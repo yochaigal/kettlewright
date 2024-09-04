@@ -1,0 +1,232 @@
+{
+  "Bonds": [
+    {
+      "description": "You inherited a Single Gem (500gp, cold and brittle) from a long-dead relative. It arrived with a warning: squander your newfound riches, and a debt long thought forgotten would be called.",
+      "items": [
+        {
+          "name": "Single Gem",
+          "description": "You inherited a Single Gem (500gp, cold and brittle) from a long-dead relative. It arrived with a warning: squander your newfound riches, and a debt long thought forgotten would be called."
+        }
+      ]
+    },
+    {
+      "description": "A distant cousin left you a small inheritance. Take 20gp, and a strange Compass that always points towards something deep in the Wood.",
+      "gold": 20,
+      "items": [
+        {
+          "name": "Ornate Compass",
+          "description": "A distant cousin left you a small inheritance. Take 20gp, and a strange Compass that always points towards something deep in the Wood."
+        }
+      ]
+    },
+    {
+      "description": "You carry a Portrait in a locket (petty) of a past love who disappeared into the Wood long ago. Somehow, you know that they are still alive.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Locket",
+          "tags": [
+            "petty"
+          ],
+          "description": "You carry a Portrait in a locket (petty) of a past love who disappeared into the Wood long ago. Somehow, you know that they are still alive."
+        }
+      ]
+    },
+    {
+      "description": "You found a Tiny Crystal Prism (petty) buried in the dirt. When held up to the light, it shows visions of an unknown location deep within the Wood. Sometimes, you feel a presence looking back at you.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Tiny Crystal Prism",
+          "tags": [
+            "petty"
+          ],
+          "description": "You found a Tiny Crystal Prism (petty) buried in the dirt. When held up to the light, it shows visions of an unknown location deep within the Wood. Sometimes, you feel a presence looking back at you."
+        }
+      ]
+    },
+    {
+      "description": "You once freed a Naiad from a choked stream. In return, it gave you some Silver Moss (petty). Swallow it near water and the creature will come, once, to repay its debt.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Silver Moss",
+          "tags": [
+            "petty"
+          ],
+          "description": "You once freed a Naiad from a choked stream. In return, it gave you some Silver Moss (petty). Swallow it near water and the creature will come, once, to repay its debt."
+        }
+      ]
+    },
+    {
+      "description": "You inherited an old Journal, bound in bark. Each evening, its pages are filled with the events of the day, crassly from the journal’s perspective. The writing is crude, but accurate.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Journal",
+          "description": "You inherited an old Journal, bound in bark. Each evening, its pages are filled with the events of the day, crassly from the journal’s perspective. The writing is crude, but accurate."
+        }
+      ]
+    },
+    {
+      "description": "You protect a long-dormant family secret. Take one half of an Ancient Key (petty). They say that if joined with its twin, it opens a Gate through any door.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Ancient Key Half",
+          "tags": [
+            "petty"
+          ],
+          "description": "You protect a long-dormant family secret. Take one half of an Ancient Key. They say that if joined with its twin, it opens a Gate through any door."
+        }
+      ]
+    },
+    {
+      "description": "You received a Letter (petty) detailing incontrovertible proof that your true parentage is that of Fae nobility. The note also indicates a date and location where you are to meet them, deep in the the Wood.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Letter",
+          "tags": [
+            "petty"
+          ],
+          "description": "You received a Letter (petty) detailing incontrovertible proof that your true parentage is that of Fae nobility. The note also indicates a date and location where you are to meet them, deep in the the Wood."
+        }
+      ]
+    },
+    {
+      "description": "You owe a great debt to a member of the nobility, and carry their Signet Ring (petty), which serves as proof of their protection as well as your obligation.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Signet Ring",
+          "tags": [
+            "petty"
+          ],
+          "description": "You owe a great debt to a member of the nobility, and carry their Signet Ring (petty), which serves as proof of their protection as well as your obligation."
+        }
+      ]
+    },
+    {
+      "description": "You consumed a Mischievous Spirit that wreaks havoc on your insides, demanding to be taken home, deep in the Wood. It occupies one slot but absorbs one Fatigue each day. It wants you alive (for now).",
+      "gold": "",
+      "items": [
+        {
+          "name": "Mischievous Spirit",
+          "description": "You consumed a Mischievous Spirit that wreaks havoc on your insides, demanding to be taken home, deep in the Wood. It occupies one slot but absorbs one Fatigue each day. It wants you alive (for now)."
+        }
+      ]
+    },
+    {
+      "description": "A roaming storyteller once spun you tales of great treasure hidden deep in the Wood. You thought it naught but fancy, till they gave you A Rolled-Up Map (petty) marked with an X.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Rolled-Up Map",
+          "tags": [
+            "petty"
+          ],
+          "description": "A roaming storyteller once spun you tales of great treasure hidden deep in the Wood. You thought it naught but fancy, till they gave you A Rolled-Up Map (petty) marked with an X."
+        }
+      ]
+    },
+    {
+      "description": "During your travels, you met a dying hunter who asked you to deliver a message to their loved ones. Take a Letter (petty), sealed with tree sap. It is addressed only to the Lord Of Winter.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Letter",
+          "tags": [
+            "petty"
+          ],
+          "description": "During your travels, you met a dying hunter who asked you to deliver a message to their loved ones. Take a Letter (petty), sealed with tree sap. It is addressed only to the Lord Of Winter."
+        }
+      ]
+    },
+    {
+      "description": "You found a wounded beast in the forest, but chose to ignore it. You see it everywhere now, but only when you’re alone. It looks sad, but not angry. You cannot become panicked when acting alone.",
+      "gold": "",
+      "items": []
+    },
+    {
+      "description": "You promised a childhood friend that you’d bring them back a rare gift, something unique in all the world. Take a Bracelet (petty) woven from twine and wildflowers.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Bracelet",
+          "tags": [
+            "petty"
+          ],
+          "description": "You promised a childhood friend that you’d bring them back a rare gift, something unique in all the world. Take a Bracelet (petty) woven from twine and wildflowers."
+        }
+      ]
+    },
+    {
+      "description": "You crossed a creature of the Wood, and it cursed you with a Stone Heart (1 Armor). With each passing month, the stone grows heavier by one slot. Until your debt is lifted, you cannot truly die.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Stone Heart",
+          "tags": [
+            "1 armor"
+          ],
+          "description": "You crossed a creature of the Wood, and it cursed you with a Stone Heart (1 Armor). With each passing month, the stone grows heavier by one slot. Until your debt is lifted, you cannot truly die."
+        }
+      ]
+    },
+    {
+      "description": "You carved a Whistle (petty) from an Oak Lord’s branch. Your act did not go unnoticed. You cannot seem to rid yourself of the whistle either.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Whistle",
+          "tags": [
+            "petty"
+          ],
+          "description": "You carved a Whistle (petty) from an Oak Lord’s branch. Your act did not go unnoticed. You cannot seem to rid yourself of the whistle either."
+        }
+      ]
+    },
+    {
+      "description": "The Dawn Brigade did your family a service, giving you a dried Blood-Red Flower (petty) as proof. When the flower turns white, it means the favor is owed.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Blood-Red Flower",
+          "tags": [
+            "petty"
+          ],
+          "description": "The Dawn Brigade did your family a service, giving you a dried Blood-Red Flower (petty) as proof. When the flower turns white, it means the favor is owed."
+        }
+      ]
+    },
+    {
+      "description": "An entertainer once visited your home, filling it with story and song. He left one day without a word, leaving behind only A Miniature Lute. Something rattles inside.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Miniature Lute",
+          "description": "An entertainer once visited your home, filling it with story and song. He left one day without a word, leaving behind only A Miniature Lute. Something rattles inside."
+        }
+      ]
+    },
+    {
+      "description": "A white crow appeared to you in a dream, holding a twig in its mouth. You awoke the next morning with The Twig (petty) in your hand. You believe it brings you luck. It smells faintly of sulfur.",
+      "gold": "",
+      "items": [
+        {
+          "name": "Twig",
+          "tags": [
+            "petty"
+          ],
+          "description": "A white crow appeared to you in a dream, holding a twig in its mouth. You awoke the next morning with The Twig (petty) in your hand. You believe it brings you luck. It smells faintly of sulfur."
+        }
+      ]
+    },
+    {
+      "description": "One of your ancestors wronged a Moss Witch, who cursed their bloodline. Your visage causes mirrors to shatter. You’ve noticed that the shards can sometimes reveal illusions.",
+      "gold": "",
+      "items": []
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Flask-SocketIO Example</title>
+    <!-- Include the Socket.IO client library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  </head>
+  <body>
+    <h1>Flask-SocketIO Example</h1>
+    <button type="button" id="tools-dice-button">Roll</button>
+    <p id="tools-dice-result"></p>
+    <script>
+      const username = "{{ current_user.username }}";
+      const party_id = "{{ party_id }}";
+      const user_id = "{{ current_user.id }}";
+      // Establish Socket.IO connection
+      const socket = io();
+
+      // Connection event handlers
+      socket.on("connect", () => {
+        console.log("Connected to Flask server");
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Disconnected from Flask server");
+      });
+
+      // ... other event listeners and emitters ...
+    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='src/js/party_tools.js') }}"></script>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+{
+  "Physique": [
+    "Athletic",
+    "Brawny",
+    "Flabby",
+    "Lanky",
+    "Rugged",
+    "Scrawny",
+    "Short",
+    "Statuesque",
+    "Stout",
+    "Towering"
+  ],
+  "Skin": [
+    "Birthmarked",
+    "Webbed",
+    "Scarred",
+    "Marked",
+    "Rosy",
+    "Soft",
+    "Tanned",
+    "Tattooed",
+    "Oily",
+    "Weathered"
+  ],
+  "Hair": [
+    "Bald",
+    "Braided",
+    "Curly",
+    "Filthy",
+    "Frizzy",
+    "Long",
+    "Luxurious",
+    "Oily",
+    "Wavy",
+    "Wispy"
+  ],
+  "Face": [
+    "Bony",
+    "Broken",
+    "Chiseled",
+    "Elongated",
+    "Pale",
+    "Perfect",
+    "Rakish",
+    "Sharp",
+    "Square",
+    "Sunken"
+  ],
+  "Speech": [
+    "Blunt",
+    "Booming",
+    "Cryptic",
+    "Droning",
+    "Formal",
+    "Gravelly",
+    "Precise",
+    "Squeaky",
+    "Stuttering",
+    "Whispery"
+  ],
+  "Clothing": [
+    "Antique",
+    "Bloody",
+    "Elegant",
+    "Filthy",
+    "Foreign",
+    "Frayed",
+    "Frumpy",
+    "Livery",
+    "Rancid",
+    "Soiled"
+  ],
+  "Virtue": [
+    "Ambitious",
+    "Cautious",
+    "Courageous",
+    "Disciplined",
+    "Gregarious",
+    "Honorable",
+    "Humble",
+    "Merciful",
+    "Serene",
+    "Tolerant"
+  ],
+  "Vice": [
+    "Aggressive",
+    "Bitter",
+    "Craven",
+    "Deceitful",
+    "Greedy",
+    "Lazy",
+    "Nervous",
+    "Rude",
+    "Vain",
+    "Vengeful"
+  ]
+}

@@ -1,0 +1,90 @@
+[
+  {
+    "name": "Rations",
+    "tags": ["uses"],
+    "uses": "3",
+    "charges": "0",
+    "max_charges": "0",
+    "location": 0,
+    "description": "\\nThis item has no description...\nsdf ",
+    "carrying": null,
+    "id": 1
+  },
+  {
+    "name": "Torch",
+    "tags": ["uses"],
+    "uses": 3,
+    "charges": 0,
+    "max_charges": 0,
+    "location": 0,
+    "description": "This item has no description...",
+    "carrying": null,
+    "id": 2
+  },
+  {
+    "name": "Vestments of the Order",
+    "tags": ["petty"],
+    "uses": 0,
+    "charges": 0,
+    "max_charges": 0,
+    "location": 0,
+    "description": "This item has no description...",
+    "carrying": null,
+    "id": 3
+  },
+  {
+    "name": "Blessed Tinctures",
+    "tags": [],
+    "uses": 0,
+    "charges": 0,
+    "max_charges": 0,
+    "location": 0,
+    "description": "This item has no description...",
+    "carrying": null,
+    "id": 4
+  },
+  {
+    "name": "Silver Knife",
+    "tags": ["d6"],
+    "uses": 0,
+    "charges": 0,
+    "max_charges": 0,
+    "location": 0,
+    "description": "This item has no description...",
+    "carrying": null,
+    "id": 5
+  },
+  {
+    "name": "Crossbow",
+    "tags": ["d8", "bulky"],
+    "uses": 0,
+    "charges": 0,
+    "max_charges": 0,
+    "location": 0,
+    "description": "This item has no description...",
+    "carrying": null,
+    "id": 6
+  },
+  {
+    "name": "Pocket Leyfinder",
+    "tags": [],
+    "uses": 0,
+    "charges": 0,
+    "max_charges": 0,
+    "location": 0,
+    "description": "It points to nearby ley lines and other sources of arcane power. If you lose it, the punishment is death.",
+    "carrying": null,
+    "id": 7
+  },
+  {
+    "name": "Journal",
+    "tags": [],
+    "uses": 0,
+    "charges": 0,
+    "max_charges": 0,
+    "location": 0,
+    "description": "You inherited an old Journal, bound in bark. Each evening, its pages are filled with the events of the day, crassly from the journal’s perspective. The writing is crude, but accurate.",
+    "carrying": null,
+    "id": 8
+  }
+]

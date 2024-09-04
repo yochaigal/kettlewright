@@ -1,0 +1,168 @@
+{
+  "Barber-Surgeon": {
+    "image": "barber-surgeon.webp",
+    "background_description": "You walk the line between healer and harrower, knowing the frailty of the flesh but also the secrets that lie within. With the right tools, life and death are merely words.",
+    "names": [
+      "Wilmot",
+      "Patch",
+      "Lancet",
+      "Sawbones",
+      "Theo",
+      "Cutwell",
+      "Humor",
+      "Landsford",
+      "Goodeye",
+      "Johanna"
+    ],
+    "starting_gear": [
+      {
+        "name": "Rations",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Torch",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Bonesaw",
+        "tags": ["d6"]
+      },
+      {
+        "name": "Bandages",
+        "tags": ["uses"],
+        "uses": 3
+      },
+      {
+        "name": "Leech",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": "Restores 1 STR"
+      },
+      {
+        "name": "Stained medical finery",
+        "tags": ["petty"]
+      }
+    ],
+    "table1": {
+      "question": "How have you 'improved' yourself?",
+      "options": [
+        {
+          "description": "You have a replacement eye that can magnify objects, act as a telescope, and provide minimal night vision. You cannot wear anything metal on your head, and the presence of strong magnets make you deprived.",
+          "items": []
+        },
+        {
+          "description": "One foot is mostly metal (kick, d6), and you treat some tough terrain as Easy. Carry an Oil Can (6 uses). Without a daily application, you are deprived and noisy.",
+          "items": [
+            {
+              "name": "Oil Can",
+              "tags": ["uses"],
+              "uses": 6,
+              "description": "Without a daily application you are deprived and noisy."
+            }
+          ]
+        },
+        {
+          "description": "One of your fingers has been swapped, the bone replaced by gold and iron. Take a Hook and a Screwdriver that can attach to the fingertip.",
+          "items": [
+            {
+              "name": "Hook & Screwdriver",
+              "tags": ["petty"],
+              "description": "Attaches to mechanical finger."
+            }
+          ]
+        },
+        {
+          "description": "Both ears have been surgically enhanced, tripling your hearing. You can focus on a specific sound, such as a conversation, at a great distance. You wear an ear flap to protect against sudden loud noises (WIL save to avoid temporary paralysis).",
+          "items": []
+        },
+        {
+          "description": "Your chest is lined with alchemical sigils, toughening the skin (Armor 1). Wearing other metallic armor nullifies the effect.",
+          "items": [
+            {
+              "name": "Alchemical Sigils",
+              "tags": ["petty", "1 Armor", "bonus defense"],
+              "description": "Your chest is lined with alchemical sigils, _toughening the skin_ (1 Armor)."
+            }
+          ]
+        },
+        {
+          "description": "One arm is fully metal and comes off at the shoulder. It can be used as a weapon (d8, bulky when not attached) and can move independently if you are within sight of it.",
+          "items": []
+        }
+      ]
+    },
+    "table2": {
+      "question": "What rare tool is essential to your work?",
+      "options": [
+        {
+          "description": "Regrowth Salve: Regrows a body part over the course of a day. 1 use.",
+          "items": [
+            {
+              "name": "Regrowth Salve",
+              "tags": ["uses"],
+              "uses": 1,
+              "description": "Regrows a body part over the course of a day."
+            }
+          ]
+        },
+        {
+          "description": "Graftgrub: A small worm that can fuse inanimate objects with parts of the body. 1 use.",
+          "items": [
+            {
+              "name": "Graftgrub",
+              "tags": ["uses"],
+              "uses": 1,
+              "description": "Fuses inanimate objects with parts of the body."
+            }
+          ]
+        },
+        {
+          "description": "Woundwax: Heals wounds from fire or chemicals (restoring full STR) but nothing else. 2 uses.",
+          "items": [
+            {
+              "name": "Woundwax",
+              "tags": ["uses"],
+              "uses": 2,
+              "description": "Heals wounds from fire or chemicals restoring full STR."
+            }
+          ]
+        },
+        {
+          "description": "Quicksilver: A stimulant. Go first in combat, and automatically pass any WIL saves for one hour. Addictive: Save STR or become deprived after 24 hours without it. 4 uses.",
+          "items": [
+            {
+              "name": "Quicksilver",
+              "tags": ["uses"],
+              "uses": 4,
+              "description": "Stimulant. Go first in combat, and automatically pass any WIL saves for one hour. Addictive: Save STR or become deprived after 24 hours without it."
+            }
+          ]
+        },
+        {
+          "description": "Pneuma Pump: Portable iron lungs (bulky). Enables life-saving surgery or underwater breathing.",
+          "items": [
+            {
+              "name": "Pneuma Pump",
+              "tags": ["bulky"],
+              "description": "Portable iron lungs. Enables life-saving surgery or underwater breathing."
+            }
+          ]
+        },
+        {
+          "description": "Lodestone: Draws out dangerous elements from the body and acts as a powerful magnetic force.",
+          "items": [
+            {
+              "name": "Lodestone",
+              "tags": [],
+              "description": "Draws out dangerous elements from the body and acts as a powerful magnetic force."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

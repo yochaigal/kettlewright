@@ -1,0 +1,66 @@
+{% extends "base.html" %} {% block content %}
+<script>
+  let baseURL = `{{ base_url }}`;
+</script>
+<script type="text/javascript" src="{{ url_for('static', filename='src/js/parties.js') }}"></script>
+
+<div class="body-container">
+  <div class="parties-page-header"
+    ><a id="new-party-button"><button type="button ">New Party</button></a></div
+  >
+  <div class="party-cards-container">
+    {% for party in parties %}
+
+    <div
+      class="column is-one-third"
+      data-ownername="{{ party.owner_username }}"
+      data-partyurl="{{ party.party_url }}"
+      onclick="redirectToPartyPage(this)"
+    >
+      <div class="card party-card" style="cursor: pointer">
+        <h2 class="party-card-name">{{ party.name }}</h2>
+        <p class="party-card-description">{{party.description}}</p>
+        <h3 class="">Members</h3>
+        {% if party.member_names and party.member_names != "No members yet." %}
+        <div class="party-card-member-portraits">
+          {% for portrait in party.member_portraits %}
+          <img src="{{ portrait }}" alt="Member Portrait" class="party-card-member-portrait" />
+          {% endfor %}
+        </div>
+        {% else %}
+        <p>No members yet.</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+    <div class="modal" id="new-party-modal">
+      <div class="modal-background" id="new-party-modal-background"></div>
+      <div class="modal-card" id="new-party-modal-card">
+        <form method="POST" id="new-party-form">
+          {{ form.hidden_tag() }}
+          <div class="modal-card-head">
+            <h3 class="modal-card-title">New Party</h3>
+            <!-- <button class="delete" type="button" aria-label="close" id="new-party-modal-close"></button> -->
+          </div>
+          <section class="modal-card-body">
+            <div class="field">
+              <label class="label">Name</label>
+              {{ form.name(class="input", required=True) }}</div
+            >
+            <div class="field">
+              <label class="label">Description</label> {{ form.description(class="textarea",
+              oninput='resizeTextarea(this)' ) }}</div
+            >
+          </section>
+          <footer class="modal-card-foot" style="">
+            {{ form.submit(class='button', id="new-party-submit-button") }}
+            <button class="button" type="button" id="new-party-cancel-button" style="margin-left: auto">
+              Cancel
+            </button>
+          </footer>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+</div>

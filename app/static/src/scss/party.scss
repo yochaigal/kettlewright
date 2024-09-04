@@ -1,0 +1,94 @@
+@import '_variables.scss';
+
+#party-members-content {
+display: flex;
+width: 100%;
+flex-wrap: wrap;
+justify-content: space-around;
+}
+.party-section {
+    margin: 2em 0;
+
+}
+.party-section-content {
+  padding: 2em 1em;
+}
+
+.party-collapse-button {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    margin-right: .25em;
+  }
+  
+.party-collapse-button i {
+position: relative;
+z-index: 1;
+}
+
+.party-collapse-button:hover::before {
+content: "";
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 30px;
+height: 30px;
+background-color: #f0f0f0;
+border-radius: 50%;
+}
+
+.party-events-button-container {
+  margin: 1em 0;
+  display: flex;
+  gap: 1em;
+  flex-wrap: wrap;
+  height: 60px;
+  
+}
+
+.party-tools-sheet {
+  width: 100%;
+  max-width: 940px;
+  padding: 4em;
+}
+
+@media (max-width: 940px) {
+  .party-tools-sheet {
+    padding: 1em 1em;
+  }
+}
+
+.tools-roll-container {
+  // display: grid;
+  // grid-template-columns: 1fr 1fr 1fr;
+
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+  align-items: center;
+  margin-top: 1em;
+}
+
+.tools-select {
+  width: 180px;
+}
+
+.tools-category-title, .tools-select, .tools-dice {
+  margin: 0;
+}
+
+.tools-roll-container select {
+  margin: 0;
+}
+
+.tools-roll-container select:focus {
+  margin: 0;
+}
+
+#tools-result-display {
+  height: 400px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+

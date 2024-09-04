@@ -1,0 +1,22 @@
+{
+  "Wilderness Events": [
+    {
+      "description": "Encounter: Roll on an encounter table for that terrain type or location. Don’t forget to roll for NPC reactions if applicable."
+    },
+    {
+      "description": "Sign: The party discovers a clue, spoor, or indication of a nearby encounter, locality, hidden feature, or information about a nearby area."
+    },
+    {
+      "description": "Environment: A shift in weather or terrain."
+    },
+    {
+      "description": "Loss: The party is faced with a choice that costs them a resource (rations, tools, etc), time, or effort."
+    },
+    {
+      "description": "Exhaustion: The party encounters a barrier, forcing effort, care or delays. This might mean spending extra time (and an additional Wilderness Action) or adding Fatigue to the PC's inventory to represent their difficulties."
+    },
+    {
+      "description": "Quiet: The party finds food, treasure, or other useful resources. The Warden can instead choose to reveal the primary feature of the area."
+    }
+  ]
+}

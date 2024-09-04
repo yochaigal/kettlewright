@@ -1,0 +1,176 @@
+{% extends "base.html" %} {% block content %}
+<script>
+  const rawData = `{{ data_json|safe }}`;
+  const data = JSON.parse(rawData);
+  const containersRawData = `{{ containers_data_json|safe }}`;
+  const containersData = JSON.parse(containersRawData);
+  const deprived = `{{character.deprived}}`;
+  const customImage = "{{character.custom_image}}";
+  const imageURL = `{{character.image_url}}`;
+  const hp = `{{character.hp}}`;
+  const hpMax = `{{character.hp_max}}`;
+  const partyName = `{{character.party_name}}`;
+  const partyDescription = `{{character.party_description}}`;
+  const traits = `{{character.traits}}`;
+  const bonds = `{{character.bonds}}`;
+  const omens = `{{character.omens}}`;
+  const scars = `{{character.scars}}`;
+  const notes = `{{character.notes}}`;
+  const description = `{{character.description}}`;
+  const isOwner = `{{is_owner}}`;
+  const party = `{{party}}`;
+</script>
+
+{% if is_owner %}
+<script>
+  const party_id = "{{ character.party_id }}";
+  const character_id = "{{ character.id }}";
+</script>
+{% endif %}
+<script src="{{url_for('static', filename='src/js/character_view.js')}}" defer type="module"></script>
+
+<div class="body-container">
+  {% with messages = get_flashed_messages() %} {% if messages is not none and messages|length > 0 %}
+  <div class="message is-danger">
+    <div class="message-header">
+      <p>Errors</p>
+    </div>
+    <div class="message-body">
+      <ul class="errors">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endif %} {% endwith %}
+  <div class="sheet view-character-sheet">
+    <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em">
+      <img src="{{portrait_src}}" alt="character portrait" class="portrait-image" id="portrait-image" />
+      <div>
+        <h1 class="view-mode">{{character.name}}</h1>
+        <h2 class=""> {{character.background}} </h2></div
+      >
+      {% if is_owner %}
+      <div style="margin-left: auto; display: flex; flex-direction: column; gap: 0.5em">
+        <a href="{{ request.path }}edit/"
+          ><button class="edit-button view-mode" type="button" style="height: 42.7px"> Edit </button></a
+        >
+        <button class="button dice-button" type="button" id="character-dice-button">
+          <i class="fa-solid fa-dice dice"></i>
+        </button>
+        {% include "main/dice_modal.html" %}
+      </div>
+      {% endif %}
+    </div>
+    <div class="character-stats-traits-inventory" id="edit-character-left-">
+      <div id="character-stats-container">
+        <h3>Stats</h3>
+        <div class="stats-stats-container character-section">
+          <div class="character-attribute-container" id="character-str-container">
+            <h4>STR</h4>
+            <p class="subtitle view-mode" id="strength-view-text">{{character.strength}}/{{character.strength_max}}</p>
+          </div>
+          <div class="character-attribute-container" id="character-dex-container">
+            <h4>DEX</h4>
+            <p class="subtitle view-mode" id="dexterity-view-text"
+              >{{character.dexterity}}/{{character.dexterity_max}}</p
+            >
+          </div>
+          <div class="character-attribute-container" id="character-wil-container">
+            <h4>WIL</h4>
+            <p class="subtitle view-mode" id="willpower-view-text"
+              >{{character.willpower}}/{{character.willpower_max}}</p
+            >
+          </div>
+          <div class="character-attribute-container" id="character-hp-container">
+            <h4>HP</h4>
+            <p class="subtitle view-mode" id="hp-view-text"></p>
+          </div>
+          {% if character.deprived %}
+          <h4 class="character-deprived-text view-mode">DEPRIVED</h4>
+          {% endif %}
+
+          <div class="character-attribute-container" id="character-gold-container">
+            <h4 class="view-attribute-font">Gold</h4>
+            <p class="subtitle view-mode" id="gold-view-text">{{character.gold}}</p>
+          </div>
+          <div class="character-attribute-container" id="character-armor-container">
+            <h4>Armor</h4>
+            <p class="subtitle" id="armor-counter" style="margin-left: 0px; margin-right: auto"></p>
+          </div>
+        </div>
+      </div>
+      <div id="character-traits-container" class="character-section">
+        <div class="view-mode">
+          <h3>Traits</h3>
+
+          <p id="character-traits-view">{{character.traits}}</p>
+        </div>
+      </div>
+      {% include "main/inventory.html" %}
+    </div>
+
+    <div class="character-descriptions-grid" style="margin-top: 1em">
+      <div class="character-description-container character-section" id="character-background-container">
+        <div class="view-mode">
+          <h3>Description</h3>
+          <p id="character-description-view">{{character.description}}</p>
+        </div>
+      </div>
+      <div class="character-description-container character-section" id="character-bonds-container">
+        <div class="view-mode">
+          <h3>Bonds</h3>
+
+          <p id="character-bonds-view">{{character.bonds}}</p>
+        </div>
+      </div>
+      <div class="character-description-container character-section" id="character-omens-container">
+        <div class="view-mode">
+          <h3>Omens</h3>
+          <p id="character-omens-view">{{character.omens|safe}}</p>
+        </div>
+      </div>
+      <div class="character-description-container character-section" id="character-scars-container">
+        <div class="view-mode">
+          <h3>Scars</h3>
+          <p id="character-scars-view">{{character.scars|safe}}</p>
+        </div>
+      </div>
+      <div class="character-description-container character-section" id="character-notes-container">
+        <div class="view-mode">
+          <h3>Notes</h3>
+          <p id="character-notes-view">{{character.notes|safe}}</p>
+        </div>
+      </div>
+
+      <div class="character-description-container character-section" id="character-party-container">
+        <h3 id="character-party-heading">Party</h3>
+        {% if party %}
+        <div id="character-party-name-description">
+          <a class="bold subtitle" id="character-party-link" href="{{ base_url }}/{{ party_url }}">{{ party_name }}</a>
+          <p class="text-border" id="character-party-description">{{ party_description}}</p>
+        </div>
+        {%else %}
+        <p id="character-no-party-description">This character does not belong to a party...</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="justify-space-between view-mode" style="margin-top: 2.5em">
+      <div>
+        <a href="{{ url_for('main.print_character', username=username, url_name=url_name) }}">
+          <button class="button is-light" id="" style="margin-right: 1em" type="button">
+            Print<i class="fa-solid fa-print icon-in-button"></i>
+          </button>
+        </a>
+        <!-- {% if is_owner %}
+        <button class="button is-light" id="download-json-button" type="button"
+          >JSON<i class="fa-solid fa-download icon-in-button"></i>
+        </button>
+        {% endif %} -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

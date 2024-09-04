@@ -1,0 +1,272 @@
+.create-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 940px;
+    margin-bottom: 1em;
+    padding: 0px 1em;
+}
+
+@media (max-width: 460px) {
+    .create-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.background-fields-and-image-container, .create-name-custom-name-container, #background-tables-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 2.5em;
+    margin-bottom: 2.5em;
+    margin-top: 2.5em;
+    column-gap: 4em;
+
+}
+
+@media (max-width: 940px) {
+    .background-fields-and-image-container, .create-name-custom-name-container, #background-tables-container{
+        grid-template-columns: 1fr;
+        row-gap: 1em;
+        column-gap: 0em;
+    }
+
+}
+
+
+
+#create-portrait-container {
+    cursor: pointer;
+}
+.create-text-field-container {
+    flex-grow: 1;
+    padding-right: 64.59px; /* Add the same margin-right as the select field */
+    margin-top: 1em;
+}
+
+.create-select-field {
+    margin-bottom: 0px !important;
+}
+
+// .create-field-dice-container {
+//     width: 100%;
+//     max-width: 100%;
+//     display: flex;  
+//     justify-content: space-between;
+//     align-items: center;
+// }
+
+// .create-field-dice-container .select {
+//     flex-grow: 1;
+//     margin-right: 10px; /* Add some spacing between the select and the button */
+// }
+
+// .create-field-dice-container .select select {
+//     min-width: 100% !important;
+// }
+
+.background-table-container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  .table-border {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .create-field-dice-container {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .create-field-dice-container .select {
+    flex-grow: 1;
+    margin-right: 10px;
+    min-width: 0;
+  }
+  
+  .create-field-dice-container .select select {
+    width: 100% !important;
+  }
+  
+  @media (max-width: 460px) {
+    .create-field-dice-container .select {
+      margin-right: 5px;
+    }
+  
+    .create-field-dice-container .dice-button {
+      flex-shrink: 0;
+    }
+  }
+
+
+.table-question {
+   font-weight: 600;
+   height: 44px;
+   margin-top: 0px;
+}
+
+.create-top-text-field {
+    font-size: 12pt;
+    min-height: 134px !important;
+}
+
+.create-attributes-container {
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+  
+
+.create-str-dex-wil-container {
+margin-top: 2em;
+display: flex;
+justify-content: space-between;
+}
+
+@media (max-width: 940px) {
+    .create-str-dex-wil-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    }
+}
+
+.create-attribute-container {
+display: grid;
+grid-template-columns: 1fr 1fr 1fr 1fr;
+width: 180px;
+align-items: baseline;
+}
+
+.attribute-font {
+    
+}
+
+#swap-container {
+display: flex;
+gap: 1em;
+justify-content: center;
+align-items: center;
+margin: 2em auto 2em auto;
+}
+
+#swap-container > * {
+margin: 0px;
+}
+
+#create-hp-container {
+align-self: center;
+}
+
+
+  
+.create-attribute-container > * > * {
+margin-bottom: 0px !important;
+padding: 0px;
+}
+
+.create-attribute-container > * {
+margin-bottom: 0px;
+padding: 0px;
+}
+
+
+.create-traits-outer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+  .create-traits-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    margin-top: 2em;
+
+  }
+
+.create-trait-container {
+    display: flex;
+    justify-content: center;;
+}
+
+.trait-select {
+    width: 150px;
+}
+
+  @media (max-width: 940px) {
+    .create-traits-container {
+        grid-template-columns: auto auto;    
+      }
+  }
+
+  
+
+
+
+  /* Bonds Age Omens */
+
+
+
+  .create-bonds-age-omens-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  #bonds-select, #omens-select {
+    width: 200px;
+}
+  #age-field {
+    width: 150px;
+  }
+
+
+  @media (max-width: 940px) {
+
+    .create-bonds-age-omens-container {
+        flex-direction: column;
+        gap: 1em;
+    }
+
+
+
+    #bonds-select, #omens-select {
+        width: 100%;
+    }
+    
+  }
+
+  .create-armor-gold-container {
+    display: flex;
+    justify-content: space-around;
+    margin: 1em 0;
+    // max-width: 460px;
+    gap: 2em;
+  
+  }
+
+  #gold-field, #armor-counter {
+    text-align: center;
+    font-weight: 800;
+    font-size: 14pt;
+  }
+  #armor-counter {
+    margin-left: .5em;
+  }
+
+
+.create-inventory-container {
+    display: flex;
+    justify-content: center;
+    min-width: 100%;
+}
+
+#submit-button {
+    max-width: fit-content;
+    margin-top: 4em;
+}

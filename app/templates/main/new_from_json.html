@@ -1,0 +1,16 @@
+{% extends "base.html" %} {% block content %}
+<script
+  src="{{url_for('static', filename='src/js/new_from_json.js')}}"
+  defer
+  type="module"
+></script>
+<form class="" id="character-form" method="post">
+  {{ form.hidden_tag() }}
+  <div>
+    <h1 class="subtitle">Upload JSON File</h1>
+    <input type="file" id="jsonFile" accept=".json" />
+  </div>
+  <br /><br />
+  {{ form.submit(class='button is-success', id="submit-button") }}
+</form>
+{% endblock %}

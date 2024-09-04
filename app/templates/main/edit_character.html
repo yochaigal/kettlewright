@@ -1,0 +1,252 @@
+{% extends "base.html" %} {% block content %}
+<script>
+  const itemsData = JSON.parse(`{{ items_json|safe }}`.slice(1, -1));
+  const containersData = JSON.parse(`{{ containers_json|safe }}`.slice(1, -1));
+
+  let name = `{{character.name}}`;
+  let background = `{{character.background}}`;
+  let custom_name = `{{character.custom_name}}`;
+  let custom_background = `{{character.custom_background}}`;
+  let strength = `{{character.strength}}`;
+  let strengthMax = `{{character.strength_max}}`;
+  let dexterity = `{{character.dexterity}}`;
+  let dexterityMax = `{{character.dexterity_max}}`;
+  let willpower = `{{character.willpower}}`;
+  let willpowerMax = `{{character.willpower_max}}`;
+  let hp = `{{character.hp}}`;
+  let hpMax = `{{character.hp_max}}`;
+  let gold = `{{character.gold}}`;
+  let deprived = `{{character.deprived|tojson}}`;
+  let description = `{{character.description}}`;
+  let bonds = `{{character.bonds}}`;
+  let omens = `{{character.omens}}`;
+  let scars = `{{character.scars}}`;
+  let customName = "{{character.custom_name}}";
+  let notes = `{{character.notes}}`;
+  let customImage = "{{character.custom_image}}";
+  let imageURL = `{{character.image_url}}`;
+  let ownerUsername = `{{character.owner_username}}`;
+  let urlName = `{{character.url_name}}`;
+  let partyCode = `{{character.party_code}}`;
+  let partyName = `{{party_name}}`;
+  let partyURL = `{{party_url}}`;
+  const baseURL = `{{base_url}}`;
+  let traits = `{{character.traits}}`;
+  const marketplaceRawData = `{{ marketplace_data | safe }}`;
+  const marketplaceData = JSON.parse(marketplaceRawData);
+  const party_id = "{{ character.party_id }}";
+  const user_id = "{{ current_user.id }}";
+  const character_id = "{{ character.id }}";
+  const scarsRawData = `{{ scars_data | safe }}`;
+  const scarsData = JSON.parse(scarsRawData).Scars;
+  const omensRawData = `{{ omens_data | safe }}`;
+  const omensData = JSON.parse(omensRawData).Omens;
+  console.log("scarsData", scarsData);
+</script>
+
+<script src="{{url_for('static', filename='src/js/character_edit.js')}}" defer type="module"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+<section class="body-container">
+  {% with messages = get_flashed_messages() %} {% if messages is not none and messages|length > 0 %}
+  <div class="message is-danger">
+    <div class="message-header">
+      <p>Errors</p>
+    </div>
+    <div class="message-body">
+      <ul class="errors">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endif %} {% endwith %}
+  <form class="sheet" id="character-form" method="post">
+    {{ form.hidden_tag() }}
+    <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em">
+      <img src="{{portrait_src}}" alt="character portrait" class="portrait-image" id="portrait-image" />
+      {%include "main/edit_portrait_modal.html"%}
+      <div>
+        <p class="">{{ form.name(class=' edit-mode' ) }}</p>
+        <h2 class=""> {{character.background}} </h2></div
+      >
+    </div>
+
+    <div class="character-stats-traits-inventory" id="edit-character-left-">
+      <div id="character-stats-container">
+        <h3>Stats</h3>
+        <div class="stats-stats-container character-section">
+          <div class="character-attribute-container character-attribute-container-edit" id="character-str-container">
+            <h4>STR</h4>
+
+            <span class="edit-mode character-attribute-field-container">
+              {{ form.strength(class='character-attribute-input', size=1, type='number', min="0", max="99",
+              step="1",id="strength-input") }}
+              <p class="subtitle character-attribute-input">/</p>
+              {{ form.strength_max(class='character-attribute-input', size=1, type='number', min="0", max="99",
+              step="1", id="strength-max-input") }}
+            </span>
+          </div>
+          <div class="character-attribute-container character-attribute-container-edit" id="character-dex-container">
+            <h4>DEX</h4>
+
+            <span class="edit-mode character-attribute-field-container">
+              {{ form.dexterity(class='character-attribute-input', size=1, type='number', min="0", max="99", step="1",
+              id="dexterity-input") }}
+              <p class="subtitle character-attribute-input">/</p>
+              {{ form.dexterity_max(class='character-attribute-input', size=1, type='number', min="0", max="99",
+              step="1", id="dexterity-max-input") }}
+            </span>
+          </div>
+          <div class="character-attribute-container character-attribute-container-edit" id="character-wil-container">
+            <h4>WIL</h4>
+
+            <span class="edit-mode character-attribute-field-container">
+              {{ form.willpower(class='character-attribute-input', size=1, type='number', min="0", max="99", step="1",
+              id="willpower-input") }}
+              <p class="subtitle character-attribute-input">/</p>
+              {{ form.willpower_max(class='character-attribute-input', size=1, type='number', min="0", max="99",
+              step="1", id="willpower-max-input") }}
+            </span>
+          </div>
+          <div class="character-attribute-container character-attribute-container-edit" id="character-hp-container">
+            <h4>HP</h4>
+
+            <span class="edit-mode character-attribute-field-container">
+              {{ form.hp(class='character-attribute-input', size=1, type='number', min="0", max="99",
+              step="1",id="hp-input") }}
+              <p class="subtitle character-attribute-input">/</p>
+              {{ form.hp_max(class='character-attribute-input', size=1, type='number', min="0", max="99",
+              step="1",id="hp-max-input") }}
+            </span>
+          </div>
+          {% if character.deprived %} {% endif %}
+          <div
+            class="character-attribute-container character-attribute-container-edit edit-mode"
+            id="character-deprived-container"
+          >
+            <!-- <div style="display: flex"> -->
+            <h4 class="character-deprived-text">DEPRIVED</h4> {{ form.deprived(class='checkbox edit-mode',
+            type="checkbox", id="deprived-field") }}
+            <!-- </div> -->
+            <!-- <button type="button" class="edit-mode" id="character-rest-button"> Rest </button> -->
+          </div>
+
+          <div
+            class="character-attribute-container character-attribute-container-edit edit-mode"
+            id="character-rest-container"
+          >
+            <button type="button" class="edit-mode" id="character-rest-button"> Rest </button>
+          </div>
+
+          <div class="character-attribute-container character-attribute-container-edit" id="character-gold-container">
+            <h4 class="view-attribute-font">Gold</h4>
+
+            <div class="edit-mode character-attribute-field-container">
+              <div class="number-field">
+                {{ form.gold(class='input number-input character-attribute-input', size=1, type='number', min="0",
+                max="9999", step="1", id="gold-input") }}
+              </div>
+            </div>
+          </div>
+          <div class="character-attribute-container character-attribute-container-edit" id="character-armor-container">
+            <h4>Armor</h4>
+            <p class="subtitle" id="armor-counter"></p>
+          </div>
+        </div>
+      </div>
+      <div id="character-traits-container" class="character-section">
+        <div class="edit-mode">
+          <h3>Traits</h3>
+
+          {{ form.traits(class='textarea', id='traits-field', oninput='resizeTextarea(this)') }}
+        </div>
+      </div>
+      {% include "main/inventory.html" %}
+    </div>
+
+    <div class="character-descriptions-grid" style="margin-top: 1em">
+      <div class="character-description-container character-section" id="character-background-container">
+        <div class="edit-mode">
+          <h3>Description</h3>
+
+          {{ form.description(class='textarea', id='description-field', oninput='resizeTextarea(this)') }}
+        </div></div
+      >
+      <div class="character-description-container character-section" id="character-bonds-container">
+        <div class="edit-mode">
+          <h3>Bonds</h3>
+
+          {{ form.bonds(class='textarea', id='bonds-field', oninput='resizeTextarea(this)') }}
+        </div>
+      </div>
+      <div class="character-description-container character-section" id="character-omens-container">
+        <div class="edit-mode">
+          <span style="display: flex">
+            <h3>Omens</h3>
+            <button class="roll button dice-button" type="button" id="roll-omens-button" style="font-size: 16pt">
+              <i class="fa-solid fa-dice dice"></i> </button
+          ></span>
+          {{ form.omens(class='textarea', id='omens-field', oninput='resizeTextarea(this)') }}
+        </div>
+      </div>
+      <div class="character-description-container character-section" id="character-scars-container">
+        <div class="edit-mode">
+          <span style="display: flex">
+            <h3>Scars</h3>
+            <button class="roll button dice-button" type="button" id="roll-scars-button" style="font-size: 16pt">
+              <i class="fa-solid fa-dice dice"></i> </button
+          ></span>
+
+          {{ form.scars(class='textarea', id='scars-field', oninput='resizeTextarea(this)') }}
+        </div>
+      </div>
+      <div class="character-description-container character-section" id="character-notes-container">
+        <div class="edit-mode">
+          <h3>Notes</h3>
+          {{ form.notes(class='textarea', id='notes-field', oninput='resizeTextarea(this)') }}
+        </div>
+      </div>
+
+      <div class="character-description-container character-section" id="character-party-container">
+        <h3 id="character-party-heading">Party</h3>
+
+        <div id="character-party-name-description">
+          <a class="bold subtitle" id="character-party-link" style="text-decoration: underline">{{ party_name }}</a>
+
+          <p class="text-border" id="character-party-description">{{ party_description}}</p>
+          <button
+            class="button hidden is-warning"
+            style="margin-top: 20px; margin-left: 10px"
+            id="character-leave-party-button"
+            type="button"
+            >Leave Party</button
+          ></div
+        >
+
+        <div class="field hidden" id="character-join-code" style="margin-top: 20px">
+          <label>Join Code</label>
+          {{ form.party_code(class='input', id='party-code-field') }}
+        </div>
+      </div>
+    </div>
+
+    <button
+      class="button edit-mode is-danger"
+      id="delete-character-button"
+      type="button"
+      style="margin-top: 100px"
+      data-character-id="{{ character.id }}"
+    >
+      DELETE CHARACTER<i class="fa-solid fa-trash icon-in-button"></i>
+    </button>
+
+    <div id="save-button-footer-wrapper" class="sticky-save-button-wrapper edit-mode">
+      <button id="save-button-footer-save" class="button is-success"> Save </button>
+      <button id="save-button-footer-cancel" class="button" type="button"> Cancel </button>
+    </div>
+  </form>
+</section>
+
+{% endblock %}

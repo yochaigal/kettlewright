@@ -1,0 +1,63 @@
+{
+  "NPCs": {
+    "Names": {
+      "d100": [
+        "Aeloria", "Ainsley", "Aislin", "Alaric", "Alder", "Alistair", "Anika", "Azura", "Birch", "Brave",
+        "Cade", "Caelan", "Caius", "Callan", "Carver", "Cedric", "Ciaran", "Cinder", "Cleaver", "Coraline",
+        "Creek", "Crow", "Crucible", "Dain", "Darnel", "Dax", "Dorian", "Elia", "Eoin", "Evander",
+        "Ewan", "Faris", "Finch", "Gerda", "Glow", "Glyph", "Godric", "Gunnar", "Harkin", "Harper",
+        "Hildred", "Hemlock", "Jarek", "Juniper", "Kade", "Kael", "Kavi", "Lian", "Leo", "Liora",
+        "Luna", "Lysander", "Lysander", "Mariner", "Marcellus", "Marius", "Mend", "Milo", "Mirth", "Neria",
+        "Nazira", "Nox", "Onyx", "Pan", "Plow", "Rush", "Rolan", "Shade", "Sharpsight", "Shroud",
+        "Sky", "Spade", "Spike", "Stellan", "Stem", "Storm", "Taran", "Taros", "Thaddeus", "Thistle",
+        "Thyme", "Tiberius"
+      ]
+    },
+    "Background": {
+      "d20": [
+        "Academic", "Assassin", "Blacksmith", "Farmer", "General", "Gravedigger", "Guard", "Healer", "Jailer",
+        "Laborer", "Lord", "Merchant", "Monk", "Mystic", "Outlander", "Peddler", "Politician", "Spy", "Thief",
+        "Thug"
+      ]
+    },
+    "Goals": {
+      "d20": [
+        "Ascension", "Cleansing", "Conservation", "Defense", "Domination", "Enrichment", "Expansion", "Freedom",
+        "Healing", "Integration", "Justice", "Peace", "Power", "Preservation", "Purification", "Redemption",
+        "Revenge", "Survival", "Unity", "Wealth"
+      ]
+    },
+    "Traits": {
+      "Virtues": {
+        "d20": [
+          "Cautious", "Compassionate", "Connected", "Courageous", "Disciplined", "Discreet", "Honest",
+          "Intelligent", "Judicious", "Loyal", "Methodical", "Meticulous", "Polite", "Popular", "Pragmatic",
+          "Resourceful", "Suave", "Shrewd", "Tenacious", "Witty"
+        ]
+      },
+      "Vices": {
+        "d20": [
+          "Aloof", "Corrupt", "Craven", "Cruel", "Cynical", "Deceptive", "Greedy", "Impulsive", "Incompetent",
+          "Inflexible", "Manipulative", "Mercurial", "Naive", "Pedantic", "Ruthless", "Sarcastic", "Selfish",
+          "Stubborn", "Vain", "Xenophobic"
+        ]
+      }
+    },
+    "Quirks": {
+      "Quirk1": {
+        "d20": [
+          "Gaunt", "Harsh Voice", "Young", "Squints", "Strong", "Alert", "Bright Eyes", "Bald", "Notable Hair",
+          "Missing Ear", "Good Posture", "Limps", "Grimy", "Muscular", "Thick Eyebrows", "Crooked Teeth",
+          "Heavy Brow", "Pleasant Voice", "Broad Face", "Tired"
+        ]
+      },
+      "Quirk2": {
+        "d20": [
+          "Eyepatch", "Tough", "Clumsy", "Scarred", "Diseased", "Attractive", "Doughy", "Fast", "Haggard",
+          "Dimples", "Lanky", "Imposing", "Tall", "Wiry", "Weak", "Slow", "Dark Eyes", "Loud", "Disfigured",
+          "Piercings"
+        ]
+      }
+    }
+  }
+}

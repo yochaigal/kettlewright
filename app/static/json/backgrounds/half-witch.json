@@ -1,0 +1,181 @@
+{
+  "Half Witch": {
+    "image": "half-witch.webp",
+    "background_description": "Born of both the mortal world and the unseen, you are an enigma to some and feared by many. Yours is the tale of what happens when two worlds collide.",
+    "names": [
+      "Solena",
+      "Veles",
+      "Bryn",
+      "Sabine",
+      "Razvan",
+      "Rowena",
+      "Galen",
+      "Nyx",
+      "Vex",
+      "Iwan"
+    ],
+    "starting_gear": [
+      {
+        "name": "Rations",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Torch",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Spellbook (Thicket)",
+        "tags": [],
+        "description": "A thicket of trees and dense brush up to 50ft wide suddenly sprouts up. Wrapped in vines that must be destroyed again with each use."
+      },
+      {
+        "name": "Iron Dagger",
+        "tags": ["d6"]
+      },
+      {
+        "name": "Herbs Pouch",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": "Restore 1 STR."
+      },
+      {
+        "name": "Ghillie Suit",
+        "tags": []
+      }
+    ],
+    "table1": {
+      "question": "What did you bring back from the Unseelie Court?",
+      "options": [
+        {
+          "description": "A Black Rose Fiddle (bulky). Its music causes intense sadness and immobility in nearby mortals. (Others are merely fascinated.) You don't know how to play.",
+          "items": [
+            {
+              "name": "Black Rose Fiddle",
+              "tags": ["bulky"],
+              "description": "Its music causes intense sadness and immobility in nearby mortals. (Others are merely fascinated.) You don't know how to play."
+            }
+          ]
+        },
+        {
+          "description": "Paper legs. You are extremely light and can fall a few stories without getting hurt. Try to avoid tearing them or getting them wet.",
+          "items": [
+            {
+              "name": "Paper Legs",
+              "tags": [],
+              "description": "You are extremely light and can fall a few stories without getting hurt. Try to avoid tearing them or getting them wet."
+            }
+          ]
+        },
+        {
+          "description": "A Living Nightmare that dwells within you but manifests whenever you are in danger. It has your same Attributes and HP and attacks with claws (d8+d8). It disappears on Critical Damage (take 1d4 WIL damage), re-appearing again on the next full moon.",
+          "items": [
+            {
+              "name": "Living Nightmare",
+              "tags": [],
+              "description": "Manifests whenever you are in danger. It has your same Attributes and HP and attacks with claws (d8+d8). It disappears on Critical Damage (take 1d4 WIL damage), re-appearing again on the next full moon."
+            }
+          ]
+        },
+        {
+          "description": "A Raven Familiar [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as an intelligent being and is entirely devoted to you.",
+          "items": [
+            {
+              "name": "Raven Familiar",
+              "tags": [],
+              "description": "[8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as an intelligent being and is entirely devoted to you."
+            }
+          ]
+        },
+        {
+          "description": "A Briar Thorn. It can pierce any organic material (quite painfully) but when removed leaves no trace of the intrusion.",
+          "items": [
+            {
+              "name": "Briar Thorn",
+              "tags": [],
+              "description": "Can pierce any organic material without leaving a trace."
+            }
+          ]
+        },
+        {
+          "description": "A Fae creature's True Name. Use it to summon its owner for an act of great service, but only once. It could also fetch a hefty price, from the right buyer.",
+          "items": []
+        }
+      ]
+    },
+    "table2": {
+      "question": "What concoction do you carry, and what rare ingredients did you gather to make it?",
+      "options": [
+        {
+          "description": "Rebirth Ash: Remnants of a bark spirit. Sprinkle to reignite a fire that has died or return to life a creature that has died only moments before. 3 uses.",
+          "items": [
+            {
+              "name": "Rebirth Ash",
+              "tags": ["uses"],
+              "uses": 3,
+              "description": "Remnants of a bark spirit. Sprinkle to reignite a fire or return to life a recently deceased creature."
+            }
+          ]
+        },
+        {
+          "description": "Glamour Feather: Plume of a firebird. Can make any creature appear convincingly as someone (or something) else. 1 use.",
+          "items": [
+            {
+              "name": "Glamour Feather",
+              "tags": ["uses"],
+              "uses": 1,
+              "description": "Can make any creature appear as someone or something else."
+            }
+          ]
+        },
+        {
+          "description": "Hawthorn Seed: An acorn from the other side, gathered on the spring equinox. When planted, it sprouts a luxurious shelter, collapsing at moonrise the next day. 1 use.",
+          "items": [
+            {
+              "name": "Hawthorn Seed",
+              "tags": ["uses"],
+              "uses": 1,
+              "description": "An acorn from the other side, gathered on the spring equinox. When planted, it sprouts a luxurious shelter, collapsing at moonrise the next day."
+            }
+          ]
+        },
+        {
+          "description": "Stonetree Sap: Sap obtained in exchange for blood. Hardens when rubbed on any surface (+1 Armor). 3 uses.",
+          "items": [
+            {
+              "name": "Stonetree Sap",
+              "tags": ["uses"],
+              "uses": 3,
+              "description": "Sap obtained in exchange for blood. Hardens when rubbed on any surface (+1 Armor)."
+            }
+          ]
+        },
+        {
+          "description": "Nightdust Powder: The ritual burning of six owls. When tossed in the air, day turns to night for a short while. 2 uses.",
+          "items": [
+            {
+              "name": "Nightdust Powder",
+              "tags": ["uses"],
+              "uses": 2,
+              "description": "Day turns to night for a short while when tossed in the air."
+            }
+          ]
+        },
+        {
+          "description": "Hex Stone: Gathered from a river that flows from the other side. Removed from its iron tin, it can absorb the effects of an active magical effect. If destroyed, the magic is released. 1 use.",
+          "items": [
+            {
+              "name": "Hex Stone",
+              "tags": ["uses"],
+              "uses": 1,
+              "description": "Absorbs an active magical effect; releasing it if destroyed."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

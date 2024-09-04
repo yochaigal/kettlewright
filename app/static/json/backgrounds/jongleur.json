@@ -1,0 +1,179 @@
+{
+  "Jongleur": {
+    "image": "jongleur.webp",
+    "background_description": "What inspires the soul more than song, words, and spectacle? Why practice for years to master the arcane when you've already got real magic inside?",
+    "names": [
+      "Jax",
+      "Selene",
+      "Baladria",
+      "Ada",
+      "Morth",
+      "Saylor",
+      "Tripp",
+      "Lantos",
+      "Echo",
+      "Jubilo"
+    ],
+    "starting_gear": [
+      {
+        "name": "Rations",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Torch",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Costume",
+        "tags": []
+      },
+      {
+        "name": "Simple Instrument (Pipes, Lute, etc.)",
+        "tags": []
+      },
+      {
+        "name": "Lucky Jerkin",
+        "tags": ["1 Armor", "bonus defense"]
+      },
+      {
+        "name": "Sling",
+        "tags": ["d6"]
+      }
+    ],
+    "table1": {
+      "question": "What happened at your final performance?",
+      "options": [
+        {
+          "description": "Despite your training in the deadly arts, an actor died and you were blamed. Take a light-weight Rapier (d6) and a false identity.",
+          "items": [
+            {
+              "name": "Rapier",
+              "tags": ["d6"]
+            }
+          ]
+        },
+        {
+          "description": "The crowd loved your catchy tune about a noble and his romantic failings. The noble in question, not so much. Take the Read Mind Spellbook and a warrant for your arrest.",
+          "items": [
+            {
+              "name": "Read Mind Spellbook",
+              "tags": [],
+              "description": "You can hear the surface thoughts of nearby creatures. Long-term possession can cause the reader to mistake the thoughts of others as their own."
+            }
+          ]
+        },
+        {
+          "description": "Your debut composition reduced the audience to a gibbering mess, murmuring of bright creatures descending from the night sky. Later you noticed that the notes resembled stellar constellations. Take a Book On Astronomy and a lot of questions.",
+          "items": [
+            {
+              "name": "Book On Astronomy",
+              "tags": []
+            }
+          ]
+        },
+        {
+          "description": "You mocked a forgotten trickster god and were cursed for it. You speak only in perfect rhyme. Ironically, this has only made you more popular among your peers. Take a Thesaurus (20gp). Without it, you are deprived.",
+          "items": [
+            {
+              "name": "Thesaurus",
+              "tags": [],
+              "description": "Worth 20gp. Without it you are deprived."
+            }
+          ]
+        },
+        {
+          "description": "You were scarred in an on-stage accident. The crowd cheered, thinking it was part of the act. Take well-worn Stage Mail (1 Armor), a memorable scar, and a fear of applause.",
+          "items": [
+            {
+              "name": "Stage Mail",
+              "tags": ["1 Armor"]
+            }
+          ]
+        },
+        {
+          "description": "Your respectable puppeteering skills were matched only by your mimicry. You were so good you were branded a witch (literally) and banished. Take an Uncanny Hand-Puppet and a Rabbit Skull (petty) that protects against charms.",
+          "items": [
+            {
+              "name": "Uncanny Hand-Puppet",
+              "tags": []
+            },
+            {
+              "name": "Rabbit Skull",
+              "tags": ["petty"],
+              "description": "Protects against charms."
+            }
+          ]
+        }
+      ]
+    },
+    "table2": {
+      "question": "What trinket were you unable to leave behind?",
+      "options": [
+        {
+          "description": "False Cuffs: Comfortable, realistic-looking cuffs. Only you know the trick to get out of them.",
+          "items": [
+            {
+              "name": "False Cuffs",
+              "tags": [],
+              "description": "Comfortable, realistic-looking cuffs. Only you know the trick to get out of them."
+            }
+          ]
+        },
+        {
+          "description": "Pocket Theatre: A set of small puppets and a folding stage. Good for quick distractions.",
+          "items": [
+            {
+              "name": "Pocket Theatre",
+              "tags": [],
+              "description": "A set of small puppets and a folding stage. Good for quick distractions."
+            }
+          ]
+        },
+        {
+          "description": "Ghost Violin: A dark-grey violin that plays a haunting tune, mirrored by an invisible, distant twin.",
+          "items": [
+            {
+              "name": "Ghost Violin",
+              "tags": [],
+              "description": "A dark-grey violin that plays a haunting tune, mirrored by an invisible, distant twin."
+            }
+          ]
+        },
+        {
+          "description": "Tragic Tales: Banned in proper company, this book becomes less bawdy and more harrowing towards the end. Worth 100gp.",
+          "items": [
+            {
+              "name": "Tragic Tales",
+              "tags": [],
+              "description": "Banned in proper company, it becomes less bawdy and more harrowing towards the ends. Worth 100gp."
+            }
+          ]
+        },
+        {
+          "description": "Mythos Mask: A plaster mask that allows one to take on a monster's countenance. Once it comes off, add a Fatigue.",
+          "items": [
+            {
+              "name": "Mythos Mask",
+              "tags": [],
+              "description": "A plaster mask that allows one to take on a monster's countenance. Once it comes off, add a Fatigue."
+            }
+          ]
+        },
+        {
+          "description": "Rebreak Glass: A wine flute that can be broken multiple times, reforming after 24 hours. Makes a really loud noise.",
+          "items": [
+            {
+              "name": "Rebreak Glass",
+              "tags": [],
+              "description": "A wine flute that can be broken multiple times, reforming after 24 hours. Makes a really loud noise."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

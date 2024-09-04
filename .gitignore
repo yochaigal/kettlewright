@@ -1,0 +1,9 @@
+.vscode
+.env
+instance/
+notes.md
+app/static/.webassets-cache/
+app/static/dist/
+app/__pycache__/
+app/static/json/backgrounds/background_data.json
+app/static/json/party_events/event_data.json

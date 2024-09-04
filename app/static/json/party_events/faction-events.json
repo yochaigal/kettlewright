@@ -1,0 +1,28 @@
+{
+  "FactionActions": [
+    {
+      "Consequence": "Failure",
+      "Impact": "A new Obstacle is introduced, and an Advantage is lost."
+    },
+    {
+      "Consequence": "Setback",
+      "Impact": "An Advantage is lost."
+    },
+    {
+      "Consequence": "Status Quo",
+      "Impact": "Nothing is gained, but nothing is lost."
+    },
+    {
+      "Consequence": "Mixed Success",
+      "Impact": "A goal is achieved, but an Advantage is lost."
+    },
+    {
+      "Consequence": "Success",
+      "Impact": "A goal is achieved, and no Advantages are lost."
+    },
+    {
+      "Consequence": "Major Success",
+      "Impact": "A goal is achieved, and a new Advantage is found."
+    }
+  ]
+}

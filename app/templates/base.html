@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kettlewright</title>
+    <link rel="stylesheet" href = https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400;1,700&family=Averia+Serif+Libre:ital,wght@0,300;0,700;1,300;1,700&family=Caveat&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,300;0,600;1,300;1,600&display=swap&family=Noto+Sans+Symbols+2&display=swap"
+      rel="stylesheet"
+    />
+    {% assets "scss_all" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}" />
+    {% endassets %}
+    <script>
+      function resizeTextarea(element) {
+        element.style.height = "auto";
+        element.style.height = element.scrollHeight + 4 + "px";
+      }
+    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='src/js/main.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <!-- <script type="text/javascript" src="{{ url_for('static', filename='src/js/socket_notifications.js') }}"></script> -->
+    {% if current_user.is_authenticated %}
+
+    <script src="{{url_for('static', filename='src/js/socket_init.js')}}" defer type="module"></script>
+    {% endif %}
+  </head>
+  <body>
+    <nav class="navbar" role="navigation" aria-label="main navigation" id="navbar">
+      <div class="nav-logo-container">
+        {% if request.endpoint != 'main.index' %}
+        <a class="" href="{{ url_for('main.index') }}">
+          <img src="{{ url_for('static', filename='images/CairnLogoSmall.webp') }}" id="nav-logo" />
+        </a>
+        {% endif %}
+        <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div class="navbar-menu" id="navMenu">
+        <div class="navbar-start">
+          {% if current_user.is_authenticated %}
+          <a href="{{ url_for('main.characters', username=current_user.username) }}" class="navbar-item">
+            characters
+          </a>
+          <a href="{{ url_for('main.parties', username=current_user.username) }}" class="navbar-item"> parties </a>
+          <a href="{{ url_for('main.tools')}}" class="navbar-item"> tools </a>
+          {% endif %}
+        </div>
+        <div class="navbar-end">
+          {% if current_user.is_authenticated %}
+          <a href="{{ url_for('auth.account') }}" class="navbar-item"> account </a>
+          {% endif %} {% if not current_user.is_authenticated %}
+          <a href="{{ url_for('auth.login') }}" class="navbar-item"> login </a>
+          <a href="{{ url_for('auth.signup') }}" class="navbar-item"> sign up </a>
+          {% endif %} {% if current_user.is_authenticated %} {% endif %}
+        </div>
+      </div>
+    </nav>
+    {% block content %} {% endblock %}
+  </body>
+</html>

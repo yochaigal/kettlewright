@@ -1,0 +1,162 @@
+{
+  "Aurifex": {
+    "image": "aurifex.webp",
+    "background_description": "You are an artisan of the arcane, a smith of subtle forces. In the crucible of your workshop, the laws that govern this world are warped to suit your needs.",
+    "names": [
+      "Hestia",
+      "Basil",
+      "Rune",
+      "Prism",
+      "Ember",
+      "Quintess",
+      "Aludel",
+      "Mordant",
+      "Salaman",
+      "Jazia"
+    ],
+    "starting_gear": [
+      {
+        "name": "Rations",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Lantern",
+        "tags": []
+      },
+      {
+        "name": "Oil Can",
+        "tags": ["uses"],
+        "uses": 6
+      },
+      {
+        "name": "Needle-Knife",
+        "tags": ["d6"]
+      },
+      {
+        "name": "Protective Gloves",
+        "tags": ["petty"]
+      }
+    ],
+    "table1": {
+      "question": "What went horribly wrong?",
+      "options": [
+        {
+          "description": "There was an explosion, and you lost your sense of smell. Well, almost: you can sniff out gold as a pig does truffles. Take a Tin of Snuff to dampen the impact. Use it every day or become deprived.",
+          "items": [
+            {
+              "name": "Tin of Snuff",
+              "tags": ["uses"],
+              "uses": 6,
+              "description": "Use it every day or become deprived."
+            }
+          ]
+        },
+        {
+          "description": "You dematerialized a beloved pet. Now it follows you around, invisible but always present. Although it cannot interact with the physical realm, you are able to share its senses. (Add a Fatigue each time.) It follows basic commands."
+        },
+        {
+          "description": "You were exposed to a long-acting truth serum whose effects have yet to wear off. The disorder has its advantages: you cannot repeat lies you've heard, either."
+        },
+        {
+          "description": "You were adept at creating fake gold, which is almost as good. Eventually, your ruse was discovered, and you had to make a hasty retreat. Take a heavy Metal Ingot and Gold Powder.",
+          "items": [
+            {
+              "name": "Metal Ingot",
+              "tags": []
+            },
+            {
+              "name": "Gold Powder",
+              "tags": ["uses"],
+              "uses": 3
+            }
+          ]
+        },
+        {
+          "description": "Your alchemical recipe worked, but a rival stole the blueprint before your claims could be proven. Take a prototype Blunderbuss that takes one round to reload, and a thirst for revenge.",
+          "items": [
+            {
+              "name": "Blunderbuss",
+              "tags": ["d12", "blast", "bulky"],
+              "description": "Takes a round to reload"
+            }
+          ]
+        },
+        {
+          "description": "Ridiculed for discovering how to turn gold into lead, you were a laughing stock. Take a bottle of Universal Solvent that dissolves anything it touches into its constituent parts.",
+          "items": [
+            {
+              "name": "Universal Solvent",
+              "tags": ["uses"],
+              "uses": 2
+            }
+          ]
+        }
+      ]
+    },
+    "table2": {
+      "question": "What alchemical marvel is the product of your latest ingenuity?",
+      "options": [
+        {
+          "description": "Pyrophoric Gel: A sticky green fluid that catches fire when exposed to air. It lasts for 8 hours and cannot be extinguished.",
+          "items": [
+            {
+              "name": "Pyrophoric Gel",
+              "tags": []
+            }
+          ]
+        },
+        {
+          "description": "Blast Sphere: A head-sized iron ball filled with explosive powder that detonates on impact.",
+          "items": [
+            {
+              "name": "Blast Sphere",
+              "tags": ["d12", "blast", "bulky"]
+            }
+          ]
+        },
+        {
+          "description": "Aqua Vita: Purifies any liquid, converting it to pure water. Drinking it cures 1d6 STR.",
+          "items": [
+            {
+              "name": "Aqua Vita",
+              "tags": ["uses"],
+              "uses": 1
+            }
+          ]
+        },
+        {
+          "description": "Mimic Stone: Records a short phrase that can later be played back.",
+          "items": [
+            {
+              "name": "Mimic Stone",
+              "tags": [],
+              "description": "Records a short phrase that can later be played back."
+            }
+          ]
+        },
+        {
+          "description": "Spark Dust: Ignites easily and quickly. Useful for starting a fire or as an incendiary device.",
+          "items": [
+            {
+              "name": "Spark Dust",
+              "tags": ["uses"],
+              "uses": 3
+            }
+          ]
+        },
+        {
+          "description": "Homunculus: A miniature clay replica of yourself that follows your every command. It hates being enthralled to you and complains bitterly whenever possible. Any damage done to the homunculus is also done to you. 3 HP, 4 STR, 13 DEX, 5 WIL.",
+          "items": [
+            {
+              "name": "Homunculus",
+              "tags": [],
+              "description": "A miniature clay replica of yourself that follows your every command. It hates being enthralled to you and complains bitterly whenever possible. Any damage done to the homunculus is also done to you. 3 HP, 4 STR, 13 DEX, 5 WIL"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

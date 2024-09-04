@@ -1,0 +1,42 @@
+<div class="modal" id="marketplace-modal">
+  <div class="modal-background" id="marketplace-modal-background"></div>
+  <div class="modal-card" style="border-radius: 4px">
+    <header class="modal-card-head" style="display: flex; flex-direction: column">
+      <h3 class="modal-card-title">Marketplace</h3>
+
+      <div id="category-toggles">
+        <label style="margin-right: 10px"> <input type="checkbox" id="toggle-gear" checked /> Gear </label>
+        <label style="margin-right: 10px"> <input type="checkbox" id="toggle-armor" checked /> Armor </label>
+        <label style="margin-right: 10px"> <input type="checkbox" id="toggle-weapons" checked /> Weapons </label>
+      </div>
+    </header>
+    <div class="modal-card-body justify-left" id="party-item-transfer-modal-content">
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Cost</th>
+            <th>Type</th>
+            <th><i class="fa-solid fa-cart-plus"></i></th>
+          </tr>
+        </thead>
+        <tbody id="marketplace-table-body">
+          <!-- Table rows will be inserted here by JavaScript -->
+        </tbody>
+      </table>
+    </div>
+    <footer class="modal-card-foot">
+      <h4 id="gold-display"></h4>
+      <div class="footer-button-container">
+        <button class="button is-success" type="button" id="marketplace-save-button"> Buy </button>
+
+        <button id="clear-selection-button" class="button is-warning" type="button" style="margin-left: auto"
+          >Clear</button
+        >
+        <button class="button marketplace-modal-cancel-button" type="button" id="marketplace-cancel-button">
+          Cancel
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>

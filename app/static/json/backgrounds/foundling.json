@@ -1,0 +1,195 @@
+{
+  "Foundling": {
+    "image": "foundling.webp",
+    "background_description": "An odd birthmark, a strange smell: somehow, the touch of elsewhere still lingers. Wherever you are, you have trouble fitting in. Roll on the Omens table (even if you're not the youngest player), but keep the results private for now.",
+    "names": [
+      "Faunus",
+      "Snowdrop",
+      "Wisp",
+      "Silverdew",
+      "Brim",
+      "Solstice",
+      "Steeleye",
+      "Artea",
+      "Gossamer",
+      "Hazel"
+    ],
+    "starting_gear": [
+      {
+        "name": "Rations",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Torch",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Salt pouch",
+        "tags": []
+      },
+      {
+        "name": "Heirloom amulet",
+        "tags": ["petty"],
+        "description": "Glows in the presence of magic"
+      },
+      {
+        "name": "Sling",
+        "tags": ["d6"]
+      },
+      {
+        "name": "Dagger",
+        "tags": ["d6"]
+      }
+    ],
+    "table1": {
+      "question": "Who took you in?",
+      "options": [
+        {
+          "description": "An old hunter. You were both quite happy, until it all ended. Take a Weathered Longbow (d8, bulky) and a Leather Jerkin (1 Armor).",
+          "items": [
+            {
+              "name": "Weathered Longbow",
+              "tags": ["d8", "bulky"]
+            },
+            {
+              "name": "Leather Jerkin",
+              "tags": ["1 Armor"]
+            }
+          ]
+        },
+        {
+          "description": "A wizened apothecary, who taught you the healing arts but maintained a clinical detachment. Take a Healing Unguent (restores d4 STR).",
+          "items": [
+            {
+              "name": "Healing Unguent",
+              "tags": ["uses"],
+              "uses": 1,
+              "description": "Restores d4 STR"
+            }
+          ]
+        },
+        {
+          "description": "A druid, who taught you the language of trees. When it came time to leave, you took with you only a Gnarled Staff (d8) and left a promise that one day you would return.",
+          "items": [
+            {
+              "name": "Gnarled Staff",
+              "tags": ["d8"]
+            }
+          ]
+        },
+        {
+          "description": "A gruff blacksmith from a sleepy river town. You were always kept at arm's length. Now the forge is cold, and you've moved on. Take a Smith's Apron (petty) and a set of Oft-mended Chain Mail (2 Armor, bulky).",
+          "items": [
+            {
+              "name": "Smith's Apron",
+              "tags": ["petty"]
+            },
+            {
+              "name": "Oft-mended Chain Mail",
+              "tags": ["2 Armor", "bulky"]
+            }
+          ]
+        },
+        {
+          "description": "A troupe of traveling entertainers. For a time, they were like family to you. One day you woke up and they were gone with no explanation. Take a Storybook, a Dagger (d6), and some burning questions.",
+          "items": [
+            {
+              "name": "Storybook",
+              "tags": []
+            },
+            {
+              "name": "Dagger",
+              "tags": ["d6"]
+            }
+          ]
+        },
+        {
+          "description": "The monks of a secluded forest monastery. When their rules became too strict, and you snuck away. Take a Monk's Habit (warm, petty) and a Spellbook of Control Plants.",
+          "items": [
+            {
+              "name": "Monk's Habit",
+              "tags": ["petty"],
+              "description": "Warm"
+            },
+            {
+              "name": "Spellbook (Control Plants)",
+              "description": "Nearby plants and trees obey you and gain the ability to move at a slow pace. Leaves grow along the spine, and it smells faintly of decay.",
+              "tags": []
+            }
+          ]
+        }
+      ]
+    },
+    "table2": {
+      "question": "What keeps bad tidings at bay?",
+      "options": [
+        {
+          "description": "Pipeweed: Your good luck charm. Conversations tend to flow more easily after a smoke. 6 uses.",
+          "items": [
+            {
+              "name": "Pipeweed",
+              "tags": ["uses"],
+              "uses": 6,
+              "description": "Your good luck charm. Conversations tend to flow more easily after a smoke."
+            }
+          ]
+        },
+        {
+          "description": "Stink Jar: Shattering this jar releases an odor so foul all nearby must make a STR save or immediately vomit. 1 use.",
+          "items": [
+            {
+              "name": "Stink Jar",
+              "tags": ["uses"],
+              "uses": 1,
+              "description": "Shattering this jar releases an odor so foul all nearby must make a STR save or immediately vomit."
+            }
+          ]
+        },
+        {
+          "description": "Ivy Worm: A green worm often mistaken for a weed. Swallowed whole, it absorbs any toxins or rot in the body before exiting through the usual way.",
+          "items": [
+            {
+              "name": "Ivy Worm",
+              "tags": [],
+              "description": "A green worm often mistaken for a weed. Swallowed whole, it absorbs any toxins or rot in the body before exiting through the usual way."
+            }
+          ]
+        },
+        {
+          "description": "Dream Stone: A smooth blue stone that helps recall dreams more clearly. Overuse can cause dream-addiction.",
+          "items": [
+            {
+              "name": "Dream Stone",
+              "tags": [],
+              "description": "A smooth blue stone that helps recall dreams more clearly. Overuse can cause dream-addiction."
+            }
+          ]
+        },
+        {
+          "description": "Drowning Rod: A finger-sized wooden stick that doubles in size each time it is fully submerged in water. It does not shrink down again.",
+          "items": [
+            {
+              "name": "Drowning Rod",
+              "tags": [],
+              "description": "A finger-sized wooden stick that doubles in size each time it is fully submerged in water. It does not shrink down again."
+            }
+          ]
+        },
+        {
+          "description": "Rabbit's Foot: You were wearing it when they found you. They say it is the foot of she who left you and that it protects you from witch magic. Petty.",
+          "items": [
+            {
+              "name": "Rabbit's Foot",
+              "tags": ["petty"],
+              "description": "You were wearing it when they found you. They say it is the foot of she who left you and that it protects you from witch magic."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

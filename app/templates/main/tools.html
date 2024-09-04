@@ -1,0 +1,26 @@
+{% extends "base.html" %} {% block content %}
+<script>
+  const dataRaw = `{{ events_data | safe }}`;
+  const data = JSON.parse(dataRaw);
+</script>
+<script src="{{ url_for('static', filename='src/js/tools.js') }}" type="module"></script>
+<div class="body-container">
+  <div class="sheet party-tools-sheet">
+    <h2>Warden Tools</h2>
+    <div class="text-border" style="margin-top: 2em" id="tools-result-display"></div>
+    <div style="margin-top: 2em">
+      <div class="tools-roll-container">
+        <select class="tools-select" id="category-select">
+          <option value selected disabled="">Choose...</option>
+        </select>
+        <select class="tools-select" id="subcategory-select">
+          <option value selected disabled="">Choose...</option>
+        </select>
+        <button class="roll button dice-button" type="button" id="roll-button">
+          <i class="fa-solid fa-dice dice"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

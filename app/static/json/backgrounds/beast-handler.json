@@ -1,0 +1,155 @@
+{
+   "Beast Handler": {
+    "image": "beast-handler.webp",
+    "background_description": "You alone can walk among the creatures of the wild, fearless and in control. You share a connection with animals that others can only dream of... so long as you don't become their snack.",
+    "names": [
+      "Amara",
+      "Wulf",
+      "Mireille",
+      "Soren",
+      "Freki",
+      "Aster",
+      "Gerrik",
+      "Boreas",
+      "Veda",
+      "Matheus"
+    ],
+    "starting_gear": [
+      {
+        "name": "Rations",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Torch",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Leather Whip",
+        "tags": ["d6"]
+      },
+      {
+        "name": "Soporific Darts",
+        "tags": ["uses"],
+        "uses": 6,
+        "description": "STR save or fall asleep."
+      },
+      {
+        "name": "Lure",
+        "tags": []
+      },
+      {
+        "name": "Rope (25ft)",
+        "tags": []
+      }
+    ],
+    "table1": {
+      "question": "What creature is your specialty?",
+      "options": [
+        {
+          "description": "Arachnids: Take a Quick-Flame Rod and an Oil Can (6 uses). It can destroy a large spider nest in seconds.",
+          "items": [
+            {
+              "name": "Quick-Flame Rod",
+              "tags": ["uses"],
+              "uses": 6,
+              "description": "Can destroy a large spider nest in seconds."
+            },
+            {
+              "name": "Oil Can",
+              "tags": ["uses"],
+              "uses": 6
+            }
+          ]
+        },
+        {
+          "description": "Felines: Take a sack of Whiskerwort. Its odor can calm and control even the largest of cats.",
+          "items": [
+            {
+              "name": "Whiskerwort",
+              "tags": [],
+              "description": "Its odor can calm and control even the largest of cats."
+            }
+          ]
+        },
+        {
+          "description": "Canines: Take a wreath of Wolfsbane and a Large Net. Effective against werewolves as well.",
+          "items": [
+            {
+              "name": "Wolfsbane",
+              "tags": [],
+              "description": "Effective against werewolves as well."
+            },
+            {
+              "name": "Large Net",
+              "tags": []
+            }
+          ]
+        },
+        {
+          "description": "Birds: Take a Warble-Whistle (3 charges). It can imitate any bird call and can even be used to send simple messages. Recharge: Feed a baby bird as its mother would, then blow.",
+          "items": [
+            {
+              "name": "Warble-Whistle",
+              "tags": ["charges"],
+              "charges": 3,
+              "max_charges": 3,
+              "description": "Can imitate any bird call and can even be used to send simple messages. Recharge: Feed a baby bird as its mother would, then blow."
+            }
+          ]
+        },
+        {
+          "description": "Rodents: Take a Pan Flute that emits a high-pitched sound that only rodents can hear. So long as you play, they will follow, even to their deaths.",
+          "items": [
+            {
+              "name": "Pan Flute",
+              "tags": [],
+              "description": "Emits a high-pitched sound that only rodents can hear. So long as you play, they will follow, even to their deaths."
+            }
+          ]
+        },
+        {
+          "description": "Serpents: Take a Warming Stone that generates an irresistible heat and a vial of Antitoxin (2 uses).",
+          "items": [
+            {
+              "name": "Warming Stone",
+              "tags": [],
+              "description": "Generates an irresistible heat."
+            },
+            {
+              "name": "Antitoxin",
+              "tags": ["uses"],
+              "uses": 2
+            }
+          ]
+        }
+      ]
+    },
+    "table2": {
+      "question": "What have you learned from the creatures of the wild?",
+      "options": [
+        {
+          "description": "That there is far more to the world than meets the eye. With quiet concentration, you can borrow the senses of a nearby creature of your specialty."
+        },
+        {
+          "description": "That the behavior of beasts is a language in itself. When observing beasts of your specialty you gain insight into weather patterns and impending disasters."
+        },
+        {
+          "description": "That the pulse of the hunt is a powerful impulse. You have a sense for when predators, even those not of your specialty are near."
+        },
+        {
+          "description": "That the land is a language unto itself. Your chance of becoming lost in a terrain dominated by the beasts of your specialty is reduced by one step (e.g. 4-in-6 becomes 3-in-6)."
+        },
+        {
+          "description": "That nature's symphony can be heard if you attune to its rhythm. When surrounded by creatures of your specialty, they can alert you to approaching danger before it arrives."
+        },
+        {
+          "description": "That survival is all about adaptability. Once per day, you may take on a simple feature from a creature of your specialty (webbed fingers, night vision, etc.). Add a Fatigue each time."
+        }
+      ]
+    }
+  }
+}

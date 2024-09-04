@@ -1,0 +1,151 @@
+{% extends "base.html" %} {% block content %}
+<script>
+  const partyID = `{{ party_id }}`;
+  let members = `{{ members }}`;
+  const joinCode = `{{ join_code }}`;
+  const userID = `{{ user_id }}`;
+  const isOwner = `{{ is_owner }}`;
+  const isSubOwner = `{{ is_subowner }}`;
+  const ownername = `{{ ownername }}`;
+  const username = `{{ username }}`;
+  const partyURL = `{{ party_url }}`;
+  const base_url = `{{ base_url }}`;
+  const data = JSON.parse(`{{ items_json|safe }}`.slice(1, -1));
+  const containersData = JSON.parse(`{{ containers_data_json|safe }}`.slice(1, -1));
+</script>
+<script src="{{ url_for('static', filename='src/js/party_edit.js') }}" defer type="module"></script>
+<section class="body-container">
+  {% with messages = get_flashed_messages() %} {% if messages is not none and messages|length > 0 %}
+  <div class="message is-danger">
+    <div class="message-body">
+      <div class="errors">
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %} {% endwith %}
+  <form id="party-form" class="sheet box" method="post">
+    {{ form.hidden_tag() }}
+    <div style="display: flex; justify-content: space-between">
+      <div>
+        <p class="justify-centered">{{ form.name(class='title justify-centered', id ='party-name-field') }}</p>
+        <div> {{ form.description(class='textarea') }} </div></div
+      >
+    </div>
+
+    <div class="party-section">
+      <span id="party-members-collapse-button" class="party-collapse-button">
+        <i class="fa-solid fa-chevron-down" id="party-members-collapse-icon"></i>
+      </span>
+      <span class="subtitle bold">Members</span>
+      <div id="party-members-content" class="party-section-content">
+        {% if characters %} {% for character in characters %}
+
+        <div
+          class="card character-card"
+          style="cursor: pointer; height: auto; padding: 1em"
+          data-character-owner="{{ character.owner_username }}"
+          data-character-name="{{ character.name }}"
+          data-character-portrait-url="{{ character.image_url }}"
+          data-character-url="{{ character.url_name }}"
+          data-character-id="{{ character.id }}"
+          data-character-items="{{ character.items }}"
+          data-character-hp-max="{{ character.hp_max }}"
+        >
+          <div class="card-content">
+            <div class="card-image">
+              <figure class="" style="display: flex; align-items: center; justify-content: center">
+                <img
+                  src="{{ character.portrait_src }}"
+                  alt="Character Portrait"
+                  style="height: 120px; width: 120px; object-fit: cover"
+                  data-custom-image="{{ character.custom_image }}"
+                  data-image-url="{{ character.image_url }}"
+                  class="character-card-image"
+                />
+              </figure>
+            </div>
+            <div class="character-card-name-container">
+              <h2 class="character-card-name">{{ character.name }}</h2>
+              <h3 class="character-card-background">{{ character.background }}</h3>
+            </div>
+
+            <div class="character-card-stats-container">
+              <div>
+                <div class="card-attribute-container">
+                  <p class="character-card-attribute subtitle">
+                    STR {{character.strength}}/{{character.strength_max}}
+                  </p>
+                </div>
+                <div class="card-attribute-container">
+                  <p class="character-card-attribute subtitle">
+                    DEX {{character.dexterity}}/{{character.dexterity_max}}
+                  </p>
+                </div>
+                <div class="card-attribute-container">
+                  <p class="character-card-attribute subtitle">
+                    WIL {{character.willpower}}/{{character.willpower_max}}
+                  </p>
+                </div>
+              </div>
+              <div>
+                <div class="card-attribute-container">
+                  <p class="character-card-attribute subtitle">Armor {{character.armor}}</p>
+                </div>
+                <div class="card-attribute-container">
+                  <p class="character-card-attribute subtitle hp-text">HP {{character.hp}}/{{character.hp_max}}</p>
+                </div>
+                <div class="card-attribute-container">
+                  <p class="character-card-attribute subtitle">Gold {{character.gold}}</p>
+                </div>
+              </div>
+            </div>
+            <div class="level is-mobile"> </div>
+          </div>
+          {% if is_owner %}
+          <footer class="card-footer edit-mode">
+            <button
+              class="card-footer-item button is-danger is-light edit-mode character-remove-button"
+              type="button"
+              id="character-remove-button"
+              >Remove
+            </button>
+          </footer>
+          {% endif %}
+        </div>
+
+        {% endfor %} {% else %}
+        <p>No members in this party</p>
+
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="party-section">
+      <span id="party-inventory-collapse-button" class="party-collapse-button">
+        <i class="fa-solid fa-chevron-down" id="party-inventory-collapse-icon"></i>
+      </span>
+      <span class="subtitle bold">Inventory</span>
+      <div id="party-inventory-content" class="party-section-content">
+        <div> {% include "main/inventory.html" %}</div>
+      </div>
+    </div>
+
+    {% if is_owner %}
+    <div>
+      <button class="button is-danger edit-mode" type="button" id="delete-party-button" style="margin: 40px 0px">
+        Delete Party
+      </button>
+    </div>
+    {% endif %}
+
+    <div id="save-button-footer-wrapper" class="sticky-save-button-wrapper edit-mode">
+      <button id="save-button" class="button is-success" style="margin-right: 40px"> Save </button>
+      <button id="cancel-button" class="button" type="button"> Cancel </button>
+    </div>
+  </form>
+</section>
+
+{% endblock %}

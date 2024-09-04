@@ -1,0 +1,38 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="body-container auth-container">
+  <form class="card auth-card" method="POST">
+    {{ form.hidden_tag() }}
+    <h3 class="auth-title">Sign Up</h3>
+
+    <div class="field">
+      <div class="control">{{ form.email(class="input") }}</div>
+    </div>
+
+    <div class="field">
+      <div class="control">{{ form.user_name(class="input") }}</div>
+    </div>
+
+    <div class="field">
+      <div class="control">{{ form.password(class="input") }}</div>
+    </div>
+
+    <div class="field">
+      <div class="control">{{ form.password2(class="input") }}</div>
+    </div>
+
+    {% if require_signup_code %}
+    <div class="field">
+      <div class="control">{{ form.signup_code(class="input") }}</div>
+    </div>
+    {% endif %} {{ form.submit(class="button is-block is-info is-fullwidth")}} {% with messages =
+    get_flashed_messages(category_filter=['error']) %} {% if messages %}
+    <div class="notification is-danger" style="margin-top: 1em">{{ messages[0] }}</div>
+    {% endif %} {% endwith %} {% with messages = get_flashed_messages(category_filter=['success']) %} {% if messages %}
+    <div class="notification is-success">{{ messages[0] }}</div>
+    {% endif %} {% endwith %} {% for field in form %} {% if field.errors %} {% for error in field.errors %}
+    <div class="notification is-danger" style="margin-top: 1em">{{ error }}</div>
+    {% endfor %} {% endif %} {% endfor %}
+  </form>
+</div>
+{% endblock %}

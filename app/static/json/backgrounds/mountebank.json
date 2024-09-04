@@ -1,0 +1,181 @@
+{
+  "Mountebank": {
+    "image": "mountebank.webp",
+    "background_description": "Wits are your sharpest weapon, a facade your strongest shield. But when you do lose, you lose badly.",
+    "names": [
+      "Ambrose",
+      "Lucius",
+      "Beauregard",
+      "Cornelius",
+      "Aria",
+      "Toph",
+      "Indigo",
+      "Delphine",
+      "Solene",
+      "Noa"
+    ],
+    "starting_gear": [
+      {
+        "name": "Rations",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Torch",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Trick Playing Cards",
+        "tags": []
+      },
+      {
+        "name": "Fancy Hat",
+        "tags": ["petty"]
+      },
+      {
+        "name": "Cane Sword",
+        "tags": ["d6"]
+      }
+    ],
+    "starting_containers": [
+      {
+        "name": "Cart",
+        "slots": 4,
+        "carried_by": "main",
+        "load": 2
+      }
+    ],
+    "table1": {
+      "question": "How was your fraud exposed?",
+      "options": [
+        {
+          "description": "Your 'patients' kept reporting miraculous recoveries, despite your lack of training. Start with Bandages (3 uses) and a knack for healing.",
+          "items": [
+            {
+              "name": "Bandages",
+              "tags": ["uses"],
+              "uses": 3
+            }
+          ]
+        },
+        {
+          "description": "After seducing a wealthy patron, their family hired a criminal gang to retrieve you. You got away and need to lay low. Start with Beauty Cream, 2 uses. Apply to appear irresistibly beautiful for the next 12 hours.",
+          "items": [
+            {
+              "name": "Beauty Cream",
+              "tags": ["uses"],
+              "uses": 2
+            }
+          ]
+        },
+        {
+          "description": "You were a peddler of fake prophesies, but when one turned out to be true, it drew unwanted attention. Roll on the Omens table, but keep the result to yourself. Start with a concealable Knife (d6, petty).",
+          "items": [
+            {
+              "name": "Knife",
+              "tags": ["d6", "petty"],
+              "description": "Concealable."
+            }
+          ]
+        },
+        {
+          "description": "Your latest stunt destroyed a priceless artifact and injured a dozen bystanders. Start with a Captain's Uniform (petty), a Ceremonial Sword (harmless, 60gp), and a Bouquet of Flowers.",
+          "items": [
+            {
+              "name": "Captain's Uniform",
+              "tags": ["petty"]
+            },
+            {
+              "name": "Ceremonial Sword",
+              "tags": [],
+              "description": "Harmless, worth 60gp"
+            },
+            {
+              "name": "Bouquet of Flowers",
+              "tags": []
+            }
+          ]
+        },
+        {
+          "description": "You were cursed by a hedgewitch for fooling some innocent village folk. Magic acts unpredictably in your hands (WIL save to avoid disaster). If you are the target of magic, the same applies to its wielder.",
+          "items": []
+        },
+        {
+          "description": "Your 'seances' with the dead were in actuality a ruse involving a cleverly hidden spellbook of Auditory Illusion. Inevitably, a patron discovered your secret. Start with the Spellbook and a bundle of scarves.",
+          "items": [
+            {
+              "name": "Spellbook (Auditory Illusion)",
+              "tags": [],
+              "description": "You create illusory sounds that seem to come from a direction of your choice. Produces random and occasionally inopportune sounds throughout the day."
+            }
+          ]
+        }
+      ]
+    },
+    "table2": {
+      "question": "What keepsake could always identify you?",
+      "options": [
+        {
+          "description": "Royal Crest: Born into royalty, you chose a different life. The Royal Crest grants you access but also alerts your family of your whereabouts. Petty.",
+          "items": [
+            {
+              "name": "Royal Crest",
+              "tags": ["petty"],
+              "description": "Born into royalty, you chose a different life. The Royal Crest grants you access but also alerts your family of your whereabouts."
+            }
+          ]
+        },
+        {
+          "description": "Miracle Oil: A smelly, slippery concoction. 2 uses.",
+          "items": [
+            {
+              "name": "Miracle Oil",
+              "tags": ["uses"],
+              "uses": 2
+            }
+          ]
+        },
+        {
+          "description": "Surgeon's Soap: A lye and ash block that makes skin temporarily transparent, revealing the anatomy within. 4 uses.",
+          "items": [
+            {
+              "name": "Surgeon's Soap",
+              "tags": ["uses"],
+              "uses": 4
+            }
+          ]
+        },
+        {
+          "description": "Goat Powder: Derived from the placenta of a baby goat. Temporarily cures any affliction, but symptoms return within hours.",
+          "items": [
+            {
+              "name": "Goat Powder",
+              "tags": []
+            }
+          ]
+        },
+        {
+          "description": "Cursed Sapphire: Worth 200gp, it noticeably returns to your pocket shortly after you spend it. You can't seem to get rid of it.",
+          "items": [
+            {
+              "name": "Cursed Sapphire",
+              "tags": []
+            }
+          ]
+        },
+        {
+          "description": "Alchemical Tattoo: A dog, cat, or bird that can leave your body on demand. It follows your commands to the best of its abilities and can pass its injuries (as STR loss) back onto you. Petty.",
+          "items": [
+            {
+              "name": "Alchemical Tattoo",
+              "tags": ["petty"]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

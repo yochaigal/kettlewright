@@ -1,0 +1,37 @@
+<div class="modal" id="edit-portrait-modal">
+  <script src="{{ url_for('static', filename='src/js/edit_portrait_modal.js') }}" type="module"></script>
+  <div class="modal-background" id="edit-portrait-modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <h3 class="modal-card-title">Edit Portrait</h3>
+      <button class="delete" aria-label="close" id="edit-portrait-modal-close" type="button"></button>
+    </header>
+    <section class="modal-card-body">
+      <!-- Content ... -->
+      <div id="edit-portrait-modal-image-select-container">
+        {% for image in images %}
+        <img
+          data_url="{{image}}"
+          class="edit-portrait-modal-thumbnail"
+          src="{{url_for('static', filename='images/portraits/' + image)}}"
+        />
+        {% endfor %}
+      </div>
+    </section>
+    <footer class="modal-card-foot" style="flex-direction: column">
+      <div id="edit-portrait-modal-custom-url-container">
+        <input
+          class="input"
+          type="text"
+          placeholder="Custom Image URL (1:1 aspect ratio)"
+          id="edit-portrait-modal-custom-url"
+          style="width: 400px; margin-bottom: 20px"
+        />
+      </div>
+      <div class="footer-button-container">
+        <button class="button is-success" id="edit-portrait-modal-save" type="button">Save</button>
+        <button class="button" id="edit-portrait-modal-cancel" type="button">Cancel</button>
+      </div>
+    </footer>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+flask-login = "*"
+flask-migrate = "*"
+flask-wtf = "*"
+email-validator = "*"
+flask-assets = "*"
+libsass = "*"
+flask-mail = "*"
+python-dotenv = "*"
+itsdangerous = "*"
+jsmin = "*"
+werkzeug = "==2.3.7"
+bleach = "*"
+python-slugify = "*"
+flask-socketio = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"

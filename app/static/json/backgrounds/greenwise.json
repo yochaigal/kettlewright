@@ -1,0 +1,175 @@
+{
+  "Greenwise": {
+    "image": "greenwise.webp",
+    "background_description": "You delve deep into the Wood, prying its secrets from between rough boughs and whispering leaves. To this verdant kingdom, you are no mere scholar but its confidant as well.",
+    "names": [
+      "Gunther",
+      "Moss",
+      "Fern",
+      "Lichen",
+      "Root",
+      "Willow",
+      "Sage",
+      "Yarrow",
+      "Rowan",
+      "Ash"
+    ],
+    "starting_gear": [
+      {
+        "name": "Rations",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Torch",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Iron Pot",
+        "tags": []
+      },
+      {
+        "name": "Root Knife",
+        "tags": ["d6"]
+      },
+      {
+        "name": "Healing Salve",
+        "tags": ["uses"],
+        "uses": 1,
+        "description": "restores 1d4 STR"
+      },
+      {
+        "name": "Twine Bauble",
+        "tags": ["petty"],
+        "description": "Ward: A silver circle 50ft across appears on the ground. Choose one species that cannot cross it."
+      }
+    ],
+    "table1": {
+      "question": "How has the Wood failed you?",
+      "options": [
+        {
+          "description": "An ill-tempered forest spirit cursed you for stealing, marking you as an enemy of their kind. Take a Bezoar Stone. Ingesting it cures any poison (1 use, unless retrieved).",
+          "items": [
+            {
+              "name": "Bezoar Stone",
+              "tags": ["uses"],
+              "uses": 1,
+              "description": "Ingesting it cures any poison (1 use, unless retrieved)."
+            }
+          ]
+        },
+        {
+          "description": "A close friend disappeared into the forest. Now you see their face in any tea you brew. Take a Soporific Concoction (3 uses).",
+          "items": [
+            {
+              "name": "Soporific Concoction",
+              "tags": ["uses"],
+              "uses": 3
+            }
+          ]
+        },
+        {
+          "description": "You were poisoned, losing your sense of taste and smell. You can now withstand noxious fumes and always carry Antitoxin (2 uses).",
+          "items": [
+            {
+              "name": "Antitoxin",
+              "tags": ["uses"],
+              "uses": 2
+            }
+          ]
+        },
+        {
+          "description": "Your radical experiments turned your skin green, and you now gain nourishment as a plant. You don't need Rations, but a day without sufficient sunlight and water leaves you deprived."
+        },
+        {
+          "description": "Your impressive corpseflower won a local contest then promptly killed a judge. You fled, but not without the Prize Money (100gp) and a warrant for your arrest.",
+          "items": [],
+          "bonus_gold": 100
+        },
+        {
+          "description": "You created a restorative tincture that also causes accidental infertility. Take a Healing Potion that completely restores STR. Only you know of its unintended side-effects.",
+          "items": [
+            {
+              "name": "Healing Potion",
+              "tags": ["uses"],
+              "uses": 1,
+              "description": "Completely restores STR. Only you know of its unintended side-effects."
+            }
+          ]
+        }
+      ]
+    },
+    "table2": {
+      "question": "What keeps you safe while in the Wood?",
+      "options": [
+        {
+          "description": "Amadou: A vermilion fungus that catches fire quite easily. 3 uses.",
+          "items": [
+            {
+              "name": "Amadou",
+              "tags": ["uses"],
+              "uses": 3,
+              "description": "A vermilion fungus that catches fire quite easily."
+            }
+          ]
+        },
+        {
+          "description": "Delphinium: Breathe water for up to one hour. 1 use, but can be divided into fractional doses.",
+          "items": [
+            {
+              "name": "Delphinium",
+              "tags": ["uses"],
+              "uses": 1,
+              "description": "Breathe water for up to one hour. Can be divided into fractional doses."
+            }
+          ]
+        },
+        {
+          "description": "Tacky Stalk: A woody reed that hardens into a permanent adhesive when chewed. 2 uses.",
+          "items": [
+            {
+              "name": "Tacky Stalk",
+              "tags": ["uses"],
+              "uses": 2,
+              "description": "A woody reed that hardens into a permanent adhesive when chewed."
+            }
+          ]
+        },
+        {
+          "description": "Wisp Lantern: Caged in wrought iron, provides a dim light so long as the wisp is able to feed on nearby pain and fear.",
+          "items": [
+            {
+              "name": "Wisp Lantern",
+              "tags": [],
+              "description": "Provides a dim light so long as the wisp is able to feed on nearby pain and fear."
+            }
+          ]
+        },
+        {
+          "description": "Seed Bomb: A canvas sack filled with seeds that explode on impact. d6 damage (blast, 3 uses).",
+          "items": [
+            {
+              "name": "Seed Bomb",
+              "tags": ["uses", "blast", "d6"],
+              "uses": 3,
+              "description": "A canvas sack filled with seeds that explode on impact. d6 damage (blast, 3 uses)."
+            }
+          ]
+        },
+        {
+          "description": "Briarvine: Entangles any creature up to horse size (STR to break free). Reusable.",
+          "items": [
+            {
+              "name": "Briarvine",
+              "tags": [],
+              "description": "Entangles any creature up to horse size (STR to break free). Reusable."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

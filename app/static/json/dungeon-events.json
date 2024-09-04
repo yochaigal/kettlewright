@@ -1,0 +1,22 @@
+{
+  "Dungeon Events": [
+    {
+      "description": "Encounter: Roll on an encounter table. Possibly hostile. (See Reactions.)"
+    },
+    {
+      "description": "Sign: A clue, spoor, track, abandoned lair, scent, victim, etc is discovered."
+    },
+    {
+      "description": "Environment: Surroundings shift or escalate. Water rises, ceilings collapse, a ritual nears completion, etc."
+    },
+    {
+      "description": "Loss: Torches are blown out, an ongoing spell fizzles, etc. The party must resolve the effect before moving on."
+    },
+    {
+      "description": "Exhaustion: The party must rest (triggering another roll on this table), add a Fatigue, or consume a ration."
+    },
+    {
+      "description": "Discovery: The party is left alone (and safe) for the time being."
+    }
+  ]
+}

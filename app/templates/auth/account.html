@@ -1,0 +1,30 @@
+{% extends "base.html" %} {% block content %}
+<div class="body-container">
+  <div class="">
+    {% with messages = get_flashed_messages(category_filter=['error']) %} {% if messages %}
+    <div class="notification is-danger">{{ messages[0] }}</div>
+    {% endif %} {% endwith %} {% with messages = get_flashed_messages(category_filter=['success']) %} {% if messages %}
+    <div class="notification is-success">{{ messages[0] }}</div>
+    {% endif %} {% endwith %}
+    <div class="container">
+      <h1 class="title has-text-left" style="margin-bottom: 10px">Hello, {{ username }}</h1>
+      <p class="has-text-left" style="margin-top: 0px">{{ email }}</p>
+    </div>
+    <div class="container" style="margin-top: 40px">
+      <h2 class="title has-text-left" style="margin-bottom: 10px">Account Settings</h2>
+      <div class="has-text-left">
+        <a href="{{ url_for('auth.change_email') }}"> Change Email </a>
+      </div>
+      <div class="has-text-left">
+        <a href="{{ url_for('auth.change_password') }}"> Change Password </a>
+      </div>
+    </div>
+    <div class="container" style="margin-top: 40px">
+      <button class="button is-pulled-left is-danger">
+        <a href="{{ url_for('auth.logout') }}"> Logout </a>
+      </button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

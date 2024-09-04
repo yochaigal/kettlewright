@@ -1,0 +1,44 @@
+{
+  "Factions": {
+    "NameFormulas": {
+      "Faction": [
+        "(The) [Noun] [Group]",
+        "(The) [Adjective] [Group]",
+        "[Group] of (the) [Noun]",
+        "[Adjective] [Group] of (the) [Noun]",
+        "(The) [Noun] [Adjective] [Group]",
+        "[Group] of (the) [Adjective] [Noun]"
+      ]
+    },
+    "Adjectives": [
+      "Aging", "Amber", "Ancient", "Angry", "Ashen", "Bare", "Battered", "Bitter", "Blackened", "Blazing",
+      "Bleak", "Blighted", "Blistered", "Blistering", "Blustery", "Brisk", "Bright", "Broad", "Calm", "Celestial",
+      "Choking", "Cold", "Colorful", "Copper", "Cracked", "Crimson", "Crumbling", "Curled", "Curling", "Curved",
+      "Curvy", "Dampened", "Dark", "Dazzling", "Dead", "Deathly", "Diamond", "Dismal", "Dreary", "Empty",
+      "Endless", "Fierce", "Flaming", "Flashing", "Foggy", "Forbidden", "Forgotten", "Fragile", "Frayed", "Frozen",
+      "Furious", "Gaping", "Gleaming", "Glow", "Granite", "Grim", "Grizzled", "Hazy", "Heated", "Hellish",
+      "Hideous", "Jagged", "Lone", "Lonely", "Luminous", "Lurching", "Lustrous", "Miserable", "Misty", "Mournful",
+      "Muddy", "Narrow", "Ominous", "Overgrown", "Patched", "Peeling", "Plunging", "Ragged", "Rotting", "Salty",
+      "Savage", "Shifting", "Shimmering", "Shining", "Shivering", "Shrouded", "Singed", "Sinking", "Slaughter",
+      "Smoky", "Soggy", "Sour", "Sputtering", "Stained", "Starved", "Stinking", "Stuffed", "Sunken", "Thin",
+      "Withered"
+    ],
+    "Nouns": [
+      "Abyss", "Alliance", "Amber", "Ambition", "Apple", "Aurora", "Black", "Blight", "Blue", "Bone",
+      "Bright", "Chasm", "Chip", "Copper", "Country", "Crack", "Crimson", "Curl", "Darkness", "Dawn",
+      "Dead", "Death", "Decay", "Dent", "Desolation", "Despair", "Devil", "Dirt", "Doom", "Doorway",
+      "Echo", "Ember", "Fate", "Fear", "Fire", "Flame", "Fray", "Frost", "Fury", "Ghost",
+      "Giant", "God", "Gold", "Green", "Harvest", "Hat", "Honor", "Hope", "Horror", "Iron",
+      "Island", "Jade", "King", "Lavender", "Life", "Light", "Marble", "Mist", "Mold", "Moon",
+      "Mud", "Nightmare", "Patch", "Peril", "Purple", "Radiance", "Rag", "Rain", "Rainbow", "Red",
+      "Refuge", "Regret", "Rot", "Ruin", "Shadow", "Spark", "Stone", "Tempest", "Silver", "Skull",
+      "Sky", "Smoke", "Snake", "Sorrow", "Storm", "Sun", "Terror", "Thorn", "Thunder", "Toxic",
+      "Tranquil", "Troll", "Valor", "Violet", "War", "Whisper", "Zephyr"
+    ],
+    "FactionTypes": [
+      "Assembly", "Brotherhood", "Circle", "Clan", "Coalition", "Collective", "Covenant", "Enclave",
+      "Fellowship", "Guild", "Horde", "League", "Legion", "Market", "Ministry", "Movement",
+      "Network", "Order", "Pact", "Syndicate"
+    ]
+  }
+}

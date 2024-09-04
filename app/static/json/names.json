@@ -1,0 +1,180 @@
+{
+  "Names": {
+    "NameFormulas": {
+      "POI": [
+        "(The) [Noun] [POI]",
+        "(The) [Adjective] [POI]",
+        "[POI] of (the) [Noun]",
+        "[Adjective] [POI] of (the) [Noun]",
+        "(The) [Noun] [Adjective] [POI]",
+        "[POI] of (the) [Adjective] [Noun]"
+      ],
+      "Faction": [
+        "(The) [Noun] [Group]",
+        "(The) [Adjective] [Group]",
+        "[Group] of (the) [Noun]",
+        "[Adjective] [Group] of (the) [Noun]",
+        "(The) [Noun] [Adjective] [Group]",
+        "[Group] of (the) [Adjective] [Noun]"
+      ],
+      "Realm": [
+        "(The) [Noun] [Rulers]",
+        "(The) [Adjective] [Rulers]",
+        "[Rulers] of (the) [Noun]",
+        "[Adjective] [Rulers] of (the) [Noun]",
+        "(The) [Noun] [Adjective] [Rulers]",
+        "[Rulers] of (the) [Adjective] [Noun]"
+      ]
+    },
+    "Adjectives": [
+      "Aging", "Amber", "Ancient", "Angry", "Ashen", "Bare", "Battered", "Bitter", "Blackened", "Blazing",
+      "Bleak", "Blighted", "Blistered", "Blistering", "Blustery", "Brisk", "Bright", "Broad", "Calm", "Celestial",
+      "Choking", "Cold", "Colorful", "Copper", "Cracked", "Crimson", "Crumbling", "Curled", "Curling", "Curved",
+      "Curvy", "Dampened", "Dark", "Dazzling", "Dead", "Deathly", "Diamond", "Dismal", "Dreary", "Empty",
+      "Endless", "Fierce", "Flaming", "Flashing", "Foggy", "Forbidden", "Forgotten", "Fragile", "Frayed", "Frozen",
+      "Furious", "Gaping", "Gleaming", "Glow", "Granite", "Grim", "Grizzled", "Hazy", "Heated", "Hellish",
+      "Hideous", "Jagged", "Lone", "Lonely", "Luminous", "Lurching", "Lustrous", "Miserable", "Misty", "Mournful",
+      "Muddy", "Narrow", "Ominous", "Overgrown", "Patched", "Peeling", "Plunging", "Ragged", "Rotting", "Salty",
+      "Savage", "Shifting", "Shimmering", "Shining", "Shivering", "Shrouded", "Singed", "Sinking", "Slaughter",
+      "Smoky", "Soggy", "Sour", "Sputtering", "Stained", "Starved", "Stinking", "Stuffed", "Sunken", "Thin",
+      "Withered"
+    ],
+    "Nouns": [
+      "Abyss", "Alliance", "Amber", "Ambition", "Apple", "Aurora", "Black", "Blight", "Blue", "Bone",
+      "Bright", "Chasm", "Chip", "Copper", "Country", "Crack", "Crimson", "Curl", "Darkness", "Dawn",
+      "Dead", "Death", "Decay", "Dent", "Desolation", "Despair", "Devil", "Dirt", "Doom", "Doorway",
+      "Elevated", "Ember", "Fate", "Fear", "Fire", "Flame", "Foreign", "Fray", "Frost", "Fury",
+      "Ghost", "Giant", "God", "Gold", "Golden", "Green", "Harsh", "Harvest", "Hat", "Honor",
+      "Hope", "Horror", "Iron", "Island", "Jade", "King", "Lavender", "Life", "Light", "Marble",
+      "Mist", "Mold", "Moon", "Mud", "Nightmare", "Patch", "Peril", "Purple", "Quaint", "Rag",
+      "Rain", "Rainbow", "Red", "Refuge", "Regret", "Rot", "Ruin", "Rustic", "Serene", "Shadow",
+      "Sharp", "Silver", "Skull", "Sky", "Smoke", "Snake", "Sorrow", "Storm", "Sun", "Terror",
+      "Thin", "Thunder", "Toxic", "Tranquil", "Troll", "Victory", "Violet", "War", "Witch", "Zephyr"
+    ],
+    "GroupTypes": [
+      "Assembly", "Brotherhood", "Circle", "Clan", "Coalition", "Collective", "Covenant", "Enclave",
+      "Fellowship", "Guild", "Horde", "League", "Legion", "Market", "Ministry", "Movement",
+      "Network", "Order", "Pact", "Syndicate"
+    ],
+    "RulerTypes": [
+      "Alliance", "Commonwealth", "Confederation", "Dominion", "Ecclesiarchy", "Empire", "Federacy",
+      "Grand Duchy", "Kingdom", "Principality", "Protectorate", "Republic", "Union", "Barony",
+      "Fiefdom", "Hegemony", "Monarchy", "Realm", "Regency", "State"
+    ],
+    "TerrainSynonyms": {
+      "Beaches": ["seaside", "shore", "coast", "seaboard", "foreshore", "marina"],
+      "Bogs": ["marsh", "sump", "mire", "quad", "morass", "slough", "fens"],
+      "Canyons": ["ravine", "gully", "chasm", "abyss", "gulf", "gulch"],
+      "Caverns": ["grotto", "cavity", "tunnels", "dugout", "cave"],
+      "Cliffs": ["precipice", "face", "crag", "bluff", "ridge", "escarpment", "steep"],
+      "Desert": ["dunes", "sands", "vast", "wastes", "blight", "erg"],
+      "Farmlands": ["tillage", "holding", "acreage", "steading", "grange", "plantation"],
+      "Forest": ["bush", "woods", "woodland", "weald", "grove", "copse"],
+      "Grasslands": ["pasture", "steppe", "prairie", "savanna", "fields", "greenery"],
+      "Hills": ["hillock", "mound", "mount", "knoll", "hummock", "slope"],
+      "Hollows": ["dip", "hole", "pit", "cavity", "crater", "trough", "holes"],
+      "Jungle": ["bush", "woods", "woodland", "weald", "grove", "copse"],
+      "Lakes": ["pond", "pool", "tarn", "lagoon", "loch", "bayou"],
+      "Mountains": ["peaks", "ridge", "range", "summit", "pinnacle", "butte"],
+      "Oasis": ["spring", "well", "fountain", "haven", "watering hole", "refuge"],
+      "Plains": ["heath", "meadow", "veldt", "flats", "lowlands", "sward"],
+      "Plateau": ["uplands", "mesa", "highlands", "downs", "reach"],
+      "River": ["waterway", "stream", "brook", "runnel", "creek", "channel"],
+      "Sea": ["seaside", "shore", "coast", "seaboard", "foreshore", "marina"],
+      "Swamp": ["mire", "morass", "quag", "moors", "sump", "wetlands"],
+      "Thickets": ["chaparral", "boscage", "covert", "coppice", "fells"],
+      "Tundra": ["expanse", "prairie", "steppe", "boreal", "ley"],
+      "Valley": ["dale", "vale", "basin", "gully", "gorge", "gap", "glen"],
+      "Wasteland": ["dunes", "sands", "vast", "wastes", "blight", "erg"]
+    },
+    "ForestNames": {
+      "Adjectives": [
+        "Abandoned", "Ancient", "Beckoning", "Blooming", "Bountiful", "Celestial", "Charmed", "Crystal",
+        "Dappled", "Dense", "Desolate", "Distant", "Echoing", "Eerie", "Emerald", "Enchanted", "Enigmatic",
+        "Ephemeral", "Eternal", "Ethereal", "Exotic", "Fabled", "Flourishing", "Forgotten", "Forsaken",
+        "Fragrant", "Frosty", "Gentle", "Glistening", "Gloomy", "Gnarled", "Golden", "Grassy", "Harmonious",
+        "Haunted", "Hidden", "Hushed", "Illuminated", "Jagged", "Lavish", "Leafy", "Lonely", "Looming",
+        "Lost", "Luminescent", "Luminous", "Lush", "Majestic", "Melancholy", "Menacing", "Misty", "Moonlit",
+        "Mossy", "Murmuring", "Mysterious", "Mystic", "Opulent", "Overgrown", "Precarious", "Primeval",
+        "Pristine", "Quaint", "Radiant", "Roaring", "Rugged", "Rustling", "Sacred", "Secluded", "Serene",
+        "Serpentine", "Shadowy", "Shimmering", "Shrouded", "Silent", "Smoky", "Somber", "Spectral", "Splendid",
+        "Stark", "Sturdy", "Sunlit", "Sunny", "Swirling", "Tangled", "Timeless", "Towering", "Tranquil",
+        "Trickling", "Twilight", "Twisted", "Unseen", "Unyielding", "Veiled", "Verdant", "Vibrant", "Weathered",
+        "Weeping", "Whispering", "Wild", "Winding"
+      ],
+      "Nouns": [
+        "Arbors", "Arch", "Blossoms", "Bogs", "Boughs", "Brake", "Brambles", "Branches", "Briar", "Bridge",
+        "Brook", "Brush", "Camp", "Canopy", "Cascade", "Cave", "Cavern", "Chase", "Clearing", "Clump",
+        "Coppice", "Copse", "Crags", "Creek", "Dale", "Dell", "Dew", "Fell", "Fen", "Ferns", "Foliage",
+        "Forest", "Fungi", "Gill", "Glade", "Glen", "Gorge", "Granite", "Green", "Grotto", "Grove",
+        "Growth", "Heath", "Henge", "Hollow", "Horizon", "Knar", "Knoll", "Leaves", "Light", "Loam",
+        "Loom", "Marsh", "Meadow", "Mire", "Morass", "Oak", "Oasis", "Orchard", "Pass", "Passages",
+        "Path", "Pathway", "Pine", "Roots", "Sanctuary", "Shade", "Shadows", "Shrub", "Slope", "Spring",
+        "Stirs", "Stones", "Stream", "Stump", "Swale", "Sward", "Sway", "Tangle", "Thicket", "Thistles",
+        "Timber", "Timberland", "Tower", "Trails", "Trees", "Trunks", "Underbrush", "Undergrowth", "Understory",
+        "Vines", "Waterway", "Weald", "Wildwood", "Woodland", "Woodlot", "Woods", "Yonder", "Zephyr"
+      ]
+    }
+  },
+  "NPCs": {
+    "Names": {
+      "d100": [
+        "Aeloria", "Ainsley", "Aislin", "Alaric", "Alder", "Alistair", "Anika", "Azura", "Birch", "Brave",
+        "Cade", "Caelan", "Caius", "Callan", "Carver", "Cedric", "Ciaran", "Cinder", "Cleaver", "Coraline",
+        "Creek", "Crow", "Crucible", "Dain", "Darnel", "Dax", "Dorian", "Elia", "Eoin", "Evander",
+        "Ewan", "Faris", "Finch", "Gerda", "Glow", "Glyph", "Godric", "Gunnar", "Harkin", "Harper",
+        "Hildred", "Hemlock", "Jarek", "Juniper", "Kade", "Kael", "Kavi", "Lian", "Leo", "Liora",
+        "Luna", "Lysander", "Lysander", "Mariner", "Marcellus", "Marius", "Mend", "Milo", "Mirth", "Neria",
+        "Nazira", "Nox", "Onyx", "Pan", "Plow", "Rush", "Rolan", "Shade", "Sharpsight", "Shroud",
+        "Sky", "Spade", "Spike", "Stellan", "Stem", "Storm", "Taran", "Taros", "Thaddeus", "Thistle",
+        "Thyme", "Tiberius"
+      ]
+   },
+    "Background": {
+      "d20": [
+        "Academic", "Assassin", "Blacksmith", "Farmer", "General", "Gravedigger", "Guard", "Healer", "Jailer",
+        "Laborer", "Lord", "Merchant", "Monk", "Mystic", "Outlander", "Peddler", "Politician", "Spy", "Thief",
+        "Thug"
+      ]
+    },
+    "Goals": {
+      "d20": [
+        "Ascension", "Cleansing", "Conservation", "Defense", "Domination", "Enrichment", "Expansion", "Freedom",
+        "Healing", "Integration", "Justice", "Peace", "Power", "Preservation", "Purification", "Redemption",
+        "Revenge", "Survival", "Unity", "Wealth"
+      ]
+    },
+    "Traits": {
+      "Virtues": {
+        "d20": [
+          "Cautious", "Compassionate", "Connected", "Courageous", "Disciplined", "Discreet", "Honest",
+          "Intelligent", "Judicious", "Loyal", "Methodical", "Meticulous", "Polite", "Popular", "Pragmatic",
+          "Resourceful", "Suave", "Shrewd", "Tenacious", "Witty"
+        ]
+      },
+      "Vices": {
+        "d20": [
+          "Aloof", "Corrupt", "Craven", "Cruel", "Cynical", "Deceptive", "Greedy", "Impulsive", "Incompetent",
+          "Inflexible", "Manipulative", "Mercurial", "Naive", "Pedantic", "Ruthless", "Sarcastic", "Selfish",
+          "Stubborn", "Vain", "Xenophobic"
+        ]
+      }
+    },
+    "Quirks": {
+      "Quirk1": {
+        "d20": [
+          "Gaunt", "Harsh Voice", "Young", "Squints", "Strong", "Alert", "Bright Eyes", "Bald", "Notable Hair",
+          "Missing Ear", "Good Posture", "Limps", "Grimy", "Muscular", "Thick Eyebrows", "Crooked Teeth",
+          "Heavy Brow", "Pleasant Voice", "Broad Face", "Tired"
+        ]
+      },
+      "Quirk2": {
+        "d20": [
+          "Eyepatch", "Tough", "Clumsy", "Scarred", "Diseased", "Attractive", "Doughy", "Fast", "Haggard",
+          "Dimples", "Lanky", "Imposing", "Tall", "Wiry", "Weak", "Slow", "Dark Eyes", "Loud", "Disfigured",
+          "Piercings"
+        ]
+      }
+    }
+  }
+}

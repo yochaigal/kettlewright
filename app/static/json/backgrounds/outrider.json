@@ -1,0 +1,168 @@
+{
+  "Outrider": {
+    "image": "outrider.webp",
+    "background_description": "Your coin comes from escorting caravans, tracking fugitives, or lending your blade to a cause. You've been a savior, an executioner, a hero, and even a villain. Yours is not a solitary path, however: you'll always have your horse.",
+    "names": [
+      "Drake",
+      "Cyra",
+      "Keir",
+      "Darius",
+      "Valen",
+      "Rorik",
+      "Yara",
+      "Rui",
+      "Talon",
+      "Jory"
+    ],
+    "starting_gear": [
+      {
+        "name": "Rations",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Torch",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Long sword",
+        "tags": ["d10", "bulky"]
+      },
+      {
+        "name": "Leather jerkin",
+        "tags": ["1 Armor"]
+      },
+      {
+        "name": "Crossbow",
+        "tags": ["d8", "bulky"]
+      },
+      {
+        "name": "Spyglass",
+        "tags": []
+      }
+    ],
+    "table1": {
+      "question": "What personal code or principle do you uphold?",
+      "options": [
+        {
+          "description": "No innocent blood: No bystander will come to harm on your watch. Take a Steadymade Buckler (+1 Armor). While holding this shield, you cannot be moved so long as both feet are planted on firm ground.",
+          "items": [
+            {
+              "name": "Steadymade Buckler",
+              "tags": ["1 Armor", "bonus defense"],
+              "description": "While holding this shield, you cannot be moved so long as both feet are planted on firm ground."
+            }
+          ]
+        },
+        {
+          "description": "Revere the tools of death: Weapons are to be respected and maintained. Take a Wyrmbone Whetstone. Following a half-hour ritual sharpening, attacks with the weapon are enhanced until STR damage is dealt.",
+          "items": [
+            {
+              "name": "Wyrmbone Whetstone",
+              "tags": [],
+              "description": "Following a half-hour ritual sharpening, attacks with the weapon are enhanced until STR damage is dealt."
+            }
+          ]
+        },
+        {
+          "description": "To the death, always: You never back down from a fight, no matter the odds. Take a Death-Whistle, 1 charge. Its scream frightens away all who hear it (save WIL or flee). Recharge: Capture the final breath of a dying warrior.",
+          "items": [
+            {
+              "name": "Death-Whistle",
+              "tags": ["charges"],
+              "charges": 1,
+              "max_charges": 1,
+              "description": "Its scream frightens away all who hear it (save WIL or flee). Recharge: Capture the final breath of a dying warrior."
+            }
+          ]
+        },
+        {
+          "description": "Revere the dead: Death is a journey we all take, and it deserves respect. Take an extra 30gp. You always place two gold pieces on the eyelids of a slain foe. Somehow, you always find the coin.",
+          "items": [],
+          "bonus_gold": 30
+        },
+        {
+          "description": "Loyalty to the work: Your word is your bond. Once you've accepted a job, you see it through to the end. Take a weathered Tally Stick. Once a vow is marked onto its face, the stick hardens (d8) until it is complete. The stick will snap in half if the vow is ever broken.",
+          "items": [
+            {
+              "name": "Tally Stick",
+              "tags": [],
+              "description": "Once a vow is marked onto its face, the stick hardens (d8) until it is complete. The stick will snap in half if the vow is ever broken."
+            }
+          ]
+        },
+        {
+          "description": "Always pay your debts: You always repay what you owe, whether in coin or in kind. You expect nothing less from all others. Take a Blacked-Out Ledger, then roll a second time on the Bonds table.",
+          "items": [
+            {
+              "name": "Blacked-Out Ledger",
+              "tags": []
+            }
+          ]
+        }
+      ]
+    },
+    "table2": {
+      "question": "What breed is your horse?",
+      "options": [
+        {
+          "description": "Heavy Destrier: A beast built for war, an imposing creature. 8 HP, 1 Armor, hooves (d10+d10), +2 slots.",
+          "containers": [
+            {
+              "name": "Heavy Destrier",
+              "slots": 2
+            }
+          ]
+        },
+        {
+          "description": "Blacklegged Dandy: Hardy and adaptable. Tough or Perilous terrain are one step easier. 6 HP. +4 slots.",
+          "containers": [
+            {
+              "name": "Blacklegged Dandy",
+              "slots": 4
+            }
+          ]
+        },
+        {
+          "description": "Rivertooth: Impressively strong, capable of carrying heavy loads. 4 HP. +6 slots (only +2 slots if carrying two people).",
+          "containers": [
+            {
+              "name": "Rivertooth",
+              "slots": 6
+            }
+          ]
+        },
+        {
+          "description": "Piebald Cob: Intelligent, it can understand simple commands, and even has an instinct for danger. 6 HP. +4 slots.",
+          "containers": [
+            {
+              "name": "Piebald Cob",
+              "slots": 4
+            }
+          ]
+        },
+        {
+          "description": "Linden White: Highly trained and agile, it can perform intricate maneuvers in a time of need (no DEX save to flee). +3 slots.",
+          "containers": [
+            {
+              "name": "Linden White",
+              "slots": 3
+            }
+          ]
+        },
+        {
+          "description": "Stray Fogger: Wild but very fast (even in Tough terrain). Rides light. 4 HP. +2 slots.",
+          "containers": [
+            {
+              "name": "Stray Fogger",
+              "slots": 2
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

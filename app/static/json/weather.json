@@ -1,0 +1,36 @@
+{
+  "Weather": {
+    "Types": {
+      "Spring": ["Nice", "Fair", "Fair", "Unpleasant", "Inclement", "Extreme"],
+      "Summer": ["Nice", "Nice", "Fair", "Unpleasant", "Inclement", "Extreme"],
+      "Fall": ["Fair", "Fair", "Unpleasant", "Inclement", "Inclement", "Extreme"],
+      "Winter": ["Fair", "Unpleasant", "Inclement", "Inclement", "Extreme", "Extreme"]
+    },
+    "Difficulty": {
+      "Nice": {
+        "Effect": "Favorable conditions for travel.",
+        "Examples": "Clear skies, sunny"
+      },
+      "Fair": {
+        "Effect": "Favorable conditions for travel.",
+        "Examples": "Overcast, breezy"
+      },
+      "Unpleasant": {
+        "Effect": "Add a Fatigue or add one watch to the journey.",
+        "Examples": "Gusting winds, rain showers, sweltering heat, chill air"
+      },
+      "Inclement": {
+        "Effect": "Add a Fatigue or add +1 watch. Increase terrain Difficulty by a step.",
+        "Examples": "Thunderstorms, lightning, rain, muddy ground"
+      },
+      "Extreme": {
+        "Effect": "Add a Fatigue and add +1 watch. Increase terrain Difficulty by a step.",
+        "Examples": "Blizzards, freezing winds, flooding, mud slides"
+      },
+      "Catastrophic": {
+        "Effect": "Most parties cannot travel under these conditions.",
+        "Examples": "Tornados, tidal waves, hurricane, volcanic eruption"
+      }
+    }
+  }
+}

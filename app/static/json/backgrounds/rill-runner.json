@@ -1,0 +1,148 @@
+{
+  "Rill Runner": {
+    "image": "rill-runner.webp",
+    "background_description": "You sing the stories of rivers and lakes, your talents soothing friends and the elements alike. You've seen more than most, but somehow it never seems to be enough.",
+    "names": ["Gale", "Piper", "Brook", "Adair", "Stone", "Dale", "Wren", "Cliff", "Rain", "Robin"],
+    "starting_gear": [
+      {
+        "name": "Rations",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Torch",
+        "tags": ["uses"],
+        "uses": 3,
+        "description": ""
+      },
+      {
+        "name": "Water Shoes",
+        "tags": []
+      },
+      {
+        "name": "Brigandine",
+        "tags": ["1 Armor", "bulky"]
+      },
+      {
+        "name": "Compass",
+        "tags": []
+      },
+      {
+        "name": "Dagger",
+        "tags": ["d6"]
+      }
+    ],
+    "table1": {
+      "question": "What songs are you best known for?",
+      "options": [
+        {
+          "description": "The Tinker's Two-Step. A humorous fairy tale about a gift-giving traveler. Start with a Reed Whistle. Anyone in earshot must pass a WIL save to perform an act of violence.",
+          "items": [
+            {
+              "name": "Reed Whistle",
+              "tags": [],
+              "description": "Anyone in earshot must pass a WIL save to perform an act of violence."
+            }
+          ]
+        },
+        {
+          "description": "The Sylph and Her Lover. A bawdy tale of lost love. Start with a Breeze Knot (3 charges). Creates a strong breeze. Recharge: Tie it to a mast during a storm.",
+          "items": [
+            {
+              "name": "Breeze Knot",
+              "tags": ["charges"],
+              "charges": 3,
+              "max_charges": 3,
+              "description": "Creates a strong breeze. Recharge: Tie it to a mast during a storm."
+            }
+          ]
+        },
+        {
+          "description": "Harper's Devotion. A sad, short tale about a musician who falls in love with a star. Start with a Celestial Lute. Reveals the constellations above, no matter the weather.",
+          "items": [
+            {
+              "name": "Celestial Lute",
+              "tags": [],
+              "description": "Reveals the constellations above, no matter the weather."
+            }
+          ]
+        },
+        {
+          "description": "The Reed Fisher. A celebrated song about a massive carp that always seems to get away. Begin with a spool of River Twine (5 uses). Each dip into the river guarantees a catch, though it might not be pleasant.",
+          "items": [
+            {
+              "name": "River Twine",
+              "tags": ["uses"],
+              "uses": 5,
+              "description": "Each dip into the river guarantees a catch, though it might not be pleasant."
+            }
+          ]
+        },
+        {
+          "description": "Song of the Silver Stream. A wordless lullaby that mimics flowing water. Take a Stone Flute that can calm almost any river.",
+          "items": [
+            {
+              "name": "Stone Flute",
+              "tags": [],
+              "description": "Can calm almost any river."
+            }
+          ]
+        },
+        {
+          "description": "The Thrush and the Meadow. A moody tale told in alternating chorus. Start with a Feather Quill (1 use, petty). A map drawn with this quill reveals the most expedient course between any two points.",
+          "items": [
+            {
+              "name": "Feather Quill",
+              "tags": ["1 use", "petty"],
+              "uses": 1,
+              "description": "A map drawn with this quill reveals the most expedient course between any two points."
+            }
+          ]
+        }
+      ]
+    },
+    "table2": {
+      "question": "What pays your way across the land?",
+      "options": [
+        {
+          "description": "Performing at taverns always yields both room and board. Sometimes you even get tips! Start with an extra 10gp.",
+          "items": [],
+          "bonus_gold": 10
+        },
+        {
+          "description": "You are a protector for those afraid to travel alone. Start with a Rapier.",
+          "items": [
+            {
+              "name": "Rapier",
+              "tags": ["d8"]
+            }
+          ]
+        },
+        {
+          "description": "You buy low and sell high, always making just enough to get by. Take a single item worth 20gp (or less) from the gear table.",
+          "items": [],
+          "gear_table": 20
+        },
+        {
+          "description": "You deliver delicate packages throughout the lands. You have at least one contact in any major town.",
+          "items": []
+        },
+        {
+          "description": "Over troubled waters and dangerous winds, you always make sure a ship reaches its destination. For you, passage is always free.",
+          "items": []
+        },
+        {
+          "description": "You shepherd caravans and travelers across water-soaked lands. Start with a  map (petty) relevant to your next journey.",
+          "items": [
+            {
+              "name": "Map",
+              "tags": [],
+              "description": "Relevant to your next journey."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "Reactions": [
+    {
+      "roll": "2",
+      "description": "Hostile"
+    },
+    {
+      "roll": "3",
+      "description": "Wary"
+    },
+    {
+      "roll": "4",
+      "description": "Wary"
+    },
+    {
+      "roll": "5",
+      "description": "Wary"
+    },
+    {
+      "roll": "6",
+      "description": "Curious"
+    },
+    {
+      "roll": "7",
+      "description": "Curious"
+    },
+    {
+      "roll": "8",
+      "description": "Curious"
+    },
+    {
+      "roll": "9",
+      "description": "Kind"
+    },
+    {
+      "roll": "10",
+      "description": "Kind"
+    },
+    {
+      "roll": "11",
+      "description": "Kind"
+    },
+    {
+      "roll": "12",
+      "description": "Helpful"
+    }
+  ]
+}

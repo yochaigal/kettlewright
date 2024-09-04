@@ -1,0 +1,88 @@
+{% extends "base.html" %} {% block content %}
+<script type="text/javascript" src="{{ url_for('static', filename='src/js/characters.js') }}"></script>
+
+<section class="body-container">
+  <div class="characters-page-header">
+    <a href="{{ url_for('main.new_character') }} "><button type="button">New Character</button></a>
+  </div>
+
+  <section class="characters-cards-container">
+    {% for character in characters %}
+
+    <div
+      class="card character-card"
+      style="cursor: pointer"
+      data-character="{{ character.url_name }}"
+      onclick="redirectToCharacterPage(this)"
+    >
+      <div class="card-content">
+        <div class="card-image">
+          <figure class="" style="display: flex; align-items: center; justify-content: center">
+            <img
+              src="{{ character.portrait_src }}"
+              alt="Character Portrait"
+              data-custom-image="{{ character.custom_image }}"
+              data-image-url="{{ character.image_url }}"
+              class="character-card-image"
+            />
+          </figure>
+        </div>
+
+        <div class="character-card-name-container">
+          <h2 class="character-card-name">{{ character.name }}</h2>
+          <h3 class="character-card-background">{{ character.background }}</h3>
+        </div>
+
+        <div class="character-card-stats-container">
+          <div class="column is-half">
+            <div class="card-attribute-container">
+              <!-- <img
+                src="{{ url_for('static', filename='images/STR.webp') }}"
+                alt="Strength"
+                class="card-attribute-icon"
+              /> -->
+              <p class="character-card-attribute subtitle"> STR {{character.strength}}/{{character.strength_max}} </p>
+            </div>
+            <div class="card-attribute-container">
+              <p class="character-card-attribute subtitle"> DEX {{character.dexterity}}/{{character.dexterity_max}} </p>
+            </div>
+            <div class="card-attribute-container">
+              <p class="character-card-attribute subtitle"> WIL {{character.willpower}}/{{character.willpower_max}} </p>
+            </div>
+          </div>
+          <div class="column is-half">
+            <div class="card-attribute-container">
+              <p class="character-card-attribute subtitle">Armor {{character.armor}}</p>
+            </div>
+            <div class="card-attribute-container">
+              <p class="character-card-attribute subtitle">HP {{character.hp}}</p>
+            </div>
+            <div class="card-attribute-container">
+              <p class="character-card-attribute subtitle">Gold {{character.gold}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="character-card-footer">
+        <button
+          class="button is-light card-link-button"
+          type="button"
+          data-url-name="{{ character.url_name }}"
+          data-owner-username="{{ character.owner_username }}"
+        >
+          <i class="fa-solid fa-link icon-in-button" style="margin-right: 4px"></i>
+        </button>
+        <button
+          class="button is-light card-delete-character-button"
+          type="button"
+          data-character-id="{{ character.id }}"
+        >
+          <i class="fa-solid fa-trash icon-in-button" style="margin-right: 4px"></i>
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </section>
+
+  {% endblock %}
+</section>
