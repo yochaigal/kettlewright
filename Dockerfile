@@ -7,9 +7,6 @@ ENV PYTHONUNBUFFERED=1
 # Set the working directory
 WORKDIR /app
 
-# Set the PATH environment variable
-ENV PATH=/home/kettlewright/.local/bin:$PATH
-
 # Set up environment variables for the UID and GID
 ARG UID=1000
 ARG GID=1000
@@ -18,20 +15,22 @@ ARG GID=1000
 RUN addgroup --gid $GID kettlewright && \
     adduser --disabled-password --gecos '' --uid $UID --gid $GID kettlewright
 
-# Change ownership of the entire app directory to the current user
-RUN chown -R kettlewright:kettlewright /app
-
-# Switch to the newly created user before copying files
-USER kettlewright
-
-# Copy the requirements file to the container
+# Copy requirements file and change ownership
 COPY requirements.txt /app/
+RUN chown kettlewright:kettlewright /app/requirements.txt
 
 # Install the Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# Copy the entire application code into the container
+# Copy the entire application code and set ownership
 COPY . /app/
+RUN chown -R kettlewright:kettlewright /app
+
+# Set the correct file permissions
+RUN chmod -R u+rw /app
+
+# Switch to the non-root user
+USER kettlewright
 
 # Expose the port that the Flask app will run on
 EXPOSE 5000
