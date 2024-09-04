@@ -1,0 +1,38 @@
+# Ignore the git repository folder
+.git
+.gitignore
+
+# Byte-compiled Python files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments (if any)
+venv/
+env/
+*.env
+
+# Build directories
+build/
+dist/
+*.egg-info/
+
+# Docker files
+Dockerfile.*
+.dockerignore
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node modules (if you're using any JS tools or frontend framework)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Sensitive files
+.env
