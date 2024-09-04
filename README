@@ -1,2 +1,6 @@
 1. Move .env.template to .env.
 2. Fill out .env variables.
+3. Run 'docker run -it --user $(id -u):$(id -g) --env-file .env -v $(pwd)/migrations:/app/migrations -v $(pwd)/instance:/app/instance kettlewright /bin/sh'
+4. Run 'flask db upgrade' and then 'exit'
+5. Launch with 'docker run --user $(id -u):$(id -g) -v $(pwd):/app --env-file .env -p 5000:5000 kettlewright'
+6. Setup nginx reverse proxy.
