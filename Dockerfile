@@ -15,10 +15,10 @@ ARG GID=1000
 RUN addgroup --gid $GID kettlewright && \
     adduser --disabled-password --gecos '' --uid $UID --gid $GID kettlewright
 
-# Change ownership of the entire app directory to the current user (before copying anything)
-RUN chown -R $UID:$GID /app
+# Change ownership of the entire app directory to the current user
+RUN chown -R kettlewright:kettlewright /app
 
-# Switch to the newly created user before copying any files
+# Switch to the newly created user before copying files
 USER kettlewright
 
 # Copy the requirements file to the container
