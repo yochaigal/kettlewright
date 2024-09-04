@@ -4,8 +4,22 @@ FROM python:3.10
 # Set environment variables to avoid Python buffering and enable Flask debugging
 ENV PYTHONUNBUFFERED=1
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
+
+# Set up environment variables for the UID and GID
+ARG UID=1000
+ARG GID=1000
+
+# Create a user with the same UID and GID as the host user
+RUN addgroup --gid $GID kettlewright && \
+    adduser --disabled-password --gecos '' --uid $UID --gid $GID kettlewright
+
+# Change ownership of the entire app directory to the current user (before copying anything)
+RUN chown -R $UID:$GID /app
+
+# Switch to the newly created user before copying any files
+USER kettlewright
 
 # Copy the requirements file to the container
 COPY requirements.txt /app/
