@@ -7,6 +7,9 @@ ENV PYTHONUNBUFFERED=1
 # Set the working directory
 WORKDIR /app
 
+# Set the PATH environment variable
+ENV PATH=/home/kettlewright/.local/bin:$PATH
+
 # Set up environment variables for the UID and GID
 ARG UID=1000
 ARG GID=1000
