@@ -1,7 +1,8 @@
-1. Move .env.template to .env.
-2. Fill out .env variables.
-3. Build docker image with 'docker build --build-arg UID=$(id -u) --build-arg GID=$(id -g) -t kettlewright .'
-4. Run 'docker run -it --user $(id -u):$(id -g) --env-file .env -v $(pwd)/migrations:/app/migrations -v $(pwd)/instance:/app/instance kettlewright /bin/sh'
-5. Run 'flask db upgrade' and then 'exit'
-6. Launch with 'docker run --user $(id -u):$(id -g) -v $(pwd):/app --env-file .env -p 5000:5000 kettlewright'
-7. Access the application at http://127.0.0.1:5000
+1. Copy contents of repository to new folder (except for .git). 
+2. Move .env.template to .env.
+3. Fill out .env variables.
+4. Build docker image with 'docker build --build-arg UID=$(id -u) --build-arg GID=$(id -g) -t kettlewright .'
+5. Run 'docker run -it --user $(id -u):$(id -g) --env-file .env -v $(pwd)/migrations:/app/migrations -v $(pwd)/instance:/app/instance kettlewright /bin/sh'
+6. Run 'flask db upgrade' and then 'exit'
+7. Launch with 'docker run --user $(id -u):$(id -g) -v $(pwd):/app --env-file .env -p 5000:5000 kettlewright'
+8. Access the application at http://127.0.0.1:5000
