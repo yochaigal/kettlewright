@@ -1,8 +1,8 @@
-1. Copy contents of repository to new folder (except for .git). 
-2. Move .env.template to .env.
-3. Fill out .env variables.
+1. Copy contents of repository to new folder (except for .git related files). Make sure to copy the .dockerignore file! 
+2. Move .env.template to .env
+3. Fill out .env variables
 4. Build docker image with 'docker build -t kettlewright .'
-5. Run 'docker run -it --env-file .env kettlewright /bin/sh'
-6. Run 'flask db upgrade' and then 'exit'
-7. Launch with 'docker run --user $(id -u):$(id -g) -v $(pwd):/app --env-file .env -p 5000:5000 kettlewright'
-8. Access the application at http://127.0.0.1:5000
+5. Run 'docker run -it --env-file .env -v $(pwd)/instance:/app/instance kettlewright /bin/sh'
+6. Then run 'flask db upgrade' from the shell, then 'exit'
+7. Lunch the application with 'docker run --user $(id -u):$(id -g) -v $(pwd)/instance:/app/instance --env-file .env -p 5000:5000 kettlewright'
+8. Access the Kettlewright at http://127.0.0.1:5000
