@@ -33,7 +33,7 @@ RUN chmod -R u+rw /app
 USER kettlewright
 
 # Expose the port that the Flask app will run on
-EXPOSE 5000
+EXPOSE 8000
 
 # Command to run the Flask application with Gunicorn and WebSocket support
-CMD ["gunicorn", "--worker-class", "eventlet", "-w", "2", "-b", "0.0.0.0:5000", "app:application"]
+CMD ["gunicorn", "--worker-class", "eventlet", "-w", "2", "-b", "0.0.0.0:8000", "app:application"]
