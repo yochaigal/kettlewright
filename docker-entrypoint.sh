@@ -11,10 +11,13 @@ if [ -n "$UID" ] && [ -n "$GID" ]; then
     if ! id -u kettlewright >/dev/null 2>&1; then
         adduser --disabled-password --gecos '' --uid "$UID" --gid "$GID" kettlewright
     fi
-fi
 
-# Change ownership of all files in /app to the created user
-chown -R "$UID":"$GID" /app
+    # Change ownership of all files in /app to the created user and group
+    chown -R "$UID":"$GID" /app
+else
+    echo "UID and GID must be provided"
+    exit 1
+fi
 
 # Execute the provided command
 exec "$@"
