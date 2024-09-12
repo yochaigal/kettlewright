@@ -58,4 +58,4 @@ Pull the latest image:
 
 Start a new container using the latest image:
 
-       docker run --user $(id -u):$(id -g) --env-file .env -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
+    docker run --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
