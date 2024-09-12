@@ -19,14 +19,14 @@ RUN groupadd --gid $GID kettlewright && \
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
+# Set the correct file permissions
+RUN chmod -R u+rw /app
+
 # Switch to the non-root user before copying the application code
 USER kettlewright
 
 # Copy the application code and ensure ownership
 COPY --chown=kettlewright:kettlewright . /app/
-
-# Set the correct file permissions
-RUN chmod -R u+rw /app
 
 # Expose the port that the Flask app will run on
 EXPOSE 8000
