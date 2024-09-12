@@ -1,7 +1,7 @@
 # Use an official Python runtime as the base image
 FROM python:3.10
 
-# Set environment variables to avoid Python buffering and enable Flask debugging
+# Set environment variables to show logging
 ENV PYTHONUNBUFFERED=1
 
 # Set the working directory
