@@ -14,27 +14,19 @@
    
        docker pull yochaigal/kettlewright
 
-5. Run the container with environment file and bind the local `instance` folder:
+5. Create the database:
    
-       docker run -it --user $(id -u):$(id -g) --env-file .env -v $(pwd)/instance:/app/instance yochaigal/kettlewright /bin/sh
+       docker run -it --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance yochaigal/kettlewright /bin/sh -c "flask db upgrade"
 
-6. Inside the container, run database migrations:
+6. Start Kettlewright:
    
-       flask db upgrade
+       docker run --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
-7. Exit the container:
-   
-       exit
+7. Open http://127.0.0.1:8000 to access Kettlewright. You can stop the application with `Ctrl+C` in the terminal.
 
-8. Start the Flask application:
-   
-       docker run --user $(id -u):$(id -g) --env-file .env -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
+## After Kettlewright Has Been Installed
 
-9. Open http://127.0.0.1:8000 to access Kettlewright. You can stop the application with `Ctrl+C` in the terminal.
-
-## Docker Tips
-
-To run the application again, first find the container id (typically the most recent container):
+To run Kettlewright again, first find the container id (typically the most recent container):
 
        docker ps -a
 
@@ -49,6 +41,8 @@ To see the logs, run:
 To remove old containers:
 
        docker rm [container] 
+
+## Updating Kettlewright
 
 First, stop the container:
 
