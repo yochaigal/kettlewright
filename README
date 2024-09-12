@@ -1,12 +1,19 @@
-1. Copy .env.template to .env 
-2. Fill out .env variables
-3. Build docker image with 'docker build -t kettlewright .'
-4. Run 'docker run -it --user $(id -u):$(id -g) --env-file .env -v $(pwd)/instance:/app/instance kettlewright /bin/sh'
-5. Run 'flask db upgrade' from the shell, then 'exit'
-6. Lunch the application with 'docker run --user $(id -u):$(id -g) -v $(pwd)/instance:/app/instance --env-file .env -p 8000:8000 kettlewright'
-7. Access Kettlewright at http://127.0.0.1:8000
-from the src folder
+1. Copy '.env.template' to '.env'
+2. Fill out '.env' variables
+3. Build the Docker image with:
+   'docker build -t kettlewright .'
+4. Run the following command to start a container for database migration:
+   'docker run -it --user $(id -u):$(id -g) --env-file .env -v flask-instance:/app/instance kettlewright /bin/sh'
+5. Inside the container, run the database migration:
+   'flask db upgrade'
+   Then, type 'exit' to leave the container.
+6. Launch the application with:
+   'docker run --user $(id -u):$(id -g) --env-file .env -v flask-instance:/app/instance -p 8000:8000 kettlewright'
+7. See if Kettlewright is running by navigation to http://127.0.0.1:8000 in a browser window. Ctrl+C in terminal to exit. 
+8. Get the container id with: 
+   'docker ps -a' 
+   Then, run the application with: 
+   'docker run [container id]'
 
-Note:
-For MacOS, you will need to add quotes around the commands in steps 4 and 6, and you will not need to run either command as the current user.
+
 
