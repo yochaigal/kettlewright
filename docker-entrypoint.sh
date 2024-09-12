@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Create the user and group if they do not exist, using the provided UID and GID
+# Check if the UID and GID are provided
 if [ -n "$UID" ] && [ -n "$GID" ]; then
     if ! getent group kettlewright >/dev/null; then
         addgroup --gid "$GID" kettlewright
@@ -8,10 +8,10 @@ if [ -n "$UID" ] && [ -n "$GID" ]; then
     if ! id -u kettlewright >/dev/null 2>&1; then
         adduser --disabled-password --gecos '' --uid "$UID" --gid "$GID" kettlewright
     fi
-
-    # Set ownership of the /app directory
-    chown -R kettlewright:kettlewright /app
 fi
 
-# Execute the original command
+# Change ownership of all files in /app to the current user
+chown -R kettlewright:kettlewright /app
+
+# Execute the provided command
 exec "$@"
