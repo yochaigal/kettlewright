@@ -15,28 +15,25 @@ ARG GID=1000
 RUN groupadd --gid $GID kettlewright && \
     useradd --uid $UID --gid $GID --create-home --shell /bin/bash kettlewright
 
-# Install the Python dependencies as root
+# Copy the requirements file and change ownership
 COPY requirements.txt /app/
+RUN chown kettlewright:kettlewright /app/requirements.txt
+
+# Install the Python dependencies
 RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# Copy the entire application code and set ownership
+COPY . /app/
+RUN chown -R kettlewright:kettlewright /app
 
 # Set the correct file permissions
 RUN chmod -R u+rw /app
 
-# Switch to the non-root user before copying the application code
+# Switch to the non-root user
 USER kettlewright
-
-# Copy the application code and ensure ownership
-COPY --chown=kettlewright:kettlewright . /app/
 
 # Expose the port that the Flask app will run on
 EXPOSE 8000
 
-# Copy entrypoint script and set execute permissions
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-# Set the entrypoint to the script
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-
-# Default command
+# Command to run the Flask application with Gunicorn and WebSocket support
 CMD ["gunicorn", "--worker-class", "eventlet", "-w", "2", "-b", "0.0.0.0:8000", "app:application"]
