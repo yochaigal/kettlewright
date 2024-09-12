@@ -48,7 +48,11 @@ To see the logs, run:
 
 To ensure that the Docker container starts on boot, add the "--restart" flag:
 
-   docker update --restart always [container]
+      docker update --restart always [container]
+
+To remove old containers:
+
+      docker rm [container] 
 
 ## Updating Kettlewright
 
@@ -67,4 +71,3 @@ Pull the latest image:
 Start a new container using the latest image:
 
     docker run --user $(id -u):$(id -g) --env-file .env -v $(pwd)/instance:/app/instance -p 8000:8000 yochaigal/kettlewright
-  
