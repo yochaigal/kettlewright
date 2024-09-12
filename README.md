@@ -59,3 +59,26 @@ Pull the latest image:
 Start a new container using the latest image:
 
     docker run --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
+
+## Running the app without Docker
+
+1. Pull the repository.
+
+2. Copy .env.template to .env and insert the appropriate values.
+
+3. Create the python environment:
+
+      pipenv shell
+
+4. Install packages:
+
+      pipenv sync
+
+5. Initialize database:
+
+      flask db upgrade
+      exit
+
+6. Run the app:
+
+      pipenv run dotenv run -- gunicorn -k eventlet -w 2 -b 0.0.0.0:8000 'app:application'

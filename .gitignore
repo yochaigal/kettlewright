@@ -7,3 +7,8 @@ __pycache__/
 *.log
 *.sqlite
 *.db
+Pipfile.lock
+app/static/.webassets-cache/
+event_data.json
+background_data.json
+app/static/dist/
