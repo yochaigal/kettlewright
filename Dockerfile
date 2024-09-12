@@ -7,9 +7,9 @@ ENV PYTHONUNBUFFERED=1
 # Set the working directory
 WORKDIR /app
 
-# Set up environment variables for the UID and GID
-ARG UID
-ARG GID
+# Set up environment variables for the UID and GID, with defaults
+ARG UID=1000
+ARG GID=1000
 
 # Create a group and user with the same UID and GID as the host user
 RUN groupadd --gid $GID kettlewright && \
