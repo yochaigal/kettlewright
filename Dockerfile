@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED=1
 # Set the working directory
 WORKDIR /app
 
-# Install the Python dependencies
+# Install dependencies
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
@@ -18,7 +18,7 @@ COPY . /app/
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Set the entrypoint to the script
+# Set the entrypoint for the script
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 # Expose the port that the Flask app will run on
