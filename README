@@ -1,4 +1,3 @@
-
 # Kettlewright Setup
 
 1. Create a directory for environment variables and the SQLite database:
@@ -33,7 +32,7 @@
 
 9. Open http://127.0.0.1:8000 to access Kettlewright. You can stop the application with `Ctrl+C` in the terminal.
 
-## Additional Info
+## Docker Tips
 
 To run the application again, first find the container id (typically the most recent container):
 
