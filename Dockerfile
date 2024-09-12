@@ -8,14 +8,14 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Set up environment variables for the UID and GID
-ARG UID=1000
-ARG GID=1000
+ARG UID
+ARG GID
 
-# Create a user with the same UID and GID as the host user
+# Create a group and user with the same UID and GID as the host user
 RUN addgroup --gid $GID kettlewright && \
     adduser --disabled-password --gecos '' --uid $UID --gid $GID kettlewright
 
-# Copy requirements file and change ownership
+# Copy the requirements file and change ownership
 COPY requirements.txt /app/
 RUN chown kettlewright:kettlewright /app/requirements.txt
 
