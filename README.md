@@ -36,34 +36,34 @@
 
 To run the application again, first find the container id (typically the most recent container):
 
-      docker ps -a
+       docker ps -a
 
 Then start the container with:
 
-      docker start [container]
+       docker start [container]
 
 To see the logs, run:
 
-      docker logs -f [container]
+       docker logs -f [container]
 
 To remove old containers:
 
-      docker rm [container] 
+       docker rm [container] 
 
 ## Updating Kettlewright
 
 First, stop the container:
 
-      docker stop [container]
+       docker stop [container]
 
 Then remove it:
 
-      docker rm [container]
+       docker rm [container]
 
 Pull the latest image:
 
-      docker pull yochaigal/kettlewright
+       docker pull yochaigal/kettlewright
 
 Start a new container using the latest image:
 
-    docker run --user 1000:1000 --env-file .env -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
+       docker run --user 1000:1000 --env-file .env -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
