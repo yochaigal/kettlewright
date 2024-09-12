@@ -7,5 +7,6 @@
 7. Access Kettlewright at http://127.0.0.1:8000
 from the src folder
 
-For MacOS, you will need to add quotes around the commands in steps 4 and 6, and you will not need to run the command in step 6 as the current user.
+Note:
+For MacOS, you will need to add quotes around the commands in steps 4 and 6, and you will not need to run either command as the current user.
 

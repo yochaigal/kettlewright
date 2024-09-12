@@ -19,6 +19,8 @@ werkzeug = "==2.3.7"
 bleach = "*"
 python-slugify = "*"
 flask-socketio = "*"
+flask-sqlalchemy = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 

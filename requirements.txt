@@ -14,7 +14,7 @@ email-validator
 Werkzeug
 click
 bleach
-slugify
+python-slugify
 libsass
 Flask-Assets
 WTForms
