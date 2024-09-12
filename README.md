@@ -39,22 +39,32 @@ To run the application again, first find the container id (typically the most re
       docker ps -a
 
 Then start the container with:
+
       docker start [container]
 
 To see the logs, run:
+
       docker logs -f [container]
+
+To ensure that the Docker container starts on boot, add the "--restart" flag:
+
+   docker update --restart always [container]
 
 ## Updating Kettlewright
 
 First, stop the container:
+
       docker stop [container]
 
 Then remove it:
+
       docker rm [container]
 
 Pull the latest image:
+
       docker pull yochaigal/kettlewright
 
 Start a new container using the latest image:
+
     docker run --user $(id -u):$(id -g) --env-file .env -v $(pwd)/instance:/app/instance -p 8000:8000 yochaigal/kettlewright
   
