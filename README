@@ -1,3 +1,4 @@
+### Instructions (Linux)
 1. Copy '.env.template' to '.env'
 2. Fill out '.env' variables
 3. Build the Docker image with:
@@ -14,6 +15,3 @@
    'docker ps -a' 
    Then, run the application with: 
    'docker run [container id]'
-
-
-
