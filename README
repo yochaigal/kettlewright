@@ -1,37 +1,61 @@
-### Instructions (Linux)
---- all commands are run from within the git folder ---
-1. Copy '.env.template' to '.env'
-2. Fill out '.env' variables
-3. Build the Docker image with:
-   'docker build -t kettlewright .'
-4. Run the following command to start a container for database migration:
-   'docker run -it --user $(id -u):$(id -g) --env-file .env -v flask-instance:/app/instance kettlewright /bin/sh'
-5. Inside the container, run the database migration:
-   'flask db upgrade'
-   Then, type 'exit' to leave the container.
-6. Launch the application with:
-   'docker run --user $(id -u):$(id -g) --env-file .env -v flask-instance:/app/instance -p 8000:8000 kettlewright'
-7. See if Kettlewright is running by navigation to http://127.0.0.1:8000 in a browser window. Ctrl+C in terminal to exit. 
-8. Get the container id with: 
-   'docker ps -a' 
-   Then, run the application with: 
-   'docker run [container id]'
 
-### Instructions (MacOS)
---- all commands are run from within the git folder ---
-1. Copy '.env.template' to '.env'
-2. Fill out '.env' variables
-3. Build the Docker image with:
-   'docker build -t kettlewright .'
-4. Run the following command to start a container for database migration:
-   'docker run -it --env-file .env -v "flask-instance:/app/instance" kettlewright /bin/sh'
-5. Inside the container, run the database migration:
-   'flask db upgrade'
-   Then, type 'exit' to leave the container.
-6. Launch the application with:
-   'docker run --env-file .env -v "flask-instance:/app/instance" -p 8000:8000 kettlewright'
-7. See if Kettlewright is running by navigation to http://127.0.0.1:8000 in a browser window. Ctrl+C in terminal to exit. 
-8. Get the container id with: 
-   'docker ps -a' 
-   Then, run the application with: 
-   'docker run [container id]'
+# Kettlewright Setup
+
+1. Create a directory for environment variables and the SQLite database:
+   
+       mkdir -p ~/docker/kettlewright/instance
+
+2. Copy `.env.template` to the directory and rename it to `.env`:
+   
+       cp [repo_directory]/.env.template ~/docker/kettlewright/.env
+
+3. Edit `.env` with appropriate values.
+
+4. Pull the Docker image:
+   
+       docker pull yochaigal/kettlewright
+
+5. Run the container with environment file and bind the local `instance` folder:
+   
+       docker run -it --user $(id -u):$(id -g) --env-file .env -v $(pwd)/instance:/app/instance yochaigal/kettlewright /bin/sh
+
+6. Inside the container, run database migrations:
+   
+       flask db upgrade
+
+7. Exit the container:
+   
+       exit
+
+8. Start the Flask application:
+   
+       docker run --user $(id -u):$(id -g) --env-file .env -v $(pwd)/instance:/app/instance -p 8000:8000 yochaigal/kettlewright
+
+9. Open http://127.0.0.1:8000 to access Kettlewright. You can stop the application with `Ctrl+C` in the terminal.
+
+## Additional Info
+
+To run the application again, first find the container id (typically the most recent container):
+
+      docker ps -a
+
+Then start the container with:
+      docker start [container]
+
+To see the logs, run:
+      docker logs -f [container]
+
+## Updating Kettlewright
+
+First, stop the container:
+      docker stop [container]
+
+Then remove it:
+      docker rm [container]
+
+Pull the latest image:
+      docker pull yochaigal/kettlewright
+
+Start a new container using the latest image:
+    docker run --user $(id -u):$(id -g) --env-file .env -v $(pwd)/instance:/app/instance -p 8000:8000 yochaigal/kettlewright
+  
