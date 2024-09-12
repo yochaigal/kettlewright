@@ -16,7 +16,7 @@
 
 5. Run the container with environment file and bind the local `instance` folder:
    
-       docker run -it --user $(id -u):$(id -g) --env-file .env -v $(pwd)/instance:/app/instance yochaigal/kettlewright /bin/sh
+       docker run -it --user 1000:1000 --env-file .env -v $(pwd)/instance:/app/instance yochaigal/kettlewright /bin/sh
 
 6. Inside the container, run database migrations:
    
@@ -28,7 +28,7 @@
 
 8. Start the Flask application:
    
-       docker run --user $(id -u):$(id -g) --env-file .env -v $(pwd)/instance:/app/instance -p 8000:8000 yochaigal/kettlewright
+       docker run --user 1000:1000 --env-file .env -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
 9. Open http://127.0.0.1:8000 to access Kettlewright. You can stop the application with `Ctrl+C` in the terminal.
 
@@ -45,10 +45,6 @@ Then start the container with:
 To see the logs, run:
 
       docker logs -f [container]
-
-To ensure that the Docker container starts on boot, add the "--restart" flag:
-
-      docker update --restart always [container]
 
 To remove old containers:
 
@@ -70,4 +66,4 @@ Pull the latest image:
 
 Start a new container using the latest image:
 
-    docker run --user $(id -u):$(id -g) --env-file .env -v $(pwd)/instance:/app/instance -p 8000:8000 yochaigal/kettlewright
+    docker run --user 1000:1000 --env-file .env -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
