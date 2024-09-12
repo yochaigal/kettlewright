@@ -11,7 +11,7 @@ WORKDIR /app
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# Copy the entire application code
+# Copy the application
 COPY . /app/
 
 # Copy the entrypoint script and make it executable
