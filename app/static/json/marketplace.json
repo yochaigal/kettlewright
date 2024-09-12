@@ -1,0 +1,294 @@
+{
+  "Gear": {
+    "Air bladder": {
+      "tags": [],
+      "cost": 5
+    },
+    "Animal feed": {
+      "tags": ["uses", "bulky"],
+      "uses": 3,
+      "cost": 5
+    },
+    "Antitoxin": {
+      "tags": [],
+      "cost": 20
+    },
+    "Bandages": {
+      "tags": ["uses"],
+      "uses": 3,
+      "cost": 30
+    },
+    "Bathing Goods (Soap, Perfume, etc.)": {
+      "tags": [],
+      "cost": 5
+    },
+    "Book": {
+      "tags": [],
+      "cost": 50
+    },
+    "Caltrops": {
+      "tags": [],
+      "cost": 10
+    },
+    "Card deck": {
+      "tags": [],
+      "cost": 5
+    },
+    "Chain (10ft)": {
+      "tags": [],
+      "cost": 10
+    },
+    "Chalk": {
+      "tags": ["petty"],
+      "cost": 1
+    },
+    "Chest": {
+      "tags": [],
+      "cost": 25
+    },
+    "Chisel": {
+      "tags": [],
+      "cost": 5
+    },
+    "Common Agents (Glue, Grease, etc.)": {
+      "tags": [],
+      "cost": 10
+    },
+    "Common Tools (Hammer, Shovel, etc.)": {
+      "tags": [],
+      "cost": 10
+    },
+    "Compass": {
+      "tags": [],
+      "cost": 75
+    },
+    "Complex Instruments (Bagpipes, Fiddle, etc.)": {
+      "tags": [],
+      "cost": 50
+    },
+    "Containers (Sack, Waterskin, etc.)": {
+      "tags": [],
+      "cost": 10
+    },
+    "Cooking Gear (Pots, Utensils, etc.)": {
+      "tags": [],
+      "cost": 10
+    },
+    "Costume Gear (Face Paint, Disguise)": {
+      "tags": [],
+      "cost": 15
+    },
+    "Dowsing rod": {
+      "tags": [],
+      "cost": 15
+    },
+    "Expeditionary Gear (Climbing Spikes, Pulley), etc.": {
+      "tags": [],
+      "cost": 10
+    },
+    "Fire oil": {
+      "tags": [],
+      "cost": 10
+    },
+    "Fishing rod": {
+      "tags": [],
+      "cost": 10
+    },
+    "Games (Cards, Dice, etc.)": {
+      "tags": [],
+      "cost": 10
+    },
+    "Gloves": {
+      "tags": ["petty"],
+      "cost": 20
+    },
+    "Grappling hook": {
+      "tags": [],
+      "cost": 25
+    },
+    "Lantern": {
+      "tags": [],
+      "cost": 10
+    },
+    "Mirror": {
+      "tags": [],
+      "cost": 5
+    },
+    "Net": {
+      "tags": [],
+      "cost": 10
+    },
+    "Oil Can": {
+      "tags": ["uses"],
+      "uses": 6,
+      "cost": 10
+    },
+    "Outdoor Comfort (Blanket, Hammock, etc.)": {
+      "tags": [],
+      "cost": 10
+    },
+    "Parchment": {
+      "tags": ["uses"],
+      "uses": 3,
+      "cost": 10
+    },
+    "Pole (10ft)": {
+      "tags": [],
+      "cost": 5
+    },
+    "Rations": {
+      "tags": ["uses"],
+      "uses": 3,
+      "cost": 10
+    },
+    "Repellent (Wolfsbane, Mugwort, etc.)": {
+      "tags": [],
+      "cost": 10
+    },
+    "Rope (25ft)": {
+      "tags": [],
+      "cost": 5
+    },
+    "Sedative": {
+      "tags": [],
+      "cost": 30
+    },
+    "Sewing kit": {
+      "tags": [],
+      "cost": 20
+    },
+    "Simple Instruments (Pipes, Lute, etc.)": {
+      "tags": [],
+      "cost": 10
+    },
+    "Smoking pipe": {
+      "tags": ["petty"],
+      "cost": 15
+    },
+    "Specialized Tools (Ink, etc.)": {
+      "tags": [],
+      "cost": 20
+    },
+    "Spiked boots": {
+      "tags": [],
+      "cost": 15
+    },
+    "Spyglass": {
+      "tags": [],
+      "cost": 40
+    },
+    "Tent (fits 2, bulky)": {
+      "tags": ["bulky"],
+      "cost": 20
+    },
+    "Thieving Tools (Lockpick, Metal File, etc.)": {
+      "tags": [],
+      "cost": 25
+    },
+    "Torch": {
+      "tags": ["uses"],
+      "uses": 3,
+      "cost": 5
+    },
+    "Trap": {
+      "tags": ["d6 STR"],
+      "cost": 35
+    },
+    "Whistle": {
+      "tags": ["petty"],
+      "cost": 15
+    },
+    "Wilderness Clothes (Poncho, Cloak, etc.)": {
+      "tags": ["petty"],
+      "cost": 15
+    }
+  },
+  "Armor": {
+    "Brigandine": {
+      "tags": ["1 Armor", "bulky"],
+      "cost": 20
+    },
+    "Chainmail": {
+      "tags": ["2 Armor", "bulky"],
+      "cost": 40
+    },
+    "Gambeson": {
+      "tags": ["+1 Armor", "bonus defense"],
+      "cost": 15
+    },
+    "Helmet": {
+      "tags": ["+1 Armor", "bonus defense"],
+      "cost": 10
+    },
+    "Plate": {
+      "tags": ["3 Armor", "bulky"],
+      "cost": 60
+    },
+    "Shield": {
+      "tags": ["+1 Armor", "bonus defense"],
+      "cost": 10
+    }
+  },
+  "Weapons": {
+    "Axe": {
+      "tags": ["d8"],
+      "cost": 10
+    },
+    "Bow": {
+      "tags": ["d6", "bulky"],
+      "cost": 20
+    },
+    "Crossbow": {
+      "tags": ["d8", "bulky"],
+      "cost": 30
+    },
+    "Cudgel": {
+      "tags": ["d6"],
+      "cost": 5
+    },
+    "Dagger": {
+      "tags": ["d6"],
+      "cost": 5
+    },
+    "Flail": {
+      "tags": ["d8"],
+      "cost": 10
+    },
+    "Halberd": {
+      "tags": ["d10", "bulky"],
+      "cost": 20
+    },
+    "Long Sword": {
+      "tags": ["d10", "bulky"],
+      "cost": 20
+    },
+    "Mace": {
+      "tags": ["d8"],
+      "cost": 10
+    },
+    "Sickle": {
+      "tags": ["d6"],
+      "cost": 5
+    },
+    "Sling": {
+      "tags": ["d6"],
+      "cost": 5
+    },
+    "Spear": {
+      "tags": ["d8"],
+      "cost": 10
+    },
+    "Staff": {
+      "tags": ["d6"],
+      "cost": 5
+    },
+    "Sword": {
+      "tags": ["d8"],
+      "cost": 10
+    },
+    "War Hammer": {
+      "tags": ["d10", "bulky"],
+      "cost": 20
+    }
+  }
+}

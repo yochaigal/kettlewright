@@ -1,7 +1,7 @@
 1. Copy .env.template to .env 
 2. Fill out .env variables
 3. Build docker image with 'docker build -t kettlewright .'
-4. Run 'docker run -it --env-file .env -v $(pwd)/instance:/app/instance kettlewright /bin/sh'
+4. Run 'docker run -it --user $(id -u):$(id -g) --env-file .env -v $(pwd)/instance:/app/instance kettlewright /bin/sh'
 5. Run 'flask db upgrade' from the shell, then 'exit'
 6. Lunch the application with 'docker run --user $(id -u):$(id -g) -v $(pwd)/instance:/app/instance --env-file .env -p 8000:8000 kettlewright'
 7. Access Kettlewright at http://127.0.0.1:8000
