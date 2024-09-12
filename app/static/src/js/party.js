@@ -1,4 +1,4 @@
-let editMode = false;
+// let editMode = false;
 let characterList = [];
 
 import inventory from "./inventoryData.js";
@@ -20,11 +20,11 @@ function redirectToCharacterPage(element) {
 document.addEventListener("DOMContentLoaded", function () {
   // for every character card show the remove button if in edit mode
 
-  document.querySelectorAll(".character-card").forEach((element) => {
-    if (editMode) {
-      element.querySelector(".character-remove-button").classList.remove("hidden");
-    }
-  });
+  // document.querySelectorAll(".character-card").forEach((element) => {
+  //   if (editMode) {
+  //     element.querySelector(".character-remove-button").classList.remove("hidden");
+  //   }
+  // });
 
   if (document.getElementById("join-code-button")) {
     document.getElementById("join-code-button").addEventListener("click", function () {

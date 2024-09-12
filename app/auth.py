@@ -23,18 +23,21 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data.lower()).first()
         if user is not None and user.confirmed == 0:
-            flash(
-                'Please follow the link in your email to confirm your account.', 'success')
+            flash(Markup('Please confirm your account before logging in. If you did not receive a confirmation link, please click <a href="/resend_confirmation" class="alert-link">here</a> to resend.'), 'error')
         elif user is not None and user.verify_password(form.password.data):
-            login_user(user, form.remember_me.data)
-            # go to the next page if it exists, otherwise go to the profile page
-            next = request.args.get('next')
-            if next is None or not next.startswith('/'):
-                next = url_for('main.characters',
-                               username=current_user.username)
-            return redirect(next)
-        flash(Markup(
-            'Invalid email or password. <a href="/reset" class="alert-link">Forgot Password?</a>'), 'error')
+            if user.confirmed:
+                login_user(user, form.remember_me.data)
+                # go to the next page if it exists, otherwise go to the profile page
+                next = request.args.get('next')
+                if next is None or not next.startswith('/'):
+                    next = url_for('main.characters',
+                                   username=current_user.username)
+                return redirect(next)
+            else:
+                flash(Markup('Please confirm your account before logging in. If you did not receive a confirmation link, please click <a href="/resend_confirmation" class="alert-link">here</a> to resend.'), 'error')
+        else:
+            flash(Markup(
+                'Invalid email or password. <a href="/reset" class="alert-link">Forgot Password?</a>'), 'error')
 
     return render_template('auth/login.html', form=form)
 

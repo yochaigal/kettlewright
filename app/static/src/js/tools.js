@@ -13,9 +13,9 @@ const categories = {
   },
   Weather: data.Weather.Types,
   // Names: data.Names.NameFormulas,
-  "World Building": {
+  Worldbuilding: {
     Dungeon: data.Dungeon,
-    // Forest: data.Forest,
+    Forest: data.Forest,
     Realm: data.Realm,
   },
   Items: {
@@ -58,8 +58,8 @@ rollButton.addEventListener("click", () => {
     case "Realm":
       rollRealm(categories.Realm, subcategory);
       break;
-    case "World Building":
-      rollLocations(categories["World Building"], subcategory);
+    case "Worldbuilding":
+      rollLocations(categories["Worldbuilding"], subcategory);
       break;
     case "Items":
       rollRelics(categories.Items, subcategory);
@@ -81,6 +81,10 @@ const formatObjectToString = (obj) => {
     .join("<br>");
 };
 
+const formatNumberedArrayToString = (arr) => {
+  return arr.map((item, index) => `${index + 1}. ${item}`).join("<br>");
+};
+
 const displayResult = (result) => {
   const resultDisplay = document.getElementById("tools-result-display");
   const height = resultDisplay.scrollHeight;
@@ -97,11 +101,12 @@ const rollBestiary = (data, subcategory) => {
   const bestiary = data[subcategory];
   if (subcategory === "Random Monster") {
     const result = bestiary[roll(bestiary.length)];
-    const textResult = `<b><u>Random Monster</u></b><br><br><b>Name:</b> ${result.Name}<br><b>HP:</b> ${result.HP},${
-      result.Armor ? ` <b>Armor:</b> ${result.Armor},` : ""
-    } <b>STR:</b> ${result.STR}, <b>DEX:</b> ${result.DEX}, <b>WIL:</b> ${result.WIL}<br>${
-      result.Attack ? `<b>Attack:</b> ${result.Attack}<br>` : ""
-    }<b>Traits:</b> ${result.Traits.join("<br>")}`;
+    const formattedTraits = result.Traits.map((trait) => trait.replace(/Critical Damage/g, "<b>Critical Damage</b>"));
+    const textResult = `<b><u>${result.Name}</u></b><br><br>HP: ${result.HP}, ${
+      result.Armor ? `Armor: ${result.Armor},` : ""
+    } STR: ${result.STR}, DEX: ${result.DEX}, WIL: ${result.WIL}${
+      result.Attack ? `, ${result.Attack}<br><br>` : ""
+    }• ${formattedTraits.join("<br>• ")}`;
     displayResult(textResult);
   } else if (subcategory === "Custom Monster") {
     const physique = bestiary.MonsterAppearance.Physique[roll(bestiary.MonsterAppearance.Physique.length)];
@@ -140,34 +145,69 @@ const rollWeather = (data, subcategory) => {
   displayResult(textResult);
 };
 
-const formatNumberedArrayToString = (arr) => {
-  return arr.map((item, index) => `${index + 1}. ${item}`).join("<br>");
-};
-
 const rollRelics = (data, subcategory) => {
   const items = data[subcategory];
   const result = items[roll(items.length)];
-  const textResult = `<b><u>${subcategory.substring(0, subcategory.length - 1)}</u></b><br><br>${formatObjectToString(
-    result
-  )}`;
+  let name = result.name;
+  let weight = "";
+  if (result.tags.includes("petty")) {
+    weight = " (petty)";
+  } else if (result.tags.includes("bulky")) {
+    weight = " (bulky)";
+  }
+
+  let tags = [];
+
+  // Filter and add regular tags
+  const regularTags = result.tags.filter(
+    (tag) => !["bulky", "petty", "uses", "charges", "use", "charge"].includes(tag)
+  );
+  if (regularTags.length > 0) {
+    tags.push(regularTags.join(", "));
+  }
+
+  // Add uses if present
+  if (result.uses) {
+    tags.push(`${result.uses} use${result.uses > 1 ? "s" : ""}`);
+  }
+
+  // Add charges if present
+  if (result.max_charges) {
+    tags.push(`${result.max_charges} charge${result.max_charges > 1 ? "s" : ""}`);
+  }
+
+  // Join all tags with proper comma placement
+  const tagsString = tags.length > 0 ? `, ${tags.join(", ")}` : "";
+
+  // Format description, splitting on "Recharge" and making only "Recharge" bold
+  let descriptionText = "";
+  if (result.description) {
+    const parts = result.description.split(/(Recharge)/);
+    descriptionText = parts
+      .map((part, index) => {
+        if (part === "Recharge") {
+          return `<br>• <b>Recharge</b>`;
+        } else if (index === 0) {
+          return `• ${part}`;
+        } else if (index % 2 === 0) {
+          // Even indexes after 0 are text following "Recharge"
+          return part;
+        }
+        return part; // This line should never be reached, but it's here for completeness
+      })
+      .join("");
+  }
+
+  // Add personality if it exists
+  if (result.personality) {
+    descriptionText += descriptionText ? "<br>" : ""; // Add a line break if there's already a description
+    descriptionText += `• Personality: ${result.personality}`;
+  }
+
+  const textResult = `<b><u>${name}</u></b>${tagsString}<i>${weight}</i><br><br>${descriptionText}`;
 
   displayResult(textResult);
 };
-
-// const convertName = (nameFormula, noun, adjective, type) => {
-//   let name = nameFormula;
-
-//   if (name.includes("[Noun]")) {
-//     name = name.replace("[Noun]", noun);
-//   }
-//   if (name.includes("[Adjective]")) {
-//     name = name.replace("[Adjective]", adjective);
-//   }
-//   if (name.includes("[Group]")) {
-//     name = name.replace("[Group]", type);
-//   }
-//   return name;
-// };
 
 const convertName = (nameFormula, replacements) => {
   let name = nameFormula;
@@ -227,22 +267,22 @@ const rollLocations = (data, subcategory) => {
         const monsterType =
           setting.POIs.Monster.Group[monsterGroup][roll(setting.POIs.Monster.Group[monsterGroup].length)];
         const activity = setting.POIs.Monster.Activity[roll(setting.POIs.Monster.Activity.length)];
-        result.POIs.push(`Monster: ${activity} ${monsterType}`);
+        result.POIs.push(`Monster: ${activity}, ${monsterType}`);
       }
       if (poi === "Lore") {
         const roomType = setting.POIs.Lore.RoomType[roll(setting.POIs.Lore.RoomType.length)];
         const clue = setting.POIs.Lore.Clue[roll(setting.POIs.Lore.Clue.length)];
-        result.POIs.push(`Lore: ${roomType} ${clue}`);
+        result.POIs.push(`Lore: ${roomType}, ${clue}`);
       }
       if (poi === "Special") {
         const special = setting.POIs.Special.Special[roll(setting.POIs.Special.Special.length)];
         const feature = setting.POIs.Special.Feature[roll(setting.POIs.Special.Feature.length)];
-        result.POIs.push(`Special: ${special} ${feature}`);
+        result.POIs.push(`Special: ${special}, ${feature}`);
       }
       if (poi === "Trap") {
         const trap = setting.POIs.Trap.Trap[roll(setting.POIs.Trap.Trap.length)];
         const trigger = setting.POIs.Trap.Trigger[roll(setting.POIs.Trap.Trigger.length)];
-        result.POIs.push(`Trap: ${trap} ${trigger}`);
+        result.POIs.push(`Trap: ${trap}, ${trigger}`);
       }
     }
 
@@ -253,6 +293,73 @@ const rollLocations = (data, subcategory) => {
     )}<br><br><b><u>Rooms:</u></b><br>${formatNumberedArrayToString(result.POIs)}`;
     displayResult(textResult);
   } else if (subcategory === "Forest") {
+    result.Traits = {
+      Traits:
+        setting.Properties.Traits.Description1[roll(setting.Properties.Traits.Description1.length)] +
+        ", " +
+        setting.Properties.Traits.Description2[roll(setting.Properties.Traits.Description2.length)].toLowerCase(),
+    };
+    result.Virtue = {
+      Virtue: setting.Properties.SpiritTraits.Virtue[roll(setting.Properties.SpiritTraits.Virtue.length)],
+    };
+    result.Vice = { Vice: setting.Properties.SpiritTraits.Vice[roll(setting.Properties.SpiritTraits.Vice.length)] };
+    result.Goal = { Goal: setting.Properties.ForestAgenda.Goal[roll(setting.Properties.ForestAgenda.Goal.length)] };
+    result.Obstacle = {
+      Obstacle: setting.Properties.ForestAgenda.Obstacle[roll(setting.Properties.ForestAgenda.Obstacle.length)],
+    };
+
+    const poeMin = setting.ForestPOIs.Repeat.Min;
+    const poeMax = setting.ForestPOIs.Repeat.Max;
+    const poiRepeat = Math.floor(Math.random() * (poeMax - poeMin + 1)) + poeMin;
+    result.POIs = [];
+    for (let i = 0; i < poiRepeat; i++) {
+      const poi = setting.ForestPOIs.ForestDieDropTable[roll(setting.ForestPOIs.ForestDieDropTable.length)];
+      if (poi === "Monster") {
+        const monsterType = setting.ForestPOIs.Monster.Monster[roll(setting.ForestPOIs.Monster.Monster.length)];
+        const activity = setting.ForestPOIs.Monster.Activity[roll(setting.ForestPOIs.Monster.Activity.length)];
+        result.POIs.push(`Monster: ${activity}, ${monsterType}`);
+      }
+      if (poi === "Ruins") {
+        const ruin = setting.ForestPOIs.Ruins.Ruin[roll(setting.ForestPOIs.Ruins.Ruin.length)];
+        const feature = setting.ForestPOIs.Ruins.Feature[roll(setting.ForestPOIs.Ruins.Feature.length)];
+        result.POIs.push(`Ruins: ${ruin}, ${feature}`);
+      }
+      if (poi === "Shelter") {
+        const shelter = setting.ForestPOIs.Shelter.Shelter[roll(setting.ForestPOIs.Shelter.Shelter.length)];
+        const feature = setting.ForestPOIs.Shelter.Feature[roll(setting.ForestPOIs.Shelter.Feature.length)];
+        result.POIs.push(`Shelter: ${shelter}, ${feature}`);
+      }
+      if (poi === "Hazard") {
+        const hazard = setting.ForestPOIs.Hazard.Hazard[roll(setting.ForestPOIs.Hazard.Hazard.length)];
+        const feature = setting.ForestPOIs.Hazard.Feature[roll(setting.ForestPOIs.Hazard.Feature.length)];
+        result.POIs.push(`Hazard: ${hazard}, ${feature}`);
+      }
+    }
+    const name =
+      setting.ForestNames.Adjectives[roll(setting.ForestNames.Adjectives.length)] +
+      " " +
+      setting.ForestNames.Nouns[roll(setting.ForestNames.Nouns.length)];
+
+    const trailsRepeat = poiRepeat;
+    result.trails = [];
+
+    for (let i = 0; i < trailsRepeat; i++) {
+      const path = setting.Trails.Path[roll(setting.Trails.Path.length)];
+      const type = setting.Trails.Type[roll(setting.Trails.Type.length)];
+      const marker = setting.Trails.Marker[roll(setting.Trails.Marker.length)];
+      result.trails.push(`${path}, ${type}, ${marker}`);
+    }
+
+    const textResult = `<b><u>Forest</u></b><br><br>
+    <b>${name}</b><br><br>
+    ${formatObjectToString(result.Traits)}<br>${formatObjectToString(result.Virtue)}<br>${formatObjectToString(
+      result.Vice
+    )}
+    <br>${formatObjectToString(result.Goal)}<br>${formatObjectToString(result.Obstacle)}
+    <br><br><b><u>Points of Interest</u></b><br>${formatNumberedArrayToString(result.POIs)}
+    <br><br><b><u>Trails</u></b><br>${formatNumberedArrayToString(result.trails)}
+    `;
+    displayResult(textResult);
   } else if (subcategory === "Realm") {
     result.Culture = {
       Character: setting.Theme.People.Culture.Character[roll(setting.Theme.People.Culture.Character.length)],
@@ -373,7 +480,6 @@ const rollLocations = (data, subcategory) => {
     const realmAdjective = setting.Names.Adjectives[roll(setting.Names.Adjectives.length)];
     const realmNoun = setting.Names.Nouns[roll(setting.Names.Nouns.length)];
     const realmRulerType = setting.Names.RulerTypes[roll(setting.Names.RulerTypes.length)];
-    console.log("ruler: ", realmRulerType);
     const realmName = convertName(realmNameFormula, [
       { type: "Noun", word: realmNoun },
       { type: "Adjective", word: realmAdjective },
@@ -394,3 +500,11 @@ const rollLocations = (data, subcategory) => {
     displayResult(textResult);
   }
 };
+
+const clearResults = () => {
+  const resultDisplay = document.getElementById("tools-result-display");
+  resultDisplay.innerHTML = "";
+};
+
+const clearButton = document.getElementById("clear-button");
+clearButton.addEventListener("click", clearResults);

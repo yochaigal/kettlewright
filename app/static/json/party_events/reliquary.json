@@ -18,7 +18,7 @@
     },
     {
       "name": "Barbed Epaulets",
-      "tags": ["+1 Armor", "bonus defense"],
+      "tags": ["+1 Armor"],
       "description": "Spiked shoulder pads that poison anyone that touches them (STR save or lose consciousness)."
     },
     {
@@ -45,7 +45,7 @@
     {
       "name": "Dryad's Tear",
       "tags": ["use"],
-      "use": 1,
+      "uses": 1,
       "description": "Shatter this crystal to merge with a tree you can touch. You can perceive the goings-on within whatever forest that tree belongs to."
     },
     {
@@ -77,7 +77,7 @@
     {
       "name": "Gate Chalk",
       "tags": ["use", "petty"],
-      "use": 1,
+      "uses": 1,
       "description": "Draw a doorway on any flat surface to open a one-way passage to the Roots. Good luck."
     },
     {
@@ -103,13 +103,13 @@
     {
       "name": "Homunculus Nail",
       "tags": ["use", "petty"],
-      "use": 1,
+      "uses": 1,
       "description": "Prick a finger with the pointy end and hammer into any small object to form a loyal servant [3 HP, 4 STR, 13 DEX, 5 WIL] completely devoted to you. If not destroyed, it will outlive you."
     },
     {
       "name": "Honest Earworm",
       "tags": ["use"],
-      "use": 1,
+      "uses": 1,
       "description": "A foul-smelling, pinky-sized worm that feeds on earwax by crawling into the ear canal of a sleeping person. The victim then loses the ability to lie for 1d4 hours."
     },
     {
@@ -133,7 +133,7 @@
     {
       "name": "Lover's Covenant",
       "tags": ["use"],
-      "use": 1,
+      "uses": 1,
       "description": "A bottle of red-tinted ink, a broken heart emblazoned on the front. Write up a contract of any length. Any who sign are bound to obey by penalty of death."
     },
     {
@@ -157,26 +157,24 @@
     {
       "name": "Nightstone",
       "tags": ["use"],
-      "use": 1,
+      "uses": 1,
       "description": "Rare moon-shaped stones dredged from underwater caves and jungle dolines. Swallow whole to relieve all fatigue and deprivation as if you had a good night's sleep and a good meal. The stone will eventually pass through your system. It isn't fun."
     },
     {
       "name": "Obliteration Scroll",
       "tags": ["use", "petty"],
-      "use": 1,
+      "uses": 1,
       "description": "A single-page document filled with gibberish. Sign anywhere on the page to remove any knowledge of your existence from this plane of reality. No one will know or remember you, and any references to your name or lineage will vanish. The scroll disappears in a puff of smoke that smells faintly of sulfur."
     },
     {
-
-
       "name": "Parliament's Promise",
-      "tags": ["+1 Armor", "bonus defense"],
+      "tags": ["+1 Armor"],
       "description": "A helmet in the form of an owl's head. Its wearer can twist their head around like an owl and can see in darkness with perfect clarity. While wearing the helm, the wearer loses the ability to speak, uttering only the simplest of cooing noises."
     },
     {
       "name": "Phoenix Ash",
       "tags": ["use"],
-      "use": 1,
+      "uses": 1,
       "description": "Sprinkle over a corpse to resurrect the deceased. They return with full health but no memory of their past life."
     },
     {
@@ -189,7 +187,7 @@
     {
       "name": "Roc Feather",
       "tags": ["use"],
-      "use": 1,
+      "uses": 1,
       "description": "Hold while falling to float safely to the ground from any height."
     },
     {
@@ -221,7 +219,7 @@
     {
       "name": "Stone Eater",
       "tags": ["use"],
-      "use": 1,
+      "uses": 1,
       "description": "A rodent-sized centipede that consumes and digests stone, capable of cutting a small tunnel in under an hour. It can be used more than once, but only if you can catch it (DEX 18)."
     },
     {
@@ -233,12 +231,12 @@
     {
       "name": "Sponge Army",
       "tags": ["use"],
-      "use": 1,
+      "uses": 1,
       "description": "A dozen miniature soldiers made of carved sea sponges. When splashed with water, they grow to full size [8 HP, 6 STR, 13 DEX, 5 WIL, hardened sponge (d6), detachment] and follow the orders of the person they see until they are destroyed or dry out completely (about 10 minutes)."
     },
     {
       "name": "Tupshead Crown",
-      "tags": ["+1 Armor", "bonus defense", "bulky"],
+      "tags": ["+1 Armor", "bulky"],
       "description": "A beautifully rendered ram's head helm wrought from tough alpine oak. The horns can be used as weapons (d6+d6)."
     },
     {
@@ -251,19 +249,19 @@
     {
       "name": "Voice of the Mountain",
       "tags": ["use"],
-      "use": 1,
+      "uses": 1,
       "description": "A rough pebble imbued with the essence of a mountain spirit. Crush to call forth an earthquake or similar natural disaster. Do not expect to be spared."
     },
     {
       "name": "Ward Stone",
       "tags": ["use"],
-      "use": 1,
+      "uses": 1,
       "description": "A flat, unassuming river stone notched with faded symbols. Smash to release a silvery powder in a 20ft radius that pacifies anyone who breathes it."
     },
     {
       "name": "Whispergale",
       "tags": ["use"],
-      "use": 1,
+      "uses": 1,
       "description": "A balloon-shaped plant that captures a spoken message and delivers it to a location within a day's walk."
     },
     {

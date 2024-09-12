@@ -7,48 +7,36 @@ from flask_socketio import SocketIO, emit
 from .assets import compile_static_assets
 import os
 from .parse_json import consolidate_json_files
-from dotenv import load_dotenv
 
 migrate = Migrate()
 mail = Mail()
 socketio = SocketIO()
 
 def create_app():
-    load_dotenv('../env')
+    # create consolidated backgrounds json file
+    consolidate_json_files('app/static/json/backgrounds',
+                           'app/static/json/backgrounds/background_data.json')
 
-    base_dir = os.path.abspath(os.path.dirname(__file__))
-
-    consolidate_json_files(
-        os.path.join(base_dir, 'static/json/backgrounds'),
-        os.path.join(base_dir, 'static/json/backgrounds/background_data.json')
-    )
-
-    consolidate_json_files(
-        os.path.join(base_dir, 'static/json/party_events'),
-        os.path.join(base_dir, 'static/json/party_events/event_data.json')
-    )
+    # create consolidated events json file
+    consolidate_json_files('app/static/json/party_events',
+                           'app/static/json/party_events/event_data.json')
 
     app = Flask(__name__)
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
-    if not app.config['SECRET_KEY']:
-        raise ValueError("No SECRET_KEY set for Flask application")
-
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
-    if not app.config['SQLALCHEMY_DATABASE_URI']:
-        raise ValueError("No SQLALCHEMY_DATABASE_URI set for Flask application")
 
     db.init_app(app)
 
-    # Initialize Flask-Migrate
+    # flask-migrate
     migrate.init_app(app, db)
 
-    # Initialize Flask-Login
+    # flask-login
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
 
-    # Compile static assets
+    # flask-assets, configured in assets.py
     compile_static_assets(app)
 
     # Flask-Mail configurations
@@ -60,10 +48,8 @@ def create_app():
 
     mail.init_app(app)
 
-    # Initialize Flask-SocketIO
     socketio.init_app(app)
 
-    # Load user from the database
     from .models import User
 
     @login_manager.user_loader
@@ -71,20 +57,20 @@ def create_app():
         # since the user_id is the primary key
         return User.query.get(int(user_id))
 
-    # Register blueprints
+    # blueprint for auth routes
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
 
+    # blueprint for non-auth routes
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
-    # Register socket events
     from .socket_events import register_socket_events
     register_socket_events(socketio)
 
     return app
 
-# Create the application instance
+
 application = create_app()
 
 if __name__ == '__main__':

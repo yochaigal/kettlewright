@@ -1,4 +1,4 @@
-let editMode = false;
+// let editMode = false;
 let characterList = [];
 
 import inventory from "./inventoryData.js";
@@ -27,41 +27,33 @@ function removeCharacterFromParty(element, event) {
     console.log(element);
     const removeID = JSON.parse(element.getAttribute("data-character-id"));
     members = JSON.parse(members);
-    console.log("members ", members, typeof members);
-    // Correctly filter out removeID from the members array
     members = members.filter((member) => member !== removeID);
-    console.log("members ", members, typeof members);
-    // console.log("members ", members, typeof members);
-
     document.getElementById("members").value = JSON.stringify(members);
-    // console.log("members ", document.getElementById("members").value);
-
-    // Submit the form with the new members list
     document.getElementById("party-form").submit();
   }
 }
 
-function toggleEditMode() {
-  editMode = true;
-  inventoryUI.setMode("edit");
+// function toggleEditMode() {
+//   editMode = true;
+//   inventoryUI.setMode("edit");
 
-  document.querySelectorAll(".edit-mode").forEach((element) => {
-    element.classList.remove("hidden");
-  });
+//   document.querySelectorAll(".edit-mode").forEach((element) => {
+//     element.classList.remove("hidden");
+//   });
 
-  document.querySelectorAll(".view-mode").forEach((element) => {
-    element.classList.add("hidden");
-  });
-}
+//   document.querySelectorAll(".view-mode").forEach((element) => {
+//     element.classList.add("hidden");
+//   });
+// }
 
 document.addEventListener("DOMContentLoaded", function () {
   // for every character card show the remove button if in edit mode
 
-  document.querySelectorAll(".character-card").forEach((element) => {
-    if (editMode) {
-      element.querySelector(".character-remove-button").classList.remove("hidden");
-    }
-  });
+  // document.querySelectorAll(".character-card").forEach((element) => {
+  //   if (editMode) {
+  //     element.querySelector(".character-remove-button").classList.remove("hidden");
+  //   }
+  // });
 
   if (document.getElementById("join-code-button")) {
     document.getElementById("join-code-button").addEventListener("click", function () {
@@ -100,18 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   document.querySelectorAll(".character-card").forEach((element) => {
-    const owner = element.getAttribute("data-character-owner");
-
-    // const childElements = element.querySelectorAll(".card-image, .card-content");
-    // childElements.forEach((child) => {
-    //   child.addEventListener("click", function () {
-    //     if (owner === username) {
-    //       redirectToCharacterPage(element, true);
-    //     } else {
-    //       redirectToCharacterPage(element);
-    //     }
-    //   });
-    // });
+    // const owner = element.getAttribute("data-character-owner");
 
     element.addEventListener("click", function () {
       redirectToCharacterPage(element);
@@ -180,36 +161,6 @@ document.addEventListener("DOMContentLoaded", function () {
     option.text = characterList[i].name;
     transferSelect.add(option);
   }
-
-  // Handle events
-
-  // let eventsTextContainer = document.getElementById("party-events-text");
-  // console.log("events", events);
-
-  // if (events == "None") {
-  //   events = "";
-  // }
-
-  // eventsTextContainer.innerHTML = events == "" ? "No events yet..." : events;
-
-  // if (isOwner === "True") {
-  //   document.getElementById("party-roll-wilderness-table").addEventListener("click", function () {
-  //     eventsTextContainer.textContent = events == "" ? "No events yet..." : events;
-  //     let roll = Math.floor(Math.random() * wildernessTable.length);
-  //     console.log(roll);
-  //     let result = wildernessTable[roll].description;
-  //     events += result + "<br><br>";
-  //     eventsTextContainer.innerHTML = events;
-  //   });
-
-  //   document.getElementById("party-roll-dungeon-table").addEventListener("click", function () {
-  //     eventsTextContainer.textContent = events == "" ? "No events yet..." : events;
-  //     let roll = Math.floor(Math.random() * dungeonTable.length);
-  //     let result = dungeonTable[roll].description;
-  //     events += result + "<br><br>";
-  //     eventsTextContainer.innerHTML = events;
-  //   });
-  // }
 
   // Handle form submission
   document.getElementById("party-form").addEventListener("submit", function (event) {

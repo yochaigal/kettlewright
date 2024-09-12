@@ -90,5 +90,22 @@ border-radius: 50%;
   height: 400px;
   max-height: 400px;
   overflow-y: auto;
+
 }
 
+#tools-button-container {
+  display: flex; 
+  justify-content: center; 
+  gap: 1em; 
+  width: 180px
+}
+@media (max-width: 600px) {
+
+  .tools-roll-container {
+    flex-wrap: wrap;
+  }
+  // #tools-button-container {
+  //   justify-content: space-between;
+
+  // }
+}

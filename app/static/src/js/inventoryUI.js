@@ -266,7 +266,10 @@ const inventoryUI = {
       if (newUses >= 0) inventory.updateItem(id, "uses", newUses);
     } else if (tag === "charges") {
       const newCharges = charges + increment;
-      if (newCharges >= 0 && newCharges <= max_charges) inventory.updateItem(id, "charges", newCharges);
+      console.log(newCharges, max_charges);
+      if (newCharges >= 0 && newCharges <= max_charges) {
+        inventory.updateItem(id, "charges", newCharges);
+      }
     }
     this.refreshInventory(location);
   },

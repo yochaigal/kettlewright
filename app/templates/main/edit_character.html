@@ -5,8 +5,8 @@
 
   let name = `{{character.name}}`;
   let background = `{{character.background}}`;
-  let custom_name = `{{character.custom_name}}`;
-  let custom_background = `{{character.custom_background}}`;
+  let customName = `{{character.custom_name}}`;
+  let customBackground = `{{character.custom_background}}`;
   let strength = `{{character.strength}}`;
   let strengthMax = `{{character.strength_max}}`;
   let dexterity = `{{character.dexterity}}`;
@@ -21,7 +21,6 @@
   let bonds = `{{character.bonds}}`;
   let omens = `{{character.omens}}`;
   let scars = `{{character.scars}}`;
-  let customName = "{{character.custom_name}}";
   let notes = `{{character.notes}}`;
   let customImage = "{{character.custom_image}}";
   let imageURL = `{{character.image_url}}`;
@@ -41,7 +40,6 @@
   const scarsData = JSON.parse(scarsRawData).Scars;
   const omensRawData = `{{ omens_data | safe }}`;
   const omensData = JSON.parse(omensRawData).Omens;
-  console.log("scarsData", scarsData);
 </script>
 
 <script src="{{url_for('static', filename='src/js/character_edit.js')}}" defer type="module"></script>
@@ -192,15 +190,16 @@
         </div>
       </div>
       <div class="character-description-container character-section" id="character-scars-container">
-        <div class="edit-mode">
-          <span style="display: flex">
-            <h3>Scars</h3>
-            <button class="roll button dice-button" type="button" id="roll-scars-button" style="font-size: 16pt">
+        <span id="character-scars-select-container">
+          <h3>Scars</h3>
+          <!-- <button class="roll button dice-button" type="button" id="roll-scars-button" style="font-size: 16pt">
               <i class="fa-solid fa-dice dice"></i> </button
-          ></span>
+          > -->
+          <select id="scars-select"></select>
+          <button class="button" type="button" id="add-scar-button"><i class="fa-solid fa-plus"></i></button>
+        </span>
 
-          {{ form.scars(class='textarea', id='scars-field', oninput='resizeTextarea(this)') }}
-        </div>
+        {{ form.scars(class='textarea', id='scars-field', oninput='resizeTextarea(this)') }}
       </div>
       <div class="character-description-container character-section" id="character-notes-container">
         <div class="edit-mode">
@@ -232,15 +231,17 @@
       </div>
     </div>
 
-    <button
-      class="button edit-mode is-danger"
-      id="delete-character-button"
-      type="button"
-      style="margin-top: 100px"
-      data-character-id="{{ character.id }}"
-    >
-      DELETE CHARACTER<i class="fa-solid fa-trash icon-in-button"></i>
-    </button>
+    <div style="display: flex; flex-direction: column; margin-top: 100px">
+      <button id="download-json-button" class="button" type="button"> JSON <i class="fa-solid fa-download"></i></button>
+      <button
+        class="button edit-mode is-danger"
+        id="delete-character-button"
+        type="button"
+        data-character-id="{{ character.id }}"
+      >
+        DELETE CHARACTER<i class="fa-solid fa-trash icon-in-button"></i>
+      </button>
+    </div>
 
     <div id="save-button-footer-wrapper" class="sticky-save-button-wrapper edit-mode">
       <button id="save-button-footer-save" class="button is-success"> Save </button>

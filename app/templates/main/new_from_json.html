@@ -1,16 +1,14 @@
 {% extends "base.html" %} {% block content %}
-<script
-  src="{{url_for('static', filename='src/js/new_from_json.js')}}"
-  defer
-  type="module"
-></script>
-<form class="" id="character-form" method="post">
-  {{ form.hidden_tag() }}
-  <div>
-    <h1 class="subtitle">Upload JSON File</h1>
-    <input type="file" id="jsonFile" accept=".json" />
-  </div>
-  <br /><br />
-  {{ form.submit(class='button is-success', id="submit-button") }}
-</form>
+<section class="body-container">
+  <script src="{{url_for('static', filename='src/js/new_from_json.js')}}" defer type="module"></script>
+  <form class="" id="character-form" method="post" style="max-width: 460px">
+    {{ form.hidden_tag() }}
+    <div>
+      <h3 class="">Upload JSON Character File</h3>
+      <input type="file" id="jsonFile" accept=".json" style="display: flex; flex-direction: column" />
+    </div>
+    <br /><br />
+    {{ form.submit(class='button is-success', id="submit-button", style="margin-top: 0;") }}
+  </form>
+</section>
 {% endblock %}

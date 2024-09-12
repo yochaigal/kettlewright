@@ -3,6 +3,19 @@ width: 80%;
 margin-bottom: 2em;
 }
 
+.characters-page-header {
+    display: flex;
+    // flex-direction: column;
+    justify-content: space-between;
+    max-width: 1120px;
+}
+
+// @media (max-width: 400px) {
+//     .characters-page-header {
+//         flex-direction: column;
+//     }
+// }
+
 
 .characters-cards-container, .party-cards-container {
     display: flex;

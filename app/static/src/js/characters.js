@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const ownerUsername = element.dataset.ownerUsername;
 
     const link = `https://kettlewright.cairnrpg.com/users/${ownerUsername}/characters/${urlName}/`;
-    console.log(link);
     navigator.clipboard.writeText(link);
     alert("Link copied to clipboard");
   }

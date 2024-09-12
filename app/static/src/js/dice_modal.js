@@ -33,21 +33,6 @@ const diceModal = {
     this.updateD100Visibility();
   },
 
-  // rollDice(sides) {
-  //   const result = Math.floor(Math.random() * sides) + 1;
-  //   console.log(`Rolled a d${sides} and got a ${result}`);
-  //   this.resultText.textContent = result.toString();
-  //   return `d${sides} (${result})`;
-  // },
-
-  // rollDoubleDice(sides) {
-  //   const roll1 = Math.floor(Math.random() * sides) + 1;
-  //   const roll2 = Math.floor(Math.random() * sides) + 1;
-  //   console.log(`Rolled d${sides}+d${sides} and got ${roll1} and ${roll2}`);
-  //   this.resultText.textContent = `${roll1}, ${roll2}`;
-  //   return `d${sides}+d${sides} (${roll1}, ${roll2})`;
-  // },
-
   updateD100Visibility() {
     const d100Button = document.getElementById("dice-modal-d100-button");
     d100Button.style.display = this.mode === "party" ? "inline-flex" : "none";

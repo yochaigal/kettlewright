@@ -322,6 +322,9 @@ const inventoryModalUI = {
     this.item.uses = +this.itemUsesField.value;
     this.item.charges = +this.itemChargesField.value;
     this.item.max_charges = +this.itemMaxChargesField.value;
+    if (this.item.max_charges < this.item.charges) {
+      this.item.max_charges = this.item.charges;
+    }
     this.item.description = this.itemDescriptionField.value;
     this.item.tags = [];
     this.item.location = +this.itemContainerSelect.value;

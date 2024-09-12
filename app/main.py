@@ -142,66 +142,53 @@ def new_from_json():
     user = current_user.username
     if current_user.is_authenticated:
         if form.validate_on_submit():
-
             # create url_name
             if form.name.data == 'Custom':
                 url_name = create_unique_url_name(form.custom_name.data)
             else:
                 url_name = create_unique_url_name(form.name.data)
+
             # add character to db
-            character.name = sanitize_data(form.name.data)
-            character.background = sanitize_data(form.background.data)
-            character.strength = sanitize_data(form.strength.data or 0)
-            character.strength_max = sanitize_data(
-                form.strength_max.data or 0)
-            character.dexterity = sanitize_data(form.dexterity.data or 0)
-            character.deprived = sanitize_data(form.deprived.data or False)
-            character.dexterity_max = sanitize_data(
-                form.dexterity_max.data or 0)
-            character.willpower = sanitize_data(form.willpower.data or 0)
-            character.willpower_max = sanitize_data(
-                form.willpower_max.data or 0)
-            character.hp = sanitize_data(form.hp.data or 0)
-            character.hp_max = sanitize_data(form.hp_max.data or 0)
-            character.gold = sanitize_data(form.gold.data or 0)
-            character.description = sanitize_data(form.description.data or '')
-            character.notes = sanitize_data(form.notes.data or '')
-            character.bonds = sanitize_data(form.bonds.data or '')
-            character.omens = sanitize_data(form.omens.data or '')
-            character.scars = sanitize_data(form.scars.data or '')
-            character.image_url = sanitize_data(form.image_url.data or '')
-            character.custom_image = sanitize_data(
-                form.custom_image.data or False)
-            character.items = sanitize_json_content(form.items.data or '')
-            character.containers = sanitize_json_content(
-                form.containers.data or '')
-            character.custom_name = sanitize_data(
-                form.custom_name.data)
-            character.custom_background = sanitize_data(
-                form.custom_background.data)
+            character = Character(
+                name=sanitize_data(form.name.data),
+                background=sanitize_data(form.background.data),
+                url_name=url_name,
+                owner_username=current_user.username,
+                owner=current_user.id,
+                strength=sanitize_data(form.strength.data or 0),
+                strength_max=sanitize_data(form.strength_max.data or 0),
+                dexterity=sanitize_data(form.dexterity.data or 0),
+                dexterity_max=sanitize_data(form.dexterity_max.data or 0),
+                willpower=sanitize_data(form.willpower.data or 0),
+                willpower_max=sanitize_data(form.willpower_max.data or 0),
+                hp=sanitize_data(form.hp.data or 0),
+                hp_max=sanitize_data(form.hp_max.data or 0),
+                gold=sanitize_data(form.gold.data or 0),
+                description=sanitize_data(form.description.data or ''),
+                notes=sanitize_data(form.notes.data or ''),
+                bonds=sanitize_data(form.bonds.data or ''),
+                omens=sanitize_data(form.omens.data or ''),
+                scars=sanitize_data(form.scars.data or ''),
+                image_url=sanitize_data(form.image_url.data or ''),
+                custom_image=string_to_bool(
+                    sanitize_data(form.custom_image.data or False)),
+                items=sanitize_json_content(form.items.data or ''),
+                containers=sanitize_json_content(form.containers.data or ''),
+                custom_name=sanitize_data(form.custom_name.data),
+                custom_background=sanitize_data(form.custom_background.data),
+                deprived=string_to_bool(
+                    sanitize_data(form.deprived.data or False)),
+                traits=sanitize_data(form.traits.data or ''),  # New field
+                armor=sanitize_data(form.armor.data or '')  # New field
+            )
 
-            def string_to_bool(s):
-                return s == "True"
-
-            character.custom_image = string_to_bool(character.custom_image)
-            character.deprived = string_to_bool(character.deprived)
-
-            new_character = Character(name=character.name, background=character.background, url_name=url_name,
-                                      owner_username=current_user.username, owner=current_user.id, strength=character.strength,
-                                      strength_max=character.strength_max, dexterity=character.dexterity, dexterity_max=character.dexterity_max,
-                                      willpower=character.willpower, willpower_max=character.willpower_max, hp=character.hp, hp_max=character.hp_max,
-                                      gold=character.gold, description=character.description, notes=character.notes, bonds=character.bonds,
-                                      omens=character.omens, scars=character.scars, image_url=character.image_url,
-                                      items=character.items, containers=character.containers, custom_image=character.custom_image,
-                                      deprived=character.deprived,
-                                      custom_name=character.custom_name, custom_background=character.custom_background)
-            db.session.add(new_character)
+            db.session.add(character)
             db.session.commit()
 
             print('submitted', file=sys.stderr)
             print(form.items.data, file=sys.stderr)
 
-            return redirect(url_for('main.edit_character', username=current_user.username, url_name=url_name))
+            return redirect(url_for('main.character', username=current_user.username, url_name=url_name))
 
         else:
             print('not submitted', file=sys.stderr)
@@ -213,6 +200,14 @@ def new_from_json():
     else:
         return redirect(url_for('main.index'))
     return render_template('main/new_from_json.html', form=form)
+
+
+def string_to_bool(value):
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.lower() in ('true', 't', 'yes', 'y', '1')
+    return bool(value)
 
 
 @main.route('/new_character/', methods=['GET', 'POST'])

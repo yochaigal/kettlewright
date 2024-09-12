@@ -210,3 +210,26 @@ align-items: flex-end;
 .character-deprived-text {
   margin: 0px 1em 0px 0px;
 }
+
+#character-scars-select-container {
+  display: flex;
+  align-items: center;
+}
+
+#scars-select{
+  max-width: 200px;
+  margin: 0px;
+  margin-left: 1em;
+}
+
+@media (max-width: 940px) {
+#scars-select {
+  max-width: 160px;
+}
+}  
+
+#add-scar-button {
+  margin: 0px;
+  font-size: 12pt;
+  border: none;
+}

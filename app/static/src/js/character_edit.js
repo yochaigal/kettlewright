@@ -25,7 +25,6 @@ document.getElementById("portrait-image").addEventListener("click", () => {
 function setGold(value) {
   gold = value;
   document.getElementById("gold-input").value = gold;
-  // document.getElementById("gold-view-text").textContent = gold;
 }
 marketplace.initialize(marketplaceData, "marketplace", gold, (items) => inventory.addItems(items), setGold);
 
@@ -36,7 +35,6 @@ if (deprived == "true") {
   deprived = false;
 }
 
-// const deprivedContainer = document.getElementById("deprived-grid-container");
 const deprivedField = document.getElementById("deprived-field");
 const restButton = document.getElementById("character-rest-button");
 
@@ -90,22 +88,37 @@ document.getElementById("description-field").value = convertBrToNewline(
   document.getElementById("description-field").value
 );
 
-// Roll Scars and Omens
+// Select Scars
+
+const scarsSelect = document.getElementById("scars-select");
+const scarsField = document.getElementById("scars-field");
+const addScarButton = document.getElementById("add-scar-button");
+
+// populate scars select
+for (let i = 0; i < scarsData.length; i++) {
+  const option = document.createElement("option");
+  option.value = i;
+  // selectedScar = scarsData[i].description;
+  option.text = scarsData[i].description.substring(0, 30) + "...";
+  scarsSelect.appendChild(option);
+}
+
+addScarButton.addEventListener("click", function () {
+  const selectedScarIndex = scarsSelect.value;
+  const selectedScar = scarsData[selectedScarIndex].description;
+  if (scarsField.value.trim() === "") {
+    scarsField.value = selectedScar;
+  } else {
+    scarsField.value = scarsField.value + "\n\n" + selectedScar;
+  }
+  resizeTextarea(scarsField);
+});
+
+// Roll Omens
 
 const roll = (sides) => {
   return Math.floor(Math.random() * sides);
 };
-
-document.getElementById("roll-scars-button").addEventListener("click", function () {
-  const scars = document.getElementById("scars-field");
-  const result = scarsData[roll(scarsData.length)].description;
-  if (scars.value.trim() === "") {
-    scars.value = result;
-  } else {
-    scars.value = scars.value + "\n\n" + result;
-  }
-  resizeTextarea(scars);
-});
 
 document.getElementById("roll-omens-button").addEventListener("click", function () {
   const omens = document.getElementById("omens-field");
@@ -132,27 +145,6 @@ function togglePartyEditing() {
 
 togglePartyEditing();
 
-// document.querySelectorAll(".edit-button").forEach((button) => {
-//   button.addEventListener("click", function () {
-//     inventoryUI.setMode("edit");
-//     mode = "edit";
-//     document.getElementById("portrait-image").classList.add("pointer");
-
-//     document.querySelectorAll(".edit-mode").forEach((element) => {
-//       element.classList.remove("hidden");
-//       togglePartyEditing();
-//     });
-//     document.querySelectorAll(".view-mode").forEach((element) => {
-//       element.classList.add("hidden");
-//     });
-//     document.querySelectorAll(".character-attribute-container").forEach((element) => {
-//       // element.classList.remove("attribute-grid-container-view");
-//       element.classList.add("character-attribute-container-edit");
-//     });
-
-//   });
-// });
-
 // Party Link
 const partyLink = document.getElementById("character-party-link");
 
@@ -172,13 +164,6 @@ if (partyName != "None") {
   document.getElementById("character-party-description").classList.add("hidden");
 }
 
-// Copy Public Link
-// document.getElementById("public-page-link").addEventListener("click", function () {
-//   const link = `https://kettlewright.cairnrpg.com/users/${ownerUsername}/characters/${urlName}/`;
-//   navigator.clipboard.writeText(link);
-//   alert("Link copied to clipboard");
-// });
-
 // Cancel Button
 document.getElementById("save-button-footer-cancel").addEventListener("click", function () {
   if (confirm("Cancel and lose all changes?")) {
@@ -187,63 +172,86 @@ document.getElementById("save-button-footer-cancel").addEventListener("click", f
   }
 });
 
-// JSON download
-// document.getElementById("download-json-button").addEventListener("click", function () {
-//   const processValue = (value) => {
-//     // Remove extra quotes if present
-//     if (typeof value === "string" && value.startsWith('"') && value.endsWith('"')) {
-//       value = value.slice(1, -1);
-//     }
-//     // Convert numeric strings to numbers
-//     else if (!isNaN(value) && value.trim() !== "") {
-//       value = Number(value);
-//     }
-//     return value;
-//   };
+// JSON Download
+document.getElementById("download-json-button").addEventListener("click", function () {
+  const processValue = (value) => {
+    // Handle null or undefined
+    if (value == null) {
+      return value;
+    }
 
-//   const data = {
-//     name: processValue(name),
-//     background: processValue(background),
-//     strength: processValue(strength),
-//     strength_max: processValue(strengthMax),
-//     dexterity: processValue(dexterity),
-//     dexterity_max: processValue(dexterityMax),
-//     willpower: processValue(willpower),
-//     willpower_max: processValue(willpowerMax),
-//     hp: processValue(hp),
-//     hp_max: processValue(hpMax),
-//     gold: processValue(gold),
-//     description: processValue(description),
-//     traits: processValue(traits),
-//     bonds: processValue(bonds),
-//     omens: processValue(omens),
-//     scars: processValue(scars),
-//     notes: processValue(notes),
-//     items: inventory.getItems(),
-//     containers: inventory.getContainers(),
-//     custom_image: portraitModal.getCustomImage(),
-//     image_url: portraitModal.getImageURL(),
-//   };
+    // Convert to string if it's not already
+    let strValue = String(value);
 
-//   // Convert it to JSON
-//   const jsonString = JSON.stringify(data, null, 2);
+    // Remove extra quotes if present
+    if (strValue.startsWith('"') && strValue.endsWith('"')) {
+      strValue = strValue.slice(1, -1);
+    }
 
-//   // Create a blob with the JSON data
-//   const blob = new Blob([jsonString], { type: "application/json" });
+    // Convert numeric strings to numbers
+    if (!isNaN(strValue) && strValue.trim() !== "") {
+      return Number(strValue);
+    }
 
-//   // Create a link element
-//   const link = document.createElement("a");
-//   link.href = URL.createObjectURL(blob);
-//   link.download = "data.json";
+    // Convert boolean strings to actual booleans
+    if (strValue.toLowerCase() === "true") {
+      return true;
+    }
+    if (strValue.toLowerCase() === "false") {
+      return false;
+    }
 
-//   // Append the link to the body and trigger the download
-//   document.body.appendChild(link);
-//   link.click();
+    // Return the processed string value
+    return strValue;
+  };
 
-//   // Clean up
-//   document.body.removeChild(link);
-//   URL.revokeObjectURL(link.href);
-// });
+  const data = {
+    name: processValue(name),
+    background: processValue(background),
+    custom_name: processValue(customName),
+    custom_background: processValue(customBackground),
+    strength: processValue(strength),
+    strength_max: processValue(strengthMax),
+    dexterity: processValue(dexterity),
+    dexterity_max: processValue(dexterityMax),
+    willpower: processValue(willpower),
+    willpower_max: processValue(willpowerMax),
+    hp: processValue(hp),
+    hp_max: processValue(hpMax),
+    gold: processValue(gold),
+    description: processValue(description),
+    traits: processValue(traits),
+    bonds: processValue(bonds),
+    omens: processValue(omens),
+    scars: processValue(scars),
+    notes: processValue(notes),
+    items: inventory.getItems(),
+    containers: inventory.getContainers(),
+    custom_image: processValue(portraitModal.getCustomImage()),
+    image_url: processValue(portraitModal.getImageURL()),
+    deprived: processValue(deprived),
+    armor: processValue(armor),
+  };
+
+  // Convert it to JSON
+  const jsonString = JSON.stringify(data, null, 2);
+
+  // Create a blob with the JSON data
+  const blob = new Blob([jsonString], { type: "application/json" });
+
+  // Create a link element
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "character_data.json";
+
+  // Append the link to the body and trigger the download
+  document.body.appendChild(link);
+  link.click();
+
+  // Clean up
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+});
 
 // Delete Button
 

@@ -202,31 +202,47 @@ class CharacterEditForm(FlaskForm):
 
 
 class CharacterJSONForm(FlaskForm):
+    name = HiddenField('Name', validators=[DataRequired(), Length(max=2000)])
+    background = HiddenField('Background', validators=[
+                             DataRequired(), Length(max=2000)])
+    custom_name = HiddenField('Custom Name', validators=[Length(max=2000)])
+    custom_background = HiddenField(
+        'Custom Background', validators=[Length(max=2000)])
 
-    name = HiddenField('HiddenString', validators=[DataRequired()])
-    background = HiddenField('HiddenString', validators=[DataRequired()])
-    custom_name = HiddenField('HiddenString')
-    custom_background = HiddenField('HiddenString')
+    # Integer fields
+    strength = HiddenField('Strength', validators=[
+                           InputRequired(), Length(max=10)])
+    strength_max = HiddenField('Strength Max', validators=[
+                               InputRequired(), Length(max=10)])
+    dexterity = HiddenField('Dexterity', validators=[
+                            InputRequired(), Length(max=10)])
+    dexterity_max = HiddenField('Dexterity Max', validators=[
+                                InputRequired(), Length(max=10)])
+    willpower = HiddenField('Willpower', validators=[
+                            InputRequired(), Length(max=10)])
+    willpower_max = HiddenField('Willpower Max', validators=[
+                                InputRequired(), Length(max=10)])
+    hp = HiddenField('HP', validators=[InputRequired(), Length(max=10)])
+    hp_max = HiddenField('HP Max', validators=[
+                         InputRequired(), Length(max=10)])
+    gold = HiddenField('Gold', validators=[InputRequired(), Length(max=10)])
 
-    strength = HiddenField('HiddenNumber', validators=[InputRequired()])
-    strength_max = HiddenField('HiddenNumber', validators=[InputRequired()])
-    dexterity = HiddenField('HiddenNumber', validators=[InputRequired()])
-    dexterity_max = HiddenField('HiddenNumber', validators=[InputRequired()])
-    willpower = HiddenField('HiddenNumber', validators=[InputRequired()])
-    willpower_max = HiddenField('HiddenNumber', validators=[InputRequired()])
-    hp = HiddenField('HiddenNumber', validators=[InputRequired()])
-    hp_max = HiddenField('HiddenNumber', validators=[InputRequired()])
-    gold = HiddenField('HiddenNumber', validators=[InputRequired()])
-    items = HiddenField('HiddenString')
-    containers = HiddenField('HiddenString')
-    deprived = HiddenField('HiddenBoolean')
-    notes = HiddenField('HiddenString')
-    description = HiddenField('HiddenString')
-    bonds = HiddenField('HiddenString')
-    omens = HiddenField('HiddenString')
-    scars = HiddenField('HiddenString')
-    image_url = HiddenField('HiddenString')
-    custom_image = HiddenField('HiddenBoolean')
+    items = HiddenField('Items', validators=[Length(max=100000)])
+    containers = HiddenField('Containers', validators=[Length(max=100000)])
+
+    # Boolean field - allowing "true" or "false" (5 characters max)
+    deprived = HiddenField('Deprived', validators=[Length(max=5)])
+
+    notes = HiddenField('Notes', validators=[Length(max=2000)])
+    description = HiddenField('Description', validators=[Length(max=2000)])
+    traits = HiddenField('Traits', validators=[Length(max=2000)])
+    bonds = HiddenField('Bonds', validators=[Length(max=2000)])
+    omens = HiddenField('Omens', validators=[Length(max=2000)])
+    scars = HiddenField('Scars', validators=[Length(max=2000)])
+
+    image_url = HiddenField('Image URL', validators=[Length(max=2000)])
+    custom_image = HiddenField('Custom Image', validators=[Length(max=2000)])
+    armor = HiddenField('Armor', validators=[Length(max=2000)])
 
     submit = SubmitField('Save')
 
