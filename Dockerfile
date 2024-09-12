@@ -11,11 +11,11 @@ WORKDIR /app
 ARG UID
 ARG GID
 
-# Create a user with the same UID and GID as the host user
-RUN addgroup --gid $GID kettlewright && \
-    adduser --disabled-password --gecos '' --uid $UID --gid $GID kettlewright
+# Create a group and user with the same UID and GID as the host user
+RUN groupadd --gid $GID kettlewright && \
+    useradd --uid $UID --gid $GID --create-home --shell /bin/bash kettlewright
 
-# Copy requirements file and change ownership
+# Copy the requirements file and change ownership
 COPY requirements.txt /app/
 RUN chown kettlewright:kettlewright /app/requirements.txt
 
