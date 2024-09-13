@@ -17,8 +17,6 @@
        REQUIRE_SIGNUP_CODE=[True_or_False]
        SIGNUP_CODE=[only needed if previous statement is True]
 
-You can also copy `.env.template` from the repo and rename it to `.env`.
-
 3. Pull the Docker image:
    
        docker pull yochaigal/kettlewright
