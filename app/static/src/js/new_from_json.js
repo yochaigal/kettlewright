@@ -27,6 +27,7 @@ document.getElementById("character-form").addEventListener("submit", function (e
   document.getElementById("custom_image").value = data.custom_image;
   document.getElementById("image_url").value = data.image_url;
   document.getElementById("name").value = data.name;
+  document.getElementById("traits").value = data.traits;
   document.getElementById("background").value = data.background;
   document.getElementById("items").value = JSON.stringify(data.items);
   document.getElementById("containers").value = JSON.stringify(data.containers);
