@@ -1,30 +1,15 @@
-#!/bin/bash
+#!/bin/sh
 
-# Check if the UID and GID are provided
-if [ -n "$UID" ] && [ -n "$GID" ]; then
-    # Check if the user with UID already exists
-    if ! id -u kettlewright >/dev/null 2>&1; then
-        # Create group if it does not exist
-        if ! getent group kettlewright >/dev/null; then
-            addgroup --gid "$GID" kettlewright
-        fi
+# Set default values for UID and GID
+USER_ID=${LOCAL_USER_ID:-9001}
+GROUP_ID=${LOCAL_GROUP_ID:-9001}
 
-        # Create user if it does not exist
-        adduser --disabled-password --gecos '' --uid "$UID" --gid "$GID" kettlewright
+# Create a user and group with the same UID/GID as the host user
+addgroup --gid $GROUP_ID appgroup
+adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID appuser
 
-        # Change ownership of all files in /app to the created user and group
-        chown -R "$UID":"$GID" /app
-    else
-        echo "User with UID $UID already exists, skipping user and group creation"
-    fi
-else
-    echo "UID and GID must be provided"
-    exit 1
-fi
+# Change ownership of all files in /app to appuser:appgroup
+chown -R appuser:appgroup /app
 
-# Run database migrations
-echo "Running database migrations..."
-flask db upgrade
-
-# Execute the provided command (e.g., starting the Flask application with Gunicorn)
-exec "$@"
+# Run the application as the new user
+exec su -c "$@" appuser

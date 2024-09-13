@@ -14,6 +14,9 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Copy the application
 COPY . /app/
 
+# Change ownership of all files to the appuser/appgroup (with UID/GID passed in docker-entrypoint.sh)
+RUN chown -R ${LOCAL_USER_ID:-9001}:${LOCAL_GROUP_ID:-9001} /app
+
 # Copy the entrypoint script and make it executable
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
