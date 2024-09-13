@@ -4,25 +4,38 @@
    
        mkdir -p ~/docker/kettlewright/instance
 
-2. Copy `.env.template` to the directory and rename it to `.env`:
-   
-       cp [repo_directory]/.env.template ~/docker/kettlewright/.env
+2. Create a file called `.env` and populate it with the following:
 
-3. Edit `.env` with appropriate values.
+```
+BASE_URL=http://127.0.0.1
+SECRET_KEY=[unique database password]
+SQLALCHEMY_DATABASE_URI=sqlite:///db.sqlite
+MAIL_SERVER=[enter mail server details]
+MAIL_PORT=[Probably 587]
+MAIL_USE_TLS=[Probably 1]
+MAIL_USERNAME=[enter email address]
+MAIL_PASSWORD=[enter email password]
+REQUIRE_SIGNUP_CODE=[True_or_False]
+SIGNUP_CODE=[only needed if previous statement is True]
+```
 
-4. Pull the Docker image:
+You can also copy `.env.template` from the repo and rename it to `.env`.
+
+1. Edit `.env` with appropriate values.
+
+2. Pull the Docker image:
    
        docker pull yochaigal/kettlewright
 
-5. Create the database:
+3. Create the database:
    
        docker run -it --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance yochaigal/kettlewright /bin/sh -c "flask db upgrade"
 
-6. Start Kettlewright:
+4. Start Kettlewright:
    
        docker run --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
-7. Open http://127.0.0.1:8000 to access Kettlewright. You can stop the application with `Ctrl+C` in the terminal.
+5. Open http://127.0.0.1:8000 to access Kettlewright. You can stop the application with `Ctrl+C` in the terminal.
 
 ## After Kettlewright Has Been Installed
 
