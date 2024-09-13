@@ -4,7 +4,7 @@
 
        mkdir -p ~/docker/kettlewright/instance
 
-2. Create a file called `.env` and populate it with the following:
+2. Create a file in ~/docker/kettlewright/ called `.env` and populate it with the following:
 
        BASE_URL=http://127.0.0.1
        SECRET_KEY=[unique string]
@@ -23,7 +23,7 @@
 
 4. Start Kettlewright
 
-       docker run -d --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
+       docker run -d --env-file ~/docker/kettlewright/.env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
 5. Open [http://127.0.0.1:8000](http://127.0.0.1:8000) to access Kettlewright.
 
@@ -61,7 +61,7 @@ To remove old containers:
 
 4. Start a new container using the latest image:
 
-       docker run --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
+       docker run -d --env-file ~/docker/kettlewright/.env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
 ## Automated Updates
 
