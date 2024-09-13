@@ -58,7 +58,7 @@ Pull the latest image:
 
 Start a new container using the latest image:
 
-    docker run --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
+       docker run --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
 ## Running the app without Docker
 
@@ -68,17 +68,17 @@ Start a new container using the latest image:
 
 3. Create the python environment:
 
-      pipenv shell
+       pipenv shell
 
 4. Install packages:
 
-      pipenv sync
+       pipenv sync
 
 5. Initialize database:
 
-      flask db upgrade
-      exit
+       flask db upgrade
+       exit
 
 6. Run the app:
 
-      pipenv run dotenv run -- gunicorn -k eventlet -w 2 -b 0.0.0.0:8000 'app:application'
+       pipenv run dotenv run -- gunicorn -k eventlet -w 2 -b 0.0.0.0:8000 'app:application'
