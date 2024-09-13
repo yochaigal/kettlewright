@@ -11,21 +11,30 @@ WORKDIR /app
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# Copy the application
+# Copy the rest of the application code
 COPY . /app/
-
-# Change ownership of all files to the appuser/appgroup (with UID/GID passed in docker-entrypoint.sh)
-RUN chown -R ${LOCAL_USER_ID:-9001}:${LOCAL_GROUP_ID:-9001} /app
 
 # Copy the entrypoint script and make it executable
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Set the entrypoint for the script
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+# Add the ARG instructions to allow UID and GID to be passed during build
+ARG UID=1000
+ARG GID=1000
+
+# Create a group and user inside the container with the same UID and GID
+RUN groupadd -g $GID kettlewright && \
+    useradd -u $UID -g $GID -m kettlewright && \
+    chown -R kettlewright:kettlewright /app
+
+# Ensure the default user inside the container is kettlewright
+USER kettlewright
 
 # Expose the port that the Flask app will run on
 EXPOSE 8000
+
+# Set the entrypoint to use your entrypoint script
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 # Command to run the Flask application with Gunicorn and WebSocket support
 CMD ["gunicorn", "--worker-class", "eventlet", "-w", "2", "-b", "0.0.0.0:8000", "app:application"]

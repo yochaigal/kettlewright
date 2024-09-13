@@ -1,15 +1,33 @@
-#!/bin/sh
+#!/bin/bash
 
-# Set default values for UID and GID
-USER_ID=${LOCAL_USER_ID:-9001}
-GROUP_ID=${LOCAL_GROUP_ID:-9001}
+# Check if the UID and GID are provided (these should be passed in when running the container)
+if [ -n "$UID" ] && [ -n "$GID" ]; then
+    # Check if the user with UID already exists
+    if ! id -u kettlewright >/dev/null 2>&1; then
+        # Create group if it does not exist
+        if ! getent group kettlewright >/dev/null; then
+            addgroup --gid "$GID" kettlewright
+        fi
 
-# Create a user and group with the same UID/GID as the host user
-addgroup --gid $GROUP_ID appgroup
-adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID appuser
+        # Create user if it does not exist
+        adduser --disabled-password --gecos '' --uid "$UID" --gid "$GID" kettlewright
+    else
+        echo "User with UID $UID already exists, skipping user and group creation"
+    fi
 
-# Change ownership of all files in /app to appuser:appgroup
-chown -R appuser:appgroup /app
+    # Change ownership of all files in /app to the created user and group
+    chown -R "$UID":"$GID" /app
+else
+    echo "UID and GID must be provided"
+    exit 1
+fi
 
-# Run the application as the new user
-exec su -c "$@" appuser
+# Ensure the instance folder has the correct ownership
+chown -R "$UID":"$GID" /app/instance
+
+# Run database migrations
+echo "Running database migrations..."
+flask db upgrade
+
+# Execute the provided command (e.g., starting the Flask application with Gunicorn)
+exec "$@"
