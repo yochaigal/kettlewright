@@ -110,3 +110,4 @@ def downgrade():
     op.drop_table('characters')
     op.drop_table('users')
     # ### end Alembic commands ###
+
