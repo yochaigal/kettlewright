@@ -2,7 +2,7 @@
 
 1. Create a directory for environment variables and the SQLite database:
 
-       mkdir -p ~/docker/kettlewright/
+       mkdir -p ~/docker/kettlewright/instance
 
 2. Create a file in ~/docker/kettlewright/ called `.env` and populate it with the following:
 
