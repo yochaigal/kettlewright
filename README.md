@@ -1,7 +1,7 @@
 # Kettlewright Setup
 
 1. Create a directory for environment variables and the SQLite database:
-   
+
        mkdir -p ~/docker/kettlewright/instance
 
 2. Create a file called `.env` and populate it with the following:
@@ -18,28 +18,24 @@
        SIGNUP_CODE=[only needed if previous statement is True]
 
 3. Pull the Docker image:
-   
+
        docker pull yochaigal/kettlewright
 
-4. Create the database:
-   
-       docker run -it --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance yochaigal/kettlewright /bin/sh -c "flask db upgrade"
+4. Start Kettlewright
 
-5. Start Kettlewright:
-   
-       docker run --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
+       docker run -d --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
-6. Open http://127.0.0.1:8000 to access Kettlewright. You can stop the application with `Ctrl+C` in the terminal.
+5. Open [http://127.0.0.1:8000](http://127.0.0.1:8000) to access Kettlewright.
 
 ## After Kettlewright Has Been Installed
 
-To run Kettlewright again, first find the container id (typically the most recent container):
+To manage the Kettlewright image, first find the container id (typically the most recent container):
 
        docker ps -a
 
-Then start the container with:
+Then start or stop the container with:
 
-       docker start [container]
+       docker start/stop [container]
 
 To see the logs, run:
 
@@ -47,7 +43,7 @@ To see the logs, run:
 
 To remove old containers:
 
-       docker rm [container] 
+       docker rm [container]
 
 ## Updating Kettlewright
 
@@ -67,23 +63,23 @@ To remove old containers:
 
        docker run --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
-### Automated Updates
+## Automated Updates
 
-1. To update the docker image automatically, install Watchtower:
+1. To update the Docker image automatically, install Watchtower:
 
-       git pull containerr/watchtower
+       git pull containerrr/watchtower
 
 2. Then, run the following command:
 
        docker run -d --name watchtower --restart always -v /var/run/docker.sock:/var/run/docker.sock -e TZ=America/New_York containrrr/watchtower --cleanup --schedule "*/5 * * * *"
 
-This command will run Watchtower every 5 minutes as well as automatically at boot. It will update all available docker images unless explicitly stated, as well as cleanup old images. 
+This command will run Watchtower every 5 minutes and automatically at boot. It will update all available Docker images unless explicitly stated, as well as clean up old images.
 
 ## Running the app without Docker
 
-1. Pull the repository.
+1. Clone the repository.
 
-2. Copy .env.template to .env and insert the appropriate values.
+2. Copy `.env.template` to `.env` and insert the appropriate values.
 
 3. Create the python environment:
 
