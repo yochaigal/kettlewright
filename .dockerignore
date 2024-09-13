@@ -21,9 +21,9 @@ node_modules/
 npm-debug.log
 yarn-error.log
 .env
-instance/
 Pipfile.lock
 app/static/.webassets-cache/
 event_data.json
 background_data.json
 app/static/dist/
+*.sqlite
