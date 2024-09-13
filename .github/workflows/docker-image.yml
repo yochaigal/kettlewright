@@ -1,11 +1,14 @@
-name: Build and Push Docker Image
+name: Build Docker Image
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - '**/*'
+    paths-ignore:
+      - '.gitignore'
+      - '.env.template'
+  pull_request:
+    paths-ignore:
+      - '.gitignore'
+      - '.env.template'
 
 jobs:
   build:
