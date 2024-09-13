@@ -7,7 +7,7 @@
 2. Create a file called `.env` and populate it with the following:
 
        BASE_URL=http://127.0.0.1
-       SECRET_KEY=[unique database password]
+       SECRET_KEY=[unique string]
        SQLALCHEMY_DATABASE_URI=sqlite:///db.sqlite
        MAIL_SERVER=[enter mail server details]
        MAIL_PORT=[Probably 587]
@@ -72,7 +72,7 @@ To remove old containers:
 2. Then, run the following command:
 
        docker run -d --name watchtower --restart always -v /var/run/docker.sock:/var/run/docker.sock -e TZ=America/New_York containrrr/watchtower --cleanup --schedule "*/5 * * * *"
-
+       
 This command will run Watchtower every 5 minutes and automatically at boot. It will update all available Docker images unless explicitly stated, as well as clean up old images.
 
 ## Running the app without Docker
