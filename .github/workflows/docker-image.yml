@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '**/*'  # Any file in any directory
+      - '**/*'
 
 jobs:
   build:
@@ -28,9 +28,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build and push Docker image
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v4
       with:
         push: true
         tags: yochaigal/kettlewright:latest
-        cache-from: type=registry,ref=yochaigal/kettlewright:latest
-        cache-to: type=registry,mode=max,ref=yochaigal/kettlewright:latest
