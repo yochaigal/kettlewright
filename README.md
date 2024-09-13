@@ -44,21 +44,33 @@ To remove old containers:
 
 ## Updating Kettlewright
 
-First, stop the container:
+1. First, stop the container:
 
        docker stop [container]
 
-Then remove it:
+2. Then remove it:
 
        docker rm [container]
 
-Pull the latest image:
+3. Pull the latest image:
 
        docker pull yochaigal/kettlewright
 
-Start a new container using the latest image:
+4. Start a new container using the latest image:
 
        docker run --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
+
+### Automated Updates
+
+1. To update the docker image automatically, install Watchtower:
+
+       git pull containerr/watchtower
+
+2. Then, run the following command:
+
+       docker run -d --name watchtower --restart always -v /var/run/docker.sock:/var/run/docker.sock -e TZ=America/New_York containrrr/watchtower --cleanup --schedule "*/5 * * * *"
+
+This command will run Watchtower every 5 minutes as well as automatically at boot. It will update all available docker images unless explicitly stated, as well as cleanup old images. 
 
 ## Running the app without Docker
 
