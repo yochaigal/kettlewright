@@ -22,6 +22,7 @@
        docker pull yochaigal/kettlewright
 
 4. Create the database:
+
        docker run -it --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance yochaigal/kettlewright /bin/sh -c "flask db upgrade"
    
 5. Start Kettlewright
