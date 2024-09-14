@@ -12,3 +12,4 @@ app/static/.webassets-cache/
 event_data.json
 background_data.json
 app/static/dist/
+instance/

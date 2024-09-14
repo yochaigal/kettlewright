@@ -28,3 +28,4 @@ event_data.json
 background_data.json
 app/static/dist/
 *.sqlite
+instance
