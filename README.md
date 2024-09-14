@@ -6,7 +6,7 @@
 
 2. Create a file in ~/docker/kettlewright/ called `.env` and populate it with the following:
 
-       BASE_URL=http://127.0.0.1
+       BASE_URL=http://127.0.0.1:8000
        SECRET_KEY=[unique string]
        SQLALCHEMY_DATABASE_URI=sqlite:///db.sqlite
        MAIL_SERVER=[enter mail server details]
