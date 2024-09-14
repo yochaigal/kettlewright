@@ -21,11 +21,14 @@
 
        docker pull yochaigal/kettlewright
 
-4. Start Kettlewright
+4. Create the database:
+       docker run -it --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance yochaigal/kettlewright /bin/sh -c "flask db upgrade"
+   
+5. Start Kettlewright
 
        docker run -d --env-file ~/docker/kettlewright/.env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
-5. Open [http://127.0.0.1:8000](http://127.0.0.1:8000) to access Kettlewright.
+6. Open [http://127.0.0.1:8000](http://127.0.0.1:8000) to access Kettlewright.
 
 ## After Kettlewright Has Been Installed
 
@@ -59,7 +62,11 @@ To remove old containers:
 
        docker pull yochaigal/kettlewright
 
-4. Start a new container using the latest image:
+4. Update the database:
+       
+       docker run -it --env-file .env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance yochaigal/kettlewright /bin/sh -c "flask db upgrade"
+
+5. Start a new container using the latest image:
 
        docker run -d --env-file ~/docker/kettlewright/.env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
