@@ -23,7 +23,7 @@
 
 4. Start Kettlewright
 
-       ddocker run -d --env-file ~/docker/kettlewright/.env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always kettlewright
+       docker run -d --env-file ~/docker/kettlewright/.env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always kettlewright
 
 5. Open [http://127.0.0.1:8000](http://127.0.0.1:8000) to access Kettlewright.
 
