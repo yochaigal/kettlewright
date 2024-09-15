@@ -43,7 +43,7 @@ To remove old containers:
 
 To copy the database from the container volume:
 
-       docker cp kettlewright_db:/app/instance/db.sqlite .
+       docker cp [container]:/app/instance/db.sqlite .
 
 ## Updating Kettlewright
 
