@@ -3,7 +3,6 @@ import notification from "./notification.js";
 const socketNotificationManager = {
   socket: null,
   notifications: [],
-  maxNotifications: 5,
   connectionAttempts: 0,
   maxConnectionAttempts: 5,
 
