@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Kettlewright</title>
-    <link rel="stylesheet" href = https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400;1,700&family=Averia+Serif+Libre:ital,wght@0,300;0,700;1,300;1,700&family=Caveat&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,300;0,600;1,300;1,600&display=swap&family=Noto+Sans+Symbols+2&display=swap"
       rel="stylesheet"
@@ -20,20 +20,34 @@
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='src/js/main.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-    <!-- <script type="text/javascript" src="{{ url_for('static', filename='src/js/socket_notifications.js') }}"></script> -->
     {% if current_user.is_authenticated %}
-
     <script src="{{url_for('static', filename='src/js/socket_init.js')}}" defer type="module"></script>
     {% endif %}
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='icons/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='icons/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ url_for('static', filename='icons/site.webmanifest') }}">
-    <link rel="mask-icon" href="{{ url_for('static', filename='icons/safari-pinned-tab.svg') }}" color="#5bbad5">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="msapplication-config" content="{{ url_for('static', filename='icons/browserconfig.xml') }}">
-    <meta name="theme-color" content="#ffffff"> 
+    
+  <!-- Basic Meta Tag -->
+  <meta name="description" content="A free, open-source application for managing characters and parties in the Cairn roleplaying game.">
+
+  <!-- Open Graph Meta Tags (for social media sharing) -->
+  <meta property="og:title" content="Kettlewright">
+  <meta property="og:description" content="A free, open-source application for managing characters and parties in the Cairn roleplaying game.">
+  <meta property="og:url" content="https://Kettlewright.com">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Kettlewright">
+  <meta name="twitter:description" content="A free, open-source application for managing characters and parties in the Cairn roleplaying game.">
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='icons/favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='icons/favicon-16x16.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='icons/site.webmanifest') }}">
+  <link rel="mask-icon" href="{{ url_for('static', filename='icons/safari-pinned-tab.svg') }}" color="#5bbad5">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-config" content="{{ url_for('static', filename='icons/browserconfig.xml') }}">
+  <meta name="theme-color" content="#ffffff"> 
   </head>
   <body>
     <nav class="navbar" role="navigation" aria-label="main navigation" id="navbar">
