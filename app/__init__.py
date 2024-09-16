@@ -11,7 +11,7 @@ from .parse_json import consolidate_json_files
 
 migrate = Migrate()
 mail = Mail()
-socketio = SocketIO()
+socketio = SocketIO(app, manage_session=True)
 
 
 def create_app():
