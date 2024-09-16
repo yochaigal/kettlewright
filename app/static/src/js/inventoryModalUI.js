@@ -271,13 +271,11 @@ const inventoryModalUI = {
     item = { name: "", uses: "", charges: "", max_charges: "", description: "", tags: [], location: 0 }
   ) {
     this.item = item;
-
     this.itemNameField.value = item.name;
     this.itemUsesField.value = item.uses;
     this.itemChargesField.value = item.charges;
     this.itemMaxChargesField.value = item.max_charges;
     this.itemDescriptionField.value = item.description;
-    console.log("item location", item.location);
     this.populateContainerOptions(this.itemContainerSelect, item.location);
 
     // Select the tags
