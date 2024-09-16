@@ -11,8 +11,6 @@ from .parse_json import consolidate_json_files
 
 migrate = Migrate()
 mail = Mail()
-socketio = SocketIO(app, manage_session=True)
-
 
 def create_app():
     # create consolidated backgrounds json file
@@ -55,7 +53,7 @@ def create_app():
     mail.init_app(app)
 
     # Initialize SocketIO with CORS allowed origins
-    socketio = SocketIO(app, cors_allowed_origins='*')
+    socketio = SocketIO(app, manage_session=True, cors_allowed_origins='*')
 
     from .models import User
 
