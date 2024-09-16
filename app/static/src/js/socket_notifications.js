@@ -21,7 +21,7 @@ const socketNotificationManager = {
     });
 
     this.socket.on("dice_rolled", (data) => {
-      console.log("Dice roll received:", data);
+      // console.log("Dice roll received:", data);
       notification.showNotification(data);
     });
   },
@@ -37,7 +37,7 @@ const socketNotificationManager = {
       character_id: characterId,
     };
     this.socket.emit("roll_dice", data);
-    console.log("Dice roll sent:", data);
+    // console.log("Dice roll sent:", data);
   },
 };
 

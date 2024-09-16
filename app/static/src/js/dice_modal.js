@@ -6,7 +6,6 @@ const diceModal = {
 
   initialize(rollCallback) {
     document.getElementById("dice-modal-background").addEventListener("click", () => {
-      console.log("Background clicked");
       document.getElementById("dice-modal").classList.remove("is-active");
     });
 

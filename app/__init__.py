@@ -4,6 +4,7 @@ from app.models import db
 from flask_login import LoginManager
 from flask_mail import Mail, Message
 from flask_socketio import SocketIO, emit
+from flask_cors import CORS
 from .assets import compile_static_assets
 import os
 from .parse_json import consolidate_json_files
@@ -11,6 +12,7 @@ from .parse_json import consolidate_json_files
 migrate = Migrate()
 mail = Mail()
 socketio = SocketIO()
+
 
 def create_app():
     # create consolidated backgrounds json file
@@ -23,8 +25,12 @@ def create_app():
 
     app = Flask(__name__)
 
+    # Configure CORS
+    CORS(app, resources={r"/*": {"origins": "*"}})
+
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+        'SQLALCHEMY_DATABASE_URI')
 
     db.init_app(app)
 
@@ -48,7 +54,8 @@ def create_app():
 
     mail.init_app(app)
 
-    socketio.init_app(app)
+    # Initialize SocketIO with CORS allowed origins
+    socketio.init_app(app, cors_allowed_origins="*")
 
     from .models import User
 
@@ -75,4 +82,3 @@ application = create_app()
 
 if __name__ == '__main__':
     socketio.run(application)
-
