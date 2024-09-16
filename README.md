@@ -1,10 +1,6 @@
 # Kettlewright Setup
 
-1. Create a directory for environment variables and the SQLite database:
-
-       mkdir -p ~/docker/kettlewright/instance
-
-2. Create a file in ~/docker/kettlewright/ called `.env` and populate it with the following:
+1. Create a file in ~/docker/kettlewright/ called `.env` and populate it with the following:
 
        BASE_URL=http://127.0.0.1:8000
        SECRET_KEY=[unique string]
@@ -17,15 +13,15 @@
        REQUIRE_SIGNUP_CODE=[True_or_False]
        SIGNUP_CODE=[only needed if previous statement is True]
 
-3. Pull the Docker image:
+2. Pull the Docker image:
 
        docker pull yochaigal/kettlewright
 
-4. Start Kettlewright
+3. Start Kettlewright
 
-       docker run -d --env-file ~/docker/kettlewright/.env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always kettlewright
+       docker run -d --env-file ~/docker/kettlewright/.env -v kettlewright_db:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
-5. Open [http://127.0.0.1:8000](http://127.0.0.1:8000) to access Kettlewright.
+4. Open [http://127.0.0.1:8000](http://127.0.0.1:8000) to access Kettlewright.
 
 ## After Kettlewright Has Been Installed
 
@@ -45,6 +41,10 @@ To remove old containers:
 
        docker rm [container]
 
+To copy the database from the container volume:
+
+       docker cp [container]:/app/instance/db.sqlite .
+
 ## Updating Kettlewright
 
 1. First, stop the container:
@@ -61,7 +61,7 @@ To remove old containers:
 
 4. Start a new container using the latest image:
 
-       docker run -d --env-file ~/docker/kettlewright/.env -e UID=$(id -u) -e GID=$(id -g) -v $(pwd)/instance:/app/instance -p 8000:8000 --restart always kettlewright
+       docker run -d --env-file ~/docker/kettlewright/.env -v kettlewright_db:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
 ## Automated Updates
 
