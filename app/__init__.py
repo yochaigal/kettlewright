@@ -55,8 +55,7 @@ def create_app():
     mail.init_app(app)
 
     # Initialize SocketIO with CORS allowed origins
-    socketio = SocketIO(app, cors_allowed_origins='http://127.0.0.1:8000')
-
+    socketio = SocketIO(app, cors_allowed_origins='*')
 
     from .models import User
 
