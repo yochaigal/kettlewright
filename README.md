@@ -97,3 +97,17 @@ This command will run Watchtower every 5 minutes and automatically at boot. It w
 6. Run the app:
 
        pipenv run dotenv run -- gunicorn -k eventlet -w 5 -b 0.0.0.0:8000 --timeout 120 'app:application'
+
+
+## Attribution
+
+- **David Stearns** -  Software Development, QA, Testing
+- **Yochai Gal** - Project Design, DevOps, Documentation
+
+### Tools
+
+- **tlomdev's tokens** - A free, CC-BY-SA [token pack](https://tlomdev.itch.io/tlomdevs-tokens) by [tlomdev](https://tlomdev.itch.io/)
+- **magick.css** - A classless [CSS framework](https://css.winterveil.net/) designed by [winterveil](https://github.com/wintermute-cell)
+- **docker** - A platform for building and managing containerized applications. More on docker [here](https://www.docker.com/).
+- **flask** -  A lightweight Python web framework for building web applications. More on flask [here](https://flask.palletsprojects.com/en/3.0.x/)
+- **sqlite** - A fast, self-contained and full-featured SQL database engine. More on[here](https://www.sqlite.org/).
