@@ -12,6 +12,13 @@ from .parse_json import consolidate_json_files
 migrate = Migrate()
 mail = Mail()
 
+# Initialize SocketIO at the module level
+socketio = SocketIO(
+    async_mode='eventlet',
+    manage_session=True,
+    cors_allowed_origins='*',
+    message_queue='redis://localhost:6379'
+)
 
 def create_app():
     # create consolidated backgrounds json file
@@ -28,8 +35,7 @@ def create_app():
     CORS(app, resources={r"/*": {"origins": "*"}})
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-        'SQLALCHEMY_DATABASE_URI')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
 
     db.init_app(app)
 
@@ -53,7 +59,8 @@ def create_app():
 
     mail.init_app(app)
 
-    socketio = SocketIO(app, async_mode='eventlet', manage_session=True, cors_allowed_origins='*')
+    # Initialize SocketIO with the app
+    socketio.init_app(app)  # Add this line
 
     from .models import User
 
