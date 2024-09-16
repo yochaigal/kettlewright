@@ -53,7 +53,7 @@ def create_app():
 
     mail.init_app(app)
 
-    socketio = SocketIO(app, async_mode='eventlet',
+    socketio = SocketIO(app, async_mode='gevent',
                         manage_session=False, cors_allowed_origins='*')
 
     from .models import User
