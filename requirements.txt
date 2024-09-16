@@ -20,3 +20,4 @@ Flask-Assets
 WTForms
 Flask-WTF
 flask_cors
+redis
