@@ -1,6 +1,7 @@
 # In __init__.py
 
 import os
+import logging
 from flask import Flask
 from flask_migrate import Migrate
 from app.models import db
@@ -14,12 +15,16 @@ from .parse_json import consolidate_json_files
 migrate = Migrate()
 mail = Mail()
 
+# Setup basic logging configuration
+logging.basicConfig(level=logging.INFO)
+
 # Determine if Redis should be used
 use_redis = os.getenv('USE_REDIS', 'False').lower() in ['true', '1', 't']
 redis_url = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0') if use_redis else None
 
-# Initialize SocketIO based on the USE_REDIS flag
+# Log whether Redis is being used
 if use_redis:
+    logging.info(f"Using Redis as a message queue: {redis_url}")
     socketio = SocketIO(
         async_mode='eventlet',
         manage_session=True,
@@ -27,6 +32,7 @@ if use_redis:
         message_queue=redis_url
     )
 else:
+    logging.info("Not using Redis; falling back to local eventlet sessions.")
     socketio = SocketIO(
         async_mode='eventlet',
         manage_session=True,
