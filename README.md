@@ -15,15 +15,18 @@
        USE_REDIS=[True_or_False]
        REDIS_URL=redis://redis-server:6379/0
 
-2. Pull the Docker image:
+> Note: You will likely not need to mark USE_REDIS as 'True' unless you are planning to support hundreds of users. In that case please adjust the required worker count (typically 2 * CPU cores + 1). See "Using a redis server" below for more details.
+
+
+1. Pull the Docker image:
 
        docker pull yochaigal/kettlewright
 
-3. Start Kettlewright
+2. Start Kettlewright
 
-       docker run -d --env-file ~/docker/kettlewright/.env -v kettlewright_db:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
+       docker run -d --name kettlewright --env-file ~/docker/kettlewright/.env -v kettlewright_db:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
-4. Open [http://127.0.0.1:8000](http://127.0.0.1:8000) to access Kettlewright.
+3. Open [http://127.0.0.1:8000](http://127.0.0.1:8000) to access Kettlewright.
 
 ## After Kettlewright Has Been Installed
 
@@ -63,13 +66,13 @@ To copy the database from the container volume:
 
 4. Start a new container using the latest image:
 
-       docker run -d --env-file ~/docker/kettlewright/.env -v kettlewright_db:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
+       docker run -d --name kettlewright --env-file ~/docker/kettlewright/.env -v kettlewright_db:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
 ## Automated Updates
 
 1. To update the Docker image automatically, install Watchtower:
 
-       git pull containerrr/watchtower
+       docker pull containrrr/watchtower
 
 2. Then, run the following command:
 
@@ -89,11 +92,11 @@ If you plan to launch Kettlewright with multiple workers, you _must_ use a redis
 
 3. Run the redis container:
 
-        docker run --name redis-server -restart unless-stopped -p 6379:6379 -d redis redis-server --save 60 1 --loglevel warning
+       docker run --name redis-server --restart unless-stopped -p 6379:6379 -d redis redis-server --save 60 1 --loglevel warning
 
 4. Launch Kettlewright:
 
-       docker run -d --env-file ~/docker/kettlewright/.env -v kettlewright_db:/app/instance --link redis-server:redis-server -p 8000:8000 --restart always yochaigal/kettlewright
+       docker run -d --name kettlewright --env-file ~/docker/kettlewright/.env -v kettlewright_db:/app/instance --link redis-server:redis-server -p 8000:8000 --restart always yochaigal/kettlewright
 
 ## Running the app without Docker
 
@@ -132,3 +135,4 @@ If you plan to launch Kettlewright with multiple workers, you _must_ use a redis
 - **docker** - A platform for building and managing containerized applications. More on docker [here](https://www.docker.com/).
 - **flask** -  A lightweight Python web framework for building web applications. More on flask [here](https://flask.palletsprojects.com/en/3.0.x/)
 - **sqlite** - A fast, self-contained and full-featured SQL database engine. More on SQLite [here](https://www.sqlite.org/).
+- **redis** - A real-time in-memory data structure store used as a database, cache, and message broker. More on redis [here](https://redis.io/).
