@@ -18,6 +18,10 @@ mail = Mail()
 # Setup basic logging
 logging.basicConfig(level=logging.INFO)
 
+# Get allowed origins from BASE_URL and split to allow multiple origins
+base_url = os.getenv('BASE_URL', 'http://127.0.0.1:8000')
+allowed_origins = base_url.split(',')
+
 # Check if Redis should be used
 use_redis = os.getenv('USE_REDIS', 'False').lower() in ['true', '1', 't']
 redis_url = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0') if use_redis else None
@@ -28,7 +32,7 @@ if use_redis:
     socketio = SocketIO(
         async_mode='eventlet',
         manage_session=True,
-        cors_allowed_origins='*',
+        cors_allowed_origins=allowed_origins,  # Use allowed origins for SocketIO
         message_queue=redis_url
     )
 else:
@@ -36,7 +40,7 @@ else:
     socketio = SocketIO(
         async_mode='eventlet',
         manage_session=True,
-        cors_allowed_origins='*'
+        cors_allowed_origins=allowed_origins  # Use allowed origins for SocketIO
     )
 
 def create_app():
@@ -51,8 +55,8 @@ def create_app():
                                'app/static/json/party_events/event_data.json')
         app.config['JSON_CONSOLIDATED'] = True
 
-    # Configure CORS
-    CORS(app, resources={r"/*": {"origins": "*"}})
+    # Configure CORS using allowed origins
+    CORS(app, resources={r"/*": {"origins": allowed_origins}})
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
