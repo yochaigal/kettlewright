@@ -13,11 +13,12 @@ migrate = Migrate()
 mail = Mail()
 
 redis_url = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0')
+
 socketio = SocketIO(
     async_mode='eventlet',
     manage_session=True,
     cors_allowed_origins='*',
-    message_queue='redis://localhost:6379'
+    message_queue=redis_url
 )
 
 def create_app():
