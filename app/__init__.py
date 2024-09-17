@@ -1,12 +1,14 @@
+# In __init__.py
+
+import os
 from flask import Flask
 from flask_migrate import Migrate
 from app.models import db
 from flask_login import LoginManager
-from flask_mail import Mail, Message
-from flask_socketio import SocketIO, emit
+from flask_mail import Mail
+from flask_socketio import SocketIO
 from flask_cors import CORS
 from .assets import compile_static_assets
-import os
 from .parse_json import consolidate_json_files
 
 migrate = Migrate()
@@ -16,6 +18,7 @@ mail = Mail()
 use_redis = os.getenv('USE_REDIS', 'False').lower() in ['true', '1', 't']
 redis_url = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0') if use_redis else None
 
+# Initialize SocketIO based on the USE_REDIS flag
 if use_redis:
     socketio = SocketIO(
         async_mode='eventlet',
@@ -30,15 +33,13 @@ else:
         cors_allowed_origins='*'
     )
 
+# Consolidate JSON files
+consolidate_json_files('app/static/json/backgrounds',
+                       'app/static/json/backgrounds/background_data.json')
+consolidate_json_files('app/static/json/party_events',
+                       'app/static/json/party_events/event_data.json')
+
 def create_app():
-    # create consolidated backgrounds json file
-    consolidate_json_files('app/static/json/backgrounds',
-                           'app/static/json/backgrounds/background_data.json')
-
-    # create consolidated events json file
-    consolidate_json_files('app/static/json/party_events',
-                           'app/static/json/party_events/event_data.json')
-
     app = Flask(__name__)
 
     # Configure CORS
@@ -70,7 +71,7 @@ def create_app():
     mail.init_app(app)
 
     # Initialize SocketIO with the app
-    socketio.init_app(app)  # Add this line
+    socketio.init_app(app)
 
     from .models import User
 
@@ -91,6 +92,5 @@ def create_app():
     register_socket_events(socketio)
 
     return app
-
 
 application = create_app()
