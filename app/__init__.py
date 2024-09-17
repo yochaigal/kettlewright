@@ -15,10 +15,10 @@ from .parse_json import consolidate_json_files
 migrate = Migrate()
 mail = Mail()
 
-# Setup basic logging configuration
+# Setup basic logging
 logging.basicConfig(level=logging.INFO)
 
-# Determine if Redis should be used
+# Check if Redis should be used
 use_redis = os.getenv('USE_REDIS', 'False').lower() in ['true', '1', 't']
 redis_url = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0') if use_redis else None
 
@@ -39,14 +39,17 @@ else:
         cors_allowed_origins='*'
     )
 
-# Consolidate JSON files
-consolidate_json_files('app/static/json/backgrounds',
-                       'app/static/json/backgrounds/background_data.json')
-consolidate_json_files('app/static/json/party_events',
-                       'app/static/json/party_events/event_data.json')
-
 def create_app():
     app = Flask(__name__)
+
+    # Ensure the consolidation is performed only once, in the main process
+    if not app.config.get('JSON_CONSOLIDATED'):
+        # Consolidate JSON files
+        consolidate_json_files('app/static/json/backgrounds',
+                               'app/static/json/backgrounds/background_data.json')
+        consolidate_json_files('app/static/json/party_events',
+                               'app/static/json/party_events/event_data.json')
+        app.config['JSON_CONSOLIDATED'] = True
 
     # Configure CORS
     CORS(app, resources={r"/*": {"origins": "*"}})
@@ -56,18 +59,18 @@ def create_app():
 
     db.init_app(app)
 
-    # flask-migrate
+    # db migrate
     migrate.init_app(app, db)
 
-    # flask-login
+    # login
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
 
-    # flask-assets, configured in assets.py
+    # flask-assets
     compile_static_assets(app)
 
-    # Flask-Mail configurations
+    # Mail configuration
     app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER')
     app.config['MAIL_PORT'] = os.environ.get('MAIL_PORT')
     app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
