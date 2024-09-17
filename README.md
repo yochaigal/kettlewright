@@ -30,35 +30,37 @@
 
 ## After Kettlewright Has Been Installed
 
-To manage the Kettlewright image, first find the container id (typically the most recent container):
+By default the Kettlewright container should be labeled _kettlewright_, but it helps to know how to do the following anyway!
+To find the container id (typically the most recent container):
 
        docker ps -a
 
 Then start or stop the container with:
 
-       docker start/stop [container]
+       docker start/stop [container/label]
 
 To see the logs, run:
 
-       docker logs -f [container]
+       docker logs -f [container/label]
+       Ctrl+C to exit
 
 To remove old containers:
 
-       docker rm [container]
+       docker rm [container/label]
 
 To copy the database from the container volume:
 
-       docker cp [container]:/app/instance/db.sqlite .
+       docker cp [container/label]:/app/instance/db.sqlite .
 
-## Updating Kettlewright
+## Updating Kettlewright Manually
 
 1. First, stop the container:
 
-       docker stop [container]
+       docker stop [container/label]
 
 2. Then remove it:
 
-       docker rm [container]
+       docker rm [container/label]
 
 3. Pull the latest image:
 
@@ -78,7 +80,7 @@ To copy the database from the container volume:
 
        docker run -d --name watchtower --restart always -v /var/run/docker.sock:/var/run/docker.sock -e TZ=America/New_York containrrr/watchtower --cleanup --schedule "*/5 * * * *"
        
-This command will run Watchtower every 5 minutes and automatically at boot. It will update all available Docker images unless explicitly stated, as well as clean up old images.
+This will run Watchtower every 5 minutes and automatically at boot. It will update all available Docker images unless explicitly stated, as well as clean up old images.
 
 ## Using a redis server
 
@@ -119,9 +121,7 @@ If you plan to launch Kettlewright with multiple workers, you _must_ use a redis
 
 6. Run the app:
 
-       pipenv run dotenv run -- gunicorn -k eventlet -w 5 -b 0.0.0.0:8000 --timeout 120 'app:application'
-
-> Note: Raise or lower the '-w' option depending on the amount of workers you may need (typically 2 * $CORES + 1).
+       pipenv run dotenv run -- gunicorn -k eventlet -w 1 -b 0.0.0.0:8000 --timeout 120 'app:application'
 
 ## Attribution
 
@@ -130,9 +130,9 @@ If you plan to launch Kettlewright with multiple workers, you _must_ use a redis
 
 ### Tools
 
-- **tlomdev's tokens** - A free, CC-BY-SA [token pack](https://tlomdev.itch.io/tlomdevs-tokens) by [tlomdev](https://tlomdev.itch.io/)
-- **magick.css** - A classless [CSS framework](https://css.winterveil.net/) designed by [winterveil](https://github.com/wintermute-cell)
+- **tlomdev's tokens** - A free, CC-BY-SA [token pack](https://tlomdev.itch.io/tlomdevs-tokens) by [tlomdev](https://tlomdev.itch.io/).
+- **magick.css** - A classless [CSS framework](https://css.winterveil.net/) designed by [winterveil](https://github.com/wintermute-cell).
 - **docker** - A platform for building and managing containerized applications. More on docker [here](https://www.docker.com/).
-- **flask** -  A lightweight Python web framework for building web applications. More on flask [here](https://flask.palletsprojects.com/en/3.0.x/)
+- **flask** -  A lightweight Python web framework for building web applications. More on flask [here](https://flask.palletsprojects.com/en/3.0.x/).
 - **sqlite** - A fast, self-contained and full-featured SQL database engine. More on SQLite [here](https://www.sqlite.org/).
 - **redis** - A real-time in-memory data structure store used as a database, cache, and message broker. More on redis [here](https://redis.io/).

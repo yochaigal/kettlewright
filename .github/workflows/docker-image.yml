@@ -9,6 +9,7 @@ on:
     paths-ignore:
       - '.gitignore'
       - '.env.template'
+      - 'README.md'
 
 jobs:
   build:
