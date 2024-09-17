@@ -12,14 +12,23 @@ from .parse_json import consolidate_json_files
 migrate = Migrate()
 mail = Mail()
 
-redis_url = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0')
+# Determine if Redis should be used
+use_redis = os.getenv('USE_REDIS', 'False').lower() in ['true', '1', 't']
+redis_url = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0') if use_redis else None
 
-socketio = SocketIO(
-    async_mode='eventlet',
-    manage_session=True,
-    cors_allowed_origins='*',
-    message_queue=redis_url
-)
+if use_redis:
+    socketio = SocketIO(
+        async_mode='eventlet',
+        manage_session=True,
+        cors_allowed_origins='*',
+        message_queue=redis_url
+    )
+else:
+    socketio = SocketIO(
+        async_mode='eventlet',
+        manage_session=True,
+        cors_allowed_origins='*'
+    )
 
 def create_app():
     # create consolidated backgrounds json file

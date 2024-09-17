@@ -12,6 +12,8 @@
        MAIL_PASSWORD=[enter email password]
        REQUIRE_SIGNUP_CODE=[True_or_False]
        SIGNUP_CODE=[only needed if previous statement is True]
+       USE_REDIS=[True_or_False]
+       REDIS_URL=redis://redis-server:6379/0
 
 2. Pull the Docker image:
 
@@ -74,6 +76,24 @@ To copy the database from the container volume:
        docker run -d --name watchtower --restart always -v /var/run/docker.sock:/var/run/docker.sock -e TZ=America/New_York containrrr/watchtower --cleanup --schedule "*/5 * * * *"
        
 This command will run Watchtower every 5 minutes and automatically at boot. It will update all available Docker images unless explicitly stated, as well as clean up old images.
+
+## Using a redis server
+
+If you plan to launch Kettlewright with multiple workers, you _must_ use a redis server as a message queue.
+
+1. Set the USE_REDIS value to True in your .env file. 
+
+2. Install redis:
+
+       docker pull redis
+
+3. Run the redis container:
+
+        docker run --name redis-server -restart unless-stopped -p 6379:6379 -d redis redis-server --save 60 1 --loglevel warning
+
+4. Launch Kettlewright:
+
+       docker run -d --env-file ~/docker/kettlewright/.env -v kettlewright_db:/app/instance --link redis-server:redis-server -p 8000:8000 --restart always yochaigal/kettlewright
 
 ## Running the app without Docker
 
