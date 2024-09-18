@@ -98,8 +98,8 @@ const addScarButton = document.getElementById("add-scar-button");
 for (let i = 0; i < scarsData.length; i++) {
   const option = document.createElement("option");
   option.value = i;
-  // selectedScar = scarsData[i].description;
-  option.text = scarsData[i].description.substring(0, 30) + "...";
+  option.text = scarsData[i].description.split(":")[0];
+
   scarsSelect.appendChild(option);
 }
 
