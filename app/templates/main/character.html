@@ -1,9 +1,9 @@
 {% extends "base.html" %} {% block content %}
 <script>
-  const rawData = `{{ data_json|safe }}`;
-  const data = JSON.parse(rawData);
-  const containersRawData = `{{ containers_data_json|safe }}`;
-  const containersData = JSON.parse(containersRawData);
+  // const rawData = `{{ data_json|safe }}`;
+  // const data = JSON.parse(rawData);
+  const data = JSON.parse(`{{ items_json|safe }}`.slice(1, -1));
+  const containersData = JSON.parse(`{{ containers_json|safe }}`.slice(1, -1));
   const deprived = `{{character.deprived}}`;
   const customImage = "{{character.custom_image}}";
   const imageURL = `{{character.image_url}}`;

@@ -448,7 +448,7 @@ def character(username, url_name):
         party_url = None
         party_description = None
 
-    return render_template('main/character.html', character=character, data_json=character.items, containers_data_json=character.containers, username=username, url_name=url_name,
+    return render_template('main/character.html', character=character, items_json=json.dumps(character.items), containers_json=json.dumps(character.containers), username=username, url_name=url_name,
                            party=party, party_url=party_url, party_name=party_name, party_description=party_description, base_url=base_url, is_owner=is_owner)
 
 
@@ -457,7 +457,7 @@ def print_character(username, url_name):
     user = User.query.filter_by(username=username).first_or_404()
     character = Character.query.filter_by(
         owner=user.id, url_name=url_name).first_or_404()
-    return render_template('main/character_print.html', character=character, data_json=character.items, containers_data_json=character.containers)
+    return render_template('main/character_print.html', character=character, items_json=json.dumps(character.items), containers_json=json.dumps(character.containers))
 
 
 @main.route('/delete-character/<int:character_id>/', methods=['POST', 'GET'])
