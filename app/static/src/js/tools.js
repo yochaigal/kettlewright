@@ -17,6 +17,7 @@ const categories = {
     Dungeon: data.Dungeon,
     Forest: data.Forest,
     Realm: data.Realm,
+    Faction: data.Realm,
   },
   Items: {
     Relics: data.Relics,
@@ -24,6 +25,7 @@ const categories = {
   },
 };
 
+// Setup Selects and Buttons
 const addOptionsToSelect = (data, element) => {
   element.innerHTML = '<option value="" selected disabled>Choose...</option>';
   for (let key in data) {
@@ -67,10 +69,19 @@ rollButton.addEventListener("click", () => {
   }
 });
 
+const clearResults = () => {
+  const resultDisplay = document.getElementById("tools-result-display");
+  resultDisplay.innerHTML = "";
+};
+
+const clearButton = document.getElementById("clear-button");
+clearButton.addEventListener("click", clearResults);
+
 const roll = (sides) => {
   return Math.floor(Math.random() * sides);
 };
 
+// Output formatting functions
 const formatObjectToString = (obj) => {
   return Object.entries(obj)
     .filter(([key, value]) => !(Array.isArray(value) && value.length === 0))
@@ -85,17 +96,21 @@ const formatNumberedArrayToString = (arr) => {
   return arr.map((item, index) => `${index + 1}. ${item}`).join("<br>");
 };
 
-// const displayResult = (result) => {
-//   const resultDisplay = document.getElementById("tools-result-display");
-//   const height = resultDisplay.scrollHeight;
-//   const line = "------------------------------------<br>";
-//   if (resultDisplay.innerHTML === "no events yet...") {
-//     resultDisplay.innerHTML = result + "<br><br>" + line;
-//   } else {
-//     resultDisplay.innerHTML = resultDisplay.innerHTML + `<p>${result}</p>` + line;
-//   }
-//   resultDisplay.scrollTop = height;
-// };
+const convertName = (nameFormula, replacements) => {
+  let name = nameFormula;
+
+  replacements.forEach(({ type, word }) => {
+    const regex = new RegExp(`\\[${type}\\]`, "g");
+    name = name.replace(regex, word);
+  });
+
+  // Remove optional parts if their content wasn't replaced
+  name = name.replace(/\([^()]*\[.*?\][^()]*\)/g, "");
+  // Remove any remaining brackets
+  name = name.replace(/[\[\]()]/g, "");
+  // Trim any extra spaces
+  return name.trim().replace(/\s+/g, " ");
+};
 
 const displayResult = (result) => {
   const resultDisplay = document.getElementById("tools-result-display");
@@ -108,6 +123,7 @@ const displayResult = (result) => {
   resultDisplay.scrollTop = 0;
 };
 
+// Roll functions
 const rollBestiary = (data, subcategory) => {
   const bestiary = data[subcategory];
   if (subcategory === "Random Monster") {
@@ -220,25 +236,55 @@ const rollRelics = (data, subcategory) => {
   displayResult(textResult);
 };
 
-const convertName = (nameFormula, replacements) => {
-  let name = nameFormula;
-
-  replacements.forEach(({ type, word }) => {
-    const regex = new RegExp(`\\[${type}\\]`, "g");
-    name = name.replace(regex, word);
-  });
-
-  // Remove optional parts if their content wasn't replaced
-  name = name.replace(/\([^()]*\[.*?\][^()]*\)/g, "");
-  // Remove any remaining brackets
-  name = name.replace(/[\[\]()]/g, "");
-  // Trim any extra spaces
-  return name.trim().replace(/\s+/g, " ");
-};
-
 const rollLocations = (data, subcategory) => {
   const setting = data[subcategory];
   let result = {};
+
+  const rollRealmFaction = () => {
+    // Factions
+    const advantageNumber =
+      setting.Theme.Factions.FactionAdvantages.NumberOfAdvantages[
+        roll(setting.Theme.Factions.FactionAdvantages.NumberOfAdvantages.length)
+      ];
+    let advantages = [];
+    for (let i = 0; i < advantageNumber; i++) {
+      advantages.push(
+        setting.Theme.Factions.FactionAdvantages.Advantage[
+          roll(setting.Theme.Factions.FactionAdvantages.Advantage.length)
+        ]
+      );
+    }
+    const nameFormula =
+      setting.Theme.Factions.FactionNames.NameFormulas.Faction[
+        roll(setting.Theme.Factions.FactionNames.NameFormulas.Faction.length)
+      ];
+    const adjective =
+      setting.Theme.Factions.FactionNames.Adjectives[roll(setting.Theme.Factions.FactionNames.Adjectives.length)];
+    const noun = setting.Theme.Factions.FactionNames.Nouns[roll(setting.Theme.Factions.FactionNames.Nouns.length)];
+    const type =
+      setting.Theme.Factions.FactionNames.FactionTypes[roll(setting.Theme.Factions.FactionNames.FactionTypes.length)];
+
+    const name = convertName(nameFormula, [
+      { type: "Noun", word: noun },
+      { type: "Adjective", word: adjective },
+      { type: "Group", word: type },
+    ]);
+
+    let factions = {};
+    factions = {
+      Name: name,
+      Type: setting.Theme.Factions.FactionTypes.Type[roll(setting.Theme.Factions.FactionTypes.Type.length)],
+      Agent: setting.Theme.Factions.FactionTypes.Agent[roll(setting.Theme.Factions.FactionTypes.Agent.length)],
+      "Trait 1": setting.Theme.Factions.FactionTraits.Trait1[roll(setting.Theme.Factions.FactionTraits.Trait1.length)],
+      "Trait 2": setting.Theme.Factions.FactionTraits.Trait2[roll(setting.Theme.Factions.FactionTraits.Trait2.length)],
+      Advantages: advantages.join(", "),
+      Agenda: setting.Theme.Factions.FactionAgendas.Agenda[roll(setting.Theme.Factions.FactionAgendas.Agenda.length)],
+      Obstacle:
+        setting.Theme.Factions.FactionAgendas.Obstacle[roll(setting.Theme.Factions.FactionAgendas.Obstacle.length)],
+    };
+
+    return factions;
+  };
 
   if (subcategory === "Dungeon") {
     result.Purpose = {
@@ -382,48 +428,7 @@ const rollLocations = (data, subcategory) => {
     };
 
     // Factions
-    const advantageNumber =
-      setting.Theme.Factions.FactionAdvantages.NumberOfAdvantages[
-        roll(setting.Theme.Factions.FactionAdvantages.NumberOfAdvantages.length)
-      ];
-    let advantages = [];
-    for (let i = 0; i < advantageNumber; i++) {
-      advantages.push(
-        setting.Theme.Factions.FactionAdvantages.Advantage[
-          roll(setting.Theme.Factions.FactionAdvantages.Advantage.length)
-        ]
-      );
-    }
-    const nameFormula =
-      setting.Theme.Factions.FactionNames.NameFormulas.Faction[
-        roll(setting.Theme.Factions.FactionNames.NameFormulas.Faction.length)
-      ];
-    const adjective =
-      setting.Theme.Factions.FactionNames.Adjectives[roll(setting.Theme.Factions.FactionNames.Adjectives.length)];
-    const noun = setting.Theme.Factions.FactionNames.Nouns[roll(setting.Theme.Factions.FactionNames.Nouns.length)];
-    const type =
-      setting.Theme.Factions.FactionNames.FactionTypes[roll(setting.Theme.Factions.FactionNames.FactionTypes.length)];
-
-    // const name = convertName(nameFormula, noun, adjective, type);
-
-    const name = convertName(nameFormula, [
-      { type: "Noun", word: noun },
-      { type: "Adjective", word: adjective },
-      { type: "Group", word: type },
-    ]);
-
-    result.Factions = {};
-    result.Factions = {
-      Name: name,
-      Type: setting.Theme.Factions.FactionTypes.Type[roll(setting.Theme.Factions.FactionTypes.Type.length)],
-      Agent: setting.Theme.Factions.FactionTypes.Agent[roll(setting.Theme.Factions.FactionTypes.Agent.length)],
-      "Trait 1": setting.Theme.Factions.FactionTraits.Trait1[roll(setting.Theme.Factions.FactionTraits.Trait1.length)],
-      "Trait 2": setting.Theme.Factions.FactionTraits.Trait2[roll(setting.Theme.Factions.FactionTraits.Trait2.length)],
-      Advantages: advantages.join(", "),
-      Agenda: setting.Theme.Factions.FactionAgendas.Agenda[roll(setting.Theme.Factions.FactionAgendas.Agenda.length)],
-      Obstacle:
-        setting.Theme.Factions.FactionAgendas.Obstacle[roll(setting.Theme.Factions.FactionAgendas.Obstacle.length)],
-    };
+    result.Factions = rollRealmFaction();
 
     // set terrain count to a random number 1-6
     const terrainCount = Math.floor(Math.random() * 6) + 1;
@@ -509,13 +514,10 @@ const rollLocations = (data, subcategory) => {
       result.Weather
     )}<br><br><b><u>Points of Interest</u></b><br>${formatNumberedArrayToString(result.POIs)}`;
     displayResult(textResult);
+  } else if (subcategory === "Faction") {
+    result = rollRealmFaction();
+
+    const textResult = `<b><u>Faction</u></b><br><br>${formatObjectToString(result)}`;
+    displayResult(textResult);
   }
 };
-
-const clearResults = () => {
-  const resultDisplay = document.getElementById("tools-result-display");
-  resultDisplay.innerHTML = "";
-};
-
-const clearButton = document.getElementById("clear-button");
-clearButton.addEventListener("click", clearResults);
