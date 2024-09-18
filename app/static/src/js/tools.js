@@ -1,3 +1,5 @@
+import utils from "./utils.js";
+
 const categorySelect = document.getElementById("category-select");
 const subcategorySelect = document.getElementById("subcategory-select");
 const rollButton = document.getElementById("roll-button");
@@ -6,6 +8,7 @@ const categories = {
   Bestiary: {
     "Random Monster": data["Random Monster"],
     "Custom Monster": data["Custom Monster"],
+    "Reaction Roll": data["Reaction Roll"],
   },
   Events: {
     "Dungeon Events": data["Dungeon Events"],
@@ -145,6 +148,11 @@ const rollBestiary = (data, subcategory) => {
     const ability = bestiary.MonsterAbilities.Ability[roll(bestiary.MonsterAbilities.Ability.length)];
     const target = bestiary.MonsterAbilities.Target[roll(bestiary.MonsterAbilities.Target.length)];
     const textResult = `<b><u>Custom Monster</u></b><br><br><b>Physique:</b> ${physique}<br><b>Feature:</b> ${feature}<br><b>Quirks:</b> ${quirks}<br><b>Weakness:</b> ${weakness}<br><b>Attack:</b> ${attack}<br><b>Critical Damage:</b> ${criticalDamage}<br><b>Ability:</b> ${ability}<br><b>Target:</b> ${target}`;
+    displayResult(textResult);
+  } else if (subcategory === "Reaction Roll") {
+    let roll = utils.roll(2, 6);
+    const result = bestiary[roll - 2]; //2-12 -> 0-10
+    const textResult = `<b><u>Reaction Roll</u></b><br><br><b>${result}</b>`;
     displayResult(textResult);
   }
 };
