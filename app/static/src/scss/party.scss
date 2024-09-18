@@ -64,7 +64,7 @@ border-radius: 50%;
   // grid-template-columns: 1fr 1fr 1fr;
 
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 1em;
   align-items: center;
   margin-top: 1em;
@@ -95,7 +95,7 @@ border-radius: 50%;
 
 #tools-button-container {
   display: flex; 
-  justify-content: center; 
+  justify-content: flex-start; 
   gap: 1em; 
   width: 180px
 }

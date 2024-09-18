@@ -85,16 +85,27 @@ const formatNumberedArrayToString = (arr) => {
   return arr.map((item, index) => `${index + 1}. ${item}`).join("<br>");
 };
 
+// const displayResult = (result) => {
+//   const resultDisplay = document.getElementById("tools-result-display");
+//   const height = resultDisplay.scrollHeight;
+//   const line = "------------------------------------<br>";
+//   if (resultDisplay.innerHTML === "no events yet...") {
+//     resultDisplay.innerHTML = result + "<br><br>" + line;
+//   } else {
+//     resultDisplay.innerHTML = resultDisplay.innerHTML + `<p>${result}</p>` + line;
+//   }
+//   resultDisplay.scrollTop = height;
+// };
+
 const displayResult = (result) => {
   const resultDisplay = document.getElementById("tools-result-display");
-  const height = resultDisplay.scrollHeight;
   const line = "------------------------------------<br>";
   if (resultDisplay.innerHTML === "no events yet...") {
     resultDisplay.innerHTML = result + "<br><br>" + line;
   } else {
-    resultDisplay.innerHTML = resultDisplay.innerHTML + `<p>${result}</p>` + line;
+    resultDisplay.innerHTML = `<p>${result}</p>` + line + resultDisplay.innerHTML;
   }
-  resultDisplay.scrollTop = height;
+  resultDisplay.scrollTop = 0;
 };
 
 const rollBestiary = (data, subcategory) => {
