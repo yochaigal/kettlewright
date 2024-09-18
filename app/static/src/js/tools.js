@@ -6,6 +6,7 @@ const categories = {
   Bestiary: {
     "Random Monster": data["Random Monster"],
     "Custom Monster": data["Custom Monster"],
+    "Reaction Roll": data["Reaction Roll"],
   },
   Events: {
     "Dungeon Events": data["Dungeon Events"],
@@ -81,6 +82,10 @@ const roll = (sides) => {
   return Math.floor(Math.random() * sides);
 };
 
+const roll2d6 = () => {
+  return roll(6) + roll(6);
+};
+
 // Output formatting functions
 const formatObjectToString = (obj) => {
   return Object.entries(obj)
@@ -145,6 +150,10 @@ const rollBestiary = (data, subcategory) => {
     const ability = bestiary.MonsterAbilities.Ability[roll(bestiary.MonsterAbilities.Ability.length)];
     const target = bestiary.MonsterAbilities.Target[roll(bestiary.MonsterAbilities.Target.length)];
     const textResult = `<b><u>Custom Monster</u></b><br><br><b>Physique:</b> ${physique}<br><b>Feature:</b> ${feature}<br><b>Quirks:</b> ${quirks}<br><b>Weakness:</b> ${weakness}<br><b>Attack:</b> ${attack}<br><b>Critical Damage:</b> ${criticalDamage}<br><b>Ability:</b> ${ability}<br><b>Target:</b> ${target}`;
+    displayResult(textResult);
+  } else if (subcategory === "Reaction Roll") {
+    const result = bestiary[roll2d6()];
+    const textResult = `<b><u>Reaction Roll</u></b><br><br><b>${result}</b>`;
     displayResult(textResult);
   }
 };
