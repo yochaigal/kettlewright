@@ -63,6 +63,14 @@ restButton.addEventListener("click", function () {
   document.getElementById("hp-input").value = hpMax;
 });
 
+// Set HP color to red when overburdened
+const overBurdened = inventory.getSlotsCount(0) >= 10;
+console.log("overburdened: " + overBurdened);
+if (overBurdened) {
+  document.getElementById("hp-input").classList.add("red-text");
+  document.getElementById("hp-max-input").classList.add("red-text");
+}
+
 // Resize textareas
 document.addEventListener("DOMContentLoaded", function () {
   const textareas = document.getElementsByClassName("textarea");
