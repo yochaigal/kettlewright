@@ -126,10 +126,25 @@ If you plan to launch Kettlewright with multiple workers, you _must_ use a redis
 
 ## Running the app without Docker (flask)
 
+It can be helpful to run the app with flask, as you can see changes immediately rather than after restarting the server.
+
 1. Add USE_FLASK=True to the .env file
-2. Enter the python virtual environment and run the app:
+
+2. Create the python environment and lock it:
 
        pipenv shell
+       pipenv lock
+
+3. Install packages:
+
+       pipenv sync
+
+4. Initialize database:
+
+       flask db upgrade
+
+5. Run the app:
+
        flask run --port=8000 --debug
 
 ## Attribution
