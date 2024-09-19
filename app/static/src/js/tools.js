@@ -5,7 +5,7 @@ const subcategorySelect = document.getElementById("subcategory-select");
 const rollButton = document.getElementById("roll-button");
 
 const categories = {
-  Bestiary: {
+  Monsters: {
     "Random Monster": data["Random Monster"],
     "Custom Monster": data["Custom Monster"],
     "Reaction Roll": data["Reaction Roll"],
@@ -51,8 +51,8 @@ rollButton.addEventListener("click", () => {
   const subcategory = subcategorySelect.value;
 
   switch (category) {
-    case "Bestiary":
-      rollBestiary(categories.Bestiary, subcategory);
+    case "Monsters":
+      rollMonsters(categories.Monsters, subcategory);
       break;
     case "Events":
       rollEvents(categories.Events, subcategory);
@@ -127,10 +127,10 @@ const displayResult = (result) => {
 };
 
 // Roll functions
-const rollBestiary = (data, subcategory) => {
-  const bestiary = data[subcategory];
+const rollMonsters = (data, subcategory) => {
+  const Monsters = data[subcategory];
   if (subcategory === "Random Monster") {
-    const result = bestiary[roll(bestiary.length)];
+    const result = Monsters[roll(Monsters.length)];
     const formattedTraits = result.Traits.map((trait) => trait.replace(/Critical Damage/g, "<b>Critical Damage</b>"));
     const textResult = `<b><u>${result.Name}</u></b><br><br>HP: ${result.HP}, ${
       result.Armor ? `Armor: ${result.Armor},` : ""
@@ -139,19 +139,19 @@ const rollBestiary = (data, subcategory) => {
     }• ${formattedTraits.join("<br>• ")}`;
     displayResult(textResult);
   } else if (subcategory === "Custom Monster") {
-    const physique = bestiary.MonsterAppearance.Physique[roll(bestiary.MonsterAppearance.Physique.length)];
-    const feature = bestiary.MonsterAppearance.Feature[roll(bestiary.MonsterAppearance.Feature.length)];
-    const quirks = bestiary.MonsterTraits.Quirks[roll(bestiary.MonsterTraits.Quirks.length)];
-    const weakness = bestiary.MonsterTraits.Weakness[roll(bestiary.MonsterTraits.Weakness.length)];
-    const attack = bestiary.MonsterAttacks.Type[roll(bestiary.MonsterAttacks.Type.length)];
-    const criticalDamage = bestiary.MonsterAttacks.CriticalDamage[roll(bestiary.MonsterAttacks.CriticalDamage.length)];
-    const ability = bestiary.MonsterAbilities.Ability[roll(bestiary.MonsterAbilities.Ability.length)];
-    const target = bestiary.MonsterAbilities.Target[roll(bestiary.MonsterAbilities.Target.length)];
+    const physique = Monsters.MonsterAppearance.Physique[roll(Monsters.MonsterAppearance.Physique.length)];
+    const feature = Monsters.MonsterAppearance.Feature[roll(Monsters.MonsterAppearance.Feature.length)];
+    const quirks = Monsters.MonsterTraits.Quirks[roll(Monsters.MonsterTraits.Quirks.length)];
+    const weakness = Monsters.MonsterTraits.Weakness[roll(Monsters.MonsterTraits.Weakness.length)];
+    const attack = Monsters.MonsterAttacks.Type[roll(Monsters.MonsterAttacks.Type.length)];
+    const criticalDamage = Monsters.MonsterAttacks.CriticalDamage[roll(Monsters.MonsterAttacks.CriticalDamage.length)];
+    const ability = Monsters.MonsterAbilities.Ability[roll(Monsters.MonsterAbilities.Ability.length)];
+    const target = Monsters.MonsterAbilities.Target[roll(Monsters.MonsterAbilities.Target.length)];
     const textResult = `<b><u>Custom Monster</u></b><br><br><b>Physique:</b> ${physique}<br><b>Feature:</b> ${feature}<br><b>Quirks:</b> ${quirks}<br><b>Weakness:</b> ${weakness}<br><b>Attack:</b> ${attack}<br><b>Critical Damage:</b> ${criticalDamage}<br><b>Ability:</b> ${ability}<br><b>Target:</b> ${target}`;
     displayResult(textResult);
   } else if (subcategory === "Reaction Roll") {
     let roll = utils.roll(2, 6);
-    const result = bestiary[roll - 2]; //2-12 -> 0-10
+    const result = Monsters[roll - 2]; //2-12 -> 0-10
     const textResult = `<b><u>Reaction Roll</u></b><br><br><b>${result}</b>`;
     displayResult(textResult);
   }
