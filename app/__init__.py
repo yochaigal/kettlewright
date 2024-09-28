@@ -1,5 +1,3 @@
-# In __init__.py
-
 import os
 import logging
 from flask import Flask
@@ -24,24 +22,32 @@ allowed_origins = base_url.split(',')
 
 # Check if Redis should be used
 use_redis = os.getenv('USE_REDIS', 'False').lower() in ['true', '1', 't']
-redis_url = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0') if use_redis else None
+redis_url = os.getenv(
+    'REDIS_URL', 'redis://127.0.0.1:6379/0') if use_redis else None
+use_flask = os.getenv('USE_FLASK', 'False').lower() in [
+    'true', '1', 't']  # Use Flask Server for local development
 
 # Log whether Redis is being used
 if use_redis:
     logging.info(f"Using Redis as a message queue: {redis_url}")
-    socketio = SocketIO(
-        async_mode='eventlet',
-        manage_session=True,
-        cors_allowed_origins=allowed_origins,  # Use allowed origins for SocketIO
-        message_queue=redis_url
-    )
+    socketio_config = {
+        'manage_session': True,
+        'cors_allowed_origins': allowed_origins,
+        'message_queue': redis_url
+    }
 else:
-    logging.info("Not using Redis; falling back to local eventlet sessions.")
-    socketio = SocketIO(
-        async_mode='eventlet',
-        manage_session=True,
-        cors_allowed_origins=allowed_origins  # Use allowed origins for SocketIO
-    )
+    logging.info("Not using Redis; falling back to local sessions.")
+    socketio_config = {
+        'manage_session': True,
+        'cors_allowed_origins': allowed_origins
+    }
+
+# Set async_mode if not using Flask
+if not use_flask:
+    socketio_config['async_mode'] = 'eventlet'
+
+socketio = SocketIO(**socketio_config)
+
 
 def create_app():
     app = Flask(__name__)
@@ -59,7 +65,8 @@ def create_app():
     CORS(app, resources={r"/*": {"origins": allowed_origins}})
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+        'SQLALCHEMY_DATABASE_URI')
 
     db.init_app(app)
 
@@ -105,5 +112,6 @@ def create_app():
     register_socket_events(socketio)
 
     return app
+
 
 application = create_app()
