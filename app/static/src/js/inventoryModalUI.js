@@ -15,6 +15,12 @@ const inventoryModalUI = {
   itemDescriptionField: document.getElementById("add-item-modal-description-field"),
   itemContainerSelect: document.getElementById("add-item-modal-container-select"),
   removeContainerItemDestination: document.getElementById("edit-container-modal-move-items-destination"),
+  editContainerErrorContainer: document.getElementById("edit-container-error-container"),
+  editContainerErrorText: document.getElementById("edit-container-error-text"),
+  addContainerErrorContainer: document.getElementById("add-container-error-container"),
+  addContainerErrorText: document.getElementById("add-container-error-text"),
+  maxContainerSlots: 20,
+  maxContainerLoad: 10,
 
   initialize(page = "character") {
     this.page = page;
@@ -80,6 +86,8 @@ const inventoryModalUI = {
         }
       });
     });
+    this.editContainerErrorText.textContent = "";
+    this.editContainerErrorContainer.classList.add("hidden");
   },
   // _____________ Item Description Modal _____________
 
@@ -340,6 +348,7 @@ const inventoryModalUI = {
 
   // _____________ Add Container Modal _____________
 
+  // Initialize and set save functions
   initializeAddContainerModal() {
     const carriedBySelect = document.getElementById("add-container-modal-carried-select");
     const addContainerNameField = document.getElementById("add-container-modal-name-field");
@@ -352,15 +361,17 @@ const inventoryModalUI = {
       let containerName = addContainerNameField.value;
       let containerSlots = addContainerSlotsField.value;
 
-      //check to make sure the user inputed a value for both the container name and slots)
+      //check to make sure the user inputed a value for both the container name and slots
       if (containerName.trim().length == 0 || inventory.getContainerID(containerName)) {
         addContainerNameField.focus();
         addContainerNameField.classList.add("is-danger");
         return;
       }
-      if (containerSlots.length == 0 || containerSlots <= 0) {
+      if (containerSlots.length == 0 || containerSlots <= 0 || containerSlots > this.maxContainerSlots) {
         addContainerSlotsField.focus();
         addContainerSlotsField.classList.add("is-danger");
+        this.addContainerErrorText.textContent = `Slots must be between 1 and ${this.maxContainerSlots}`;
+        this.addContainerErrorContainer.classList.remove("hidden");
         return;
       }
       if (containerName !== "" && containerSlots > 0) {
@@ -393,9 +404,11 @@ const inventoryModalUI = {
         editContainerNameField.classList.add("is-danger");
         return;
       }
-      if (containerSlots.length == 0 || containerSlots <= 0) {
+      if (containerSlots.length == 0 || containerSlots <= 0 || containerSlots > this.maxContainerSlots) {
         editContainerSlotsField.focus();
         editContainerSlotsField.classList.add("is-danger");
+        this.editContainerErrorText.value = `Slots must be between 1 and ${this.maxContainerSlots}`;
+        this.editContainerErrorContainer.classList.remove("hidden");
         return;
       }
       if (containerName !== "" && containerSlots > 0) {

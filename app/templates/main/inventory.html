@@ -43,8 +43,7 @@
           <input
             class="input"
             type="number"
-            min="0"
-            max="18"
+            min="1"
             placeholder="0"
             id="add-container-modal-slots-field"
             style="width: 100%"
@@ -76,8 +75,8 @@
       </div>
     </section>
     <footer class="modal-card-foot" style="flex-direction: column">
-      <div class="message is-danger hidden" id="edit-container-error-container" style="width: 100%">
-        <p class="message-body" id="add-container-error-text"></p>
+      <div class="message is-danger hidden" id="add-container-error-container" style="width: 100%">
+        <p class="message-body red-text" id="add-container-error-text"></p>
       </div>
 
       <div class="footer-button-container">
@@ -112,8 +111,7 @@
           <input
             class="input modal-field"
             type="number"
-            min="0"
-            max="18"
+            min="1"
             placeholder="slots"
             id="edit-container-modal-slots-field"
           />
@@ -166,7 +164,7 @@
 
     <footer class="modal-card-foot">
       <div class="message is-danger hidden" id="edit-container-error-container" style="width: 100%">
-        <p class="message-body" id="edit-container-error-text"></p>
+        <p class="message-body red-text" id="edit-container-error-text"></p>
       </div>
       <div class="footer-button-container">
         <button class="button is-success" type="button" id="edit-container-modal-save"> Save </button>
