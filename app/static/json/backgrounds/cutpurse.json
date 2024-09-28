@@ -124,6 +124,7 @@
               "name": "Gildfinger",
               "tags": ["charges"],
               "charges": 1,
+              "max_charges": 1,
               "description": "Recharge: Bundle it with at least 100gp for a night."
             }
           ]

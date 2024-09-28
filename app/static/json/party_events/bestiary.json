@@ -1078,5 +1078,18 @@
         "Critical Damage: Target is infected and becomes deprived. Without the services of a specialist or healer, they will become a zombie in 1d4 days."
       ]
     }
+  ],
+  "Reaction Roll": [
+    "Hostile",
+    "Wary",
+    "Wary",
+    "Wary",
+    "Curious",
+    "Curious",
+    "Curious",
+    "Kind",
+    "Kind",
+    "Kind",
+    "Helpful"
   ]
 }

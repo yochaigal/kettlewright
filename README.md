@@ -100,28 +100,52 @@ If you plan to launch Kettlewright with multiple workers, you _must_ use a redis
 
        docker run -d --name kettlewright --env-file ~/docker/kettlewright/.env -v kettlewright_db:/app/instance --link redis-server:redis-server -p 8000:8000 --restart always yochaigal/kettlewright
 
-## Running the app without Docker
+## Running the app without Docker (gunicorn)
 
 1. Clone the repository.
 
 2. Copy `.env.template` to `.env` and insert the appropriate values.
 
-3. Create the python environment:
+3. Create the python environment and lock it:
 
        pipenv shell
+       pipenv lock
 
-4. Install packages:
+5. Install packages:
 
        pipenv sync
 
-5. Initialize database:
+6. Initialize database:
 
        flask db upgrade
        exit
 
-6. Run the app:
+7. Run the app:
 
        pipenv run dotenv run -- gunicorn -k eventlet -w 1 -b 0.0.0.0:8000 --timeout 120 'app:application'
+
+## Running the app without Docker (flask)
+
+It can be helpful to run the app with flask, as you can see changes immediately rather than after restarting the server.
+
+1. Add USE_FLASK=True to the .env file
+
+2. Create the python environment and lock it:
+
+       pipenv shell
+       pipenv lock
+
+3. Install packages:
+
+       pipenv sync
+
+4. Initialize database:
+
+       flask db upgrade
+
+5. Run the app:
+
+       flask run --port=8000 --debug
 
 ## Attribution
 
