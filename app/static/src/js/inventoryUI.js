@@ -19,7 +19,7 @@ const inventoryUI = {
       inventoryModalUI.showAddEditItemModal();
     });
     document.getElementById("add-container-button").addEventListener("click", () => {
-      inventoryModalUI.showAddContainerModal();
+      inventoryModalUI.showContainerModal();
     });
     document.getElementById("show-marketplace-button").addEventListener("click", () => {
       marketplace.showMarketplace();
@@ -413,7 +413,7 @@ const inventoryUI = {
           content: "edit",
           events: {
             click: () => {
-              inventoryModalUI.showEditContainerModal(container);
+              inventoryModalUI.showContainerModal(container);
             },
           },
         });

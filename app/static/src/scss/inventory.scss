@@ -135,26 +135,42 @@ width: 100%;
     // margin-left: auto;
 
 }
-/* Add Container Modal */
+/* Add/Edit Container Modal */
 
-#add-container-modal-body, #edit-container-modal-update-sectio, #edit-container-modal-body-top {
+#add-edit-container-modal-body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1em;
+    column-gap: 2em;
 }
 
-
-
-#add-container-modal-body > * , #add-container-modal-body > * > *, #add-container-modal-body > * > * > *, 
-#edit-container-modal-body-top > * > *, #edit-container-modal-move-items-destination, #edit-container-modal-carried-select {
+#add-edit-container-modal-body > *, 
+#add-edit-container-modal-body > * > *, 
+#add-edit-container-modal-body > * > * > *, 
+#add-edit-container-modal-carried-select,
+#add-edit-container-modal-move-items-destination {
     max-width: 100%;
     width: 100%;
 }
 
-#edit-container-modal-body-bottom {
+// #add-edit-container-modal-remove-section {
+//     grid-column: 1 / -1;  /* Span across all columns */
+// }
+
+#add-edit-container-modal-remove-section > div {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1em;
+}
+
+.footer-button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#add-edit-container-modal-remove {
+    margin-left: auto;
 }
 
 .marketpace-item-quantity {

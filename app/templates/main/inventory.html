@@ -17,136 +17,75 @@
     </div>
   </div>
 </div>
-<div class="modal inventory-modal" id="add-container-modal">
+
+<div class="modal inventory-modal" id="add-edit-container-modal">
   <div class="modal-background inventory-modal-background"></div>
-  <div class="modal-card" id="add-container-modal-container">
+  <div class="modal-card" id="add-edit-container-modal-container">
     <header class="modal-card-head">
-      <h3 class="modal-card-title">Add Container</h3>
+      <h3 class="modal-card-title" id="add-edit-container-modal-title">Add/Edit Container</h3>
       <button
         class="delete inventory-modal-cancel-button"
         type="button"
         aria-label="close"
-        id="add-container-modal-close"
+        id="add-edit-container-modal-close"
       ></button>
     </header>
 
-    <section class="modal-card-body" id="add-container-modal-body">
-      <div class="column field">
-        <label>Name</label>
-        <div class="" style="padding-bottom: 0">
-          <input class="input" type="text" placeholder="container name" id="add-container-modal-name-field" />
-        </div>
-      </div>
-      <div class="column field">
-        <label>Slots</label>
-        <div class="">
-          <input
-            class="input"
-            type="number"
-            min="1"
-            placeholder="0"
-            id="add-container-modal-slots-field"
-            style="width: 100%"
-          />
-        </div>
-      </div>
-
-      <div class="column field">
-        <label>Carried by</label>
-        <div class="select">
-          <select id="add-container-modal-carried-select">
-            <option value="">carried by...</option>
-          </select>
-        </div>
-      </div>
-      <div class="column field">
-        <label>Load</label>
-        <div class="">
-          <input
-            class="input"
-            type="number"
-            min="0"
-            max="10"
-            placeholder="0"
-            id="add-container-modal-load-field"
-            disabled
-          />
-        </div>
-      </div>
-    </section>
-    <footer class="modal-card-foot" style="flex-direction: column">
-      <div class="message is-danger hidden" id="add-container-error-container" style="width: 100%">
-        <p class="message-body red-text" id="add-container-error-text"></p>
-      </div>
-
-      <div class="footer-button-container">
-        <button class="button is-success" type="button" id="add-container-modal-save"> Save </button>
-        <button class="button inventory-modal-cancel-button" type="button"> Cancel </button>
-      </div>
-    </footer>
-  </div>
-</div>
-
-<div class="modal inventory-modal" id="edit-container-modal">
-  <div class="modal-background inventory-modal-background"></div>
-  <div class="modal-card" id="edit-container-modal-container">
-    <header class="modal-card-head">
-      <h3 class="modal-card-title">Edit Container</h3>
-      <button class="delete inventory-modal-cancel-button" type="button" aria-label="close"></button>
-    </header>
     <section class="modal-card-body">
-      <div id="edit-container-modal-body-top"
-        ><div>
+      <div id="add-edit-container-modal-body">
+        <div class="column field">
           <label>Name</label>
-          <input
-            class="input modal-field"
-            type="text"
-            placeholder="container name"
-            id="edit-container-modal-name-field"
-          />
+          <div class="" style="padding-bottom: 0">
+            <input class="input" type="text" placeholder="container name" id="add-edit-container-modal-name-field" />
+          </div>
         </div>
-
-        <div class="field">
+        <div class="column field">
           <label>Slots</label>
-          <input
-            class="input modal-field"
-            type="number"
-            min="1"
-            placeholder="slots"
-            id="edit-container-modal-slots-field"
-          />
-        </div>
-
-        <div class="">
-          <label>Carried by</label>
-          <div class="select modal-field">
-            <select id="edit-container-modal-carried-select">
-              <option value="0">carried by...</option>
-            </select>
+          <div class="">
+            <input
+              class="input"
+              type="number"
+              min="1"
+              placeholder="0"
+              id="add-edit-container-modal-slots-field"
+              style="width: 100%"
+            />
           </div>
         </div>
 
-        <div class="">
+        <div class="column field">
+          <label>Carried by</label>
+          <div class="select">
+            <select id="add-edit-container-modal-carried-select">
+              <option value="">carried by...</option>
+            </select>
+          </div>
+        </div>
+        <div class="column field">
           <label>Load</label>
-          <input
-            class="input modal-field"
-            type="number"
-            min="0"
-            max="10"
-            placeholder="0"
-            id="edit-container-modal-load-field"
-          /> </div
-      ></div>
-      <div>
-        <div class="divider" style="margin: 1em 0px; padding: 0px"></div>
-        <div id="edit-container-modal-body-bottom">
           <div class="">
-            <lable>Remove Container</lable>
+            <input
+              class="input"
+              type="number"
+              min="0"
+              max="10"
+              placeholder="0"
+              id="add-edit-container-modal-load-field"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div id="add-edit-container-modal-remove-section" class="hidden">
+        <div class="divider" style="margin: 1em 0px; padding: 0px"></div>
+        <div style="margin-top: 2em">
+          <div class="column field">
+            <label>Remove Container</label>
             <div class="control">
               <label class="checkbox">
                 <input
                   type="checkbox"
-                  id="edit-container-modal-delete-checkbox"
+                  id="add-edit-container-modal-delete-checkbox"
                   style="width: 20px; height: 20px; margin-top: 10px"
                 />
               </label>
@@ -155,29 +94,27 @@
           <div class="column field">
             <label>Move Items</label>
             <div class="select">
-              <select id="edit-container-modal-move-items-destination" disabled></select>
-            </div>
-          </div>
-        </div>
+              <select id="add-edit-container-modal-move-items-destination" disabled></select>
+            </div> </div
+        ></div>
       </div>
     </section>
 
     <footer class="modal-card-foot">
-      <div class="message is-danger hidden" id="edit-container-error-container" style="width: 100%">
-        <p class="message-body red-text" id="edit-container-error-text"></p>
+      <div class="message is-danger hidden" id="add-edit-container-error-container" style="width: 100%">
+        <p class="message-body red-text" id="add-edit-container-error-text"></p>
       </div>
-      <div class="footer-button-container">
-        <button class="button is-success" type="button" id="edit-container-modal-save"> Save </button>
 
-        <button class="button inventory-modal-cancel-button" type="button"> Cancel </button>
+      <div class="footer-button-container">
+        <button class="button is-success" type="button" id="add-edit-container-modal-save">Save</button>
+        <button class="button inventory-modal-cancel-button" type="button">Cancel</button>
         <button
-          class="button is-danger"
+          class="button is-danger hidden"
           type="button"
-          id="edit-container-modal-remove"
+          id="add-edit-container-modal-remove"
           style="margin-left: auto"
-          disabled
         >
-          Remove Container
+          Delete
         </button>
       </div>
     </footer>
@@ -186,16 +123,16 @@
 
 <div class="modal inventory-modal" id="add-edit-item-modal">
   <div class="modal-background inventory-modal-background"></div>
-  <div class="modal-card" id="add-item-modal-container">
+  <div class="modal-card" id="add-edit-item-modal-container">
     <header class="modal-card-head">
-      <h3 class="modal-card-title" id="add-item-modal-title">Add Item</h3>
+      <h3 class="modal-card-title" id="add-edit-item-modal-title">Add Item</h3>
       <button class="delete inventory-modal-cancel-button" aria-label="close" type="button"></button>
     </header>
 
     <section class="modal-card-body" id="add-edit-item-modal-body">
       <div class="field">
         <label>Name</label>
-        <input class="input" type="text" placeholder="Item Name" id="add-item-modal-name-field" />
+        <input class="input" type="text" placeholder="Item Name" id="add-edit-item-modal-name-field" />
       </div>
 
       <div class="tags-container field" style="margin: 20px 0px">
@@ -223,18 +160,18 @@
       </div>
 
       <div style="display: flex; justify-content: flex-start; gap: 40px">
-        <div class="inactive field" id="add-item-modal-uses-container" style="align-items: center">
+        <div class="inactive field" id="add-edit-item-modal-uses-container" style="align-items: center">
           <label>Uses</label>
           <div class="column number-field" style="padding-bottom: 0">
-            <input class="input" type="number" min="0" max="64" placeholder="0" id="add-item-modal-uses-field" />
+            <input class="input" type="number" min="0" max="64" placeholder="0" id="add-edit-item-modal-uses-field" />
           </div>
         </div>
-        <div id="add-item-modal-charges-container" class="field">
+        <div id="add-edit-item-modal-charges-container" class="field">
           <label>Charges / Max</label>
           <div style="display: flex">
-            <input class="input" type="number" min="0" max="64" placeholder="0" id="add-item-modal-charges-field" />
+            <input class="input" type="number" min="0" placeholder="0" id="add-edit-item-modal-charges-field" />
             <p style="margin: 0 4px; display: flex; align-items: center">/</p>
-            <input class="input" type="number" min="0" max="64" placeholder="0" id="add-item-modal-max-charges-field" />
+            <input class="input" type="number" min="0" placeholder="0" id="add-edit-item-modal-max-charges-field" />
           </div>
         </div>
       </div>
@@ -242,7 +179,7 @@
         <label>Container</label>
 
         <div class="select" style="max-width: 200px">
-          <select id="add-item-modal-container-select"></select>
+          <select id="add-edit-item-modal-container-select"></select>
         </div>
       </div>
 
@@ -251,22 +188,30 @@
         <textarea
           class="textarea"
           placeholder="Item Description"
-          id="add-item-modal-description-field"
+          id="add-edit-item-modal-description-field"
           oninput="resizeTextarea(this)"
         ></textarea>
       </div>
     </section>
 
     <footer class="modal-card-foot">
+      <div class="message hidden" id="add-edit-item-modal-error-container" style="width: 100%">
+        <p class="message-body red-text" id="add-edit-item-modal-error-text"></p>
+      </div>
       <div class="footer-button-container">
-        <button class="button is-success" type="button" id="add-item-modal-save"> Add Item </button>
-        <button class="button is-success" type="button" id="add-item-modal-save-edits"> Save </button>
-        <button class="button inventory-modal-cancel-button" type="button" id="add-item-modal-cancel"> Cancel </button>
-        <button class="button is-primary" type="button" id="add-item-modal-transfer" style="margin-left: auto">
-          <i class="fa-solid fa-share icon-in-button"></i>
-          Party
-        </button>
-        <button class="button is-danger" type="button" id="add-item-modal-delete"> Delete Item </button>
+        <div>
+          <button class="button is-success" type="button" id="add-edit-item-modal-save"> Save </button>
+          <button class="button inventory-modal-cancel-button" type="button" id="add-edit-item-modal-cancel">
+            Cancel
+          </button></div
+        >
+        <div>
+          <button class="button is-primary" type="button" id="add-edit-item-modal-transfer" style="margin-left: auto">
+            <i class="fa-solid fa-share icon-in-button"></i>
+            Party
+          </button>
+          <button class="button is-danger hidden" type="button" id="add-edit-item-modal-delete"> Delete </button></div
+        >
       </div>
     </footer>
   </div>

@@ -147,7 +147,7 @@ function togglePartyEditing() {
     document.getElementById("character-join-code").classList.add("hidden");
   } else {
     document.getElementById("character-join-code").classList.remove("hidden");
-    document.getElementById("add-item-modal-transfer").classList.add("hidden");
+    document.getElementById("add-edit-item-modal-transfer").classList.add("hidden");
   }
 }
 

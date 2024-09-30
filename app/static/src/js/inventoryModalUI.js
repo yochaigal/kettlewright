@@ -1,34 +1,44 @@
 import inventory from "./inventoryData.js";
 import inventoryUI from "./inventoryUI.js";
 import utils, { createOption } from "./utils.js";
-//import { DragAndDropModule } from "./dragAndDrop.js";
 
 const inventoryModalUI = {
   openModal: "none",
   page: "character",
   item: {},
   container: {},
-  itemNameField: document.getElementById("add-item-modal-name-field"),
-  itemUsesField: document.getElementById("add-item-modal-uses-field"),
-  itemChargesField: document.getElementById("add-item-modal-charges-field"),
-  itemMaxChargesField: document.getElementById("add-item-modal-max-charges-field"),
-  itemDescriptionField: document.getElementById("add-item-modal-description-field"),
-  itemContainerSelect: document.getElementById("add-item-modal-container-select"),
-  removeContainerItemDestination: document.getElementById("edit-container-modal-move-items-destination"),
-  editContainerErrorContainer: document.getElementById("edit-container-error-container"),
-  editContainerErrorText: document.getElementById("edit-container-error-text"),
-  addContainerErrorContainer: document.getElementById("add-container-error-container"),
-  addContainerErrorText: document.getElementById("add-container-error-text"),
+  itemModalMode: "add", // "add" or "edit"
+
+  // Add/Edit Item Modal
+  itemNameField: document.getElementById("add-edit-item-modal-name-field"),
+  itemUsesField: document.getElementById("add-edit-item-modal-uses-field"),
+  itemChargesField: document.getElementById("add-edit-item-modal-charges-field"),
+  itemMaxChargesField: document.getElementById("add-edit-item-modal-max-charges-field"),
+  itemDescriptionField: document.getElementById("add-edit-item-modal-description-field"),
+  itemContainerSelect: document.getElementById("add-edit-item-modal-container-select"),
+  itemErrorContainer: document.getElementById("add-edit-item-modal-error-container"),
+  itemErrorText: document.getElementById("add-edit-item-modal-error-text"),
+  itemDeleteButton: document.getElementById("add-edit-item-modal-delete"),
+  itemTransferButton: document.getElementById("add-edit-item-modal-transfer"),
+  itemTitleText: document.getElementById("add-edit-item-modal-title"),
+  maxItemNameLength: 40,
+  maxItemDescriptionLength: 1000,
+  maxUsesCharges: 64,
+
+  // Add/Edit Container Modal
+  removeContainerItemDestination: document.getElementById("add-edit-container-modal-move-items-destination"),
+  containerErrorContainer: document.getElementById("add-edit-container-error-container"),
+  containerErrorText: document.getElementById("add-edit-container-error-text"),
   maxContainerSlots: 20,
   maxContainerLoad: 10,
+  maxContainerNameLength: 30,
 
   initialize(page = "character") {
     this.page = page;
     this.initializeInventoryModals();
     this.initializeTagButtons();
     this.initializeAddEditItemModal();
-    this.initializeAddContainerModal();
-    this.initializeEditContainerModal();
+    this.initializeContainerModal();
     this.initializeTransferItemModal();
   },
 
@@ -36,11 +46,13 @@ const inventoryModalUI = {
     document.querySelectorAll(".inventory-modal-background").forEach((modal) => {
       modal.addEventListener("click", () => {
         this.closeInventoryModals();
+        this.removeModalWarnings();
       });
     });
     document.querySelectorAll(".inventory-modal-cancel-button").forEach((button) => {
       button.addEventListener("click", () => {
         this.closeInventoryModals();
+        this.removeModalWarnings();
       });
     });
   },
@@ -86,8 +98,10 @@ const inventoryModalUI = {
         }
       });
     });
-    this.editContainerErrorText.textContent = "";
-    this.editContainerErrorContainer.classList.add("hidden");
+    this.containerErrorText.textContent = "";
+    this.containerErrorContainer.classList.add("hidden");
+    this.itemErrorText.textContent = "";
+    this.itemErrorContainer.classList.add("hidden");
   },
   // _____________ Item Description Modal _____________
 
@@ -100,31 +114,48 @@ const inventoryModalUI = {
   //Add and edit item models share the same html
 
   initializeAddEditItemModal() {
-    document.getElementById("add-item-modal-save").addEventListener("click", () => {
-      this.saveItem();
-      this.closeInventoryModals();
-      inventoryUI.showSaveFooter();
+    document.getElementById("add-edit-item-modal-save").addEventListener("click", () => {
+      // check for errors
+      if (this.itemNameField.value.trim() === "" || this.itemNameField.value.length >= this.maxItemNameLength) {
+        this.itemNameField.focus();
+        this.itemNameField.classList.add("is-danger");
+        this.itemErrorText.textContent = `Item name must be between 1 and ${this.maxItemNameLength} characters`;
+        this.itemErrorContainer.classList.remove("hidden");
+      } else if (this.itemDescriptionField.value.length >= this.maxItemDescriptionLength) {
+        this.itemDescriptionField.focus();
+        this.itemDescriptionField.classList.add("is-danger");
+        this.itemErrorText.textContent = `Item description must be less than ${this.maxItemDescriptionLength} characters`;
+        this.itemErrorContainer.classList.remove("hidden");
+      }
+      // save the item
+      else if (this.itemModalMode === "add") {
+        this.saveItem();
+        this.closeInventoryModals();
+        this.removeModalWarnings();
+        inventoryUI.showSaveFooter();
+      } else if (this.itemModalMode === "edit") {
+        this.saveItem(this.item);
+        this.closeInventoryModals();
+        this.removeModalWarnings();
+        inventoryUI.showSaveFooter();
+      }
     });
-    document.getElementById("add-item-modal-save-edits").addEventListener("click", () => {
-      this.saveItem(this.item);
-      this.closeInventoryModals();
-      inventoryUI.showSaveFooter();
-    });
-    document.getElementById("add-item-modal-delete").addEventListener("click", () => {
+
+    this.itemDeleteButton.addEventListener("click", () => {
       inventory.deleteItem(this.item.id);
       this.closeInventoryModals();
       inventoryUI.refreshInventory();
     });
     // chanage the transfer button if the page is the party page
     if (this.page === "party") {
-      const transferButton = document.getElementById("add-item-modal-transfer");
+      const transferButton = document.getElementById("add-edit-item-modal-transfer");
       const transferButtonIcon = transferButton.querySelector("i");
       transferButton.innerHTML = "";
       let transferButtonText = document.createTextNode(" Character");
       transferButton.appendChild(transferButtonIcon);
       // transferButton.appendChild(transferButtonText);
     }
-    document.getElementById("add-item-modal-transfer").addEventListener("click", () => {
+    this.itemTransferButton.addEventListener("click", () => {
       if (this.page === "party") {
         this.saveItem(this.item);
         this.closeInventoryModals();
@@ -233,24 +264,23 @@ const inventoryModalUI = {
 
   toggleUses() {
     if (document.getElementById("tag-button-uses").classList.contains("selected")) {
-      document.getElementById("add-item-modal-uses-container").classList.remove("inactive");
+      document.getElementById("add-edit-item-modal-uses-container").classList.remove("inactive");
     } else {
-      document.getElementById("add-item-modal-uses-container").classList.add("inactive");
+      document.getElementById("add-edit-item-modal-uses-container").classList.add("inactive");
     }
 
     if (document.getElementById("tag-button-charges").classList.contains("selected")) {
-      document.getElementById("add-item-modal-charges-container").classList.remove("inactive");
+      document.getElementById("add-edit-item-modal-charges-container").classList.remove("inactive");
     } else {
-      document.getElementById("add-item-modal-charges-container").classList.add("inactive");
+      document.getElementById("add-edit-item-modal-charges-container").classList.add("inactive");
     }
   },
 
   showAddEditItemModal(item = null) {
     this.item = item;
     if (item === null) {
-      // if item is null, it is an add item modal
-      document.getElementById("add-item-modal-save-edits").classList.add("hidden");
-      document.getElementById("add-item-modal-save").classList.remove("hidden");
+      this.itemModalMode = "add";
+      this.itemTitleText.textContent = "Add Item";
       let item = {
         name: "",
         uses: "",
@@ -260,19 +290,21 @@ const inventoryModalUI = {
         tags: [],
         location: inventoryUI.getSelectedContainer(),
       };
+      this.itemDeleteButton.classList.add("hidden");
+      this.itemTransferButton.classList.add("hidden");
       this.populateAddEditItemModal(item);
-
-      //resize description textbox
     } else {
-      document.getElementById("add-item-modal-save-edits").classList.remove("hidden");
-      document.getElementById("add-item-modal-save").classList.add("hidden");
+      this.itemTitleText.textContent = "Edit Item";
+      this.itemModalMode = "edit";
+      this.itemDeleteButton.classList.remove("hidden");
+      this.itemTransferButton.classList.remove("hidden");
       this.populateAddEditItemModal(item);
     }
     document.getElementById("add-edit-item-modal").classList.add("is-active");
     inventoryUI.hideSaveFooter();
     document.getElementById("add-edit-item-modal-body").scrollTop = 0;
     console.log("resizing text area");
-    resizeTextarea(document.getElementById("add-item-modal-description-field"));
+    resizeTextarea(document.getElementById("add-edit-item-modal-description-field"));
   },
 
   populateAddEditItemModal(
@@ -346,166 +378,165 @@ const inventoryModalUI = {
     inventoryUI.refreshInventory();
   },
 
-  // _____________ Add Container Modal _____________
+  // _____________ Add/Edit Container Modal _____________
 
-  // Initialize and set save functions
-  initializeAddContainerModal() {
-    const carriedBySelect = document.getElementById("add-container-modal-carried-select");
-    const addContainerNameField = document.getElementById("add-container-modal-name-field");
-    const addContainerSlotsField = document.getElementById("add-container-modal-slots-field");
+  initializeContainerModal() {
+    const carriedBySelect = document.getElementById("add-edit-container-modal-carried-select");
+    const containerNameField = document.getElementById("add-edit-container-modal-name-field");
+    const containerSlotsField = document.getElementById("add-edit-container-modal-slots-field");
+    const containerLoadField = document.getElementById("add-edit-container-modal-load-field");
+    const saveButton = document.getElementById("add-edit-container-modal-save");
+    const deleteCheckbox = document.getElementById("add-edit-container-modal-delete-checkbox");
+    const removeButton = document.getElementById("add-edit-container-modal-remove");
 
     this.populateContainerOptions(carriedBySelect, null, null, "Not carried");
-    document.getElementById("add-container-modal-save").addEventListener("click", () => {
+
+    saveButton.addEventListener("click", () => {
       this.removeModalWarnings();
 
-      let containerName = addContainerNameField.value;
-      let containerSlots = addContainerSlotsField.value;
+      let containerName = containerNameField.value;
+      let containerSlots = containerSlotsField.value;
 
-      //check to make sure the user inputed a value for both the container name and slots
-      if (containerName.trim().length == 0 || inventory.getContainerID(containerName)) {
-        addContainerNameField.focus();
-        addContainerNameField.classList.add("is-danger");
-        return;
-      }
-      if (containerSlots.length == 0 || containerSlots <= 0 || containerSlots > this.maxContainerSlots) {
-        addContainerSlotsField.focus();
-        addContainerSlotsField.classList.add("is-danger");
-        this.addContainerErrorText.textContent = `Slots must be between 1 and ${this.maxContainerSlots}`;
-        this.addContainerErrorContainer.classList.remove("hidden");
-        return;
-      }
-      if (containerName !== "" && containerSlots > 0) {
-        this.saveContainer(this.container);
-        this.removeModalWarnings();
-      }
-    });
+      // Check for errors
 
-    carriedBySelect.addEventListener("change", () => {
-      document.getElementById("add-container-modal-load-field").disabled = carriedBySelect.value === "" ? true : false;
-    });
-  },
-
-  initializeEditContainerModal() {
-    const editContainerNameField = document.getElementById("edit-container-modal-name-field");
-    const editContainerSlotsField = document.getElementById("edit-container-modal-slots-field");
-
-    document.getElementById("edit-container-modal-save").addEventListener("click", () => {
-      this.removeModalWarnings();
-
-      let containerName = editContainerNameField.value;
-      let containerSlots = editContainerSlotsField.value;
-
-      //check to make sure the user inputed a value for both the container name and slots)
+      // Container name must be unique and under maxContainerNameLength characters
       if (
         containerName.trim().length == 0 ||
-        (inventory.getContainerID(containerName) && inventory.getContainerID(containerName) !== this.container.id)
+        (this.openModal === "add" && inventory.getContainerID(containerName)) ||
+        (this.openModal === "edit" &&
+          inventory.getContainerID(containerName) &&
+          inventory.getContainerID(containerName) !== this.container.id) ||
+        containerName.length >= this.maxContainerNameLength
       ) {
-        editContainerNameField.focus();
-        editContainerNameField.classList.add("is-danger");
+        containerNameField.focus();
+        containerNameField.classList.add("is-danger");
+        this.containerErrorText.textContent = `Container name must be unique and between 1 and ${this.maxContainerNameLength} characters`;
+        this.containerErrorContainer.classList.remove("hidden");
         return;
-      }
-      if (containerSlots.length == 0 || containerSlots <= 0 || containerSlots > this.maxContainerSlots) {
-        editContainerSlotsField.focus();
-        editContainerSlotsField.classList.add("is-danger");
-        this.editContainerErrorText.value = `Slots must be between 1 and ${this.maxContainerSlots}`;
-        this.editContainerErrorContainer.classList.remove("hidden");
+        // Slots must be between 1 and maxContainerSlots
+      } else if (containerSlots.length == 0 || containerSlots <= 0 || containerSlots > this.maxContainerSlots) {
+        containerSlotsField.focus();
+        containerSlotsField.classList.add("is-danger");
+        this.containerErrorText.textContent = `Slots must be between 1 and ${this.maxContainerSlots}`;
+        this.containerErrorContainer.classList.remove("hidden");
         return;
-      }
-      if (containerName !== "" && containerSlots > 0) {
-        this.saveContainerEdits(this.container);
+        // Load must be between 1 and maxContainerLoad if container is carried
+      } else if (carriedBySelect.value !== "" && containerLoadField.value === "") {
+        containerLoadField.focus();
+        containerLoadField.classList.add("is-danger");
+        this.containerErrorText.textContent = `Load must be set if container is carried`;
+        this.containerErrorContainer.classList.remove("hidden");
+        return;
+        // else save the container
+      } else {
+        this.saveContainer(this.container || {});
         this.removeModalWarnings();
       }
     });
 
-    document.getElementById("edit-container-modal-delete-checkbox").addEventListener("change", () => {
-      if (document.getElementById("edit-container-modal-delete-checkbox").checked) {
-        this.removeContainerItemDestination.disabled = false;
-        document.getElementById("edit-container-modal-remove").disabled = false;
-      } else {
-        this.removeContainerItemDestination.disabled = true;
-        document.getElementById("edit-container-modal-remove").disabled = true;
-        this.removeContainerItemDestination.value = "";
-      }
-    });
-
-    document.getElementById("edit-container-modal-remove").addEventListener("click", () => {
-      if (this.removeContainerItemDestination.value === "") {
-        inventory.deleteContainer(this.container.id);
-      } else {
-        inventory.deleteContainer(this.container.id, this.removeContainerItemDestination.value);
-      }
-      this.closeInventoryModals();
-      inventoryUI.refreshInventory();
-    });
-  },
-
-  showAddContainerModal() {
-    this.openModal = "add-container";
-    document.getElementById("add-container-modal").classList.add("is-active");
-    inventoryUI.hideSaveFooter();
-    this.clearAddContainerModal();
-  },
-
-  clearAddContainerModal() {
-    document.getElementById("add-container-modal-name-field").value = "";
-    document.getElementById("add-container-modal-load-field").value = "";
-    document.getElementById("add-container-modal-slots-field").value = "";
-  },
-
-  showEditContainerModal(container) {
-    this.openModal = "edit-container";
-    this.container = container;
-    document.getElementById("edit-container-modal").classList.add("is-active");
-    inventoryUI.hideSaveFooter();
-    this.populateEditContainerModal(container);
-  },
-
-  populateEditContainerModal(container) {
-    document.getElementById("edit-container-modal-name-field").value = container.name;
-    document.getElementById("edit-container-modal-slots-field").value = container.slots;
-    const carriedBySelect = document.getElementById("edit-container-modal-carried-select");
-    this.populateContainerOptions(carriedBySelect, container.carried_by, container.id, "Not carried");
     carriedBySelect.addEventListener("change", () => {
-      document.getElementById("edit-container-modal-load-field").disabled = carriedBySelect.value === "" ? true : false;
+      containerLoadField.disabled = carriedBySelect.value === "";
     });
-    if (container.carried_by) {
-      document.getElementById("edit-container-modal-carried-select").value = container.carried_by;
-      document.getElementById("edit-container-modal-load-field").value = container.load;
-    } else {
-      document.getElementById("edit-container-modal-load-field").disabled = true;
+
+    if (deleteCheckbox) {
+      deleteCheckbox.addEventListener("change", () => {
+        this.removeContainerItemDestination.disabled = !deleteCheckbox.checked;
+        removeButton.disabled = !deleteCheckbox.checked;
+        if (!deleteCheckbox.checked) {
+          this.removeContainerItemDestination.value = "";
+        }
+      });
     }
 
-    // Populate the move container desitnation
+    if (removeButton) {
+      removeButton.addEventListener("click", () => {
+        if (this.removeContainerItemDestination.value === "") {
+          inventory.deleteContainer(this.container.id);
+        } else {
+          inventory.deleteContainer(this.container.id, this.removeContainerItemDestination.value);
+        }
+        this.closeInventoryModals();
+        inventoryUI.refreshInventory();
+      });
+    }
+  },
+
+  showContainerModal(container = null) {
+    this.openModal = container ? "edit" : "add";
+    this.container = container;
+    const modal = document.getElementById("add-edit-container-modal");
+    const title = document.getElementById("add-edit-container-modal-title");
+    const removeSection = document.getElementById("add-edit-container-modal-remove-section");
+    const removeButton = document.getElementById("add-edit-container-modal-remove");
+
+    modal.classList.add("is-active");
+
+    if (container) {
+      title.textContent = "Edit Container";
+      removeSection.classList.remove("hidden");
+      removeButton.classList.remove("hidden");
+    } else {
+      title.textContent = "Add Container";
+      removeSection.classList.add("hidden");
+      removeButton.classList.add("hidden");
+    }
+
+    inventoryUI.hideSaveFooter();
+    this.populateContainerModal(container);
+  },
+
+  populateContainerModal(container) {
+    const nameField = document.getElementById("add-edit-container-modal-name-field");
+    const slotsField = document.getElementById("add-edit-container-modal-slots-field");
+    const carriedBySelect = document.getElementById("add-edit-container-modal-carried-select");
+    const loadField = document.getElementById("add-edit-container-modal-load-field");
+    const removeSection = document.getElementById("add-edit-container-modal-remove-section");
+
+    nameField.value = container ? container.name : "";
+    slotsField.value = container ? container.slots : "";
+    this.populateContainerOptions(
+      carriedBySelect,
+      container ? container.carried_by : null,
+      container ? container.id : null,
+      "Not carried"
+    );
+
+    if (container) {
+      console.log("populating edit container modal");
+      carriedBySelect.value = container.carried_by || "";
+      loadField.value = container.load || "";
+      loadField.disabled = !container.carried_by;
+      if (removeSection) {
+        removeSection.classList.remove("hidden");
+        this.populateRemoveContainerDestination(container);
+      }
+    } else {
+      loadField.value = "";
+      loadField.disabled = true;
+      if (removeSection) {
+        removeSection.classList.add("hidden");
+      }
+    }
+  },
+
+  saveContainer(container) {
+    container.name = document.getElementById("add-edit-container-modal-name-field").value;
+    container.load = document.getElementById("add-edit-container-modal-load-field").value;
+    container.slots = document.getElementById("add-edit-container-modal-slots-field").value;
+    container.carried_by = document.getElementById("add-edit-container-modal-carried-select").value;
+    inventory.addOrUpdateContainer(container);
+    this.closeInventoryModals();
+    inventoryUI.refreshInventory();
+  },
+
+  populateRemoveContainerDestination(container) {
+    console.log("populating remove container destination");
     this.removeContainerItemDestination.innerHTML = "";
     utils.addOptionToSelect(this.removeContainerItemDestination, "", "Delete items");
-    let containers = inventory.getContainers();
-    containers = containers.filter((c) => c.id !== container.id);
+    let containers = inventory.getContainers().filter((c) => c.id !== container.id);
     containers.forEach((c) => {
       utils.addOptionToSelect(this.removeContainerItemDestination, c.id, c.name);
     });
-  },
-
-  saveContainer(container = null) {
-    container = container || {};
-    container.name = document.getElementById("add-container-modal-name-field").value;
-    container.load = document.getElementById("add-container-modal-load-field").value;
-    container.slots = document.getElementById("add-container-modal-slots-field").value;
-    container.carried_by = document.getElementById("add-container-modal-carried-select").value;
-    // if the container is being edited, it will have an id, if not it will be generated by addOrUpdateContainer
-    inventory.addOrUpdateContainer(container);
-    this.closeInventoryModals();
-    inventoryUI.refreshInventory();
-  },
-
-  saveContainerEdits() {
-    let container = this.container;
-    container.name = document.getElementById("edit-container-modal-name-field").value;
-    container.load = document.getElementById("edit-container-modal-load-field").value;
-    container.slots = document.getElementById("edit-container-modal-slots-field").value;
-    container.carried_by = document.getElementById("edit-container-modal-carried-select").value;
-    inventory.addOrUpdateContainer(container);
-    this.closeInventoryModals();
-    inventoryUI.refreshInventory();
   },
 
   // _____________ Transfer Item Modal Modal _____________
