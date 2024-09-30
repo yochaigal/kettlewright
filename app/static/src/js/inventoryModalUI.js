@@ -23,7 +23,7 @@ const inventoryModalUI = {
   itemTitleText: document.getElementById("add-edit-item-modal-title"),
   maxItemNameLength: 40,
   maxItemDescriptionLength: 1000,
-  maxUsesCharges: 64,
+  maxUsesCharges: 99,
 
   // Add/Edit Container Modal
   removeContainerItemDestination: document.getElementById("add-edit-container-modal-move-items-destination"),
@@ -115,26 +115,32 @@ const inventoryModalUI = {
 
   initializeAddEditItemModal() {
     document.getElementById("add-edit-item-modal-save").addEventListener("click", () => {
+      const showErrorMessage = (field, message) => {
+        field.focus();
+        field.classList.add("is-danger");
+        this.itemErrorText.textContent = message;
+        this.itemErrorContainer.classList.remove("hidden");
+        field.scrollIntoView();
+      };
+
       // check for errors
       if (this.itemNameField.value.trim() === "" || this.itemNameField.value.length >= this.maxItemNameLength) {
-        this.itemNameField.focus();
-        this.itemNameField.classList.add("is-danger");
-        this.itemErrorText.textContent = `Item name must be between 1 and ${this.maxItemNameLength} characters`;
-        this.itemErrorContainer.classList.remove("hidden");
+        showErrorMessage(this.itemNameField, `Item name must be between 1 and ${this.maxItemNameLength} characters`);
       } else if (this.itemDescriptionField.value.length >= this.maxItemDescriptionLength) {
-        this.itemDescriptionField.focus();
-        this.itemDescriptionField.classList.add("is-danger");
-        this.itemErrorText.textContent = `Item description must be less than ${this.maxItemDescriptionLength} characters`;
-        this.itemErrorContainer.classList.remove("hidden");
+        showErrorMessage(
+          this.itemDescriptionField,
+          `Item description must be less than ${this.maxItemDescriptionLength} characters`
+        );
+      } else if (this.itemUsesField.value > this.maxUsesCharges) {
+        showErrorMessage(this.itemUsesField, `Uses must be less than ${this.maxUsesCharges + 1}`);
+      } else if (this.itemChargesField.value > this.maxUsesCharges) {
+        showErrorMessage(this.itemChargesField, `Charges must be less than ${this.maxUsesCharges + 1}`);
+      } else if (this.itemMaxChargesField.value > this.maxUsesCharges) {
+        showErrorMessage(this.itemMaxChargesField, `Max charges must be less than ${this.maxUsesCharges + 1}`);
       }
       // save the item
-      else if (this.itemModalMode === "add") {
-        this.saveItem();
-        this.closeInventoryModals();
-        this.removeModalWarnings();
-        inventoryUI.showSaveFooter();
-      } else if (this.itemModalMode === "edit") {
-        this.saveItem(this.item);
+      else if (this.itemModalMode === "add" || this.itemModalMode === "edit") {
+        this.saveItem(this.itemModalMode === "edit" ? this.item : undefined);
         this.closeInventoryModals();
         this.removeModalWarnings();
         inventoryUI.showSaveFooter();
@@ -397,6 +403,13 @@ const inventoryModalUI = {
       let containerName = containerNameField.value;
       let containerSlots = containerSlotsField.value;
 
+      const showErrorMessage = (field, message) => {
+        field.focus();
+        field.classList.add("is-danger");
+        this.containerErrorText.textContent = message;
+        this.containerErrorContainer.classList.remove("hidden");
+      };
+
       // Check for errors
 
       // Container name must be unique and under maxContainerNameLength characters
@@ -408,27 +421,21 @@ const inventoryModalUI = {
           inventory.getContainerID(containerName) !== this.container.id) ||
         containerName.length >= this.maxContainerNameLength
       ) {
-        containerNameField.focus();
-        containerNameField.classList.add("is-danger");
-        this.containerErrorText.textContent = `Container name must be unique and between 1 and ${this.maxContainerNameLength} characters`;
-        this.containerErrorContainer.classList.remove("hidden");
-        return;
-        // Slots must be between 1 and maxContainerSlots
-      } else if (containerSlots.length == 0 || containerSlots <= 0 || containerSlots > this.maxContainerSlots) {
-        containerSlotsField.focus();
-        containerSlotsField.classList.add("is-danger");
-        this.containerErrorText.textContent = `Slots must be between 1 and ${this.maxContainerSlots}`;
-        this.containerErrorContainer.classList.remove("hidden");
-        return;
-        // Load must be between 1 and maxContainerLoad if container is carried
-      } else if (carriedBySelect.value !== "" && containerLoadField.value === "") {
-        containerLoadField.focus();
-        containerLoadField.classList.add("is-danger");
-        this.containerErrorText.textContent = `Load must be set if container is carried`;
-        this.containerErrorContainer.classList.remove("hidden");
-        return;
-        // else save the container
-      } else {
+        showErrorMessage(
+          containerNameField,
+          `Container name must be unique and between 1 and ${this.maxContainerNameLength} characters`
+        );
+      }
+      // Slots must be between 1 and maxContainerSlots
+      else if (containerSlots.length == 0 || containerSlots <= 0 || containerSlots > this.maxContainerSlots) {
+        showErrorMessage(containerSlotsField, `Slots must be between 1 and ${this.maxContainerSlots}`);
+      }
+      // Load must be between 1 and maxContainerLoad if container is carried
+      else if (carriedBySelect.value !== "" && containerLoadField.value === "") {
+        showErrorMessage(containerLoadField, `Load must be set if container is carried`);
+      }
+      // else save the container
+      else {
         this.saveContainer(this.container || {});
         this.removeModalWarnings();
       }

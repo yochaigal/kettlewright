@@ -122,6 +122,11 @@ width: 100%;
 
 /* Inventory Modals  */
 
+#item-description-modal-content {
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
 
 #add-item-modal-description-field {
     min-height: 30px;
