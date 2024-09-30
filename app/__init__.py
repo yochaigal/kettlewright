@@ -9,6 +9,8 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 from .assets import compile_static_assets
 from .parse_json import consolidate_json_files
+from datetime import timedelta
+
 
 migrate = Migrate()
 mail = Mail()
@@ -89,6 +91,9 @@ def create_app():
     app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS')
 
     mail.init_app(app)
+
+    # Set the session timeout to 24 hours
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
 
     # Initialize SocketIO with the app
     socketio.init_app(app)
