@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (document.getElementById("cancel-button")) {
     document.getElementById("cancel-button").addEventListener("click", function () {
-      window.location = `${base_url}/users/${username}/parties/${partyURL}/`;
+      window.location = `${base_url}/users/${ownername}/parties/${partyURL}/`;
     });
   }
 
