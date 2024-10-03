@@ -12,6 +12,8 @@ db = SQLAlchemy()
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
+    last_login = db.Column(db.DateTime(timezone=True), default=func.now())
     email = db.Column(db.String(100), unique=True)
     password_hash = db.Column(db.String(100))
     username = db.Column(db.String(1000), unique=True)
