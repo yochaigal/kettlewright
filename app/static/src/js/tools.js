@@ -21,6 +21,7 @@ const categories = {
     Forest: data.Forest,
     Realm: data.Realm,
     Faction: data.Realm,
+    NPC: data.NPCGenerator,
   },
   Items: {
     Relics: data.Relics,
@@ -64,7 +65,7 @@ rollButton.addEventListener("click", () => {
       rollRealm(categories.Realm, subcategory);
       break;
     case "Worldbuilding":
-      rollLocations(categories["Worldbuilding"], subcategory);
+      rollWorldbuilding(categories["Worldbuilding"], subcategory);
       break;
     case "Items":
       rollRelics(categories.Items, subcategory);
@@ -79,6 +80,14 @@ const clearResults = () => {
 
 const clearButton = document.getElementById("clear-button");
 clearButton.addEventListener("click", clearResults);
+
+const copyButton = document.getElementById("tools-copy-text-button");
+copyButton.addEventListener("click", () => {
+  const resultDisplay = document.getElementById("tools-result-display");
+  const text = resultDisplay.innerText;
+  navigator.clipboard.writeText(text);
+  alert("Results copied to clipboard");
+});
 
 const roll = (sides) => {
   return Math.floor(Math.random() * sides);
@@ -244,7 +253,7 @@ const rollRelics = (data, subcategory) => {
   displayResult(textResult);
 };
 
-const rollLocations = (data, subcategory) => {
+const rollWorldbuilding = (data, subcategory) => {
   const setting = data[subcategory];
   let result = {};
 
@@ -524,8 +533,17 @@ const rollLocations = (data, subcategory) => {
     displayResult(textResult);
   } else if (subcategory === "Faction") {
     result = rollRealmFaction();
-
     const textResult = `<b><u>Faction</u></b><br><br>${formatObjectToString(result)}`;
+    displayResult(textResult);
+  } else if (subcategory === "NPC") {
+    const name = setting.NPCNames.Names[roll(setting.NPCNames.Names.length)];
+    const background = setting.NPCBackgrounds[roll(setting.NPCBackgrounds.length)];
+    const virtue = setting.NPCTraits.Virtues[roll(setting.NPCTraits.Virtues.length)];
+    const vice = setting.NPCTraits.Vices[roll(setting.NPCTraits.Vices.length)];
+    const quirk = setting.NPCQuirks[roll(setting.NPCQuirks.length)];
+    const goal = setting.NPCGoals.Goals[roll(setting.NPCGoals.Goals.length)];
+
+    const textResult = `<b><u>NPC</u></b><br><br><b>Name:</b> ${name}<br><b>Background:</b> ${background}<br><b>Virtue:</b> ${virtue}<br><b>Vice:</b> ${vice}<br><b>Quirk:</b> ${quirk}<br><b>Goal:</b> ${goal}`;
     displayResult(textResult);
   }
 };
