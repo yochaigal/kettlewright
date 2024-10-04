@@ -113,6 +113,10 @@ def create_app():
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
+    # blueprint for api routes
+    from .api import api as api_blueprint
+    app.register_blueprint(api_blueprint)
+
     from .socket_events import register_socket_events
     register_socket_events(socketio)
 
