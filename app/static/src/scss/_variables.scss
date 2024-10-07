@@ -1,12 +1,17 @@
 /* Variables */
-$blue: #53a6ff;
-$yellow: #ffc107;
-$red: #ff8a8a;
-$green: #55dd75;
-$purple: #6f42c1;
-$light-grey: #d1d1d1;
-$bg-light: #fefefe;
-$bg-dark: #0e0e0e;
+$blue: hsl(210, 100%, 66%);
+$yellow: hsl(45, 100%, 51%);
+$red: hsl(0, 93%, 74%);
+$green: hsl(135, 65%, 60%);
+$purple: hsl(261, 51%, 51%);
+$light-grey: hsl(0, 0%, 82%);
+$bg-light: hsl(0, 0%, 99.6%);
+$bg-dark: hsl(0, 0%, 5.5%);
+
+/* Dark versions */
+$dark-blue: hsl(210, 65%, 40%);  
+$dark-green: hsl(135, 65%, 40%);  
+$dark-red: hsl(0, 65%, 40%);     
 
 $is-primary: $blue;
 $is-success: $green;

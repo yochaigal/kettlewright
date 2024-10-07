@@ -4,9 +4,10 @@ const notification = {
 
   showNotification(message) {
     const notification = document.createElement("div");
+    notification.className = "notification";
     notification.style.position = "fixed";
     notification.style.right = "20px";
-    notification.style.backgroundColor = "rgba(0,0,0,0.8)";
+    // notification.style.backgroundColor = "rgba(0,0,0,0.8)";
     notification.style.color = "white";
     notification.style.padding = "10px";
     notification.style.borderRadius = "5px";

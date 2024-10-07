@@ -3,19 +3,13 @@
 
 .is-danger {
   background-color: $red !important;
-
 }
-.is-success {
+.is-success, .is-new {
   background-color: $green !important;
 }
-.is-primary {
+.is-primary, .is-blue, .is-info {
   background-color: $blue;
 }
-
-.is-blue {
-  background-color: $blue;
-}
-
 .is-yellow {
   background-color: $yellow;
 }
@@ -23,27 +17,74 @@
 
 /* Changes to Magick.css */
 
-
-/* @font-face {
-  font-family: 'Noto Sans Symbols 2';
-  src: url('../fonts/NotoSansSymbols2-Regular.ttf') format('truetype');
-  font-display: swap;
-} */
-
 /* specifying content as uniciode, as Chrome sometimes had issues reading the symbol in magick.css*/
 h3:before {
-  
     content: "\1F65B  ";
 }
 
 
-// @media (prefers-color-scheme: dark) {
-//   :root {
-  
-//       --bg: #1a1a1a;
+body.dark-mode {
+  // adjust magick.css variables for dark mode
+  --fg: hsl(0, 0%, 100%);
+  // --bg: hsl(0, 0%, 5%);
+  // --form-bg: hsl(0, 0%, 10%);
 
-//   }
+  --bg: hsl(260, 90%, 4%);
+  --form-bg: hsl(260, 100%, 5%);
+
+ 
+  --form-fg: rgb(254, 254, 254);
+  --form-fg-placeholder: #fefefe9a;
+
+  .is-danger {
+    background-color: $dark-red !important;
+  }
+  .is-success {
+    background-color: $dark-green !important;
+  }
+  .is-new, #add-edit-item-modal-transfer {
+    background-color: transparent !important;
+  }
+  .is-primary, .is-blue, .is-info, .tag.selected  {
+    background-color: $dark-blue !important;
+  }
+
+  .sheet, .card,  #save-button-footer-wrapper, .notification,  .party-member-card, .modal-card {
+    box-shadow: 0px 0px 4px 0px rgba(255, 255, 255, 0.15);
+    // box-shadow: none;
+    //border: 2px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .notification {
+    background-color: var(--bg) !important;
+  }
+
+  .party-member-card {
+    // background-color: var(--bg) !important;
+    // box-shadow: 0px 0px 4px 0px rgba(255, 255, 255, 0.2);
+  }
+
+  #nav-logo {
+    filter: invert(1);
+  }
+
+.modal-card {
+  background-color: var(--bg);
+}
+
+.modal-background {
+  background-color: rgba(10, 10, 10, 0.85)
+}
+
+// .dice-modal-button {
+//   border: 2px solid rgba(255, 255, 255, 0.1);
+//   background-color: transparent;
+//   color: white !important;
 // }
+
+
+
+}
 
 main {
   max-width: 96rem;
@@ -93,9 +134,7 @@ form, .form {
   max-width: 940px;
   width: 100%;
   box-shadow: none;
-  // background-color: var(--bg); 
   background-color: var(--form-bg);
- 
 }
 
 form button {
@@ -134,12 +173,12 @@ button, .button {
 
 /* Shared Classes */
 
-.notification {
-  padding: 1em;
-  border-radius: 4px;
-  font-size: 13pt;
-  width: 100%;
-}
+// .notification {
+//   padding: 1em;
+//   border-radius: 4px;
+//   font-size: 13pt;
+//   width: 100%;
+// }
 
 .sheet, .card {
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
@@ -247,10 +286,6 @@ button, .button {
   overflow: hidden;
   resize: none;
   min-height: 1em;
-  //padding-top: 1em;  
- 
-
-
 }
 
 
@@ -278,13 +313,11 @@ button, .button {
   border: 1px solid #dbdbdb;
   border-radius: 4px;
   padding: calc(.75em - 1px);
-  // margin: calc(.75em - 1px);;
-  // background-color: rgb(252, 252, 252);
 }
 
 @media (prefers-color-scheme: light) {
 .text-border {
-  background-color: rgb(252, 252, 252)
+  // background-color: rgb(252, 252, 252)
 }
 }
 
@@ -403,13 +436,6 @@ text-decoration: none;
   
 }
 
-// @media (prefers-color-scheme: dark) {
-//   .nav-logo-container img {
-//     filter: invert(1);
-    
-//   }
-// }
-
 .navbar-burger {
 color: #4a4a4a;
 -moz-appearance: none;
@@ -466,11 +492,12 @@ opacity: 0;
 transform: translateY(-5px) rotate(-45deg);
 }
  
-
-
-#save-button-footer-wrapper {
-  // padding-bottom: .5em;
-  // padding-top: 1em;
+#dark-mode-toggle {
+  margin: 0px; 
+  margin-right: 1em;
+  font-size: 14pt; 
+  border: none; 
+  padding: 0px
 }
 
 
@@ -479,11 +506,9 @@ transform: translateY(-5px) rotate(-45deg);
   bottom: 0;
   left: 0;
   width: 100%;
-  //display: none; /* Initially hidden */
   z-index: 100; /* Make sure it appears above other content */
-  // text-align: center; 
   padding: 1em; /* Add some padding to separate it from the screen edge */
-  background-color: $bg-light; /* Add a background color */
+  background-color: var(--form-bg);
   box-shadow: 0 -2px 5px rgba(0,0,0,0.1); /* Optional: add a shadow for better visibility */
 
   display: flex;
@@ -491,12 +516,6 @@ transform: translateY(-5px) rotate(-45deg);
   align-items: center;
   gap: 2em;
 }
-
-// @media (prefers-color-scheme: dark) {
-//   .sticky-save-button-wrapper {
-//     background-color: $bg-dark;
-//   }
-// }
 
 #save-button-footer-save, #save-button-footer-cancel {
   margin: 0;
@@ -526,4 +545,8 @@ display: block;
 
 .modal-card-foot {
   flex-direction: row;
+}
+
+.notification {
+  background-color: rgba(0,0,0,0.8);
 }

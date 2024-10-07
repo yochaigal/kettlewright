@@ -24,6 +24,7 @@ const diceModal = {
       const buttonId = `dice-modal-d${sides}+d${sides}-button`;
       document.getElementById(buttonId).addEventListener("click", () => {
         let result = utils.rollDoubleDice(sides);
+        this.resultText.textContent = `${result[0]}, ${result[1]}`;
         rollCallback(`${result[0]}, ${result[1]} (d${sides}+d${sides})`);
       });
     });
