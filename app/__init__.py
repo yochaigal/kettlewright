@@ -9,8 +9,9 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 from .assets import compile_static_assets
 from .parse_json import consolidate_json_files
-from datetime import timedelta
+from datetime import datetime, timezone
 
+UTC = timezone.utc
 
 migrate = Migrate()
 mail = Mail()
