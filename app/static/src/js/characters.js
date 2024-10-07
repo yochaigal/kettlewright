@@ -13,13 +13,13 @@ document.addEventListener("DOMContentLoaded", function () {
     alert("Link copied to clipboard");
   }
 
-  document.querySelectorAll(".character-card").forEach((card) => {
-    card.addEventListener("click", function (event) {
-      if (!event.target.closest(".character-card-footer")) {
-        redirectToCharacterPage(this);
-      }
-    });
-  });
+  // document.querySelectorAll(".character-card").forEach((card) => {
+  //   card.addEventListener("click", function (event) {
+  //     if (!event.target.closest(".character-card-footer")) {
+  //       redirectToCharacterPage(this);
+  //     }
+  //   });
+  // });
 
   document.querySelectorAll(".card-link-button").forEach((button) => {
     button.addEventListener("click", function (event) {

@@ -21,6 +21,10 @@ signup_code = os.environ.get('SIGNUP_CODE', 'default')
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    # if already logged in, redirect to index
+    if current_user.is_authenticated:
+        return redirect(url_for('main.characters', username=current_user.username))
+
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data.lower()).first()
