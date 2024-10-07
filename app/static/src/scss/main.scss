@@ -82,7 +82,10 @@ body.dark-mode {
 //   color: white !important;
 // }
 
-
+// for chrome in windows/linux
+select, option {
+  background-color: var(--bg);
+}
 
 }
 
