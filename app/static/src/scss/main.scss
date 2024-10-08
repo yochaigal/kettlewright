@@ -25,15 +25,18 @@ h3:before {
 
 body.dark-mode {
   // adjust magick.css variables for dark mode
-  --fg: hsl(0, 0%, 100%);
+  --fg: hsl(0, 0%, 85%);
   // --bg: hsl(0, 0%, 5%);
   // --form-bg: hsl(0, 0%, 10%);
 
-  --bg: hsl(260, 90%, 4%);
-  --form-bg: hsl(260, 100%, 5%);
+  // --bg: hsl(260, 90%, 4%);
+  // --form-bg: hsl(260, 90%, 5%);
+  --bg: hsl(0, 0%, 6%);
+  --form-bg: hsl(0, 0%, 8%);
+
 
  
-  --form-fg: rgb(254, 254, 254);
+  --form-fg: hsl(0, 0%, 85%);
   --form-fg-placeholder: #fefefe9a;
 
   .is-danger {
@@ -548,3 +551,5 @@ display: block;
 .notification {
   background-color: rgba(0,0,0,0.8);
 }
+
+.github-fork-ribbon:before { background-color: #333; }  

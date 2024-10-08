@@ -9,6 +9,10 @@
       href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400;1,700&family=Averia+Serif+Libre:ital,wght@0,300;0,700;1,300;1,700&family=Caveat&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,300;0,600;1,300;1,600&display=swap&family=Noto+Sans+Symbols+2&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css"
+    />
     {% assets "scss_all" %}
     <link rel="stylesheet" href="{{ ASSET_URL }}" />
     {% endassets %}
@@ -84,11 +88,10 @@
     </script>
     <nav class="navbar" role="navigation" aria-label="main navigation" id="navbar">
       <div class="nav-logo-container">
-        {% if request.endpoint != 'main.index' %}
         <a class="" href="{{ url_for('main.index') }}">
           <img src="{{ url_for('static', filename='images/CairnLogoSmall.webp') }}" id="nav-logo" />
         </a>
-        {% endif %}
+
         <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
@@ -107,10 +110,10 @@
           {% endif %}
         </div>
         <div class="navbar-end">
-          {% if current_user.is_authenticated %}
           <button type="button" class="navbar-item navbar-desktop-item" id="dark-mode-toggle">
             <i class="fa-solid fa-circle-half-stroke"></i>
           </button>
+          {% if current_user.is_authenticated %}
           <a href="{{ url_for('auth.account') }}" class="navbar-item navbar-desktop-item"> account </a>
           {% endif %} {% if not current_user.is_authenticated %}
           <a href="{{ url_for('auth.login') }}" class="navbar-item navbar-desktop-item"> login </a>
