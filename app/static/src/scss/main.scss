@@ -553,3 +553,17 @@ display: block;
 }
 
 .github-fork-ribbon:before { background-color: #333; }  
+
+.homepage-title {
+  font-size: 42pt;
+}
+
+@media (max-width: 600px) {
+  .homepage-title {
+    font-size: 32pt;
+  }
+}
+
+.homepage-text-container {
+  text-align: center; padding: 2em; max-width: 400px;
+}
