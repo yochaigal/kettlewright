@@ -149,14 +149,16 @@ It can be helpful to run the app with flask, as you can see changes immediately 
 
 ## Attribution
 
-- **David Stearns** -  Software Development, QA, Testing
-- **Yochai Gal** - Project Design, DevOps, Documentation
+- Software Development, QA, Testing: [**David Stearns**](https://github.com/david-stearns)
+- Project Design, DevOps, Documentation: [**Yochai Gal**](https://newschoolrevolution.com)
+- Token Art:  [tlomdev](https://tlomdev.itch.io/tlomdevs-tokens) (CC-BY 4.0)
+- Logo/favicon Art: [Adam Hensley](https://adamhensley.itch.io/)
 
 ### Tools
 
-- **tlomdev's tokens** - A free, CC-BY-SA [token pack](https://tlomdev.itch.io/tlomdevs-tokens) by [tlomdev](https://tlomdev.itch.io/).
 - **magick.css** - A classless [CSS framework](https://css.winterveil.net/) designed by [winterveil](https://github.com/wintermute-cell).
 - **docker** - A platform for building and managing containerized applications. More on docker [here](https://www.docker.com/).
 - **flask** -  A lightweight Python web framework for building web applications. More on flask [here](https://flask.palletsprojects.com/en/3.0.x/).
 - **sqlite** - A fast, self-contained and full-featured SQL database engine. More on SQLite [here](https://www.sqlite.org/).
 - **redis** - A real-time in-memory data structure store used as a database, cache, and message broker. More on redis [here](https://redis.io/).
+- **bulma** - A modern CSS framework based on Flexbox. More on bulma [here](https://github.com/jgthms/bulma).
