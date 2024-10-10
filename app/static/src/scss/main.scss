@@ -67,7 +67,7 @@ body.dark-mode {
     // box-shadow: 0px 0px 4px 0px rgba(255, 255, 255, 0.2);
   }
 
-  #nav-logo {
+  #nav-logo, #kettlewright-logo {
     filter: invert(1);
   }
 
@@ -88,6 +88,12 @@ body.dark-mode {
 // for chrome in windows/linux
 select, option {
   background-color: var(--bg);
+}
+
+.dark-mode select option:checked,
+.dark-mode select option:hover {
+  background-color: #555;
+  color: var(--fg);
 }
 
 }
@@ -201,11 +207,12 @@ button, .button {
 //   }
 // }
 
-.card.auth-card {
+.auth-card {
   max-width: 400px;
   margin: 0px auto;
   padding: 4em 2em;
   height: auto;
+  background-color: var(--bg);
 }
 
 .auth-card .field {
@@ -431,12 +438,27 @@ margin-bottom: 2px;
 text-decoration: none;
 }
 
-#nav-logo {
-  height: 50px; 
+#nav-logo, #kettlewright-logo {
+  
   width: auto; 
   max-width: none; 
   object-fit: contain; 
   box-sizing: content-box;
+}
+
+#nav-logo {
+  height: 50px; 
+}
+
+#kettlewright-logo {
+  height: 150px; 
+}
+
+@media screen and (max-width: 500px) {
+#kettlewright-logo {
+  height: 125px; 
+}
+  
 }
 
 .navbar-mobile-item {
@@ -564,6 +586,10 @@ display: block;
   }
 }
 
-.homepage-text-container {
-  text-align: center; padding: 2em; max-width: 400px;
+.homepage-text-container, .about-text-container {
+  text-align: left; 
+  padding: 2em; 
+  max-width: 800px;
+  width: 100%;
 }
+

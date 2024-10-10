@@ -1,10 +1,12 @@
 {% extends "base.html" %} {% block content %}
 
 <div class="body-container auth-container">
-  <form class="card auth-card" method="POST">
+  <div>
+    <img src="/static/images/Kettlewright_Logo_Black.png" alt="Kettlewright" id="kettlewright-logo" />
+  </div>
+  <form class="auth-card" method="POST">
     {{ form.hidden_tag() }}
-    <h3 class="auth-title">Sign Up</h3>
-
+    <!-- <h3 class="auth-title">Sign Up</h3> -->
     <div class="field">
       <div class="control">{{ form.email(class="input") }}</div>
     </div>

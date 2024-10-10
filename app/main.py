@@ -75,11 +75,10 @@ def sanitize_json_content(json_str):
 
 @main.route('/')
 def index():
-    # if current_user.is_authenticated:
-    #     return redirect(url_for('main.characters', username=current_user.username))
-    # else:
-    #     return redirect(url_for('auth.login'))
-    return render_template('main/index.html')
+    if current_user.is_authenticated:
+        return redirect(url_for('main.characters', username=current_user.username))
+    else:
+        return redirect(url_for('auth.login'))
 
 
 @main.route('/profile')
@@ -96,6 +95,11 @@ def user(username):
         return render_template('main/profile.html', username=current_user.username)
     else:
         return redirect(url_for('main.index'))
+
+
+@main.route('/about')
+def about():
+    return render_template('main/about.html')
 
 
 @main.route('/users/<username>/characters/')

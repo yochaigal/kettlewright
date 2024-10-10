@@ -32,7 +32,7 @@ class RegistrationForm(FlaskForm):
                               render_kw={"placeholder": "confirm password"})
     signup_code = StringField('Signup Code', validators=[DataRequired()],
                               render_kw={"placeholder": "signup code"})
-    submit = SubmitField('Register')
+    submit = SubmitField('Sign Up')
 
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)

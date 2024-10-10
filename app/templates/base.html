@@ -107,6 +107,7 @@
           </a>
           <a href="{{ url_for('main.parties', username=current_user.username) }}" class="navbar-item"> parties </a>
           <a href="{{ url_for('main.tools')}}" class="navbar-item"> tools </a>
+
           {% endif %}
         </div>
         <div class="navbar-end">
@@ -114,10 +115,12 @@
             <i class="fa-solid fa-circle-half-stroke"></i>
           </button>
           {% if current_user.is_authenticated %}
+          <a href="{{ url_for('main.about') }}" class="navbar-item navbar-desktop-item"> about </a>
           <a href="{{ url_for('auth.account') }}" class="navbar-item navbar-desktop-item"> account </a>
           {% endif %} {% if not current_user.is_authenticated %}
           <a href="{{ url_for('auth.login') }}" class="navbar-item navbar-desktop-item"> login </a>
           <a href="{{ url_for('auth.signup') }}" class="navbar-item navbar-desktop-item"> sign up </a>
+          <a href="{{ url_for('main.about') }}" class="navbar-item navbar-desktop-item"> about </a>
           {% endif %} {% if current_user.is_authenticated %} {% endif %}
         </div>
       </div>
