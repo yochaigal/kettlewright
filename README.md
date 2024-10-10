@@ -149,16 +149,17 @@ It can be helpful to run the app with flask, as you can see changes immediately 
 
 ## Attribution
 
-- Software Development, QA, Testing: [**David Stearns**](https://github.com/david-stearns)
-- Project Design, DevOps, Documentation: [**Yochai Gal**](https://newschoolrevolution.com)
-- Token Art:  [tlomdev](https://tlomdev.itch.io/tlomdevs-tokens) (CC-BY 4.0)
-- Logo/favicon Art: [Adam Hensley](https://adamhensley.itch.io/)
+- [**David Stearns**](https://github.com/david-stearns): Software Development, QA, Testing.
+- [**Yochai Gal**](https://newschoolrevolution.com): Project Design, DevOps, Documentation.
+- [**tlomdev**](https://tlomdev.itch.io/tlomdevs-tokens): Token Art licensed under CC-BY 4.0.
+- [**Adam Hensley**](https://adamhensley.itch.io/): Logo/favicon Art.
 
 ### Tools
 
-- **magick.css** - A classless [CSS framework](https://css.winterveil.net/) designed by [winterveil](https://github.com/wintermute-cell).
-- **docker** - A platform for building and managing containerized applications. More on docker [here](https://www.docker.com/).
-- **flask** -  A lightweight Python web framework for building web applications. More on flask [here](https://flask.palletsprojects.com/en/3.0.x/).
-- **sqlite** - A fast, self-contained and full-featured SQL database engine. More on SQLite [here](https://www.sqlite.org/).
-- **redis** - A real-time in-memory data structure store used as a database, cache, and message broker. More on redis [here](https://redis.io/).
-- **bulma** - A modern CSS framework based on Flexbox. More on bulma [here](https://github.com/jgthms/bulma).
+- [**flask**](https://flask.palletsprojects.com/en/3.0.x/): A lightweight Python framework for building web applications.
+- [**gunicorn**](https://gunicorn.org/): A "green" python-based WSGI HTTP Server for UNIX-like systems.
+- [**sqlite**](https://www.sqlite.org): A fast, self-contained and full-featured SQL database engine.
+- [**redis**](https://redis.io): A real-time in-memory data structure store used as a database, cache, and message broker.
+- [**docker**](https://www.docker.com): A platform for building and managing containerized applications.
+- [**magick.css**](https://css.winterveil.net) - A classless CSS framework designed by [winterveil](https://github.com/wintermute-cell).
+- [**bulma**](https://github.com/jgthms/bulma): A modern CSS framework based on Flexbox.
