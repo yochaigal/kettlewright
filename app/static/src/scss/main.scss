@@ -67,7 +67,7 @@ body.dark-mode {
     // box-shadow: 0px 0px 4px 0px rgba(255, 255, 255, 0.2);
   }
 
-  #nav-logo, #kettlewright-logo {
+  #nav-logo, #kettlewright-logo, .nav-logo-container img {
     filter: invert(1);
   }
 
@@ -401,15 +401,15 @@ max-width: 20em;
   border-radius: 4px;
 }
 
-/* Nav */
+/* Nav and Logos */
 
 .navbar {
 display: flex;
 align-items: end;
-gap: 1rem;
+//gap: 1rem;
 font-size: 11pt;
 margin: .5rem 2rem;
-
+height: 58px;
 }
 
 .nav-logo-container {
@@ -438,34 +438,32 @@ margin-bottom: 2px;
 text-decoration: none;
 }
 
-#nav-logo, #kettlewright-logo {
-  
-  width: auto; 
-  max-width: none; 
-  object-fit: contain; 
-  box-sizing: content-box;
+
+.kettlewright-logo-container, .nav-logo-container {
+  max-width: 500px;
+  padding: 0 1em;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
-#nav-logo {
-  height: 50px; 
+.kettlewright-logo-container, .nav-logo-container img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-#kettlewright-logo {
-  height: 150px; 
-}
-
-@media screen and (max-width: 500px) {
-#kettlewright-logo {
-  height: 125px; 
-}
-  
+.nav-logo-container {
+  max-width: 200px;
+  position: relative;  
+  top: 9px; 
+  margin: 0px;
 }
 
 .navbar-mobile-item {
   display: none;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 760px) {
 
 .navbar {
   display: flex;
@@ -510,16 +508,19 @@ text-decoration: none;
   display: block;
 }
   
+.nav-logo-container {
+  max-width: 180px;
+}
 }
 
 
  
 #dark-mode-toggle, #nav-mobile-button {
-  margin: 0px; 
-  margin-right: 1em;
+  margin: 0px 1em 2px 0px; 
   font-size: 14pt; 
   border: none; 
   padding: 0px
+
 }
 
 
