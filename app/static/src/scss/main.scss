@@ -441,7 +441,7 @@ text-decoration: none;
 
 .kettlewright-logo-container, .nav-logo-container {
   max-width: 500px;
-  padding: 0 1em;
+  padding: 0 2em;
   margin: 0 auto;
   box-sizing: border-box;
 }
@@ -453,10 +453,11 @@ text-decoration: none;
 }
 
 .nav-logo-container {
-  max-width: 200px;
+  max-width: 160px;
   position: relative;  
   top: 9px; 
   margin: 0px;
+  padding: 1em;
 }
 
 .navbar-mobile-item {
