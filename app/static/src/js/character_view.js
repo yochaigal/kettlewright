@@ -53,10 +53,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Handle Custom Portrait Image
   if (customImage == "None") {
+    console.log("No custom image found, using default portrait");
     document.getElementById("portrait-image").src = "/static/images/portraits/default-portrait.webp";
-  } else if (customImage == "False") {
+  } else if (customImage == "False" || customImage == "false") {
+    console.log("using a default portrait");
     document.getElementById("portrait-image").src = "/static/images/portraits/" + imageURL;
   } else {
+    console.log("using a custom portrait");
+    console.log(customImage);
     document.getElementById("portrait-image").src = imageURL;
   }
 

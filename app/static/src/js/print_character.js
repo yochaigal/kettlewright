@@ -7,9 +7,12 @@ inventory.setContainers(containersData);
 inventoryUI.getPrintableInventory();
 
 // Set Portrait Image
+
+console.log(customImage);
+
 if (customImage == "None") {
   document.getElementById("portrait-image").src = "/static/images/portraits/default-portrait.webp";
-} else if (customImage == "False") {
+} else if (customImage == "False" || customImage == "false") {
   document.getElementById("portrait-image").src = "/static/images/portraits/" + imageURL;
 } else {
   document.getElementById("portrait-image").src = imageURL;
@@ -43,6 +46,7 @@ if (!scars || scars == "None" || scars == "") {
   document.getElementById("character-print-scars-container").classList.add("hidden");
 }
 
+console.log("Omens: ", omens);
 if (!omens || omens == "None" || omens == "") {
   document.getElementById("character-print-omens-container").classList.add("hidden");
 }

@@ -1,45 +1,94 @@
 {% extends "base.html" %} {% block content %}
 <script>
-  const itemsData = JSON.parse(`{{ items_json|safe }}`.slice(1, -1));
-  const containersData = JSON.parse(`{{ containers_json|safe }}`.slice(1, -1));
-
-  let name = `{{character.name}}`;
-  let background = `{{character.background}}`;
-  let customName = `{{character.custom_name}}`;
-  let customBackground = `{{character.custom_background}}`;
-  let strength = `{{character.strength}}`;
-  let strengthMax = `{{character.strength_max}}`;
-  let dexterity = `{{character.dexterity}}`;
-  let dexterityMax = `{{character.dexterity_max}}`;
-  let willpower = `{{character.willpower}}`;
-  let willpowerMax = `{{character.willpower_max}}`;
-  let hp = `{{character.hp}}`;
-  let hpMax = `{{character.hp_max}}`;
-  let gold = `{{character.gold}}`;
-  let deprived = `{{character.deprived|tojson}}`;
-  let description = `{{character.description}}`;
-  let bonds = `{{character.bonds}}`;
-  let omens = `{{character.omens}}`;
-  let scars = `{{character.scars}}`;
-  let notes = `{{character.notes}}`;
-  let customImage = "{{character.custom_image}}";
-  let imageURL = `{{character.image_url}}`;
-  let ownerUsername = `{{character.owner_username}}`;
-  let urlName = `{{character.url_name}}`;
-  let partyCode = `{{character.party_code}}`;
-  let partyName = `{{party_name}}`;
-  let partyURL = `{{party_url}}`;
-  const baseURL = `{{base_url}}`;
-  let traits = `{{character.traits}}`;
+  const quickRoll = `{{ quick_roll }}`;
+  let itemsData, containersData, deprived, customImage, imageURL, hp, hpMax, gold;
+  let partyDescription, traits, bonds, omens, scars, notes, description;
+  let isOwner, party;
+  let baseURL;
+  const omensRawData = `{{ omens_data | safe }}`;
+  const omensData = JSON.parse(omensRawData);
   const marketplaceRawData = `{{ marketplace_data | safe }}`;
   const marketplaceData = JSON.parse(marketplaceRawData);
-  const party_id = "{{ character.party_id }}";
-  const user_id = "{{ current_user.id }}";
-  const character_id = "{{ character.id }}";
   const scarsRawData = `{{ scars_data | safe }}`;
   const scarsData = JSON.parse(scarsRawData).Scars;
-  const omensRawData = `{{ omens_data | safe }}`;
-  const omensData = JSON.parse(omensRawData).Omens;
+
+  if (quickRoll !== "True") {
+    itemsData = JSON.parse(`{{ items_json|safe }}`.slice(1, -1));
+    containersData = JSON.parse(`{{ containers_json|safe }}`.slice(1, -1));
+    deprived = `{{character.deprived}}`;
+    customImage = "{{character.custom_image}}";
+    imageURL = `{{character.image_url}}`;
+    hp = `{{character.hp}}`;
+    hpMax = `{{character.hp_max}}`;
+    partyName = `{{character.party_name}}`;
+    partyDescription = `{{character.party_description}}`;
+    traits = `{{character.traits}}`;
+    bonds = `{{character.bonds}}`;
+    omens = `{{character.omens}}`;
+    scars = `{{character.scars}}`;
+    notes = `{{character.notes}}`;
+    description = `{{character.description}}`;
+    isOwner = `{{is_owner}}`;
+    party = `{{party}}`;
+    baseURL = `{{base_url}}`;
+    let partyCode = `{{character.party_code}}`;
+    let partyURL = `{{party_url}}`;
+    let ownerUsername = `{{character.owner_username}}`;
+    console.log("party: ", partyName);
+  } else {
+    let character = {};
+    isOwner = false;
+    itemsData = JSON.parse(localStorage.getItem("items"));
+    containersData = JSON.parse(localStorage.getItem("containers"));
+    character = {
+      background: localStorage.getItem("background"),
+      name: localStorage.getItem("name"),
+      strength: localStorage.getItem("strength"),
+      strength_max: localStorage.getItem("strength"),
+      dexterity: localStorage.getItem("dexterity"),
+      dexterity_max: localStorage.getItem("dexterity"),
+      willpower: localStorage.getItem("willpower"),
+      willpower_max: localStorage.getItem("willpower"),
+      gold: localStorage.getItem("gold"),
+      armor: localStorage.getItem("armor"),
+      traits: localStorage.getItem("traits"),
+      bonds: localStorage.getItem("bonds"),
+      omens: localStorage.getItem("omens"),
+      scars: localStorage.getItem("scars") || "",
+      description: localStorage.getItem("description"),
+      notes: localStorage.getItem("notes"),
+      hp: localStorage.getItem("hp"),
+      hp_max: localStorage.getItem("hp"),
+      deprived: false,
+      party_name: "",
+      party_description: "",
+    };
+    customImage = localStorage.getItem("custom_image");
+    imageURL = localStorage.getItem("image_url");
+
+    // update the DOM in quick roll mode
+    window.addEventListener("DOMContentLoaded", () => {
+      document.querySelector("h1.view-mode").textContent = character.name;
+      document.querySelector("h2").textContent = character.background;
+      document.getElementById("strength-view-text").textContent = `${character.strength}/${character.strength_max}`;
+      document.getElementById("dexterity-view-text").textContent = `${character.dexterity}/${character.dexterity_max}`;
+      document.getElementById("willpower-view-text").textContent = `${character.willpower}/${character.willpower_max}`;
+      document.getElementById("hp-view-text").textContent = `${character.hp}/${character.hp_max}`;
+      document.getElementById("gold-view-text").textContent = character.gold;
+      document.getElementById("armor-counter").textContent = character.armor;
+      document.getElementById("character-traits-view").textContent = character.traits;
+      document.getElementById("character-description-view").textContent = character.description;
+      document.getElementById("character-bonds-view").textContent = character.bonds;
+      document.getElementById("character-omens-view").textContent = character.omens;
+      document.getElementById("character-scars-view").textContent = character.scars;
+      document.getElementById("character-notes-view").textContent = character.notes;
+
+      // Hide party section for quick roll
+      document.getElementById("character-party-container").style.display = "none";
+    });
+
+    console.log(character);
+  }
 </script>
 
 <script src="{{url_for('static', filename='src/js/character_edit.js')}}" defer type="module"></script>

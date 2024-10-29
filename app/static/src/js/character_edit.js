@@ -142,10 +142,12 @@ document.getElementById("roll-omens-button").addEventListener("click", function 
 // Party Editing
 
 function togglePartyEditing() {
-  if (partyName != "None") {
+  console.log("party name: " + partyName);
+  if (partyName != "None" && partyName != "") {
     document.getElementById("character-leave-party-button").classList.remove("hidden");
     document.getElementById("character-join-code").classList.add("hidden");
   } else {
+    console.log("party name is none");
     document.getElementById("character-join-code").classList.remove("hidden");
     document.getElementById("add-edit-item-modal-transfer").classList.add("hidden");
   }
@@ -156,7 +158,7 @@ togglePartyEditing();
 // Party Link
 const partyLink = document.getElementById("character-party-link");
 
-if (partyName != "None") {
+if (partyName != "None" && partyName != "") {
   partyLink.addEventListener("click", function () {
     const link = `${baseURL}/${partyURL}`;
     window.location = link;

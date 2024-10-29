@@ -1,26 +1,82 @@
 {% extends "base.html" %} {% block content %}
 <script>
-  // const rawData = `{{ data_json|safe }}`;
-  // const data = JSON.parse(rawData);
-  // const containersRawData = `{{ containers_data_json|safe }}`;
-  // const containersData = JSON.parse(containersRawData);
-  const data = JSON.parse(`{{ items_json|safe }}`.slice(1, -1));
-  const containersData = JSON.parse(`{{ containers_json|safe }}`.slice(1, -1));
-  const deprived = `{{character.deprived}}`;
-  const customImage = "{{character.custom_image}}";
-  const imageURL = `{{character.image_url}}`;
-  const hp = `{{character.hp}}`;
-  const hpMax = `{{character.hp_max}}`;
-  const partyName = `{{character.party_name}}`;
-  const partyDescription = `{{character.party_description}}`;
-  const traits = `{{character.traits}}`;
-  const bonds = `{{character.bonds}}`;
-  const omens = `{{character.omens}}`;
-  const scars = `{{character.scars}}`;
-  const notes = `{{character.notes}}`;
-  const description = `{{character.description}}`;
-  const isOwner = `{{is_owner}}`;
-  const party = `{{party}}`;
+  const quickRoll = `{{ quick_roll }}`;
+  let data, containersData, deprived, customImage, imageURL, hp, hpMax;
+  let partyName, partyDescription, traits, bonds, omens, scars, notes, description;
+  let isOwner, party;
+
+  if (quickRoll !== "True") {
+    data = JSON.parse(`{{ items_json|safe }}`.slice(1, -1));
+    containersData = JSON.parse(`{{ containers_json|safe }}`.slice(1, -1));
+    deprived = `{{character.deprived}}`;
+    customImage = "{{character.custom_image}}";
+    imageURL = `{{character.image_url}}`;
+    hp = `{{character.hp}}`;
+    hpMax = `{{character.hp_max}}`;
+    partyName = `{{character.party_name}}`;
+    partyDescription = `{{character.party_description}}`;
+    traits = `{{character.traits}}`;
+    bonds = `{{character.bonds}}`;
+    omens = `{{character.omens}}`;
+    scars = `{{character.scars}}`;
+    notes = `{{character.notes}}`;
+    description = `{{character.description}}`;
+    isOwner = `{{is_owner}}`;
+    party = `{{party}}`;
+  } else {
+    let character = {};
+    isOwner = false;
+    data = JSON.parse(localStorage.getItem("items"));
+    containersData = JSON.parse(localStorage.getItem("containers"));
+    character = {
+      background: localStorage.getItem("background"),
+      name: localStorage.getItem("name"),
+      strength: localStorage.getItem("strength"),
+      strength_max: localStorage.getItem("strength"),
+      dexterity: localStorage.getItem("dexterity"),
+      dexterity_max: localStorage.getItem("dexterity"),
+      willpower: localStorage.getItem("willpower"),
+      willpower_max: localStorage.getItem("willpower"),
+      gold: localStorage.getItem("gold"),
+      armor: localStorage.getItem("armor"),
+      traits: localStorage.getItem("traits"),
+      bonds: localStorage.getItem("bonds"),
+      omens: localStorage.getItem("omens"),
+      scars: localStorage.getItem("scars") || "",
+      description: localStorage.getItem("description"),
+      notes: localStorage.getItem("notes"),
+      hp: localStorage.getItem("hp"),
+      hp_max: localStorage.getItem("hp"),
+      deprived: false,
+      party_name: "",
+      party_description: "",
+    };
+    customImage = localStorage.getItem("custom_image");
+    imageURL = localStorage.getItem("image_url");
+
+    // update the DOM in quick roll mode
+    window.addEventListener("DOMContentLoaded", () => {
+      document.querySelector("h1.view-mode").textContent = character.name;
+      document.querySelector("h2").textContent = character.background;
+      document.getElementById("strength-view-text").textContent = `${character.strength}/${character.strength_max}`;
+      document.getElementById("dexterity-view-text").textContent = `${character.dexterity}/${character.dexterity_max}`;
+      document.getElementById("willpower-view-text").textContent = `${character.willpower}/${character.willpower_max}`;
+      document.getElementById("hp-view-text").textContent = `${character.hp}/${character.hp_max}`;
+      document.getElementById("gold-view-text").textContent = character.gold;
+      document.getElementById("armor-counter").textContent = character.armor;
+      document.getElementById("character-traits-view").textContent = character.traits;
+      document.getElementById("character-description-view").textContent = character.description;
+      document.getElementById("character-bonds-view").textContent = character.bonds;
+      document.getElementById("character-omens-view").textContent = character.omens;
+      document.getElementById("character-scars-view").textContent = character.scars;
+      document.getElementById("character-notes-view").textContent = character.notes;
+
+      // Hide party section for quick roll
+      document.getElementById("character-party-container").style.display = "none";
+    });
+
+    console.log(character);
+  }
 </script>
 
 <script src="{{url_for('static', filename='src/js/print_character.js')}}" defer type="module"></script>

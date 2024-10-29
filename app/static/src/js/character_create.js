@@ -660,18 +660,49 @@ document.addEventListener("DOMContentLoaded", function () {
   // ____________________ Submit Actions ____________________
   //
 
-  document.getElementById("character-form").addEventListener("submit", function (event) {
-    document.getElementById("gold-hidden-field").value = gold + bonusGold;
-    document.getElementById("description-hidden-field").value = description;
-    document.getElementById("traits-hidden-field").value =
-      `You are ${ageField.value} years old. ` + traitsDescription.innerHTML;
+  console.log(quickRoll == "True" ? "Quick Roll" : "Normal Roll");
 
-    document.querySelector('input[name="items"]').value = JSON.stringify(inventory.getItems());
-    const containers = inventory.getContainers();
-    document.querySelector('input[name="containers"]').value = JSON.stringify(containers);
-    document.getElementById("custom-image").value = portraitModal.getCustomImage();
-    document.getElementById("custom-image-url").value = portraitModal.getImageURL();
-    document.getElementById("armor-hidden-field").value = document.getElementById("armor-counter").textContent;
-    updateNotes();
+  document.getElementById("character-form").addEventListener("submit", function (event) {
+    if (quickRoll !== "True") {
+      document.getElementById("gold-hidden-field").value = gold + bonusGold;
+      document.getElementById("description-hidden-field").value = description;
+      document.getElementById("traits-hidden-field").value =
+        `You are ${ageField.value} years old. ` + traitsDescription.innerHTML;
+
+      document.querySelector('input[name="items"]').value = JSON.stringify(inventory.getItems());
+      const containers = inventory.getContainers();
+      document.querySelector('input[name="containers"]').value = JSON.stringify(containers);
+      document.getElementById("custom-image").value = portraitModal.getCustomImage();
+      document.getElementById("custom-image-url").value = portraitModal.getImageURL();
+      document.getElementById("armor-hidden-field").value = document.getElementById("armor-counter").textContent;
+      updateNotes();
+    } else {
+      // save to local storage
+      event.preventDefault();
+      //delete all previous items
+      localStorage.clear();
+
+      localStorage.setItem("background", backgroundField.value);
+      localStorage.setItem("name", nameField.value);
+      localStorage.setItem("strength", strengthField.value);
+      localStorage.setItem("dexterity", dexterityField.value);
+      localStorage.setItem("willpower", willpowerField.value);
+      localStorage.setItem("hp", hpField.value);
+      localStorage.setItem("age", ageField.value);
+      localStorage.setItem("traits", traitsDescription.innerHTML);
+      localStorage.setItem("bonds", bondsSelect.value);
+      localStorage.setItem("omens", omensSelect.value);
+      localStorage.setItem("gold", gold + bonusGold);
+      localStorage.setItem("custom_image", portraitModal.getCustomImage());
+      localStorage.setItem("image_url", portraitModal.getImageURL());
+
+      localStorage.setItem("description", description);
+      localStorage.setItem("notes", notes.value);
+      localStorage.setItem("items", JSON.stringify(inventory.getItems()));
+      localStorage.setItem("containers", JSON.stringify(inventory.getContainers()));
+
+      window.location.href = "/quickcharacter";
+      return false;
+    }
   });
 });

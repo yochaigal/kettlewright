@@ -1,5 +1,6 @@
 {% extends "base.html" %} {% block content %}
 <script>
+  const quickRoll = `{{ quick_roll }}`;
   const traitsRawData = `{{ traits_data | safe }}`;
   const backgroundRawData = `{{ background_data | safe }}`;
   const traitsData = JSON.parse(traitsRawData);

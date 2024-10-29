@@ -29,6 +29,29 @@ scars_file_path = os.path.join(os.path.dirname(os.path.abspath(
 with open(scars_file_path, 'r') as file:
     scars_data = json.load(file)
 
+backgrounds_file_path = os.path.join(os.path.dirname(os.path.abspath(
+    __file__)), 'static', 'json', 'backgrounds', 'background_data.json')
+with open(backgrounds_file_path, 'r') as file:
+    background_data = json.load(file)
+
+traits_file_path = os.path.join(os.path.dirname(os.path.abspath(
+    __file__)), 'static', 'json', 'traits.json')
+with open(traits_file_path, 'r') as file:
+    traits_data = json.load(file)
+
+bonds_file_path = os.path.join(os.path.dirname(os.path.abspath(
+    __file__)), 'static', 'json', 'bonds.json')
+with open(bonds_file_path, 'r') as file:
+    bonds_data = json.load(file)
+
+with open(marketplace_file_path, 'r') as file:
+    marketplace_data = json.load(file)
+
+image_folder = os.path.join(os.path.dirname(os.path.abspath(
+    __file__)), 'static', 'images', 'portraits')
+image_files = [f for f in os.listdir(
+    image_folder) if f.endswith('.webp')]
+
 
 def sanitize_data(data):
     if isinstance(data, str):
@@ -255,37 +278,51 @@ def new_character():
                     error_messages.append(f"{field}: {error}")
             flash(" ".join(error_messages))
 
-        # json_file_path = os.path.join(os.path.dirname(os.path.abspath(
-        #     __file__)), 'static', 'json', 'background_data.json')
-        backgrounds_file_path = os.path.join(os.path.dirname(os.path.abspath(
-            __file__)), 'static', 'json', 'backgrounds', 'background_data.json')
-        with open(backgrounds_file_path, 'r') as file:
-            background_data = json.load(file)
-
-        traits_file_path = os.path.join(os.path.dirname(os.path.abspath(
-            __file__)), 'static', 'json', 'traits.json')
-        with open(traits_file_path, 'r') as file:
-            traits_data = json.load(file)
-
-        bonds_file_path = os.path.join(os.path.dirname(os.path.abspath(
-            __file__)), 'static', 'json', 'bonds.json')
-        with open(bonds_file_path, 'r') as file:
-            bonds_data = json.load(file)
-
-        with open(marketplace_file_path, 'r') as file:
-            marketplace_data = json.load(file)
-
-        image_folder = os.path.join(os.path.dirname(os.path.abspath(
-            __file__)), 'static', 'images', 'portraits')
-        image_files = [f for f in os.listdir(
-            image_folder) if f.endswith('.webp')]
-
     return render_template('main/character_create.html', form=form, background_data=json.dumps(background_data), traits_data=json.dumps(traits_data),
                            bonds_data=json.dumps(bonds_data), omens_data=json.dumps(omens_data), marketplace_data=json.dumps(marketplace_data), images=image_files)
 
 
-@main.route('/users/<username>/characters/<url_name>/edit/', methods=['GET', 'POST'])
-@login_required
+@main.route('/quickroll/', methods=['GET', 'POST'])
+def quickroll():
+    form = CharacterForm()
+    return render_template('main/character_create.html', quick_roll=True, form=form, background_data=json.dumps(background_data), traits_data=json.dumps(traits_data),
+                           bonds_data=json.dumps(bonds_data), omens_data=json.dumps(omens_data), marketplace_data=json.dumps(marketplace_data), images=image_files)
+
+
+@main.route('/quickcharacter/', methods=['GET'])
+def quickcharacter():
+    return render_template('main/character.html', quick_roll=True, character=None, items_json=json.dumps([]), containers_json=json.dumps([]))
+
+
+@main.route('/quickcharacter/print', methods=['GET'])
+def print_quickcharacter():
+    return render_template('main/character_print.html', quick_roll=True, character=None)
+
+
+@main.route('/quickcharacter/edit', methods=['GET', 'POST'])
+def edit_quickcharacter():
+    form = CharacterEditForm()
+
+    return render_template('main/edit_character.html',
+                           quick_roll=True,
+                           character=None,
+                           form=form,
+                           items_json='[]',
+                           containers_json='[]',
+                           portrait_src=url_for(
+                               'static', filename='images/portraits/default.webp'),
+                           omens_data=json.dumps(omens_data),
+                           scars_data=json.dumps(scars_data),
+                           marketplace_data=json.dumps(marketplace_data),
+                           party_name=None,
+                           party_url=None,
+                           party_description=None,
+                           is_owner=False,
+                           party=None)
+
+
+@ main.route('/users/<username>/characters/<url_name>/edit/', methods=['GET', 'POST'])
+@ login_required
 def edit_character(username, url_name):
 
     # Get user and character
@@ -309,9 +346,6 @@ def edit_character(username, url_name):
             'static', filename='images/portraits/' + character.image_url)
     else:
         portrait_src = character.image_url
-
-    with open(marketplace_file_path, 'r') as file:
-        marketplace_data = json.load(file)
 
     # Party info and validation
 
@@ -428,7 +462,7 @@ def edit_character(username, url_name):
                            party_description=party_description, omens_data=json.dumps(omens_data), scars_data=json.dumps(scars_data), base_url=base_url, username=username, user_id=current_user.id, url_name=url_name, marketplace_data=json.dumps(marketplace_data))
 
 
-@main.route('/users/<username>/characters/<url_name>/')
+@ main.route('/users/<username>/characters/<url_name>/')
 def character(username, url_name):
     user = User.query.filter_by(username=username).first_or_404()
     character = Character.query.filter_by(
@@ -457,7 +491,7 @@ def character(username, url_name):
                            party=party, party_url=party_url, party_name=party_name, party_description=party_description, base_url=base_url, is_owner=is_owner)
 
 
-@main.route('/users/<username>/characters/<url_name>/print/')
+@ main.route('/users/<username>/characters/<url_name>/print/')
 def print_character(username, url_name):
     user = User.query.filter_by(username=username).first_or_404()
     character = Character.query.filter_by(
@@ -465,8 +499,8 @@ def print_character(username, url_name):
     return render_template('main/character_print.html', character=character, items_json=json.dumps(character.items), containers_json=json.dumps(character.containers))
 
 
-@main.route('/delete-character/<int:character_id>/', methods=['POST', 'GET'])
-@login_required
+@ main.route('/delete-character/<int:character_id>/', methods=['POST', 'GET'])
+@ login_required
 def delete(character_id):
     character = Character.query.get_or_404(character_id)
 
@@ -519,8 +553,8 @@ def generate_unique_party_url(name):
     return party_url
 
 
-@main.route('/users/<username>/parties/',  methods=['GET', 'POST'])
-@login_required
+@ main.route('/users/<username>/parties/',  methods=['GET', 'POST'])
+@ login_required
 def parties(username):
     user = User.query.filter_by(username=username).first_or_404()
     form = PartyForm()
@@ -576,7 +610,7 @@ def parties(username):
     return render_template('main/parties.html', form=form, parties=parties_sorted, base_url=base_url)
 
 
-@main.route('/users/<ownername>/parties/<party_url>/', methods=['GET', 'POST'])
+@ main.route('/users/<ownername>/parties/<party_url>/', methods=['GET', 'POST'])
 def party(ownername, party_url):
     owner = User.query.filter_by(username=ownername).first_or_404()
     party = Party.query.filter_by(
@@ -619,7 +653,7 @@ def party(ownername, party_url):
                            items_json=json.dumps(party.items), containers_data_json=json.dumps(party.containers), party_id=party.id,)
 
 
-@main.route('/users/<ownername>/parties/<party_url>/edit/', methods=['GET', 'POST'])
+@ main.route('/users/<ownername>/parties/<party_url>/edit/', methods=['GET', 'POST'])
 def party_edit(ownername, party_url):
     owner = User.query.filter_by(username=ownername).first_or_404()
     party = Party.query.filter_by(
@@ -724,7 +758,7 @@ def party_edit(ownername, party_url):
                            )
 
 
-@main.route('/users/<ownername>/parties/<party_url>/tools/', methods=['POST', 'GET'])
+@ main.route('/users/<ownername>/parties/<party_url>/tools/', methods=['POST', 'GET'])
 @ login_required
 def party_tools(ownername, party_url):
     party_id = Party.query.filter_by(
