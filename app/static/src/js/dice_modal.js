@@ -31,6 +31,15 @@ const diceModal = {
 
     // Show/hide d100 based on mode
     this.updateD100Visibility();
+
+    // Install event listener for modal ESC.
+    document.addEventListener('keyup', (e) => {
+      const dm = document.getElementById("dice-modal");
+      if (e.code != "Escape" || !dm) return;
+      if (dm.classList.contains("is-active")) {
+        dm.classList.remove("is-active");
+      };
+    });
   },
 
   updateD100Visibility() {

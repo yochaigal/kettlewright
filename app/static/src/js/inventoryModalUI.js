@@ -55,6 +55,12 @@ const inventoryModalUI = {
         this.removeModalWarnings();
       });
     });
+    // Install event listener for modal ESC.
+    document.addEventListener('keyup', (e) => {
+      if (e.code != "Escape") return;
+      this.closeInventoryModals();
+      this.removeModalWarnings();
+    });
   },
 
   // _____________ Shared _____________
@@ -175,6 +181,7 @@ const inventoryModalUI = {
         inventoryUI.refreshInventory();
       }
     });
+
   },
 
   initializeTagButtons() {

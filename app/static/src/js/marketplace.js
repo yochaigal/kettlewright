@@ -60,6 +60,12 @@ const marketplace = {
     if (marketplaceBackground) {
       marketplaceBackground.addEventListener("click", () => this.handleCancel());
     }
+
+    // Install event listener for modal ESC.
+    document.addEventListener('keyup', (e) => {
+      if (e.code != "Escape") return;
+      this.handleCancel();
+    });
   },
 
   setAddedBy(addedBy) {
