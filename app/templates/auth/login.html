@@ -24,6 +24,9 @@
     {% endif %} {% endwith %} {% with messages = get_flashed_messages(category_filter=['success']) %} {% if messages %}
     <div class="notification is-success" style="margin-top: 1em">{{ messages[0] }}</div>
     {% endif %} {% endwith %}
+    <div>
+      <a href="/reset" class="alert-link forgot-password-link">Forgot Password?</a>
+    </div>
   </form>
 </div>
 
