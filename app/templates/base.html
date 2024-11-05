@@ -24,6 +24,10 @@
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='src/js/main.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    
+    <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.13"></script>
+    
     {% if current_user.is_authenticated %}
     <script src="{{url_for('static', filename='src/js/socket_init.js')}}" defer type="module"></script>
     {% endif %}
@@ -70,7 +74,7 @@
     <meta name="msapplication-config" content="{{ url_for('static', filename='icons/browserconfig.xml') }}" />
     <meta name="theme-color" content="#ffffff" />
   </head>
-  <body class="">
+  <body class="" hx-ext="class-tools, preload">
     <script>
       (function () {
         const isDarkMode = localStorage.getItem("darkMode") === "true";

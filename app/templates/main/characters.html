@@ -58,7 +58,7 @@
               <p class="character-card-attribute subtitle">Armor {{character.armor}}</p>
             </div>
             <div class="card-attribute-container">
-              <p class="character-card-attribute subtitle">HP {{character.hp}}</p>
+              <p class="character-card-attribute subtitle">HP {{character.hp}}/{{character.hp_max}}</p>
             </div>
             <div class="card-attribute-container">
               <p class="character-card-attribute subtitle">Gold {{character.gold}}</p>
@@ -77,8 +77,8 @@
         </button>
         <button
           class="button is-light card-delete-character-button"
-          type="button"
           data-character-id="{{ character.id }}"
+          hx-get="/delete-character-modal/{{ character.id }}" hx-target="body" hx-swap="beforeend"
         >
           <i class="fa-solid fa-trash icon-in-button" style="margin-right: 4px"></i>
         </button>

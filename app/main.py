@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, jsonify, flash
+from flask import Blueprint, render_template, redirect, url_for, jsonify, flash, make_response
 from flask_login import login_required, current_user
 from .models import User, Character, Party
 from . import db
@@ -10,8 +10,10 @@ import re
 from slugify import slugify
 import os
 import bleach
+from flask_htmx import HTMX
 
 main = Blueprint('main', __name__)
+htmx = HTMX(main)
 
 base_url = os.environ.get('BASE_URL')
 print('base_url:', base_url, file=sys.stderr)
@@ -487,7 +489,9 @@ def delete(character_id):
     db.session.commit()
 
     # flash('Character deleted successfully.', 'success')
-    return redirect(url_for('main.characters', username=current_user.username))
+    response = make_response("Redirecting")
+    response.headers["HX-Redirect"] = url_for('main.characters', username=current_user.username)
+    return response
 
 
 def generate_unique_join_code():
@@ -761,3 +765,9 @@ def tools():
     with open(events_path, 'r') as file:
         events_data = json.load(file)
     return render_template('main/tools.html', events_data=json.dumps(events_data))
+
+@ main.route("/delete-character-modal/<character_id>")
+def delete_character_modal(character_id):
+    if htmx:
+        return render_template("modal/delete-character.html", character_id=character_id)
+    return render_template("index.html")

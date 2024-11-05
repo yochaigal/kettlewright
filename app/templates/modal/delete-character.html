@@ -1,0 +1,16 @@
+<div _="on closeModal remove me" class="modal-background">
+	<div class="modal-background" _="on click trigger closeModal"></div>
+	<div class="modal-card">
+        <header class="modal-card-head">
+		<h3>Delete character</h3>
+        </header>
+        <section class="modal-card-body">
+		    <div>Are you sure, you want to delete this character?</div>
+            <div class="modal-buttons">
+                <button _="on click trigger closeModal">Close</button>
+                <button _="on click trigger closeModal" hx-get="/delete-character/{{character_id}}/">Delete</button>
+            </div>
+        </section>
+	</div>
+    
+</div>

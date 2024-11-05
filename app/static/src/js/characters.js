@@ -30,13 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.querySelectorAll(".card-delete-character-button").forEach((button) => {
     button.addEventListener("click", function (event) {
-      event.stopPropagation();
-      const characterId = this.getAttribute("data-character-id");
-      console.log("delete button clicked", characterId);
-
-      if (confirm("Are you sure you want to delete this character?")) {
-        window.location.href = `/delete-character/${characterId}/`;
-      }
+      event.stopPropagation(); // only to avoid clicking on the character card
     });
   });
 });
