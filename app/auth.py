@@ -48,7 +48,7 @@ def login():
                 flash(Markup('Please confirm your account before logging in. If you did not receive a confirmation link, please click <a href="/resend_confirmation" class="alert-link">here</a> to resend.'), 'error')
         else:
             flash(Markup(
-                'Invalid email or password. <a href="/reset" class="alert-link">Forgot Password?</a>'), 'error')
+                'Invalid email or password.'), 'error')
 
     return render_template('auth/login.html', form=form)
 
