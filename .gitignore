@@ -13,3 +13,4 @@ event_data.json
 background_data.json
 app/static/dist/
 instance/
+app/static/.webassets-manifest
