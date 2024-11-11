@@ -10,8 +10,12 @@ import re
 from slugify import slugify
 import os
 import bleach
+from flask_htmx import HTMX
+
+
 
 main = Blueprint('main', __name__)
+htmx = HTMX(main)
 
 base_url = os.environ.get('BASE_URL')
 print('base_url:', base_url, file=sys.stderr)
@@ -761,3 +765,14 @@ def tools():
     with open(events_path, 'r') as file:
         events_data = json.load(file)
     return render_template('main/tools.html', events_data=json.dumps(events_data))
+
+# This is an example for htmx usage
+# @ main.route("/htmx/example")
+# def htmx_example(params):
+#     if htmx:
+#          -- if we want to return rendered partial --  
+#         return render_template("some local partial template", some params...)
+#         -- if we want to return redirect (will cause page reload) --
+#         response = make_response("Redirecting...")
+#         response.headers["HX-Redirect"] = url_for('main.characters', some params ...)
+#     return render_template("index.html")
