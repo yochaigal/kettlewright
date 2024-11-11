@@ -19,7 +19,13 @@
           <button class="roll button dice-button" type="button" id="roll-button">
             <i class="fa-solid fa-dice dice"></i>
           </button>
-          <button class="button dice-button" id="tools-copy-text-button" type="button">
+          <button class="button dice-button" 
+            id="tools-copy-text-button" 
+            type="button" 
+            hx-get="/htmx/alert/Copy text/Results copied to clipboard"
+            hx-target="body" 
+            hx-swap="beforeend"
+          >
             <i class="fa-solid fa-copy"></i>
           </button>
           <button class="button dice-button" id="clear-button" style="font-size: 16pt">

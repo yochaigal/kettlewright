@@ -766,6 +766,12 @@ def tools():
         events_data = json.load(file)
     return render_template('main/tools.html', events_data=json.dumps(events_data))
 
+@ main.route("/htmx/alert/<title>/<message>")
+def htmx_alert(title, message):
+    if htmx:
+        return render_template("modal/alert.html", modal_title=title, modal_message=message)
+    return render_template("index.html")
+
 # This is an example for htmx usage
 # @ main.route("/htmx/example")
 # def htmx_example(params):

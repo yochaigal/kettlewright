@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const link = `https://kettlewright.cairnrpg.com/users/${ownerUsername}/characters/${urlName}/`;
     navigator.clipboard.writeText(link);
-    alert("Link copied to clipboard");
   }
 
   // document.querySelectorAll(".character-card").forEach((card) => {
