@@ -23,7 +23,12 @@
         <i class="fa-solid fa-dice icon-in-button"></i> </button
     ></div>
 
-    <button class="button" id="reset-button" type="button">
+    <button class="button" id="reset-button" type="button"
+        hx-get="/reload-page?link=/new_character/"
+        hx-confirm="Do you want to reset character?"
+        data-confirm-title="Reset character"
+        data-confirm-button="Reset"
+    >
       Reset
       <i class="fa-solid fa-rotate-right icon-in-button"></i>
     </button>

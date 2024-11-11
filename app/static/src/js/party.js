@@ -4,6 +4,7 @@ let characterList = [];
 import inventory from "./inventoryData.js";
 import inventoryUI from "./inventoryUI.js";
 import inventoryModalUI from "./inventoryModalUI.js";
+import { styledAlert } from "./utils.js";
 
 inventory.setItems(data);
 inventory.setContainers(containersData);
@@ -30,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("join-code-button").addEventListener("click", function () {
       navigator.clipboard.writeText(joinCode).then(
         function () {
-          alert("Join code copied to clipboard");
+          styledAlert("Party join code", "Join code copied to clipboard", "#party-form");
         },
         function (err) {
           console.error("Could not copy text: ", err);

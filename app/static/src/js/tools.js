@@ -1,4 +1,4 @@
-import utils from "./utils.js";
+import utils, { handleClick, styledAlert } from "./utils.js";
 
 const categorySelect = document.getElementById("category-select");
 const subcategorySelect = document.getElementById("subcategory-select");
@@ -82,11 +82,15 @@ const clearButton = document.getElementById("clear-button");
 clearButton.addEventListener("click", clearResults);
 
 const copyButton = document.getElementById("tools-copy-text-button");
-copyButton.addEventListener("click", () => {
+
+handleClick("#tools-copy-text-button", (event, element) => {
   const resultDisplay = document.getElementById("tools-result-display");
   const text = resultDisplay.innerText;
   navigator.clipboard.writeText(text);
+  styledAlert("Copy text", "Results copied to clipboard");
 });
+
+
 
 const roll = (sides) => {
   return Math.floor(Math.random() * sides);

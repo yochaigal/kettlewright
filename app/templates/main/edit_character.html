@@ -236,8 +236,11 @@
       <button
         class="button edit-mode is-danger"
         id="delete-character-button"
-        type="button"
         data-character-id="{{ character.id }}"
+        data-confirm-title="Delete character"
+        data-confirm-button="Delete"
+        hx-get="/delete-character/{{ character.id }}/"
+        hx-confirm="Are you sure you want to delete {{character.name}}?"
       >
         DELETE CHARACTER<i class="fa-solid fa-trash icon-in-button"></i>
       </button>
@@ -245,7 +248,17 @@
 
     <div id="save-button-footer-wrapper" class="sticky-save-button-wrapper edit-mode">
       <button id="save-button-footer-save" class="button is-success"> Save </button>
-      <button id="save-button-footer-cancel" class="button" type="button"> Cancel </button>
+      <button 
+          id="save-button-footer-cancel" 
+          class="button" 
+          type="button"
+          data-confirm-title="Leave edit"
+          data-confirm-button="Leave"
+          data-cancel-button="Stay"
+          hx-get="/reload-page?link=/users/{{username}}/characters/{{url_name}}/"
+          hx-confirm="Cancel and lose all changes?">
+        Cancel 
+      </button>
     </div>
   </form>
 </section>

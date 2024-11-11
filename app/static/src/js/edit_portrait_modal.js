@@ -1,4 +1,5 @@
 import inventoryUI from "./inventoryUI.js";
+import { styledAlert } from "./utils.js";
 
 const portraitModal = {
   page: "edit",
@@ -8,7 +9,7 @@ const portraitModal = {
   customPortrait: false,
   userSelected: false,
 
-  setImageURL(url) {},
+  setImageURL(url) { },
 
   // set the portrait image to the modal selection
   setPortraitImage(custom = false) {
@@ -47,14 +48,12 @@ const portraitModal = {
     // Regular expression to check if the URL is valid
     const validUrlPattern = /^(https?:\/\/)?[\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?$/;
     if (!validUrlPattern.test(url)) {
-      alert("Invalid URL");
       return false;
     }
 
     // Regular expression to check for valid image file extensions
     const validImageExtensions = /\.(jpg|jpeg|png|gif|bmp|svg)$/i;
     if (!validImageExtensions.test(url)) {
-      alert("URL does not point to a valid image file");
       return false;
     }
 
@@ -127,6 +126,7 @@ const portraitModal = {
           this.userSelected = true;
         } else {
           //this.customURLField.classList.add("is-danger");
+          styledAlert("Save portrait", "Image URL not valid\nor does not point to a valid image file.", "#edit-portrait-modal-image-select-container");
         }
       } else {
         this.setPortraitImage(this.customPortrait);

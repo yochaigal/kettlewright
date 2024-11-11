@@ -116,6 +116,86 @@ export const rollDoubleDice = (sides) => {
   // return `d${sides}+d${sides} (${roll1}, ${roll2})`;
 };
 
+// Styled alert dialog
+// @param {string} title alert title
+// @param {string} message alert message 
+export const styledAlert = (title, message) => {
+  Swal.fire({
+    title: title,
+    text: message,
+    confirmButtonText: 'Close',
+    background: 'var(--bg)',
+    color: 'var(--fg)',
+    buttonsStyling: false,
+    animation: true,
+    customClass: {
+      popup: 'modal-alert',
+      title: 'modal-alert-card-title',
+      htmlContainer: 'modal-alert-content',
+      actions: 'modal-alert-actions'
+    }
+  });
+}
+
+// Styled confirm dialog
+// @param {string} title confirm title
+// @param {string} message confirm message 
+//
+// @returns promise to proceed with confirmation
+export const styledConfirm = (title, message, confirmButton, cancelButton) => {
+  return Swal.fire({
+    title: title,
+    text: message,
+    confirmButtonText: confirmButton ? confirmButton : "OK",
+    cancelButtonText: cancelButton ? cancelButton : "Cancel",
+    showCancelButton: true,
+    background: 'var(--bg)',
+    color: 'var(--fg)',
+    buttonsStyling: false,
+    animation: true,
+    customClass: {
+      popup: 'modal-alert',
+      title: 'modal-alert-card-title',
+      htmlContainer: 'modal-alert-content',
+      actions: 'modal-alert-actions'
+    }
+  });
+}
+
+// Utility function for attaching business logic to 'click' event on the element.
+// @param {string} elementSelector element selector
+// @param {function} eventCallback function taking two parameters: 'event' (click event) and 'element' (click target) 
+export const handleClick = (elementSelector, eventCallback) => {
+  document.querySelectorAll(elementSelector).forEach((element) => {
+    element.addEventListener("click", function (event) {
+      eventCallback(event, element);
+    });
+  });
+}
+
+// Register confirm handler for all HTMX actions
+document.addEventListener("htmx:confirm", function (e) {
+  // The event is triggered on every trigger for a request, so we need to check if the element
+  // that triggered the request has a hx-confirm attribute, if not we can return early and let
+  // the default behavior happen
+  if (!e.target.hasAttribute('hx-confirm')) return
+
+  e.preventDefault()
+
+  // Get styled confirm promise and run it.
+  styledConfirm(
+    e.target.dataset.confirmTitle ? e.target.dataset.confirmTitle : "", // data-confirm-title attribute
+    e.detail.question, //  hx-confirm attribute value
+    e.target.dataset.confirmButton, // data-confirm-button attribute
+    e.target.dataset.cancelButton, // data-cancel-button attribute
+  ).then(function (result) {
+    if (result.isConfirmed) {
+      // If the user confirms, we manually issue the request
+      e.detail.issueRequest(true); // true to skip the built-in window.confirm()
+    }
+  })
+})
+
 import * as utils from "./utils.js"; // Assuming the above exports are in utils.js
 
 export default utils;

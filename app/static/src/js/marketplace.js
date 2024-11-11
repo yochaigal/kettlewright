@@ -1,4 +1,4 @@
-import { createElement } from "./utils.js";
+import { createElement, styledAlert } from "./utils.js";
 import inventoryUI from "./inventoryUI.js";
 
 const marketplace = {
@@ -186,7 +186,7 @@ const marketplace = {
     const newQuantity = Math.max(0, currentQuantity + change);
 
     if (change > 0 && this.gold < item.cost) {
-      alert("Not enough gold to purchase this item!");
+      styledAlert(itemName, "Not enough gold to purchase this item!", "#marketplace-modal");
       return;
     }
 

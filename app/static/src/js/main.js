@@ -1,3 +1,4 @@
+
 const toggleDarkMode = () => {
   document.body.classList.toggle("dark-mode");
   const isDarkMode = document.body.classList.contains("dark-mode");
@@ -17,6 +18,7 @@ const applyDarkMode = () => {
   }
 };
 
+// Document initialization
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("nav-mobile-button").addEventListener("click", () => {
     document.getElementById("nav-menu").classList.toggle("is-active");

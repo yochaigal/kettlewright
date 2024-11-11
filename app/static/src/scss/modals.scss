@@ -6,7 +6,7 @@
 .modal-background {
   bottom: 0;
   left: 0;
-  position: absolute;
+  position: fixed;
   right: 0;
   top: 0;
 }
@@ -233,11 +233,11 @@
 }
 
 
+
 .modal-card-title {
   font-size: 1.5em;
   flex-grow: 0;
   width: auto;
-
 }
 
 .modal-card-head {
@@ -352,4 +352,35 @@ img.edit-portrait-modal-thumbnail.highlighted {
 .dice-modal-button {
   font-size: 16pt;
   border: none;
+}
+
+/* --- Modal alert --- */
+
+.modal-alert {
+  font-size: 1.6rem;
+  border-radius: 4px;
+  max-height: 80vh;
+  max-width: 90vw;
+  width: fit-content;
+  border: 1px solid color-mix(in lab, transparent 80%, var(--fg));
+}
+
+.modal-alert-card-title {
+  display: flex;
+  font-size: 1.5em;
+  padding: 20px;
+  width: auto;
+  justify-content: center;
+  align-items: center;
+  background-color: color-mix(in lab, transparent 90%, var(--fg));
+}
+
+.modal-alert-content {
+  padding: 16px;
+}
+
+.modal-alert-actions {
+  padding: 16px;
+  gap: 16px;
+  width: fit-content;
 }

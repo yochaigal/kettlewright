@@ -3,12 +3,18 @@
 .is-danger {
   background-color: $red !important;
 }
-.is-success, .is-new {
+
+.is-success,
+.is-new {
   background-color: $green !important;
 }
-.is-primary, .is-blue, .is-info {
+
+.is-primary,
+.is-blue,
+.is-info {
   background-color: $blue;
 }
+
 .is-yellow {
   background-color: $yellow;
 }
@@ -18,7 +24,7 @@
 
 /* specifying content as uniciode, as Chrome sometimes had issues reading the symbol in magick.css*/
 h3:before {
-    content: "\1F65B  ";
+  content: "\1F65B  ";
 }
 
 
@@ -34,24 +40,36 @@ body.dark-mode {
   --form-bg: hsl(0, 0%, 8%);
 
 
- 
+
   --form-fg: hsl(0, 0%, 85%);
   --form-fg-placeholder: #fefefe9a;
 
   .is-danger {
     background-color: $dark-red !important;
   }
+
   .is-success {
     background-color: $dark-green !important;
   }
-  .is-new, #add-edit-item-modal-transfer {
+
+  .is-new,
+  #add-edit-item-modal-transfer {
     background-color: transparent !important;
   }
-  .is-primary, .is-blue, .is-info, .tag.selected  {
+
+  .is-primary,
+  .is-blue,
+  .is-info,
+  .tag.selected {
     background-color: $dark-blue !important;
   }
 
-  .sheet, .card,  #save-button-footer-wrapper, .notification,  .party-member-card, .modal-card {
+  .sheet,
+  .card,
+  #save-button-footer-wrapper,
+  .notification,
+  .party-member-card,
+  .modal-card {
     box-shadow: 0px 0px 4px 0px rgba(255, 255, 255, 0.15);
     // box-shadow: none;
     //border: 2px solid rgba(255, 255, 255, 0.1);
@@ -66,34 +84,37 @@ body.dark-mode {
     // box-shadow: 0px 0px 4px 0px rgba(255, 255, 255, 0.2);
   }
 
-  #nav-logo, #kettlewright-logo, .nav-logo-container img {
+  #nav-logo,
+  #kettlewright-logo,
+  .nav-logo-container img {
     filter: invert(1);
   }
 
-.modal-card {
-  background-color: var(--bg);
-}
+  .modal-card {
+    background-color: var(--bg);
+  }
 
-.modal-background {
-  background-color: rgba(10, 10, 10, 0.85)
-}
+  .modal-background {
+    background-color: rgba(10, 10, 10, 0.85)
+  }
 
-// .dice-modal-button {
-//   border: 2px solid rgba(255, 255, 255, 0.1);
-//   background-color: transparent;
-//   color: white !important;
-// }
+  // .dice-modal-button {
+  //   border: 2px solid rgba(255, 255, 255, 0.1);
+  //   background-color: transparent;
+  //   color: white !important;
+  // }
 
-// for chrome in windows/linux
-select, option {
-  background-color: var(--bg);
-}
+  // for chrome in windows/linux
+  select,
+  option {
+    background-color: var(--bg);
+  }
 
-.dark-mode select option:checked,
-.dark-mode select option:hover {
-  background-color: #555;
-  color: var(--fg);
-}
+  .dark-mode select option:checked,
+  .dark-mode select option:hover {
+    background-color: #555;
+    color: var(--fg);
+  }
 
 }
 
@@ -101,13 +122,15 @@ main {
   max-width: 96rem;
 }
 
-textarea, select {
+textarea,
+select {
   font-family: "Averia Serif Libre", serif;
   font-size: 13pt;
 }
 
-select, select:focus {
-  border: 1px solid  $light-grey;
+select,
+select:focus {
+  border: 1px solid $light-grey;
   border-radius: 4px;
   padding: .5em;
 }
@@ -132,14 +155,15 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
-} 
+}
 
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
-} 
+}
 
-form, .form {
+form,
+.form {
   display: block;
   padding: 4em;
   max-width: 940px;
@@ -170,11 +194,13 @@ footer {
   width: 100%;
 }
 
-header, footer {
+header,
+footer {
   margin: auto;
 }
 
-button, .button {
+button,
+.button {
   max-width: fit-content;
   min-width: max-content;
   border-radius: 2px;
@@ -191,7 +217,8 @@ button, .button {
 //   width: 100%;
 // }
 
-.sheet, .card {
+.sheet,
+.card {
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   background-color: var(--form-bg);
 }
@@ -221,14 +248,15 @@ button, .button {
 @media (max-width: 600px) {
   .card.auth-card {
     box-shadow: none;
-    background-color: var(--bg); 
+    background-color: var(--bg);
   }
 }
 
 .auth-title {
   font-size: 1.25em;
   margin-bottom: 1.5em;
-  margin-left: -15px; /* Adjust for icon */
+  margin-left: -15px;
+  /* Adjust for icon */
 }
 
 @media (max-width: 940px) {
@@ -239,13 +267,14 @@ button, .button {
 }
 
 .body-container {
-  display: flex; 
+  display: flex;
   flex-direction: column;
-  align-items: center ;
+  align-items: center;
   margin: 80px 0px;
   box-sizing: border-box;
 
 }
+
 .grid-columns-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -253,7 +282,7 @@ button, .button {
   row-gap: 1em;
 }
 
-.justify-left{
+.justify-left {
   display: flex;
   justify-content: flex-start;
 }
@@ -285,12 +314,13 @@ button, .button {
   font-weight: 400 !important;
 
 }
+
 .flex-row {
   display: flex;
   gap: 1rem;
   margin-top: 0px;
   flex-wrap: wrap;
- 
+
 }
 
 .textarea {
@@ -310,7 +340,7 @@ button, .button {
 
 .dice-button {
   font-size: 20pt;
-  margin: 0;  
+  margin: 0;
   border: none;
 
 }
@@ -335,6 +365,7 @@ button, .button {
 .hidden {
   display: none !important;
 }
+
 .inactive {
   opacity: 0.3;
   pointer-events: none;
@@ -362,13 +393,19 @@ button, .button {
 
 .tag {
   display: inline-block;
-  background-color: transparent; /* 1 */
-  color: var(--fg); /* 1 */
-  padding: 8px; /* 2 */
-  margin-top: 1rem; /* 3 */
-  border: 1px solid var(--fg); /* 4 */
+  background-color: transparent;
+  /* 1 */
+  color: var(--fg);
+  /* 1 */
+  padding: 8px;
+  /* 2 */
+  margin-top: 1rem;
+  /* 3 */
+  border: 1px solid var(--fg);
+  /* 4 */
   border-radius: 2px;
-  cursor: pointer; /* 5 */
+  cursor: pointer;
+  /* 5 */
   width: auto;
   font-size: 1.5rem;
 
@@ -376,10 +413,12 @@ button, .button {
 
 
 .tag:disabled {
-    opacity: 0.5;
-    border-style: dashed; /* 1 */
-    cursor: not-allowed; /* 2 */
-    text-decoration: line-through;
+  opacity: 0.5;
+  border-style: dashed;
+  /* 1 */
+  cursor: not-allowed;
+  /* 2 */
+  text-decoration: line-through;
 }
 
 .tag.selected {
@@ -388,7 +427,7 @@ button, .button {
 
 
 .card {
-max-width: 20em;
+  max-width: 20em;
 }
 
 .card-content {
@@ -403,48 +442,52 @@ max-width: 20em;
 /* Nav and Logos */
 
 .navbar {
-display: flex;
-align-items: end;
-//gap: 1rem;
-font-size: 11pt;
-margin: .5rem 2rem;
-height: 58px;
+  display: flex;
+  align-items: end;
+  //gap: 1rem;
+  font-size: 11pt;
+  margin: .5rem 2rem;
+  height: 58px;
 }
 
 .nav-logo-container {
   display: flex;
   align-items: end;
 }
+
 #nav-logo {
   margin: 8px 0px 0px 0px;
 }
 
-.navbar-menu{
+.navbar-menu {
   display: flex;
   justify-content: space-between;
   width: 100%;
 
 }
 
-.navbar-start, .navbar-end {
+.navbar-start,
+.navbar-end {
   display: flex;
   gap: 1.5rem;
   margin: 0 2rem;
 }
 
 .navbar-item {
-margin-bottom: 2px;
-text-decoration: none;
+  margin-bottom: 2px;
+  text-decoration: none;
 }
 
-.kettlewright-logo-container, .nav-logo-container {
+.kettlewright-logo-container,
+.nav-logo-container {
   max-width: 500px;
   padding: 0 4em;
   margin: 0 auto;
   box-sizing: border-box;
 }
 
-.kettlewright-logo-container, .nav-logo-container img {
+.kettlewright-logo-container,
+.nav-logo-container img {
   width: 100%;
   height: auto;
   display: block;
@@ -452,8 +495,8 @@ text-decoration: none;
 
 .nav-logo-container {
   max-width: 160px;
-  position: relative;  
-  top: 9px; 
+  position: relative;
+  top: 9px;
   margin: 0px;
   padding: 1em;
 }
@@ -464,62 +507,64 @@ text-decoration: none;
 
 @media screen and (max-width: 760px) {
 
-.navbar {
-  display: flex;
-  justify-content: space-between;
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .navbar-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2em;
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    background-color: var(--bg);
+    padding: 4em 2em;
+    font-size: 14pt;
+  }
+
+  .navbar-menu.is-active {
+    display: flex;
+  }
+
+
+
+  .navbar-start,
+  .navbar-end {
+    flex-direction: column;
+    gap: 2em;
+  }
+
+  .navbar-end {
+    flex-direction: column-reverse;
+  }
+
+  .navbar-item {
+    margin: 0;
+  }
+
+  .navbar-mobile-item {
+    display: block;
+  }
+
+  .nav-logo-container {
+    max-width: 180px;
+  }
 }
-.navbar-menu {
-  display: none;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 2em;
-  position: fixed;
-  top: 80px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 100;
-  background-color: var(--bg);
-  padding:  4em 2em;
+
+
+
+#dark-mode-toggle,
+#nav-mobile-button {
+  margin: 0px 1em 2px 0px;
   font-size: 14pt;
-}
-
-.navbar-menu.is-active {
-  display: flex;
-}
-
-
-
-.navbar-start, .navbar-end {
-  flex-direction: column;
-  gap: 2em;
-}
-
-.navbar-end {
-  flex-direction: column-reverse;
-}
-
-.navbar-item {
-  margin: 0;
-}
-
-.navbar-mobile-item {
-  display: block;
-}
-  
-.nav-logo-container {
-  max-width: 180px;
-}
-}
-
-
- 
-#dark-mode-toggle, #nav-mobile-button {
-  margin: 0px 1em 2px 0px; 
-  font-size: 14pt; 
-  border: none; 
+  border: none;
   padding: 0px
-
 }
 
 
@@ -529,10 +574,13 @@ text-decoration: none;
   bottom: 0;
   left: 0;
   width: 100%;
-  z-index: 100; /* Make sure it appears above other content */
-  padding: 1em; /* Add some padding to separate it from the screen edge */
+  z-index: 100;
+  /* Make sure it appears above other content */
+  padding: 1em;
+  /* Add some padding to separate it from the screen edge */
   background-color: var(--form-bg);
-  box-shadow: 0 -2px 5px rgba(0,0,0,0.1); /* Optional: add a shadow for better visibility */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  /* Optional: add a shadow for better visibility */
 
   display: flex;
   justify-content: center;
@@ -540,18 +588,19 @@ text-decoration: none;
   gap: 2em;
 }
 
-#save-button-footer-save, #save-button-footer-cancel {
+#save-button-footer-save,
+#save-button-footer-cancel {
   margin: 0;
 }
 
 /* Modals */
 
 .modal {
-display: none;
+  display: none;
 }
 
 .modal.is-active {
-display: block;
+  display: block;
 }
 
 .modal-card {
@@ -571,10 +620,12 @@ display: block;
 }
 
 .notification {
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
-.github-fork-ribbon:before { background-color: #333; }  
+.github-fork-ribbon:before {
+  background-color: #333;
+}
 
 .homepage-title {
   font-size: 42pt;
@@ -586,9 +637,10 @@ display: block;
   }
 }
 
-.homepage-text-container, .about-text-container {
-  text-align: left; 
-  padding: 1em 2em; 
+.homepage-text-container,
+.about-text-container {
+  text-align: left;
+  padding: 1em 2em;
   max-width: 800px;
   width: 100%;
 }

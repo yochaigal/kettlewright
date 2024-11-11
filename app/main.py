@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, jsonify, flash
+from flask import Blueprint, render_template, redirect, url_for, jsonify, flash, request, make_response
 from flask_login import login_required, current_user
 from .models import User, Character, Party
 from . import db
@@ -491,7 +491,9 @@ def delete(character_id):
     db.session.commit()
 
     # flash('Character deleted successfully.', 'success')
-    return redirect(url_for('main.characters', username=current_user.username))
+    response = make_response("Redirecting")
+    response.headers["HX-Redirect"] = url_for('main.characters', username=current_user.username)
+    return response
 
 
 def generate_unique_join_code():
@@ -766,11 +768,12 @@ def tools():
         events_data = json.load(file)
     return render_template('main/tools.html', events_data=json.dumps(events_data))
 
-@ main.route("/htmx/alert/<title>/<message>")
-def htmx_alert(title, message):
-    if htmx:
-        return render_template("modal/alert.html", modal_title=title, modal_message=message)
-    return render_template("index.html")
+@main.route('/reload-page')
+def reload_page():
+    response = make_response("Redirecting")
+    response.headers["HX-Redirect"] = request.args.get("link")
+    return response
+    
 
 # This is an example for htmx usage
 # @ main.route("/htmx/example")
