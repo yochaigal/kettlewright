@@ -650,11 +650,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   document.getElementById("roll-all").addEventListener("click", rollAll);
   document.getElementById("roll-remaining").addEventListener("click", rollRemaining);
-  document.getElementById("reset-button").addEventListener("click", function () {
-    if (confirm("Reset Character?")) {
-      window.location.reload(); // Reloads the current page
-    }
-  });
 
   //
   // ____________________ Submit Actions ____________________

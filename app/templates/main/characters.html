@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block content %}
-<script type="text/javascript" src="{{ url_for('static', filename='src/js/characters.js') }}"></script>
+<script src="{{ url_for('static', filename='src/js/characters.js') }}" type="module"></script>
 
 <section class="body-container">
   <div class="characters-page-header">
@@ -16,7 +16,6 @@
       class="card character-card"
       style="cursor: pointer"
       data-character="{{ character.url_name }}"
-      onclick="redirectToCharacterPage(this)"
     >
       <div class="card-content">
         <div class="card-image">
@@ -68,17 +67,22 @@
       </div>
       <div class="character-card-footer">
         <button
+          title="Copy character link" 
           class="button is-light card-link-button"
           type="button"
           data-url-name="{{ character.url_name }}"
           data-owner-username="{{ character.owner_username }}"
         >
           <i class="fa-solid fa-link icon-in-button" style="margin-right: 4px"></i>
-        </button>
+      </button>
         <button
           class="button is-light card-delete-character-button"
           type="button"
           data-character-id="{{ character.id }}"
+          data-confirm-title="Delete character"
+          data-confirm-button="Delete"
+          hx-get="/delete-character/{{ character.id }}/"
+          hx-confirm="Are you sure you want to delete {{character.name}}?"
         >
           <i class="fa-solid fa-trash icon-in-button" style="margin-right: 4px"></i>
         </button>

@@ -1,4 +1,4 @@
-import utils from "./utils.js";
+import utils, { handleClick, styledAlert } from "./utils.js";
 
 const categorySelect = document.getElementById("category-select");
 const subcategorySelect = document.getElementById("subcategory-select");
@@ -82,12 +82,15 @@ const clearButton = document.getElementById("clear-button");
 clearButton.addEventListener("click", clearResults);
 
 const copyButton = document.getElementById("tools-copy-text-button");
-copyButton.addEventListener("click", () => {
+
+handleClick("#tools-copy-text-button", (event, element) => {
   const resultDisplay = document.getElementById("tools-result-display");
   const text = resultDisplay.innerText;
   navigator.clipboard.writeText(text);
-  alert("Results copied to clipboard");
+  styledAlert("Copy text", "Results copied to clipboard");
 });
+
+
 
 const roll = (sides) => {
   return Math.floor(Math.random() * sides);
@@ -141,11 +144,9 @@ const rollMonsters = (data, subcategory) => {
   if (subcategory === "Random Monster") {
     const result = Monsters[roll(Monsters.length)];
     const formattedTraits = result.Traits.map((trait) => trait.replace(/Critical Damage/g, "<b>Critical Damage</b>"));
-    const textResult = `<b><u>${result.Name}</u></b><br><br>HP: ${result.HP}, ${
-      result.Armor ? `Armor: ${result.Armor},` : ""
-    } STR: ${result.STR}, DEX: ${result.DEX}, WIL: ${result.WIL}${
-      result.Attack ? `, ${result.Attack}<br><br>` : ""
-    }• ${formattedTraits.join("<br>• ")}`;
+    const textResult = `<b><u>${result.Name}</u></b><br><br>HP: ${result.HP}, ${result.Armor ? `Armor: ${result.Armor},` : ""
+      } STR: ${result.STR}, DEX: ${result.DEX}, WIL: ${result.WIL}${result.Attack ? `, ${result.Attack}<br><br>` : ""
+      }• ${formattedTraits.join("<br>• ")}`;
     displayResult(textResult);
   } else if (subcategory === "Custom Monster") {
     const physique = Monsters.MonsterAppearance.Physique[roll(Monsters.MonsterAppearance.Physique.length)];
@@ -261,19 +262,19 @@ const rollWorldbuilding = (data, subcategory) => {
     // Factions
     const advantageNumber =
       setting.Theme.Factions.FactionAdvantages.NumberOfAdvantages[
-        roll(setting.Theme.Factions.FactionAdvantages.NumberOfAdvantages.length)
+      roll(setting.Theme.Factions.FactionAdvantages.NumberOfAdvantages.length)
       ];
     let advantages = [];
     for (let i = 0; i < advantageNumber; i++) {
       advantages.push(
         setting.Theme.Factions.FactionAdvantages.Advantage[
-          roll(setting.Theme.Factions.FactionAdvantages.Advantage.length)
+        roll(setting.Theme.Factions.FactionAdvantages.Advantage.length)
         ]
       );
     }
     const nameFormula =
       setting.Theme.Factions.FactionNames.NameFormulas.Faction[
-        roll(setting.Theme.Factions.FactionNames.NameFormulas.Faction.length)
+      roll(setting.Theme.Factions.FactionNames.NameFormulas.Faction.length)
       ];
     const adjective =
       setting.Theme.Factions.FactionNames.Adjectives[roll(setting.Theme.Factions.FactionNames.Adjectives.length)];
@@ -452,11 +453,9 @@ const rollWorldbuilding = (data, subcategory) => {
     result.Terrain = [];
     for (let i = 0; i < terrainCount; i++) {
       const difficulty = setting.Topography.Difficulty[roll(setting.Topography.Difficulty.length)];
-      const terrain = `${
-        setting.Topography.Terrain[difficulty].Terrain[roll(setting.Topography.Terrain[difficulty].Terrain.length)]
-      }. Difficulty: ${difficulty}. Landmark: ${
-        setting.Topography.Terrain[difficulty].Landmark[roll(setting.Topography.Terrain[difficulty].Landmark.length)]
-      }.
+      const terrain = `${setting.Topography.Terrain[difficulty].Terrain[roll(setting.Topography.Terrain[difficulty].Terrain.length)]
+        }. Difficulty: ${difficulty}. Landmark: ${setting.Topography.Terrain[difficulty].Landmark[roll(setting.Topography.Terrain[difficulty].Landmark.length)]
+        }.
      `;
       result.Terrain.push(terrain);
     }
@@ -485,26 +484,21 @@ const rollWorldbuilding = (data, subcategory) => {
       ]);
 
       if (type === "Waypoint") {
-        poi = `${poiName}: ${
-          setting.PointsOfInterest.Waypoints.Waypoint[roll(setting.PointsOfInterest.Waypoints.Waypoint.length)]
-        }, 
+        poi = `${poiName}: ${setting.PointsOfInterest.Waypoints.Waypoint[roll(setting.PointsOfInterest.Waypoints.Waypoint.length)]
+          }, 
         ${setting.PointsOfInterest.Waypoints.Feature[roll(setting.PointsOfInterest.Waypoints.Feature.length)]}`;
       } else if (type === "Settlement") {
-        poi = `${poiName}: ${
-          setting.PointsOfInterest.Settlements.Settlement[roll(setting.PointsOfInterest.Settlements.Settlement.length)]
-        }, ${setting.PointsOfInterest.Settlements.Feature[roll(setting.PointsOfInterest.Settlements.Feature.length)]}`;
+        poi = `${poiName}: ${setting.PointsOfInterest.Settlements.Settlement[roll(setting.PointsOfInterest.Settlements.Settlement.length)]
+          }, ${setting.PointsOfInterest.Settlements.Feature[roll(setting.PointsOfInterest.Settlements.Feature.length)]}`;
       } else if (type === "Curiosity") {
-        poi = `${poiName}: ${
-          setting.PointsOfInterest.Curiosities.Curiosity[roll(setting.PointsOfInterest.Curiosities.Curiosity.length)]
-        }, ${setting.PointsOfInterest.Curiosities.Feature[roll(setting.PointsOfInterest.Curiosities.Feature.length)]}`;
+        poi = `${poiName}: ${setting.PointsOfInterest.Curiosities.Curiosity[roll(setting.PointsOfInterest.Curiosities.Curiosity.length)]
+          }, ${setting.PointsOfInterest.Curiosities.Feature[roll(setting.PointsOfInterest.Curiosities.Feature.length)]}`;
       } else if (type === "Lair") {
-        poi = `${poiName}: ${setting.PointsOfInterest.Lairs.Lair[roll(setting.PointsOfInterest.Lairs.Lair.length)]}, ${
-          setting.PointsOfInterest.Lairs.Feature[roll(setting.PointsOfInterest.Lairs.Feature.length)]
-        }`;
+        poi = `${poiName}: ${setting.PointsOfInterest.Lairs.Lair[roll(setting.PointsOfInterest.Lairs.Lair.length)]}, ${setting.PointsOfInterest.Lairs.Feature[roll(setting.PointsOfInterest.Lairs.Feature.length)]
+          }`;
       } else if (type === "Dungeon") {
-        poi = `${poiName}: ${
-          setting.PointsOfInterest.Dungeons.Type[roll(setting.PointsOfInterest.Dungeons.Type.length)]
-        }, ${setting.PointsOfInterest.Dungeons.Feature[roll(setting.PointsOfInterest.Dungeons.Feature.length)]}`;
+        poi = `${poiName}: ${setting.PointsOfInterest.Dungeons.Type[roll(setting.PointsOfInterest.Dungeons.Type.length)]
+          }, ${setting.PointsOfInterest.Dungeons.Feature[roll(setting.PointsOfInterest.Dungeons.Feature.length)]}`;
       }
       result.POIs.push(poi);
     }

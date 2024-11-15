@@ -1,42 +1,33 @@
-function redirectToCharacterPage(element) {
+import { handleClick, styledAlert, styledConfirm } from "./utils.js";
+
+const redirectToCharacterPage = (element) => {
   const url = element.getAttribute("data-character");
   window.location.href = `${url}`;
 }
 
+const copyLink = (element) => {
+  const urlName = element.dataset.urlName;
+  const ownerUsername = element.dataset.ownerUsername;
+  const link = `https://kettlewright.cairnrpg.com/users/${ownerUsername}/characters/${urlName}/`;
+  navigator.clipboard.writeText(link);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-  function copyLink(element) {
-    const urlName = element.dataset.urlName;
-    const ownerUsername = element.dataset.ownerUsername;
 
-    const link = `https://kettlewright.cairnrpg.com/users/${ownerUsername}/characters/${urlName}/`;
-    navigator.clipboard.writeText(link);
-    alert("Link copied to clipboard");
-  }
-
-  // document.querySelectorAll(".character-card").forEach((card) => {
-  //   card.addEventListener("click", function (event) {
-  //     if (!event.target.closest(".character-card-footer")) {
-  //       redirectToCharacterPage(this);
-  //     }
-  //   });
-  // });
-
-  document.querySelectorAll(".card-link-button").forEach((button) => {
-    button.addEventListener("click", function (event) {
-      event.stopPropagation();
-      copyLink(this);
-    });
+  handleClick(".character-card", (event, element) => {
+    if (!event.target.closest(".character-card-footer")) {
+      redirectToCharacterPage(element);
+    }
   });
 
-  document.querySelectorAll(".card-delete-character-button").forEach((button) => {
-    button.addEventListener("click", function (event) {
-      event.stopPropagation();
-      const characterId = this.getAttribute("data-character-id");
-      console.log("delete button clicked", characterId);
-
-      if (confirm("Are you sure you want to delete this character?")) {
-        window.location.href = `/delete-character/${characterId}/`;
-      }
-    });
+  handleClick(".card-link-button", (event, element) => {
+    event.stopPropagation();
+    copyLink(element);
+    styledAlert("Copy character link", "Link copied to clipboard");
   });
+
+  handleClick(".card-delete-character-button", (event, element) => {
+    event.stopPropagation(); // only to prevent opening character sheet
+  });
+
 });
