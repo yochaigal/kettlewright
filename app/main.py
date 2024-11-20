@@ -13,7 +13,6 @@ import bleach
 from flask_htmx import HTMX
 
 
-
 main = Blueprint('main', __name__)
 htmx = HTMX(main)
 
@@ -773,6 +772,8 @@ def reload_page():
     response = make_response("Redirecting")
     response.headers["HX-Redirect"] = request.args.get("link")
     return response
+
+
     
 
 # This is an example for htmx usage

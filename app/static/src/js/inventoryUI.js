@@ -329,35 +329,25 @@ const inventoryUI = {
 
     // Update Armor Counter
     if (this.page !== "party") {
-      this.updateArmor(items);
+      // this.updateArmor(items); Moved to backend
     }
 
     // Set the container headers
     this.setContainerHeaders(container);
 
     // Update HP data, if we are on edit page.
-    // It is possible to restore old HP during inventory updates,
-    // but only until we save the form.
-    // To be able to restore HP every time, we need either a global JS app state
-    // or backend storage during edit.
+    // overburdened state is set from character object during template parsing
     const hpInput = document.getElementById("hp-input");
     const hpInputMax = document.getElementById("hp-max-input");
-    const overBurdened = hpInput && hpInputMax && inventory.getSlotsCount(0) >= 10 && !this.storedHP;
-    const clearOverBurdened = hpInput && hpInputMax && inventory.getSlotsCount(0) < 10 && this.storedHP;
-    if (overBurdened) {
-      hpInput.classList.add("red-text");
-      this.storedHP = hpInput.value;
-      hpInput.value = 0;
-      hpInputMax.classList.add("red-text");
-    }
-    // Separate case because we are checking also editing state 
-    // and DOM elements existence in the same condition.
-    if (clearOverBurdened) {
-      hpInput.classList.remove("red-text");
-      hpInput.value = this.storedHP ? this.storedHP : hpInput.value;
-      this.storedHP = null;
-      hpInputMax.classList.remove("red-text");
-    }
+    if (overburdened != undefined)
+      if (overburdened == 'True') {
+        hpInput.classList.add("red-text");
+        hpInput.value = 0;
+        hpInputMax.classList.add("red-text");
+      } else {
+        hpInput.classList.remove("red-text");
+        hpInputMax.classList.remove("red-text");
+      }
 
   },
 
@@ -385,18 +375,18 @@ const inventoryUI = {
     inventoryModalUI.showAddEditItemModal(inventory.getItem(id));
   },
 
-  updateArmor() {
-    let { armor, bonusDefense } = inventory.getArmorValue();
-
-    const armorCounter = document.getElementById("armor-counter");
-    // if (bonusDefense > 0) {
-    //   armorCounter.textContent = "+";
-    // } else {
-    //   armorCounter.textContent = "";
-    // }
-    // armorCounter.textContent += armor;
-    armorCounter.textContent = armor;
-  },
+  // NOTE: moved to backend
+  // updateArmor() {
+  // let { armor, bonusDefense } = inventory.getArmorValue();
+  // const armorCounter = document.getElementById("armor-counter");
+  // if (bonusDefense > 0) {
+  //   armorCounter.textContent = "+";
+  // } else {
+  //   armorCounter.textContent = "";
+  // }
+  // armorCounter.textContent += armor;
+  // armorCounter.textContent = armor;
+  // },
 
   setContainerHeaders(activeContainerID) {
     this.selectedContainer = activeContainerID;

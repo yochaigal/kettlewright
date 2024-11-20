@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import URLSafeTimedSerializer as Serializer
 from flask import current_app
 import sys
+import json
 
 db = SQLAlchemy()
 
@@ -119,7 +120,53 @@ class Character(db.Model):
 
     def __repr__(self):
         return f'<Character {self.name}>'
-
+    
+    def hpValue(self):
+        hp = self.hp
+        if self.occupiedSlots() >= 10:
+            hp = 0
+        return [hp,self.hp_max]
+    
+    def overburdened(self):
+        return self.occupiedSlots() >= 10
+    
+    def armorValue(self):
+        armor = 0
+        if self.items == None:
+            return 0
+        items = json.loads(self.items)
+        if  len(self.items) == 0:
+            return 0
+        for it in items:
+            if it["location"] != 0:
+                continue
+            if it["tags"] == None or len(it["tags"]) == 0:
+                continue
+            if "1 Armor" in it["tags"]:
+                armor += 1
+            if "2 Armor" in it["tags"]:
+                armor += 2
+            if "3 Armor" in it["tags"]:
+                armor += 3
+        if armor > 3:
+            armor = 3
+        return armor
+    
+    def occupiedSlots(self):
+        if self.items == None:
+            return 0
+        items = json.loads(self.items)
+        if  len(self.items) == 0:
+            return 0
+        slots = 0
+        for it in items:
+            if "petty" in it["tags"]:
+                continue
+            if "bulky" in it["tags"]:
+                slots += 2
+            else:
+                slots += 1
+        return slots
 
 class Party(db.Model):
     __tablename__ = 'parties'
