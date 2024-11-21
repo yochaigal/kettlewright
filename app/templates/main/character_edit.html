@@ -40,7 +40,7 @@
   const scarsData = JSON.parse(scarsRawData).Scars;
   const omensRawData = `{{ omens_data | safe }}`;
   const omensData = JSON.parse(omensRawData).Omens;
-  const overburdened = `{{character.overburdened()}}`;
+  window.overburdened = `{{character.overburdened()}}`;
 </script>
 
 <script src="{{url_for('static', filename='src/js/character_edit.js')}}" defer type="module"></script>

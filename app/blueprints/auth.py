@@ -3,10 +3,9 @@ from datetime import datetime, UTC
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session
 from markupsafe import Markup
 from flask_login import login_user, login_required, logout_user, current_user
-from .models import User
-from . import db
-from .forms import LoginForm, RegistrationForm, PasswordResetRequestForm, PasswordResetForm, ResendConfirmationForm, PasswordUpdateForm, EmailUpdateForm
-from .email import send_email
+from app.models import db, User
+from app.forms import LoginForm, RegistrationForm, PasswordResetRequestForm, PasswordResetForm, ResendConfirmationForm, PasswordUpdateForm, EmailUpdateForm
+from app.email import send_email
 import sys
 import os
 

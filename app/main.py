@@ -426,7 +426,7 @@ def edit_character(username, url_name):
         if error_messages:
             flash(" ".join(error_messages))
 
-    return render_template('main/edit_character.html', character=character, name=character.name, background=character.background, portrait_src=portrait_src,
+    return render_template('main/character_edit.html', character=character, name=character.name, background=character.background, portrait_src=portrait_src,
                            items_json=json.dumps(character.items), containers_json=json.dumps(character.containers), form=form, images=image_files, party_name=party_name, party_url=party_url,
                            party_description=party_description, omens_data=json.dumps(omens_data), scars_data=json.dumps(scars_data), base_url=base_url, username=username, user_id=current_user.id, url_name=url_name, marketplace_data=json.dumps(marketplace_data))
 

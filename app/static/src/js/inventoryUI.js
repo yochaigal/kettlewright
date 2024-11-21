@@ -339,7 +339,7 @@ const inventoryUI = {
     // overburdened state is set from character object during template parsing
     const hpInput = document.getElementById("hp-input");
     const hpInputMax = document.getElementById("hp-max-input");
-    if (overburdened != undefined)
+    if (window.overburdened) {
       if (overburdened == 'True') {
         hpInput.classList.add("red-text");
         hpInput.value = 0;
@@ -348,6 +348,7 @@ const inventoryUI = {
         hpInput.classList.remove("red-text");
         hpInputMax.classList.remove("red-text");
       }
+    }
 
   },
 

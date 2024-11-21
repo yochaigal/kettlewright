@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response
-from .models import User, Character
-from .forms import CharacterEditForm
-from . import db
+from app.models import db, User, Character
+from app.forms import CharacterEditForm
 
 character_edit = Blueprint('character_edit', __name__)
 bool_fields = ['deprived']
