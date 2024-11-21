@@ -26,7 +26,6 @@ def register_socket_events(socketio):
         # Find all parties the user is a member of
         user_parties = Party.query.filter(
             (Party.owner == current_user.id) |
-            (Party.members.contains(str(current_user.id))) |
             (Party.subowners.contains(str(current_user.id)))
         ).all()
 
