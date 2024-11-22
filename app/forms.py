@@ -201,6 +201,33 @@ class CharacterEditForm(FlaskForm):
     transfer = HiddenField()
 
 
+# Text field partial forms
+class CharacterEditFormNotes(FlaskForm):
+    notes = TextAreaField('Notes', validators=[Length(
+        0, 2000)], render_kw={"placeholder": "notes"})
+    transfer = HiddenField()
+    
+class CharacterEditFormDescription(FlaskForm):
+    description = TextAreaField('Description', validators=[Length(
+        0, 2000)], render_kw={"placeholder": "description"})
+    transfer = HiddenField()
+    
+class CharacterEditFormTraits(FlaskForm):    
+    traits = TextAreaField('Traits', validators=[Length(
+        0, 2000)], render_kw={"placeholder": "traits"})
+    transfer = HiddenField()
+
+class CharacterEditFormBonds(FlaskForm):    
+    bonds = TextAreaField('Bonds', validators=[Length(
+        0, 2000)], render_kw={"placeholder": "bonds"})
+    transfer = HiddenField()
+    
+class CharacterEditFormOmens(FlaskForm):    
+    omens = TextAreaField('Omens', validators=[Length(
+        0, 2000)], render_kw={"placeholder": "omens"})
+    transfer = HiddenField()
+    
+
 class CharacterJSONForm(FlaskForm):
     name = HiddenField('Name', validators=[DataRequired(), Length(max=2000)])
     background = HiddenField('Background', validators=[

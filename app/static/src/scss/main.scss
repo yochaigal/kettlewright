@@ -330,6 +330,9 @@ button,
   min-height: 1em;
 }
 
+.textarea.inplace {
+  min-height: auto !important;
+}
 
 
 .select-with-dice {
