@@ -61,11 +61,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Adjust HP if overburdened
-  const hpText = document.getElementById("hp-view-text");
-  const overBurdened = inventory.getSlotsCount(0) >= 10;
+  // const hpText = document.getElementById("hp-view-text");
+  // const overBurdened = inventory.getSlotsCount(0) >= 10;
 
-  hpText.textContent = overBurdened ? "0/" + hpMax : hp + "/" + hpMax;
-  hpText.classList.toggle("red-text", overBurdened);
+  // hpText.textContent = overBurdened ? "0/" + hpMax : hp + "/" + hpMax;
+  // hpText.classList.toggle("red-text", overBurdened);
 
   // Set default text for empty fields and fix line breaks
   function setDefaultText(elementId, value, defaultText) {

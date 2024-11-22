@@ -1,0 +1,47 @@
+<div id="character-stats-container">
+    <div class="row16spaced">
+      <h3>Stats</h3>
+      <div 
+        title="Edit stats"
+        hx-get="/charedit/inplace-attrs/{{username}}/{{url_name}}" 
+        hx-target="#character-stats-container" class="small-icon-button" >
+          <i class="fa-solid fa-pencil pencil" ></i>
+      </div>
+    </div>
+    <div class="stats-stats-container character-section">
+      <div class="character-attribute-container" id="character-str-container">
+        <h4>STR</h4>
+        <p class="subtitle view-mode" id="strength-view-text">{{character.strength}}/{{character.strength_max}}</p>
+      </div>
+      <div class="character-attribute-container" id="character-dex-container">
+        <h4>DEX</h4>
+        <p class="subtitle view-mode" id="dexterity-view-text">
+          {{character.dexterity}}/{{character.dexterity_max}}
+        </p>
+      </div>
+      <div class="character-attribute-container" id="character-wil-container">
+        <h4>WIL</h4>
+        <p class="subtitle view-mode" id="willpower-view-text"
+          >{{character.willpower}}/{{character.willpower_max}}</p
+        >
+      </div>
+      <div class="character-attribute-container" id="character-hp-container">
+        <h4>HP</h4>
+        <p class="subtitle view-mode {% if character.overburdened() %} red-text {% endif %}" id="hp-view-text">
+          {{character.hpValue()[0]}}/{{character.hpValue()[1]}}
+        </p>
+      </div>
+      {% if character.deprived %}
+      <h4 class="character-deprived-text view-mode">DEPRIVED</h4>
+      {% endif %}
+
+      <div class="character-attribute-container" id="character-gold-container">
+        <h4 class="view-attribute-font">Gold</h4>
+        <p class="subtitle view-mode" id="gold-view-text">{{character.gold}}</p>
+      </div>
+      <div class="character-attribute-container" id="character-armor-container">
+        <h4>Armor</h4>
+        <p class="subtitle" id="armor-counter" style="margin-left: 0px; margin-right: auto">{{character.armorValue()}}</p>
+      </div>
+    </div>
+  </div>

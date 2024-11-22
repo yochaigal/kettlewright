@@ -40,6 +40,7 @@
   const scarsData = JSON.parse(scarsRawData).Scars;
   const omensRawData = `{{ omens_data | safe }}`;
   const omensData = JSON.parse(omensRawData).Omens;
+  window.overburdened = `{{character.overburdened()}}`;
 </script>
 
 <script src="{{url_for('static', filename='src/js/character_edit.js')}}" defer type="module"></script>
@@ -111,7 +112,7 @@
           <div class="character-attribute-container character-attribute-container-edit" id="character-hp-container">
             <h4>HP</h4>
 
-            <span class="edit-mode character-attribute-field-container">
+            <span class="edit-mode character-attribute-field-container ">
               {{ form.hp(class='character-attribute-input', size=1, type='number', min="0", max="99",
               step="1",id="hp-input") }}
               <p class="subtitle character-attribute-input">/</p>
@@ -150,7 +151,7 @@
           </div>
           <div class="character-attribute-container character-attribute-container-edit" id="character-armor-container">
             <h4>Armor</h4>
-            <p class="subtitle" id="armor-counter"></p>
+            <p class="subtitle" id="armor-counter">{{character.armorValue()}}</p>
           </div>
         </div>
       </div>

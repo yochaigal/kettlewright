@@ -2,6 +2,7 @@
   max-width: 940px;
   padding: 4em;
 }
+
 @media (max-width: 940px) {
   .view-character-sheet {
     padding: 1em 1em;
@@ -9,40 +10,41 @@
 }
 
 
-.character-section{
+.character-section {
   margin: 1em 0px;
 }
 
 .character-stats-traits-inventory {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    grid-template-areas:
-      "stats inventory-container"
-      "traits inventory-container";
-    /* row-gap: 1em; */
-    column-gap: 2.5em;
-    margin-bottom: 2em;
-  }
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "stats inventory-container"
+    "traits inventory-container";
+  /* row-gap: 1em; */
+  column-gap: 2.5em;
+  margin-bottom: 2em;
+}
 
 
 .character-print-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-column-gap: 2.5em;
-grid-template-rows: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 2.5em;
+  grid-template-rows: auto;
 
 }
 
 .print-container {
   // margin-bottom: 1em;
 }
+
 @media (max-width: 940px) {
   .character-stats-traits-inventory {
     grid-template-areas:
-    "stats stats"
-    "traits traits"
-    "inventory-container inventory-container";
+      "stats stats"
+      "traits traits"
+      "inventory-container inventory-container";
   }
 }
 
@@ -71,24 +73,28 @@ grid-template-rows: auto;
       "party";
 
   }
-}  
+}
 
 
 #character-stats-container {
-grid-area: stats;
-} 
+  grid-area: stats;
+}
+
 #inventory-container {
-grid-area: inventory-container;
+  grid-area: inventory-container;
 }
+
 #background-container {
-margin-top: 0px;
+  margin-top: 0px;
 }
+
 #bonds-container {
-margin-top: 0px;
+  margin-top: 0px;
 }
+
 #character-traits-container {
-grid-area: traits;
-margin-top: 0px;
+  grid-area: traits;
+  margin-top: 0px;
 }
 
 .portrait-image {
@@ -96,11 +102,11 @@ margin-top: 0px;
   width: 100px;
   object-fit: cover;
 }
-  
+
 .fatigue-text {
-font-weight: 600;
+  font-weight: 600;
 }
-  
+
 
 /* For individual stats, str, etc. */
 .character-attribute-container {
@@ -110,14 +116,14 @@ font-weight: 600;
   align-items: center;
 }
 
-.character-attribute-container > *  {
- margin: 0px;
+.character-attribute-container>* {
+  margin: 0px;
 }
 
 .character-attribute-field-container {
-display: flex;
-justify-content: flex-start;
-align-items: flex-end;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
 
 }
 
@@ -139,33 +145,40 @@ align-items: flex-end;
   grid-template-columns: 1fr 1fr;
   row-gap: .5em;
   grid-template-areas: "str gld"
-                      "dex armor"
-                      "wil hp"
-                      "deprived rest";
+    "dex armor"
+    "wil hp"
+    "deprived rest";
 
 }
 
 #character-str-container {
   grid-area: str;
 }
+
 #character-dex-container {
   grid-area: dex;
 }
+
 #character-wil-container {
   grid-area: wil;
 }
+
 #character-hp-container {
   grid-area: hp;
 }
+
 #character-armor-container {
   grid-area: armor;
 }
+
 #character-deprived-container {
   grid-area: deprived;
 }
+
 #character-gold-container {
   grid-area: gld;
 }
+
 #character-rest-container {
   grid-area: rest;
 }
@@ -216,17 +229,17 @@ align-items: flex-end;
   align-items: center;
 }
 
-#scars-select{
+#scars-select {
   max-width: 200px;
   margin: 0px;
   margin-left: 1em;
 }
 
 @media (max-width: 940px) {
-#scars-select {
-  max-width: 160px;
+  #scars-select {
+    max-width: 160px;
+  }
 }
-}  
 
 #add-scar-button {
   margin: 0px;

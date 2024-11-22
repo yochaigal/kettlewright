@@ -17,6 +17,7 @@ UTC = timezone.utc
 migrate = Migrate()
 mail = Mail()
 
+
 # Setup basic logging
 logging.basicConfig(level=logging.INFO)
 
@@ -100,7 +101,7 @@ def create_app():
     # Initialize SocketIO with the app
     socketio.init_app(app)
 
-    from .models import User
+    from app.models import User
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -108,7 +109,7 @@ def create_app():
         return User.query.get(int(user_id))
 
     # blueprint for auth routes
-    from .auth import auth as auth_blueprint
+    from app.blueprints import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
 
     # blueprint for non-auth routes
@@ -116,8 +117,12 @@ def create_app():
     app.register_blueprint(main_blueprint)
 
     # blueprint for api routes
-    from .api import api as api_blueprint
+    from app.blueprints import api as api_blueprint
     app.register_blueprint(api_blueprint)
+    
+    # blueprint for partial character editors
+    from app.blueprints import character_edit as character_edit_blueprint
+    app.register_blueprint(character_edit_blueprint)
 
     from .socket_events import register_socket_events
     register_socket_events(socketio)

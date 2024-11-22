@@ -224,31 +224,31 @@ const inventory = {
     return slots;
   },
 
-  getArmorValue() {
-    let armor = 0;
-    let bonusDefense = 0;
+  // NOTE: Moved to backend
+  // getArmorValue() {
+  // let armor = 0;
+  // let bonusDefense = 0;
 
-    if (!this.items) {
-      return { armor, bonusDefense };
-    }
+  // if (!this.items) {
+  //   return { armor, bonusDefense };
+  // }
 
-    this.items.forEach((item) => {
-      if (item.tags && item.location === 0) {
-        if (item.tags.includes("1 Armor")) {
-          armor++;
-        } else if (item.tags.includes("2 Armor")) {
-          armor += 2;
-        } else if (item.tags.includes("3 Armor")) {
-          armor += 3;
-        }
-        if (item.tags.includes("bonus defense")) {
-          bonusDefense++;
-        }
-      }
-    });
-
-    return { armor, bonusDefense };
-  },
+  // this.items.forEach((item) => {
+  //   if (item.tags && item.location === 0) {
+  //     if (item.tags.includes("1 Armor")) {
+  //       armor++;
+  //     } else if (item.tags.includes("2 Armor")) {
+  //       armor += 2;
+  //     } else if (item.tags.includes("3 Armor")) {
+  //       armor += 3;
+  //     }
+  //     if (item.tags.includes("bonus defense")) {
+  //       bonusDefense++;
+  //     }
+  //   }
+  // });
+  // return { armor, bonusDefense };
+  // },
 
   deleteContainer(id, moveItemsTo = null) {
     // console.log("Deleting container: " + id, "moveItemsTo: " + moveItemsTo);

@@ -1,45 +1,47 @@
-import inventory from "./inventoryData.js";
-import inventoryUI from "./inventoryUI.js";
-import inventoryModalUI from "./inventoryModalUI.js";
+// NOTE: duplicate?
 
-let mode = "view_character";
+// import inventory from "./inventoryData.js";
+// import inventoryUI from "./inventoryUI.js";
+// import inventoryModalUI from "./inventoryModalUI.js";
 
-console.log(partyName);
+// let mode = "view_character";
 
-inventory.setItems(data);
-inventory.setContainers(containersData);
-inventoryUI.initialize();
-inventoryModalUI.initialize();
+// console.log(partyName);
 
-// const deprivedContainer = document.getElementById("deprived-grid-container");
-// const deprivedIcon = document.getElementById("deprived-icon");
-// const hpContainer = document.getElementById("edit-page-hp-container");
+// inventory.setItems(data);
+// inventory.setContainers(containersData);
+// inventoryUI.initialize();
+// inventoryModalUI.initialize();
 
-console.log("custom image", customImage);
-if (customImage == "None") {
-  document.getElementById("portrait-image").src = "/static/images/portraits/default-portrait.webp";
-} else if (customImage == "False") {
-  document.getElementById("portrait-image").src = "/static/images/portraits/" + imageURL;
-} else {
-  document.getElementById("portrait-image").src = imageURL;
-}
+// // const deprivedContainer = document.getElementById("deprived-grid-container");
+// // const deprivedIcon = document.getElementById("deprived-icon");
+// // const hpContainer = document.getElementById("edit-page-hp-container");
 
-// if (deprived == "True") {
-//   deprivedContainer.classList.remove("deprived-inactive");
-//   deprivedContainer.classList.add("deprived-active");
-//   deprivedIcon.classList.add("red-filter");
-//   deprivedIcon.classList.remove("invert-filter");
-//   hpContainer.classList.add("inactive");
+// console.log("custom image", customImage);
+// if (customImage == "None") {
+//   document.getElementById("portrait-image").src = "/static/images/portraits/default-portrait.webp";
+// } else if (customImage == "False") {
+//   document.getElementById("portrait-image").src = "/static/images/portraits/" + imageURL;
 // } else {
-//   deprivedContainer.classList.add("deprived-inactive");
-//   deprivedContainer.classList.remove("deprived-active");
-//   deprivedIcon.classList.remove("red-filter");
-//   deprivedIcon.classList.add("invert-filter");
-//   hpContainer.classList.remove("inactive");
+//   document.getElementById("portrait-image").src = imageURL;
 // }
 
-const hpText = document.getElementById("hp-view-text");
-const overBurdened = inventory.getSlotsCount(0) > 10;
+// // if (deprived == "True") {
+// //   deprivedContainer.classList.remove("deprived-inactive");
+// //   deprivedContainer.classList.add("deprived-active");
+// //   deprivedIcon.classList.add("red-filter");
+// //   deprivedIcon.classList.remove("invert-filter");
+// //   hpContainer.classList.add("inactive");
+// // } else {
+// //   deprivedContainer.classList.add("deprived-inactive");
+// //   deprivedContainer.classList.remove("deprived-active");
+// //   deprivedIcon.classList.remove("red-filter");
+// //   deprivedIcon.classList.add("invert-filter");
+// //   hpContainer.classList.remove("inactive");
+// // }
 
-hpText.textContent = overBurdened ? "0/" + hpMax : hp + "/" + hpMax;
-hpText.classList.toggle("red-text", overBurdened);
+// const hpText = document.getElementById("hp-view-text");
+// const overBurdened = inventory.getSlotsCount(0) > 10;
+
+// hpText.textContent = overBurdened ? "0/" + hpMax : hp + "/" + hpMax;
+// hpText.classList.toggle("red-text", overBurdened);
