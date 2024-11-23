@@ -1,0 +1,21 @@
+<form class="no-space">
+    <div class="row16spaced">
+        <h3 class="no-space">Bonds</h3>
+        <div class="row32">
+            <div 
+                title="Save changes"
+                hx-post="/charedit/inplace-text/{{username}}/{{url_name}}/bonds/save" 
+                hx-target="#character-bonds-container"
+                class="small-icon-button" >
+                <i class="fa-solid fa-check check" ></i>
+            </div>
+            <div 
+                title="Cancel"
+                hx-get="/charedit/inplace-text/{{username}}/{{url_name}}/bonds/cancel" class="small-icon-button"
+                hx-target="#character-bonds-container">   
+                <i class="fa-solid fa-xmark xmark"></i>
+            </div>
+        </div>
+    </div>    
+    {{ form.bonds(class='textarea inplace', id='bonds-field', oninput='resizeTextarea(this)') }}        
+</form>

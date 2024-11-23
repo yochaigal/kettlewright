@@ -681,17 +681,24 @@ button,
   width: 19px;
   height: 19px;
   cursor: pointer;
-  color: var(--fg);
-  /*color-mix(in lab, transparent 70%, var(--fg)); */
+  color: color-mix(in lab, transparent 60%, var(--fg));
 }
 
 .small-icon-button:hover {
-  color: color-mix(in lab, transparent 50%, var(--fg));
+  color: var(--fg);
 }
 
 .no-space {
   margin: 0px;
   padding: 0px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.with-whitespace {
+  white-space: pre-line;
 }
 
 

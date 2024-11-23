@@ -1,0 +1,9 @@
+<div class="view-mode">
+  <div class="row16spaced">
+    <h3 class="no-space">Notes</h3>
+    <div title="Edit notes" hx-get="/charedit/inplace-text/{{ username }}/{{ url_name }}/notes" hx-target="#character-notes-container" class="small-icon-button">
+      <i class="fa-solid fa-pencil pencil"></i>
+    </div>
+  </div>
+  <p id="character-notes-view" class="with-whitespace">{{ character.notes|safe }}</p>
+</div>
