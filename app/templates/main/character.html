@@ -99,15 +99,7 @@
       </div>
 
       <div class="character-description-container character-section" id="character-party-container">
-        <h3 id="character-party-heading">Party</h3>
-        {% if party %}
-        <div id="character-party-name-description">
-          <a class="bold subtitle" id="character-party-link" href="{{ base_url }}/{{ party_url }}">{{ party_name }}</a>
-          <p class="text-border" id="character-party-description">{{ party_description}}</p>
-        </div>
-        {%else %}
-        <p id="character-no-party-description">This character does not belong to a party...</p>
-        {% endif %}
+        {% include "partial/charview_party.html" %}
       </div>
     </div>
 

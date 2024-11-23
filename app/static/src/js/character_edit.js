@@ -154,24 +154,25 @@ function togglePartyEditing() {
 
 togglePartyEditing();
 
+// NOTE: moved to backend and template logic
 // Party Link
-const partyLink = document.getElementById("character-party-link");
+// const partyLink = document.getElementById("character-party-link");
 
-if (partyName != "None") {
-  partyLink.addEventListener("click", function () {
-    const link = `${baseURL}/${partyURL}`;
-    window.location = link;
-  });
+// if (partyName != "None") {
+//   partyLink.addEventListener("click", function () {
+//     const link = `${baseURL}/${partyURL}`;
+//     window.location = link;
+//   });
 
-  document.getElementById("character-leave-party-button").addEventListener("click", function () {
-    document.getElementById("character-join-code").classList.remove("hidden");
-    document.getElementById("party-code-field").value = "";
-    document.getElementById("character-party-name-description").classList.add("hidden");
-  });
-} else {
-  partyLink.classList.add("hidden");
-  document.getElementById("character-party-description").classList.add("hidden");
-}
+//   document.getElementById("character-leave-party-button").addEventListener("click", function () {
+//     document.getElementById("character-join-code").classList.remove("hidden");
+//     document.getElementById("party-code-field").value = "";
+//     document.getElementById("character-party-name-description").classList.add("hidden");
+//   });
+// } else {
+//   partyLink.classList.add("hidden");
+//   document.getElementById("character-party-description").classList.add("hidden");
+// }
 
 
 // JSON Download
