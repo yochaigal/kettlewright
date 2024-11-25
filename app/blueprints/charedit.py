@@ -4,26 +4,30 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash,
 from app.models import db, User, Character, Party
 from app.forms import *
 from app.main import sanitize_data
-from app.lib import load_scars
+from app.lib import load_scars, load_images, character_portrait_link, is_url_image
+
 
 character_edit = Blueprint('character_edit', __name__)
 bool_fields = ['deprived']
 
-# Route: enter character stats editing
-@character_edit.route('/charedit/inplace-attrs/<username>/<url_name>')
-def charedit_inplace_attrs(username, url_name):
+# Retrieve character data
+def get_char_data(username, url_name):
     user = User.query.filter_by(username=username).first_or_404()
     character = Character.query.filter_by(
         owner=user.id, url_name=url_name).first_or_404()
+    return user, character
+
+# Route: enter character stats editing
+@character_edit.route('/charedit/inplace-attrs/<username>/<url_name>')
+def charedit_inplace_attrs(username, url_name):
+    user, character = get_char_data(username, url_name)
     form = CharacterEditForm(obj=character)
     return render_template('partial/charedit_attrs.html', user=user, character=character, form=form, username=username, url_name=url_name)
 
 # Route: save edited character stats
 @character_edit.route('/charedit/inplace-attrs/<username>/<url_name>/save', methods=['POST'])
 def charedit_inplace_attrs_save(username, url_name):
-    user = User.query.filter_by(username=username).first_or_404()
-    character = Character.query.filter_by(
-        owner=user.id, url_name=url_name).first_or_404()
+    user, character = get_char_data(username, url_name)
     data = request.form
     for field in data:
         value = data[field]
@@ -42,9 +46,7 @@ def charedit_inplace_attrs_save(username, url_name):
 # Route: cancel character stats editing    
 @character_edit.route('/charedit/inplace-attrs/<username>/<url_name>/cancel')
 def charedit_inplace_attrs_cancel(username, url_name):
-    user = User.query.filter_by(username=username).first_or_404()
-    character = Character.query.filter_by(
-        owner=user.id, url_name=url_name).first_or_404()
+    user, character = get_char_data(username, url_name)
     return render_template('partial/charview_attrs.html', user=user, character=character, username=username, url_name=url_name)
 
 
@@ -112,9 +114,7 @@ def remove_character_from_party(character):
 # Route: enter character text field editing
 @character_edit.route('/charedit/inplace-text/<username>/<url_name>/<field_name>', methods=['GET'])
 def charedit_inplace_text(username, url_name, field_name):
-    user = User.query.filter_by(username=username).first_or_404()
-    character = Character.query.filter_by(
-        owner=user.id, url_name=url_name).first_or_404()
+    user, character = get_char_data(username, url_name)
     party, party_url = prepare_party_data(character.party_id)
     if field_name == "traits":
         form = CharacterEditFormTraits(obj=character)
@@ -140,9 +140,7 @@ def charedit_inplace_text(username, url_name, field_name):
 @character_edit.route('/charedit/inplace-text/<username>/<url_name>/<field_name>/save', methods=['POST'])
 def charedit_inplace_text_save(username, url_name, field_name):
     err = None
-    user = User.query.filter_by(username=username).first_or_404()
-    character = Character.query.filter_by(
-        owner=user.id, url_name=url_name).first_or_404()
+    user, character = get_char_data(username, url_name)
     data = request.form
     if field_name == "party_code":
         party = Party.query.filter_by(join_code=data[field_name].strip()).first()
@@ -178,9 +176,7 @@ def charedit_inplace_text_save(username, url_name, field_name):
 # Route: cancel character text field editing
 @character_edit.route('/charedit/inplace-text/<username>/<url_name>/<field_name>/cancel', methods=['GET'])
 def charedit_inplace_text_cancel(username, url_name, field_name):
-    user = User.query.filter_by(username=username).first_or_404()
-    character = Character.query.filter_by(
-        owner=user.id, url_name=url_name).first_or_404()
+    user, character = get_char_data(username, url_name)
     party, party_url = prepare_party_data(character.party_id)   
     if field_name == "traits":
         template = 'partial/charview_traits.html'
@@ -199,9 +195,7 @@ def charedit_inplace_text_cancel(username, url_name, field_name):
 # Route: leave current character party
 @character_edit.route('/charedit/leave-party/<username>/<url_name>', methods=['GET'])
 def charedit_leave_party(username, url_name):
-    user = User.query.filter_by(username=username).first_or_404()
-    character = Character.query.filter_by(
-        owner=user.id, url_name=url_name).first_or_404()
+    user, character = get_char_data(username, url_name)
     remove_character_from_party(character)
     db.session.commit()
     return render_template('partial/charview_party.html', user=user, character=character, username=username, url_name=url_name, party=None, party_url="")
@@ -212,9 +206,7 @@ def charedit_leave_party(username, url_name):
 # Route: character scars editing
 @character_edit.route('/charedit/inplace-scars/<username>/<url_name>', methods=['GET'])
 def charedit_inplace_scars(username, url_name):
-    user = User.query.filter_by(username=username).first_or_404()
-    character = Character.query.filter_by(
-        owner=user.id, url_name=url_name).first_or_404()
+    user, character = get_char_data(username, url_name)
     form = CharacterEditFormScars(obj=character)
     scarlist = load_scars()
     return render_template('partial/charedit_scars.html', user=user, character=character, username=username, url_name=url_name, form=form, scarlist=scarlist)
@@ -222,9 +214,7 @@ def charedit_inplace_scars(username, url_name):
 # Route: character scars add new scar
 @character_edit.route('/charedit/inplace-scars/<username>/<url_name>/add', methods=['POST'])
 def charedit_inplace_scars_add(username, url_name):
-    user = User.query.filter_by(username=username).first_or_404()
-    character = Character.query.filter_by(
-        owner=user.id, url_name=url_name).first_or_404()
+    user, character = get_char_data(username, url_name)
     data = request.form
     scarlist = load_scars()
     selected_scar = data['scars-select']
@@ -236,9 +226,7 @@ def charedit_inplace_scars_add(username, url_name):
 # Route: character scars editing save
 @character_edit.route('/charedit/inplace-scars/<username>/<url_name>/save', methods=['POST'])
 def charedit_inplace_scars_save(username, url_name):
-    user = User.query.filter_by(username=username).first_or_404()
-    character = Character.query.filter_by(
-        owner=user.id, url_name=url_name).first_or_404()
+    user, character = get_char_data(username, url_name)
     data = request.form
     setattr(character, "scars",data["scars"])
     db.session.commit()
@@ -248,10 +236,62 @@ def charedit_inplace_scars_save(username, url_name):
 # Route: character scars editing cancel
 @character_edit.route('/charedit/inplace-scars/<username>/<url_name>/cancel', methods=['GET'])
 def charedit_inplace_scars_cancel(username, url_name):
-    user = User.query.filter_by(username=username).first_or_404()
-    character = Character.query.filter_by(
-        owner=user.id, url_name=url_name).first_or_404()
+    user, character = get_char_data(username, url_name)
     scarlist = load_scars()
     return render_template('partial/charview_scars.html', user=user, character=character, username=username, url_name=url_name, scarlist=scarlist)
 
-    
+# --- Info ---
+
+# Route: edit character name
+@character_edit.route('/charedit/inplace-name/<username>/<url_name>', methods=['GET'])
+def charedit_inplace_name(username, url_name):
+    user, character = get_char_data(username, url_name)
+    form = CharacterEditFormName(obj=character)
+    return render_template('partial/charedit_name.html', user=user, character=character, username=username, url_name=url_name, form=form)
+
+# Route: edit character name save
+@character_edit.route('/charedit/inplace-name/<username>/<url_name>/save', methods=['POST'])
+def charedit_inplace_name_save(username, url_name):
+    user, character = get_char_data(username, url_name)
+    data = request.form
+    setattr(character,"name",data["name"])
+    db.session.commit()
+    return render_template('partial/charview_name.html', user=user, character=character, username=username, url_name=url_name)    
+
+# Route: edit character name cancel
+@character_edit.route('/charedit/inplace-name/<username>/<url_name>/cancel', methods=['GET'])
+def charedit_inplace_name_cancel(username, url_name):
+    user, character = get_char_data(username, url_name)
+    return render_template('partial/charview_name.html', user=user, character=character, username=username, url_name=url_name)    
+
+# Route: edit character portrait
+@character_edit.route('/charedit/inplace-portrait/<username>/<url_name>', methods=['GET'])
+def charedit_inplace_portrait(username, url_name):
+    user, character = get_char_data(username, url_name)
+    images = load_images()
+    return render_template('partial/charedit_portrait.html', user=user, character=character, username=username, url_name=url_name, images=images)
+
+# Route: edit character portrait - cancel
+@character_edit.route('/charedit/inplace-portrait/<username>/<url_name>/cancel', methods=['GET'])
+def charedit_inplace_portrait_cancel(username, url_name):
+    user, character = get_char_data(username, url_name)
+    portrait_src = character_portrait_link(character)
+    return render_template('partial/charview_portrait.html', user=user, character=character, username=username, url_name=url_name, portrait_src=portrait_src)
+
+# Route: edit character portrait - save
+@character_edit.route('/charedit/inplace-portrait/<username>/<url_name>/save', methods=['POST'])
+def charedit_inplace_portrait_save(username, url_name):
+    user, character = get_char_data(username, url_name)
+    data = request.form
+    custom_url = data['custom-url']
+    selected_portrait = data['selected-portrait']
+    if custom_url != None and custom_url != "" and is_url_image(custom_url):
+        setattr(character,"image_url", custom_url)
+        setattr(character,"custom_image",True)
+        db.session.commit()    
+    elif selected_portrait != "" and selected_portrait != None:
+        setattr(character,"image_url", selected_portrait)
+        setattr(character,"custom_image",False)
+        db.session.commit()    
+    portrait_src = character_portrait_link(character)
+    return render_template('partial/charview_portrait.html', user=user, character=character, username=username, url_name=url_name, portrait_src=portrait_src)
