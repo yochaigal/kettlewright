@@ -87,11 +87,9 @@
         hx-on-htmx-after-request="document.getElementById('omens-field') ? resizeTextarea(document.getElementById('omens-field')):''">
         {% include  "partial/charview_omens.html" %}
       </div>
-      <div class="character-description-container character-section" id="character-scars-container">
-        <div class="view-mode">
-          <h3>Scars</h3>
-          <p id="character-scars-view">{{character.scars|safe}}</p>
-        </div>
+      <div class="character-description-container character-section" id="character-scars-container"
+           hx-on-htmx-after-request="document.getElementById('scars-field') ? resizeTextarea(document.getElementById('scars-field')):''">
+        {% include "partial/charview_scars.html" %}
       </div>
       <div class="character-description-container character-section" id="character-notes-container"
         hx-on-htmx-after-request="document.getElementById('notes-field') ? resizeTextarea(document.getElementById('notes-field')):''">

@@ -225,6 +225,8 @@ class CharacterEditFormOmens(FlaskForm):
 class CharacterEditFormParty(FlaskForm):
     party_code = StringField('Party Code', validators=[Length(0, 32)], render_kw={"placeholder": "join code"})
 
+class CharacterEditFormScars(FlaskForm):
+    scars = TextAreaField('Scars', validators=[Length(0, 2000)], render_kw={"placeholder": "scars"})
     
 
 class CharacterJSONForm(FlaskForm):

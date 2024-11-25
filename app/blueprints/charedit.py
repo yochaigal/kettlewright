@@ -1,7 +1,10 @@
+# Character inline editor blueprint
+
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response
 from app.models import db, User, Character, Party
 from app.forms import *
 from app.main import sanitize_data
+from app.lib import load_scars
 
 character_edit = Blueprint('character_edit', __name__)
 bool_fields = ['deprived']
@@ -203,3 +206,52 @@ def charedit_leave_party(username, url_name):
     db.session.commit()
     return render_template('partial/charview_party.html', user=user, character=character, username=username, url_name=url_name, party=None, party_url="")
     None
+    
+# ----- SCARS ----    
+
+# Route: character scars editing
+@character_edit.route('/charedit/inplace-scars/<username>/<url_name>', methods=['GET'])
+def charedit_inplace_scars(username, url_name):
+    user = User.query.filter_by(username=username).first_or_404()
+    character = Character.query.filter_by(
+        owner=user.id, url_name=url_name).first_or_404()
+    form = CharacterEditFormScars(obj=character)
+    scarlist = load_scars()
+    return render_template('partial/charedit_scars.html', user=user, character=character, username=username, url_name=url_name, form=form, scarlist=scarlist)
+
+# Route: character scars add new scar
+@character_edit.route('/charedit/inplace-scars/<username>/<url_name>/add', methods=['POST'])
+def charedit_inplace_scars_add(username, url_name):
+    user = User.query.filter_by(username=username).first_or_404()
+    character = Character.query.filter_by(
+        owner=user.id, url_name=url_name).first_or_404()
+    data = request.form
+    scarlist = load_scars()
+    selected_scar = data['scars-select']
+    if selected_scar != None:
+        character.scars = character.scars + "\n"+selected_scar+":"+scarlist[selected_scar]
+        db.session.commit()
+    return render_template('partial/charview_scars.html', user=user, character=character, username=username, url_name=url_name, scarlist=scarlist)
+    
+# Route: character scars editing save
+@character_edit.route('/charedit/inplace-scars/<username>/<url_name>/save', methods=['POST'])
+def charedit_inplace_scars_save(username, url_name):
+    user = User.query.filter_by(username=username).first_or_404()
+    character = Character.query.filter_by(
+        owner=user.id, url_name=url_name).first_or_404()
+    data = request.form
+    setattr(character, "scars",data["scars"])
+    db.session.commit()
+    scarlist = load_scars()
+    return render_template('partial/charview_scars.html', user=user, character=character, username=username, url_name=url_name, scarlist=scarlist)
+
+# Route: character scars editing cancel
+@character_edit.route('/charedit/inplace-scars/<username>/<url_name>/cancel', methods=['GET'])
+def charedit_inplace_scars_cancel(username, url_name):
+    user = User.query.filter_by(username=username).first_or_404()
+    character = Character.query.filter_by(
+        owner=user.id, url_name=url_name).first_or_404()
+    scarlist = load_scars()
+    return render_template('partial/charview_scars.html', user=user, character=character, username=username, url_name=url_name, scarlist=scarlist)
+
+    

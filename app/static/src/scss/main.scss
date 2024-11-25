@@ -654,6 +654,14 @@ button,
   display: inline-block;
 }
 
+
+.row8 {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+}
+
 .row16 {
   display: flex;
   flex-direction: row;
@@ -699,6 +707,10 @@ button,
 
 .with-whitespace {
   white-space: pre-line;
+}
+
+.smaller-font {
+  font-size: smaller;
 }
 
 
