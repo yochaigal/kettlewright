@@ -1,0 +1,21 @@
+<form class="no-space">
+        <div class="row16">
+            <h3 class="no-space">Description</h3>
+            <div class="row32">
+                <div 
+                    title="Save changes"
+                    hx-post="/charedit/inplace-text/{{username}}/{{url_name}}/description/save" 
+                    hx-target="#character-description-container"
+                    class="small-icon-button" >
+                    <i class="fa-solid fa-check check" ></i>
+                </div>
+                <div 
+                    title="Cancel"
+                    hx-get="/charedit/inplace-text/{{username}}/{{url_name}}/description/cancel" class="small-icon-button"
+                    hx-target="#character-description-container">   
+                    <i class="fa-solid fa-xmark xmark"></i>
+                </div>
+            </div>
+        </div>    
+        {{ form.description(class='textarea inplace', id='description-field', oninput='resizeTextarea(this)') }}        
+</form>

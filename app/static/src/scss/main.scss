@@ -330,6 +330,9 @@ button,
   min-height: 1em;
 }
 
+.textarea.inplace {
+  margin-top: 16px;
+}
 
 
 .select-with-dice {
@@ -651,6 +654,14 @@ button,
   display: inline-block;
 }
 
+
+.row8 {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+}
+
 .row16 {
   display: flex;
   flex-direction: row;
@@ -678,17 +689,28 @@ button,
   width: 19px;
   height: 19px;
   cursor: pointer;
-  color: var(--fg);
-  /*color-mix(in lab, transparent 70%, var(--fg)); */
+  color: color-mix(in lab, transparent 60%, var(--fg));
 }
 
 .small-icon-button:hover {
-  color: color-mix(in lab, transparent 50%, var(--fg));
+  color: var(--fg);
 }
 
 .no-space {
   margin: 0px;
   padding: 0px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.with-whitespace {
+  white-space: pre-line;
+}
+
+.smaller-font {
+  font-size: smaller;
 }
 
 

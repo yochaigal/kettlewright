@@ -1,0 +1,21 @@
+<form class="no-space">
+    <div class="row16">
+        <h3 class="no-space">Notes</h3>
+        <div class="row32">
+            <div 
+                title="Save changes"
+                hx-post="/charedit/inplace-text/{{username}}/{{url_name}}/notes/save" 
+                hx-target="#character-notes-container"
+                class="small-icon-button" >
+                <i class="fa-solid fa-check check" ></i>
+            </div>
+            <div 
+                title="Cancel"
+                hx-get="/charedit/inplace-text/{{username}}/{{url_name}}/notes/cancel" class="small-icon-button"
+                hx-target="#character-notes-container">   
+                <i class="fa-solid fa-xmark xmark"></i>
+            </div>
+        </div>
+    </div>    
+    {{ form.notes(class='textarea inplace', id='notes-field', oninput='resizeTextarea(this)') }}        
+</form>

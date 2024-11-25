@@ -35,29 +35,31 @@ if (deprived == "true") {
   deprived = false;
 }
 
-const deprivedField = document.getElementById("deprived-field");
+// const deprivedField = document.getElementById("deprived-field");
 const restButton = document.getElementById("character-rest-button");
 
-deprivedField.addEventListener("change", function () {
-  if (deprivedField.checked) {
-    setDeprived(true);
-  } else {
-    setDeprived(false);
-  }
-});
 
-function setDeprived(state) {
-  if (state === true) {
-    deprived = true;
-    deprivedField.checked = true;
-    restButton.classList.add("inactive");
-    deprived;
-  } else {
-    deprived = false;
-    deprivedField.checked = false;
-    restButton.classList.remove("inactive");
-  }
-}
+// NOTE: moved to backend and HTMX
+// deprivedField.addEventListener("change", function () {
+//   if (deprivedField.checked) {
+//     setDeprived(true);
+//   } else {
+//     setDeprived(false);
+//   }
+// });
+
+// function setDeprived(state) {
+//   if (state === true) {
+//     deprived = true;
+//     deprivedField.checked = true;
+//     restButton.classList.add("inactive");
+//     deprived;
+//   } else {
+//     deprived = false;
+//     deprivedField.checked = false;
+//     restButton.classList.remove("inactive");
+//   }
+// }
 
 restButton.addEventListener("click", function () {
   document.getElementById("hp-input").value = hpMax;
@@ -73,55 +75,59 @@ restButton.addEventListener("click", function () {
 // }
 
 // Resize textareas
-document.addEventListener("DOMContentLoaded", function () {
-  const textareas = document.getElementsByClassName("textarea");
-  for (let i = 0; i < textareas.length; i++) {
-    resizeTextarea(textareas[i]);
-  }
-});
+// NOTE: moved to HTMX code
+
+// document.addEventListener("DOMContentLoaded", function () {
+//   const textareas = document.getElementsByClassName("textarea");
+//   for (let i = 0; i < textareas.length; i++) {
+//     resizeTextarea(textareas[i]);
+//   }
+// });
 
 // Convert <br> to newline when editing text
-function convertBrToNewline(str) {
-  str = str.replace(/<br\s*[\/]?>/gi, "\n");
-  // don't allow more than three new line breaks in a row
-  str = str.replace(/\n{4,}/g, "\n\n\n");
-  return str;
-}
+// function convertBrToNewline(str) {
+//   str = str.replace(/<br\s*[\/]?>/gi, "\n");
+//   // don't allow more than three new line breaks in a row
+//   str = str.replace(/\n{4,}/g, "\n\n\n");
+//   return str;
+// }
 
-document.getElementById("notes-field").value = convertBrToNewline(document.getElementById("notes-field").value);
-document.getElementById("bonds-field").value = convertBrToNewline(document.getElementById("bonds-field").value);
-document.getElementById("omens-field").value = convertBrToNewline(document.getElementById("omens-field").value);
-document.getElementById("scars-field").value = convertBrToNewline(document.getElementById("scars-field").value);
-document.getElementById("traits-field").value = convertBrToNewline(document.getElementById("traits-field").value);
-document.getElementById("description-field").value = convertBrToNewline(
-  document.getElementById("description-field").value
-);
+// NOTE: CSS 
+// document.getElementById("notes-field").value = convertBrToNewline(document.getElementById("notes-field").value);
+// document.getElementById("bonds-field").value = convertBrToNewline(document.getElementById("bonds-field").value);
+// document.getElementById("omens-field").value = convertBrToNewline(document.getElementById("omens-field").value);
+// document.getElementById("scars-field").value = convertBrToNewline(document.getElementById("scars-field").value);
+// document.getElementById("traits-field").value = convertBrToNewline(document.getElementById("traits-field").value);
+// document.getElementById("description-field").value = convertBrToNewline(
+//   document.getElementById("description-field").value
+// );
 
 // Select Scars
+// NOTE: moved to backend and HTMX
 
-const scarsSelect = document.getElementById("scars-select");
-const scarsField = document.getElementById("scars-field");
-const addScarButton = document.getElementById("add-scar-button");
+// const scarsSelect = document.getElementById("scars-select");
+// const scarsField = document.getElementById("scars-field");
+// const addScarButton = document.getElementById("add-scar-button");
 
 // populate scars select
-for (let i = 0; i < scarsData.length; i++) {
-  const option = document.createElement("option");
-  option.value = i;
-  option.text = scarsData[i].description.split(":")[0];
+// for (let i = 0; i < scarsData.length; i++) {
+//   const option = document.createElement("option");
+//   option.value = i;
+//   option.text = scarsData[i].description.split(":")[0];
 
-  scarsSelect.appendChild(option);
-}
+//   scarsSelect.appendChild(option);
+// }
 
-addScarButton.addEventListener("click", function () {
-  const selectedScarIndex = scarsSelect.value;
-  const selectedScar = scarsData[selectedScarIndex].description;
-  if (scarsField.value.trim() === "") {
-    scarsField.value = selectedScar;
-  } else {
-    scarsField.value = scarsField.value + "\n\n" + selectedScar;
-  }
-  resizeTextarea(scarsField);
-});
+// addScarButton.addEventListener("click", function () {
+//   const selectedScarIndex = scarsSelect.value;
+//   const selectedScar = scarsData[selectedScarIndex].description;
+//   if (scarsField.value.trim() === "") {
+//     scarsField.value = selectedScar;
+//   } else {
+//     scarsField.value = scarsField.value + "\n\n" + selectedScar;
+//   }
+//   resizeTextarea(scarsField);
+// });
 
 // Roll Omens
 
@@ -154,24 +160,25 @@ function togglePartyEditing() {
 
 togglePartyEditing();
 
+// NOTE: moved to backend and template logic
 // Party Link
-const partyLink = document.getElementById("character-party-link");
+// const partyLink = document.getElementById("character-party-link");
 
-if (partyName != "None") {
-  partyLink.addEventListener("click", function () {
-    const link = `${baseURL}/${partyURL}`;
-    window.location = link;
-  });
+// if (partyName != "None") {
+//   partyLink.addEventListener("click", function () {
+//     const link = `${baseURL}/${partyURL}`;
+//     window.location = link;
+//   });
 
-  document.getElementById("character-leave-party-button").addEventListener("click", function () {
-    document.getElementById("character-join-code").classList.remove("hidden");
-    document.getElementById("party-code-field").value = "";
-    document.getElementById("character-party-name-description").classList.add("hidden");
-  });
-} else {
-  partyLink.classList.add("hidden");
-  document.getElementById("character-party-description").classList.add("hidden");
-}
+//   document.getElementById("character-leave-party-button").addEventListener("click", function () {
+//     document.getElementById("character-join-code").classList.remove("hidden");
+//     document.getElementById("party-code-field").value = "";
+//     document.getElementById("character-party-name-description").classList.add("hidden");
+//   });
+// } else {
+//   partyLink.classList.add("hidden");
+//   document.getElementById("character-party-description").classList.add("hidden");
+// }
 
 
 // JSON Download

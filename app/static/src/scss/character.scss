@@ -23,7 +23,7 @@
     "traits inventory-container";
   /* row-gap: 1em; */
   column-gap: 2.5em;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 }
 
 
@@ -78,6 +78,7 @@
 
 #character-stats-container {
   grid-area: stats;
+  margin-bottom: 1em;
 }
 
 #inventory-container {
@@ -245,4 +246,8 @@
   margin: 0px;
   font-size: 12pt;
   border: none;
+}
+
+#character-party-name-description {
+  margin: 16px 0px;
 }

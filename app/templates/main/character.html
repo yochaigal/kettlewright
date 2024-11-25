@@ -53,9 +53,9 @@
       </div>
       {% if is_owner %}
       <div style="margin-left: auto; display: flex; flex-direction: column; gap: 0.5em">
-        <a href="{{ request.path }}edit/"
-          ><button class="edit-button view-mode" type="button" style="height: 42.7px"> Edit </button></a
-        >
+        <a href="{{ request.path }}edit/">
+          <button class="edit-button view-mode" type="button" style="height: 42.7px"> Edit </button>
+        </a>
         <button class="button dice-button" type="button" id="character-dice-button">
           <i class="fa-solid fa-dice dice"></i>
         </button>
@@ -65,105 +65,39 @@
     </div>
     <div class="character-stats-traits-inventory" id="edit-character-left-">
       <div id="character-stats-container">
-        <div class="row16spaced">
-          <h3>Stats</h3>
-          <div 
-            title="Edit stats"
-            hx-get="/charedit/inplace-attrs/{{username}}/{{url_name}}" 
-            hx-target="#character-stats-container" class="small-icon-button" >
-              <i class="fa-solid fa-pencil pencil" ></i>
-          </div>
-        </div>
-        <div class="stats-stats-container character-section">
-          <div class="character-attribute-container" id="character-str-container">
-            <h4>STR</h4>
-            <p class="subtitle view-mode" id="strength-view-text">{{character.strength}}/{{character.strength_max}}</p>
-          </div>
-          <div class="character-attribute-container" id="character-dex-container">
-            <h4>DEX</h4>
-            <p class="subtitle view-mode" id="dexterity-view-text">
-              {{character.dexterity}}/{{character.dexterity_max}}
-            </p>
-          </div>
-          <div class="character-attribute-container" id="character-wil-container">
-            <h4>WIL</h4>
-            <p class="subtitle view-mode" id="willpower-view-text"
-              >{{character.willpower}}/{{character.willpower_max}}</p
-            >
-          </div>
-          <div class="character-attribute-container" id="character-hp-container">
-            <h4>HP</h4>
-            <p class="subtitle view-mode {% if character.overburdened() %} red-text {% endif %}" id="hp-view-text">
-              {{character.hpValue()[0]}}/{{character.hpValue()[1]}}
-            </p>
-          </div>
-          {% if character.deprived %}
-          <h4 class="character-deprived-text view-mode">DEPRIVED</h4>
-          {% endif %}
-
-          <div class="character-attribute-container" id="character-gold-container">
-            <h4 class="view-attribute-font">Gold</h4>
-            <p class="subtitle view-mode" id="gold-view-text">{{character.gold}}</p>
-          </div>
-          <div class="character-attribute-container" id="character-armor-container">
-            <h4>Armor</h4>
-            <p class="subtitle" id="armor-counter" style="margin-left: 0px; margin-right: auto">{{character.armorValue()}}</p>
-          </div>
-        </div>
+          {% include "partial/charview_attrs.html" %}
       </div>
-      <div id="character-traits-container" class="character-section">
-        <div class="view-mode">
-          <h3>Traits</h3>
-
-          <p id="character-traits-view">{{character.traits}}</p>
-        </div>
+      <div id="character-traits-container" class="character-section"
+        hx-on-htmx-after-request="document.getElementById('traits-field') ? resizeTextarea(document.getElementById('traits-field')):''">
+          {% include "partial/charview_traits.html" %}
       </div>
       {% include "main/inventory.html" %}
     </div>
 
     <div class="character-descriptions-grid" style="margin-top: 1em">
-      <div class="character-description-container character-section" id="character-background-container">
-        <div class="view-mode">
-          <h3>Description</h3>
-          <p id="character-description-view">{{character.description}}</p>
-        </div>
+      <div id="character-description-container" class="character-section character-description-container"
+        hx-on-htmx-after-request="document.getElementById('description-field') ? resizeTextarea(document.getElementById('description-field')):''">
+           {% include "partial/charview_description.html" %}
       </div>
-      <div class="character-description-container character-section" id="character-bonds-container">
-        <div class="view-mode">
-          <h3>Bonds</h3>
-
-          <p id="character-bonds-view">{{character.bonds}}</p>
-        </div>
+      <div class="character-description-container character-section" id="character-bonds-container"
+        hx-on-htmx-after-request="document.getElementById('bonds-field') ? resizeTextarea(document.getElementById('bonds-field')):''">
+           {% include  "partial/charview_bonds.html" %}
       </div>
-      <div class="character-description-container character-section" id="character-omens-container">
-        <div class="view-mode">
-          <h3>Omens</h3>
-          <p id="character-omens-view">{{character.omens|safe}}</p>
-        </div>
+      <div class="character-description-container character-section" id="character-omens-container"
+        hx-on-htmx-after-request="document.getElementById('omens-field') ? resizeTextarea(document.getElementById('omens-field')):''">
+        {% include  "partial/charview_omens.html" %}
       </div>
-      <div class="character-description-container character-section" id="character-scars-container">
-        <div class="view-mode">
-          <h3>Scars</h3>
-          <p id="character-scars-view">{{character.scars|safe}}</p>
-        </div>
+      <div class="character-description-container character-section" id="character-scars-container"
+           hx-on-htmx-after-request="document.getElementById('scars-field') ? resizeTextarea(document.getElementById('scars-field')):''">
+        {% include "partial/charview_scars.html" %}
       </div>
-      <div class="character-description-container character-section" id="character-notes-container">
-        <div class="view-mode">
-          <h3>Notes</h3>
-          <p id="character-notes-view">{{character.notes|safe}}</p>
-        </div>
+      <div class="character-description-container character-section" id="character-notes-container"
+        hx-on-htmx-after-request="document.getElementById('notes-field') ? resizeTextarea(document.getElementById('notes-field')):''">
+        {% include  "partial/charview_notes.html" %}
       </div>
 
       <div class="character-description-container character-section" id="character-party-container">
-        <h3 id="character-party-heading">Party</h3>
-        {% if party %}
-        <div id="character-party-name-description">
-          <a class="bold subtitle" id="character-party-link" href="{{ base_url }}/{{ party_url }}">{{ party_name }}</a>
-          <p class="text-border" id="character-party-description">{{ party_description}}</p>
-        </div>
-        {%else %}
-        <p id="character-no-party-description">This character does not belong to a party...</p>
-        {% endif %}
+        {% include "partial/charview_party.html" %}
       </div>
     </div>
 

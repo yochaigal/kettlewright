@@ -1,4 +1,4 @@
-import { handleClick, styledAlert, styledConfirm } from "./utils.js";
+import { handleClick, styledAlert } from "./utils.js";
 
 const redirectToCharacterPage = (element) => {
   const url = element.getAttribute("data-character");

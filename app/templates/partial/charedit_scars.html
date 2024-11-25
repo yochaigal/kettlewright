@@ -1,0 +1,21 @@
+<form class="no-space">
+    <div id="character-scars-select-container" class="row16">
+        <h3 class="no-space">Scars</h3>
+        <div class="row32">
+            <div 
+                title="Save changes"
+                hx-post="/charedit/inplace-scars/{{username}}/{{url_name}}/save" 
+                hx-target="#character-scars-container"
+                class="small-icon-button" >
+                <i class="fa-solid fa-check check" ></i>
+            </div>
+            <div 
+                title="Cancel"
+                hx-get="/charedit/inplace-scars/{{username}}/{{url_name}}/cancel" class="small-icon-button"
+                hx-target="#character-scars-container">   
+                <i class="fa-solid fa-xmark xmark"></i>
+            </div>
+        </div>        
+    </div>
+    {{ form.scars(class='textarea with-whitespace', id='scars-field', oninput='resizeTextarea(this)') }}
+</form>

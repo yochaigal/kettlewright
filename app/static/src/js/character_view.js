@@ -68,19 +68,21 @@ document.addEventListener("DOMContentLoaded", function () {
   // hpText.classList.toggle("red-text", overBurdened);
 
   // Set default text for empty fields and fix line breaks
-  function setDefaultText(elementId, value, defaultText) {
-    const element = document.getElementById(elementId);
-    if (!value || value == "None" || value == "") {
-      element.innerText = defaultText;
-    } else {
-      element.innerHTML = value.replace(/\n/g, "<br>");
-    }
-  }
 
-  setDefaultText("character-traits-view", traits, "This character has no traits...");
-  setDefaultText("character-omens-view", omens, "This character has no omens...");
-  setDefaultText("character-scars-view", scars, "This character has no scars...");
-  setDefaultText("character-notes-view", notes, "This character has no notes...");
-  setDefaultText("character-bonds-view", bonds, "This character has no bonds...");
-  setDefaultText("character-description-view", description, "This character has no description...");
+  // NOTE: replaced by CSS
+  // function setDefaultText(elementId, value, defaultText) {
+  //   const element = document.getElementById(elementId);
+  //   if (!value || value == "None" || value == "") {
+  //     element.innerText = defaultText;
+  //   } else {
+  //     element.innerHTML = value.replace(/\n/g, "<br>");
+  //   }
+  // }
+
+  // setDefaultText("character-traits-view", traits, "This character has no traits...");
+  // setDefaultText("character-omens-view", omens, "This character has no omens...");
+  // setDefaultText("character-scars-view", scars, "This character has no scars...");
+  // setDefaultText("character-notes-view", notes, "This character has no notes...");
+  // setDefaultText("character-bonds-view", bonds, "This character has no bonds...");
+  // setDefaultText("character-description-view", description, "This character has no description...");
 });
