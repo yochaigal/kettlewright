@@ -1,6 +1,6 @@
 # Character inline editor blueprint
 
-from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response
 from app.models import db, User, Character, Party
 from app.forms import *
 from app.main import sanitize_data
@@ -295,3 +295,17 @@ def charedit_inplace_portrait_save(username, url_name):
         db.session.commit()    
     portrait_src = character_portrait_link(character)
     return render_template('partial/charview_portrait.html', user=user, character=character, username=username, url_name=url_name, portrait_src=portrait_src)
+
+
+# Route: export character to JSON
+@character_edit.route('/charedit/export/<username>/<url_name>', methods=['GET'])
+def charedit_export(username, url_name):
+    user, character = get_char_data(username, url_name)
+    response_bytes = character.toJSON()
+    response = make_response(response_bytes)
+    response.headers.set('Content-Type', 'application/json')
+    response.headers.set(
+        'Content-Disposition', 'attachment', filename=user.username + '_'+character.name + '.json' )
+    return response
+    
+    

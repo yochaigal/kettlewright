@@ -111,3 +111,14 @@ class Character(db.Model):
             else:
                 slots += 1
         return slots
+    
+    # Serialize object to JSON
+    def toJSON(self):
+        dictret = dict(self.__dict__); 
+        to_remove = ['party_id','party_code','_sa_instance_state','created_at','url_name','owner_username','owner']
+        for r in to_remove:
+            dictret.pop(r, None)
+        to_parse = ['containers','items']
+        for p in to_parse:
+            dictret[p] = json.loads(dictret[p])
+        return json.dumps(dictret, indent=4, sort_keys=True)

@@ -1,6 +1,10 @@
-<h1 class="click-pointer" 
-    title="Click to edit name"
-    hx-get="/charedit/inplace-name/{{username}}/{{url_name}}" 
-    hx-target="#character-name-container">
-    {{character.name}}
-</h1>
+<div class="row16">
+    <h1>
+        {{character.name}}
+    </h1>
+    <div title="Edit name" class="small-icon-button"
+        hx-get="/charedit/inplace-name/{{username}}/{{url_name}}" 
+        hx-target="#character-name-container" >
+            <i class="fa-solid fa-pencil pencil"></i>
+    </div>
+</div>

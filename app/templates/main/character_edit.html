@@ -123,13 +123,15 @@
           {% if character.deprived %} {% endif %}
           <div
             class="character-attribute-container character-attribute-container-edit edit-mode"
-            id="character-deprived-container"
-          >
-            <!-- <div style="display: flex"> -->
-            <h4 class="character-deprived-text">DEPRIVED</h4> {{ form.deprived(class='checkbox edit-mode',
-            type="checkbox", id="deprived-field") }}
+            id="character-deprived-container">
+              <div class="row16">
+                  <img src="/static/images/fatigue-alt.webp">
+                  <h4 class="character-deprived-text">DEPRIVED</h4> 
+                 {{ form.deprived(class='checkbox edit-mode', type="checkbox", id="deprived-field") }}
+              </div>
             <!-- </div> -->
             <!-- <button type="button" class="edit-mode" id="character-rest-button"> Rest </button> -->
+            
           </div>
 
           <div

@@ -22,7 +22,10 @@
     <p class="subtitle view-mode {% if character.overburdened() %} red-text {% endif %}" id="hp-view-text">{{ character.hpValue().0 }}/{{ character.hpValue().1 }}</p>
   </div>
   {% if character.deprived %}
-    <h4 class="character-deprived-text view-mode">DEPRIVED</h4>
+    <div class="row16">
+      <img src="/static/images/fatigue-alt.webp" style="height: 1.5em">
+      <h4 class="character-deprived-text view-mode">DEPRIVED</h4>
+    </div>
   {% endif %}
 
   <div class="character-attribute-container" id="character-gold-container">
