@@ -90,18 +90,20 @@ const portraitModal = {
       });
     });
 
-    this.customURLField.addEventListener("input", () => {
-      this.portraitURL = this.customURLField.value;
-      this.customPortrait = true;
-      //this.setPortraitImage(true);
-    });
+    if (this.customURLField) {
+      this.customURLField.addEventListener("input", () => {
+        this.portraitURL = this.customURLField.value;
+        this.customPortrait = true;
+        //this.setPortraitImage(true);
+      });
+      this.customURLField.addEventListener("focus", () => {
+        this.removeHighlight();
+        this.customURLField.classList.add("highlighted");
+        this.portraitURL = this.customURLField.value;
+        this.customPortrait = true;
+      });
+    }
 
-    this.customURLField.addEventListener("focus", () => {
-      this.removeHighlight();
-      this.customURLField.classList.add("highlighted");
-      this.portraitURL = this.customURLField.value;
-      this.customPortrait = true;
-    });
 
     document.getElementById("edit-portrait-modal-close").addEventListener("click", () => {
       editPortraitModal.classList.remove("is-active");
@@ -174,7 +176,9 @@ const portraitModal = {
       this.customURLField.value = this.portraitURL;
     } else {
       console.log("not custom portrait");
-      this.customURLField.value = "";
+      if (this.customURLField) {
+        this.customURLField.value = "";
+      }
     }
   },
 };

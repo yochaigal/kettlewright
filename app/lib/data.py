@@ -13,3 +13,8 @@ def load_scars():
         name = s["name"]
         result[name] = desc
     return result
+
+def load_images():
+    image_folder = os.path.join(app_static_path(), 'images', 'portraits')
+    image_files = [f for f in os.listdir(image_folder) if f.endswith('.webp')]
+    return image_files

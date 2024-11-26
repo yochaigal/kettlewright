@@ -46,9 +46,13 @@
   {% endif %} {% endwith %}
   <div class="sheet view-character-sheet">
     <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em">
-      <img src="{{portrait_src}}" alt="character portrait" class="portrait-image" id="portrait-image" />
+      <div class="no-space" id="character-portrait-container" >
+        {% include "partial/charview_portrait.html" %}
+      </div>
       <div>
-        <h1 class="view-mode">{{character.name}}</h1>
+        <div class="no-space" id="character-name-container">
+          {% include "partial/charview_name.html" %}
+        </div>
         <h2 class=""> {{character.background}} </h2>
       </div>
       {% if is_owner %}

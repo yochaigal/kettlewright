@@ -228,6 +228,9 @@ class CharacterEditFormParty(FlaskForm):
 class CharacterEditFormScars(FlaskForm):
     scars = TextAreaField('Scars', validators=[Length(0, 2000)], render_kw={"placeholder": "scars"})
     
+class CharacterEditFormName(FlaskForm):
+    name = StringField('Custom Name', validators=[DataRequired(), Length(1, 32)])
+    
 
 class CharacterJSONForm(FlaskForm):
     name = HiddenField('Name', validators=[DataRequired(), Length(max=2000)])

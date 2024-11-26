@@ -1,0 +1,83 @@
+<script>
+   function clickImage(e) {
+    const el = document.getElementById("img-"+e);
+    if (!el) return;
+    const selected = document.getElementById("selected-portrait");
+    if (!selected) return;
+    document.querySelectorAll(".edit-portrait-modal-thumbnail").forEach((thumbnail) => {
+      thumbnail.classList.remove("highlighted");
+    });
+    el.classList.add("highlighted");
+    selected.value = e;
+    document.getElementById('edit-portrait-modal-custom-url').value = "";
+  }
+
+  function changeCustom(e) {
+    document.querySelectorAll(".edit-portrait-modal-thumbnail").forEach((thumbnail) => {
+      thumbnail.classList.remove("highlighted");
+    });
+    const selected = document.getElementById("selected-portrait");
+    if (!selected) return;
+    selected.value = "";
+  }
+</script>
+
+<div class="modal is-active" id="edit-portrait-modal">
+  <form class="no-space">
+  <input type="hidden" id="selected-portrait" name="selected-portrait"></input>
+  <div class="modal-background" id="edit-portrait-modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head" style="width:100%">
+      <div class="row16spaced" >
+        <h3 class="modal-card-title">Edit Portrait</h3>
+        <div 
+            title="Close"
+            hx-get="/charedit/inplace-portrait/{{username}}/{{url_name}}/cancel"
+            hx-target="#character-portrait-container">   
+          <i class="fa-solid fa-xmark xmark"></i>
+        </div>
+      </div>
+    </header>
+    <section class="modal-card-body">
+      <!-- Content ... -->
+      <div id="edit-portrait-modal-image-select-container">
+        {% for image in images %}
+        <img
+          onClick="clickImage('{{image}}')"
+          data_url="{{image}}"
+          id="img-{{image}}"
+          class="edit-portrait-modal-thumbnail"
+          src="{{url_for('static', filename='images/portraits/' + image)}}"
+        />
+        {% endfor %}
+      </div>
+    </section>
+    <footer class="modal-card-foot" style="flex-direction: column">
+      <div id="edit-portrait-modal-custom-url-container">
+        <input
+          class="input"
+          type="text"
+          placeholder="Custom Image URL (1:1 aspect ratio)"
+          id="edit-portrait-modal-custom-url"
+          name="custom-url"
+          style="width: 400px; margin-bottom: 20px"
+          oninput="changeCustom()"
+        />
+      </div>
+      <div class="footer-button-container">
+        <button class="button is-success" id="edit-portrait-modal-save" 
+            hx-post="/charedit/inplace-portrait/{{username}}/{{url_name}}/save"
+            hx-target="#character-portrait-container">
+          Save
+        </button>
+        <button class="button" id="edit-portrait-modal-cancel" 
+            hx-get="/charedit/inplace-portrait/{{username}}/{{url_name}}/cancel"
+            hx-target="#character-portrait-container">
+            Cancel
+        </button>
+      </div>
+    </footer>
+  </div>
+  </form>
+</div>
+
