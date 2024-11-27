@@ -4,7 +4,6 @@ import inventoryModalUI from "./inventoryModalUI.js";
 import utils from "./utils.js";
 import diceModal from "./dice_modal.js";
 import notification from "./notification.js";
-import portraitModal from "./edit_portrait_modal.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize Inventory

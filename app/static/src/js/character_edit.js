@@ -29,14 +29,14 @@ function setGold(value) {
 marketplace.initialize(marketplaceData, "marketplace", gold, (items) => inventory.addItems(items), setGold);
 
 // Deprived and Rest
-if (deprived == "true") {
-  deprived = true;
-} else {
-  deprived = false;
-}
+// if (deprived == "true") {
+//   deprived = true;
+// } else {
+//   deprived = false;
+// }
 
 // const deprivedField = document.getElementById("deprived-field");
-const restButton = document.getElementById("character-rest-button");
+// const restButton = document.getElementById("character-rest-button");
 
 
 // NOTE: moved to backend and HTMX
@@ -61,9 +61,10 @@ const restButton = document.getElementById("character-rest-button");
 //   }
 // }
 
-restButton.addEventListener("click", function () {
-  document.getElementById("hp-input").value = hpMax;
-});
+// NOTE: moved to backend
+// restButton.addEventListener("click", function () {
+//   document.getElementById("hp-input").value = hpMax;
+// });
 
 // NOTE: moved to backend
 // Set HP color to red when overburdened
@@ -180,87 +181,87 @@ togglePartyEditing();
 //   document.getElementById("character-party-description").classList.add("hidden");
 // }
 
-
+// NOTE: moved to backend
 // JSON Download
-document.getElementById("download-json-button").addEventListener("click", function () {
-  const processValue = (value) => {
-    // Handle null or undefined
-    if (value == null) {
-      return value;
-    }
+// document.getElementById("download-json-button").addEventListener("click", function () {
+//   const processValue = (value) => {
+//     // Handle null or undefined
+//     if (value == null) {
+//       return value;
+//     }
 
-    // Convert to string if it's not already
-    let strValue = String(value);
+//     // Convert to string if it's not already
+//     let strValue = String(value);
 
-    // Remove extra quotes if present
-    if (strValue.startsWith('"') && strValue.endsWith('"')) {
-      strValue = strValue.slice(1, -1);
-    }
+//     // Remove extra quotes if present
+//     if (strValue.startsWith('"') && strValue.endsWith('"')) {
+//       strValue = strValue.slice(1, -1);
+//     }
 
-    // Convert numeric strings to numbers
-    if (!isNaN(strValue) && strValue.trim() !== "") {
-      return Number(strValue);
-    }
+//     // Convert numeric strings to numbers
+//     if (!isNaN(strValue) && strValue.trim() !== "") {
+//       return Number(strValue);
+//     }
 
-    // Convert boolean strings to actual booleans
-    if (strValue.toLowerCase() === "true") {
-      return true;
-    }
-    if (strValue.toLowerCase() === "false") {
-      return false;
-    }
+//     // Convert boolean strings to actual booleans
+//     if (strValue.toLowerCase() === "true") {
+//       return true;
+//     }
+//     if (strValue.toLowerCase() === "false") {
+//       return false;
+//     }
 
-    // Return the processed string value
-    return strValue;
-  };
+//     // Return the processed string value
+//     return strValue;
+//   };
 
-  const data = {
-    name: processValue(name),
-    background: processValue(background),
-    custom_name: processValue(customName),
-    custom_background: processValue(customBackground),
-    strength: processValue(strength),
-    strength_max: processValue(strengthMax),
-    dexterity: processValue(dexterity),
-    dexterity_max: processValue(dexterityMax),
-    willpower: processValue(willpower),
-    willpower_max: processValue(willpowerMax),
-    hp: processValue(hp),
-    hp_max: processValue(hpMax),
-    gold: processValue(gold),
-    description: processValue(description),
-    traits: processValue(traits),
-    bonds: processValue(bonds),
-    omens: processValue(omens),
-    scars: processValue(scars),
-    notes: processValue(notes),
-    items: inventory.getItems(),
-    containers: inventory.getContainers(),
-    custom_image: processValue(portraitModal.getCustomImage()),
-    image_url: processValue(portraitModal.getImageURL()),
-    deprived: processValue(deprived),
-    armor: processValue(armor),
-  };
+// const data = {
+//   name: processValue(name),
+//   background: processValue(background),
+//   custom_name: processValue(customName),
+//   custom_background: processValue(customBackground),
+//   strength: processValue(strength),
+//   strength_max: processValue(strengthMax),
+//   dexterity: processValue(dexterity),
+//   dexterity_max: processValue(dexterityMax),
+//   willpower: processValue(willpower),
+//   willpower_max: processValue(willpowerMax),
+//   hp: processValue(hp),
+//   hp_max: processValue(hpMax),
+//   gold: processValue(gold),
+//   description: processValue(description),
+//   traits: processValue(traits),
+//   bonds: processValue(bonds),
+//   omens: processValue(omens),
+//   scars: processValue(scars),
+//   notes: processValue(notes),
+//   items: inventory.getItems(),
+//   containers: inventory.getContainers(),
+//   custom_image: processValue(portraitModal.getCustomImage()),
+//   image_url: processValue(portraitModal.getImageURL()),
+//   deprived: processValue(deprived),
+//   armor: processValue(armor),
+// };
 
-  // Convert it to JSON
-  const jsonString = JSON.stringify(data, null, 2);
+//   // Convert it to JSON
+//   const jsonString = JSON.stringify(data, null, 2);
 
-  // Create a blob with the JSON data
-  const blob = new Blob([jsonString], { type: "application/json" });
+//   // Create a blob with the JSON data
+//   const blob = new Blob([jsonString], { type: "application/json" });
 
-  // Create a link element
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "character_data.json";
+//   // Create a link element
+//   const link = document.createElement("a");
+//   link.href = URL.createObjectURL(blob);
+//   link.download = "character_data.json";
 
-  // Append the link to the body and trigger the download
-  document.body.appendChild(link);
-  link.click();
+//   // Append the link to the body and trigger the download
+//   document.body.appendChild(link);
+//   link.click();
 
-  // Clean up
-  document.body.removeChild(link);
-  URL.revokeObjectURL(link.href);
-});
+//   // Clean up
+//   document.body.removeChild(link);
+//   URL.revokeObjectURL(link.href);
+// });
 
 
 // Submit Button

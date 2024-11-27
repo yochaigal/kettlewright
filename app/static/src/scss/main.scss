@@ -655,6 +655,8 @@ button,
 }
 
 
+/* --- layout -- */
+
 .row8 {
   display: flex;
   flex-direction: row;
@@ -684,18 +686,6 @@ button,
   align-items: center;
 }
 
-.small-icon-button {
-  border: none;
-  width: 19px;
-  height: 19px;
-  cursor: pointer;
-  color: color-mix(in lab, transparent 60%, var(--fg));
-}
-
-.small-icon-button:hover {
-  color: var(--fg);
-}
-
 .no-space {
   margin: 0px;
   padding: 0px;
@@ -704,19 +694,6 @@ button,
 .full-width {
   width: 100%;
 }
-
-.with-whitespace {
-  white-space: pre-line;
-}
-
-.smaller-font {
-  font-size: smaller;
-}
-
-.click-pointer {
-  cursor: pointer !important;
-}
-
 
 /* --- checkbox --- */
 
@@ -743,4 +720,75 @@ button,
 
 .checkbox:checked::before {
   transform: scale(1);
+}
+
+/* --- buttons -- */
+
+.small-icon-button {
+  border: none;
+  width: 19px;
+  height: 19px;
+  cursor: pointer;
+  color: color-mix(in lab, transparent 60%, var(--fg));
+}
+
+.small-icon-button:hover {
+  color: var(--fg);
+}
+
+
+.sketchy-button:hover {
+  background-color: color-mix(in lab, transparent 90%, var(--fg));
+}
+
+.sketchy-button {
+  color: var(-fg);
+  background-color: var(--bg);
+  border: 2px solid color-mix(in lab, transparent 20%, var(--fg));
+  box-shadow: 20px 38px 34px -26px hsla(0, 0%, 0%, .2);
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  padding: 6px 16px;
+  width: fit-content;
+  height: fit-content;
+  cursor: pointer;
+}
+
+
+/* --- text l&f --- */
+
+.with-whitespace {
+  white-space: pre-line;
+}
+
+.smaller-font {
+  font-size: smaller;
+}
+
+.click-pointer {
+  cursor: pointer !important;
+}
+
+/* --- visual attributes --- */
+
+.ghost20 {
+  color: color-mix(in lab, transparent 20%, var(--fg));
+}
+
+.ghost30 {
+  color: color-mix(in lab, transparent 30%, var(--fg));
+}
+
+.ghost40 {
+  color: color-mix(in lab, transparent 40%, var(--fg));
+}
+
+.ghost50 {
+  color: color-mix(in lab, transparent 50%, var(--fg));
+}
+
+.ghost20:hover,
+.ghost30:hover,
+.ghost40:hover,
+.ghost50:hover {
+  color: var(--fg);
 }
