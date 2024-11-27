@@ -308,4 +308,10 @@ def charedit_export(username, url_name):
         'Content-Disposition', 'attachment', filename=user.username + '_'+character.name + '.json' )
     return response
     
-    
+# Route: rest
+@character_edit.route('/charedit/rest/<username>/<url_name>', methods=['GET'])
+def charedit_rest(username, url_name):
+    user, character = get_char_data(username, url_name)
+    setattr(character,"hp",character.hp_max)
+    db.session.commit()
+    return render_template('partial/charview_attrs.html', user=user, character=character, username=username, url_name=url_name)
