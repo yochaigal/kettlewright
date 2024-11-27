@@ -147,19 +147,19 @@ document.getElementById("roll-omens-button").addEventListener("click", function 
   resizeTextarea(omens);
 });
 
+// NOTE: moved to backend
 // Party Editing
+// function togglePartyEditing() {
+//   if (partyName != "None") {
+//     document.getElementById("character-leave-party-button").classList.remove("hidden");
+//     document.getElementById("character-join-code").classList.add("hidden");
+//   } else {
+//     document.getElementById("character-join-code").classList.remove("hidden");
+//     document.getElementById("add-edit-item-modal-transfer").classList.add("hidden");
+//   }
+// }
 
-function togglePartyEditing() {
-  if (partyName != "None") {
-    document.getElementById("character-leave-party-button").classList.remove("hidden");
-    document.getElementById("character-join-code").classList.add("hidden");
-  } else {
-    document.getElementById("character-join-code").classList.remove("hidden");
-    document.getElementById("add-edit-item-modal-transfer").classList.add("hidden");
-  }
-}
-
-togglePartyEditing();
+// togglePartyEditing();
 
 // NOTE: moved to backend and template logic
 // Party Link

@@ -7,24 +7,14 @@
   const deprived = `{{character.deprived}}`;
   const customImage = "{{character.custom_image}}"; 
   const imageURL = `{{character.image_url}}`; 
-  // const hp = `{{character.hp}}`; 
-  // const hpMax = `{{character.hp_max}}`; 
-  // const partyName = `{{character.party_name}}`; 
-  // const partyDescription = `{{character.party_description}}`; 
-  // const traits = `{{character.traits}}`; 
-  // const bonds = `{{character.bonds}}`;
-  const omens = `{{character.omens}}`;
-  const scars = `{{character.scars}}`;
-  const notes = `{{character.notes}}`;
-  const description = `{{character.description}}`;
-  const isOwner = `{{is_owner}}`; 
-  // const party = `{{party}}`; 
+
 </script>
 
 {% if is_owner %}
 <script>
   const party_id = "{{ character.party_id }}"; 
   const character_id = "{{ character.id }}";
+  const isOwner = "{{ is_owner }}";
 </script>
 {% endif %}
 <script src="{{url_for('static', filename='src/js/character_view.js')}}" defer type="module"></script>
@@ -75,7 +65,7 @@
           {% include "partial/charview_attrs.html" %}
       </div>
       <div id="character-traits-container" class="character-section"
-        hx-on-htmx-after-request="document.getElementById('traits-field') ? resizeTextarea(document.getElementById('traits-field')):''">
+        hx-on-htmx-after-settle="document.getElementById('traits-field') ? resizeTextarea(document.getElementById('traits-field')):''">
           {% include "partial/charview_traits.html" %}
       </div>
       {% include "main/inventory.html" %}
@@ -83,23 +73,23 @@
 
     <div class="character-descriptions-grid" style="margin-top: 1em">
       <div id="character-description-container" class="character-section character-description-container"
-        hx-on-htmx-after-request="document.getElementById('description-field') ? resizeTextarea(document.getElementById('description-field')):''">
+        hx-on-htmx-after-settle="document.getElementById('description-field') ? resizeTextarea(document.getElementById('description-field')):''">
            {% include "partial/charview_description.html" %}
       </div>
       <div class="character-description-container character-section" id="character-bonds-container"
-        hx-on-htmx-after-request="document.getElementById('bonds-field') ? resizeTextarea(document.getElementById('bonds-field')):''">
+        hx-on-htmx-after-settle="document.getElementById('bonds-field') ? resizeTextarea(document.getElementById('bonds-field')):''">
            {% include  "partial/charview_bonds.html" %}
       </div>
       <div class="character-description-container character-section" id="character-omens-container"
-        hx-on-htmx-after-request="document.getElementById('omens-field') ? resizeTextarea(document.getElementById('omens-field')):''">
+        hx-on-htmx-after-settle="document.getElementById('omens-field') ? resizeTextarea(document.getElementById('omens-field')):''">
         {% include  "partial/charview_omens.html" %}
       </div>
       <div class="character-description-container character-section" id="character-scars-container"
-           hx-on-htmx-after-request="document.getElementById('scars-field') ? resizeTextarea(document.getElementById('scars-field')):''">
+           hx-on-htmx-after-settle="document.getElementById('scars-field') ? resizeTextarea(document.getElementById('scars-field')):''">
         {% include "partial/charview_scars.html" %}
       </div>
       <div class="character-description-container character-section" id="character-notes-container"
-        hx-on-htmx-after-request="document.getElementById('notes-field') ? resizeTextarea(document.getElementById('notes-field')):''">
+        hx-on-htmx-after-settle="document.getElementById('notes-field') ? resizeTextarea(document.getElementById('notes-field')):''">
         {% include  "partial/charview_notes.html" %}
       </div>
 

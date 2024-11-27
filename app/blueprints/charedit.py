@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash,
 from app.models import db, User, Character, Party
 from app.forms import *
 from app.main import sanitize_data
-from app.lib import load_scars, load_images, character_portrait_link, is_url_image
+from app.lib import load_scars, load_images, character_portrait_link, is_url_image, load_omens, roll_list
 
 
 character_edit = Blueprint('character_edit', __name__)
@@ -157,7 +157,6 @@ def charedit_inplace_text_save(username, url_name, field_name):
         setattr(character, field_name, sanitize_data(data[field_name]))
         party, party_url = prepare_party_data(character.party_id)
     db.session.commit()
-    print("save", party, party_url)
     
     if field_name == "traits":
         template = 'partial/charview_traits.html'
@@ -315,3 +314,16 @@ def charedit_rest(username, url_name):
     setattr(character,"hp",character.hp_max)
     db.session.commit()
     return render_template('partial/charview_attrs.html', user=user, character=character, username=username, url_name=url_name)
+
+# Route: roll omens on omen edit
+@character_edit.route('/charedit/omen-roll/<username>/<url_name>', methods=['POST'])
+def charedit_omen_roll(username, url_name):
+    user, character = get_char_data(username, url_name)  
+    omens = load_omens()
+    data = request.form
+    result = roll_list(omens)
+    if data["omens"] != "":
+        result = data["omens"] + "\n \n" + result
+    form = CharacterEditFormOmens(obj=character)
+    form.omens.data = result
+    return render_template('partial/charedit_omens.html', user=user, character=character, form=form, username=username, url_name=url_name)
