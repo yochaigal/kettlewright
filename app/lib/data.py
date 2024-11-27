@@ -18,3 +18,13 @@ def load_images():
     image_folder = os.path.join(app_static_path(), 'images', 'portraits')
     image_files = [f for f in os.listdir(image_folder) if f.endswith('.webp')]
     return image_files
+
+def load_omens():
+    result = []
+    omens_file_path = os.path.join(app_static_path(), 'json', 'omens.json')
+    with open(omens_file_path, 'r') as file:
+        omens_data = json.load(file)
+    for s in omens_data["Omens"]:
+        desc = s['description']
+        result.append(desc)
+    return result

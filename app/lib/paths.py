@@ -11,8 +11,10 @@ def app_static_path():
 def character_portrait_link(character):
     if character.custom_image == False:
         portrait_src = url_for('static', filename='images/portraits/' + character.image_url)
-    else:
+    elif character.image_url != None:
         portrait_src = character.image_url
+    else:
+        portrait_src = "/static/images/portraits/default-portrait.webp"
     return portrait_src
 
 def is_url_image(image_url):

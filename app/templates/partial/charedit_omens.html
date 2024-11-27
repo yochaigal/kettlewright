@@ -3,6 +3,13 @@
         <h3 class="no-space">Omens</h3>
         <div class="row32">
             <div 
+                title="Roll omens"
+                hx-post="/charedit/omen-roll/{{username}}/{{url_name}}" 
+                hx-target="#character-omens-container"
+                class="small-icon-button" >
+                <i class="fa-solid fa-dice dice" ></i>
+            </div>
+            <div 
                 title="Save changes"
                 hx-post="/charedit/inplace-text/{{username}}/{{url_name}}/omens/save" 
                 hx-target="#character-omens-container"
@@ -19,3 +26,4 @@
     </div>    
     {{ form.omens(class='textarea inplace', id='omens-field', oninput='resizeTextarea(this)') }}        
 </form>
+

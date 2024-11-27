@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from .models import User, Character, Party
 from . import db
 from .forms import CharacterForm, CharacterEditForm, CharacterJSONForm, PartyForm, PartyEditForm
-from app.lib import load_scars
+from app.lib import load_scars, character_portrait_link
 import sys
 import json
 from urllib.parse import quote
@@ -458,9 +458,10 @@ def character(username, url_name):
         party_description = None
         
     scarlist = load_scars()
+    portrait_src = character_portrait_link(character)
 
     return render_template('main/character.html', character=character, items_json=json.dumps(character.items), containers_json=json.dumps(character.containers), username=username, url_name=url_name,
-                           party=party, party_url=party_url, party_name=party_name, party_description=party_description, base_url=base_url, is_owner=is_owner, scarlist=scarlist)
+                           party=party, party_url=party_url, party_name=party_name, party_description=party_description, base_url=base_url, is_owner=is_owner, scarlist=scarlist, portrait_src=portrait_src)
 
 
 @main.route('/users/<username>/characters/<url_name>/print/')

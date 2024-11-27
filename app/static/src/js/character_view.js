@@ -52,13 +52,14 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Handle Custom Portrait Image
-  if (customImage == "None") {
-    document.getElementById("portrait-image").src = "/static/images/portraits/default-portrait.webp";
-  } else if (customImage == "False") {
-    document.getElementById("portrait-image").src = "/static/images/portraits/" + imageURL;
-  } else {
-    document.getElementById("portrait-image").src = imageURL;
-  }
+  // NOTE: moved to template and backend
+  // if (customImage == "None") {
+  //   document.getElementById("portrait-image").src = "/static/images/portraits/default-portrait.webp";
+  // } else if (customImage == "False") {
+  //   document.getElementById("portrait-image").src = "/static/images/portraits/" + imageURL;
+  // } else {
+  //   document.getElementById("portrait-image").src = imageURL;
+  // }
 
   // Adjust HP if overburdened
   // const hpText = document.getElementById("hp-view-text");
