@@ -5,5 +5,11 @@
       <i class="fa-solid fa-pencil pencil"></i>
     </div>
   </div>
-  <p id="character-bonds-view" class="with-whitespace">{{ character.bonds }}</p>
+  <p id="character-bonds-view" class="with-whitespace">
+   {% if character.bonds != "" %} 
+    {{ character.bonds }}
+   {% else %}
+    This character has no bonds...
+   {% endif %}
+  </p>
 </div>

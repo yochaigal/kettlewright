@@ -4,41 +4,45 @@
 }
 
 .inventory-container-title {
-font-weight: 400;
-margin-top: 0px;
-font-size: 1.8rem;
+    font-weight: 400;
+    margin-top: 0px;
+    font-size: 1.8rem;
 }
 
 .inventory-container-title-selected {
-font-weight: 600;
-font-size: 2.025rem
+    font-weight: 600;
+    font-size: 2.025rem
 }
 
 
 .inventory-header {
-/* border-top: .5px dotted ; */
-border-bottom: .5px dotted ;
-/* margin-bottom: .5em; */
-padding-bottom: .5em; 
-
+    /* border-top: .5px dotted ; */
+    border-bottom: .5px dotted;
+    /* margin-bottom: .5em; */
+    padding-bottom: .5em;
+    background-color: color-mix(in lab, transparent 95%, var(--fg));
+    justify-content: center;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 4px;
 }
 
 .inventory-footer-buttons {
-display: flex;
-justify-content: flex-start;
-/* border-bottom: .5px dotted ; */
-gap: .5em;
-flex-wrap: wrap;
-padding-bottom: .5em;
+    display: flex;
+    justify-content: flex-start;
+    /* border-bottom: .5px dotted ; */
+    gap: .5em;
+    flex-wrap: wrap;
+    padding-bottom: .5em;
 }
 
 
 .inventory-container-title-container {
-display: flex;
-gap: .5em;
-align-items: start;
-height: 20px;
-margin-right: .8em;
+    display: flex;
+    gap: .5em;
+    align-items: start;
+    height: 20px;
+    margin-right: .8em;
 
 }
 
@@ -46,30 +50,30 @@ margin-right: .8em;
 
 
 .inventory-item-container {
-display:flex;
-flex-direction: row;
-align-items: end;
-border-bottom: .5px dotted ;
-min-height: 26px; 
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    border-bottom: .5px dotted;
+    min-height: 26px;
 
 }
 
 .inventory-item-text {
-margin-bottom: 0px;
-margin-top: 0px;
-padding: 0px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    padding: 0px;
 }
 
 .inventory-item-button-container {
-display: flex;
-margin-left: auto;
-gap: 12px;
-font-size: 13pt;
-cursor: pointer;
+    display: flex;
+    margin-left: auto;
+    gap: 12px;
+    font-size: 13pt;
+    cursor: pointer;
 }
 
 .inventory-item-button {
-margin-bottom: auto;
+    margin-bottom: auto;
 }
 
 .inventory-item-info-button {
@@ -78,45 +82,44 @@ margin-bottom: auto;
 }
 
 .inventory-item-plus-minus {
-/* min-width: 52px; */
-margin-top: auto;
+    /* min-width: 52px; */
+    margin-top: auto;
 }
 
 
 .inventory-item-plus-minus-container {
-min-width: 52px;
-margin-left: 1em; 
-margin-right: 1em; 
-/* font-weight: 600; */
-/* font-size: 16pt; */
-cursor: pointer;
-white-space: nowrap;
+    min-width: 52px;
+    margin-left: 1em;
+    margin-right: 1em;
+    /* font-weight: 600; */
+    /* font-size: 16pt; */
+    cursor: pointer;
+    white-space: nowrap;
 }
+
 .inventory-item-edit-button {
-text-decoration: underline;
-margin-top: auto;
-margin-left: auto;
-cursor: pointer;
+    text-decoration: underline;
+    margin-top: auto;
+    margin-left: auto;
+    cursor: pointer;
 }
 
 .inventory-container-edit-button {
-text-decoration: underline;
-margin: 0px;
-font-size: 12pt;
+    text-decoration: underline;
+    margin: 0px;
+    font-size: 12pt;
 }
 
 .inventory-edit-button {
-padding: 4px;
-margin-top: 0px;
+    padding: 4px;
+    margin-top: 0px;
 
 }
 
-.inventory-dice {
-   
-}
+.inventory-dice {}
 
 #add-item-modal-container-select {
-width: 100%;    
+    width: 100%;
 }
 
 
@@ -140,6 +143,7 @@ width: 100%;
     // margin-left: auto;
 
 }
+
 /* Add/Edit Container Modal */
 
 #add-edit-container-modal-body {
@@ -149,9 +153,9 @@ width: 100%;
     column-gap: 2em;
 }
 
-#add-edit-container-modal-body > *, 
-#add-edit-container-modal-body > * > *, 
-#add-edit-container-modal-body > * > * > *, 
+#add-edit-container-modal-body>*,
+#add-edit-container-modal-body>*>*,
+#add-edit-container-modal-body>*>*>*,
 #add-edit-container-modal-carried-select,
 #add-edit-container-modal-move-items-destination {
     max-width: 100%;
@@ -162,7 +166,7 @@ width: 100%;
 //     grid-column: 1 / -1;  /* Span across all columns */
 // }
 
-#add-edit-container-modal-remove-section > div {
+#add-edit-container-modal-remove-section>div {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1em;
@@ -182,7 +186,7 @@ width: 100%;
     display: flex;
     gap: .25em;
     align-items: center;
-    
+
 }
 
 .marketpace-quantity-button {
@@ -202,4 +206,9 @@ width: 100%;
 
 #show-marketplace-button {
     margin-top: 0;
+}
+
+.item-edit-button {
+    font-size: 0.8em;
+    color: color-mix(in lab, transparent 20%, var(--fg));
 }

@@ -8,7 +8,11 @@
     </div>
   </div>
   <div id="character-traits-view" class="with-whitespace">
+  {% if character.traits != "" %}
       {{character.traits}}
+  {% else %}
+      This character has no traits...
+  {% endif %}
     </div>
 </div>
   

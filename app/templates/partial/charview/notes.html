@@ -5,5 +5,11 @@
       <i class="fa-solid fa-pencil pencil"></i>
     </div>
   </div>
-  <p id="character-notes-view" class="with-whitespace">{{ character.notes|safe }}</p>
+  <p id="character-notes-view" class="with-whitespace">
+  {% if character.notes != "" %}
+    {{ character.notes|safe }}
+  {% else %}
+    This character has no notes...
+  {% endif %}
+  </p>
 </div>

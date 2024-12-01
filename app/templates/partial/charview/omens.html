@@ -6,5 +6,11 @@
       <i class="fa-solid fa-pencil pencil"></i>
     </div>
   </div>
-  <p id="character-omens-view" class="with-whitespace">{{ character.omens }}</p>
+  <p id="character-omens-view" class="with-whitespace">
+  {% if character.omens != "" %}
+    {{ character.omens }}
+  {% else %}
+    This character has no omens...
+  {% endif %}
+  </p>
 </div>

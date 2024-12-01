@@ -1,0 +1,304 @@
+
+<div class="row16spaced full-width">
+    <h3 id="inventory-title">Inventory</h3>
+    <div class="row32">
+        <button class="button smaller-font" id="show-marketplace-button" type="button"> Marketplace </button>
+        <div title="Close inventory editor" hx-get="/charedit/inplace-inventory/{{ username }}/{{ url_name }}/{{inventory.selected_container["id"]}}/close" 
+            hx-target="#inventory-container" class="small-icon-button">
+            <i class="fa-solid fa-xmark xmark"></i>
+        </div>
+    </div>
+</div>
+<div class="inventory-header flex-row" id="inventory-header"> 
+    {% for cnt in inventory.containers %}
+      <div class="inventory-container-title subtitle pointer {% if cnt["is_selected"] %} inventory-container-title-selected {% endif %} {% if cnt["encumbered"] %} red-text {% endif %} "
+        hx-get="/charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt["id"]}}?mode=edit"
+        hx-target="#inventory-container">
+          {{cnt["title"]}}
+      </div> 
+    {% endfor %}   
+</div>
+<div id="items-container-inline" style="margin-top: 0px; width: 100%">
+{% for it in inventory.selected_container["items"] %}
+    <div class="inventory-item-container">
+    {% if it["is_empty"] %}
+        <div class="inventory-item-text"></div>
+    {% else %}
+        <div class="inventory-item-text {% if it["name"] == "Fatigue" %} fatigue-text {% endif %}">
+        {{it.title | safe}}
+        </div>
+        <div class="inventory-item-button-container">        
+            {% if it.editable %}
+            <div class="pointer" title="Edit"  
+                hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container["id"]}}/item-edit/{{it.id}}"
+                hx-target="#inventory-container">
+                <i class="item-edit-button fa-solid fa-pencil pencil" ></i>
+            </div>
+            {% endif %}
+            <div class="pointer" title="Delete"  
+                hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container["id"]}}/item-delete/{{it.id}}"
+                hx-target="#inventory-container"
+                hx-confirm="Do you want to delete {{it.name}}?"
+                data-confirm-title="Delete item"
+                data-confirm-button="Delete"
+             >
+                <i class="item-edit-button fa-solid fa-xmark xmark" ></i>
+            </div>
+        </div>
+    {% endif %}      
+    </div>
+{% endfor %}
+</div>
+
+<div class="panel-block inventory-footer">
+<div class="inventory-footer-buttons">
+    <button class="button smaller-font" id="add-item-button" type="button"> + Item </button>
+    <button class="button smaller-font" id="add-fatigue-button" type="button"
+            hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container["id"]}}/fatigue"
+            hx-target="#inventory-container"> + Fatigue </button>
+    <button class="button smaller-font" id="add-container-button" type="button"> + Container </button>    
+</div>
+</div>
+
+<!-- Modals -->
+
+<div class="modal inventory-modal" id="add-edit-container-modal">
+<div class="modal-background inventory-modal-background"></div>
+<div class="modal-card" id="add-edit-container-modal-container">
+    <header class="modal-card-head">
+    <h3 class="modal-card-title" id="add-edit-container-modal-title">Add/Edit Container</h3>
+    <button
+        class="delete inventory-modal-cancel-button"
+        type="button"
+        aria-label="close"
+        id="add-edit-container-modal-close"
+    ></button>
+    </header>
+
+    <section class="modal-card-body">
+    <div id="add-edit-container-modal-body">
+        <div class="column field">
+        <label>Name</label>
+        <div class="" style="padding-bottom: 0">
+            <input class="input" type="text" placeholder="container name" id="add-edit-container-modal-name-field" />
+        </div>
+        </div>
+        <div class="column field">
+        <label>Slots</label>
+        <div class="">
+            <input
+            class="input"
+            type="number"
+            min="1"
+            placeholder="0"
+            id="add-edit-container-modal-slots-field"
+            style="width: 100%"
+            />
+        </div>
+        </div>
+
+        <div class="column field">
+        <label>Carried by</label>
+        <div class="select">
+            <select id="add-edit-container-modal-carried-select">
+            <option value="">carried by...</option>
+            </select>
+        </div>
+        </div>
+        <div class="column field">
+        <label>Load</label>
+        <div class="">
+            <input
+            class="input"
+            type="number"
+            min="0"
+            max="10"
+            placeholder="0"
+            id="add-edit-container-modal-load-field"
+            />
+        </div>
+        </div>
+    </div>
+
+    <div id="add-edit-container-modal-remove-section" class="hidden">
+        <div class="divider" style="margin: 1em 0px; padding: 0px"></div>
+        <div style="margin-top: 2em">
+        <div class="column field">
+            <label>Remove Container</label>
+            <div class="control">
+            <label class="checkbox">
+                <input
+                type="checkbox"
+                id="add-edit-container-modal-delete-checkbox"
+                style="width: 20px; height: 20px; margin-top: 10px"
+                />
+            </label>
+            </div>
+        </div>
+        <div class="column field">
+            <label>Move Items</label>
+            <div class="select">
+            <select id="add-edit-container-modal-move-items-destination" disabled></select>
+            </div> </div
+        ></div>
+    </div>
+    </section>
+
+    <footer class="modal-card-foot">
+    <div class="message is-danger hidden" id="add-edit-container-error-container" style="width: 100%">
+        <p class="message-body red-text" id="add-edit-container-error-text"></p>
+    </div>
+
+    <div class="footer-button-container">
+        <button class="button is-success" type="button" id="add-edit-container-modal-save">Save</button>
+        <button class="button inventory-modal-cancel-button" type="button">Cancel</button>
+        <button
+        class="button is-danger hidden"
+        type="button"
+        id="add-edit-container-modal-remove"
+        style="margin-left: auto"
+        >
+        Delete
+        </button>
+    </div>
+    </footer>
+</div>
+</div>
+
+<div class="modal inventory-modal" id="add-edit-item-modal">
+<div class="modal-background inventory-modal-background"></div>
+<div class="modal-card" id="add-edit-item-modal-container">
+    <header class="modal-card-head">
+    <h3 class="modal-card-title" id="add-edit-item-modal-title">Add Item</h3>
+    <button class="delete inventory-modal-cancel-button" aria-label="close" type="button"></button>
+    </header>
+
+    <section class="modal-card-body" id="add-edit-item-modal-body">
+    <div class="field">
+        <label>Name</label>
+        <input class="input" type="text" placeholder="Item Name" id="add-edit-item-modal-name-field" />
+    </div>
+
+    <div class="tags-container field" style="margin: 20px 0px">
+        <label>Tags</label>
+        <div>
+        <div class="tag button">bulky</div>
+        <div class="tag button">petty</div>
+        <div class="tag button" id="tag-button-uses">uses</div>
+        <div class="tag button" id="tag-button-charges">charges</div>
+        <div class="tag button">blast</div>
+        </div>
+        <div>
+        <div class="tag button" id="tag-button-d4">d4</div>
+        <div class="tag button" id="tag-button-d6">d6</div>
+        <div class="tag button" id="tag-button-d8">d8</div>
+        <div class="tag button" id="tag-button-d10">d10</div>
+        <div class="tag button" id="tag-button-d12">d12</div>
+        </div>
+        <div>
+        <div class="tag">1 Armor</div>
+        <div class="tag button">2 Armor</div>
+        <div class="tag button">3 Armor</div>
+        <div class="tag button">bonus defense</div>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: flex-start; gap: 40px">
+        <div class="inactive field" id="add-edit-item-modal-uses-container" style="align-items: center">
+        <label>Uses</label>
+        <div class="column number-field" style="padding-bottom: 0">
+            <input class="input" type="number" min="0" placeholder="0" id="add-edit-item-modal-uses-field" />
+        </div>
+        </div>
+        <div id="add-edit-item-modal-charges-container" class="field">
+        <label>Charges / Max</label>
+        <div style="display: flex">
+            <input class="input" type="number" min="0" placeholder="0" id="add-edit-item-modal-charges-field" />
+            <p style="margin: 0 4px; display: flex; align-items: center">/</p>
+            <input class="input" type="number" min="0" placeholder="0" id="add-edit-item-modal-max-charges-field" />
+        </div>
+        </div>
+    </div>
+    <div class="field" style="display: flex; flex-direction: column; min-width: 120px">
+        <label>Container</label>
+
+        <div class="select" style="max-width: 200px">
+        <select id="add-edit-item-modal-container-select"></select>
+        </div>
+    </div>
+
+    <div class="field">
+        <label>Description</label>
+        <textarea
+        class="textarea"
+        placeholder="Item Description"
+        id="add-edit-item-modal-description-field"
+        oninput="resizeTextarea(this)"
+        ></textarea>
+    </div>
+    </section>
+
+    <footer class="modal-card-foot">
+    <div class="message hidden" id="add-edit-item-modal-error-container" style="width: 100%">
+        <p class="message-body red-text" id="add-edit-item-modal-error-text"></p>
+    </div>
+    <div class="footer-button-container">
+        <div>
+        <button class="button is-success" type="button" id="add-edit-item-modal-save"> Save </button>
+        <button class="button inventory-modal-cancel-button" type="button" id="add-edit-item-modal-cancel">
+            Cancel
+        </button></div
+        >
+        <div>
+        <button class="button is-primary" type="button" id="add-edit-item-modal-transfer" style="margin-left: auto">
+            <i class="fa-solid fa-share icon-in-button"></i>
+            Party
+        </button>
+        <button class="button is-danger hidden" type="button" id="add-edit-item-modal-delete"> Delete </button></div
+        >
+    </div>
+    </footer>
+</div>
+</div>
+
+<div class="modal inventory-modal" id="party-item-transfer-modal">
+<div class="modal-background inventory-modal-background"></div>
+<div class="modal-card" style="border-radius: 4px">
+    <header class="modal-card-head">
+    <h3 class="modal-card-title">Transfer Item</h3>
+    <button class="delete inventory-modal-cancel-button" aria-label="close" type="button"></button>
+    </header>
+    <div class="modal-card-body justify-left" id="party-item-transfer-modal-content">
+    <select id="party-item-transfer-modal-select">
+        <option value="">transfer to...</option>
+    </select>
+    </div>
+    <footer class="modal-card-foot">
+    <div class="footer-button-container">
+        <button class="button is-primary" type="button" id="party-transfer-item-modal-save"> Transfer </button>
+        <button
+        class="button inventory-modal-cancel-button"
+        type="button"
+        id="transfer-item-modal-cancel"
+        style="margin-left: auto"
+        >
+        Cancel
+        </button>
+    </div>
+    </footer>
+</div>
+</div>
+
+<div class="modal inventory-modal" id="item-description-modal">
+<div class="modal-background inventory-modal-background"></div>
+<div class="modal-card" style="border-radius: 4px">
+    <div class="modal-card-body justify-left">
+    <p id="item-description-modal-content">This item has no description</p>
+    </div>
+</div>
+</div>
+
+
+<!-- legacy compatibiity -->
+<div id="items-container" style="display:none"></div>
+
