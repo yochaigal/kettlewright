@@ -9,9 +9,9 @@
         </div>
     </div>
 </div>
-<div class="inventory-header flex-row" id="inventory-header"> 
+<div class="inventory-header flex-row" id="inventory-header" style="gap: 1.5rem"> 
     {% for cnt in inventory.containers %}
-    <div class="row8">
+    <div class="row8" >
         <div class="inventory-container-title subtitle pointer {% if cnt["is_selected"] %} inventory-container-title-selected {% endif %} {% if cnt["encumbered"] %} red-text {% endif %} "
             hx-get="/charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt["id"]}}?mode=edit"
             hx-target="#inventory-container">

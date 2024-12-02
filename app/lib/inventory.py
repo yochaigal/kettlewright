@@ -18,21 +18,27 @@ class Inventory:
         self.select(0)
         
     def parse(self, character):
-        self.containers = json.loads(character.containers)
-        for c in self.containers:
+        containers = json.loads(character.containers)
+        cdict = {}
+        for c in containers:
             if not "items" in c:
                 c["items"] = []
+            cdict[c["id"]] = c
         items = json.loads(character.items)
         for i in items:
-            c = self.containers[int(i["location"])]
+            if not int(i["location"]) in cdict:
+                continue
+            c = cdict[int(i["location"])]
             if c == None:
                 print("Unknown container for item",i)
+                continue
             i["is_empty"] = False
             c["items"].append(i)
-        self.containers.sort(key=lambda x: x["id"])
-        for c in self.containers:
+        containers.sort(key=lambda x: x["id"])
+        for c in containers:
             if "items" in c:
                 c["items"].sort(key=bring_fatigue_to_end)
+        self.containers = containers
         
     # decorate items and containers for display        
     def decorate(self):
@@ -255,7 +261,18 @@ class Inventory:
         for it in items:
             if int(it["location"]) == int(from_container):
                 it["location"] = int(to_container)
-        self.character.items = items
+        self.character.items = json.dumps(items)
+        db.session.commit()
+        self.parse(self.character)
+        
+    # remove items from container
+    def remove_items(self, container_id):
+        items = json.loads(self.character.items)
+        result = []
+        for it in items:
+            if it["location"] != int(container_id):
+                result.append(it)
+        self.character.items = json.dumps(items)
         db.session.commit()
         self.parse(self.character)
         
@@ -266,12 +283,14 @@ class Inventory:
         for c in containers:
             if c["id"] != int(container_id):
                 result.append(c)
-        self.character.containers = json.dumps(result)                        
+        self.character.containers = json.dumps(result)
+        db.session.commit()
+        self.parse(self.character)                        
         if move_to != None and move_to != "":
             self.move_items(container_id, move_to)
         else:
-            db.session.commit()
-            self.parse(self.character)
+            self.remove_items(container_id)
+
     
     # add container
     def add_container(self, name, slots, carried_by, load):

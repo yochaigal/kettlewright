@@ -68,7 +68,9 @@
         hx-on-htmx-after-settle="document.getElementById('traits-field') ? resizeTextarea(document.getElementById('traits-field')):''">
           {% include "partial/charview/traits.html" %}
       </div>
-      <div class="inventory-container" id="inventory-container">
+      <!-- This partial is reloaded during container change so we need to adjust edit icon state -->
+      <div class="inventory-container" id="inventory-container" 
+        hx-on-htmx-after-settle="if (document.getElementsByClassName('fa-eye')[0].classList.contains('hidden')) document.getElementById('edit-inventory-icon').classList.add('hidden')">
         {% include "partial/charview/inventory.html" %}
       </div>  
     </div>

@@ -93,7 +93,7 @@
               hx-target="#inventory-container">Save</button>
         </div> 
   
-        {% if mode == "edit" %}
+        {% if mode == "edit" and container.id != 0 %}
         <div>
           <div class="divider" style="margin: 1em 0px; padding: 0px"></div>
           <div style="margin-top: 2em; align-items: center; justify-content: center" class="row32">

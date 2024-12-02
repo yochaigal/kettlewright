@@ -422,5 +422,6 @@ def charedit_inplace_inventory_container_delete(username, url_name, container_id
     inventory = Inventory(character)
     data = request.form
     inventory.delete_container(container_id, data["delete-items"])
+    inventory.select(0)
     inventory.decorate()
     return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
