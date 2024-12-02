@@ -328,6 +328,8 @@ def charedit_omen_roll(username, url_name):
     form.omens.data = result
     return render_template('partial/charedit/omens.html', user=user, character=character, form=form, username=username, url_name=url_name)
 
+# --- INVENTORY ---
+
 # Route: select inventory container
 @character_edit.route('/charedit/inventory-select-container/<username>/<url_name>/<container_id>', methods=['GET'])
 def charedit_inventory_select_container(username, url_name, container_id):
@@ -346,7 +348,8 @@ def charedit_inventory_select_container(username, url_name, container_id):
 def charedit_inplace_inventory(username, url_name, container_id):
     user, character = get_char_data(username, url_name)
     inventory = Inventory(character)
-    inventory.select(int(container_id))
+    if container_id != "None":
+        inventory.select(int(container_id))
     inventory.decorate()
     return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
 
@@ -376,5 +379,48 @@ def charedit_inplace_inventory_add_fatigue(username, url_name, container_id):
     inventory = Inventory(character)
     inventory.add_fatigue(container_id)
     inventory.select(int(container_id))
+    inventory.decorate()
+    return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
+
+# Route: edit container dialog
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/container-edit/<container_id>', methods=['GET'])
+def charedit_inplace_inventory_container_edit(username, url_name, container_id):
+    user, character = get_char_data(username, url_name)
+    inventory = Inventory(character)
+    inventory.decorate()
+    mode = request.args.get('mode')
+    if mode == None or mode == "":
+        mode = "edit"
+    if mode == "edit":
+        container = inventory.get_container(container_id)
+    else:
+        container = None
+    return render_template('partial/modal/edit_container.html', user=user, character=character, username=username, url_name=url_name, 
+                           inventory=inventory, container=container, mode=mode)
+
+# Route: edit container dialog save
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/container-edit/<container_id>/save', methods=['POST'])
+def charedit_inplace_inventory_container_edit_save(username, url_name, container_id):
+    user, character = get_char_data(username, url_name)
+    inventory = Inventory(character)
+    data = request.form
+    if data["mode"] == "edit":
+        inventory.update_container(container_id,data["name"],data["slots"],data["carried_by"],data["load"])
+        inventory.select(int(container_id))
+        container = inventory.get_container(container_id)
+    else:
+        id = inventory.add_container(data["name"],data["slots"],data["carried_by"],data["load"])
+        inventory.select(id)
+        container = inventory.get_container(id)
+    inventory.decorate()
+    return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
+
+# Route: delete container
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/container-edit/<container_id>/delete', methods=['POST'])
+def charedit_inplace_inventory_container_delete(username, url_name, container_id):
+    user, character = get_char_data(username, url_name)
+    inventory = Inventory(character)
+    data = request.form
+    inventory.delete_container(container_id, data["delete-items"])
     inventory.decorate()
     return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)

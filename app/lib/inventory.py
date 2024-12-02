@@ -50,7 +50,7 @@ class Inventory:
     # decorate single item
     def decorate_item(self, item, container):
         title = item["name"]
-        if item["name"] in non_editable_items:
+        if item["name"] in non_editable_items or "carrying" in item:
             item["editable"] = False
         else:
             item["editable"] = True
@@ -105,12 +105,16 @@ class Inventory:
     def delete_item(self,container_id,item_id):
         idx = 0
         items = json.loads(self.character.items)        
+        deleted = None
         for it in items:
             if it["id"] == int(item_id) and it["location"] == int(container_id):
-                items.pop(idx)
+                deleted = items.pop(idx)
                 break
             idx += 1
         self.character.items = json.dumps(items)
+        if deleted != None and "carrying" in deleted and "location" in deleted:
+            containers = self.remove_carried_by(deleted["location"])
+            self.character.containers = json.dumps(containers)
         db.session.commit()
         self.parse(self.character)
         
@@ -135,6 +139,26 @@ class Inventory:
             if it["location"] == int(container_id):
                 result.append(it)
         return result
+    
+    # generate new item id
+    def generate_item_id(self):
+        items = json.loads(self.character.items)
+        max = 0
+        for it in items:
+            if max <= it["id"]:
+                max = it["id"]
+        max += 1
+        return max
+    
+    # generate new container id
+    def generate_container_id(self):
+        cnts = json.loads(self.character.containers)
+        max = 0
+        for it in cnts:
+            if max <= it["id"]:
+                max = it["id"]
+        max += 1
+        return max
         
     # add fatigue
     def add_fatigue(self, container_id):
@@ -146,10 +170,125 @@ class Inventory:
         if len(cont_items) >= cnt["slots"]:
             return
         items = json.loads(self.character.items)                
-        items.append({"name": FATIGUE_NAME, "editable": False, "location": int(container_id),"tags":[]})
+        new_id = self.generate_item_id()
+        items.append({"id": new_id, "name": FATIGUE_NAME, "editable": False, "location": int(container_id),"tags":[]})
         self.character.items = json.dumps(items)
         db.session.commit()
         self.parse(self.character)
+        
+    # get containers other than selected
+    def get_other_containers(self, container_id):
+        result = []
+        for c in self.containers:
+            if c["id"] != int(container_id):
+                result.append(c)
+        return result
+    
+    # remove carrying tag from items
+    def remove_carrying(self, container_id):
+        result = []
+        items = json.loads(self.character.items)
+        for it in items:
+            if not "carrying" in it or int(it["carrying"]) != int(container_id):
+                result.append(it)            
+        return result
+    
+    # add carrying tag
+    def add_carrying(self, carried_by, container_id, name):
+        items = json.loads(self.character.items)  
+        found = False
+        for it in items:
+            if "carrying" in it and int(it["carrying"]) == int(container_id):
+                found = True
+        if found:
+            return items
+        new_id = self.generate_item_id()
+        items.append({"id": new_id, "name": "Carrying "+name, "editable": False, "location": int(carried_by),"tags":[], "carrying":int(container_id)})
+        return items
+    
+    # remove carried by
+    def remove_carried_by(self, carried_by):
+        containers = json.loads(self.character.containers)
+        for c in containers:
+            if "carried_by" in c and int(c["carried_by"]) == int(carried_by):
+                del c["carried_by"]
+                if "load" in c:
+                    del c["load"]
+        return containers
+        
+    
+    # update container data
+    def update_container(self, container_id, name, slots, carried_by, load):
+        cnt = self.get_container(container_id)
+        cnt["name"] = name
+        cnt["slots"] = int(slots)
+        has_carried = carried_by != None and carried_by != "" and load != "" and load != None and int(load) != 0
+        if has_carried:
+            cnt["carried_by"] = carried_by
+            cnt["load"] = load
+        else:
+            if "carried_by" in cnt:
+                del cnt["carried_by"]
+            if "load" in cnt:
+                del cnt["load"]
+            
+        containers = json.loads(self.character.containers)
+        result = []
+        for c in containers:
+            if c["id"] != int(container_id):
+                result.append(c)
+        result.append(cnt)
+        if has_carried:
+            items = self.add_carrying(carried_by,container_id, name)
+            self.character.items = json.dumps(items)
+        else:
+            items =  self.remove_carrying(container_id)
+            self.character.items = json.dumps(items)
+            
+        self.character.containers = json.dumps(result)
+        db.session.commit()
+        self.parse(self.character)
+        
+    # move items to other container
+    def move_items(self, from_container, to_container):
+        items = json.loads(self.character.items)
+        for it in items:
+            if int(it["location"]) == int(from_container):
+                it["location"] = int(to_container)
+        self.character.items = items
+        db.session.commit()
+        self.parse(self.character)
+        
+    # delete container
+    def delete_container(self, container_id, move_to):
+        result = []
+        containers = json.loads(self.character.containers)
+        for c in containers:
+            if c["id"] != int(container_id):
+                result.append(c)
+        self.character.containers = json.dumps(result)                        
+        if move_to != None and move_to != "":
+            self.move_items(container_id, move_to)
+        else:
+            db.session.commit()
+            self.parse(self.character)
+    
+    # add container
+    def add_container(self, name, slots, carried_by, load):
+        new_id = self.generate_container_id()
+        containers = json.loads(self.character.containers)
+        obj = {"name": name, "slots": int(slots), "id": new_id}
+        has_carried = carried_by != None and carried_by != "" and load != "" and load != None and int(load) != 0
+        if has_carried:
+            obj["carried_by"] = carried_by
+            obj["load"] = load
+            items = self.add_carrying(carried_by,new_id, name)
+            self.character.items = json.dumps(items)
+        containers.append(obj)
+        self.character.containers = json.dumps(containers)                        
+        db.session.commit()
+        self.parse(self.character)
+        return new_id
             
     def print(self):
         print(self.containers)
