@@ -1,0 +1,109 @@
+<div class="inventory-modal" id="add-edit-item-modal">
+    <form class="no-space">
+    <div class="modal-background inventory-modal-background"></div>
+    <div class="modal-card" id="add-edit-item-modal-container">
+      <header class="modal-card-head">
+        <h3 class="modal-card-title" id="add-edit-item-modal-title">
+            {% if mode == "edit" %}
+                Edit Item: {{item.name}}
+            {% else %}
+                Create Item
+            {% endif %}
+        </h3>
+        <button class="delete inventory-modal-cancel-button" aria-label="close" type="button"></button>
+      </header>
+  
+      <section class="modal-card-body" id="add-edit-item-modal-body">
+        <div class="field">
+          <label>Name</label>
+          <input class="input" type="text" placeholder="Item Name" id="add-edit-item-modal-name-field" />
+        </div>
+  
+        <div class="tags-container field" style="margin: 20px 0px">
+          <label>Tags</label>
+          <div>
+            <div class="tag button">bulky</div>
+            <div class="tag button">petty</div>
+            <div class="tag button" id="tag-button-uses">uses</div>
+            <div class="tag button" id="tag-button-charges">charges</div>
+            <div class="tag button">blast</div>
+          </div>
+          <div>
+            <div class="tag button" id="tag-button-d4">d4</div>
+            <div class="tag button" id="tag-button-d6">d6</div>
+            <div class="tag button" id="tag-button-d8">d8</div>
+            <div class="tag button" id="tag-button-d10">d10</div>
+            <div class="tag button" id="tag-button-d12">d12</div>
+          </div>
+          <div>
+            <div class="tag">1 Armor</div>
+            <div class="tag button">2 Armor</div>
+            <div class="tag button">3 Armor</div>
+            <div class="tag button">bonus defense</div>
+          </div>
+        </div>
+  
+        <div style="display: flex; justify-content: flex-start; gap: 40px">
+          <div class="inactive field" id="add-edit-item-modal-uses-container" style="align-items: center">
+            <label>Uses</label>
+            <div class="column number-field" style="padding-bottom: 0">
+              <input class="input" type="number" min="0" placeholder="0" id="add-edit-item-modal-uses-field" />
+            </div>
+          </div>
+          <div id="add-edit-item-modal-charges-container" class="field">
+            <label>Charges / Max</label>
+            <div style="display: flex">
+              <input class="input" type="number" min="0" placeholder="0" id="add-edit-item-modal-charges-field" />
+              <p style="margin: 0 4px; display: flex; align-items: center">/</p>
+              <input class="input" type="number" min="0" placeholder="0" id="add-edit-item-modal-max-charges-field" />
+            </div>
+          </div>
+        </div>
+        <div class="field" style="display: flex; flex-direction: column; min-width: 120px">
+          <label>Container</label>
+  
+          <div class="select" style="max-width: 200px">
+            <select id="add-edit-item-modal-container-select"></select>
+          </div>
+        </div>
+  
+        <div class="field">
+          <label>Description</label>
+          <textarea
+            class="textarea"
+            placeholder="Item Description"
+            id="add-edit-item-modal-description-field"
+            oninput="resizeTextarea(this)"
+          ></textarea>
+        </div>
+      </section>
+  
+      <footer class="modal-card-foot">
+        <div class="message hidden" id="add-edit-item-modal-error-container" style="width: 100%">
+          <p class="message-body red-text" id="add-edit-item-modal-error-text"></p>
+        </div>
+        <div class="footer-button-container">
+          <div>
+            <button class="button is-success" type="button" id="add-edit-item-modal-save"> Save </button>
+            <button class="button inventory-modal-cancel-button" type="button" id="add-edit-item-modal-cancel"
+            {% if mode == "edit" %}
+            hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container.id}}"
+            {% else %}
+            hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/None"
+            {% endif %}
+            hx-target="#inventory-container">
+              Cancel
+            </button></div
+          >
+          <div>
+            <button class="button is-primary" type="button" id="add-edit-item-modal-transfer" style="margin-left: auto">
+              <i class="fa-solid fa-share icon-in-button"></i>
+              Party
+            </button>
+            <button class="button is-danger hidden" type="button" id="add-edit-item-modal-delete"> Delete </button></div
+          >
+        </div>
+      </footer>
+    </div>
+    </form>
+  </div>

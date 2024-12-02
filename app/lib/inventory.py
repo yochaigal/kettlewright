@@ -308,6 +308,14 @@ class Inventory:
         db.session.commit()
         self.parse(self.character)
         return new_id
+    
+    # get item by id
+    def get_item(self, item_id):
+        items = json.loads(self.character.items)
+        for it in items:
+            if it["id"] == int(item_id):
+                return it
+        return None
             
     def print(self):
         print(self.containers)

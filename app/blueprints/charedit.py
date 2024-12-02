@@ -425,3 +425,21 @@ def charedit_inplace_inventory_container_delete(username, url_name, container_id
     inventory.select(0)
     inventory.decorate()
     return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
+
+# Route: edit item dialog
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>', methods=['GET'])
+def charedit_inplace_inventory_item_edit(username, url_name, item_id):
+    user, character = get_char_data(username, url_name)
+    inventory = Inventory(character)
+    inventory.decorate()
+    mode = request.args.get('mode')
+    if mode == None or mode == "":
+        mode = "edit"
+    if mode == "edit":
+        item = inventory.get_item(item_id)
+    else:
+        item = None
+    return render_template('partial/modal/edit_item.html', user=user, character=character, username=username, url_name=url_name, 
+                           inventory=inventory, item=item, mode=mode)
+    
+    
