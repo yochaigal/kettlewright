@@ -1,6 +1,3 @@
-import inventory from "./inventoryData.js";
-import inventoryUI from "./inventoryUI.js";
-import inventoryModalUI from "./inventoryModalUI.js";
 import utils from "./utils.js";
 import diceModal from "./dice_modal.js";
 import notification from "./notification.js";
@@ -33,23 +30,29 @@ const rollDiceCallback = (sides) => {
 window.KW_rollDiceCallback = rollDiceCallback;
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Initialize Inventory
-  // inventory.setItems(data);
-  // inventory.setContainers(containersData);
-  // inventoryUI.initialize("character");
-  // inventoryModalUI.initialize();
-
   // Setup Dice Rolling
   if (isOwner == "True") {
-    // inventoryUI.setShowDice(true);
-    // inventoryUI.setRollDiceCallback(rollDiceCallback);
-
     document.getElementById("character-dice-button").addEventListener("click", () => {
-      console.log("rool dice");
       diceModal.showDiceModal();
     });
-
     diceModal.initialize(showRollDiceNotifcation);
   }
+  // Initial state is a view mode
+  document.querySelectorAll(".fa-pencil").forEach((item) => {
+    item.classList.add("hidden");
+  });
+
+  // Mode switch
+  document.getElementById("charsheet-mode-switch").addEventListener("click", () => {
+    document.querySelectorAll(".fa-pencil").forEach((item) => {
+      item.classList.toggle("hidden");
+    });
+    document.querySelectorAll(".fa-eye").forEach((item) => {
+      item.classList.toggle("hidden");
+    });
+    document.querySelectorAll(".fa-pen-to-square").forEach((item) => {
+      item.classList.toggle("hidden");
+    });
+  });
 
 });

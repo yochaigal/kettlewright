@@ -361,8 +361,36 @@ class Inventory:
         db.session.commit()
         self.parse(self.character)
         return item
-        
-            
+    
+    # change item amount
+    def change_amount(self, item_id, action, prop):
+        item = self.get_item(item_id)
+        if item == None:
+            return None
+        if not prop in item:
+            print("cannot find",prop,"in item",item["name"])
+            return
+        val = item[prop]
+        if action == "plus":
+            val += 1
+        elif action == "minus":
+            val -= 1
+        if val < 0:
+            val = 0
+        if prop == "charges" and val > item["max_charges"]:
+            val = item["max_charges"]            
+        item[prop] = val
+        items = json.loads(self.character.items)
+        result = []
+        for it in items:
+            if it["id"] != int(item_id):
+                result.append(it)
+        result.append(item)
+        self.character.items = json.dumps(result)
+        db.session.commit()
+        self.parse(self.character)
+        return item
+                    
     def print(self):
         print(self.containers)
                 

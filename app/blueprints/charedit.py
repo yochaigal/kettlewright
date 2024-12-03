@@ -463,3 +463,15 @@ def charedit_inplace_inventory_item_edit_save(username, url_name, item_id):
     inventory.decorate()
     return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name,inventory=inventory)    
     
+    
+# Route: change somea amount property in item
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/amount', methods=['GET'])
+def charedit_inplace_inventory_item_edit_amount(username, url_name, item_id):
+    user, character = get_char_data(username, url_name)
+    inventory = Inventory(character)
+    prop = request.args.get('property')
+    action = request.args.get('action')
+    item = inventory.change_amount(item_id, action, prop)
+    inventory.select(item["location"])
+    inventory.decorate()
+    return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)    

@@ -1,12 +1,5 @@
 {% extends "base.html" %} {% block content %}
 <script>
-  // const rawData = `{{ data_json|safe }}`;
-  // const data = JSON.parse(rawData);
-  const data = JSON.parse(`{{ items_json|safe }}`.slice(1, -1));
-  const containersData = JSON.parse(`{{ containers_json|safe }}`.slice(1, -1));
-  const deprived = `{{character.deprived}}`;
-  const customImage = "{{character.custom_image}}"; 
-  const imageURL = `{{character.image_url}}`; 
   const party = `{{party}}`; 
 </script>
 
@@ -110,11 +103,13 @@
           </button>
         </a>
 
+        {% if is_owner %}
         <a href="/charedit/export/{{username}}/{{url_name}}">
           <button id="download-json-button" class="button" type="button"> 
               JSON <i class="fa-solid fa-download"></i>
           </button>
         </a>
+        
         <button
           class="edit-mode is-danger button"
           id="delete-character-button"
@@ -126,36 +121,12 @@
         >
           DELETE<i class="fa-solid fa-trash icon-in-button"></i>
         </button>
-        
-        <!-- {% if is_owner %}
-        <button class="button is-light" id="download-json-button" type="button"
-          >JSON<i class="fa-solid fa-download icon-in-button"></i>
-        </button>
-        {% endif %} -->
+        {% endif %}
+               
       </div>
     </div>
   </div>
 </div>
-
-<script>
-  // Initial state is a view mode
-  document.querySelectorAll(".fa-pencil").forEach((item) => {
-    item.classList.add("hidden");
-  });
-
-  document.getElementById("charsheet-mode-switch").addEventListener("click", () => {
-    document.querySelectorAll(".fa-pencil").forEach((item) => {
-      item.classList.toggle("hidden");
-    });
-    document.querySelectorAll(".fa-eye").forEach((item) => {
-      item.classList.toggle("hidden");
-    });
-    document.querySelectorAll(".fa-pen-to-square").forEach((item) => {
-      item.classList.toggle("hidden");
-    });
-  });
-
-</script>
 
 {% endblock %}
 

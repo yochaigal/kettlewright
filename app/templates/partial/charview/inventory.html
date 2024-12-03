@@ -1,11 +1,12 @@
 <div class="row16">
-  <h3 id="inventory-title">Inventory</h3>
-  <div title="Edit inventory" hx-get="/charedit/inplace-inventory/{{ username }}/{{ url_name }}/{{inventory.selected_container["id"]}}" 
+  <h3>Inventory</h3>
+  <div title="Edit inventory" 
+    hx-get="/charedit/inplace-inventory/{{ username }}/{{ url_name }}/{{inventory.selected_container["id"]}}" 
     hx-target="#inventory-container" class="small-icon-button">
     <i class="fa-solid fa-pencil pencil" id="edit-inventory-icon"></i>
   </div>
 </div>
-<div class="inventory-header flex-row" id="inventory-header"> 
+<div class="inventory-header flex-row"> 
     {% for cnt in inventory.containers %}
       <div class="inventory-container-title subtitle pointer {% if cnt["is_selected"] %} inventory-container-title-selected {% endif %} {% if cnt["encumbered"] %} red-text {% endif %} "
         hx-get="/charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt["id"]}}"
@@ -14,7 +15,7 @@
       </div> 
     {% endfor %}
 </div>
-<div id="items-container-inline" style="margin-top: 0px; width: 100%">
+<div style="margin-top: 0px; width: 100%">
   {% for it in inventory.selected_container["items"] %}
     <div class="inventory-item-container">
       {% if it["is_empty"] %}
