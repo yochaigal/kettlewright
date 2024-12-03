@@ -441,5 +441,22 @@ def charedit_inplace_inventory_item_edit(username, url_name, item_id):
         item = None
     return render_template('partial/modal/edit_item.html', user=user, character=character, username=username, url_name=url_name, 
                            inventory=inventory, item=item, mode=mode)
-    
+
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/save', methods=['POST'])
+def charedit_inplace_inventory_item_edit_save(username, url_name, item_id):
+    user, character = get_char_data(username, url_name)
+    inventory = Inventory(character)
+    data = request.form
+    mode = request.args.get('mode')
+    if mode == None or mode == "":
+        mode = "edit"
+    if mode == "edit":
+        item = inventory.update_item(item_id,data["edit_item_name"],data["edit_item_tags"],data["edit_item_uses"],
+                                     data["edit_item_charges"], data["edit_item_max_charges"], data["edit_item_container"],
+                                     data["edit_item_description"])
+        inventory.select(int(item["location"]))
+    else:
+        item = None
+    inventory.decorate()
+    return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name,inventory=inventory)    
     

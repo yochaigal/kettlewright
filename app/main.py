@@ -461,6 +461,7 @@ def character(username, url_name):
     portrait_src = character_portrait_link(character)
     items_json = json.dumps(character.items)
     inventory = Inventory(character)
+    inventory.select(0)
     inventory.decorate()
     
     return render_template('main/character.html', character=character, items_json=items_json, containers_json=json.dumps(character.containers), username=username, url_name=url_name,

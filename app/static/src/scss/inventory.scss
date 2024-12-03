@@ -53,10 +53,10 @@
 .inventory-item-container {
     display: flex;
     flex-direction: row;
-    align-items: end;
+    align-items: center;
+    /* was end */
     border-bottom: .5px dotted;
     min-height: 26px;
-
 }
 
 .inventory-item-text {
@@ -211,5 +211,19 @@
 
 .item-edit-button {
     font-size: 0.8em;
+    color: color-mix(in lab, transparent 60%, var(--fg));
+    align-self: center;
+}
+
+.item-edit-button:hover {
+    color: var(--fg);
+}
+
+.item-edit-button-ghost {
+    font-size: 0.8em;
+    color: color-mix(in lab, transparent 80%, var(--fg));
+}
+
+.item-edit-button-ghost:hover {
     color: color-mix(in lab, transparent 20%, var(--fg));
 }

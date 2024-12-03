@@ -1,44 +1,36 @@
-<div class="inventory-modal" id="add-edit-container-modal">
+<div class="inventory-modal">
     <form class="no-space">
     <input type="hidden" name="mode" value="{{mode}}" />
     
     <div class="modal-background inventory-modal-background"></div>
-    <div class="modal-card" id="add-edit-container-modal-container">
+    <div class="modal-card">
       <header class="modal-card-head">
-        <h3 class="modal-card-title" id="add-edit-container-modal-title">
+        <h3 class="modal-card-title">
             {% if mode == "edit" %}
                 Edit Container: {{container.name}}
             {% else %}
                 Create Container
             {% endif %}
-        </h3>
-        <button
-          class="delete inventory-modal-cancel-button"
-          type="button"
-          aria-label="close"
-          id="add-edit-container-modal-close"
-        ></button>
+        </h3>        
       </header>
   
-      <section class="modal-card-body">
-        
-        <div id="add-edit-container-modal-body">
+      <section class="modal-card-body">        
+        <div>
           <div class="column field">
             <label>Name</label>
             <div class="" style="padding-bottom: 0">
-              <input class="input" type="text" placeholder="container name" id="add-edit-container-modal-name-field" name="name"  
+              <input class="input" type="text" placeholder="container name" name="name"  
                 {% if mode == "edit" %} value="{{container.name}}" {% endif %} />
             </div>
           </div>
           <div class="column field">
             <label>Slots</label>
-            <div class="">
+            <div>
               <input
                 class="input"
                 type="number"
                 min="1"
                 placeholder="0"
-                id="add-edit-container-modal-slots-field"
                 style="width: 100%"
                 name="slots"
                 {% if mode == "edit" %}
@@ -74,7 +66,6 @@
                 min="0"
                 max="10"
                 placeholder="0"
-                id="add-edit-container-modal-load-field"
                 name="load"
                 {% if mode == "edit" %}
                 value="{{container.load}}"
@@ -100,7 +91,6 @@
                 <button
                     class="button is-danger"
                     type="button"
-                    id="add-edit-container-modal-remove"
                     style="margin-left: auto; margin-top: 0px"
                     hx-post="/charedit/inplace-inventory/{{username}}/{{url_name}}/container-edit/{{container.id}}/delete"
                     hx-target="#inventory-container"
@@ -109,7 +99,7 @@
                     data-confirm-button="Delete">
                         Delete container
                 </button>    
-                <select id="container-edit-delete-items" name="delete-items" style="margin-bottom: 0px">
+                <select name="delete-items" style="margin-bottom: 0px">
                     <option value="">Delete all items</option>
                     {% for c in inventory.get_other_containers(container.id) %} 
                         <option value="{{c.id}}">Move items to {{c.name}}</option>
@@ -135,8 +125,7 @@
             {% endif %}
             hx-target="#inventory-container" >
                   Cancel
-          </button>
-          
+          </button>          
         </div>
       </footer>
     </div>

@@ -21,7 +21,7 @@
             <div class="pointer" title="Edit {{cnt.name}}"  
                 hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/container-edit/{{inventory.selected_container["id"]}}"
                 hx-target="#inventory-container">
-                <i class="item-edit-button fa-solid fa-pencil pencil" ></i>
+                <i class="item-edit-button fa-solid fa-pen-to-square pen-to-square" ></i>
             </div>
         {% endif %}
     </div> 
@@ -41,7 +41,7 @@
             <div class="pointer" title="Edit"  
                 hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{it.id}}"
                 hx-target="#inventory-container">
-                <i class="item-edit-button fa-solid fa-pencil pencil" ></i>
+                <i class="item-edit-button fa-solid fa-pen-to-square pen-to-square" ></i>
             </div>
             {% endif %}
             <div class="pointer" title="Delete"  

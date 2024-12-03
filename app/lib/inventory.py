@@ -49,17 +49,19 @@ class Inventory:
             else:
                 c["encumbered"] = False
             for it in c["items"]:
-                self.decorate_item(it, c)
+                self.decorate_item(it)                
             while len(c["items"]) < int(c["slots"]): # fill empty slots
                 c["items"].append({ "name":"", "is_empty":True, "editable": False })
-    
+            
+        
     # decorate single item
-    def decorate_item(self, item, container):
+    def decorate_item(self, item):
         title = item["name"]
         if item["name"] in non_editable_items or "carrying" in item:
             item["editable"] = False
         else:
             item["editable"] = True
+        item["dice"] = []
         if len(item["tags"]) > 0:
             title += " ("
             tt = []
@@ -68,13 +70,12 @@ class Inventory:
                 bf = True
             for tag in item["tags"]:
                 # extract dice info
-                dice_match = re.findall("^d(\d+)(?:\s*\+\s*d(\d+))?$", tag)                
+                dice_match = re.findall(r'^d(\d+)(?:\s*\+\s*d(\d+))?$', tag)                
                 dices = []
                 for x in dice_match:
                     for y in x:
                         if y != "":
-                            dices.append(int(y))
-                item["dice"] = dices 
+                            item["dice"].append(int(y))
                 # annotate tags                            
                 if tag == "bulky" or tag == "petty":
                     tt.append("<i>"+tag+"</i>")
@@ -94,14 +95,13 @@ class Inventory:
                     if tag != "bonus defense":
                         tt.append(tag)
             title += ",".join(tt)
-            title += ") "
-                    
+            title += ") "                    
         item["title"] = title
             
     # select active container
     def select(self, id):
         for c in self.containers:
-            if id == c["id"]:
+            if int(id) == c["id"]:
                 c["is_selected"] = True
                 self.selected_container = c
             else:
@@ -316,6 +316,43 @@ class Inventory:
             if it["id"] == int(item_id):
                 return it
         return None
+    
+    def update_item(self, item_id, name, tags, uses, charges, max_charges, container, description):
+        print("update item: ", item_id, name, tags, uses, charges, max_charges, container, description)
+        item = self.get_item(item_id)
+        if item == None:
+            return
+        item["name"] = name
+        if tags != "":
+            item["tags"] = tags.split(",")
+        else:
+            item["tags"] = []
+        if "uses" in item["tags"]:
+            item["uses"] = int(uses)
+        else:
+            if "uses" in item:
+                del item["uses"]
+        if "charges" in item["tags"]:
+            item["charges"] = int(charges)
+            item["max_charges"] = int(max_charges)
+        else:
+            if "charges" in item:
+                del item["charges"]
+            if "max_charges" in item:
+                del item["max_charges"]
+        item["location"] = int(container)
+        item["description"] = description
+        items = json.loads(self.character.items)
+        result = []
+        for it in items:
+            if it["id"] != int(item_id):
+                result.append(it)
+        result.append(item)
+        self.character.items = json.dumps(result)
+        db.session.commit()
+        self.parse(self.character)
+        return item
+        
             
     def print(self):
         print(self.containers)
