@@ -36,7 +36,21 @@
         <div class="inventory-item-text {% if it["name"] == "Fatigue" %} fatigue-text {% endif %}">
         {{it.title | safe}}
         </div>
-        <div class="inventory-item-button-container">        
+        <div class="inventory-item-button-container">   
+            {% if "uses" in it.tags %} 
+            <div class="row8">    
+                <div class="pointer item-edit-button-frame" title="Decrease" 
+                    hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{it.id}}/minus?type=uses"
+                    hx-target="#inventory-container">
+                    <i class="item-edit-button fa-solid fa-minus minus" ></i>
+                </div>
+                <div class="pointer item-edit-button-frame" title="Increase"  
+                    hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{it.id}}/plus?type=uses"
+                    hx-target="#inventory-container">
+                    <i class="item-edit-button fa-solid fa-plus plus" ></i>
+                </div>
+            </div>
+            {% endif %}
             {% if it.editable %}
             <div class="pointer" title="Edit"  
                 hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{it.id}}"
@@ -62,6 +76,8 @@
 <div class="panel-block inventory-footer">
 <div class="inventory-footer-buttons">
     <button class="button smaller-font" id="add-item-button" type="button"
+            hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/None?mode=create"
+            hx-target="#inventory-container"
             {% if inventory.selected_container["encumbered"] %} disabled {% endif %}> 
         + Item 
     </button>

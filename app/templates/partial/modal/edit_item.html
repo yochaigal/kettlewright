@@ -95,7 +95,11 @@
         <div class="footer-button-container">
           <div>
             <button class="button is-success" type="button" 
+            {% if mode == "edit" %}
               hx-post="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{item.id}}/save"
+            {% else %}
+              hx-post="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/None/save?mode=create"
+            {% endif %}
               hx-target="#inventory-container"> 
               Save 
             </button>

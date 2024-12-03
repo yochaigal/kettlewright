@@ -227,3 +227,12 @@
 .item-edit-button-ghost:hover {
     color: color-mix(in lab, transparent 20%, var(--fg));
 }
+
+.item-edit-button-frame {
+    background-color: color-mix(in lab, transparent 90%, var(--fg));
+    width: 1em;
+    height: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -317,8 +317,17 @@ class Inventory:
                 return it
         return None
     
+    # create item
+    def create_item(self, name, tags, uses, charges, max_charges, container, description):
+        new_id = self.generate_item_id()
+        items = json.loads(self.character.items)
+        items.append({"id":new_id,"name":"",tags:[],"location":0,"description":""})
+        self.character.items = json.dumps(items)
+        return self.update_item(new_id,name, tags, uses, charges, max_charges, container, description)
+        
+    
+    # update item
     def update_item(self, item_id, name, tags, uses, charges, max_charges, container, description):
-        print("update item: ", item_id, name, tags, uses, charges, max_charges, container, description)
         item = self.get_item(item_id)
         if item == None:
             return

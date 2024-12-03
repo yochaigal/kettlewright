@@ -456,7 +456,10 @@ def charedit_inplace_inventory_item_edit_save(username, url_name, item_id):
                                      data["edit_item_description"])
         inventory.select(int(item["location"]))
     else:
-        item = None
+        item = inventory.create_item(data["edit_item_name"],data["edit_item_tags"],data["edit_item_uses"],
+                                     data["edit_item_charges"], data["edit_item_max_charges"], data["edit_item_container"],
+                                     data["edit_item_description"])
+        inventory.select(int(item["location"]))
     inventory.decorate()
     return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name,inventory=inventory)    
     
