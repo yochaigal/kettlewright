@@ -122,7 +122,7 @@ export const rollDoubleDice = (sides) => {
 export const styledAlert = (title, message) => {
   Swal.fire({
     title: title,
-    text: message,
+    html: message,
     confirmButtonText: 'Close',
     background: 'var(--bg)',
     color: 'var(--fg)',
@@ -145,7 +145,7 @@ export const styledAlert = (title, message) => {
 export const styledConfirm = (title, message, confirmButton, cancelButton) => {
   return Swal.fire({
     title: title,
-    text: message,
+    html: message,
     confirmButtonText: confirmButton ? confirmButton : "OK",
     cancelButtonText: cancelButton ? cancelButton : "Cancel",
     showCancelButton: true,

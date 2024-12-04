@@ -2,8 +2,8 @@
   <h3>Inventory</h3>
   <div title="Edit inventory" 
     hx-get="/charedit/inplace-inventory/{{ username }}/{{ url_name }}/{{inventory.selected_container["id"]}}" 
-    hx-target="#inventory-container" class="small-icon-button">
-    <i class="fa-solid fa-pencil pencil" id="edit-inventory-icon"></i>
+    hx-target="#inventory-container" class="small-icon-button edmk">
+    <i class="fa-solid fa-pen-to-square pen-to-square" id="edit-inventory-icon"></i>
   </div>
 </div>
 <div class="inventory-header flex-row"> 
@@ -25,6 +25,11 @@
           {{it.title | safe}}
         </div>
         <div class="inventory-item-button-container">
+          {% if it.description != "" %}
+          <div class="pointer" title="Description" onclick="KW_alert('{{it.name}}','{{it.description|eol2br}}')">
+            <i class="item-edit-button fa-solid fa-circle-info circle-info" ></i>
+          </div>
+          {% endif  %}
           {% if it["dice"]|length > 0 %}
             <div class="pointer" title="Roll dice" onclick="KW_rollDiceCallback({{it["dice"]}})"><i class="fa-solid fa-dice dice" ></i></div>
           {% endif %}          

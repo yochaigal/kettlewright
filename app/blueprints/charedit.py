@@ -475,3 +475,13 @@ def charedit_inplace_inventory_item_edit_amount(username, url_name, item_id):
     inventory.select(item["location"])
     inventory.decorate()
     return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)    
+
+# Route: move item to party storage
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/party', methods=['GET'])
+def charedit_inplace_inventory_item_edit_party(username, url_name, item_id):
+    user, character = get_char_data(username, url_name)
+    inventory = Inventory(character)
+    item = inventory.move_item_to_party(item_id)
+    inventory.select(item["location"])
+    inventory.decorate()
+    return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory) 

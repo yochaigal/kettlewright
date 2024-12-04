@@ -1,6 +1,9 @@
 {% extends "base.html" %} {% block content %}
 <script>
   const party = `{{party}}`; 
+  const username = `{{username}}`;
+  const url_name = `{{url_name}}`;
+  const selected_container = `{{inventory.selected_container["id"]}}`;
 </script>
 
 {% if is_owner %}
@@ -45,8 +48,9 @@
             <i class="fa-solid fa-dice dice" ></i>
           </button>
           <button class="dice-button ghost40" type="button" id="charsheet-mode-switch" title="Click to switch edit/view mode">
-            <i class="fa-solid fa-eye eye hidden" ></i>
-            <i class="fa-solid fa-pen-to-square pen-to-square" ></i>
+            <i class="fa-solid fa-eye eye hidden" id="charsheet-mode-view-icon"
+              hx-get="/reload-page?link=/users/{{username}}/characters/{{url_name}}/"></i>
+            <i class="fa-solid fa-pen-to-square pen-to-square" id="charsheet-mode-edit-icon"></i>
           </button>
         </div>  
           {% include "main/dice_modal.html" %}        

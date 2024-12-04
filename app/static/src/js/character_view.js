@@ -27,7 +27,9 @@ const rollDiceCallback = (sides) => {
   }
 };
 
+// Export functions to browser, maybe not recommended but useful...
 window.KW_rollDiceCallback = rollDiceCallback;
+window.KW_alert = utils.styledAlert;
 
 document.addEventListener("DOMContentLoaded", function () {
   // Setup Dice Rolling
@@ -38,21 +40,17 @@ document.addEventListener("DOMContentLoaded", function () {
     diceModal.initialize(showRollDiceNotifcation);
   }
   // Initial state is a view mode
-  document.querySelectorAll(".fa-pencil").forEach((item) => {
+  document.querySelectorAll(".edmk").forEach((item) => {
     item.classList.add("hidden");
   });
 
   // Mode switch
-  document.getElementById("charsheet-mode-switch").addEventListener("click", () => {
-    document.querySelectorAll(".fa-pencil").forEach((item) => {
-      item.classList.toggle("hidden");
+  document.getElementById("charsheet-mode-edit-icon").addEventListener("click", () => {
+    document.querySelectorAll(".edmk").forEach((item) => {
+      item.classList.remove("hidden");
     });
-    document.querySelectorAll(".fa-eye").forEach((item) => {
-      item.classList.toggle("hidden");
-    });
-    document.querySelectorAll(".fa-pen-to-square").forEach((item) => {
-      item.classList.toggle("hidden");
-    });
+    document.getElementById("charsheet-mode-view-icon").classList.remove("hidden");
+    document.getElementById("charsheet-mode-edit-icon").classList.add("hidden");
   });
 
 });

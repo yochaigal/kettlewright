@@ -1,6 +1,6 @@
 import json
 import re
-from app.models import db
+from app.models import db, Party
 
 def bring_fatigue_to_end(item):
     if item["name"] == "Fatigue":
@@ -390,6 +390,21 @@ class Inventory:
         db.session.commit()
         self.parse(self.character)
         return item
+    
+    # move item to party storage
+    def move_item_to_party(self, item_id):
+        item = self.get_item(item_id)
+        if item == None:
+            return
+        party = Party.query.filter_by(id=self.character.party_id).first()
+        if not party:
+            return
+        self.delete_item(item["location"], item_id)
+        items = json.loads(party.items)
+        items.append(item)
+        party.items = json.dumps(items)
+        db.session.commit()
+        return item        
                     
     def print(self):
         print(self.containers)

@@ -102,7 +102,20 @@
             {% endif %}
               hx-target="#inventory-container"> 
               Save 
+            </button>   
+            {% if mode == "edit" %}         
+            <button class="button"  type="button" style="margin-left: auto"
+                hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{item.id}}/party"
+                hx-target="#inventory-container"
+                hx-confirm="Do you want to move <br/>{{item.name}} to party storage?"
+                data-confirm-title="Move to party storage"
+                data-confirm-button="Move">
+              <i class="fa-solid fa-share icon-in-button"></i>
+              Party Storage
             </button>
+            {% endif %}
+          </div>
+          <div>
             <button class="button inventory-modal-cancel-button" type="button" 
             {% if mode == "edit" %}
             hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container.id}}"
@@ -111,12 +124,6 @@
             {% endif %}
             hx-target="#inventory-container">
               Cancel
-            </button></div
-          >
-          <div>
-            <button class="button is-primary" type="button" style="margin-left: auto">
-              <i class="fa-solid fa-share icon-in-button"></i>
-              Party
             </button>
           </div>
         </div>
