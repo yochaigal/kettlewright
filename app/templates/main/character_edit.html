@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block content %}
+<!-- NOTE: prepared to remove -->
+<!-- {% extends "base.html" %} {% block content %}
 <script>
   const itemsData = JSON.parse(`{{ items_json|safe }}`.slice(1, -1));
   const containersData = JSON.parse(`{{ containers_json|safe }}`.slice(1, -1));
@@ -129,8 +130,6 @@
                   <h4 class="character-deprived-text">DEPRIVED</h4> 
                  {{ form.deprived(class='checkbox edit-mode', type="checkbox", id="deprived-field") }}
               </div>
-            <!-- </div> -->
-            <!-- <button type="button" class="edit-mode" id="character-rest-button"> Rest </button> -->
             
           </div>
 
@@ -195,9 +194,7 @@
       <div class="character-description-container character-section" id="character-scars-container">
         <span id="character-scars-select-container">
           <h3>Scars</h3>
-          <!-- <button class="roll button dice-button" type="button" id="roll-scars-button" style="font-size: 16pt">
-              <i class="fa-solid fa-dice dice"></i> </button
-          > -->
+          
           <select id="scars-select"></select>
           <button class="button" type="button" id="add-scar-button"><i class="fa-solid fa-plus"></i></button>
         </span>
@@ -266,3 +263,4 @@
 </section>
 
 {% endblock %}
+-->
