@@ -1,0 +1,137 @@
+<script>
+    function KW_toggle_market_category() {
+        cats = [];
+        if (document.getElementById("toggle-gear").checked) {
+            cats.push("Gear");
+        }
+        if (document.getElementById("toggle-armor").checked) {
+            cats.push("Armor");
+        }
+        if (document.getElementById("toggle-weapons").checked) {
+            cats.push("Weapons");
+        }
+        htmx.ajax('GET',`/marketplace/{{username}}/{{url_name}}?categories=${cats.join(',')}`,"#inventory-container");
+    }
+
+    function KW_modify_cart(maxgold, name, cost, plus) {
+      let gold = Number.parseInt(document.getElementById("current-gold").value);
+      if (plus) gold -= cost; else gold += cost;
+      if (gold < 0) {
+        KW_alert("Not enough gold","Cannot buy "+name);
+        return
+      }
+      if (gold > maxgold) {
+        gold = maxgold;
+      }
+      document.getElementById("gold-display").innerHTML = "Gold: "+gold;
+      document.getElementById("current-gold").value = gold;
+      let cartAmount = Number.parseInt(document.getElementById("cart-"+name).innerHTML);
+      if (plus) cartAmount += 1; else cartAmount -= 1;
+      if (cartAmount < 0) cartAmount = 0;
+      document.getElementById("cart-"+name).innerHTML = cartAmount;
+
+      let cart = [];
+      if (document.getElementById("current-cart").value != "")  {
+        cart = JSON.parse(document.getElementById("current-cart").value);
+      }
+      if (plus) cart.push(name); else {
+        const index = cart.indexOf(name);
+        cart.splice(index, 1);
+      }
+      document.getElementById("current-cart").value = JSON.stringify(cart);
+    }
+
+    function KW_clear_cart() {
+      document.querySelectorAll(".cart-amount").forEach((it) => it.innerHTML = '0');
+      document.getElementById("current-cart").value = "";
+      document.getElementById("current-gold").value = {{character.gold}};
+      document.getElementById("gold-display").innerHTML = "Gold: "+{{character.gold}};
+    }
+
+</script>
+<div id="marketplace-modal">
+<form class="no-space">   
+    <input type="hidden" name="current-gold" id="current-gold"  value="{{character.gold}}" />
+    <input type="hidden" name="current-cart" id="current-cart" value="" />
+
+    <div class="modal-background" id="marketplace-modal-background"></div>
+    <div class="modal-card" style="border-radius: 4px">
+      <header class="modal-card-head" style="display: flex; flex-direction: column">
+        <h3 class="modal-card-title">Marketplace</h3>
+        <div class="row32">
+          <label  class="row8"> <input type="checkbox" class="checkbox" id="toggle-gear" 
+                {% if market.categories == [] or "Gear" in market.categories %}
+                checked 
+                {% endif %}
+                onchange="KW_toggle_market_category()"/> Gear </label>
+          <label  class="row8"> <input type="checkbox" class="checkbox" id="toggle-armor" 
+            {% if market.categories == [] or "Armor" in market.categories %}
+            checked 
+            {% endif %}
+            onchange="KW_toggle_market_category()"/> Armor </label>
+          <label  class="row8"> <input type="checkbox" class="checkbox" id="toggle-weapons" 
+            {% if market.categories == [] or "Weapons" in market.categories %}
+            checked 
+            {% endif %}
+            onchange="KW_toggle_market_category()"/> Weapons </label>
+        </div>
+      </header>
+      <div class="modal-card-body justify-left" id="party-item-transfer-modal-content">
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Cost</th>
+              <th>Type</th>
+              <th><i class="fa-solid fa-cart-plus"></i></th>
+            </tr>
+          </thead>
+          <tbody id="marketplace-table-body">
+            {% for item in market.get_market_items() %}
+                <tr>
+                    <td>{{item.name}}</td>
+                    <td>{{item.cost}}</td>
+                    <td>{{item.category}}</td>
+                    <td>
+                        <div class="row8">
+                            <div class="pointer item-edit-button-frame" title="Decrease" onclick="KW_modify_cart({{character.gold}},'{{item.name}}',{{item.cost}},false)" >
+                                <i class="item-edit-button fa-solid fa-minus minus" ></i>
+                            </div>
+                            <div id="cart-{{item.name}}" class="cart-amount">0</div>
+                            <div class="pointer item-edit-button-frame" title="Increase" onclick="KW_modify_cart({{character.gold}},'{{item.name}}',{{item.cost}},true)" >
+                                <i class="item-edit-button fa-solid fa-plus plus" ></i>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <footer class="modal-card-foot">
+        <h4 id="gold-display">Gold: {{character.gold}}</h4>
+        <div class="footer-button-container">
+          <button class="button is-success" 
+            type="button" 
+            id="marketplace-save-button"
+            hx-post="/marketplace/{{username}}/{{url_name}}/buy"
+            hx-target="#inventory-container"> 
+            Buy
+          </button>
+  
+          <button id="clear-selection-button" class="button is-warning" type="button" style="margin-left: auto" onclick="KW_clear_cart()">
+            Clear
+          </button>
+          <button class="button marketplace-modal-cancel-button" type="button" 
+                hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/None"
+                hx-target="#inventory-container">
+            Cancel
+          </button>
+        </div>
+      </footer>
+    </div>
+</form>
+</div>
+
+
+  

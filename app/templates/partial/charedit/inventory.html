@@ -1,7 +1,9 @@
 <div class="row16spaced full-width">
     <h3>Inventory</h3>
     <div class="row32">
-        <button class="button smaller-font" type="button"> Marketplace </button>
+        <button class="button smaller-font" style="margin: 0px"
+            hx-get="/marketplace/{{username}}/{{url_name}}"
+            hx-target="#inventory-container"> Marketplace </button>
         <div title="Close inventory editor" 
             hx-get="/charedit/inplace-inventory/{{ username }}/{{ url_name }}/{{inventory.selected_container["id"]}}/close" 
             hx-target="#inventory-container" class="small-icon-button">

@@ -8,7 +8,8 @@
 </div>
 <div class="inventory-header flex-row"> 
     {% for cnt in inventory.containers %}
-      <div class="inventory-container-title subtitle pointer {% if cnt["is_selected"] %} inventory-container-title-selected {% endif %} {% if cnt["encumbered"] %} red-text {% endif %} "
+      <div class="inventory-container-title subtitle pointer {% if cnt["is_selected"] %} 
+        inventory-container-title-selected {% endif %} {% if cnt["encumbered"] %} red-text {% endif %} "
         hx-get="/charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt["id"]}}"
         hx-target="#inventory-container">
           {{cnt["title"]}}
@@ -25,7 +26,7 @@
           {{it.title | safe}}
         </div>
         <div class="inventory-item-button-container">
-          {% if it.description != "" %}
+          {% if "description" in it and it.description != "" %}
           <div class="pointer" title="Description" onclick="KW_alert('{{it.name}}','{{it.description|eol2br}}')">
             <i class="item-edit-button fa-solid fa-circle-info circle-info" ></i>
           </div>

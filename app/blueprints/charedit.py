@@ -4,18 +4,13 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash,
 from app.models import db, User, Character, Party
 from app.forms import *
 from app.main import sanitize_data
-from app.lib import load_scars, load_images, character_portrait_link, is_url_image, load_omens, roll_list, Inventory
+from app.lib import load_scars, load_images, character_portrait_link, is_url_image, load_omens, roll_list, Inventory, get_char_data
 
 
 character_edit = Blueprint('character_edit', __name__)
 bool_fields = ['deprived']
 
-# Retrieve character data
-def get_char_data(username, url_name):
-    user = User.query.filter_by(username=username).first_or_404()
-    character = Character.query.filter_by(
-        owner=user.id, url_name=url_name).first_or_404()
-    return user, character
+
 
 # Route: enter character stats editing
 @character_edit.route('/charedit/inplace-stats/<username>/<url_name>')
@@ -149,7 +144,6 @@ def charedit_inplace_text_save(username, url_name, field_name):
             add_character_to_party(character)
             owner_username = User.query.filter_by(id=party.owner).first().username
             party_url = 'users/' + owner_username + '/parties/' + party.party_url + '/'
-            print("proper", party_url)
         else:
             err = "Invalid party join code ("+data[field_name]+")"
             party_url = None
@@ -370,7 +364,10 @@ def charedit_inplace_inventory_delete_item(username, url_name, container_id, ite
     inventory.delete_item(container_id, item_id)
     inventory.select(int(container_id))
     inventory.decorate()
-    return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
+    render =  render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
+    response = make_response(render)
+    response.headers["HX-Trigger"] = "refresh-stats"
+    return response
 
 # Route: add fatigue inventory item
 @character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/<container_id>/fatigue', methods=['GET'])
@@ -380,7 +377,10 @@ def charedit_inplace_inventory_add_fatigue(username, url_name, container_id):
     inventory.add_fatigue(container_id)
     inventory.select(int(container_id))
     inventory.decorate()
-    return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
+    render = render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
+    response = make_response(render)
+    response.headers["HX-Trigger"] = "refresh-stats"
+    return response
 
 # Route: edit container dialog
 @character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/container-edit/<container_id>', methods=['GET'])
@@ -461,7 +461,10 @@ def charedit_inplace_inventory_item_edit_save(username, url_name, item_id):
                                      data["edit_item_description"])
         inventory.select(int(item["location"]))
     inventory.decorate()
-    return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name,inventory=inventory)    
+    render = render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name,inventory=inventory)    
+    response = make_response(render)
+    response.headers["HX-Trigger"] = "refresh-stats"
+    return response
     
     
 # Route: change somea amount property in item

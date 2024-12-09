@@ -40,11 +40,24 @@ class Inventory:
                 c["items"].sort(key=bring_fatigue_to_end)
         self.containers = containers
         
+    # count slots for a container
+    def container_slots(self, container):
+        slots = 0
+        for it in container["items"]:
+            if "bulky" in it["tags"]:
+                slots += 2
+                continue
+            if "petty" in it["tags"]:
+                continue
+            slots += 1
+        return slots
+        
     # decorate items and containers for display        
     def decorate(self):
         for c in self.containers:
-            c["title"] = c["name"] + " ("+str(len(c["items"]))+"/"+str(c["slots"])+")"
-            if len(c["items"]) >= int(c["slots"]):
+            curr_slots = self.container_slots(c)
+            c["title"] = c["name"] + " ("+str(curr_slots)+"/"+str(c["slots"])+")"
+            if curr_slots >= int(c["slots"]):
                 c["encumbered"] = True
             else:
                 c["encumbered"] = False

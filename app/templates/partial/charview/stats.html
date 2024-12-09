@@ -50,3 +50,7 @@
   </button>
   </div>
 </div>
+<div 
+  hx-trigger="refresh-stats from:body" 
+  hx-get="/charedit/inplace-stats/{{ username }}/{{ url_name }}/cancel" 
+  hx-target="#character-stats-container"></div>
