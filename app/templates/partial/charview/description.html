@@ -1,0 +1,16 @@
+<div class="view-mode">
+  <div class="row16">
+    <h3 class="no-space">Description</h3>
+    <div title="Edit description" hx-get="/charedit/inplace-text/{{ username }}/{{ url_name }}/description" 
+        hx-target="#character-description-container" class="small-icon-button edmk">
+      <i class="fa-solid fa-pen-to-square pen-to-square"></i>
+    </div>
+  </div>
+  <p id="character-description-view" class="with-whitespace">
+  {% if character.description != "" %}
+    {{ character.description }}
+  {% else %}
+    This character has no description...
+  {% endif %}
+  </p>
+</div>

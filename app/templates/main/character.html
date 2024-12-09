@@ -1,13 +1,9 @@
 {% extends "base.html" %} {% block content %}
 <script>
-  // const rawData = `{{ data_json|safe }}`;
-  // const data = JSON.parse(rawData);
-  const data = JSON.parse(`{{ items_json|safe }}`.slice(1, -1));
-  const containersData = JSON.parse(`{{ containers_json|safe }}`.slice(1, -1));
-  const deprived = `{{character.deprived}}`;
-  const customImage = "{{character.custom_image}}"; 
-  const imageURL = `{{character.image_url}}`; 
-
+  const party = `{{party}}`; 
+  const username = `{{username}}`;
+  const url_name = `{{url_name}}`;
+  const selected_container = `{{inventory.selected_container["id"]}}`;
 </script>
 
 {% if is_owner %}
@@ -37,11 +33,11 @@
   <div class="sheet view-character-sheet">
     <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em">
       <div class="no-space" id="character-portrait-container" >
-        {% include "partial/charview_portrait.html" %}
+        {% include "partial/charview/portrait.html" %}
       </div>
       <div>
         <div class="no-space" id="character-name-container">
-          {% include "partial/charview_name.html" %}
+          {% include "partial/charview/name.html" %}
         </div>
         <h2 class=""> {{character.background}} </h2>
       </div>
@@ -52,8 +48,9 @@
             <i class="fa-solid fa-dice dice" ></i>
           </button>
           <button class="dice-button ghost40" type="button" id="charsheet-mode-switch" title="Click to switch edit/view mode">
-            <i class="fa-solid fa-eye eye hidden" ></i>
-            <i class="fa-solid fa-pen-to-square pen-to-square" ></i>
+            <i class="fa-solid fa-eye eye hidden" id="charsheet-mode-view-icon"
+              hx-get="/reload-page?link=/users/{{username}}/characters/{{url_name}}/"></i>
+            <i class="fa-solid fa-pen-to-square pen-to-square" id="charsheet-mode-edit-icon"></i>
           </button>
         </div>  
           {% include "main/dice_modal.html" %}        
@@ -62,39 +59,43 @@
     </div>
     <div class="character-stats-traits-inventory" id="edit-character-left-">
       <div id="character-stats-container">
-          {% include "partial/charview_attrs.html" %}
+          {% include "partial/charview/stats.html" %}
       </div>
       <div id="character-traits-container" class="character-section"
         hx-on-htmx-after-settle="document.getElementById('traits-field') ? resizeTextarea(document.getElementById('traits-field')):''">
-          {% include "partial/charview_traits.html" %}
+          {% include "partial/charview/traits.html" %}
       </div>
-      {% include "main/inventory.html" %}
+      <!-- This partial is reloaded during container change so we need to adjust edit icon state -->
+      <div class="inventory-container" id="inventory-container" 
+        hx-on-htmx-after-settle="if (document.getElementsByClassName('fa-eye')[0].classList.contains('hidden')) document.getElementById('edit-inventory-icon').classList.add('hidden')">
+        {% include "partial/charview/inventory.html" %}
+      </div>  
     </div>
 
     <div class="character-descriptions-grid" style="margin-top: 1em">
       <div id="character-description-container" class="character-section character-description-container"
         hx-on-htmx-after-settle="document.getElementById('description-field') ? resizeTextarea(document.getElementById('description-field')):''">
-           {% include "partial/charview_description.html" %}
+           {% include "partial/charview/description.html" %}
       </div>
       <div class="character-description-container character-section" id="character-bonds-container"
         hx-on-htmx-after-settle="document.getElementById('bonds-field') ? resizeTextarea(document.getElementById('bonds-field')):''">
-           {% include  "partial/charview_bonds.html" %}
+           {% include  "partial/charview/bonds.html" %}
       </div>
       <div class="character-description-container character-section" id="character-omens-container"
         hx-on-htmx-after-settle="document.getElementById('omens-field') ? resizeTextarea(document.getElementById('omens-field')):''">
-        {% include  "partial/charview_omens.html" %}
+        {% include  "partial/charview/omens.html" %}
       </div>
       <div class="character-description-container character-section" id="character-scars-container"
            hx-on-htmx-after-settle="document.getElementById('scars-field') ? resizeTextarea(document.getElementById('scars-field')):''">
-        {% include "partial/charview_scars.html" %}
+        {% include "partial/charview/scars.html" %}
       </div>
       <div class="character-description-container character-section" id="character-notes-container"
         hx-on-htmx-after-settle="document.getElementById('notes-field') ? resizeTextarea(document.getElementById('notes-field')):''">
-        {% include  "partial/charview_notes.html" %}
+        {% include  "partial/charview/notes.html" %}
       </div>
 
       <div class="character-description-container character-section" id="character-party-container">
-        {% include "partial/charview_party.html" %}
+        {% include "partial/charview/party.html" %}
       </div>
     </div>
 
@@ -106,11 +107,13 @@
           </button>
         </a>
 
+        {% if is_owner %}
         <a href="/charedit/export/{{username}}/{{url_name}}">
           <button id="download-json-button" class="button" type="button"> 
               JSON <i class="fa-solid fa-download"></i>
           </button>
         </a>
+        
         <button
           class="edit-mode is-danger button"
           id="delete-character-button"
@@ -122,36 +125,12 @@
         >
           DELETE<i class="fa-solid fa-trash icon-in-button"></i>
         </button>
-        
-        <!-- {% if is_owner %}
-        <button class="button is-light" id="download-json-button" type="button"
-          >JSON<i class="fa-solid fa-download icon-in-button"></i>
-        </button>
-        {% endif %} -->
+        {% endif %}
+               
       </div>
     </div>
   </div>
 </div>
-
-<script>
-  // Initial state is a view mode
-  document.querySelectorAll(".fa-pencil").forEach((item) => {
-    item.classList.add("hidden");
-  });
-
-  document.getElementById("charsheet-mode-switch").addEventListener("click", () => {
-    document.querySelectorAll(".fa-pencil").forEach((item) => {
-      item.classList.toggle("hidden");
-    });
-    document.querySelectorAll(".fa-eye").forEach((item) => {
-      item.classList.toggle("hidden");
-    });
-    document.querySelectorAll(".fa-pen-to-square").forEach((item) => {
-      item.classList.toggle("hidden");
-    });
-  });
-
-</script>
 
 {% endblock %}
 

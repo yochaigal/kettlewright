@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from .models import User, Character, Party
 from . import db
 from .forms import CharacterForm, CharacterEditForm, CharacterJSONForm, PartyForm, PartyEditForm
-from app.lib import load_scars, character_portrait_link
+from app.lib import load_scars, character_portrait_link, Inventory
 import sys
 import json
 from urllib.parse import quote
@@ -288,152 +288,155 @@ def new_character():
                            bonds_data=json.dumps(bonds_data), omens_data=json.dumps(omens_data), marketplace_data=json.dumps(marketplace_data), images=image_files)
 
 
-@main.route('/users/<username>/characters/<url_name>/edit/', methods=['GET', 'POST'])
-@login_required
-def edit_character(username, url_name):
+# NOTE: prepared to remove
 
-    # Get user and character
-    user = User.query.filter_by(username=username).first_or_404()
-    character = Character.query.filter_by(
-        owner=user.id, url_name=url_name).first_or_404()
-    form = CharacterEditForm(obj=character)
+# @main.route('/users/<username>/characters/<url_name>/edit/', methods=['GET', 'POST'])
+# @login_required
+# def edit_character(username, url_name):
 
-    # Redirect if the character does not belong to the current user
-    if username != current_user.username:
-        return redirect(url_for('main.character', username=username, url_name=url_name))
+#     # Get user and character
+#     user = User.query.filter_by(username=username).first_or_404()
+#     character = Character.query.filter_by(
+#         owner=user.id, url_name=url_name).first_or_404()
+#     form = CharacterEditForm(obj=character)
 
-    # Import portrait image files
-    image_folder = os.path.join(os.path.dirname(os.path.abspath(
-        __file__)), 'static', 'images', 'portraits')
-    image_files = [f for f in os.listdir(image_folder) if f.endswith('.webp')]
+#     # Redirect if the character does not belong to the current user
+#     if username != current_user.username:
+#         return redirect(url_for('main.character', username=username, url_name=url_name))
 
-    # Create link for Portrait
-    if character.custom_image == False:
-        portrait_src = url_for(
-            'static', filename='images/portraits/' + character.image_url)
-    else:
-        portrait_src = character.image_url
+#     # Import portrait image files
+#     image_folder = os.path.join(os.path.dirname(os.path.abspath(
+#         __file__)), 'static', 'images', 'portraits')
+#     image_files = [f for f in os.listdir(image_folder) if f.endswith('.webp')]
 
-    with open(marketplace_file_path, 'r') as file:
-        marketplace_data = json.load(file)
+#     # Create link for Portrait
+#     if character.custom_image == False:
+#         portrait_src = url_for(
+#             'static', filename='images/portraits/' + character.image_url)
+#     else:
+#         portrait_src = character.image_url
 
-    # Party info and validation
+#     with open(marketplace_file_path, 'r') as file:
+#         marketplace_data = json.load(file)
 
-    def validate_party(party_code):
-        party = Party.query.filter_by(join_code=party_code.strip()).first()
-        return party.id if party else None
+#     # Party info and validation
 
-    party = Party.query.filter_by(id=character.party_id).first()
+#     def validate_party(party_code):
+#         party = Party.query.filter_by(join_code=party_code.strip()).first()
+#         return party.id if party else None
 
-    if party:
-        party_name = party.name
-        owner_username = User.query.filter_by(id=party.owner).first().username
-        party_url = 'users/' + owner_username + \
-            '/parties/' + party.party_url + '/'
-        party_description = party.description
-        print('party:', party_name, party_url,
-              party_description, file=sys.stderr)
-    else:
-        party_name = None
-        party_url = None
-        party_description = None
+#     party = Party.query.filter_by(id=character.party_id).first()
 
-    if form.validate_on_submit():
-        # Directly map form fields to character attributes for simple cases
-        fields_to_update = [
-            'strength_max', 'strength',
-            'dexterity_max', 'dexterity', 'willpower_max', 'willpower',
-            'hp_max', 'hp', 'deprived', 'gold', 'image_url', 'armor', 'party_code',
-            'name', 'description', 'notes', 'bonds', 'omens', 'scars', 'traits'
-        ]
-        for field in fields_to_update:
-            setattr(character, field, sanitize_data(getattr(form, field).data))
+#     if party:
+#         party_name = party.name
+#         owner_username = User.query.filter_by(id=party.owner).first().username
+#         party_url = 'users/' + owner_username + \
+#             '/parties/' + party.party_url + '/'
+#         party_description = party.description
+#         print('party:', party_name, party_url,
+#               party_description, file=sys.stderr)
+#     else:
+#         party_name = None
+#         party_url = None
+#         party_description = None
 
-        character.custom_image = sanitize_data(
-            form.custom_image.data).lower() == 'true'
-        character.party_id = validate_party(
-            sanitize_data(form.party_code.data))
+#     if form.validate_on_submit():
+#         # Directly map form fields to character attributes for simple cases
+#         fields_to_update = [
+#             'strength_max', 'strength',
+#             'dexterity_max', 'dexterity', 'willpower_max', 'willpower',
+#             'hp_max', 'hp', 'deprived', 'gold', 'image_url', 'armor', 'party_code',
+#             'name', 'description', 'notes', 'bonds', 'omens', 'scars', 'traits'
+#         ]
+#         for field in fields_to_update:
+#             setattr(character, field, sanitize_data(getattr(form, field).data))
 
-        character.items = sanitize_json_content(form.items.data)
-        character.containers = sanitize_json_content(form.containers.data)
+#         character.custom_image = sanitize_data(
+#             form.custom_image.data).lower() == 'true'
+#         character.party_id = validate_party(
+#             sanitize_data(form.party_code.data))
 
-        def load_party_members(party):
-            return json.loads(party.members) if party.members else []
+#         character.items = sanitize_json_content(form.items.data)
+#         character.containers = sanitize_json_content(form.containers.data)
 
-        def save_party_members(party, party_members):
-            party.members = json.dumps(party_members)
+#         def load_party_members(party):
+#             return json.loads(party.members) if party.members else []
 
-        def load_party_subowners(party):
-            return json.loads(party.subowners) if party.subowners else []
+#         def save_party_members(party, party_members):
+#             party.members = json.dumps(party_members)
 
-        def save_party_subowners(party, party_subowners):
-            party.subowners = json.dumps(party_subowners)
+#         def load_party_subowners(party):
+#             return json.loads(party.subowners) if party.subowners else []
 
-        def get_user_characters_in_party(party_members, user_id):
-            return [member for member in party_members if Character.query.get(member).owner == user_id]
+#         def save_party_subowners(party, party_subowners):
+#             party.subowners = json.dumps(party_subowners)
 
-        if party or character.party_id:
-            # if removing party, remove character from party
-            if (character.party_id is None and party) or (character.party_id and party and character.party_id != party.id):
-                party_members = load_party_members(party)
-                party_subowners = load_party_subowners(party)
+#         def get_user_characters_in_party(party_members, user_id):
+#             return [member for member in party_members if Character.query.get(member).owner == user_id]
 
-                if character.id in party_members:
-                    party_members.remove(character.id)
-                    save_party_members(party, party_members)
-                # Check if the user has other characters in the party before removing from subowners
-                user_characters = get_user_characters_in_party(
-                    party_members, character.owner)
-                if not user_characters and character.owner in party_subowners:
-                    party_subowners.remove(character.owner)
-                    save_party_subowners(party, party_subowners)
+#         if party or character.party_id:
+#             # if removing party, remove character from party
+#             if (character.party_id is None and party) or (character.party_id and party and character.party_id != party.id):
+#                 party_members = load_party_members(party)
+#                 party_subowners = load_party_subowners(party)
 
-            if character.party_id:
-                # if adding party, add character to party
-                party = Party.query.filter_by(id=character.party_id).first()
-                party_members = load_party_members(party)
-                if character.id not in party_members:
-                    party_members.append(character.id)
-                    save_party_members(party, party_members)
-                # Add user to subowners
-                party_subowners = load_party_subowners(party)
-                if character.owner not in party_subowners:
-                    party_subowners.append(character.owner)
-                    save_party_subowners(party, party_subowners)
+#                 if character.id in party_members:
+#                     party_members.remove(character.id)
+#                     save_party_members(party, party_members)
+#                 # Check if the user has other characters in the party before removing from subowners
+#                 user_characters = get_user_characters_in_party(
+#                     party_members, character.owner)
+#                 if not user_characters and character.owner in party_subowners:
+#                     party_subowners.remove(character.owner)
+#                     save_party_subowners(party, party_subowners)
 
-        # Transfer items to party
-        if party and character.party_id and form.transfer.data:
+#             if character.party_id:
+#                 # if adding party, add character to party
+#                 party = Party.query.filter_by(id=character.party_id).first()
+#                 party_members = load_party_members(party)
+#                 if character.id not in party_members:
+#                     party_members.append(character.id)
+#                     save_party_members(party, party_members)
+#                 # Add user to subowners
+#                 party_subowners = load_party_subowners(party)
+#                 if character.owner not in party_subowners:
+#                     party_subowners.append(character.owner)
+#                     save_party_subowners(party, party_subowners)
 
-            items_to_transfer = json.loads(
-                sanitize_json_content(form.transfer.data))
-            print('items to transfer:', items_to_transfer, file=sys.stderr)
-            party = Party.query.filter_by(id=character.party_id).first()
-            party_items = json.loads(party.items)
-            for item in items_to_transfer:
-                party_items.append(item)
-            party.items = json.dumps(party_items)
+#         # Transfer items to party
+#         if party and character.party_id and form.transfer.data:
 
-        db.session.commit()
+#             items_to_transfer = json.loads(
+#                 sanitize_json_content(form.transfer.data))
+#             print('items to transfer:', items_to_transfer, file=sys.stderr)
+#             party = Party.query.filter_by(id=character.party_id).first()
+#             party_items = json.loads(party.items)
+#             for item in items_to_transfer:
+#                 party_items.append(item)
+#             party.items = json.dumps(party_items)
 
-        return redirect(url_for('main.character', username=username, url_name=url_name))
+#         db.session.commit()
 
-    else:
-        error_messages = []
-        for field, errors in form.errors.items():
-            for error in errors:
-                error_messages.append(f"{field}: {error}")
+#         return redirect(url_for('main.character', username=username, url_name=url_name))
 
-        # Only flash if there are error messages
-        if error_messages:
-            flash(" ".join(error_messages))
+#     else:
+#         error_messages = []
+#         for field, errors in form.errors.items():
+#             for error in errors:
+#                 error_messages.append(f"{field}: {error}")
 
-    return render_template('main/character_edit.html', character=character, name=character.name, background=character.background, portrait_src=portrait_src,
-                           items_json=json.dumps(character.items), containers_json=json.dumps(character.containers), form=form, images=image_files, party_name=party_name, party_url=party_url,
-                           party_description=party_description, omens_data=json.dumps(omens_data), scars_data=json.dumps(scars_data), base_url=base_url, username=username, user_id=current_user.id, url_name=url_name, marketplace_data=json.dumps(marketplace_data))
+#         # Only flash if there are error messages
+#         if error_messages:
+#             flash(" ".join(error_messages))
+
+#     return render_template('main/character_edit.html', character=character, name=character.name, background=character.background, portrait_src=portrait_src,
+#                            items_json=json.dumps(character.items), containers_json=json.dumps(character.containers), form=form, images=image_files, party_name=party_name, party_url=party_url,
+#                            party_description=party_description, omens_data=json.dumps(omens_data), scars_data=json.dumps(scars_data), base_url=base_url, username=username, user_id=current_user.id, url_name=url_name, marketplace_data=json.dumps(marketplace_data))
 
 
 @main.route('/users/<username>/characters/<url_name>/')
 def character(username, url_name):
+    print("character")
     user = User.query.filter_by(username=username).first_or_404()
     character = Character.query.filter_by(
         owner=user.id, url_name=url_name).first_or_404()
@@ -459,9 +462,14 @@ def character(username, url_name):
         
     scarlist = load_scars()
     portrait_src = character_portrait_link(character)
-
-    return render_template('main/character.html', character=character, items_json=json.dumps(character.items), containers_json=json.dumps(character.containers), username=username, url_name=url_name,
-                           party=party, party_url=party_url, party_name=party_name, party_description=party_description, base_url=base_url, is_owner=is_owner, scarlist=scarlist, portrait_src=portrait_src)
+    items_json = json.dumps(character.items)
+    inventory = Inventory(character)
+    inventory.select(0)
+    inventory.decorate()
+    
+    return render_template('main/character.html', character=character, items_json=items_json, containers_json=json.dumps(character.containers), username=username, url_name=url_name,
+                           party=party, party_url=party_url, party_name=party_name, party_description=party_description, base_url=base_url, is_owner=is_owner, 
+                           scarlist=scarlist, portrait_src=portrait_src, inventory=inventory)
 
 
 @main.route('/users/<username>/characters/<url_name>/print/')

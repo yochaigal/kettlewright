@@ -1,7 +1,7 @@
 <div class="row16">
   <h3>Stats</h3>
-  <div title="Edit stats" hx-get="/charedit/inplace-attrs/{{ username }}/{{ url_name }}" hx-target="#character-stats-container" class="small-icon-button">
-    <i class="fa-solid fa-pencil pencil"></i>
+  <div title="Edit stats" hx-get="/charedit/inplace-stats/{{ username }}/{{ url_name }}" hx-target="#character-stats-container" class="small-icon-button edmk">
+    <i class="fa-solid fa-pen-to-square pen-to-square"></i>
   </div>
 </div>
 <div class="stats-stats-container character-section">
@@ -50,3 +50,7 @@
   </button>
   </div>
 </div>
+<div 
+  hx-trigger="refresh-stats from:body" 
+  hx-get="/charedit/inplace-stats/{{ username }}/{{ url_name }}/cancel" 
+  hx-target="#character-stats-container"></div>

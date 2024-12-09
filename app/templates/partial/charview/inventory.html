@@ -1,0 +1,46 @@
+<div class="row16">
+  <h3>Inventory</h3>
+  <div title="Edit inventory" 
+    hx-get="/charedit/inplace-inventory/{{ username }}/{{ url_name }}/{{inventory.selected_container["id"]}}" 
+    hx-target="#inventory-container" class="small-icon-button edmk">
+    <i class="fa-solid fa-pen-to-square pen-to-square" id="edit-inventory-icon"></i>
+  </div>
+</div>
+<div class="inventory-header flex-row"> 
+    {% for cnt in inventory.containers %}
+      <div class="inventory-container-title subtitle pointer {% if cnt["is_selected"] %} 
+        inventory-container-title-selected {% endif %} {% if cnt["encumbered"] %} red-text {% endif %} "
+        hx-get="/charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt["id"]}}"
+        hx-target="#inventory-container">
+          {{cnt["title"]}}
+      </div> 
+    {% endfor %}
+</div>
+<div style="margin-top: 0px; width: 100%">
+  {% for it in inventory.selected_container["items"] %}
+    <div class="inventory-item-container">
+      {% if it["is_empty"] %}
+        <div class="inventory-item-text"></div>
+      {% else %}
+        <div class="inventory-item-text {% if it["name"] == "Fatigue" %} fatigue-text {% endif %}">
+          {{it.title | safe}}
+        </div>
+        <div class="inventory-item-button-container">
+          {% if "description" in it and it.description != "" %}
+          <div class="pointer" title="Description" onclick="KW_alert('{{it.name}}','{{it.description|eol2br}}')">
+            <i class="item-edit-button fa-solid fa-circle-info circle-info" ></i>
+          </div>
+          {% endif  %}
+          {% if it["dice"]|length > 0 %}
+            <div class="pointer" title="Roll dice" onclick="KW_rollDiceCallback({{it["dice"]}})"><i class="fa-solid fa-dice dice" ></i></div>
+          {% endif %}          
+        </div>
+      {% endif %}      
+    </div>
+  {% endfor %}
+</div>
+
+<!-- legacy compatibiity -->
+<div id="items-container" style="display:none"></div>
+
+

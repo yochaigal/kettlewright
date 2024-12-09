@@ -2,6 +2,7 @@ import os
 import app 
 import json
 from .paths import app_static_path
+from app.models import db, User, Party, Character
 
 def load_scars():
     result = {}
@@ -28,3 +29,26 @@ def load_omens():
         desc = s['description']
         result.append(desc)
     return result
+
+
+def load_market():
+    result = []
+    market_file_path = os.path.join(app_static_path(), 'json', 'marketplace.json')
+    with open(market_file_path, 'r') as file:
+        market_data = json.load(file)
+    result = []
+    for cat in market_data:
+        for name in market_data[cat]:
+            item = market_data[cat][name]
+            item["category"] = cat
+            item["name"] = name
+            result.append(item)
+    return result
+
+# Retrieve character data
+def get_char_data(username, url_name):
+    user = User.query.filter_by(username=username).first_or_404()
+    character = Character.query.filter_by(
+        owner=user.id, url_name=url_name).first_or_404()
+    return user, character
+

@@ -1,0 +1,17 @@
+<div class="view-mode">
+  <div class="row16">
+    <h3 class="no-space">Bonds</h3>
+    <div title="Edit bonds" 
+      hx-get="/charedit/inplace-text/{{ username }}/{{ url_name }}/bonds" 
+      hx-target="#character-bonds-container" class="small-icon-button edmk">
+      <i class="fa-solid fa-pen-to-square pen-to-square"></i>
+    </div>
+  </div>
+  <p id="character-bonds-view" class="with-whitespace">
+   {% if character.bonds != "" %} 
+    {{ character.bonds }}
+   {% else %}
+    This character has no bonds...
+   {% endif %}
+  </p>
+</div>

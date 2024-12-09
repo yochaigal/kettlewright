@@ -123,11 +123,22 @@ def create_app():
     # blueprint for partial character editors
     from app.blueprints import character_edit as character_edit_blueprint
     app.register_blueprint(character_edit_blueprint)
+    
+    # blueprint for marketplace dialog
+    from app.blueprints import marketplace as marketplace_blueprint
+    app.register_blueprint(marketplace_blueprint)
 
     from .socket_events import register_socket_events
     register_socket_events(socketio)
+    
+    # Convert end of line chars into HTML <br>
+    @app.template_filter("eol2br")
+    def eol2br_filter(text: str) -> str:
+        return text.replace("\n","<br/>")
 
     return app
+
+
 
 
 application = create_app()
