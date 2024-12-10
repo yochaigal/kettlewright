@@ -29,3 +29,24 @@
     </div>
     {% endif %}
 </form>
+
+
+<div>
+    <div class="row16">
+      <h3 id="character-party-heading" class="no-space">Party</h3>
+      {% if party %}
+      <div title="Leave party" class="small-icon-button edmk" hx-get="/charedit/leave-party/{{username}}/{{url_name}}"
+        hx-target="#character-party-container" hx-confirm="Do you want to leave party {{party.name}}?"
+        data-confirm-title="Leave party" data-confirm-button="Leave">
+        <i class="fa-solid fa-person-walking-arrow-right person-walking-arrow-right"></i>
+      </div>
+      {% else %}
+      <div title="Join party" hx-get="/charedit/inplace-text/{{username}}/{{url_name}}/party_code"
+        hx-target="#character-party-container" class="small-icon-button edmk">
+        <i class="fa-solid fa-pen-to-square pen-to-square"></i>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  </div>

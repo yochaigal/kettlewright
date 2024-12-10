@@ -768,6 +768,8 @@ button,
 
 .with-whitespace {
   white-space: pre-line;
+  position: relative;
+  top: -2em; /* move text up, preline makes padding */
 }
 
 .smaller-font {

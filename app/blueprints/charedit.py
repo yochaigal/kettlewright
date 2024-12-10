@@ -5,6 +5,7 @@ from app.models import db, User, Character, Party
 from app.forms import *
 from app.main import sanitize_data
 from app.lib import load_scars, load_images, character_portrait_link, is_url_image, load_omens, roll_list, Inventory, get_char_data
+from unidecode import unidecode
 
 
 character_edit = Blueprint('character_edit', __name__)
@@ -298,7 +299,7 @@ def charedit_export(username, url_name):
     response = make_response(response_bytes)
     response.headers.set('Content-Type', 'application/json')
     response.headers.set(
-        'Content-Disposition', 'attachment', filename=user.username + '_'+character.name + '.json' )
+        'Content-Disposition', 'attachment', filename=unidecode(user.username) + '_'+unidecode(character.name) + '.json' )
     return response
     
 # Route: rest

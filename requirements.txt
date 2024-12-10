@@ -22,5 +22,6 @@ pytz
 redis
 SQLAlchemy
 tzdata
+unidecode
 Werkzeug
 WTForms
