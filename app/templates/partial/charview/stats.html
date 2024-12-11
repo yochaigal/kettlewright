@@ -2,20 +2,30 @@
 <div class="stats-stats-container character-section">
   <div class="character-attribute-container" id="character-str-container">
     <h4>STR</h4>
-    <p class="subtitle view-mode" id="strength-view-text">{{ character.strength }}/{{ character.strength_max }}</p>
+    <p class="subtitle view-mode" id="strength-view-text">
+      {{ character.strength }}/{{ character.strength_max }}
+    </p>
   </div>
   <div class="character-attribute-container" id="character-dex-container">
     <h4>DEX</h4>
-    <p class="subtitle view-mode" id="dexterity-view-text">{{ character.dexterity }}/{{ character.dexterity_max }}</p>
+    <p class="subtitle view-mode" id="dexterity-view-text">
+      {{ character.dexterity }}/{{ character.dexterity_max }}
+    </p>
   </div>
   <div class="character-attribute-container" id="character-wil-container">
     <h4>WIL</h4>
-    <p class="subtitle view-mode" id="willpower-view-text">{{ character.willpower }}/{{ character.willpower_max }}</p>
+    <p class="subtitle view-mode" id="willpower-view-text">
+      {{ character.willpower }}/{{ character.willpower_max }}
+    </p>
   </div>
   <div class="character-attribute-container" id="character-hp-container">
     <h4>HP</h4>
-    <p class="subtitle view-mode {% if character.overburdened() %} red-text {% endif %}" id="hp-view-text">{{
-      character.hpValue().0 }}/{{ character.hpValue().1 }}</p>
+    <p
+      class="subtitle view-mode {% if character.overburdened() %} red-text {% endif %}"
+      id="hp-view-text"
+    >
+      {{ character.hpValue().0 }}/{{ character.hpValue().1 }}
+    </p>
   </div>
 
   {% if character.deprived %}
@@ -31,16 +41,31 @@
   </div>
   <div class="character-attribute-container" id="character-armor-container">
     <h4>Armor</h4>
-    <p class="subtitle" id="armor-counter" style="margin-left: 0px; margin-right: auto">
+    <p
+      class="subtitle"
+      id="armor-counter"
+      style="margin-left: 0px; margin-right: auto"
+    >
       {{ character.armorValue() }}
     </p>
   </div>
   <div id="character-rest-container">
-    <button class="button" hx-get="/charedit/rest/{{username}}/{{url_name}}" hx-target="#character-stats-container"
-      hx-confirm="Do you want to restore all HP?" data-confirm-title="Rest" data-confirm-button="Yes">
+    {% if not character.deprived %}
+    <button
+      class="button"
+      hx-get="/charedit/rest/{{username}}/{{url_name}}"
+      hx-target="#character-stats-container"
+      hx-confirm="Do you want to restore all HP?"
+      data-confirm-title="Rest"
+      data-confirm-button="Yes"
+    >
       Rest
     </button>
+    {% endif %}
   </div>
 </div>
-<div hx-trigger="refresh-stats from:body" hx-get="/charedit/inplace-stats/{{ username }}/{{ url_name }}/cancel"
-  hx-target="#character-stats-container"></div>
+<div
+  hx-trigger="refresh-stats from:body"
+  hx-get="/charedit/inplace-stats/{{ username }}/{{ url_name }}/cancel"
+  hx-target="#character-stats-container"
+></div>

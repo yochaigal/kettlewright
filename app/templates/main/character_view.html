@@ -13,10 +13,15 @@
   const isOwner = "{{ is_owner }}";
 </script>
 {% endif %}
-<script src="{{url_for('static', filename='src/js/character_view.js')}}" defer type="module"></script>
+<script
+  src="{{url_for('static', filename='src/js/character_view.js')}}"
+  defer
+  type="module"
+></script>
 
 <div class="body-container">
-  {% with messages = get_flashed_messages() %} {% if messages is not none and messages|length > 0 %}
+  {% with messages = get_flashed_messages() %} {% if messages is not none and
+  messages|length > 0 %}
   <div class="message is-danger">
     <div class="message-header">
       <p>Errors</p>
@@ -31,30 +36,44 @@
   </div>
   {% endif %} {% endwith %}
   <div class="sheet view-character-sheet">
-    <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em">
+    <div
+      style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em"
+    >
       <div class="no-space" id="character-portrait-container">
-        <div class="no-space click-pointer" title="Click to change image"
-          hx-get="/charedit/inplace-portrait/{{username}}/{{url_name}}" hx-target="#character-portrait-container">
-          <img src="{{portrait_src}}" alt="character portrait" class="portrait-image" id="portrait-image" />
-        </div>
+        <img
+          src="{{portrait_src}}"
+          alt="character portrait"
+          class="portrait-image"
+          id="portrait-image"
+        />
       </div>
       <div>
         <div id="character-name-container">
           <h1>{{character.name}}</h1>
         </div>
-        <h2 class=""> {{character.background}} </h2>
+        <h2 class="">{{character.background}}</h2>
       </div>
       {% if is_owner %}
-      <div style="margin-left: auto; display: flex; flex-direction: column; gap: 0.5em">
+      <div
+        style="
+          margin-left: auto;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5em;
+        "
+      >
         <div class="row32">
           <button class="dice-button" type="button" id="character-dice-button">
             <i class="fa-solid fa-dice dice"></i>
           </button>
-          <button class="dice-button ghost40" type="button" id="charsheet-mode-switch"
-            title="Click to switch edit/view mode">
-            <i class="fa-solid fa-eye eye hidden" id="charsheet-mode-view-icon"
-              hx-get="/reload-page?link=/users/{{username}}/characters/{{url_name}}/"></i>
-            <i class="fa-solid fa-pen-to-square pen-to-square" id="charsheet-mode-edit-icon"></i>
+          <button
+            class="dice-button ghost40"
+            type="button"
+            title="Click to switch edit/view mode"
+            hx-get="/charedit/{{username}}/{{url_name}}"
+            hx-target="body"
+          >
+            <i class="fa-solid fa-pen-to-square pen-to-square"></i>
           </button>
         </div>
         {% include "main/dice_modal.html" %}
@@ -68,89 +87,103 @@
       <div id="character-traits-container">
         <h3 class="no-space">Traits</h3>
         <div id="character-traits-view" class="with-whitespace">
-          {% if character.traits != "" %}
-          {{character.traits}}
-          {% else %}
-          This character has no traits...
-          {% endif %}
+          {% if character.traits != "" %} {{character.traits}} {% else %} This
+          character has no traits... {% endif %}
         </div>
       </div>
-      <div class="inventory-container" id="inventory-container"
-        hx-on-htmx-after-settle="if (document.getElementsByClassName('fa-eye')[0].classList.contains('hidden')) document.getElementById('edit-inventory-icon').classList.add('hidden')">
+      <div class="inventory-container" id="inventory-container">
         {% include "partial/charview/inventory.html" %}
       </div>
     </div>
 
     <div class="character-descriptions-grid">
-      <div class="character-description-container" id="character-description-container">
+      <div
+        class="character-description-container"
+        id="character-description-container"
+      >
         <h3 class="no-space">Description</h3>
         <p id="character-description-view" class="with-whitespace">
-          {% if character.description != "" %}
-          {{ character.description }}
-          {% else %}
-          This character has no description...
-          {% endif %}
+          {% if character.description != "" %} {{ character.description }} {%
+          else %} This character has no description... {% endif %}
         </p>
       </div>
-      <div class="character-description-container" id="character-bonds-container">
+      <div
+        class="character-description-container"
+        id="character-bonds-container"
+      >
         <h3 class="no-space">Bonds</h3>
         <p id="character-bonds-view" class="with-whitespace">
-          {% if character.bonds != "" %}
-          {{ character.bonds }}
-          {% else %}
-          This character has no bonds...
-          {% endif %}
+          {% if character.bonds != "" %} {{ character.bonds }} {% else %} This
+          character has no bonds... {% endif %}
         </p>
       </div>
-      <div class="character-description-container" id="character-omens-container">
+      <div
+        class="character-description-container"
+        id="character-omens-container"
+      >
         <h3 class="no-space">Omens</h3>
         <p id="character-omens-view" class="with-whitespace">
-          {% if character.omens != "" %}
-          {{ character.omens }}
-          {% else %}
-          This character has no omens...
-          {% endif %}
+          {% if character.omens != "" %} {{ character.omens }} {% else %} This
+          character has no omens... {% endif %}
         </p>
       </div>
-      <div class="character-description-container" id="character-scars-container">
+      <div
+        class="character-description-container"
+        id="character-scars-container"
+      >
         <h3 class="no-space">Scars</h3>
         <p id="character-scars-view" class="with-whitespace">
-          {% if character.scars != "" %}
-          {{character.scars|safe}}
-          {% else %}
-          This character has no scars...
-          {% endif %}
+          {% if character.scars != "" %} {{character.scars|safe}} {% else %}
+          This character has no scars... {% endif %}
         </p>
       </div>
-      <div class="character-description-container" id="character-notes-container">
+      <div
+        class="character-description-container"
+        id="character-notes-container"
+      >
         <h3 class="no-space">Notes</h3>
         <p id="character-notes-view" class="with-whitespace">
-          {% if character.notes != "" %}
-          {{ character.notes|safe }}
-          {% else %}
-          This character has no notes...
-          {% endif %}
+          {% if character.notes != "" %} {{ character.notes|safe }} {% else %}
+          This character has no notes... {% endif %}
         </p>
       </div>
 
-      <div class="character-description-container" id="character-party-container">
+      <div
+        class="character-description-container"
+        id="character-party-container"
+      >
         {% if party %}
         <div id="character-party-name-description">
-          <a class="bold subtitle" id="character-party-link" href="{{ base_url }}/{{ party_url }}">{{ party.name }}</a>
-          <p class="" id="character-party-description">{{ party.description }}</p>
+          <a
+            class="bold subtitle"
+            id="character-party-link"
+            href="{{ base_url }}/{{ party_url }}"
+            >{{ party.name }}</a
+          >
+          <p class="" id="character-party-description">
+            {{ party.description }}
+          </p>
         </div>
-        {% else %}
-        {% if err %}
-        <p style="color:red">{{ err }}</p>
+        {% else %} {% if err %}
+        <p style="color: red">{{ err }}</p>
         {% endif %}
-        <p id="character-no-party-description">This character does not belong to a party...</p>
+        <p id="character-no-party-description">
+          This character does not belong to a party...
+        </p>
         {% endif %}
       </div>
 
       <div class="justify-space-between" style="margin-top: 2.5em">
         <div class="row32">
-          <a href="{{ url_for('main.print_character', username=username, url_name=url_name) }}">
-            <button class="button is-light" id="" style="margin-right: 1em" type="button">
+          <a
+            href="{{ url_for('main.print_character', username=username, url_name=url_name) }}"
+          >
+            <button
+              class="button is-light"
+              id=""
+              style="margin-right: 1em"
+              type="button"
+            >
               Print<i class="fa-solid fa-print icon-in-button"></i>
             </button>
           </a>
@@ -162,17 +195,22 @@
             </button>
           </a>
 
-          <button class="edit-mode is-danger button" id="delete-character-button" data-character-id="{{ character.id }}"
-            data-confirm-title="Delete character" data-confirm-button="Delete"
+          <button
+            class="edit-mode is-danger button"
+            id="delete-character-button"
+            data-character-id="{{ character.id }}"
+            data-confirm-title="Delete character"
+            data-confirm-button="Delete"
             hx-get="/delete-character/{{ character.id }}/"
-            hx-confirm="Are you sure you want to delete {{character.name}}?">
+            hx-confirm="Are you sure you want to delete {{character.name}}?"
+          >
             DELETE<i class="fa-solid fa-trash icon-in-button"></i>
           </button>
           {% endif %}
-
         </div>
       </div>
     </div>
   </div>
 
   {% endblock %}
+</div>

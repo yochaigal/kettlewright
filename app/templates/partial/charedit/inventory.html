@@ -1,27 +1,15 @@
-<div class="row16spaced full-width">
-    <h3>Inventory</h3>
-    <div class="row32">
-        <button class="button smaller-font" style="margin: 0px"
-            hx-get="/marketplace/{{username}}/{{url_name}}"
-            hx-target="#inventory-container"> Marketplace </button>
-        <div title="Close inventory editor" 
-            hx-get="/charedit/inplace-inventory/{{ username }}/{{ url_name }}/{{inventory.selected_container["id"]}}/close" 
-            hx-target="#inventory-container" class="small-icon-button">
-            <i class="fa-solid fa-xmark xmark"></i>
-        </div>
-    </div>
-</div>
+<h3>Inventory</h3>
 <div class="inventory-header flex-row" style="gap: 1.5rem"> 
     {% for cnt in inventory.containers %}
     <div class="row8" >
-        <div class="inventory-container-title subtitle pointer {% if cnt["is_selected"] %} inventory-container-title-selected {% endif %} {% if cnt["encumbered"] %} red-text {% endif %} "
-            hx-get="/charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt["id"]}}?mode=edit"
+        <div class="inventory-container-title subtitle pointer {% if cnt.is_selected %} inventory-container-title-selected {% endif %} {% if cnt.encumbered %} red-text {% endif %} "
+            hx-get="/charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt.id}}?mode=edit"
             hx-target="#inventory-container">
-            {{cnt["title"]}}
+            {{cnt.title}}
         </div> 
         {% if cnt.is_selected %}
             <div class="pointer" title="Edit {{cnt.name}}"  
-                hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/container-edit/{{inventory.selected_container["id"]}}"
+                hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/container-edit/{{inventory.selected_container['id']}}"
                 hx-target="#inventory-container">
                 <i class="item-edit-button fa-solid fa-pen-to-square pen-to-square" ></i>
             </div>
@@ -35,7 +23,7 @@
     {% if it["is_empty"] %}
         <div class="inventory-item-text"></div>
     {% else %}
-        <div class="inventory-item-text {% if it["name"] == "Fatigue" %} fatigue-text {% endif %}">
+        <div class="inventory-item-text {% if it.name == 'Fatigue' %} fatigue-text {% endif %}">
         {{it.title | safe}}
         </div>
         <div class="inventory-item-button-container">   
@@ -75,7 +63,7 @@
             </div>
             {% endif %}
             <div class="pointer" title="Delete"  
-                hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container["id"]}}/item-delete/{{it.id}}"
+                hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container['id']}}/item-delete/{{it.id}}"
                 hx-target="#inventory-container"
                 hx-confirm="Do you want to delete {{it.name}}?"
                 data-confirm-title="Delete item"
@@ -94,23 +82,21 @@
     <button class="button smaller-font" type="button"
             hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/None?mode=create"
             hx-target="#inventory-container"
-            {% if inventory.selected_container["encumbered"] %} disabled {% endif %}> 
+            {% if inventory.selected_container['encumbered'] %} disabled {% endif %}> 
         + Item 
     </button>
     <button class="button smaller-font" type="button"
-            hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container["id"]}}/fatigue"
+            hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container['id']}}/fatigue"
             hx-target="#inventory-container"
             {% if inventory.selected_container["encumbered"] %} disabled {% endif %}> 
             + Fatigue 
     </button>
     <button class="button smaller-font" type="button"
-                hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/container-edit/{{inventory.selected_container["id"]}}?mode=create"
+                hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/container-edit/{{inventory.selected_container['id']}}?mode=create"
                 hx-target="#inventory-container">
                  + Container 
     </button>    
 </div>
 </div>
 
-<!-- legacy compatibiity -->
-<div id="items-container" style="display:none"></div>
 

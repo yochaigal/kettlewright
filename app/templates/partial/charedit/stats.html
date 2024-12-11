@@ -1,62 +1,67 @@
-<form class="no-space">
-  <div class="row16">
-    <h3>Stats</h3>
-    <div class="row32">
-      <div title="Save changes" hx-post="/charedit/inplace-stats/{{ username }}/{{ url_name }}/save" hx-target="#character-stats-container" class="small-icon-button greenish">
-        <i class="fa-solid fa-check check"></i>
-      </div>
-      <div title="Cancel" hx-get="/charedit/inplace-stats/{{ username }}/{{ url_name }}/cancel" class="small-icon-button" hx-target="#character-stats-container">
-        <i class="fa-solid fa-xmark xmark"></i>
+<h3>Stats</h3>
+<div class="stats-stats-container character-section">
+  <div class="character-attribute-container" id="character-str-container">
+    <h4>STR</h4>
+
+    <span class="edit-mode character-attribute-field-container">
+      {{ form.strength(class='character-attribute-input', size=1, type='number',
+      min='0', max='99', step='1', id='strength-input') }}
+      <p class="subtitle character-attribute-input">/</p>
+      {{ form.strength_max(class='character-attribute-input', size=1,
+      type='number', min='0', max='99', step='1', id='strength-max-input') }}
+    </span>
+  </div>
+  <div class="character-attribute-container" id="character-dex-container">
+    <h4>DEX</h4>
+
+    <span class="edit-mode character-attribute-field-container">
+      {{ form.dexterity(class='character-attribute-input', size=1,
+      type='number', min='0', max='99', step='1', id='dexterity-input') }}
+      <p class="subtitle character-attribute-input">/</p>
+      {{ form.dexterity_max(class='character-attribute-input', size=1,
+      type='number', min='0', max='99', step='1', id='dexterity-max-input') }}
+    </span>
+  </div>
+  <div class="character-attribute-container" id="character-wil-container">
+    <h4>WIL</h4>
+
+    <span class="edit-mode character-attribute-field-container">
+      {{ form.willpower(class='character-attribute-input', size=1,
+      type='number', min='0', max='99', step='1', id='willpower-input') }}
+      <p class="subtitle character-attribute-input">/</p>
+      {{ form.willpower_max(class='character-attribute-input', size=1,
+      type='number', min='0', max='99', step='1', id='willpower-max-input') }}
+    </span>
+  </div>
+  <div class="character-attribute-container" id="character-hp-container">
+    <h4>HP</h4>
+    <span class="edit-mode character-attribute-field-container">
+      {{ form.hp(class='character-attribute-input', size=1, type='number',
+      min='0', max='99', step='1', id='hp-input') }}
+      <p class="subtitle character-attribute-input">/</p>
+      {{ form.hp_max(class='character-attribute-input', size=1, type='number',
+      min='0', max='99', step='1', id='hp-max-input') }}
+    </span>
+  </div>
+  {% if character.deprived %} {% endif %}
+  <div
+    class="character-attribute-container edit-mode"
+    id="character-deprived-container"
+  >
+    <h4 class="character-deprived-text">DEPRIVED</h4>
+    {{ form.deprived(class='checkbox edit-mode',
+    type='checkbox',id='deprived-field') }}
+  </div>
+
+  <div class="character-attribute-container" id="character-gold-container">
+    <h4 class="view-attribute-font">Gold</h4>
+
+    <div class="edit-mode character-attribute-field-container">
+      <div class="number-field">
+        {{ form.gold(class='input number-input character-attribute-input',
+        size=1, type='number', min='0', max='9999', step='1', id='gold-input')
+        }}
       </div>
     </div>
   </div>
-  <div class="stats-stats-container character-section">
-    <div class="character-attribute-container" id="character-str-container">
-      <h4>STR</h4>
-
-      <span class="edit-mode character-attribute-field-container">
-        {{ form.strength(class='character-attribute-input', size=1, type='number', min='0', max='99', step='1', id='strength-input') }}
-        <p class="subtitle character-attribute-input">/</p>
-        {{ form.strength_max(class='character-attribute-input', size=1, type='number', min='0', max='99', step='1', id='strength-max-input') }}
-      </span>
-    </div>
-    <div class="character-attribute-container" id="character-dex-container">
-      <h4>DEX</h4>
-
-      <span class="edit-mode character-attribute-field-container">
-        {{ form.dexterity(class='character-attribute-input', size=1, type='number', min='0', max='99', step='1', id='dexterity-input') }}
-        <p class="subtitle character-attribute-input">/</p>
-        {{ form.dexterity_max(class='character-attribute-input', size=1, type='number', min='0', max='99', step='1', id='dexterity-max-input') }}
-      </span>
-    </div>
-    <div class="character-attribute-container" id="character-wil-container">
-      <h4>WIL</h4>
-
-      <span class="edit-mode character-attribute-field-container">
-        {{ form.willpower(class='character-attribute-input', size=1, type='number', min='0', max='99', step='1', id='willpower-input') }}
-        <p class="subtitle character-attribute-input">/</p>
-        {{ form.willpower_max(class='character-attribute-input', size=1, type='number', min='0', max='99', step='1', id='willpower-max-input') }}
-      </span>
-    </div>
-    <div class="character-attribute-container" id="character-hp-container">
-      <h4>HP</h4>
-      <span class="edit-mode character-attribute-field-container">
-        {{ form.hp(class='character-attribute-input', size=1, type='number', min='0', max='99', step='1', id='hp-input') }}
-        <p class="subtitle character-attribute-input">/</p>
-        {{ form.hp_max(class='character-attribute-input', size=1, type='number', min='0', max='99', step='1', id='hp-max-input') }}
-      </span>
-    </div>
-    {% if character.deprived %} {% endif %}
-    <div class="character-attribute-container edit-mode" id="character-deprived-container">
-      <h4 class="character-deprived-text">DEPRIVED</h4> {{ form.deprived(class='checkbox edit-mode', type='checkbox', id='deprived-field') }}
-    </div>
-
-    <div class="character-attribute-container" id="character-gold-container">
-      <h4 class="view-attribute-font">Gold</h4>
-
-      <div class="edit-mode character-attribute-field-container">
-        <div class="number-field">{{ form.gold(class='input number-input character-attribute-input', size=1, type='number', min='0', max='9999', step='1', id='gold-input') }}</div>
-      </div>
-    </div>
-  </div>
-</form>
+</div>

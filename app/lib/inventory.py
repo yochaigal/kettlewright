@@ -43,6 +43,7 @@ class Inventory:
     # count slots for a container
     def container_slots(self, container):
         slots = 0
+        print("container slots for",container)
         for it in container["items"]:
             if "bulky" in it["tags"]:
                 slots += 2
@@ -139,7 +140,7 @@ class Inventory:
         
     # get container
     def get_container(self, container_id):
-        conts = json.loads(self.character.containers)
+        conts = self.containers
         cnt = None
         for c in conts:
             if c["id"] == int(container_id):
@@ -181,12 +182,13 @@ class Inventory:
         
     # add fatigue
     def add_fatigue(self, container_id):
+        print("add fatigue")
         idx = 0        
         cont_items = self.get_items_for_container(container_id)
         cnt = self.get_container(container_id)
         if cnt == None:
             return
-        if len(cont_items) >= cnt["slots"]:
+        if self.container_slots(cnt) >= cnt["slots"]:
             return
         items = json.loads(self.character.items)                
         new_id = self.generate_item_id()
@@ -332,6 +334,11 @@ class Inventory:
     
     # create item
     def create_item(self, name, tags, uses, charges, max_charges, container, description):
+        cnt = self.get_container(container)
+        if cnt == None:
+            return
+        if self.container_slots(cnt) >= cnt["slots"]:
+            return
         new_id = self.generate_item_id()
         items = json.loads(self.character.items)
         items.append({"id":new_id,"name":"",tags:[],"location":0,"description":""})

@@ -39,18 +39,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     diceModal.initialize(showRollDiceNotifcation);
   }
-  // Initial state is a view mode
-  document.querySelectorAll(".edmk").forEach((item) => {
-    item.classList.add("hidden");
-  });
-
-  // Mode switch
-  document.getElementById("charsheet-mode-edit-icon").addEventListener("click", () => {
-    document.querySelectorAll(".edmk").forEach((item) => {
-      item.classList.remove("hidden");
-    });
-    document.getElementById("charsheet-mode-view-icon").classList.remove("hidden");
-    document.getElementById("charsheet-mode-edit-icon").classList.add("hidden");
-  });
-
 });

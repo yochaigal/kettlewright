@@ -52,3 +52,45 @@ def get_char_data(username, url_name):
         owner=user.id, url_name=url_name).first_or_404()
     return user, character
 
+def sanitize_data(data):
+    if isinstance(data, str):
+        sanitized_value = bleach.clean(data)  # Sanitize strings
+        sanitized_value = sanitized_value.replace(
+            '`', "'")  # Replace backticks with single quotes
+        return sanitized_value
+    elif isinstance(data, list):
+        # Recursively sanitize list items
+        return [sanitize_data(item) for item in data]
+    else:
+        return data  # Booleans and numbers are returned as is
+
+
+def sanitize_json_content(json_str):
+    try:
+        data = json.loads(json_str)
+    except json.JSONDecodeError as e:
+        print(f"Error parsing JSON: {e}", file=sys.stderr)
+        return None
+
+    def sanitize_string(value):
+        if not isinstance(value, str):
+            return value
+        sanitized_value = bleach.clean(value, tags=['p', 'b', 'i'], attributes={
+                                       'a': ['href']}, strip=True)
+        # Replace backticks with single quotes, necessary since JSON read by javascript as template literals
+        sanitized_value = sanitized_value.replace('`', "'")
+        return sanitized_value
+
+    def sanitize_json(obj):
+        if isinstance(obj, dict):
+            return {key: sanitize_json(value) for key, value in obj.items()}
+        elif isinstance(obj, list):
+            return [sanitize_json(item) for item in obj]
+        else:
+            return sanitize_string(obj)
+
+    sanitized_data = sanitize_json(data)
+    sanitized_json_str = json.dumps(sanitized_data)
+
+    return sanitized_json_str
+
