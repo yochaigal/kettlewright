@@ -1,4 +1,3 @@
-<form class="no-space">
     <div class="row16">
         <h3 class="no-space" id="character-party-heading">Party</h3>
         <div class="row32">
@@ -18,17 +17,12 @@
         </div>
     </div>    
 
-    {% if party %}
-    
-    {% endif %}
-
     {% if not party %}
     <div class="field" id="character-join-code" style="margin-top: 20px">
       <label>Join Code</label>
       {{ form.party_code(class='input', id='party-id-field') }}
     </div>
     {% endif %}
-</form>
 
 
 <div>

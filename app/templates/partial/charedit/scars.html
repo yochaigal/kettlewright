@@ -1,46 +1,13 @@
-<form class="no-space">
-  <div id="character-scars-select-container" class="row16">
-    <h3 class="no-space">Scars</h3>
-    <div class="row32">
-      <div
-        title="Save changes"
-        hx-post="/charedit/inplace-scars/{{username}}/{{url_name}}/save"
-        hx-target="#character-scars-container"
-        class="small-icon-button"
-      >
-        <i class="fa-solid fa-check check"></i>
-      </div>
-      <div
-        title="Cancel"
-        hx-get="/charedit/inplace-scars/{{username}}/{{url_name}}/cancel"
-        class="small-icon-button"
-        hx-target="#character-scars-container"
-      >
-        <i class="fa-solid fa-xmark xmark"></i>
-      </div>
-    </div>
+<h3 class="no-space">Scars</h3>
+{{ form.scars(class='textarea with-whitespace', id='scars-field', oninput='resizeTextarea(this)') }}
+<div class="row8">
+  <select id="scars-select" name="scars-select" class="smaller-font">
+    {% for s in scarlist %}
+    <option value="{{s}}">{{s}}</option>
+    {% endfor %}
+  </select>
+  <div title="Add scar" hx-post="/charedit/inplace-scars/{{username}}/{{url_name}}/add" hx-target="#scars-field"
+    class="small-icon-button">
+    <i class="fa-solid fa-plus plus"></i>
   </div>
-  {{ form.scars(class='textarea with-whitespace', id='scars-field',
-  oninput='resizeTextarea(this)') }}
-</form>
-
-<div>
-  <form class="no-space">
-    <div class="row8">
-      <select id="scars-select" name="scars-select" class="smaller-font">
-        {% for s in scarlist %}
-        <option value="{{s}}">{{s}}</option>
-        {% endfor %}
-      </select>
-      <div
-        title="Add scar"
-        hx-post="/charedit/inplace-scars/{{username}}/{{url_name}}/add"
-        hx-target="#character-scars-container"
-        hx-on-htmx-after-request="document.getElementById('scars-field') ? resizeTextarea(document.getElementById('scars-field')):''"
-        class="small-icon-button"
-      >
-        <i class="fa-solid fa-plus plus"></i>
-      </div>
-    </div>
-  </form>
 </div>

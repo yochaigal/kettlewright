@@ -3,6 +3,7 @@ import app
 import json
 from .paths import app_static_path
 from app.models import db, User, Party, Character
+import bleach
 
 def load_scars():
     result = {}

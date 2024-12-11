@@ -43,7 +43,6 @@ class Inventory:
     # count slots for a container
     def container_slots(self, container):
         slots = 0
-        print("container slots for",container)
         for it in container["items"]:
             if "bulky" in it["tags"]:
                 slots += 2
@@ -182,7 +181,6 @@ class Inventory:
         
     # add fatigue
     def add_fatigue(self, container_id):
-        print("add fatigue")
         idx = 0        
         cont_items = self.get_items_for_container(container_id)
         cnt = self.get_container(container_id)

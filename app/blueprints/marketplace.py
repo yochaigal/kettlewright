@@ -41,7 +41,7 @@ def marketplace_buy(username, url_name):
     inventory.decorate()
     render = render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
     response = make_response(render)
-    response.headers["HX-Trigger"] = "refresh-stats"
+    response.headers["HX-Trigger"] = '{"refresh-stats":{"gold":'+data["current-gold"]+'}}'
     return response
     
     

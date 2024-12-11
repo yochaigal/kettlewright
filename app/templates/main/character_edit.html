@@ -38,6 +38,7 @@
   <div class="sheet view-character-sheet">
     <form class="no-space">
       <input type="hidden" name="old_items" value="{{old_items}}" />
+      <input type="hidden" name="old_gold" value="{{character.gold}}" />
       <div
         style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em"
       >
@@ -108,50 +109,36 @@
           id="character-description-container"
         >
           <h3 class="no-space">Description</h3>
-          <p id="character-description-view" class="with-whitespace">
-            {% if character.description != "" %} {{ character.description }} {%
-            else %} This character has no description... {% endif %}
-          </p>
+          {{ form.description(class='textarea inplace', id='description-field',
+          oninput='resizeTextarea(this)') }}
         </div>
         <div
           class="character-description-container"
           id="character-bonds-container"
         >
           <h3 class="no-space">Bonds</h3>
-          <p id="character-bonds-view" class="with-whitespace">
-            {% if character.bonds != "" %} {{ character.bonds }} {% else %} This
-            character has no bonds... {% endif %}
-          </p>
+          {{ form.bonds(class='textarea inplace', id='bonds-field',
+          oninput='resizeTextarea(this)') }}
         </div>
         <div
           class="character-description-container"
           id="character-omens-container"
         >
-          <h3 class="no-space">Omens</h3>
-          <p id="character-omens-view" class="with-whitespace">
-            {% if character.omens != "" %} {{ character.omens }} {% else %} This
-            character has no omens... {% endif %}
-          </p>
+          {% include "partial/charedit/omens.html" %}
         </div>
         <div
           class="character-description-container"
           id="character-scars-container"
         >
-          <h3 class="no-space">Scars</h3>
-          <p id="character-scars-view" class="with-whitespace">
-            {% if character.scars != "" %} {{character.scars|safe}} {% else %}
-            This character has no scars... {% endif %}
-          </p>
+          {% include "partial/charedit/scars.html" %}
         </div>
         <div
           class="character-description-container"
           id="character-notes-container"
         >
           <h3 class="no-space">Notes</h3>
-          <p id="character-notes-view" class="with-whitespace">
-            {% if character.notes != "" %} {{ character.notes|safe }} {% else %}
-            This character has no notes... {% endif %}
-          </p>
+          {{ form.notes(class='textarea inplace', id='notes-field',
+          oninput='resizeTextarea(this)') }}
         </div>
 
         <div

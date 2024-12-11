@@ -86,9 +86,11 @@
       </div>
       <div id="character-traits-container">
         <h3 class="no-space">Traits</h3>
-        <div id="character-traits-view" class="with-whitespace">
-          {% if character.traits != "" %} {{character.traits}} {% else %} This
-          character has no traits... {% endif %}
+        <div
+          id="character-traits-view"
+          class="with-whitespace character-text-field"
+        >
+          {% if character.traits != "" %} {{character.traits}} {% else %} This character has no traits... {% endif %}
         </div>
       </div>
       <div class="inventory-container" id="inventory-container">
@@ -102,9 +104,11 @@
         id="character-description-container"
       >
         <h3 class="no-space">Description</h3>
-        <p id="character-description-view" class="with-whitespace">
-          {% if character.description != "" %} {{ character.description }} {%
-          else %} This character has no description... {% endif %}
+        <p
+          id="character-description-view "
+          class="with-whitespace character-text-field"
+        >
+          {% if character.description != "" %} {{ character.description }} {% else %} This character has no description... {% endif %}
         </p>
       </div>
       <div
@@ -112,9 +116,11 @@
         id="character-bonds-container"
       >
         <h3 class="no-space">Bonds</h3>
-        <p id="character-bonds-view" class="with-whitespace">
-          {% if character.bonds != "" %} {{ character.bonds }} {% else %} This
-          character has no bonds... {% endif %}
+        <p
+          id="character-bonds-view"
+          class="with-whitespace character-text-field"
+        >
+          {% if character.bonds != "" %} {{ character.bonds }} {% else %} This character has no bonds... {% endif %}
         </p>
       </div>
       <div
@@ -122,9 +128,11 @@
         id="character-omens-container"
       >
         <h3 class="no-space">Omens</h3>
-        <p id="character-omens-view" class="with-whitespace">
-          {% if character.omens != "" %} {{ character.omens }} {% else %} This
-          character has no omens... {% endif %}
+        <p
+          id="character-omens-view"
+          class="with-whitespace character-text-field"
+        >
+          {% if character.omens != "" %} {{ character.omens }} {% else %} This character has no omens... {% endif %}
         </p>
       </div>
       <div
@@ -132,9 +140,11 @@
         id="character-scars-container"
       >
         <h3 class="no-space">Scars</h3>
-        <p id="character-scars-view" class="with-whitespace">
-          {% if character.scars != "" %} {{character.scars|safe}} {% else %}
-          This character has no scars... {% endif %}
+        <p
+          id="character-scars-view"
+          class="with-whitespace character-text-field"
+        >
+          {% if character.scars != "" %} {{character.scars|safe}} {% else %} This character has no scars... {% endif %}
         </p>
       </div>
       <div
@@ -142,9 +152,11 @@
         id="character-notes-container"
       >
         <h3 class="no-space">Notes</h3>
-        <p id="character-notes-view" class="with-whitespace">
-          {% if character.notes != "" %} {{ character.notes|safe }} {% else %}
-          This character has no notes... {% endif %}
+        <p
+          id="character-notes-view"
+          class="with-whitespace character-text-field"
+        >
+          {% if character.notes != "" %} {{ character.notes|safe }} {% else %} This character has no notes... {% endif %}
         </p>
       </div>
 
@@ -160,7 +172,10 @@
             href="{{ base_url }}/{{ party_url }}"
             >{{ party.name }}</a
           >
-          <p class="" id="character-party-description">
+          <p
+            class="character-text-field with-whitespace"
+            id="character-party-description"
+          >
             {{ party.description }}
           </p>
         </div>

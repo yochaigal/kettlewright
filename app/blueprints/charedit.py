@@ -13,41 +13,6 @@ character_edit = Blueprint('character_edit', __name__)
 bool_fields = ['deprived']
 
 
-
-
-# Route: enter character stats editing
-# @character_edit.route('/charedit/inplace-stats/<username>/<url_name>')
-# def charedit_inplace_stats(username, url_name):
-#     user, character = get_char_data(username, url_name)
-#     form = CharacterEditForm(obj=character)
-#     return render_template('partial/charedit/stats.html', user=user, character=character, form=form, username=username, url_name=url_name)
-
-# Route: save edited character stats
-# @character_edit.route('/charedit/inplace-stats/<username>/<url_name>/save', methods=['POST'])
-# def charedit_inplace_stats_save(username, url_name):
-#     user, character = get_char_data(username, url_name)
-#     data = request.form
-#     for field in data:
-#         value = data[field]
-#         if field in bool_fields:
-#             if value == 'y':
-#                 value = True
-#         setattr(character, field, value) # TODO: sanitize data
-#     # bool field disappears when unchecked
-#     for bf in bool_fields:
-#         if not bf in data:
-#             setattr(character, bf, False)
-#     db.session.commit()
-#     return render_template('partial/charview/stats.html', user=user, character=character, username=username, url_name=url_name)
-
-    
-# Route: cancel character stats editing    
-# @character_edit.route('/charedit/inplace-stats/<username>/<url_name>/cancel')
-# def charedit_inplace_stats_cancel(username, url_name):
-#     user, character = get_char_data(username, url_name)
-#     return render_template('partial/charview/stats.html', user=user, character=character, username=username, url_name=url_name)
-
-
 # Prepare some party data for template
 def prepare_party_data(party_id):
     party = Party.query.filter_by(id=party_id).first()
@@ -125,7 +90,7 @@ def charedit_show(username, url_name):
     render =  render_template('main/character_edit.html', user=user, character=character, username=username, url_name=url_name, scarlist=scarlist, inventory=inventory, portrait_src=portrait_src, is_owner=is_owner, form=form,old_items = character.items)
     response = make_response(render)
     
-    response.headers['HX-Trigger-After-Settle'] = "charedit_loaded"
+    response.headers['HX-Trigger-After-Settle'] = "charedit-loaded"
     return response
 
 # Route: character page save
@@ -133,8 +98,8 @@ def charedit_show(username, url_name):
 def charedit_save(username, url_name):
     user, character = get_char_data(username, url_name)
     form = CharacterEditForm(obj=character)
-    fields_to_update = ['strength_max', 'strength','dexterity_max', 'dexterity', 'willpower_max', 'willpower','hp_max', 'hp', 'deprived', 'gold']
-    #'image_url', 'armor', 'party_code','name', 'description', 'notes', 'bonds', 'omens', 'scars', 'traits']
+    fields_to_update = ['strength_max', 'strength','dexterity_max', 'dexterity', 'willpower_max', 'willpower','hp_max', 'hp', 'deprived', 'gold','description', 'armor','name','omens', 'scars','traits','bonds','notes']
+    # , 'party_code',, , , , , , ]
     for field in fields_to_update:
         setattr(character, field, sanitize_data(getattr(form, field).data))
     db.session.commit()
@@ -148,104 +113,21 @@ def charedit_save(username, url_name):
 def charedit_cancel(username, url_name):
     user, character = get_char_data(username, url_name)
     data = request.form
+    changed = False
     # restore some data
     if data['old_items'] != None:
         character.items = data['old_items']
-        db.session.commit()
+        changed = True
+    if data['old_gold'] != None:
+        character.gold = data['old_gold']
+        changed = True
+    if changed:
+        db.session.commit()        
+    # TODO: remove items from party storage
     response = make_response("Redirecting")
     response.headers["HX-Redirect"] = "/users/"+username+"/characters/"+url_name
     return response
 
-
-
-
-
-
-
-
-
-
-
-
-
-# # Route: enter character text field editing
-# @character_edit.route('/charedit/inplace-text/<username>/<url_name>/<field_name>', methods=['GET'])
-# def charedit_inplace_text(username, url_name, field_name):
-#     user, character = get_char_data(username, url_name)
-#     party, party_url = prepare_party_data(character.party_id)
-#     if field_name == "traits":
-#         form = CharacterEditFormTraits(obj=character)
-#         template = 'partial/charedit/traits.html'
-#     elif field_name == "description":
-#         form = CharacterEditFormDescription(obj=character)
-#         template = 'partial/charedit/description.html'
-#     elif field_name == "bonds":
-#         form = CharacterEditFormBonds(obj=character)
-#         template = 'partial/charedit/bonds.html'        
-#     elif field_name == "omens":
-#         form = CharacterEditFormOmens(obj=character)
-#         template = 'partial/charedit/omens.html'                
-#     elif field_name == "notes":
-#         form = CharacterEditFormNotes(obj=character)
-#         template = 'partial/charedit/notes.html'                
-#     elif field_name == "party_code":
-#         form = CharacterEditFormParty(obj=character)
-#         template = 'partial/charedit/party.html'                        
-#     return render_template(template, user=user, character=character, form=form, username=username, url_name=url_name, party=party, party_url=party_url)
-    
-# # Route: save edited character text fields    
-# @character_edit.route('/charedit/inplace-text/<username>/<url_name>/<field_name>/save', methods=['POST'])
-# def charedit_inplace_text_save(username, url_name, field_name):
-#     err = None
-#     user, character = get_char_data(username, url_name)
-#     data = request.form
-#     if field_name == "party_code":
-#         party = Party.query.filter_by(join_code=data[field_name].strip()).first()
-#         if party:
-#             character.party_id = party.id
-#             add_character_to_party(character)
-#             owner_username = User.query.filter_by(id=party.owner).first().username
-#             party_url = 'users/' + owner_username + '/parties/' + party.party_url + '/'
-#         else:
-#             err = "Invalid party join code ("+data[field_name]+")"
-#             party_url = None
-#     else: 
-#         setattr(character, field_name, sanitize_data(data[field_name]))
-#         party, party_url = prepare_party_data(character.party_id)
-#     db.session.commit()
-    
-#     if field_name == "traits":
-#         template = 'partial/charview/traits.html'
-#     elif field_name == "description":
-#         template = 'partial/charview/description.html'
-#     elif field_name == "bonds":
-#         template = 'partial/charview/bonds.html'
-#     elif field_name == "omens":
-#         template = 'partial/charview/omens.html'        
-#     elif field_name == "notes":
-#         template = 'partial/charview/notes.html'        
-#     elif field_name == "party_code":
-#         template = 'partial/charview/party.html'                
-#     return render_template(template, user=user, character=character, username=username, url_name=url_name, party=party, party_url=party_url, err=err)
-
-# # Route: cancel character text field editing
-# @character_edit.route('/charedit/inplace-text/<username>/<url_name>/<field_name>/cancel', methods=['GET'])
-# def charedit_inplace_text_cancel(username, url_name, field_name):
-#     user, character = get_char_data(username, url_name)
-#     party, party_url = prepare_party_data(character.party_id)   
-#     if field_name == "traits":
-#         template = 'partial/charview/traits.html'
-#     elif field_name == "description":
-#         template = 'partial/charview/description.html'
-#     elif field_name == "bonds":
-#         template = 'partial/charview/bonds.html'        
-#     elif field_name == "omens":
-#         template = 'partial/charview/omens.html'                
-#     elif field_name == "notes":
-#         template = 'partial/charview/notes.html'                
-#     elif field_name == "party_code":
-#         template = 'partial/charview/party.html'                        
-#     return render_template(template, user=user, character=character, username=username, url_name=url_name, party=party, party_url=party_url)
 
 # Route: leave current character party
 @character_edit.route('/charedit/leave-party/<username>/<url_name>', methods=['GET'])
@@ -258,64 +140,23 @@ def charedit_leave_party(username, url_name):
     
 # ----- SCARS ----    
 
-# Route: character scars editing
-@character_edit.route('/charedit/inplace-scars/<username>/<url_name>', methods=['GET'])
-def charedit_inplace_scars(username, url_name):
-    user, character = get_char_data(username, url_name)
-    form = CharacterEditFormScars(obj=character)
-    scarlist = load_scars()
-    return render_template('partial/charedit/scars.html', user=user, character=character, username=username, url_name=url_name, form=form, scarlist=scarlist)
 
 # Route: character scars add new scar
 @character_edit.route('/charedit/inplace-scars/<username>/<url_name>/add', methods=['POST'])
 def charedit_inplace_scars_add(username, url_name):
     user, character = get_char_data(username, url_name)
     data = request.form
+    print(data)
     scarlist = load_scars()
     selected_scar = data['scars-select']
+    result = data["scars"]
     if selected_scar != None:
-        character.scars = character.scars + "\n"+selected_scar+":"+scarlist[selected_scar]
-        db.session.commit()
-    return render_template('partial/charview/scars.html', user=user, character=character, username=username, url_name=url_name, scarlist=scarlist)
+        result = result + "\n"+selected_scar+":"+scarlist[selected_scar]
+    response = make_response(result)
+    response.headers["HX-Trigger-After-Settle"] = 'scar-roll'
+    print(result)
+    return response
     
-# Route: character scars editing save
-@character_edit.route('/charedit/inplace-scars/<username>/<url_name>/save', methods=['POST'])
-def charedit_inplace_scars_save(username, url_name):
-    user, character = get_char_data(username, url_name)
-    data = request.form
-    setattr(character, "scars",data["scars"])
-    db.session.commit()
-    scarlist = load_scars()
-    return render_template('partial/charview/scars.html', user=user, character=character, username=username, url_name=url_name, scarlist=scarlist)
-
-# Route: character scars editing cancel
-@character_edit.route('/charedit/inplace-scars/<username>/<url_name>/cancel', methods=['GET'])
-def charedit_inplace_scars_cancel(username, url_name):
-    user, character = get_char_data(username, url_name)
-    scarlist = load_scars()
-    return render_template('partial/charview/scars.html', user=user, character=character, username=username, url_name=url_name, scarlist=scarlist)
-
-# # Route: edit character name
-# @character_edit.route('/charedit/inplace-name/<username>/<url_name>', methods=['GET'])
-# def charedit_inplace_name(username, url_name):
-#     user, character = get_char_data(username, url_name)
-#     form = CharacterEditFormName(obj=character)
-#     return render_template('partial/charedit/name.html', user=user, character=character, username=username, url_name=url_name, form=form)
-
-# # Route: edit character name save
-# @character_edit.route('/charedit/inplace-name/<username>/<url_name>/save', methods=['POST'])
-# def charedit_inplace_name_save(username, url_name):
-#     user, character = get_char_data(username, url_name)
-#     data = request.form
-#     setattr(character,"name",data["name"])
-#     db.session.commit()
-#     return render_template('partial/charview/name.html', user=user, character=character, username=username, url_name=url_name)    
-
-# # Route: edit character name cancel
-# @character_edit.route('/charedit/inplace-name/<username>/<url_name>/cancel', methods=['GET'])
-# def charedit_inplace_name_cancel(username, url_name):
-#     user, character = get_char_data(username, url_name)
-#     return render_template('partial/charview/name.html', user=user, character=character, username=username, url_name=url_name)    
 
 # ----- PORTRAIT -----
 
@@ -384,9 +225,9 @@ def charedit_omen_roll(username, url_name):
     result = roll_list(omens)
     if data["omens"] != "":
         result = data["omens"] + "\n \n" + result
-    form = CharacterEditFormOmens(obj=character)
-    form.omens.data = result
-    return render_template('partial/charedit/omens.html', user=user, character=character, form=form, username=username, url_name=url_name)
+    response = make_response(result)
+    response.headers["HX-Trigger-After-Settle"] = 'omen-roll'
+    return response
 
 # --- INVENTORY ---
 
@@ -508,6 +349,7 @@ def charedit_inplace_inventory_item_edit(username, url_name, item_id):
     return render_template('partial/modal/edit_item.html', user=user, character=character, username=username, url_name=url_name, 
                            inventory=inventory, item=item, mode=mode)
 
+# Route: edit item save
 @character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/save', methods=['POST'])
 def charedit_inplace_inventory_item_edit_save(username, url_name, item_id):
     user, character = get_char_data(username, url_name)
@@ -533,7 +375,7 @@ def charedit_inplace_inventory_item_edit_save(username, url_name, item_id):
     return response
     
     
-# Route: change somea amount property in item
+# Route: change some amount property in item
 @character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/amount', methods=['GET'])
 def charedit_inplace_inventory_item_edit_amount(username, url_name, item_id):
     user, character = get_char_data(username, url_name)
