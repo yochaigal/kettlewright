@@ -1,27 +1,10 @@
 {% extends "base.html" %} {% block content %}
-<script>
-  //const party = `{{party}}`;
-  // const username = `{{username}}`;
-  // const url_name = `{{url_name}}`;
-  // const selected_container = `{{inventory.selected_container["id"]}}`;
-</script>
 
-{% if is_owner %}
-<script>
-  //const party_id = "{{ character.party_id }}";
-  // const character_id = "{{ character.id }}";
-  // const isOwner = "{{ is_owner }}";
-</script>
-{% endif %}
-<script
-  src="{{url_for('static', filename='src/js/character_edit.js')}}"
-  defer
-  type="module"
-></script>
+<script src="{{url_for('static', filename='src/js/character_edit.js')}}" defer type="module"></script>
 
 <div class="body-container">
-  {% with messages = get_flashed_messages() %} {% if messages is not none and
-  messages|length > 0 %}
+  {% with messages = get_flashed_messages() %}
+  {% if messages is not none and messages|length > 0 %}
   <div class="message is-danger">
     <div class="message-header">
       <p>Errors</p>
@@ -34,27 +17,18 @@
       </ul>
     </div>
   </div>
-  {% endif %} {% endwith %}
+  {% endif %}
+  {% endwith %}
   <div class="sheet view-character-sheet">
     <form class="no-space">
       <input type="hidden" name="old_items" value="{{old_items}}" />
       <input type="hidden" name="old_gold" value="{{character.gold}}" />
-      <div
-        style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em"
-      >
+      <input type="hidden" name="old_containers" value="{{old_containers}}" />
+      <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em">
         <div class="no-space" id="character-portrait-container">
-          <div
-            class="no-space click-pointer"
-            title="Click to change image"
-            hx-get="/charedit/inplace-portrait/{{username}}/{{url_name}}"
-            hx-target="#character-portrait-container"
-          >
-            <img
-              src="{{portrait_src}}"
-              alt="character portrait"
-              class="portrait-image"
-              id="portrait-image"
-            />
+          <div class="no-space click-pointer" title="Click to change image"
+            hx-get="/charedit/inplace-portrait/{{username}}/{{url_name}}" hx-target="#character-portrait-container">
+            <img src="{{portrait_src}}" alt="character portrait" class="portrait-image" id="portrait-image" />
           </div>
         </div>
         <div>
@@ -62,27 +36,17 @@
           <h2 class="">{{character.background}}</h2>
         </div>
         {% if is_owner %}
-        <div
-          style="
+        <div style="
             margin-left: auto;
             display: flex;
             flex-direction: column;
             gap: 0.5em;
-          "
-        >
+          ">
           <div class="row32">
-            <button
-              type="button"
-              class="dice-button ghost40"
-              hx-post="/charedit/{{username}}/{{url_name}}/save"
-            >
+            <button type="button" class="dice-button ghost40" hx-post="/charedit/{{username}}/{{url_name}}/save">
               <i class="fa-solid fa-check check"></i>
             </button>
-            <button
-              class="dice-button ghost40"
-              type="button"
-              hx-post="/charedit/{{username}}/{{url_name}}/cancel"
-            >
+            <button class="dice-button ghost40" type="button" hx-post="/charedit/{{username}}/{{url_name}}/cancel">
               <i class="fa-solid fa-xmark xmark"></i>
             </button>
           </div>
@@ -104,47 +68,29 @@
       </div>
 
       <div class="character-descriptions-grid">
-        <div
-          class="character-description-container"
-          id="character-description-container"
-        >
+        <div class="character-description-container" id="character-description-container">
           <h3 class="no-space">Description</h3>
           {{ form.description(class='textarea inplace', id='description-field',
           oninput='resizeTextarea(this)') }}
         </div>
-        <div
-          class="character-description-container"
-          id="character-bonds-container"
-        >
+        <div class="character-description-container" id="character-bonds-container">
           <h3 class="no-space">Bonds</h3>
           {{ form.bonds(class='textarea inplace', id='bonds-field',
           oninput='resizeTextarea(this)') }}
         </div>
-        <div
-          class="character-description-container"
-          id="character-omens-container"
-        >
+        <div class="character-description-container" id="character-omens-container">
           {% include "partial/charedit/omens.html" %}
         </div>
-        <div
-          class="character-description-container"
-          id="character-scars-container"
-        >
+        <div class="character-description-container" id="character-scars-container">
           {% include "partial/charedit/scars.html" %}
         </div>
-        <div
-          class="character-description-container"
-          id="character-notes-container"
-        >
+        <div class="character-description-container" id="character-notes-container">
           <h3 class="no-space">Notes</h3>
           {{ form.notes(class='textarea inplace', id='notes-field',
           oninput='resizeTextarea(this)') }}
         </div>
 
-        <div
-          class="character-description-container"
-          id="character-party-container"
-        >
+        <div class="character-description-container" id="character-party-container">
           {% include "partial/charedit/party.html" %}
         </div>
       </div>

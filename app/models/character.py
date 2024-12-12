@@ -100,6 +100,11 @@ class Character(db.Model):
     def occupiedMainSlots(self):
         if self.items == None:
             return 0
+        conts = json.loads(self.containers)
+        cnt_load = {}
+        for c in conts:
+            if "load" in c:
+                cnt_load[int(c["id"])] = int(c["load"])
         items = json.loads(self.items)
         if  len(self.items) == 0:
             return 0
@@ -109,8 +114,14 @@ class Character(db.Model):
                 continue
             if "bulky" in it["tags"]:
                 slots += 2
-            else:
-                slots += 1
+                continue
+            if "carrying" in it:
+                load = cnt_load[int(it["carrying"])]
+                if load != None:
+                    slots += load
+                continue
+            slots += 1
+        print("occupiedMainSlots", slots)
         return slots
     
     # Serialize object to JSON

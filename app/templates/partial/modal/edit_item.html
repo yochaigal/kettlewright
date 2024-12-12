@@ -1,67 +1,102 @@
 <div class="inventory-modal">
   <form class="no-space">
-    <input type="hidden" name="edit_item_tags" value="" id="edit_item_tags"/>  
-    <input type="mode" name="mode" value="{{mode}}" />  
+    <input type="hidden" name="edit_item_tags" value id="edit_item_tags" />
+    <input type="mode" name="mode" value="{{mode}}" />
     <div class="modal-background inventory-modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
         <h3 class="modal-card-title">
-            {% if mode == "edit" %}
-                Edit Item: {{item.name}}
-            {% else %}
-                Create Item
-            {% endif %}
+          {% if mode == "edit" %}
+          Edit Item: {{item.name}}
+          {% else %}
+          Create Item
+          {% endif %}
         </h3>
       </header>
-  
+
       <section class="modal-card-body">
         <div class="field">
           <label>Name</label>
-          <input class="input" type="text" placeholder="Item Name" name="edit_item_name" 
-          {% if mode == "edit" %} value="{{item.name}}" {% endif %}  />
+          <input class="input" type="text" placeholder="Item Name"
+            name="edit_item_name" {% if mode=="edit" %}
+            value="{{item.name}}" {% endif %} />
         </div>
-  
+
         <div class="tags-container field" style="margin: 20px 0px">
           <label>Tags</label>
           <div>
-            <div class="tag button {% if mode == "edit" and "bulky" in item.tags %} selected {% endif %}" data-tag="bulky">bulky</div>
-            <div class="tag button {% if mode == "edit" and "petty" in item.tags %} selected {% endif %}" data-tag="petty">petty</div>
-            <div class="tag button {% if mode == "edit" and "uses" in item.tags %} selected {% endif %}" data-tag="uses">uses</div>
-            <div class="tag button {% if mode == "edit" and "charges" in item.tags %} selected {% endif %}" data-tag="charges">charges</div>
-            <div class="tag button {% if mode == "edit" and "blast" in item.tags %} selected {% endif %}" data-tag="blast">blast</div>
+            <div class="tag button {% if mode == " edit" and "bulky" in
+              item.tags %} selected {% endif %}"
+              data-tag="bulky">bulky</div>
+            <div class="tag button {% if mode == " edit" and "petty" in
+              item.tags %} selected {% endif %}"
+              data-tag="petty">petty</div>
+            <div class="tag button {% if mode == " edit" and "uses" in item.tags
+              %} selected {% endif %}"
+              data-tag="uses">uses</div>
+            <div class="tag button {% if mode == " edit" and "charges" in
+              item.tags %} selected {% endif %}"
+              data-tag="charges">charges</div>
+            <div class="tag button {% if mode == " edit" and "blast" in
+              item.tags %} selected {% endif %}"
+              data-tag="blast">blast</div>
           </div>
           <div>
-            <div class="tag button {% if mode == "edit" and "d4" in item.tags %} selected {% endif %}" data-tag="d4">d4</div>
-            <div class="tag button {% if mode == "edit" and "d6" in item.tags %} selected {% endif %}" data-tag="d6">d6</div>
-            <div class="tag button {% if mode == "edit" and "d8" in item.tags %} selected {% endif %}" data-tag="d8">d8</div>
-            <div class="tag button {% if mode == "edit" and "d10" in item.tags %} selected {% endif %}" data-tag="d10">d10</div>
-            <div class="tag button {% if mode == "edit" and "d12" in item.tags %} selected {% endif %}" data-tag="d12">d12</div>
+            <div class="tag button {% if mode == " edit" and "d4" in item.tags
+              %} selected {% endif %}" data-tag="d4">d4
+            </div>
+            <div class="tag button {% if mode == " edit" and "d6" in item.tags
+              %} selected {% endif %}" data-tag="d6">d6
+            </div>
+            <div class="tag button {% if mode == " edit" and "d8" in item.tags
+              %} selected {% endif %}" data-tag="d8">d8
+            </div>
+            <div class="tag button {% if mode == " edit" and "d10" in item.tags
+              %} selected {% endif %}" data-tag="d10">
+              d10</div>
+            <div class="tag button {% if mode == " edit" and "d12" in item.tags
+              %} selected {% endif %}" data-tag="d12">
+              d12</div>
           </div>
           <div>
-            <div class="tag {% if mode == "edit" and "1 Armor" in item.tags %} selected {% endif %}" data-tag="1 Armor">1 Armor</div>
-            <div class="tag button {% if mode == "edit" and "2 Armor" in item.tags %} selected {% endif %}" data-tag="2 Armor">2 Armor</div>
-            <div class="tag button {% if mode == "edit" and "3 Armor" in item.tags %} selected {% endif %}" data-tag="3 Armor">3 Armor</div>
-            <div class="tag button {% if mode == "edit" and "bonus defense" in item.tags %} selected {% endif %}" data-tag="bonus defense">bonus defense</div>
+            <div class="tag {% if mode == " edit" and "1 Armor" in item.tags %}
+              selected {% endif %}"
+              data-tag="1 Armor">1 Armor</div>
+            <div class="tag button {% if mode == " edit" and "2 Armor" in
+              item.tags %} selected {% endif %}"
+              data-tag="2 Armor">2 Armor</div>
+            <div class="tag button {% if mode == " edit" and "3 Armor" in
+              item.tags %} selected {% endif %}"
+              data-tag="3 Armor">3 Armor</div>
+            <div class="tag button {% if mode == " edit" and "bonus defense" in
+              item.tags %} selected {% endif %}"
+              data-tag="bonus defense">bonus defense</div>
           </div>
         </div>
-  
+
         <div style="display: flex; justify-content: flex-start; gap: 40px">
-          <div class="field flex-column-centered" >
+          <div class="field flex-column-centered">
             <label>Uses</label>
             <div class="column number-field" style="padding-bottom: 0">
-              <input class="input text-centered" type="number" min="0" placeholder="0" id="edit_item_uses" name="edit_item_uses"
-              {% if mode == "edit" %} value="{{item.uses}}" {% endif %} />
+              <input class="input text-centered" type="number" min="0"
+                placeholder="0" id="edit_item_uses"
+                name="edit_item_uses" {% if mode=="edit" %}
+                value="{{item.uses}}" {% endif %} />
             </div>
           </div>
-          
+
           <div class="field flex-column-centered">
             <label>Charges / Max</label>
             <div style="display: flex">
-              <input class="input text-centered" type="number" min="0" placeholder="0" id="edit_item_charges" name="edit_item_charges"
-              {% if mode == "edit" %} value="{{item.charges}}" {% endif %} />
+              <input class="input text-centered" type="number" min="0"
+                placeholder="0" id="edit_item_charges"
+                name="edit_item_charges" {% if mode=="edit" %}
+                value="{{item.charges}}" {% endif %} />
               <p style="margin: 0 4px; display: flex; align-items: center">/</p>
-              <input class="input text-centered" type="number" min="0" placeholder="0" id="edit_item_max_charges" name="edit_item_max_charges"
-              {% if mode == "edit" %} value="{{item.max_charges}}" {% endif %} />
+              <input class="input text-centered" type="number" min="0"
+                placeholder="0" id="edit_item_max_charges"
+                name="edit_item_max_charges" {% if mode=="edit" %}
+                value="{{item.max_charges}}" {% endif %} />
             </div>
           </div>
 
@@ -69,60 +104,62 @@
             <label>Container</label>
             <div class="select" style="max-width: 200px">
               <select id="edit_item_container" name="edit_item_container">
-                {% for c in inventory.containers %} 
-                    <option value="{{c.id}}" {% if mode == "edit" and item.location == c.id %} selected {% endif %}>{{c.name}}</option>
+                {% for c in inventory.containers %}
+                <option value="{{c.id}}" {% if mode=="edit" and
+                  item.location==c.id %} selected {% endif %}>{{c.name}}
+                </option>
                 {% endfor %}
               </select>
             </div>
           </div>
         </div>
-        
+
         <div class="field">
           <label>Description</label>
-          <textarea
-            class="textarea"
-            placeholder="Item Description"
+          <textarea class="textarea" placeholder="Item Description"
             id="edit_item_description"
             name="edit_item_description"
             oninput="resizeTextarea(this)">{% if mode == "edit" %}{{item.description}}{% endif %}</textarea>
         </div>
       </section>
-  
+
       <footer class="modal-card-foot">
-        <div class="message hidden" id="add-edit-item-modal-error-container" style="width: 100%">
-          <p class="message-body red-text" id="add-edit-item-modal-error-text"></p>
+        <div class="message hidden" id="add-edit-item-modal-error-container"
+          style="width: 100%">
+          <p class="message-body red-text"
+            id="add-edit-item-modal-error-text"></p>
         </div>
         <div class="footer-button-container">
           <div>
-            <button class="button is-success" type="button" 
-            {% if mode == "edit" %}
+            <button class="button is-success" type="button"
+              {% if mode == "edit" %}
               hx-post="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{item.id}}/save"
-            {% else %}
+              {% else %}
               hx-post="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/None/save?mode=create"
-            {% endif %}
-              hx-target="#inventory-container"> 
-              Save 
-            </button>   
-            {% if mode == "edit" %}         
-            <button class="button"  type="button" style="margin-left: auto"
-                hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{item.id}}/party"
-                hx-target="#inventory-container"
-                hx-confirm="Do you want to move <br/>{{item.name}} to party storage?"
-                data-confirm-title="Move to party storage"
-                data-confirm-button="Move">
+              {% endif %}
+              hx-target="#inventory-container">
+              Save
+            </button>
+            {% if mode == "edit" and character.party_id != None %}
+            <button class="button" type="button" style="margin-left: auto"
+              hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{item.id}}/party"
+              hx-target="#inventory-container"
+              hx-confirm="Do you want to move <br/>{{item.name}} to party storage?"
+              data-confirm-title="Move to party storage"
+              data-confirm-button="Move">
               <i class="fa-solid fa-share icon-in-button"></i>
               Party Storage
             </button>
             {% endif %}
           </div>
           <div>
-            <button class="button inventory-modal-cancel-button" type="button" 
-            {% if mode == "edit" %}
-            hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container.id}}"
-            {% else %}
-            hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/None"
-            {% endif %}
-            hx-target="#inventory-container">
+            <button class="button inventory-modal-cancel-button" type="button"
+              {% if mode == "edit" %}
+              hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container.id}}"
+              {% else %}
+              hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/None"
+              {% endif %}
+              hx-target="#inventory-container">
               Cancel
             </button>
           </div>
@@ -132,18 +169,18 @@
   </form>
 </div>
 
-  <script>
-    /* tags stored temporarily in hidden element */
-  function getTagsFromHidden () {
+<script>
+  /* tags stored temporarily in hidden element */
+  function getTagsFromHidden() {
     let tags = [];
-    if (document.getElementById("edit_item_tags").value != "") 
-      tags = document.getElementById("edit_item_tags").value.split(','); 
+    if (document.getElementById("edit_item_tags").value != "")
+      tags = document.getElementById("edit_item_tags").value.split(',');
     return tags;
   }
 
-  function updateTagsInHidden () {
+  function updateTagsInHidden() {
     let tags = [];
-    document.querySelectorAll(".tag").forEach((item) =>{
+    document.querySelectorAll(".tag").forEach((item) => {
       if (item.classList.contains("selected")) {
         tags.push(item.dataset.tag);
       }
@@ -154,45 +191,45 @@
   function adjustTagSelection(tag) {
     switch (tag) {
       case "bulky":
-        document.querySelector('[data-tag="petty"]').classList.remove("selected");break;
+        document.querySelector('[data-tag="petty"]').classList.remove("selected"); break;
       case "petty":
-        document.querySelector('[data-tag="bulky"]').classList.remove("selected");break;
+        document.querySelector('[data-tag="bulky"]').classList.remove("selected"); break;
       case "uses":
-        document.querySelector('[data-tag="charges"]').classList.remove("selected");break;
+        document.querySelector('[data-tag="charges"]').classList.remove("selected"); break;
       case "charges":
-        document.querySelector('[data-tag="uses"]').classList.remove("selected");break;
+        document.querySelector('[data-tag="uses"]').classList.remove("selected"); break;
       case "d4":
-        for (const x of ["d6","d8","d10","d12"]) {
-          document.querySelector('[data-tag="'+x+'"]').classList.remove("selected");
+        for (const x of ["d6", "d8", "d10", "d12"]) {
+          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
         }; break;
       case "d6":
-        for (const x of ["d4","d8","d10","d12"]) {
-          document.querySelector('[data-tag="'+x+'"]').classList.remove("selected");
+        for (const x of ["d4", "d8", "d10", "d12"]) {
+          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
         }; break;
       case "d8":
-        for (const x of ["d6","d4","d10","d12"]) {
-          document.querySelector('[data-tag="'+x+'"]').classList.remove("selected");
+        for (const x of ["d6", "d4", "d10", "d12"]) {
+          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
         }; break;
       case "d10":
-        for (const x of ["d6","d8","d4","d12"]) {
-          document.querySelector('[data-tag="'+x+'"]').classList.remove("selected");
+        for (const x of ["d6", "d8", "d4", "d12"]) {
+          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
         }; break;
       case "d12":
-        for (const x of ["d6","d8","d10","d4"]) {
-          document.querySelector('[data-tag="'+x+'"]').classList.remove("selected");
+        for (const x of ["d6", "d8", "d10", "d4"]) {
+          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
         }; break;
       case "1 Armor":
-        for (const x of ["2 Armor","3 Armor"]) {
-          document.querySelector('[data-tag="'+x+'"]').classList.remove("selected");
+        for (const x of ["2 Armor", "3 Armor"]) {
+          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
         }; break;
       case "2 Armor":
-        for (const x of ["1 Armor","3 Armor"]) {
-          document.querySelector('[data-tag="'+x+'"]').classList.remove("selected");
-        }; break;        
+        for (const x of ["1 Armor", "3 Armor"]) {
+          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
+        }; break;
       case "3 Armor":
-        for (const x of ["2 Armor","1 Armor"]) {
-          document.querySelector('[data-tag="'+x+'"]').classList.remove("selected");
-        }; break;        
+        for (const x of ["2 Armor", "1 Armor"]) {
+          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
+        }; break;
     }
   }
 
@@ -213,4 +250,4 @@
   resizeTextarea(document.getElementById("edit_item_description"));
 
 
-  </script>
+</script>

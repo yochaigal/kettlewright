@@ -91,7 +91,7 @@ def charedit_show(username, url_name):
     if character.party_code != None and character.party_code.startswith('Invalid last party code:'):
         form.party_code.data = ""
     party = Party.query.filter_by(id=character.party_id).first()
-    render =  render_template('main/character_edit.html', user=user, character=character, username=username, url_name=url_name, scarlist=scarlist, inventory=inventory, portrait_src=portrait_src, is_owner=is_owner, form=form,old_items = character.items, party=party)
+    render =  render_template('main/character_edit.html', user=user, character=character, username=username, url_name=url_name, scarlist=scarlist, inventory=inventory, portrait_src=portrait_src, is_owner=is_owner, form=form,old_items = character.items, party=party, old_containers=character.containers)
     response = make_response(render)
     
     response.headers['HX-Trigger-After-Settle'] = "charedit-loaded"
@@ -137,9 +137,14 @@ def charedit_cancel(username, url_name):
     if data['old_gold'] != None:
         character.gold = data['old_gold']
         changed = True
+    if data['old_containers'] != None:
+        character.containers = data['old_containers']
+        changed = True
     if changed:
         db.session.commit()        
-    # TODO: remove items from party storage
+    inventory = Inventory(character)
+    inventory.remove_items_from_party(json.loads(character.items))
+    
     response = make_response("Redirecting")
     response.headers["HX-Redirect"] = "/users/"+username+"/characters/"+url_name
     return response

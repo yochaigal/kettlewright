@@ -43,11 +43,21 @@ class Inventory:
     # count slots for a container
     def container_slots(self, container):
         slots = 0
+        conts = json.loads(self.character.containers)
+        cnt_load = {}
+        for c in conts:
+            if "load" in c:
+                cnt_load[int(c["id"])] = int(c["load"])
         for it in container["items"]:
             if "bulky" in it["tags"]:
                 slots += 2
                 continue
             if "petty" in it["tags"]:
+                continue
+            if "carrying" in it:
+                load = cnt_load[int(it["carrying"])]
+                if load != None:
+                    slots += load
                 continue
             slots += 1
         return slots
@@ -75,6 +85,12 @@ class Inventory:
         else:
             item["editable"] = True
         item["dice"] = []
+        # loads
+        if "carrying" in item:
+            for c in self.containers:
+                if "load" in c and int(c["id"]) == int(item["carrying"]):
+                    title = title + " ["+str(c["load"])+"]"
+        # tags
         if len(item["tags"]) > 0:
             title += " ("
             tt = []
@@ -297,6 +313,13 @@ class Inventory:
             if c["id"] != int(container_id):
                 result.append(c)
         self.character.containers = json.dumps(result)
+        items = json.loads(self.character.items)
+        result = []
+        for it in items:
+            if "carrying" in it and it["carrying"] == int(container_id):
+                continue
+            result.append(it)
+        self.character.items = json.dumps(result)
         db.session.commit()
         self.parse(self.character)                        
         if move_to != None and move_to != "":
@@ -423,6 +446,24 @@ class Inventory:
         party.items = json.dumps(items)
         db.session.commit()
         return item        
+    
+    # remove items from party storage
+    def remove_items_from_party(self, char_items):
+        party = Party.query.filter_by(id=self.character.party_id).first()
+        if not party:
+            return
+        keys = []
+        for it in char_items:
+            key = str(it["id"])+"~"+it["name"]
+            keys.append(key)
+        items = json.loads(party.items)
+        result = []
+        for it in items:
+            k = str(it["id"])+"~"+it["name"]
+            if not k in keys: 
+                result.append(it)
+        party.items = json.dumps(result)
+        db.session.commit()
                     
     def print(self):
         print(self.containers)

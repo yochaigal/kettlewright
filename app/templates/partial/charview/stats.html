@@ -20,10 +20,7 @@
   </div>
   <div class="character-attribute-container" id="character-hp-container">
     <h4>HP</h4>
-    <p
-      class="subtitle view-mode {% if character.overburdened() %} red-text {% endif %}"
-      id="hp-view-text"
-    >
+    <p class="subtitle view-mode {% if character.overburdened() %} red-text {% endif %}" id="hp-view-text">
       {{ character.hpValue().0 }}/{{ character.hpValue().1 }}
     </p>
   </div>
@@ -41,31 +38,17 @@
   </div>
   <div class="character-attribute-container" id="character-armor-container">
     <h4>Armor</h4>
-    <p
-      class="subtitle"
-      id="armor-counter"
-      style="margin-left: 0px; margin-right: auto"
-    >
+    <p class="subtitle" id="armor-counter" style="margin-left: 0px; margin-right: auto">
       {{ character.armorValue() }}
     </p>
   </div>
   <div id="character-rest-container">
-    {% if not character.deprived %}
-    <button
-      class="button"
-      hx-get="/charedit/rest/{{username}}/{{url_name}}"
-      hx-target="#character-stats-container"
-      hx-confirm="Do you want to restore all HP?"
-      data-confirm-title="Rest"
-      data-confirm-button="Yes"
-    >
+    <button class="button smaller-font" hx-get="/charedit/rest/{{username}}/{{url_name}}"
+      hx-target="#character-stats-container" hx-confirm="Do you want to restore all HP?" data-confirm-title="Rest"
+      data-confirm-button="Yes" {% if character.deprived %} disabled {% endif %}>
       Rest
     </button>
-    {% endif %}
   </div>
 </div>
-<div
-  hx-trigger="refresh-stats from:body"
-  hx-get="/charedit/inplace-stats/{{ username }}/{{ url_name }}/cancel"
-  hx-target="#character-stats-container"
-></div>
+<div hx-trigger="refresh-stats from:body" hx-get="/charedit/inplace-stats/{{ username }}/{{ url_name }}/cancel"
+  hx-target="#character-stats-container"></div>
