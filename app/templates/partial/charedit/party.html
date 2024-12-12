@@ -1,46 +1,35 @@
-    <div class="row16">
-        <h3 class="no-space" id="character-party-heading">Party</h3>
-        <div class="row32">
-            <div 
-                title="Save changes"
-                hx-post="/charedit/inplace-text/{{username}}/{{url_name}}/party_code/save" 
-                hx-target="#character-party-container"
-                class="small-icon-button" >
-                <i class="fa-solid fa-check check" ></i>
-            </div>
-            <div 
-                title="Cancel"
-                hx-get="/charedit/inplace-text/{{username}}/{{url_name}}/party_code/cancel" class="small-icon-button"
-                hx-target="#character-party-container">   
-                <i class="fa-solid fa-xmark xmark"></i>
-            </div>
-        </div>
-    </div>    
-
-    {% if not party %}
+<div>
+  <div class="row16">
+    <h3 id="character-party-heading" class="no-space">Party</h3>
+    {% if party %}
+      <button 
+          type="button"
+          class="button" 
+          style="margin-top: 0px"
+          hx-get="/charedit/leave-party/{{username}}/{{url_name}}"
+          hx-target="#character-party-container"
+          hx-confirm="Do you want to leave party {{party.name}}?<br/>This action is persistent,<br/>independent on character editor state."
+          data-confirm-title="Leave party"
+          data-confirm-button="Leave">
+            Leave party
+      </button>
+    {% endif %}    
+    </div>
+  </div>  
+  {% if party %}
+  <div id="character-party-name-description">
+    <a class="bold subtitle" id="character-party-link" href="{{ base_url }}/{{ party_url }}">{{ party.name }}</a>
+    <p class="" id="character-party-description">{{ party.description }}</p>
+  </div>
+  {% else %}
+  <div class="column">
+    {% if err %}
+      <p style="color:red">{{ err }}</p>
+    {% endif %}
     <div class="field" id="character-join-code" style="margin-top: 20px">
       <label>Join Code</label>
       {{ form.party_code(class='input', id='party-id-field') }}
     </div>
-    {% endif %}
-
-
-<div>
-    <div class="row16">
-      <h3 id="character-party-heading" class="no-space">Party</h3>
-      {% if party %}
-      <div title="Leave party" class="small-icon-button edmk" hx-get="/charedit/leave-party/{{username}}/{{url_name}}"
-        hx-target="#character-party-container" hx-confirm="Do you want to leave party {{party.name}}?"
-        data-confirm-title="Leave party" data-confirm-button="Leave">
-        <i class="fa-solid fa-person-walking-arrow-right person-walking-arrow-right"></i>
-      </div>
-      {% else %}
-      <div title="Join party" hx-get="/charedit/inplace-text/{{username}}/{{url_name}}/party_code"
-        hx-target="#character-party-container" class="small-icon-button edmk">
-        <i class="fa-solid fa-pen-to-square pen-to-square"></i>
-      </div>
-      {% endif %}
-    </div>
-  </div>
-  
-  </div>
+  </div>  
+  {% endif %}
+</div>

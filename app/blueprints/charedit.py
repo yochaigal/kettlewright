@@ -73,6 +73,7 @@ def remove_character_from_party(character):
         party_subowners.remove(character.owner)
         save_party_subowners(party, party_subowners)
     character.party_id = None
+    character.party_code = ""
 
 # Route: edit character page
 @character_edit.route('/charedit/<username>/<url_name>')
@@ -87,7 +88,10 @@ def charedit_show(username, url_name):
     if current_user.is_authenticated:
         is_owner = current_user.id == user.id
     form = CharacterEditForm(obj=character)
-    render =  render_template('main/character_edit.html', user=user, character=character, username=username, url_name=url_name, scarlist=scarlist, inventory=inventory, portrait_src=portrait_src, is_owner=is_owner, form=form,old_items = character.items)
+    if character.party_code != None and character.party_code.startswith('Invalid last party code:'):
+        form.party_code.data = ""
+    party = Party.query.filter_by(id=character.party_id).first()
+    render =  render_template('main/character_edit.html', user=user, character=character, username=username, url_name=url_name, scarlist=scarlist, inventory=inventory, portrait_src=portrait_src, is_owner=is_owner, form=form,old_items = character.items, party=party)
     response = make_response(render)
     
     response.headers['HX-Trigger-After-Settle'] = "charedit-loaded"
@@ -99,13 +103,25 @@ def charedit_save(username, url_name):
     user, character = get_char_data(username, url_name)
     form = CharacterEditForm(obj=character)
     fields_to_update = ['strength_max', 'strength','dexterity_max', 'dexterity', 'willpower_max', 'willpower','hp_max', 'hp', 'deprived', 'gold','description', 'armor','name','omens', 'scars','traits','bonds','notes']
-    # , 'party_code',, , , , , , ]
     for field in fields_to_update:
         setattr(character, field, sanitize_data(getattr(form, field).data))
+    err = None
+    party_code = getattr(form, 'party_code').data
+    if  party_code != "":
+        party = Party.query.filter_by(join_code=party_code.strip()).first()
+        if party:
+            character.party_id = party.id
+            add_character_to_party(character)
+            character.party_code = party_code
+        else:
+            character.party_code = "Invalid last party code: "+party_code
+            party_url = None
+    else:
+        character.party_code = ""
     db.session.commit()
-    # TODO: update character
     response = make_response("Redirecting")
     response.headers["HX-Redirect"] = "/users/"+username+"/characters/"+url_name
+
     return response
 
 # Route: character page cancel
@@ -128,6 +144,8 @@ def charedit_cancel(username, url_name):
     response.headers["HX-Redirect"] = "/users/"+username+"/characters/"+url_name
     return response
 
+# ----- PARTY ----    
+
 
 # Route: leave current character party
 @character_edit.route('/charedit/leave-party/<username>/<url_name>', methods=['GET'])
@@ -135,8 +153,19 @@ def charedit_leave_party(username, url_name):
     user, character = get_char_data(username, url_name)
     remove_character_from_party(character)
     db.session.commit()
-    return render_template('partial/charview/party.html', user=user, character=character, username=username, url_name=url_name, party=None, party_url="")
-    None
+    response = make_response("Redirect")
+    response.headers["HX-Redirect"] = "/charedit/"+username+"/"+url_name
+    return response
+    # return render_template('partial/charedit/party.html', user=user, character=character, username=username, url_name=url_name, party=None, party_url="")
+
+@character_edit.route('/charedit/clear-party-err/<username>/<url_name>', methods=['GET'])
+def charedit_clear_party_err(username, url_name):
+    user, character = get_char_data(username, url_name)
+    character.party_code = ""
+    db.session.commit()
+    response = make_response("")
+    return response
+
     
 # ----- SCARS ----    
 

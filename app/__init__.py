@@ -135,6 +135,15 @@ def create_app():
     @app.template_filter("eol2br")
     def eol2br_filter(text: str) -> str:
         return text.replace("\n","<br/>")
+    
+    # Write error about party code
+    @app.template_filter("party_code_error")
+    def party_code_error_filter(text: str) -> str:
+        if text == None:
+            return None
+        if text.startswith('Invalid last party code:'):
+            return text
+        return None
 
     return app
 

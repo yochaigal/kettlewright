@@ -21,3 +21,5 @@ htmx.on("scar-roll", function(evt){
   element.style.height = "auto";
   element.style.height = element.scrollHeight + 4 + "px";
 });
+
+

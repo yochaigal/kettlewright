@@ -145,25 +145,7 @@
           class="character-description-container"
           id="character-party-container"
         >
-          {% if party %}
-          <div id="character-party-name-description">
-            <a
-              class="bold subtitle"
-              id="character-party-link"
-              href="{{ base_url }}/{{ party_url }}"
-              >{{ party.name }}</a
-            >
-            <p class="" id="character-party-description">
-              {{ party.description }}
-            </p>
-          </div>
-          {% else %} {% if err %}
-          <p style="color: red">{{ err }}</p>
-          {% endif %}
-          <p id="character-no-party-description">
-            This character does not belong to a party...
-          </p>
-          {% endif %}
+          {% include "partial/charedit/party.html" %}
         </div>
       </div>
     </form>
