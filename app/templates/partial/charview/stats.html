@@ -1,32 +1,35 @@
-<div class="row16">
-  <h3>Stats</h3>
-  <div title="Edit stats" hx-get="/charedit/inplace-stats/{{ username }}/{{ url_name }}" hx-target="#character-stats-container" class="small-icon-button edmk">
-    <i class="fa-solid fa-pen-to-square pen-to-square"></i>
-  </div>
-</div>
+<h3>Stats</h3>
 <div class="stats-stats-container character-section">
   <div class="character-attribute-container" id="character-str-container">
     <h4>STR</h4>
-    <p class="subtitle view-mode" id="strength-view-text">{{ character.strength }}/{{ character.strength_max }}</p>
+    <p class="subtitle view-mode" id="strength-view-text">
+      {{ character.strength }}/{{ character.strength_max }}
+    </p>
   </div>
   <div class="character-attribute-container" id="character-dex-container">
     <h4>DEX</h4>
-    <p class="subtitle view-mode" id="dexterity-view-text">{{ character.dexterity }}/{{ character.dexterity_max }}</p>
+    <p class="subtitle view-mode" id="dexterity-view-text">
+      {{ character.dexterity }}/{{ character.dexterity_max }}
+    </p>
   </div>
   <div class="character-attribute-container" id="character-wil-container">
     <h4>WIL</h4>
-    <p class="subtitle view-mode" id="willpower-view-text">{{ character.willpower }}/{{ character.willpower_max }}</p>
+    <p class="subtitle view-mode" id="willpower-view-text">
+      {{ character.willpower }}/{{ character.willpower_max }}
+    </p>
   </div>
   <div class="character-attribute-container" id="character-hp-container">
     <h4>HP</h4>
-    <p class="subtitle view-mode {% if character.overburdened() %} red-text {% endif %}" id="hp-view-text">{{ character.hpValue().0 }}/{{ character.hpValue().1 }}</p>
+    <p class="subtitle view-mode {% if character.overburdened() %} red-text {% endif %}" id="hp-view-text">
+      {{ character.hpValue().0 }}/{{ character.hpValue().1 }}
+    </p>
   </div>
-  
+
   {% if character.deprived %}
-    <div class="row16" id="character-deprived-container">
-      <i class="fa-solid fa-face-tired face-tired"></i>
-      <h4 class="character-deprived-text view-mode">DEPRIVED</h4>
-    </div>
+  <div class="row16" id="character-deprived-container">
+    <i class="fa-solid fa-face-tired face-tired"></i>
+    <h4 class="character-deprived-text view-mode">DEPRIVED</h4>
+  </div>
   {% endif %}
 
   <div class="character-attribute-container" id="character-gold-container">
@@ -40,17 +43,12 @@
     </p>
   </div>
   <div id="character-rest-container">
-    <button class="button" 
-      hx-get="/charedit/rest/{{username}}/{{url_name}}" 
-      hx-target="#character-stats-container"
-      hx-confirm="Do you want to restore all HP?"
-      data-confirm-title="Rest"
-      data-confirm-button="Yes">
+    <button class="button smaller-font" hx-get="/charedit/rest/{{username}}/{{url_name}}"
+      hx-target="#character-stats-container" hx-confirm="Do you want to restore all HP?" data-confirm-title="Rest"
+      data-confirm-button="Yes" {% if character.deprived %} disabled {% endif %}>
       Rest
-  </button>
+    </button>
   </div>
 </div>
-<div 
-  hx-trigger="refresh-stats from:body" 
-  hx-get="/charedit/inplace-stats/{{ username }}/{{ url_name }}/cancel" 
+<div hx-trigger="refresh-stats from:body" hx-get="/charedit/inplace-stats/{{ username }}/{{ url_name }}/cancel"
   hx-target="#character-stats-container"></div>

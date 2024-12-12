@@ -9,7 +9,6 @@
   }
 }
 
-
 .character-section {
   margin: 1em 0px;
 }
@@ -23,7 +22,7 @@
     "traits inventory-container";
   /* row-gap: 1em; */
   column-gap: 2.5em;
-  margin-bottom: 1em;
+  margin-bottom: 1em; 
 }
 
 
@@ -250,4 +249,8 @@
 
 #character-party-name-description {
   margin: 16px 0px;
+}
+
+.character-text-field {
+  margin-top: 0px !important;
 }

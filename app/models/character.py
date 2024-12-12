@@ -64,13 +64,13 @@ class Character(db.Model):
     # Compute HP value, returns current and max
     def hpValue(self):
         hp = self.hp
-        if self.occupiedSlots() >= 10:
+        if self.occupiedMainSlots() >= 10:
             hp = 0
         return [hp,self.hp_max]
     
     # Returns True if character is overburdened
     def overburdened(self):
-        return self.occupiedSlots() >= 10
+        return self.occupiedMainSlots() >= 10
     
     # Compute armor value based on possessed items
     def armorValue(self):
@@ -96,20 +96,32 @@ class Character(db.Model):
         return armor
     
     # Compute occupied slots based on possessed items
-    def occupiedSlots(self):
+    # but only for a main container
+    def occupiedMainSlots(self):
         if self.items == None:
             return 0
+        conts = json.loads(self.containers)
+        cnt_load = {}
+        for c in conts:
+            if "load" in c:
+                cnt_load[int(c["id"])] = int(c["load"])
         items = json.loads(self.items)
         if  len(self.items) == 0:
             return 0
         slots = 0
         for it in items:
-            if "petty" in it["tags"]:
+            if "petty" in it["tags"] or it["location"] != 0:
                 continue
             if "bulky" in it["tags"]:
                 slots += 2
-            else:
-                slots += 1
+                continue
+            if "carrying" in it:
+                load = cnt_load[int(it["carrying"])]
+                if load != None:
+                    slots += load
+                continue
+            slots += 1
+        print("occupiedMainSlots", slots)
         return slots
     
     # Serialize object to JSON

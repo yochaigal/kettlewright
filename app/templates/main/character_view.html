@@ -1,0 +1,169 @@
+{% extends "base.html" %} {% block content %}
+<script>
+  const party = `{{party}}`;
+  const username = `{{username}}`;
+  const url_name = `{{url_name}}`;
+  const selected_container = `{{inventory.selected_container["id"]}}`;
+</script>
+
+{% if is_owner %}
+<script>
+  const party_id = "{{ character.party_id }}";
+  const character_id = "{{ character.id }}";
+  const isOwner = "{{ is_owner }}";
+</script>
+{% endif %}
+<script src="{{url_for('static', filename='src/js/character_view.js')}}" defer type="module"></script>
+
+<div class="body-container">
+  {% with messages = get_flashed_messages() %} {% if messages is not none and
+  messages|length > 0 %}
+  <div class="message is-danger">
+    <div class="message-header">
+      <p>Errors</p>
+    </div>
+    <div class="message-body">
+      <ul class="errors">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endif %} {% endwith %}
+  <div class="sheet view-character-sheet">
+    <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em">
+      <div class="no-space" id="character-portrait-container">
+        <img src="{{portrait_src}}" alt="character portrait" class="portrait-image" id="portrait-image" />
+      </div>
+      <div>
+        <div id="character-name-container">
+          <h1>{{character.name}}</h1>
+        </div>
+        <h2 class="">{{character.background}}</h2>
+      </div>
+      {% if is_owner %}
+      <div style="
+          margin-left: auto;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5em;
+        ">
+        <div class="row32">
+          <button class="dice-button" type="button" id="character-dice-button">
+            <i class="fa-solid fa-dice dice"></i>
+          </button>
+          <button class="dice-button ghost40" type="button" title="Click to switch edit/view mode"
+            hx-get="/charedit/{{username}}/{{url_name}}" hx-target="body">
+            <i class="fa-solid fa-pen-to-square pen-to-square"></i>
+          </button>
+        </div>
+        {% include "main/dice_modal.html" %}
+      </div>
+      {% endif %}
+    </div>
+    <div class="character-stats-traits-inventory" id="edit-character-left-">
+      <div id="character-stats-container">
+        {% include "partial/charview/stats.html" %}
+      </div>
+      <div id="character-traits-container">
+        <h3 class="no-space">Traits</h3>
+        <div id="character-traits-view" class="with-whitespace character-text-field">
+          {% if character.traits != "" %} {{character.traits}} {% else %} This
+          character has no traits... {% endif %}
+        </div>
+      </div>
+      <div class="inventory-container" id="inventory-container">
+        {% include "partial/charview/inventory.html" %}
+      </div>
+    </div>
+
+    <div class="character-descriptions-grid">
+      <div class="character-description-container" id="character-description-container">
+        <h3 class="no-space">Description</h3>
+        <p id="character-description-view " class="with-whitespace character-text-field">
+          {% if character.description != "" %} {{ character.description }} {%
+          else %} This character has no description... {% endif %}
+        </p>
+      </div>
+      <div class="character-description-container" id="character-bonds-container">
+        <h3 class="no-space">Bonds</h3>
+        <p id="character-bonds-view" class="with-whitespace character-text-field">
+          {% if character.bonds != "" %} {{ character.bonds }} {% else %} This
+          character has no bonds... {% endif %}
+        </p>
+      </div>
+      <div class="character-description-container" id="character-omens-container">
+        <h3 class="no-space">Omens</h3>
+        <p id="character-omens-view" class="with-whitespace character-text-field">
+          {% if character.omens != "" %} {{ character.omens }} {% else %} This
+          character has no omens... {% endif %}
+        </p>
+      </div>
+      <div class="character-description-container" id="character-scars-container">
+        <h3 class="no-space">Scars</h3>
+        <p id="character-scars-view" class="with-whitespace character-text-field">
+          {% if character.scars != "" %} {{character.scars|safe}} {% else %}
+          This character has no scars... {% endif %}
+        </p>
+      </div>
+      <div class="character-description-container" id="character-notes-container">
+        <h3 class="no-space">Notes</h3>
+        <p id="character-notes-view" class="with-whitespace character-text-field">
+          {% if character.notes != "" %} {{ character.notes|safe }} {% else %}
+          This character has no notes... {% endif %}
+        </p>
+      </div>
+
+      <div class="character-description-container" id="character-party-container">
+        <h3 id="character-party-heading">Party</h3>
+        {% if party %}
+        <div id="character-party-name-description">
+          <a class="bold subtitle" id="character-party-link" href="{{ base_url }}/{{ party_url }}">{{ party.name }}</a>
+          <p class="character-text-field with-whitespace" id="character-party-description">
+            {{ party.description }}
+          </p>
+        </div>
+        {% else %}
+        <div id="party-code-error" class="row16">
+          {% if character.party_code|party_code_error %}
+          <p style="color: red">{{ character.party_code|party_code_error }}</p>
+          <i class="fa-solid fa-xmark xmark" hx-get="/charedit/clear-party-err/{{username}}/{{url_name}}"
+            hx-target="#party-code-error"></i>
+          {% endif %}
+        </div>
+        <p id="character-no-party-description">
+          This character does not belong to a party...
+        </p>
+        {% endif %}
+      </div>
+
+      <div class="justify-space-between" style="margin-top: 2.5em">
+        <div class="row32">
+          <a href="{{ url_for('main.print_character', username=username, url_name=url_name) }}">
+            <button class="button is-light" id="" style="margin-right: 1em" type="button">
+              Print<i class="fa-solid fa-print icon-in-button"></i>
+            </button>
+          </a>
+
+          {% if is_owner %}
+          <a href="/charedit/export/{{username}}/{{url_name}}">
+            <button id="download-json-button" class="button" type="button">
+              JSON <i class="fa-solid fa-download"></i>
+            </button>
+          </a>
+
+          <button class="edit-mode is-danger button" id="delete-character-button" data-character-id="{{ character.id }}"
+            data-confirm-title="Delete character" data-confirm-button="Delete"
+            hx-get="/delete-character/{{ character.id }}/"
+            hx-confirm="Are you sure you want to delete {{character.name}}?">
+            DELETE<i class="fa-solid fa-trash icon-in-button"></i>
+          </button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}
+</div>
