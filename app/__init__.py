@@ -127,6 +127,10 @@ def create_app():
     # blueprint for marketplace dialog
     from app.blueprints import marketplace as marketplace_blueprint
     app.register_blueprint(marketplace_blueprint)
+    
+     # blueprint for party routes
+    from app.blueprints import party as party_blueprint
+    app.register_blueprint(party_blueprint)
 
     from .socket_events import register_socket_events
     register_socket_events(socketio)
@@ -144,6 +148,11 @@ def create_app():
         if text.startswith('Invalid last party code:'):
             return text
         return None
+    
+    # Sanitize strings for JS function calls
+    @app.template_filter("js_param")
+    def js_param_filter(text: str) -> str:
+        return text.replace("'","’")
 
     return app
 

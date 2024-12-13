@@ -1,19 +1,11 @@
 {% extends "base.html" %} {% block content %}
+
+{% if is_owner or is_subowner %}
 <script>
-  const partyID = `{{ party_id }}`;
-  let members = `{{ members }}`;
-  const joinCode = `{{ join_code }}`;
-  const userID = `{{ user_id }}`;
-  const isOwner = `{{ is_owner }}`;
-  const isSubOwner = `{{ is_subowner }}`;
-  const ownername = `{{ ownername }}`;
-  const username = `{{ username }}`;
-  const partyURL = `{{ party_url }}`;
-  const base_url = `{{ base_url }}`;
-  const data = JSON.parse(`{{ items_json|safe }}`.slice(1, -1));
-  const containersData = JSON.parse(`{{ containers_data_json|safe }}`.slice(1, -1));
+  joinCode = `{{ join_code }}`;
 </script>
-<script src="{{ url_for('static', filename='src/js/party_edit.js') }}" defer type="module"></script>
+{% endif %}
+<script src="{{ url_for('static', filename='src/js/party_view.js') }}" defer type="module"></script>
 <section class="body-container">
   {% with messages = get_flashed_messages() %} {% if messages is not none and messages|length > 0 %}
   <div class="message is-danger">
@@ -26,13 +18,28 @@
     </div>
   </div>
   {% endif %} {% endwith %}
-  <form id="party-form" class="sheet box" method="post">
-    {{ form.hidden_tag() }}
+  <div id="party-form" class="sheet box form">
     <div style="display: flex; justify-content: space-between">
       <div>
-        <p class="justify-centered">{{ form.name(class='title justify-centered', id ='party-name-field') }}</p>
-        <div> {{ form.description(class='textarea') }} </div>
+        <h1 class="title level-item justify-centered">{{ name }}</h1>
+        <p class="justify-centered"></p>
+
+        <p>{{description}}</p>
       </div>
+
+      <div class="row32 centered">
+        {% if is_owner or is_subowner %}
+        <button class="button is-light" id="join-code-button" type="button">
+          Join Code
+          <i class="fa-solid fa-link icon-in-button"></i>
+        </button>
+        <button class="dice-button ghost40" type="button" title="Click to switch edit/view mode"
+          hx-get="/party/{{username}}/{{party.id}}" hx-target="body">
+          <i class="fa-solid fa-pen-to-square pen-to-square"></i>
+        </button>
+        {% endif %}
+      </div>
+
     </div>
 
     <div class="party-section">
@@ -43,7 +50,7 @@
       <div id="party-members-content" class="party-section-content">
         {% if characters %} {% for character in characters %}
 
-        <div class="card character-card" style="cursor: pointer; height: auto; padding: 1em"
+        <div class="card character-card party-member-card" style="cursor: pointer; padding: 20px"
           data-character-owner="{{ character.owner_username }}" data-character-name="{{ character.name }}"
           data-character-portrait-url="{{ character.image_url }}" data-character-url="{{ character.url_name }}"
           data-character-id="{{ character.id }}" data-character-items="{{ character.items }}"
@@ -94,13 +101,6 @@
             </div>
             <div class="level is-mobile"> </div>
           </div>
-          {% if is_owner %}
-          <footer class="card-footer edit-mode">
-            <button class="card-footer-item button is-danger is-light edit-mode character-remove-button" type="button"
-              id="character-remove-button">Remove
-            </button>
-          </footer>
-          {% endif %}
         </div>
 
         {% endfor %} {% else %}
@@ -114,25 +114,12 @@
       <span id="party-inventory-collapse-button" class="party-collapse-button">
         <i class="fa-solid fa-chevron-down" id="party-inventory-collapse-icon"></i>
       </span>
-      <span class="subtitle bold">Inventory</span>
+      <span class="subtitle bold">Storage</span>
       <div id="party-inventory-content" class="party-section-content">
-        <div> {% include "partial/partyedit/inventory.html" %}</div>
+        <div> {% include "partial/partyview/inventory.html" %}</div>
       </div>
     </div>
-
-    {% if is_owner %}
-    <div>
-      <button class="button is-danger edit-mode" type="button" id="delete-party-button" style="margin: 40px 0px">
-        Delete Party
-      </button>
-    </div>
-    {% endif %}
-
-    <div id="save-button-footer-wrapper" class="sticky-save-button-wrapper edit-mode">
-      <button id="save-button" class="button is-success" style="margin-right: 40px"> Save </button>
-      <button id="cancel-button" class="button" type="button"> Cancel </button>
-    </div>
-  </form>
+  </div>
 </section>
 
 {% endblock %}

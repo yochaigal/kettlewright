@@ -590,11 +590,14 @@ def party(ownername, party_url):
                     'static', filename='images/portraits/' + character.image_url)
             else:
                 character.portrait_src = character.image_url
-
-    return render_template('main/party.html', name=party.name, description=party.description,
+                
+    inventory = Inventory(party)
+    inventory.select(0)
+    inventory.decorate()
+    
+    return render_template('main/party_view.html', name=party.name, description=party.description,
                            members=party.members, characters=characters, join_code=join_code, is_owner=is_owner,
-                           is_subowner=is_subowner, base_url=base_url,
-                           items_json=json.dumps(party.items), containers_data_json=json.dumps(party.containers), party_id=party.id,)
+                           inventory=inventory, is_subowner=is_subowner, base_url=base_url, party=party, party_id=party.id,)
 
 
 @main.route('/users/<ownername>/parties/<party_url>/edit/', methods=['GET', 'POST'])
@@ -694,11 +697,14 @@ def party_edit(ownername, party_url):
             error_messages.append(f"{field}: {error}")
     if error_messages:
         flash(" ".join(error_messages))
+        
+    inventory = Inventory(party)
 
     return render_template('main/party_edit.html', form=form, name=party.name, description=party.description,
                            members=party.members, characters=characters, join_code=join_code, is_owner=is_owner,
                            is_subowner=is_subowner, user_id=current_user.id, ownername=owner.username, username=current_user.username, base_url=base_url,
                            items_json=json.dumps(party.items), containers_data_json=json.dumps(party.containers), party_id=party.id, party_url=party_url,
+                           inventory=inventory
                            )
 
 
