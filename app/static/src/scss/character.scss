@@ -107,6 +107,12 @@
   font-weight: 600;
 }
 
+.item-blocker-text {
+  font-style: italic;
+  font-weight: 600;
+  background: linear-gradient(to right,var(--bg), color-mix(in lab, transparent 95%, var(--fg)));
+}
+
 
 /* For individual stats, str, etc. */
 .character-attribute-container {
