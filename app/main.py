@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from .models import User, Character, Party
 from . import db
 from .forms import CharacterForm, CharacterEditForm, CharacterJSONForm, PartyForm, PartyEditForm
-from app.lib import load_scars, character_portrait_link, Inventory, sanitize_data, sanitize_json_content
+from app.lib import load_scars, character_portrait_link, Inventory, sanitize_data, sanitize_json_content, load_version
 import sys
 import json
 from urllib.parse import quote
@@ -63,7 +63,8 @@ def user(username):
 
 @main.route('/about')
 def about():
-    return render_template('main/about.html')
+    version = load_version()
+    return render_template('main/about.html', version=version)
 
 
 @main.route('/users/<username>/characters/')
