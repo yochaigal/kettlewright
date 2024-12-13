@@ -95,3 +95,9 @@ def sanitize_json_content(json_str):
 
     return sanitized_json_str
 
+
+def load_version():
+    ver_file_path = os.path.join(app_static_path(), 'json', 'version.json')
+    with open(ver_file_path, 'r') as file:
+        ver_data = json.load(file)
+    return ver_data["version"]

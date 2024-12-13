@@ -334,7 +334,7 @@ class Inventory:
             obj["carried_by"] = carried_by
             obj["load"] = load
             for i in range(int(load)):
-                items = self.add_carrying(carried_by,new_id, name)
+                items = self.add_carrying(carried_by,new_id, name, int(load))
             self.character.items = json.dumps(items)
         containers.append(obj)
         self.character.containers = json.dumps(containers)                        
