@@ -1,8 +1,15 @@
+function resizeText(element) {
+  element.style.height = "auto";
+  element.style.height = element.scrollHeight + 4 + "px";
+}
+
 htmx.on("charedit-loaded", function(evt){ 
-  document.querySelectorAll(".textarea").forEach((element) => {
-    element.style.height = "auto";
-    element.style.height = element.scrollHeight + 4 + "px";
-    });
+  document.querySelectorAll("textarea").forEach((element) => {
+      resizeText(element);
+      element.addEventListener("focus", () => {
+        resizeText(element);
+      })
+  });
 });
 
 htmx.on("refresh-stats", function(evt){ 
@@ -12,14 +19,12 @@ htmx.on("refresh-stats", function(evt){
 
 htmx.on("omen-roll", function(evt){ 
   const element = document.getElementById('omens-field');
-  element.style.height = "auto";
-  element.style.height = element.scrollHeight + 4 + "px";
+  resizeText(element);
 });
 
 htmx.on("scar-roll", function(evt){ 
   const element = document.getElementById('scars-field');
-  element.style.height = "auto";
-  element.style.height = element.scrollHeight + 4 + "px";
+  resizeText(element);
 });
 
 

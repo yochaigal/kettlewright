@@ -2,14 +2,20 @@ import json
 import re
 from app.models import db, Party
 
+FATIGUE_NAME = "Fatigue"
+CARRYING_NAME = "Carrying"
+non_editable_items = [FATIGUE_NAME]
+
 def bring_fatigue_to_end(item):
-    if item["name"] == "Fatigue":
+    if item["name"] == FATIGUE_NAME:
         return "zzzzzzzzzzzzz"
+    if item["name"].startswith(CARRYING_NAME):
+        return "zzzzzzzzzz"
     else:
         return item["name"]
     
-FATIGUE_NAME = "Fatigue"
-non_editable_items = [FATIGUE_NAME]
+
+
 
 class Inventory:
     def __init__(self, character):
@@ -43,21 +49,11 @@ class Inventory:
     # count slots for a container
     def container_slots(self, container):
         slots = 0
-        conts = json.loads(self.character.containers)
-        cnt_load = {}
-        for c in conts:
-            if "load" in c:
-                cnt_load[int(c["id"])] = int(c["load"])
         for it in container["items"]:
             if "bulky" in it["tags"]:
                 slots += 2
                 continue
             if "petty" in it["tags"]:
-                continue
-            if "carrying" in it:
-                load = cnt_load[int(it["carrying"])]
-                if load != None:
-                    slots += load
                 continue
             slots += 1
         return slots
@@ -80,16 +76,20 @@ class Inventory:
     # decorate single item
     def decorate_item(self, item):
         title = item["name"]
+        item["blocker"] = False
+        item["editable"] = True
+        item["removable"] = True
+        
         if item["name"] in non_editable_items or "carrying" in item:
-            item["editable"] = False
-        else:
-            item["editable"] = True
-        item["dice"] = []
-        # loads
+            item["editable"] = False                       
+            
         if "carrying" in item:
-            for c in self.containers:
-                if "load" in c and int(c["id"]) == int(item["carrying"]):
-                    title = title + " ["+str(c["load"])+"]"
+            item["removable"] = False           
+            
+        if "carrying" in item or item["name"] == FATIGUE_NAME:
+            item["blocker"] = True
+            
+        item["dice"] = []
         # tags
         if len(item["tags"]) > 0:
             title += " ("
@@ -123,7 +123,7 @@ class Inventory:
                 else:
                     if tag != "bonus defense":
                         tt.append(tag)
-            title += ",".join(tt)
+            title += ", ".join(tt)
             title += ") "                    
         item["title"] = title
             
@@ -229,16 +229,12 @@ class Inventory:
         return result
     
     # add carrying tag
-    def add_carrying(self, carried_by, container_id, name):
+    def add_carrying(self, carried_by, container_id, name, amount):
         items = json.loads(self.character.items)  
-        found = False
-        for it in items:
-            if "carrying" in it and int(it["carrying"]) == int(container_id):
-                found = True
-        if found:
-            return items
         new_id = self.generate_item_id()
-        items.append({"id": new_id, "name": "Carrying "+name, "editable": False, "location": int(carried_by),"tags":[], "carrying":int(container_id)})
+        for i in range(amount):
+            new_item = {"id": new_id+i, "name": "Carrying "+name, "editable": False, "location": int(carried_by),"tags":[], "carrying":int(container_id)}
+            items.append(new_item)
         return items
     
     # remove carried by
@@ -264,8 +260,8 @@ class Inventory:
         else:
             if "carried_by" in cnt:
                 del cnt["carried_by"]
-            if "load" in cnt:
-                del cnt["load"]
+            # if "load" in cnt:
+            #     del cnt["load"]
             
         containers = json.loads(self.character.containers)
         result = []
@@ -274,7 +270,7 @@ class Inventory:
                 result.append(c)
         result.append(cnt)
         if has_carried:
-            items = self.add_carrying(carried_by,container_id, name)
+            items = self.add_carrying(carried_by,container_id, name, int(load))
             self.character.items = json.dumps(items)
         else:
             items =  self.remove_carrying(container_id)
@@ -337,7 +333,8 @@ class Inventory:
         if has_carried:
             obj["carried_by"] = carried_by
             obj["load"] = load
-            items = self.add_carrying(carried_by,new_id, name)
+            for i in range(int(load)):
+                items = self.add_carrying(carried_by,new_id, name)
             self.character.items = json.dumps(items)
         containers.append(obj)
         self.character.containers = json.dumps(containers)                        
