@@ -86,8 +86,7 @@
         </div>
         <div class="character-description-container" id="character-notes-container">
           <h3 class="no-space">Notes</h3>
-          {{ form.notes(class='textarea inplace', id='notes-field',
-          oninput='resizeTextarea(this)') }}
+          {{ form.notes(class='charedit-notes', id='notes-field', rows=5) }}
         </div>
 
         <div class="character-description-container" id="character-party-container">
