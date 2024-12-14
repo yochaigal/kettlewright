@@ -217,10 +217,13 @@ def charedit_inplace_portrait_save(username, url_name):
     data = request.form
     custom_url = data['custom-url']
     selected_portrait = data['selected-portrait']
-    if custom_url != None and custom_url != "" and is_url_image(custom_url):
-        setattr(character,"image_url", custom_url)
-        setattr(character,"custom_image",True)
-        db.session.commit()    
+    if custom_url != None and custom_url != "":
+        if not is_url_image(custom_url):
+            print("Bad image url!!!", custom_url)
+        else:
+            setattr(character,"image_url", custom_url)
+            setattr(character,"custom_image",True)
+            db.session.commit()    
     elif selected_portrait != "" and selected_portrait != None:
         setattr(character,"image_url", selected_portrait)
         setattr(character,"custom_image",False)

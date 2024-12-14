@@ -26,6 +26,6 @@ def is_url_image(image_url):
            return True
        return False
    except:
-        return False
+       return True # some url throw exception even when they have an image
 
 
