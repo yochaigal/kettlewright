@@ -11,7 +11,7 @@
   const isOwner = "{{ is_owner }}";
 </script>
 {% endif %}
-<script src="{{ url_for('static', filename='src/js/party_edit.js') }}" defer type="module"></script>
+<script src="{{ url_for('static', filename='src/js/party_view.js') }}" defer type="module"></script>
 <section class="body-container">
   {% with messages = get_flashed_messages() %} {% if messages is not none and messages|length > 0 %}
   <div class="message is-danger">
@@ -29,16 +29,19 @@
       <div>
         <h1 class="title level-item justify-centered">{{ name }}</h1>
         <p class="justify-centered"></p>
+
         <p>{{description}}</p>
       </div>
 
       <div class="row32 center-items">
         {% if is_owner or is_subowner %}
-        <button type="button" class="dice-button ghost40" hx-post="/party/{{username}}/{{party.id}}/save">
-          <i class="fa-solid fa-check check"></i>
+        <button class="button is-light no-margin-top" id="join-code-button" type="button">
+          Join Code
+          <i class="fa-solid fa-link icon-in-button"></i>
         </button>
-        <button class="dice-button ghost40" type="button" hx-post="/charedit/{{username}}/{{party.id}}/cancel">
-          <i class="fa-solid fa-xmark xmark"></i>
+        <button class="dice-button ghost40" type="button" title="Click to switch edit/view mode"
+          hx-get="/party/{{username}}/{{party.id}}/edit" hx-target="body">
+          <i class="fa-solid fa-pen-to-square pen-to-square"></i>
         </button>
         {% endif %}
       </div>

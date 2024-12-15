@@ -18,10 +18,15 @@ def bring_fatigue_to_end(item):
 
 
 class Inventory:
+    # character can be a player character or a party
     def __init__(self, character):
         self.character = character
         self.parse(character)
         self.select(0)
+        self.itemsWithRolls = True
+        
+    def setItemsWithRolls(self, value):
+        self.itemsWithRolls = value
         
     def parse(self, character):
         containers = json.loads(character.containers)
@@ -101,10 +106,11 @@ class Inventory:
                 # extract dice info
                 dice_match = re.findall(r'^d(\d+)(?:\s*\+\s*d(\d+))?$', tag)                
                 dices = []
-                for x in dice_match:
-                    for y in x:
-                        if y != "":
-                            item["dice"].append(int(y))
+                if self.itemsWithRolls:
+                    for x in dice_match:
+                        for y in x:
+                            if y != "":
+                                item["dice"].append(int(y))
                 # annotate tags                            
                 if tag == "bulky" or tag == "petty":
                     tt.append("<i>"+tag+"</i>")

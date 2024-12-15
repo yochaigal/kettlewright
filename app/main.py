@@ -590,11 +590,15 @@ def party(ownername, party_url):
                     'static', filename='images/portraits/' + character.image_url)
             else:
                 character.portrait_src = character.image_url
+                
+    inventory = Inventory(party)
+    inventory.select(0)
+    inventory.setItemsWithRolls(False)
+    inventory.decorate()
 
-    return render_template('main/party.html', name=party.name, description=party.description,
+    return render_template('main/party_view.html', name=party.name, description=party.description,
                            members=party.members, characters=characters, join_code=join_code, is_owner=is_owner,
-                           is_subowner=is_subowner, base_url=base_url,
-                           items_json=json.dumps(party.items), containers_data_json=json.dumps(party.containers), party_id=party.id,)
+                           is_subowner=is_subowner, base_url=base_url,party_id=party.id, inventory=inventory, party=party)
 
 
 @main.route('/users/<ownername>/parties/<party_url>/edit/', methods=['GET', 'POST'])

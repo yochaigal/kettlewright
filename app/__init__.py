@@ -127,6 +127,10 @@ def create_app():
     # blueprint for marketplace dialog
     from app.blueprints import marketplace as marketplace_blueprint
     app.register_blueprint(marketplace_blueprint)
+    
+    # blueprint for party page
+    from app.blueprints import party as party_blueprint
+    app.register_blueprint(party_blueprint)
 
     from .socket_events import register_socket_events
     register_socket_events(socketio)
@@ -135,6 +139,11 @@ def create_app():
     @app.template_filter("eol2br")
     def eol2br_filter(text: str) -> str:
         return text.replace("\n","<br/>")
+    
+    # Sanitize single quote for JS calls
+    @app.template_filter("squote2js")
+    def squote2js_filter(text: str) -> str:
+        return text.replace("'","’")
     
     # Write error about party code
     @app.template_filter("party_code_error")
