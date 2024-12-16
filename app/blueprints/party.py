@@ -122,6 +122,26 @@ def party_remove_char(character_id, ownername, party_url):
     response.headers["HX-Redirect"] = "/party/edit/"+ownername+"/"+party_url
     return response
 
+# Route: delete party
+@party.route('/party/delete/<party_id>', methods=['GET'])
+def party_delete(party_id):
+    party = get_party_by_id(party_id)
+    if party.owner != current_user.id:
+        return redirect(url_for('main.parties', username=current_user.username))
+
+    # remove party from all characters in the party
+    characters = Character.query.filter_by(party_id=party.id).all()
+    for character in characters:
+        character.party_id = None
+        character.party_code = None
+
+    db.session.delete(party)
+    db.session.commit()
+    
+    response = make_response("redirect")
+    response.headers["HX-Redirect"] = "/users/"+current_user.username+"/parties/"
+    return response
+
 
 # --- PARTY INVENTORY ---
 

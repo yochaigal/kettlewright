@@ -117,6 +117,14 @@
       </div>
     </div>
 
+    <div>
+      <button class="button is-danger edit-mode" type="button" id="delete-party-button" style="margin: 40px 0px"
+        hx-get="/party/delete/{{party.id}}" hx-confirm="Do you want to delete party {{party.name}}?"
+        data-confirm-title="Delete party" data-confirm-button="Delete">
+        Delete Party
+      </button>
+    </div>
+
   </div>
 </section>
 {% endblock %}
