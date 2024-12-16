@@ -2,8 +2,7 @@
   {% for cnt in inventory.containers %}
   <div
     class="inventory-container-title subtitle pointer {% if cnt.is_selected %} inventory-container-title-selected {% endif %} {% if cnt.encumbered %} red-text {% endif %}"
-    hx-get=" /charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt.id}}"
-    hx-target="#inventory-container">
+    hx-get=" /party/inventory-select-container/{{party.id}}/{{cnt.id}}" hx-target="#inventory-container">
     {{cnt.title}}
   </div>
   {% endfor %}

@@ -14,23 +14,18 @@
 <script src="{{ url_for('static', filename='src/js/party_view.js') }}" defer type="module"></script>
 <section class="body-container">
   {% with messages = get_flashed_messages() %} {% if messages is not none and messages|length > 0 %}
-  <div class="message is-danger">
-    <div class="message-body">
-      <div class="errors">
-        {% for message in messages %}
-        <p>{{ message }}</p>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
+  {% for message in messages %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      KW_alert("Error", '{{message|squote2js}}')
+    });
+  </script>
+  {% endfor %}
   {% endif %} {% endwith %}
   <div id="party-form" class="sheet box form">
     <div style="display: flex; justify-content: space-between">
       <div>
-        <h1 class="title level-item justify-centered">{{ name }}</h1>
-        <p class="justify-centered"></p>
-
-        <p>{{description}}</p>
+        <h1 class="title level-item justify-centered">{{ party.name }}</h1>
       </div>
 
       <div class="row32 center-items">
@@ -40,12 +35,14 @@
           <i class="fa-solid fa-link icon-in-button"></i>
         </button>
         <button class="dice-button ghost40" type="button" title="Click to switch edit/view mode"
-          hx-get="/party/{{username}}/{{party.id}}/edit" hx-target="body">
+          hx-get="/party/edit/{{ownername}}/{{party_url}}" hx-target="body">
           <i class="fa-solid fa-pen-to-square pen-to-square"></i>
         </button>
         {% endif %}
       </div>
     </div>
+
+    <div>{{party.description}}</div>
 
     <div class="party-section">
       <span id="party-members-collapse-button" class="party-collapse-button">
@@ -117,7 +114,7 @@
         <i class="fa-solid fa-chevron-down" id="party-inventory-collapse-icon"></i>
       </span>
       <span class="subtitle bold">Storage</span>
-      <div id="party-inventory-content" class="party-section-content">
+      <div id="inventory-container" class="party-section-content">
         <div> {% include "partial/partyview/inventory.html" %}</div>
       </div>
     </div>

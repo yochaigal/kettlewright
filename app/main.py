@@ -554,156 +554,110 @@ def parties(username):
     return render_template('main/parties.html', form=form, parties=parties_sorted, base_url=base_url)
 
 
-@main.route('/users/<ownername>/parties/<party_url>/', methods=['GET', 'POST'])
-def party(ownername, party_url):
-    owner = User.query.filter_by(username=ownername).first_or_404()
-    party = Party.query.filter_by(
-        owner=owner.id, party_url=party_url).first_or_404()
-    join_code = None
-    is_owner = False
-    is_subowner = False
 
-    # if not current_user.is_authenticated:
-    #     return redirect(url_for('main.index'))
-    if current_user.is_authenticated:
-        if party.owner == current_user.id:
-            join_code = party.join_code
-            is_owner = True
+# @main.route('/users/<ownername>/parties/<party_url>/edit/', methods=['GET', 'POST'])
+# def party_edit(ownername, party_url):
+#     owner = User.query.filter_by(username=ownername).first_or_404()
+#     party = Party.query.filter_by(
+#         owner=owner.id, party_url=party_url).first_or_404()
+#     form = PartyEditForm(obj=party)
+#     join_code = None
+#     is_owner = False
+#     is_subowner = False
 
-    # Load party members and subowners
-    members_list = json.loads(
-        party.members) if party.members and party.members.strip() else []
-    subowners_list = json.loads(
-        party.subowners) if party.subowners and party.subowners.strip() else []
+#     if not current_user.is_authenticated:
+#         return redirect(url_for('main.index'))
 
-    if current_user.is_authenticated:
-        is_subowner = current_user.id in subowners_list
-    characters = []
+#     if party.owner == current_user.id:
+#         join_code = party.join_code
+#         is_owner = True
 
-    for member_id in members_list:
-        character = Character.query.filter_by(id=member_id).first()
-        if character:
-            characters.append(character)
-            # Update character portrait source
-            if not character.custom_image:
-                character.portrait_src = url_for(
-                    'static', filename='images/portraits/' + character.image_url)
-            else:
-                character.portrait_src = character.image_url
-                
-    inventory = Inventory(party)
-    inventory.select(0)
-    inventory.setItemsWithRolls(False)
-    inventory.decorate()
+#     # Load party members and subowners
+#     members_list = json.loads(
+#         party.members) if party.members and party.members.strip() else []
+#     subowners_list = json.loads(
+#         party.subowners) if party.subowners and party.subowners.strip() else []
 
-    return render_template('main/party_view.html', name=party.name, description=party.description,
-                           members=party.members, characters=characters, join_code=join_code, is_owner=is_owner,
-                           is_subowner=is_subowner, base_url=base_url,party_id=party.id, inventory=inventory, party=party)
+#     is_subowner = current_user.id in subowners_list
+#     characters = []
 
+#     for member_id in members_list:
+#         character = Character.query.filter_by(id=member_id).first()
+#         if character:
+#             characters.append(character)
+#             # Update character portrait source
+#             if not character.custom_image:
+#                 character.portrait_src = url_for(
+#                     'static', filename='images/portraits/' + character.image_url)
+#             else:
+#                 character.portrait_src = character.image_url
 
-@main.route('/users/<ownername>/parties/<party_url>/edit/', methods=['GET', 'POST'])
-def party_edit(ownername, party_url):
-    owner = User.query.filter_by(username=ownername).first_or_404()
-    party = Party.query.filter_by(
-        owner=owner.id, party_url=party_url).first_or_404()
-    form = PartyEditForm(obj=party)
-    join_code = None
-    is_owner = False
-    is_subowner = False
+#     if form.validate_on_submit():
+#         if party.version != int(form.version.data):
+#             flash(
+#                 'This party has been modified by someone else. Please refresh and try again.')
+#             return redirect(url_for('main.party', ownername=ownername, party_url=party_url))
 
-    if not current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+#         if is_owner or is_subowner:
+#             party.name = sanitize_data(form.name.data)
+#             party.description = sanitize_data(form.description.data)
+#             party.items = sanitize_json_content(form.items.data)
+#             party.containers = sanitize_json_content(form.containers.data)
 
-    if party.owner == current_user.id:
-        join_code = party.join_code
-        is_owner = True
+#             if form.transfer.data:
+#                 items_to_transfer = json.loads(
+#                     sanitize_json_content(form.transfer.data))
+#                 for item in items_to_transfer:
+#                     character = Character.query.filter_by(
+#                         id=item['character']).first()
+#                     if character:
+#                         character_items = json.loads(character.items)
+#                         character_items.append(item)
+#                         character.items = json.dumps(character_items)
 
-    # Load party members and subowners
-    members_list = json.loads(
-        party.members) if party.members and party.members.strip() else []
-    subowners_list = json.loads(
-        party.subowners) if party.subowners and party.subowners.strip() else []
+#         if is_owner:
+#             old_members = members_list
+#             updated_members = json.loads(form.members.data)
+#             removed_members = list(set(old_members) - set(updated_members))
 
-    is_subowner = current_user.id in subowners_list
-    characters = []
+#             for member in removed_members:
+#                 character = Character.query.filter_by(id=member).first()
+#                 if character:
+#                     character.party_id = None
+#                     character.party_code = None
 
-    for member_id in members_list:
-        character = Character.query.filter_by(id=member_id).first()
-        if character:
-            characters.append(character)
-            # Update character portrait source
-            if not character.custom_image:
-                character.portrait_src = url_for(
-                    'static', filename='images/portraits/' + character.image_url)
-            else:
-                character.portrait_src = character.image_url
+#                     # Check if the character's owner has other characters in the party
+#                     owner_has_other_characters = any(
+#                         char.owner == character.owner and char.id != character.id
+#                         for char in Character.query.filter(Character.id.in_(updated_members)).all()
+#                     )
 
-    if form.validate_on_submit():
-        if party.version != int(form.version.data):
-            flash(
-                'This party has been modified by someone else. Please refresh and try again.')
-            return redirect(url_for('main.party', ownername=ownername, party_url=party_url))
+#                     if not owner_has_other_characters and character.owner in subowners_list:
+#                         subowners_list.remove(character.owner)
 
-        if is_owner or is_subowner:
-            party.name = sanitize_data(form.name.data)
-            party.description = sanitize_data(form.description.data)
-            party.items = sanitize_json_content(form.items.data)
-            party.containers = sanitize_json_content(form.containers.data)
+#             party.members = form.members.data
+#             party.subowners = json.dumps(subowners_list)
+#             party.events = form.events.data
 
-            if form.transfer.data:
-                items_to_transfer = json.loads(
-                    sanitize_json_content(form.transfer.data))
-                for item in items_to_transfer:
-                    character = Character.query.filter_by(
-                        id=item['character']).first()
-                    if character:
-                        character_items = json.loads(character.items)
-                        character_items.append(item)
-                        character.items = json.dumps(character_items)
+#         # Increment the version
+#         party.version += 1
+#         db.session.commit()
 
-        if is_owner:
-            old_members = members_list
-            updated_members = json.loads(form.members.data)
-            removed_members = list(set(old_members) - set(updated_members))
+#         return redirect(url_for('main.party', ownername=owner.username, party_url=party_url))
 
-            for member in removed_members:
-                character = Character.query.filter_by(id=member).first()
-                if character:
-                    character.party_id = None
-                    character.party_code = None
+#     # Display error messages
+#     error_messages = []
+#     for field, errors in form.errors.items():
+#         for error in errors:
+#             error_messages.append(f"{field}: {error}")
+#     if error_messages:
+#         flash(" ".join(error_messages))
 
-                    # Check if the character's owner has other characters in the party
-                    owner_has_other_characters = any(
-                        char.owner == character.owner and char.id != character.id
-                        for char in Character.query.filter(Character.id.in_(updated_members)).all()
-                    )
-
-                    if not owner_has_other_characters and character.owner in subowners_list:
-                        subowners_list.remove(character.owner)
-
-            party.members = form.members.data
-            party.subowners = json.dumps(subowners_list)
-            party.events = form.events.data
-
-        # Increment the version
-        party.version += 1
-        db.session.commit()
-
-        return redirect(url_for('main.party', ownername=owner.username, party_url=party_url))
-
-    # Display error messages
-    error_messages = []
-    for field, errors in form.errors.items():
-        for error in errors:
-            error_messages.append(f"{field}: {error}")
-    if error_messages:
-        flash(" ".join(error_messages))
-
-    return render_template('main/party_edit.html', form=form, name=party.name, description=party.description,
-                           members=party.members, characters=characters, join_code=join_code, is_owner=is_owner,
-                           is_subowner=is_subowner, user_id=current_user.id, ownername=owner.username, username=current_user.username, base_url=base_url,
-                           items_json=json.dumps(party.items), containers_data_json=json.dumps(party.containers), party_id=party.id, party_url=party_url,
-                           )
+#     return render_template('main/party_edit.html', form=form, name=party.name, description=party.description,
+#                            members=party.members, characters=characters, join_code=join_code, is_owner=is_owner,
+#                            is_subowner=is_subowner, user_id=current_user.id, ownername=owner.username, username=current_user.username, base_url=base_url,
+#                            items_json=json.dumps(party.items), containers_data_json=json.dumps(party.containers), party_id=party.id, party_url=party_url,
+#                            )
 
 
 @main.route('/users/<ownername>/parties/<party_url>/tools/', methods=['POST', 'GET'])

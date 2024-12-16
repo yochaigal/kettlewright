@@ -3,6 +3,8 @@ import utils from "./utils.js";
 window.KW_alert = utils.styledAlert;
 
 document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOMContentLoaded");
+
   // prepare join code button
   if (document.getElementById("join-code-button")) {
     document
@@ -56,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
   );
   setupCollapseToggle(
     "party-inventory-collapse-button",
-    "party-inventory-content",
+    "inventory-container",
     "party-inventory-collapse-icon"
   );
 });
