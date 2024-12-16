@@ -65,7 +65,7 @@ def charedit_save(username, url_name):
             character.party_code = party_code
         else:
             party_url = None
-            flash("Invalid last party code: "+party_code)
+            flash("Invalid party code: "+party_code)
     else:
         character.party_code = ""
     db.session.commit()

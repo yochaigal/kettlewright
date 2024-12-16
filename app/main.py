@@ -36,7 +36,6 @@ with open(scars_file_path, 'r') as file:
 
 
 
-
 @main.route('/')
 def index():
     if current_user.is_authenticated:
@@ -549,7 +548,7 @@ def parties(username):
             db.session.add(new_party)
             db.session.commit()
             # redirect to the new party page
-            return redirect(url_for('main.party', ownername=username, party_url=party_url))
+            return redirect(url_for('party.party_view', ownername=username, party_url=party_url))
 
     return render_template('main/parties.html', form=form, parties=parties_sorted, base_url=base_url)
 
