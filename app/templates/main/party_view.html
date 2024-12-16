@@ -1,6 +1,17 @@
 {% extends "base.html" %} {% block content %}
-
-<script src="{{ url_for('static', filename='src/js/party_edit.js') }}" defer type="module"></script>
+<script>
+  const party_id = `{{party.id}}`;
+  const username = `{{username}}`;
+  const url_name = `{{url_name}}`;
+  const selected_container = `{{inventory.selected_container["id"]}}`;
+</script>
+{% if is_owner or is_subowner %}
+<script>
+  joinCode = `{{ join_code }}`;
+  const isOwner = "{{ is_owner }}";
+</script>
+{% endif %}
+<script src="{{ url_for('static', filename='src/js/party_view.js') }}" defer type="module"></script>
 <section class="body-container">
   {% with messages = get_flashed_messages() %} {% if messages is not none and messages|length > 0 %}
   {% for message in messages %}
@@ -12,24 +23,27 @@
   {% endfor %}
   {% endif %} {% endwith %}
   <div id="party-form" class="sheet box form">
-    <form class="no-space">
-      <input type="hidden" name="old_items" id="old_items" value="{{party.items}}" />
-      <input type="hidden" name="old_containers" id="old_items" value="{{party.containers}}" />
-      <div style="display: flex; justify-content: space-between">
-        <div class="title level-item justify-centered">{{ form.name(class='input') }}</div>
-        <div class="row32 center-items">
-          {% if is_owner or is_subowner %}
-          <button type="button" class="dice-button ghost40" hx-post="/party/edit/{{ownername}}/{{party_url}}/save">
-            <i class="fa-solid fa-check check"></i>
-          </button>
-          <button class="dice-button ghost40" type="button" hx-post="/party/edit/{{ownername}}/{{party_url}}/cancel">
-            <i class="fa-solid fa-xmark xmark"></i>
-          </button>
-          {% endif %}
-        </div>
+    <div style="display: flex; justify-content: space-between">
+      <div>
+        <h1 class="title level-item justify-centered">{{ party.name }}</h1>
       </div>
-      <div>{{ form.description(class='textarea charedit-notes', rows=5) }} </div>
-    </form>
+
+      <div class="row32 center-items">
+        {% if is_owner or is_subowner %}
+        <button class="button is-light no-margin-top" id="join-code-button" type="button">
+          Join Code
+          <i class="fa-solid fa-link icon-in-button"></i>
+        </button>
+        <button class="dice-button ghost40" type="button" title="Click to switch edit/view mode"
+          hx-get="/party/edit/{{ownername}}/{{party_url}}" hx-target="body">
+          <i class="fa-solid fa-pen-to-square pen-to-square"></i>
+        </button>
+        {% endif %}
+      </div>
+    </div>
+
+    <div>{{party.description}}</div>
+
     <div class="party-section">
       <span id="party-members-collapse-button" class="party-collapse-button">
         <i class="fa-solid fa-chevron-down" id="party-members-collapse-icon"></i>
@@ -38,7 +52,8 @@
       <div id="party-members-content" class="party-section-content">
         {% if characters %} {% for character in characters %}
 
-        <div class="card character-card party-member-card" style="cursor: pointer; padding: 20px">
+        <div class="card character-card party-member-card" style="cursor: pointer; padding: 20px"
+          hx-get="/party/show-user/{{character.owner_username}}/{{character.url_name}}">
           <div class="card-content">
             <div class="card-image">
               <figure class="" style="display: flex; align-items: center; justify-content: center">
@@ -85,19 +100,6 @@
             </div>
             <div class="level is-mobile"> </div>
           </div>
-          {% if is_owner %}
-          <footer class="card-footer edit-mode">
-            <button class="card-footer-item button is-danger is-light edit-mode character-remove-button" type="button"
-              id="character-remove-button" hx-get="/party/remove-char/{{character.id}}/{{ownername}}/{{party_url}}"
-              hx-target="#char-remove-anchor"
-              hx-confirm="Do you want to remove {{character.name}} from party?<br/>This action is permanent,<br/>independent on later editor action."
-              data-confirm-title="Remove character" data-confirm-button="Remove">Remove
-            </button>
-            <div id="char-remove-anchor"></div>
-          </footer>
-          <p></p>
-          {% endif %}
-
         </div>
 
         {% endfor %} {% else %}
@@ -113,10 +115,12 @@
       </span>
       <span class="subtitle bold">Storage</span>
       <div id="inventory-container" class="party-section-content">
-        {% include "partial/partyedit/inventory.html" %}
+        <div> {% include "partial/partyview/inventory.html" %}</div>
       </div>
     </div>
 
+
   </div>
 </section>
+
 {% endblock %}

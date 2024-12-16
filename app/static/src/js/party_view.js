@@ -1,16 +1,30 @@
 import utils from "./utils.js";
 
-htmx.on("container-edit", function (evt) {
-  document.getElementById("modal-card").scrollIntoViewIfNeeded();
-});
-
-htmx.on("item-edit", function (evt) {
-  document.getElementById("modal-card").scrollIntoViewIfNeeded();
-});
-
 window.KW_alert = utils.styledAlert;
 
-htmx.on("party-edit", function (evt) {
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOMContentLoaded");
+
+  // prepare join code button
+  if (document.getElementById("join-code-button")) {
+    document
+      .getElementById("join-code-button")
+      .addEventListener("click", function () {
+        navigator.clipboard.writeText(joinCode).then(
+          function () {
+            utils.styledAlert(
+              "Party join code",
+              "Party join code copied to clipboard",
+              "#party-form"
+            );
+          },
+          function (err) {
+            console.error("Could not copy text: ", err);
+          }
+        );
+      });
+  }
+
   // Initialize all collapsible sections
 
   function setupCollapseToggle(buttonId, contentId, iconId) {

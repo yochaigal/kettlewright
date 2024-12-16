@@ -13,23 +13,18 @@
   const isOwner = "{{ is_owner }}";
 </script>
 {% endif %}
-<script src="{{url_for('static', filename='src/js/character_view.js')}}" defer type="module"></script>
+<script src="{{url_for('static', filename='src/js/character_view.js')}}" type="module"></script>
 
 <div class="body-container">
   {% with messages = get_flashed_messages() %} {% if messages is not none and
   messages|length > 0 %}
-  <div class="message is-danger">
-    <div class="message-header">
-      <p>Errors</p>
-    </div>
-    <div class="message-body">
-      <ul class="errors">
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
+  {% for message in messages %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      KW_alert("Error", '{{message|squote2js}}')
+    });
+  </script>
+  {% endfor %}
   {% endif %} {% endwith %}
   <div class="sheet view-character-sheet">
     <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em">

@@ -3,10 +3,10 @@
     <input type="hidden" name="edit_item_tags" value id="edit_item_tags" />
     <input type="mode" name="mode" value="{{mode}}" />
     <div class="modal-background inventory-modal-background"></div>
-    <div class="modal-card">
+    <div class="modal-card" id="modal-card">
       <header class="modal-card-head">
         <h3 class="modal-card-title">
-          {% if mode == 'edit' %}
+          {% if mode == "edit" %}
           Edit Item: {{item.name}}
           {% else %}
           Create Item
@@ -28,7 +28,7 @@
               data-tag="bulky">bulky</div>
             <div class="tag button {% if mode == 'edit' and 'petty' in item.tags %} selected {% endif %}"
               data-tag="petty">petty</div>
-            <div class="tag button {% if mode == 'edit' and  'uses' in item.tags %} selected {% endif %}"
+            <div class="tag button {% if mode == 'edit' and 'uses' in item.tags %} selected {% endif %}"
               data-tag="uses">uses</div>
             <div class="tag button {% if mode == 'edit' and 'charges' in item.tags %} selected {% endif %}"
               data-tag="charges">charges</div>
@@ -96,7 +96,7 @@
           <label>Description</label>
           <textarea class="textarea" placeholder="Item Description" id="edit_item_description"
             name="edit_item_description"
-            oninput="resizeTextarea(this)">{% if mode == 'edit' %}{{item.description}}{% endif %}</textarea>
+            oninput="resizeTextarea(this)">{% if mode == "edit" %}{{item.description}}{% endif %}</textarea>
         </div>
       </section>
 
@@ -107,26 +107,16 @@
         <div class="footer-button-container">
           <div>
             <button class="button is-success" type="button" {% if mode=='edit' %}
-              hx-post="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{item.id}}/save" {% else %}
-              hx-post="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/None/save?mode=create" {% endif
-              %} hx-target="#inventory-container">
+              hx-post="/party/inventory/{{party.id}}/item-edit/{{item.id}}/save" {% else %}
+              hx-post="/party/inventory/{{party.id}}/item-edit/None/save?mode=create" {% endif %}
+              hx-target="#inventory-container">
               Save
             </button>
-            {% if mode == 'edit' and character.party_id != None %}
-            <button class="button" type="button" style="margin-left: auto"
-              hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{item.id}}/party"
-              hx-target="#inventory-container" hx-confirm="Do you want to move <br/>{{item.name}} to party storage?"
-              data-confirm-title="Move to party storage" data-confirm-button="Move">
-              <i class="fa-solid fa-share icon-in-button"></i>
-              Party Storage
-            </button>
-            {% endif %}
           </div>
           <div>
             <button class="button inventory-modal-cancel-button" type="button" {% if mode=='edit' %}
-              hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container.id}}" {% else
-              %} hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/None" {% endif %}
-              hx-target="#inventory-container">
+              hx-get="/party/inventory/{{party.id}}/{{inventory.selected_container.id}}" {% else %}
+              hx-get="/party/inventory/{{party.id}}/None" {% endif %} hx-target="#inventory-container">
               Cancel
             </button>
           </div>
