@@ -18,7 +18,8 @@
     </div>
     <div class="inventory-item-button-container">
       {% if "description" in it and it.description != "" %}
-      <div class="pointer" title="Description" onclick="KW_alert('{{it.name}}','{{it.description|eol2br|squote2js}}')">
+      <div class="pointer" title="Description"
+        onclick="KW_alert('{{it.name|squote2js}}','{{it.description|eol2br|squote2js}}')">
         <i class="item-edit-button fa-solid fa-circle-info circle-info"></i>
       </div>
       {% endif %} {% if it.dice|length > 0 %}
