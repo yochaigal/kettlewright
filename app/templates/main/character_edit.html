@@ -36,12 +36,7 @@
           <h2 class="">{{character.background}}</h2>
         </div>
         {% if is_owner %}
-        <div style="
-            margin-left: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5em;
-          ">
+        <div class="charedit-action-pad" id="action-pad">
           <div class="row32">
             <button type="button" class="dice-button ghost40" hx-post="/charedit/{{username}}/{{url_name}}/save">
               <i class="fa-solid fa-check check"></i>

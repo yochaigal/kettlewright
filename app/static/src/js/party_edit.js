@@ -48,3 +48,14 @@ htmx.on("party-edit", function (evt) {
     "party-inventory-collapse-icon"
   );
 });
+
+window.onscrollend = function () {
+  let actionPad = document.getElementById("action-pad");
+  if (window.scrollY != 0) {
+    actionPad.classList.add("charedit-action-pad-top");
+    actionPad.classList.remove("charedit-action-pad");
+  } else {
+    actionPad.classList.remove("charedit-action-pad-top");
+    actionPad.classList.add("charedit-action-pad");
+  }
+};
