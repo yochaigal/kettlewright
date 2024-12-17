@@ -49,12 +49,20 @@ htmx.on("party-edit", function (evt) {
   );
 });
 
-window.onscrollend = function () {
+window.onscroll = function () {
   let actionPad = document.getElementById("action-pad");
-  if (window.scrollY != 0) {
+  if (
+    window.scrollY != 0 &&
+    actionPad.classList.contains("charedit-action-pad")
+  ) {
     actionPad.classList.add("charedit-action-pad-top");
     actionPad.classList.remove("charedit-action-pad");
-  } else {
+    return;
+  }
+  if (
+    window.scrollY == 0 &&
+    actionPad.classList.contains("charedit-action-pad-top")
+  ) {
     actionPad.classList.remove("charedit-action-pad-top");
     actionPad.classList.add("charedit-action-pad");
   }
