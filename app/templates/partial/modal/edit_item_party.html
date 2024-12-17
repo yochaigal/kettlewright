@@ -113,6 +113,13 @@
               Save
             </button>
           </div>
+          {% if characters and characters|length > 0 %}
+          <div class="row16">
+            <button class="button is-primary" type="button" style="margin-left: auto" title="Transfer"
+              hx-get="/party/inventory/{{party.id}}/item-transfer/{{inventory.selected_container.id}}/{{item.id}}"
+              hx-target="#inventory-container"><i class="fa-solid fa-share icon-in-button"></i></button>
+          </div>
+          {% endif %}
           <div>
             <button class="button inventory-modal-cancel-button" type="button" {% if mode=='edit' %}
               hx-get="/party/inventory/{{party.id}}/{{inventory.selected_container.id}}" {% else %}

@@ -4,13 +4,13 @@
   const username = `{{username}}`;
   const url_name = `{{url_name}}`;
   const selected_container = `{{inventory.selected_container["id"]}}`;
+  const isOwner = "{{ is_owner }}";
 </script>
 
 {% if is_owner %}
 <script>
   const party_id = "{{ character.party_id }}";
   const character_id = "{{ character.id }}";
-  const isOwner = "{{ is_owner }}";
 </script>
 {% endif %}
 <script src="{{url_for('static', filename='src/js/character_view.js')}}" type="module"></script>

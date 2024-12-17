@@ -90,7 +90,8 @@ def party_edit_cancel(ownername, party_url):
         party.containers = data['old_containers']
         changed = True
     if changed:
-        db.session.commit()     
+        db.session.commit()
+    inventory.remove_items_from_characters(json.loads(party.items))
     response = make_response("Redirect")
     response.headers["HX-Redirect"] = "/users/"+ownername+"/parties/"+party_url+"/"
     return response
@@ -229,14 +230,21 @@ def party_inventory_item_edit(party_id, item_id):
     inventory = Inventory(party)
     inventory.setItemsWithRolls(False)
     inventory.decorate()
+    characters = []
     mode = request.args.get('mode')
     if mode == None or mode == "":
         mode = "edit"
     if mode == "edit":
         item = inventory.get_item(item_id)
+        members_list = json.loads(
+        party.members) if party.members and party.members.strip() else []
+        for member_id in members_list:
+            character = Character.query.filter_by(id=member_id).first()
+            if character:
+                characters.append(character)
     else:
         item = None
-    render = render_template('partial/modal/edit_item_party.html', party=party, inventory=inventory, item=item, mode=mode)
+    render = render_template('partial/modal/edit_item_party.html', characters=characters, party=party, inventory=inventory, item=item, mode=mode)
     response = make_response(render)
     response.headers['HX-Trigger-After-Settle'] = "item-edit"
     return response
@@ -293,3 +301,37 @@ def party_inventory_item_edit_amount(party_id, item_id):
     inventory.setItemsWithRolls(False)
     inventory.decorate()
     return render_template('partial/partyedit/inventory.html', party=party, inventory=inventory)  
+
+
+# Route: transfer item dialog
+@party.route('/party/inventory/<party_id>/item-transfer/<container_id>/<item_id>', methods=['GET'])
+def party_inventory_item_transfer(party_id, container_id, item_id):
+    party = get_party_by_id(party_id)
+    inventory = Inventory(party)
+    inventory.setItemsWithRolls(False)
+    inventory.decorate()
+    item = inventory.get_item(item_id)
+    members_list = json.loads(
+        party.members) if party.members and party.members.strip() else []
+    characters = []
+    for member_id in members_list:
+        character = Character.query.filter_by(id=member_id).first()
+        if character:
+            characters.append(character)
+    return render_template('partial/modal/transfer_item.html', characters=characters,party=party, inventory=inventory, item=item, container_id=container_id)
+
+# Route: transfer item dialog accept
+@party.route('/party/inventory/<party_id>/item-transfer/<container_id>/<item_id>/transfer', methods=['POST'])
+def party_inventory_item_transfer_accept(party_id, container_id, item_id):
+    party = get_party_by_id(party_id)
+    data = request.form
+    inventory = Inventory(party)
+    if data['member'] and data['member'] != "":
+        item = inventory.move_item_to_user(item_id, int(data['member']))
+        inventory.select(item["location"])
+    inventory.setItemsWithRolls(False)
+    inventory.decorate()
+    return render_template('partial/partyedit/inventory.html', party=party, inventory=inventory)  
+
+      
+    

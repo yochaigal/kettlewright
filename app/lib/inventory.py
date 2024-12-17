@@ -1,6 +1,6 @@
 import json
 import re
-from app.models import db, Party
+from app.models import db, Party, Character
 
 FATIGUE_NAME = "Fatigue"
 CARRYING_NAME = "Carrying"
@@ -467,6 +467,44 @@ class Inventory:
                 result.append(it)
         party.items = json.dumps(result)
         db.session.commit()
+        
+    # move item from party storage to user
+    def move_item_to_user(self, item_id, user_id):
+        item = self.get_item(item_id)
+        if item == None:
+            return
+        character = Character.query.filter_by(id=user_id).first()
+        if not character:
+            return
+        self.delete_item(item["location"], item_id)
+        items = json.loads(character.items)
+        items.append(item)
+        character.items = json.dumps(items)
+        db.session.commit()
+        return item          
+    
+    # remove items from characters
+    def remove_items_from_characters(self, char_items):
+        party = Party.query.filter_by(id=self.character.id).first()
+        if not party:
+            return
+        keys = []
+        for it in char_items:
+            key = str(it["id"])+"~"+it["name"]
+            keys.append(key)
+        members_list = json.loads(
+            party.members) if party.members and party.members.strip() else []
+        for member_id in members_list:
+            character = Character.query.filter_by(id=member_id).first()
+            if character:
+                items = json.loads(character.items)
+                result = []
+                for it in items:
+                    k = str(it["id"])+"~"+it["name"]
+                    if not k in keys: 
+                        result.append(it)
+                character.items = json.dumps(result)
+                db.session.commit()        
                     
     def print(self):
         print(self.containers)
