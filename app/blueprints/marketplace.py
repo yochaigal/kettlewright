@@ -39,9 +39,15 @@ def marketplace_buy(username, url_name):
             inventory.create_item(it["name"], ",".join(it["tags"]), it["uses"], it["charges"], it["max_charges"],0,it["description"])
     inventory.select(0)
     inventory.decorate()
-    render = render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
-    response = make_response(render)
-    response.headers["HX-Trigger"] = '{"refresh-stats":{"gold":'+data["current-gold"]+'}}'
+    response = make_response("Redirect")
+    response.headers["HX-Redirect"] = "/users/"+username+"/characters/"+url_name+"/"
     return response
     
+    
+# Route: cancel buying
+@marketplace.route('/marketplace/<username>/<url_name>/cancel', methods=['GET'])
+def marketplace_cancel(username, url_name):
+    response = make_response("Redirect")
+    response.headers["HX-Redirect"] = "/users/"+username+"/characters/"+url_name+"/"
+    return response    
     

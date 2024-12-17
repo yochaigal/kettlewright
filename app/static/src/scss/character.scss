@@ -264,3 +264,21 @@
 .charedit-notes {
   resize: vertical;
 }
+
+.charedit-action-pad {
+  background-color: var(--form-bg);
+  margin-left: auto;
+  position: static;
+}
+
+.charedit-action-pad-top {
+  border-top: none;
+  background-color: color-mix(in lab, var(--bg) 80%, var(--fg));
+  position: fixed;
+  left: 50%;
+  top: 0px;
+  transform: translateX(-50%);
+  padding-left: 16px;
+  padding-right: 16px;
+  border-radius: 8px;
+}
