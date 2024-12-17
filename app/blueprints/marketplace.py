@@ -7,10 +7,13 @@ marketplace = Blueprint('marketplace', __name__)
 
 
 # Route: show marketplace dialog for a user and character
-@marketplace.route('/marketplace/<username>/<url_name>', methods=['GET'])
-def marketplace_show(username, url_name):
+@marketplace.route('/marketplace/<username>/<url_name>/<container_id>', methods=['GET'])
+def marketplace_show(username, url_name, container_id):
     user, character = get_char_data(username, url_name)
     market = Market()
+    inventory = Inventory(character)
+    container = inventory.get_container(container_id)
+    capacity = int(container["slots"])-int(inventory.container_slots(container))
     cats = request.args.get("categories")
     if cats != None and cats != "":
         market.set_categories(cats.split(","))
@@ -21,11 +24,11 @@ def marketplace_show(username, url_name):
         market.set_filter(filter)
     else:
         market.set_filter("")
-    return render_template('partial/modal/marketplace.html', user=user, character=character, username=username, url_name=url_name, market=market)
+    return render_template('partial/modal/marketplace.html', user=user, character=character, username=username, url_name=url_name, market=market, container=container, capacity=capacity)
 
 # Route: buy items
-@marketplace.route('/marketplace/<username>/<url_name>/buy', methods=['POST'])
-def marketplace_buy(username, url_name):
+@marketplace.route('/marketplace/<username>/<url_name>/<container_id>/buy', methods=['POST'])
+def marketplace_buy(username, url_name, container_id):
     user, character = get_char_data(username, url_name)
     market = Market()
     inventory = Inventory(character)
@@ -36,7 +39,7 @@ def marketplace_buy(username, url_name):
     if data["current-cart"] != None and len(data["current-cart"]) > 0:
         items = market.buy(json.loads(data["current-cart"]))
         for it in items:
-            inventory.create_item(it["name"], ",".join(it["tags"]), it["uses"], it["charges"], it["max_charges"],0,it["description"])
+            inventory.create_item(it["name"], ",".join(it["tags"]), it["uses"], it["charges"], it["max_charges"],container_id,it["description"])
     inventory.select(0)
     inventory.decorate()
     response = make_response("Redirect")

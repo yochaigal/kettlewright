@@ -360,9 +360,9 @@ class Inventory:
     def create_item(self, name, tags, uses, charges, max_charges, container, description):
         cnt = self.get_container(container)
         if cnt == None:
-            return
+            return None
         if self.container_slots(cnt) >= cnt["slots"]:
-            return
+            return None
         new_id = self.generate_item_id()
         items = json.loads(self.character.items)
         items.append({"id":new_id,"name":"",tags:[],"location":0,"description":""})
