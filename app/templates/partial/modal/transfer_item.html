@@ -1,0 +1,33 @@
+<div class="inventory-modal">
+  <form class="no-space">
+    <div class="modal-background inventory-modal-background"></div>
+    <div class="modal-card" id="modal-card">
+      <header class="modal-card-head">
+        <h3 class="modal-card-title">Transfer item</h3>
+      </header>
+
+      <section class="modal-card-body">
+        <div>Transferring <b>{{item.name}}</b> to:</div>
+        <div class="justify-centered">
+          <select name="member" id="member">
+            {% for c in characters %}
+            <option value="{{c.id}}">{{c.name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </section>
+
+      <footer class="modal-card-foot">
+        <div class="row16spaced">
+          <button class="button is-success" type="button"
+            hx-post="/party/inventory/{{party.id}}/item-transfer/{{container_id}}/{{item.id}}/transfer"
+            hx-target="#inventory-container">Transfer</button>
+          <button class="button inventory-modal-cancel-button" type="button"
+            hx-get="/party/inventory/{{party.id}}/{{container_id}}" hx-target="#inventory-container">
+            Cancel
+          </button>
+        </div>
+      </footer>
+    </div>
+  </form>
+</div>
