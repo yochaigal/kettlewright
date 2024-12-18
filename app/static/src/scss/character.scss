@@ -267,9 +267,22 @@
 
 .charedit-action-pad {
   background-color: var(--form-bg);
-  margin-left: auto;
   position: static;
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  align-items: center;
+  @media (max-width: 940px) {
+      background-color: var(--form-bg);
+      position: static;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+  }
 }
+
+
 
 .charedit-action-pad-top {
   border-top: none;
@@ -282,3 +295,18 @@
   padding-right: 16px;
   border-radius: 8px;
 }
+
+
+.charview-action-pad {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  align-items: center;
+  @media (max-width: 940px) {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+  }
+}
+

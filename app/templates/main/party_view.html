@@ -27,11 +27,10 @@
       <div>
         <h1 class="title level-item justify-centered">{{ party.name }}</h1>
       </div>
-
-      <div class="row32 center-items">
+      <div class="charview-action-pad">
         {% if is_owner or is_subowner %}
-        <button class="button is-light no-margin-top" id="join-code-button" type="button">
-          Join Code
+        <button class="button is-light no-margin-top" id="join-code-button" type="button" title="Join Code">
+          <span class="mobile-hidden">Join Code</span>
           <i class="fa-solid fa-link icon-in-button"></i>
         </button>
         <button class="dice-button ghost40" type="button" title="Click to switch edit/view mode"

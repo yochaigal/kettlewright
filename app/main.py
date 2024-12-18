@@ -279,7 +279,6 @@ def character(username, url_name):
     inventory = Inventory(character)
     inventory.select(0)
     inventory.decorate()
-    print("auth", current_user.is_authenticated, "owner", is_owner,current_user.id ,user.id)
     return render_template('main/character_view.html', character=character, items_json=items_json, containers_json=json.dumps(character.containers), username=username, url_name=url_name, party=party, party_url=party_url, party_name=party_name, party_description=party_description, base_url=base_url, is_owner=is_owner, scarlist=scarlist, portrait_src=portrait_src, inventory=inventory)
 
 

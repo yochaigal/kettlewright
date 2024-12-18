@@ -27,24 +27,19 @@
   {% endfor %}
   {% endif %} {% endwith %}
   <div class="sheet view-character-sheet">
-    <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em">
+    <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em;">
       <div class="no-space" id="character-portrait-container">
         <img src="{{portrait_src}}" alt="character portrait" class="portrait-image" id="portrait-image" />
       </div>
-      <div>
-        <div id="character-name-container">
-          <h1>{{character.name}}</h1>
+      <div class="full-width row16spaced-top">
+        <div>
+          <div id="character-name-container">
+            <h1>{{character.name}}</h1>
+          </div>
+          <h2 class="">{{character.background}}</h2>
         </div>
-        <h2 class="">{{character.background}}</h2>
-      </div>
-      {% if is_owner %}
-      <div style="
-          margin-left: auto;
-          display: flex;
-          flex-direction: column;
-          gap: 0.5em;
-        ">
-        <div class="row32">
+        {% if is_owner %}
+        <div class="charview-action-pad">
           <button class="dice-button" type="button" id="character-dice-button">
             <i class="fa-solid fa-dice dice"></i>
           </button>
@@ -52,10 +47,10 @@
             hx-get="/charedit/{{username}}/{{url_name}}" hx-target="body">
             <i class="fa-solid fa-pen-to-square pen-to-square"></i>
           </button>
+          {% include "main/dice_modal.html" %}
         </div>
-        {% include "main/dice_modal.html" %}
+        {% endif %}
       </div>
-      {% endif %}
     </div>
     <div class="character-stats-traits-inventory" id="edit-character-left-">
       <div id="character-stats-container">
@@ -114,19 +109,16 @@
         <h3 id="character-party-heading">Party</h3>
         {% if party %}
         <div id="character-party-name-description">
+          {% if is_owner %}
           <a class="bold subtitle" id="character-party-link" href="{{ base_url }}/{{ party_url }}">{{ party.name }}</a>
+          {% else %}
+          <div class="bold subtitle">{{ party.name }}</div>
+          {% endif %}
           <p class="character-text-field with-whitespace" id="character-party-description">
             {{ party.description }}
           </p>
         </div>
         {% else %}
-        <div id="party-code-error" class="row16">
-          {% if character.party_code|party_code_error %}
-          <p style="color: red">{{ character.party_code|party_code_error }}</p>
-          <i class="fa-solid fa-xmark xmark" hx-get="/charedit/clear-party-err/{{username}}/{{url_name}}"
-            hx-target="#party-code-error"></i>
-          {% endif %}
-        </div>
         <p id="character-no-party-description">
           This character does not belong to a party...
         </p>

@@ -40,8 +40,8 @@ def charedit_show(username, url_name):
     form = CharacterEditForm(obj=character)
     if character.party_code != None and character.party_code.startswith('Invalid last party code:'):
         form.party_code.data = ""
-    party = Party.query.filter_by(id=character.party_id).first()
-    render =  render_template('main/character_edit.html', user=user, character=character, username=username, url_name=url_name, scarlist=scarlist, inventory=inventory, portrait_src=portrait_src, is_owner=is_owner, form=form,old_items = character.items, party=party, old_containers=character.containers)
+    party, party_url = prepare_party_data(character.party_id)
+    render =  render_template('main/character_edit.html', user=user, character=character, username=username, url_name=url_name, scarlist=scarlist, inventory=inventory, portrait_src=portrait_src, is_owner=is_owner, form=form,old_items = character.items, party=party, old_containers=character.containers, party_url=party_url)
     response = make_response(render)
     
     response.headers['HX-Trigger-After-Settle'] = "charedit-loaded"
@@ -111,7 +111,6 @@ def charedit_leave_party(username, url_name):
     response = make_response("Redirect")
     response.headers["HX-Redirect"] = "/charedit/"+username+"/"+url_name
     return response
-    # return render_template('partial/charedit/party.html', user=user, character=character, username=username, url_name=url_name, party=None, party_url="")
 
 @character_edit.route('/charedit/clear-party-err/<username>/<url_name>', methods=['GET'])
 def charedit_clear_party_err(username, url_name):
@@ -138,7 +137,6 @@ def charedit_inplace_scars_add(username, url_name):
         result = result + "\n"+selected_scar+":"+scarlist[selected_scar]
     response = make_response(result)
     response.headers["HX-Trigger-After-Settle"] = 'scar-roll'
-    print(result)
     return response
     
 
