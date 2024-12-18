@@ -19,14 +19,12 @@
         <div class="title level-item justify-centered">{{ form.name(class='input') }}</div>
         {% if is_owner or is_subowner %}
         <div class="charedit-action-pad" id="action-pad">
-          <div class="row32 center-items">
-            <button type="button" class="dice-button ghost40" hx-post="/party/edit/{{ownername}}/{{party_url}}/save">
-              <i class="fa-solid fa-check check"></i>
-            </button>
-            <button class="dice-button ghost40" type="button" hx-post="/party/edit/{{ownername}}/{{party_url}}/cancel">
-              <i class="fa-solid fa-xmark xmark"></i>
-            </button>
-          </div>
+          <button type="button" class="dice-button ghost40" hx-post="/party/edit/{{ownername}}/{{party_url}}/save">
+            <i class="fa-solid fa-check check"></i>
+          </button>
+          <button class="dice-button ghost40" type="button" hx-post="/party/edit/{{ownername}}/{{party_url}}/cancel">
+            <i class="fa-solid fa-xmark xmark"></i>
+          </button>
         </div>
         {% endif %}
       </div>

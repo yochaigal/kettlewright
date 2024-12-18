@@ -43,11 +43,13 @@
     </p>
   </div>
   <div id="character-rest-container">
+    {% if is_owner %}
     <button class="button smaller-font" hx-get="/charedit/rest/{{username}}/{{url_name}}"
       hx-target="#character-stats-container" hx-confirm="Do you want to restore all HP?" data-confirm-title="Rest"
       data-confirm-button="Yes" {% if character.deprived %} disabled {% endif %}>
       Rest
     </button>
+    {% endif %}
   </div>
 </div>
 <div hx-trigger="refresh-stats from:body" hx-get="/charedit/inplace-stats/{{ username }}/{{ url_name }}/cancel"

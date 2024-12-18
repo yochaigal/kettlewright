@@ -31,22 +31,21 @@
             <img src="{{portrait_src}}" alt="character portrait" class="portrait-image" id="portrait-image" />
           </div>
         </div>
-        <div>
-          <div class="">{{ form.name(class=' edit-mode' ) }}</div>
-          <h2 class="">{{character.background}}</h2>
-        </div>
-        {% if is_owner %}
-        <div class="charedit-action-pad" id="action-pad">
-          <div class="row32">
-            <button type="button" class="dice-button ghost40" hx-post="/charedit/{{username}}/{{url_name}}/save">
-              <i class="fa-solid fa-check check"></i>
-            </button>
+        <div class="full-width row16spaced-top">
+          <div>
+            <div class="">{{ form.name(class=' edit-mode' ) }}</div>
+            <h2 class="">{{character.background}}</h2>
+          </div>
+          {% if is_owner %}
+          <div class="charedit-action-pad" id="action-pad">
+            <button type="button" class="dice-button ghost40" hx-post="/charedit/{{username}}/{{url_name}}/save"><i
+                class="fa-solid fa-check check"></i></button>
             <button class="dice-button ghost40" type="button" hx-post="/charedit/{{username}}/{{url_name}}/cancel">
               <i class="fa-solid fa-xmark xmark"></i>
             </button>
           </div>
+          {% endif %}
         </div>
-        {% endif %}
       </div>
       <div class="character-stats-traits-inventory" id="edit-character-left-">
         <div id="character-stats-container">

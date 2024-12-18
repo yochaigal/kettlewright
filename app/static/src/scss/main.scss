@@ -402,6 +402,9 @@ button,
   font-size: 14pt;
   cursor: pointer;
   margin-left: 6px;
+  @media (max-width: 940px) {
+    margin-left: 0px;
+  }
 }
 
 
@@ -690,6 +693,14 @@ button,
   justify-content: space-between;
 }
 
+.row16spaced-top {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: start;
+  justify-content: space-between;
+}
+
 .row32 {
   display: flex;
   flex-direction: row;
@@ -814,4 +825,11 @@ button,
 .ghost40:hover,
 .ghost50:hover {
   color: var(--fg);
+}
+
+
+@media (max-width: 940px) {
+  .mobile-hidden {
+    display: none;
+  }
 }

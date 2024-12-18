@@ -1,9 +1,11 @@
 <div class="row16spaced full-width">
   <h3>Inventory</h3>
   <div id="modal-anchor"></div>
+  {% if is_owner %}
   <button type="button" class="button smaller-font" style="margin: 0px"
     hx-get="/marketplace/{{username}}/{{url_name}}/{{inventory.selected_container.id}}" hx-target="#modal-anchor">
     Marketplace </button>
+  {% endif %}
 </div>
 <div class="inventory-header flex-row">
   {% for cnt in inventory.containers %}
@@ -30,7 +32,7 @@
         onclick="KW_alert('{{it.name|squote2js}}','{{it.description|squote2js|eol2br}}')">
         <i class="item-edit-button fa-solid fa-circle-info circle-info"></i>
       </div>
-      {% endif %} {% if it.dice|length > 0 %}
+      {% endif %} {% if it.dice|length > 0 and is_owner %}
       <div class="pointer" title="Roll dice" onclick="KW_rollDiceCallback({{it.dice}})">
         <i class="fa-solid fa-dice dice"></i>
       </div>
