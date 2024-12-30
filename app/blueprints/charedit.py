@@ -52,7 +52,7 @@ def charedit_show(username, url_name):
 def charedit_save(username, url_name):
     user, character = get_char_data(username, url_name)
     form = CharacterEditForm(obj=character)
-    fields_to_update = ['strength_max', 'strength','dexterity_max', 'dexterity', 'willpower_max', 'willpower','hp_max', 'hp', 'deprived', 'gold','description', 'armor','name','omens', 'scars','traits','bonds','notes']
+    fields_to_update = ['strength_max', 'strength','dexterity_max', 'dexterity', 'willpower_max', 'willpower','hp_max', 'hp', 'deprived', 'gold','description', 'name','omens', 'scars','traits','bonds','notes']
     for field in fields_to_update:
         setattr(character, field, sanitize_data(getattr(form, field).data))
     err = None
@@ -68,7 +68,9 @@ def charedit_save(username, url_name):
             flash("Invalid party code: "+party_code)
     else:
         character.party_code = ""
+    character.armor = character.armorValue() # update armor
     db.session.commit()
+    
     response = make_response("Redirecting")
     response.headers["HX-Redirect"] = "/users/"+username+"/characters/"+url_name
 
@@ -83,6 +85,7 @@ def charedit_cancel(username, url_name):
     # restore some data
     if data['old_items'] != None:
         character.items = data['old_items']
+        character.armor = character.armorValue() # update armor
         changed = True
     if data['old_gold'] != None:
         character.gold = data['old_gold']
