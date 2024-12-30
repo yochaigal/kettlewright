@@ -213,11 +213,11 @@
       "cost": 40
     },
     "Gambeson": {
-      "tags": ["+1 Armor", "bonus defense"],
+      "tags": ["1 Armor", "bonus defense"],
       "cost": 15
     },
     "Helmet": {
-      "tags": ["+1 Armor", "bonus defense"],
+      "tags": ["1 Armor", "bonus defense"],
       "cost": 10
     },
     "Plate": {
@@ -225,7 +225,7 @@
       "cost": 60
     },
     "Shield": {
-      "tags": ["+1 Armor", "bonus defense"],
+      "tags": ["1 Armor", "bonus defense"],
       "cost": 10
     }
   },
