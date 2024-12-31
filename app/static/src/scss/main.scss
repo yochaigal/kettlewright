@@ -833,3 +833,52 @@ button,
     display: none;
   }
 }
+
+.tabs {
+  float: none;
+  list-style: none;
+  position: relative;
+  margin: 16px 0 0 8px;
+  text-align: left;
+  li {
+    float: left;
+    display: block;
+  }
+  input[type="radio"] {
+    position: absolute;
+    top: 0;
+    left: -9999px;
+  }
+  label {
+    user-select: none;
+    display: block;
+    padding: 14px 21px;
+    border-radius: 2px 2px 0 0;
+    font-weight: normal;
+    width: 100%;
+    background: var(--form-bg);
+    cursor: pointer;
+    position: relative;
+    top: 3px; 
+    &:hover {
+      background: color-mix(in lab, transparent 95%, var(--fg));
+    }
+  }
+  .tab-content{
+    z-index: 2;
+    display: none; 
+    overflow: hidden;
+    width: 100%;
+    padding: 16px;  
+    position: absolute;
+    top: 53px;
+    left: 0; 
+    background: color-mix(in lab, transparent 95%, var(--fg));
+  }
+  [id^="tab"]:checked + label { 
+    background: color-mix(in lab, transparent 95%, var(--fg)); 
+  }
+  [id^="tab"]:checked ~ [id^="tab-content"] {
+    display: block;
+  }
+}

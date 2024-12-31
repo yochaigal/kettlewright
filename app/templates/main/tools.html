@@ -6,31 +6,59 @@
 <script src="{{ url_for('static', filename='src/js/tools.js') }}" type="module"></script>
 <div class="body-container">
   <div class="sheet party-tools-sheet">
-    <h2>Warden Tools</h2>
-    <div style="margin-top: 2em">
-      <div class="tools-roll-container">
-        <select class="tools-select" id="category-select">
-          <option value selected disabled="">Choose...</option>
-        </select>
-        <select class="tools-select" id="subcategory-select">
-          <option value selected disabled="">Choose...</option>
-        </select>
-        <div id="tools-button-container">
-          <button class="roll button dice-button" type="button" id="roll-button">
-            <i class="fa-solid fa-dice dice"></i>
-          </button>
-          <button class="button dice-button" 
-            id="tools-copy-text-button" 
-            type="button">
-            <i class="fa-solid fa-copy"></i>
-          </button>
-          <button class="button dice-button" id="clear-button" style="font-size: 16pt">
-            <i class="fa-solid fa-trash"></i>
-          </button>
-        </div>
-      </div>
+    <h2>Tools</h2>
+    <div class="tabs" role="tablist">
+      <ul>
+        <li>
+          <input type="radio" name="tabs" id="tab1" checked />
+          <label for="tab1" role="tab" aria-selected="true" aria-controls="panel1" tabindex="0">Tables</label>
+          <div id="tab-content1" class="tab-content flex-column-centered" role="tabpanel" aria-labelledby="description"
+            aria-hidden="false">
+            <div class="tools-roll-container">
+              <select class="tools-select" id="category-select">
+                <option value selected disabled="">Choose...</option>
+              </select>
+              <select class="tools-select" id="subcategory-select">
+                <option value selected disabled="">Choose...</option>
+              </select>
+              <div id="tools-button-container">
+                <button class="roll button dice-button" type="button" id="roll-button">
+                  <i class="fa-solid fa-dice dice"></i>
+                </button>
+                <button class="button dice-button" id="tools-copy-text-button" type="button">
+                  <i class="fa-solid fa-copy"></i>
+                </button>
+                <button class="button dice-button" id="clear-button" style="font-size: 16pt">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+            <div class="text-border" style="margin-top: 1em" id="tools-result-display"></div>
+          </div>
+        </li>
+        <li>
+          <input type="radio" name="tabs" id="tab2" />
+          <label for="tab2" role="tab" aria-selected="true" aria-controls="panel2" tabindex="0">PC Generator</label>
+          <div id="tab-content2" class="tab-content" role="tabpanel" aria-labelledby="description" aria-hidden="false">
+            <div class="tools-generator">
+              <div id="tools-button-container">
+                <button class="roll button dice-button" type="button" id="roll-button">
+                  <i class="fa-solid fa-dice dice"></i>
+                </button>
+                <button class="button dice-button" id="tools-copy-text-button" type="button">
+                  <i class="fa-solid fa-copy"></i>
+                </button>
+                <button class="button dice-button" id="clear-button" style="font-size: 16pt">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+            <div class="text-border" style="margin-top: 1em" id="gen-result-display"></div>
+          </div>
+        </li>
+      </ul>
     </div>
-    <div class="text-border" style="margin-top: 2em" id="tools-result-display"></div>
+
   </div>
 </div>
 {% endblock %}

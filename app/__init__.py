@@ -131,6 +131,10 @@ def create_app():
     # blueprint for party page
     from app.blueprints import party as party_blueprint
     app.register_blueprint(party_blueprint)
+    
+     # blueprint for generator
+    from app.blueprints import generator as generator_blueprint
+    app.register_blueprint(generator_blueprint)
 
     from .socket_events import register_socket_events
     register_socket_events(socketio)

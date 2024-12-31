@@ -380,4 +380,4 @@ def charedit_inplace_inventory_item_edit_party(username, url_name, item_id):
     item = inventory.move_item_to_party(item_id)
     inventory.select(item["location"])
     inventory.decorate()
-    return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory) 
+    return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)    

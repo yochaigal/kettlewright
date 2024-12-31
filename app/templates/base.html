@@ -1,95 +1,81 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Kettlewright</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400;1,700&family=Averia+Serif+Libre:ital,wght@0,300;0,700;1,300;1,700&family=Caveat&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,300;0,600;1,300;1,600&display=swap&family=Noto+Sans+Symbols+2&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css"
-    />
-    {% assets "scss_all" %}
-    <link rel="stylesheet" href="{{ ASSET_URL }}" />
-    {% endassets %}
-    <script>
-      function resizeTextarea(element) {
-        element.style.height = "auto";
-        element.style.height = element.scrollHeight + 4 + "px";
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kettlewright</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400;1,700&family=Averia+Serif+Libre:ital,wght@0,300;0,700;1,300;1,700&family=Caveat&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,300;0,600;1,300;1,600&display=swap&family=Noto+Sans+Symbols+2&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+  {% assets "scss_all" %}
+  <link rel="stylesheet" href="{{ ASSET_URL }}" />
+  {% endassets %}
+  <script>
+    function resizeTextarea(element) {
+      element.style.height = "auto";
+      element.style.height = element.scrollHeight + 4 + "px";
+    }
+  </script>
+  <script type="text/javascript" src="{{ url_for('static', filename='src/js/main.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  {% if current_user.is_authenticated %}
+  <script src="{{url_for('static', filename='src/js/socket_init.js')}}" defer type="module"></script>
+  {% endif %}
+
+  <!-- Basic Meta Tag -->
+  <meta name="description"
+    content="A free, open-source application for managing characters and parties in the Cairn roleplaying game." />
+
+  <!-- Open Graph Meta Tags (for social media sharing) -->
+  <meta property="og:title" content="Kettlewright" />
+  <meta property="og:description"
+    content="A free, open-source application for managing characters and parties in the Cairn roleplaying game." />
+  <meta property="og:url" content="https://Kettlewright.com" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Kettlewright" />
+  <meta name="twitter:description"
+    content="A free, open-source application for managing characters and parties in the Cairn roleplaying game." />
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}" />
+  <link rel="icon" type="image/png" sizes="48x48" href="{{ url_for('static', filename='icons/favicon-48x48.png') }}" />
+  <link rel="manifest" href="{{ url_for('static', filename='icons/site.webmanifest') }}" />
+  <link rel="mask-icon" href="{{ url_for('static', filename='icons/safari-pinned-tab.svg') }}" color="#5bbad5" />
+  <link rel="shortcut icon" href="{{ url_for('static', filename='icons/favicon.ico') }}" />
+  <meta name="msapplication-TileColor" content="#da532c" />
+  <meta name="msapplication-config" content="{{ url_for('static', filename='icons/browserconfig.xml') }}" />
+  <meta name="theme-color" content="#ffffff" />
+
+  <!-- HTMX support with Hyperscript -->
+  <script src="https://unpkg.com/htmx.org@2.0.3"
+    integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/hyperscript.org@0.9.13"></script>
+
+  <!-- Sweet alert customized alerts -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+
+<body>
+  <script>
+    (function () {
+      const isDarkMode = localStorage.getItem("darkMode") === "true";
+      const isNotPrintPage = !window.location.href.endsWith("/print/");
+      if (isDarkMode && isNotPrintPage) {
+        document.body.classList.add("dark-mode");
       }
-    </script>
-    <script type="text/javascript" src="{{ url_for('static', filename='src/js/main.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-    {% if current_user.is_authenticated %}
-    <script src="{{url_for('static', filename='src/js/socket_init.js')}}" defer type="module"></script>
-    {% endif %}
-
-    <!-- Basic Meta Tag -->
-    <meta
-      name="description"
-      content="A free, open-source application for managing characters and parties in the Cairn roleplaying game."
-    />
-
-    <!-- Open Graph Meta Tags (for social media sharing) -->
-    <meta property="og:title" content="Kettlewright" />
-    <meta
-      property="og:description"
-      content="A free, open-source application for managing characters and parties in the Cairn roleplaying game."
-    />
-    <meta property="og:url" content="https://Kettlewright.com" />
-    <meta property="og:type" content="website" />
-
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Kettlewright" />
-    <meta
-      name="twitter:description"
-      content="A free, open-source application for managing characters and parties in the Cairn roleplaying game."
-    />
-
-    <!-- Favicons -->
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="48x48"
-      href="{{ url_for('static', filename='icons/favicon-48x48.png') }}"
-    />
-    <link rel="manifest" href="{{ url_for('static', filename='icons/site.webmanifest') }}" />
-    <link rel="mask-icon" href="{{ url_for('static', filename='icons/safari-pinned-tab.svg') }}" color="#5bbad5" />
-    <link rel="shortcut icon" href="{{ url_for('static', filename='icons/favicon.ico') }}" />
-    <meta name="msapplication-TileColor" content="#da532c" />
-    <meta name="msapplication-config" content="{{ url_for('static', filename='icons/browserconfig.xml') }}" />
-    <meta name="theme-color" content="#ffffff" />
-    
-    <!-- HTMX support with Hyperscript -->
-    <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/hyperscript.org@0.9.13"></script>
-
-    <!-- Sweet alert customized alerts -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-  </head>
-  <body>
-    <script>
-      (function () {
-        const isDarkMode = localStorage.getItem("darkMode") === "true";
-        const isNotPrintPage = !window.location.href.endsWith("/print/");
-        if (isDarkMode && isNotPrintPage) {
-          document.body.classList.add("dark-mode");
-        }
-      })();
-    </script>
-    <nav class="navbar" role="navigation" aria-label="main navigation" id="navbar">
-      <!-- {% set excluded_routes = ['main.about', 'auth.login', 'auth.signup'] %} {% if request.endpoint not in
+    })();
+  </script>
+  <nav class="navbar" role="navigation" aria-label="main navigation" id="navbar">
+    <!-- {% set excluded_routes = ['main.about', 'auth.login', 'auth.signup'] %} {% if request.endpoint not in
       excluded_routes %}
       <div class="nav-logo-container">
         <img src="{{ url_for('static', filename='images/Kettlewright_Logo_Black_Text.png') }}" alt="Kettlewright" />
@@ -97,37 +83,37 @@
       {% else %}
       <div class="kettlewright-logo-placeholder"></div>
       {% endif %} -->
-      <div class="kettlewright-logo-placeholder"></div>
-      <div class="navbar-menu" id="nav-menu">
-        <div class="navbar-start">
-          {% if current_user.is_authenticated %}
-          <a href="{{ url_for('main.characters', username=current_user.username) }}" class="navbar-item">
-            characters
-          </a>
-          <a href="{{ url_for('main.parties', username=current_user.username) }}" class="navbar-item"> parties </a>
-          <a href="{{ url_for('main.tools')}}" class="navbar-item"> tools </a>
-
-          {% endif %}
-        </div>
-        <div class="navbar-end">
-          <button type="button" class="navbar-item navbar-desktop-item" id="dark-mode-toggle">
-            <i class="fa-solid fa-circle-half-stroke"></i>
-          </button>
-          {% if current_user.is_authenticated %}
-          <a href="{{ url_for('main.about') }}" class="navbar-item navbar-desktop-item"> about </a>
-          <a href="{{ url_for('auth.account') }}" class="navbar-item navbar-desktop-item"> account </a>
-          {% endif %} {% if not current_user.is_authenticated %}
-          <a href="{{ url_for('auth.login') }}" class="navbar-item navbar-desktop-item"> login </a>
-          <a href="{{ url_for('auth.signup') }}" class="navbar-item navbar-desktop-item"> sign up </a>
-          <a href="{{ url_for('main.about') }}" class="navbar-item navbar-desktop-item"> about </a>
-          {% endif %} {% if current_user.is_authenticated %} {% endif %}
-        </div>
+    <div class="kettlewright-logo-placeholder"></div>
+    <div class="navbar-menu" id="nav-menu">
+      <div class="navbar-start">
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('main.characters', username=current_user.username) }}" class="navbar-item">
+          characters
+        </a>
+        <a href="{{ url_for('main.parties', username=current_user.username) }}" class="navbar-item"> parties </a>
+        {% endif %}
+        <a href="{{ url_for('main.tools')}}" class="navbar-item"> tools </a>
       </div>
-      <button type="button" class="navbar-item navbar-mobile-item" id="nav-mobile-button" style="margin-left: 0px">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-    </nav>
-    {% block content %} {% endblock %}
+      <div class="navbar-end">
+        <button type="button" class="navbar-item navbar-desktop-item" id="dark-mode-toggle">
+          <i class="fa-solid fa-circle-half-stroke"></i>
+        </button>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('main.about') }}" class="navbar-item navbar-desktop-item"> about </a>
+        <a href="{{ url_for('auth.account') }}" class="navbar-item navbar-desktop-item"> account </a>
+        {% endif %} {% if not current_user.is_authenticated %}
+        <a href="{{ url_for('auth.login') }}" class="navbar-item navbar-desktop-item"> login </a>
+        <a href="{{ url_for('auth.signup') }}" class="navbar-item navbar-desktop-item"> sign up </a>
+        <a href="{{ url_for('main.about') }}" class="navbar-item navbar-desktop-item"> about </a>
+        {% endif %} {% if current_user.is_authenticated %} {% endif %}
+      </div>
+    </div>
+    <button type="button" class="navbar-item navbar-mobile-item" id="nav-mobile-button" style="margin-left: 0px">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </nav>
+  {% block content %} {% endblock %}
 
-  </body>
+</body>
+
 </html>
