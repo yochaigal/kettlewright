@@ -40,20 +40,7 @@
           <input type="radio" name="tabs" id="tab2" />
           <label for="tab2" role="tab" aria-selected="true" aria-controls="panel2" tabindex="0">PC Generator</label>
           <div id="tab-content2" class="tab-content" role="tabpanel" aria-labelledby="description" aria-hidden="false">
-            <div class="tools-generator">
-              <div id="tools-button-container">
-                <button class="roll button dice-button" type="button" id="roll-button">
-                  <i class="fa-solid fa-dice dice"></i>
-                </button>
-                <button class="button dice-button" id="tools-copy-text-button" type="button">
-                  <i class="fa-solid fa-copy"></i>
-                </button>
-                <button class="button dice-button" id="clear-button" style="font-size: 16pt">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            </div>
-            <div class="text-border" style="margin-top: 1em" id="gen-result-display"></div>
+            {% include "partial/tools/pcgen.html" %}
           </div>
         </li>
       </ul>

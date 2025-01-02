@@ -101,3 +101,23 @@ def load_version():
     with open(ver_file_path, 'r') as file:
         ver_data = json.load(file)
     return ver_data["version"]
+
+def load_backgrounds():
+    bkg_file_path = os.path.join(app_static_path(), 'json', 'backgrounds', 'background_data.json')
+    with open(bkg_file_path, 'r') as file:
+        bkg_data = json.load(file)    
+    return bkg_data
+
+def load_traits():
+    result = []
+    traits_file_path = os.path.join(app_static_path(), 'json', 'traits.json')
+    with open(traits_file_path, 'r') as file:
+        traits_data = json.load(file)
+    return traits_data
+
+def load_bonds():
+    result = []
+    bonds_file_path = os.path.join(app_static_path(), 'json', 'bonds.json')
+    with open(bonds_file_path, 'r') as file:
+        bonds_data = json.load(file)
+    return bonds_data["Bonds"]

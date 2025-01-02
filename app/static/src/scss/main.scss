@@ -366,7 +366,8 @@ button,
 }
 
 .text-border {
-  border: 1px solid #dbdbdb;
+  // border: 1px solid #dbdbdb;
+  background-color: var(--bg);
   border-radius: 4px;
   padding: calc(.75em - 1px);
 }
@@ -851,15 +852,20 @@ button,
   }
   label {
     user-select: none;
-    display: block;
-    padding: 14px 21px;
-    border-radius: 2px 2px 0 0;
-    font-weight: normal;
+    // display: block;
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+    border-radius: 4px 4px 0 0;
     width: 100%;
-    background: var(--form-bg);
+    height: 48px;
+    /* background: var(--form-bg); */
+    border: solid 1px color-mix(in lab,transparent 75%, var(--fg));
+    color: color-mix(in lab,transparent 65%, var(--fg));
     cursor: pointer;
     position: relative;
-    top: 3px; 
+    top: 1px;
+    z-index: 10; 
     &:hover {
       background: color-mix(in lab, transparent 95%, var(--fg));
     }
@@ -871,12 +877,13 @@ button,
     width: 100%;
     padding: 16px;  
     position: absolute;
-    top: 53px;
+    top: 48px;
     left: 0; 
-    background: color-mix(in lab, transparent 95%, var(--fg));
+    border: solid 1px color-mix(in lab, transparent 75%, var(--fg));
   }
   [id^="tab"]:checked + label { 
-    background: color-mix(in lab, transparent 95%, var(--fg)); 
+    color: var(--fg);
+    border-bottom: solid 1px var(--form-bg); 
   }
   [id^="tab"]:checked ~ [id^="tab-content"] {
     display: block;

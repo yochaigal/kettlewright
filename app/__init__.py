@@ -8,7 +8,7 @@ from flask_mail import Mail
 from flask_socketio import SocketIO
 from flask_cors import CORS
 from .assets import compile_static_assets
-from .parse_json import consolidate_json_files
+from app.lib import consolidate_json_files
 from datetime import datetime, timezone
 from datetime import timedelta
 

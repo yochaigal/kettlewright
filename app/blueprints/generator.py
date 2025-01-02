@@ -13,7 +13,15 @@ generator = Blueprint('generator', __name__)
 
 
 # Route: generate random character
-@generator.route('/gen/character', methods=['GET'])
+@generator.route('/gen/character', methods=['POST'])
 def character():
-    response = make_response("Generate random char")
-    return response
+    data = request.form
+    val = '<p>'+generate_character()+'</p>'
+    if data['pcgen_value'] and data['pcgen_value'] != "":
+        val = data['pcgen_value'] + '------------------------------------' + val
+    return render_template('partial/tools/pcgen.html',pcgen_value=val)
+
+# Route: clear pc generator value
+@generator.route('/gen/character/clear', methods=['GET'])
+def character_clear():
+    return render_template('partial/tools/pcgen.html',pcgen_value="")

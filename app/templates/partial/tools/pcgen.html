@@ -1,0 +1,29 @@
+<form class="no-space">
+    <input type="hidden" name="pcgen_value" id="pcgen_value" value="{{pcgen_value}}" />
+    <div class="tools-generator">
+        <div id="tools-button-container">
+            <button class="button dice-button" type="button" id="pcgen-button" hx-post="/gen/character"
+                hx-target="#tab-content2">
+                <i class="fa-solid fa-dice dice"></i>
+            </button>
+            <button class="button dice-button" id="pcgen-copy-text-button" type="button">
+                <i class="fa-solid fa-copy"></i>
+            </button>
+            <button class="button dice-button" id="pcgen-clear-button" type="button" style="font-size: 16pt"
+                hx-get="/gen/character/clear" hx-target="#tab-content2"
+                hx-confirm="Do you want to clear character data?" data-confirm-title="Clear data"
+                data-confirm-button="Clear">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </div>
+    </div>
+    <div class="text-border" style="margin-top: 1em" id="pcgen-result-display">{{pcgen_value|safe}}</div>
+</form>
+<script>
+    document.getElementById("pcgen-copy-text-button").addEventListener('click', (event, element) => {
+        const resultDisplay = document.getElementById("pcgen-result-display");
+        const text = resultDisplay.innerText;
+        navigator.clipboard.writeText(text);
+        KW_alert("Copy text", "Results copied to clipboard");
+    });
+</script>

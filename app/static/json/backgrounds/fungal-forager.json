@@ -148,7 +148,7 @@
           "items": [
             {
               "name": "Sloth-Tarp",
-              "tags": ["+1 Armor", "bonus defense"],
+              "tags": ["1 Armor", "bonus defense"],
               "description": "A tough and weatherproof fabric, useful for hanging off trees. When inside, you have +1 Armor."
             }
           ]
