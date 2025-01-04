@@ -287,7 +287,10 @@ def print_character(username, url_name):
     user = User.query.filter_by(username=username).first_or_404()
     character = Character.query.filter_by(
         owner=user.id, url_name=url_name).first_or_404()
-    return render_template('main/character_print.html', character=character, items_json=json.dumps(character.items), containers_json=json.dumps(character.containers))
+    party = Party.query.filter_by(id=character.party_id).first()
+    inventory = Inventory(character)
+    return render_template('main/character_print.html', character=character, items_json=json.dumps(character.items), 
+                           containers_json=json.dumps(character.containers), party=party, inventory=inventory)
 
 
 @main.route('/delete-character/<int:character_id>/', methods=['POST', 'GET'])

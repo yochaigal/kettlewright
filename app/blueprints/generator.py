@@ -13,10 +13,14 @@ generator = Blueprint('generator', __name__)
 
 
 # Route: generate random character
-@generator.route('/gen/character', methods=['POST'])
+@generator.route('/gen/character', methods=['GET'])
 def character():
-    val = '<p>'+generate_character()+'</p>'
-    return render_template('partial/tools/pcgen.html',pcgen_value=val)
+    external = request.args.get('external')
+    ext = False
+    if external and  external.upper() == 'TRUE':
+        ext = True 
+    response = make_response(generate_character(ext))
+    return response
 
 # Route: clear pc generator value
 @generator.route('/gen/character/clear', methods=['GET'])

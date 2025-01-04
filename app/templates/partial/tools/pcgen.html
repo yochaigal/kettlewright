@@ -1,7 +1,7 @@
 <div class="tools-generator">
     <div id="tools-button-container">
-        <button class="button dice-button" type="button" id="pcgen-button" hx-post="/gen/character"
-            hx-target="#tab-content2" title="Roll">
+        <button class="button dice-button" type="button" id="pcgen-button" hx-get="/gen/character"
+            hx-target="#pcgen-result-display" title="Roll">
             <i class="fa-solid fa-dice dice"></i>
         </button>
         <button class="button dice-button" id="pcgen-copy-text-button" type="button" title="Copy to clipboard">
@@ -13,7 +13,7 @@
         </button>
     </div>
 </div>
-<div class="text-border" style="margin-top: 1em" id="pcgen-result-display">{{pcgen_value|safe}}</div>
+<div class="text-border" style="margin-top: 1em" id="pcgen-result-display"></div>
 <script>
     document.getElementById("pcgen-copy-text-button").addEventListener('click', (event, element) => {
         const resultDisplay = document.getElementById("pcgen-result-display");
