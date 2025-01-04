@@ -2,6 +2,9 @@
 <h4>{{character.background_name}}</h4>
 <p>
 <div class="subtitle">🙛 Description</div>
+<p>
+    {{character.description}}
+</p>
 <div>
     You have a {{character.traits[0].value}} {{character.traits[0].name}}, {{character.traits[1].value}}
     {{character.traits[1].name}}, and {{character.traits[2].value}}
@@ -32,6 +35,9 @@
     <div><b class="ghost40">Weapon:</b> {{character.weapon_desc}}</div>
     {% endif %}
     <div><b class="ghost40">Other items:</b> {{character.items_desc}}</div>
+    {% if character.container_desc != ""%}
+    <div><b class="ghost40">Containers:</b> {{character.container_desc}} </div>
+    {% endif %}
 </div>
 <div><b class="ghost40">Gold:</b> {{character.gold}}</div>
 </p>
@@ -68,3 +74,5 @@
     {{character.table2['option']['description']}}
 </p>
 </p>
+<input type="hidden" name="json_data" id="json_data" value="{{json_data}}" />
+<input type="hidden" name="character_name" id="character_name" value="{{character.name}}" />

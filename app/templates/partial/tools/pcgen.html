@@ -1,29 +1,36 @@
-<form class="no-space">
-    <input type="hidden" name="pcgen_value" id="pcgen_value" value="{{pcgen_value}}" />
-    <div class="tools-generator">
-        <div id="tools-button-container">
-            <button class="button dice-button" type="button" id="pcgen-button" hx-post="/gen/character"
-                hx-target="#tab-content2">
-                <i class="fa-solid fa-dice dice"></i>
-            </button>
-            <button class="button dice-button" id="pcgen-copy-text-button" type="button">
-                <i class="fa-solid fa-copy"></i>
-            </button>
-            <button class="button dice-button" id="pcgen-clear-button" type="button" style="font-size: 16pt"
-                hx-get="/gen/character/clear" hx-target="#tab-content2"
-                hx-confirm="Do you want to clear character data?" data-confirm-title="Clear data"
-                data-confirm-button="Clear">
-                <i class="fa-solid fa-trash"></i>
-            </button>
-        </div>
+<div class="tools-generator">
+    <div id="tools-button-container">
+        <button class="button dice-button" type="button" id="pcgen-button" hx-post="/gen/character"
+            hx-target="#tab-content2" title="Roll">
+            <i class="fa-solid fa-dice dice"></i>
+        </button>
+        <button class="button dice-button" id="pcgen-copy-text-button" type="button" title="Copy to clipboard">
+            <i class="fa-solid fa-copy"></i>
+        </button>
+        <button class="button dice-button" id="pcgen-json-button" type="button" style="font-size: 16pt"
+            title="Download JSON">
+            <i class="fa-solid fa-download"></i>
+        </button>
     </div>
-    <div class="text-border" style="margin-top: 1em" id="pcgen-result-display">{{pcgen_value|safe}}</div>
-</form>
+</div>
+<div class="text-border" style="margin-top: 1em" id="pcgen-result-display">{{pcgen_value|safe}}</div>
 <script>
     document.getElementById("pcgen-copy-text-button").addEventListener('click', (event, element) => {
         const resultDisplay = document.getElementById("pcgen-result-display");
         const text = resultDisplay.innerText;
         navigator.clipboard.writeText(text);
         KW_alert("Copy text", "Results copied to clipboard");
+    });
+
+    document.getElementById('pcgen-json-button').addEventListener('click', () => {
+        if (!document.getElementById('json_data')) return;
+        const jsonData = document.getElementById('json_data').value;
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const fileURL = URL.createObjectURL(blob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = fileURL;
+        downloadLink.download = document.getElementById('character_name').value;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
     });
 </script>

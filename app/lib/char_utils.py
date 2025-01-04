@@ -1,8 +1,11 @@
 from app.models import db, User, Character, Party
 from app.lib import load_backgrounds, load_traits, load_bonds, load_omens
 import random
+import json
 import re
 from flask import render_template
+
+NO_ARMOR = 'No upper body protection, no helmet nor shield'
 
 # Retrieve character data
 def get_character(character_id):
@@ -47,6 +50,9 @@ class TraitValue:
         self.name = name
         self.value = value
         
+def traits_text(age, traits):
+    return 'You are ' + str(age) + ' years old. You have a '+ traits[0].value + ' '+traits[0].name + ', '+ traits[1].value + ' ' + traits[1].name + ', and '+ traits[2].value + ' ' + traits[2].name+'. Your '+ traits[3].name +' is '+ traits[3].value + ', your ' + traits[4].name+' '+ traits[4].value+'. You have '+ traits[5].value+ ' ' + traits[5].name+'. You are ' + traits[6].value+' and '+ traits[7].value+'.'
+        
 class TableValue:
     def __init__(self, question, option):
         self.question = question
@@ -75,6 +81,8 @@ class GeneratedCharacter:
         self.gold = 0
         self.age = 10
         self.slots = 0
+        self.description = ""
+        self.containers = []
         
     def other_items(self):
         result = []
@@ -148,6 +156,40 @@ class GeneratedCharacter:
         if armor > 3:
             armor = 3
         return armor
+    
+    def container_items(self):
+        r = []
+        for c in self.containers:
+            r.append(c['name']+' ('+str(c['slots'])+')')
+        return ", ".join(r)
+    
+    def toJSON(self):
+        r = {}
+        r['armor'] = self.attributes.armor
+        if r['armor'] == NO_ARMOR:
+            r['armor'] = 0
+        r['background'] = self.background_name
+        r['bonds'] = self.bond['description']
+        r['containers'] = self.containers
+        r['deprived'] = False
+        r['description'] = self.description
+        r['dexterity'] = self.attributes.dex
+        r['dexterity_max'] = self.attributes.dex
+        r['gold'] = self.gold
+        r['hp'] = self.attributes.hp
+        r['hp_max'] = self.attributes.hp
+        r['items'] = self.items 
+        r['name'] = self.name
+        r['notes'] = self.table1.question+"\n"+self.table1.option['description']+'\n'+self.table2.question+'\n'+self.table2.option['description']
+        r['omens'] = self.omen
+        r['scars'] = ''
+        r['strength'] = self.attributes.str
+        r['strength_max'] = self.attributes.str
+        r['traits'] = traits_text(self.age, self.traits)
+        r['willpower'] = self.attributes.wil
+        r['willpower_max'] = self.attributes.wil
+        r['image_url'] = "default-portrait.webp"
+        return r
 
 
 def generate_character():
@@ -159,6 +201,7 @@ def generate_character():
         keys.append(k)
     selected = keys[random.randint(0,len(keys)-1)]
     genchar.background = bkgs[selected]
+    genchar.description = genchar.background['background_description']
     genchar.background_name = selected
     
     genchar.name = genchar.background['names'][random.randint(0,len(genchar.background['names'])-1)]
@@ -206,7 +249,7 @@ def generate_character():
     genchar.attributes.wil=random.randint(3,18)
     genchar.attributes.armor = genchar.armor()
     if genchar.attributes.armor == 0:
-        genchar.attributes.armor = 'No upper body protection, no helmet nor shield'
+        genchar.attributes.armor = NO_ARMOR
          
     traits = load_traits()
     for key in traits:
@@ -224,6 +267,28 @@ def generate_character():
     genchar.weapon_desc = genchar.weapon_items()
     genchar.items_desc = genchar.other_items()
     
-    # TODO: add starting containers
     
-    return render_template("partial/tools/pcgen_text.html",character=genchar)
+    # apply ids and location to items
+    idx = 1
+    for it in genchar.items:
+        it['id'] = idx
+        it['location'] = 0
+        idx += 1
+    
+    genchar.containers.append({
+            "id": 0,
+            "name": "Main",
+            "slots": 10
+        })
+    if "starting_containers" in genchar.background:
+        idx = 1
+        for c in genchar.background['starting_containers']:
+            c['id'] = idx 
+            idx += 1
+            genchar.containers.append(c)
+            
+    genchar.container_desc = genchar.container_items()
+
+    json_data = json.dumps(genchar.toJSON())
+    
+    return render_template("partial/tools/pcgen_text.html",character=genchar, json_data=json_data)
