@@ -1,3 +1,7 @@
+{% if external == True %}
+<!-- We can include here some styles -->
+{% endif %}
+
 <h2>{{character.name}}</h2>
 <h4>{{character.background_name}}</h4>
 <p>
@@ -18,28 +22,28 @@
 <p>
 <div class="subtitle">🙛 Attributes</div>
 <div>
-    <div><b class="ghost40">HP:</b> {{character.attributes.hp}}</div>
-    <div><b class="ghost40">Armor:</b> {{character.attributes.armor}}</div>
-    <div><b class="ghost40">STR:</b> {{character.attributes.str}}</div>
-    <div><b class="ghost40">DEX:</b> {{character.attributes.dex}}</div>
-    <div><b class="ghost40">WIL:</b> {{character.attributes.wil}}</div>
+    <div><b>HP:</b> {{character.attributes.hp}}</div>
+    <div><b>Armor:</b> {{character.attributes.armor}}</div>
+    <div><b>STR:</b> {{character.attributes.str}}</div>
+    <div><b>DEX:</b> {{character.attributes.dex}}</div>
+    <div><b>WIL:</b> {{character.attributes.wil}}</div>
 </div>
 </p>
 <p>
 <div class="subtitle">🙛 Equipment ({{character.slots}})</div>
 <div>
     {% if character.armor_desc != "" %}
-    <div><b class="ghost40">Armor:</b> {{character.armor_desc}}</div>
+    <div><b>Armor:</b> {{character.armor_desc}}</div>
     {% endif %}
     {% if character.weapon_desc != "" %}
-    <div><b class="ghost40">Weapon:</b> {{character.weapon_desc}}</div>
+    <div><b>Weapon:</b> {{character.weapon_desc}}</div>
     {% endif %}
-    <div><b class="ghost40">Other items:</b> {{character.items_desc}}</div>
+    <div><b>Other items:</b> {{character.items_desc}}</div>
     {% if character.container_desc != ""%}
-    <div><b class="ghost40">Containers:</b> {{character.container_desc}} </div>
+    <div><b>Containers:</b> {{character.container_desc}} </div>
     {% endif %}
 </div>
-<div><b class="ghost40">Gold:</b> {{character.gold}}</div>
+<div><b>Gold:</b> {{character.gold}}</div>
 </p>
 <p>
 <div class="subtitle">🙛 Bonds</div>

@@ -132,6 +132,7 @@ class Inventory:
             title += ", ".join(tt)
             title += ") "                    
         item["title"] = title
+        return item
             
     # select active container
     def select(self, id):
@@ -170,7 +171,7 @@ class Inventory:
         return cnt
         
     # get items for container:
-    def get_items_for_container(self, container_id):
+    def get_items_for_container(self, container_id, decorated):
         result = []
         cnt = self.get_container(container_id)
         if cnt == None:
@@ -178,7 +179,10 @@ class Inventory:
         items = json.loads(self.character.items)
         for it in items:
             if it["location"] == int(container_id):
-                result.append(it)
+                if decorated:
+                    result.append(self.decorate_item(it))
+                else:
+                    result.append(it)
         return result
     
     # generate new item id
@@ -204,7 +208,7 @@ class Inventory:
     # add fatigue
     def add_fatigue(self, container_id):
         idx = 0        
-        cont_items = self.get_items_for_container(container_id)
+        cont_items = self.get_items_for_container(container_id, False)
         cnt = self.get_container(container_id)
         if cnt == None:
             return

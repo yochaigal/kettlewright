@@ -192,7 +192,7 @@ class GeneratedCharacter:
         return r
 
 
-def generate_character():
+def generate_character(external):
     genchar = GeneratedCharacter()
     
     bkgs = load_backgrounds()
@@ -291,4 +291,4 @@ def generate_character():
 
     json_data = json.dumps(genchar.toJSON())
     
-    return render_template("partial/tools/pcgen_text.html",character=genchar, json_data=json_data)
+    return render_template("partial/tools/pcgen_text.html",character=genchar, json_data=json_data, external=external)

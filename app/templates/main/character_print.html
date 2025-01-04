@@ -1,38 +1,22 @@
 {% extends "base.html" %} {% block content %}
-<script>
-  // const rawData = `{{ data_json|safe }}`;
-  // const data = JSON.parse(rawData);
-  // const containersRawData = `{{ containers_data_json|safe }}`;
-  // const containersData = JSON.parse(containersRawData);
-  const data = JSON.parse(`{{ items_json|safe }}`.slice(1, -1));
-  const containersData = JSON.parse(`{{ containers_json|safe }}`.slice(1, -1));
-  const deprived = `{{character.deprived}}`;
-  const customImage = "{{character.custom_image}}";
-  const imageURL = `{{character.image_url}}`;
-  const hp = `{{character.hp}}`;
-  const hpMax = `{{character.hp_max}}`;
-  const partyName = `{{character.party_name}}`;
-  const partyDescription = `{{character.party_description}}`;
-  const traits = `{{character.traits}}`;
-  const bonds = `{{character.bonds}}`;
-  const omens = `{{character.omens}}`;
-  const scars = `{{character.scars}}`;
-  const notes = `{{character.notes}}`;
-  const description = `{{character.description}}`;
-  const isOwner = `{{is_owner}}`;
-  const party = `{{party}}`;
-</script>
-
-<script src="{{url_for('static', filename='src/js/print_character.js')}}" defer type="module"></script>
-
 <div class="body-container" style="margin-top: 0px">
   <div class="view-character-sheet" style="padding-top: 0px">
     <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em">
-      <img src="{{portrait_src}}" alt="character portrait" class="portrait-image" id="portrait-image" />
+      {% if character.custom_image == False and character.image_url == '' %}
+      <img src="/static/images/portraits/default-portrait.webp" alt="character portrait" class="portrait-image"
+        id="portrait-image" />
+      {% else %}
+      {% if character.custom_image == False and character.image_url != '' %}
+      <img src="/static/images/portraits/{{character.image_url}}" alt="character portrait" class="portrait-image"
+        id="portrait-image" />
+      {% else %}
+      <img src="{{character.image_url}}" alt="character portrait" class="portrait-image" id="portrait-image" />
+      {% endif %}
+      {% endif %}
       <div>
         <h1 class="view-mode">{{character.name}}</h1>
-        <h2 class=""> {{character.background}} </h2></div
-      >
+        <h2 class=""> {{character.background}} </h2>
+      </div>
     </div>
     <div class="character-print-grid print-container">
       <div>
@@ -44,15 +28,13 @@
           </div>
           <div class="character-attribute-container" id="character-dex-container">
             <h4>DEX</h4>
-            <p class="subtitle view-mode" id="dexterity-view-text"
-              >{{character.dexterity}}/{{character.dexterity_max}}</p
-            >
+            <p class="subtitle view-mode" id="dexterity-view-text">{{character.dexterity}}/{{character.dexterity_max}}
+            </p>
           </div>
           <div class="character-attribute-container" id="character-wil-container">
             <h4>WIL</h4>
-            <p class="subtitle view-mode" id="willpower-view-text"
-              >{{character.willpower}}/{{character.willpower_max}}</p
-            >
+            <p class="subtitle view-mode" id="willpower-view-text">{{character.willpower}}/{{character.willpower_max}}
+            </p>
           </div>
           <div class="character-attribute-container" id="character-hp-container">
             <h4>HP</h4>
@@ -68,30 +50,40 @@
           </div>
           <div class="character-attribute-container" id="character-armor-container">
             <h4>Armor</h4>
-            <p class="subtitle" id="armor-counter" style="margin-left: 0px; margin-right: auto"></p>
+            <p class="subtitle" id="armor-counter" style="margin-left: 0px; margin-right: auto">{{character.armor}}</p>
           </div>
         </div>
       </div>
       <div>
         <h3>Traits</h3>
-
         <p id="character-traits-view" class="character-section">{{character.traits}}</p>
       </div>
     </div>
     <div class="print-container">
       <h3>Inventory</h3>
       <div id="additional-inventory-container" class="character-print-grid">
-        <div id="main-inventory-container" style="margin-bottom: 1em"> </div>
+        {% for c in inventory.containers %}
+        <div style="margin-bottom: 1em" class="inventory-container print-container">
+          <div class="inventory-container-title-selected subtitle">{{c.name}} ( {{inventory.container_slots(c)}}
+            /
+            {{c.slots}} )</div>
+          {% for it in inventory.get_items_for_container(c.id, True) %}
+          <span class="inventory-item-container">{{it['title'] | safe}}</span>
+          {% endfor %}
+        </div>
+        {% endfor %}
       </div>
     </div>
 
     <div>
+      {% if character.description != "" %}
       <div id="character-print-description-container" class="print-container">
         <div class="character-section">
           <h3>Description</h3>
           <p id="character-description-view">{{character.description}}</p>
         </div>
       </div>
+      {% endif %}
       <div id="character-print-bonds-container" class="print-container">
         <div class="character-section">
           <h3>Bonds</h3>
@@ -99,31 +91,37 @@
           <p id="character-bonds-view">{{character.bonds}}</p>
         </div>
       </div>
+      {% if character.omens != "" %}
       <div id="character-print-omens-container" class="print-container">
         <div class="character-section">
           <h3>Omens</h3>
           <p id="character-omens-view">{{character.omens|safe}}</p>
         </div>
       </div>
+      {% endif %}
+      {% if character.scars != "" %}
       <div id="character-print-scars-container" class="print-container">
         <div class="character-section">
           <h3>Scars</h3>
           <p id="character-scars-view">{{character.scars|safe}}</p>
         </div>
       </div>
+      {% endif %}
+      {% if character.notes != "" %}
       <div id="character-print-notes-container" class="print-container">
         <div class="character-section">
           <h3>Notes</h3>
           <p id="character-notes-view">{{character.notes|safe}}</p>
         </div>
       </div>
+      {% endif %}
       <div class="" id="character-party-container" class="print-container">
         <h3 id="character-party-heading">Party</h3>
-        {% if party_name %}
-        <div id="character-party-name-description">
-          <a class="bold subtitle" id="character-party-link" href="{{ base_url }}/{{ party_url }}">{{ party_name }}</a>
-          <p class="text-border" id="character-party-description">{{ party_description}}</p>
-        </div>
+        {% if party %}
+        <p id="character-party-name-description">
+        <div class="bold subtitle">{{ party.name }}</div>
+        <div class="text-border" id="character-party-description">{{ party.description}}</div>
+        </p>
         {%else %}
         <p id="character-no-party-description">This character does not belong to a party...</p>
         {% endif %}
@@ -131,4 +129,8 @@
     </div>
   </div>
 </div>
+<script>
+  document.getElementById("navbar").classList.add("hidden");
+  window.print();
+</script>
 {% endblock %}
