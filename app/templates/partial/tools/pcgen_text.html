@@ -1,0 +1,78 @@
+<h2>{{character.name}}</h2>
+<h4>{{character.background_name}}</h4>
+<p>
+<div class="subtitle">🙛 Description</div>
+<p>
+    {{character.description}}
+</p>
+<div>
+    You have a {{character.traits[0].value}} {{character.traits[0].name}}, {{character.traits[1].value}}
+    {{character.traits[1].name}}, and {{character.traits[2].value}}
+    {{character.traits[2].name}}. Your {{character.traits[3].name}} is {{character.traits[3].value}}, your
+    {{character.traits[4].name}} {{character.traits[4].value}}. You
+    have {{character.traits[5].value}} {{character.traits[5].name}}. You are {{character.traits[6].value}} and
+    {{character.traits[7].value}}.
+    You are {{character.age}} years old.
+</div>
+</p>
+<p>
+<div class="subtitle">🙛 Attributes</div>
+<div>
+    <div><b class="ghost40">HP:</b> {{character.attributes.hp}}</div>
+    <div><b class="ghost40">Armor:</b> {{character.attributes.armor}}</div>
+    <div><b class="ghost40">STR:</b> {{character.attributes.str}}</div>
+    <div><b class="ghost40">DEX:</b> {{character.attributes.dex}}</div>
+    <div><b class="ghost40">WIL:</b> {{character.attributes.wil}}</div>
+</div>
+</p>
+<p>
+<div class="subtitle">🙛 Equipment ({{character.slots}})</div>
+<div>
+    {% if character.armor_desc != "" %}
+    <div><b class="ghost40">Armor:</b> {{character.armor_desc}}</div>
+    {% endif %}
+    {% if character.weapon_desc != "" %}
+    <div><b class="ghost40">Weapon:</b> {{character.weapon_desc}}</div>
+    {% endif %}
+    <div><b class="ghost40">Other items:</b> {{character.items_desc}}</div>
+    {% if character.container_desc != ""%}
+    <div><b class="ghost40">Containers:</b> {{character.container_desc}} </div>
+    {% endif %}
+</div>
+<div><b class="ghost40">Gold:</b> {{character.gold}}</div>
+</p>
+<p>
+<div class="subtitle">🙛 Bonds</div>
+<div>
+    {{character.bond['description']}}
+</div>
+{% if 'items' in character.bond %}
+<div>
+    {% for it in character.bond['items'] %}
+    <div><b>{{it['name']}}:</b> {{it['description']}}</div>
+    {% endfor %}
+
+</div>
+{% endif %}
+</p>
+
+<p>
+<div class="subtitle">🙛 Omens</div>
+<div>
+    {{character.omen}}
+</div>
+</p>
+
+<p>
+<div class="subtitle">🙛 Your Past</div>
+<p>
+    <i>{{character.table1['question']}}</i><br />
+    {{character.table1['option']['description']}}
+</p>
+<p>
+    <i>{{character.table2['question']}}</i><br />
+    {{character.table2['option']['description']}}
+</p>
+</p>
+<input type="hidden" name="json_data" id="json_data" value="{{json_data}}" />
+<input type="hidden" name="character_name" id="character_name" value="{{character.name}}" />

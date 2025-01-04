@@ -8,7 +8,7 @@ from flask_mail import Mail
 from flask_socketio import SocketIO
 from flask_cors import CORS
 from .assets import compile_static_assets
-from .parse_json import consolidate_json_files
+from app.lib import consolidate_json_files
 from datetime import datetime, timezone
 from datetime import timedelta
 
@@ -131,6 +131,10 @@ def create_app():
     # blueprint for party page
     from app.blueprints import party as party_blueprint
     app.register_blueprint(party_blueprint)
+    
+     # blueprint for generator
+    from app.blueprints import generator as generator_blueprint
+    app.register_blueprint(generator_blueprint)
 
     from .socket_events import register_socket_events
     register_socket_events(socketio)

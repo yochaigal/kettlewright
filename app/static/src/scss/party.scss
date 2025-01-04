@@ -48,7 +48,8 @@ border-radius: 50%;
 .party-tools-sheet {
   width: 100%;
   max-width: 940px;
-  padding: 4em;
+  padding: 1em;
+  min-height: 660px;
 }
 
 @media (max-width: 940px) {
@@ -84,11 +85,17 @@ border-radius: 50%;
   margin: 0;
 }
 
-#tools-result-display {
+#tools-result-display,
+#pcgen-result-display  {
   height: 400px;
   max-height: 400px;
   overflow-y: auto;
+}
 
+.tools-generator {
+  justify-content: end;
+  display: flex;
+  margin-top: 1em;
 }
 
 #tools-button-container {

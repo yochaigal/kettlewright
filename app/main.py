@@ -439,7 +439,7 @@ def tools():
         __file__)), 'static', 'json', 'party_events', 'event_data.json')
     with open(events_path, 'r') as file:
         events_data = json.load(file)
-    return render_template('main/tools.html', events_data=json.dumps(events_data))
+    return render_template('main/tools.html', events_data=json.dumps(events_data),pcgen_value="")
 
 @main.route('/reload-page')
 def reload_page():
