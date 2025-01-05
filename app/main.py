@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from .models import User, Character, Party
 from . import db
 from .forms import CharacterForm, CharacterEditForm, CharacterJSONForm, PartyForm, PartyEditForm
-from app.lib import load_scars, character_portrait_link, Inventory, sanitize_data, sanitize_json_content, load_version
+from app.lib import load_scars, character_portrait_link, Inventory, sanitize_data, sanitize_json_content, load_version, load_backgrounds
 import sys
 import json
 from urllib.parse import quote
@@ -411,7 +411,6 @@ def parties(username):
 def party_tools(ownername, party_url):
     party_id = Party.query.filter_by(
         owner_username=ownername, party_url=party_url).first().id
-
     return render_template('main/party_tools.html', username=current_user.username, user_id=current_user.id, party_id=party_id)
 
 
@@ -442,7 +441,8 @@ def tools():
         __file__)), 'static', 'json', 'party_events', 'event_data.json')
     with open(events_path, 'r') as file:
         events_data = json.load(file)
-    return render_template('main/tools.html', events_data=json.dumps(events_data),pcgen_value="")
+    backgrounds = load_backgrounds()
+    return render_template('main/tools.html', events_data=json.dumps(events_data),pcgen_value="", backgrounds=backgrounds)
 
 @main.route('/reload-page')
 def reload_page():

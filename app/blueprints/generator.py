@@ -48,7 +48,8 @@ def character():
     ext = False
     if external and  external.upper() == 'TRUE':
         ext = True 
-    response = make_response(generate_character(ext))
+    background = request.args.get('background')
+    response = make_response(generate_character(ext, background))
     response.headers["HX-Trigger-After-Settle"] = "show-print"
     return response
 
