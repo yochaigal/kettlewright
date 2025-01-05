@@ -152,7 +152,7 @@ def find_background(list, bkg):
     return keys[bkg.casefold()]
 
 
-def generate_character(external, bkg):
+def generate_character(bkg):
     genchar = GeneratedCharacter()
     
     bkgs = load_backgrounds()
@@ -259,4 +259,4 @@ def generate_character(external, bkg):
             
     json_data = json.dumps(genchar.toJSON())
     
-    return render_template("partial/tools/pcgen_text.html",character=genchar, json_data=json_data, external=external)
+    return genchar, json_data

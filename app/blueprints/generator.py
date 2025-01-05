@@ -49,7 +49,16 @@ def character():
     if external and  external.upper() == 'TRUE':
         ext = True 
     background = request.args.get('background')
-    response = make_response(generate_character(ext, background))
+    genchar, json_data  = generate_character(background)
+    
+    out = request.args.get('output')
+    if out and out == 'json':
+        response = make_response(json_data)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    
+    render =  render_template("partial/tools/pcgen_text.html",character=genchar, json_data=json_data, external=ext)
+    response = make_response(render)
     response.headers["HX-Trigger-After-Settle"] = "show-print"
     return response
 
