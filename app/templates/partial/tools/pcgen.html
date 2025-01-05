@@ -1,19 +1,28 @@
-<div class="tools-generator">
-    <div id="tools-button-container">
-        <button class="button dice-button" type="button" id="pcgen-button" hx-get="/gen/character"
-            hx-target="#pcgen-result-display" title="Roll">
-            <i class="fa-solid fa-dice dice"></i>
-        </button>
-        <button class="button dice-button" id="pcgen-copy-text-button" type="button" title="Copy to clipboard">
-            <i class="fa-solid fa-copy"></i>
-        </button>
-        <button class="button dice-button" id="pcgen-json-button" type="button" style="font-size: 16pt"
-            title="Download JSON">
-            <i class="fa-solid fa-download"></i>
-        </button>
+<form class="no-space">
+    <div class="tools-generator">
+        <div id="tools-button-container">
+            <button class="button dice-button" type="button" id="pcgen-button" hx-get="/gen/character"
+                hx-target="#pcgen-result-display" title="Roll">
+                <i class="fa-solid fa-dice dice"></i>
+            </button>
+            <button class="button dice-button hidden" id="pcgen-copy-text-button" type="button"
+                title="Copy to clipboard">
+                <i class="fa-solid fa-copy"></i>
+            </button>
+            <button class="button dice-button hidden" id="pcgen-json-button" type="button" style="font-size: 16pt"
+                title="Export">
+                <i class="fa-solid fa-download"></i>
+            </button>
+            <button class="button dice-button hidden" type="button" id="gen-print-button" title="Print"
+                hx-post="/gen/character/print" hx-target="body" hx-swap="outerHTML"
+                hx-on-htmx-after-settle="document.getElementById('navbar').classList.add('hidden');">
+                <i class="fa-solid fa-print"></i>
+            </button>
+        </div>
     </div>
-</div>
-<div class="text-border" style="margin-top: 1em" id="pcgen-result-display"></div>
+    <div class="text-border" style="margin-top: 1em" id="pcgen-result-display"></div>
+    <div class="hidden" id="print-anchor"></div>
+</form>
 <script>
     document.getElementById("pcgen-copy-text-button").addEventListener('click', (event, element) => {
         const resultDisplay = document.getElementById("pcgen-result-display");
@@ -32,5 +41,16 @@
         downloadLink.download = document.getElementById('character_name').value;
         document.body.appendChild(downloadLink);
         downloadLink.click();
+    });
+    htmx.on("show-print", function (evt) {
+        document.getElementById('gen-print-button').classList.remove('hidden');
+        document.getElementById('pcgen-copy-text-button').classList.remove('hidden');
+        document.getElementById('pcgen-json-button').classList.remove('hidden');
+    });
+
+    htmx.on("do-print", function (evt) {
+        document.getElementById("navbar").classList.add("hidden");
+        document.body.classList.remove("dark-mode");
+        window.print();
     });
 </script>

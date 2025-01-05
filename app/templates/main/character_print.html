@@ -130,7 +130,9 @@
   </div>
 </div>
 <script>
+  {% if not from_generator %}
   document.getElementById("navbar").classList.add("hidden");
   window.print();
+  {% endif %}
 </script>
 {% endblock %}

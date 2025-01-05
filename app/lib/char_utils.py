@@ -84,52 +84,6 @@ class GeneratedCharacter:
         self.description = ""
         self.containers = []
         
-    def other_items(self):
-        result = []
-        for it in self.items:
-            if "1 Armor" in it["tags"] or  "2 Armor" in it["tags"] or "3 Armor" in it["tags"]:
-                continue
-            weapon = False
-            for tag in it["tags"]:
-                dice_match = re.findall(r'^d(\d+)(?:\s*\+\s*d(\d+))?$', tag)
-                if len(dice_match) > 0:
-                    weapon = True
-                    break
-            if weapon == True:
-                continue
-            result.append(item_text(it))
-        return ", ".join(result)
-    
-    def armor_items(self):
-        result = []
-        for it in self.items:
-            v = ''
-            if "1 Armor" in it["tags"]:
-                v = '1'
-            elif "2 Armor" in it["tags"]:
-                v = '2'
-            elif "3 Armor" in it["tags"]:
-                v = '3'            
-            if "bonus defense" in it['tags'] and v != '':
-                v = '+'+v
-            if v != '':
-                result.append(item_text(it))        
-        return ", ".join(result)
-
-    def weapon_items(self):
-        result = []
-        for it in self.items:
-            dices = []
-            for tag in it["tags"]:
-                dice_match = re.findall(r'^d(\d+)(?:\s*\+\s*d(\d+))?$', tag)            
-                for x in dice_match:
-                    for y in x:
-                        if y != "":
-                            dices.append('d'+y)
-            if len(dices) > 0:
-                result.append(item_text(it))
-        return ", ".join(result)
-    
     def used_slots(self):
         slots = 0
         for it in self.items:
@@ -282,9 +236,17 @@ def generate_character(external):
             c['id'] = idx 
             idx += 1
             genchar.containers.append(c)
+    if "containers" in t1o:
+        for c in t1o['containers']:
+            c['id'] = idx
+            idx += 1
+            genchar.containers.append(c)
+    if "containers" in t2o:
+        for c in t2o['containers']:
+            c['id'] = idx
+            idx += 1
+            genchar.containers.append(c)            
             
-    genchar.container_desc = genchar.container_items()
-
     json_data = json.dumps(genchar.toJSON())
     
     return render_template("partial/tools/pcgen_text.html",character=genchar, json_data=json_data, external=external)
