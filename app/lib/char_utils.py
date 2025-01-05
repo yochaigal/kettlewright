@@ -145,8 +145,14 @@ class GeneratedCharacter:
         r['image_url'] = "default-portrait.webp"
         return r
 
+def find_background(list, bkg):
+    keys = {}
+    for k in list:
+        keys[k.casefold()] = k
+    return keys[bkg.casefold()]
 
-def generate_character(external):
+
+def generate_character(external, bkg):
     genchar = GeneratedCharacter()
     
     bkgs = load_backgrounds()
@@ -154,6 +160,10 @@ def generate_character(external):
     for k in bkgs:
         keys.append(k)
     selected = keys[random.randint(0,len(keys)-1)]
+    if bkg and bkg != "":
+        bc = find_background(bkgs, bkg)
+        if bc:
+            selected = bc
     genchar.background = bkgs[selected]
     genchar.description = genchar.background['background_description']
     genchar.background_name = selected

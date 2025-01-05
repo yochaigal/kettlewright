@@ -1,5 +1,22 @@
+<script>
+    function updateGenUrl(ev) {
+        const el = document.getElementById('pcgen-button');
+        // el.setAttribute('hx-vals', parts[0] + '?background=' + encodeURI(ev.value));
+        el.setAttribute('hx-vals', '{"background":"' + ev.value + '"}');
+        console.log(el);
+    }
+</script>
 <form class="no-space">
     <div class="tools-generator">
+        <div class="row16">
+            <select id="background-select" onchange="updateGenUrl(this)">
+                Background:
+                <option value="">Random</option>
+                {% for bkg in backgrounds %}
+                <option value="{{bkg}}">{{bkg}}</option>
+                {% endfor %}
+            </select>
+        </div>
         <div id="tools-button-container">
             <button class="button dice-button" type="button" id="pcgen-button" hx-get="/gen/character"
                 hx-target="#pcgen-result-display" title="Roll">
