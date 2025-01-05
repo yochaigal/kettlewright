@@ -41,8 +41,9 @@
 </div>
 <div><b>Gold:</b> {{character.gold}}</div>
 </p>
+{% if character.containers|length > 1 %}
 <p>
-<div class="subtitle">🙛 Extra</div>
+<div class="subtitle">🙛 Special</div>
 <div>
     <ul style="list-style-position:inside; padding-inline-start:16px">
         {% for c in character.containers %}
@@ -53,6 +54,7 @@
     </ul>
 </div>
 </p>
+{% endif %}
 <p>
 <div class="subtitle">🙛 Bonds</div>
 <div>
