@@ -32,17 +32,16 @@
 <p>
 <div class="subtitle">🙛 Equipment ({{character.slots}})</div>
 <div>
-    {% if character.armor_desc != "" %}
-    <div><b>Armor:</b> {{character.armor_desc}}</div>
-    {% endif %}
-    {% if character.weapon_desc != "" %}
-    <div><b>Weapon:</b> {{character.weapon_desc}}</div>
-    {% endif %}
-    <div><b>Other items:</b> {{character.items_desc}}</div>
-    {% if character.container_desc != ""%}
-    <div><b>Containers:</b> {{character.container_desc}} </div>
-    {% endif %}
+    <div><b>Items:</b></div>
+    <ul style="list-style-position:inside; padding-inline-start:16px">
+        {% for it in character.items %}
+        <li style="float:none; display: list-item;">{{it.title}}</li>
+        {% endfor %}
+    </ul>
 </div>
+{% if character.container_desc != ""%}
+<div><b>Containers:</b> {{character.container_desc}} </div>
+{% endif %}
 <div><b>Gold:</b> {{character.gold}}</div>
 </p>
 <p>

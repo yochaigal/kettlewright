@@ -238,6 +238,7 @@ def generate_character(external):
     for it in items:
         if not it['name'] in check:
             check[it['name']] = True
+            it['title'] = item_text(it)
             filtered.append(it)
     genchar.items = filtered
     
@@ -262,12 +263,7 @@ def generate_character(external):
          genchar.gold += int(genchar.bond['gold'])
     
     genchar.slots = genchar.used_slots()
-    
-    genchar.armor_desc = genchar.armor_items()
-    genchar.weapon_desc = genchar.weapon_items()
-    genchar.items_desc = genchar.other_items()
-    
-    
+        
     # apply ids and location to items
     idx = 1
     for it in genchar.items:
