@@ -37,6 +37,14 @@
         {% for it in character.items %}
         <li style="float:none; display: list-item;">{{it.title}}</li>
         {% endfor %}
+    </ul>
+</div>
+<div><b>Gold:</b> {{character.gold}}</div>
+</p>
+<p>
+<div class="subtitle">🙛 Extra</div>
+<div>
+    <ul style="list-style-position:inside; padding-inline-start:16px">
         {% for c in character.containers %}
         {% if c.id != 0 %}
         <li style="float:none; display: list-item;">{{c.name}} ({{c.slots}} slots)</li>
@@ -44,7 +52,6 @@
         {% endfor %}
     </ul>
 </div>
-<div><b>Gold:</b> {{character.gold}}</div>
 </p>
 <p>
 <div class="subtitle">🙛 Bonds</div>
