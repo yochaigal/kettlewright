@@ -100,9 +100,9 @@ border-radius: 50%;
 
 #tools-button-container {
   display: flex; 
-  justify-content: flex-start; 
+  justify-content: flex-end; 
   gap: 1em; 
-  width: 180px
+  width: 100%;
 }
 @media (max-width: 600px) {
 

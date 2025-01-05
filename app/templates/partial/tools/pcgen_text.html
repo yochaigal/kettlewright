@@ -37,11 +37,13 @@
         {% for it in character.items %}
         <li style="float:none; display: list-item;">{{it.title}}</li>
         {% endfor %}
+        {% for c in character.containers %}
+        {% if c.id != 0 %}
+        <li style="float:none; display: list-item;">{{c.name}} ({{c.slots}} slots)</li>
+        {% endif %}
+        {% endfor %}
     </ul>
 </div>
-{% if character.container_desc != ""%}
-<div><b>Containers:</b> {{character.container_desc}} </div>
-{% endif %}
 <div><b>Gold:</b> {{character.gold}}</div>
 </p>
 <p>
