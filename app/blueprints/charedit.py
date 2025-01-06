@@ -325,6 +325,11 @@ def charedit_inplace_inventory_container_delete(username, url_name, container_id
 @character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>', methods=['GET'])
 def charedit_inplace_inventory_item_edit(username, url_name, item_id):
     user, character = get_char_data(username, url_name)
+    party_containers = []
+    if character.party_id and character.party_id != '':
+        party = get_party_by_id(character.party_id)
+        party_containers = json.loads(party.containers)
+    
     inventory = Inventory(character)
     inventory.decorate()
     mode = request.args.get('mode')
@@ -335,7 +340,7 @@ def charedit_inplace_inventory_item_edit(username, url_name, item_id):
     else:
         item = None
     return render_template('partial/modal/edit_item.html', user=user, character=character, username=username, url_name=url_name, 
-                           inventory=inventory, item=item, mode=mode)
+                           inventory=inventory, item=item, mode=mode, party_containers=party_containers)
 
 # Route: edit item save
 @character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/save', methods=['POST'])
@@ -376,11 +381,13 @@ def charedit_inplace_inventory_item_edit_amount(username, url_name, item_id):
     return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)    
 
 # Route: move item to party storage
-@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/party', methods=['GET'])
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/party', methods=['POST'])
 def charedit_inplace_inventory_item_edit_party(username, url_name, item_id):
     user, character = get_char_data(username, url_name)
+    data = request.form
     inventory = Inventory(character)
-    item = inventory.move_item_to_party(item_id)
-    inventory.select(item["location"])
+    if 'party-storage-container' in data:
+        item = inventory.move_item_to_party(item_id, data['party-storage-container'])
+        inventory.select(item["location"])
     inventory.decorate()
     return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)    

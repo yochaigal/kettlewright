@@ -145,15 +145,17 @@ class Inventory:
                 
     # delete item
     def delete_item(self,container_id,item_id):
-        idx = 0
         items = json.loads(self.character.items)        
+        print('delete', item_id, items, container_id)
         deleted = None
+        result = []
         for it in items:
-            if it["id"] == int(item_id) and it["location"] == int(container_id):
-                deleted = items.pop(idx)
-                break
-            idx += 1
-        self.character.items = json.dumps(items)
+            if it["id"] == int(item_id) and int(it["location"]) == int(container_id):
+                deleted = it
+            else:
+                result.append(it)        
+        print(result)
+        self.character.items = json.dumps(result)
         if deleted != None and "carrying" in deleted and "location" in deleted:
             containers = self.remove_carried_by(deleted["location"])
             self.character.containers = json.dumps(containers)
@@ -440,7 +442,7 @@ class Inventory:
         return item
     
     # move item to party storage
-    def move_item_to_party(self, item_id):
+    def move_item_to_party(self, item_id, container_id):
         item = self.get_item(item_id)
         if item == None:
             return
@@ -449,6 +451,10 @@ class Inventory:
             return
         self.delete_item(item["location"], item_id)
         items = json.loads(party.items)
+        if container_id:
+            item['location'] = container_id
+        else:
+            item['location'] = 0
         items.append(item)
         party.items = json.dumps(items)
         db.session.commit()
@@ -456,6 +462,7 @@ class Inventory:
     
     # remove items from party storage
     def remove_items_from_party(self, char_items):
+        print('remove items', char_items)
         party = Party.query.filter_by(id=self.character.party_id).first()
         if not party:
             return
@@ -481,7 +488,9 @@ class Inventory:
         if not character:
             return
         self.delete_item(item["location"], item_id)
+        db.session.commit()
         items = json.loads(character.items)
+        item['location'] = 0 # move to main
         items.append(item)
         character.items = json.dumps(items)
         db.session.commit()

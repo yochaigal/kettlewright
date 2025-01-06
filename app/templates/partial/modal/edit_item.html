@@ -98,12 +98,33 @@
             name="edit_item_description"
             oninput="resizeTextarea(this)">{% if mode == 'edit' %}{{item.description}}{% endif %}</textarea>
         </div>
+        <div class="row32 justify-centered" style="align-items: center">
+          {% if mode == 'edit' and character.party_id != None %}
+          <div>
+            <select style="margin-bottom: 0px;" name="party-storage-container">
+              {% for c in party_containers %}
+              <option value="{{c.id}}">Party storage: {{c.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <button class="button icon-in-button" type="button" style="margin-top:0px"
+              hx-post="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{item.id}}/party"
+              hx-target="#inventory-container"
+              hx-confirm="Do you want to move <br/>{{item.name}} to selected party storage?"
+              data-confirm-title="Move to party storage" data-confirm-button="Move">
+              <i class="fa-solid fa-share icon-in-button"></i>
+            </button>
+          </div>
+          {% endif %}
+        </div>
       </section>
 
       <footer class="modal-card-foot">
         <div class="message hidden" id="add-edit-item-modal-error-container" style="width: 100%">
           <p class="message-body red-text" id="add-edit-item-modal-error-text"></p>
         </div>
+
         <div class="footer-button-container">
           <div>
             <button class="button is-success" type="button" {% if mode=='edit' %}
@@ -112,15 +133,6 @@
               %} hx-target="#inventory-container">
               Save
             </button>
-            {% if mode == 'edit' and character.party_id != None %}
-            <button class="button" type="button" style="margin-left: auto"
-              hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{item.id}}/party"
-              hx-target="#inventory-container" hx-confirm="Do you want to move <br/>{{item.name}} to party storage?"
-              data-confirm-title="Move to party storage" data-confirm-button="Move">
-              <i class="fa-solid fa-share icon-in-button"></i>
-              Party Storage
-            </button>
-            {% endif %}
           </div>
           <div>
             <button class="button inventory-modal-cancel-button" type="button" {% if mode=='edit' %}
