@@ -1,6 +1,6 @@
 # Multipurpose generator blueprint
 
-from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response
+from flask import Blueprint, render_template, url_for, request, flash, session, make_response, Response
 from flask_login import login_required, current_user
 from app.models import db, User, Character, Party
 from app.forms import *
@@ -68,7 +68,7 @@ def character_clear():
     return render_template('partial/tools/pcgen.html',pcgen_value="")
 
 # Route: print generated character
-@generator.route('/gen/character/print/', methods=['POST'])
+@generator.route('/gen/character/print', methods=['POST'])
 def character_print():
     data = request.form
     if not data or not "json_data" in data or data['json_data'] == None or data['json_data'] == '':

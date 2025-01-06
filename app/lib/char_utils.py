@@ -213,8 +213,6 @@ def generate_character(bkg):
     genchar.attributes.dex=random.randint(3,18)
     genchar.attributes.wil=random.randint(3,18)
     genchar.attributes.armor = genchar.armor()
-    if genchar.attributes.armor == 0:
-        genchar.attributes.armor = NO_ARMOR
          
     traits = load_traits()
     for key in traits:
