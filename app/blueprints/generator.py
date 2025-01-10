@@ -44,12 +44,12 @@ def parse_character(data):
 # Route: generate random character
 @generator.route('/gen/character', methods=['GET'])
 def character():
-    external = request.args.get('external')
-    ext = False
-    if external and  external.upper() == 'TRUE':
-        ext = True 
     background = request.args.get('background')
     genchar, json_data  = generate_character(background)
+    darkmode = False
+    dmode = request.args.get('darkmode')
+    if dmode != None and dmode.upper() == 'TRUE':
+        darkmode = True
     
     out = request.args.get('output')
     if out and out == 'json':
@@ -57,7 +57,7 @@ def character():
         response.headers['Content-Type'] = 'application/json'
         return response
     
-    render =  render_template("partial/tools/pcgen_text.html",character=genchar, json_data=json_data, external=ext)
+    render =  render_template("partial/tools/pcgen_text.html",character=genchar, json_data=json_data, darkmode=darkmode)
     response = make_response(render)
     response.headers["HX-Trigger-After-Settle"] = "show-print"
     return response
