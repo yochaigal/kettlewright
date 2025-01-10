@@ -1,5 +1,5 @@
-{% if external == True %}
-<!-- We can include here some styles -->
+{% if darkmode %}
+{% include "partial/tools/pcgen_darkmode.html"%}
 {% endif %}
 
 <h2>{{character.name}}</h2>
@@ -10,11 +10,14 @@
     {{character.description}}
 </p>
 <div>
-    You have a {{character.traits[0].value}} {{character.traits[0].name}}, {{character.traits[1].value}}
+    You have a {{character.traits[0].value}} {{character.traits[0].name}},
+    {{character.traits[1].value}}
     {{character.traits[1].name}}, and {{character.traits[2].value}}
-    {{character.traits[2].name}}. Your {{character.traits[3].name}} is {{character.traits[3].value}}, your
+    {{character.traits[2].name}}. Your {{character.traits[3].name}} is
+    {{character.traits[3].value}}, your
     {{character.traits[4].name}} {{character.traits[4].value}}. You
-    have {{character.traits[5].value}} {{character.traits[5].name}}. You are {{character.traits[6].value}} and
+    have {{character.traits[5].value}} {{character.traits[5].name}}. You are
+    {{character.traits[6].value}} and
     {{character.traits[7].value}}.
     You are {{character.age}} years old.
 </div>
@@ -48,7 +51,8 @@
     <ul style="list-style-position:inside; padding-inline-start:16px">
         {% for c in character.containers %}
         {% if c.id != 0 %}
-        <li style="float:none; display: list-item;">{{c.name}} ({{c.slots}} slots)</li>
+        <li style="float:none; display: list-item;">{{c.name}} ({{c.slots}}
+            slots)</li>
         {% endif %}
         {% endfor %}
     </ul>
