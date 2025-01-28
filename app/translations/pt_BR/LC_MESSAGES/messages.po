@@ -1,24 +1,21 @@
-# Translations template for PROJECT.
-# Copyright (C) 2025 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
-#
-#, fuzzy
+
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2025-01-28 23:33+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2025-02-16 22:18+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-# ============================================= BASIC  =============================================
-
+# ============================================= BASIC
+# =============================================
 #: app/forms.py:10 app/forms.py:19 app/forms.py:53 app/forms.py:68
 #: app/forms.py:77 app/forms.py:79
 msgid "Email"
@@ -370,8 +367,7 @@ msgstr ""
 msgid "Save Party"
 msgstr ""
 
-#: app/static/json/backgrounds/aurifex.json:39
-#: app/static/json/bonds.json:30
+#: app/static/json/backgrounds/aurifex.json:39 app/static/json/bonds.json:30
 #: app/static/json/bonds.json:221 app/static/json/marketplace.json:42
 #: app/static/json/marketplace.json:102 app/static/json/marketplace.json:165
 #: app/static/json/marketplace.json:198 app/static/json/marketplace.json:202
@@ -390,7 +386,6 @@ msgstr ""
 #: app/templates/partial/modal/edit_item_party.html:55
 msgid "1 Armor"
 msgstr ""
-
 
 #: app/static/json/backgrounds/aurifex.json:26
 #: app/static/json/marketplace.json:4 app/static/json/marketplace.json:13
@@ -412,7 +407,7 @@ msgstr ""
 msgid "uses"
 msgstr ""
 
-#: inventory.py:123
+#: app/static/json/backgrounds/rill-runner.json:97 inventory.py:123
 msgid "1 use"
 msgstr ""
 
@@ -478,11 +473,11 @@ msgstr ""
 msgid "d10"
 msgstr ""
 
-#: app/static/json/backgrounds/aurifex.json:19 - all backgrounds
+#: - all app/static/json/backgrounds/aurifex.json:19 backgrounds
 msgid "Rations"
 msgstr ""
 
-#: app/static/json/backgrounds/barber-surgeon.json:25 - all backgrounds
+#: - all app/static/json/backgrounds/barber-surgeon.json:25 backgrounds
 msgid "Torch"
 msgstr ""
 
@@ -491,8 +486,8 @@ msgstr ""
 msgid "items"
 msgstr ""
 
-#: app/static/json/backgrounds/aurifex.json:22
 # NOTE: Please leave it empty as a translation
+#: app/static/json/backgrounds/aurifex.json:22
 msgid "-"
 msgstr ""
 
@@ -518,12 +513,10 @@ msgstr ""
 msgid "blast"
 msgstr ""
 
-
-#: app/static/json/backgrounds/bonekeeper.json:79
 # Inventory slots
+#: app/static/json/backgrounds/bonekeeper.json:79
 msgid "slots"
 msgstr ""
-
 
 #: app/static/json/backgrounds/bonekeeper.json:81
 msgid "load"
@@ -1237,10 +1230,8 @@ msgstr ""
 msgid "Storage"
 msgstr ""
 
-
-# ============================================= BONDS =============================================
-
-
+# ============================================= BONDS
+# =============================================
 #: app/static/json/bonds.json:4 app/static/json/bonds.json:8
 msgid ""
 "You inherited a Single Gem (500gp, cold and brittle) from a long-dead "
@@ -1381,7 +1372,6 @@ msgid ""
 "angry. You cannot become panicked when acting alone."
 msgstr ""
 
-
 #: app/static/json/bonds.json:153 app/static/json/bonds.json:161
 msgid ""
 "You promised a childhood friend that you’d bring them back a rare gift, "
@@ -1454,9 +1444,8 @@ msgid ""
 " sometimes reveal illusions."
 msgstr ""
 
-
-# ============================================= OMENS =============================================
-
+# ============================================= OMENS
+# =============================================
 #: app/static/json/omens.json:4
 msgid ""
 "The once rich waters of a life-giving river have turned black and putrid,"
@@ -1599,8 +1588,8 @@ msgid ""
 "same warning: A fire is coming, and it will consume them all."
 msgstr ""
 
-# ============================================= SCARS =============================================
-
+# ============================================= SCARS
+# =============================================
 #: app/static/json/scars.json:4
 msgid "1 HP - Lasting Scar"
 msgstr ""
@@ -1760,8 +1749,8 @@ msgid ""
 "If the total is higher than your max HP, take the new result."
 msgstr ""
 
-# ============================================= TRAITS =============================================
-
+# ============================================= TRAITS
+# =============================================
 #: app/static/json/traits.json:3
 msgid "Athletic"
 msgstr ""
@@ -2107,10 +2096,8 @@ msgstr ""
 msgid "Vengeful"
 msgstr ""
 
-
-# ============================================= BACKGROUNDS =============================================
-
-
+# ============================================= BACKGROUNDS
+# =============================================
 #: app/static/json/backgrounds/aurifex.json:1
 msgid "Aurifex"
 msgstr ""
@@ -2119,7 +2106,6 @@ msgstr ""
 msgid "Barber-Surgeon"
 msgstr ""
 
-
 #: app/static/json/backgrounds/beast-handler.json:1
 msgid "Beast Handler"
 msgstr ""
@@ -2127,7 +2113,6 @@ msgstr ""
 #: app/static/json/backgrounds/bonekeeper.json:1
 msgid "Bonekeeper"
 msgstr ""
-
 
 #: app/static/json/backgrounds/cutpurse.json:1
 msgid "Cutpurse"
@@ -2157,19 +2142,13 @@ msgstr ""
 msgid "Half Witch"
 msgstr ""
 
-#: app/static/json/backgrounds/hexenbane.json:1
-msgid ""
-msgstr "Łowca czarownic"
-
 #: app/static/json/backgrounds/jongleur.json:1
 msgid "Jongleur"
 msgstr ""
 
-
 #: app/static/json/backgrounds/kettlewright.json:1
 msgid "Kettlewright"
 msgstr ""
-
 
 #: app/static/json/backgrounds/marchguard.json:1
 msgid "Marchguard"
@@ -2179,7 +2158,6 @@ msgstr ""
 msgid "Mountebank"
 msgstr ""
 
-
 #: app/static/json/backgrounds/outrider.json:1
 msgid "Outrider"
 msgstr ""
@@ -2188,16 +2166,13 @@ msgstr ""
 msgid "Prowler"
 msgstr ""
 
-
 #: app/static/json/backgrounds/rill-runner.json:1
 msgid "Rill Runner"
 msgstr ""
 
-
 #: app/static/json/backgrounds/scrivener.json:1
 msgid "Scrivener"
 msgstr ""
-
 
 #: app/static/json/backgrounds/aurifex.json:4
 msgid ""
@@ -2213,7 +2188,6 @@ msgstr ""
 #: app/static/json/party_events/setting.json:1139
 msgid "Ember"
 msgstr ""
-
 
 #: app/static/json/backgrounds/aurifex.json:25
 #: app/static/json/backgrounds/bonekeeper.json:25
@@ -2297,7 +2271,6 @@ msgstr ""
 #: app/static/json/backgrounds/aurifex.json:80
 msgid "Blunderbuss"
 msgstr ""
-
 
 #: app/static/json/backgrounds/aurifex.json:82
 msgid "Takes a round to reload"
@@ -2396,7 +2369,6 @@ msgid ""
 " flesh but also the secrets that lie within. With the right tools, life "
 "and death are merely words."
 msgstr ""
-
 
 #: app/static/json/backgrounds/barber-surgeon.json:31
 msgid "Bonesaw"
@@ -2754,7 +2726,6 @@ msgid ""
 "vision, etc.). Add a Fatigue each time."
 msgstr ""
 
-
 #: app/static/json/backgrounds/bonekeeper.json:4
 msgid ""
 "You are a shepherd to the departed. You listen to the final whispers of "
@@ -2827,7 +2798,6 @@ msgstr ""
 #: app/static/json/backgrounds/kettlewright.json:109
 msgid "Donkey"
 msgstr ""
-
 
 #: app/static/json/backgrounds/bonekeeper.json:87
 msgid ""
@@ -2950,8 +2920,6 @@ msgid ""
 "Powerful stuff. Its faded label makes it unclear what it is actually "
 "meant to repel, though. Perhaps everything."
 msgstr ""
-
-
 
 #: app/static/json/backgrounds/cutpurse.json:4
 msgid ""
@@ -3168,7 +3136,6 @@ msgid ""
 "When spun, time skips backwards 30 seconds. Everyone remembers what "
 "happened."
 msgstr ""
-
 
 #: app/static/json/backgrounds/fieldwarden.json:4
 msgid ""
@@ -3401,7 +3368,6 @@ msgstr ""
 msgid "Thunder"
 msgstr ""
 
-
 #: app/static/json/backgrounds/fletchwind.json:31
 msgid "Serrated Knife"
 msgstr ""
@@ -3554,7 +3520,6 @@ msgid ""
 " table (even if you're not the youngest player), but keep the results "
 "private for now."
 msgstr ""
-
 
 #: app/static/json/backgrounds/foundling.json:31
 msgid "Salt pouch"
@@ -3770,14 +3735,12 @@ msgid ""
 "who left you and that it protects you from witch magic."
 msgstr ""
 
-
 #: app/static/json/backgrounds/fungal-forager.json:4
 msgid ""
 "You follow the whisperings of the deep earth, the rhythmic pulse of the "
 "mycelium forest that grows beneath the surface. The dark holds no terror "
 "for you. Also, you really love mushrooms."
 msgstr ""
-
 
 #: app/static/json/backgrounds/fungal-forager.json:14
 msgid "Sharpened Trowel"
@@ -3986,7 +3949,6 @@ msgid ""
 "Great for dislodging a gem, tool, or limb from a tight crack. Highly "
 "explosive."
 msgstr ""
-
 
 #: app/static/json/backgrounds/greenwise.json:4
 msgid ""
@@ -4210,8 +4172,6 @@ msgstr ""
 #: app/static/json/backgrounds/greenwise.json:168
 msgid "Entangles any creature up to horse size (STR to break free). Reusable."
 msgstr ""
-
-
 
 #: app/static/json/backgrounds/half-witch.json:4
 msgid ""
@@ -4439,7 +4399,6 @@ msgstr ""
 msgid "Absorbs an active magical effect; releasing it if destroyed."
 msgstr ""
 
-
 #: app/static/json/backgrounds/hexenbane.json:4
 msgid ""
 "You are a mere digit on the unerring hand of justice. You go where others"
@@ -4615,7 +4574,6 @@ msgid ""
 "returning to the previous limit at the end of combat. If your vow is "
 "broken, you die."
 msgstr ""
-
 
 #: app/static/json/backgrounds/jongleur.json:4
 msgid ""
@@ -4833,13 +4791,11 @@ msgid ""
 " Makes a really loud noise."
 msgstr ""
 
-
 #: app/static/json/backgrounds/kettlewright.json:4
 msgid ""
 "You are known by the smell of molten metal and the jingle of tin. You are"
 " no mere merchant but an artisan of fire and metal."
 msgstr ""
-
 
 #: app/static/json/backgrounds/kettlewright.json:20
 msgid "Pincers"
@@ -5049,7 +5005,6 @@ msgid ""
 "meat."
 msgstr ""
 
-
 #: app/static/json/backgrounds/marchguard.json:4
 msgid ""
 "Bound by blood Oath to patrol the border and protect the realm. Once "
@@ -5249,13 +5204,11 @@ msgstr ""
 msgid "Poacher's Woe"
 msgstr ""
 
-
 #: app/static/json/backgrounds/mountebank.json:4
 msgid ""
 "Wits are your sharpest weapon, a facade your strongest shield. But when "
 "you do lose, you lose badly."
 msgstr ""
-
 
 #: app/static/json/backgrounds/mountebank.json:31
 msgid "Trick Playing Cards"
@@ -5431,7 +5384,6 @@ msgstr ""
 msgid "Alchemical Tattoo"
 msgstr ""
 
-
 #: app/static/json/backgrounds/outrider.json:4
 msgid ""
 "Your coin comes from escorting caravans, tracking fugitives, or lending "
@@ -5439,7 +5391,6 @@ msgid ""
 "even a villain. Yours is not a solitary path, however: you'll always have"
 " your horse."
 msgstr ""
-
 
 #: app/static/json/backgrounds/outrider.json:31
 msgid "Long sword"
@@ -5605,7 +5556,6 @@ msgstr ""
 msgid "Stray Fogger"
 msgstr ""
 
-
 #: app/static/json/backgrounds/prowler.json:4
 msgid ""
 "You are a specter in the night, a fleeting shadow that slips by its prey,"
@@ -5613,7 +5563,6 @@ msgid ""
 "contest between life and death. You know that one day you will lose. You "
 "look forward to it."
 msgstr ""
-
 
 #: app/static/json/backgrounds/prowler.json:31
 msgid "Tarp"
@@ -5815,7 +5764,6 @@ msgid ""
 "Expensive (20gp a bottle)"
 msgstr ""
 
-
 #: app/static/json/backgrounds/rill-runner.json:4
 msgid ""
 "You sing the stories of rivers and lakes, your talents soothing friends "
@@ -5847,7 +5795,6 @@ msgstr ""
 msgid "Dale"
 msgstr ""
 
-
 #: app/static/json/backgrounds/rill-runner.json:5
 #: app/static/json/party_events/factions.json:212
 #: app/static/json/party_events/names.json:49
@@ -5855,7 +5802,6 @@ msgstr ""
 #: app/static/json/party_events/setting.json:1175
 msgid "Rain"
 msgstr ""
-
 
 #: app/static/json/backgrounds/rill-runner.json:20
 msgid "Water Shoes"
@@ -5956,10 +5902,6 @@ msgstr ""
 msgid "Feather Quill"
 msgstr ""
 
-#: app/static/json/backgrounds/rill-runner.json:97
-msgid "1 use"
-msgstr ""
-
 #: app/static/json/backgrounds/rill-runner.json:99
 msgid ""
 "A map drawn with this quill reveals the most expedient course between any"
@@ -6012,14 +5954,12 @@ msgstr ""
 msgid "Relevant to your next journey."
 msgstr ""
 
-
 #: app/static/json/backgrounds/scrivener.json:4
 msgid ""
 "You copy ancient texts and illuminate manuscripts, recording the voices "
 "of the clever, the great, and the powerful. You will prove that the pen "
 "truly is mightier than the sword."
 msgstr ""
-
 
 #: app/static/json/backgrounds/scrivener.json:31
 msgid "Quill & Ink"
@@ -6240,13 +6180,12 @@ msgid ""
 "slowly revealed in a tight scrawl."
 msgstr ""
 
-# ============================================= BESTIARY =============================================
-
+# ============================================= BESTIARY
+# =============================================
 #: app/static/json/party_events/bestiary.json:4
 #: app/static/json/party_events/dungeons.json:254
 msgid "Acolyte"
 msgstr ""
-
 
 #: app/static/json/party_events/bestiary.json:10
 msgid "ceremonial dagger (d6)"
@@ -8145,8 +8084,8 @@ msgid ""
 "days."
 msgstr ""
 
-# ============================================= CUSTOM MONSTER =============================================
-
+# ============================================= CUSTOM MONSTER
+# =============================================
 #: app/static/json/party_events/custom-monster.json:5
 msgid "Albino"
 msgstr ""
@@ -8805,8 +8744,8 @@ msgstr ""
 msgid "Weather"
 msgstr ""
 
-# ============================================= DUNGEONS =============================================
-
+# ============================================= DUNGEONS
+# =============================================
 #: app/static/json/party_events/dungeon-events.json:4
 msgid "Encounter: Roll on an encounter table. Possibly hostile. (See Reactions.)"
 msgstr ""
@@ -9957,7 +9896,6 @@ msgstr ""
 msgid "Stable"
 msgstr ""
 
-
 #: app/static/json/party_events/dungeons.json:308
 msgid "Study"
 msgstr ""
@@ -10327,8 +10265,8 @@ msgstr ""
 msgid "Tripping"
 msgstr ""
 
-# ============================================= FACTIONS =============================================
-
+# ============================================= FACTIONS
+# =============================================
 #: app/static/json/party_events/faction-events.json:4
 msgid "Failure"
 msgstr ""
@@ -10636,7 +10574,6 @@ msgstr ""
 #: app/static/json/party_events/setting.json:204
 msgid "Magic"
 msgstr ""
-
 
 #: app/static/json/party_events/factions.json:73
 #: app/static/json/party_events/setting.json:206
@@ -11545,8 +11482,8 @@ msgstr ""
 msgid "Syndicate"
 msgstr ""
 
-# ============================================= FORESTS =============================================
-
+# ============================================= FORESTS
+# =============================================
 #: app/static/json/party_events/forests.json:6
 msgid "Barren"
 msgstr ""
@@ -13510,8 +13447,8 @@ msgstr ""
 msgid "Tree Carvings"
 msgstr ""
 
-# ============================================= SETTING =============================================
-
+# ============================================= SETTING
+# =============================================
 #: app/static/json/party_events/names.json:5
 #: app/static/json/party_events/setting.json:989
 msgid "(The) [Noun] [POI]"
@@ -16636,10 +16573,8 @@ msgstr ""
 msgid "Uneven, Soggy Ground"
 msgstr ""
 
-
-# ============================================= NPCS =============================================
-
-
+# ============================================= NPCS
+# =============================================
 #: app/static/json/party_events/names.json:135
 #: app/static/json/party_events/npcs.json:68
 #: app/static/json/party_events/setting.json:123
@@ -16988,10 +16923,8 @@ msgstr ""
 msgid "Tanner"
 msgstr ""
 
-
-# ============================================= RELIQUARY =============================================
-
-
+# ============================================= RELIQUARY
+# =============================================
 #: app/static/json/party_events/reliquary.json:4
 msgid "A Blade Called Hope"
 msgstr ""
@@ -17027,7 +16960,6 @@ msgstr ""
 msgid "Barbed Epaulets"
 msgstr ""
 
-
 #: app/static/json/party_events/reliquary.json:22
 msgid ""
 "Spiked shoulder pads that poison anyone that touches them (STR save or "
@@ -17048,7 +16980,6 @@ msgstr ""
 #: app/static/json/party_events/reliquary.json:32
 msgid "Bloodmap"
 msgstr ""
-
 
 #: app/static/json/party_events/reliquary.json:36
 msgid ""
@@ -17075,7 +17006,6 @@ msgstr ""
 #: app/static/json/party_events/reliquary.json:46
 msgid "Dryad's Tear"
 msgstr ""
-
 
 #: app/static/json/party_events/reliquary.json:49
 msgid ""
@@ -17502,9 +17432,8 @@ msgid ""
 " when they are killed."
 msgstr ""
 
-
-# ============================================= SPELLBOOKS =============================================
-
+# ============================================= SPELLBOOKS
+# =============================================
 #: app/static/json/party_events/spellbooks.json:4
 msgid "Adhere"
 msgstr ""
@@ -18794,8 +18723,8 @@ msgstr ""
 msgid "Long-term exposure can cause hair loss, blurry vision, and fatigue."
 msgstr ""
 
-# ============================================= WEATHER =============================================
-
+# ============================================= WEATHER
+# =============================================
 #: app/static/json/party_events/weather.json:4
 #: app/static/json/party_events/weather.json:5
 msgid "Nice"
@@ -18874,9 +18803,8 @@ msgstr ""
 msgid "Tornados, tidal waves, hurricane, volcanic eruption"
 msgstr ""
 
-
-# ============================================= WILDERNESS_EVENTS =============================================
-
+# ============================================= WILDERNESS_EVENTS
+# =============================================
 #: app/static/json/party_events/wilderness-events.json:4
 msgid ""
 "Encounter: Roll on an encounter table for that terrain type or location. "
@@ -18912,5 +18840,4 @@ msgid ""
 "Quiet: The party finds food, treasure, or other useful resources. The "
 "Warden can instead choose to reveal the primary feature of the area."
 msgstr ""
-
 

@@ -13,6 +13,7 @@ import os
 import bleach
 from flask_htmx import HTMX
 from flask_babel import _
+import datetime
 
 
 main = Blueprint('main', __name__)
@@ -458,7 +459,9 @@ def select_language():
     response = make_response("Setting language")
     lang = request.args.get('lang')
     if lang != None and lang != "":
-        response.set_cookie("kw_lang",lang)    
+        expire_date = datetime.datetime.now()
+        expire_date = expire_date + datetime.timedelta(days=180)
+        response.set_cookie("kw_lang", lang, expires=expire_date)        
     response.headers["HX-Redirect"] = request.headers['Referer']
     return response
 

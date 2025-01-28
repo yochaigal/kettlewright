@@ -1,6 +1,7 @@
 import json
 import re
 from app.models import db, Party, Character
+from flask_babel import _
 
 FATIGUE_NAME = "Fatigue"
 CARRYING_NAME = "Carrying"
@@ -80,7 +81,7 @@ class Inventory:
         
     # decorate single item
     def decorate_item(self, item):
-        title = item["name"]
+        title = _(item["name"])
         item["blocker"] = False
         item["editable"] = True
         item["removable"] = True
@@ -119,11 +120,11 @@ class Inventory:
                     tt.append("<i>"+tag+"</i>")
                 elif tag == "uses":
                     if item["uses"] == 1:
-                        tt.append("1 use")
+                        tt.append(_("1 use"))
                     else:
-                        tt.append(str(item["uses"])+" uses")
+                        tt.append(str(item["uses"])+" "+_("uses"))
                 elif tag == "charges":
-                    tt.append(str(item["charges"])+"/"+str(item["max_charges"])+" charges")
+                    tt.append(str(item["charges"])+"/"+str(item["max_charges"])+" "+_("charges"))
                 elif "1 Armor" in tag or "2 Armor" in tag or "3 Armor" in tag:
                     if bf:
                         tt.append("+"+tag)

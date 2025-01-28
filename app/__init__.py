@@ -57,6 +57,9 @@ socketio = SocketIO(**socketio_config)
 
 # Determine locale
 def get_locale():
+    lang = request.args.get('lang')
+    if lang != None and lang != "":
+        return lang    
     lang = request.cookies.get('kw_lang')
     if lang != None and lang != "":
         return lang
@@ -170,6 +173,10 @@ def create_app():
         if text.startswith('Invalid last party code:'):
             return text
         return None
+    
+    @app.context_processor
+    def inject_locale():
+        return dict(locale=get_locale())
 
     return app
 
@@ -178,4 +185,3 @@ def create_app():
 
 application = create_app()
 babel = Babel(application, locale_selector=get_locale)
-

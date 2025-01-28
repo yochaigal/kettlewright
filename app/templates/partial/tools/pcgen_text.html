@@ -3,22 +3,22 @@
 {% endif %}
 
 <h2>{{character.name}}</h2>
-<h4>{{character.background_name}}</h4>
+<h4>{{character.background_name | tr}}</h4>
 <p>
 <div class="subtitle">🙛 {{_('Description')}}</div>
 <p>
-    {{character.description}}
+    {{character.description | tr}}
 </p>
 <div>
-    {{_('You have a')}} {{character.traits[0].value}} {{character.traits[0].name}},
-    {{character.traits[1].value}}
-    {{character.traits[1].name}}, {{_('and')}} {{character.traits[2].value}}
-    {{character.traits[2].name}}. {{_('Your')}} {{character.traits[3].name}} {{_('is')}}
-    {{character.traits[3].value}}, {{_('your')}}
-    {{character.traits[4].name}} {{character.traits[4].value}}. {{_('You have')}}
-    {{character.traits[5].value}} {{character.traits[5].name}}. {{_('You are')}}
-    {{character.traits[6].value}} {{_('and')}}
-    {{character.traits[7].value}}.
+    {{_('You have a')}} {{character.traits[0].value | tr}} {{character.traits[0].name | tr}},
+    {{character.traits[1].value | tr}} {{character.traits[1].name | tr}},
+    {{_('and')}} {{character.traits[2].value | tr}}
+    {{character.traits[2].name | tr}}. {{_('Your')}} {{character.traits[3].name | tr}} {{_('is')}}
+    {{character.traits[3].value | tr}}, {{_('your')}}
+    {{character.traits[4].name | tr}} {{character.traits[4].value | tr}}. {{_('You have')}}
+    {{character.traits[5].value | tr}} {{character.traits[5].name | tr}}. {{_('You are')}}
+    {{character.traits[6].value | tr}} {{_('and')}}
+    {{character.traits[7].value | tr}}.
     {{_('Your age')}}: {{character.age}}.
 </div>
 </p>

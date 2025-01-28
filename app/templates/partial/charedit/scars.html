@@ -3,7 +3,7 @@
 <div class="row8">
   <select id="scars-select" name="scars-select" class="smaller-font">
     {% for s in scarlist %}
-    <option value="{{s}}">{{s}}</option>
+    <option value="{{s}}">{{s | tr}}</option>
     {% endfor %}
   </select>
   <div title="Add scar" hx-post="/charedit/inplace-scars/{{username}}/{{url_name}}/add" hx-target="#scars-field"

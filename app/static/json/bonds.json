@@ -10,7 +10,6 @@
       ]
     },
     {
-      "type":"gettext_string",
       "description": "A distant cousin left you a small inheritance. Take 20gp, and a strange Compass that always points towards something deep in the Wood.",
       "gold": 20,
       "items": [

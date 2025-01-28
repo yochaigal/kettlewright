@@ -5,7 +5,10 @@
 <script type="text/javascript" src="{{ url_for('static', filename='src/js/parties.js') }}"></script>
 
 <div class="body-container">
-  <div class="parties-page-header"><a id="new-party-button"><button type="button" class="is-new">New Party</button></a>
+  <div class="parties-page-header"><a id="new-party-button">
+      <button type="button" class="is-new">
+        {{_('New Party')}}
+      </button></a>
   </div>
 
   <div class="party-cards-container">

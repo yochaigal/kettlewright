@@ -13,7 +13,7 @@
                 {{_('Background')}}:
                 <option value="">{{_('Random')}}</option>
                 {% for bkg in backgrounds %}
-                <option value="{{bkg}}">{{bkg}}</option>
+                <option value="{{bkg}}">{{bkg | tr}}</option>
                 {% endfor %}
             </select>
         </div>
