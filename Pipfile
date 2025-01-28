@@ -47,5 +47,7 @@ wtforms = "==3.1.2"
 flask-cors = "*"
 flask-htmx = "*"
 unidecode = "*"
+flask-babel = "*"
+pybabel-json = "*"
 
 [dev-packages]

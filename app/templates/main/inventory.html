@@ -1,6 +1,6 @@
 {% include "main/marketplace.html" %}
 <div class="inventory-container" id="inventory-container">
-  <h3 id="inventory-title">Inventory</h3>
+  <h3 id="inventory-title">{{_('Inventory')}}</h3>
 
   <!-- <span class="subtitle script-font inventory-slots-count-text" id="main-slot-counter"></span> -->
 
@@ -10,10 +10,10 @@
 
   <div class="panel-block inventory-footer">
     <div class="inventory-footer-buttons">
-      <button class="button hidden" id="add-item-button" type="button"> + Item </button>
-      <button class="button hidden" id="add-fatigue-button" type="button"> + Fatigue </button>
-      <button class="button hidden" id="add-container-button" type="button"> + Container </button>
-      <button class="button hidden" id="show-marketplace-button" type="button"> Marketplace </button>
+      <button class="button hidden" id="add-item-button" type="button"> + {{_('Item')}} </button>
+      <button class="button hidden" id="add-fatigue-button" type="button"> + {{_('Fatigue')}} </button>
+      <button class="button hidden" id="add-container-button" type="button"> + {{_('Container')}} </button>
+      <button class="button hidden" id="show-marketplace-button" type="button"> {{_('Marketplace')}} </button>
     </div>
   </div>
 </div>
@@ -22,56 +22,40 @@
   <div class="modal-background inventory-modal-background"></div>
   <div class="modal-card" id="add-edit-container-modal-container">
     <header class="modal-card-head">
-      <h3 class="modal-card-title" id="add-edit-container-modal-title">Add/Edit Container</h3>
-      <button
-        class="delete inventory-modal-cancel-button"
-        type="button"
-        aria-label="close"
-        id="add-edit-container-modal-close"
-      ></button>
+      <h3 class="modal-card-title" id="add-edit-container-modal-title">{{_('Add/Edit Container')}}</h3>
+      <button class="delete inventory-modal-cancel-button" type="button" aria-label="close"
+        id="add-edit-container-modal-close"></button>
     </header>
 
     <section class="modal-card-body">
       <div id="add-edit-container-modal-body">
         <div class="column field">
-          <label>Name</label>
+          <label>{{_('Name')}}</label>
           <div class="" style="padding-bottom: 0">
             <input class="input" type="text" placeholder="container name" id="add-edit-container-modal-name-field" />
           </div>
         </div>
         <div class="column field">
-          <label>Slots</label>
+          <label>{{_('Slots')}}</label>
           <div class="">
-            <input
-              class="input"
-              type="number"
-              min="1"
-              placeholder="0"
-              id="add-edit-container-modal-slots-field"
-              style="width: 100%"
-            />
+            <input class="input" type="number" min="1" placeholder="0" id="add-edit-container-modal-slots-field"
+              style="width: 100%" />
           </div>
         </div>
 
         <div class="column field">
-          <label>Carried by</label>
+          <label>{{_('Carried by')}}</label>
           <div class="select">
             <select id="add-edit-container-modal-carried-select">
-              <option value="">carried by...</option>
+              <option value="">{{_('carried by...')}}</option>
             </select>
           </div>
         </div>
         <div class="column field">
-          <label>Load</label>
+          <label>{{_('Load')}}</label>
           <div class="">
-            <input
-              class="input"
-              type="number"
-              min="0"
-              max="10"
-              placeholder="0"
-              id="add-edit-container-modal-load-field"
-            />
+            <input class="input" type="number" min="0" max="10" placeholder="0"
+              id="add-edit-container-modal-load-field" />
           </div>
         </div>
       </div>
@@ -80,23 +64,21 @@
         <div class="divider" style="margin: 1em 0px; padding: 0px"></div>
         <div style="margin-top: 2em">
           <div class="column field">
-            <label>Remove Container</label>
+            <label>{{_('Remove Container')}}</label>
             <div class="control">
               <label class="checkbox">
-                <input
-                  type="checkbox"
-                  id="add-edit-container-modal-delete-checkbox"
-                  style="width: 20px; height: 20px; margin-top: 10px"
-                />
+                <input type="checkbox" id="add-edit-container-modal-delete-checkbox"
+                  style="width: 20px; height: 20px; margin-top: 10px" />
               </label>
             </div>
           </div>
           <div class="column field">
-            <label>Move Items</label>
+            <label>{{_('Move Items')}}</label>
             <div class="select">
               <select id="add-edit-container-modal-move-items-destination" disabled></select>
-            </div> </div
-        ></div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -106,15 +88,11 @@
       </div>
 
       <div class="footer-button-container">
-        <button class="button is-success" type="button" id="add-edit-container-modal-save">Save</button>
-        <button class="button inventory-modal-cancel-button" type="button">Cancel</button>
-        <button
-          class="button is-danger hidden"
-          type="button"
-          id="add-edit-container-modal-remove"
-          style="margin-left: auto"
-        >
-          Delete
+        <button class="button is-success" type="button" id="add-edit-container-modal-save">{{_('Save')}}</button>
+        <button class="button inventory-modal-cancel-button" type="button">{{_('Cancel')}}</button>
+        <button class="button is-danger hidden" type="button" id="add-edit-container-modal-remove"
+          style="margin-left: auto">
+          {{_('Delete')}}
         </button>
       </div>
     </footer>
@@ -125,49 +103,49 @@
   <div class="modal-background inventory-modal-background"></div>
   <div class="modal-card" id="add-edit-item-modal-container">
     <header class="modal-card-head">
-      <h3 class="modal-card-title" id="add-edit-item-modal-title">Add Item</h3>
+      <h3 class="modal-card-title" id="add-edit-item-modal-title">{{_('Add Item')}}</h3>
       <button class="delete inventory-modal-cancel-button" aria-label="close" type="button"></button>
     </header>
 
     <section class="modal-card-body" id="add-edit-item-modal-body">
       <div class="field">
-        <label>Name</label>
+        <label>{{_('Name')}}</label>
         <input class="input" type="text" placeholder="Item Name" id="add-edit-item-modal-name-field" />
       </div>
 
       <div class="tags-container field" style="margin: 20px 0px">
-        <label>Tags</label>
+        <label>{{_('Tags')}}</label>
         <div>
-          <div class="tag button">bulky</div>
-          <div class="tag button">petty</div>
-          <div class="tag button" id="tag-button-uses">uses</div>
-          <div class="tag button" id="tag-button-charges">charges</div>
-          <div class="tag button">blast</div>
+          <div class="tag button">{{_('bulky')}}</div>
+          <div class="tag button">{{_('petty')}}</div>
+          <div class="tag button" id="tag-button-uses">{{_('uses')}}</div>
+          <div class="tag button" id="tag-button-charges">{{_('charges')}}</div>
+          <div class="tag button">{{_('blast')}}</div>
         </div>
         <div>
-          <div class="tag button" id="tag-button-d4">d4</div>
-          <div class="tag button" id="tag-button-d6">d6</div>
-          <div class="tag button" id="tag-button-d8">d8</div>
-          <div class="tag button" id="tag-button-d10">d10</div>
-          <div class="tag button" id="tag-button-d12">d12</div>
+          <div class="tag button" id="tag-button-d4">{{_('d4')}}</div>
+          <div class="tag button" id="tag-button-d6">{{_('d6')}}</div>
+          <div class="tag button" id="tag-button-d8">{{_('d8')}}</div>
+          <div class="tag button" id="tag-button-d10">{{_('d10')}}</div>
+          <div class="tag button" id="tag-button-d12">{{_('d12')}}</div>
         </div>
         <div>
-          <div class="tag">1 Armor</div>
-          <div class="tag button">2 Armor</div>
-          <div class="tag button">3 Armor</div>
-          <div class="tag button">bonus defense</div>
+          <div class="tag">{{_('1 Armor')}}</div>
+          <div class="tag button">{{_('2 Armor')}}</div>
+          <div class="tag button">{{_('3 Armor')}}</div>
+          <div class="tag button">{{_('bonus defense')}}</div>
         </div>
       </div>
 
       <div style="display: flex; justify-content: flex-start; gap: 40px">
         <div class="inactive field" id="add-edit-item-modal-uses-container" style="align-items: center">
-          <label>Uses</label>
+          <label>{{_('Uses')}}</label>
           <div class="column number-field" style="padding-bottom: 0">
             <input class="input" type="number" min="0" placeholder="0" id="add-edit-item-modal-uses-field" />
           </div>
         </div>
         <div id="add-edit-item-modal-charges-container" class="field">
-          <label>Charges / Max</label>
+          <label>{{_('Charges / Max')}}</label>
           <div style="display: flex">
             <input class="input" type="number" min="0" placeholder="0" id="add-edit-item-modal-charges-field" />
             <p style="margin: 0 4px; display: flex; align-items: center">/</p>
@@ -176,7 +154,7 @@
         </div>
       </div>
       <div class="field" style="display: flex; flex-direction: column; min-width: 120px">
-        <label>Container</label>
+        <label>{{_('Container')}}</label>
 
         <div class="select" style="max-width: 200px">
           <select id="add-edit-item-modal-container-select"></select>
@@ -184,13 +162,9 @@
       </div>
 
       <div class="field">
-        <label>Description</label>
-        <textarea
-          class="textarea"
-          placeholder="Item Description"
-          id="add-edit-item-modal-description-field"
-          oninput="resizeTextarea(this)"
-        ></textarea>
+        <label>{{_('Description')}}</label>
+        <textarea class="textarea" placeholder="Item Description" id="add-edit-item-modal-description-field"
+          oninput="resizeTextarea(this)"></textarea>
       </div>
     </section>
 
@@ -202,16 +176,17 @@
         <div>
           <button class="button is-success" type="button" id="add-edit-item-modal-save"> Save </button>
           <button class="button inventory-modal-cancel-button" type="button" id="add-edit-item-modal-cancel">
-            Cancel
-          </button></div
-        >
+            {{_('Cancel')}}
+          </button>
+        </div>
         <div>
           <button class="button is-primary" type="button" id="add-edit-item-modal-transfer" style="margin-left: auto">
             <i class="fa-solid fa-share icon-in-button"></i>
-            Party
+            {{_('Party')}}
           </button>
-          <button class="button is-danger hidden" type="button" id="add-edit-item-modal-delete"> Delete </button></div
-        >
+          <button class="button is-danger hidden" type="button" id="add-edit-item-modal-delete"> {{_('Delete')}}
+          </button>
+        </div>
       </div>
     </footer>
   </div>
@@ -221,24 +196,20 @@
   <div class="modal-background inventory-modal-background"></div>
   <div class="modal-card" style="border-radius: 4px">
     <header class="modal-card-head">
-      <h3 class="modal-card-title">Transfer Item</h3>
+      <h3 class="modal-card-title">{{_('Transfer Item')}}</h3>
       <button class="delete inventory-modal-cancel-button" aria-label="close" type="button"></button>
     </header>
     <div class="modal-card-body justify-left" id="party-item-transfer-modal-content">
       <select id="party-item-transfer-modal-select">
-        <option value="">transfer to...</option>
+        <option value="">{{_('transfer to...')}}</option>
       </select>
     </div>
     <footer class="modal-card-foot">
       <div class="footer-button-container">
         <button class="button is-primary" type="button" id="party-transfer-item-modal-save"> Transfer </button>
-        <button
-          class="button inventory-modal-cancel-button"
-          type="button"
-          id="transfer-item-modal-cancel"
-          style="margin-left: auto"
-        >
-          Cancel
+        <button class="button inventory-modal-cancel-button" type="button" id="transfer-item-modal-cancel"
+          style="margin-left: auto">
+          {{_('Cancel')}}
         </button>
       </div>
     </footer>
@@ -249,7 +220,7 @@
   <div class="modal-background inventory-modal-background"></div>
   <div class="modal-card" style="border-radius: 4px">
     <div class="modal-card-body justify-left">
-      <p id="item-description-modal-content">This item has no description</p>
+      <p id="item-description-modal-content">{{_('This item has no description')}}</p>
     </div>
   </div>
 </div>

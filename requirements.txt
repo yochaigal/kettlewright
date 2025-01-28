@@ -12,6 +12,8 @@ Flask-SQLAlchemy
 Flask-WTF
 flask_cors
 flask_htmx
+flask_babel
+pybabel-json
 gunicorn
 itsdangerous
 Jinja2

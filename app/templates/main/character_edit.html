@@ -7,7 +7,7 @@
   {% if messages is not none and messages|length > 0 %}
   <div class="message is-danger">
     <div class="message-header">
-      <p>Errors</p>
+      <p>{{_('Errors')}}</p>
     </div>
     <div class="message-body">
       <ul class="errors">
@@ -52,7 +52,7 @@
           {% include "partial/charedit/stats.html" %}
         </div>
         <div id="character-traits-container">
-          <h3 class="no-space">Traits</h3>
+          <h3 class="no-space">{{_('Traits')}}</h3>
           {{ form.traits(class='textarea inplace', id='traits-field',
           oninput='resizeTextarea(this)') }}
         </div>
@@ -63,12 +63,12 @@
 
       <div class="character-descriptions-grid">
         <div class="character-description-container" id="character-description-container">
-          <h3 class="no-space">Description</h3>
+          <h3 class="no-space">{{_('Description')}}</h3>
           {{ form.description(class='textarea inplace', id='description-field',
           oninput='resizeTextarea(this)') }}
         </div>
         <div class="character-description-container" id="character-bonds-container">
-          <h3 class="no-space">Bonds</h3>
+          <h3 class="no-space">{{_('Bonds')}}</h3>
           {{ form.bonds(class='textarea inplace', id='bonds-field',
           oninput='resizeTextarea(this)') }}
         </div>
@@ -79,7 +79,7 @@
           {% include "partial/charedit/scars.html" %}
         </div>
         <div class="character-description-container" id="character-notes-container">
-          <h3 class="no-space">Notes</h3>
+          <h3 class="no-space">{{_('Notes')}}</h3>
           {{ form.notes(class='charedit-notes', id='notes-field', rows=5) }}
         </div>
 

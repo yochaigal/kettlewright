@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash,
 from app.lib import get_char_data, load_market, Market, Inventory
 from app.models import db, User, Character, Party
 import json
+from flask_babel import _
 
 marketplace = Blueprint('marketplace', __name__)
 

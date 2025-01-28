@@ -1,5 +1,5 @@
 <div class="row16spaced full-width">
-    <h3>Inventory</h3>
+    <h3>{{_('Inventory')}}</h3>
 </div>
 <div class="inventory-header flex-row" style="gap: 1.5rem">
     {% for cnt in inventory.containers %}
@@ -83,17 +83,17 @@
         <button class="button smaller-font" type="button"
             hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/None?mode=create"
             hx-target="#modal-anchor" {% if inventory.selected_container['encumbered'] %} disabled {% endif %}>
-            + Item
+            + {{_('Item')}}
         </button>
         <button class="button smaller-font" type="button"
             hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container['id']}}/fatigue"
             hx-target="#inventory-container" {% if inventory.selected_container["encumbered"] %} disabled {% endif %}>
-            + Fatigue
+            + {{_('Fatigue')}}
         </button>
         <button class="button smaller-font" type="button"
             hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/container-edit/{{inventory.selected_container['id']}}?mode=create"
             hx-target="#modal-anchor">
-            + Container
+            + {{_('Container')}}
         </button>
         <div id="modal-anchor"></div>
     </div>

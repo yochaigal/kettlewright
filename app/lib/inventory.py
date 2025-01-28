@@ -88,6 +88,9 @@ class Inventory:
         if item["name"] in non_editable_items or "carrying" in item:
             item["editable"] = False                       
             
+        if "description" in item and item["description"] == "-":
+            item["description"] = ""
+            
         if "carrying" in item:
             item["removable"] = False           
             

@@ -1,6 +1,6 @@
 import os
 import logging
-from flask import Flask
+from flask import Flask, request
 from flask_migrate import Migrate
 from app.models import db
 from flask_login import LoginManager
@@ -11,6 +11,8 @@ from .assets import compile_static_assets
 from app.lib import consolidate_json_files
 from datetime import datetime, timezone
 from datetime import timedelta
+from flask_babel import Babel
+from flask_babel import _
 
 UTC = timezone.utc
 
@@ -53,7 +55,13 @@ if not use_flask:
 
 socketio = SocketIO(**socketio_config)
 
-
+# Determine locale
+def get_locale():
+    lang = request.cookies.get('kw_lang')
+    if lang != None and lang != "":
+        return lang
+    return "en"
+    
 def create_app():
     app = Flask(__name__)
 
@@ -149,6 +157,11 @@ def create_app():
     def squote2js_filter(text: str) -> str:
         return text.replace("'","’")
     
+    # Translate
+    @app.template_filter("tr")
+    def squote2js_filter(text: str) -> str:
+        return _(text)
+    
     # Write error about party code
     @app.template_filter("party_code_error")
     def party_code_error_filter(text: str) -> str:
@@ -164,3 +177,5 @@ def create_app():
 
 
 application = create_app()
+babel = Babel(application, locale_selector=get_locale)
+

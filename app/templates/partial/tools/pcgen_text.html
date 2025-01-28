@@ -5,48 +5,48 @@
 <h2>{{character.name}}</h2>
 <h4>{{character.background_name}}</h4>
 <p>
-<div class="subtitle">🙛 Description</div>
+<div class="subtitle">🙛 {{_('Description')}}</div>
 <p>
     {{character.description}}
 </p>
 <div>
-    You have a {{character.traits[0].value}} {{character.traits[0].name}},
+    {{_('You have a')}} {{character.traits[0].value}} {{character.traits[0].name}},
     {{character.traits[1].value}}
-    {{character.traits[1].name}}, and {{character.traits[2].value}}
-    {{character.traits[2].name}}. Your {{character.traits[3].name}} is
-    {{character.traits[3].value}}, your
-    {{character.traits[4].name}} {{character.traits[4].value}}. You
-    have {{character.traits[5].value}} {{character.traits[5].name}}. You are
-    {{character.traits[6].value}} and
+    {{character.traits[1].name}}, {{_('and')}} {{character.traits[2].value}}
+    {{character.traits[2].name}}. {{_('Your')}} {{character.traits[3].name}} {{_('is')}}
+    {{character.traits[3].value}}, {{_('your')}}
+    {{character.traits[4].name}} {{character.traits[4].value}}. {{_('You have')}}
+    {{character.traits[5].value}} {{character.traits[5].name}}. {{_('You are')}}
+    {{character.traits[6].value}} {{_('and')}}
     {{character.traits[7].value}}.
-    You are {{character.age}} years old.
+    {{_('Your age')}}: {{character.age}}.
 </div>
 </p>
 <p>
-<div class="subtitle">🙛 Attributes</div>
+<div class="subtitle">🙛 {{_('Attributes')}}</div>
 <div>
-    <div><b>HP:</b> {{character.attributes.hp}}</div>
-    <div><b>Armor:</b> {{character.attributes.armor}}</div>
-    <div><b>STR:</b> {{character.attributes.str}}</div>
-    <div><b>DEX:</b> {{character.attributes.dex}}</div>
-    <div><b>WIL:</b> {{character.attributes.wil}}</div>
+    <div><b>{{_('HP')}}:</b> {{character.attributes.hp}}</div>
+    <div><b>{{_('Armor')}}:</b> {{character.attributes.armor}}</div>
+    <div><b>{{_('STR')}}:</b> {{character.attributes.str}}</div>
+    <div><b>{{_('DEX')}}:</b> {{character.attributes.dex}}</div>
+    <div><b>{{_('WIL')}}:</b> {{character.attributes.wil}}</div>
 </div>
 </p>
 <p>
-<div class="subtitle">🙛 Equipment ({{character.slots}})</div>
+<div class="subtitle">🙛 {{_('Equipment')}} ({{character.slots}})</div>
 <div>
-    <div><b>Items:</b></div>
+    <div><b>{{_('Items')}}:</b></div>
     <ul style="list-style-position:inside; padding-inline-start:16px">
         {% for it in character.items %}
         <li style="float:none; display: list-item;">{{it.title}}</li>
         {% endfor %}
     </ul>
 </div>
-<div><b>Gold:</b> {{character.gold}}</div>
+<div><b>{{_('Gold')}}:</b> {{character.gold}}</div>
 </p>
 {% if character.containers|length > 1 %}
 <p>
-<div class="subtitle">🙛 Special</div>
+<div class="subtitle">🙛 {{_('Special')}}</div>
 <div>
     <ul style="list-style-position:inside; padding-inline-start:16px">
         {% for c in character.containers %}
@@ -60,14 +60,16 @@
 </p>
 {% endif %}
 <p>
-<div class="subtitle">🙛 Bonds</div>
+<div class="subtitle">🙛 {{_('Bonds')}}</div>
+{% if not 'items' in character.bond or character.bond['items']|length == 0 %}
 <div>
-    {{character.bond['description']}}
+    {{character.bond['description']|tr}}
 </div>
+{% endif %}
 {% if 'items' in character.bond %}
 <div>
     {% for it in character.bond['items'] %}
-    <div><b>{{it['name']}}:</b> {{it['description']}}</div>
+    <div><b>{{it['name']|tr}}:</b> {{it['description']|tr}}</div>
     {% endfor %}
 
 </div>
@@ -75,21 +77,21 @@
 </p>
 
 <p>
-<div class="subtitle">🙛 Omens</div>
+<div class="subtitle">🙛 {{_('Omens')}}</div>
 <div>
-    {{character.omen}}
+    {{character.omen | tr}}
 </div>
 </p>
 
 <p>
-<div class="subtitle">🙛 Your Past</div>
+<div class="subtitle">🙛 {{_('Your Past')}}</div>
 <p>
-    <i>{{character.table1['question']}}</i><br />
-    {{character.table1['option']['description']}}
+    <i>{{character.table1['question'] | tr}}</i><br />
+    {{character.table1['option']['description']|tr}}
 </p>
 <p>
-    <i>{{character.table2['question']}}</i><br />
-    {{character.table2['option']['description']}}
+    <i>{{character.table2['question']|tr}}</i><br />
+    {{character.table2['option']['description']|tr}}
 </p>
 </p>
 <input type="hidden" name="json_data" id="json_data" value="{{json_data}}" />

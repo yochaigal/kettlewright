@@ -7,9 +7,9 @@
       <header class="modal-card-head">
         <h3 class="modal-card-title">
           {% if mode == "edit" %}
-          Edit Container: {{container.name}}
+          {{_('Edit Container')}}: {{container.name}}
           {% else %}
-          Create Container
+          {{_('Create Container')}}
           {% endif %}
         </h3>
       </header>
@@ -17,14 +17,14 @@
       <section class="modal-card-body">
         <div id="add-edit-container-modal-body">
           <div class="column field">
-            <label>Name</label>
+            <label>{{_('Name')}}</label>
             <div class="" style="padding-bottom: 0">
               <input class="input" type="text" placeholder="container name" name="name" {% if mode=="edit" %}
                 value="{{container.name}}" {% endif %} />
             </div>
           </div>
           <div class="column field">
-            <label>Slots</label>
+            <label>{{_('Slots')}}</label>
             <div>
               <input class="input" type="number" min="1" placeholder="0" style="width: 100%" name="slots" {% if
                 mode=="edit" %} value="{{container.slots}}" {% endif %} />
@@ -32,7 +32,7 @@
           </div>
 
           <div class="column field">
-            <label>Carried by</label>
+            <label>{{_('Carried by')}}</label>
             <div class="select">
               <select name="carried_by">
                 <option value="">...</option>
@@ -50,7 +50,7 @@
             </div>
           </div>
           <div class="column field">
-            <label>Load</label>
+            <label>{{_('Load')}}</label>
             <div class="">
               <input class="input" type="number" min="0" max="10" placeholder="0" name="load" {% if mode=="edit" %}
                 value="{{container.load}}" {% endif %} />
@@ -72,12 +72,12 @@
               hx-post="/party/inventory/{{party.id}}/container-edit/{{container.id}}/delete"
               hx-target="#inventory-container" hx-confirm="Do you want to delete container {{container.name}}?"
               data-confirm-title="Delete container" data-confirm-button="Delete">
-              Delete container
+              {{_('Delete container')}}
             </button>
             <select name="delete-items" style="margin-bottom: 0px">
-              <option value="">Delete all items</option>
+              <option value="">{{_('Delete all items')}}</option>
               {% for c in inventory.get_other_containers(container.id) %}
-              <option value="{{c.id}}">Move items to {{c.name}}</option>
+              <option value="{{c.id}}">{{_('Move items to')}} {{c.name}}</option>
               {% endfor %}
             </select>
           </div>
@@ -95,7 +95,7 @@
           <button class="button inventory-modal-cancel-button" type="button" {% if mode=="edit" %}
             hx-get="/party/inventory/{{party.id}}/{{container.id}}" {% else %}
             hx-get="/party/inventory/{{party.id}}/None" {% endif %} hx-target="#inventory-container">
-            Cancel
+            {{_('Cancel')}}
           </button>
         </div>
       </footer>

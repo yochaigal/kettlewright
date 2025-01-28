@@ -2,21 +2,22 @@
   <div class="modal-background" id="marketplace-modal-background"></div>
   <div class="modal-card" style="border-radius: 4px">
     <header class="modal-card-head" style="display: flex; flex-direction: column">
-      <h3 class="modal-card-title">Marketplace</h3>
+      <h3 class="modal-card-title">{{_('Marketplace')}}</h3>
 
       <div id="category-toggles">
-        <label style="margin-right: 10px"> <input type="checkbox" id="toggle-gear" checked /> Gear </label>
-        <label style="margin-right: 10px"> <input type="checkbox" id="toggle-armor" checked /> Armor </label>
-        <label style="margin-right: 10px"> <input type="checkbox" id="toggle-weapons" checked /> Weapons </label>
+        <label style="margin-right: 10px"> <input type="checkbox" id="toggle-gear" checked /> {{_('Gear')}} </label>
+        <label style="margin-right: 10px"> <input type="checkbox" id="toggle-armor" checked /> {{_('Armor')}} </label>
+        <label style="margin-right: 10px"> <input type="checkbox" id="toggle-weapons" checked /> {{_('Weapons')}}
+        </label>
       </div>
     </header>
     <div class="modal-card-body justify-left" id="party-item-transfer-modal-content">
       <table>
         <thead>
           <tr>
-            <th>Item</th>
-            <th>Cost</th>
-            <th>Type</th>
+            <th>{{_('Item')}}</th>
+            <th>{{_('Cost')}}</th>
+            <th>{{_('Type')}}</th>
             <th><i class="fa-solid fa-cart-plus"></i></th>
           </tr>
         </thead>
@@ -30,11 +31,10 @@
       <div class="footer-button-container">
         <button class="button is-success" type="button" id="marketplace-save-button"> Buy </button>
 
-        <button id="clear-selection-button" class="button is-warning" type="button" style="margin-left: auto"
-          >Clear</button
-        >
+        <button id="clear-selection-button" class="button is-warning" type="button"
+          style="margin-left: auto">{{_('Clear')}}</button>
         <button class="button marketplace-modal-cancel-button" type="button" id="marketplace-cancel-button">
-          Cancel
+          {{_('Cancel')}}
         </button>
       </div>
     </footer>

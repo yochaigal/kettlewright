@@ -3,11 +3,11 @@
     <div class="modal-background inventory-modal-background"></div>
     <div class="modal-card" id="modal-card">
       <header class="modal-card-head">
-        <h3 class="modal-card-title">Transfer item</h3>
+        <h3 class="modal-card-title">{{_('Transfer item')}}</h3>
       </header>
 
       <section class="modal-card-body">
-        <div>Transferring <b>{{item.name}}</b> to:</div>
+        <div>{{_('Transferring')}} <b>{{item.name}}</b> {{_('to')}}:</div>
         <div class="justify-centered">
           <select name="member" id="member">
             {% for c in characters %}
@@ -24,7 +24,7 @@
             hx-target="#inventory-container">Transfer</button>
           <button class="button inventory-modal-cancel-button" type="button"
             hx-get="/party/inventory/{{party.id}}/{{container_id}}" hx-target="#inventory-container">
-            Cancel
+            {{_('Cancel')}}
           </button>
         </div>
       </footer>

@@ -34,7 +34,7 @@
       <span id="party-members-collapse-button" class="party-collapse-button">
         <i class="fa-solid fa-chevron-down" id="party-members-collapse-icon"></i>
       </span>
-      <span class="subtitle bold">Members</span>
+      <span class="subtitle bold">{{_('Members')}}</span>
       <div id="party-members-content" class="party-section-content">
         {% if characters %} {% for character in characters %}
 
@@ -57,29 +57,30 @@
               <div>
                 <div class="card-attribute-container">
                   <p class="character-card-attribute subtitle">
-                    STR {{character.strength}}/{{character.strength_max}}
+                    {{_('STR')}} {{character.strength}}/{{character.strength_max}}
                   </p>
                 </div>
                 <div class="card-attribute-container">
                   <p class="character-card-attribute subtitle">
-                    DEX {{character.dexterity}}/{{character.dexterity_max}}
+                    {{_('DEX')}} {{character.dexterity}}/{{character.dexterity_max}}
                   </p>
                 </div>
                 <div class="card-attribute-container">
                   <p class="character-card-attribute subtitle">
-                    WIL {{character.willpower}}/{{character.willpower_max}}
+                    {{_('WIL')}} {{character.willpower}}/{{character.willpower_max}}
                   </p>
                 </div>
               </div>
               <div>
                 <div class="card-attribute-container">
-                  <p class="character-card-attribute subtitle">Armor {{character.armor}}</p>
+                  <p class="character-card-attribute subtitle">{{_('Armor')}} {{character.armor}}</p>
                 </div>
                 <div class="card-attribute-container">
-                  <p class="character-card-attribute subtitle hp-text">HP {{character.hp}}/{{character.hp_max}}</p>
+                  <p class="character-card-attribute subtitle hp-text">{{_('HP')}} {{character.hp}}/{{character.hp_max}}
+                  </p>
                 </div>
                 <div class="card-attribute-container">
-                  <p class="character-card-attribute subtitle">Gold {{character.gold}}</p>
+                  <p class="character-card-attribute subtitle">{{_('Gold')}} {{character.gold}}</p>
                 </div>
               </div>
             </div>
@@ -91,7 +92,7 @@
               id="character-remove-button" hx-get="/party/remove-char/{{character.id}}/{{ownername}}/{{party_url}}"
               hx-target="#char-remove-anchor"
               hx-confirm="Do you want to remove {{character.name}} from party?<br/>This action is permanent,<br/>independent on later editor action."
-              data-confirm-title="Remove character" data-confirm-button="Remove">Remove
+              data-confirm-title="Remove character" data-confirm-button="Remove">{{_('Remove')}}
             </button>
             <div id="char-remove-anchor"></div>
           </footer>
@@ -101,7 +102,7 @@
         </div>
 
         {% endfor %} {% else %}
-        <p>No members in this party</p>
+        <p>{{_('No members in this party')}}</p>
 
         {% endif %}
       </div>
@@ -111,7 +112,7 @@
       <span id="party-inventory-collapse-button" class="party-collapse-button">
         <i class="fa-solid fa-chevron-down" id="party-inventory-collapse-icon"></i>
       </span>
-      <span class="subtitle bold">Storage</span>
+      <span class="subtitle bold">{{_('Storage')}}</span>
       <div id="inventory-container" class="party-section-content">
         {% include "partial/partyedit/inventory.html" %}
       </div>
@@ -121,7 +122,7 @@
       <button class="button is-danger edit-mode" type="button" id="delete-party-button" style="margin: 40px 0px"
         hx-get="/party/delete/{{party.id}}" hx-confirm="Do you want to delete party {{party.name}}?"
         data-confirm-title="Delete party" data-confirm-button="Delete">
-        Delete Party
+        {{_('Delete Party')}}
       </button>
     </div>
 

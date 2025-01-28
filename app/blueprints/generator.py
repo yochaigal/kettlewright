@@ -7,6 +7,7 @@ from app.forms import *
 from app.main import sanitize_data
 from app.lib import *
 from unidecode import unidecode
+from flask_babel import lazy_gettext as _l, _
 
 
 generator = Blueprint('generator', __name__)

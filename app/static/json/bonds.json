@@ -10,6 +10,7 @@
       ]
     },
     {
+      "type":"gettext_string",
       "description": "A distant cousin left you a small inheritance. Take 20gp, and a strange Compass that always points towards something deep in the Wood.",
       "gold": 20,
       "items": [
@@ -21,7 +22,7 @@
     },
     {
       "description": "You carry a Portrait in a locket (petty) of a past love who disappeared into the Wood long ago. Somehow, you know that they are still alive.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Locket",
@@ -34,7 +35,7 @@
     },
     {
       "description": "You found a Tiny Crystal Prism (petty) buried in the dirt. When held up to the light, it shows visions of an unknown location deep within the Wood. Sometimes, you feel a presence looking back at you.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Tiny Crystal Prism",
@@ -47,7 +48,7 @@
     },
     {
       "description": "You once freed a Naiad from a choked stream. In return, it gave you some Silver Moss (petty). Swallow it near water and the creature will come, once, to repay its debt.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Silver Moss",
@@ -60,7 +61,7 @@
     },
     {
       "description": "You inherited an old Journal, bound in bark. Each evening, its pages are filled with the events of the day, crassly from the journal’s perspective. The writing is crude, but accurate.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Journal",
@@ -70,7 +71,7 @@
     },
     {
       "description": "You protect a long-dormant family secret. Take one half of an Ancient Key (petty). They say that if joined with its twin, it opens a Gate through any door.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Ancient Key Half",
@@ -83,7 +84,7 @@
     },
     {
       "description": "You received a Letter (petty) detailing incontrovertible proof that your true parentage is that of Fae nobility. The note also indicates a date and location where you are to meet them, deep in the the Wood.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Letter",
@@ -96,7 +97,7 @@
     },
     {
       "description": "You owe a great debt to a member of the nobility, and carry their Signet Ring (petty), which serves as proof of their protection as well as your obligation.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Signet Ring",
@@ -109,7 +110,7 @@
     },
     {
       "description": "You consumed a Mischievous Spirit that wreaks havoc on your insides, demanding to be taken home, deep in the Wood. It occupies one slot but absorbs one Fatigue each day. It wants you alive (for now).",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Mischievous Spirit",
@@ -119,7 +120,7 @@
     },
     {
       "description": "A roaming storyteller once spun you tales of great treasure hidden deep in the Wood. You thought it naught but fancy, till they gave you A Rolled-Up Map (petty) marked with an X.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Rolled-Up Map",
@@ -132,7 +133,7 @@
     },
     {
       "description": "During your travels, you met a dying hunter who asked you to deliver a message to their loved ones. Take a Letter (petty), sealed with tree sap. It is addressed only to the Lord Of Winter.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Letter",
@@ -145,12 +146,12 @@
     },
     {
       "description": "You found a wounded beast in the forest, but chose to ignore it. You see it everywhere now, but only when you’re alone. It looks sad, but not angry. You cannot become panicked when acting alone.",
-      "gold": "",
+      "gold": 0,
       "items": []
     },
     {
       "description": "You promised a childhood friend that you’d bring them back a rare gift, something unique in all the world. Take a Bracelet (petty) woven from twine and wildflowers.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Bracelet",
@@ -163,7 +164,7 @@
     },
     {
       "description": "You crossed a creature of the Wood, and it cursed you with a Stone Heart (1 Armor). With each passing month, the stone grows heavier by one slot. Until your debt is lifted, you cannot truly die.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Stone Heart",
@@ -176,7 +177,7 @@
     },
     {
       "description": "You carved a Whistle (petty) from an Oak Lord’s branch. Your act did not go unnoticed. You cannot seem to rid yourself of the whistle either.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Whistle",
@@ -189,7 +190,7 @@
     },
     {
       "description": "The Dawn Brigade did your family a service, giving you a dried Blood-Red Flower (petty) as proof. When the flower turns white, it means the favor is owed.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Blood-Red Flower",
@@ -202,7 +203,7 @@
     },
     {
       "description": "An entertainer once visited your home, filling it with story and song. He left one day without a word, leaving behind only A Miniature Lute. Something rattles inside.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Miniature Lute",
@@ -212,7 +213,7 @@
     },
     {
       "description": "A white crow appeared to you in a dream, holding a twig in its mouth. You awoke the next morning with The Twig (petty) in your hand. You believe it brings you luck. It smells faintly of sulfur.",
-      "gold": "",
+      "gold": 0,
       "items": [
         {
           "name": "Twig",
@@ -225,7 +226,7 @@
     },
     {
       "description": "One of your ancestors wronged a Moss Witch, who cursed their bloodline. Your visage causes mirrors to shatter. You’ve noticed that the shards can sometimes reveal illusions.",
-      "gold": "",
+      "gold": 0,
       "items": []
     }
   ]

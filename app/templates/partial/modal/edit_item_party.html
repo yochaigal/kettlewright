@@ -7,61 +7,64 @@
       <header class="modal-card-head">
         <h3 class="modal-card-title">
           {% if mode == "edit" %}
-          Edit Item: {{item.name}}
+          {{_('Edit Item')}}: {{item.name}}
           {% else %}
-          Create Item
+          {{_('Create Item')}}
           {% endif %}
         </h3>
       </header>
 
       <section class="modal-card-body">
         <div class="field">
-          <label>Name</label>
+          <label>{{_('Name')}}</label>
           <input class="input" type="text" placeholder="Item Name" name="edit_item_name" {% if mode=='edit' %}
             value="{{item.name}}" {% endif %} />
         </div>
 
         <div class="tags-container field" style="margin: 20px 0px">
-          <label>Tags</label>
+          <label>{{_('Tags')}}</label>
           <div>
             <div class="tag button {% if mode == 'edit' and 'bulky' in item.tags %} selected {% endif %}"
-              data-tag="bulky">bulky</div>
+              data-tag="bulky">{{_('bulky')}}</div>
             <div class="tag button {% if mode == 'edit' and 'petty' in item.tags %} selected {% endif %}"
-              data-tag="petty">petty</div>
+              data-tag="petty">{{_('petty')}}</div>
             <div class="tag button {% if mode == 'edit' and 'uses' in item.tags %} selected {% endif %}"
-              data-tag="uses">uses</div>
+              data-tag="uses">{{_('uses')}}</div>
             <div class="tag button {% if mode == 'edit' and 'charges' in item.tags %} selected {% endif %}"
-              data-tag="charges">charges</div>
+              data-tag="charges">{{_('charges')}}</div>
             <div class="tag button {% if mode == 'edit' and 'blast' in item.tags %} selected {% endif %}"
-              data-tag="blast">blast</div>
+              data-tag="blast">{{_('blast')}}</div>
           </div>
           <div>
-            <div class="tag button {% if mode == 'edit' and 'd4' in item.tags %} selected {% endif %}" data-tag="d4">d4
+            <div class="tag button {% if mode == 'edit' and 'd4' in item.tags %} selected {% endif %}" data-tag="d4">
+              {{_('d4')}}
             </div>
-            <div class="tag button {% if mode == 'edit' and 'd6' in item.tags %} selected {% endif %}" data-tag="d6">d6
+            <div class="tag button {% if mode == 'edit' and 'd6' in item.tags %} selected {% endif %}" data-tag="d6">
+              {{_('d6')}}
             </div>
-            <div class="tag button {% if mode == 'edit' and 'd8' in item.tags %} selected {% endif %}" data-tag="d8">d8
+            <div class="tag button {% if mode == 'edit' and 'd8' in item.tags %} selected {% endif %}" data-tag="d8">
+              {{_('d8')}}
             </div>
             <div class="tag button {% if mode == 'edit' and 'd10' in item.tags %} selected {% endif %}" data-tag="d10">
-              d10</div>
+              {{_('d10')}}</div>
             <div class="tag button {% if mode == 'edit' and 'd12' in item.tags %} selected {% endif %}" data-tag="d12">
-              d12</div>
+              {{_('d12')}}</div>
           </div>
           <div>
             <div class="tag {% if mode == 'edit' and '1 Armor' in item.tags %} selected {% endif %}" data-tag="1 Armor">
-              1 Armor</div>
+              {{_('1 Armor')}}</div>
             <div class="tag button {% if mode == 'edit' and '2 Armor' in item.tags %} selected {% endif %}"
-              data-tag="2 Armor">2 Armor</div>
+              data-tag="2 Armor">{{_('2 Armor')}}</div>
             <div class="tag button {% if mode == 'edit' and '3 Armor' in item.tags %} selected {% endif %}"
-              data-tag="3 Armor">3 Armor</div>
+              data-tag="3 Armor">{{_('3 Armor')}}</div>
             <div class="tag button {% if mode == 'edit' and 'bonus defense' in item.tags %} selected {% endif %}"
-              data-tag="bonus defense">bonus defense</div>
+              data-tag="bonus defense">{{_('bonus defense')}}</div>
           </div>
         </div>
 
         <div style="display: flex; justify-content: flex-start; gap: 40px">
           <div class="field flex-column-centered">
-            <label>Uses</label>
+            <label>{{_('Uses')}}</label>
             <div class="column number-field" style="padding-bottom: 0">
               <input class="input text-centered" type="number" min="0" placeholder="0" id="edit_item_uses"
                 name="edit_item_uses" {% if mode=='edit' %} value="{{item.uses}}" {% endif %} />
@@ -69,7 +72,7 @@
           </div>
 
           <div class="field flex-column-centered">
-            <label>Charges / Max</label>
+            <label>{{_('Charges / Max')}}</label>
             <div style="display: flex">
               <input class="input text-centered" type="number" min="0" placeholder="0" id="edit_item_charges"
                 name="edit_item_charges" {% if mode=='edit' %} value="{{item.charges}}" {% endif %} />
@@ -80,7 +83,7 @@
           </div>
 
           <div class="field flex-column-centered" style="min-width: 120px">
-            <label>Container</label>
+            <label>{{_('Container')}}</label>
             <div class="select" style="max-width: 200px">
               <select id="edit_item_container" name="edit_item_container">
                 {% for c in inventory.containers %}
@@ -93,7 +96,7 @@
         </div>
 
         <div class="field">
-          <label>Description</label>
+          <label>{{_('Description')}}</label>
           <textarea class="textarea" placeholder="Item Description" id="edit_item_description"
             name="edit_item_description"
             oninput="resizeTextarea(this)">{% if mode == "edit" %}{{item.description}}{% endif %}</textarea>
@@ -110,7 +113,7 @@
               hx-post="/party/inventory/{{party.id}}/item-edit/{{item.id}}/save" {% else %}
               hx-post="/party/inventory/{{party.id}}/item-edit/None/save?mode=create" {% endif %}
               hx-target="#inventory-container">
-              Save
+              {{_('Save')}}
             </button>
           </div>
           {% if characters and characters|length > 0 %}
@@ -124,7 +127,7 @@
             <button class="button inventory-modal-cancel-button" type="button" {% if mode=='edit' %}
               hx-get="/party/inventory/{{party.id}}/{{inventory.selected_container.id}}" {% else %}
               hx-get="/party/inventory/{{party.id}}/None" {% endif %} hx-target="#inventory-container">
-              Cancel
+              {{_('Cancel')}}
             </button>
           </div>
         </div>

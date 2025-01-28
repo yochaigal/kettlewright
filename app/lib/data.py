@@ -5,6 +5,8 @@ from .paths import app_static_path
 from app.models import db, User, Party, Character
 import bleach
 import sys
+from flask_babel import lazy_gettext as _l
+
 
 def load_scars():
     result = {}
@@ -122,3 +124,4 @@ def load_bonds():
     with open(bonds_file_path, 'r') as file:
         bonds_data = json.load(file)
     return bonds_data["Bonds"]
+    
