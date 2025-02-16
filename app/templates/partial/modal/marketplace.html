@@ -91,17 +91,17 @@
     <div class="modal-background" id="marketplace-modal-background"></div>
     <div class="modal-card" style="border-radius: 4px">
       <header class="modal-card-head" style="display: flex; flex-direction: column">
-        <h3 class="modal-card-title">Marketplace</h3>
-        <h4>Storing in {{container.name}} (<span id="current-capacity">{{capacity}}</span>)</h4>
+        <h3 class="modal-card-title">{{_('Marketplace')}}</h3>
+        <h4>{{_('Storing in')}} {{container.name}} (<span id="current-capacity">{{capacity}}</span>)</h4>
         <div class="row32">
           <label class="row8"> <input type="checkbox" class="checkbox" id="toggle-gear" {% if market.categories==[]
-              or 'Gear' in market.categories %} checked {% endif %} onchange="KW_toggle_market_category()" /> Gear
+              or 'Gear' in market.categories %} checked {% endif %} onchange="KW_toggle_market_category()" /> {{_('Gear')}}
           </label>
           <label class="row8"> <input type="checkbox" class="checkbox" id="toggle-armor" {% if market.categories==[]
-              or 'Armor' in market.categories %} checked {% endif %} onchange="KW_toggle_market_category()" /> Armor
+              or 'Armor' in market.categories %} checked {% endif %} onchange="KW_toggle_market_category()" /> {{_('Armor')}}
           </label>
           <label class="row8"> <input type="checkbox" class="checkbox" id="toggle-weapons" {% if market.categories==[]
-              or 'Weapons' in market.categories %} checked {% endif %} onchange="KW_toggle_market_category()" /> Weapons
+              or 'Weapons' in market.categories %} checked {% endif %} onchange="KW_toggle_market_category()" /> {{_('Weapons')}}
           </label>
         </div>
       </header>
@@ -109,9 +109,9 @@
         <table>
           <thead>
             <tr>
-              <th>Item</th>
-              <th>Cost</th>
-              <th>Type</th>
+              <th>{{_('Item')}}</th>
+              <th>{{_('Cost')}}</th>
+              <th>{{_('Type')}}</th>
               <th><i class="fa-solid fa-cart-plus"></i></th>
             </tr>
           </thead>
@@ -144,16 +144,16 @@
         <div class="footer-button-container">
           <button class="button is-success" type="button" id="marketplace-save-button"
             hx-post="/marketplace/{{username}}/{{url_name}}/{{container.id}}/buy" hx-target="#inventory-container">
-            Buy
+            {{_('Buy')}}
           </button>
 
           <button id="clear-selection-button" class="button is-warning" type="button" style="margin-left: auto"
             onclick="KW_clear_cart()">
-            Clear
+            {{_('Clear')}}
           </button>
           <button class="button marketplace-modal-cancel-button" type="button"
             hx-get="/marketplace/{{username}}/{{url_name}}/cancel" hx-target="#inventory-container">
-            Cancel
+            {{_('Cancel')}}
           </button>
         </div>
       </footer>

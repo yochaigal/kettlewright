@@ -1,0 +1,72 @@
+<script>
+    function selectLanguage(title, cancelText) {
+        return Swal.fire({
+            title: title,
+            html: `{% include "lang.html" %}`,
+            confirmButtonText: "OK",
+            cancelButtonText: cancelText,
+            showCancelButton: true,
+            background: "var(--bg)",
+            color: "var(--fg)",
+            buttonsStyling: false,
+            animation: true,
+            customClass: {
+                popup: "modal-alert",
+                title: "modal-alert-card-title",
+                htmlContainer: "modal-alert-content",
+                actions: "modal-alert-actions",
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const val = document.getElementById('lang-selector').value;
+                htmx.ajax('GET', '/select-language?lang=' + val).then(() => { }).catch((e) => console.error(e));
+            }
+        });
+    };
+</script>
+
+<nav class="navbar" role="navigation" aria-label="main navigation" id="navbar">
+    <!-- {% set excluded_routes = ['main.about', 'auth.login', 'auth.signup'] %} {% if request.endpoint not in
+      excluded_routes %}
+      <div class="nav-logo-container">
+        <img src="{{ url_for('static', filename='images/Kettlewright_Logo_Black_Text.png') }}" alt="Kettlewright" />
+      </div>
+      {% else %}
+      <div class="kettlewright-logo-placeholder"></div>
+      {% endif %} -->
+    <div class="kettlewright-logo-placeholder"></div>
+    <div class="navbar-menu" id="nav-menu">
+        <div class="navbar-start">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('main.characters', username=current_user.username) }}" class="navbar-item">
+                {{_('characters')}}
+            </a>
+            <a href="{{ url_for('main.parties', username=current_user.username) }}" class="navbar-item">
+                {{_('parties')}}
+            </a>
+            {% endif %}
+            <a href="{{ url_for('main.tools')}}" class="navbar-item"> {{_('tools')}} </a>
+        </div>
+        <div class="navbar-end">
+            <button type="button" class="navbar-item navbar-desktop-item" id="dark-mode-toggle">
+                <i class="fa-solid fa-circle-half-stroke"></i>
+            </button>
+            {{locale}}
+            <button type="button" onclick="selectLanguage('{{_('Language')}}', '{{_('Cancel')}}')"
+                class="navbar-item navbar-desktop-item" id="language-toggle">
+                <i class="fa-solid fa-globe"></i>
+            </button>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('main.about') }}" class="navbar-item navbar-desktop-item"> {{_('about')}} </a>
+            <a href="{{ url_for('auth.account') }}" class="navbar-item navbar-desktop-item"> {{_('account')}} </a>
+            {% endif %} {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('auth.login') }}" class="navbar-item navbar-desktop-item"> {{_('login')}} </a>
+            <a href="{{ url_for('auth.signup') }}" class="navbar-item navbar-desktop-item"> {{_('sign up')}} </a>
+            <a href="{{ url_for('main.about') }}" class="navbar-item navbar-desktop-item"> {{_('about')}} </a>
+            {% endif %} {% if current_user.is_authenticated %} {% endif %}
+        </div>
+    </div>
+    <button type="button" class="navbar-item navbar-mobile-item" id="nav-mobile-button" style="margin-left: 0px">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+</nav>

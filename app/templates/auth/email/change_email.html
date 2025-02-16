@@ -1,12 +1,10 @@
 <p>Hi {{ user.username }},</p>
 <p>
-  To confirm your new email address
-  <a href="{{ url_for('auth.change_email', token=token, _external=True) }}"
-    >click here</a
-  >.
+  {{_('To confirm your new email address')}}
+  <a href="{{ url_for('auth.change_email', token=token, _external=True) }}">{{_('click here')}}</a>.
 </p>
 <p>
-  Alternatively, you can paste the following link in your browser's address bar:
+  {{_('Alternatively, you can paste the following link in your browser address bar:')}}
 </p>
 <p>{{ url_for('auth.change_email', token=token, _external=True) }}</p>
-<p><small>Note: replies to this email address are not monitored.</small></p>
+<p><small>{{_('Note: replies to this email address are not monitored.')}}</small></p>

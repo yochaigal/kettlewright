@@ -83,7 +83,7 @@
         <button class="button smaller-font" type="button"
             hx-get="/party/inventory/{{party.id}}/item-edit/None?mode=create" hx-target="#modal-anchor" {% if
             inventory.selected_container['encumbered'] %} disabled {% endif %}>
-            + Item
+            + {{_('Item')}}
         </button>
         {# <button class="button smaller-font" type="button"
             hx-get="/party/inventory/{{party.id}}/{{inventory.selected_container['id']}}/fatigue"
@@ -93,7 +93,7 @@
         <button class="button smaller-font" type="button"
             hx-get="/party/inventory/{{party.id}}/container-edit/{{inventory.selected_container['id']}}?mode=create"
             hx-target="#modal-anchor">
-            + Container
+            + {{_('Container')}}
         </button>
         <div id="modal-anchor"></div>
     </div>

@@ -8,6 +8,7 @@ from app.forms import LoginForm, RegistrationForm, PasswordResetRequestForm, Pas
 from app.email import send_email
 import sys
 import os
+from flask_babel import _
 
 auth = Blueprint('auth', __name__)
 

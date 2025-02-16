@@ -116,6 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const setBackgroundDescription = (background) => {
     const backgroundDescription = document.getElementById("create-background-description");
     description = backgroundData[background]?.background_description ?? "";
+    if (description == '-') description = "";
     backgroundDescription.innerHTML = description;
   };
 
@@ -128,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
           added_by: "background",
         };
 
-        if (!startingItem.description) {
+        if (!startingItem.description || startingItem.description == '-') {
           startingItem.description = "";
         }
 

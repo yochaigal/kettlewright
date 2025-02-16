@@ -3,6 +3,7 @@ from flask_login import current_user
 from app.models import User, Character, Party
 import os
 import sys
+from flask_babel import _
 
 api = Blueprint('api', __name__)
 

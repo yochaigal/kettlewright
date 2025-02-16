@@ -30,7 +30,7 @@
       <div class="charview-action-pad">
         {% if is_owner or is_subowner %}
         <button class="button is-light no-margin-top" id="join-code-button" type="button" title="Join Code">
-          <span class="mobile-hidden">Join Code</span>
+          <span class="mobile-hidden">{{_('Join Code')}}</span>
           <i class="fa-solid fa-link icon-in-button"></i>
         </button>
         <button class="dice-button ghost40" type="button" title="Click to switch edit/view mode"
@@ -47,7 +47,7 @@
       <span id="party-members-collapse-button" class="party-collapse-button">
         <i class="fa-solid fa-chevron-down" id="party-members-collapse-icon"></i>
       </span>
-      <span class="subtitle bold">Members</span>
+      <span class="subtitle bold">{{_('Members')}}</span>
       <div id="party-members-content" class="party-section-content">
         {% if characters %} {% for character in characters %}
 
@@ -71,29 +71,30 @@
               <div>
                 <div class="card-attribute-container">
                   <p class="character-card-attribute subtitle">
-                    STR {{character.strength}}/{{character.strength_max}}
+                    {{_('STR')}} {{character.strength}}/{{character.strength_max}}
                   </p>
                 </div>
                 <div class="card-attribute-container">
                   <p class="character-card-attribute subtitle">
-                    DEX {{character.dexterity}}/{{character.dexterity_max}}
+                    {{_('DEX')}} {{character.dexterity}}/{{character.dexterity_max}}
                   </p>
                 </div>
                 <div class="card-attribute-container">
                   <p class="character-card-attribute subtitle">
-                    WIL {{character.willpower}}/{{character.willpower_max}}
+                    {{_('WIL')}} {{character.willpower}}/{{character.willpower_max}}
                   </p>
                 </div>
               </div>
               <div>
                 <div class="card-attribute-container">
-                  <p class="character-card-attribute subtitle">Armor {{character.armor}}</p>
+                  <p class="character-card-attribute subtitle">{{_('Armor')}} {{character.armor}}</p>
                 </div>
                 <div class="card-attribute-container">
-                  <p class="character-card-attribute subtitle hp-text">HP {{character.hp}}/{{character.hp_max}}</p>
+                  <p class="character-card-attribute subtitle hp-text">{{_('HP')}} {{character.hp}}/{{character.hp_max}}
+                  </p>
                 </div>
                 <div class="card-attribute-container">
-                  <p class="character-card-attribute subtitle">Gold {{character.gold}}</p>
+                  <p class="character-card-attribute subtitle">{{_('Gold')}} {{character.gold}}</p>
                 </div>
               </div>
             </div>
@@ -102,7 +103,7 @@
         </div>
 
         {% endfor %} {% else %}
-        <p>No members in this party</p>
+        <p>{{_('No members in this party')}}</p>
 
         {% endif %}
       </div>
@@ -112,7 +113,7 @@
       <span id="party-inventory-collapse-button" class="party-collapse-button">
         <i class="fa-solid fa-chevron-down" id="party-inventory-collapse-icon"></i>
       </span>
-      <span class="subtitle bold">Storage</span>
+      <span class="subtitle bold">{{_('Storage')}}</span>
       <div id="inventory-container" class="party-section-content">
         <div> {% include "partial/partyview/inventory.html" %}</div>
       </div>

@@ -1,9 +1,9 @@
-<h3 class="no-space">Scars</h3>
+<h3 class="no-space">{{_('Scars')}}</h3>
 {{ form.scars(class='textarea with-whitespace', id='scars-field', oninput='resizeTextarea(this)') }}
 <div class="row8">
   <select id="scars-select" name="scars-select" class="smaller-font">
     {% for s in scarlist %}
-    <option value="{{s}}">{{s}}</option>
+    <option value="{{s}}">{{s | tr}}</option>
     {% endfor %}
   </select>
   <div title="Add scar" hx-post="/charedit/inplace-scars/{{username}}/{{url_name}}/add" hx-target="#scars-field"

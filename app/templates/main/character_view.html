@@ -57,10 +57,10 @@
         {% include "partial/charview/stats.html" %}
       </div>
       <div id="character-traits-container">
-        <h3 class="no-space">Traits</h3>
+        <h3 class="no-space">{{_('Traits')}}</h3>
         <div id="character-traits-view" class="with-whitespace character-text-field">
-          {% if character.traits != "" %} {{character.traits}} {% else %} This
-          character has no traits... {% endif %}
+          {% if character.traits != "" %} {{character.traits}} {% else %}
+          {{_('This character has no traits...')}} {% endif %}
         </div>
       </div>
       <div class="inventory-container" id="inventory-container">
@@ -70,43 +70,43 @@
 
     <div class="character-descriptions-grid">
       <div class="character-description-container" id="character-description-container">
-        <h3 class="no-space">Description</h3>
+        <h3 class="no-space">{{_('Description')}}</h3>
         <p id="character-description-view " class="with-whitespace character-text-field">
           {% if character.description != "" %} {{ character.description }} {%
-          else %} This character has no description... {% endif %}
+          else %} {{_('This character has no description...')}} {% endif %}
         </p>
       </div>
       <div class="character-description-container" id="character-bonds-container">
-        <h3 class="no-space">Bonds</h3>
+        <h3 class="no-space">{{_('Bonds')}}</h3>
         <p id="character-bonds-view" class="with-whitespace character-text-field">
-          {% if character.bonds != "" %} {{ character.bonds }} {% else %} This
-          character has no bonds... {% endif %}
+          {% if character.bonds != "" %} {{ character.bonds }} {% else %}
+          {{_('This character has no bonds...')}} {% endif %}
         </p>
       </div>
       <div class="character-description-container" id="character-omens-container">
-        <h3 class="no-space">Omens</h3>
+        <h3 class="no-space">{{_('Omens')}}</h3>
         <p id="character-omens-view" class="with-whitespace character-text-field">
-          {% if character.omens != "" %} {{ character.omens }} {% else %} This
-          character has no omens... {% endif %}
+          {% if character.omens != "" %} {{ character.omens }} {% else %}
+          {{_('This character has no omens...')}} {% endif %}
         </p>
       </div>
       <div class="character-description-container" id="character-scars-container">
-        <h3 class="no-space">Scars</h3>
+        <h3 class="no-space">{{_('Scars')}}</h3>
         <p id="character-scars-view" class="with-whitespace character-text-field">
           {% if character.scars != "" %} {{character.scars|safe}} {% else %}
-          This character has no scars... {% endif %}
+          {{_('This character has no scars...')}} {% endif %}
         </p>
       </div>
       <div class="character-description-container" id="character-notes-container">
-        <h3 class="no-space">Notes</h3>
+        <h3 class="no-space">{{_('Notes')}}</h3>
         <p id="character-notes-view" class="with-whitespace character-text-field">
           {% if character.notes != "" %} {{ character.notes|safe }} {% else %}
-          This character has no notes... {% endif %}
+          {{_('This character has no notes...')}} {% endif %}
         </p>
       </div>
 
       <div class="character-description-container" id="character-party-container">
-        <h3 id="character-party-heading">Party</h3>
+        <h3 id="character-party-heading">{{_('Party')}}</h3>
         {% if party %}
         <div id="character-party-name-description">
           {% if is_owner %}
@@ -120,7 +120,7 @@
         </div>
         {% else %}
         <p id="character-no-party-description">
-          This character does not belong to a party...
+          {{_('This character does not belong to a party...')}}
         </p>
         {% endif %}
       </div>
@@ -129,22 +129,22 @@
         <div class="row32">
           <a href="{{ url_for('main.print_character', username=username, url_name=url_name) }}">
             <button class="button is-light" id="" style="margin-right: 1em" type="button">
-              Print<i class="fa-solid fa-print icon-in-button"></i>
+              {{_('Print')}}<i class="fa-solid fa-print icon-in-button"></i>
             </button>
           </a>
 
           {% if is_owner %}
           <a href="/charedit/export/{{username}}/{{url_name}}">
             <button id="download-json-button" class="button" type="button">
-              Export <i class="fa-solid fa-download"></i>
+              {{_('Export')}} <i class="fa-solid fa-download"></i>
             </button>
           </a>
 
           <button class="edit-mode is-danger button" id="delete-character-button" data-character-id="{{ character.id }}"
-            data-confirm-title="Delete character" data-confirm-button="Delete"
+            data-confirm-title="{{_('Delete character')}}" data-confirm-button="{{_('Delete')}}"
             hx-get="/delete-character/{{ character.id }}/"
-            hx-confirm="Are you sure you want to delete {{character.name}}?">
-            DELETE<i class="fa-solid fa-trash icon-in-button"></i>
+            hx-confirm="{{_('Are you sure you want to delete')}} {{character.name}}?">
+            {{_('DELETE')}}<i class="fa-solid fa-trash icon-in-button"></i>
           </button>
           {% endif %}
         </div>

@@ -19,13 +19,13 @@
         "name": "Rations",
         "tags": ["uses"],
         "uses": 3,
-        "description": ""
+        "description": "-"
       },
       {
         "name": "Torch",
         "tags": ["uses"],
         "uses": 3,
-        "description": ""
+        "description": "-"
       },
       {
         "name": "Brigandine",

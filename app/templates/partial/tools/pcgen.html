@@ -10,10 +10,10 @@
     <div class="tools-generator">
         <div class="row16">
             <select id="background-select" onchange="updateGenUrl(this)">
-                Background:
-                <option value="">Random</option>
+                {{_('Background')}}:
+                <option value="">{{_('Random')}}</option>
                 {% for bkg in backgrounds %}
-                <option value="{{bkg}}">{{bkg}}</option>
+                <option value="{{bkg}}">{{bkg | tr}}</option>
                 {% endfor %}
             </select>
         </div>

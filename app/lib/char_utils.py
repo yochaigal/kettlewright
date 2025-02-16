@@ -4,6 +4,7 @@ import random
 import json
 import re
 from flask import render_template
+from flask_babel import _
 
 NO_ARMOR = 'No upper body protection, no helmet nor shield'
 
@@ -14,13 +15,13 @@ def get_character(character_id):
 
 
 def item_text(item):
-    name = item['name']
+    name = _(item['name'])
     tags = []
     for t in item['tags']:
         if t == 'bonus defense':
             continue
         if t == 'uses':
-            tags.append(str(item['uses'])+ ' uses')
+            tags.append(str(item['uses'])+ ' ' + _('uses'))
             continue
         if t == "charges":
             c = item['charges']
@@ -28,16 +29,16 @@ def item_text(item):
                 mc = item['max_charges'] 
             else:
                 mc = c
-            tags.append(str(c)+ '/'+ str(mc)+ ' charges')
+            tags.append(str(c)+ '/'+ str(mc)+ ' ' + _('charges'))
             continue
         if t == '1 Armor' or t == '2 Armor' or t == '3 Armor':
-            v = t
+            v = _(t)
             if 'bonus defense' in item['tags']:
                 v = '+'+v
             if not v in tags:
                 tags.append(v)
             continue
-        tags.append(t)        
+        tags.append(_(t))        
     result = name
     if len(tags) > 0:
         result = result + ' ('+', '.join(tags)+')'
@@ -51,7 +52,8 @@ class TraitValue:
         self.value = value
         
 def traits_text(age, traits):
-    return 'You are ' + str(age) + ' years old. You have a '+ traits[0].value + ' '+traits[0].name + ', '+ traits[1].value + ' ' + traits[1].name + ', and '+ traits[2].value + ' ' + traits[2].name+'. Your '+ traits[3].name +' is '+ traits[3].value + ', your ' + traits[4].name+' '+ traits[4].value+'. You have '+ traits[5].value+ ' ' + traits[5].name+'. You are ' + traits[6].value+' and '+ traits[7].value+'.'
+    return _('You have a')+' '+_(traits[0].value)+' '+_(traits[0].name)+', '+_(traits[1].value)+' '+_(traits[1].name)+', '+_('and')+' '+_(traits[2].value)+' '+_(traits[2].name)+'. '+_('Your')+' '+_(traits[3].name)+' '+_('is')+' '+_(traits[3].value)+', '+_('your')+' '+ _(traits[4].name)+' '+_(traits[4].value)+'. '+_('You have')+ ' '+_(traits[5].value)+' '+_(traits[5].name)+'. '+_('You are')+' '+    _(traits[6].value)+' ' +_('and')+' '+_(traits[7].value)+'. '+_('Your age')+': '+str(age)+' .'
+    
         
 class TableValue:
     def __init__(self, question, option):
@@ -122,20 +124,27 @@ class GeneratedCharacter:
         r['armor'] = self.attributes.armor
         if r['armor'] == NO_ARMOR:
             r['armor'] = 0
-        r['background'] = self.background_name
-        r['bonds'] = self.bond['description']
+        r['background'] = _(self.background_name)
+        r['bonds'] = _(self.bond['description'])
         r['containers'] = self.containers
         r['deprived'] = False
-        r['description'] = self.description
+        r['description'] = _(self.description)
         r['dexterity'] = self.attributes.dex
         r['dexterity_max'] = self.attributes.dex
         r['gold'] = self.gold
         r['hp'] = self.attributes.hp
         r['hp_max'] = self.attributes.hp
-        r['items'] = self.items 
+        tritems = []
+        for it in self.items:
+            tit = it
+            tit['name'] = _(tit['name'])
+            if 'description' in tit:
+                tit['description'] = _(tit['description'])
+            tritems.append(tit)
+        r['items'] = tritems
         r['name'] = self.name
-        r['notes'] = self.table1.question+"\n"+self.table1.option['description']+'\n'+self.table2.question+'\n'+self.table2.option['description']
-        r['omens'] = self.omen
+        r['notes'] = _(self.table1.question)+"\n"+_(self.table1.option['description'])+'\n'+_(self.table2.question)+'\n'+_(self.table2.option['description'])
+        r['omens'] = _(self.omen)
         r['scars'] = ''
         r['strength'] = self.attributes.str
         r['strength_max'] = self.attributes.str

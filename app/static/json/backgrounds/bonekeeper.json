@@ -19,28 +19,28 @@
         "name": "Rations",
         "tags": ["uses"],
         "uses": 3,
-        "description": ""
+        "description": "-"
       },
       {
         "name": "Lantern",
         "tags": [],
-        "description": ""
+        "description": "-"
       },
       {
         "name": "Oil Can",
         "tags": ["uses"],
         "uses": 6,
-        "description": ""
+        "description": "-"
       },
       {
         "name": "Stake",
         "tags": ["d6"],
-        "description": ""
+        "description": "-"
       },
       {
         "name": "Chains (10ft)",
         "tags": [],
-        "description": ""
+        "description": "-"
       }
     ],
     "table1": {

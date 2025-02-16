@@ -12,6 +12,8 @@ from slugify import slugify
 import os
 import bleach
 from flask_htmx import HTMX
+from flask_babel import _
+import datetime
 
 
 main = Blueprint('main', __name__)
@@ -450,16 +452,16 @@ def reload_page():
     response.headers["HX-Redirect"] = request.args.get("link")
     return response
 
+# I18N support
 
-    
+@main.route('/select-language')
+def select_language():
+    response = make_response("Setting language")
+    lang = request.args.get('lang')
+    if lang != None and lang != "":
+        expire_date = datetime.datetime.now()
+        expire_date = expire_date + datetime.timedelta(days=180)
+        response.set_cookie("kw_lang", lang, expires=expire_date)        
+    response.headers["HX-Redirect"] = request.headers['Referer']
+    return response
 
-# This is an example for htmx usage
-# @ main.route("/htmx/example")
-# def htmx_example(params):
-#     if htmx:
-#          -- if we want to return rendered partial --  
-#         return render_template("some local partial template", some params...)
-#         -- if we want to return redirect (will cause page reload) --
-#         response = make_response("Redirecting...")
-#         response.headers["HX-Redirect"] = url_for('main.characters', some params ...)
-#     return render_template("index.html")

@@ -1,25 +1,25 @@
-<h3>Stats</h3>
+<h3>{{_('Stats')}}</h3>
 <div class="stats-stats-container character-section">
   <div class="character-attribute-container" id="character-str-container">
-    <h4>STR</h4>
+    <h4>{{_('STR')}}</h4>
     <p class="subtitle view-mode" id="strength-view-text">
       {{ character.strength }}/{{ character.strength_max }}
     </p>
   </div>
   <div class="character-attribute-container" id="character-dex-container">
-    <h4>DEX</h4>
+    <h4>{{_('DEX')}}</h4>
     <p class="subtitle view-mode" id="dexterity-view-text">
       {{ character.dexterity }}/{{ character.dexterity_max }}
     </p>
   </div>
   <div class="character-attribute-container" id="character-wil-container">
-    <h4>WIL</h4>
+    <h4>{{_('WIL')}}</h4>
     <p class="subtitle view-mode" id="willpower-view-text">
       {{ character.willpower }}/{{ character.willpower_max }}
     </p>
   </div>
   <div class="character-attribute-container" id="character-hp-container">
-    <h4>HP</h4>
+    <h4>{{_('HP')}}</h4>
     <p class="subtitle view-mode {% if character.overburdened() %} red-text {% endif %}" id="hp-view-text">
       {{ character.hpValue().0 }}/{{ character.hpValue().1 }}
     </p>
@@ -28,16 +28,16 @@
   {% if character.deprived %}
   <div class="row16" id="character-deprived-container">
     <i class="fa-solid fa-face-tired face-tired"></i>
-    <h4 class="character-deprived-text view-mode">DEPRIVED</h4>
+    <h4 class="character-deprived-text view-mode">{{_('DEPRIVED')}}</h4>
   </div>
   {% endif %}
 
   <div class="character-attribute-container" id="character-gold-container">
-    <h4 class="view-attribute-font">Gold</h4>
+    <h4 class="view-attribute-font">{{_('Gold')}}</h4>
     <p class="subtitle view-mode" id="gold-view-text">{{ character.gold }}</p>
   </div>
   <div class="character-attribute-container" id="character-armor-container">
-    <h4>Armor</h4>
+    <h4>{{_('Armor')}}</h4>
     <p class="subtitle" id="armor-counter" style="margin-left: 0px; margin-right: auto">
       {{ character.armorValue() }}
     </p>
@@ -45,9 +45,9 @@
   <div id="character-rest-container">
     {% if is_owner %}
     <button class="button smaller-font" hx-get="/charedit/rest/{{username}}/{{url_name}}"
-      hx-target="#character-stats-container" hx-confirm="Do you want to restore all HP?" data-confirm-title="Rest"
-      data-confirm-button="Yes" {% if character.deprived %} disabled {% endif %}>
-      Rest
+      hx-target="#character-stats-container" hx-confirm="{{_('Do you want to restore all HP?')}}"
+      data-confirm-title="Rest" data-confirm-button="Yes" {% if character.deprived %} disabled {% endif %}>
+      {{_('Rest')}}
     </button>
     {% endif %}
   </div>

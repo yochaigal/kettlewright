@@ -1,12 +1,12 @@
 <div>
   <div class="row16">
-    <h3 id="character-party-heading" class="no-space">Party</h3>
+    <h3 id="character-party-heading" class="no-space">{{_('Party')}}</h3>
     {% if party %}
     <button type="button" class="button" style="margin-top: 0px"
       hx-get="/charedit/leave-party/{{username}}/{{url_name}}" hx-target="#character-party-container"
       hx-confirm="Do you want to leave party <br/>{{party.name}}?" data-confirm-title="Leave party"
       data-confirm-button="Leave">
-      Leave party
+      {{_('Leave party')}}
     </button>
     {% endif %}
   </div>
@@ -22,7 +22,7 @@
   <p style="color:red">{{ err }}</p>
   {% endif %}
   <div class="field" id="character-join-code" style="margin-top: 20px">
-    <label>Join Code</label>
+    <label>{{_('Join Code')}}</label>
     {{ form.party_code(class='input', id='party-id-field') }}
   </div>
 </div>

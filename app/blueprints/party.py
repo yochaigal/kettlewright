@@ -4,6 +4,7 @@ from app.lib import *
 from app.models import db, User, Character, Party
 from app.forms import *
 import json
+from flask_babel import _
 
 party = Blueprint('party', __name__)
 

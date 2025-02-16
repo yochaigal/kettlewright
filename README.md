@@ -169,3 +169,26 @@ It can be helpful to run the app with flask, as you can see changes immediately 
 - [**docker**](https://www.docker.com): A platform for building and managing containerized applications.
 - [**magick.css**](https://css.winterveil.net) - A classless CSS framework designed by [winterveil](https://github.com/wintermute-cell).
 - [**bulma**](https://github.com/jgthms/bulma): A modern CSS framework based on Flexbox.
+
+## Preparing data for translation
+
+Every actions should be performed in venv (after pipenv shell).
+
+### Extracting strings
+
+`pybabel extract -F babel.cfg -k _l -o messages.pot .`
+
+### Generating language catalog
+
+`pybabel init -i messages.pot -d app/translations -l es`
+
+### Compiling translations
+
+`pybabel compile -d app/translations`
+
+### Updating translations
+
+```python
+       pybabel extract -F babel.cfg -k _l -o messages.pot . # generate new definitions
+       pybabel update -i messages.pot -d app/translations   # merge with existing translations
+```

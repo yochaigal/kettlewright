@@ -7,6 +7,7 @@ from app.forms import *
 from app.main import sanitize_data
 from app.lib import *
 from unidecode import unidecode
+from flask_babel import _
 
 
 
@@ -137,7 +138,7 @@ def charedit_inplace_scars_add(username, url_name):
     selected_scar = data['scars-select']
     result = data["scars"]
     if selected_scar != None:
-        result = result + "\n"+selected_scar+":"+scarlist[selected_scar]
+        result = result + "\n"+_(selected_scar)+": "+_(scarlist[selected_scar])
     response = make_response(result)
     response.headers["HX-Trigger-After-Settle"] = 'scar-roll'
     return response
