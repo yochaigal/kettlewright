@@ -1,0 +1,5 @@
+<div class="no-space click-pointer" title="Click to change image"
+    hx-get="/charcreo/portrait?src={{portrait_src}}&custom_image={{custom_image}}"
+    hx-target="#character-portrait-container">
+    <img src="{{portrait_src | urldec}}" alt="character portrait" class="portrait-image" id="portrait-image" />
+</div>

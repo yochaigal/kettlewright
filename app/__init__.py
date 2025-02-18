@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from datetime import timedelta
 from flask_babel import Babel
 from flask_babel import _
+import urllib.parse
 
 UTC = timezone.utc
 
@@ -143,9 +144,13 @@ def create_app():
     from app.blueprints import party as party_blueprint
     app.register_blueprint(party_blueprint)
     
-     # blueprint for generator
+    # blueprint for generator
     from app.blueprints import generator as generator_blueprint
     app.register_blueprint(generator_blueprint)
+    
+    # blueprint for character creation
+    from app.blueprints import character_create as character_create_blueprint
+    app.register_blueprint(character_create_blueprint)
 
     from .socket_events import register_socket_events
     register_socket_events(socketio)
@@ -164,6 +169,11 @@ def create_app():
     @app.template_filter("tr")
     def squote2js_filter(text: str) -> str:
         return _(text)
+    
+    # URL decode
+    @app.template_filter("urldec")
+    def urlenc_filter(text: str) -> str:
+        return urllib.parse.unquote_plus(text)
     
     # Write error about party code
     @app.template_filter("party_code_error")

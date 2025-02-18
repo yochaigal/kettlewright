@@ -1,357 +1,108 @@
 {% extends "base.html" %} {% block content %}
-<script>
-  const traitsRawData = `{{ traits_data | safe }}`;
-  const backgroundRawData = `{{ background_data | safe }}`;
-  const traitsData = JSON.parse(traitsRawData);
-  const bondsRawData = `{{ bonds_data | safe }}`;
-  const bondsData = JSON.parse(bondsRawData);
-  const omensRawData = `{{ omens_data | safe }}`;
-  const omensData = JSON.parse(omensRawData);
-  const marketplaceRawData = `{{ marketplace_data | safe }}`;
-  const marketplaceData = JSON.parse(marketplaceRawData);
-</script>
 <script src="{{ url_for('static', filename='src/js/character_create.js') }}" type="module"></script>
 <div class="body-container">
-  <div class="create-header">
-    <div>
-      <button class="button is-link purple" id="roll-all" type="button" style="margin-right: 8px">
-        {{_('Roll All')}}
-        <i class="fa-solid fa-dice icon-in-button"></i>
-      </button>
-      <button class="button is-link blue" id="roll-remaining" type="button" style="margin-right: 8px">
-        {{_('Roll Remaining')}}
-        <i class="fa-solid fa-dice icon-in-button"></i> </button>
-    </div>
-
-    <button class="button" id="reset-button" type="button" hx-get="/reload-page?link=/new_character/"
-      hx-confirm="Do you want to reset character?" data-confirm-title="Reset character" data-confirm-button="Reset">
-      {{_('Reset')}}
-      <i class="fa-solid fa-rotate-right icon-in-button"></i>
-    </button>
-  </div>
-  <form class="sheet" method="POST" id="character-form">
-    {{ form.csrf_token }} {{form.description(class="hidden", id="description-hidden-field")
-    }}{{form.notes(class="hidden", id="notes-hidden-field") }}{{form.bonds(class="hidden", id="bonds-hidden-field") }}
-    {{form.omens(class="hidden", id="omens-hidden-field") }} {{ form.items (class="hidden") }} {{ form.containers
-    (class="hidden") }} {{form.gold(class="hidden", id="gold-hidden-field") }} {{form.custom_image(class="hidden",
-    id="custom-image")}} {{ form.image_url(class="hidden", id="custom-image-url") }} {{ form.armor(class="hidden",
-    id="armor-hidden-field") }} {{form.traits(class="hidden", id="traits-hidden-field") }}
-    <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em">
-      <div id="create-portrait-container" style="display: flex; flex-direction: column">
-        <img id="portrait-image" src="{{ url_for('static', filename='images/portraits/default-portrait.webp') }}"
-          alt="Portrait" class="portrait-image" />
-        <p style="margin-top: -6px; text-align: center"> (edit)</p>
-      </div>
-      <h1 style="max-width: 200px">{{_('New Character')}}</h1>
-    </div>
-    <div class="create-background-name-container">
-      <div class="background-fields-and-image-container">
-        <div class="background-fields-container">
-          <div class="create-field-dice-container">
-            <div class="select">{{ form.background(class="input bold create-select-field") }}</div>
-            <button class="roll button dice-button" data-target="background" type="button">
-              <i class="fa-solid fa-dice dice"></i>
+    <div class="create-header">
+        <div>
+            <button class="button is-link purple" id="roll-all" type="button" style="margin-right: 8px">
+                {{_('Roll All')}}
+                <i class="fa-solid fa-dice icon-in-button"></i>
             </button>
-          </div>
-          <div class="create-text-field-container">
-            {{ form.custom_background(class="inactive", id="custom-background-field") }}
-          </div>
-          {% if form.custom_background.errors %}
-          <div class="message is-danger">
-            <ul class="message-header rounded">
-              {% for error in form.custom_background.errors %}
-              <li>{{ error }}</li>
-              {% endfor %}
-            </ul>
-          </div>
-          {% endif %}
-          <p class="block text-border create-top-text-field" id="create-background-description"
-            style="min-height: 100px"></p>
+            <button class="button is-link blue" id="roll-remaining" type="button" style="margin-right: 8px">
+                {{_('Roll Remaining')}}
+                <i class="fa-solid fa-dice icon-in-button"></i> </button>
         </div>
-        <div class="">
-          <div class="create-field-dice-container" id="name-select-roll-container">
-            <div class="select"> {{ form.name(class="create-select-field", id="name-field", required=True) }} </div>
-            <button class="roll button dice-button" data-target="name" type="button">
-              <i class="fa-solid fa-dice dice"></i>
-            </button>
-          </div>
-          <div class="create-text-field-container">
-            {{ form.custom_name(class="inactive", id="custom-name-field") }}</div>
-        </div>
-      </div>
-      {% if form.custom_name.errors %}
-      <div class="message is-danger">
-        <ul class="message-header rounded">
-          {% for error in form.custom_name.errors %}
-          <li>{{ error }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-      {% endif %}
-
-      <div id="background-tables-container">
-        <div class="background-table-container">
-          <!-- <label id="table1-question">Background Table 1</label> -->
-          <p class="table-question" id="table1-question"></p>
-          <div class="table-border">
-            <div class="create-field-dice-container" id="background-table1-container">
-              <div class="select">
-                <select class="create-select-field" id="background-table1-select" required>
-                  <option value="">{{_('Table')}} {{_('(d6)')}}...</option>
-                </select>
-              </div>
-              <button class="roll button dice-button" type="button" data-target="table1">
-                <i class="fa-solid fa-dice dice"></i>
-              </button>
-            </div>
-            <div class="columns" style="margin-top: 2px">
-              <div class="column">
-                <p class="text-border create-top-text-field" id="background-table1-description"
-                  style="min-height: 120px"></p>
-              </div>
-            </div>
-          </div>
-          <button class="button hidden" id="show-gear-table-1" type="button"> {{_('Gear Table 1')}} </button>
-        </div>
-        <div class="background-table-container">
-          <!-- <label id="table2-question">Background Table 2</label> -->
-          <p class="table-question" id="table2-question"></p>
-          <div class="table-border">
-            <div class="create-field-dice-container">
-              <div class="select">
-                <select class="create-select-field" id="background-table2-select" required>
-                  <option value>{{_('Table')}} {{_('(d6)')}}...</option>
-                </select>
-              </div>
-              <button class="roll button dice-button" type="button" data-target="table2">
-                <i class="fa-solid fa-dice dice"></i>
-              </button>
-            </div>
-            <div class="columns" style="margin-top: 2px">
-              <div class="column">
-                <p class="text-border create-top-text-field" id="background-table2-description"
-                  style="min-height: 120px"></p>
-              </div>
-            </div>
-          </div>
-          <button class="button hidden" id="show-gear-table-2" type="button"> {{_('Gear Table 2')}} </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="create-attributes-container">
-      <h2 class="title script-font">{{_('Attributes')}}</h2>
-      <div class="create-str-dex-wil-container">
-        <div class="create-attribute-container">
-          <span class="subtitle attribute-font">{{_('STR')}}</span>
-          <span class="attribute-roll-font">{{_('(3d6)')}}</span>
-          <span class="number-field">
-            {{ form.strength_max(class='input number-input create-attribute-field', size=1, type='number',
-            id="strength-max-field") }}
-          </span>
-          <button class="roll button dice-button" data-target="strength" type="button">
-            <i class="fa-solid fa-dice dice"></i>
-          </button>
-        </div>
-        <div class="create-attribute-container">
-          <span class="subtitle attribute-font">{{_('DEX')}}</span>
-          <span class="attribute-roll-font">{{_('(3d6)')}}</span>
-
-          <span class="number-field">
-            {{ form.dexterity_max(class='input number-input create-attribute-field', size=1, type='number',
-            id="dexterity-max-field") }}
-          </span>
-          <button class="roll button dice-button" data-target="dexterity" type="button">
-            <i class="fa-solid fa-dice dice"></i>
-          </button>
-        </div>
-        <div class="create-attribute-container">
-          <span class="subtitle attribute-font">{{_('WIL')}}</span>
-          <span class="attribute-roll-font">{{_('(3d6)')}}</span>
-          <span class="number-field">
-            {{ form.willpower_max(class='input number-input create-attribute-field', size=1, type='number',
-            id="willpower-max-field") }}
-          </span>
-          <button class="roll button dice-button" data-target="willpower" type="button">
-            <i class="fa-solid fa-dice dice"></i>
-          </button>
-        </div>
-      </div>
-      <div id="swap-container">
-        <select class="" id="swap-attribute-1">
-          <option>{{_('Swap once...')}}</option>
-          <option>{{_('Strength')}}</option>
-          <option>{{_('Dexterity')}}</option>
-          <option>{{_('Willpower')}}</option>
-        </select>
-
-        <button class="button" type="button" id="swap-button">
-          <i class="fa-solid fa-right-left icon-in-button"></i>
+        <button class="button" id="reset-button" type="button" hx-get="/reload-page?link=/new_character/"
+            hx-confirm="{{_('Do you want to reset character?')}}" data-confirm-title="{{_('Reset character')}}"
+            data-confirm-button="{{_('Reset')}}" data-cancel-button="{{_('Cancel')}}">
+            {{_('Reset')}}
+            <i class="fa-solid fa-rotate-right icon-in-button"></i>
         </button>
-
-        <select class="" id="swap-attribute-2">
-          <option>{{_('Swap once...')}}</option>
-          <option>{{_('Strength')}}</option>
-          <option>{{_('Dexterity')}}</option>
-          <option>{{_('Willpower')}}</option>
-        </select>
-      </div>
-
-      <div class="create-attribute-container" id="create-hp-container">
-        <span class="subtitle hp-font">{{_('HP')}}</span>
-        <span class="attribute-roll-font">{{_('(d6)')}}</span>
-        <span class="column number-field">
-          {{ form.hp_max(class='input number-input create-attribute-field', size=1, type='number', id="hp-max-field") }}
-        </span>
-        <button class="roll button dice-button" data-target="hp" type="button">
-          <i class="fa-solid fa-dice dice"></i>
-        </button>
-      </div>
     </div>
-
-    <div class="divider"></div>
-
-    <div class="create-traits-outer-container">
-      <div class="justify-left">
-        <h2 class="title script-font">{{_('Traits')}}</h2>
-        <button class="roll button dice-button" type="button" data-target="traits">
-          <i class="fa-solid fa-dice dice"></i>
-        </button>
-      </div>
-
-      <div class="create-traits-container">
-        <div class="create-trait-container">
-          <select class="trait-select" id="Physique" required>
-            <option>{{_('Physique')}} ({{_('d10')}})...</option>
-          </select>
+    <form class="sheet" method="POST" id="character-form">
+        <!--  portrait -->
+        <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em">
+            <div class="no-space" id="character-portrait-container">
+                {% include "partial/charcreo/portrait_img.html" %}
+            </div>
+            <h1 style="max-width: 200px">{{_('New Character')}}</h1>
         </div>
-        <div class="create-trait-container">
-          <select class="trait-select" id="Skin" required>
-            <option>{{_('Skin')}} ({{_('d10')}})...</option>
-          </select>
-        </div>
-        <div class="create-trait-container">
-          <select class="trait-select" id="Hair" required>
-            <option>{{_('Hair')}} ({{_('d10')}})...</option>
-          </select>
-        </div>
-        <div class="create-trait-container">
-          <select class="trait-select" id="Face" required>
-            <option>{{_('Face')}} ({{_('d10')}})...</option>
-          </select>
-        </div>
-        <div class="create-trait-container">
-          <select class="trait-select" id="Speech" required>
-            <option>{{_('Speech')}} ({{_('d10')}})...</option>
-          </select>
-        </div>
-        <div class="create-trait-container">
-          <select class="trait-select" id="Clothing" required>
-            <option>{{_('Clothing')}} ({{_('d10')}})...</option>
-          </select>
-        </div>
-        <div class="create-trait-container">
-          <select class="trait-select" id="Virtue" required>
-            <option>{{_('Virtue')}} ({{_('d10')}})...</option>
-          </select>
-        </div>
-        <div class="create-trait-container">
-          <select class="trait-select" id="Vice" required>
-            <option>{{_('Vice')}} ({{_('d10')}})...</option>
-          </select>
-        </div>
-      </div>
-      <p class="text-border" id="traits-description" style="min-height: 100px"></p>
-    </div>
-    <div class="divider"></div>
-
-    <div class="create-bonds-age-omens-outer-container">
-      <div class="create-bonds-age-omens-container">
-        <div id="create-age-outer-container">
-          <div>
-            <h2 class="title script-font">{{_('Age')}}</h2>
-            <div class="columns">
-              <div class="column justify-left">
-                <div class="field">
-                  <div class="control">
-                    <input class="" type="text" id="age-field" placeholder="{{_('Age')}} ({{_('2d20+10')}})..."
-                      required />
-                  </div>
+        <!-- Fields -->
+        <div class="create-background-name-container">
+            <div class="background-fields-and-image-container">
+                <div class="background-fields-container" id="background-field-container">
+                    {% include "partial/charcreo/background.html" %}
                 </div>
-                <button class="roll button dice-button" type="button" data-target="age">
-                  <i class="fa-solid fa-dice dice"></i>
-                </button>
-              </div>
+                <div class="">
+                    <div class="create-field-dice-container" id="name-select-roll-container">
+                        <div class="select"> {{ form.name(class="create-select-field", id="name-field", required=True)
+                            }} </div>
+                        <button class="roll button dice-button" data-target="name" type="button">
+                            <i class="fa-solid fa-dice dice"></i>
+                        </button>
+                    </div>
+                    <div class="create-text-field-container">
+                        {{ form.custom_name(class="inactive", id="custom-name-field") }}</div>
+                </div>
             </div>
-          </div>
-        </div>
-        <div id="create-bonds-outer-container" class="">
-          <h2 class="title script-font">{{_('Bonds')}}</h2>
-          <div class="create-field-dice-container">
-            <select class="" id="bonds-select" required>
-              <option value="">{{_('Bonds')}} ({{_('d20')}})...</option>
-            </select>
-            <button class="roll button dice-button" type="button" data-target="bonds">
-              <i class="fa-solid fa-dice dice"></i>
-            </button>
-          </div>
-        </div>
-        <div id="create-omens-outer-container">
-          <h2 class="title script-font">{{_('Omens')}}</h2>
-          <div class="create-field-dice-container">
-            <select class="" id="omens-select">
-              <option value="">{{_('Omens')}} ({{_('d20')}})...</option>
-            </select>
-            <button class="roll button dice-button" type="button" data-target="omens">
-              <i class="fa-solid fa-dice dice"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-      <p class="text-border" id="bonds-omens-description" style="min-height: 120px"></p>
-    </div>
+            {% if form.custom_name.errors %}
+            <div class="message is-danger">
+                <ul class="message-header rounded">
+                    {% for error in form.custom_name.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
 
-    <div class="divider"></div>
-
-    <div class="items-container" style="margin-bottom: 24px">
-      <h2 class="title script-font">{{_('Items')}}</h2>
-      <div class="create-armor-gold-container">
-        <div class="justify-left">
-          <p class="subtitle attribute-font">{{_('Armor')}}</p>
-          <p class="title script-font" id="armor-counter"> 0 </p>
+            <div id="background-tables-container">
+                <div class="background-table-container">
+                    <!-- <label id="table1-question">Background Table 1</label> -->
+                    <p class="table-question" id="table1-question"></p>
+                    <div class="table-border">
+                        <div class="create-field-dice-container" id="background-table1-container">
+                            <div class="select">
+                                <select class="create-select-field" id="background-table1-select" required>
+                                    <option value="">{{_('Table')}} {{_('(d6)')}}...</option>
+                                </select>
+                            </div>
+                            <button class="roll button dice-button" type="button" data-target="table1">
+                                <i class="fa-solid fa-dice dice"></i>
+                            </button>
+                        </div>
+                        <div class="columns" style="margin-top: 2px">
+                            <div class="column">
+                                <p class="text-border create-top-text-field" id="background-table1-description"
+                                    style="min-height: 120px"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="button hidden" id="show-gear-table-1" type="button"> {{_('Gear Table 1')}} </button>
+                </div>
+                <div class="background-table-container">
+                    <!-- <label id="table2-question">Background Table 2</label> -->
+                    <p class="table-question" id="table2-question"></p>
+                    <div class="table-border">
+                        <div class="create-field-dice-container">
+                            <div class="select">
+                                <select class="create-select-field" id="background-table2-select" required>
+                                    <option value>{{_('Table')}} {{_('(d6)')}}...</option>
+                                </select>
+                            </div>
+                            <button class="roll button dice-button" type="button" data-target="table2">
+                                <i class="fa-solid fa-dice dice"></i>
+                            </button>
+                        </div>
+                        <div class="columns" style="margin-top: 2px">
+                            <div class="column">
+                                <p class="text-border create-top-text-field" id="background-table2-description"
+                                    style="min-height: 120px"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="button hidden" id="show-gear-table-2" type="button"> {{_('Gear Table 2')}} </button>
+                </div>
+            </div>
         </div>
-        <div class="create-attribute-container">
-          <span class="subtitle attribute-font">{{_('Gold')}}</span>
-          <span class="attribute-roll-font">({{_('3d6')}})</span>
-          <p class="number-field" id="gold-field">0</p>
-          <button class="roll button dice-button" data-target="gold" type="button">
-            <i class="fa-solid fa-dice dice"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="create-inventory-container">{% include "main/inventory.html" %}</div>
-    </div>
-    <!-- <div class="divider"></div> -->
-    <!-- {% with messages = get_flashed_messages() %} {% if messages is not none and
-    messages|length > 0 %}
-    <div class="message is-danger">
-      <div class="message-header">
-        <p>Errors</p>
-      </div>
-      <div class="message-body">
-        <ul class="errors">
-          {% for message in messages %}
-          <li>{{ message }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-    {% endif %} {% endwith %}  -->
-
-    {{ form.submit(class='button', id="submit-button") }}
-  </form>
+    </form>
 </div>
-{%include "main/edit_portrait_modal.html"%} {% endblock %}
+{% endblock %}

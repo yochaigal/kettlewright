@@ -148,8 +148,8 @@ msgid "Background (d20)..."
 msgstr "Przeszłość (k20)..."
 
 #: app/forms.py:114 app/forms.py:115
-msgid "Custom"
-msgstr "Własne"
+msgid "** Custom **"
+msgstr "** Własne **"
 
 #: app/forms.py:125 app/forms.py:238 app/templates/partial/tools/pcgen.html:13
 msgid "Background"
@@ -412,7 +412,7 @@ msgstr "koszt"
 msgid "uses"
 msgstr "uż."
 
-#: inventory.py:123
+#: app/static/json/backgrounds/rill-runner.json:97 inventory.py:123
 msgid "1 use"
 msgstr "1 użycie"
 
@@ -517,7 +517,6 @@ msgstr "k12"
 #: app/templates/partial/modal/edit_item_party.html:36
 msgid "blast"
 msgstr "podmuch"
-
 
 # Inventory slots
 #: app/static/json/backgrounds/bonekeeper.json:79
@@ -688,8 +687,7 @@ msgstr "kliknij tutaj"
 msgid ""
 "Alternatively, you can paste the following link in your browser address "
 "bar:"
-msgstr ""
-"Możesz też skopiować link do paska przeglądarki"
+msgstr "Możesz też skopiować link do paska przeglądarki"
 
 #: app/templates/auth/email/change_email.html:10
 #: app/templates/auth/email/confirm.html:10
@@ -1233,13 +1231,19 @@ msgstr "złoto"
 msgid "Members"
 msgstr "Członkowie"
 
-
 #: app/static/json/party_events/dungeons.json:307
 #: app/templates/main/party_edit.html:115
 #: app/templates/main/party_view.html:116
 msgid "Storage"
 msgstr "Przechowalnia"
 
+#: app/templates/main/character_create.html:15
+msgid "Do you want to reset character?"
+msgstr "Czy chcesz zresetować postać?"
+
+#: app/templates/main/character_create.html:15
+msgid "Reset character"
+msgstr "Resetuj postać"
 
 # ============================================= BONDS
 # =============================================
@@ -1249,9 +1253,9 @@ msgid ""
 "relative. It arrived with a warning: squander your newfound riches, and a"
 " debt long thought forgotten would be called."
 msgstr ""
-"Odziedziczyłeś pojedynczy klejnot (500z, zimny i kruchy) po dawno zmarłym "
-"krewnym. Dostałeś(aś) go z ostrzeżeniem: roztrwoń swoje nowo odkryte bogactwa, a"
-"dług, o którym dawno zapomniano, zostanie Ci przypomniany."
+"Odziedziczyłeś pojedynczy klejnot (500z, zimny i kruchy) po dawno zmarłym"
+" krewnym. Dostałeś(aś) go z ostrzeżeniem: roztrwoń swoje nowo odkryte "
+"bogactwa, a dług, o którym dawno zapomniano, zostanie Ci przypomniany."
 
 #: app/static/json/bonds.json:7
 msgid "Single Gem"
@@ -1274,8 +1278,8 @@ msgid ""
 "You carry a Portrait in a locket (petty) of a past love who disappeared "
 "into the Wood long ago. Somehow, you know that they are still alive."
 msgstr ""
-"Nosisz portret twojej dawnej miłości w medalionie (drobiazg), osoba ta zniknęła "
-"w lesie dawno temu, ale w jakiś sposób wiesz, że nadal żyje."
+"Nosisz portret twojej dawnej miłości w medalionie (drobiazg), osoba ta "
+"zniknęła w lesie dawno temu, ale w jakiś sposób wiesz, że nadal żyje."
 
 #: app/static/json/bonds.json:28
 msgid "Locket"
@@ -1287,9 +1291,9 @@ msgid ""
 "to the light, it shows visions of an unknown location deep within the "
 "Wood. Sometimes, you feel a presence looking back at you."
 msgstr ""
-"Znalazłeś mały kryształowy pryzmat (drobiazg) zakopany w ziemi. Kiedy trzymasz go pod "
-" światło, pokazuje obraz nieznanego miejsca ukrytego głęboko w "
-"Lesie. Czasami czujesz także jakąś obecność patrzącą na ciebie."
+"Znalazłeś mały kryształowy pryzmat (drobiazg) zakopany w ziemi. Kiedy "
+"trzymasz go pod  światło, pokazuje obraz nieznanego miejsca ukrytego "
+"głęboko w Lesie. Czasami czujesz także jakąś obecność patrzącą na ciebie."
 
 #: app/static/json/bonds.json:41
 msgid "Tiny Crystal Prism"
@@ -1315,9 +1319,9 @@ msgid ""
 "filled with the events of the day, crassly from the journal’s "
 "perspective. The writing is crude, but accurate."
 msgstr ""
-"Odziedziczyłeś stary dziennik oprawiony w korę. Każdego wieczoru jego strony "
-"same zapełniają się wydarzeniami dnia, opisywanymi bez ogródek z perspektywy dziennika."
-" Dziennik bywa surowy, ale dokładny."
+"Odziedziczyłeś stary dziennik oprawiony w korę. Każdego wieczoru jego "
+"strony same zapełniają się wydarzeniami dnia, opisywanymi bez ogródek z "
+"perspektywy dziennika. Dziennik bywa surowy, ale dokładny."
 
 #: app/static/json/bonds.json:67
 msgid "Journal"
@@ -1329,9 +1333,9 @@ msgid ""
 " (petty). They say that if joined with its twin, it opens a Gate through "
 "any door."
 msgstr ""
-"Chronisz długo skrywaną rodzinną tajemnicę. Dostałeś jedną połowę starożytnego klucza "
-"(drobiazg). Mówią, że jeśli połączy się go z bliźniaczą połówką, otworzy on Bramę "
-" przez dowolne drzwi."
+"Chronisz długo skrywaną rodzinną tajemnicę. Dostałeś jedną połowę "
+"starożytnego klucza (drobiazg). Mówią, że jeśli połączy się go z "
+"bliźniaczą połówką, otworzy on Bramę  przez dowolne drzwi."
 
 #: app/static/json/bonds.json:77
 msgid "Ancient Key Half"
@@ -1343,9 +1347,9 @@ msgid ""
 "Key. They say that if joined with its twin, it opens a Gate through any "
 "door."
 msgstr ""
-"Chronisz długo skrywaną rodzinną tajemnicę. Dostałeś jedną połowę starożytnego klucza. "
-" Mówią, że jeśli połączy się go z bliźniaczą połówką, otworzy on Bramę "
-" przez dowolne drzwi."
+"Chronisz długo skrywaną rodzinną tajemnicę. Dostałeś jedną połowę "
+"starożytnego klucza.  Mówią, że jeśli połączy się go z bliźniaczą "
+"połówką, otworzy on Bramę  przez dowolne drzwi."
 
 #: app/static/json/bonds.json:86 app/static/json/bonds.json:94
 msgid ""
@@ -1353,9 +1357,10 @@ msgid ""
 "true parentage is that of Fae nobility. The note also indicates a date "
 "and location where you are to meet them, deep in the the Wood."
 msgstr ""
-"Otrzymałeś list (drobiazg) zawierający niepodważalny dowód na to, że tak naprawdę pochodzisz ze szlachty Fae."
-" Notatka wskazuje również datę i miejsce, w którym masz się spotkać z ich przedstawicielem "
-", gdzieś głęboko w Lesie."
+"Otrzymałeś list (drobiazg) zawierający niepodważalny dowód na to, że tak "
+"naprawdę pochodzisz ze szlachty Fae. Notatka wskazuje również datę i "
+"miejsce, w którym masz się spotkać z ich przedstawicielem , gdzieś "
+"głęboko w Lesie."
 
 #: app/static/json/bonds.json:90 app/static/json/bonds.json:139
 msgid "Letter"
@@ -1367,8 +1372,8 @@ msgid ""
 "Ring (petty), which serves as proof of their protection as well as your "
 "obligation."
 msgstr ""
-"Masz wielki dług wobec członka szlachty i nosisz jego sygnet (drobiazg), "
-" który służy jako dowód jego ochrony, a także twojego zobowiązania."
+"Masz wielki dług wobec członka szlachty i nosisz jego sygnet (drobiazg),"
+"  który służy jako dowód jego ochrony, a także twojego zobowiązania."
 
 #: app/static/json/bonds.json:103
 msgid "Signet Ring"
@@ -1380,9 +1385,10 @@ msgid ""
 "demanding to be taken home, deep in the Wood. It occupies one slot but "
 "absorbs one Fatigue each day. It wants you alive (for now)."
 msgstr ""
-"Pochłonąłeś złośliwego ducha, który sieje spustoszenie w twoim wnętrzu, "
-" domagając się zabrania do domu, głęboko w Lesie. Zajmuje jedno miejsce w ekwipunku, "
-" ale każdego dnia dodaje jedno Zmęczenie. Chce cię żywego (na razie)."
+"Pochłonąłeś złośliwego ducha, który sieje spustoszenie w twoim wnętrzu,  "
+"domagając się zabrania do domu, głęboko w Lesie. Zajmuje jedno miejsce w "
+"ekwipunku,  ale każdego dnia dodaje jedno Zmęczenie. Chce cię żywego (na "
+"razie)."
 
 #: app/static/json/bonds.json:116
 msgid "Mischievous Spirit"
@@ -1394,9 +1400,9 @@ msgid ""
 "in the Wood. You thought it naught but fancy, till they gave you A "
 "Rolled-Up Map (petty) marked with an X."
 msgstr ""
-"Wędrowny gawędziarz opowiadał ci kiedyś historie o wielkim skarbie ukrytym głęboko w Lesie."
-" Myślałeś, że to tylko bajki, dopóki nie otrzymałeś zwiniętej mapy (drobiazg) "
-" z miejscem oznaczonym literą X."
+"Wędrowny gawędziarz opowiadał ci kiedyś historie o wielkim skarbie "
+"ukrytym głęboko w Lesie. Myślałeś, że to tylko bajki, dopóki nie "
+"otrzymałeś zwiniętej mapy (drobiazg)  z miejscem oznaczonym literą X."
 
 #: app/static/json/bonds.json:126
 msgid "Rolled-Up Map"
@@ -1408,9 +1414,9 @@ msgid ""
 "message to their loved ones. Take a Letter (petty), sealed with tree sap."
 " It is addressed only to the Lord Of Winter."
 msgstr ""
-"Podczas podróży spotkałeś umierającego myśliwego, który poprosił cię o przekazanie "
-" wiadomości jego bliskim. Dostałeś list (drobiazg), zapieczętowany sokiem z drzewa. "
-" Jest zaadresowany do Władcy Zimy."
+"Podczas podróży spotkałeś umierającego myśliwego, który poprosił cię o "
+"przekazanie  wiadomości jego bliskim. Dostałeś list (drobiazg), "
+"zapieczętowany sokiem z drzewa.  Jest zaadresowany do Władcy Zimy."
 
 #: app/static/json/bonds.json:148
 msgid ""
@@ -1418,9 +1424,9 @@ msgid ""
 "it everywhere now, but only when you’re alone. It looks sad, but not "
 "angry. You cannot become panicked when acting alone."
 msgstr ""
-"Znalazłeś ranne zwierzę w lesie, ale postanowiłeś je zignorować. "
-" Teraz widzisz je wszędzie, ale tylko wtedy, gdy jesteś sam. "
-"Wygląda na smutne, ale nie złe. Nie możesz wpaść w Panikę, gdy działasz samotnie."
+"Znalazłeś ranne zwierzę w lesie, ale postanowiłeś je zignorować.  Teraz "
+"widzisz je wszędzie, ale tylko wtedy, gdy jesteś sam. Wygląda na smutne, "
+"ale nie złe. Nie możesz wpaść w Panikę, gdy działasz samotnie."
 
 #: app/static/json/bonds.json:153 app/static/json/bonds.json:161
 msgid ""
@@ -1428,9 +1434,9 @@ msgid ""
 "something unique in all the world. Take a Bracelet (petty) woven from "
 "twine and wildflowers."
 msgstr ""
-"Obiecałaś przyjaciółce z dzieciństwa, że przywieziesz jej rzadki prezent, "
-" coś wyjątkowego na całym świecie. Dostajesz bransoletkę (drobiazg) utkaną "
-"ze sznurka i polnych kwiatów."
+"Obiecałaś przyjaciółce z dzieciństwa, że przywieziesz jej rzadki prezent,"
+"  coś wyjątkowego na całym świecie. Dostajesz bransoletkę (drobiazg) "
+"utkaną ze sznurka i polnych kwiatów."
 
 #: app/static/json/bonds.json:157
 msgid "Bracelet"
@@ -1442,9 +1448,10 @@ msgid ""
 "(1 Armor). With each passing month, the stone grows heavier by one slot. "
 "Until your debt is lifted, you cannot truly die."
 msgstr ""
-"Wszedłeś w drogę stworzeniu z Lasu, które rzuciło na ciebie klątwę Kamiennego Serca "
-" (1 Pancerza). Z każdym mijającym miesiącem kamień staje się cięższy zabierając jedno miejsce w ekwpiunku. "
-" Dopóki urok nie zostanie zdjęty, nie możesz naprawdę umrzeć."
+"Wszedłeś w drogę stworzeniu z Lasu, które rzuciło na ciebie klątwę "
+"Kamiennego Serca  (1 Pancerza). Z każdym mijającym miesiącem kamień staje"
+" się cięższy zabierając jedno miejsce w ekwpiunku.  Dopóki urok nie "
+"zostanie zdjęty, nie możesz naprawdę umrzeć."
 
 #: app/static/json/bonds.json:170
 msgid "Stone Heart"
@@ -1455,8 +1462,9 @@ msgid ""
 "You carved a Whistle (petty) from an Oak Lord’s branch. Your act did not "
 "go unnoticed. You cannot seem to rid yourself of the whistle either."
 msgstr ""
-"Wyrzeźbiłeś gwizdek (drobiazg) z gałęzi Dębowego Lorda. Twój czyn nie pozostał "
-" niezauważony. Nie możesz również w żaden sposób pozbyć się tego gwizdka."
+"Wyrzeźbiłeś gwizdek (drobiazg) z gałęzi Dębowego Lorda. Twój czyn nie "
+"pozostał  niezauważony. Nie możesz również w żaden sposób pozbyć się tego"
+" gwizdka."
 
 #: app/static/json/bonds.json:183
 msgid "Whistle"
@@ -1468,9 +1476,9 @@ msgid ""
 "Flower (petty) as proof. When the flower turns white, it means the favor "
 "is owed."
 msgstr ""
-"Brygada Świtu wyświadczyła przysługę twojej rodzinie, dając ci na dowód zasuszony "
-" Krwistoczerwony kwiat (drobiazg). Gdy kwiat zmieni kolor na biały, oznacza to, "
-" że dług trzeba spłacić."
+"Brygada Świtu wyświadczyła przysługę twojej rodzinie, dając ci na dowód "
+"zasuszony  Krwistoczerwony kwiat (drobiazg). Gdy kwiat zmieni kolor na "
+"biały, oznacza to,  że dług trzeba spłacić."
 
 #: app/static/json/bonds.json:196
 msgid "Blood-Red Flower"
@@ -1482,9 +1490,9 @@ msgid ""
 " left one day without a word, leaving behind only A Miniature Lute. "
 "Something rattles inside."
 msgstr ""
-"Pewien artysta odwiedził kiedyś twój dom, wypełniając go opowieściami i śpiewem. "
-" Pewnego dnia odszedł bez słowa, pozostawiając po sobie jedynie miniaturową lutnię. "
-" W środku coś grzechocze."
+"Pewien artysta odwiedził kiedyś twój dom, wypełniając go opowieściami i "
+"śpiewem.  Pewnego dnia odszedł bez słowa, pozostawiając po sobie jedynie "
+"miniaturową lutnię.  W środku coś grzechocze."
 
 #: app/static/json/bonds.json:209
 msgid "Miniature Lute"
@@ -1496,9 +1504,9 @@ msgid ""
 " awoke the next morning with The Twig (petty) in your hand. You believe "
 "it brings you luck. It smells faintly of sulfur."
 msgstr ""
-"We śnie ukazał ci się biały kruk trzymający w dziobie gałązkę. Obudziłeś się "
-" następnego ranka z gałązką (drobiazg) w dłoni. Wierzysz, że przynosi szczęście. "
-" Pachnie słabo siarką."
+"We śnie ukazał ci się biały kruk trzymający w dziobie gałązkę. Obudziłeś "
+"się  następnego ranka z gałązką (drobiazg) w dłoni. Wierzysz, że przynosi"
+" szczęście.  Pachnie słabo siarką."
 
 #: app/static/json/bonds.json:219
 msgid "Twig"
@@ -1510,9 +1518,9 @@ msgid ""
 "Your visage causes mirrors to shatter. You’ve noticed that the shards can"
 " sometimes reveal illusions."
 msgstr ""
-"Jeden z twoich przodków skrzywdził Mchową Wiedźmę, która przeklęła jego ród. "
-" Twoje oblicze sprawia, że lustra pękają. Zauważyłeś, że odłamki mogą czasami "
-" ujawniać iluzję."
+"Jeden z twoich przodków skrzywdził Mchową Wiedźmę, która przeklęła jego "
+"ród.  Twoje oblicze sprawia, że lustra pękają. Zauważyłeś, że odłamki "
+"mogą czasami  ujawniać iluzję."
 
 # ============================================= OMENS
 # =============================================
@@ -1523,10 +1531,10 @@ msgid ""
 " points to some recent desecration as the cause, but most do not heed "
 "their words."
 msgstr ""
-"Niegdyś bogate wody życiodajnej rzeki stały się czarne i zgniłe, "
-"skażając ziemię i przyprawiając o mdłości tych, którzy z niej piją. "
-"Starszy wioski jako przyczynę wskazuje jakieś niedawne zbezczeszczenie, "
-"ale większość nie zwraca uwagi na jego słowa."
+"Niegdyś bogate wody życiodajnej rzeki stały się czarne i zgniłe, skażając"
+" ziemię i przyprawiając o mdłości tych, którzy z niej piją. Starszy "
+"wioski jako przyczynę wskazuje jakieś niedawne zbezczeszczenie, ale "
+"większość nie zwraca uwagi na jego słowa."
 
 #: app/static/json/omens.json:7
 msgid ""
@@ -1535,9 +1543,9 @@ msgid ""
 "pattern to the frost found in windows, ponds, and cracks in the ground. "
 "It almost looks like a map."
 msgstr ""
-"Wydaje się, że zima nadeszła w tym roku zbyt szybko, a mróz i śnieg pojawiły się "
-"znacznie wcześniej niż oczekiwano. Ludzie plotkują o wzorze szronu w oknach, stawach "
-"i pęknięciach w ziemi. Wygląda prawie jak mapa."
+"Wydaje się, że zima nadeszła w tym roku zbyt szybko, a mróz i śnieg "
+"pojawiły się znacznie wcześniej niż oczekiwano. Ludzie plotkują o wzorze "
+"szronu w oknach, stawach i pęknięciach w ziemi. Wygląda prawie jak mapa."
 
 #: app/static/json/omens.json:10
 msgid ""
@@ -1545,8 +1553,8 @@ msgid ""
 "grove. It is said to be the work of a great forest spirit, angered by "
 "nearby deforestation."
 msgstr ""
-"Gęsta, nienaturalna mgła zaczęła pojawiać się w starożytnym i świętym gaju. "
-"Mówi się, że jest to dzieło wielkiego ducha lasu, rozgniewanego "
+"Gęsta, nienaturalna mgła zaczęła pojawiać się w starożytnym i świętym "
+"gaju. Mówi się, że jest to dzieło wielkiego ducha lasu, rozgniewanego "
 "pobliskim wyrębem."
 
 #: app/static/json/omens.json:13
@@ -1556,10 +1564,10 @@ msgid ""
 "into the Roots are spreading like wildfire. Village elders believe the "
 "two are connected."
 msgstr ""
-"Nocne niebo staje się coraz ciemniejsze każdego wieczoru, jakby gwiazdy znikały "
-"jedna po drugiej. Pogłoski o piekielnych istotach porywających rolników i wciągających "
-"ich do Korzeni rozprzestrzeniają się jak pożar. Starszyzna wioski wierzy, że "
-"te dwa zjawiska są ze sobą powiązane."
+"Nocne niebo staje się coraz ciemniejsze każdego wieczoru, jakby gwiazdy "
+"znikały jedna po drugiej. Pogłoski o piekielnych istotach porywających "
+"rolników i wciągających ich do Korzeni rozprzestrzeniają się jak pożar. "
+"Starszyzna wioski wierzy, że te dwa zjawiska są ze sobą powiązane."
 
 #: app/static/json/omens.json:16
 msgid ""
@@ -1567,9 +1575,9 @@ msgid ""
 "claim that a spectral figure has been spotted wandering the forest, "
 "gazing longingly at anyone it encounters."
 msgstr ""
-"Ptaki śpiewające w Lesie ostatnio niesamowicie ucichły. Myśliwi twierdzą, "
-"że po lesie błąka się widmowa postać, która z tęsknotą spogląda na każdego, "
-"kogo napotka."
+"Ptaki śpiewające w Lesie ostatnio niesamowicie ucichły. Myśliwi twierdzą,"
+" że po lesie błąka się widmowa postać, która z tęsknotą spogląda na "
+"każdego, kogo napotka."
 
 #: app/static/json/omens.json:19
 msgid ""
@@ -1578,10 +1586,10 @@ msgid ""
 "locals believe they are the tears of the earth itself, weeping for a "
 "great tragedy yet to come."
 msgstr ""
-"Dziwne kamienie w kształcie łez można znaleźć w całym regionie. "
-"Wywołują one swego rodzaju „gorączkę złota” zarówno u jubilerów, jak i złodziei. "
-"Miejscowi wierzą, że są to łzy samej ziemi, płaczącej z powodu "
-"wielkiej tragedii, która ma dopiero nadejść."
+"Dziwne kamienie w kształcie łez można znaleźć w całym regionie. Wywołują "
+"one swego rodzaju „gorączkę złota” zarówno u jubilerów, jak i złodziei. "
+"Miejscowi wierzą, że są to łzy samej ziemi, płaczącej z powodu wielkiej "
+"tragedii, która ma dopiero nadejść."
 
 #: app/static/json/omens.json:22
 msgid ""
@@ -1589,8 +1597,9 @@ msgid ""
 "loud buzzing sound emanating from deep within the Wood. They also say "
 "that the sound is getting closer."
 msgstr ""
-"Wiele osób śni o rojących się szkodnikach, a rolnicy mówią o głośnym brzęczeniu "
-"wydobywającym się z głębi lasu. Mówią też, że dźwięk jest coraz bliżej."
+"Wiele osób śni o rojących się szkodnikach, a rolnicy mówią o głośnym "
+"brzęczeniu wydobywającym się z głębi lasu. Mówią też, że dźwięk jest "
+"coraz bliżej."
 
 #: app/static/json/omens.json:25
 msgid ""
@@ -1598,9 +1607,9 @@ msgid ""
 "said to shelter the town’s secrets in its boughs. Recently, it has begun "
 "bleeding red sap, worrying the elders."
 msgstr ""
-"Pewna miejscowość słynie z imponującego „drzewa-matki”, o którym mówi się, "
-"że w swoich konarach skrywa tajemnice miasteczka. Ostatnio zaczęło krwawić "
-"czerwoną posoką, co zaniepokoiło starszyznę."
+"Pewna miejscowość słynie z imponującego „drzewa-matki”, o którym mówi "
+"się, że w swoich konarach skrywa tajemnice miasteczka. Ostatnio zaczęło "
+"krwawić czerwoną posoką, co zaniepokoiło starszyznę."
 
 #: app/static/json/omens.json:28
 msgid ""
@@ -1609,9 +1618,9 @@ msgid ""
 "between the Wood and the mortal realm grow thin."
 msgstr ""
 "Księżyc zmienia kolor na głęboki karmazyn, barwiąc noc niesamowitym, "
-"krwistoczerwonym światłem. Niektórzy twierdzą, że zwiastuje to czas chaosu "
-"i konfliktów, ponieważ granice między Lasem a światem śmiertelników "
-"stają się coraz cieńsze."
+"krwistoczerwonym światłem. Niektórzy twierdzą, że zwiastuje to czas "
+"chaosu i konfliktów, ponieważ granice między Lasem a światem "
+"śmiertelników stają się coraz cieńsze."
 
 #: app/static/json/omens.json:31
 msgid ""
@@ -1621,15 +1630,17 @@ msgid ""
 msgstr ""
 "Na nocnym niebie pojawiły się dziwne pęknięcia, odsłaniając kłębiący się "
 "wir światła i kolorów. Niektórzy twierdzą, że przepaść między światami "
-"jest najsłabsza od wieków i obawiają się, co może wyłonić się z drugiej strony."
+"jest najsłabsza od wieków i obawiają się, co może wyłonić się z drugiej "
+"strony."
 
 #: app/static/json/omens.json:34
 msgid ""
 "A night-blooming flower once thought extinct is sprouting up throughout "
 "the Wood. Its scent is intoxicating, but also causes vivid nightmares."
 msgstr ""
-"Kwitnący nocą kwiat, niegdyś uważany za wymarły, pojawia się w całym Lesie. "
-"Jego zapach jest odurzający, ale także wywołuje sugestywne koszmary."
+"Kwitnący nocą kwiat, niegdyś uważany za wymarły, pojawia się w całym "
+"Lesie. Jego zapach jest odurzający, ale także wywołuje sugestywne "
+"koszmary."
 
 #: app/static/json/omens.json:37
 msgid ""
@@ -1638,8 +1649,8 @@ msgid ""
 "from the Wood each full moon."
 msgstr ""
 "Miejscowe bydło stało się ostatnio coraz bardziej niespokojne i nie do "
-"opanowania. Stary pasterz twierdzi, że jest to spowodowane niepokojącym wyciem, "
-"które wydobywa się z lasu przy każdej pełni księżyca."
+"opanowania. Stary pasterz twierdzi, że jest to spowodowane niepokojącym "
+"wyciem, które wydobywa się z lasu przy każdej pełni księżyca."
 
 #: app/static/json/omens.json:40
 msgid ""
@@ -1647,9 +1658,9 @@ msgid ""
 "wooden structures they come across. The sound of their wings hum a "
 "familiar tune as they pass overhead, like a forgotten nursery rhyme."
 msgstr ""
-"Roje owadów masowo uciekają z Lasu, niszcząc wszelkie napotkane drewniane "
-"konstrukcje. Gdy przelatują nad głowami, dźwięk ich skrzydeł nuci znajomą "
-"melodię, niczym zapomnianą rymowankę."
+"Roje owadów masowo uciekają z Lasu, niszcząc wszelkie napotkane drewniane"
+" konstrukcje. Gdy przelatują nad głowami, dźwięk ich skrzydeł nuci "
+"znajomą melodię, niczym zapomnianą rymowankę."
 
 #: app/static/json/omens.json:43
 msgid ""
@@ -1658,8 +1669,8 @@ msgid ""
 "there are fewer and fewer creatures to hunt."
 msgstr ""
 "Myśliwi mówią o klątwie, która spada na każdego, kto zabije zwierzę ze "
-"smugą białego futra: wkrótce potem zostaje znaleziony martwy w swoim domu. "
-"Każdego dnia jest coraz mniej stworzeń do upolowania."
+"smugą białego futra: wkrótce potem zostaje znaleziony martwy w swoim "
+"domu. Każdego dnia jest coraz mniej stworzeń do upolowania."
 
 #: app/static/json/omens.json:46
 msgid ""
@@ -1685,9 +1696,9 @@ msgid ""
 "and died, despite showing no signs of disease. After its trunk was cut, a"
 " bloody hand was found in its core."
 msgstr ""
-"Starożytne drzewo w sercu sennej wioski nagle uschło i umarło, "
-"mimo że nie wykazywało żadnych oznak choroby. Po przecięciu pnia, "
-"w jego wnętrzu znaleziono zakrwawioną dłoń."
+"Starożytne drzewo w sercu sennej wioski nagle uschło i umarło, mimo że "
+"nie wykazywało żadnych oznak choroby. Po przecięciu pnia, w jego wnętrzu "
+"znaleziono zakrwawioną dłoń."
 
 #: app/static/json/omens.json:55
 msgid ""
@@ -1695,9 +1706,9 @@ msgid ""
 "village have lain barren since they began to fall. A single child has "
 "been the only exception, taken by elders overcome with fear and dread."
 msgstr ""
-"Posągi płaczą krwią od miesięcy, a łona kobiet w całej wiosce "
-"pozostają jałowe. Jedynym wyjątkiem było dziecko, ukryte przez "
-"ogarniętą trwogą starszyznę."
+"Posągi płaczą krwią od miesięcy, a łona kobiet w całej wiosce pozostają "
+"jałowe. Jedynym wyjątkiem było dziecko, ukryte przez ogarniętą trwogą "
+"starszyznę."
 
 #: app/static/json/omens.json:58
 msgid ""
@@ -1705,9 +1716,9 @@ msgid ""
 "fleeing the area entirely. Hunters talk of a shadowy figure that roams "
 "the Wood, calling to the animals."
 msgstr ""
-"Lokalna fauna zachowuje się dziwnie, wykazując zwiększoną agresję "
-"lub całkowicie uciekając z okolicy. Myśliwi mówią o mrocznej postaci, "
-"która przemierza las, nawołując zwierzęta."
+"Lokalna fauna zachowuje się dziwnie, wykazując zwiększoną agresję lub "
+"całkowicie uciekając z okolicy. Myśliwi mówią o mrocznej postaci, która "
+"przemierza las, nawołując zwierzęta."
 
 #: app/static/json/omens.json:61
 msgid ""
@@ -1716,9 +1727,9 @@ msgid ""
 "same warning: A fire is coming, and it will consume them all."
 msgstr ""
 "W ostatnich tygodniach w przygranicznych miasteczkach wybuchły zamieszki "
-"po tym, jak wiele osób twierdziło, że w snach ich dzieci pojawiła się postać "
-"w czerwonej szacie, wypowiadająca to samo ostrzeżenie: "
-"Nadchodzi ogień, który pochłonie wszystko."
+"po tym, jak wiele osób twierdziło, że w snach ich dzieci pojawiła się "
+"postać w czerwonej szacie, wypowiadająca to samo ostrzeżenie: Nadchodzi "
+"ogień, który pochłonie wszystko."
 
 # ============================================= SCARS
 # =============================================
@@ -1734,11 +1745,13 @@ msgid ""
 "\n"
 "If the total is higher than your max HP, take the new result."
 msgstr ""
-"Rzuć 1k6. 1: Kark, 2: Ręce, 3: Oko, 4: Klatka piersiowa, 5: Nogi, 6: Ucho. \n"
+"Rzuć 1k6. 1: Kark, 2: Ręce, 3: Oko, 4: Klatka piersiowa, 5: Nogi, 6: "
+"Ucho. \n"
 "\n"
 "Rzuć 1k6. \n"
 "\n"
-"Jeśli suma jest wyższa niż twoja maksymalna OCHR, wynik staje się twoją nową maksymalną OCHR."
+"Jeśli suma jest wyższa niż twoja maksymalna OCHR, wynik staje się twoją "
+"nową maksymalną OCHR."
 
 #: app/static/json/scars.json:8
 msgid "2 HP - Rattling Blow"
@@ -1756,7 +1769,8 @@ msgstr ""
 "\n"
 "Rzuć 1k6.\n"
 "\n"
-"Jeśli suma jest wyższa niż twoja maksymalna OCHR, wynik staje się twoją nową maksymalną OCHR."
+"Jeśli suma jest wyższa niż twoja maksymalna OCHR, wynik staje się twoją "
+"nową maksymalną OCHR."
 
 #: app/static/json/scars.json:12
 msgid "3 HP - Walloped"
@@ -1771,8 +1785,8 @@ msgid ""
 "\n"
 "Add that amount to your max HP."
 msgstr ""
-"Zostajesz wysłany w powietrze i lądujesz płasko na twarzy. Odczuwasz dyskomfort,"
-" dopóki nie odpoczniesz przez kilka godzin.\n"
+"Zostajesz wysłany w powietrze i lądujesz płasko na twarzy. Odczuwasz "
+"dyskomfort, dopóki nie odpoczniesz przez kilka godzin.\n"
 "\n"
 "Następnie, rzuć 1k6.\n"
 "\n"
@@ -1794,7 +1808,8 @@ msgstr ""
 "\n"
 "Po zrośnięciu, rzuć 2k6.\n"
 "\n"
-"Jeśli suma jest wyższa niż twoja maksymalna OCHR, wynik staje się twoją nową maksymalną OCHR."
+"Jeśli suma jest wyższa niż twoja maksymalna OCHR, wynik staje się twoją "
+"nową maksymalną OCHR."
 
 #: app/static/json/scars.json:20
 msgid "5 HP - Diseased"
@@ -1812,7 +1827,8 @@ msgstr ""
 "\n"
 "Kiedy wydobrzejesz, rzuć 2k6.\n"
 "\n"
-"Jeśli suma jest wyższa niż twoja maksymalna OCHR, wynik staje się twoją nową maksymalną OCHR."
+"Jeśli suma jest wyższa niż twoja maksymalna OCHR, wynik staje się twoją "
+"nową maksymalną OCHR."
 
 #: app/static/json/scars.json:24
 msgid "6 HP - Reorienting Head Wound"
@@ -1830,7 +1846,8 @@ msgstr ""
 "\n"
 "Rzuć 3k6.\n"
 "\n"
-"Jeśli wynik jest wyższy niż aktualny poziom atrybutu, staje się on nową wartością wskazanej cechy."
+"Jeśli wynik jest wyższy niż aktualny poziom atrybutu, staje się on nową "
+"wartością wskazanej cechy."
 
 #: app/static/json/scars.json:28
 msgid "7 HP - Hamstrung"
@@ -1844,11 +1861,13 @@ msgid ""
 "\n"
 "If the total is higher than your max DEX, take the new result."
 msgstr ""
-"Ledwo możesz się poruszać, dopóki nie otrzymasz poważnej pomocy i nie odpoczniesz.\n"
+"Ledwo możesz się poruszać, dopóki nie otrzymasz poważnej pomocy i nie "
+"odpoczniesz.\n"
 "\n"
 "Po wyzdrowieniu, rzuć 3k6.\n"
 "\n"
-"Jeśli suma jest wyższa niż twoja maksymalna wartość ZRE, nowy wynik staje się nową maksymalną wartością."
+"Jeśli suma jest wyższa niż twoja maksymalna wartość ZRE, nowy wynik staje"
+" się nową maksymalną wartością."
 
 #: app/static/json/scars.json:32
 msgid "8 HP - Deafened"
@@ -1884,7 +1903,8 @@ msgstr ""
 "\n"
 "Rzuć 3k6.\n"
 "\n"
-"Jeśli suma jest wyższa niż twoja maksymalna wartość WOL, nowy wynik staje się nową maksymalną wartością."
+"Jeśli suma jest wyższa niż twoja maksymalna wartość WOL, nowy wynik staje"
+" się nową maksymalną wartością."
 
 #: app/static/json/scars.json:40
 msgid "10 HP - Sundered"
@@ -1899,7 +1919,8 @@ msgid ""
 "\n"
 "If you pass, increase your max WIL by 1d6."
 msgstr ""
-"Kończyna została oderwana, jest kaleka lub bezużyteczna. Strażnik określi, która to kończyna.\n"
+"Kończyna została oderwana, jest kaleka lub bezużyteczna. Strażnik "
+"określi, która to kończyna.\n"
 "\n"
 "Następnie wykonaj rzut obronny WOL.\n"
 "\n"
@@ -1917,7 +1938,8 @@ msgid ""
 "\n"
 "Take the new result as your max HP."
 msgstr ""
-"Odczuwasz dyskomfort i zostajesz wyłączony z gry. Umierasz w ciągu godziny, chyba że zostaniesz uleczony.\n"
+"Odczuwasz dyskomfort i zostajesz wyłączony z gry. Umierasz w ciągu "
+"godziny, chyba że zostaniesz uleczony.\n"
 "\n"
 "Po wyzdrowieniu, rzuć 2k6.\n"
 "\n"
@@ -1936,12 +1958,14 @@ msgid ""
 "\n"
 "If the total is higher than your max HP, take the new result."
 msgstr ""
-"Śmierć wydawała się bliska, ale jakoś udało ci się przeżyć. Jeśli twój następny rzut obronny "
-"przeciwko obrażeniom krytycznym jest nieudany, umierasz okropną śmiercią.\n"
+"Śmierć wydawała się bliska, ale jakoś udało ci się przeżyć. Jeśli twój "
+"następny rzut obronny przeciwko obrażeniom krytycznym jest nieudany, "
+"umierasz okropną śmiercią.\n"
 "\n"
 "Jeśli zdasz test, rzuć 3k6.\n"
 "\n"
-"Jeśli suma jest większa niż twoje maksymalne OCHR, weź nowy wynik jako aktualną, maksymalną OCHR."
+"Jeśli suma jest większa niż twoje maksymalne OCHR, weź nowy wynik jako "
+"aktualną, maksymalną OCHR."
 
 # ============================================= TRAITS
 # =============================================
@@ -2292,7 +2316,6 @@ msgstr "mściwy(-a)"
 
 # ============================================= BACKGROUNDS
 # =============================================
-
 #: app/static/json/backgrounds/aurifex.json:1
 msgid "Aurifex"
 msgstr "Alchemik"
@@ -2301,7 +2324,6 @@ msgstr "Alchemik"
 msgid "Barber-Surgeon"
 msgstr "Felczer"
 
-
 #: app/static/json/backgrounds/beast-handler.json:1
 msgid "Beast Handler"
 msgstr "Poskramiacz zwierząt"
@@ -2309,7 +2331,6 @@ msgstr "Poskramiacz zwierząt"
 #: app/static/json/backgrounds/bonekeeper.json:1
 msgid "Bonekeeper"
 msgstr "Opiekun kości"
-
 
 #: app/static/json/backgrounds/cutpurse.json:1
 msgid "Cutpurse"
@@ -2339,19 +2360,13 @@ msgstr "Leśnik"
 msgid "Half Witch"
 msgstr "Półwiedźma"
 
-#: app/static/json/backgrounds/hexenbane.json:1
-msgid "Hexenbane"
-msgstr "Łowca czarownic"
-
 #: app/static/json/backgrounds/jongleur.json:1
 msgid "Jongleur"
 msgstr "Kuglarz"
 
-
 #: app/static/json/backgrounds/kettlewright.json:1
 msgid "Kettlewright"
 msgstr "Wędrowny kowal"
-
 
 #: app/static/json/backgrounds/marchguard.json:1
 msgid "Marchguard"
@@ -2361,7 +2376,6 @@ msgstr "Strażnik graniczny"
 msgid "Mountebank"
 msgstr "Hochsztapler"
 
-
 #: app/static/json/backgrounds/outrider.json:1
 msgid "Outrider"
 msgstr "Najemniczka"
@@ -2370,16 +2384,13 @@ msgstr "Najemniczka"
 msgid "Prowler"
 msgstr "Skrytobójca"
 
-
 #: app/static/json/backgrounds/rill-runner.json:1
 msgid "Rill Runner"
 msgstr "Bard rzeczny"
 
-
 #: app/static/json/backgrounds/scrivener.json:1
 msgid "Scrivener"
 msgstr "Skryba"
-
 
 #: app/static/json/backgrounds/aurifex.json:4
 msgid ""
@@ -2387,8 +2398,8 @@ msgid ""
 "crucible of your workshop, the laws that govern this world are warped to "
 "suit your needs."
 msgstr ""
-"Jesteś mistrzem sztuk tajemnych, kowalem subtelnych mocy. W tyglu twojego warsztatu, "
-" na swoje potrzeby, wypaczasz prawa rządzące tym światem."
+"Jesteś mistrzem sztuk tajemnych, kowalem subtelnych mocy. W tyglu twojego"
+" warsztatu,  na swoje potrzeby, wypaczasz prawa rządzące tym światem."
 
 #: app/static/json/backgrounds/aurifex.json:10
 #: app/static/json/party_events/factions.json:196
@@ -2431,9 +2442,10 @@ msgid ""
 "you can sniff out gold as a pig does truffles. Take a Tin of Snuff to "
 "dampen the impact. Use it every day or become deprived."
 msgstr ""
-"Nastąpiła eksplozja i straciłeś węch. No, prawie: możesz wywąchać złoto jak świnia trufle. "
-" Weź puzderko z tabaką (6 użyć), aby łagodzić skutki eksplozji. Używaj jej codziennie, "
-" w przeciwnym razie zaczniesz odczuwać dyskomfort."
+"Nastąpiła eksplozja i straciłeś węch. No, prawie: możesz wywąchać złoto "
+"jak świnia trufle.  Weź puzderko z tabaką (6 użyć), aby łagodzić skutki "
+"eksplozji. Używaj jej codziennie,  w przeciwnym razie zaczniesz odczuwać "
+"dyskomfort."
 
 #: app/static/json/backgrounds/aurifex.json:49
 msgid "Tin of Snuff"
@@ -2450,10 +2462,10 @@ msgid ""
 "you are able to share its senses. (Add a Fatigue each time.) It follows "
 "basic commands."
 msgstr ""
-"Zdematerializowałeś ukochanego zwierzaka. Teraz ciągle łazi za tobą, niewidzialny, "
-" ale zawsze obecny. Chociaż nie może wchodzić w interakcje ze światem fizycznym, "
-" możesz współdzielić z nim jego zmysły. (Dodaj zmęczenie za każdym razem.) "
-" Wykonuje podstawowe polecenia."
+"Zdematerializowałeś ukochanego zwierzaka. Teraz ciągle łazi za tobą, "
+"niewidzialny,  ale zawsze obecny. Chociaż nie może wchodzić w interakcje "
+"ze światem fizycznym,  możesz współdzielić z nim jego zmysły. (Dodaj "
+"zmęczenie za każdym razem.)  Wykonuje podstawowe polecenia."
 
 #: app/static/json/backgrounds/aurifex.json:60
 msgid ""
@@ -2461,9 +2473,9 @@ msgid ""
 "wear off. The disorder has its advantages: you cannot repeat lies you've "
 "heard, either."
 msgstr ""
-"Zostałeś wystawiony na działanie długotrwałego serum prawdy, "
-"którego efekty jeszcze trwają. Zaburzenie ma swoje zalety: "
-" nie możesz też powtarzać zasłyszanych kłamstw."
+"Zostałeś wystawiony na działanie długotrwałego serum prawdy, którego "
+"efekty jeszcze trwają. Zaburzenie ma swoje zalety:  nie możesz też "
+"powtarzać zasłyszanych kłamstw."
 
 #: app/static/json/backgrounds/aurifex.json:63
 msgid ""
@@ -2471,9 +2483,9 @@ msgid ""
 "Eventually, your ruse was discovered, and you had to make a hasty "
 "retreat. Take a heavy Metal Ingot and Gold Powder."
 msgstr ""
-"Byłeś biegły w tworzeniu fałszywego złota, prawie tak samo dobrego "
-"jak prawdziwe. W końcu jednak oszustwo zostało odkryte i musiałeś "
-"salwować się ucieczką. Weź ciężką sztabkę metalu i złoty proszek (3 użycia)."
+"Byłeś biegły w tworzeniu fałszywego złota, prawie tak samo dobrego jak "
+"prawdziwe. W końcu jednak oszustwo zostało odkryte i musiałeś salwować "
+"się ucieczką. Weź ciężką sztabkę metalu i złoty proszek (3 użycia)."
 
 #: app/static/json/backgrounds/aurifex.json:66
 msgid "Metal Ingot"
@@ -2489,9 +2501,9 @@ msgid ""
 "your claims could be proven. Take a prototype Blunderbuss that takes one "
 "round to reload, and a thirst for revenge."
 msgstr ""
-"Twój alchemiczny przepis zadziałał znakomicie, ale rywal ukradł recepturę, "
-"zanim zdążyłeś zabezpieczyć swoje prawa autorskie. "
-"Weź prototypowy Garłacz (k12, podmuch, nieporęczny), którego przeładowanie "
+"Twój alchemiczny przepis zadziałał znakomicie, ale rywal ukradł "
+"recepturę, zanim zdążyłeś zabezpieczyć swoje prawa autorskie. Weź "
+"prototypowy Garłacz (k12, podmuch, nieporęczny), którego przeładowanie "
 "zajmuje jedną rundę, i zasmakuj zemsty."
 
 #: app/static/json/backgrounds/aurifex.json:80
@@ -2509,8 +2521,8 @@ msgid ""
 "touches into its constituent parts."
 msgstr ""
 "Stałeś się pośmiewiskiem ponieważ odkryłeś, jak zamienić złoto w ołów. "
-"Weź butelkę Uniwersalnego Rozpuszczalnika (2 użycia), płyn ten rozpuszcza "
-"na części składowe wszystko, czego dotknie."
+"Weź butelkę Uniwersalnego Rozpuszczalnika (2 użycia), płyn ten rozpuszcza"
+" na części składowe wszystko, czego dotknie."
 
 #: app/static/json/backgrounds/aurifex.json:90
 msgid "Universal Solvent"
@@ -2525,8 +2537,9 @@ msgid ""
 "Pyrophoric Gel: A sticky green fluid that catches fire when exposed to "
 "air. It lasts for 8 hours and cannot be extinguished."
 msgstr ""
-"Żel piroforyczny: lepki zielony płyn, który zapala się pod wpływem "
-" zetknięcia z powietrzem. Płomień utrzymuje się przez 8 godzin i nie można go ugasić."
+"Żel piroforyczny: lepki zielony płyn, który zapala się pod wpływem  "
+"zetknięcia z powietrzem. Płomień utrzymuje się przez 8 godzin i nie można"
+" go ugasić."
 
 #: app/static/json/backgrounds/aurifex.json:105
 msgid "Pyrophoric Gel"
@@ -2537,8 +2550,8 @@ msgid ""
 "Blast Sphere: A head-sized iron ball filled with explosive powder that "
 "detonates on impact."
 msgstr ""
-"Wybuchowa kula: żelazna kula wielkości głowy wypełniona wybuchowym proszkiem,"
-" który detonuje przy uderzeniu. k12, podmuch, nieporęczna."
+"Wybuchowa kula: żelazna kula wielkości głowy wypełniona wybuchowym "
+"proszkiem, który detonuje przy uderzeniu. k12, podmuch, nieporęczna."
 
 #: app/static/json/backgrounds/aurifex.json:114
 msgid "Blast Sphere"
@@ -2549,8 +2562,8 @@ msgid ""
 "Aqua Vita: Purifies any liquid, converting it to pure water. Drinking it "
 "cures 1d6 STR."
 msgstr ""
-"Aqua Vita: oczyszcza dowolny płyn, zamieniając go w krystaliczną wodę. "
-" Jej wypicie leczy 1k6 SIŁ. 1 użycie."
+"Aqua Vita: oczyszcza dowolny płyn, zamieniając go w krystaliczną wodę.  "
+"Jej wypicie leczy 1k6 SIŁ. 1 użycie."
 
 #: app/static/json/backgrounds/aurifex.json:123
 msgid "Aqua Vita"
@@ -2558,7 +2571,9 @@ msgstr "Aqua Vita"
 
 #: app/static/json/backgrounds/aurifex.json:130
 msgid "Mimic Stone: Records a short phrase that can later be played back."
-msgstr "Kamień Mimiczny: można za jego pomocą nagrać krótką frazę, a później ją odtworzyć."
+msgstr ""
+"Kamień Mimiczny: można za jego pomocą nagrać krótką frazę, a później ją "
+"odtworzyć."
 
 #: app/static/json/backgrounds/aurifex.json:133
 msgid "Mimic Stone"
@@ -2573,8 +2588,8 @@ msgid ""
 "Spark Dust: Ignites easily and quickly. Useful for starting a fire or as "
 "an incendiary device."
 msgstr ""
-"Iskrowy pył: łatwo i szybko się zapala. Przydatny do wzniecania ognia "
-"lub jako środek zapalający. 3 użycia."
+"Iskrowy pył: łatwo i szybko się zapala. Przydatny do wzniecania ognia lub"
+" jako środek zapalający. 3 użycia."
 
 #: app/static/json/backgrounds/aurifex.json:143
 msgid "Spark Dust"
@@ -2587,9 +2602,10 @@ msgid ""
 " possible. Any damage done to the homunculus is also done to you. 3 HP, 4"
 " STR, 13 DEX, 5 WIL."
 msgstr ""
-"Homunkulus: miniaturowa gliniana replika ciebie, która wykonuje każde twoje polecenie. "
-"Nienawidzi tego, że została magicznie zniewolona i narzeka gorzko, gdy tylko jest to możliwe. "
-" Wszelkie obrażenia zadane homunkulusowi są również zadawane tobie. 3 OCHR, 4 SIŁ, 13 ZRE, 5 WOL"
+"Homunkulus: miniaturowa gliniana replika ciebie, która wykonuje każde "
+"twoje polecenie. Nienawidzi tego, że została magicznie zniewolona i "
+"narzeka gorzko, gdy tylko jest to możliwe.  Wszelkie obrażenia zadane "
+"homunkulusowi są również zadawane tobie. 3 OCHR, 4 SIŁ, 13 ZRE, 5 WOL"
 
 #: app/static/json/backgrounds/aurifex.json:153
 msgid "Homunculus"
@@ -2602,9 +2618,10 @@ msgid ""
 "Any damage done to the homunculus is also done to you. 3 HP, 4 STR, 13 "
 "DEX, 5 WIL"
 msgstr ""
-"Miniaturowa gliniana replika ciebie, która wykonuje każde twoje polecenie. "
-"Nienawidzi tego, że została magicznie zniewolona i narzeka gorzko, gdy tylko jest to możliwe. "
-"Wszelkie obrażenia zadane homunkulusowi są również zadawane tobie. 3 OCHR, 4 SIŁ, 13 ZRE, 5 WOL"
+"Miniaturowa gliniana replika ciebie, która wykonuje każde twoje "
+"polecenie. Nienawidzi tego, że została magicznie zniewolona i narzeka "
+"gorzko, gdy tylko jest to możliwe. Wszelkie obrażenia zadane "
+"homunkulusowi są również zadawane tobie. 3 OCHR, 4 SIŁ, 13 ZRE, 5 WOL"
 
 #: app/static/json/backgrounds/barber-surgeon.json:4
 msgid ""
@@ -6143,10 +6160,6 @@ msgstr ""
 
 #: app/static/json/backgrounds/rill-runner.json:96
 msgid "Feather Quill"
-msgstr ""
-
-#: app/static/json/backgrounds/rill-runner.json:97
-msgid "1 use"
 msgstr ""
 
 #: app/static/json/backgrounds/rill-runner.json:99
@@ -10142,7 +10155,6 @@ msgstr ""
 #: app/static/json/party_events/forests.json:70
 msgid "Stable"
 msgstr ""
-
 
 #: app/static/json/party_events/dungeons.json:308
 msgid "Study"
@@ -19088,4 +19100,7 @@ msgid ""
 "Quiet: The party finds food, treasure, or other useful resources. The "
 "Warden can instead choose to reveal the primary feature of the area."
 msgstr ""
+
+#~ msgid "Hexenbane"
+#~ msgstr "Łowca czarownic"
 

@@ -1,0 +1,32 @@
+<div>
+    <div class="create-field-dice-container" hx-post="/charcreo/select-background" hx-trigger="change"
+        hx-target="#background-field-container">
+        <div class="select">{{ form.background(class="input bold create-select-field") }}</div>
+        <button class="roll button dice-button" data-target="background" type="button"
+            hx-post="/charcreo/roll-background" hx-target="#background-field-container">
+            <i class="fa-solid fa-dice dice"></i>
+        </button>
+    </div>
+    <div class="create-text-field-container">
+        {% if background %}
+        {{ form.custom_background(class="inactive", id="custom-background-field") }}
+        {% else %}
+        {{ form.custom_background(id="custom-background-field") }}
+        {% endif %}
+    </div>
+    {% if form.custom_background.errors %}
+    <div class="message is-danger">
+        <ul class="message-header rounded">
+            {% for error in form.custom_background.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if background %}
+    <p class="block text-border create-top-text-field" id="create-background-description" style="min-height: 100px">
+        {{background['background_description'] | tr}}
+    </p>
+    {% endif %}
+</div>
