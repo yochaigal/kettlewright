@@ -1,53 +1,150 @@
-<div class="background-fields-container" id="background-field-container">
-    <div class="create-field-dice-container" hx-post="/charcreo/select-background" hx-trigger="change"
-        hx-target="#background-name-container">
-        <div class="select">{{ form.background(class="input bold create-select-field") }}</div>
-        <button class="roll button dice-button" data-target="background" type="button"
-            hx-post="/charcreo/roll-background" hx-target="#background-name-container">
-            <i class="fa-solid fa-dice dice"></i>
-        </button>
-    </div>
-    <div class="create-text-field-container">
-        {% if background %}
-        {{ form.custom_background(class="inactive", id="custom-background-field") }}
-        {% else %}
-        {{ form.custom_background(id="custom-background-field") }}
-        {% endif %}
-    </div>
-    {% if form.custom_background.errors %}
-    <div class="message is-danger">
-        <ul class="message-header rounded">
-            {% for error in form.custom_background.errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
-
-    {% if background %}
-    <p class="block text-border create-top-text-field" id="create-background-description" style="min-height: 100px">
-        {{background['background_description'] | tr}}
-    </p>
-    {% endif %}
-</div>
-
-<!-- names -->
-<div class="" id="name-field-container">
-    <div class="create-field-dice-container" id="name-select-roll-container" hx-post="/charcreo/select-name"
-        hx-trigger="change" hx-target="#background-name-container">
-        <div class="select">
-            {{ form.name(class="create-select-field", id="name-field", required=True) }}
+<div class="background-fields-and-image-container" id="background-name-container">
+    <!-- BACKGROUNDS -->
+    <div class="background-fields-container" id="background-field-container">
+        <div class="create-field-dice-container" hx-post="/charcreo/select-background" hx-trigger="change"
+            hx-target="#fields-container">
+            <div class="select">{{ form.background(class="input bold create-select-field") }}</div>
+            <button class="roll button dice-button" type="button" hx-post="/charcreo/roll-background"
+                hx-target="#fields-container">
+                <i class="fa-solid fa-dice dice"></i>
+            </button>
         </div>
-        <button class="roll button dice-button" data-target="name" type="button" hx-post="/charcreo/roll-name"
-            hx-target="#background-name-container">
-            <i class="fa-solid fa-dice dice"></i>
-        </button>
-    </div>
-    <div class="create-text-field-container">
-        {% if form.name.data and form.name.data != "" and form.name.data != "Custom" %}
-        {{ form.custom_name(class="inactive", id="custom-name-field") }}
-        {% else %}
-        {{ form.custom_name(id="custom-name-field") }}
+        <div class="create-text-field-container">
+            {% if custom_fields['background'] %}
+            {{ form.custom_background(class="inactive", id="custom-background-field") }}
+            {% else %}
+            {{ form.custom_background(id="custom-background-field") }}
+            {% endif %}
+        </div>
+        {% if form.custom_background.errors %}
+        <div class="message is-danger">
+            <ul class="message-header rounded">
+                {% for error in form.custom_background.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if custom_fields['background'] %}
+        <p class="block text-border create-top-text-field" id="create-background-description" style="min-height: 100px">
+            {{custom_fields['background']['background_description'] | tr}}
+        </p>
         {% endif %}
     </div>
+
+    <!-- NAMES -->
+    <div class="" id="name-field-container">
+        <div class="create-field-dice-container" id="name-select-roll-container" hx-post="/charcreo/select-name"
+            hx-trigger="change" hx-target="#fields-container">
+            <div class="select">
+                {{ form.name(class="create-select-field", id="name-field", required=True) }}
+            </div>
+            <button class="roll button dice-button" type="button" hx-post="/charcreo/roll-name"
+                hx-target="#fields-container">
+                <i class="fa-solid fa-dice dice"></i>
+            </button>
+        </div>
+        <div class="create-text-field-container">
+            {% if form.name.data and form.name.data != "" and form.name.data != "Custom" %}
+            {{ form.custom_name(class="inactive", id="custom-name-field") }}
+            {% else %}
+            {{ form.custom_name(id="custom-name-field") }}
+            {% endif %}
+        </div>
+    </div>
 </div>
+
+<!-- NAME ERRORS -->
+{% if form.custom_name.errors %}
+<div class="message is-danger">
+    <ul class="message-header rounded">
+        {% for error in form.custom_name.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+
+<!-- TABLES -->
+{% if custom_fields['background'] %}
+<div id="background-tables-container">
+    <!-- TABLE 1 -->
+    <div class="background-table-container">
+        <p class="table-question" id="table1-question">
+            {{custom_fields['background']['table1']['question']}}
+        </p>
+        <div class="table-border">
+            <div class="create-field-dice-container" id="background-table1-container">
+                <div class="select">
+                    <select class="create-select-field" name="background_table1_select" required
+                        hx-post="/charcreo/bkg-table-select" hx-trigger="change" hx-target="#fields-container">
+                        <option value="" disabled {%if not custom_fields['background_table1_select']%} selected
+                            {%endif%}>{{_('Table')}} {{_('(d6)')}}...</option>
+                        {% for opt in custom_fields['background']['table1']['options'] %}
+                        <option value="{{opt['description']}}" {% if
+                            custom_fields['background_table1_select']==opt['description'] %} selected {%endif%}>
+                            {{ opt['description'] | tr | trunc36}}...
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button class="roll button dice-button" type="button" hx-post="/charcreo/bkg-table-roll/1"
+                    hx-target="#fields-container">
+                    <i class="fa-solid fa-dice dice"></i>
+                </button>
+            </div>
+            <div class="columns" style="margin-top: 2px">
+                <div class="column">
+                    <p class="text-border create-top-text-field" id="background-table1-description"
+                        style="min-height: 120px">
+                        {% if custom_fields['background_table1_select'] %}
+                        {{ custom_fields['background_table1_select'] }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <button class="button hidden" id="show-gear-table-1" type="button"> {{_('Gear Table 1')}} </button>
+    </div>
+    <!-- TABLE 2 -->
+    <div class="background-table-container">
+        <p class="table-question" id="table2-question">
+            {{custom_fields['background']['table2']['question']}}
+        </p>
+        <div class="table-border">
+            <div class="create-field-dice-container">
+                <div class="select">
+                    <select class="create-select-field" name="background_table2_select" required
+                        hx-post="/charcreo/bkg-table-select" hx-trigger="change" hx-target="#fields-container">
+                        <option value="" disabled {%if not custom_fields['background_table2_select']%} selected
+                            {%endif%}>{{_('Table')}} {{_('(d6)')}}...</option>
+                        {% for opt in custom_fields['background']['table2']['options'] %}
+                        <option value="{{opt['description']}}" {% if
+                            custom_fields['background_table2_select']==opt['description']%} selected {%endif%}>
+                            {{ opt['description'] | tr | trunc36}}...
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button class="roll button dice-button" type="button" hx-post="/charcreo/bkg-table-roll/2"
+                    hx-target="#fields-container">
+                    <i class="fa-solid fa-dice dice"></i>
+                </button>
+            </div>
+            <div class="columns" style="margin-top: 2px">
+                <div class="column">
+                    <p class="text-border create-top-text-field" id="background-table2-description"
+                        style="min-height: 120px">
+                        {% if custom_fields['background_table2_select'] %}
+                        {{ custom_fields['background_table2_select'] }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <button class="button hidden" id="show-gear-table-2" type="button"> {{_('Gear Table 2')}} </button>
+    </div>
+</div>
+{% endif %}

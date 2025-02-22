@@ -255,7 +255,9 @@ def new_character():
     if ps != None and ps != "":
         portrait_src = ps
     custom_image = request.args.get("custom_image")
-    return render_template('main/character_create.html', portrait_src = portrait_src, custom_image=custom_image, form=form, background=None)
+    custom_fields = {}
+    custom_fields['background'] = None
+    return render_template('main/character_create.html', portrait_src = portrait_src, custom_image=custom_image, form=form, custom_fields=custom_fields)
                         #    form=form, background_data=json.dumps(background_data), traits_data=json.dumps(traits_data),
                         #    bonds_data=json.dumps(bonds_data), omens_data=json.dumps(omens_data), marketplace_data=json.dumps(marketplace_data), images=image_files)
 

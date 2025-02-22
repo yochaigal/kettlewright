@@ -40,7 +40,17 @@ def update_name_choices(form):
     if background != None:
         form.name.choices = rebuild_names(background['names'])
     else:
-        form.name.choices = rebuild_all_names() 
+        form.name.choices = rebuild_all_names()
+        
+def get_custom_fields(data):
+    result = {}
+    names = ["background_table1_select", "background_table2_select"]
+    for n in names:
+        if n in data:
+            result[n] = data[n]
+        else:
+            result[n] = None            
+    return result
  
 
 # Route: edit new character portrait
@@ -93,8 +103,12 @@ def charcreo_select_background():
         form.name.choices = rebuild_names(background['names'])
         form.name.process_data('')
     else:
-        form.name.choices = rebuild_all_names()    
-    return render_template('partial/charcreo/fields.html', form=form, background=background)
+        form.name.choices = rebuild_all_names() 
+    custom_fields = get_custom_fields(request.form)
+    custom_fields["background_table1_select"] = None
+    custom_fields["background_table2_select"] = None
+    custom_fields['background'] = background
+    return render_template('partial/charcreo/fields.html', form=form,custom_fields=custom_fields)
     
 # route: roll background
 @character_create.route('/charcreo/roll-background', methods=['POST'])
@@ -106,14 +120,20 @@ def charcreo_roll_background():
     form.custom_background.process_data("")
     form.name.choices = rebuild_names(background['names'])
     form.name.process_data('')
-    return render_template('partial/charcreo/fields.html', form=form, background=background)
+    custom_fields = get_custom_fields(request.form)
+    custom_fields["background_table1_select"] = None
+    custom_fields["background_table2_select"] = None
+    custom_fields['background'] = background
+    return render_template('partial/charcreo/fields.html', form=form, custom_fields=custom_fields)
     
 # route: select name
 @character_create.route('/charcreo/select-name', methods=['POST'])
 def charcreo_select_name():
     form = CharacterForm(formdata=request.form)
-    update_name_choices(form)        
-    return render_template('partial/charcreo/fields.html', form=form, background=get_background(form))    
+    update_name_choices(form)
+    custom_fields = get_custom_fields(request.form)
+    custom_fields['background'] = get_background(form)
+    return render_template('partial/charcreo/fields.html', form=form,custom_fields=custom_fields)    
 
 # route: roll name
 @character_create.route('/charcreo/roll-name', methods=['POST'])
@@ -123,4 +143,36 @@ def charcreo_roll_name():
     lst = form.name.choices[2:]     
     name,_ = roll_list(lst)            
     form.name.process_data(name)
-    return render_template('partial/charcreo/fields.html', form=form, background=get_background(form))    
+    custom_fields=get_custom_fields(request.form)
+    custom_fields['background']=get_background(form)
+    return render_template('partial/charcreo/fields.html', form=form, custom_fields=custom_fields)    
+
+# route: select background table
+@character_create.route('/charcreo/bkg-table-select', methods=['POST'])
+def charcreo_bkg_table_select():
+    data = request.form
+    form = CharacterForm(formdata=data)
+    update_name_choices(form)
+    custom_fields=get_custom_fields(data)
+    custom_fields['background']=get_background(form)
+    return render_template('partial/charcreo/fields.html', form=form,custom_fields=custom_fields )
+
+
+# route: roll background table
+@character_create.route('/charcreo/bkg-table-roll/<nr>', methods=['POST'])
+def charcreo_bkg_table_roll(nr):
+    data = request.form
+    form = CharacterForm(formdata=data)
+    update_name_choices(form)
+    custom_fields=get_custom_fields(data)
+    background=get_background(form)
+    if nr == "1":
+        lst = background['table1']['options']
+        field="background_table1_select"        
+    else:
+        lst = background['table2']['options']
+        field="background_table2_select"
+    opt=roll_list(lst)
+    custom_fields[field]=opt['description']
+    custom_fields['background']=get_background(form)
+    return render_template('partial/charcreo/fields.html', form=form, custom_fields=custom_fields )
