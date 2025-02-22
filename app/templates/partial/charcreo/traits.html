@@ -1,0 +1,77 @@
+<div class="create-trait-container">
+    <select class="trait-select" name="Physique" required hx-post="/charcreo/trait-select/Physique" hx-trigger="change"
+        hx-target="#traits-container">
+        <option value="___">{{_('Physique')}} ({{_('d10')}})...</option>
+        {% for t in custom_fields['traits']['Physique'] %}
+        <option value="{{t}}" {% if custom_fields['Physique']==t %} selected {%endif%}>{{t | tr}}</option>
+        {% endfor %}
+    </select>
+</div>
+<div class="create-trait-container">
+    <select class="trait-select" name="Skin" required hx-post="/charcreo/trait-select/Skin" hx-trigger="change"
+        hx-target="#traits-container">
+        <option value="___">{{_('Skin')}} ({{_('d10')}})...</option>
+        {% for t in custom_fields['traits']['Skin'] %}
+        <option value="{{t}}" {% if custom_fields['Skin']==t %} selected {%endif%}>{{t | tr}}</option>
+        {% endfor %}
+    </select>
+</div>
+<div class="create-trait-container">
+    <select class="trait-select" name="Hair" required hx-post="/charcreo/trait-select/Hair" hx-trigger="change"
+        hx-target="#traits-container">
+        <option value="___">{{_('Hair')}} ({{_('d10')}})...</option>
+        {% for t in custom_fields['traits']['Hair'] %}
+        <option value="{{t}}" {% if custom_fields['Hair']==t %} selected {%endif%}>{{t | tr}}</option>
+        {% endfor %}
+    </select>
+</div>
+<div class="create-trait-container">
+    <select class="trait-select" name="Face" required hx-post="/charcreo/trait-select/Face" hx-trigger="change"
+        hx-target="#traits-container">
+        <option value="___">{{_('Face')}} ({{_('d10')}})...</option>
+        {% for t in custom_fields['traits']['Face'] %}
+        <option value="{{t}}" {% if custom_fields['Face']==t %} selected {%endif%}>{{t | tr}}</option>
+        {% endfor %}
+    </select>
+</div>
+<div class="create-trait-container">
+    <select class="trait-select" name="Speech" required hx-post="/charcreo/trait-select/Speech" hx-trigger="change"
+        hx-target="#traits-container">
+        <option value="___">{{_('Speech')}} ({{_('d10')}})...</option>
+        {% for t in custom_fields['traits']['Speech'] %}
+        <option value="{{t}}" {% if custom_fields['Speech']==t %} selected {%endif%}>{{t | tr}}</option>
+        {% endfor %}
+    </select>
+</div>
+<div class="create-trait-container">
+    <select class="trait-select" name="Clothing" required hx-post="/charcreo/trait-select/Clothing" hx-trigger="change"
+        hx-target="#traits-container">
+        <option value="___">{{_('Clothing')}} ({{_('d10')}})...</option>
+        {% for t in custom_fields['traits']['Clothing'] %}
+        <option value="{{t}}" {% if custom_fields['Clothing']==t %} selected {%endif%}>{{t | tr}}</option>
+        {% endfor %}
+    </select>
+</div>
+<div class="create-trait-container">
+    <select class="trait-select" name="Virtue" required hx-post="/charcreo/trait-select/Virtue" hx-trigger="change"
+        hx-target="#traits-container">
+        <option value="___">{{_('Virtue')}} ({{_('d10')}})...</option>
+        {% for t in custom_fields['traits']['Virtue'] %}
+        <option value="{{t}}" {% if custom_fields['Virtue']==t %} selected {%endif%}>{{t | tr}}</option>
+        {% endfor %}
+    </select>
+</div>
+<div class="create-trait-container">
+    <select class="trait-select" name="Vice" required hx-post="/charcreo/trait-select/Vice" hx-trigger="change"
+        hx-target="#traits-container">
+        <option value="___">{{_('Vice')}} ({{_('d10')}})...</option>
+        {% for t in custom_fields['traits']['Vice'] %}
+        <option value="{{t}}" {% if custom_fields['Vice']==t %} selected {%endif%}>{{t | tr}}</option>
+        {% endfor %}
+    </select>
+</div>
+<p class="text-border" id="traits-description" style="min-height: 100px; grid-column: 1/5">
+    {% if form.traits.data %}
+    {{form.traits.data}}
+    {% endif %}
+</p>

@@ -33,10 +33,26 @@
 
         <div class="divider"></div>
 
+        <!-- ATTRIBUTES -->
         <div class="create-attributes-container">
             <h2 class="title script-font">{{_('Attributes')}}</h2>
             <div id="attrs-container">
                 {% include "partial/charcreo/attrs.html" %}
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="create-traits-outer-container">
+            <div class="justify-left">
+                <h2 class="title script-font">{{_('Traits')}}</h2>
+                <button class="roll button dice-button" type="button" hx-post="/charcreo/trait-roll"
+                    hx-target="#traits-container">
+                    <i class="fa-solid fa-dice dice"></i>
+                </button>
+            </div>
+            <div id="traits-container" class="create-traits-container">
+                {% include "partial/charcreo/traits.html" %}
             </div>
         </div>
 

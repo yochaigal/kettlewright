@@ -51,8 +51,13 @@ class TraitValue:
         self.name = name
         self.value = value
         
+        
+# generate traits text, table contains: Physique, Skin, Hair, Face, Speech, Clothing, Virtue, Vice        
 def traits_text(age, traits):
-    return _('You have a')+' '+_(traits[0].value)+' '+_(traits[0].name)+', '+_(traits[1].value)+' '+_(traits[1].name)+', '+_('and')+' '+_(traits[2].value)+' '+_(traits[2].name)+'. '+_('Your')+' '+_(traits[3].name)+' '+_('is')+' '+_(traits[3].value)+', '+_('your')+' '+ _(traits[4].name)+' '+_(traits[4].value)+'. '+_('You have')+ ' '+_(traits[5].value)+' '+_(traits[5].name)+'. '+_('You are')+' '+    _(traits[6].value)+' ' +_('and')+' '+_(traits[7].value)+'. '+_('Your age')+': '+str(age)+' .'
+    txt = _('You have a')+' '+_(traits[0].value)+' '+_(traits[0].name)+', '+_(traits[1].value)+' '+_(traits[1].name)+', '+_('and')+' '+_(traits[2].value)+' '+_(traits[2].name)+'. '+_('Your')+' '+_(traits[3].name)+' '+_('is')+' '+_(traits[3].value)+', '+_('your')+' '+ _(traits[4].name)+' '+_(traits[4].value)+'. '+_('You have')+ ' '+_(traits[5].value)+' '+_(traits[5].name)+'. '+_('You are')+' '+    _(traits[6].value)+' ' +_('and')+' '+_(traits[7].value)+'. '
+    if age > 0:
+        txt += _('Your age')+': '+str(age)+' .'
+    return txt
     
         
 class TableValue:
