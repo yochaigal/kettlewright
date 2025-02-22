@@ -176,3 +176,87 @@ def charcreo_bkg_table_roll(nr):
     custom_fields[field]=opt['description']
     custom_fields['background']=get_background(form)
     return render_template('partial/charcreo/fields.html', form=form, custom_fields=custom_fields )
+
+# route: roll attribute
+@character_create.route('/charcreo/attr-roll/<atype>', methods=['POST'])
+def charcreo_attr_roll(atype):
+    data = request.form
+    form = CharacterForm(formdata=data)
+    update_name_choices(form)
+    custom_fields=get_custom_fields(data)
+    custom_fields['background']=get_background(form)
+    match atype:
+        case "str":
+            _, total = roll_multi_dice(6,3)
+            # hack, because flask cannot change numeric field
+            form.strength_max.data = total
+            form.strength_max.raw_data = None
+        case "dex":
+            _, total = roll_multi_dice(6,3)
+            form.dexterity_max.data = total
+            form.dexterity_max.raw_data = None
+        case "wil":
+            _, total = roll_multi_dice(6,3)
+            form.willpower_max.data = total
+            form.willpower_max.raw_data = None            
+        case "hp":
+            _, total = roll_multi_dice(6,1)
+            form.hp_max.data = total
+            form.hp_max.raw_data = None                    
+    return render_template('partial/charcreo/attrs.html', form=form,custom_fields=custom_fields )
+
+# route: swap attributes
+@character_create.route('/charcreo/attr-swap', methods=['POST'])
+def charcreo_swap_attr():
+    data = request.form
+    form = CharacterForm(formdata=data)
+    update_name_choices(form)
+    custom_fields=get_custom_fields(data)
+    custom_fields['background']=get_background(form)
+    attr1 = data['swap_attribute_1']
+    attr2 = data['swap_attribute_2']
+    if attr1 != "" and attr2 != "":
+        match attr1:
+            case "str":
+                match attr2:
+                    case "dex":
+                        v = form.dexterity_max.data
+                        form.dexterity_max.data = form.strength_max.data
+                        form.strength_max.data = v
+                        form.strength_max.raw_data = None
+                        form.dexterity_max.raw_data = None
+                    case "wil":
+                        v = form.willpower_max.data
+                        form.willpower_max.data = form.strength_max.data
+                        form.strength_max.data = v
+                        form.strength_max.raw_data = None
+                        form.willpower_max.raw_data = None
+            case "dex":
+                match attr2:
+                    case "str":
+                        v = form.dexterity_max.data
+                        form.dexterity_max.data = form.strength_max.data
+                        form.strength_max.data = v
+                        form.strength_max.raw_data = None
+                        form.dexterity_max.raw_data = None
+                    case "wil":
+                        v = form.willpower_max.data
+                        form.willpower_max.data = form.dexterity_max.data
+                        form.dexterity_max.data = v
+                        form.willpower_max.raw_data = None
+                        form.dexterity_max.raw_data = None
+            case "wil":
+                match attr2:
+                    case "str":
+                        v = form.strength_max.data
+                        form.strength_max.data = form.willpower_max.data
+                        form.willpower_max.data = v
+                        form.strength_max.raw_data = None
+                        form.willpower_max.raw_data = None
+                    case "dex":
+                        v = form.willpower_max.data
+                        form.willpower_max.data = form.dexterity_max.data
+                        form.dexterity_max.data = v            
+                        form.willpower_max.raw_data = None
+                        form.dexterity_max.raw_data = None
+    return render_template('partial/charcreo/attrs.html', form=form,custom_fields=custom_fields )

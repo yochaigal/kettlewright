@@ -145,7 +145,7 @@ class CharacterForm(FlaskForm):
     #     else:
     #         field.data = ''
     strength = IntegerField(_l('Strength'))
-    strength_max = IntegerField(_l('Strength Max'), validators=[InputRequired()])
+    strength_max = IntegerField(_l('Strength Max'), validators=[DataRequired()])
     dexterity = IntegerField(_l('Dexterity'))
     dexterity_max = IntegerField(_l('Dexterity Max'), validators=[InputRequired()])
     willpower = IntegerField(_l('Willpower'))

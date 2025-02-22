@@ -1,0 +1,70 @@
+<div class="create-str-dex-wil-container">
+    <div class="create-attribute-container">
+        <span class="subtitle attribute-font">{{_('STR')}}</span>
+        <span class="attribute-roll-font">{{_('(3d6)')}}</span>
+        <span class="number-field">
+            {{ form.strength_max(class='input number-input create-attribute-field center-input', size=1, type='number',
+            id="strength-max-field") }}
+        </span>
+        <button class="roll button dice-button" type="button" hx-post="/charcreo/attr-roll/str"
+            hx-target="#attrs-container">
+            <i class="fa-solid fa-dice dice"></i>
+        </button>
+    </div>
+    <div class="create-attribute-container">
+        <span class="subtitle attribute-font">{{_('DEX')}}</span>
+        <span class="attribute-roll-font">{{_('(3d6)')}}</span>
+
+        <span class="number-field">
+            {{ form.dexterity_max(class='input number-input create-attribute-field center-input', size=1, type='number',
+            id="dexterity-max-field") }}
+        </span>
+        <button class="roll button dice-button" type="button" hx-post="/charcreo/attr-roll/dex"
+            hx-target="#attrs-container">
+            <i class="fa-solid fa-dice dice"></i>
+        </button>
+    </div>
+    <div class="create-attribute-container">
+        <span class="subtitle attribute-font">{{_('WIL')}}</span>
+        <span class="attribute-roll-font">{{_('(3d6)')}}</span>
+        <span class="number-field">
+            {{ form.willpower_max(class='input number-input create-attribute-field center-input', size=1, type='number',
+            id="willpower-max-field") }}
+        </span>
+        <button class="roll button dice-button" type="button" hx-post="/charcreo/attr-roll/wil"
+            hx-target="#attrs-container">
+            <i class="fa-solid fa-dice dice"></i>
+        </button>
+    </div>
+</div>
+<div id="swap-container">
+    <select class="" name="swap_attribute_1">
+        <option>{{_('Swap once...')}}</option>
+        <option value="str">{{_('Strength')}}</option>
+        <option value="dex">{{_('Dexterity')}}</option>
+        <option value="wil">{{_('Willpower')}}</option>
+    </select>
+
+    <button class="button" type="button" id="swap-button" hx-post="/charcreo/attr-swap" hx-target="#attrs-container">
+        <i class="fa-solid fa-right-left icon-in-button"></i>
+    </button>
+
+    <select class="" name="swap_attribute_2">
+        <option>{{_('Swap once...')}}</option>
+        <option value="str">{{_('Strength')}}</option>
+        <option value="dex">{{_('Dexterity')}}</option>
+        <option value="wil">{{_('Willpower')}}</option>
+    </select>
+</div>
+
+<div class="create-attribute-container" id="create-hp-container">
+    <span class="subtitle hp-font">{{_('HP')}}</span>
+    <span class="attribute-roll-font">{{_('(d6)')}}</span>
+    <span class="column number-field">
+        {{ form.hp_max(class='input number-input create-attribute-field center-input', size=1, type='number',
+        id="hp-max-field") }}
+    </span>
+    <button class="roll button dice-button" type="button" hx-post="/charcreo/attr-roll/hp" hx-target="#attrs-container">
+        <i class="fa-solid fa-dice dice"></i>
+    </button>
+</div>

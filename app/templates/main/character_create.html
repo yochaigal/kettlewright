@@ -30,6 +30,17 @@
         <div class="create-background-name-container" id="fields-container">
             {% include "partial/charcreo/fields.html" %}
         </div>
+
+        <div class="divider"></div>
+
+        <div class="create-attributes-container">
+            <h2 class="title script-font">{{_('Attributes')}}</h2>
+            <div id="attrs-container">
+                {% include "partial/charcreo/attrs.html" %}
+            </div>
+        </div>
+
+
     </form>
 </div>
 {% endblock %}
