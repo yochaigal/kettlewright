@@ -2356,6 +2356,11 @@ msgstr "Grzybiarz"
 msgid "Greenwise"
 msgstr "Leśnik"
 
+#: app/static/json/backgrounds/hexenbane.json:1
+msgid "Hexenbane"
+msgstr "Łowca czarownic"
+
+
 #: app/static/json/backgrounds/half-witch.json:1
 msgid "Half Witch"
 msgstr "Półwiedźma"
@@ -19101,6 +19106,4 @@ msgid ""
 "Warden can instead choose to reveal the primary feature of the area."
 msgstr ""
 
-#~ msgid "Hexenbane"
-#~ msgstr "Łowca czarownic"
 

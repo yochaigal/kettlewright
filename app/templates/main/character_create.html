@@ -28,21 +28,8 @@
         </div>
         <!-- Fields -->
         <div class="create-background-name-container">
-            <div class="background-fields-and-image-container">
-                <div class="background-fields-container" id="background-field-container">
-                    {% include "partial/charcreo/background.html" %}
-                </div>
-                <div class="">
-                    <div class="create-field-dice-container" id="name-select-roll-container">
-                        <div class="select"> {{ form.name(class="create-select-field", id="name-field", required=True)
-                            }} </div>
-                        <button class="roll button dice-button" data-target="name" type="button">
-                            <i class="fa-solid fa-dice dice"></i>
-                        </button>
-                    </div>
-                    <div class="create-text-field-container">
-                        {{ form.custom_name(class="inactive", id="custom-name-field") }}</div>
-                </div>
+            <div class="background-fields-and-image-container" id="background-name-container">
+                {% include "partial/charcreo/fields.html" %}
             </div>
             {% if form.custom_name.errors %}
             <div class="message is-danger">

@@ -1,3 +1,5 @@
+
+
 # Character creation blueprint
 
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response
@@ -8,9 +10,38 @@ from app.main import sanitize_data
 from app.lib import *
 from unidecode import unidecode
 from flask_babel import _
+from flask_babel import lazy_gettext as _l
 import urllib.parse
 
 character_create = Blueprint('character_create', __name__)
+
+def rebuild_names(names):
+    result = [('', _l('Name (d10)...')), ('Custom', _l('** Custom **'))]
+    for name in names:
+        result.append((name, name))
+    return result
+
+def rebuild_all_names():
+    backgrounds = load_backgrounds()
+    result = [('', _l('Name (d10)...')), ('Custom', _l('** Custom **'))]
+    for bkg in backgrounds:
+        for name in backgrounds[bkg]['names']:
+            result.append((name, name))
+    return result
+
+def get_background(form):
+    bkgs = load_backgrounds()
+    if form.background.data != '' and form.background.data != 'Custom':
+        return bkgs[form.background.data]
+    return None
+
+def update_name_choices(form):
+    background=get_background(form)
+    if background != None:
+        form.name.choices = rebuild_names(background['names'])
+    else:
+        form.name.choices = rebuild_all_names() 
+ 
 
 # Route: edit new character portrait
 @character_create.route('/charcreo/portrait', methods=['GET'])
@@ -52,26 +83,44 @@ def charcreo_portrait_save():
     return render_template('partial/charcreo/portrait_img.html', portrait_src = portrait_src, custom_image=custom_image)        
 
 
-# Route - select background
+# route: select background
 @character_create.route('/charcreo/select-background', methods=['POST'])
 def charcreo_select_background():
-    data = request.form
-    form = CharacterForm()
-    bkgs = load_backgrounds()
-    if data['background'] != 'Custom':
-        background = bkgs[data['background']]
+    form = CharacterForm(formdata=request.form)
+    background = get_background(form)
+    if background != None:
         form.custom_background.process_data("")
+        form.name.choices = rebuild_names(background['names'])
+        form.name.process_data('')
     else:
-        background=None
-    return render_template('partial/charcreo/background.html', form=form, background=background)
+        form.name.choices = rebuild_all_names()    
+    return render_template('partial/charcreo/fields.html', form=form, background=background)
     
-# Route - roll background
+# route: roll background
 @character_create.route('/charcreo/roll-background', methods=['POST'])
 def charcreo_roll_background():
-    form = CharacterForm()
+    form = CharacterForm(formdata=request.form)
     bkgs = load_backgrounds()
-    name, background = roll_dict(bkgs)
-    form.background.process_data(name)
+    key, background = roll_dict(bkgs)
+    form.background.process_data(key)
     form.custom_background.process_data("")
-    return render_template('partial/charcreo/background.html', form=form, background=background)
+    form.name.choices = rebuild_names(background['names'])
+    form.name.process_data('')
+    return render_template('partial/charcreo/fields.html', form=form, background=background)
     
+# route: select name
+@character_create.route('/charcreo/select-name', methods=['POST'])
+def charcreo_select_name():
+    form = CharacterForm(formdata=request.form)
+    update_name_choices(form)        
+    return render_template('partial/charcreo/fields.html', form=form, background=get_background(form))    
+
+# route: roll name
+@character_create.route('/charcreo/roll-name', methods=['POST'])
+def charcreo_roll_name():
+    form = CharacterForm(formdata=request.form)
+    update_name_choices(form)
+    lst = form.name.choices[2:]     
+    name,_ = roll_list(lst)            
+    form.name.process_data(name)
+    return render_template('partial/charcreo/fields.html', form=form, background=get_background(form))    

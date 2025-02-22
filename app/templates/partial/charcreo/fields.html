@@ -1,9 +1,9 @@
-<div>
+<div class="background-fields-container" id="background-field-container">
     <div class="create-field-dice-container" hx-post="/charcreo/select-background" hx-trigger="change"
-        hx-target="#background-field-container">
+        hx-target="#background-name-container">
         <div class="select">{{ form.background(class="input bold create-select-field") }}</div>
         <button class="roll button dice-button" data-target="background" type="button"
-            hx-post="/charcreo/roll-background" hx-target="#background-field-container">
+            hx-post="/charcreo/roll-background" hx-target="#background-name-container">
             <i class="fa-solid fa-dice dice"></i>
         </button>
     </div>
@@ -29,4 +29,25 @@
         {{background['background_description'] | tr}}
     </p>
     {% endif %}
+</div>
+
+<!-- names -->
+<div class="" id="name-field-container">
+    <div class="create-field-dice-container" id="name-select-roll-container" hx-post="/charcreo/select-name"
+        hx-trigger="change" hx-target="#background-name-container">
+        <div class="select">
+            {{ form.name(class="create-select-field", id="name-field", required=True) }}
+        </div>
+        <button class="roll button dice-button" data-target="name" type="button" hx-post="/charcreo/roll-name"
+            hx-target="#background-name-container">
+            <i class="fa-solid fa-dice dice"></i>
+        </button>
+    </div>
+    <div class="create-text-field-container">
+        {% if form.name.data and form.name.data != "" and form.name.data != "Custom" %}
+        {{ form.custom_name(class="inactive", id="custom-name-field") }}
+        {% else %}
+        {{ form.custom_name(id="custom-name-field") }}
+        {% endif %}
+    </div>
 </div>

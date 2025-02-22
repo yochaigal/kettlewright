@@ -2166,8 +2166,8 @@ msgid "Half Witch"
 msgstr ""
 
 #: app/static/json/backgrounds/hexenbane.json:1
-msgid ""
-msgstr "Łowca czarownic"
+msgid "Hexenbane"
+msgstr ""
 
 #: app/static/json/backgrounds/jongleur.json:1
 msgid "Jongleur"

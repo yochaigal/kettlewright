@@ -112,8 +112,8 @@ def load_data_from_json(file_path):
         # Adding background to choices
         background_choices.append((background, _l(background)))
 
-    background_choices.append(('Custom', _l('** Custom **') ))
-    names_choices.append(('Custom', _l('** Custom **')))
+    background_choices.insert(1, ('Custom', _l('** Custom **') ))
+    names_choices.insert(1, ('Custom', _l('** Custom **')))
     return names_choices, background_choices
 
 
