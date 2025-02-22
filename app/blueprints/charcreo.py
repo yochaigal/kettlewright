@@ -44,7 +44,7 @@ def update_name_choices(form):
         
 def get_custom_fields(data):
     result = {}
-    names = ["background_table1_select", "background_table2_select",
+    names = ["background_table1_select", "background_table2_select", "age","bonds_selected","omens_selected", 
              "Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice"]
     for n in names:
         if n in data:
@@ -65,6 +65,10 @@ def process_form_data(data):
         form.name.choices = rebuild_all_names()
     custom_fields['background'] = background
     custom_fields['traits'] = load_traits()
+    custom_fields['bonds'] = load_bonds()
+    custom_fields['omens'] = load_omens()
+    custom_fields['bonds_selected'] = data['bonds_select']
+    custom_fields['omens_selected'] = data['omens_select']
     
     return form, custom_fields, background
     
@@ -273,3 +277,33 @@ def charcreo_trait_roll():
         tts.append(TraitValue(n, custom_fields[n]))
     form.traits.process_data(traits_text(0, tts))
     return render_template('partial/charcreo/traits.html', form=form,custom_fields=custom_fields )
+
+# route: age roll
+@character_create.route('/charcreo/age-roll', methods=['POST'])
+def charcreo_age_roll():
+    form, custom_fields, background = process_form_data(request.form)
+    _, total = roll_multi_dice(20,2)
+    custom_fields['age'] = total + 10
+    return render_template('partial/charcreo/abo.html', form=form,custom_fields=custom_fields )
+
+# route: select bond or omen
+@character_create.route('/charcreo/bonds-omen-select', methods=['POST'])
+def charcreo_bonds_select():
+    form, custom_fields, background = process_form_data(request.form)
+    return render_template('partial/charcreo/abo.html', form=form,custom_fields=custom_fields )
+
+# route: bond roll
+@character_create.route('/charcreo/bond-roll', methods=['POST'])
+def charcreo_bond_roll():
+    form, custom_fields, background = process_form_data(request.form)
+    b = roll_list(load_bonds())
+    custom_fields['bonds_selected'] = b['description']
+    return render_template('partial/charcreo/abo.html', form=form,custom_fields=custom_fields )
+
+# route: omen roll
+@character_create.route('/charcreo/omen-roll', methods=['POST'])
+def charcreo_omen_roll():
+    form, custom_fields, background = process_form_data(request.form)
+    o = roll_list(load_omens())
+    custom_fields['omens_selected'] = o
+    return render_template('partial/charcreo/abo.html', form=form,custom_fields=custom_fields )

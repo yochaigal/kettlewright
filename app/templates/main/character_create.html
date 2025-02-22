@@ -43,6 +43,7 @@
 
         <div class="divider"></div>
 
+        <!-- TRAITS -->
         <div class="create-traits-outer-container">
             <div class="justify-left">
                 <h2 class="title script-font">{{_('Traits')}}</h2>
@@ -54,6 +55,13 @@
             <div id="traits-container" class="create-traits-container">
                 {% include "partial/charcreo/traits.html" %}
             </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- AGE, BONDS, OMENS -->
+        <div class="create-bonds-age-omens-outer-container" id="abo-container">
+            {% include "partial/charcreo/abo.html" %}
         </div>
 
 

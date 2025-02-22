@@ -1,0 +1,65 @@
+<div class="create-bonds-age-omens-container">
+    <div id="create-age-outer-container">
+        <div>
+            <h2 class="title script-font">{{_('Age')}}</h2>
+            <div class="columns">
+                <div class="column justify-left">
+                    <div class="field">
+                        <div class="control">
+                            <input class="center-input" type="text" name="age" value="{{custom_fields['age']}}"
+                                placeholder="{{_('Age')}} ({{_('2d20+10')}})..." required />
+                        </div>
+                    </div>
+                    <button class="roll button dice-button" type="button" hx-post="/charcreo/age-roll"
+                        hx-target="#abo-container">
+                        <i class="fa-solid fa-dice dice"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="create-bonds-outer-container" class="">
+        <h2 class="title script-font">{{_('Bonds')}}</h2>
+        <div class="create-field-dice-container">
+            <select class="" name="bonds_select" id="bonds-select" required hx-post="/charcreo/bonds-omen-select"
+                hx-trigger="change" hx-target="#abo-container">
+                <option value="">{{_('Bonds')}} ({{_('d20')}})...</option>
+                {% for b in custom_fields['bonds'] %}
+                <option value="{{b['description']}}" {% if custom_fields['bonds_selected']==b['description']%} selected
+                    {%endif%}>{{b['description'] | tr | trunc(60)}}</option>
+                {% endfor %}
+            </select>
+            <button class="roll button dice-button" type="button" hx-post="/charcreo/bond-roll"
+                hx-target="#abo-container">
+                <i class="fa-solid fa-dice dice"></i>
+            </button>
+        </div>
+    </div>
+    <div id="create-omens-outer-container">
+        <h2 class="title script-font">{{_('Omens')}}</h2>
+        <div class="create-field-dice-container">
+            <select class="" id="omens-select" name="omens_select" hx-post="/charcreo/bonds-omen-select"
+                hx-trigger="change" hx-target="#abo-container">
+                <option value="">{{_('Omens')}} ({{_('d20')}})...</option>
+                {% for o in custom_fields['omens'] %}
+                <option value="{{o}}" {% if custom_fields['omens_selected']==o%} selected {%endif%}>{{o | tr |
+                    trunc(60)}}</option>
+                {% endfor %}
+            </select>
+            <button class="roll button dice-button" type="button" hx-post="/charcreo/omen-roll"
+                hx-target="#abo-container">
+                <i class="fa-solid fa-dice dice"></i>
+            </button>
+        </div>
+    </div>
+</div>
+<p class="text-border" id="bonds-omens-description" style="min-height: 120px">
+    {% if custom_fields['bonds_selected'] %}
+    {{ custom_fields['bonds_selected'] | tr}}
+    {% endif %}
+    <br />
+    {% if custom_fields['omens_selected'] %}
+    <br />
+    {{ custom_fields['omens_selected'] | tr}}
+    {% endif %}
+</p>

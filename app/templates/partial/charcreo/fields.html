@@ -85,7 +85,7 @@
                         {% for opt in custom_fields['background']['table1']['options'] %}
                         <option value="{{opt['description']}}" {% if
                             custom_fields['background_table1_select']==opt['description'] %} selected {%endif%}>
-                            {{ opt['description'] | tr | trunc36}}...
+                            {{ opt['description'] | tr | trunc(36)}}...
                         </option>
                         {% endfor %}
                     </select>
@@ -123,7 +123,7 @@
                         {% for opt in custom_fields['background']['table2']['options'] %}
                         <option value="{{opt['description']}}" {% if
                             custom_fields['background_table2_select']==opt['description']%} selected {%endif%}>
-                            {{ opt['description'] | tr | trunc36}}...
+                            {{ opt['description'] | tr | trunc(36)}}...
                         </option>
                         {% endfor %}
                     </select>

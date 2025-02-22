@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from .models import User, Character, Party
 from . import db
 from .forms import CharacterForm, CharacterEditForm, CharacterJSONForm, PartyForm, PartyEditForm
-from app.lib import load_scars, character_portrait_link, Inventory, sanitize_data, sanitize_json_content, load_version, load_backgrounds, load_traits
+from app.lib import load_scars, character_portrait_link, Inventory, sanitize_data, sanitize_json_content, load_version, load_backgrounds, load_traits, load_bonds, load_omens
 import sys
 import json
 from urllib.parse import quote
@@ -258,6 +258,8 @@ def new_character():
     custom_fields = {}
     custom_fields['background'] = None
     custom_fields['traits'] = load_traits()
+    custom_fields['bonds'] = load_bonds()
+    custom_fields['omens'] = load_omens()
     
     return render_template('main/character_create.html', portrait_src = portrait_src, custom_image=custom_image, form=form, custom_fields=custom_fields)
                         #    form=form, background_data=json.dumps(background_data), traits_data=json.dumps(traits_data),

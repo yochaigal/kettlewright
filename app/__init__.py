@@ -175,10 +175,11 @@ def create_app():
     def urlenc_filter(text: str) -> str:
         return urllib.parse.unquote_plus(text)
     
-    # Truncate text to 36 chars
-    @app.template_filter("trunc36")
-    def urlenc_filter(text: str) -> str:
-        return text[0:36]
+    # Truncate text to x chars
+    @app.template_filter("trunc")
+    def trunc_filter(text: str, len: int) -> str:
+        return text[0:len]
+    
     
     # Write error about party code
     @app.template_filter("party_code_error")
