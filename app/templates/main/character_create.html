@@ -20,11 +20,11 @@
     </div>
     <form class="sheet" method="POST" id="character-form">
         <!--  PORTRAIT -->
-        <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em">
+        <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em; align-items: center">
             <div class="no-space" id="character-portrait-container">
                 {% include "partial/charcreo/portrait_img.html" %}
             </div>
-            <h1 style="max-width: 200px">{{_('New Character')}}</h1>
+            <h1>{{_('New Character')}}</h1>
         </div>
         <!-- FIELDS -->
         <div class="create-background-name-container" id="fields-container">
@@ -64,6 +64,12 @@
             {% include "partial/charcreo/abo.html" %}
         </div>
 
+        <!-- ITEMS -->
+        <div class="divider"></div>
+
+        <div class="items-container" style="margin-bottom: 24px" id="items-container">
+            {% include "partial/charcreo/items.html" %}
+        </div>
 
     </form>
 </div>

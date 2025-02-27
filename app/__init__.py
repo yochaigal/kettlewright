@@ -179,7 +179,13 @@ def create_app():
     @app.template_filter("trunc")
     def trunc_filter(text: str, len: int) -> str:
         return text[0:len]
-    
+
+    # sum 2 integers
+    @app.template_filter("intsum")
+    def intsum_filter(text: str, text2: str) -> str:
+        t1 = int(text)
+        t2 = int(text2)
+        return str(t1+t2)
     
     # Write error about party code
     @app.template_filter("party_code_error")

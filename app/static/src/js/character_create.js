@@ -1,5 +1,7 @@
 import utils from "./utils.js";
 
+window.KW_alert = utils.styledAlert;
+
 // import inventory from "./inventoryData.js";
 // import inventoryUI from "./inventoryUI.js";
 // import inventoryModalUI from "./inventoryModalUI.js";

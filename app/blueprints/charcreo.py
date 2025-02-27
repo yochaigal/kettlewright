@@ -12,6 +12,7 @@ from unidecode import unidecode
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 import urllib.parse
+import json
 
 character_create = Blueprint('character_create', __name__)
 
@@ -44,7 +45,8 @@ def update_name_choices(form):
         
 def get_custom_fields(data):
     result = {}
-    names = ["background_table1_select", "background_table2_select", "age","bonds_selected","omens_selected", 
+    names = ["background_table1_select", "background_table2_select", "age","bonds_selected","omens_selected",
+             "armor","gold","bonus_gold_t1", "bonus_gold_t2", "bonus_gold_bond","items","bond_items",
              "Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice"]
     for n in names:
         if n in data:
@@ -69,11 +71,45 @@ def process_form_data(data):
     custom_fields['omens'] = load_omens()
     custom_fields['bonds_selected'] = data['bonds_select']
     custom_fields['omens_selected'] = data['omens_select']
-    
+    character = DummyCharacter()    
+    if custom_fields['items'] != None and custom_fields['items'] != '':
+        character.items = custom_fields['items']
+    inventory = Inventory(character)
+    inventory.decorate()
+    custom_fields['inventory'] = inventory
     return form, custom_fields, background
     
  
-
+ # update items in inventory
+def update_items(custom_fields,items):
+    if custom_fields['inventory']:
+        custom_fields['inventory'].remove_items(0)
+        for it in items:
+            if not "tags" in it:
+                it['tags'] = []
+            item = custom_fields['inventory'].create_item(sdv(it,'name'),",".join(sdv(it,'tags',[])),sdv(it,'uses'),
+                                                    sdv(it,'charges'), sdv(it,'max_charges'),0,sdv(it,'description'))            
+    if custom_fields['bond_items']:
+        bitems = json.loads(custom_fields['bond_items'])
+        for it in bitems:
+            if not "tags" in it:
+                it['tags'] = []
+            item = custom_fields['inventory'].create_item(sdv(it,'name'),",".join(sdv(it,'tags',[])),sdv(it,'uses'),
+                                                    sdv(it,'charges'), sdv(it,'max_charges'),0,sdv(it,'description'))            
+    custom_fields['items'] = json.dumps(custom_fields['inventory'].get_items_for_container(0, False))
+    custom_fields['inventory'].select(0)
+    custom_fields['inventory'].decorate()
+    custom_fields['armor'] = custom_fields['inventory'].compute_armor()
+    
+    
+# update additional gold
+def update_gold(custom_fields, field, gold):
+    if not gold or gold == "":
+        custom_fields[field] = 0
+        return 0    
+    custom_fields[field] = gold 
+    return gold  
+   
 # Route: edit new character portrait
 @character_create.route('/charcreo/portrait', methods=['GET'])
 def charedit_inplace_portrait():
@@ -117,14 +153,18 @@ def charcreo_portrait_save():
 # route: select background
 @character_create.route('/charcreo/select-background', methods=['POST'])
 def charcreo_select_background():
-    # form = CharacterForm(formdata=request.form)
     form, custom_fields, background = process_form_data(request.form)
-    # custom_fields = get_custom_fields(request.form)    
     if background != None:
         form.name.process_data('')
+        update_items(custom_fields,background['starting_gear'])
+    else:
+        update_items(custom_fields,[])
     custom_fields["background_table1_select"] = None
     custom_fields["background_table2_select"] = None
-    return render_template('partial/charcreo/fields.html', form=form,custom_fields=custom_fields)
+    render = render_template('partial/charcreo/fields.html', form=form,custom_fields=custom_fields)
+    response = make_response(render)    
+    response.headers['HX-Trigger-After-Settle'] = "background-changed"
+    return response
     
 # route: roll background
 @character_create.route('/charcreo/roll-background', methods=['POST'])
@@ -137,9 +177,14 @@ def charcreo_roll_background():
     form.name.choices = rebuild_names(background['names'])
     form.name.process_data('')
     custom_fields['background'] = background
+    update_items(custom_fields,background['starting_gear'])
     custom_fields["background_table1_select"] = None
-    custom_fields["background_table2_select"] = None    
-    return render_template('partial/charcreo/fields.html', form=form, custom_fields=custom_fields)
+    custom_fields["background_table2_select"] = None  
+    
+    render = render_template('partial/charcreo/fields.html', form=form, custom_fields=custom_fields)
+    response = make_response(render)    
+    response.headers['HX-Trigger'] = "background-changed"
+    return response
     
 # route: select name
 @character_create.route('/charcreo/select-name', methods=['POST'])
@@ -157,16 +202,39 @@ def charcreo_roll_name():
     return render_template('partial/charcreo/fields.html', form=form, custom_fields=custom_fields)    
 
 # route: select background table
-@character_create.route('/charcreo/bkg-table-select', methods=['POST'])
-def charcreo_bkg_table_select():
+@character_create.route('/charcreo/bkg-table-select/<num>', methods=['POST'])
+def charcreo_bkg_table_select(num):
     form, custom_fields, background = process_form_data(request.form)
-    return render_template('partial/charcreo/fields.html', form=form,custom_fields=custom_fields )
+    items = []
+    if background:
+        items = background['starting_gear']
+    opt = None
+    gfield = None
+    match num:
+        case "1":
+            opt = find_background_table_option(background,'table1',custom_fields['background_table1_select'])
+            gfield = 'bonus_gold_t1'
+        case "2":
+            opt = find_background_table_option(background,'table2',custom_fields['background_table2_select'])
+            gfield = 'bonus_gold_t2'
+    if opt:
+        items.extend(sdv(opt,'items',[]))
+        update_items(custom_fields, items)
+        if gfield:
+            update_gold(custom_fields, gfield ,sdv(opt, 'bonus_gold',0))        
+    render =  render_template('partial/charcreo/fields.html', form=form,custom_fields=custom_fields )
+    response = make_response(render)    
+    response.headers['HX-Trigger-After-Settle'] = "background-changed"
+    return response
 
 
 # route: roll background table
 @character_create.route('/charcreo/bkg-table-roll/<nr>', methods=['POST'])
 def charcreo_bkg_table_roll(nr):
     form, custom_fields, background = process_form_data(request.form)
+    items = []
+    if background:
+        items = background['starting_gear']
     if nr == "1":
         lst = background['table1']['options']
         field="background_table1_select"        
@@ -174,8 +242,15 @@ def charcreo_bkg_table_roll(nr):
         lst = background['table2']['options']
         field="background_table2_select"
     opt=roll_list(lst)
+    if 'items' in opt:
+        items.extend(opt['items'])
+    update_items(custom_fields, items)   
+    update_gold(custom_fields, sdv(opt, 'bonus_gold',0))                    
     custom_fields[field]=opt['description']
-    return render_template('partial/charcreo/fields.html', form=form, custom_fields=custom_fields )
+    render = render_template('partial/charcreo/fields.html', form=form, custom_fields=custom_fields )
+    response = make_response(render)    
+    response.headers['HX-Trigger-After-Settle'] = "background-changed"
+    return response
 
 # route: roll attribute
 @character_create.route('/charcreo/attr-roll/<atype>', methods=['POST'])
@@ -287,10 +362,25 @@ def charcreo_age_roll():
     return render_template('partial/charcreo/abo.html', form=form,custom_fields=custom_fields )
 
 # route: select bond or omen
-@character_create.route('/charcreo/bonds-omen-select', methods=['POST'])
-def charcreo_bonds_select():
-    form, custom_fields, background = process_form_data(request.form)
-    return render_template('partial/charcreo/abo.html', form=form,custom_fields=custom_fields )
+@character_create.route('/charcreo/bonds-omen-select/<tp>', methods=['POST'])
+def charcreo_bonds_select(tp):
+    form, custom_fields, background = process_form_data(request.form)    
+    if tp == 'b':
+        bond = find_bond_by_description(custom_fields['bonds_selected'])
+        print('bond',bond)
+        if bond:
+            update_gold(custom_fields,'bonus_gold_bond',sdv(bond,'gold',0))
+            custom_fields['bond_items'] = json.dumps(sdv(bond,'items',[]))                       
+        else:
+            custom_fields['bond_items'] = '[]'
+        if background:
+            update_items(custom_fields, background['starting_gear'])
+        else:
+            update_items(custom_fields, []) 
+    render = render_template('partial/charcreo/abo_oob.html', form=form,custom_fields=custom_fields )            
+    response = make_response(render)    
+    response.headers['HX-Trigger-After-Settle'] = "bond-changed"
+    return response
 
 # route: bond roll
 @character_create.route('/charcreo/bond-roll', methods=['POST'])
@@ -298,7 +388,16 @@ def charcreo_bond_roll():
     form, custom_fields, background = process_form_data(request.form)
     b = roll_list(load_bonds())
     custom_fields['bonds_selected'] = b['description']
-    return render_template('partial/charcreo/abo.html', form=form,custom_fields=custom_fields )
+    update_gold(custom_fields,'bonus_gold_bond',sdv(b,'gold',0))
+    custom_fields['bond_items'] = json.dumps(sdv(b,'items',[]))
+    if background:
+        update_items(custom_fields, background['starting_gear'])            
+    else:
+        update_items(custom_fields, []) 
+    render = render_template('partial/charcreo/abo_oob.html', form=form,custom_fields=custom_fields )
+    response = make_response(render)    
+    response.headers['HX-Trigger-After-Settle'] = "bond-changed"
+    return response
 
 # route: omen roll
 @character_create.route('/charcreo/omen-roll', methods=['POST'])
@@ -307,3 +406,17 @@ def charcreo_omen_roll():
     o = roll_list(load_omens())
     custom_fields['omens_selected'] = o
     return render_template('partial/charcreo/abo.html', form=form,custom_fields=custom_fields )
+
+# route: gold roll
+@character_create.route('/charcreo/gold-roll', methods=['POST'])
+def charcreo_gold_roll():
+    form, custom_fields, background = process_form_data(request.form)
+    _, total = roll_multi_dice(6,3)
+    custom_fields['gold'] = total
+    return render_template('partial/charcreo/items.html', form=form,custom_fields=custom_fields )
+
+# route: refresh items
+@character_create.route('/charcreo/refresh-items', methods=['POST'])
+def charcreo_refresh_items():
+    form, custom_fields, background = process_form_data(request.form)
+    return render_template('partial/charcreo/items.html', form=form,custom_fields=custom_fields )

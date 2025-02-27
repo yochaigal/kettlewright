@@ -1,3 +1,9 @@
+<!-- items and additional gold  are changed during background change -->
+<input type="hidden" id="char_items" name="items" value="{{custom_fields['items']}}" />
+<input type="hidden" name="bonus_gold_t1" value="{{custom_fields['bonus_gold_t1']}}" />
+<input type="hidden" name="bonus_gold_t2" value="{{custom_fields['bonus_gold_t2']}}" />
+<input type="hidden" name="armor" value="{{custom_fields['armor']}}" />
+
 <div class="background-fields-and-image-container" id="background-name-container">
     <!-- BACKGROUNDS -->
     <div class="background-fields-container" id="background-field-container">
@@ -79,7 +85,7 @@
             <div class="create-field-dice-container" id="background-table1-container">
                 <div class="select">
                     <select class="create-select-field" name="background_table1_select" required
-                        hx-post="/charcreo/bkg-table-select" hx-trigger="change" hx-target="#fields-container">
+                        hx-post="/charcreo/bkg-table-select/1" hx-trigger="change" hx-target="#fields-container">
                         <option value="" disabled {%if not custom_fields['background_table1_select']%} selected
                             {%endif%}>{{_('Table')}} {{_('(d6)')}}...</option>
                         {% for opt in custom_fields['background']['table1']['options'] %}
@@ -117,7 +123,7 @@
             <div class="create-field-dice-container">
                 <div class="select">
                     <select class="create-select-field" name="background_table2_select" required
-                        hx-post="/charcreo/bkg-table-select" hx-trigger="change" hx-target="#fields-container">
+                        hx-post="/charcreo/bkg-table-select/2" hx-trigger="change" hx-target="#fields-container">
                         <option value="" disabled {%if not custom_fields['background_table2_select']%} selected
                             {%endif%}>{{_('Table')}} {{_('(d6)')}}...</option>
                         {% for opt in custom_fields['background']['table2']['options'] %}

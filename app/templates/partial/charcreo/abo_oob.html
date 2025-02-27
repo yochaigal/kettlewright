@@ -69,4 +69,5 @@
 </p>
 
 <!-- Refresh items when bond changed -->
+<input type="hidden" id="char_items" name="items" value="{{custom_fields['items']}}" hx-swap-oob="true" />
 <div hx-trigger="bond-changed from:body" hx-post="/charcreo/refresh-items" hx-target="#items-container"></div>

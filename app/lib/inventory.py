@@ -1,6 +1,7 @@
 import json
 import re
 from app.models import db, Party, Character
+from app.lib import sdv
 from flask_babel import _
 
 FATIGUE_NAME = "Fatigue"
@@ -38,7 +39,7 @@ class Inventory:
             cdict[c["id"]] = c
         items = json.loads(character.items)
         for i in items:
-            if not int(i["location"]) in cdict:
+            if not "location" in i or not int(i["location"]) in cdict:
                 continue
             c = cdict[int(i["location"])]
             if c == None:
@@ -56,6 +57,8 @@ class Inventory:
     def container_slots(self, container):
         slots = 0
         for it in container["items"]:
+            if not "tags" in it:
+                continue
             if "bulky" in it["tags"]:
                 slots += 2
                 continue
@@ -117,7 +120,7 @@ class Inventory:
                                 item["dice"].append(int(y))
                 # annotate tags                            
                 if tag == "bulky" or tag == "petty":
-                    tt.append("<i>"+tag+"</i>")
+                    tt.append("<i>"+_(tag)+"</i>")
                 elif tag == "uses":
                     if item["uses"] == 1:
                         tt.append(_("1 use"))
@@ -127,12 +130,12 @@ class Inventory:
                     tt.append(str(item["charges"])+"/"+str(item["max_charges"])+" "+_("charges"))
                 elif "1 Armor" in tag or "2 Armor" in tag or "3 Armor" in tag:
                     if bf:
-                        tt.append("+"+tag)
+                        tt.append("+"+_(tag))
                     else:
-                        tt.append(tag)
+                        tt.append(_(tag))
                 else:
                     if tag != "bonus defense":
-                        tt.append(tag)
+                        tt.append(_(tag))
             title += ", ".join(tt)
             title += ") "                    
         item["title"] = title
@@ -311,7 +314,7 @@ class Inventory:
         for it in items:
             if it["location"] != int(container_id):
                 result.append(it)
-        self.character.items = json.dumps(items)
+        self.character.items = json.dumps(result)
         db.session.commit()
         self.parse(self.character)
         
@@ -513,6 +516,22 @@ class Inventory:
                         result.append(it)
                 character.items = json.dumps(result)
                 db.session.commit()        
+                
+    def compute_armor(self):
+        armor = 0
+        for it in self.get_items_for_container(0,False):
+            if it["tags"] == None or len(it["tags"]) == 0:
+                continue
+            if "1 Armor" in it["tags"]:
+                armor += 1
+            if "2 Armor" in it["tags"]:
+                armor += 2
+            if "3 Armor" in it["tags"]:
+                armor += 3
+        if armor > 3:
+            armor = 3
+        return armor
+                                        
                     
     def print(self):
         print(self.containers)

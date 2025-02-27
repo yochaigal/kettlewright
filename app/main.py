@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from .models import User, Character, Party
 from . import db
 from .forms import CharacterForm, CharacterEditForm, CharacterJSONForm, PartyForm, PartyEditForm
-from app.lib import load_scars, character_portrait_link, Inventory, sanitize_data, sanitize_json_content, load_version, load_backgrounds, load_traits, load_bonds, load_omens
+from app.lib import load_scars, character_portrait_link, Inventory, sanitize_data, sanitize_json_content, load_version, load_backgrounds, load_traits, load_bonds, load_omens, DummyCharacter
 import sys
 import json
 from urllib.parse import quote
@@ -260,10 +260,20 @@ def new_character():
     custom_fields['traits'] = load_traits()
     custom_fields['bonds'] = load_bonds()
     custom_fields['omens'] = load_omens()
+    custom_fields['gold'] = 0
+    custom_fields['bonus_gold_t1'] = 0
+    custom_fields['bonus_gold_t2'] = 0
+    custom_fields['bonus_gold_bond'] = 0
+    custom_fields['armor'] = 0
+    character = DummyCharacter()
+    custom_fields['inventory'] = Inventory(character)
+    custom_fields['inventory'].decorate()
+    custom_fields['items'] = '[]'
+    custom_fields['bond_items'] = '[]'
+    custom_fields['armor'] = '0'
     
-    return render_template('main/character_create.html', portrait_src = portrait_src, custom_image=custom_image, form=form, custom_fields=custom_fields)
-                        #    form=form, background_data=json.dumps(background_data), traits_data=json.dumps(traits_data),
-                        #    bonds_data=json.dumps(bonds_data), omens_data=json.dumps(omens_data), marketplace_data=json.dumps(marketplace_data), images=image_files)
+    return render_template('main/character_create.html', portrait_src = portrait_src, custom_image=custom_image, 
+                           form=form, custom_fields=custom_fields)
 
 
 @main.route('/users/<username>/characters/<url_name>/')

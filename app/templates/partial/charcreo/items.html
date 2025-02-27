@@ -1,0 +1,33 @@
+<h2 class="title script-font">{{_('Items')}}</h2>
+<div class="create-armor-gold-container">
+    <div class="justify-left">
+        <p class="subtitle attribute-font">{{_('Armor')}}</p>
+        <p class="title script-font" id="armor-counter">
+            {% if custom_fields['armor'] != None %}
+            {{custom_fields['armor']}}
+            {% endif %}
+        </p>
+    </div>
+    <div class="create-attribute-container">
+        <span class="subtitle attribute-font">{{_('Gold')}}</span>
+        <span class="attribute-roll-font">({{_('3d6')}})</span>
+        <p class="number-field" id="gold-field">
+            <input type="hidden" name="gold" value="{{custom_fields['gold']}}" />
+            {% if custom_fields['gold'] != None %}
+            {{custom_fields['gold'] | intsum(custom_fields['bonus_gold_t1']) | intsum(custom_fields['bonus_gold_t2']) |
+            intsum(custom_fields['bonus_gold_bond'])}}
+            {% endif %}
+        </p>
+        <button class="roll button dice-button" type="button" hx-post="/charcreo/gold-roll"
+            hx-target="#items-container">
+            <i class="fa-solid fa-dice dice"></i>
+        </button>
+    </div>
+</div>
+
+<div class="create-inventory-container">
+    {% include "partial/charcreo/inventory.html" %}
+</div>
+
+<!-- Refresh items when background changed -->
+<div hx-trigger="background-changed from:body" hx-post="/charcreo/refresh-items" hx-target="#items-container"></div>

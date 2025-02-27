@@ -272,3 +272,40 @@ def generate_character(bkg):
     json_data = json.dumps(genchar.toJSON())
     
     return genchar, json_data
+
+
+
+# used for character creation inventory
+class DummyCharacter:
+    def __init__(self):
+        self.name = ""
+        self.background = None
+        self.background_name = ""
+        self.bond = None
+        self.omen = None
+        self.items = '[]'
+        self.table1 = None
+        self.table2 = None
+        self.attributes = None
+        self.traits = ''
+        self.gold = 0
+        self.age = 10
+        self.slots = 0
+        self.description = ""
+        self.containers = '[{"name": "Main", "slots": 10, "id": 0}]'
+        
+def find_background_table_option(background, tablename, option):
+    if tablename in background and 'options' in background[tablename]:
+        for it in background[tablename]['options']:
+            if not 'description' in it:
+                continue
+            if it['description'] == option:
+                return it
+    return None
+
+def find_bond_by_description(desc):
+    bonds = load_bonds()
+    for b in bonds:
+        if b['description'] == desc:
+            return b
+    return None
