@@ -2634,31 +2634,34 @@ msgid ""
 " flesh but also the secrets that lie within. With the right tools, life "
 "and death are merely words."
 msgstr ""
+"Balansujesz na granicy pomiędzy uzdrowicielem a rzeźnikiem, znasz słabości "
+"ciała oraz jego najgłębsze sekrety. Dzięki odpowiednim narzędziom "
+"życie i śmierć to tylko słowa."
 
 #: app/static/json/backgrounds/barber-surgeon.json:31
 msgid "Bonesaw"
-msgstr ""
+msgstr "Piła do kości"
 
 #: app/static/json/backgrounds/barber-surgeon.json:35
 #: app/static/json/backgrounds/mountebank.json:58
 msgid "Bandages"
-msgstr ""
+msgstr "Bandaże"
 
 #: app/static/json/backgrounds/barber-surgeon.json:40
 msgid "Leech"
-msgstr ""
+msgstr "Pijawka lekarska"
 
 #: app/static/json/backgrounds/barber-surgeon.json:43
 msgid "Restores 1 STR"
-msgstr ""
+msgstr "przywraca 1 SIŁ"
 
 #: app/static/json/backgrounds/barber-surgeon.json:46
 msgid "Stained medical finery"
-msgstr ""
+msgstr "Poplamione akcesoria medyczne "
 
 #: app/static/json/backgrounds/barber-surgeon.json:51
 msgid "How have you 'improved' yourself?"
-msgstr ""
+msgstr "Jak się „ulepszyłeś”"
 
 #: app/static/json/backgrounds/barber-surgeon.json:54
 msgid ""
@@ -2666,6 +2669,9 @@ msgid ""
 "and provide minimal night vision. You cannot wear anything metal on your "
 "head, and the presence of strong magnets make you deprived."
 msgstr ""
+"Masz sztuczne oko, które może powiększać obrazy, działać jak teleskop i zapewniać "
+"minimalne widzenie w nocy. Nie możesz nosić niczego metalowego na głowie, a obecność "
+"silnych magnesów sprawia, że odczuwasz dyskomfort."
 
 #: app/static/json/backgrounds/barber-surgeon.json:58
 msgid ""
@@ -2673,24 +2679,30 @@ msgid ""
 "Easy. Carry an Oil Can (6 uses). Without a daily application, you are "
 "deprived and noisy."
 msgstr ""
+"Twoja jedna stopa jest w większości metalowa (kopnięcie, k6), a niektóre "
+"trudne tereny traktujesz jako łatwe. Noś przy sobie puszkę oleju (6 użyć),"
+"która służyć będzie do konserwacji stopy. Bez codziennej konserwacji odczuwasz "
+"dyskomfort i hałasujesz podczas chodzenia."
 
 #: app/static/json/backgrounds/barber-surgeon.json:64
 msgid "Without a daily application you are deprived and noisy."
-msgstr ""
+msgstr "Bez codziennej konserwacji odczuwasz dyskomfort i hałasujesz podczas chodzenia."
 
 #: app/static/json/backgrounds/barber-surgeon.json:69
 msgid ""
 "One of your fingers has been swapped, the bone replaced by gold and iron."
 " Take a Hook and a Screwdriver that can attach to the fingertip."
 msgstr ""
+"Jeden z twoich palców został zamieniony, kość zastąpiono złotem i żelazem. "
+"Weź hak i śrubokręt, które można przymocować do opuszki palca."
 
 #: app/static/json/backgrounds/barber-surgeon.json:72
 msgid "Hook & Screwdriver"
-msgstr ""
+msgstr "Hak i śrubokręt"
 
 #: app/static/json/backgrounds/barber-surgeon.json:74
 msgid "Attaches to mechanical finger."
-msgstr ""
+msgstr "Można przymocować do opuszki palca."
 
 #: app/static/json/backgrounds/barber-surgeon.json:79
 msgid ""
@@ -2699,22 +2711,30 @@ msgid ""
 "You wear an ear flap to protect against sudden loud noises (WIL save to "
 "avoid temporary paralysis)."
 msgstr ""
+"Twoje uszy zostały chirurgicznie wzmocnione, co trzykrotnie poprawiło słuch. "
+"Możesz skupić się na konkretnym dźwięku, takim jak rozmowa, nawet z dużej odległości. "
+"Nosisz nauszniki chroniące przed nagłymi, głośnymi dźwiękami (rzut obronny WOL, "
+"aby uniknąć tymczasowego paraliżu)."
 
 #: app/static/json/backgrounds/barber-surgeon.json:83
 msgid ""
 "Your chest is lined with alchemical sigils, toughening the skin (Armor "
 "1). Wearing other metallic armor nullifies the effect."
 msgstr ""
+"Twoja klatka piersiowa jest pokryta alchemicznymi symbolami, wzmacniającymi "
+"skórę (pancerz 1). Noszenie innego, metalowego pancerza niweluje ten efekt."
 
 #: app/static/json/backgrounds/barber-surgeon.json:86
 msgid "Alchemical Sigils"
-msgstr ""
+msgstr "Alchemiczne symbole"
 
 #: app/static/json/backgrounds/barber-surgeon.json:88
 msgid ""
 "Your chest is lined with alchemical sigils, _toughening the skin_ (1 "
 "Armor)."
 msgstr ""
+"Twoja klatka piersiowa jest pokryta alchemicznymi symbolami, wzmacniającymi "
+"skórę (pancerz 1)"
 
 #: app/static/json/backgrounds/barber-surgeon.json:93
 msgid ""
@@ -2722,50 +2742,53 @@ msgid ""
 " weapon (d8, bulky when not attached) and can move independently if you "
 "are within sight of it."
 msgstr ""
+"Jedno twoje ramię jest w pełni metalowe i da się odłączyć od ramienia. "
+"Może być używane jako broń (k8, nieporęczne gdy nie jest przymocowane) i "
+"może poruszać się niezależnie, jeśli jesteś w zasięgu jego wzroku."
 
 #: app/static/json/backgrounds/barber-surgeon.json:99
 msgid "What rare tool is essential to your work?"
-msgstr ""
+msgstr "Jakie rzadkie narzędzie jest niezbędne w twojej pracy?"
 
 #: app/static/json/backgrounds/barber-surgeon.json:102
 msgid "Regrowth Salve: Regrows a body part over the course of a day. 1 use."
-msgstr ""
+msgstr "Maść regeneracyjna: Regeneruje dowolną część ciała w ciągu jednego dnia. 1 użycie."
 
 #: app/static/json/backgrounds/barber-surgeon.json:105
 msgid "Regrowth Salve"
-msgstr ""
+msgstr "Maść regeneracyjna"
 
 #: app/static/json/backgrounds/barber-surgeon.json:108
 msgid "Regrows a body part over the course of a day."
-msgstr ""
+msgstr "Regeneruje dowolną część ciała w ciągu jednego dnia."
 
 #: app/static/json/backgrounds/barber-surgeon.json:113
 msgid ""
 "Graftgrub: A small worm that can fuse inanimate objects with parts of the"
 " body. 1 use."
-msgstr ""
+msgstr "Larwa przeszczepowa: Mały robak, który może łączyć przedmioty nieożywione z częściami ciała. 1 użycie."
 
 #: app/static/json/backgrounds/barber-surgeon.json:116
 msgid "Graftgrub"
-msgstr ""
+msgstr "Larwa przeszczepowa"
 
 #: app/static/json/backgrounds/barber-surgeon.json:119
 msgid "Fuses inanimate objects with parts of the body."
-msgstr ""
+msgstr "Może łączyć przedmioty nieożywione z częściami ciała"
 
 #: app/static/json/backgrounds/barber-surgeon.json:124
 msgid ""
 "Woundwax: Heals wounds from fire or chemicals (restoring full STR) but "
 "nothing else. 2 uses."
-msgstr ""
+msgstr "Wosk do ran: Leczy rany od ognia lub chemikaliów (przywraca pełną SIŁ), ale nic poza tym. 2 użycia."
 
 #: app/static/json/backgrounds/barber-surgeon.json:127
 msgid "Woundwax"
-msgstr ""
+msgstr "Wosk do ran"
 
 #: app/static/json/backgrounds/barber-surgeon.json:130
 msgid "Heals wounds from fire or chemicals restoring full STR."
-msgstr ""
+msgstr "Leczy rany od ognia lub chemikaliów (przywraca pełną SIŁ), ale nic poza tym."
 
 #: app/static/json/backgrounds/barber-surgeon.json:135
 msgid ""
@@ -2773,10 +2796,13 @@ msgid ""
 "WIL saves for one hour. Addictive: Save STR or become deprived after 24 "
 "hours without it. 4 uses."
 msgstr ""
+"Żywe srebro: Środek pobudzający. W walce zawsze działasz przed przeciwnikami i "
+"automatycznie zdajesz każdy rzut obronny WOL przez godzinę. Uzależnia: Rzut obronny "
+"SIŁ albo po 24 godzinach bez tego środka odczuwasz dyskomfort.4 użycia."
 
 #: app/static/json/backgrounds/barber-surgeon.json:138
 msgid "Quicksilver"
-msgstr ""
+msgstr "Żywe srebro"
 
 #: app/static/json/backgrounds/barber-surgeon.json:141
 msgid ""
@@ -2784,36 +2810,39 @@ msgid ""
 "one hour. Addictive: Save STR or become deprived after 24 hours without "
 "it."
 msgstr ""
+"Środek pobudzający. W walce zawsze działasz przed przeciwnikami i "
+"automatycznie zdajesz każdy rzut obronny WOL przez godzinę. Uzależnia: Rzut obronny "
+"SIŁ albo po 24 godzinach bez tego środka odczuwasz dyskomfort."
 
 #: app/static/json/backgrounds/barber-surgeon.json:146
 msgid ""
 "Pneuma Pump: Portable iron lungs (bulky). Enables life-saving surgery or "
 "underwater breathing."
-msgstr ""
+msgstr "Pompa płucna: Przenośne żelazne płuca (nieporęczne). Umożliwiają operacje ratujące życie lub oddychanie pod wodą."
 
 #: app/static/json/backgrounds/barber-surgeon.json:149
 msgid "Pneuma Pump"
-msgstr ""
+msgstr "Pompa płucna"
 
 #: app/static/json/backgrounds/barber-surgeon.json:151
 msgid "Portable iron lungs. Enables life-saving surgery or underwater breathing."
-msgstr ""
+msgstr "Przenośne żelazne płuca (nieporęczne). Umożliwiają operacje ratujące życie lub oddychanie pod wodą."
 
 #: app/static/json/backgrounds/barber-surgeon.json:156
 msgid ""
 "Lodestone: Draws out dangerous elements from the body and acts as a "
 "powerful magnetic force."
-msgstr ""
+msgstr "Magnetyt: Wyciąga niebezpieczne elementy z ciała i działa jak potężny magnes."
 
 #: app/static/json/backgrounds/barber-surgeon.json:159
 msgid "Lodestone"
-msgstr ""
+msgstr "Magnetyt"
 
 #: app/static/json/backgrounds/barber-surgeon.json:161
 msgid ""
 "Draws out dangerous elements from the body and acts as a powerful "
 "magnetic force."
-msgstr ""
+msgstr "Wyciąga niebezpieczne elementy z ciała i działa jak potężny magnes."
 
 #: app/static/json/backgrounds/beast-handler.json:4
 msgid ""

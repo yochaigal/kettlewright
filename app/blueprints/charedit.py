@@ -133,7 +133,6 @@ def charedit_clear_party_err(username, url_name):
 def charedit_inplace_scars_add(username, url_name):
     user, character = get_char_data(username, url_name)
     data = request.form
-    print(data)
     scarlist = load_scars()
     selected_scar = data['scars-select']
     result = data["scars"]

@@ -32,7 +32,7 @@
         <div class="justify-left">
             <h2 class="title script-font">{{_('Traits')}}</h2>
             <button class="roll button dice-button" type="button" hx-post="/charcreo/trait-roll"
-                hx-target="#traits-container">
+                hx-target="#traits-container"  hx-swap="innerHTML">
                 <i class="fa-solid fa-dice dice"></i>
             </button>
         </div>

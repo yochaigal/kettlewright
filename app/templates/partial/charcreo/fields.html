@@ -8,10 +8,10 @@
     <!-- BACKGROUNDS -->
     <div class="background-fields-container" id="background-field-container">
         <div class="create-field-dice-container" hx-post="/charcreo/select-background" hx-trigger="change"
-            hx-target="#fields-container">
+            hx-target="#fields-container"  hx-swap="innerHTML">
             <div class="select">{{ form.background(class="input bold create-select-field") }}</div>
             <button class="roll button dice-button" type="button" hx-post="/charcreo/roll-background"
-                hx-target="#fields-container">
+                hx-target="#fields-container"  hx-swap="innerHTML">
                 <i class="fa-solid fa-dice dice"></i>
             </button>
         </div>
@@ -42,12 +42,12 @@
     <!-- NAMES -->
     <div class="" id="name-field-container">
         <div class="create-field-dice-container" id="name-select-roll-container" hx-post="/charcreo/select-name"
-            hx-trigger="change" hx-target="#fields-container">
+            hx-trigger="change" hx-target="#fields-container"  hx-swap="innerHTML">
             <div class="select">
                 {{ form.name(class="create-select-field", id="name-field", required=True) }}
             </div>
             <button class="roll button dice-button" type="button" hx-post="/charcreo/roll-name"
-                hx-target="#fields-container">
+                hx-target="#fields-container"  hx-swap="innerHTML">
                 <i class="fa-solid fa-dice dice"></i>
             </button>
         </div>
@@ -85,7 +85,7 @@
             <div class="create-field-dice-container" id="background-table1-container">
                 <div class="select">
                     <select class="create-select-field" name="background_table1_select" required
-                        hx-post="/charcreo/bkg-table-select/1" hx-trigger="change" hx-target="#fields-container">
+                        hx-post="/charcreo/bkg-table-select/1" hx-trigger="change" hx-target="#fields-container"  hx-swap="innerHTML">
                         <option value="" disabled {%if not custom_fields['background_table1_select']%} selected
                             {%endif%}>{{_('Table')}} {{_('(d6)')}}...</option>
                         {% for opt in custom_fields['background']['table1']['options'] %}
@@ -97,7 +97,7 @@
                     </select>
                 </div>
                 <button class="roll button dice-button" type="button" hx-post="/charcreo/bkg-table-roll/1"
-                    hx-target="#fields-container">
+                    hx-target="#fields-container"  hx-swap="innerHTML">
                     <i class="fa-solid fa-dice dice"></i>
                 </button>
             </div>
@@ -106,7 +106,7 @@
                     <p class="text-border create-top-text-field" id="background-table1-description"
                         style="min-height: 120px">
                         {% if custom_fields['background_table1_select'] %}
-                        {{ custom_fields['background_table1_select'] }}
+                        {{ custom_fields['background_table1_select'] | tr}}
                         {% endif %}
                     </p>
                 </div>
@@ -123,7 +123,7 @@
             <div class="create-field-dice-container">
                 <div class="select">
                     <select class="create-select-field" name="background_table2_select" required
-                        hx-post="/charcreo/bkg-table-select/2" hx-trigger="change" hx-target="#fields-container">
+                        hx-post="/charcreo/bkg-table-select/2" hx-trigger="change" hx-target="#fields-container"  hx-swap="innerHTML">
                         <option value="" disabled {%if not custom_fields['background_table2_select']%} selected
                             {%endif%}>{{_('Table')}} {{_('(d6)')}}...</option>
                         {% for opt in custom_fields['background']['table2']['options'] %}
@@ -135,7 +135,7 @@
                     </select>
                 </div>
                 <button class="roll button dice-button" type="button" hx-post="/charcreo/bkg-table-roll/2"
-                    hx-target="#fields-container">
+                    hx-target="#fields-container"  hx-swap="innerHTML">
                     <i class="fa-solid fa-dice dice"></i>
                 </button>
             </div>
@@ -144,7 +144,7 @@
                     <p class="text-border create-top-text-field" id="background-table2-description"
                         style="min-height: 120px">
                         {% if custom_fields['background_table2_select'] %}
-                        {{ custom_fields['background_table2_select'] }}
+                        {{ custom_fields['background_table2_select'] | tr }}
                         {% endif %}
                     </p>
                 </div>

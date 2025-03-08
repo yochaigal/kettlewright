@@ -7,7 +7,7 @@
             id="strength-max-field") }}
         </span>
         <button class="roll button dice-button" type="button" hx-post="/charcreo/attr-roll/str"
-            hx-target="#attrs-container">
+            hx-target="#attrs-container"  hx-swap="innerHTML">
             <i class="fa-solid fa-dice dice"></i>
         </button>
     </div>
@@ -20,7 +20,7 @@
             id="dexterity-max-field") }}
         </span>
         <button class="roll button dice-button" type="button" hx-post="/charcreo/attr-roll/dex"
-            hx-target="#attrs-container">
+            hx-target="#attrs-container"  hx-swap="innerHTML">
             <i class="fa-solid fa-dice dice"></i>
         </button>
     </div>
@@ -32,7 +32,7 @@
             id="willpower-max-field") }}
         </span>
         <button class="roll button dice-button" type="button" hx-post="/charcreo/attr-roll/wil"
-            hx-target="#attrs-container">
+            hx-target="#attrs-container"  hx-swap="innerHTML">
             <i class="fa-solid fa-dice dice"></i>
         </button>
     </div>
@@ -45,7 +45,7 @@
         <option value="wil">{{_('Willpower')}}</option>
     </select>
 
-    <button class="button" type="button" id="swap-button" hx-post="/charcreo/attr-swap" hx-target="#attrs-container">
+    <button class="button" type="button" id="swap-button" hx-post="/charcreo/attr-swap" hx-target="#attrs-container"  hx-swap="innerHTML">
         <i class="fa-solid fa-right-left icon-in-button"></i>
     </button>
 
@@ -64,7 +64,7 @@
         {{ form.hp_max(class='input number-input create-attribute-field center-input', size=1, type='number',
         id="hp-max-field") }}
     </span>
-    <button class="roll button dice-button" type="button" hx-post="/charcreo/attr-roll/hp" hx-target="#attrs-container">
+    <button class="roll button dice-button" type="button" hx-post="/charcreo/attr-roll/hp" hx-target="#attrs-container"  hx-swap="innerHTML">
         <i class="fa-solid fa-dice dice"></i>
     </button>
 </div>

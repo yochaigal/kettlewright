@@ -602,8 +602,6 @@ def charcreo_roll_remaining():
     if not custom_fields['gold'] or custom_fields['gold'] == '0':
         _, total = roll_multi_dice(6,3)
         custom_fields['gold'] = total
-    else:
-        print(custom_fields['gold'])
     if not custom_fields['portrait_src'] or custom_fields['portrait_src'] == '' or custom_fields['portrait_src'] == DEFAULT_PORTRAIT:
         image = roll_list(load_images())
         custom_fields['portrait_src'] = "/static/images/portraits/"+image

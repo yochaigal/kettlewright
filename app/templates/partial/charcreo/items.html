@@ -19,7 +19,7 @@
             {% endif %}
         </p>
         <button class="roll button dice-button" type="button" hx-post="/charcreo/gold-roll"
-            hx-target="#items-container">
+            hx-target="#items-container"  hx-swap="innerHTML">
             <i class="fa-solid fa-dice dice"></i>
         </button>
     </div>
@@ -30,4 +30,4 @@
 </div>
 
 <!-- Refresh items when background changed -->
-<div hx-trigger="background-changed from:body" hx-post="/charcreo/refresh-items" hx-target="#items-container"></div>
+<div hx-trigger="background-changed from:body" hx-post="/charcreo/refresh-items" hx-target="#items-container"  hx-swap="innerHTML"></div>
