@@ -173,6 +173,8 @@ def create_app():
     # URL decode
     @app.template_filter("urldec")
     def urlenc_filter(text: str) -> str:
+        if not text:
+            return None
         return urllib.parse.unquote_plus(text)
     
     # Truncate text to x chars

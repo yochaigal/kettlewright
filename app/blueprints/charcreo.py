@@ -32,7 +32,7 @@ def rebuild_all_names():
 
 def get_background(form):
     bkgs = load_backgrounds()
-    if form.background.data != '' and form.background.data != 'Custom':
+    if form.background.data and form.background.data != '' and form.background.data != 'Custom':
         return bkgs[form.background.data]
     return None
 
@@ -46,8 +46,8 @@ def update_name_choices(form):
 def get_custom_fields(data):
     result = {}
     names = ["background_table1_select", "background_table2_select", "age","bonds_selected","omens_selected",
-             "armor","gold","bonus_gold_t1", "bonus_gold_t2", "bonus_gold_bond","items","bond_items",
-             "Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice"]
+             "armor","gold","bonus_gold_t1", "bonus_gold_t2", "bonus_gold_bond","items","bond_items", "selected-portrait",
+             "Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice", "portrait_src","custom_image"]
     for n in names:
         if n in data:
             result[n] = data[n]
@@ -78,8 +78,32 @@ def process_form_data(data):
     inventory.decorate()
     custom_fields['inventory'] = inventory
     return form, custom_fields, background
-    
- 
+
+
+def process_dict_data(data):
+    form = CharacterForm(data=data)
+    custom_fields = get_custom_fields(data)
+    background = get_background(form)
+    if background != None:
+        form.custom_background.process_data("")
+        form.name.choices = rebuild_names(background['names'])
+    else:
+        form.name.choices = rebuild_all_names()
+    custom_fields['background'] = background
+    custom_fields['traits'] = load_traits()
+    custom_fields['bonds'] = load_bonds()
+    custom_fields['omens'] = load_omens()
+    custom_fields['bonds_selected'] = data['bonds_select']
+    custom_fields['omens_selected'] = data['omens_select']
+    character = DummyCharacter()    
+    if custom_fields['items'] != None and custom_fields['items'] != '':
+        character.items = custom_fields['items']
+    inventory = Inventory(character)
+    inventory.decorate()
+    custom_fields['inventory'] = inventory
+    return form, custom_fields, background
+
+
  # update items in inventory
 def update_items(custom_fields,items):
     if custom_fields['inventory']:
@@ -116,8 +140,11 @@ def charedit_inplace_portrait():
     portrait_src = request.args.get('src')
     images = load_images()
     custom_image = request.args.get("custom_image")
+    custom_fields = {}
+    custom_fields['portrait_src'] = portrait_src
+    custom_fields['custom_image'] = custom_image
     portrait_src = urllib.parse.quote_plus(portrait_src)
-    return render_template('partial/charcreo/portrait.html', images=images, portrait_src=portrait_src, custom_image=custom_image)
+    return render_template('partial/charcreo/portrait.html', images=images, portrait_src=portrait_src, custom_image=custom_image, custom_fields=custom_fields)
 
 # Route: edit new character portrait - cancel
 @character_create.route('/charcreo/portrait/cancel', methods=['GET'])
@@ -128,7 +155,10 @@ def charcreo_portrait_cancel():
         portrait_src = ps
     portrait_src = urllib.parse.quote_plus(portrait_src)
     custom_image = request.args.get("custom_image")
-    return render_template('partial/charcreo/portrait_img.html', portrait_src = portrait_src, custom_image=custom_image)          
+    custom_fields = {}
+    custom_fields['portrait_src'] = portrait_src
+    custom_fields['custom_image'] = custom_image
+    return render_template('partial/charcreo/portrait_img.html', portrait_src = portrait_src, custom_image=custom_image, custom_fields=custom_fields)          
 
 # Route: edit new character portrait - save
 @character_create.route('/charcreo/portrait/save', methods=['POST'])
@@ -147,7 +177,10 @@ def charcreo_portrait_save():
             portrait_src = "/static/images/portraits/"+selected_portrait
             custom_image = False
     portrait_src = urllib.parse.quote_plus(portrait_src)
-    return render_template('partial/charcreo/portrait_img.html', portrait_src = portrait_src, custom_image=custom_image)        
+    custom_fields = {}
+    custom_fields['portrait_src'] = portrait_src
+    custom_fields['custom_image'] = custom_image
+    return render_template('partial/charcreo/portrait_img.html', portrait_src = portrait_src, custom_image=custom_image, custom_fields=custom_fields)        
 
 
 # route: select background
@@ -170,8 +203,7 @@ def charcreo_select_background():
 @character_create.route('/charcreo/roll-background', methods=['POST'])
 def charcreo_roll_background():
     form, custom_fields, background = process_form_data(request.form)
-    bkgs = load_backgrounds()
-    key, background = roll_dict(bkgs)
+    key, background = random_background()
     form.background.process_data(key)
     form.custom_background.process_data("")
     form.name.choices = rebuild_names(background['names'])
@@ -189,13 +221,13 @@ def charcreo_roll_background():
 # route: select name
 @character_create.route('/charcreo/select-name', methods=['POST'])
 def charcreo_select_name():
-    form, custom_fields, background = process_form_data(request.form)
+    form, custom_fields, _ = process_form_data(request.form)
     return render_template('partial/charcreo/fields.html', form=form,custom_fields=custom_fields)    
 
 # route: roll name
 @character_create.route('/charcreo/roll-name', methods=['POST'])
 def charcreo_roll_name():
-    form, custom_fields, background = process_form_data(request.form)
+    form, custom_fields, _ = process_form_data(request.form)
     lst = form.name.choices[2:]     
     name,_ = roll_list(lst)            
     form.name.process_data(name)    
@@ -237,15 +269,17 @@ def charcreo_bkg_table_roll(nr):
         items = background['starting_gear']
     if nr == "1":
         lst = background['table1']['options']
-        field="background_table1_select"        
+        field="background_table1_select"
+        gfield = 'bonus_gold_t1'        
     else:
         lst = background['table2']['options']
         field="background_table2_select"
+        gfield = 'bonus_gold_t2'
     opt=roll_list(lst)
     if 'items' in opt:
         items.extend(opt['items'])
     update_items(custom_fields, items)   
-    update_gold(custom_fields, sdv(opt, 'bonus_gold',0))                    
+    update_gold(custom_fields,gfield,sdv(opt, 'bonus_gold',0))                    
     custom_fields[field]=opt['description']
     render = render_template('partial/charcreo/fields.html', form=form, custom_fields=custom_fields )
     response = make_response(render)    
@@ -255,7 +289,7 @@ def charcreo_bkg_table_roll(nr):
 # route: roll attribute
 @character_create.route('/charcreo/attr-roll/<atype>', methods=['POST'])
 def charcreo_attr_roll(atype):
-    form, custom_fields, background = process_form_data(request.form)
+    form, custom_fields, _ = process_form_data(request.form)
     match atype:
         case "str":
             _, total = roll_multi_dice(6,3)
@@ -333,7 +367,7 @@ def charcreo_swap_attr():
 # route: select trait
 @character_create.route('/charcreo/trait-select/<ttype>', methods=['POST'])
 def charcreo_trait_select(ttype):
-    form, custom_fields, background = process_form_data(request.form)
+    form, custom_fields, _ = process_form_data(request.form)
     names = ["Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice"]
     tts = []
     for n in names:
@@ -344,7 +378,7 @@ def charcreo_trait_select(ttype):
 # route: roll traits
 @character_create.route('/charcreo/trait-roll', methods=['POST'])
 def charcreo_trait_roll():
-    form, custom_fields, background = process_form_data(request.form)
+    form, custom_fields, _ = process_form_data(request.form)
     names = ["Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice"]
     tts = []
     for n in names:
@@ -356,7 +390,7 @@ def charcreo_trait_roll():
 # route: age roll
 @character_create.route('/charcreo/age-roll', methods=['POST'])
 def charcreo_age_roll():
-    form, custom_fields, background = process_form_data(request.form)
+    form, custom_fields, _ = process_form_data(request.form)
     _, total = roll_multi_dice(20,2)
     custom_fields['age'] = total + 10
     return render_template('partial/charcreo/abo.html', form=form,custom_fields=custom_fields )
@@ -367,7 +401,6 @@ def charcreo_bonds_select(tp):
     form, custom_fields, background = process_form_data(request.form)    
     if tp == 'b':
         bond = find_bond_by_description(custom_fields['bonds_selected'])
-        print('bond',bond)
         if bond:
             update_gold(custom_fields,'bonus_gold_bond',sdv(bond,'gold',0))
             custom_fields['bond_items'] = json.dumps(sdv(bond,'items',[]))                       
@@ -402,7 +435,7 @@ def charcreo_bond_roll():
 # route: omen roll
 @character_create.route('/charcreo/omen-roll', methods=['POST'])
 def charcreo_omen_roll():
-    form, custom_fields, background = process_form_data(request.form)
+    form, custom_fields, _ = process_form_data(request.form)
     o = roll_list(load_omens())
     custom_fields['omens_selected'] = o
     return render_template('partial/charcreo/abo.html', form=form,custom_fields=custom_fields )
@@ -410,7 +443,7 @@ def charcreo_omen_roll():
 # route: gold roll
 @character_create.route('/charcreo/gold-roll', methods=['POST'])
 def charcreo_gold_roll():
-    form, custom_fields, background = process_form_data(request.form)
+    form, custom_fields, _ = process_form_data(request.form)
     _, total = roll_multi_dice(6,3)
     custom_fields['gold'] = total
     return render_template('partial/charcreo/items.html', form=form,custom_fields=custom_fields )
@@ -418,5 +451,164 @@ def charcreo_gold_roll():
 # route: refresh items
 @character_create.route('/charcreo/refresh-items', methods=['POST'])
 def charcreo_refresh_items():
-    form, custom_fields, background = process_form_data(request.form)
+    form, custom_fields, _ = process_form_data(request.form)
     return render_template('partial/charcreo/items.html', form=form,custom_fields=custom_fields )
+
+# route: roll all character data
+@character_create.route('/charcreo/roll-all', methods=['GET'])
+def charcreo_roll_all():
+    # roll values
+    data = {}
+    items = []
+    key, background = random_background()
+    name = random_name(background)
+    items.extend(background['starting_gear'])
+    data['background'] = key
+    data['name'] = name
+    t1 = random_table_option(background, 'table1')
+    t2 = random_table_option(background, 'table2')
+    items.extend(sdv(t1,'items',[]))
+    items.extend(sdv(t2,'items',[]))
+    data['background_table1_select'] = t1['description']
+    data['background_table2_select'] = t2['description']
+    bond = roll_list(load_bonds())
+    data['bonds_select'] = bond['description']
+    data['bond_items'] = json.dumps(sdv(bond,'items',[]))
+    omen = roll_list(load_omens())
+    data['omens_select'] = omen   
+    update_gold(data,'bonus_gold_bond',sdv(bond,'gold',0)) 
+    update_gold(data, "bonus_gold_t1" ,sdv(t1, 'bonus_gold',0))
+    update_gold(data, "bonus_gold_t2" ,sdv(t2, 'bonus_gold',0))
+    _, total = roll_multi_dice(6,3)
+    data['gold'] = total
+    _, total = roll_multi_dice(20,2)
+    data['age'] = total + 10 
+    
+    # prepare form 
+    form, custom_fields, background = process_dict_data(data)
+    update_items(custom_fields, items)    
+    tnames = ["Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice"]
+    tts = []
+    for n in tnames:
+        custom_fields[n] = roll_list(custom_fields['traits'][n])
+        tts.append(TraitValue(n, custom_fields[n]))
+    form.traits.process_data(traits_text(0, tts))
+    _, total = roll_multi_dice(6,3)
+    form.strength_max.data = total
+    form.strength_max.raw_data = None
+    _, total = roll_multi_dice(6,3)
+    form.dexterity_max.data = total
+    form.dexterity_max.raw_data = None
+    _, total = roll_multi_dice(6,3)
+    form.willpower_max.data = total
+    form.willpower_max.raw_data = None            
+    _, total = roll_multi_dice(6,1)
+    form.hp_max.data = total
+    form.hp_max.raw_data = None 
+    image = roll_list(load_images())
+    custom_fields['portrait_src'] = "/static/images/portraits/"+image
+    custom_fields['custom_image'] = ''
+    render = render_template('partial/charcreo/body.html', form=form, custom_fields=custom_fields, portrait_src=custom_fields['portrait_src'], custom_image=custom_fields['custom_image'])
+    response = make_response(render)    
+    return response
+
+
+form_attr = {
+    "str": "strength_max",
+    "dex": "dexterity_max",
+    "wil": "willpower_max",
+    "hp": "hp_max"
+}
+
+DEFAULT_PORTRAIT = urllib.parse.quote_plus("/static/images/portraits/default-portrait.webp")
+
+# route: roll remaining character data
+@character_create.route('/charcreo/roll-remaining', methods=['POST'])
+def charcreo_roll_remaining():
+    form, custom_fields, background = process_form_data(request.form)
+    data = {}
+    if not custom_fields['background']:
+        key, background = random_background()
+        custom_fields['background'] = background
+        custom_fields['background_table1_select'] = None
+        custom_fields['background_table2_select'] = None
+        items = json.loads(custom_fields['items'])
+        items.extend(background['starting_gear'])
+        update_items(custom_fields, items)
+        form.background.process_data(key)
+        form.custom_background.process_data("")
+        form.name.choices = rebuild_names(background['names'])
+    if not form.name.data or form.name.data == '':        
+        form.name.process_data(random_name(background))
+    if not custom_fields['background_table1_select']:
+        items = background['starting_gear']
+        lst = background['table1']['options']
+        opt=roll_list(lst)
+        if 'items' in opt:
+            items.extend(opt['items'])
+        update_items(custom_fields, items)   
+        update_gold(custom_fields,'bonus_gold_t1',sdv(opt, 'bonus_gold',0))                    
+        custom_fields['background_table1_select']=opt['description']
+    if not custom_fields['background_table2_select']:
+        items = background['starting_gear']
+        lst = background['table2']['options']
+        opt=roll_list(lst)
+        if 'items' in opt:
+            items.extend(opt['items'])
+        update_items(custom_fields, items)   
+        update_gold(custom_fields,'bonus_gold_t2',sdv(opt, 'bonus_gold',0))                    
+        custom_fields['background_table2_select']=opt['description']
+    for atype in ['str','dex','wil','hp']:
+        if not form[form_attr[atype]].data or form[form_attr[atype]].data == '':
+            match atype:
+                case "str":
+                    _, total = roll_multi_dice(6,3)
+                    form.strength_max.data = total
+                    form.strength_max.raw_data = None
+                case "dex":
+                    _, total = roll_multi_dice(6,3)
+                    form.dexterity_max.data = total
+                    form.dexterity_max.raw_data = None
+                case "wil":
+                    _, total = roll_multi_dice(6,3)
+                    form.willpower_max.data = total
+                    form.willpower_max.raw_data = None            
+                case "hp":
+                    _, total = roll_multi_dice(6,1)
+                    form.hp_max.data = total
+                    form.hp_max.raw_data = None                                     
+    names = ["Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice"]
+    tts = []
+    for n in names:
+        if not custom_fields[n] or custom_fields[n] == '' or custom_fields[n] == '___':
+            custom_fields[n] = roll_list(custom_fields['traits'][n])
+        tts.append(TraitValue(n, custom_fields[n]))
+    form.traits.process_data(traits_text(0, tts))   
+    if not custom_fields['age'] or custom_fields['age'] == '':
+        _, total = roll_multi_dice(20,2)
+        custom_fields['age'] = total + 10
+    if not custom_fields['bonds_selected'] or custom_fields['bonds_selected'] == '':
+        b = roll_list(load_bonds())
+        custom_fields['bonds_selected'] = b['description']
+        update_gold(custom_fields,'bonus_gold_bond',sdv(b,'gold',0))
+        custom_fields['bond_items'] = json.dumps(sdv(b,'items',[]))
+        if background:
+            update_items(custom_fields, background['starting_gear'])
+        else:
+            update_items(custom_fields, []) 
+    if not custom_fields['omens_selected'] or custom_fields['omens_selected'] == '':
+        o = roll_list(load_omens())
+        custom_fields['omens_selected'] = o
+    if not custom_fields['gold'] or custom_fields['gold'] == '0':
+        _, total = roll_multi_dice(6,3)
+        custom_fields['gold'] = total
+    else:
+        print(custom_fields['gold'])
+    if not custom_fields['portrait_src'] or custom_fields['portrait_src'] == '' or custom_fields['portrait_src'] == DEFAULT_PORTRAIT:
+        image = roll_list(load_images())
+        custom_fields['portrait_src'] = "/static/images/portraits/"+image
+        custom_fields['custom_image'] = ''
+    render = render_template('partial/charcreo/body.html', form=form, custom_fields=custom_fields, portrait_src=custom_fields['portrait_src'], custom_image=custom_fields['custom_image'])
+    response = make_response(render)    
+    return response
+    

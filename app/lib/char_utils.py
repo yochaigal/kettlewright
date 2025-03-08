@@ -1,5 +1,5 @@
 from app.models import db, User, Character, Party
-from app.lib import load_backgrounds, load_traits, load_bonds, load_omens
+from app.lib import load_backgrounds, load_traits, load_bonds, load_omens, roll_list, roll_dice, roll_multi_dice, roll_dict
 import random
 import json
 import re
@@ -309,3 +309,36 @@ def find_bond_by_description(desc):
         if b['description'] == desc:
             return b
     return None
+
+def random_background():
+    bkgs = load_backgrounds()
+    key, background = roll_dict(bkgs)
+    return key, background
+
+def random_name(background):
+    if background != None and 'names' in background:
+        return roll_list(background['names'])
+    names = []
+    bkgs = load_backgrounds()
+    for key in bkgs:
+        names.extend(bkgs[key]['names'])
+    return roll_list(names)
+
+def random_table_option(background, name):
+    if not background or not name in background:
+        return None
+    return roll_list(background[name]['options'])
+
+# ["Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice"]
+def random_trait(name):
+    traits = load_traits()
+    if not name in traits:
+        return None
+    return roll_list(traits[name])
+
+def random_bond():
+    b = roll_list(load_bonds())
+    
+def random_omen():
+    b = roll_list(load_omens())
+    

@@ -271,6 +271,8 @@ def new_character():
     custom_fields['items'] = '[]'
     custom_fields['bond_items'] = '[]'
     custom_fields['armor'] = '0'
+    custom_fields['portrait_src'] = portrait_src
+    custom_fields['custom_image'] = custom_image
     
     return render_template('main/character_create.html', portrait_src = portrait_src, custom_image=custom_image, 
                            form=form, custom_fields=custom_fields)

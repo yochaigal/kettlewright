@@ -1,9 +1,10 @@
 {% extends "base.html" %} {% block content %}
 <script src="{{ url_for('static', filename='src/js/character_create.js') }}" type="module"></script>
-<div class="body-container">
+<div class="body-container" id="create-body-container">
     <div class="create-header">
         <div>
-            <button class="button is-link purple" id="roll-all" type="button" style="margin-right: 8px">
+            <button class="button is-link purple" id="roll-all" type="button" style="margin-right: 8px"
+                hx-get="/charcreo/roll-all" hx-target="#character-form" hx-swap="outerHTML">
                 {{_('Roll All')}}
                 <i class="fa-solid fa-dice icon-in-button"></i>
             </button>
@@ -19,6 +20,8 @@
         </button>
     </div>
     <form class="sheet" method="POST" id="character-form">
+        <div hx-post="/charcreo/roll-remaining" hx-target="#character-form" hx-swap="outerHTML"
+            hx-trigger="click from:#roll-remaining" />
         <!--  PORTRAIT -->
         <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em; align-items: center">
             <div class="no-space" id="character-portrait-container">

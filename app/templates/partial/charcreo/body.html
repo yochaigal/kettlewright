@@ -1,0 +1,58 @@
+<form class="sheet" method="POST" id="character-form">
+    <div hx-post="/charcreo/roll-remaining" hx-target="#character-form" hx-swap="outerHTML"
+        hx-trigger="click from:#roll-remaining" />
+    <input type="hidden" name="portrait_src" value="{{custom_fields['portrait_src']}}" />
+    <input type="hidden" name="custom_image" value="{{custom_fields['custom_image']}}" />
+    <!--  PORTRAIT -->
+    <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em; align-items: center">
+        <div class="no-space" id="character-portrait-container">
+            {% include "partial/charcreo/portrait_img.html" %}
+        </div>
+        <h1>{{_('New Character')}}</h1>
+    </div>
+    <!-- FIELDS -->
+    <div class="create-background-name-container" id="fields-container">
+        {% include "partial/charcreo/fields.html" %}
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ATTRIBUTES -->
+    <div class="create-attributes-container">
+        <h2 class="title script-font">{{_('Attributes')}}</h2>
+        <div id="attrs-container">
+            {% include "partial/charcreo/attrs.html" %}
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- TRAITS -->
+    <div class="create-traits-outer-container">
+        <div class="justify-left">
+            <h2 class="title script-font">{{_('Traits')}}</h2>
+            <button class="roll button dice-button" type="button" hx-post="/charcreo/trait-roll"
+                hx-target="#traits-container">
+                <i class="fa-solid fa-dice dice"></i>
+            </button>
+        </div>
+        <div id="traits-container" class="create-traits-container">
+            {% include "partial/charcreo/traits.html" %}
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- AGE, BONDS, OMENS -->
+    <div class="create-bonds-age-omens-outer-container" id="abo-container">
+        {% include "partial/charcreo/abo.html" %}
+    </div>
+
+    <!-- ITEMS -->
+    <div class="divider"></div>
+
+    <div class="items-container" style="margin-bottom: 24px" id="items-container">
+        {% include "partial/charcreo/items.html" %}
+    </div>
+
+</form>
