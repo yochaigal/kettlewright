@@ -18859,9 +18859,8 @@ msgid "Time Control"
 msgstr ""
 
 #: app/static/json/party_events/spellbooks.json:546
-#, python-format
-msgid "Time in a 50ft bubble slows down or increases by 10% for 30 seconds."
-msgstr ""
+msgid "Time in a 50ft bubble slows down or increases by 10&#37; for 30 seconds."
+msgstr "Czas w sferze o promieniu 15m ulega spowolnieniu lub wydłużeniu o 10% na 30 sekund."
 
 #: app/static/json/party_events/spellbooks.json:547
 msgid "Alternates its appearance as either impossibly old or freshly written."
