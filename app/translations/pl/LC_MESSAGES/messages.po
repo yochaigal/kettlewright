@@ -2850,77 +2850,84 @@ msgid ""
 "control. You share a connection with animals that others can only dream "
 "of... so long as you don't become their snack."
 msgstr ""
+"Tylko ty możesz poruszać się bez obaw pośród dzikich stworzeń oraz w pełni "
+"je kontrolować. Łączy cię ze zwierzętami więź, o której inni mogą tylko pomarzyć… "
+"o ile nie staniesz się ich przekąską."
 
 #: app/static/json/backgrounds/beast-handler.json:31
 msgid "Leather Whip"
-msgstr ""
+msgstr "Skórzany bicz"
 
 #: app/static/json/backgrounds/beast-handler.json:35
 msgid "Soporific Darts"
-msgstr ""
+msgstr "Strzałki usypiające"
 
 #: app/static/json/backgrounds/beast-handler.json:38
 msgid "STR save or fall asleep."
-msgstr ""
+msgstr "rzut obronny SIŁ albo cel zostaje uśpiony,"
 
 #: app/static/json/backgrounds/beast-handler.json:41
 msgid "Lure"
-msgstr ""
+msgstr "Przynęta"
 
 #: app/static/json/backgrounds/beast-handler.json:45
 #: app/static/json/backgrounds/fungal-forager.json:23
 msgid "Rope (25ft)"
-msgstr ""
+msgstr "Lina (8m)"
 
 #: app/static/json/backgrounds/beast-handler.json:50
 msgid "What creature is your specialty?"
-msgstr ""
+msgstr "W poskramianiu jakich stworzeń się specjalizujesz?"
 
 #: app/static/json/backgrounds/beast-handler.json:53
 msgid ""
 "Arachnids: Take a Quick-Flame Rod and an Oil Can (6 uses). It can destroy"
 " a large spider nest in seconds."
 msgstr ""
+"Arachnidy: Weź Różdżkę szybkiego płomienia i puszkę oleju (6 użyć). "
+"Zestaw może zniszczyć duże gniazdo pająków w kilka sekund."
 
 #: app/static/json/backgrounds/beast-handler.json:56
 msgid "Quick-Flame Rod"
-msgstr ""
+msgstr "Różdżka szybkiego płomienia"
 
 #: app/static/json/backgrounds/beast-handler.json:59
 msgid "Can destroy a large spider nest in seconds."
-msgstr ""
+msgstr "Może zniszczyć duże gniazdo pająków w kilka sekund."
 
 #: app/static/json/backgrounds/beast-handler.json:69
 msgid ""
 "Felines: Take a sack of Whiskerwort. Its odor can calm and control even "
 "the largest of cats."
 msgstr ""
+"Kotowate: Weź worek Wąsoziela. Jego zapach może uspokoić i pozwoli kontrolować nawet największe koty."
 
 #: app/static/json/backgrounds/beast-handler.json:72
 msgid "Whiskerwort"
-msgstr ""
+msgstr "Wąsoziele"
 
 #: app/static/json/backgrounds/beast-handler.json:74
 msgid "Its odor can calm and control even the largest of cats."
-msgstr ""
+msgstr "Jego zapach może uspokoić i pozwoli kontrolować nawet największe koty."
 
 #: app/static/json/backgrounds/beast-handler.json:79
 msgid ""
 "Canines: Take a wreath of Wolfsbane and a Large Net. Effective against "
 "werewolves as well."
 msgstr ""
+"Psowate: Weź wieniec z tojadu i dużą sieć. Skuteczne również przeciwko wilkołakom."
 
 #: app/static/json/backgrounds/beast-handler.json:82
 msgid "Wolfsbane"
-msgstr ""
+msgstr "Tojad"
 
 #: app/static/json/backgrounds/beast-handler.json:84
 msgid "Effective against werewolves as well."
-msgstr ""
+msgstr "Skuteczny również przeciwko wilkołakom."
 
 #: app/static/json/backgrounds/beast-handler.json:87
 msgid "Large Net"
-msgstr ""
+msgstr "Duża sieć"
 
 #: app/static/json/backgrounds/beast-handler.json:93
 msgid ""
@@ -2928,16 +2935,22 @@ msgid ""
 "and can even be used to send simple messages. Recharge: Feed a baby bird "
 "as its mother would, then blow."
 msgstr ""
+"Ptaki: Weź Świergoczący gwizdek (3 ładunki). Może naśladować każdy ptasi śpiew, "
+"a nawet służyć do wysyłania prostych wiadomości. Doładowanie: Nakarm małego ptaszka "
+"tak, jak zrobiłaby to jego matka, a następnie dmuchnij."
 
 #: app/static/json/backgrounds/beast-handler.json:96
 msgid "Warble-Whistle"
-msgstr ""
+msgstr "Świergoczący gwizdek"
 
 #: app/static/json/backgrounds/beast-handler.json:100
 msgid ""
 "Can imitate any bird call and can even be used to send simple messages. "
 "Recharge: Feed a baby bird as its mother would, then blow."
 msgstr ""
+"Może naśladować każdy ptasi śpiew, "
+"a nawet służyć do wysyłania prostych wiadomości. Doładowanie: Nakarm małego ptaszka "
+"tak, jak zrobiłaby to jego matka, a następnie dmuchnij."
 
 #: app/static/json/backgrounds/beast-handler.json:105
 msgid ""
@@ -2945,39 +2958,47 @@ msgid ""
 "rodents can hear. So long as you play, they will follow, even to their "
 "deaths."
 msgstr ""
+"Gryzonie: Weź Fletnię Pana, emituje ona wysoki dźwięk, który mogą usłyszeć "
+"tylko gryzonie. Dopóki grasz, gryzonie podążają za tobą, nawet jeśli oznacza "
+"to ich zgubę."
 
 #: app/static/json/backgrounds/beast-handler.json:108
 msgid "Pan Flute"
-msgstr ""
+msgstr "Fletnia Pana"
 
 #: app/static/json/backgrounds/beast-handler.json:110
 msgid ""
 "Emits a high-pitched sound that only rodents can hear. So long as you "
 "play, they will follow, even to their deaths."
 msgstr ""
+"Emituje wysoki dźwięk, który mogą usłyszeć "
+"tylko gryzonie. Dopóki grasz, gryzonie podążają za tobą, nawet jeśli oznacza "
+"to ich zgubę.""
 
 #: app/static/json/backgrounds/beast-handler.json:115
 msgid ""
 "Serpents: Take a Warming Stone that generates an irresistible heat and a "
 "vial of Antitoxin (2 uses)."
 msgstr ""
+"Węże: Weź Kamień rozgrzewający, który generuje nieznośne ciepło i fiolkę "
+"antytoksyny (2 użycia)."
 
 #: app/static/json/backgrounds/beast-handler.json:118
 msgid "Warming Stone"
-msgstr ""
+msgstr "Kamień rozgrzewający"
 
 #: app/static/json/backgrounds/beast-handler.json:120
 msgid "Generates an irresistible heat."
-msgstr ""
+msgstr "Generuje nieznośne ciepło"
 
 #: app/static/json/backgrounds/beast-handler.json:123
 #: app/static/json/backgrounds/greenwise.json:78
 msgid "Antitoxin"
-msgstr ""
+msgstr "Antytoksyna"
 
 #: app/static/json/backgrounds/beast-handler.json:132
 msgid "What have you learned from the creatures of the wild?"
-msgstr ""
+msgstr "Czego nauczyłeś się od dzikich zwierząt?"
 
 #: app/static/json/backgrounds/beast-handler.json:135
 msgid ""
@@ -2985,6 +3006,9 @@ msgid ""
 "concentration, you can borrow the senses of a nearby creature of your "
 "specialty."
 msgstr ""
+"Że na świecie jest znacznie więcej, niż widać na pierwszy rzut oka. "
+"Dzięki cichej koncentracji możesz pożyczyć zmysły pobliskiego "
+"stworzenia z twojej specjalności."
 
 #: app/static/json/backgrounds/beast-handler.json:138
 msgid ""
@@ -2992,12 +3016,16 @@ msgid ""
 "beasts of your specialty you gain insight into weather patterns and "
 "impending disasters."
 msgstr ""
+"Zachowanie zwierząt jest językiem samym w sobie. Obserwując zwierzęta ze "
+"swojej specjalności, zyskujesz wgląd we wzorce pogodowe i zbliżające się katastrofy."
 
 #: app/static/json/backgrounds/beast-handler.json:141
 msgid ""
 "That the pulse of the hunt is a powerful impulse. You have a sense for "
 "when predators, even those not of your specialty are near."
 msgstr ""
+"Instynkt polowania jest potężnym impulsem. Wyczuwasz drapieżniki znajdujące "
+"się w pobliżu, nawet te, które nie należą do twojej specjalizacji."
 
 #: app/static/json/backgrounds/beast-handler.json:144
 msgid ""
@@ -3005,6 +3033,9 @@ msgid ""
 "a terrain dominated by the beasts of your specialty is reduced by one "
 "step (e.g. 4-in-6 becomes 3-in-6)."
 msgstr ""
+"Teren jest językiem samym w sobie. Twoja szansa na zgubienie się w terenie "
+"zdominowanym przez zwierzęta z twojej specjalności jest zmniejszona o jeden "
+"stopień (np. 4 na 6 staje się 3 na 6)."
 
 #: app/static/json/backgrounds/beast-handler.json:147
 msgid ""
@@ -3012,6 +3043,9 @@ msgid ""
 "surrounded by creatures of your specialty, they can alert you to "
 "approaching danger before it arrives."
 msgstr ""
+"Możesz usłyszeć symfonię natury, jeśli dostroisz się do jej rytmu. "
+"Kiedy jesteś otoczony przez stworzenia z twojej specjalności, mogą one "
+"ostrzec cię o zbliżającym się niebezpieczeństwie, zanim nadejdzie."
 
 #: app/static/json/backgrounds/beast-handler.json:150
 msgid ""
@@ -3019,6 +3053,9 @@ msgid ""
 "simple feature from a creature of your specialty (webbed fingers, night "
 "vision, etc.). Add a Fatigue each time."
 msgstr ""
+"Przetrwanie polega na zdolności adaptacji. Raz dziennie możesz przejąć prostą "
+"cechę od stworzenia z twojej specjalności (palce pokryte błoną, widzenie w nocy itp.). "
+"Za każdym razem dodaj zmęczenie."
 
 #: app/static/json/backgrounds/bonekeeper.json:4
 msgid ""
