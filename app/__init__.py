@@ -167,15 +167,22 @@ def create_app():
     
     # Translate
     @app.template_filter("tr")
-    def squote2js_filter(text: str) -> str:
+    def tr_filter(text: str) -> str:
         return _(text)
     
     # URL decode
     @app.template_filter("urldec")
-    def urlenc_filter(text: str) -> str:
+    def urldec_filter(text: str) -> str:
         if not text:
             return None
         return urllib.parse.unquote_plus(text)
+    
+    # URL decode
+    @app.template_filter("urlenc")
+    def urlenc_filter(text: str) -> str:
+        if not text:
+            return None
+        return urllib.parse.quote_plus(text)
     
     # Truncate text to x chars
     @app.template_filter("trunc")

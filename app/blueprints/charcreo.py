@@ -3,18 +3,21 @@
 # Character creation blueprint
 
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response
-from flask_login import login_required, current_user
+from flask_login import current_user
 from app.models import db, User, Character, Party
 from app.forms import *
-from app.main import sanitize_data
+from app.main import create_unique_url_name
 from app.lib import *
 from unidecode import unidecode
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 import urllib.parse
 import json
+from flask_login import login_required, current_user
+
 
 character_create = Blueprint('character_create', __name__)
+
 
 def rebuild_names(names):
     result = [('', _l('Name (d10)...')), ('Custom', _l('** Custom **'))]
@@ -57,6 +60,7 @@ def get_custom_fields(data):
 
 # Fill all needed data from request
 def process_form_data(data):
+    print("process", data['portrait_src'])
     form = CharacterForm(formdata=data)
     custom_fields = get_custom_fields(data)
     background = get_background(form)
@@ -104,7 +108,7 @@ def process_dict_data(data):
     return form, custom_fields, background
 
 
- # update items in inventory
+# update items in inventory
 def update_items(custom_fields,items):
     if custom_fields['inventory']:
         custom_fields['inventory'].remove_items(0)
@@ -166,16 +170,16 @@ def charcreo_portrait_save():
     data = request.form
     custom_url = data['custom-url']
     selected_portrait = data['selected-portrait']
-    portrait_src = "/static/images/portraits/default-portrait.webp"
+    portrait_src = "default-portrait.webp"
     if custom_url != None and custom_url != "":
         if not is_url_image(custom_url):
             print("Bad image url!!!", custom_url)
         else:
             portrait_src = custom_url
-            custom_image = True
+            custom_image = "true"
     elif selected_portrait != "" and selected_portrait != None:
-            portrait_src = "/static/images/portraits/"+selected_portrait
-            custom_image = False
+            portrait_src = selected_portrait
+            custom_image = "false"
     portrait_src = urllib.parse.quote_plus(portrait_src)
     custom_fields = {}
     custom_fields['portrait_src'] = portrait_src
@@ -506,8 +510,8 @@ def charcreo_roll_all():
     form.hp_max.data = total
     form.hp_max.raw_data = None 
     image = roll_list(load_images())
-    custom_fields['portrait_src'] = "/static/images/portraits/"+image
-    custom_fields['custom_image'] = ''
+    custom_fields['portrait_src'] = image
+    custom_fields['custom_image'] = 'false'
     render = render_template('partial/charcreo/body.html', form=form, custom_fields=custom_fields, portrait_src=custom_fields['portrait_src'], custom_image=custom_fields['custom_image'])
     response = make_response(render)    
     return response
@@ -526,7 +530,6 @@ DEFAULT_PORTRAIT = urllib.parse.quote_plus("/static/images/portraits/default-por
 @character_create.route('/charcreo/roll-remaining', methods=['POST'])
 def charcreo_roll_remaining():
     form, custom_fields, background = process_form_data(request.form)
-    data = {}
     if not custom_fields['background']:
         key, background = random_background()
         custom_fields['background'] = background
@@ -604,9 +607,52 @@ def charcreo_roll_remaining():
         custom_fields['gold'] = total
     if not custom_fields['portrait_src'] or custom_fields['portrait_src'] == '' or custom_fields['portrait_src'] == DEFAULT_PORTRAIT:
         image = roll_list(load_images())
-        custom_fields['portrait_src'] = "/static/images/portraits/"+image
-        custom_fields['custom_image'] = ''
+        custom_fields['portrait_src'] = image
+        custom_fields['custom_image'] = 'false'
     render = render_template('partial/charcreo/body.html', form=form, custom_fields=custom_fields, portrait_src=custom_fields['portrait_src'], custom_image=custom_fields['custom_image'])
     response = make_response(render)    
     return response
     
+
+# Route: save character
+@character_create.route('/charcreo/save', methods=['POST'])
+def charcreo_save():
+    form, custom_fields, _ = process_form_data(request.form)
+    form.custom_background.data = bleach.clean(form.custom_background.data)
+    form.custom_name.data = bleach.clean(form.custom_name.data)
+
+    # create url_name
+    if form.name.data == 'Custom':
+        url_name = create_unique_url_name(form.custom_name.data)
+        form.name.data = form.custom_name.data
+    else:
+        url_name = create_unique_url_name(form.name.data)
+
+    if form.background.data == 'Custom':
+        form.background.data = form.custom_background.data
+
+    # add character to db
+
+    custom_image = custom_fields['custom_image'] == 'true'
+    containers = '[{"name": "Main", "slots": 10, "id": 0}]'
+    print('portrait:', custom_fields['portrait_src'], "custom", custom_fields['custom_image'])
+    
+    new_character = Character(
+                name=form.name.data, owner_username=current_user.username, background=form.background.data, owner=current_user.id, url_name=url_name, custom_background=form.custom_background.data, custom_name=form.custom_name.data, items=form.items.data, 
+                containers=containers, # form.containers.data,
+                strength_max=form.strength_max.data, dexterity_max=form.dexterity_max.data, willpower_max=form.willpower_max.data, 
+                hp_max=form.hp_max.data, strength=form.strength_max.data, dexterity=form.dexterity_max.data, armor=form.armor.data, scars="",
+                willpower=form.willpower_max.data, hp=form.hp_max.data, deprived=False, 
+                description=form.description.data, traits=form.traits.data, notes=form.notes.data, 
+                gold=form.gold.data, bonds=form.bonds.data, omens=form.omens.data, custom_image=custom_image, image_url=custom_fields['portrait_src'])
+    db.session.add(new_character)
+    db.session.commit()
+    response = make_response("Redirecting")
+    response.headers["HX-Redirect"] = url_for('main.character', username=current_user.username, url_name=url_name)
+    return response
+    # return render_template('partial/modal/save_char_error.html')
+
+# Route: save character error cancel
+@character_create.route('/charcreo/save/error', methods=['GET'])
+def charcreo_save_error_cancel():
+    return ""

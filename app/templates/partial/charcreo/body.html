@@ -1,8 +1,6 @@
 <form class="sheet" method="POST" id="character-form">
     <div hx-post="/charcreo/roll-remaining" hx-target="#character-form" hx-swap="outerHTML"
         hx-trigger="click from:#roll-remaining" />
-    <input type="hidden" name="portrait_src" value="{{custom_fields['portrait_src']}}" />
-    <input type="hidden" name="custom_image" value="{{custom_fields['custom_image']}}" />
     <!--  PORTRAIT -->
     <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em; align-items: center">
         <div class="no-space" id="character-portrait-container">
@@ -54,5 +52,8 @@
     <div class="items-container" style="margin-bottom: 24px" id="items-container">
         {% include "partial/charcreo/items.html" %}
     </div>
+
+    <input class="button" id="submit-button" name="submit" type="button" value="{{_('Save Character')}}"
+    hx-post="/charcreo/save" hx-target="#dialog-anchor" hx-swap="innerHTML"/>        
 
 </form>

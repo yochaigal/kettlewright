@@ -74,6 +74,9 @@
             {% include "partial/charcreo/items.html" %}
         </div>
 
+        <input class="button" id="submit-button" name="submit" type="button" value="{{_('Save Character')}}"
+        hx-post="/charcreo/save" hx-target="#dialog-anchor" hx-swap="innerHTML"/>        
     </form>
 </div>
+<div class="no-space" id="dialog-anchor" />
 {% endblock %}

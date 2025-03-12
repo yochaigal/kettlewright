@@ -1,5 +1,6 @@
 import json
 import re
+from app.lib.data import safeint
 from app.models import db, Party, Character
 from app.lib import sdv
 from flask_babel import _
@@ -16,8 +17,6 @@ def bring_fatigue_to_end(item):
     else:
         return item["name"]
     
-
-
 
 class Inventory:
     # character can be a player character or a party
@@ -121,12 +120,12 @@ class Inventory:
                 # annotate tags                            
                 if tag == "bulky" or tag == "petty":
                     tt.append("<i>"+_(tag)+"</i>")
-                elif tag == "uses":
+                elif tag == "uses" and "uses" in item:
                     if item["uses"] == 1:
                         tt.append(_("1 use"))
                     else:
                         tt.append(str(item["uses"])+" "+_("uses"))
-                elif tag == "charges":
+                elif tag == "charges" and "charges" in item and "max_charges" in item:
                     tt.append(str(item["charges"])+"/"+str(item["max_charges"])+" "+_("charges"))
                 elif "1 Armor" in tag or "2 Armor" in tag or "3 Armor" in tag:
                     if bf:
@@ -397,8 +396,9 @@ class Inventory:
             if "uses" in item:
                 del item["uses"]
         if "charges" in item["tags"]:
-            item["charges"] = int(charges)
-            item["max_charges"] = int(max_charges)
+            item["charges"] = safeint(charges)
+        if "max_charges" in item:
+            item["max_charges"] = safeint(max_charges)
         else:
             if "charges" in item:
                 del item["charges"]

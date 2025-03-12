@@ -19,7 +19,7 @@
       <div class="card-content">
         <div class="card-image">
           <figure class="" style="display: flex; align-items: center; justify-content: center">
-            <img src="{{ character.portrait_src }}" alt="Character Portrait"
+            <img src="{{ character.portrait_src | urldec }}" alt="Character Portrait"
               data-custom-image="{{ character.custom_image }}" data-image-url="{{ character.image_url }}"
               class="character-card-image" />
           </figure>
@@ -27,7 +27,7 @@
 
         <div class="character-card-name-container">
           <h2 class="character-card-name">{{ character.name }}</h2>
-          <h3 class="character-card-background">{{ character.background }}</h3>
+          <h3 class="character-card-background">{{ character.background | tr }}</h3>
         </div>
 
         <div class="character-card-stats-container">
@@ -38,24 +38,24 @@
                 alt="Strength"
                 class="card-attribute-icon"
               /> -->
-              <p class="character-card-attribute subtitle"> STR {{character.strength}}/{{character.strength_max}} </p>
+              <p class="character-card-attribute subtitle"> {{_('STR')}} {{character.strength}}/{{character.strength_max}} </p>
             </div>
             <div class="card-attribute-container">
-              <p class="character-card-attribute subtitle"> DEX {{character.dexterity}}/{{character.dexterity_max}} </p>
+              <p class="character-card-attribute subtitle"> {{_('DEX')}} {{character.dexterity}}/{{character.dexterity_max}} </p>
             </div>
             <div class="card-attribute-container">
-              <p class="character-card-attribute subtitle"> WIL {{character.willpower}}/{{character.willpower_max}} </p>
+              <p class="character-card-attribute subtitle"> {{_('WIL')}} {{character.willpower}}/{{character.willpower_max}} </p>
             </div>
           </div>
           <div class="column is-half">
             <div class="card-attribute-container">
-              <p class="character-card-attribute subtitle">Armor {{character.armor}}</p>
+              <p class="character-card-attribute subtitle">{{_('Armor')}} {{character.armor}}</p>
             </div>
             <div class="card-attribute-container">
-              <p class="character-card-attribute subtitle">HP {{character.hp}}</p>
+              <p class="character-card-attribute subtitle">{{_('HP')}} {{character.hp}}</p>
             </div>
             <div class="card-attribute-container">
-              <p class="character-card-attribute subtitle">Gold {{character.gold}}</p>
+              <p class="character-card-attribute subtitle">{{_('Gold')}} {{character.gold}}</p>
             </div>
           </div>
         </div>
@@ -66,9 +66,10 @@
           <i class="fa-solid fa-link icon-in-button" style="margin-right: 4px"></i>
         </button>
         <button class="button is-light card-delete-character-button" type="button"
-          data-character-id="{{ character.id }}" data-confirm-title="Delete character" data-confirm-button="Delete"
+          data-character-id="{{ character.id }}" data-confirm-title="{{_('Delete character')}}" 
+          data-confirm-button="{{_('Delete')}}" data-cancel-button="{{_('Cancel')}}"
           hx-get="/delete-character/{{ character.id }}/"
-          hx-confirm="Are you sure you want to delete {{character.name}}?">
+          hx-confirm="{{_('Are you sure you want to delete')}} {{character.name}}?">
           <i class="fa-solid fa-trash icon-in-button" style="margin-right: 4px"></i>
         </button>
       </div>

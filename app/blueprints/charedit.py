@@ -202,7 +202,7 @@ def charedit_rest(username, url_name):
     user, character = get_char_data(username, url_name)
     setattr(character,"hp",character.hp_max)
     db.session.commit()
-    return render_template('partial/charview/stats.html', user=user, character=character, username=username, url_name=url_name)
+    return render_template('partial/charview/stats.html', user=user, character=character, username=username, url_name=url_name, is_owner=True)
 
 # Route: roll omens on omen edit
 @character_edit.route('/charedit/omen-roll/<username>/<url_name>', methods=['POST'])

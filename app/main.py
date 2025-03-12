@@ -77,7 +77,7 @@ def characters(username):
     characters_sorted = sorted(
         characters, key=lambda x: x.created_at, reverse=True)
     for character in characters_sorted:
-        if character.custom_image == False:
+        if character.custom_image == False and character.image_url != None:
             character.portrait_src = url_for(
                 'static', filename='images/portraits/' + character.image_url)
         else:

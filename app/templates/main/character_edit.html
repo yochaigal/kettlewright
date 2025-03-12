@@ -28,13 +28,13 @@
         <div class="no-space" id="character-portrait-container">
           <div class="no-space click-pointer" title="Click to change image"
             hx-get="/charedit/inplace-portrait/{{username}}/{{url_name}}" hx-target="#character-portrait-container">
-            <img src="{{portrait_src}}" alt="character portrait" class="portrait-image" id="portrait-image" />
+            <img src="{{portrait_src | urldec}}" alt="character portrait" class="portrait-image" id="portrait-image" />
           </div>
         </div>
         <div class="full-width row16spaced-top">
           <div>
             <div class="">{{ form.name(class=' edit-mode' ) }}</div>
-            <h2 class="">{{character.background}}</h2>
+            <h2 class="">{{character.background | tr }}</h2>
           </div>
           {% if is_owner %}
           <div class="charedit-action-pad" id="action-pad">
