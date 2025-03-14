@@ -3079,34 +3079,41 @@ msgid ""
 "the dead as they descend into the cold, unyielding earth. You know that "
 "to fully celebrate the gift of life, we must honor its finale as well."
 msgstr ""
+"Jesteś pasterzem dla tych, którzy odeszli. Słuchasz ostatnich szeptów zmarłych, "
+"kiedy schodzą do zimnej, nieugiętej ziemi. Wiesz, że aby w pełni celebrować "
+"dar życia, musimy również uhonorować jego finał."
 
 #: app/static/json/backgrounds/bonekeeper.json:36
 msgid "Stake"
-msgstr ""
+msgstr "Kołek"
 
 #: app/static/json/backgrounds/bonekeeper.json:41
 msgid "Chains (10ft)"
-msgstr ""
+msgstr "Łańcuch (3m)"
 
 #: app/static/json/backgrounds/bonekeeper.json:47
 msgid "What did you take from the dead?"
-msgstr ""
+msgstr "Co zabrałeś zmarłym?"
 
 #: app/static/json/backgrounds/bonekeeper.json:50
 msgid ""
 "A crow-shaped amulet. You can ask a question of the dead but must add a "
 "Fatigue each time. They do not always speak truthfully."
 msgstr ""
+"Amulet w kształcie wrony. Możesz zadać pytanie zmarłym, ale za każdym "
+"razem musisz dodać zmęczenie. Zmarli nie zawsze mówią prawdę."
 
 #: app/static/json/backgrounds/bonekeeper.json:53
 msgid "Crow-shaped Amulet"
-msgstr ""
+msgstr "Amulet w kształcie wrony"
 
 #: app/static/json/backgrounds/bonekeeper.json:55
 msgid ""
 "You can ask a question of the dead but must add a Fatigue each time. They"
 " do not always speak truthfully."
 msgstr ""
+"Możesz zadać pytanie zmarłym, ale za każdym "
+"razem musisz dodać zmęczenie. Zmarli nie zawsze mówią prawdę."
 
 #: app/static/json/backgrounds/bonekeeper.json:60
 msgid ""
@@ -3115,6 +3122,10 @@ msgid ""
 "sustenance but are still subject to pain and death. Trapped between "
 "worlds, the dead see you as one of their own."
 msgstr ""
+"Śmiertelna rana od uwolnionego upiora. Zostałeś uleczony, ale szpetna "
+"blizna uczyniła cię pariasem. Nie potrzebujesz powietrza ani pożywienia, "
+"ale wciąż jesteś narażony na ból i śmierć. Jesteś uwięziony pomiędzy "
+"światami a zmarli postrzegają cię jako jednego ze swoich."
 
 #: app/static/json/backgrounds/bonekeeper.json:64
 #: app/static/json/backgrounds/bonekeeper.json:69
@@ -3125,26 +3136,33 @@ msgid ""
 "time. If destroyed, you permanently lose 1d4 STR. Recharge: Fill with the"
 " blood of a dying warrior."
 msgstr ""
+"Wiadro krwi (nieporęczne) od lokalnego kultu śmierci. Opróżnij je, aby wskrzesić "
+"sługę zbudowanego z tego, co jest pogrzebane w miejscu wylania krwi. "
+"6 OCHR, Pancerz 1, 13 SIŁ, 11 ZRE, 4 WOL i pięści z odłamków (d8+d8). "
+"W danym momencie można wskrzesić tylko jednego sługę. Jeśli zostanie zniszczony, "
+"na stałe traci 1k4 SIŁ. Doładowanie: Napełnij wiadro krwią umierającego wojownika."
 
 #: app/static/json/backgrounds/bonekeeper.json:67
 msgid "Blood Pail"
-msgstr ""
+msgstr "Wiadro krwi"
 
 #: app/static/json/backgrounds/bonekeeper.json:74
 msgid ""
 "A burial wagon (+6 slots, slow) from your last job. It came with a "
 "stubborn old donkey (+4 slots, only +2 slots if pulling wagon)."
 msgstr ""
+"Karawan (+6 miejsc, wolny) z twojej ostatniej pracy. "
+"Masz również upartego, starego osła (+4 miejsca, tylko +2 miejsca, jeśli ciągnie wóz)."
 
 #: app/static/json/backgrounds/bonekeeper.json:78
 msgid "Burial Wagon"
-msgstr ""
+msgstr "Karawan"
 
 #: app/static/json/backgrounds/bonekeeper.json:80
 #: app/static/json/backgrounds/bonekeeper.json:83
 #: app/static/json/backgrounds/kettlewright.json:109
 msgid "Donkey"
-msgstr ""
+msgstr "Osioł"
 
 #: app/static/json/backgrounds/bonekeeper.json:87
 msgid ""
@@ -3152,121 +3170,146 @@ msgid ""
 "worked in service to an obscure underworld deity, but you lost your "
 "faith. Though exiled, you continue to serve, even as an apostate."
 msgstr ""
+"Księga za zaklęciem Wykrywanie magii, skradziona ze starożytnej biblioteki. "
+"Twoja rodzina służyła tajemniczemu podziemnemu bóstwu, ale ty straciłeś wiarę. "
+"Choć zostałeś wygnany, nadal mu służysz, nawet jako odstępca. "
+"Wykrywanie magii: Możesz widzieć lub słyszeć pobliskie magiczne aury. "
+"Księga staje się ciepła w dotyku, gdy w pobliżu używana jest magia."
 
 #: app/static/json/backgrounds/bonekeeper.json:90
 msgid "Spellbook (Detect Magic)"
-msgstr ""
+msgstr "Księga za zaklęciem Wykrywanie magii"
 
 #: app/static/json/backgrounds/bonekeeper.json:92
 msgid ""
 "You can see or hear nearby magical auras. Becomes warm to the touch when "
 "magic is used nearby."
 msgstr ""
+"Możesz widzieć lub słyszeć pobliskie magiczne aury. "
+"Księga staje się ciepła w dotyku, gdy w pobliżu używana jest magia."
 
 #: app/static/json/backgrounds/bonekeeper.json:97
 msgid ""
 "A plague doctor's mask, after its owner succumbed to the disease that "
 "wiped out everyone you once knew. They should have kept it on."
 msgstr ""
+"Maska lekarza plagi, odziedziczona po właścicielu, który zmarł na zarazę. "
+"Plagę, która zniszczyła wszystkich, których kiedyś znałeś. Trzeba było "
+"ją pochować razem z właścicielem."
 
 #: app/static/json/backgrounds/bonekeeper.json:100
 msgid "Plague Doctor's Mask"
-msgstr ""
+msgstr "Maska lekarza plagi"
 
 #: app/static/json/backgrounds/bonekeeper.json:102
 msgid ""
 "After its owner succumbed to the disease that wiped out everyone you once"
 " knew. They should have kept it on."
 msgstr ""
+"Odziedziczona po właścicielu, który zmarł na zarazę. "
+"Plagę, która zniszczyła wszystkich, których kiedyś znałeś. Trzeba było "
+"ją pochować razem z właścicielem.""
 
 #: app/static/json/backgrounds/bonekeeper.json:109
 msgid "What tool was invaluable in your work?"
-msgstr ""
+msgstr "Jakie narzędzie było nieocenione w Twojej pracy?"
 
 #: app/static/json/backgrounds/bonekeeper.json:112
 msgid ""
 "Manacles. Though old, it's still effective even against the very strong. "
 "You don't have the key."
 msgstr ""
+"Kajdany: Choć stare, nadal skuteczne nawet przeciwko bardzo silnym postaciom. "
+"Nie masz do nich klucza."
 
 #: app/static/json/backgrounds/bonekeeper.json:115
 msgid "Manacles"
-msgstr ""
+msgstr "Kajdany"
 
 #: app/static/json/backgrounds/bonekeeper.json:117
 msgid ""
 "Though old, it's still effective even against the very strong. You don't "
 "have the key."
 msgstr ""
+"Choć stare, nadal skuteczne nawet przeciwko bardzo silnym postaciom. "
+"Nie masz do nich klucza."
 
 #: app/static/json/backgrounds/bonekeeper.json:122
 msgid ""
 "Sponge. Supposedly made from the remains of a rare sea creature. It never"
 " seems to dry out."
 msgstr ""
+"Gąbka: Podobno wykonana ze szczątków rzadkiego morskiego stworzenia. Wydaje się, "
+"że nigdy nie wysycha."
 
 #: app/static/json/backgrounds/bonekeeper.json:125
 msgid "Sponge"
-msgstr ""
+msgstr "Gąbka"
 
 #: app/static/json/backgrounds/bonekeeper.json:127
 msgid ""
 "Supposedly made from the remains of a rare sea creature. It never seems "
 "to dry out."
 msgstr ""
+"Podobno wykonana ze szczątków rzadkiego morskiego stworzenia. Wydaje się, "
+"że nigdy nie wysycha."
 
 #: app/static/json/backgrounds/bonekeeper.json:132
 msgid "Pulley. Great for moving gravestones, rocks, or even bodies."
-msgstr ""
+msgstr "Krążek linowy: Świetnie nadaje się do przesuwania nagrobków, kamieni, a nawet ciał."
 
 #: app/static/json/backgrounds/bonekeeper.json:135
 msgid "Pulley"
-msgstr ""
+msgstr "Krążek linowy"
 
 #: app/static/json/backgrounds/bonekeeper.json:137
 msgid "Great for moving gravestones, rocks, or even bodies."
-msgstr ""
+msgstr "Świetnie nadaje się do przesuwania nagrobków, kamieni, a nawet ciał."
 
 #: app/static/json/backgrounds/bonekeeper.json:142
 msgid "Incense. Perfect for rituals or to keep the flies at bay. Cools the blood."
-msgstr ""
+msgstr "Kadzidło: Idealne do rytuałów lub utrzymywania much na dystans. Studzi krew."
 
 #: app/static/json/backgrounds/bonekeeper.json:145
 msgid "Incense"
-msgstr ""
+msgstr "Kadzidło"
 
 #: app/static/json/backgrounds/bonekeeper.json:147
 msgid "Perfect for rituals or to keep the flies at bay. Cools the blood."
-msgstr ""
+msgstr "Idealne do rytuałów lub utrzymywania much na dystans. Studzi krew."
 
 #: app/static/json/backgrounds/bonekeeper.json:152
 msgid "Crowbar. d6 damage. Sometimes you just need to get the damn thing open!"
-msgstr ""
+msgstr "Łom: k6 obrażeń. Czasami trzeba po prostu otworzyć to cholerstwo!"
 
 #: app/static/json/backgrounds/bonekeeper.json:155
 msgid "Crowbar"
-msgstr ""
+msgstr "Łom"
 
 #: app/static/json/backgrounds/bonekeeper.json:157
 msgid "Sometimes you just need to get the damn thing open!"
-msgstr ""
+msgstr "Czasami trzeba po prostu otworzyć to cholerstwo!"
 
 #: app/static/json/backgrounds/bonekeeper.json:162
 msgid ""
 "Repellent. Powerful stuff. Its faded label makes it unclear what it is "
 "actually meant to repel, though. Perhaps everything. 3 uses."
 msgstr ""
+"Środek odstraszający: Mocna rzecz. Jego wyblakła etykieta sprawia, "
+"że nie jest jasne, co właściwie ma odstraszać. Być może wszystko. 3 użycia."
 
 #: app/static/json/backgrounds/bonekeeper.json:165
 #: app/static/json/backgrounds/fieldwarden.json:43
 msgid "Repellent"
-msgstr ""
+msgstr "Środek odstraszający"
 
 #: app/static/json/backgrounds/bonekeeper.json:168
 msgid ""
 "Powerful stuff. Its faded label makes it unclear what it is actually "
 "meant to repel, though. Perhaps everything."
 msgstr ""
+"Mocna rzecz. Jego wyblakła etykieta sprawia, że nie jest jasne, co "
+"właściwie ma odstraszać. Być może wszystko. 3 użycia."
 
 #: app/static/json/backgrounds/cutpurse.json:4
 msgid ""
