@@ -29,7 +29,5 @@
     {% include "partial/charcreo/inventory.html" %}
 </div>
 
-<input type="hidden" name="containers" value="" />
-
 <!-- Refresh items when background changed -->
-<div hx-trigger="background-changed from:body" hx-post="/charcreo/refresh-items" hx-target="#items-container"  hx-swap="innerHTML"></div>
+<div hx-trigger="background-changed from:*" hx-post="/charcreo/refresh-items" hx-target="#items-container"  hx-swap="innerHTML"></div>

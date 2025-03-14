@@ -102,7 +102,7 @@ class Inventory:
             
         item["dice"] = []
         # tags
-        if len(item["tags"]) > 0:
+        if "tags" in item and len(item["tags"]) > 0:
             title += " ("
             tt = []
             bf = False
@@ -175,6 +175,13 @@ class Inventory:
                 cnt = c
                 break
         return cnt
+    
+    def get_containers_wo_items(self):
+        conts = self.containers
+        result = []
+        for c in conts:
+            result.append({"id": c['id'], "name": c['name'], "slots": c['slots']})
+        return result
         
     # get items for container:
     def get_items_for_container(self, container_id, decorated):

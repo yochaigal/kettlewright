@@ -1,13 +1,13 @@
 <div class="inventory-modal" id="error-modal" >
       <div class="modal-background inventory-modal-background"></div>
-      <div class="modal-card" id="modal-card" style="top: inherit; bottom: -100%">
+      <div class="modal-card" id="modal-card" style="position: fixed">
         <header class="modal-card-head">
           <h3 class="modal-card-title">{{_('Error')}}</h3>
         </header>
   
         <section class="modal-card-body">
           <div class="justify-centered">
-            ERRROOROR
+            {{error|tr}}
           </div>
         </section>
   

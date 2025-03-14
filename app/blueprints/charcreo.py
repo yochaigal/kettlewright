@@ -48,7 +48,7 @@ def update_name_choices(form):
         
 def get_custom_fields(data):
     result = {}
-    names = ["background_table1_select", "background_table2_select", "age","bonds_selected","omens_selected",
+    names = ["background_table1_select", "background_table2_select", "age","bonds_selected","omens_selected","containers",
              "armor","gold","bonus_gold_t1", "bonus_gold_t2", "bonus_gold_bond","items","bond_items", "selected-portrait",
              "Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice", "portrait_src","custom_image"]
     for n in names:
@@ -60,7 +60,6 @@ def get_custom_fields(data):
 
 # Fill all needed data from request
 def process_form_data(data):
-    print("process", data['portrait_src'])
     form = CharacterForm(formdata=data)
     custom_fields = get_custom_fields(data)
     background = get_background(form)
@@ -77,7 +76,9 @@ def process_form_data(data):
     custom_fields['omens_selected'] = data['omens_select']
     character = DummyCharacter()    
     if custom_fields['items'] != None and custom_fields['items'] != '':
-        character.items = custom_fields['items']
+        character.items = custom_fields['items']    
+    if custom_fields['containers'] != None and custom_fields['containers'] != '':
+        character.containers = custom_fields['containers']
     inventory = Inventory(character)
     inventory.decorate()
     custom_fields['inventory'] = inventory
@@ -102,6 +103,8 @@ def process_dict_data(data):
     character = DummyCharacter()    
     if custom_fields['items'] != None and custom_fields['items'] != '':
         character.items = custom_fields['items']
+    if custom_fields['containers'] != None and custom_fields['containers'] != '':
+        character.containers = custom_fields['containers']        
     inventory = Inventory(character)
     inventory.decorate()
     custom_fields['inventory'] = inventory
@@ -129,6 +132,15 @@ def update_items(custom_fields,items):
     custom_fields['inventory'].decorate()
     custom_fields['armor'] = custom_fields['inventory'].compute_armor()
     
+def update_containers(custom_fields, conts):
+    if custom_fields['inventory']:
+        custom_fields['inventory'].containers = [{"name": "Main", "slots": 10, "id": 0}]
+        for c in conts:
+            if 'id' in c and int(c['id']) == 0:
+                continue
+            custom_fields['inventory'].add_container(sdv(c,'name','?'),sdv(c,'slots',0),None,None)            
+    custom_fields['containers'] = json.dumps(custom_fields['inventory'].get_containers_wo_items())
+            
     
 # update additional gold
 def update_gold(custom_fields, field, gold):
@@ -194,6 +206,7 @@ def charcreo_select_background():
     if background != None:
         form.name.process_data('')
         update_items(custom_fields,background['starting_gear'])
+        update_containers(custom_fields,sdv(background,'starting_containers',[]))
     else:
         update_items(custom_fields,[])
     custom_fields["background_table1_select"] = None
@@ -214,12 +227,13 @@ def charcreo_roll_background():
     form.name.process_data('')
     custom_fields['background'] = background
     update_items(custom_fields,background['starting_gear'])
+    update_containers(custom_fields,sdv(background,'starting_containers',[]))
     custom_fields["background_table1_select"] = None
     custom_fields["background_table2_select"] = None  
     
     render = render_template('partial/charcreo/fields.html', form=form, custom_fields=custom_fields)
     response = make_response(render)    
-    response.headers['HX-Trigger'] = "background-changed"
+    response.headers['HX-Trigger-After-Settle'] = "background-changed"
     return response
     
 # route: select name
@@ -242,6 +256,7 @@ def charcreo_roll_name():
 def charcreo_bkg_table_select(num):
     form, custom_fields, background = process_form_data(request.form)
     items = []
+    containers = []
     if background:
         items = background['starting_gear']
     opt = None
@@ -255,7 +270,9 @@ def charcreo_bkg_table_select(num):
             gfield = 'bonus_gold_t2'
     if opt:
         items.extend(sdv(opt,'items',[]))
+        containers.extend(sdv(opt,'containers',[]))
         update_items(custom_fields, items)
+        update_containers(custom_fields,containers)
         if gfield:
             update_gold(custom_fields, gfield ,sdv(opt, 'bonus_gold',0))        
     render =  render_template('partial/charcreo/fields.html', form=form,custom_fields=custom_fields )
@@ -269,6 +286,7 @@ def charcreo_bkg_table_select(num):
 def charcreo_bkg_table_roll(nr):
     form, custom_fields, background = process_form_data(request.form)
     items = []
+    containers = []
     if background:
         items = background['starting_gear']
     if nr == "1":
@@ -280,9 +298,10 @@ def charcreo_bkg_table_roll(nr):
         field="background_table2_select"
         gfield = 'bonus_gold_t2'
     opt=roll_list(lst)
-    if 'items' in opt:
-        items.extend(opt['items'])
+    items.extend(sdv(opt,'items',[]))
+    containers.extend(sdv(opt,'containers',[]))
     update_items(custom_fields, items)   
+    update_containers(custom_fields, containers)   
     update_gold(custom_fields,gfield,sdv(opt, 'bonus_gold',0))                    
     custom_fields[field]=opt['description']
     render = render_template('partial/charcreo/fields.html', form=form, custom_fields=custom_fields )
@@ -464,9 +483,11 @@ def charcreo_roll_all():
     # roll values
     data = {}
     items = []
+    containers = []
     key, background = random_background()
     name = random_name(background)
     items.extend(background['starting_gear'])
+    containers.extend(sdv(background, 'starting_containers',[]))
     data['background'] = key
     data['name'] = name
     t1 = random_table_option(background, 'table1')
@@ -490,7 +511,9 @@ def charcreo_roll_all():
     
     # prepare form 
     form, custom_fields, background = process_dict_data(data)
-    update_items(custom_fields, items)    
+    custom_fields['containers'] = '[{"name": "Main", "slots": 10, "id": 0}]'
+    update_items(custom_fields, items) 
+    update_containers(custom_fields, containers)   
     tnames = ["Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice"]
     tts = []
     for n in tnames:
@@ -530,6 +553,8 @@ DEFAULT_PORTRAIT = urllib.parse.quote_plus("/static/images/portraits/default-por
 @character_create.route('/charcreo/roll-remaining', methods=['POST'])
 def charcreo_roll_remaining():
     form, custom_fields, background = process_form_data(request.form)
+    custom_fields['containers'] = '[{"name": "Main", "slots": 10, "id": 0}]'
+    containers = []
     if not custom_fields['background']:
         key, background = random_background()
         custom_fields['background'] = background
@@ -537,6 +562,7 @@ def charcreo_roll_remaining():
         custom_fields['background_table2_select'] = None
         items = json.loads(custom_fields['items'])
         items.extend(background['starting_gear'])
+        containers.extend(sdv(background,'starting_containers',[]))
         update_items(custom_fields, items)
         form.background.process_data(key)
         form.custom_background.process_data("")
@@ -547,8 +573,8 @@ def charcreo_roll_remaining():
         items = background['starting_gear']
         lst = background['table1']['options']
         opt=roll_list(lst)
-        if 'items' in opt:
-            items.extend(opt['items'])
+        items.extend(sdv(opt,'items',[]))
+        containers.extend(sdv(opt,'containers',[]))    
         update_items(custom_fields, items)   
         update_gold(custom_fields,'bonus_gold_t1',sdv(opt, 'bonus_gold',0))                    
         custom_fields['background_table1_select']=opt['description']
@@ -556,8 +582,8 @@ def charcreo_roll_remaining():
         items = background['starting_gear']
         lst = background['table2']['options']
         opt=roll_list(lst)
-        if 'items' in opt:
-            items.extend(opt['items'])
+        items.extend(sdv(opt,'items',[]))
+        containers.extend(sdv(opt,'containers',[]))    
         update_items(custom_fields, items)   
         update_gold(custom_fields,'bonus_gold_t2',sdv(opt, 'bonus_gold',0))                    
         custom_fields['background_table2_select']=opt['description']
@@ -580,6 +606,7 @@ def charcreo_roll_remaining():
                     _, total = roll_multi_dice(6,1)
                     form.hp_max.data = total
                     form.hp_max.raw_data = None                                     
+    update_containers(custom_fields, containers)
     names = ["Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice"]
     tts = []
     for n in names:
@@ -630,13 +657,15 @@ def charcreo_save():
 
     if form.background.data == 'Custom':
         form.background.data = form.custom_background.data
+    
+    if form.name.data == None or form.name.data == '':
+        return render_template('partial/modal/save_char_error.html', error="Character has to have a name!")    
 
     # add character to db
 
     custom_image = custom_fields['custom_image'] == 'true'
-    containers = '[{"name": "Main", "slots": 10, "id": 0}]'
-    print('portrait:', custom_fields['portrait_src'], "custom", custom_fields['custom_image'])
-    
+    containers = custom_fields['containers']
+        
     new_character = Character(
                 name=form.name.data, owner_username=current_user.username, background=form.background.data, owner=current_user.id, url_name=url_name, custom_background=form.custom_background.data, custom_name=form.custom_name.data, items=form.items.data, 
                 containers=containers, # form.containers.data,
@@ -650,7 +679,6 @@ def charcreo_save():
     response = make_response("Redirecting")
     response.headers["HX-Redirect"] = url_for('main.character', username=current_user.username, url_name=url_name)
     return response
-    # return render_template('partial/modal/save_char_error.html')
 
 # Route: save character error cancel
 @character_create.route('/charcreo/save/error', methods=['GET'])
