@@ -44,9 +44,9 @@
   </div>
   <div id="character-rest-container">
     {% if is_owner %}
-    <button class="button smaller-font" hx-get="/charedit/rest/{{username}}/{{url_name}}"
+    <button class="button smaller-font" hx-get="/charedit/rest/{{username}}/{{url_name}}" hx-swap="innerHTML"
       hx-target="#character-stats-container" hx-confirm="{{_('Do you want to restore all HP?')}}"
-      data-confirm-title="Rest" data-confirm-button="Yes" {% if character.deprived %} disabled {% endif %}>
+      data-confirm-title="{{_('Rest')}}" data-confirm-button="{{_('Yes')}}"  data-cancel-button="{{_('No')}}" {% if character.deprived %} disabled {% endif %}>
       {{_('Rest')}}
     </button>
     {% endif %}

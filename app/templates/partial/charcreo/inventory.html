@@ -1,0 +1,36 @@
+<div class="col32" style="width: 100%; align-items: start">
+  <div class="row16spaced full-width">
+    <h3>{{_('Inventory')}}</h3>
+  </div>
+  <div class="inventory-header flex-row">
+    {% for cnt in custom_fields['inventory'].containers %}
+    <div
+      class="inventory-container-title subtitle pointer {% if cnt.is_selected %} inventory-container-title-selected {% endif %} {% if cnt.encumbered %} red-text {% endif %}"
+      hx-get=" /charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt.id}}"
+      hx-target="#inventory-container"  hx-swap="innerHTML">
+      {{cnt.title}}
+    </div>
+    {% endfor %}
+  </div>
+  <div style="margin-top: 0px; width: 100%">
+    {% for it in custom_fields['inventory'].selected_container['items'] %}
+    <div class="inventory-item-container {% if it.blocker %} item-blocker-text {% endif %}">
+      {% if it.is_empty %}
+      <div class="inventory-item-text"></div>
+      {% else %}
+      <div class="inventory-item-text">
+        {{it.title | safe}}
+      </div>
+      <div class="inventory-item-button-container">
+        {% if "description" in it and it.description != "" %}
+        <div class="pointer" title="Description"
+          onclick="KW_alert('{{it.name|tr|squote2js}}','{{it.description|tr|squote2js|eol2br}}')">
+          <i class="item-edit-button fa-solid fa-circle-info circle-info"></i>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>

@@ -4,7 +4,7 @@
   {% if is_owner %}
   <button type="button" class="button smaller-font" style="margin: 0px"
     hx-get="/marketplace/{{username}}/{{url_name}}/{{inventory.selected_container.id}}" hx-target="#modal-anchor">
-    Marketplace </button>
+    {{_('Marketplace')}} </button>
   {% endif %}
 </div>
 <div class="inventory-header flex-row">
@@ -29,7 +29,7 @@
     <div class="inventory-item-button-container">
       {% if "description" in it and it.description != "" %}
       <div class="pointer" title="Description"
-        onclick="KW_alert('{{it.name|squote2js}}','{{it.description|squote2js|eol2br}}')">
+        onclick="KW_alert('{{it.name|tr|squote2js}}','{{it.description|tr|squote2js|eol2br}}')">
         <i class="item-edit-button fa-solid fa-circle-info circle-info"></i>
       </div>
       {% endif %} {% if it.dice|length > 0 and is_owner %}

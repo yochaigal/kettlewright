@@ -1,5 +1,5 @@
 from app.models import db, User, Character, Party
-from app.lib import load_backgrounds, load_traits, load_bonds, load_omens
+from app.lib import load_backgrounds, load_traits, load_bonds, load_omens, roll_list, roll_dice, roll_multi_dice, roll_dict
 import random
 import json
 import re
@@ -51,8 +51,13 @@ class TraitValue:
         self.name = name
         self.value = value
         
+        
+# generate traits text, table contains: Physique, Skin, Hair, Face, Speech, Clothing, Virtue, Vice        
 def traits_text(age, traits):
-    return _('You have a')+' '+_(traits[0].value)+' '+_(traits[0].name)+', '+_(traits[1].value)+' '+_(traits[1].name)+', '+_('and')+' '+_(traits[2].value)+' '+_(traits[2].name)+'. '+_('Your')+' '+_(traits[3].name)+' '+_('is')+' '+_(traits[3].value)+', '+_('your')+' '+ _(traits[4].name)+' '+_(traits[4].value)+'. '+_('You have')+ ' '+_(traits[5].value)+' '+_(traits[5].name)+'. '+_('You are')+' '+    _(traits[6].value)+' ' +_('and')+' '+_(traits[7].value)+'. '+_('Your age')+': '+str(age)+' .'
+    txt = _('You have a')+' '+_(traits[0].value)+' '+_(traits[0].name)+', '+_(traits[1].value)+' '+_(traits[1].name)+', '+_('and')+' '+_(traits[2].value)+' '+_(traits[2].name)+'. '+_('Your')+' '+_(traits[3].name)+' '+_('is')+' '+_(traits[3].value)+', '+_('your')+' '+ _(traits[4].name)+' '+_(traits[4].value)+'. '+_('You have')+ ' '+_(traits[5].value)+' '+_(traits[5].name)+'. '+_('You are')+' '+    _(traits[6].value)+' ' +_('and')+' '+_(traits[7].value)+'. '
+    if age > 0:
+        txt += _('Your age')+': '+str(age)+' .'
+    return txt
     
         
 class TableValue:
@@ -267,3 +272,73 @@ def generate_character(bkg):
     json_data = json.dumps(genchar.toJSON())
     
     return genchar, json_data
+
+
+
+# used for character creation inventory
+class DummyCharacter:
+    def __init__(self):
+        self.name = ""
+        self.background = None
+        self.background_name = ""
+        self.bond = None
+        self.omen = None
+        self.items = '[]'
+        self.table1 = None
+        self.table2 = None
+        self.attributes = None
+        self.traits = ''
+        self.gold = 0
+        self.age = 10
+        self.slots = 0
+        self.description = ""
+        self.containers = '[{"name": "Main", "slots": 10, "id": 0}]'
+        
+def find_background_table_option(background, tablename, option):
+    if tablename in background and 'options' in background[tablename]:
+        for it in background[tablename]['options']:
+            if not 'description' in it:
+                continue
+            if it['description'] == option:
+                return it
+    return None
+
+def find_bond_by_description(desc):
+    bonds = load_bonds()
+    for b in bonds:
+        if b['description'] == desc:
+            return b
+    return None
+
+def random_background():
+    bkgs = load_backgrounds()
+    key, background = roll_dict(bkgs)
+    return key, background
+
+def random_name(background):
+    if background != None and 'names' in background:
+        return roll_list(background['names'])
+    names = []
+    bkgs = load_backgrounds()
+    for key in bkgs:
+        names.extend(bkgs[key]['names'])
+    return roll_list(names)
+
+def random_table_option(background, name):
+    if not background or not name in background:
+        return None
+    return roll_list(background[name]['options'])
+
+# ["Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice"]
+def random_trait(name):
+    traits = load_traits()
+    if not name in traits:
+        return None
+    return roll_list(traits[name])
+
+def random_bond():
+    b = roll_list(load_bonds())
+    
+def random_omen():
+    b = roll_list(load_omens())
+    
