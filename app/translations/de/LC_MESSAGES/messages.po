@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2025-01-28 23:33+0100\n"
-"PO-Revision-Date: 2025-02-16 22:17+0100\n"
+"PO-Revision-Date: 2025-02-25 22:21+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
 "Language-Team: de <LL@li.org>\n"
@@ -12,143 +12,143 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.16.0\n"
+"Generated-By: Babel 2.10.3\n"
 
 # ============================================= BASIC
 # =============================================
 #: app/forms.py:10 app/forms.py:19 app/forms.py:53 app/forms.py:68
 #: app/forms.py:77 app/forms.py:79
 msgid "Email"
-msgstr ""
+msgstr "E-Mail"
 
 #: app/forms.py:12 app/forms.py:29 app/forms.py:74
 msgid "Password"
-msgstr ""
+msgstr "Passwort"
 
 #: app/forms.py:14
 msgid "Keep me logged in"
-msgstr ""
+msgstr "Angemeldet bleiben"
 
 #: app/forms.py:15
 msgid "Login"
-msgstr ""
+msgstr "Anmelden"
 
 #: app/forms.py:20 app/forms.py:69
 msgid "Invalid email address"
-msgstr ""
+msgstr "Ungültige E-Mail-Adresse"
 
 #: app/forms.py:20 app/forms.py:69
 msgid "email"
-msgstr ""
+msgstr "E-Mail"
 
 #: app/forms.py:24
 msgid "Username"
-msgstr ""
+msgstr "Nutzername"
 
 #: app/forms.py:28
 msgid "username"
-msgstr ""
+msgstr "Nutzername"
 
 #: app/forms.py:30
 msgid "Password must be between 8 and 64 characters"
-msgstr ""
+msgstr "Passwortlänge muss zwischen 8 und 64 Zeichen liegen"
 
 #: app/forms.py:30 app/forms.py:60 app/forms.py:88
 msgid "Passwords must match"
-msgstr ""
+msgstr "Passwörter müssen übereinstimmen"
 
 #: app/forms.py:31 app/forms.py:61 app/forms.py:76
 msgid "password"
-msgstr ""
+msgstr "Passwort"
 
 #: app/forms.py:32 app/forms.py:62
 msgid "Confirm password"
-msgstr ""
+msgstr "Passwort bestätigen"
 
 #: app/forms.py:33 app/forms.py:63
 msgid "confirm password"
-msgstr ""
+msgstr "Passwort bestätigen"
 
 #: app/forms.py:34
 msgid "Signup Code"
-msgstr ""
+msgstr "Registrierungscode"
 
 #: app/forms.py:35
 msgid "signup code"
-msgstr ""
+msgstr "Registrierungscode"
 
 #: app/forms.py:36
 msgid "Sign Up"
-msgstr ""
+msgstr "Registrierung"
 
 #: app/forms.py:55 app/forms.py:64 app/templates/auth/reset_password.html:5
 #: app/templates/auth/reset_password_request.html:6
 msgid "Reset Password"
-msgstr ""
+msgstr "Passwort zurücksetzen"
 
 #: app/forms.py:59
 msgid "New Password"
-msgstr ""
+msgstr "Neues Passwort"
 
 #: app/forms.py:70 app/templates/auth/resend_confirmation.html:6
 msgid "Resend Confirmation"
-msgstr ""
+msgstr "Bestätigung erneut senden"
 
 #: app/forms.py:78
 msgid "Email addresses must match"
-msgstr ""
+msgstr "E-Mail-Adressen müssen übereinstimmen"
 
 #: app/forms.py:78
 msgid "new email"
-msgstr ""
+msgstr "neue E-Mail-Adresse"
 
 #: app/forms.py:80
 msgid "confirm new email"
-msgstr ""
+msgstr "neue E-Mail-Adresse bestätigen"
 
 #: app/forms.py:81 app/forms.py:92
 msgid "Change"
-msgstr ""
+msgstr "Ändern"
 
 #: app/forms.py:85
 msgid "Current Password"
-msgstr ""
+msgstr "Aktuelles Passwort"
 
 #: app/forms.py:86
 msgid "current password"
-msgstr ""
+msgstr "Aktuelles Passwort"
 
 #: app/forms.py:87
 msgid "New password"
-msgstr ""
+msgstr "Neues Passwort"
 
 #: app/forms.py:89
 msgid "new password"
-msgstr ""
+msgstr "Neues Passwort"
 
 #: app/forms.py:90
 msgid "Confirm new password"
-msgstr ""
+msgstr "Neues Passwort bestätigen"
 
 #: app/forms.py:91
 msgid "confirm new password"
-msgstr ""
+msgstr "Neues Passwort bestätigen"
 
 #: app/forms.py:103
 msgid "Name (d10)..."
-msgstr ""
+msgstr "Name (W10)..."
 
 #: app/forms.py:104
 msgid "Background (d20)..."
-msgstr ""
+msgstr "Hintergrund (W20)..."
 
 #: app/forms.py:114 app/forms.py:115
 msgid "Custom"
-msgstr ""
+msgstr "Individuell"
 
 #: app/forms.py:125 app/forms.py:238 app/templates/partial/tools/pcgen.html:13
 msgid "Background"
-msgstr ""
+msgstr "Hintergrund"
 
 #: app/forms.py:126 app/forms.py:237 app/forms.py:283 app/forms.py:293
 #: app/templates/main/inventory.html:33 app/templates/main/inventory.html:112
@@ -158,46 +158,46 @@ msgstr ""
 #: app/templates/partial/modal/edit_item.html:19
 #: app/templates/partial/modal/edit_item_party.html:19
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: app/forms.py:129 app/forms.py:130 app/forms.py:242
 msgid "Custom Background"
-msgstr ""
+msgstr "Individueller Hintergrund"
 
 #: app/forms.py:138 app/forms.py:139 app/forms.py:170 app/forms.py:233
 #: app/forms.py:240
 msgid "Custom Name"
-msgstr ""
+msgstr "Individueller Name"
 
 #: app/forms.py:146 app/forms.py:172 app/forms.py:245
 #: app/templates/main/character_create.html:185
 #: app/templates/main/character_create.html:196
 msgid "Strength"
-msgstr ""
+msgstr "Stärke"
 
 #: app/forms.py:147 app/forms.py:173 app/forms.py:247
 msgid "Strength Max"
-msgstr ""
+msgstr "Stärke max"
 
 #: app/forms.py:148 app/forms.py:174 app/forms.py:249
 #: app/templates/main/character_create.html:186
 #: app/templates/main/character_create.html:197
 msgid "Dexterity"
-msgstr ""
+msgstr "Geschicklichkeit"
 
 #: app/forms.py:149 app/forms.py:175 app/forms.py:251
 msgid "Dexterity Max"
-msgstr ""
+msgstr "Geschicklichkeit max"
 
 #: app/forms.py:150 app/forms.py:176 app/forms.py:178 app/forms.py:253
 #: app/templates/main/character_create.html:187
 #: app/templates/main/character_create.html:198
 msgid "Willpower"
-msgstr ""
+msgstr "Willenskraft"
 
 #: app/forms.py:151 app/forms.py:177 app/forms.py:179 app/forms.py:255
 msgid "Willpower Max"
-msgstr ""
+msgstr "Willenskraft max"
 
 #: app/forms.py:152 app/forms.py:257
 #: app/static/json/party_events/bestiary.json:5
@@ -208,23 +208,23 @@ msgstr ""
 #: app/templates/partial/charview/stats.html:22
 #: app/templates/partial/tools/pcgen_text.html:28
 msgid "HP"
-msgstr ""
+msgstr "TP"
 
 #: app/forms.py:153 app/forms.py:258
 msgid "HP Max"
-msgstr ""
+msgstr "TP max"
 
 #: app/forms.py:155 app/forms.py:185 app/forms.py:207 app/forms.py:268
 #: app/forms.py:287 app/forms.py:297 app/templates/main/character_edit.html:82
 #: app/templates/main/character_print.html:113
 #: app/templates/main/character_view.html:101
 msgid "Notes"
-msgstr ""
+msgstr "Notizen"
 
 #: app/forms.py:156 app/forms.py:188 app/forms.py:212 app/forms.py:286
 #: app/forms.py:296
 msgid "description"
-msgstr ""
+msgstr "Beschreibung"
 
 #: app/forms.py:161 app/forms.py:180 app/forms.py:260
 #: app/static/json/party_events/names.json:47
@@ -237,11 +237,11 @@ msgstr ""
 #: app/templates/partial/charview/stats.html:36
 #: app/templates/partial/tools/pcgen_text.html:45
 msgid "Gold"
-msgstr ""
+msgstr "Gold"
 
 #: app/forms.py:162
 msgid "Save Character"
-msgstr ""
+msgstr "Charakter speichern"
 
 #: app/forms.py:181 app/forms.py:279
 #: app/templates/main/edit_portrait_modal.html:24
@@ -250,15 +250,15 @@ msgstr ""
 #: app/templates/partial/modal/edit_item.html:116
 #: app/templates/partial/modal/edit_item_party.html:116
 msgid "Save"
-msgstr ""
+msgstr "Speichern"
 
 #: app/forms.py:184 app/forms.py:266
 msgid "Deprived"
-msgstr ""
+msgstr "in Bedrängnis"
 
 #: app/forms.py:186 app/forms.py:208 app/forms.py:288 app/forms.py:298
 msgid "notes"
-msgstr ""
+msgstr "Notizen"
 
 #: app/forms.py:187 app/forms.py:211 app/forms.py:269 app/forms.py:285
 #: app/forms.py:295 app/templates/main/character_edit.html:66
@@ -269,7 +269,7 @@ msgstr ""
 #: app/templates/partial/modal/edit_item_party.html:99
 #: app/templates/partial/tools/pcgen_text.html:8
 msgid "Description"
-msgstr ""
+msgstr "Beschreibung"
 
 #: app/forms.py:189 app/forms.py:215 app/forms.py:270
 #: app/templates/main/character_create.html:218
@@ -277,11 +277,11 @@ msgstr ""
 #: app/templates/main/character_print.html:58
 #: app/templates/main/character_view.html:60
 msgid "Traits"
-msgstr ""
+msgstr "Merkmale"
 
 #: app/forms.py:190 app/forms.py:216
 msgid "traits"
-msgstr ""
+msgstr "Merkmale"
 
 #: app/forms.py:191 app/forms.py:219 app/forms.py:271
 #: app/templates/main/character_create.html:291
@@ -291,11 +291,11 @@ msgstr ""
 #: app/templates/main/character_view.html:80
 #: app/templates/partial/tools/pcgen_text.html:63
 msgid "Bonds"
-msgstr ""
+msgstr "Bindungen"
 
 #: app/forms.py:192 app/forms.py:220
 msgid "bonds"
-msgstr ""
+msgstr "Bindungen"
 
 #: app/forms.py:193 app/forms.py:223 app/forms.py:272
 #: app/templates/main/character_create.html:302
@@ -305,47 +305,47 @@ msgstr ""
 #: app/templates/partial/charedit/omens.html:2
 #: app/templates/partial/tools/pcgen_text.html:80
 msgid "Omens"
-msgstr ""
+msgstr "Omen"
 
 #: app/forms.py:194 app/forms.py:224
 msgid "omens"
-msgstr ""
+msgstr "Omen"
 
 #: app/forms.py:195 app/forms.py:230 app/forms.py:273
 #: app/templates/main/character_print.html:105
 #: app/templates/main/character_view.html:94
 #: app/templates/partial/charedit/scars.html:1
 msgid "Scars"
-msgstr ""
+msgstr "Narben"
 
 #: app/forms.py:196 app/forms.py:230
 msgid "scars"
-msgstr ""
+msgstr "Narben"
 
 #: app/forms.py:200 app/forms.py:227
 msgid "Party Code"
-msgstr ""
+msgstr "Gruppencode"
 
 #: app/forms.py:201 app/forms.py:227
 msgid "join code"
-msgstr ""
+msgstr "Beitrittscode"
 
 #: app/forms.py:262 app/templates/main/character_create.html:319
 #: app/templates/partial/tools/pcgen_text.html:38
 msgid "Items"
-msgstr ""
+msgstr "Ausrüstung"
 
 #: app/forms.py:263
 msgid "Containers"
-msgstr ""
+msgstr "Containers"
 
 #: app/forms.py:275
 msgid "Image URL"
-msgstr ""
+msgstr "Bild URL"
 
 #: app/forms.py:276
 msgid "Custom Image"
-msgstr ""
+msgstr "Eigenes Bild"
 
 #: app/forms.py:277 app/static/json/party_events/bestiary.json:6
 #: app/static/json/party_events/bestiary.json:32
@@ -357,15 +357,15 @@ msgstr ""
 #: app/templates/partial/modal/marketplace.html:101
 #: app/templates/partial/tools/pcgen_text.html:29
 msgid "Armor"
-msgstr ""
+msgstr "Rüstung"
 
 #: app/forms.py:284 app/forms.py:294
 msgid "name"
-msgstr ""
+msgstr "Name"
 
 #: app/forms.py:289
 msgid "Save Party"
-msgstr ""
+msgstr "Gruppe speichern"
 
 #: app/static/json/backgrounds/aurifex.json:39 app/static/json/bonds.json:30
 #: app/static/json/bonds.json:221 app/static/json/marketplace.json:42
@@ -376,7 +376,7 @@ msgstr ""
 #: app/templates/partial/modal/edit_item.html:30
 #: app/templates/partial/modal/edit_item_party.html:30
 msgid "petty"
-msgstr ""
+msgstr "klein"
 
 #: app/static/json/backgrounds/barber-surgeon.json:87
 #: app/static/json/bonds.json:172 app/static/json/marketplace.json:208
@@ -385,18 +385,18 @@ msgstr ""
 #: app/templates/partial/modal/edit_item.html:55
 #: app/templates/partial/modal/edit_item_party.html:55
 msgid "1 Armor"
-msgstr ""
+msgstr "1 Rüstung"
 
 #: app/static/json/backgrounds/aurifex.json:26
 #: app/static/json/marketplace.json:4 app/static/json/marketplace.json:13
 #: app/static/json/party_events/reliquary.json:10
 #: app/static/json/party_events/spellbooks.json:5
 msgid "tags"
-msgstr ""
+msgstr "Tags"
 
 #: app/static/json/marketplace.json:5 app/static/json/marketplace.json:10
 msgid "cost"
-msgstr ""
+msgstr "Preis"
 
 #: app/static/json/backgrounds/aurifex.json:20
 #: app/static/json/marketplace.json:8 app/static/json/marketplace.json:9
@@ -405,11 +405,11 @@ msgstr ""
 #: app/templates/partial/modal/edit_item.html:32
 #: app/templates/partial/modal/edit_item_party.html:32
 msgid "uses"
-msgstr ""
+msgstr "Anwendungen"
 
 #: app/static/json/backgrounds/rill-runner.json:97 inventory.py:123
 msgid "1 use"
-msgstr ""
+msgstr "1 Anwendung"
 
 #: app/static/json/backgrounds/aurifex.json:81
 #: app/static/json/marketplace.json:8 app/static/json/marketplace.json:181
@@ -418,7 +418,7 @@ msgstr ""
 #: app/templates/partial/modal/edit_item.html:28
 #: app/templates/partial/modal/edit_item_party.html:28
 msgid "bulky"
-msgstr ""
+msgstr "sperrig"
 
 #: app/static/json/marketplace.json:194
 msgid "d6 STR"
@@ -430,20 +430,20 @@ msgstr ""
 #: app/templates/partial/modal/edit_item.html:57
 #: app/templates/partial/modal/edit_item_party.html:57
 msgid "2 Armor"
-msgstr ""
+msgstr "2 Rüstung"
 
 #: app/static/json/backgrounds/barber-surgeon.json:87
 #: app/static/json/marketplace.json:216 app/static/json/marketplace.json:220
 #: app/templates/partial/modal/edit_item.html:61
 #: app/templates/partial/modal/edit_item_party.html:61
 msgid "bonus defense"
-msgstr ""
+msgstr "Bonus Verteidigung"
 
 #: app/static/json/marketplace.json:224 app/templates/main/inventory.html:135
 #: app/templates/partial/modal/edit_item.html:59
 #: app/templates/partial/modal/edit_item_party.html:59
 msgid "3 Armor"
-msgstr ""
+msgstr "3 Rüstung"
 
 #: app/static/json/backgrounds/fieldwarden.json:68
 #: app/static/json/marketplace.json:234 app/static/json/marketplace.json:242
@@ -452,7 +452,7 @@ msgstr ""
 #: app/templates/partial/modal/edit_item.html:46
 #: app/templates/partial/modal/edit_item_party.html:46
 msgid "d8"
-msgstr ""
+msgstr "W8"
 
 #: app/static/json/backgrounds/aurifex.json:35
 #: app/static/json/marketplace.json:274 app/static/json/marketplace.json:282
@@ -461,7 +461,7 @@ msgstr ""
 #: app/templates/partial/modal/edit_item.html:43
 #: app/templates/partial/modal/edit_item_party.html:43
 msgid "d6"
-msgstr ""
+msgstr "W6"
 
 #: app/static/json/backgrounds/kettlewright.json:54
 #: app/static/json/marketplace.json:258 app/static/json/marketplace.json:262
@@ -471,11 +471,11 @@ msgstr ""
 #: app/templates/partial/modal/edit_item.html:49
 #: app/templates/partial/modal/edit_item_party.html:49
 msgid "d10"
-msgstr ""
+msgstr "W10"
 
 #: - all app/static/json/backgrounds/aurifex.json:19 backgrounds
 msgid "Rations"
-msgstr ""
+msgstr "Rationen"
 
 #: - all app/static/json/backgrounds/barber-surgeon.json:25 backgrounds
 msgid "Torch"
@@ -484,7 +484,7 @@ msgstr ""
 #: app/static/json/backgrounds/barber-surgeon.json:55
 #: app/static/json/bonds.json:150 app/static/json/bonds.json:230
 msgid "items"
-msgstr ""
+msgstr "Ausrüstung"
 
 # NOTE: Please leave it empty as a translation
 #: app/static/json/backgrounds/aurifex.json:22
@@ -497,30 +497,30 @@ msgstr ""
 #: app/templates/partial/modal/edit_item.html:34
 #: app/templates/partial/modal/edit_item_party.html:34
 msgid "charges"
-msgstr ""
+msgstr "Ladungen"
 
 #: app/static/json/backgrounds/aurifex.json:81
 #: app/templates/main/dice_modal.html:19 app/templates/main/inventory.html:130
 #: app/templates/partial/modal/edit_item.html:51
 #: app/templates/partial/modal/edit_item_party.html:51
 msgid "d12"
-msgstr ""
+msgstr "W12"
 
 #: app/static/json/backgrounds/aurifex.json:81
 #: app/templates/main/inventory.html:123
 #: app/templates/partial/modal/edit_item.html:36
 #: app/templates/partial/modal/edit_item_party.html:36
 msgid "blast"
-msgstr ""
+msgstr "Explosion"
 
 # Inventory slots
 #: app/static/json/backgrounds/bonekeeper.json:79
 msgid "slots"
-msgstr ""
+msgstr "Plätze"
 
 #: app/static/json/backgrounds/bonekeeper.json:81
 msgid "load"
-msgstr ""
+msgstr "Laden"
 
 #: app/static/json/party_events/bestiary.json:7
 #: app/templates/main/character_create.html:148
@@ -530,7 +530,7 @@ msgstr ""
 #: app/templates/partial/charview/stats.html:4
 #: app/templates/partial/tools/pcgen_text.html:30
 msgid "STR"
-msgstr ""
+msgstr "STR"
 
 #: app/static/json/party_events/bestiary.json:8
 #: app/templates/main/character_create.html:159
@@ -540,7 +540,7 @@ msgstr ""
 #: app/templates/partial/charview/stats.html:10
 #: app/templates/partial/tools/pcgen_text.html:31
 msgid "DEX"
-msgstr ""
+msgstr "GES"
 
 #: app/static/json/party_events/bestiary.json:9
 #: app/templates/main/character_create.html:171
@@ -550,63 +550,63 @@ msgstr ""
 #: app/templates/partial/charview/stats.html:16
 #: app/templates/partial/tools/pcgen_text.html:32
 msgid "WIL"
-msgstr ""
+msgstr "WIL"
 
 #: app/static/json/party_events/bestiary.json:1083
 #: app/static/json/party_events/reactions.json:5
 msgid "Hostile"
-msgstr ""
+msgstr "Feindlich"
 
 #: app/static/json/party_events/bestiary.json:1084
 #: app/static/json/party_events/reactions.json:17
 msgid "Wary"
-msgstr ""
+msgstr "Misstrauisch"
 
 #: app/static/json/party_events/bestiary.json:1087
 #: app/static/json/party_events/reactions.json:29
 #: app/static/json/party_events/setting.json:9
 msgid "Curious"
-msgstr ""
+msgstr "Neugierig"
 
 #: app/static/json/party_events/bestiary.json:1090
 #: app/static/json/party_events/reactions.json:41
 msgid "Kind"
-msgstr ""
+msgstr "Freundlich"
 
 #: app/static/json/party_events/bestiary.json:1093
 #: app/static/json/party_events/reactions.json:45
 msgid "Helpful"
-msgstr ""
+msgstr "Hilfreich"
 
 #: app/static/json/party_events/reliquary.json:33
 msgid "charge"
-msgstr ""
+msgstr "Ladung"
 
 #: app/static/json/party_events/reliquary.json:21
 #: app/static/json/party_events/reliquary.json:171
 #: app/static/json/party_events/reliquary.json:239
 msgid "+1 Armor"
-msgstr ""
+msgstr "+1 Rüstung"
 
 #: app/static/json/party_events/reliquary.json:47
 msgid "use"
-msgstr ""
+msgstr "Anwendung"
 
 #: app/templates/nav.html:42
 msgid "characters"
-msgstr ""
+msgstr "Charaktere"
 
 #: app/templates/nav.html:45
 msgid "parties"
-msgstr ""
+msgstr "Gruppen"
 
 #: app/templates/nav.html:48
 msgid "tools"
-msgstr ""
+msgstr "Werkzeuge"
 
 #: app/templates/nav.html:54
 msgid "Language"
-msgstr ""
+msgstr "Sprache"
 
 #: app/templates/main/edit_portrait_modal.html:25
 #: app/templates/main/inventory.html:92 app/templates/main/inventory.html:179
@@ -620,61 +620,61 @@ msgstr ""
 #: app/templates/partial/modal/marketplace.html:156
 #: app/templates/partial/modal/transfer_item.html:27
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: app/templates/nav.html:59 app/templates/nav.html:64
 msgid "about"
-msgstr ""
+msgstr "Informationen"
 
 #: app/templates/nav.html:60
 msgid "account"
-msgstr ""
+msgstr "Nutzerkonto"
 
 #: app/templates/nav.html:62
 msgid "login"
-msgstr ""
+msgstr "anmelden"
 
 #: app/templates/nav.html:63
 msgid "sign up"
-msgstr ""
+msgstr "registrieren"
 
 #: app/templates/auth/account.html:10
 msgid "Hello"
-msgstr ""
+msgstr "Hallo"
 
 #: app/templates/auth/account.html:14
 msgid "Account Settings"
-msgstr ""
+msgstr "Kontoeinstellungen"
 
 #: app/templates/auth/account.html:16
 msgid "Change Email"
-msgstr ""
+msgstr "E-Mail ändern"
 
 #: app/templates/auth/account.html:19 app/templates/auth/change_password.html:6
 msgid "Change Password"
-msgstr ""
+msgstr "Passwort ändern"
 
 #: app/templates/auth/account.html:24
 msgid "Logout"
-msgstr ""
+msgstr "Abmelden"
 
 #: app/templates/auth/change_email.html:6
 msgid "Change Email Address"
-msgstr ""
+msgstr "E-Mail Addresse ändern"
 
 #: app/templates/auth/login.html:28
 msgid "Forgot Password?"
-msgstr ""
+msgstr "Passwort vergessen?"
 
 #: app/templates/auth/email/change_email.html:3
 msgid "To confirm your new email address"
-msgstr ""
+msgstr "Um deine neue E-Mail-Adresse zu bestätigen,"
 
 #: app/templates/auth/email/change_email.html:4
 #: app/templates/auth/email/confirm.html:4
 #: app/templates/auth/email/reset_password.html:4
 msgid "click here"
-msgstr ""
+msgstr "klicke hier"
 
 #: app/templates/auth/email/change_email.html:7
 #: app/templates/auth/email/confirm.html:7
@@ -682,273 +682,273 @@ msgstr ""
 msgid ""
 "Alternatively, you can paste the following link in your browser address "
 "bar:"
-msgstr ""
+msgstr "Alternativ kannst du den Folgenden Link in die Adresszeile deines Browsers kopieren:"
 
 #: app/templates/auth/email/change_email.html:10
 #: app/templates/auth/email/confirm.html:10
 #: app/templates/auth/email/reset_password.html:11
 msgid "Note: replies to this email address are not monitored."
-msgstr ""
+msgstr "Notiz: Antworten an diese E-Mail-Adresse werden nicht gelesen."
 
 #: app/templates/auth/email/confirm.html:1
 #: app/templates/auth/email/reset_password.html:1
 msgid "Hi"
-msgstr ""
+msgstr "Hi"
 
 #: app/templates/auth/email/confirm.html:3
 msgid "To confirm your account please"
-msgstr ""
+msgstr "Um deinen Account zu bestätigen, bitte"
 
 #: app/templates/auth/email/reset_password.html:3
 msgid "To reset your password"
-msgstr ""
+msgstr "Um dein Passwort zurückzusetzen,"
 
 #: app/templates/auth/email/reset_password.html:10
 msgid "If you have not requested a password reset simply ignore this message."
-msgstr ""
+msgstr "Falls du keine Zurücksetzung deines Passworts angefordert hast, ignoriere diese Nachricht einfach."
 
 #: app/templates/main/about.html:9
 msgid "About"
-msgstr ""
+msgstr "Informationen"
 
 #: app/templates/main/about.html:24
 msgid "Attribution"
-msgstr ""
+msgstr "Zuschreibung"
 
 #: app/templates/main/character_create.html:18
 msgid "Roll All"
-msgstr ""
+msgstr "Alles würfeln"
 
 #: app/templates/main/character_create.html:22
 msgid "Roll Remaining"
-msgstr ""
+msgstr "Verbleibendes würfeln"
 
 #: app/templates/main/character_create.html:28
 msgid "Reset"
-msgstr ""
+msgstr "Zurücksetzen"
 
 #: app/templates/main/character_create.html:45
 msgid "New Character"
-msgstr ""
+msgstr "Neuer Charakter"
 
 #: app/templates/main/character_create.html:100
 #: app/templates/main/character_create.html:123
 msgid "Table"
-msgstr ""
+msgstr "Tabelle"
 
 #: app/templates/main/character_create.html:100
 #: app/templates/main/character_create.html:123
 #: app/templates/main/character_create.html:204
 msgid "(d6)"
-msgstr ""
+msgstr "(W6)"
 
 #: app/templates/main/character_create.html:114
 msgid "Gear Table 1"
-msgstr ""
+msgstr "Ausrüstungstabelle 1"
 
 #: app/templates/main/character_create.html:137
 msgid "Gear Table 2"
-msgstr ""
+msgstr "Ausrüstungstabelle 2"
 
 #: app/templates/main/character_create.html:145
 #: app/templates/partial/tools/pcgen_text.html:26
 msgid "Attributes"
-msgstr ""
+msgstr "Eigenschaften"
 
 #: app/templates/main/character_create.html:149
 #: app/templates/main/character_create.html:160
 #: app/templates/main/character_create.html:172
 msgid "(3d6)"
-msgstr ""
+msgstr "(3W6)"
 
 #: app/templates/main/character_create.html:184
 #: app/templates/main/character_create.html:195
 msgid "Swap once..."
-msgstr ""
+msgstr "Einmal tauschen..."
 
 #: app/templates/main/character_create.html:227
 msgid "Physique"
-msgstr ""
+msgstr "Körperbau"
 
 #: app/templates/main/character_create.html:232
 msgid "Skin"
-msgstr ""
+msgstr "Haut"
 
 #: app/templates/main/character_create.html:237
 msgid "Hair"
-msgstr ""
+msgstr "Haare"
 
 #: app/templates/main/character_create.html:242
 msgid "Face"
-msgstr ""
+msgstr "Gesicht"
 
 #: app/templates/main/character_create.html:247
 msgid "Speech"
-msgstr ""
+msgstr "Sprache"
 
 #: app/templates/main/character_create.html:252
 msgid "Clothing"
-msgstr ""
+msgstr "Kleidung"
 
 #: app/templates/main/character_create.html:257
 msgid "Virtue"
-msgstr ""
+msgstr "Tugend"
 
 #: app/templates/main/character_create.html:262
 msgid "Vice"
-msgstr ""
+msgstr "Laster"
 
 #: app/templates/main/character_create.html:274
 #: app/templates/main/character_create.html:279
 msgid "Age"
-msgstr ""
+msgstr "Alter"
 
 #: app/templates/main/character_create.html:279
 msgid "2d20+10"
-msgstr ""
+msgstr "2W20+10"
 
 #: app/templates/main/character_create.html:294
 #: app/templates/main/character_create.html:305
 #: app/templates/main/dice_modal.html:20
 msgid "d20"
-msgstr ""
+msgstr "W20"
 
 #: app/templates/main/character_create.html:327
 msgid "3d6"
-msgstr ""
+msgstr "3W6"
 
 #: app/templates/main/character_edit.html:10
 msgid "Errors"
-msgstr ""
+msgstr "Fehler"
 
 #: app/templates/main/character_print.html:23
 #: app/templates/partial/charedit/stats.html:1
 #: app/templates/partial/charview/stats.html:1
 msgid "Stats"
-msgstr ""
+msgstr "Statistiken"
 
 #: app/templates/main/character_print.html:44
 #: app/templates/partial/charedit/stats.html:48
 #: app/templates/partial/charview/stats.html:31
 msgid "DEPRIVED"
-msgstr ""
+msgstr "IN BEDRÄNGNIS"
 
 #: app/templates/main/character_print.html:63
 #: app/templates/main/inventory.html:3
 #: app/templates/partial/charedit/inventory.html:2
 #: app/templates/partial/charview/inventory.html:2
 msgid "Inventory"
-msgstr ""
+msgstr "Inventar"
 
 #: app/templates/main/character_print.html:126
 #: app/templates/main/character_view.html:123
 msgid "This character does not belong to a party..."
-msgstr ""
+msgstr "Dieser Charakter gehört keiner Gruppe an."
 
 #: app/templates/main/character_view.html:63
 msgid "This character has no traits..."
-msgstr ""
+msgstr "Dieser Charakter hat keine Merkmale..."
 
 #: app/templates/main/character_view.html:76
 msgid "This character has no description..."
-msgstr ""
+msgstr "Dieser Charakter hat keine Beschreibung..."
 
 #: app/templates/main/character_view.html:83
 msgid "This character has no bonds..."
-msgstr ""
+msgstr "Dieser Charakter hat keine Bindungen..."
 
 #: app/templates/main/character_view.html:90
 msgid "This character has no omens..."
-msgstr ""
+msgstr "Dieser Charakter hat keine Omen..."
 
 #: app/templates/main/character_view.html:97
 msgid "This character has no scars..."
-msgstr ""
+msgstr "Dieser Charakter hat keine Narben..."
 
 #: app/templates/main/character_view.html:104
 msgid "This character has no notes..."
-msgstr ""
+msgstr "Dieser Charakter hat keine Notizen..."
 
 #: app/templates/main/character_view.html:109
 #: app/templates/main/inventory.html:185
 msgid "Party"
-msgstr ""
+msgstr "Gruppe"
 
 #: app/templates/main/character_view.html:132
 msgid "Print"
-msgstr ""
+msgstr "Drucken"
 
 #: app/templates/main/character_view.html:139
 msgid "Export"
-msgstr ""
+msgstr "Exportieren"
 
 #: app/templates/main/character_view.html:144
 msgid "Delete character"
-msgstr ""
+msgstr "Charakter löschen"
 
 #: app/templates/main/character_view.html:144
 #: app/templates/main/inventory.html:95 app/templates/main/inventory.html:187
 msgid "Delete"
-msgstr ""
+msgstr "Löschen"
 
 #: app/templates/main/character_view.html:146
 msgid "Are you sure you want to delete"
-msgstr ""
+msgstr "Bist du sicher, dass du löschen möchtest"
 
 #: app/templates/main/character_view.html:147
 msgid "DELETE"
-msgstr ""
+msgstr "LÖSCHEN"
 
 #: app/templates/main/characters.html:8
 msgid "Import"
-msgstr ""
+msgstr "Importieren"
 
 #: app/templates/main/dice_modal.html:6
 msgid "Roll Dice"
-msgstr ""
+msgstr "Würfeln"
 
 #: app/templates/main/dice_modal.html:15 app/templates/main/inventory.html:126
 #: app/templates/partial/modal/edit_item.html:40
 #: app/templates/partial/modal/edit_item_party.html:40
 msgid "d4"
-msgstr ""
+msgstr "W4"
 
 #: app/templates/main/dice_modal.html:22
 msgid "d100"
-msgstr ""
+msgstr "W100"
 
 #: app/templates/main/dice_modal.html:26
 msgid "d4+d4"
-msgstr ""
+msgstr "W4+W4"
 
 #: app/templates/main/dice_modal.html:30
 msgid "d8+d8"
-msgstr ""
+msgstr "W8+W8"
 
 #: app/templates/main/dice_modal.html:32
 msgid "d10+d10"
-msgstr ""
+msgstr "W10+W10"
 
 #: app/templates/main/dice_modal.html:34
 msgid "d12+d12"
-msgstr ""
+msgstr "W12+W12"
 
 #: app/templates/main/edit_portrait_modal.html:6
 #: app/templates/partial/charedit/portrait.html:32
 msgid "Edit Portrait"
-msgstr ""
+msgstr "Porträt bearbeiten"
 
 #: app/templates/main/inventory.html:13 app/templates/main/marketplace.html:18
 #: app/templates/partial/charedit/inventory.html:86
 #: app/templates/partial/modal/marketplace.html:112
 #: app/templates/partial/partyedit/inventory.html:86
 msgid "Item"
-msgstr ""
+msgstr "Gegenstand"
 
 #: app/templates/main/inventory.html:14
 #: app/templates/partial/charedit/inventory.html:91
 msgid "Fatigue"
-msgstr ""
+msgstr "Erschöpfung"
 
 #: app/templates/main/inventory.html:15 app/templates/main/inventory.html:157
 #: app/templates/partial/charedit/inventory.html:96
@@ -956,287 +956,287 @@ msgstr ""
 #: app/templates/partial/modal/edit_item_party.html:86
 #: app/templates/partial/partyedit/inventory.html:96
 msgid "Container"
-msgstr ""
+msgstr "Behälter"
 
 #: app/templates/main/inventory.html:16 app/templates/main/marketplace.html:5
 #: app/templates/partial/modal/marketplace.html:94
 msgid "Marketplace"
-msgstr ""
+msgstr "Markplatz"
 
 #: app/templates/main/inventory.html:25
 msgid "Add/Edit Container"
-msgstr ""
+msgstr "Behälter bearbeiten/hinzufügen"
 
 #: app/templates/main/inventory.html:39
 #: app/templates/partial/modal/edit_container.html:27
 #: app/templates/partial/modal/edit_container_party.html:27
 msgid "Slots"
-msgstr ""
+msgstr "Plätze"
 
 #: app/templates/main/inventory.html:47
 #: app/templates/partial/modal/edit_container.html:35
 #: app/templates/partial/modal/edit_container_party.html:35
 msgid "Carried by"
-msgstr ""
+msgstr "Getragen von"
 
 #: app/templates/main/inventory.html:50
 msgid "carried by..."
-msgstr ""
+msgstr "getragen von..."
 
 #: app/templates/main/inventory.html:55
 #: app/templates/partial/modal/edit_container.html:53
 #: app/templates/partial/modal/edit_container_party.html:53
 msgid "Load"
-msgstr ""
+msgstr "Laden"
 
 #: app/templates/main/inventory.html:67
 msgid "Remove Container"
-msgstr ""
+msgstr "Behälter entfernen"
 
 #: app/templates/main/inventory.html:76
 msgid "Move Items"
-msgstr ""
+msgstr "Gegenstände verschieben"
 
 #: app/templates/main/inventory.html:106
 msgid "Add Item"
-msgstr ""
+msgstr "Gegenstand hinzufügen"
 
 #: app/templates/main/inventory.html:117
 #: app/templates/partial/modal/edit_item.html:25
 #: app/templates/partial/modal/edit_item_party.html:25
 msgid "Tags"
-msgstr ""
+msgstr "Tags"
 
 #: app/templates/main/inventory.html:142
 #: app/templates/partial/modal/edit_item.html:67
 #: app/templates/partial/modal/edit_item_party.html:67
 msgid "Uses"
-msgstr ""
+msgstr "Anwendungen"
 
 #: app/templates/main/inventory.html:148
 #: app/templates/partial/modal/edit_item.html:75
 #: app/templates/partial/modal/edit_item_party.html:75
 msgid "Charges / Max"
-msgstr ""
+msgstr "Ladungen / max"
 
 #: app/templates/main/inventory.html:199
 msgid "Transfer Item"
-msgstr ""
+msgstr "Gegenstand verschieben"
 
 #: app/templates/main/inventory.html:204
 msgid "transfer to..."
-msgstr ""
+msgstr "verschieben nach..."
 
 #: app/templates/main/inventory.html:223
 msgid "This item has no description"
-msgstr ""
+msgstr "Dieser Gegenstand hat keine Beschreibung"
 
 #: app/templates/main/marketplace.html:8
 #: app/templates/partial/modal/marketplace.html:98
 msgid "Gear"
-msgstr ""
+msgstr "Ausrüstung"
 
 #: app/templates/main/marketplace.html:20
 #: app/templates/partial/modal/marketplace.html:114
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: app/templates/main/marketplace.html:35
 #: app/templates/partial/modal/marketplace.html:152
 msgid "Clear"
-msgstr ""
+msgstr "Aufräumen"
 
 #: app/templates/main/new_from_json.html:7
 msgid "Upload JSON Character File"
-msgstr ""
+msgstr "JSON-Charakterdatei hochladen"
 
 #: app/templates/main/parties.html:27
 msgid "No members yet."
-msgstr ""
+msgstr "Noch keine Mitglieder"
 
 #: app/templates/main/parties.html:38
 msgid "New Party"
-msgstr ""
+msgstr "Neue Gruppe"
 
 #: app/templates/main/party_edit.html:95
 msgid "Remove"
-msgstr ""
+msgstr "Entfernen"
 
 #: app/templates/main/party_edit.html:105
 #: app/templates/main/party_view.html:106
 msgid "No members in this party"
-msgstr ""
+msgstr "Keine Mitglieder in diesre Gruppe"
 
 #: app/templates/main/party_edit.html:125
 msgid "Delete Party"
-msgstr ""
+msgstr "Gruppe löschen"
 
 #: app/templates/main/profile.html:4 app/templates/main/user.html:4
 msgid "Welcome"
-msgstr ""
+msgstr "Willkommen"
 
 #: app/templates/main/profile.html:10
 msgid "Party Tools"
-msgstr ""
+msgstr "Gruppenwerkzeuge"
 
 #: app/templates/main/tools.html:14
 msgid "Tables"
-msgstr ""
+msgstr "Tabellen"
 
 #: app/templates/main/tools.html:19 app/templates/main/tools.html:22
 msgid "Choose..."
-msgstr ""
+msgstr "Wähle..."
 
 #: app/templates/main/tools.html:41
 msgid ""
 "Character\n"
 "            Generator"
-msgstr ""
+msgstr "Charaktergenerator"
 
 #: app/templates/partial/charedit/party.html:9
 msgid "Leave party"
-msgstr ""
+msgstr "Gruppe verlassen"
 
 #: app/templates/partial/charedit/party.html:25
 msgid "Join Code"
-msgstr ""
+msgstr "Beitrittscode"
 
 #: app/templates/partial/charview/stats.html:48
 msgid "Do you want to restore all HP?"
-msgstr ""
+msgstr "Magst du alle TP wiederherstellen?"
 
 #: app/templates/partial/charview/stats.html:50
 msgid "Rest"
-msgstr ""
+msgstr "Rast"
 
 #: app/templates/partial/modal/edit_container.html:10
 #: app/templates/partial/modal/edit_container_party.html:10
 msgid "Edit Container"
-msgstr ""
+msgstr "Behälter bearbeiten"
 
 #: app/templates/partial/modal/edit_container.html:12
 #: app/templates/partial/modal/edit_container_party.html:12
 msgid "Create Container"
-msgstr ""
+msgstr "Behälter erstellen"
 
 #: app/templates/partial/modal/edit_container.html:75
 #: app/templates/partial/modal/edit_container_party.html:75
 msgid "Delete container"
-msgstr ""
+msgstr "Behälter löschen"
 
 #: app/templates/partial/modal/edit_container.html:78
 #: app/templates/partial/modal/edit_container_party.html:78
 msgid "Delete all items"
-msgstr ""
+msgstr "Alle Gegenstände löschen"
 
 #: app/templates/partial/modal/edit_container.html:80
 #: app/templates/partial/modal/edit_container_party.html:80
 msgid "Move items to"
-msgstr ""
+msgstr "Gegenstände verschieben"
 
 #: app/templates/partial/modal/edit_item.html:10
 #: app/templates/partial/modal/edit_item_party.html:10
 msgid "Edit Item"
-msgstr ""
+msgstr "Gegenstände bearbeiten"
 
 #: app/templates/partial/modal/edit_item.html:12
 #: app/templates/partial/modal/edit_item_party.html:12
 msgid "Create Item"
-msgstr ""
+msgstr "Gegenstand erstellen"
 
 #: app/templates/partial/modal/edit_item.html:124
 msgid "Party Storage"
-msgstr ""
+msgstr "Gruppenlager"
 
 #: app/templates/partial/modal/marketplace.html:95
 msgid "Storing in"
-msgstr ""
+msgstr "Lagern in"
 
 #: app/templates/partial/modal/marketplace.html:147
 msgid "Buy"
-msgstr ""
+msgstr "Kaufen"
 
 #: app/templates/partial/modal/transfer_item.html:6
 msgid "Transfer item"
-msgstr ""
+msgstr "Gegenstand verschieben"
 
 #: app/templates/partial/modal/transfer_item.html:10
 msgid "Transferring"
-msgstr ""
+msgstr "Verschiebt"
 
 #: app/templates/partial/modal/transfer_item.html:10
 msgid "to"
-msgstr ""
+msgstr "nach"
 
 #: app/templates/partial/tools/pcgen.html:14
 msgid "Random"
-msgstr ""
+msgstr "Zufall"
 
 #: app/templates/partial/tools/pcgen_text.html:13
 msgid "You have a"
-msgstr ""
+msgstr "Du hast ein"
 
 #: app/templates/partial/tools/pcgen_text.html:15
 #: app/templates/partial/tools/pcgen_text.html:20
 msgid "and"
-msgstr ""
+msgstr "und"
 
 #: app/templates/partial/tools/pcgen_text.html:16
 msgid "Your"
-msgstr ""
+msgstr "Dein"
 
 #: app/templates/partial/tools/pcgen_text.html:16
 msgid "is"
-msgstr ""
+msgstr "ist"
 
 #: app/templates/partial/tools/pcgen_text.html:17
 msgid "your"
-msgstr ""
+msgstr "dein"
 
 #: app/templates/partial/tools/pcgen_text.html:18
 msgid "You have"
-msgstr ""
+msgstr "Du hast"
 
 #: app/templates/partial/tools/pcgen_text.html:19
 msgid "You are"
-msgstr ""
+msgstr "Du bist"
 
 #: app/templates/partial/tools/pcgen_text.html:22
 msgid "Your age"
-msgstr ""
+msgstr "Dein Alter"
 
 #: app/templates/partial/tools/pcgen_text.html:36
 msgid "Equipment"
-msgstr ""
+msgstr "Ausrüstung"
 
 #: app/templates/partial/tools/pcgen_text.html:87
 msgid "Your Past"
-msgstr ""
+msgstr "Deine Vergangenheit"
 
 #: app/static/json/bonds.json:25 app/static/json/bonds.json:38
 msgid "gold"
-msgstr ""
+msgstr "Gold"
 
 #: app/static/json/party_events/factions.json:72
 #: app/static/json/party_events/setting.json:205
 #: app/templates/main/parties.html:19 app/templates/main/party_edit.html:37
 #: app/templates/main/party_view.html:50
 msgid "Members"
-msgstr ""
+msgstr "Mitglieder"
 
 #: app/static/json/party_events/dungeons.json:307
 #: app/templates/main/party_edit.html:115
 #: app/templates/main/party_view.html:116
 msgid "Storage"
-msgstr ""
+msgstr "Lager"
 
 #: app/templates/main/character_create.html:15
 msgid "Do you want to reset character?"
-msgstr ""
+msgstr "Möchtest du den Charakter zurücksetzen?"
 
 #: app/templates/main/character_create.html:15
 msgid "Reset character"
-msgstr ""
+msgstr "Charakter zurücksetzen"
 
 # ============================================= BONDS
 # =============================================
@@ -1331,7 +1331,7 @@ msgstr ""
 
 #: app/static/json/bonds.json:90 app/static/json/bonds.json:139
 msgid "Letter"
-msgstr ""
+msgstr "Brief"
 
 #: app/static/json/bonds.json:99 app/static/json/bonds.json:107
 msgid ""
@@ -2943,7 +2943,7 @@ msgstr ""
 #: app/static/json/backgrounds/cutpurse.json:21
 #: app/templates/main/dice_modal.html:28
 msgid "d6+d6"
-msgstr ""
+msgstr "W6+W6"
 
 #: app/static/json/backgrounds/cutpurse.json:24
 msgid "Padded leather"
@@ -5235,6 +5235,7 @@ msgid "Cart"
 msgstr ""
 
 #: app/static/json/backgrounds/mountebank.json:47
+
 msgid "main"
 msgstr ""
 
@@ -6295,7 +6296,7 @@ msgstr ""
 #: app/static/json/party_events/bestiary.json:180
 #: app/static/json/party_events/bestiary.json:934
 msgid "bite (d10)"
-msgstr ""
+msgstr "Biss (W10)"
 
 #: app/static/json/party_events/bestiary.json:65
 msgid ""
@@ -6327,7 +6328,7 @@ msgstr ""
 #: app/static/json/party_events/bestiary.json:752
 #: app/static/json/party_events/bestiary.json:947
 msgid "bite (d6)"
-msgstr ""
+msgstr "Biss (W6)"
 
 #: app/static/json/party_events/bestiary.json:78
 msgid "Teleporting canines in service of a powerful master."
@@ -6576,7 +6577,7 @@ msgstr ""
 #: app/static/json/party_events/dungeons.json:252
 #: app/static/json/party_events/forests.json:155
 msgid "Ettin"
-msgstr ""
+msgstr "Ettin"
 
 #: app/static/json/party_events/bestiary.json:230
 #: app/static/json/party_events/bestiary.json:642
@@ -6690,7 +6691,7 @@ msgstr ""
 #: app/static/json/party_events/setting.json:415
 #: app/static/json/party_events/setting.json:1147
 msgid "Ghost"
-msgstr ""
+msgstr "Geist"
 
 #: app/static/json/party_events/bestiary.json:293
 msgid "life drain (d6)"
@@ -6737,7 +6738,7 @@ msgstr ""
 
 #: app/static/json/party_events/bestiary.json:318
 msgid "claws (d10+d10)"
-msgstr ""
+msgstr "Krallen (W10+W10)"
 
 #: app/static/json/party_events/bestiary.json:320
 msgid "Horse-sized arachnids commonly found in dry terrain or caverns."
@@ -6870,7 +6871,7 @@ msgstr ""
 #: app/static/json/party_events/bestiary.json:392
 #: app/static/json/party_events/dungeons.json:260
 msgid "Harpy"
-msgstr ""
+msgstr "Harpie"
 
 #: app/static/json/party_events/bestiary.json:397
 #: app/static/json/party_events/bestiary.json:605
@@ -7032,7 +7033,7 @@ msgstr ""
 #: app/static/json/party_events/bestiary.json:482
 #: app/static/json/party_events/dungeons.json:258
 msgid "Kobold"
-msgstr ""
+msgstr "Kobold"
 
 #: app/static/json/party_events/bestiary.json:487
 msgid "bite (d6), spear (d8)"
@@ -7336,7 +7337,7 @@ msgstr ""
 #: app/static/json/party_events/dungeons.json:255
 #: app/static/json/party_events/forests.json:162
 msgid "Owlbear"
-msgstr ""
+msgstr "Eulenbär"
 
 #: app/static/json/party_events/bestiary.json:654
 msgid "beak (d10), claws (d8+d8)"
@@ -7359,7 +7360,7 @@ msgstr ""
 
 #: app/static/json/party_events/bestiary.json:666
 msgid "talons (d10+d10)"
-msgstr ""
+msgstr "Krallen (W10+W10)"
 
 #: app/static/json/party_events/bestiary.json:668
 msgid ""
@@ -7785,7 +7786,7 @@ msgstr ""
 #: app/static/json/party_events/setting.json:467
 #: app/static/json/party_events/setting.json:1199
 msgid "Troll"
-msgstr ""
+msgstr "Troll"
 
 #: app/static/json/party_events/bestiary.json:909
 msgid "bite (d10), claws (d8+d8)"
@@ -8455,7 +8456,7 @@ msgstr ""
 
 #: app/static/json/party_events/custom-monster.json:101
 msgid "Gases"
-msgstr ""
+msgstr "Anwendungen"
 
 #: app/static/json/party_events/custom-monster.json:102
 msgid "Kicks"
@@ -9629,9 +9630,10 @@ msgstr ""
 #: app/templates/main/marketplace.html:19
 #: app/templates/partial/modal/marketplace.html:113
 msgid "Cost"
-msgstr ""
+msgstr "Preis"
 
 #: app/static/json/party_events/dungeons.json:216
+
 msgid "Danger"
 msgstr ""
 
@@ -9670,6 +9672,7 @@ msgstr ""
 #: app/static/json/party_events/names.json:46
 #: app/static/json/party_events/setting.json:409
 #: app/static/json/party_events/setting.json:1141
+
 msgid "Fear"
 msgstr ""
 
@@ -9704,6 +9707,7 @@ msgid "Stagnation"
 msgstr ""
 
 #: app/static/json/party_events/dungeons.json:231
+
 msgid "Tradition"
 msgstr ""
 
@@ -9733,7 +9737,7 @@ msgstr ""
 #: app/static/json/party_events/dungeons.json:242
 #: app/templates/partial/tools/pcgen_text.html:49
 msgid "Special"
-msgstr ""
+msgstr "Spezial"
 
 #: app/static/json/party_events/dungeons.json:242
 msgid "Trap"
@@ -9846,8 +9850,7 @@ msgstr ""
 
 #: app/static/json/party_events/dungeons.json:293
 msgid "Bath"
-msgstr ""
-
+msgstr "Explosion"
 #: app/static/json/party_events/dungeons.json:294
 msgid "Cistern"
 msgstr ""
@@ -9910,7 +9913,7 @@ msgstr ""
 
 #: app/static/json/party_events/dungeons.json:309
 msgid "Vault"
-msgstr ""
+msgstr "Informationen"
 
 #: app/static/json/party_events/dungeons.json:310
 #: app/static/json/party_events/setting.json:907
@@ -14901,7 +14904,7 @@ msgstr ""
 #: app/static/json/party_events/setting.json:89
 #: app/templates/main/about.html:37 app/templates/main/tools.html:9
 msgid "Tools"
-msgstr ""
+msgstr "Werkzeuge"
 
 #: app/static/json/party_events/setting.json:68
 #: app/static/json/party_events/setting.json:90
@@ -14918,7 +14921,7 @@ msgstr ""
 #: app/templates/main/marketplace.html:10
 #: app/templates/partial/modal/marketplace.html:104
 msgid "Weapons"
-msgstr ""
+msgstr "Waffen"
 
 #: app/static/json/party_events/setting.json:149
 msgid "Decadent"
@@ -16930,7 +16933,6 @@ msgstr ""
 #: app/static/json/party_events/npcs.json:43
 msgid "Tanner"
 msgstr ""
-
 # ============================================= RELIQUARY
 # =============================================
 #: app/static/json/party_events/reliquary.json:4
@@ -18731,8 +18733,6 @@ msgstr ""
 msgid "Long-term exposure can cause hair loss, blurry vision, and fatigue."
 msgstr ""
 
-# ============================================= WEATHER
-# =============================================
 #: app/static/json/party_events/weather.json:4
 #: app/static/json/party_events/weather.json:5
 msgid "Nice"
