@@ -25,12 +25,15 @@ class Inventory:
         self.parse(character)
         self.select(0)
         self.itemsWithRolls = True
+        self.selected_container = 0
         
     def setItemsWithRolls(self, value):
         self.itemsWithRolls = value
         
     def parse(self, character):
-        containers = json.loads(character.containers)
+        containers = []
+        if character.containers:
+            containers = json.loads(character.containers)
         cdict = {}
         for c in containers:
             if not "items" in c:
