@@ -433,6 +433,8 @@ def charcreo_bonds_select(tp):
             update_items(custom_fields, background['starting_gear'])
         else:
             update_items(custom_fields, []) 
+    form.omens.process_data(custom_fields['omens_selected'])
+    form.bonds.process_data(custom_fields['bonds_selected'])
     render = render_template('partial/charcreo/abo_oob.html', form=form,custom_fields=custom_fields )            
     response = make_response(render)    
     response.headers['HX-Trigger-After-Settle'] = "bond-changed"
@@ -444,6 +446,7 @@ def charcreo_bond_roll():
     form, custom_fields, background = process_form_data(request.form)
     b = roll_list(load_bonds())
     custom_fields['bonds_selected'] = b['description']
+    form.bonds.process_data(custom_fields['bonds_selected'])
     update_gold(custom_fields,'bonus_gold_bond',sdv(b,'gold',0))
     custom_fields['bond_items'] = json.dumps(sdv(b,'items',[]))
     if background:
@@ -461,6 +464,7 @@ def charcreo_omen_roll():
     form, custom_fields, _ = process_form_data(request.form)
     o = roll_list(load_omens())
     custom_fields['omens_selected'] = o
+    form.omens.process_data(custom_fields['omens_selected'])
     return render_template('partial/charcreo/abo.html', form=form,custom_fields=custom_fields )
 
 # route: gold roll
@@ -534,6 +538,9 @@ def charcreo_roll_all():
     image = roll_list(load_images())
     custom_fields['portrait_src'] = image
     custom_fields['custom_image'] = 'false'
+    form.omens.process_data(custom_fields['omens_selected'])
+    form.bonds.process_data(custom_fields['bonds_selected'])
+    
     render = render_template('partial/charcreo/body.html', form=form, custom_fields=custom_fields, portrait_src=custom_fields['portrait_src'], custom_image=custom_fields['custom_image'])
     response = make_response(render)    
     return response
@@ -616,15 +623,13 @@ def charcreo_roll_remaining():
     if not custom_fields['bonds_selected'] or custom_fields['bonds_selected'] == '':
         b = roll_list(load_bonds())
         custom_fields['bonds_selected'] = b['description']
+        form.bonds.process_data(custom_fields['bonds_selected'])
         update_gold(custom_fields,'bonus_gold_bond',sdv(b,'gold',0))
-        custom_fields['bond_items'] = json.dumps(sdv(b,'items',[]))
-        if background:
-            update_items(custom_fields, background['starting_gear'])
-        else:
-            update_items(custom_fields, []) 
+        custom_fields['bond_items'] = json.dumps(sdv(b,'items',[]))        
     if not custom_fields['omens_selected'] or custom_fields['omens_selected'] == '':
         o = roll_list(load_omens())
         custom_fields['omens_selected'] = o
+        form.omens.process_data(custom_fields['omens_selected'])
     if not custom_fields['gold'] or custom_fields['gold'] == '0':
         _, total = roll_multi_dice(6,3)
         custom_fields['gold'] = total
@@ -660,7 +665,7 @@ def check_char_sanity(form):
 # Route: save character
 @character_create.route('/charcreo/save', methods=['POST'])
 def charcreo_save():
-    form, custom_fields, _ = process_form_data(request.form)
+    form, custom_fields, background = process_form_data(request.form)
     form.custom_background.data = bleach.clean(form.custom_background.data)
     form.custom_name.data = bleach.clean(form.custom_name.data)
 
@@ -677,19 +682,23 @@ def charcreo_save():
     sane, errors = check_char_sanity(form)
     if not sane:
         return render_template('partial/modal/save_char_error.html', error="<ul>"+"".join(errors)+"</ul>")    
-
+    
     # add character to db
 
     custom_image = custom_fields['custom_image'] == 'true'
     containers = custom_fields['containers']
-        
+    
+    description = ''
+    if background:
+        description=sdv(background,'background_description','')
+                
     new_character = Character(
                 name=form.name.data, owner_username=current_user.username, background=form.background.data, owner=current_user.id, url_name=url_name, custom_background=form.custom_background.data, custom_name=form.custom_name.data, items=form.items.data, 
                 containers=containers, # form.containers.data,
                 strength_max=form.strength_max.data, dexterity_max=form.dexterity_max.data, willpower_max=form.willpower_max.data, 
                 hp_max=form.hp_max.data, strength=form.strength_max.data, dexterity=form.dexterity_max.data, armor=form.armor.data, scars="",
                 willpower=form.willpower_max.data, hp=form.hp_max.data, deprived=False, 
-                description=form.description.data, traits=form.traits.data, notes=form.notes.data, 
+                description=description, traits=form.traits.data, notes=form.notes.data, 
                 gold=form.gold.data, bonds=form.bonds.data, omens=form.omens.data, custom_image=custom_image, image_url=custom_fields['portrait_src'])
     db.session.add(new_character)
     db.session.commit()

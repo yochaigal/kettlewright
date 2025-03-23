@@ -24,8 +24,7 @@ class Inventory:
         self.character = character
         self.parse(character)
         self.select(0)
-        self.itemsWithRolls = True
-        self.selected_container = 0
+        self.itemsWithRolls = True        
         
     def setItemsWithRolls(self, value):
         self.itemsWithRolls = value
