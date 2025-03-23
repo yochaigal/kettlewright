@@ -125,3 +125,13 @@ def load_bonds():
         bonds_data = json.load(file)
     return bonds_data["Bonds"]
     
+# safe dictionary value
+def sdv(dict, key, default=""):
+    if key in dict:
+        return dict[key]
+    return default
+
+def safeint(val):
+    if val != None and val != '':
+        return int(val)
+    return 0

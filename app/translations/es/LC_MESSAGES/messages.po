@@ -1230,6 +1230,14 @@ msgstr ""
 msgid "Storage"
 msgstr ""
 
+#: app/templates/main/character_create.html:15
+msgid "Do you want to reset character?"
+msgstr ""
+
+#: app/templates/main/character_create.html:15
+msgid "Reset character"
+msgstr ""
+
 # ============================================= BONDS
 # =============================================
 #: app/static/json/bonds.json:4 app/static/json/bonds.json:8

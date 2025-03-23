@@ -8,7 +8,8 @@ const redirectToCharacterPage = (element) => {
 const copyLink = (element) => {
   const urlName = element.dataset.urlName;
   const ownerUsername = element.dataset.ownerUsername;
-  const link = `https://kettlewright.cairnrpg.com/users/${ownerUsername}/characters/${urlName}/`;
+  const base = window.location.origin;
+  const link = `${base}/users/${ownerUsername}/characters/${urlName}/`;
   navigator.clipboard.writeText(link);
 }
 

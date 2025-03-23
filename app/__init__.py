@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from datetime import timedelta
 from flask_babel import Babel
 from flask_babel import _
+import urllib.parse
 
 UTC = timezone.utc
 
@@ -143,9 +144,13 @@ def create_app():
     from app.blueprints import party as party_blueprint
     app.register_blueprint(party_blueprint)
     
-     # blueprint for generator
+    # blueprint for generator
     from app.blueprints import generator as generator_blueprint
     app.register_blueprint(generator_blueprint)
+    
+    # blueprint for character creation
+    from app.blueprints import character_create as character_create_blueprint
+    app.register_blueprint(character_create_blueprint)
 
     from .socket_events import register_socket_events
     register_socket_events(socketio)
@@ -162,8 +167,34 @@ def create_app():
     
     # Translate
     @app.template_filter("tr")
-    def squote2js_filter(text: str) -> str:
+    def tr_filter(text: str) -> str:
         return _(text)
+    
+    # URL decode
+    @app.template_filter("urldec")
+    def urldec_filter(text: str) -> str:
+        if not text:
+            return None
+        return urllib.parse.unquote_plus(text)
+    
+    # URL decode
+    @app.template_filter("urlenc")
+    def urlenc_filter(text: str) -> str:
+        if not text:
+            return None
+        return urllib.parse.quote_plus(text)
+    
+    # Truncate text to x chars
+    @app.template_filter("trunc")
+    def trunc_filter(text: str, len: int) -> str:
+        return text[0:len]
+
+    # sum 2 integers
+    @app.template_filter("intsum")
+    def intsum_filter(text: str, text2: str) -> str:
+        t1 = int(text)
+        t2 = int(text2)
+        return str(t1+t2)
     
     # Write error about party code
     @app.template_filter("party_code_error")

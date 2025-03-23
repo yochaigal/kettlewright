@@ -3,7 +3,7 @@
   const party = `{{party}}`;
   const username = `{{username}}`;
   const url_name = `{{url_name}}`;
-  const selected_container = `{{inventory.selected_container["id"]}}`;
+  const selected_container = `{{inventory["selected_container"]["id"]}}`;
   const isOwner = "{{ is_owner }}";
 </script>
 
@@ -29,14 +29,14 @@
   <div class="sheet view-character-sheet">
     <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em;">
       <div class="no-space" id="character-portrait-container">
-        <img src="{{portrait_src}}" alt="character portrait" class="portrait-image" id="portrait-image" />
+        <img src="{{portrait_src | urldec}}" alt="character portrait" class="portrait-image" id="portrait-image" />
       </div>
       <div class="full-width row16spaced-top">
         <div>
           <div id="character-name-container">
             <h1>{{character.name}}</h1>
           </div>
-          <h2 class="">{{character.background}}</h2>
+          <h2 class="">{{character.background | tr}}</h2>
         </div>
         {% if is_owner %}
         <div class="charview-action-pad">
@@ -59,7 +59,7 @@
       <div id="character-traits-container">
         <h3 class="no-space">{{_('Traits')}}</h3>
         <div id="character-traits-view" class="with-whitespace character-text-field">
-          {% if character.traits != "" %} {{character.traits}} {% else %}
+          {% if character.traits != "" and character.traits != None  %} {{character.traits}} {% else %}
           {{_('This character has no traits...')}} {% endif %}
         </div>
       </div>
@@ -72,35 +72,35 @@
       <div class="character-description-container" id="character-description-container">
         <h3 class="no-space">{{_('Description')}}</h3>
         <p id="character-description-view " class="with-whitespace character-text-field">
-          {% if character.description != "" %} {{ character.description }} {%
+          {% if character.description != "" and character.description != None  %} {{ character.description }} {%
           else %} {{_('This character has no description...')}} {% endif %}
         </p>
       </div>
       <div class="character-description-container" id="character-bonds-container">
         <h3 class="no-space">{{_('Bonds')}}</h3>
         <p id="character-bonds-view" class="with-whitespace character-text-field">
-          {% if character.bonds != "" %} {{ character.bonds }} {% else %}
+          {% if character.bonds != "" and character.bonds != None  %} {{ character.bonds }} {% else %}
           {{_('This character has no bonds...')}} {% endif %}
         </p>
       </div>
       <div class="character-description-container" id="character-omens-container">
         <h3 class="no-space">{{_('Omens')}}</h3>
         <p id="character-omens-view" class="with-whitespace character-text-field">
-          {% if character.omens != "" %} {{ character.omens }} {% else %}
+          {% if character.omens != "" and character.omens != None %} {{ character.omens }} {% else %}
           {{_('This character has no omens...')}} {% endif %}
         </p>
       </div>
       <div class="character-description-container" id="character-scars-container">
         <h3 class="no-space">{{_('Scars')}}</h3>
         <p id="character-scars-view" class="with-whitespace character-text-field">
-          {% if character.scars != "" %} {{character.scars|safe}} {% else %}
+          {% if character.scars != "" and character.scars != None  %} {{character.scars|safe}} {% else %}
           {{_('This character has no scars...')}} {% endif %}
         </p>
       </div>
       <div class="character-description-container" id="character-notes-container">
         <h3 class="no-space">{{_('Notes')}}</h3>
         <p id="character-notes-view" class="with-whitespace character-text-field">
-          {% if character.notes != "" %} {{ character.notes|safe }} {% else %}
+          {% if character.notes != "" and character.notes != None %} {{ character.notes|safe }} {% else %}
           {{_('This character has no notes...')}} {% endif %}
         </p>
       </div>

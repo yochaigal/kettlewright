@@ -133,7 +133,6 @@ def charedit_clear_party_err(username, url_name):
 def charedit_inplace_scars_add(username, url_name):
     user, character = get_char_data(username, url_name)
     data = request.form
-    print(data)
     scarlist = load_scars()
     selected_scar = data['scars-select']
     result = data["scars"]
@@ -203,7 +202,7 @@ def charedit_rest(username, url_name):
     user, character = get_char_data(username, url_name)
     setattr(character,"hp",character.hp_max)
     db.session.commit()
-    return render_template('partial/charview/stats.html', user=user, character=character, username=username, url_name=url_name)
+    return render_template('partial/charview/stats.html', user=user, character=character, username=username, url_name=url_name, is_owner=True)
 
 # Route: roll omens on omen edit
 @character_edit.route('/charedit/omen-roll/<username>/<url_name>', methods=['POST'])

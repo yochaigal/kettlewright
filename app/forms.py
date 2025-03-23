@@ -4,6 +4,7 @@ from wtforms.validators import DataRequired, InputRequired, Length, Email, Regex
 import os
 import json
 from flask_babel import lazy_gettext as _l
+from flask_babel import _
 
 
 class LoginForm(FlaskForm):
@@ -109,10 +110,10 @@ def load_data_from_json(file_path):
             names_choices.append((name, name))
 
         # Adding background to choices
-        background_choices.append((background, background))
+        background_choices.append((background, _l(background)))
 
-    background_choices.append((_l('Custom'), '** Custom **'))
-    names_choices.append((_l('Custom'), '** Custom **'))
+    background_choices.insert(1, ('Custom', _l('** Custom **') ))
+    names_choices.insert(1, ('Custom', _l('** Custom **')))
     return names_choices, background_choices
 
 
@@ -144,7 +145,7 @@ class CharacterForm(FlaskForm):
     #     else:
     #         field.data = ''
     strength = IntegerField(_l('Strength'))
-    strength_max = IntegerField(_l('Strength Max'), validators=[InputRequired()])
+    strength_max = IntegerField(_l('Strength Max'), validators=[DataRequired()])
     dexterity = IntegerField(_l('Dexterity'))
     dexterity_max = IntegerField(_l('Dexterity Max'), validators=[InputRequired()])
     willpower = IntegerField(_l('Willpower'))

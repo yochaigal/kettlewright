@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from .models import User, Character, Party
 from . import db
 from .forms import CharacterForm, CharacterEditForm, CharacterJSONForm, PartyForm, PartyEditForm
-from app.lib import load_scars, character_portrait_link, Inventory, sanitize_data, sanitize_json_content, load_version, load_backgrounds
+from app.lib import load_scars, character_portrait_link, Inventory, sanitize_data, sanitize_json_content, load_version, load_backgrounds, load_traits, load_bonds, load_omens, DummyCharacter
 import sys
 import json
 from urllib.parse import quote
@@ -14,6 +14,7 @@ import bleach
 from flask_htmx import HTMX
 from flask_babel import _
 import datetime
+import urllib.parse
 
 
 main = Blueprint('main', __name__)
@@ -76,7 +77,7 @@ def characters(username):
     characters_sorted = sorted(
         characters, key=lambda x: x.created_at, reverse=True)
     for character in characters_sorted:
-        if character.custom_image == False:
+        if character.custom_image == False and character.image_url != None:
             character.portrait_src = url_for(
                 'static', filename='images/portraits/' + character.image_url)
         else:
@@ -184,70 +185,97 @@ def string_to_bool(value):
 @main.route('/new_character/', methods=['GET', 'POST'])
 def new_character():
     form = CharacterForm()
-    if current_user.is_authenticated:
-        if form.validate_on_submit():
-            # sanitize custom fields
-            form.custom_background.data = bleach.clean(
-                form.custom_background.data)
-            form.custom_name.data = bleach.clean(form.custom_name.data)
+    if not current_user.is_authenticated:
+        return make_response("Unauthorized")
+    # form = CharacterForm()
+    # if current_user.is_authenticated:
+    #     if form.validate_on_submit():
+    #         # sanitize custom fields
+    #         form.custom_background.data = bleach.clean(
+    #             form.custom_background.data)
+    #         form.custom_name.data = bleach.clean(form.custom_name.data)
 
-            # create url_name
-            if form.name.data == 'Custom':
-                url_name = create_unique_url_name(form.custom_name.data)
-                form.name.data = form.custom_name.data
-            else:
-                url_name = create_unique_url_name(form.name.data)
+    #         # create url_name
+    #         if form.name.data == 'Custom':
+    #             url_name = create_unique_url_name(form.custom_name.data)
+    #             form.name.data = form.custom_name.data
+    #         else:
+    #             url_name = create_unique_url_name(form.name.data)
 
-            if form.background.data == 'Custom':
-                form.background.data = form.custom_background.data
+    #         if form.background.data == 'Custom':
+    #             form.background.data = form.custom_background.data
 
-            # add character to db
+    #         # add character to db
 
-            custom_image = form.custom_image.data.lower() == 'true'
-            new_character = Character(
-                name=form.name.data, owner_username=current_user.username, background=form.background.data, owner=current_user.id, url_name=url_name, custom_background=form.custom_background.data, custom_name=form.custom_name.data, items=form.items.data, containers=form.containers.data,
-                strength_max=form.strength_max.data, dexterity_max=form.dexterity_max.data, willpower_max=form.willpower_max.data, hp_max=form.hp_max.data, strength=form.strength_max.data, dexterity=form.dexterity_max.data, armor=form.armor.data, scars="",
-                willpower=form.willpower_max.data, hp=form.hp_max.data, deprived=False, description=form.description.data, traits=form.traits.data, notes=form.notes.data, gold=form.gold.data, bonds=form.bonds.data, omens=form.omens.data, custom_image=custom_image, image_url=form.image_url.data)
-            db.session.add(new_character)
-            db.session.commit()
+    #         custom_image = form.custom_image.data.lower() == 'true'
+    #         new_character = Character(
+    #             name=form.name.data, owner_username=current_user.username, background=form.background.data, owner=current_user.id, url_name=url_name, custom_background=form.custom_background.data, custom_name=form.custom_name.data, items=form.items.data, containers=form.containers.data,
+    #             strength_max=form.strength_max.data, dexterity_max=form.dexterity_max.data, willpower_max=form.willpower_max.data, hp_max=form.hp_max.data, strength=form.strength_max.data, dexterity=form.dexterity_max.data, armor=form.armor.data, scars="",
+    #             willpower=form.willpower_max.data, hp=form.hp_max.data, deprived=False, description=form.description.data, traits=form.traits.data, notes=form.notes.data, gold=form.gold.data, bonds=form.bonds.data, omens=form.omens.data, custom_image=custom_image, image_url=form.image_url.data)
+    #         db.session.add(new_character)
+    #         db.session.commit()
 
-           # return redirect(url_for('main.index'))
-            return redirect(url_for('main.character', username=current_user.username, url_name=url_name))
-        else:
-            print('not submitted', file=sys.stderr)
-            error_messages = []
-            for field, errors in form.errors.items():
-                for error in errors:
-                    error_messages.append(f"{field}: {error}")
-            flash(" ".join(error_messages))
+    #        # return redirect(url_for('main.index'))
+    #         return redirect(url_for('main.character', username=current_user.username, url_name=url_name))
+    #     else:
+    #         print('not submitted', file=sys.stderr)
+    #         error_messages = []
+    #         for field, errors in form.errors.items():
+    #             for error in errors:
+    #                 error_messages.append(f"{field}: {error}")
+    #         flash(" ".join(error_messages))
 
-        # json_file_path = os.path.join(os.path.dirname(os.path.abspath(
-        #     __file__)), 'static', 'json', 'background_data.json')
-        backgrounds_file_path = os.path.join(os.path.dirname(os.path.abspath(
-            __file__)), 'static', 'json', 'backgrounds', 'background_data.json')
-        with open(backgrounds_file_path, 'r') as file:
-            background_data = json.load(file)
+    #     # json_file_path = os.path.join(os.path.dirname(os.path.abspath(
+    #     #     __file__)), 'static', 'json', 'background_data.json')
+    #     backgrounds_file_path = os.path.join(os.path.dirname(os.path.abspath(
+    #         __file__)), 'static', 'json', 'backgrounds', 'background_data.json')
+    #     with open(backgrounds_file_path, 'r') as file:
+    #         background_data = json.load(file)
 
-        traits_file_path = os.path.join(os.path.dirname(os.path.abspath(
-            __file__)), 'static', 'json', 'traits.json')
-        with open(traits_file_path, 'r') as file:
-            traits_data = json.load(file)
+    #     traits_file_path = os.path.join(os.path.dirname(os.path.abspath(
+    #         __file__)), 'static', 'json', 'traits.json')
+    #     with open(traits_file_path, 'r') as file:
+    #         traits_data = json.load(file)
 
-        bonds_file_path = os.path.join(os.path.dirname(os.path.abspath(
-            __file__)), 'static', 'json', 'bonds.json')
-        with open(bonds_file_path, 'r') as file:
-            bonds_data = json.load(file)
+    #     bonds_file_path = os.path.join(os.path.dirname(os.path.abspath(
+    #         __file__)), 'static', 'json', 'bonds.json')
+    #     with open(bonds_file_path, 'r') as file:
+    #         bonds_data = json.load(file)
 
-        with open(marketplace_file_path, 'r') as file:
-            marketplace_data = json.load(file)
+    #     with open(marketplace_file_path, 'r') as file:
+    #         marketplace_data = json.load(file)
 
-        image_folder = os.path.join(os.path.dirname(os.path.abspath(
-            __file__)), 'static', 'images', 'portraits')
-        image_files = [f for f in os.listdir(
-            image_folder) if f.endswith('.webp')]
-
-    return render_template('main/character_create.html', form=form, background_data=json.dumps(background_data), traits_data=json.dumps(traits_data),
-                           bonds_data=json.dumps(bonds_data), omens_data=json.dumps(omens_data), marketplace_data=json.dumps(marketplace_data), images=image_files)
+    #     image_folder = os.path.join(os.path.dirname(os.path.abspath(
+    #         __file__)), 'static', 'images', 'portraits')
+    #     image_files = [f for f in os.listdir(
+    #         image_folder) if f.endswith('.webp')]
+        
+    portrait_src = urllib.parse.quote_plus("/static/images/portraits/default-portrait.webp")
+    ps = request.args.get("src")
+    if ps != None and ps != "":
+        portrait_src = ps
+    custom_image = request.args.get("custom_image")
+    custom_fields = {}
+    custom_fields['background'] = None
+    custom_fields['traits'] = load_traits()
+    custom_fields['bonds'] = load_bonds()
+    custom_fields['omens'] = load_omens()
+    custom_fields['gold'] = 0
+    custom_fields['bonus_gold_t1'] = 0
+    custom_fields['bonus_gold_t2'] = 0
+    custom_fields['bonus_gold_bond'] = 0
+    custom_fields['armor'] = 0
+    character = DummyCharacter()
+    custom_fields['inventory'] = Inventory(character)
+    custom_fields['inventory'].decorate()
+    custom_fields['items'] = '[]'
+    custom_fields['bond_items'] = '[]'
+    custom_fields['armor'] = '0'
+    custom_fields['portrait_src'] = portrait_src
+    custom_fields['custom_image'] = custom_image
+    
+    return render_template('main/character_create.html', portrait_src = portrait_src, custom_image=custom_image, 
+                           form=form, custom_fields=custom_fields)
 
 
 @main.route('/users/<username>/characters/<url_name>/')

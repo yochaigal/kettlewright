@@ -1,0 +1,11 @@
+<input type="hidden" name="portrait_src" value="{{custom_fields['portrait_src']}}" />
+<input type="hidden" name="custom_image" value="{{custom_fields['custom_image']}}" />
+<div class="no-space click-pointer" title="Click to change image"
+    hx-get="/charcreo/portrait?src={{portrait_src}}&custom_image={{custom_image}}" hx-swap="innerHTML"
+    hx-target="#character-portrait-container">
+    {% if custom_fields['custom_image'] == 'false' %}
+    <img src="/static/images/portraits/{{portrait_src | urldec}}" alt="character portrait" class="portrait-image" id="portrait-image" />
+    {% else %}
+    <img src="{{portrait_src | urldec}}" alt="character portrait" class="portrait-image" id="portrait-image" />
+    {% endif %}
+</div>
