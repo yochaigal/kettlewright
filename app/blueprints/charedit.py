@@ -8,6 +8,7 @@ from app.main import sanitize_data
 from app.lib import *
 from unidecode import unidecode
 from flask_babel import _
+from flask_babel import lazy_gettext as _l
 
 
 
@@ -207,12 +208,14 @@ def charedit_rest(username, url_name):
 # Route: roll omens on omen edit
 @character_edit.route('/charedit/omen-roll/<username>/<url_name>', methods=['POST'])
 def charedit_omen_roll(username, url_name):
-    user, character = get_char_data(username, url_name)  
+    user, character = get_char_data(username, url_name)
     omens = load_omens()
     data = request.form
     result = roll_list(omens)
     if data["omens"] != "":
-        result = data["omens"] + "\n \n" + result
+        result = data["omens"] + "\n \n" + _(result)
+    else:
+        result = _(result)
     response = make_response(result)
     response.headers["HX-Trigger-After-Settle"] = 'omen-roll'
     return response

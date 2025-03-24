@@ -663,6 +663,7 @@ def check_char_sanity(form):
     
 
 # Route: save character
+# Note: values are translated here, because we need to put text in character fields
 @character_create.route('/charcreo/save', methods=['POST'])
 def charcreo_save():
     form, custom_fields, background = process_form_data(request.form)
@@ -690,12 +691,12 @@ def charcreo_save():
     
     description = ''
     if background:
-        description=sdv(background,'background_description','')
+        description=_(sdv(background,'background_description',''))
     notes = []
     if custom_fields['background_table1_select'] and custom_fields['background_table1_select'] != '':
-        notes.append(background['table1']['question']+"\n"+custom_fields['background_table1_select'])
+        notes.append(_(background['table1']['question'])+"\n"+_(custom_fields['background_table1_select']))
     if custom_fields['background_table2_select'] and custom_fields['background_table2_select'] != '':
-        notes.append(background['table2']['question']+"\n"+custom_fields['background_table2_select'])        
+        notes.append(_(background['table2']['question'])+"\n"+_(custom_fields['background_table2_select']))        
                 
     new_character = Character(
                 name=form.name.data, owner_username=current_user.username, background=form.background.data, owner=current_user.id, url_name=url_name, custom_background=form.custom_background.data, custom_name=form.custom_name.data, items=form.items.data, 
@@ -703,7 +704,8 @@ def charcreo_save():
                 hp_max=form.hp_max.data, strength=form.strength_max.data, dexterity=form.dexterity_max.data, armor=form.armor.data, scars="",
                 willpower=form.willpower_max.data, hp=form.hp_max.data, deprived=False, 
                 description=description, traits=form.traits.data, notes="\n\n".join(notes), 
-                gold=form.gold.data, bonds=form.bonds.data, omens=form.omens.data, custom_image=custom_image, image_url=custom_fields['portrait_src'])
+                gold=form.gold.data, bonds=_(form.bonds.data), omens=_(form.omens.data), 
+                custom_image=custom_image, image_url=custom_fields['portrait_src'])
     db.session.add(new_character)
     db.session.commit()
     response = make_response("Redirecting")
