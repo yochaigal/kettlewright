@@ -7,46 +7,51 @@
 <div class="body-container">
   <div class="sheet party-tools-sheet">
     <h2>{{_('Tools')}}</h2>
-    <div class="tabs" role="tablist">
-      <ul>
-        <li>
-          <input type="radio" name="tabs" id="tab1" checked />
-          <label for="tab1" role="tab" aria-selected="true" aria-controls="panel1" tabindex="0">{{_('Tables')}}</label>
-          <div id="tab-content1" class="tab-content flex-column-centered" role="tabpanel" aria-labelledby="description"
-            aria-hidden="false">
-            <div class="tools-roll-container">
-              <select class="tools-select" id="category-select">
-                <option value selected disabled="">{{_('Choose...')}}</option>
-              </select>
-              <select class="tools-select" id="subcategory-select">
-                <option value selected disabled="">{{_('Choose...')}}</option>
-              </select>
-              <div id="tools-button-container">
-                <button class="roll button dice-button" type="button" id="roll-button">
-                  <i class="fa-solid fa-dice dice"></i>
-                </button>
-                <button class="button dice-button" id="tools-copy-text-button" type="button">
-                  <i class="fa-solid fa-copy"></i>
-                </button>
-                <button class="button dice-button" id="clear-button" style="font-size: 16pt">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            </div>
-            <div class="text-border" style="margin-top: 1em" id="tools-result-display"></div>
-          </div>
-        </li>
-        <li>
-          <input type="radio" name="tabs" id="tab2" />
+    <div class="tab-wrap">
+          <input type="radio" name="tabs" id="tab3" class="tab" />
+          <label for="tab3" role="tab" aria-selected="true" aria-controls="panel3" tabindex="0">{{_('Monsters')}}</label>
+
+          <input type="radio" name="tabs" id="tab4" class="tab"/>
+          <label for="tab4" role="tab" aria-selected="true" aria-controls="panel4" tabindex="0">{{_('Events')}}</label>
+
+          <input type="radio" name="tabs" id="tab5" class="tab" />
+          <label for="tab5" role="tab" aria-selected="true" aria-controls="panel5" tabindex="0">{{_('Weather')}}</label>
+
+          <input type="radio" name="tabs" id="tab6" class="tab"/>
+          <label for="tab6" role="tab" aria-selected="true" aria-controls="panel5" tabindex="0">{{_('Worldbuilding')}}</label>
+
+          <input type="radio" name="tabs" id="tab7" class="tab"/>
+          <label for="tab7" role="tab" aria-selected="true" aria-controls="panel5" tabindex="0">{{_('Items')}}</label>
+
+          <input type="radio" name="tabs" id="tab2" class="tab"/>
           <label for="tab2" role="tab" aria-selected="true" aria-controls="panel2" tabindex="0">{{_('Character
             Generator')}}</label>
-          <div id="tab-content2" class="tab-content" role="tabpanel" aria-labelledby="description" aria-hidden="false">
+
+          <div id="tab-content3" class="tab__content" role="tabpanel" aria-labelledby="description" aria-hidden="false">
+            {% include "partial/tools/monsters.html" %}
+          </div>
+          
+          <div id="tab-content4" class="tab__content" role="tabpanel" aria-labelledby="description" aria-hidden="false">
+            {% include "partial/tools/events.html" %}
+          </div>
+                
+          <div id="tab-content5" class="tab__content" role="tabpanel" aria-labelledby="description" aria-hidden="false">
+            {% include "partial/tools/weather.html" %}
+          </div>
+        
+          <div id="tab-content6" class="tab__content" role="tabpanel" aria-labelledby="description" aria-hidden="false">
+            {% include "partial/tools/worldbuild.html" %}
+          </div>
+        
+          <div id="tab-content7" class="tab__content" role="tabpanel" aria-labelledby="description" aria-hidden="false">
+            {% include "partial/tools/items.html" %}
+          </div>
+        
+          <div id="tab-content2" class="tab__content" role="tabpanel" aria-labelledby="description" aria-hidden="false">
             {% include "partial/tools/pcgen.html" %}
           </div>
-        </li>
-      </ul>
+        
     </div>
-
   </div>
 </div>
 {% endblock %}
