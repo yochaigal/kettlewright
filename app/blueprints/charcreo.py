@@ -691,14 +691,18 @@ def charcreo_save():
     description = ''
     if background:
         description=sdv(background,'background_description','')
+    notes = []
+    if custom_fields['background_table1_select'] and custom_fields['background_table1_select'] != '':
+        notes.append(background['table1']['question']+"\n"+custom_fields['background_table1_select'])
+    if custom_fields['background_table2_select'] and custom_fields['background_table2_select'] != '':
+        notes.append(background['table2']['question']+"\n"+custom_fields['background_table2_select'])        
                 
     new_character = Character(
                 name=form.name.data, owner_username=current_user.username, background=form.background.data, owner=current_user.id, url_name=url_name, custom_background=form.custom_background.data, custom_name=form.custom_name.data, items=form.items.data, 
-                containers=containers, # form.containers.data,
-                strength_max=form.strength_max.data, dexterity_max=form.dexterity_max.data, willpower_max=form.willpower_max.data, 
+                containers=containers, strength_max=form.strength_max.data, dexterity_max=form.dexterity_max.data, willpower_max=form.willpower_max.data, 
                 hp_max=form.hp_max.data, strength=form.strength_max.data, dexterity=form.dexterity_max.data, armor=form.armor.data, scars="",
                 willpower=form.willpower_max.data, hp=form.hp_max.data, deprived=False, 
-                description=description, traits=form.traits.data, notes=form.notes.data, 
+                description=description, traits=form.traits.data, notes="\n\n".join(notes), 
                 gold=form.gold.data, bonds=form.bonds.data, omens=form.omens.data, custom_image=custom_image, image_url=custom_fields['portrait_src'])
     db.session.add(new_character)
     db.session.commit()
