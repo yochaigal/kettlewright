@@ -250,7 +250,8 @@ def new_character():
     #     image_files = [f for f in os.listdir(
     #         image_folder) if f.endswith('.webp')]
         
-    portrait_src = urllib.parse.quote_plus("/static/images/portraits/default-portrait.webp")
+    # portrait_src = urllib.parse.quote_plus("/static/images/portraits/default-portrait.webp")
+    portrait_src = "default-portrait.webp"
     ps = request.args.get("src")
     if ps != None and ps != "":
         portrait_src = ps
@@ -272,7 +273,7 @@ def new_character():
     custom_fields['bond_items'] = '[]'
     custom_fields['armor'] = '0'
     custom_fields['portrait_src'] = portrait_src
-    custom_fields['custom_image'] = custom_image
+    custom_fields['custom_image'] = 'false'
     
     return render_template('main/character_create.html', portrait_src = portrait_src, custom_image=custom_image, 
                            form=form, custom_fields=custom_fields)

@@ -71,6 +71,7 @@
     </select>
 </div>
 <p class="text-border" id="traits-description" style="min-height: 100px; grid-column: 1/5">
+    {{form.traits(id="traits-field")}}
     {% if form.traits.data %}
     {{form.traits.data}}
     {% endif %}
