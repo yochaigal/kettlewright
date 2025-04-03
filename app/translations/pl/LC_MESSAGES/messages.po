@@ -1257,9 +1257,6 @@ msgstr "Nie"
 msgid "Error"
 msgstr "Błąd"
 
-#: app/templates/partial/modal/save_char_error.html:10
-msgid "Character has to have a name!"
-msgstr "Postać musi mieć imię!"
 
 # ============================================= BONDS
 # =============================================

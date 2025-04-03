@@ -428,10 +428,7 @@ def charcreo_bonds_select(tp):
             custom_fields['bond_items'] = json.dumps(sdv(bond,'items',[]))                       
         else:
             custom_fields['bond_items'] = '[]'
-        if background:
-            update_items(custom_fields, background['starting_gear'])
-        else:
-            update_items(custom_fields, []) 
+        update_items(custom_fields)        
     form.omens.process_data(custom_fields['omens_selected'])
     form.bonds.process_data(custom_fields['bonds_selected'])
     render = render_template('partial/charcreo/abo_oob.html', form=form,custom_fields=custom_fields )            
@@ -448,10 +445,7 @@ def charcreo_bond_roll():
     form.bonds.process_data(custom_fields['bonds_selected'])
     update_gold(custom_fields,'bonus_gold_bond',sdv(b,'gold',0))
     custom_fields['bond_items'] = json.dumps(sdv(b,'items',[]))
-    if background:
-        update_items(custom_fields, background['starting_gear'])            
-    else:
-        update_items(custom_fields, []) 
+    update_items(custom_fields)            
     render = render_template('partial/charcreo/abo_oob.html', form=form,custom_fields=custom_fields )
     response = make_response(render)    
     response.headers['HX-Trigger-After-Settle'] = "bond-changed"
