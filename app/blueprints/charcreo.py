@@ -293,7 +293,6 @@ def charcreo_bkg_table_roll(nr):
         lst = background['table2']['options']
         field="background_table2_select"
         gfield = 'bonus_gold_t2'
-        custom_fields['t2_items'] = sdv(opt,'items',[])
     opt=roll_list(lst)
     if nr == "1":
         custom_fields['t1_items'] = json.dumps(sdv(opt,'items',[]))
