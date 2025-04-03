@@ -1,10 +1,14 @@
-
+# German translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2025-01-28 23:33+0100\n"
-"PO-Revision-Date: 2025-02-16 22:17+0100\n"
+"PO-Revision-Date: 2025-04-03 21:50+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
 "Language-Team: de <LL@li.org>\n"
@@ -12,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.16.0\n"
+"Generated-By: Babel 2.17.0\n"
 
 # ============================================= BASIC
 # =============================================
@@ -1238,6 +1242,18 @@ msgstr ""
 msgid "Reset character"
 msgstr ""
 
+#: app/templates/partial/charview/stats.html:15
+msgid "Yes"
+msgstr ""
+
+#: app/templates/partial/charview/stats.html:15
+msgid "No"
+msgstr ""
+
+#: app/templates/partial/modal/save_char_error.html:10
+msgid "Error"
+msgstr ""
+
 # ============================================= BONDS
 # =============================================
 #: app/static/json/bonds.json:4 app/static/json/bonds.json:8
@@ -2148,6 +2164,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:1
 msgid "Half Witch"
+msgstr ""
+
+#: app/static/json/backgrounds/hexenbane.json:1
+msgid "Hexenbane"
 msgstr ""
 
 #: app/static/json/backgrounds/jongleur.json:1
