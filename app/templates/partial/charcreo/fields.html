@@ -20,8 +20,8 @@
             </button>
         </div>
         <div class="create-text-field-container">
-            {% if custom_fields['background'] %}
-            {{ form.custom_background(class="inactive", id="custom-background-field") }}
+            {% if custom_fields['background'] or form.background.data != 'Custom' %}
+            {{ form.custom_background(class="hidden", id="custom-background-field") }}
             {% else %}
             {{ form.custom_background(id="custom-background-field") }}
             {% endif %}
@@ -56,8 +56,8 @@
             </button>
         </div>
         <div class="create-text-field-container">
-            {% if form.name.data and form.name.data != "" and form.name.data != "Custom" %}
-            {{ form.custom_name(class="inactive", id="custom-name-field") }}
+            {% if form.name.data != 'Custom' %}
+            {{ form.custom_name(class="hidden", id="custom-name-field") }}
             {% else %}
             {{ form.custom_name(id="custom-name-field") }}
             {% endif %}

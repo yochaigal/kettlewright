@@ -14,8 +14,11 @@ def register_socket_events(socketio):
         join_user_parties()
 
     @socketio.on('disconnect')
-    def handle_disconnect():
-        print(f'User {current_user.id} disconnected')
+    def handle_disconnect(reason=""): # according logs, it should have at least one parameter
+        if current_user and current_user.id:
+            print(f' User {current_user.id} disconnected. Reason: {reason}')
+        else:
+            print(f' User disconnected but probably was not logged. Reason: {reason}')
 
     @socketio.on('register')
     def handle_register():
