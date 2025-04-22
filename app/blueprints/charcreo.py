@@ -681,6 +681,9 @@ def charcreo_save():
 
     custom_image = custom_fields['custom_image'] == 'true'
     containers = custom_fields['containers']
+    if containers == "":
+        # fallback, Main container always exists
+        containers = json.dumps([{"name": "Main", "slots": 10, "id": 0}])
     
     description = ''
     if background:
