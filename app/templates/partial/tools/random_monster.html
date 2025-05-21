@@ -1,0 +1,9 @@
+<b><u>{{monster.Name|tr}}</u></b>
+<br><br>
+{{_('HP')}}: {{monster.HP}} {%if monster.Armor%}, {{_('Armor')}}: {{monster.Armor}} {%endif%}, {{_('STR')}}: {{monster.STR}}, {{_('DEX')}}: {{monster.DEX}}, {{_('WIL')}}: {{monster.WIL}} {%if monster.Attack%}, {{monster.Attack|tr}} {%endif%}
+<br>
+{%for t in monster.Traits%}
+<br>• {{t|fmt|safe}}
+{%endfor%}
+<br><br>
+------------------------------------<br>

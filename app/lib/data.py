@@ -135,3 +135,9 @@ def safeint(val):
     if val != None and val != '':
         return int(val)
     return 0
+
+def load_monsters():
+    monsters_file_path = os.path.join(app_static_path(), 'json', 'party_events', 'bestiary.json')
+    with open(monsters_file_path, 'r') as file:
+        monster_data = json.load(file)
+    return monster_data

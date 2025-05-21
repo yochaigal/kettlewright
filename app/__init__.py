@@ -151,6 +151,10 @@ def create_app():
     # blueprint for character creation
     from app.blueprints import character_create as character_create_blueprint
     app.register_blueprint(character_create_blueprint)
+    
+    # blueprint for tools
+    from app.blueprints import tools as tools_blueprint
+    app.register_blueprint(tools_blueprint)
 
     from .socket_events import register_socket_events
     register_socket_events(socketio)
@@ -204,6 +208,12 @@ def create_app():
         if text.startswith('Invalid last party code:'):
             return text
         return None
+    
+    # Format special phrases
+    @app.template_filter("fmt")
+    def fmt_filter(text: str) -> str:
+        txt = text.replace(_('Critical Damage'), '<b>'+_('Critical Damage')+'</b>')
+        return txt
     
     @app.context_processor
     def inject_locale():

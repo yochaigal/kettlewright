@@ -1,34 +1,45 @@
 <form class="no-space">
     <div class="tools-generator">
         <div class="row16">
-            <select id="background-select" onchange="updateGenUrl(this)">
-                {{_('Background')}}:
-                <option value="">{{_('Random')}}</option>
-                {% for bkg in backgrounds %}
-                <option value="{{bkg}}">{{bkg | tr}}</option>
-                {% endfor %}
+            <select id="monster-select" name="monster-select">
+                <option value='random'>{{_('Random')}}</option>
+                <option value='custom'>{{_('Custom')}}</option>
+                <option value='reaction'>{{_('Reaction roll')}}</option>
             </select>
         </div>
         <div id="tools-button-container">
-            <button class="button dice-button" type="button" id="pcgen-button" hx-get="/gen/character"
-                hx-target="#pcgen-result-display" title="Roll">
+            <button class="button dice-button" type="button" id="monster-button" hx-post="/gen/monster"
+                hx-target="#monster-result-display" title="Roll">
                 <i class="fa-solid fa-dice dice"></i>
             </button>
-            <button class="button dice-button hidden" id="pcgen-copy-text-button" type="button"
+            <button class="button dice-button hidden" id="monster-copy-text-button" type="button"
                 title="Copy to clipboard">
                 <i class="fa-solid fa-copy"></i>
-            </button>
-            <button class="button dice-button hidden" id="pcgen-json-button" type="button" style="font-size: 16pt"
-                title="Export">
-                <i class="fa-solid fa-download"></i>
-            </button>
-            <button class="button dice-button hidden" type="button" id="gen-print-button" title="Print"
-                hx-post="/gen/character/print" hx-target="body" hx-swap="outerHTML"
-                hx-on-htmx-after-settle="document.getElementById('navbar').classList.add('hidden');">
-                <i class="fa-solid fa-print"></i>
-            </button>
+            </button>   
+            <button class="button dice-button hidden" id="monster-clear-button" type="button" hx-get="/gen/monster/clear"
+                 hx-target="#monster-result-display"
+                title="{{_('Clear')}}" hx-confirm="{{_('Clear current data?')}}" data-confirm-title="{{_('Clear')}}" 
+                data-confirm-button="{{_('Clear')}}" data-cancel-button="{{_('Cancel')}}" >
+                <i class="fa-solid fa-trash"></i>
+            </button>            
         </div>
     </div>
-    <div class="text-border" style="margin-top: 1em" id="monsters-result-display"></div>
-    <div class="hidden" id="print-anchor"></div>
+    <input type="hidden" id="old-result" name="old-result" />
+    <div class="text-border" style="margin-top: 1em" id="monster-result-display"></div>
 </form>
+<script>
+    document.getElementById("monster-copy-text-button").addEventListener('click', (event, element) => {
+        const resultDisplay = document.getElementById("monster-result-display");
+        const text = resultDisplay.innerText;
+        navigator.clipboard.writeText(text);
+        KW_alert("Copy text", "Results copied to clipboard");
+    });
+    htmx.on("show-monster-actions", function (evt) {
+        document.getElementById('monster-copy-text-button').classList.remove('hidden');
+        document.getElementById('monster-clear-button').classList.remove('hidden');
+    });
+    htmx.on("hide-monster-actions", function (evt) {
+        document.getElementById('monster-copy-text-button').classList.add('hidden');
+        document.getElementById('monster-clear-button').classList.add('hidden');
+    });
+</script>
