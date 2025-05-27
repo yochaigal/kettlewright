@@ -105,7 +105,7 @@ def signup():
         flash(Markup('A confirmation email has been sent. If you did not receive a link, please click <a href="/resend_confirmation" class="alert-link">here</a> to resend'), 'success')
         return redirect(url_for('auth.login'))
 
-    return render_template('auth/signup.html', form=form, require_signup_code=require_signup_code)
+    return render_template('auth/signup.html', form=form, require_signup_code=require_signup_code, captcha_key=os.environ.get('CAPTCHA_KEY'))
 
 
 @auth.route('/confirm/<token>')
