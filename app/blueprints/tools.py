@@ -10,8 +10,17 @@ tools = Blueprint('tools', __name__)
 
 
 def generate_custom_monster():
-    
-    return ""
+    data = load_custom_monster_data()
+    m = {}
+    m['physique'] = roll_list(data['MonsterAppearance']['Physique'])
+    m['feature'] = roll_list(data['MonsterAppearance']['Feature'])
+    m['quirks'] = roll_list(data['MonsterTraits']['Quirks'])
+    m['weakness'] = roll_list(data['MonsterTraits']['Weakness'])
+    m['attack_type'] = roll_list(data['MonsterAttacks']['Type'])
+    m['critical_dmg'] = roll_list(data['MonsterAttacks']['CriticalDamage'])
+    m['ability'] = roll_list(data['MonsterAbilities']['Ability'])
+    m['target'] = roll_list(data['MonsterAbilities']['Target'])
+    return m
 
 # Route: random monster
 @tools.route('/gen/monster', methods=['POST'])
@@ -22,16 +31,18 @@ def gen_monster():
     monsters = load_monsters()
     if monster_type == 'custom':
         m = generate_custom_monster()
-        render = render_template('partial/tools/random_monster.html', monster=m)
+        render = render_template('partial/tools/custom_monster.html', monster=m)
     elif monster_type == 'reaction':
         roll_result = roll_list(monsters['Reaction Roll'])
         render = render_template('partial/tools/reaction_roll.html',roll=roll_result)
     else:
         m = roll_list(monsters['Random Monster'])
         render = render_template('partial/tools/random_monster.html', monster=m)
-    new_result = old_result + render
+    new_result = render + old_result # old_result + render
     if monster_type == 'reaction':
         final_render = render_template('partial/tools/reaction_roll_oob.html', roll=roll_result, old_result = old_result,  new_result = new_result)
+    elif monster_type == 'custom':
+        final_render = render_template('partial/tools/custom_monster_oob.html', monster=m, old_result = old_result,  new_result = new_result)
     else:
         final_render = render_template('partial/tools/random_monster_oob.html', monster=m, old_result = old_result,  new_result = new_result)
     response = make_response(final_render)

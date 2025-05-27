@@ -141,3 +141,10 @@ def load_monsters():
     with open(monsters_file_path, 'r') as file:
         monster_data = json.load(file)
     return monster_data
+
+
+def load_custom_monster_data():
+    monsters_file_path = os.path.join(app_static_path(), 'json', 'party_events', 'custom-monster.json')
+    with open(monsters_file_path, 'r') as file:
+        monster_data = json.load(file)
+    return monster_data['Custom Monster']

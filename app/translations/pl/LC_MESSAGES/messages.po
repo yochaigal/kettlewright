@@ -1257,6 +1257,33 @@ msgstr "Nie"
 msgid "Error"
 msgstr "Błąd"
 
+#: app/templates/main/tools.html:12
+msgid "Monsters"
+msgstr "Potwory"
+
+#: app/templates/main/tools.html:14
+msgid "Events"
+msgstr "Zdarzenia"
+
+#: app/templates/main/tools.html:16
+msgid "Weather"
+msgstr "Pogoda"
+
+#: app/templates/main/tools.html:18
+msgid "Worldbuilding"
+msgstr "Światotworzenie"
+
+#: app/templates/partial/tools/monsters.html:6
+msgid "Custom"
+msgstr "Niestandardowy"
+
+#: app/templates/partial/tools/monsters.html:12
+msgid "Reaction roll"
+msgstr "Reakcja BN"
+
+#: app/templates/partial/tools/monsters.html:12
+msgid "Roll"
+msgstr "Rzut"
 
 # ============================================= BONDS
 # =============================================
