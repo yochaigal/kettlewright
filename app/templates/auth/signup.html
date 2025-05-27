@@ -35,6 +35,9 @@
     {% endif %} {% endwith %} {% for field in form %} {% if field.errors %} {% for error in field.errors %}
     <div class="notification is-danger" style="margin-top: 1em">{{ error }}</div>
     {% endfor %} {% endif %} {% endfor %}
+
+    <p></p>
+    <div class="g-recaptcha" data-sitekey="6Lc66EMrAAAAAMacZWKpOjcaaJt9Imy-5AKmhxAI" data-action="LOGIN"></div>
   </form>
 </div>
 {% endblock %}
