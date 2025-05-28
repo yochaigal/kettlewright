@@ -20,6 +20,10 @@
        SIGNUP_CODE=[only needed if previous statement is True]
        USE_REDIS=[True_or_False]
        REDIS_URL=redis://redis-server:6379/0
+       USE_CAPTCHA=[True_or_False]
+       CAPTCHA_KEY=[Fill in if Required]
+       CAPTCHA_PROJECT_ID=[Fill in if Required]
+       CAPTCHA_API_KEY=[Fill in if Required]
 
 > Note: You will likely not need to mark USE_REDIS as 'True' unless you are planning to support hundreds of users. In that case please adjust the required worker count (typically 2 * CPU cores + 1). See "Using a redis server" below for more details.
 
@@ -92,19 +96,23 @@ This will run Watchtower every 5 minutes and automatically at boot. It will upda
 
 If you plan to launch Kettlewright with multiple workers, you _must_ use a redis server as a message queue.
 
-1. Set the USE_REDIS value to True in your .env file. 
+1. Create a docker network:
+   
+   docker network create kettlewright-net
 
-2. Install redis:
+2. Set the USE_REDIS value to True in your .env file. 
+
+3. Install redis:
 
        docker pull redis
 
-3. Run the redis container:
+4. Run the redis container:
 
-       docker run --name redis-server --restart unless-stopped -p 6379:6379 -d redis redis-server --save 60 1 --loglevel warning
+       docker run --name redis-server --network kettlewright-net --restart unless-stopped -p 6379:6379 -d redis redis-server --save 60 1 --loglevel warning
 
-4. Launch Kettlewright:
+5. Launch Kettlewright:
 
-       docker run -d --name kettlewright --env-file ~/docker/kettlewright/.env -v kettlewright_db:/app/instance --link redis-server:redis-server -p 8000:8000 --restart always yochaigal/kettlewright
+       docker run -d --name kettlewright --network kettlewright-net --env-file ~/docker/kettlewright/.env -v kettlewright_db:/app/instance --link redis-server:redis-server -p 8000:8000 --restart always yochaigal/kettlewright
 
 ## Running the app without Docker (gunicorn)
 
