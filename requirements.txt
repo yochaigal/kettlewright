@@ -27,3 +27,4 @@ tzdata
 unidecode
 Werkzeug
 WTForms
+requests

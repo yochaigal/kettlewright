@@ -35,6 +35,7 @@ class RegistrationForm(FlaskForm):
     signup_code = StringField(_l('Signup Code'), validators=[DataRequired()],
                               render_kw={"placeholder": _l("signup code")})
     submit = SubmitField(_l('Sign Up'))
+    captcha_token = HiddenField('captcha_token')
 
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
