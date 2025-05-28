@@ -63,9 +63,10 @@
   <!-- Sweet alert customized alerts -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+  {% if use_captcha %}
   <!-- CAPTCHA API -->
   <script src="https://www.google.com/recaptcha/enterprise.js?render={{captcha_key}}"></script> 
-  
+  {% endif %}
 
 </head>
 

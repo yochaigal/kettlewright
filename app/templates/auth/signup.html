@@ -1,15 +1,16 @@
 {% extends "base.html" %} {% block content %}
 
+{% if use_captcha %}
 <script>
       function captchaSubmit() {
         grecaptcha.enterprise.ready(async () => {
-          const token = await grecaptcha.enterprise.execute('{{captcha_key}}', {action: 'LOGIN'});
-          // Here we could transfer token data to backend
-          console.log("CAPTCHA response token: ", token);
+          const token = await grecaptcha.enterprise.execute('{{captcha_key}}', {action: 'signup'});
+          document.getElementById('captcha_token').value = token;
           document.getElementById('signup-form').submit();
         });
       }
 </script>
+{% endif %}
 
 <div class="body-container auth-container">
   <div class="kettlewright-logo-container">
@@ -17,6 +18,8 @@
   </div>
   <form class="auth-card" method="POST" id="signup-form">
     {{ form.hidden_tag() }}
+    {{ form.captcha_token(id="captcha_token") }}
+
     <!-- <h3 class="auth-title">Sign Up</h3> -->
     <div class="field">
       <div class="control">{{ form.email(class="input") }}</div>
@@ -40,9 +43,13 @@
     </div>
     {% endif %} 
     
-    <button class="button is-block is-info is-fullwidth" onClick="captchaSubmit()" type="button">
-      Sign Up
-    </button>
+    {% if use_captcha %}
+      <button class="button is-block is-info is-fullwidth" onClick="captchaSubmit()" type="button">
+        Sign Up
+      </button>
+    {% else %}
+      {{ form.submit(class="button is-block is-info is-fullwidth")}} 
+    {% endif %}
 
     {% with messages = get_flashed_messages(category_filter=['error']) %} 
     {% if messages %}

@@ -49,5 +49,6 @@ flask-htmx = "*"
 unidecode = "*"
 flask-babel = "*"
 pybabel-json = "*"
+requests = "*"
 
 [dev-packages]

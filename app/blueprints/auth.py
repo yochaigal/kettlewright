@@ -6,9 +6,9 @@ from flask_login import login_user, login_required, logout_user, current_user
 from app.models import db, User
 from app.forms import LoginForm, RegistrationForm, PasswordResetRequestForm, PasswordResetForm, ResendConfirmationForm, PasswordUpdateForm, EmailUpdateForm
 from app.email import send_email
-import sys
 import os
 from flask_babel import _
+import requests
 
 auth = Blueprint('auth', __name__)
 
@@ -64,6 +64,10 @@ def logout():
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def signup():
+    use_captcha = False
+    if os.environ.get('USE_CAPTCHA') == "True":
+        use_captcha = True
+    captcha_key=os.environ.get('CAPTCHA_KEY')
 
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -89,7 +93,24 @@ def signup():
         if user:
             flash('An account with this name already exists', 'error')
             return redirect(url_for('auth.signup'))
-
+        
+        # check captcha assessment
+        if use_captcha:
+            token = form.captcha_token.data
+            project_id = os.environ.get('CAPTCHA_PROJECT_ID')
+            api_key = os.environ.get('CAPTCHA_API_KEY')
+            resp = create_assessment(project_id,captcha_key,api_key,token,'signup')
+            action = ""
+            score = 1.0
+            print("captcha assesment response: ", resp)
+            if "tokenProperties" in resp:
+                action = resp['tokenProperties']['action']
+            if "riskAnalysis" in resp:
+                score = resp['riskAnalysis']['score']
+            if action != "signup" or score >= 0.7:
+                flash('Signup try marked as risky by recaptcha. If this is a real signup, please contact administrator.', 'error')
+                return redirect(url_for('auth.signup'))
+            
         # create a new user with the form data and hash the password
         new_user = User(email=form.email.data, username=form.user_name.data,
                         password=form.password.data)
@@ -105,7 +126,10 @@ def signup():
         flash(Markup('A confirmation email has been sent. If you did not receive a link, please click <a href="/resend_confirmation" class="alert-link">here</a> to resend'), 'success')
         return redirect(url_for('auth.login'))
 
-    return render_template('auth/signup.html', form=form, require_signup_code=require_signup_code, captcha_key=os.environ.get('CAPTCHA_KEY'))
+    return render_template('auth/signup.html', form=form, 
+                           require_signup_code=require_signup_code, 
+                           use_captcha=use_captcha,
+                           captcha_key=captcha_key)
 
 
 @auth.route('/confirm/<token>')
@@ -235,3 +259,33 @@ def change_email():
                 flash(error, 'error')
 
     return render_template('auth/change_email.html', form=form)
+
+
+# ________________ CAPTCHA STUFF __________________________________
+
+def create_assessment(
+    project_id: str,
+    recaptcha_site_key: str,
+    api_key: str,
+    token: str,
+    recaptcha_action: str,
+    # user_ip_address: str,
+    # user_agent: str,
+    # ja3: str,
+    ):
+    msg = {
+        "event":{
+            "token": token, 
+            "siteKey": recaptcha_site_key,
+            # "userAgent": user_agent,
+            # "userIpAddress": user_ip_address,
+            # "ja3": ja3,
+            "expectedAction": recaptcha_action
+        }
+    }
+    response = requests.post(f"https://recaptchaenterprise.googleapis.com/v1/projects/{project_id}/assessments?key={api_key}", json=msg)
+    
+    return response
+
+ 
+    
