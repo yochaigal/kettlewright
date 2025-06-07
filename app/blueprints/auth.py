@@ -68,6 +68,9 @@ def signup():
     use_captcha = False
     if os.environ.get('USE_CAPTCHA') == "True":
         use_captcha = True
+    captcha_block = False
+    if os.environ.get('CAPTCHA_BLOCK') == "True":
+        captcha_block = True    
     captcha_key=os.environ.get('CAPTCHA_KEY')
 
     form = RegistrationForm()
@@ -109,8 +112,10 @@ def signup():
             if "riskAnalysis" in resp:
                 score = resp['riskAnalysis']['score']
             if action != "signup" or score >= 0.7:
-                flash('Signup try marked as risky by recaptcha. If this is a real signup, please contact administrator.', 'error')
-                return redirect(url_for('auth.signup'))            
+                print("captcha risk analysis: remote addr=",request.remote_addr," action=", action," score=",score)
+                if captcha_block:
+                    flash('Signup try marked as risky by recaptcha. If this is a real signup, please contact administrator.', 'error')
+                    return redirect(url_for('auth.signup'))            
             
         # create a new user with the form data and hash the password
         new_user = User(email=form.email.data, username=form.user_name.data,
