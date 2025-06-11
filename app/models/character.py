@@ -70,7 +70,12 @@ class Character(db.Model):
     
     # Returns True if character is overburdened
     def overburdened(self):
-        return self.occupiedMainSlots() >= 10
+        max = 10
+        containers = json.loads(self.containers)
+        for c in containers:
+            if c['id'] == 0:
+                max = c['slots']
+        return self.occupiedMainSlots() >= max
     
     # Compute armor value based on possessed items
     def armorValue(self):
