@@ -278,6 +278,8 @@ class Inventory:
         cnt = self.get_container(container_id)
         cnt["name"] = name
         cnt["slots"] = int(slots)
+        cnt['items'] = [] # clean items, because they will be parsed later
+        
         has_carried = carried_by != None and carried_by != "" and load != "" and load != None and int(load) != 0
         if has_carried:
             cnt["carried_by"] = carried_by
@@ -294,6 +296,7 @@ class Inventory:
             if c["id"] != int(container_id):
                 result.append(c)
         result.append(cnt)
+        
         if has_carried:
             items = self.add_carrying(carried_by,container_id, name, int(load))
             self.character.items = json.dumps(items)
