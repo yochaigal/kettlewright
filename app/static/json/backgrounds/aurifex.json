@@ -108,11 +108,12 @@
           ]
         },
         {
-          "description": "Blast Sphere: A head-sized iron ball filled with explosive powder that detonates on impact.",
+          "description": "Blast Sphere: A head-sized iron ball filled with explosive powder that detonates on impact. ",
           "items": [
             {
               "name": "Blast Sphere",
-              "tags": ["d12", "blast", "bulky"]
+              "tags": ["d12", "blast", "bulky", "uses"]
+              "uses": 1
             }
           ]
         },
