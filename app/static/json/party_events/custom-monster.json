@@ -158,7 +158,8 @@
         "Shapes",
         "Shrinks",
         "Transforms",
-        "Traps"
+        "Traps",
+        "Zaps"
       ],
       "Target": [
         "Body",
@@ -179,7 +180,8 @@
         "Time",
         "Vision",
         "Water",
-        "Weather"
+        "Weather",
+        "Weakens"
       ]
     }
   }
