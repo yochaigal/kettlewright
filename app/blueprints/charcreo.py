@@ -394,7 +394,7 @@ def charcreo_trait_select(ttype):
     tts = []
     for n in names:
         tts.append(TraitValue(n, custom_fields[n]))
-    form.traits.process_data(traits_text(0, tts))
+    form.traits.process_data(traits_text(custom_fields['age'], tts))
     return render_template('partial/charcreo/traits.html', form=form,custom_fields=custom_fields )
 
 # route: roll traits
@@ -406,7 +406,7 @@ def charcreo_trait_roll():
     for n in names:
         custom_fields[n] = roll_list(custom_fields['traits'][n])
         tts.append(TraitValue(n, custom_fields[n]))
-    form.traits.process_data(traits_text(0, tts))
+    form.traits.process_data(traits_text(custom_fields['age'], tts))
     return render_template('partial/charcreo/traits.html', form=form,custom_fields=custom_fields )
 
 # route: age roll
@@ -515,7 +515,7 @@ def charcreo_roll_all():
     for n in tnames:
         custom_fields[n] = roll_list(custom_fields['traits'][n])
         tts.append(TraitValue(n, custom_fields[n]))
-    form.traits.process_data(traits_text(0, tts))
+    form.traits.process_data(traits_text(custom_fields['age'], tts))
     _, total = roll_multi_dice(6,3)
     form.strength_max.data = total
     form.strength_max.raw_data = None
@@ -609,7 +609,7 @@ def charcreo_roll_remaining():
         if not custom_fields[n] or custom_fields[n] == '' or custom_fields[n] == '___':
             custom_fields[n] = roll_list(custom_fields['traits'][n])
         tts.append(TraitValue(n, custom_fields[n]))
-    form.traits.process_data(traits_text(0, tts))   
+    form.traits.process_data(traits_text(custom_fields['age'], tts))   
     if not custom_fields['age'] or custom_fields['age'] == '':
         _, total = roll_multi_dice(20,2)
         custom_fields['age'] = total + 10
