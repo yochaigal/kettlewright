@@ -1257,6 +1257,10 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+#: app/blueprints/charcreo.py:58
+msgid "You are %(num)s years old."
+msgstr ""
+
 
 # ============================================= BONDS =============================================
 
