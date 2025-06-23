@@ -112,7 +112,7 @@
           "items": [
             {
               "name": "Blast Sphere",
-              "tags": ["d12", "blast", "bulky", "uses"]
+              "tags": ["d12", "blast", "bulky", "uses"],
               "uses": 1
             }
           ]
