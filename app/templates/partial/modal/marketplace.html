@@ -10,7 +10,7 @@
     if (document.getElementById("toggle-weapons").checked) {
       cats.push("Weapons");
     }
-    htmx.ajax('GET', `/marketplace/{{username}}/{{url_name}}?categories=${cats.join(',')}`, "#inventory-container");
+    htmx.ajax('GET', `/marketplace/{{username}}/{{url_name}}/{{container.id}}?categories=${cats.join(',')}`, "#inventory-container");
   }
 
   function KW_modify_cart(maxgold, name, cost, plus, tags) {
