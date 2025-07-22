@@ -1,5 +1,6 @@
 import json
 import re
+import uuid
 from app.lib.data import safeint
 from app.models import db, Party, Character
 from app.lib import sdv
@@ -157,7 +158,7 @@ class Inventory:
         items = json.loads(self.character.items)        
         deleted = None
         for it in items:
-            if it["id"] == int(item_id) and it["location"] == int(container_id):
+            if it["id"] == str(item_id) and it["location"] == int(container_id):
                 deleted = items.pop(idx)
                 break
             idx += 1
@@ -202,13 +203,14 @@ class Inventory:
     
     # generate new item id
     def generate_item_id(self):
-        items = json.loads(self.character.items)
-        max = 0
-        for it in items:
-            if max <= it["id"]:
-                max = it["id"]
-        max += 1
-        return max
+        return uuid.uuid4().hex
+        # items = json.loads(self.character.items)
+        # max = 0
+        # for it in items:
+        #     if max <= it["id"]:
+        #         max = it["id"]
+        # max += 1
+        # return max
     
     # generate new container id
     def generate_container_id(self):
@@ -258,7 +260,7 @@ class Inventory:
         items = json.loads(self.character.items)  
         new_id = self.generate_item_id()
         for i in range(amount):
-            new_item = {"id": new_id+i, "name": "Carrying "+name, "editable": False, "location": int(carried_by),"tags":[], "carrying":int(container_id)}
+            new_item = {"id": new_id+"_"+str(i), "name": "Carrying "+name, "editable": False, "location": int(carried_by),"tags":[], "carrying":int(container_id)}
             items.append(new_item)
         return items
     
@@ -374,7 +376,7 @@ class Inventory:
     def get_item(self, item_id):
         items = json.loads(self.character.items)
         for it in items:
-            if it["id"] == int(item_id):
+            if it["id"] == str(item_id):
                 return it
         return None
     
@@ -421,7 +423,7 @@ class Inventory:
         items = json.loads(self.character.items)
         result = []
         for it in items:
-            if it["id"] != int(item_id):
+            if it["id"] != str(item_id):
                 result.append(it)
         result.append(item)
         self.character.items = json.dumps(result)
@@ -450,7 +452,7 @@ class Inventory:
         items = json.loads(self.character.items)
         result = []
         for it in items:
-            if it["id"] != int(item_id):
+            if it["id"] != str(item_id):
                 result.append(it)
         result.append(item)
         self.character.items = json.dumps(result)

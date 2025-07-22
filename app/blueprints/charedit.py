@@ -71,6 +71,14 @@ def charedit_save(username, url_name):
     else:
         character.party_code = ""
     character.armor = character.armorValue() # update armor
+    # Backward compatibility: update item ids
+    items = json.loads(character.items)
+    result = []
+    for it in items:
+        if isinstance(it["id"], int):
+            it["id"] = uuid.uuid4().hex
+        result.append(it)
+    character.items = json.dumps(result)
     db.session.commit()
     
     response = make_response("Redirecting")
@@ -374,7 +382,8 @@ def charedit_inplace_inventory_item_edit_amount(username, url_name, item_id):
     prop = request.args.get('property')
     action = request.args.get('action')
     item = inventory.change_amount(item_id, action, prop)
-    inventory.select(item["location"])
+    if "location" in item:
+        inventory.select(item["location"])
     inventory.decorate()
     return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)    
 
@@ -384,6 +393,7 @@ def charedit_inplace_inventory_item_edit_party(username, url_name, item_id):
     user, character = get_char_data(username, url_name)
     inventory = Inventory(character)
     item = inventory.move_item_to_party(item_id)
-    inventory.select(item["location"])
+    if "location" in item:
+        inventory.select(item["location"])
     inventory.decorate()
     return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)    
