@@ -184,6 +184,7 @@ class CharacterEditForm(FlaskForm):
     items = HiddenField()
     containers = HiddenField()
     deprived = BooleanField(_l('Deprived'))
+    panicked = BooleanField(_l('Panicked'))
     notes = TextAreaField(_l('Notes'), validators=[Length(
         0, 2000)], render_kw={"placeholder": _l("notes")})
     description = TextAreaField(_l('Description'), validators=[Length(

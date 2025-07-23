@@ -30,6 +30,7 @@ class Character(db.Model):
     hp = db.Column(db.Integer)
     hp_max = db.Column(db.Integer)
     deprived = db.Column(db.Boolean)
+    panicked = db.Column(db.Boolean)
     items = db.Column(db.String)
     containers = db.Column(db.String)
     gold = db.Column(db.Integer)
@@ -64,7 +65,7 @@ class Character(db.Model):
     # Compute HP value, returns current and max
     def hpValue(self):
         hp = self.hp
-        if self.occupiedMainSlots() >= 10:
+        if self.occupiedMainSlots() >= 10 or self.panicked:
             hp = 0
         return [hp,self.hp_max]
     

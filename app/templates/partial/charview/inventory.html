@@ -33,9 +33,15 @@
         <i class="item-edit-button fa-solid fa-circle-info circle-info"></i>
       </div>
       {% endif %} {% if it.dice|length > 0 and is_owner %}
-      <div class="pointer" title="Roll dice" onclick="KW_rollDiceCallback({{it.dice}})">
+      {% if character.panicked %}
+      <div class="pointer" title="{{_('Roll dice (impaired)')}}" onclick="KW_rollDiceCallback('4')" style="color:#ff5555">
         <i class="fa-solid fa-dice dice"></i>
       </div>
+      {% else %}
+      <div class="pointer" title="{{_('Roll dice')}}" onclick="KW_rollDiceCallback({{it.dice}})">
+        <i class="fa-solid fa-dice dice"></i>
+      </div>
+      {% endif %}          
       {% endif %}
     </div>
     {% endif %}
