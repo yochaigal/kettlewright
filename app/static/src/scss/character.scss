@@ -153,8 +153,8 @@
   grid-template-areas: "str gld"
     "dex armor"
     "wil hp"
-    "deprived rest";
-
+    "deprived rest"
+    "panicked something";
 }
 
 #character-str-container {
@@ -179,6 +179,10 @@
 
 #character-deprived-container {
   grid-area: deprived;
+}
+
+#character-panicked-container {
+  grid-area: panicked;
 }
 
 #character-gold-container {

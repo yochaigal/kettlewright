@@ -54,7 +54,7 @@ def charedit_show(username, url_name):
 def charedit_save(username, url_name):
     user, character = get_char_data(username, url_name)
     form = CharacterEditForm(obj=character)
-    fields_to_update = ['strength_max', 'strength','dexterity_max', 'dexterity', 'willpower_max', 'willpower','hp_max', 'hp', 'deprived', 'gold','description', 'name','omens', 'scars','traits','bonds','notes']
+    fields_to_update = ['strength_max', 'strength','dexterity_max', 'dexterity', 'willpower_max', 'willpower','hp_max', 'hp', 'deprived', 'gold','description', 'name','omens', 'scars','traits','bonds','notes','panicked']
     for field in fields_to_update:
         setattr(character, field, sanitize_data(getattr(form, field).data))
     err = None
