@@ -30,7 +30,7 @@ class Character(db.Model):
     hp = db.Column(db.Integer)
     hp_max = db.Column(db.Integer)
     deprived = db.Column(db.Boolean)
-    panicked = db.Column(db.Boolean, default=False)
+    panicked = db.Column(db.Boolean)
     items = db.Column(db.String)
     containers = db.Column(db.String)
     gold = db.Column(db.Integer)
