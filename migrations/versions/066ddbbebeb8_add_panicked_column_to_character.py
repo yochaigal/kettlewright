@@ -1,8 +1,8 @@
 """Add panicked column to Character
 
-Revision ID: 647e77b2e27a
+Revision ID: 066ddbbebeb8
 Revises: 15cdd43b0112
-Create Date: 2025-07-24 12:52:25.021707
+Create Date: 2025-07-24 13:31:28.442866
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '647e77b2e27a'
+revision = '066ddbbebeb8'
 down_revision = '15cdd43b0112'
 branch_labels = None
 depends_on = None
