@@ -179,11 +179,19 @@
 
 #character-deprived-container {
   grid-area: deprived;
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
 }
+
 
 #character-panicked-container {
   grid-area: panicked;
-}
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+ }
+
 
 #character-gold-container {
   grid-area: gld;

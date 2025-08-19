@@ -247,6 +247,10 @@ msgstr "Salvar"
 msgid "Deprived"
 msgstr "Privado"
 
+#: app/forms.py:184 app/forms.py:266
+msgid "Panicked"
+msgstr ""
+
 #: app/forms.py:186 app/forms.py:208 app/forms.py:288 app/forms.py:298
 msgid "notes"
 msgstr "notas"
@@ -790,6 +794,12 @@ msgstr "Estatísticas"
 #: app/templates/partial/charview/stats.html:31
 msgid "DEPRIVED"
 msgstr "PRIVADO"
+
+#: app/templates/main/character_print.html:44
+#: app/templates/partial/charedit/stats.html:48
+#: app/templates/partial/charview/stats.html:31
+msgid "PANICKED"
+msgstr ""
 
 #: app/templates/main/character_print.html:63 app/templates/main/inventory.html:3
 #: app/templates/partial/charedit/inventory.html:2

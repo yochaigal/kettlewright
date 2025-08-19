@@ -261,6 +261,10 @@ msgstr "Zapisz"
 msgid "Deprived"
 msgstr "Dyskomfort"
 
+#: app/forms.py:184 app/forms.py:266
+msgid "Panicked"
+msgstr "Panika"
+
 #: app/forms.py:186 app/forms.py:208 app/forms.py:288 app/forms.py:298
 msgid "notes"
 msgstr "notatki"
@@ -837,6 +841,12 @@ msgstr "Statystyki"
 #: app/templates/partial/charview/stats.html:31
 msgid "DEPRIVED"
 msgstr "DYSKOMFORT"
+
+#: app/templates/main/character_print.html:44
+#: app/templates/partial/charedit/stats.html:48
+#: app/templates/partial/charview/stats.html:31
+msgid "PANICKED"
+msgstr "PANIKA"
 
 #: app/templates/main/character_print.html:63
 #: app/templates/main/inventory.html:3
