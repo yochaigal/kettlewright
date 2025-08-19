@@ -65,7 +65,7 @@ class Character(db.Model):
     # Compute HP value, returns current and max
     def hpValue(self):
         hp = self.hp
-        if self.occupiedMainSlots() >= 10:
+        if self.occupiedMainSlots() >= 10 or self.panicked:
             hp = 0
         return [hp,self.hp_max]
     

@@ -43,12 +43,20 @@
       min='0', max='99', step='1', id='hp-max-input') }}
     </span>
   </div>
-  {% if character.deprived %} {% endif %}
+  <!-- deprived -->
+
   <div class="character-attribute-container edit-mode" id="character-deprived-container">
     <h4 class="character-deprived-text">{{_('DEPRIVED')}}</h4>
     {{ form.deprived(class='checkbox edit-mode',
     type='checkbox',id='deprived-field') }}
   </div>
+
+   <!-- panicked -->
+  <div class="character-attribute-container edit-mode" id="character-panicked-container">
+    <h4 class="character-deprived-text">{{_('PANICKED')}}</h4>
+    {{ form.panicked(class='checkbox edit-mode', type='checkbox',id='panicked-field') }}
+  </div>
+
 
   <div class="character-attribute-container" id="character-gold-container">
     <h4 class="view-attribute-font">{{_('Gold')}}</h4>

@@ -20,17 +20,25 @@
   </div>
   <div class="character-attribute-container" id="character-hp-container">
     <h4>{{_('HP')}}</h4>
-    <p class="subtitle view-mode {% if character.overburdened() %} red-text {% endif %}" id="hp-view-text">
+    <p class="subtitle view-mode {% if character.overburdened() or character.panicked %} red-text {% endif %}" id="hp-view-text">
       {{ character.hpValue().0 }}/{{ character.hpValue().1 }}
     </p>
   </div>
 
+
+<div id="character-deprived-container" style="display:flex;flex-direction: column;justify-content:end;gap:8px">
   {% if character.deprived %}
-  <div class="row16" id="character-deprived-container">
-    <i class="fa-solid fa-face-tired face-tired"></i>
+  <div class="row16" >
     <h4 class="character-deprived-text view-mode">{{_('DEPRIVED')}}</h4>
   </div>
   {% endif %}
+
+  {% if character.panicked %}
+  <div class="row16" >
+    <h4 class="character-deprived-text view-mode">{{_('PANICKED')}}</h4>
+  </div>
+  {% endif %}
+</div>
 
   <div class="character-attribute-container" id="character-gold-container">
     <h4 class="view-attribute-font">{{_('Gold')}}</h4>

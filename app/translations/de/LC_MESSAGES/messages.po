@@ -260,6 +260,10 @@ msgstr ""
 msgid "Deprived"
 msgstr ""
 
+#: app/forms.py:184 app/forms.py:266
+msgid "Panicked"
+msgstr ""
+
 #: app/forms.py:186 app/forms.py:208 app/forms.py:288 app/forms.py:298
 msgid "notes"
 msgstr ""
@@ -835,6 +839,12 @@ msgstr ""
 #: app/templates/partial/charedit/stats.html:48
 #: app/templates/partial/charview/stats.html:31
 msgid "DEPRIVED"
+msgstr ""
+
+#: app/templates/main/character_print.html:44
+#: app/templates/partial/charedit/stats.html:48
+#: app/templates/partial/charview/stats.html:31
+msgid "PANICKED"
 msgstr ""
 
 #: app/templates/main/character_print.html:63
