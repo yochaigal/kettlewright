@@ -101,12 +101,19 @@ def party_edit_cancel(ownername, party_url):
 # Route: edit party save
 @party.route('/party/edit/<ownername>/<party_url>/save', methods=['POST'])
 def party_edit_save(ownername, party_url):
-    # TODO: save party
     fields_to_update = ['name','description']
     party = get_party_by_owner(ownername, party_url)
     form = PartyEditForm(obj=party) 
     for field in fields_to_update:
         setattr(party, field, sanitize_data(getattr(form, field).data))
+    # Backward compatibility: update item ids
+    items = json.loads(party.items)
+    result = []
+    for it in items:
+        if isinstance(it["id"], int):
+            it["id"] = uuid.uuid4().hex
+        result.append(it)
+    party.items = json.dumps(result)
     db.session.commit()
     response = make_response("Redirect")
     response.headers["HX-Redirect"] = "/users/"+ownername+"/parties/"+party_url+"/"
