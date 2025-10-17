@@ -78,6 +78,7 @@ class GeneratedCharacter:
         self.background = None
         self.background_name = ""
         self.bond = None
+        self.bond2 = None  # Second bond for Fieldwarden/Outrider
         self.omen = None
         self.items = []
         self.table1 = None
@@ -183,9 +184,6 @@ def generate_character(bkg):
     
     genchar.name = genchar.background['names'][random.randint(0,len(genchar.background['names'])-1)]
     
-    bonds = load_bonds()
-    genchar.bond = bonds[random.randint(0, len(bonds)-1)]
-    
     omens = load_omens()
     genchar.omen = omens[random.randint(0, len(omens)-1)]
     
@@ -203,9 +201,24 @@ def generate_character(bkg):
         for it in t2o['items']:
             items.append(it)
     genchar.table2 = TableValue(t2q, t2o)
+    
+    bonds = load_bonds()
+    genchar.bond = bonds[random.randint(0, len(bonds)-1)]
+    
+    bonds_required = get_required_bonds_count(selected, t1o.get('description', ''))
+    genchar.bond2 = None
+    
+    if bonds_required == 2:
+        genchar.bond2 = roll_bond_excluding([genchar.bond['description']])
             
     if 'items' in genchar.bond:
         for it in genchar.bond['items']:
+            if not 'tags' in it:
+                it['tags'] = []
+            items.append(it)
+    
+    if genchar.bond2 and 'items' in genchar.bond2:
+        for it in genchar.bond2['items']:
             if not 'tags' in it:
                 it['tags'] = []
             items.append(it)
@@ -236,6 +249,8 @@ def generate_character(bkg):
     genchar.gold = random.randint(3,18)
     if 'gold' in genchar.bond and genchar.bond['gold'] != '':
          genchar.gold += int(genchar.bond['gold'])
+    if genchar.bond2 and 'gold' in genchar.bond2 and genchar.bond2['gold'] != '':
+         genchar.gold += int(genchar.bond2['gold'])
     
     genchar.slots = genchar.used_slots()
         
@@ -309,6 +324,19 @@ def find_bond_by_description(desc):
             return b
     return None
 
+def roll_bond_excluding(excluded_descriptions=None):
+    """Roll a random bond, excluding any bonds with descriptions in the excluded list."""
+    if excluded_descriptions is None:
+        excluded_descriptions = []
+    
+    bonds = load_bonds()
+    available_bonds = [b for b in bonds if b['description'] not in excluded_descriptions]
+    
+    if not available_bonds:
+        available_bonds = bonds
+    
+    return roll_list(available_bonds)
+
 def random_background():
     bkgs = load_backgrounds()
     key, background = roll_dict(bkgs)
@@ -337,7 +365,37 @@ def random_trait(name):
 
 def random_bond():
     b = roll_list(load_bonds())
-    
+    return b
+
 def random_omen():
     b = roll_list(load_omens())
+    return b
+
+
+def get_required_bonds_count(background_name, table1_option_desc=None):
+    """
+    Determine how many bonds a background should have based on rules.
     
+    Args:
+        background_name: Name of the background (e.g., "Fieldwarden")
+        table1_option_desc: Description of table1 option selected (for Outrider)
+    
+    Returns:
+        int: Number of bonds this background should have (1 or 2)
+    """
+    backgrounds = load_backgrounds()
+    
+    if background_name not in backgrounds:
+        return 1  # Default case
+    
+    background = backgrounds[background_name]
+    
+    # Check if background description mentions second bond
+    if "Roll a second time on the Bonds table" in background.get('background_description', ''):
+        return 2
+    
+    # Check table1 options for Outrider and similar backgrounds
+    if table1_option_desc and "roll a second time on the Bonds table" in table1_option_desc:
+        return 2
+    
+    return 1

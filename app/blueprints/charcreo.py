@@ -45,11 +45,64 @@ def update_name_choices(form):
         form.name.choices = rebuild_names(background['names'])
     else:
         form.name.choices = rebuild_all_names()
+
+def update_bonds_required_count(custom_fields, form):
+    table1_option = custom_fields.get('background_table1_select', '')
+    background_name = form.background.data if form.background.data else ''
+    custom_fields['bonds_required_count'] = get_required_bonds_count(background_name, table1_option)
+
+def clear_second_bond_if_needed(custom_fields, form):
+    """Clear second bond if only one bond is required. Returns True if bond was cleared."""
+    update_bonds_required_count(custom_fields, form)
+    bonds_required = custom_fields['bonds_required_count']
+    
+    if bonds_required == 1 and custom_fields.get('bonds_selected_2'):
+        second_bond = find_bond_by_description(custom_fields['bonds_selected_2'])
+        if second_bond:
+            if 'gold' in second_bond:
+                current_bonus = int(custom_fields.get('bonus_gold_bond', 0))
+                custom_fields['bonus_gold_bond'] = str(max(0, current_bonus - second_bond['gold']))
+            if 'items' in second_bond:
+                current_items = json.loads(custom_fields.get('bond_items', '[]'))
+                for item in second_bond['items']:
+                    if item in current_items:
+                        current_items.remove(item)
+                custom_fields['bond_items'] = json.dumps(current_items)
+        custom_fields['bonds_selected_2'] = ''
+        form.bonds.process_data(custom_fields['bonds_selected'] or '')
+        return True
+    
+    return False
+
+def update_bond_display(custom_fields, form):
+    bonds_text = custom_fields['bonds_selected'] or ''
+    if custom_fields.get('bonds_required_count', 1) == 2 and custom_fields['bonds_selected_2']:
+        bonds_text += ('\n\n' + custom_fields['bonds_selected_2']) if bonds_text else custom_fields['bonds_selected_2']
+    form.bonds.process_data(bonds_text)
+
+def roll_second_bond_if_needed(custom_fields):
+    """Roll a second bond if required and not already selected."""
+    bonds_required = custom_fields.get('bonds_required_count', 1)
+    
+    if bonds_required == 2 and (not custom_fields.get('bonds_selected_2') or custom_fields['bonds_selected_2'] == ''):
+        # Roll a second bond, excluding the first one
+        excluded_bonds = [custom_fields['bonds_selected']]
+        b2 = roll_bond_excluding(excluded_bonds)
+        if b2:
+            custom_fields['bonds_selected_2'] = b2['description']
+            # Add gold and items from second bond
+            if 'gold' in b2:
+                current_bonus = int(custom_fields.get('bonus_gold_bond', 0))
+                custom_fields['bonus_gold_bond'] = str(current_bonus + b2['gold'])
+            if 'items' in b2:
+                current_items = json.loads(custom_fields.get('bond_items', '[]'))
+                current_items.extend(b2['items'])
+                custom_fields['bond_items'] = json.dumps(current_items)
         
 def get_custom_fields(data):
     result = {}
-    names = ["background_table1_select", "background_table2_select", "age","bonds_selected","omens_selected","containers",
-             "armor","gold","bonus_gold_t1", "bonus_gold_t2", "bonus_gold_bond","items","bond_items", "t1_items","t2_items","bkg_items",
+    names = ["background_table1_select", "background_table2_select", "age","bonds_selected","bonds_selected_2","bonds_required_count","omens_selected","containers",
+             "armor","gold","bonus_gold_t1", "bonus_gold_t2", "bonus_gold_bond","bonus_gold_bond_2","items","bond_items", "bond_items_2", "t1_items","t2_items","bkg_items",
              "selected-portrait","Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice", "portrait_src","custom_image"]
     for n in names:
         if n in data:
@@ -72,8 +125,11 @@ def process_form_data(data):
     custom_fields['traits'] = load_traits()
     custom_fields['bonds'] = load_bonds()
     custom_fields['omens'] = load_omens()
-    custom_fields['bonds_selected'] = data['bonds_select']
-    custom_fields['omens_selected'] = data['omens_select']
+    custom_fields['bonds_selected'] = data.get('bonds_select', '')
+    custom_fields['bonds_selected_2'] = data.get('bonds_select_2', '')
+    custom_fields['omens_selected'] = data.get('omens_select', '')
+    update_bonds_required_count(custom_fields, form)
+    
     character = DummyCharacter()    
     if custom_fields['items'] != None and custom_fields['items'] != '':
         character.items = custom_fields['items']    
@@ -98,8 +154,11 @@ def process_dict_data(data):
     custom_fields['traits'] = load_traits()
     custom_fields['bonds'] = load_bonds()
     custom_fields['omens'] = load_omens()
-    custom_fields['bonds_selected'] = data['bonds_select']
-    custom_fields['omens_selected'] = data['omens_select']
+    custom_fields['bonds_selected'] = data.get('bonds_select', '')
+    custom_fields['bonds_selected_2'] = data.get('bonds_select_2', '')
+    custom_fields['omens_selected'] = data.get('omens_select', '')
+    update_bonds_required_count(custom_fields, form)
+    
     character = DummyCharacter()    
     if custom_fields['items'] != None and custom_fields['items'] != '':
         character.items = custom_fields['items']
@@ -115,8 +174,8 @@ def process_dict_data(data):
 def update_items(custom_fields):
     if custom_fields['inventory']:
         custom_fields['inventory'].remove_items(0)
-    for cat in ["bond_items","t1_items","t2_items","bkg_items"]:
-        if custom_fields[cat]:
+    for cat in ["bond_items","bond_items_2","t1_items","t2_items","bkg_items"]:
+        if custom_fields.get(cat):
             bitems = json.loads(custom_fields[cat])
             for it in bitems:
                 if not "tags" in it:
@@ -204,6 +263,8 @@ def charcreo_select_background():
         custom_fields['bkg_items'] = json.dumps(sdv(background,'starting_gear',[]))
         update_items(custom_fields)
         update_containers(custom_fields,sdv(background,'starting_containers',[]))
+        
+        clear_second_bond_if_needed(custom_fields, form)
     else:
         update_items(custom_fields)
     custom_fields["background_table1_select"] = None
@@ -232,6 +293,9 @@ def charcreo_roll_background():
     custom_fields["background_table2_select"] = None  
     custom_fields['t1_items'] = '[]'
     custom_fields['t2_items'] = '[]'
+    
+    clear_second_bond_if_needed(custom_fields, form)
+    
     render = render_template('partial/charcreo/fields.html', form=form, custom_fields=custom_fields)
     response = make_response(render)    
     response.headers['HX-Trigger-After-Settle'] = "background-changed"
@@ -273,7 +337,11 @@ def charcreo_bkg_table_select(num):
         update_items(custom_fields)
         update_containers(custom_fields,containers)
         if gfield:
-            update_gold(custom_fields, gfield ,sdv(opt, 'bonus_gold',0))        
+            update_gold(custom_fields, gfield ,sdv(opt, 'bonus_gold',0))
+    
+    if num == "1":
+        clear_second_bond_if_needed(custom_fields, form)
+            
     render =  render_template('partial/charcreo/fields.html', form=form,custom_fields=custom_fields )
     response = make_response(render)    
     response.headers['HX-Trigger-After-Settle'] = "background-changed"
@@ -303,6 +371,10 @@ def charcreo_bkg_table_roll(nr):
     update_containers(custom_fields, containers)   
     update_gold(custom_fields,gfield,sdv(opt, 'bonus_gold',0))                    
     custom_fields[field]=opt['description']
+    
+    if nr == "1":
+        clear_second_bond_if_needed(custom_fields, form)
+    
     render = render_template('partial/charcreo/fields.html', form=form, custom_fields=custom_fields )
     response = make_response(render)    
     response.headers['HX-Trigger-After-Settle'] = "background-changed"
@@ -419,18 +491,29 @@ def charcreo_age_roll():
 
 # route: select bond or omen
 @character_create.route('/charcreo/bonds-omen-select/<tp>', methods=['POST'])
-def charcreo_bonds_select(tp):
+@character_create.route('/charcreo/bonds-omen-select/<tp>/<bond_num>', methods=['POST'])
+def charcreo_bonds_select(tp, bond_num='1'):
     form, custom_fields, background = process_form_data(request.form)    
     if tp == 'b':
-        bond = find_bond_by_description(custom_fields['bonds_selected'])
-        if bond:
-            update_gold(custom_fields,'bonus_gold_bond',sdv(bond,'gold',0))
-            custom_fields['bond_items'] = json.dumps(sdv(bond,'items',[]))                       
-        else:
-            custom_fields['bond_items'] = '[]'
+        if bond_num == '1':
+            bond = find_bond_by_description(custom_fields['bonds_selected'])
+            if bond:
+                update_gold(custom_fields,'bonus_gold_bond',sdv(bond,'gold',0))
+                custom_fields['bond_items'] = json.dumps(sdv(bond,'items',[]))                       
+            else:
+                custom_fields['bond_items'] = '[]'
+        elif bond_num == '2':
+            bond = find_bond_by_description(custom_fields['bonds_selected_2'])
+            if bond:
+                update_gold(custom_fields,'bonus_gold_bond_2',sdv(bond,'gold',0))
+                custom_fields['bond_items_2'] = json.dumps(sdv(bond,'items',[]))                       
+            else:
+                custom_fields['bond_items_2'] = '[]'
         update_items(custom_fields)        
     form.omens.process_data(custom_fields['omens_selected'])
-    form.bonds.process_data(custom_fields['bonds_selected'])
+    
+    update_bond_display(custom_fields, form)
+    
     render = render_template('partial/charcreo/abo_oob.html', form=form,custom_fields=custom_fields )            
     response = make_response(render)    
     response.headers['HX-Trigger-After-Settle'] = "bond-changed"
@@ -438,12 +521,36 @@ def charcreo_bonds_select(tp):
 
 # route: bond roll
 @character_create.route('/charcreo/bond-roll', methods=['POST'])
-def charcreo_bond_roll():
+@character_create.route('/charcreo/bond-roll/<bond_num>', methods=['POST'])
+def charcreo_bond_roll(bond_num='1'):
     form, custom_fields, background = process_form_data(request.form)
-    b = roll_list(load_bonds())
-    custom_fields['bonds_selected'] = b['description']
-    form.bonds.process_data(custom_fields['bonds_selected'])
-    update_gold(custom_fields,'bonus_gold_bond',sdv(b,'gold',0))
+    
+    # Collect already selected bonds to avoid duplicates
+    excluded_bonds = []
+    if custom_fields.get('bonds_selected'):
+        excluded_bonds.append(custom_fields['bonds_selected'])
+    if custom_fields.get('bonds_selected_2'):
+        excluded_bonds.append(custom_fields['bonds_selected_2'])
+    
+    # Roll a bond that's not already selected
+    b = roll_bond_excluding(excluded_bonds)
+    
+    if bond_num == '2':
+        custom_fields['bonds_selected_2'] = b['description']
+        update_gold(custom_fields,'bonus_gold_bond_2',sdv(b,'gold',0))
+        if b.get('items'):
+            custom_fields['bond_items_2'] = json.dumps(b['items'])
+        else:
+            custom_fields['bond_items_2'] = '[]'
+    else:
+        custom_fields['bonds_selected'] = b['description']
+        update_gold(custom_fields,'bonus_gold_bond',sdv(b,'gold',0))
+        if b.get('items'):
+            custom_fields['bond_items'] = json.dumps(b['items'])
+        else:
+            custom_fields['bond_items'] = '[]'
+    
+    update_bond_display(custom_fields, form)
     custom_fields['bond_items'] = json.dumps(sdv(b,'items',[]))
     update_items(custom_fields)            
     render = render_template('partial/charcreo/abo_oob.html', form=form,custom_fields=custom_fields )
@@ -473,6 +580,23 @@ def charcreo_gold_roll():
 def charcreo_refresh_items():
     form, custom_fields, _ = process_form_data(request.form)
     return render_template('partial/charcreo/items.html', form=form,custom_fields=custom_fields )
+
+# route: refresh ABO (Age/Bonds/Omens) section
+@character_create.route('/charcreo/refresh-abo', methods=['POST'])
+def charcreo_refresh_abo():
+    form, custom_fields, background = process_form_data(request.form)
+    
+    bond_changed = clear_second_bond_if_needed(custom_fields, form)
+    
+    update_bond_display(custom_fields, form)
+    
+    response = make_response(render_template('partial/charcreo/abo_oob.html', form=form,custom_fields=custom_fields ))
+    
+    # Trigger item refresh if bonds were changed
+    if bond_changed:
+        response.headers['HX-Trigger-After-Settle'] = "bond-changed"
+    
+    return response
 
 # route: roll all character data
 @character_create.route('/charcreo/roll-all', methods=['GET'])
@@ -616,9 +740,13 @@ def charcreo_roll_remaining():
     if not custom_fields['bonds_selected'] or custom_fields['bonds_selected'] == '':
         b = roll_list(load_bonds())
         custom_fields['bonds_selected'] = b['description']
-        form.bonds.process_data(custom_fields['bonds_selected'])
         update_gold(custom_fields,'bonus_gold_bond',sdv(b,'gold',0))
-        custom_fields['bond_items'] = json.dumps(sdv(b,'items',[]))        
+        custom_fields['bond_items'] = json.dumps(sdv(b,'items',[]))
+    
+    # Handle second bond rolling for both cases
+    update_bonds_required_count(custom_fields, form)
+    roll_second_bond_if_needed(custom_fields)
+    update_bond_display(custom_fields, form)
     if not custom_fields['omens_selected'] or custom_fields['omens_selected'] == '':
         o = roll_list(load_omens())
         custom_fields['omens_selected'] = o

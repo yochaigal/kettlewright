@@ -14,8 +14,11 @@
         <p class="number-field" id="gold-field">
             <input type="hidden" name="gold" value="{{custom_fields['gold']}}" />
             {% if custom_fields['gold'] != None %}
-            {{custom_fields['gold'] | intsum(custom_fields['bonus_gold_t1']) | intsum(custom_fields['bonus_gold_t2']) |
-            intsum(custom_fields['bonus_gold_bond'])}}
+            {{custom_fields['gold'] |
+              intsum(custom_fields['bonus_gold_t1']) |
+              intsum(custom_fields['bonus_gold_t2']) |
+              intsum(custom_fields['bonus_gold_bond']) |
+              intsum(custom_fields.get('bonus_gold_bond_2', '0'))}} 
             {% endif %}
         </p>
         <button class="roll button dice-button" type="button" hx-post="/charcreo/gold-roll"

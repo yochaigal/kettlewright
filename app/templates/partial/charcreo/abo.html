@@ -1,6 +1,10 @@
 <!-- Gold and items are also updated by bonds -->
 <input type="hidden" name="bonus_gold_bond" value="{{custom_fields['bonus_gold_bond']}}" />
 <input type="hidden" name="bond_items" value="{{custom_fields['bond_items']}}" />
+<input type="hidden" name="bonus_gold_bond_2" value="{{custom_fields['bonus_gold_bond_2']}}" />
+<input type="hidden" name="bond_items_2" value="{{custom_fields['bond_items_2']}}" />
+<input type="hidden" name="bonds_selected_2" value="{{custom_fields['bonds_selected_2']}}" />
+<input type="hidden" name="bonds_required_count" value="{{custom_fields['bonds_required_count']}}" />
 {{form.omens(id="omens-field")}}
 {{form.bonds(id="bonds-field")}}
 
@@ -27,19 +31,39 @@
     <div id="create-bonds-outer-container" class="">
         <h2 class="title script-font">{{_('Bonds')}}</h2>
         <div class="create-field-dice-container">
-            <select class="" name="bonds_select" id="bonds-select" required hx-post="/charcreo/bonds-omen-select/b"
+            <select class="" name="bonds_select" id="bonds-select" required hx-post="/charcreo/bonds-omen-select/b/1"
                 hx-trigger="change" hx-target="#abo-container"  hx-swap="innerHTML">
                 <option value="">{{_('Bonds')}} ({{_('d20')}})...</option>
                 {% for b in custom_fields['bonds'] %}
+                {% if b['description'] != custom_fields['bonds_selected_2'] %}
                 <option value="{{b['description']}}" {% if custom_fields['bonds_selected']==b['description']%} selected
                     {%endif%}>{{b['description'] | tr | trunc(60)}}</option>
+                {% endif %}
                 {% endfor %}
             </select>
-            <button class="roll button dice-button" type="button" hx-post="/charcreo/bond-roll"
+            <button class="roll button dice-button" type="button" hx-post="/charcreo/bond-roll/1"
                 hx-target="#abo-container" hx-swap="innerHTML">
                 <i class="fa-solid fa-dice dice"></i>
             </button>
         </div>
+        {% if custom_fields.get('bonds_required_count', 1) == 2 %}
+        <div class="create-field-dice-container">
+            <select class="" name="bonds_select_2" id="bonds-select-2" required hx-post="/charcreo/bonds-omen-select/b/2"
+                hx-trigger="change" hx-target="#abo-container"  hx-swap="innerHTML">
+                <option value="">{{_('Second Bond')}} ({{_('d20')}})...</option>
+                {% for b in custom_fields['bonds'] %}
+                {% if b['description'] != custom_fields['bonds_selected'] %}
+                <option value="{{b['description']}}" {% if custom_fields['bonds_selected_2']==b['description']%} selected
+                    {%endif%}>{{b['description'] | tr | trunc(60)}}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+            <button class="roll button dice-button" type="button" hx-post="/charcreo/bond-roll/2"
+                hx-target="#abo-container" hx-swap="innerHTML">
+                <i class="fa-solid fa-dice dice"></i>
+            </button>
+        </div>
+        {% endif %}
     </div>
     <div id="create-omens-outer-container">
         <h2 class="title script-font">{{_('Omens')}}</h2>
@@ -63,6 +87,10 @@
     {% if custom_fields['bonds_selected'] %}
     {{ custom_fields['bonds_selected'] | tr}}
     {% endif %}
+    {% if custom_fields['bonds_selected_2'] %}
+    <br /><br />
+    {{ custom_fields['bonds_selected_2'] | tr}}
+    {% endif %}
     <br />
     {% if custom_fields['omens_selected'] %}
     <br />
@@ -71,4 +99,7 @@
 </p>
 
 <!-- Refresh items when bond changed -->
+<input type="hidden" id="char_items" name="items" value="{{custom_fields['items']}}" hx-swap-oob="true" />
 <div hx-trigger="bond-changed from:body" hx-post="/charcreo/refresh-items" hx-target="#items-container"  hx-swap="innerHTML"></div>
+<!-- Refresh ABO section when background changes -->
+<div hx-trigger="background-changed from:body" hx-post="/charcreo/refresh-abo" hx-target="#abo-container" hx-swap="innerHTML"></div>
