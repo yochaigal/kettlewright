@@ -131,6 +131,8 @@ class GeneratedCharacter:
             r['armor'] = 0
         r['background'] = _(self.background_name)
         r['bonds'] = _(self.bond['description'])
+        if self.bond2:
+            r['bonds'] += '\n\n' + _(self.bond2['description'])
         r['containers'] = self.containers
         r['deprived'] = False
         r['description'] = _(self.description)

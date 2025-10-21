@@ -43,6 +43,14 @@ def app():
 
 
 @pytest.fixture
+def app_with_babel(app):
+    """App fixture with Babel initialized for tests that need translation."""
+    from flask_babel import Babel
+    babel = Babel(app, locale_selector=lambda: 'en')
+    return app
+
+
+@pytest.fixture
 def client(app):
     """A test client for the app."""
     return app.test_client()
