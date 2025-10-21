@@ -18,6 +18,7 @@
        MAIL_PASSWORD=[enter email password]
        REQUIRE_SIGNUP_CODE=[True_or_False]
        SIGNUP_CODE=[only needed if previous statement is True]
+       WORKERS=[1 OR MORE]
        USE_REDIS=[True_or_False]
        REDIS_URL=redis://redis-server:6379/0
        USE_CAPTCHA=[True_or_False]
