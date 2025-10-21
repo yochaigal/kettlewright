@@ -50,7 +50,6 @@ else:
         'cors_allowed_origins': allowed_origins
     }
 
-# Set async_mode if not using Flask
 if not use_flask:
     socketio_config['async_mode'] = 'eventlet'
 
@@ -74,8 +73,8 @@ def create_app():
         # Consolidate JSON files
         consolidate_json_files('app/static/json/backgrounds',
                                'app/static/json/backgrounds/background_data.json')
-        consolidate_json_files('app/static/json/party_events',
-                               'app/static/json/party_events/event_data.json')
+        consolidate_json_files('app/static/json/generators',
+                               'app/static/json/generators/event_data.json')
         app.config['JSON_CONSOLIDATED'] = True
 
     # Configure CORS using allowed origins

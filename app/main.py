@@ -469,7 +469,7 @@ def delete_party(party_id):
 @ main.route('/tools/', methods=['GET'])
 def tools():
     events_path = os.path.join(os.path.dirname(os.path.abspath(
-        __file__)), 'static', 'json', 'party_events', 'event_data.json')
+        __file__)), 'static', 'json', 'generators', 'event_data.json')
     with open(events_path, 'r') as file:
         events_data = json.load(file)
     backgrounds = load_backgrounds()
