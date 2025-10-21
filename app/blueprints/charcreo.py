@@ -91,13 +91,11 @@ def roll_second_bond_if_needed(custom_fields):
         if b2:
             custom_fields['bonds_selected_2'] = b2['description']
             # Add gold and items from second bond
-            if 'gold' in b2:
-                current_bonus = int(custom_fields.get('bonus_gold_bond', 0))
-                custom_fields['bonus_gold_bond'] = str(current_bonus + b2['gold'])
-            if 'items' in b2:
-                current_items = json.loads(custom_fields.get('bond_items', '[]'))
-                current_items.extend(b2['items'])
-                custom_fields['bond_items'] = json.dumps(current_items)
+            update_gold(custom_fields, 'bonus_gold_bond_2', sdv(b2, 'gold', 0))
+            if b2.get('items'):
+                custom_fields['bond_items_2'] = json.dumps(b2['items'])
+            else:
+                custom_fields['bond_items_2'] = '[]'
         
 def get_custom_fields(data):
     result = {}
@@ -656,7 +654,10 @@ def charcreo_roll_all():
     custom_fields['portrait_src'] = image
     custom_fields['custom_image'] = 'false'
     form.omens.process_data(custom_fields['omens_selected'])
-    form.bonds.process_data(custom_fields['bonds_selected'])
+    
+    update_bonds_required_count(custom_fields, form)
+    roll_second_bond_if_needed(custom_fields)
+    update_bond_display(custom_fields, form)
     
     render = render_template('partial/charcreo/body.html', form=form, custom_fields=custom_fields, portrait_src=custom_fields['portrait_src'], custom_image=custom_fields['custom_image'])
     response = make_response(render)    
