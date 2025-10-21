@@ -191,9 +191,22 @@ def create_app():
 
     # sum 2 integers
     @app.template_filter("intsum")
-    def intsum_filter(text: str, text2: str) -> str:
-        t1 = int(text)
-        t2 = int(text2)
+    def intsum_filter(text, text2) -> str:
+        # Handle various input types (string, int, None)
+        if isinstance(text, int):
+            t1 = text
+        elif text and str(text).strip():
+            t1 = int(text)
+        else:
+            t1 = 0
+            
+        if isinstance(text2, int):
+            t2 = text2
+        elif text2 and str(text2).strip():
+            t2 = int(text2)
+        else:
+            t2 = 0
+            
         return str(t1+t2)
     
     # Write error about party code

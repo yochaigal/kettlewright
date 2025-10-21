@@ -74,6 +74,21 @@
 
 </div>
 {% endif %}
+{% if character.bond2 %}
+{% if not 'items' in character.bond2 or character.bond2['items']|length == 0 %}
+<div>
+    {{character.bond2['description']|tr}}
+</div>
+{% endif %}
+{% if 'items' in character.bond2 %}
+<div>
+    {% for it in character.bond2['items'] %}
+    <div><b>{{it['name']|tr}}:</b> {{it['description']|tr}}</div>
+    {% endfor %}
+
+</div>
+{% endif %}
+{% endif %}
 </p>
 
 <p>

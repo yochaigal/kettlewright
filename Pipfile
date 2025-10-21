@@ -52,3 +52,5 @@ pybabel-json = "*"
 requests = "*"
 
 [dev-packages]
+pytest = "*"
+pytest-flask = "*"
