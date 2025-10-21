@@ -22,7 +22,8 @@ const categories = {
     Dungeon: data.Dungeon,
     Forest: data.Forest,
     Realm: data.Realm,
-    Faction: data.Realm,
+    Faction: data.Faction,
+    "Faction Actions": data.FactionActions,
     NPC: data.NPCGenerator,
   },
   Items: {
@@ -771,6 +772,11 @@ const rollWorldbuilding = (data, subcategory) => {
     const textResult = `<b><u>Faction</u></b><br><br>${formatObjectToString(
       result
     )}`;
+    displayResult(textResult);
+  } else if (subcategory === "Faction Actions") {
+    const actions = setting;
+    const action = actions[roll(actions.length)];
+    const textResult = `<b><u>Faction Action Result</u></b><br><br><b>Consequence:</b> ${action.Consequence}<br><b>Impact:</b> ${action.Impact}`;
     displayResult(textResult);
   } else if (subcategory === "NPC") {
     const name = setting.NPCNames.Names[roll(setting.NPCNames.Names.length)];
