@@ -1,0 +1,58 @@
+{
+  "name": "Kettlewright Development",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  // Features to add to the dev container
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "upgradePackages": true,
+      "username": "vscode",
+      "userUid": "1000",
+      "userGid": "1000"
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  // Configure tool-specific properties
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": [
+          "tests"
+        ],
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/*.pyc": true
+        }
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.debugpy",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-sqlite"
+      ]
+    }
+  },
+
+  "forwardPorts": [8000],
+
+  "remoteUser": "vscode",
+
+  "mounts": [
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached"
+  ],
+
+  "postCreateCommand": "./.devcontainer/post-create.sh",
+  "containerEnv": {
+    "FLASK_APP": "app:application",
+    "FLASK_ENV": "development",
+    "PYTHONUNBUFFERED": "1"
+  }
+}

@@ -1,0 +1,34 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile.dev
+    volumes:
+      - ..:/workspace:cached
+    working_dir: /workspace
+    command: sleep infinity
+    environment:
+      - FLASK_APP=app:application
+      - FLASK_ENV=development
+      - PYTHONUNBUFFERED=1
+      - BASE_URL=http://localhost:8000
+      - SECRET_KEY=dev-secret-key-change-in-production
+      - SQLALCHEMY_DATABASE_URI=sqlite:////workspace/instance/kettlewright.db
+      - USE_REDIS=False
+      - REQUIRE_SIGNUP_CODE=False
+    ports:
+      - "8000:8000"
+    networks:
+      - kettlewright-network
+
+  # Optional: Uncomment if you want to use Redis for development
+  # redis:
+  #   image: redis:7-alpine
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - kettlewright-network
+
+networks:
+  kettlewright-network:
+    driver: bridge

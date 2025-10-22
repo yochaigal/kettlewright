@@ -1,5 +1,4 @@
 .DS_Store
-.vscode
 .env
 *.pyc
 __pycache__/
@@ -15,3 +14,11 @@ background_data.json
 app/static/dist/
 instance/
 app/static/.webassets-manifest
+
+# VS Code - Allow shared configs but ignore personal settings
+!.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/tasks.json

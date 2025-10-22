@@ -1,0 +1,15 @@
+FROM python:3.11
+
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /workspace
+
+# Copy and install dependencies
+COPY requirements.txt /workspace/
+RUN pip install --no-cache-dir -r /workspace/requirements.txt
+
+# Expose ports
+EXPOSE 8000
+
+# Default command (will be overridden by docker-compose)
+CMD ["sleep", "infinity"]
