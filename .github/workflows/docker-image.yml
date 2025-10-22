@@ -14,6 +14,7 @@ on:
 
 jobs:
   build:
+    if: github.repository == 'yochaigal/kettlewright'
     runs-on: ubuntu-latest
 
     steps:
