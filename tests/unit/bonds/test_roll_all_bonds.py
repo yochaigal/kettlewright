@@ -5,10 +5,9 @@ from app.blueprints.charcreo import roll_second_bond_if_needed
 from app.lib.data import load_bonds, load_backgrounds
 
 
-@pytest.mark.skip(reason="Integration test requires Babel initialization in fixtures")
-def test_roll_all_with_fieldwarden_gets_two_bonds(app, client, monkeypatch):
+def test_roll_all_with_fieldwarden_gets_two_bonds(app_with_babel, client, monkeypatch):
     """Test that rolling Fieldwarden in roll-all automatically gets 2 bonds."""
-    with app.app_context():
+    with app_with_babel.app_context():
         backgrounds = load_backgrounds()
         
         def mock_random_background():
