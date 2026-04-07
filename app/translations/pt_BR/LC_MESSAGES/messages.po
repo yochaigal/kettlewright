@@ -562,7 +562,7 @@ msgstr "uso"
 
 #: app/templates/nav.html:42
 msgid "characters"
-msgstr "caracteres"
+msgstr "personagens"
 
 #: app/templates/nav.html:45
 msgid "parties"
