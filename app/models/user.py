@@ -16,8 +16,6 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(100))
     username = db.Column(db.String(1000), unique=True)
     confirmed = db.Column(db.Boolean, default=False)
-    characters = db.relationship('Character', backref='character_owner', cascade='all, delete-orphan')
-    parties = db.relationship('Party', backref='party_owner', cascade='all, delete-orphan')
 
     @property
     def password(self):

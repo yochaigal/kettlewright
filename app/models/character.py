@@ -12,7 +12,7 @@ class Character(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     url_name = db.Column(db.String(100))
-    owner = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
+    owner = db.Column(db.Integer, db.ForeignKey('users.id'))
     owner_username = db.Column(db.String(100))
     created_at = db.Column(db.DateTime(timezone=True),
                            server_default=func.now())
