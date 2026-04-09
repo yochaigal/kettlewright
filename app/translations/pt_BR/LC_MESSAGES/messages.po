@@ -353,6 +353,14 @@ msgstr "nome"
 msgid "Save Party"
 msgstr "Salvar Equipe"
 
+#: app/forms.py:310
+msgid "Confirm Password"
+msgstr "Confirme sua Senha"
+
+#: app/forms.py:311
+msgid "Delete My Account"
+msgstr "Excluir Minha Conta"
+
 #: app/static/json/backgrounds/aurifex.json:39 app/static/json/bonds.json:30
 #: app/static/json/bonds.json:221 app/static/json/marketplace.json:42
 #: app/static/json/marketplace.json:102 app/static/json/marketplace.json:165
@@ -670,6 +678,26 @@ msgstr "Redefinir Senha"
 msgid "If you have not requested a password reset simply ignore this message."
 msgstr ""
 "Se você não solicitou uma redefinição de senha, simplesmente ignore esta mensagem."
+
+#: app/templates/auth/account.html:22 app/templates/auth/delete_account.html:6
+msgid "Delete Account"
+msgstr "Excluir Conta"
+
+#: app/templates/auth/delete_account.html:9
+msgid "Warning:"
+msgstr "Aviso:"
+
+#: app/templates/auth/delete_account.html:9
+msgid "This action cannot be undone."
+msgstr "Esta ação não pode ser desfeita."
+
+#: app/templates/auth/delete_account.html:13
+msgid "Confirm your password"
+msgstr "Confirme sua senha"
+
+#: app/templates/auth/delete_account.html:15
+msgid "Enter your password"
+msgstr "Digite sua senha"
 
 #: app/templates/main/about.html:9
 msgid "About"
