@@ -204,11 +204,11 @@ msgstr "Vontade Máxima"
 #: app/templates/partial/charview/stats.html:22
 #: app/templates/partial/tools/pcgen_text.html:28
 msgid "HP"
-msgstr "PG"
+msgstr "PV"
 
 #: app/forms.py:153 app/forms.py:258
 msgid "HP Max"
-msgstr "PG Máximo"
+msgstr "PV Máximo"
 
 #: app/forms.py:155 app/forms.py:185 app/forms.py:207 app/forms.py:268 app/forms.py:287
 #: app/forms.py:297 app/templates/main/character_edit.html:82
@@ -245,11 +245,11 @@ msgstr "Salvar"
 
 #: app/forms.py:184 app/forms.py:266
 msgid "Deprived"
-msgstr "Privado"
+msgstr "Em exaustão"
 
 #: app/forms.py:184 app/forms.py:266
 msgid "Panicked"
-msgstr ""
+msgstr "Em Pânico"
 
 #: app/forms.py:186 app/forms.py:208 app/forms.py:288 app/forms.py:298
 msgid "notes"
@@ -352,6 +352,14 @@ msgstr "nome"
 #: app/forms.py:289
 msgid "Save Party"
 msgstr "Salvar Equipe"
+
+#: app/forms.py:310
+msgid "Confirm Password"
+msgstr "Confirme sua Senha"
+
+#: app/forms.py:311
+msgid "Delete My Account"
+msgstr "Excluir Minha Conta"
 
 #: app/static/json/backgrounds/aurifex.json:39 app/static/json/bonds.json:30
 #: app/static/json/bonds.json:221 app/static/json/marketplace.json:42
@@ -562,7 +570,7 @@ msgstr "uso"
 
 #: app/templates/nav.html:42
 msgid "characters"
-msgstr "caracteres"
+msgstr "personagens"
 
 #: app/templates/nav.html:45
 msgid "parties"
@@ -670,6 +678,26 @@ msgstr "Redefinir Senha"
 msgid "If you have not requested a password reset simply ignore this message."
 msgstr ""
 "Se você não solicitou uma redefinição de senha, simplesmente ignore esta mensagem."
+
+#: app/templates/auth/account.html:22 app/templates/auth/delete_account.html:6
+msgid "Delete Account"
+msgstr "Excluir Conta"
+
+#: app/templates/auth/delete_account.html:9
+msgid "Warning:"
+msgstr "Aviso:"
+
+#: app/templates/auth/delete_account.html:9
+msgid "This action cannot be undone."
+msgstr "Esta ação não pode ser desfeita."
+
+#: app/templates/auth/delete_account.html:13
+msgid "Confirm your password"
+msgstr "Confirme sua senha"
+
+#: app/templates/auth/delete_account.html:15
+msgid "Enter your password"
+msgstr "Digite sua senha"
 
 #: app/templates/main/about.html:9
 msgid "About"
@@ -793,13 +821,13 @@ msgstr "Estatísticas"
 #: app/templates/partial/charedit/stats.html:48
 #: app/templates/partial/charview/stats.html:31
 msgid "DEPRIVED"
-msgstr "PRIVADO"
+msgstr "EM EXAUSTÃO"
 
 #: app/templates/main/character_print.html:44
 #: app/templates/partial/charedit/stats.html:48
 #: app/templates/partial/charview/stats.html:31
 msgid "PANICKED"
-msgstr ""
+msgstr "EM PÂNICO"
 
 #: app/templates/main/character_print.html:63 app/templates/main/inventory.html:3
 #: app/templates/partial/charedit/inventory.html:2
@@ -1064,7 +1092,7 @@ msgstr "Código de inscrição"
 
 #: app/templates/partial/charview/stats.html:48
 msgid "Do you want to restore all HP?"
-msgstr "Você deseja restaurar todo seu PG?"
+msgstr "Você deseja restaurar todos os seus PV?"
 
 #: app/templates/partial/charview/stats.html:50
 msgid "Rest"
@@ -1677,7 +1705,7 @@ msgstr ""
 # =============================================
 #: app/static/json/scars.json:4
 msgid "1 HP - Lasting Scar"
-msgstr "1 PG - Cicatriz Duradoura"
+msgstr "1 PV - Cicatriz Duradoura"
 
 #: app/static/json/scars.json:5
 msgid ""
@@ -1691,11 +1719,11 @@ msgstr ""
 "\n"
 "Role 1d6.\n"
 "\n"
-"Se o total for maior que seu PG máximo, pegue o novo resultado."
+"Se o total for maior que seus PV máximo, pegue o novo resultado."
 
 #: app/static/json/scars.json:8
 msgid "2 HP - Rattling Blow"
-msgstr "2 PG - Golpe Violento"
+msgstr "2 PV - Golpe Violento"
 
 #: app/static/json/scars.json:9
 msgid ""
@@ -1709,11 +1737,11 @@ msgstr ""
 "\n"
 "Role 1d6.\n"
 "\n"
-"Se o total for maior que seu PG máximo, pegue o novo resultado."
+"Se o total for maior que seus PV máximo, pegue o novo resultado."
 
 #: app/static/json/scars.json:12
 msgid "3 HP - Walloped"
-msgstr "3 PG - Arremessado"
+msgstr "3 PV - Arremessado"
 
 #: app/static/json/scars.json:13
 msgid ""
@@ -1724,16 +1752,16 @@ msgid ""
 "\n"
 "Add that amount to your max HP."
 msgstr ""
-"Você é lançado voando e cai de cara no chão, sem fôlego. Você fica privado até "
+"Você é lançado voando e cai de cara no chão, sem fôlego. Você fica em exaustão até "
 "descansar por algumas horas.\n"
 "\n"
 "Então, role 1d6.\n"
 "\n"
-"Adicione essa quantia ao seu PG máximo."
+"Adicione essa quantia ao seu PV máximo."
 
 #: app/static/json/scars.json:16
 msgid "4 HP - Broken Limb"
-msgstr "4 PG - Membro Quebrado"
+msgstr "4 PV - Membro Quebrado"
 
 #: app/static/json/scars.json:17
 msgid ""
@@ -1747,11 +1775,11 @@ msgstr ""
 "\n"
 "Depois de consertado, role 2d6.\n"
 "\n"
-"Se o total for maior que seu PG máximo, pegue o novo resultado."
+"Se o total for maior que seu PV máximo, pegue o novo resultado."
 
 #: app/static/json/scars.json:20
 msgid "5 HP - Diseased"
-msgstr "5 PG - Doente"
+msgstr "5 PV - Doente"
 
 #: app/static/json/scars.json:21
 msgid ""
@@ -1765,11 +1793,11 @@ msgstr ""
 "\n"
 "Quando você superar, role 2d6.\n"
 "\n"
-"Se o total for maior que seu PG máximo, pegue o novo resultado."
+"Se o total for maior que seu PV máximo, pegue o novo resultado."
 
 #: app/static/json/scars.json:24
 msgid "6 HP - Reorienting Head Wound"
-msgstr "6 PG - Ferimento Desorientante na Cabeça"
+msgstr "6 PV - Ferimento Desorientante na Cabeça"
 
 #: app/static/json/scars.json:25
 msgid ""
@@ -1787,7 +1815,7 @@ msgstr ""
 
 #: app/static/json/scars.json:28
 msgid "7 HP - Hamstrung"
-msgstr "7 PG - Paralizado"
+msgstr "7 PV - Paralizado"
 
 #: app/static/json/scars.json:29
 msgid ""
@@ -1805,7 +1833,7 @@ msgstr ""
 
 #: app/static/json/scars.json:32
 msgid "8 HP - Deafened"
-msgstr "8 PG - Ensurdecido"
+msgstr "8 PV - Ensurdecido"
 
 #: app/static/json/scars.json:33
 msgid ""
@@ -1823,7 +1851,7 @@ msgstr ""
 
 #: app/static/json/scars.json:36
 msgid "9 HP - Re-brained"
-msgstr "9 PG - Reset no Cérebro"
+msgstr "9 PV - Reset no Cérebro"
 
 #: app/static/json/scars.json:37
 msgid ""
@@ -1841,7 +1869,7 @@ msgstr ""
 
 #: app/static/json/scars.json:40
 msgid "10 HP - Sundered"
-msgstr "10 PG - Separado"
+msgstr "10 PV - Separado"
 
 #: app/static/json/scars.json:41
 msgid ""
@@ -1859,7 +1887,7 @@ msgstr ""
 
 #: app/static/json/scars.json:44
 msgid "11 HP - Mortal Wound"
-msgstr "11 PG - Ferida Mortal"
+msgstr "11 PV - Ferida Mortal"
 
 #: app/static/json/scars.json:45
 msgid ""
@@ -1869,15 +1897,15 @@ msgid ""
 "\n"
 "Take the new result as your max HP."
 msgstr ""
-"Você está privado e fora de ação. Você morre em uma hora, a menos que seja curado.\n"
+"Você está em exaustão e fora de ação. Você morre em uma hora, a menos que seja curado.\n"
 "\n"
 "Após a recuperação, role 2d6.\n"
 "\n"
-"Considere o novo resultado como seu PG máximo."
+"Considere o novo resultado como seu PV máximo."
 
 #: app/static/json/scars.json:48
 msgid "12 HP - Doomed"
-msgstr "12 PG - Condenado"
+msgstr "12 PV - Condenado"
 
 #: app/static/json/scars.json:49
 msgid ""
@@ -1893,7 +1921,7 @@ msgstr ""
 "\n"
 "Se passar, role 3d6.\n"
 "\n"
-"Se o total for maior que seu PG máximo, pegue o novo resultado."
+"Se o total for maior que seus PV máximo, pegue o novo resultado."
 
 # ============================================= TRAITS
 # =============================================
@@ -2369,7 +2397,7 @@ msgid ""
 msgstr ""
 "Houve uma explosão, e você perdeu o olfato. Bem, quase: você pode farejar ouro como um "
 "porco fareja trufas. Pegue uma Lata de Rapé para amortecer o impacto. Use-a todos os "
-"dias ou fique privado."
+"dias ou caia em exaustão."
 
 #: app/static/json/backgrounds/aurifex.json:49
 msgid "Tin of Snuff"
@@ -2377,7 +2405,7 @@ msgstr "Lata de Rapé"
 
 #: app/static/json/backgrounds/aurifex.json:52
 msgid "Use it every day or become deprived."
-msgstr "Use-o todos os dias ou fique privado dele."
+msgstr "Use-o todos os dias ou caia em exaustão."
 
 #: app/static/json/backgrounds/aurifex.json:57
 msgid ""
@@ -2519,7 +2547,7 @@ msgid ""
 msgstr ""
 "Homúnculo: Uma réplica de argila em miniatura de você mesmo que segue todos os seus "
 "comandos. Ele odeia ser cativado por você e reclama amargamente sempre que possível. "
-"Qualquer dano causado ao homúnculo também é causado a você. 3 PG, 4 FOR, 13 DES, 5 VON."
+"Qualquer dano causado ao homúnculo também é causado a você. 3 PV, 4 FOR, 13 DES, 5 VON."
 
 #: app/static/json/backgrounds/aurifex.json:153
 msgid "Homunculus"
@@ -2533,7 +2561,7 @@ msgid ""
 msgstr ""
 "Uma réplica de argila em miniatura de você mesmo que segue todos os seus comandos. Ele "
 "odeia ser cativado por você e reclama amargamente sempre que possível. Qualquer dano "
-"causado ao homúnculo também é causado a você. 3 PG, 4 FOR, 13 DES, 5 VON"
+"causado ao homúnculo também é causado a você. 3 PV, 4 FOR, 13 DES, 5 VON"
 
 #: app/static/json/backgrounds/barber-surgeon.json:4
 msgid ""
@@ -2578,7 +2606,7 @@ msgid ""
 msgstr ""
 "Você tem um olho substituto que pode ampliar objetos, agir como um telescópio e "
 "fornecer visão noturna mínima. Você não pode usar nada de metal na cabeça, e a "
-"presença de ímãs fortes o torna privado."
+"presença de ímãs fortes o deixam em exaustão."
 
 #: app/static/json/backgrounds/barber-surgeon.json:58
 msgid ""
@@ -2586,12 +2614,12 @@ msgid ""
 "an Oil Can (6 uses). Without a daily application, you are deprived and noisy."
 msgstr ""
 "Um pé é principalmente metal (chute, d6), e você trata alguns terrenos difíceis como "
-"Fácil. Carregue uma Lata de Óleo (6 usos). Sem uma aplicação diária, você fica privado "
+"Fácil. Carregue uma Lata de Óleo (6 usos). Sem uma aplicação diária, você fica em exaustão "
 "e barulhento."
 
 #: app/static/json/backgrounds/barber-surgeon.json:64
 msgid "Without a daily application you are deprived and noisy."
-msgstr "Sem uma aplicação diária você fica privado e barulhento."
+msgstr "Sem uma aplicação diária você fica em exaustão e barulhento."
 
 #: app/static/json/backgrounds/barber-surgeon.json:69
 msgid ""
@@ -2701,7 +2729,7 @@ msgid ""
 "one hour. Addictive: Save STR or become deprived after 24 hours without it. 4 uses."
 msgstr ""
 "Mercúrio: Um estimulante. Vá primeiro em combate e passe automaticamente em qualquer "
-"teste de resistência de VON por uma hora. Viciante: Economize FOR ou fique privado "
+"teste de resistência de VON por uma hora. Viciante: Economize FOR ou caia em exaustão "
 "após 24 horas sem ele. 4 usos."
 
 #: app/static/json/backgrounds/barber-surgeon.json:138
@@ -2714,7 +2742,7 @@ msgid ""
 "Addictive: Save STR or become deprived after 24 hours without it."
 msgstr ""
 "Um estimulante. Vá primeiro em combate e passe automaticamente em qualquer teste de "
-"resistência de VON por uma hora. Viciante: Economize FOR ou fique privado após 24 "
+"resistência de VON por uma hora. Viciante: Economize FOR ou caia em exaustão após 24 "
 "horas sem ele. 4 usos."
 
 #: app/static/json/backgrounds/barber-surgeon.json:146
@@ -3019,7 +3047,7 @@ msgid ""
 "1d4 STR. Recharge: Fill with the blood of a dying warrior."
 msgstr ""
 "Um Balde de Sangue (volumoso) de um culto local à morte. Esvazie-o para levantar um "
-"servo construído a partir do que estiver enterrado abaixo, com 6 PG, Armadura 1, 13 "
+"servo construído a partir do que estiver enterrado abaixo, com 6 PV, Armadura 1, 13 "
 "FOR, 11 DES, 4 VON e punhos de cacos (d8+d8). Apenas um servo pode ser levantado por "
 "vez. Se destruído, você perde permanentemente 1d4 FOR. Recarregue: Encha com o sangue "
 "de um guerreiro moribundo."
@@ -3537,7 +3565,7 @@ msgid ""
 "but must make a WIL save to revert. Anyone left alive from your attacks must make a "
 "WIL save to avoid infection."
 msgstr ""
-"Lobos, ou assim você pensou. Agora você é um Lobisomem [8 PG, 15 FOR, 14 DES, garras "
+"Lobos, ou assim você pensou. Agora você é um Lobisomem [8 PV, 15 FOR, 14 DES, garras "
 "(d6+d6), mordida (d8)]. Sua VON permanece a mesma. Você pode virar à vontade (uma vez "
 "por dia), mas deve fazer um teste de VON para reverter. Qualquer um que fique vivo dos "
 "seus ataques deve fazer um teste de VON para evitar infecção."
@@ -3548,7 +3576,7 @@ msgid ""
 "and a Cusped Falchion (d8)."
 msgstr ""
 "Ladrões de colheitas. Nem todos sobreviveram, mas vocês estavam em menor número. "
-"Comece com +d4 PG e um Facão (d8)."
+"Comece com +d4 PV e um Facão (d8)."
 
 #: app/static/json/backgrounds/fieldwarden.json:102
 msgid "Cusped Falchion"
@@ -3730,7 +3758,7 @@ msgid ""
 "Falconry. You keep a falcon [3 hp, 5 STR, 16 DEX, 4 WIL, claws (d6+d6), bite (d8)]. It "
 "only eats live game."
 msgstr ""
-"Falcoaria. Você mantém um falcão [3 PG, 5 FOR, 16 DES, 4 VON, garras (d6+d6), mordida "
+"Falcoaria. Você mantém um falcão [3 PV, 5 FOR, 16 DES, 4 VON, garras (d6+d6), mordida "
 "(d8)]. Ele só come caça viva."
 
 #: app/static/json/backgrounds/fletchwind.json:55
@@ -4494,7 +4522,7 @@ msgid ""
 msgstr ""
 "Seus experimentos radicais deixaram sua pele verde, e agora você ganha nutrição como "
 "uma planta. Você não precisa de Rações, mas um dia sem luz solar e água suficientes "
-"deixa você privado."
+"deixa você em exaustão."
 
 #: app/static/json/backgrounds/greenwise.json:88
 msgid ""
@@ -4712,7 +4740,7 @@ msgid ""
 "Critical Damage (take 1d4 WIL damage), re-appearing again on the next full moon."
 msgstr ""
 "Um Pesadelo Vivo que habita dentro de você, mas se manifesta sempre que você está em "
-"perigo. Ele tem os mesmos Atributos e PG e ataca com garras (d8+d8). Ele desaparece em "
+"perigo. Ele tem os mesmos Atributos e PV e ataca com garras (d8+d8). Ele desaparece em "
 "Dano Crítico (recebe 1d4 de dano VON), reaparecendo novamente na próxima lua cheia."
 
 #: app/static/json/backgrounds/half-witch.json:77
@@ -4725,7 +4753,7 @@ msgid ""
 "with claws (d8+d8). It disappears on Critical Damage (take 1d4 WIL damage), re-"
 "appearing again on the next full moon."
 msgstr ""
-"Se manifesta sempre que você está em perigo. Ele tem os mesmos Atributos e PG e ataca "
+"Se manifesta sempre que você está em perigo. Ele tem os mesmos Atributos e PV e ataca "
 "com garras (d8+d8). Ele desaparece em Dano Crítico (recebe 1d4 de dano VON), "
 "reaparecendo novamente na próxima lua cheia."
 
@@ -4734,7 +4762,7 @@ msgid ""
 "A Raven Familiar [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as an "
 "intelligent being and is entirely devoted to you."
 msgstr ""
-"Um Corvo Familiar [8 PG, 3 FOR, 11 DES, 13 VON, bico (d6)]. Ele fala como um ser "
+"Um Corvo Familiar [8 PV, 3 FOR, 11 DES, 13 VON, bico (d6)]. Ele fala como um ser "
 "inteligente e é inteiramente devotado a você."
 
 #: app/static/json/backgrounds/half-witch.json:87
@@ -4746,7 +4774,7 @@ msgid ""
 "[8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as an intelligent being and is "
 "entirely devoted to you."
 msgstr ""
-"[8 PG, 3 FOR, 11 DES, 13 VON, bico (d6)]. Ele fala como um ser inteligente e é "
+"[8 PV, 3 FOR, 11 DES, 13 VON, bico (d6)]. Ele fala como um ser inteligente e é "
 "inteiramente dedicado a você."
 
 #: app/static/json/backgrounds/half-witch.json:94
@@ -4982,7 +5010,7 @@ msgid ""
 msgstr ""
 "Ordem do Olho Vazio. Pegue um Fragmento de Vidro Vazio. Olhe através dele para ver "
 "marcas invisíveis, criaturas e outros efeitos mágicos. Perca o uso do seu olho por uma "
-"hora depois (você é privado)."
+"hora depois (você está em exaustão)."
 
 #: app/static/json/backgrounds/hexenbane.json:87
 msgid "Voidglass Shard"
@@ -4994,7 +5022,7 @@ msgid ""
 "use of your eye for an hour afterwards (you are deprived)."
 msgstr ""
 "Olhe através dele para ver marcas invisíveis, criaturas e outros efeitos mágicos. "
-"Perca o uso do seu olho por uma hora depois (você está privado)."
+"Perca o uso do seu olho por uma hora depois (você está em exaustão)."
 
 #: app/static/json/backgrounds/hexenbane.json:94
 msgid ""
@@ -5183,7 +5211,7 @@ msgid ""
 msgstr ""
 "Você zombou de um deus trapaceiro esquecido e foi amaldiçoado por isso. Você fala "
 "apenas em rima perfeita. Ironicamente, isso só o tornou mais popular entre seus pares. "
-"Pegue um Dicionário de sinônimos (20gp). Sem ele, você é privado."
+"Pegue um Dicionário de sinônimos (20gp). Sem ele, você fica em exaustão."
 
 #: app/static/json/backgrounds/jongleur.json:82
 msgid "Thesaurus"
@@ -5191,7 +5219,7 @@ msgstr "Dicionário de sinônimos"
 
 #: app/static/json/backgrounds/jongleur.json:84
 msgid "Worth 20gp. Without it you are deprived."
-msgstr "Vale 20gp. Sem isso você fica privado."
+msgstr "Vale 20gp. Sem isso você fica em exaustão."
 
 #: app/static/json/backgrounds/jongleur.json:89
 msgid ""
@@ -5456,7 +5484,7 @@ msgid ""
 "Armor)."
 msgstr ""
 "Você oferece proteção como um serviço, observando silenciosamente as ameaças enquanto "
-"o dinheiro troca de mãos. Você começa com +d4 PG e carrega uma Espada Longa (d10, "
+"o dinheiro troca de mãos. Você começa com +d4 PV e carrega uma Espada Longa (d10, "
 "volumosa) e um Gambesão (+1 Armadura)."
 
 #: app/static/json/backgrounds/kettlewright.json:86
@@ -6181,7 +6209,7 @@ msgid ""
 "Heavy Destrier: A beast built for war, an imposing creature. 8 HP, 1 Armor, hooves "
 "(d10+d10), +2 slots."
 msgstr ""
-"Corsário Pesado: Uma fera construída para a guerra, uma criatura imponente. 8 PG, "
+"Corsário Pesado: Uma fera construída para a guerra, uma criatura imponente. 8 PV, "
 "Armadura 1, cascos (d10+d10), +2 espaços."
 
 #: app/static/json/backgrounds/outrider.json:115
@@ -6194,7 +6222,7 @@ msgid ""
 "6 HP. +4 slots."
 msgstr ""
 "Dande Perna Preta: Resistente e adaptável. Terrenos difíceis ou perigosos são um passo "
-"mais fáceis. 6 PG. +4 slots."
+"mais fáceis. 6 PV. +4 slots."
 
 #: app/static/json/backgrounds/outrider.json:124
 msgid "Blacklegged Dandy"
@@ -6205,7 +6233,7 @@ msgid ""
 "Rivertooth: Impressively strong, capable of carrying heavy loads. 4 HP. +6 slots (only "
 "+2 slots if carrying two people)."
 msgstr ""
-"Dente Azul: Impressionantemente forte, capaz de carregar cargas pesadas. 4 PG. +6 "
+"Dente Azul: Impressionantemente forte, capaz de carregar cargas pesadas. 4 PV. +6 "
 "slots (apenas +2 slots se estiver carregando duas pessoas)."
 
 #: app/static/json/backgrounds/outrider.json:133
@@ -6218,7 +6246,7 @@ msgid ""
 "for danger. 6 HP. +4 slots."
 msgstr ""
 "Espiga Careca: Inteligente, consegue entender comandos simples e tem até instinto para "
-"o perigo. 6 PG. +4 slots."
+"o perigo. 6 PV. +4 slots."
 
 #: app/static/json/backgrounds/outrider.json:142
 msgid "Piebald Cob"
@@ -6230,7 +6258,7 @@ msgid ""
 "of need (no DEX save to flee). 4 HP. +3 slots."
 msgstr ""
 "Tília Branca: Altamente treinado e ágil, ele pode executar manobras complexas em "
-"momentos de necessidade (sem teste de DES para fugir). 4 PG. +3 slots."
+"momentos de necessidade (sem teste de DES para fugir). 4 PV. +3 slots."
 
 #: app/static/json/backgrounds/outrider.json:151
 msgid "Linden White"
@@ -6366,7 +6394,7 @@ msgid ""
 msgstr ""
 "Um lobo oco que estava assustando viajantes. Você teve pena da criatura meio faminta e "
 "cuidou dela até ela voltar à saúde. Agora ela é leal a você até a morte. Ela também é "
-"uma ótima escavadora de túneis. 5 PG, 11 FOR, 13 DES, 8 VON, dentes (d6)."
+"uma ótima escavadora de túneis. 5 PV, 11 FOR, 13 DES, 8 VON, dentes (d6)."
 
 #: app/static/json/backgrounds/prowler.json:106
 msgid ""
@@ -7660,7 +7688,7 @@ msgid ""
 "and becomes deprived."
 msgstr ""
 "Gás Cloro: Qualquer um por perto deve fazer um teste de DES para escapar de seu "
-"alcance ou perder 1d4 de FOR e ficar privado."
+"alcance ou perder 1d4 de FOR e ficar em exaustão."
 
 #: app/static/json/party_events/bestiary.json:365
 #: app/static/json/party_events/dungeons.json:260
@@ -8031,7 +8059,7 @@ msgid ""
 "Critical Damage: Target is deprived until they get a good night's sleep. Until then, "
 "they act boorish, selfish, and cruel (or more so, if that already is their nature)."
 msgstr ""
-"Dano Crítico: O alvo é privado até que tenha uma boa noite de sono. Até lá, ele age de "
+"Dano Crítico: O alvo está em exaustão até que tenha uma boa noite de sono. Até lá, ele age de "
 "forma grosseira, egoísta e cruel (ou mais, se essa já for sua natureza)."
 
 #: app/static/json/party_events/bestiary.json:534
@@ -8133,7 +8161,7 @@ msgid ""
 "they are cured by a specialist healer. The target is also deprived."
 msgstr ""
 "Dano Crítico: O alvo é infectado com podridão de múmia e não consegue recuperar FOR "
-"até ser curado por um healer especialista. O alvo também é privado."
+"até ser curado por um healer especialista. O alvo também fica em exaustão."
 
 #: app/static/json/party_events/bestiary.json:586
 #: app/static/json/party_events/dungeons.json:258
@@ -8487,7 +8515,7 @@ msgid ""
 "Hideous Gaze: A target is overcome with fear (HP drops to 0). WIL save each round to "
 "break the spell."
 msgstr ""
-"Olhar Medonho: Um alvo é tomado pelo medo (PG cai para 0). Salvaguarda de VON a cada "
+"Olhar Medonho: Um alvo é tomado pelo medo (PV cai para 0). Salvaguarda de VON a cada "
 "rodada para quebrar o feitiço."
 
 #: app/static/json/party_events/bestiary.json:773
@@ -8827,7 +8855,7 @@ msgid ""
 "killed, it becomes a cloud of gas and retreats to its coffin, reforming at the next "
 "nightfall. Can only be killed if exposed to sunlight or if the coffin is destroyed."
 msgstr ""
-"Regeneração: Um vampiro danificado recupera 6 PG quando morde um alvo que tem sangue. "
+"Regeneração: Um vampiro danificado recupera 6 PV quando morde um alvo que tem sangue. "
 "Se morto, ele se torna uma nuvem de gás e recua para seu caixão, reformando-se no "
 "próximo anoitecer. Só pode ser morto se exposto à luz do sol ou se o caixão for "
 "destruído."
@@ -9099,7 +9127,7 @@ msgid ""
 "Critical Damage: Target is infected and becomes deprived. Without the services of a "
 "specialist or healer, they will become a zombie in 1d4 days."
 msgstr ""
-"Dano Crítico: O alvo é infectado e fica privado. Sem os serviços de um especialista ou "
+"Dano Crítico: O alvo é infectado e fica em exaustão. Sem os serviços de um especialista ou "
 "healer, ele se tornará um zumbi em 1d4 dias."
 
 # ============================================= CUSTOM MONSTER
@@ -17887,7 +17915,7 @@ msgstr ""
 "superfície antes de enrolar em um rolo apertado. Desenrole para ver um mapa áspero "
 "revelando a localização atual de qualquer sangue restante. A imagem desaparece após "
 "alguns minutos. Recarregue: despeje um litro de sua própria essência de vida no mapa, "
-"sangue por sangue. Você está privado até que possa descansar e comer uma Ração."
+"sangue por sangue. Você fica em exaustão até que possa descansar e comer uma Ração."
 
 #: app/static/json/party_events/reliquary.json:39
 msgid "Coin of the Father"
@@ -18025,7 +18053,7 @@ msgid ""
 "will outlive you."
 msgstr ""
 "Fure um dedo com a ponta pontiaguda e martele em qualquer objeto pequeno para formar "
-"um servo leal [3 PG, 4 FOR, 13 DES, 5 VON] completamente devotado a você. Se não for "
+"um servo leal [3 PV, 4 FOR, 13 DES, 5 VON] completamente devotado a você. Se não for "
 "destruído, ele sobreviverá a você."
 
 #: app/static/json/party_events/reliquary.json:110
@@ -18050,7 +18078,7 @@ msgid ""
 "Break to release a colony of fire ants [6 HP, 2 STR, 10 DEX, 1 WIL, bite (d10), "
 "detachment]. Consumes a ration every two days."
 msgstr ""
-"Quebrar para liberar uma colônia de formigas de fogo [6 PG, 2 FOR, 10 DES, 1 VON, "
+"Quebrar para liberar uma colônia de formigas de fogo [6 PV, 2 FOR, 10 DES, 1 VON, "
 "morder (d10), destacamento]. Consome uma ração a cada dois dias."
 
 #: app/static/json/party_events/reliquary.json:121
@@ -18315,7 +18343,7 @@ msgid ""
 "completely (about 10 minutes)."
 msgstr ""
 "Uma dúzia de soldados em miniatura feitos de esponjas marinhas esculpidas. Quando "
-"salpicados com água, eles crescem até o tamanho máximo [8 PG, 6 FOR, 13 DES, 5 VON, "
+"salpicados com água, eles crescem até o tamanho máximo [8 PV, 6 FOR, 13 DES, 5 VON, "
 "esponja endurecida (d6), destacamento] e seguem as ordens da pessoa que veem até serem "
 "destruídos ou secarem completamente (cerca de 10 minutos)."
 
@@ -19575,7 +19603,7 @@ msgid ""
 "deprived afterwards)."
 msgstr ""
 "O dono pode invocar o livro apenas por meio de comando mental (salvaguarda de VON ou "
-"será privado depois)."
+"entrará em exaustão depois)."
 
 #: app/static/json/party_events/spellbooks.json:514
 msgid "Telepathy"
