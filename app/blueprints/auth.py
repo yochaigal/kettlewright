@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash,
 from markupsafe import Markup
 from flask_login import login_user, login_required, logout_user, current_user
 from app.models import db, User
-from app.forms import LoginForm, RegistrationForm, PasswordResetRequestForm, PasswordResetForm, ResendConfirmationForm, PasswordUpdateForm, EmailUpdateForm
+from app.forms import LoginForm, RegistrationForm, PasswordResetRequestForm, PasswordResetForm, ResendConfirmationForm, PasswordUpdateForm, EmailUpdateForm, DeleteAccountForm
 from app.email import send_email
 import os
 from flask_babel import _
@@ -209,8 +209,6 @@ def password_reset(token):
     return render_template('auth/reset_password.html', form=form)
 
 # __________ User Update Email or Password __________
-
-
 @auth.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
@@ -266,9 +264,38 @@ def change_email():
 
     return render_template('auth/change_email.html', form=form)
 
+# __________ Delete account __________
+@auth.route('/delete_account', methods=['GET', 'POST'])
+@login_required
+def delete_account():
+    form = DeleteAccountForm()
+    
+    if form.validate_on_submit():
+        # validate_on_submit() ensures method is POST and CSRF token is valid
+        password = form.password.data #Accessing data via form object
+        
+        # Verify if password is correct
+        if current_user.verify_password(password):
+            user_id = current_user.id
+            
+            # Logout before deleting to clear session
+            logout_user()
+            
+            # Delete user from database
+            user_to_delete = User.query.get(user_id)
+            if user_to_delete:
+                db.session.delete(user_to_delete)
+                db.session.commit()
+            
+            flash(_('Your account has been successfully deleted.'), 'success')
+            return redirect(url_for('main.index'))
+        else:
+            flash(_('Invalid password. Account deletion cancelled.'), 'error')
+            return redirect(url_for('auth.delete_account'))
+    
+    return render_template('auth/delete_account.html', form=form)
 
 # ________________ CAPTCHA STUFF __________________________________
-
 def create_assessment(
     project_id: str,
     recaptcha_site_key: str,

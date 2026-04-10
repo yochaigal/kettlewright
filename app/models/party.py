@@ -12,7 +12,7 @@ class Party(db.Model):
     __tablename__ = 'parties'
 
     id = db.Column(db.Integer, primary_key=True)
-    owner = db.Column(db.Integer, db.ForeignKey('users.id'))
+    owner = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     created_at = db.Column(db.DateTime(timezone=True),
                            server_default=func.now())
 
