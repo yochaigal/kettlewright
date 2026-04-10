@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash,
 from markupsafe import Markup
 from flask_login import login_user, login_required, logout_user, current_user
 from app.models import db, User
-from app.forms import LoginForm, RegistrationForm, PasswordResetRequestForm, PasswordResetForm, ResendConfirmationForm, PasswordUpdateForm, EmailUpdateForm, DeleteAccountForm
+from app.forms import LoginForm, RegistrationForm, PasswordResetRequestForm, PasswordResetForm, ResendConfirmationForm, PasswordUpdateForm, EmailUpdateForm
 from app.email import send_email
 import os
 from flask_babel import _

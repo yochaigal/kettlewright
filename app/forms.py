@@ -305,7 +305,3 @@ class PartyEditForm(FlaskForm):
     transfer = HiddenField()
     events = HiddenField()
     version = HiddenField('Version')
-
-class DeleteAccountForm(FlaskForm):
-    password = PasswordField(_l('Confirm Password'), validators=[DataRequired()])
-    submit = SubmitField(_l('Delete My Account'))
