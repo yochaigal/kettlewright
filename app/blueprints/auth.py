@@ -266,6 +266,35 @@ def change_email():
 
     return render_template('auth/change_email.html', form=form)
 
+# ________________ DELETE ACCOUNT __________________________________
+@auth.route('/delete_account', methods=['GET', 'POST'])
+@login_required
+def delete_account():
+    if request.method == 'POST':
+        password = request.form.get('password')
+        
+        # Verificar se a senha está correta
+        if current_user.verify_password(password):
+            # Armazenar informações antes de excluir
+            user_email = current_user.email
+            user_id = current_user.id
+            
+            # Fazer logout antes de excluir
+            logout_user()
+            
+            # Excluir o usuário do banco de dados
+            user_to_delete = User.query.get(user_id)
+            db.session.delete(user_to_delete)
+            db.session.commit()
+            
+            flash('Your account has been successfully deleted.', 'success')
+            return redirect(url_for('main.index'))
+        else:
+            flash('Invalid password. Account deletion cancelled.', 'error')
+            return redirect(url_for('auth.delete_account'))
+    
+    return render_template('auth/delete_account.html')
+
 
 # ________________ CAPTCHA STUFF __________________________________
 
