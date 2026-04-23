@@ -218,16 +218,25 @@ def charedit_inplace_portrait():
 # Route: edit new character portrait - cancel
 @character_create.route('/charcreo/portrait/cancel', methods=['GET'])
 def charcreo_portrait_cancel():
-    portrait_src = ""
     ps = request.args.get("src")
-    if ps != None and ps != "":
+    
+    if ps is None or ps == "":
+        portrait_src = "default-portrait.webp"
+    else:
         portrait_src = ps
-    portrait_src = urllib.parse.quote_plus(portrait_src)
+    
     custom_image = request.args.get("custom_image")
+    if custom_image is None or custom_image == "":
+        custom_image = "false"
+    
     custom_fields = {}
     custom_fields['portrait_src'] = portrait_src
     custom_fields['custom_image'] = custom_image
-    return render_template('partial/charcreo/portrait_img.html', portrait_src = portrait_src, custom_image=custom_image, custom_fields=custom_fields)          
+    
+    return render_template('partial/charcreo/portrait_img.html', 
+                         portrait_src=portrait_src, 
+                         custom_image=custom_image, 
+                         custom_fields=custom_fields)
 
 # Route: edit new character portrait - save
 @character_create.route('/charcreo/portrait/save', methods=['POST'])
