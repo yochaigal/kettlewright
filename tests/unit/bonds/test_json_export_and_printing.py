@@ -35,3 +35,21 @@ def test_fieldwarden_print_rendering_includes_both_bonds(app_with_babel):
             
             assert 'id="character-bonds-view"' in html
             assert 'class="with-whitespace"' in html
+
+
+def test_empty_bonds_hidden_in_print_view(app_with_babel):
+    """Bonds container should not render when bonds field is empty."""
+    with app_with_babel.test_client() as client:
+        with app_with_babel.app_context():
+            _, json_data = generate_character("Aurifex")
+            data = json.loads(json_data)
+            data['bonds'] = ""
+
+            response = client.post('/gen/character/print',
+                                   data={'json_data': json.dumps(data)},
+                                   follow_redirects=True)
+
+            assert response.status_code == 200
+            html = response.data.decode('utf-8')
+
+            assert 'id="character-print-bonds-container"' not in html
