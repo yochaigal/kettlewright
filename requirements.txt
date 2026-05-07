@@ -1,7 +1,7 @@
 bleach
 click
 email-validator
-eventlet==0.38.0
+eventlet
 Flask
 Flask-Assets
 Flask-Login
