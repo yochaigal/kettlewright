@@ -1,7 +1,6 @@
 from datetime import datetime, UTC
-import json
 
-from flask import Blueprint, render_template, redirect, url_for, request, flash, session
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session, current_app
 from markupsafe import Markup
 from flask_login import login_user, login_required, logout_user, current_user
 from app.models import db, User
@@ -103,16 +102,16 @@ def signup():
             token = form.captcha_token.data
             project_id = os.environ.get('CAPTCHA_PROJECT_ID')
             api_key = os.environ.get('CAPTCHA_API_KEY')
-            resp = create_assessment(project_id,captcha_key,api_key,token,'signup',request.remote_addr)
-            action = ""
-            score = 1.0
-            print("captcha assesment response: ", resp)
-            if "tokenProperties" in resp:
-                action = resp['tokenProperties']['action']
-            if "riskAnalysis" in resp:
-                score = resp['riskAnalysis']['score']
-            if action != "signup" or score >= 0.7:
-                print("captcha risk analysis: remote addr=",request.remote_addr," action=", action," score=",score)
+            resp = {}
+            if token:
+                try:
+                    resp = create_assessment(project_id, captcha_key, api_key,
+                                             token, 'signup', request.remote_addr)
+                except (requests.RequestException, ValueError):
+                    # Do not log the request URL or payload: they contain secrets.
+                    current_app.logger.warning('reCAPTCHA assessment request failed')
+            if not assessment_allows_signup(resp):
+                current_app.logger.info('reCAPTCHA signup assessment rejected')
                 if captcha_block:
                     flash('Signup try marked as risky by recaptcha. If this is a real signup, please contact administrator.', 'error')
                     return redirect(url_for('auth.signup'))            
@@ -296,6 +295,21 @@ def delete_account():
     return render_template('auth/delete_account.html', form=form)
 
 # ________________ CAPTCHA STUFF __________________________________
+def assessment_allows_signup(assessment):
+    if not isinstance(assessment, dict):
+        return False
+    token_properties = assessment.get('tokenProperties')
+    risk_analysis = assessment.get('riskAnalysis')
+    if not isinstance(token_properties, dict) or not isinstance(risk_analysis, dict):
+        return False
+    score = risk_analysis.get('score')
+    # Higher scores mean lower risk. Keep the existing threshold of 0.7.
+    return (token_properties.get('valid') is True
+            and token_properties.get('action') == 'signup'
+            and type(score) in (int, float)
+            and 0.7 <= score <= 1.0)
+
+
 def create_assessment(
     project_id: str,
     recaptcha_site_key: str,
@@ -317,11 +331,6 @@ def create_assessment(
         }
     }
     url = f"https://recaptchaenterprise.googleapis.com/v1/projects/{project_id}/assessments?key={api_key}"
-    print("calling captcha assesment endpoint: ", url)
-    print("with payload: ", json.dumps(msg))
-    response = requests.post(url, json=msg)
-    
-    return response
-
- 
-    
+    response = requests.post(url, json=msg, timeout=10)
+    response.raise_for_status()
+    return response.json()
