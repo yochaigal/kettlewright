@@ -38,6 +38,16 @@ margin-bottom: 2em;
     padding: 0em 1em;
 }
 
+.character-card {
+    min-height: 428px;
+    height: auto;
+}
+
+.character-card-inventory {
+    margin: 0 0 0.5em;
+    text-align: center;
+}
+
 .party-card {
     min-height: 300px;
     height: auto;

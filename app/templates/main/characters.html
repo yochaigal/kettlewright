@@ -52,7 +52,8 @@
               <p class="character-card-attribute subtitle">{{_('Armor')}} {{character.armor}}</p>
             </div>
             <div class="card-attribute-container">
-              <p class="character-card-attribute subtitle">{{_('HP')}} {{character.hp}}</p>
+              {% set hp = character.hpValue() %}
+              <p class="character-card-attribute subtitle">{{_('HP')}} {{hp[0]}}/{{hp[1]}}</p>
             </div>
             <div class="card-attribute-container">
               <p class="character-card-attribute subtitle">{{_('Gold')}} {{character.gold}}</p>
@@ -60,6 +61,7 @@
           </div>
         </div>
       </div>
+      <p class="character-card-inventory">{{_('Main inventory')}}: {{ ngettext('%(num)s slot free', '%(num)s slots free', character.freeMainSlots()) }}</p>
       <div class="character-card-footer">
         <button title="Copy character link" class="button is-light card-link-button" type="button"
           data-url-name="{{ character.url_name }}" data-owner-username="{{ character.owner_username }}">
