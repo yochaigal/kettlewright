@@ -1,7 +1,6 @@
 bleach
 click
 email-validator
-eventlet
 Flask
 Flask-Assets
 Flask-Login
@@ -14,6 +13,7 @@ flask_cors
 flask_htmx
 flask_babel
 pybabel-json
+gevent
 gunicorn
 itsdangerous
 Jinja2
