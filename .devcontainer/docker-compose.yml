@@ -6,20 +6,40 @@ services:
     volumes:
       - ..:/workspace:cached
     working_dir: /workspace
-    command: sleep infinity
+    env_file: ../.env
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        bash .devcontainer/post-create.sh
+        exec flask run --debug --host=0.0.0.0 --port=8000
     environment:
       - FLASK_APP=app:application
-      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - USE_FLASK=True
       - PYTHONUNBUFFERED=1
-      - BASE_URL=http://localhost:8000
-      - SECRET_KEY=dev-secret-key-change-in-production
-      - SQLALCHEMY_DATABASE_URI=sqlite:////workspace/instance/kettlewright.db
       - USE_REDIS=False
       - REQUIRE_SIGNUP_CODE=False
+    depends_on:
+      mailpit:
+        condition: service_healthy
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     networks:
       - kettlewright-network
+
+  mailpit:
+    image: axllent/mailpit:v1.21
+    command: ["--smtp-auth-accept-any", "--smtp-auth-allow-insecure"]
+    ports:
+      - "127.0.0.1:8025:8025"
+    networks:
+      - kettlewright-network
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   # Optional: Uncomment if you want to use Redis for development
   # redis:
