@@ -1,5 +1,6 @@
 <div class="create-trait-container">
-    <select class="trait-select" name="Physique" required hx-post="/charcreo/trait-select/Physique" hx-trigger="change"
+    <label for="trait-physique">{{_('Physique')}}</label>
+    <select class="trait-select" id="trait-physique" name="Physique" required hx-post="/charcreo/trait-select/Physique" hx-trigger="change"
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Physique')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Physique'] %}
@@ -8,7 +9,8 @@
     </select>
 </div>
 <div class="create-trait-container">
-    <select class="trait-select" name="Skin" required hx-post="/charcreo/trait-select/Skin" hx-trigger="change"
+    <label for="trait-skin">{{_('Skin')}}</label>
+    <select class="trait-select" id="trait-skin" name="Skin" required hx-post="/charcreo/trait-select/Skin" hx-trigger="change"
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Skin')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Skin'] %}
@@ -17,7 +19,8 @@
     </select>
 </div>
 <div class="create-trait-container">
-    <select class="trait-select" name="Hair" required hx-post="/charcreo/trait-select/Hair" hx-trigger="change"
+    <label for="trait-hair">{{_('Hair')}}</label>
+    <select class="trait-select" id="trait-hair" name="Hair" required hx-post="/charcreo/trait-select/Hair" hx-trigger="change"
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Hair')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Hair'] %}
@@ -26,7 +29,8 @@
     </select>
 </div>
 <div class="create-trait-container">
-    <select class="trait-select" name="Face" required hx-post="/charcreo/trait-select/Face" hx-trigger="change"
+    <label for="trait-face">{{_('Face')}}</label>
+    <select class="trait-select" id="trait-face" name="Face" required hx-post="/charcreo/trait-select/Face" hx-trigger="change"
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Face')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Face'] %}
@@ -35,7 +39,8 @@
     </select>
 </div>
 <div class="create-trait-container">
-    <select class="trait-select" name="Speech" required hx-post="/charcreo/trait-select/Speech" hx-trigger="change"
+    <label for="trait-speech">{{_('Speech')}}</label>
+    <select class="trait-select" id="trait-speech" name="Speech" required hx-post="/charcreo/trait-select/Speech" hx-trigger="change"
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Speech')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Speech'] %}
@@ -44,7 +49,8 @@
     </select>
 </div>
 <div class="create-trait-container">
-    <select class="trait-select" name="Clothing" required hx-post="/charcreo/trait-select/Clothing" hx-trigger="change"
+    <label for="trait-clothing">{{_('Clothing')}}</label>
+    <select class="trait-select" id="trait-clothing" name="Clothing" required hx-post="/charcreo/trait-select/Clothing" hx-trigger="change"
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Clothing')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Clothing'] %}
@@ -53,7 +59,8 @@
     </select>
 </div>
 <div class="create-trait-container">
-    <select class="trait-select" name="Virtue" required hx-post="/charcreo/trait-select/Virtue" hx-trigger="change"
+    <label for="trait-virtue">{{_('Virtue')}}</label>
+    <select class="trait-select" id="trait-virtue" name="Virtue" required hx-post="/charcreo/trait-select/Virtue" hx-trigger="change"
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Virtue')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Virtue'] %}
@@ -62,7 +69,8 @@
     </select>
 </div>
 <div class="create-trait-container">
-    <select class="trait-select" name="Vice" required hx-post="/charcreo/trait-select/Vice" hx-trigger="change"
+    <label for="trait-vice">{{_('Vice')}}</label>
+    <select class="trait-select" id="trait-vice" name="Vice" required hx-post="/charcreo/trait-select/Vice" hx-trigger="change"
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Vice')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Vice'] %}
@@ -70,7 +78,7 @@
         {% endfor %}
     </select>
 </div>
-<p class="text-border" id="traits-description" style="min-height: 100px; grid-column: 1/5">
+<p class="text-border" id="traits-description" style="min-height: 100px; grid-column: 1/-1">
     {{form.traits(id="traits-field")}}
     {% if form.traits.data %}
     {{form.traits.data}}
