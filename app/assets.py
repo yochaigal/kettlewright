@@ -19,6 +19,8 @@ def compile_static_assets(app):
                   'src/scss/main.scss', 'src/scss/modals.scss', 'src/scss/inventory.scss',
                   'src/scss/create.scss', 'src/scss/character.scss', 'src/scss/characters-parties.scss', 'src/scss/party.scss',
                   filters='libsass',
+                  # SCSS must be compiled even when Flask debug mode is enabled.
+                  debug=False,
                   output='dist/css/style.css',
                   depends=('**/*.scss'))
 

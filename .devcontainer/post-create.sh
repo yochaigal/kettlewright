@@ -1,46 +1,34 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 echo "🔧 Running post-create setup for Kettlewright..."
 
 # Ensure we're in the workspace directory
 cd /workspace
 
-# Install Python dependencies (in case requirements changed)
-echo "📦 Installing Python dependencies..."
-pip install --no-cache-dir pipenv
-pipenv install --dev --system
+# Dependencies, including test tools, are installed in Dockerfile.dev.
+# Rebuild the image when requirements.txt changes.
 
 # Create instance directory with proper permissions
 echo "📁 Creating instance directory..."
 mkdir -p /workspace/instance
 
-# Set up the database
-echo "🗄️  Setting up database..."
-if [ ! -f "/workspace/instance/kettlewright.db" ]; then
-    echo "Creating new database..."
-    flask db upgrade
-else
-    echo "Database exists, running migrations..."
-    flask db upgrade
-fi
-
 # Compile translations (if needed)
 echo "🌍 Compiling translations..."
 if [ -d "/workspace/app/translations" ]; then
-    pybabel compile -d app/translations || echo "No translations to compile"
+    pybabel compile -d app/translations
 fi
 
-# Build static assets
-echo "🎨 Building static assets..."
-if [ -f "/workspace/app/assets.py" ]; then
-    python -c "from app import create_app; app = create_app(); app.app_context().push(); from flask_assets import Environment; from app.assets import bundles; assets = Environment(app); assets.register(bundles)" || echo "Asset compilation skipped"
-fi
+# Apply pending migrations to the database configured in .env.
+# Loading the Flask application also builds its static assets.
+echo "🗄️  Applying migrations and building static assets..."
+flask db upgrade
 
 # Display success message
 echo "✅ Post-create setup complete!"
 echo ""
-echo "You can now run the application with:"
+echo "Docker Compose starts Flask automatically after this script."
+echo "Inside an IDE-managed Dev Container, start it with F5 or:"
 echo "  flask run --host=0.0.0.0 --port=8000"
 echo ""
 echo "Or run tests with:"

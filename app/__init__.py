@@ -50,7 +50,9 @@ else:
         'cors_allowed_origins': allowed_origins
     }
 
-if not use_flask:
+if use_flask:
+    socketio_config['async_mode'] = 'threading'
+else:
     socketio_config['async_mode'] = 'eventlet'
 
 socketio = SocketIO(**socketio_config)
