@@ -50,10 +50,11 @@ else:
         'cors_allowed_origins': allowed_origins
     }
 
+
 if use_flask:
     socketio_config['async_mode'] = 'threading'
 else:
-    socketio_config['async_mode'] = 'eventlet'
+    socketio_config['async_mode'] = 'gevent'
 
 socketio = SocketIO(**socketio_config)
 
