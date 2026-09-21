@@ -33,7 +33,8 @@
         </div>
         <div class="full-width row16spaced-top">
           <div>
-            <div class="">{{ form.name(class=' edit-mode' ) }}</div>
+            <div class="">{{ form.name(class=' edit-mode', aria_describedby='character-name-help') }}</div>
+            <p id="character-name-help" class="no-space"><small>{{_('Changing the name does not change the character link.')}}</small></p>
             <h2 class="">{{character.background | tr }}</h2>
           </div>
           {% if is_owner %}
