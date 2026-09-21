@@ -2,6 +2,8 @@
   "name": "Kettlewright Development",
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
+  // Keep the container idle in an IDE so F5 can start the Flask debugger.
+  "overrideCommand": true,
   "workspaceFolder": "/workspace",
   // Features to add to the dev container
   "features": {
@@ -41,7 +43,7 @@
     }
   },
 
-  "forwardPorts": [8000],
+  "forwardPorts": [8000, 8025],
 
   "remoteUser": "vscode",
 
