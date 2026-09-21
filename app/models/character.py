@@ -119,6 +119,15 @@ class Character(db.Model):
             slots += 1
         return slots
     
+    # Free slots in the main inventory; extra containers have their own capacity.
+    def freeMainSlots(self):
+        capacity = 10
+        for container in json.loads(self.containers or '[]'):
+            if container['id'] == 0:
+                capacity = int(container['slots'])
+                break
+        return max(0, capacity - self.occupiedMainSlots())
+
     # Serialize object to JSON
     def toJSON(self):
         dictret = dict(self.__dict__); 
