@@ -1,0 +1,39 @@
+<div class="inventory-modal shared-marketplace">
+  <div class="shared-market-form no-space">
+    <div class="modal-background inventory-modal-background"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="shared-market-title">
+      <header class="modal-card-head">
+        <h3 id="shared-market-title">{{_('Marketplace')}}</h3>
+        <p>{{_('Storing in')}} {{container.name}} · {{ ngettext('%(num)s slot free', '%(num)s slots free', capacity) }}</p>
+        <p>{{_('Add equipment to shared inventory. Prices are for reference; no character gold is deducted.')}}</p>
+        <label for="shared-market-filter">{{_('Search')}}</label>
+        <input id="shared-market-filter" type="search" name="filter" value="{{search}}"
+          hx-get="/marketplace/party/{{party.id}}/{{container.id}}" hx-target="#inventory-container"
+          hx-trigger="input changed delay:300ms, search" />
+      </header>
+      <div class="modal-card-body">
+        {% if message %}<p role="status">{{message}}</p>{% endif %}
+        {% if error %}<p role="alert" class="red-text">{{error}}</p>{% endif %}
+        <table>
+          <thead><tr><th>{{_('Item')}}</th><th>{{_('Cost')}}</th><th>{{_('Add')}}</th></tr></thead>
+          <tbody>
+            {% for item in items %}
+            <tr>
+              <td>{{item.name|tr}}{% if item.tags %}<small> ({{item.tags|join(', ')}})</small>{% endif %}</td>
+              <td>{{item.cost}}</td>
+              <td><button type="button" class="button smaller-font"
+                aria-label="{{_('Add')}} {{item.name|tr}}"
+                hx-post="/marketplace/party/{{party.id}}/{{container.id}}"
+                hx-vals='{{ {"item":item.name}|tojson }}' hx-include="#shared-market-filter" hx-target="#inventory-container">+</button></td>
+            </tr>
+            {% else %}<tr><td colspan="3">{{_('No items found.')}}</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <footer class="modal-card-foot">
+        <button class="button" type="button" hx-get="/party/inventory/{{party.id}}/{{container.id}}"
+          hx-target="#inventory-container">{{_('Done')}}</button>
+      </footer>
+    </div>
+  </div>
+</div>

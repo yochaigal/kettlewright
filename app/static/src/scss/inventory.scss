@@ -237,3 +237,45 @@
     align-items: center;
     justify-content: center;
 }
+
+.shared-marketplace {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+
+  .shared-market-form {
+    width: 100%;
+    max-width: 680px;
+  }
+
+  .modal-card {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    max-height: calc(100dvh - 48px);
+    align-items: stretch;
+  }
+
+  .modal-card-head {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+
+    h3, p { margin: 0; }
+    input { width: 100%; }
+  }
+
+  .modal-card-body { min-height: 0; }
+  table { width: 100%; }
+  td:first-child { overflow-wrap: anywhere; }
+  th, td:not(:first-child) { white-space: nowrap; }
+}
