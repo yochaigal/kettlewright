@@ -391,3 +391,16 @@ img.edit-portrait-modal-thumbnail.highlighted {
   width: fit-content;
   margin-top: 0px;
 }
+
+.portrait-custom-options {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+  text-align: left;
+  .field { min-width: 0; }
+  label, small { display: block; }
+  input { width: 100%; max-width: 100%; box-sizing: border-box; }
+  #edit-portrait-modal-custom-url-container { display: block; }
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+}
