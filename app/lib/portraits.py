@@ -5,7 +5,6 @@ from io import BytesIO
 from pathlib import Path
 
 from flask import current_app, url_for
-from PIL import Image, ImageOps, UnidentifiedImageError
 
 from app.models import Character
 
@@ -18,6 +17,9 @@ def portrait_directory():
 
 
 def save_portrait(upload):
+    # Serving existing uploads and cleaning up files do not need the image codec.
+    from PIL import Image, ImageOps, UnidentifiedImageError
+
     raw = upload.stream.read(MAX_PORTRAIT_BYTES + 1)
     if len(raw) > MAX_PORTRAIT_BYTES:
         raise ValueError('Choose an image smaller than 2 MB.')

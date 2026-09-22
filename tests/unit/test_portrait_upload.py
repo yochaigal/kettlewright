@@ -46,6 +46,28 @@ def test_upload_is_normalized_and_served_with_safe_type(portrait_client):
     assert len(list(folder.iterdir())) == 1
 
 
+def test_saved_portrait_can_be_served_without_loading_pillow(portrait_client, monkeypatch):
+    import builtins
+    import importlib
+    from app.lib import portraits
+
+    client, _ = portrait_client
+    client.post(PATH, data={'portrait-file': (png(), 'portrait.png')})
+    portrait_url = db.session.get(Character, 1).image_url
+    original_import = builtins.__import__
+
+    def without_pillow(name, *args, **kwargs):
+        if name == 'PIL' or name.startswith('PIL.'):
+            raise ModuleNotFoundError("No module named 'PIL'")
+        return original_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, '__import__', without_pillow)
+    importlib.reload(portraits)
+    response = client.get(portrait_url)
+    assert response.status_code == 200
+    assert response.mimetype == 'image/webp'
+
+
 @pytest.mark.parametrize('raw', [b'<svg onload="alert(1)"></svg>', b'broken', b'x' * (2 * 1024 * 1024 + 1), b'x' * (3 * 1024 * 1024 + 1)],
                          ids=['svg', 'corrupt', 'file-too-large', 'request-too-large'])
 def test_invalid_file_does_not_replace_portrait(portrait_client, raw):

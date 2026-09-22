@@ -25,6 +25,13 @@ Flask; refresh the browser after editing templates, JavaScript, CSS or SCSS.
 SCSS is compiled automatically. Browser refresh is manual.
 Rebuild only after changing dependencies or the Dockerfile.
 
+If `requirements.txt` changes (for example, to add Pillow for portrait uploads),
+run `docker compose -f .devcontainer/docker-compose.yml up -d --build app`.
+A restart applies migrations but does not install new dependencies. Packages
+installed manually with `pip` inside a running container are lost when that
+container is recreated from the old image. Uploaded portraits persist in
+`instance/portraits` on the host, alongside the SQLite database.
+
 ```bash
 # Stop containers (the SQLite database stays in instance/)
 docker compose -f .devcontainer/docker-compose.yml down
