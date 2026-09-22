@@ -24,6 +24,21 @@
       form.elements.edit_item_uses.value = item.uses;
       form.elements.edit_item_charges.value = item.charges;
       form.elements.edit_item_max_charges.value = item.max_charges;
+      const extraTags = form.querySelector('#item-extra-tags');
+      extraTags.replaceChildren();
+      const knownTags = Array.from(form.querySelectorAll('[data-tag]'), tag => tag.dataset.tag);
+      item.tags.filter(tag => !knownTags.includes(tag)).forEach(value => {
+        const tag = document.createElement('button');
+        tag.type = 'button';
+        tag.className = 'tag button';
+        tag.dataset.tag = value;
+        tag.textContent = value;
+        tag.addEventListener('click', () => {
+          tag.classList.toggle('selected');
+          updateTagsInHidden();
+        });
+        extraTags.append(tag);
+      });
       form.querySelectorAll('[data-tag]').forEach(tag => {
         tag.classList.toggle('selected', item.tags.includes(tag.dataset.tag));
       });
