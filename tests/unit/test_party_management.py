@@ -1,7 +1,7 @@
 import pytest
 from flask import g
 
-from app.models import Character, Party, User, db
+from app.models import Character, Party, PartyRoll, User, db
 
 
 @pytest.fixture
@@ -41,10 +41,13 @@ def test_delete_requires_owner_post_and_clears_members(party_setup):
     login(client, 2)
     assert client.post('/party/delete/1').status_code == 403
     login(client, 1)
+    db.session.add(PartyRoll(party_id=1, character_name='Member', result='4 (d6)'))
+    db.session.commit()
     assert client.get('/party/delete/1').status_code == 405
     assert client.post('/party/delete/1').status_code == 200
     assert db.session.get(Party, 1) is None
     assert db.session.get(Character, 1).party_id is None
+    assert PartyRoll.query.count() == 0
 
 
 def test_original_join_code_button_and_warden_label(party_setup):
@@ -53,6 +56,15 @@ def test_original_join_code_button_and_warden_label(party_setup):
     assert 'id="join-code-button"' in page
     assert 'id="party-invitation"' not in page
     assert 'Warden' in page
+    assert page.index('id="inventory-container"') < page.index('id="party-roll-history"')
+    assert 'Latest 20 rolls' in page
+    assert 'id="clear-roll-history"' in page
     login(party_setup, 2)
     page = party_setup.get('/users/warden/parties/party/').get_data(as_text=True)
     assert 'join-secret' not in page
+    assert 'id="party-roll-history"' in page
+    assert 'id="clear-roll-history"' not in page
+    db.session.get(Character, 1).party_id = None
+    db.session.commit()
+    page = party_setup.get('/users/warden/parties/party/').get_data(as_text=True)
+    assert 'id="party-roll-history"' not in page

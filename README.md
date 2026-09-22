@@ -180,6 +180,15 @@ an installation. Replacing a portrait removes its previous uploaded file after
 the change is saved, unless another character still references the same file.
 Images are currently retained when a character is deleted.
 
+## Party roll history
+
+The party page shows the latest 20 rolls below Storage, newest first. Rolls are
+saved in the database and updates arrive through the existing Socket.IO connection.
+Reopening the page or reconnecting loads the latest history. Only the Warden and
+current party members can read it; the Warden can clear the entire history.
+Names are recorded at the time of each roll. Deleting a party removes its history.
+Run `flask db upgrade` when updating an existing installation.
+
 ## Attribution
 
 - [**David Stearns**](https://github.com/david-stearns): Software Development, QA, Testing.

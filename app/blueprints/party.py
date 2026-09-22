@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response, abort
 from flask_login import login_required, current_user
 from app.lib import *
-from app.models import db, User, Character, Party
+from app.models import db, User, Character, Party, PartyRoll
+from app.socket_events import party_recipient_ids, notify_roll_history_changed
+from flask_wtf import FlaskForm
 from app.forms import *
 import json
 from flask_babel import _
@@ -54,8 +56,37 @@ def party_view(ownername, party_url):
     if not current_user.is_authenticated:
         return redirect(url_for('main.index'))
     party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party = get_party_data(ownername, party_url)
+    can_view_rolls = current_user.id in party_recipient_ids(party)
     return render_template('main/party_view.html', party_url=party_url, characters=characters, join_code=join_code, is_owner=is_owner,
-                           is_subowner=is_subowner, party_id=party.id, ownername=ownername, inventory=inventory, party=party)
+                           is_subowner=is_subowner, party_id=party.id, ownername=ownername, inventory=inventory, party=party,
+                           can_view_rolls=can_view_rolls, roll_form=FlaskForm(),
+                           rolls=PartyRoll.latest(party.id) if can_view_rolls else [])
+
+
+@party.route('/party/<int:party_id>/roll-history', methods=['GET'])
+@login_required
+def roll_history(party_id):
+    target_party = db.get_or_404(Party, party_id)
+    if current_user.id not in party_recipient_ids(target_party):
+        abort(403)
+    response = make_response(render_template('partial/partyview/roll_history_entries.html',
+                                            rolls=PartyRoll.latest(party_id)))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@party.route('/party/<int:party_id>/roll-history/clear', methods=['POST'])
+@login_required
+def clear_roll_history(party_id):
+    target_party = db.get_or_404(Party, party_id)
+    if target_party.owner != current_user.id:
+        abort(403)
+    if not FlaskForm().validate_on_submit():
+        abort(400)
+    PartyRoll.query.filter_by(party_id=party_id).delete(synchronize_session=False)
+    db.session.commit()
+    notify_roll_history_changed(target_party)
+    return '', 204
 
 
 # Route: redirect to character view
@@ -153,6 +184,7 @@ def party_delete(party_id):
         character.party_id = None
         character.party_code = None
 
+    PartyRoll.query.filter_by(party_id=party.id).delete(synchronize_session=False)
     db.session.delete(party)
     db.session.commit()
     

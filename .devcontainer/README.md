@@ -161,15 +161,22 @@ USE_FLASK=False FLASK_DEBUG=0 gunicorn -k eventlet -w 1 -b 0.0.0.0:8000 app:appl
 
 ### Running Tests
 
+Run these inside the container. Use an isolated database instead of the development
+database. The suite provides its own Flask fixtures; disable pytest-flask's
+automatic request context so separate test clients keep separate login sessions.
+
 ```bash
+export SQLALCHEMY_DATABASE_URI=sqlite:///:memory:
+export USE_REDIS=False
+
 # Run all tests
-pytest
+pytest -p no:flask
 
 # Run specific test file
-pytest tests/unit/bonds/test_json_export_and_printing.py
+pytest -p no:flask tests/unit/bonds/test_json_export_and_printing.py
 
 # Run with coverage
-pytest --cov=app
+pytest -p no:flask --cov=app
 ```
 
 ### Initialization and post-create.sh

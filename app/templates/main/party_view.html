@@ -122,6 +122,10 @@
       </div>
     </div>
 
+    {% if can_view_rolls %}
+      {% include "partial/partyview/roll_history.html" %}
+    {% endif %}
+
 
   </div>
 </section>

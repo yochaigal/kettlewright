@@ -1,0 +1,27 @@
+<div class="party-section" id="party-roll-history" data-party-id="{{ party.id }}"
+     data-history-url="{{ url_for('party.roll_history', party_id=party.id) }}"
+     data-load-error="{{_('Unable to refresh roll history.')}}"
+     data-clear-error="{{_('Unable to clear roll history.')}}">
+  <button type="button" class="party-collapse-button roll-history-toggle" aria-expanded="true"
+          aria-controls="party-roll-history-content" aria-label="{{_('Toggle roll history')}}">
+    <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+  </button>
+  <span class="subtitle bold">{{_('Roll history')}}</span>
+  <div id="party-roll-history-content" class="party-section-content">
+    <div class="party-roll-controls">
+      <p>{{_('Latest 20 rolls')}}</p>
+      {% if is_owner %}
+      <form id="clear-roll-history" action="{{ url_for('party.clear_roll_history', party_id=party.id) }}" method="post"
+            data-confirm="{{_('Clear all roll history for this party?')}}"
+            data-confirm-title="{{_('Clear history')}}" data-cancel="{{_('Cancel')}}">
+        {{ roll_form.hidden_tag() }}
+        <button type="submit" class="button is-light">{{_('Clear history')}}</button>
+      </form>
+      {% endif %}
+    </div>
+    <p class="roll-history-error" role="status" hidden></p>
+    <div class="party-roll-entries" aria-live="polite">
+      {% include "partial/partyview/roll_history_entries.html" %}
+    </div>
+  </div>
+</div>

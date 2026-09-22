@@ -1,4 +1,5 @@
 import notification from "./notification.js";
+import { refreshRollHistory } from "./party_roll_history.js";
 
 const socketNotificationManager = {
   socket: null,
@@ -34,6 +35,7 @@ const socketNotificationManager = {
       console.log("Connected to Flask server");
       this.connectionAttempts = 0;
       this.registerUser();
+      refreshRollHistory();
     });
 
     this.socket.on("connect_error", (error) => {
@@ -56,6 +58,9 @@ const socketNotificationManager = {
     this.socket.on("dice_rolled", (data) => {
       // console.log("Dice roll received:", data);
       notification.showNotification(data);
+    });
+    this.socket.on("roll_history_changed", (data) => {
+      refreshRollHistory(data.party_id);
     });
   },
 
