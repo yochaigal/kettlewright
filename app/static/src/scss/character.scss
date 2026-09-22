@@ -154,7 +154,8 @@
     "dex armor"
     "wil hp"
     "deprived rest"
-    "panicked something";
+    "panicked something"
+    "dead .";
 }
 
 #character-str-container {
@@ -363,4 +364,12 @@
     .print-container p { overflow-wrap: anywhere; white-space: pre-wrap; }
     h3 { break-after: avoid; }
   }
+}
+
+#character-dead-container {
+  grid-area: dead;
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+  label { font: inherit; }
 }
