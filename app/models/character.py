@@ -16,6 +16,9 @@ def item_armor_value(item):
     return sum(value for value in (1, 2, 3) if f'{value} Armor' in tags)
 
 
+BACKGROUND_FIELDS = ('background_table1_question', 'background_table1_answer', 'background_table2_question', 'background_table2_answer')
+
+
 class Character(db.Model):
     __tablename__ = 'characters'
 
@@ -47,6 +50,11 @@ class Character(db.Model):
     description = db.Column(db.String(2000))
     traits = db.Column(db.String(2000))
     notes = db.Column(db.String(2000))
+    background_table1_question = db.Column(db.String(2000))
+    background_table1_answer = db.Column(db.String(2000))
+    background_table2_question = db.Column(db.String(2000))
+    background_table2_answer = db.Column(db.String(2000))
+
     bonds = db.Column(db.String(2000))
     scars = db.Column(db.String(2000))
     omens = db.Column(db.String(2000))
@@ -127,4 +135,5 @@ class Character(db.Model):
         data['items'] = json.loads(self.items or '[]')
         data['containers'] = json.loads(self.containers or '[]')
         data['armor'] = self.armorValue()
+        data['pets'] = [pet.export() for pet in self.pets]
         return json.dumps(data, indent=4, sort_keys=True)

@@ -1,7 +1,7 @@
 <div class="row16spaced full-width">
   <h3>{{_('Inventory')}}</h3>
   <div id="modal-anchor"></div>
-  {% if is_owner %}
+  {% if is_owner and not companion_sheet %}
   <button type="button" class="button smaller-font" style="margin: 0px"
     hx-get="/marketplace/{{username}}/{{url_name}}/{{inventory.selected_container.id}}" hx-target="#modal-anchor">
     {{_('Marketplace')}} </button>
@@ -11,7 +11,7 @@
   {% for cnt in inventory.containers %}
   <div
     class="inventory-container-title subtitle pointer {% if cnt.is_selected %} inventory-container-title-selected {% endif %} {% if cnt.encumbered %} red-text {% endif %}"
-    hx-get=" /charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt.id}}"
+    hx-get=" {{inventory_select_base|default("/charedit/inventory-select-container/" ~ username ~ "/" ~ url_name)}}/{{cnt.id}}"
     hx-target="#inventory-container">
     {{cnt.title}}
   </div>

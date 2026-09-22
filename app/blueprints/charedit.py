@@ -6,7 +6,9 @@ from app.models import db, User, Character, Party
 from app.forms import *
 from app.main import sanitize_data
 from app.lib import *
+from app.models.character import BACKGROUND_FIELDS
 from app.lib.quick_stats import save_current_stat
+from app.lib.companions import save_item_to_companion, finish_companion_transfers, can_transfer_from
 from unidecode import unidecode
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
@@ -59,6 +61,7 @@ def charedit_save(username, url_name):
         abort(403)
     form = CharacterEditForm(obj=character)
     fields_to_update = ['strength_max', 'strength','dexterity_max', 'dexterity', 'willpower_max', 'willpower','hp_max', 'hp', 'deprived', 'gold','description', 'name','omens', 'scars','traits','bonds','notes','panicked','dead']
+    fields_to_update.extend(BACKGROUND_FIELDS)
     for field in fields_to_update:
         setattr(character, field, sanitize_data(getattr(form, field).data))
     err = None
@@ -83,6 +86,7 @@ def charedit_save(username, url_name):
             it["id"] = uuid.uuid4().hex
         result.append(it)
     character.items = json.dumps(result)
+    finish_companion_transfers(character)
     db.session.commit()
     
     response = make_response("Redirecting")
@@ -94,11 +98,15 @@ def charedit_save(username, url_name):
 @character_edit.route('/charedit/<username>/<url_name>/cancel', methods=['POST'])
 def charedit_cancel(username, url_name):
     user, character = get_char_data(username, url_name)
+    if not current_user.is_authenticated or character.owner != current_user.id:
+        abort(403)
     data = request.form
     changed = False
     # restore some data
     if data['old_items'] != None:
-        character.items = data['old_items']
+        restored_items = json.loads(data['old_items'])
+        finish_companion_transfers(character, restored_items)
+        character.items = json.dumps(restored_items)
         character.armor = character.armorValue() # update armor
         changed = True
     if data['old_gold'] != None:
@@ -421,7 +429,18 @@ def charedit_inplace_inventory_item_edit_save(username, url_name, item_id):
     if mode == None or mode == "":
         mode = "edit"
     destination = data["edit_item_container"]
-    if destination.startswith('party:'):
+    if data["edit_item_container"].startswith('companion:'):
+        if mode != 'edit':
+            abort(400)
+        from werkzeug.exceptions import HTTPException
+        try:
+            save_item_to_companion(inventory, item_id, data["edit_item_container"])
+        except HTTPException as error:
+            db.session.rollback()
+            response = make_response(render_template('partial/inventory_error.html', message=error.description))
+            response.headers['HX-Retarget'] = '#add-edit-item-modal-error-text'
+            return response
+    elif destination.startswith('party:'):
         if not current_user.is_authenticated or character.owner != current_user.id:
             abort(403)
         if mode != 'edit':

@@ -1,5 +1,6 @@
 <div class="inventory-modal">
   <form class="no-space">
+    {{ companion_form().hidden_tag() }}
     <input type="hidden" name="edit_item_tags" value id="edit_item_tags" />
     <input type="mode" name="mode" value="{{mode}}" />
     <div class="modal-background inventory-modal-background"></div>
@@ -65,7 +66,7 @@
 
         {% include "partial/modal/extra_item_tags.html" %}
 
-        <div style="display: flex; justify-content: flex-start; gap: 40px">
+        <div class="item-amounts-container">
           <div class="field flex-column-centered">
             <label>{{_('Uses')}}</label>
             <div class="column number-field" style="padding-bottom: 0">
@@ -93,6 +94,7 @@
                 <option value="{{c.id}}" {% if mode=='edit' and item.location==c.id %} selected {% endif %}>{{c.name}}
                 </option>
                 {% endfor %}
+              {% with source=party %}{% include "partial/companions/container_options.html" %}{% endwith %}
               </select>
             </div>
           </div>
@@ -118,7 +120,7 @@
       </section>
 
       <footer class="modal-card-foot">
-        <div class="message hidden" id="add-edit-item-modal-error-container" style="width: 100%">
+        <div class="message" id="add-edit-item-modal-error-container" style="width: 100%">
           <p class="message-body red-text" id="add-edit-item-modal-error-text"></p>
         </div>
         <div class="footer-button-container">

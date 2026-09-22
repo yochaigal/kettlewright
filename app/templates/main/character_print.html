@@ -62,6 +62,16 @@
     </div>
 
     <div class="character-print-details">
+      {% include "partial/character_background_answers.html" %}
+      {% if character.pets %}
+      <section class="print-container"><h3>{{_('Pets')}}</h3>
+      {% for pet in character.pets %}
+        <h4>{{pet.name}}</h4>
+        <p>{% for stat,label in [('hp','HP'),('strength','STR'),('dexterity','DEX'),('willpower','WIL')] %}{{label}} {{pet[stat] if pet[stat] is not none else '—'}}{% if pet[stat+'_max'] is not none %}/{{pet[stat+'_max']}}{% endif %} · {% endfor %}{{_('Armor')}} {{pet.armorValue()}} · {{pet.attack}}</p>
+        <p class="with-whitespace">{{pet.notes}}</p>
+        {% for container in pet.export().containers %}<p>{{container.name}} ({{container.slots}} {{_('slots')}}): {% for item in pet.export()['items'] if item.location == container.id %}{{item.name}}{% if not loop.last %}, {% endif %}{% endfor %}</p>{% endfor %}
+      {% endfor %}</section>
+      {% endif %}
       {% if character.description %}
       <div id="character-print-description-container" class="print-container">
         <div class="character-section">

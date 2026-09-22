@@ -36,12 +36,13 @@ form.addEventListener("submit", (event) => {
     return;
   }
   const numeric = ["strength", "strength_max", "dexterity", "dexterity_max", "willpower", "willpower_max", "hp", "hp_max", "gold"];
-  const text = ["name", "background", "custom_name", "custom_background", "description", "bonds", "omens", "scars", "notes", "image_url", "traits"];
+  const text = ["name", "background", "custom_name", "custom_background", "description", "bonds", "omens", "scars", "notes", "image_url", "traits", "background_table1_question", "background_table1_answer", "background_table2_question", "background_table2_answer"];
   for (const field of numeric) form.elements[field].value = data[field] ?? 0;
   for (const field of text) form.elements[field].value = data[field] ?? "";
   for (const field of ["custom_image", "deprived", "panicked", "dead"]) {
     form.elements[field].value = [true, 1, "true", "True", "1"].includes(data[field]) ? "true" : "false";
   }
+  form.elements.pets.value = JSON.stringify(data.pets ?? []);
   form.elements.items.value = JSON.stringify(data.items ?? []);
   form.elements.containers.value = JSON.stringify(data.containers ?? []);
 });

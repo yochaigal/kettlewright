@@ -13,6 +13,7 @@
       {% endwith %}
       {% if field == 'hp' and (character.overburdened() or character.panicked) %}
         <small class="red-text">{{_('Available HP: 0')}}</small>
+        <small>{% if character.overburdened() %}{{_('Your main inventory is full. Free a slot to use your HP.')}}{% else %}{{_('Panic reduces your available HP to 0.')}}{% endif %}</small>
       {% endif %}
     {% else %}
       <h4>{{ label }}</h4>

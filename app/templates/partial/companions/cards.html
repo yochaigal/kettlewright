@@ -1,0 +1,25 @@
+{% macro cards(creatures, editable_stats=true) %}
+<div class="companion-cards">
+  {% for c in creatures %}
+  <article class="companion-card">
+    <h4><a href="{{ url_for('companions.sheet', companion_id=c.id) }}">{{ c.name }}</a></h4>
+    {% if c.role and c.role != c.name %}<p>{{ c.role | tr }}</p>{% endif %}
+    <div class="companion-stats">
+      {% for field, label in [('hp','HP'),('strength','STR'),('dexterity','DEX'),('willpower','WIL')] %}
+      {% if editable_stats and can_manage_companion(c) and c[field] is not none %}
+      <form class="companion-stat-form quick-stat-form" data-error="{{_('Unable to save this stat. Please try again.')}}" data-saved="{{_('Saved')}}" method="post" action="{{ url_for('companions.stat', companion_id=c.id) }}">
+        {{ companion_form().hidden_tag() }}
+        <input type="hidden" name="stat" value="{{ field }}">
+        <label for="companion-{{c.id}}-{{field}}">{{label}}</label>
+        <div class="quick-stat-value"><input id="companion-{{c.id}}-{{field}}" aria-label="{{c.name}}: {{label}}" type="number" name="value" min="0" max="{{c[field+'_max']}}" value="{{c[field]}}" required><span>/{{c[field+'_max']}}</span></div>
+        <span class="companion-save-status" role="status"></span>
+      </form>
+      {% else %}<span>{{ label }} {{ c[field] if c[field] is not none else '—' }}{% if c[field+'_max'] is not none %}/{{ c[field+'_max'] }}{% endif %}</span>{% endif %}
+      {% endfor %}
+    </div>
+    <p>{{_('Armor')}} {{ c.armorValue() }}{% if c.attack %} · {{ c.attack }}{% endif %}</p>
+    {% if c.kind == 'hireling' %}<p>{{ c.daily_cost }} {{_('gp/day')}}</p>{% endif %}
+  </article>
+  {% else %}<p>{{_('None yet.')}}</p>{% endfor %}
+</div>
+{% endmacro %}

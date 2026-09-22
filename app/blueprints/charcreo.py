@@ -619,6 +619,8 @@ def charcreo_roll_all():
     data['name'] = name
     t1 = random_table_option(background, 'table1')
     t2 = random_table_option(background, 'table2')
+    containers.extend(sdv(t1, 'containers', []))
+    containers.extend(sdv(t2, 'containers', []))
     data['t1_items'] = json.dumps(sdv(t1,'items',[]))
     data['t2_items'] = json.dumps(sdv(t2,'items',[]))
     data['background_table1_select'] = t1['description']
@@ -826,12 +828,13 @@ def charcreo_save():
     description = ''
     if background:
         description=_(sdv(background,'background_description',''))
-    notes = []
-    if custom_fields['background_table1_select'] and custom_fields['background_table1_select'] != '':
-        notes.append(_(background['table1']['question'])+"\n"+_(custom_fields['background_table1_select']))
-    if custom_fields['background_table2_select'] and custom_fields['background_table2_select'] != '':
-        notes.append(_(background['table2']['question'])+"\n"+_(custom_fields['background_table2_select']))  
-        
+    background_answers = {}
+    for index in (1, 2):
+        answer = custom_fields.get(f'background_table{index}_select') or ''
+        question = background.get(f'table{index}', {}).get('question', '') if background else ''
+        background_answers[f'background_table{index}_question'] = _(question) if question else ''
+        background_answers[f'background_table{index}_answer'] = _(answer) if answer else ''
+
     # Update traits text
     names = ["Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice"]
     tts = []
@@ -844,7 +847,7 @@ def charcreo_save():
                 containers=containers, strength_max=form.strength_max.data, dexterity_max=form.dexterity_max.data, willpower_max=form.willpower_max.data, 
                 hp_max=form.hp_max.data, strength=form.strength_max.data, dexterity=form.dexterity_max.data, armor=form.armor.data, scars="",
                 willpower=form.willpower_max.data, hp=form.hp_max.data, deprived=False, 
-                description=description, traits=traits, notes="\n\n".join(notes), 
+                description=description, traits=traits, notes="", **background_answers,
                 gold=form.gold.data, bonds=_(form.bonds.data), omens=_(form.omens.data), 
                 custom_image=custom_image, image_url=custom_fields['portrait_src'])
     db.session.add(new_character)

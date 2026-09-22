@@ -64,10 +64,15 @@
           {{_('This character has no traits...')}} {% endif %}
         </div>
       </div>
-      <div class="inventory-container" id="inventory-container">
-        {% include "partial/charview/inventory.html" %}
+      <div class="character-inventory-pets">
+        <div class="inventory-container" id="inventory-container">
+          {% include "partial/charview/inventory.html" %}
+        </div>
+        {% include "partial/companions/pets.html" %}
       </div>
     </div>
+
+    {% include "partial/character_background_answers.html" %}
 
     <div class="character-descriptions-grid">
       <div class="character-description-container" id="character-description-container">

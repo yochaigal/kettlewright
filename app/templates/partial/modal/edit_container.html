@@ -1,5 +1,6 @@
 <div class="inventory-modal">
   <form class="no-space">
+    {% if companion_sheet %}{{companion_form().hidden_tag()}}{% endif %}
     <input type="hidden" name="mode" value="{{mode}}" />
 
     <div class="modal-background inventory-modal-background"></div>
@@ -26,7 +27,7 @@
           <div class="column field">
             <label>{{_('Slots')}}</label>
             <div>
-              <input class="input" type="number" min="1" placeholder="0" style="width: 100%" name="slots" {% if
+              <input class="input" type="number" min="{{0 if companion_sheet else 1}}" placeholder="0" style="width: 100%" name="slots" {% if
                 mode=="edit" %} value="{{container.slots}}" {% endif %} />
             </div>
           </div>
@@ -59,8 +60,8 @@
         </div>
         <div>
           <button class="button is-success" type="button" {% if mode=="edit" %}
-            hx-post="/charedit/inplace-inventory/{{username}}/{{url_name}}/container-edit/{{container.id}}/save" {% else
-            %} hx-post="/charedit/inplace-inventory/{{username}}/{{url_name}}/container-edit/None/save" {% endif %}
+            hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/container-edit/{{container.id}}/save" {% else
+            %} hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/container-edit/None/save" {% endif %}
             hx-target="#inventory-container">Save</button>
         </div>
 
@@ -69,7 +70,7 @@
           <div class="divider" style="margin: 1em 0px; padding: 0px"></div>
           <div style="margin-top: 2em; align-items: center; justify-content: center" class="row32">
             <button class="button is-danger" type="button" style="margin-left: auto; margin-top: 0px"
-              hx-post="/charedit/inplace-inventory/{{username}}/{{url_name}}/container-edit/{{container.id}}/delete"
+              hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/container-edit/{{container.id}}/delete"
               hx-target="#inventory-container" hx-confirm="Do you want to delete container {{container.name}}?"
               data-confirm-title="Delete container" data-confirm-button="Delete">
               {{_('Delete container')}}
@@ -93,8 +94,8 @@
 
         <div class="footer-button-container" style="justify-content: end">
           <button class="button inventory-modal-cancel-button" type="button" {% if mode=="edit" %}
-            hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{container.id}}" {% else %}
-            hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/None" {% endif %}
+            hx-get="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/{{container.id}}" {% else %}
+            hx-get="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/None" {% endif %}
             hx-target="#inventory-container">
             {{_('Cancel')}}
           </button>

@@ -1,0 +1,269 @@
+[
+  {
+    "name": "Alchemist",
+    "daily_cost": 30,
+    "items": [
+      {
+        "name": "Alchemical Tools",
+        "tags": []
+      },
+      {
+        "name": "Rations",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      }
+    ]
+  },
+  {
+    "name": "Animal Handler",
+    "daily_cost": 5,
+    "items": [
+      {
+        "name": "Rope",
+        "tags": []
+      },
+      {
+        "name": "Animal Feed",
+        "tags": [
+          "uses",
+          "bulky"
+        ],
+        "uses": 3
+      },
+      {
+        "name": "Rations",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      }
+    ]
+  },
+  {
+    "name": "Blacksmith",
+    "daily_cost": 15,
+    "items": [
+      {
+        "name": "Hammer",
+        "tags": [
+          "d6"
+        ]
+      },
+      {
+        "name": "Smithing Tools",
+        "tags": []
+      },
+      {
+        "name": "Rations",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      }
+    ]
+  },
+  {
+    "name": "Bodyguard",
+    "daily_cost": 10,
+    "items": [
+      {
+        "name": "Sword",
+        "tags": [
+          "d8"
+        ]
+      },
+      {
+        "name": "Gambeson",
+        "tags": [
+          "1 Armor"
+        ]
+      },
+      {
+        "name": "Rations",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      }
+    ]
+  },
+  {
+    "name": "Local Guide",
+    "daily_cost": 5,
+    "items": [
+      {
+        "name": "Staff",
+        "tags": [
+          "d6"
+        ]
+      },
+      {
+        "name": "Lantern",
+        "tags": []
+      },
+      {
+        "name": "Rations",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      }
+    ]
+  },
+  {
+    "name": "Lockpick",
+    "daily_cost": 10,
+    "items": [
+      {
+        "name": "Thieving Tools",
+        "tags": []
+      },
+      {
+        "name": "Rations",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      }
+    ]
+  },
+  {
+    "name": "Navigator",
+    "daily_cost": 10,
+    "items": [
+      {
+        "name": "Compass",
+        "tags": []
+      },
+      {
+        "name": "Rations",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      }
+    ]
+  },
+  {
+    "name": "Sailor",
+    "daily_cost": 5,
+    "items": [
+      {
+        "name": "Rope",
+        "tags": []
+      },
+      {
+        "name": "Dagger",
+        "tags": [
+          "d6"
+        ]
+      },
+      {
+        "name": "Rations",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      }
+    ]
+  },
+  {
+    "name": "Scholar",
+    "daily_cost": 20,
+    "items": [
+      {
+        "name": "Book",
+        "tags": []
+      },
+      {
+        "name": "Writing Tools",
+        "tags": []
+      },
+      {
+        "name": "Rations",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      }
+    ]
+  },
+  {
+    "name": "Tracker",
+    "daily_cost": 5,
+    "items": [
+      {
+        "name": "Bow",
+        "tags": [
+          "d6",
+          "bulky"
+        ]
+      },
+      {
+        "name": "Rations",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      }
+    ]
+  },
+  {
+    "name": "Trapper",
+    "daily_cost": 5,
+    "items": [
+      {
+        "name": "Trap",
+        "tags": []
+      },
+      {
+        "name": "Dagger",
+        "tags": [
+          "d6"
+        ]
+      },
+      {
+        "name": "Rations",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      }
+    ]
+  },
+  {
+    "name": "Veteran Bodyguard",
+    "daily_cost": 20,
+    "items": [
+      {
+        "name": "Sword",
+        "tags": [
+          "d8"
+        ]
+      },
+      {
+        "name": "Chainmail",
+        "tags": [
+          "2 Armor",
+          "bulky"
+        ]
+      },
+      {
+        "name": "Shield",
+        "tags": [
+          "1 Armor",
+          "bonus defense"
+        ]
+      },
+      {
+        "name": "Rations",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      }
+    ]
+  }
+]

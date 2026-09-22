@@ -117,8 +117,13 @@ def new_from_json():
     if current_user.is_authenticated:
         if form.validate_on_submit():
             from app.lib.character_json import normalize_inventory
+            from app.lib.companions import import_pet
             try:
                 items, containers = normalize_inventory(form.items.data, form.containers.data)
+                pets_data = json.loads(form.pets.data or '[]')
+                if not isinstance(pets_data, list) or len(pets_data) > 100:
+                    raise ValueError('Invalid pets')
+                pets = [import_pet(pet) for pet in pets_data]
                 for field in ('strength', 'strength_max', 'dexterity', 'dexterity_max',
                               'willpower', 'willpower_max', 'hp', 'hp_max', 'gold'):
                     getattr(form, field).data = int(getattr(form, field).data)
@@ -168,6 +173,10 @@ def new_from_json():
                 armor=sanitize_data(form.armor.data or '')  # New field
             )
 
+            from app.models.character import BACKGROUND_FIELDS
+            for field in BACKGROUND_FIELDS:
+                setattr(character, field, sanitize_data(getattr(form, field).data))
+            character.pets.extend(pets)
             character.armor = str(character.armorValue())
             db.session.add(character)
             db.session.commit()

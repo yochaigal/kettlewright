@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="body-container"><div class="sheet companion-sheet">
+  <h1>{{_('Add hireling') if kind == 'hireling' else _('Add pet')}}</h1>
+  <p>{{ parent.name }}</p>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <label for="template">{{_('Role') if kind == 'hireling' else _('Pet')}}</label>
+    <select id="template" name="template">
+      {% if kind == 'hireling' %}
+      {% for entry in templates %}<option value="{{ entry.name }}">{{ entry.name | tr }} · {{ entry.daily_cost }} {{_('gp/day')}}</option>{% endfor %}
+      {% else %}{% for name in templates %}<option value="{{ name }}">{{ name | tr }}</option>{% endfor %}{% endif %}
+      <option value="Custom">{{_('Custom')}}</option>
+    </select>
+    <label for="name">{{_('Name')}}</label><input id="name" name="name" maxlength="100">
+    {% if kind == 'hireling' %}<p>{{_('Rolls 3d6 for each attribute and d6 for HP. Starting equipment is a suggestion you can edit. Leave the name blank to roll one.')}}</p>
+    {% else %}<p>{{_('Custom pets require a name. Unknown stats can be filled in on the pet sheet.')}}</p>{% endif %}
+    <button type="submit">{{_('Create')}}</button>
+  </form>
+</div></section>
+{% endblock %}

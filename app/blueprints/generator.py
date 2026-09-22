@@ -31,6 +31,9 @@ def parse_character(data):
     c.items = json.dumps(data['items'])
     c.name = data['name']
     c.notes = data['notes']
+    from app.models.character import BACKGROUND_FIELDS
+    for field in BACKGROUND_FIELDS:
+        setattr(c, field, data.get(field, ''))
     c.omens = data['omens']
     c.scars = ''
     c.strength = data['strength']
@@ -38,6 +41,8 @@ def parse_character(data):
     c.traits = data['traits']
     c.willpower = data['willpower']
     c.willpower_max = data['willpower_max']
+    from app.lib.companions import import_pet
+    c.pets.extend(import_pet(pet) for pet in data.get('pets', []))
     return c
     
 

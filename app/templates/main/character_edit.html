@@ -57,11 +57,27 @@
           {{ form.traits(class='textarea inplace', id='traits-field',
           oninput='resizeTextarea(this)') }}
         </div>
-        <div class="inventory-container" id="inventory-container">
-          {% include "partial/charedit/inventory.html" %}
+        <div class="character-inventory-pets">
+          <div class="inventory-container" id="inventory-container">
+            {% include "partial/charedit/inventory.html" %}
+          </div>
+          {% with companion_cards_editable=false %}{% include "partial/companions/pets.html" %}{% endwith %}
         </div>
       </div>
 
+      <section class="background-table-answers">
+        <h3>{{_('Background table answers')}}</h3>
+        <div class="background-answers-grid">
+          {% for index in (1, 2) %}
+          <div>
+            {% set question = form['background_table' ~ index ~ '_question'] %}
+            {% set answer = form['background_table' ~ index ~ '_answer'] %}
+            {{ question.label }}{{ question(rows=2, class='inplace', oninput='resizeTextarea(this)') }}
+            {{ answer.label }}{{ answer(rows=5, class='inplace', oninput='resizeTextarea(this)') }}
+          </div>
+          {% endfor %}
+        </div>
+      </section>
       <div class="character-descriptions-grid">
         <div class="character-description-container" id="character-description-container">
           <h3 class="no-space">{{_('Description')}}</h3>

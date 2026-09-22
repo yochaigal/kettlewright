@@ -4,6 +4,7 @@ from app.lib import *
 from app.models import db, User, Character, Party, PartyRoll
 from app.socket_events import party_recipient_ids, notify_roll_history_changed
 from app.lib.quick_stats import save_current_stat
+from app.lib.companions import save_item_to_companion, finish_companion_transfers, can_transfer_from
 from flask_wtf import FlaskForm
 from app.forms import *
 import json
@@ -134,11 +135,15 @@ def party_edit(ownername, party_url):
 @party.route('/party/edit/<ownername>/<party_url>/cancel', methods=['GET','POST'])
 def party_edit_cancel(ownername, party_url):
     party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party = get_party_data(ownername, party_url)
+    if not can_transfer_from(party):
+        abort(403)
     data = request.form
     changed = False
     # restore some data
     if data['old_items'] != None:
-        party.items = data['old_items']
+        restored_items = json.loads(data['old_items'])
+        finish_companion_transfers(party, restored_items)
+        party.items = json.dumps(restored_items)
         changed = True
     if data['old_containers'] != None:
         party.containers = data['old_containers']
@@ -167,6 +172,7 @@ def party_edit_save(ownername, party_url):
             it["id"] = uuid.uuid4().hex
         result.append(it)
     party.items = json.dumps(result)
+    finish_companion_transfers(party)
     db.session.commit()
     response = make_response("Redirect")
     response.headers["HX-Redirect"] = "/users/"+ownername+"/parties/"+party_url+"/"
@@ -330,7 +336,18 @@ def party_inventory_item_edit_save(party_id, item_id):
     mode = request.args.get('mode')
     if mode == None or mode == "":
         mode = "edit"
-    if mode == "edit":
+    if data["edit_item_container"].startswith('companion:'):
+        if mode != 'edit':
+            abort(400)
+        from werkzeug.exceptions import HTTPException
+        try:
+            save_item_to_companion(inventory, item_id, data["edit_item_container"])
+        except HTTPException as error:
+            db.session.rollback()
+            response = make_response(render_template('partial/inventory_error.html', message=error.description))
+            response.headers['HX-Retarget'] = '#add-edit-item-modal-error-text'
+            return response
+    elif mode == "edit":
         item = inventory.update_item(item_id,data["edit_item_name"],data["edit_item_tags"],data["edit_item_uses"],
                                      data["edit_item_charges"], data["edit_item_max_charges"], data["edit_item_container"],
                                      data["edit_item_description"], armor_active=data.get("edit_item_armor_active") == "on")

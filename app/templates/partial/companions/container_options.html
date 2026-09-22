@@ -1,0 +1,5 @@
+{% if mode == 'edit' %}
+{% for destination in companion_destinations(source) %}
+<option value="{{destination.value}}">{{destination.container.name}} ({{_('Pet') if destination.companion.kind == 'pet' else _('Hireling')}}: {{destination.companion.name}})</option>
+{% endfor %}
+{% endif %}
