@@ -1,4 +1,4 @@
-"""Fill the landscape Cairn sheet without clipping character data (#142)."""
+"""Fill the Cairn character sheets without clipping character data (#142)."""
 from functools import lru_cache
 from html import unescape
 from io import BytesIO
@@ -19,13 +19,37 @@ from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
+from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Spacer
 
 from app.lib.portraits import portrait_directory
 
 
 ASSETS = Path(__file__).resolve().parents[1] / 'pdf_templates'
-PAGE_SIZE = (841.89, 595.276)
+# Coordinates use points measured from the top-left of each original A4 sheet.
+LAYOUTS = {
+    'landscape': dict(
+        page_size=(841.89, 595.276), portrait=(252.5, 185.5, 105, 105),
+        name=(48, 164, 157), background=(48, 208, 157),
+        deprived=(481, 83), status=(399, 305, 95),
+        inventory=(536, 166, 18.7, 169), fatigue=(726, 164),
+        petty=[(399, 196 + i * 16.5, 93) for i in range(6)],
+        traits=[(227 if i < 4 else 265, 410 + i * 16.5, 118 if i < 4 else 80) for i in range(10)],
+        bonds=[(362, 410 + i * 17, 140) for i in range(4)],
+        omens=[(362, 508 + i * 16.5, 140) for i in range(4)],
+        notes=[(523, 410 + i * 16.5, 229) for i in range(10)],
+    ),
+    'portrait': dict(
+        page_size=(595.321191, 841.921684), portrait=(87, 216, 110, 110),
+        name=(65, 282, 155), background=(345, 193, 190),
+        deprived=(234, 594), status=(52, 309, 180),
+        inventory=(374, 580, 15.5, 151), fatigue=(538, 580),
+        petty=[(366, 759 + i * 15, 107) for i in range(4)],
+        traits=[(345, 244 + i * 17, 205) for i in range(4)],
+        bonds=[(52, 690, 154), (52, 706, 188), (52, 722, 188)],
+        omens=[(52, 755, 188), (52, 770, 188)],
+        notes=[(40, 421 + i * 11, 201) for i in range(9)],
+    ),
+}
 FONT, BOLD = 'CairnPDFSerif', 'CairnPDFSerifBold'
 _font_lock = Lock()
 
@@ -101,19 +125,22 @@ def _item_title(item):
     return name + (' (' + ', '.join(details) + ')' if details else '')
 
 
-class LandscapeSheet:
-    def __init__(self, character, party=None):
+class CharacterSheet:
+    def __init__(self, character, party=None, orientation='landscape'):
         _register_fonts()
+        self.orientation = orientation
+        self.layout = LAYOUTS[orientation]
+        self.page_size = self.layout['page_size']
         self.character = character
         self.party = party
         self.sections = []
         self.buffer = BytesIO()
-        self.canvas = canvas.Canvas(self.buffer, pagesize=PAGE_SIZE)
+        self.canvas = canvas.Canvas(self.buffer, pagesize=self.page_size)
 
     def text(self, value, x, top, size=9, font=FONT, centered=False):
         self.canvas.setFont(font, size)
         draw = self.canvas.drawCentredString if centered else self.canvas.drawString
-        draw(x, PAGE_SIZE[1] - top, str(value if value is not None else ''))
+        draw(x, self.page_size[1] - top, str(value if value is not None else ''))
 
     def section(self, title, value):
         value = plain_text(value)
@@ -147,27 +174,32 @@ class LandscapeSheet:
 
     def draw(self):
         c = self.character
+        layout = self.layout
         portrait = _portrait(c)
         if portrait:
-            self.canvas.drawImage(portrait, 252.5, PAGE_SIZE[1] - 185.5, width=105, height=105,
+            x, bottom, width, height = layout['portrait']
+            self.canvas.drawImage(portrait, x, self.page_size[1] - bottom, width=width, height=height,
                                   preserveAspectRatio=True, anchor='c', mask='auto')
         elif c.custom_image and c.image_url:
             self.section(_('Portrait URL'), c.image_url)
-        self.single_line(c.name, 48, 164, 157, 16, BOLD, _('Name'))
-        self.single_line(_(c.background), 48, 208, 157, 12, title=_('Background'))
+        self.single_line(c.name, *layout['name'], 16, BOLD, _('Name'))
+        self.single_line(_(c.background), *layout['background'], 12, title=_('Background'))
         # Mutable numbers are intentionally blank for handwritten play at the table.
-        for center in (134, 207, 279, 350):
-            self.text(_('current'), center, 277, 7, centered=True)
-            self.text(_('max'), center, 327, 7, centered=True)
+        if self.orientation == 'landscape':
+            for center in (134, 207, 279, 350):
+                self.text(_('current'), center, 277, 7, centered=True)
+                self.text(_('max'), center, 327, 7, centered=True)
         if c.deprived:
-            self.text('X', 481, 83, 14, centered=True)
+            self.text('X', *layout['deprived'], 14, centered=True)
         states = [label for condition, label in ((c.dead, _('Dead')), (c.panicked, _('PANICKED'))) if condition]
         if states:
-            self.single_line(' / '.join(states), 399, 305, 95, title=_('Status'))
+            self.single_line(' / '.join(states), *layout['status'], title=_('Status'))
 
         items = json.loads(c.items or '[]')
         main = [it for it in items if it.get('location') == 0]
         petty = [it for it in main if 'petty' in it.get('tags', []) and 'bulky' not in it.get('tags', [])]
+        x, top, step, width = layout['inventory']
+        fatigue_x, fatigue_top = layout['fatigue']
         slot = 0
         for item in main:
             if item in petty:
@@ -175,17 +207,15 @@ class LandscapeSheet:
             slots = 2 if 'bulky' in item.get('tags', []) else 1
             title = _item_title(item)
             if slot + slots <= 10:
-                self.single_line(title, 536, 166 + slot * 18.7, 169, title=_('Inventory details'))
+                self.single_line(title, x, top + slot * step, width, title=_('Inventory details'))
                 if slots == 2:
-                    self.single_line(_('Occupied by bulky item above'), 536, 166 + (slot + 1) * 18.7, 169)
+                    self.single_line(_('Occupied by bulky item above'), x, top + (slot + 1) * step, width)
                 if item.get('name') == 'Fatigue':
-                    self.text('X', 726, 164 + slot * 18.7, 9, centered=True)
+                    self.text('X', fatigue_x, fatigue_top + slot * step, 9, centered=True)
             else:
                 self.section(_('Additional inventory'), title)
             slot += slots
-        # Six petty lines leave the seventh line available for extra conditions.
-        petty_lines = [(399, 196 + i * 16.5, 93) for i in range(6)]
-        self.ruled(_('Petty Items'), '\n'.join(_item_title(it) for it in petty), petty_lines)
+        self.ruled(_('Petty Items'), '\n'.join(_item_title(it) for it in petty), layout['petty'])
 
         for container in json.loads(c.containers or '[]'):
             contents = [_item_title(it) for it in items if it.get('location') == container['id']]
@@ -196,11 +226,10 @@ class LandscapeSheet:
         known_ids = {container['id'] for container in json.loads(c.containers or '[]')} | {0}
         self.section(_('Unassigned items'), '\n'.join(_item_title(it) for it in items if it.get('location') not in known_ids))
 
-        trait_lines = [(227 if i < 4 else 265, 410 + i * 16.5, 118 if i < 4 else 80) for i in range(10)]
-        self.ruled(_('Traits'), c.traits, trait_lines)
-        self.ruled(_('Bonds'), c.bonds, [(362, 410 + i * 17, 140) for i in range(4)])
-        self.ruled(_('Omens'), c.omens, [(362, 508 + i * 16.5, 140) for i in range(4)])
-        self.ruled(_('Notes'), c.notes, [(523, 410 + i * 16.5, 229) for i in range(10)])
+        self.ruled(_('Traits'), c.traits, layout['traits'])
+        self.ruled(_('Bonds'), c.bonds, layout['bonds'])
+        self.ruled(_('Omens'), c.omens, layout['omens'])
+        self.ruled(_('Notes'), c.notes, layout['notes'])
         self.section(_('Description'), c.description)
         self.section(_('Scars'), c.scars)
         if self.party:
@@ -208,13 +237,13 @@ class LandscapeSheet:
         self.canvas.save()
 
         writer = PdfWriter()
-        template = PdfReader(ASSETS / 'cairn-2e-landscape-a4.pdf')
+        template = PdfReader(ASSETS / f'cairn-2e-{self.orientation}-a4.pdf')
         writer.add_page(template.pages[0])
         writer.pages[0].merge_page(PdfReader(self.buffer).pages[0])
         if self.sections:
             for page in PdfReader(self.appendix()).pages:
                 writer.add_page(page)
-        writer.add_metadata({'/Title': f'{c.name} - Cairn landscape A4', '/Author': 'Kettlewright'})
+        writer.add_metadata({'/Title': f'{c.name} - Cairn {self.orientation} A4', '/Author': 'Kettlewright'})
         output = BytesIO()
         writer.write(output)
         output.seek(0)
@@ -228,23 +257,25 @@ class LandscapeSheet:
                                  spaceBefore=10, spaceAfter=6, keepWithNext=True)
         story = []
         for title, value in self.sections:
-            story.append(Paragraph(escape(title), heading))
+            section = [Paragraph(escape(title), heading)]
             for paragraph in value.split('\n'):
-                story.append(Paragraph(escape(paragraph), style) if paragraph else Spacer(1, 8))
+                section.append(Paragraph(escape(paragraph), style) if paragraph else Spacer(1, 8))
+            # Keep short sections (such as party name + description) on one page.
+            story.extend([KeepTogether(section)] if len(value) <= 300 else section)
 
         def header(pdf, document):
             pdf.saveState()
             pdf.setFont(BOLD, 15)
             title = plain_text(self.character.name) + ' - ' + _('Additional notes')
-            title, rest = _take_line(title, PAGE_SIZE[0] - 84, BOLD, 15)
-            pdf.drawString(42, PAGE_SIZE[1] - 42, title + ('...' if rest else ''))
+            title, rest = _take_line(title, self.page_size[0] - 84, BOLD, 15)
+            pdf.drawString(42, self.page_size[1] - 42, title + ('...' if rest else ''))
             pdf.setLineWidth(.6)
-            pdf.line(42, PAGE_SIZE[1] - 55, PAGE_SIZE[0] - 42, PAGE_SIZE[1] - 55)
+            pdf.line(42, self.page_size[1] - 55, self.page_size[0] - 42, self.page_size[1] - 55)
             pdf.setFont(FONT, 8)
-            pdf.drawRightString(PAGE_SIZE[0] - 42, 24, str(document.page + 1))
+            pdf.drawRightString(self.page_size[0] - 42, 24, str(document.page + 1))
             pdf.restoreState()
 
-        document = SimpleDocTemplate(buffer, pagesize=PAGE_SIZE, leftMargin=42, rightMargin=42,
+        document = SimpleDocTemplate(buffer, pagesize=self.page_size, leftMargin=42, rightMargin=42,
                                      topMargin=68, bottomMargin=42)
         document.build(story, onFirstPage=header, onLaterPages=header)
         buffer.seek(0)
@@ -252,4 +283,8 @@ class LandscapeSheet:
 
 
 def landscape_character_pdf(character, party=None):
-    return LandscapeSheet(character, party).draw()
+    return CharacterSheet(character, party).draw()
+
+
+def portrait_character_pdf(character, party=None):
+    return CharacterSheet(character, party, orientation='portrait').draw()

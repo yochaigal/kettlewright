@@ -136,6 +136,8 @@
 
           <a class="button is-light character-pdf-action" href="{{ url_for('main.print_character_landscape', username=username, url_name=url_name) }}"
              target="_blank" rel="noopener">{{_('Print PDF (landscape)')}} <i class="fa-solid fa-file-pdf icon-in-button" aria-hidden="true"></i></a>
+          <a class="button is-light character-pdf-action" href="{{ url_for('main.print_character_portrait', username=username, url_name=url_name) }}"
+             target="_blank" rel="noopener">{{_('Print PDF (portrait)')}} <i class="fa-solid fa-file-pdf icon-in-button" aria-hidden="true"></i></a>
 
           {% if is_owner %}
           <a href="/charedit/export/{{username}}/{{url_name}}">
