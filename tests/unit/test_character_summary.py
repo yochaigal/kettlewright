@@ -44,4 +44,4 @@ def test_character_card_resources(app_with_babel, items, panicked, expected_hp, 
     with app_with_babel.test_request_context('/'):
         html = render_template('main/characters.html', characters=[character])
     assert f'HP {expected_hp}</p>' in html
-    assert f'Main inventory: {expected_slots}</p>' in html
+    assert f'>{expected_slots}</p>' in html

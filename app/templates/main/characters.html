@@ -61,7 +61,7 @@
           </div>
         </div>
       </div>
-      <p class="character-card-inventory">{{_('Main inventory')}}: {{ ngettext('%(num)s slot free', '%(num)s slots free', character.freeMainSlots()) }}</p>
+      <p class="character-card-inventory">{{ ngettext('%(num)s slot free', '%(num)s slots free', character.freeMainSlots()) }}</p>
       <div class="character-card-footer">
         <button title="Copy character link" class="button is-light card-link-button" type="button"
           data-url-name="{{ character.url_name }}" data-owner-username="{{ character.owner_username }}">
