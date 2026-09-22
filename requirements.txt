@@ -28,3 +28,4 @@ unidecode
 Werkzeug
 WTForms
 requests
+Pillow

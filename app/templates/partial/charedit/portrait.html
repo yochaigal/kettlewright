@@ -9,10 +9,12 @@
     });
     el.classList.add("highlighted");
     selected.value = e;
+    document.getElementById("portrait-file").value = "";
     document.getElementById('edit-portrait-modal-custom-url').value = "";
   }
 
   function changeCustom(e) {
+    document.getElementById("portrait-file").value = "";
     document.querySelectorAll(".edit-portrait-modal-thumbnail").forEach((thumbnail) => {
       thumbnail.classList.remove("highlighted");
     });
@@ -23,7 +25,8 @@
 </script>
 
 <div class="modal is-active" id="edit-portrait-modal">
-  <form class="no-space">
+  <form class="no-space" enctype="multipart/form-data" hx-encoding="multipart/form-data">
+    {{ portrait_form.hidden_tag() }}
     <input type="hidden" id="selected-portrait" name="selected-portrait"></input>
     <div class="modal-background" id="edit-portrait-modal-background"></div>
     <div class="modal-card">
@@ -37,7 +40,13 @@
         </div>
       </header>
       <section class="modal-card-body">
-        <!-- Content ... -->
+        {% if error %}<p role="alert" class="red-text">{{error}}</p>{% endif %}
+        <div class="field">
+          <label for="portrait-file">{{_('Upload a portrait')}}</label>
+          <input type="file" id="portrait-file" name="portrait-file" accept="image/png,image/jpeg,image/webp,image/gif"
+            onchange="document.getElementById('selected-portrait').value=''; document.getElementById('edit-portrait-modal-custom-url').value='';" />
+          <small>{{_('PNG, JPEG, WebP or GIF, up to 2 MB and 4096 × 4096 pixels. Saved as a square 256 × 256 portrait, cropped from the center.')}}</small>
+        </div>
         <div id="edit-portrait-modal-image-select-container">
           {% for image in images %}
           <img onClick="clickImage('{{image}}')" data_url="{{image}}" id="img-{{image}}"
@@ -48,7 +57,7 @@
       <footer class="modal-card-foot" style="flex-direction: column">
         <div id="edit-portrait-modal-custom-url-container">
           <input class="input" type="text" placeholder="Custom Image URL (1:1 aspect ratio)"
-            id="edit-portrait-modal-custom-url" name="custom-url" style="width: 400px; margin-bottom: 20px"
+            id="edit-portrait-modal-custom-url" name="custom-url" style="width: 100%; max-width: 400px; margin-bottom: 20px"
             oninput="changeCustom()" />
         </div>
         <div class="footer-button-container">

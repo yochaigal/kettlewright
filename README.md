@@ -166,6 +166,18 @@ It can be helpful to run the app with flask, as you can see changes immediately 
 
        flask run --port=8000 --debug
 
+## Uploaded portraits
+
+After saving a character, open its editor and click its portrait to upload a PNG,
+JPEG, WebP or GIF (up to 2 MB and 4096 × 4096 pixels). Images are cropped from the
+center to 256 × 256 and stored as WebP, without original metadata or animation.
+Built-in portraits and custom image URLs remain available.
+
+Uploads live in `instance/portraits`, alongside the SQLite database in the existing
+Docker volume. Back up the whole `instance` directory. Character JSON exports
+contain the portrait URL, not the image bytes; keep the image files when moving
+an installation. Shared images are retained when a character is deleted.
+
 ## Attribution
 
 - [**David Stearns**](https://github.com/david-stearns): Software Development, QA, Testing.
