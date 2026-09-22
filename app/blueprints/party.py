@@ -270,12 +270,12 @@ def party_inventory_item_edit_save(party_id, item_id):
     if mode == "edit":
         item = inventory.update_item(item_id,data["edit_item_name"],data["edit_item_tags"],data["edit_item_uses"],
                                      data["edit_item_charges"], data["edit_item_max_charges"], data["edit_item_container"],
-                                     data["edit_item_description"])
+                                     data["edit_item_description"], armor_active=data.get("edit_item_armor_active") == "on")
         inventory.select(int(item["location"]))
     else:
         item = inventory.create_item(data["edit_item_name"],data["edit_item_tags"],data["edit_item_uses"],
                                      data["edit_item_charges"], data["edit_item_max_charges"], data["edit_item_container"],
-                                     data["edit_item_description"])
+                                     data["edit_item_description"], armor_active=data.get("edit_item_armor_active") == "on")
         inventory.select(int(item["location"]))
     inventory.decorate()
     render = render_template('partial/partyedit/inventory.html', party=party,inventory=inventory)    

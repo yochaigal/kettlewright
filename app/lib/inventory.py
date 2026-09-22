@@ -3,6 +3,7 @@ import re
 import uuid
 from app.lib.data import safeint
 from app.models import db, Party, Character
+from app.models.character import item_armor_value
 from app.lib import sdv
 from flask_babel import _
 
@@ -140,6 +141,9 @@ class Inventory:
                         tt.append(_(tag))
             title += ", ".join(tt)
             title += ") "                    
+        if any(tag in ("1 Armor", "2 Armor", "3 Armor") for tag in item.get("tags", [])):
+            if not item.get("armor_active", item.get("name") != "Sloth-Tarp"):
+                title += " — " + _("Armor inactive")
         item["title"] = title
         return item
             
@@ -381,7 +385,7 @@ class Inventory:
         return None
     
     # create item
-    def create_item(self, name, tags, uses, charges, max_charges, container, description):
+    def create_item(self, name, tags, uses, charges, max_charges, container, description, armor_active=None):
         cnt = self.get_container(container)
         if cnt == None:
             return None
@@ -391,15 +395,17 @@ class Inventory:
         items = json.loads(self.character.items)
         items.append({"id":new_id,"name":"",tags:[],"location":0,"description":""})
         self.character.items = json.dumps(items)
-        return self.update_item(new_id,name, tags, uses, charges, max_charges, container, description)
+        return self.update_item(new_id,name, tags, uses, charges, max_charges, container, description, armor_active=armor_active)
         
     
     # update item
-    def update_item(self, item_id, name, tags, uses, charges, max_charges, container, description):
+    def update_item(self, item_id, name, tags, uses, charges, max_charges, container, description, armor_active=None):
         item = self.get_item(item_id)
         if item == None:
             return
         item["name"] = name
+        if armor_active is not None:
+            item["armor_active"] = armor_active
         if tags != "":
             item["tags"] = tags.split(",")
         else:
@@ -532,21 +538,8 @@ class Inventory:
                 db.session.commit()        
                 
     def compute_armor(self):
-        armor = 0
-        for it in self.get_items_for_container(0,False):
-            if it["tags"] == None or len(it["tags"]) == 0:
-                continue
-            if "1 Armor" in it["tags"]:
-                armor += 1
-            if "2 Armor" in it["tags"]:
-                armor += 2
-            if "3 Armor" in it["tags"]:
-                armor += 3
-        if armor > 3:
-            armor = 3
-        return armor
-                                        
-                    
+        return min(3, sum(item_armor_value(item) for item in self.get_items_for_container(0, False)))
+
     def print(self):
         print(self.containers)
                 

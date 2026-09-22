@@ -96,6 +96,15 @@
         </div>
 
         <div class="field">
+          <label>
+            <input type="checkbox" name="edit_item_armor_active"
+              {% if mode != 'edit' or item.get('armor_active', item.name != 'Sloth-Tarp') %}checked{% endif %} />
+            {{_('Armor bonus active')}}
+          </label>
+          <small>{{_('Only enable conditional armor while the item is in use.')}}</small>
+        </div>
+
+        <div class="field">
           <label>{{_('Description')}}</label>
           <textarea class="textarea" placeholder="Item Description" id="edit_item_description"
             name="edit_item_description"
