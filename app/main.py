@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, jsonify, flash, request, make_response, send_file
 from flask_login import login_required, current_user
+from flask_wtf import FlaskForm
 from .models import User, Character, Party
 from . import db
 from .forms import CharacterForm, CharacterEditForm, CharacterJSONForm, PartyForm, PartyEditForm
@@ -324,7 +325,7 @@ def character(username, url_name):
     inventory = Inventory(character)
     inventory.select(0)
     inventory.decorate()
-    return render_template('main/character_view.html', character=character, items_json=items_json, containers_json=json.dumps(character.containers), username=username, url_name=url_name, party=party, party_url=party_url, party_name=party_name, party_description=party_description, base_url=base_url, is_owner=is_owner, scarlist=scarlist, portrait_src=portrait_src, inventory=inventory)
+    return render_template('main/character_view.html', character=character, items_json=items_json, containers_json=json.dumps(character.containers), username=username, url_name=url_name, party=party, party_url=party_url, party_name=party_name, party_description=party_description, base_url=base_url, is_owner=is_owner, scarlist=scarlist, portrait_src=portrait_src, inventory=inventory, stat_form=FlaskForm())
 
 
 @main.route('/users/<username>/characters/<url_name>/print/')

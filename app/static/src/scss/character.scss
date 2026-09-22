@@ -13,6 +13,26 @@
   margin: 1em 0px;
 }
 
+#character-quick-stats {
+  .character-attribute-container:has(.quick-stat-form) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem;
+  }
+  .quick-stat-form {
+    display: flex;
+    align-items: center;
+    gap: .5em;
+    label { font-size: inherit; min-width: 3.5rem; text-align: left; }
+    input[type="number"] { width: 3.5rem; max-width: 3.5rem; }
+  }
+}
+.quick-stats-status {
+  font-size: 1.4rem;
+  margin: .5rem 0;
+  &:empty { display: none; }
+}
+
 .character-stats-traits-inventory {
   display: grid;
   grid-template-columns: 1fr 1fr;

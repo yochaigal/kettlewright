@@ -3,12 +3,44 @@ from flask_login import login_required, current_user
 from app.lib import *
 from app.models import db, User, Character, Party, PartyRoll
 from app.socket_events import party_recipient_ids, notify_roll_history_changed
+from app.lib.quick_stats import save_current_stat
 from flask_wtf import FlaskForm
 from app.forms import *
 import json
 from flask_babel import _
 
 party = Blueprint('party', __name__)
+
+
+def party_characters(target_party):
+    members = json.loads(target_party.members) if target_party.members and target_party.members.strip() else []
+    by_id = {character.id: character for character in Character.query.filter(
+        Character.id.in_(members), Character.party_id == target_party.id
+    ).all()}
+    return [by_id[member_id] for member_id in members if member_id in by_id]
+
+
+@party.route('/party/<int:party_id>/members', methods=['GET'])
+@login_required
+def members(party_id):
+    target_party = db.get_or_404(Party, party_id)
+    response = make_response(render_template(
+        'partial/partyview/members.html', party=target_party,
+        characters=party_characters(target_party), stat_form=FlaskForm()))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@party.route('/party/<int:party_id>/members/<int:character_id>/stat', methods=['POST'])
+@login_required
+def update_member_stat(party_id, character_id):
+    target_party = db.get_or_404(Party, party_id)
+    character = db.get_or_404(Character, character_id)
+    if character.party_id != target_party.id or character.id not in json.loads(target_party.members or '[]'):
+        abort(404)
+    if current_user.id not in (target_party.owner, character.owner):
+        abort(403)
+    return save_current_stat(character)
 
 
 def get_party_data(ownername, party_url):
@@ -22,25 +54,15 @@ def get_party_data(ownername, party_url):
         if party.owner == current_user.id:
             join_code = party.join_code
             is_owner = True
-    members_list = json.loads(
-        party.members) if party.members and party.members.strip() else []
     subowners_list = json.loads(
         party.subowners) if party.subowners and party.subowners.strip() else []
 
     if current_user.is_authenticated:
         is_subowner = current_user.id in subowners_list
-    characters = []
-
-    for member_id in members_list:
-        character = Character.query.filter_by(id=member_id).first()
-        if character:
-            characters.append(character)
-            # Update character portrait source
-            if not character.custom_image:
-                character.portrait_src = url_for(
-                    'static', filename='images/portraits/' + character.image_url)
-            else:
-                character.portrait_src = character.image_url
+    characters = party_characters(party)
+    for character in characters:
+        character.portrait_src = character.image_url if character.custom_image else url_for(
+            'static', filename='images/portraits/' + (character.image_url or 'default-portrait.webp'))
     
     inventory = Inventory(party)
     inventory.select(0)
@@ -59,7 +81,7 @@ def party_view(ownername, party_url):
     can_view_rolls = current_user.id in party_recipient_ids(party)
     return render_template('main/party_view.html', party_url=party_url, characters=characters, join_code=join_code, is_owner=is_owner,
                            is_subowner=is_subowner, party_id=party.id, ownername=ownername, inventory=inventory, party=party,
-                           can_view_rolls=can_view_rolls, roll_form=FlaskForm(),
+                           can_view_rolls=can_view_rolls, roll_form=FlaskForm(), stat_form=FlaskForm(),
                            rolls=PartyRoll.latest(party.id) if can_view_rolls else [])
 
 

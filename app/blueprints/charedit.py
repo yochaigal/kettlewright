@@ -6,6 +6,7 @@ from app.models import db, User, Character, Party
 from app.forms import *
 from app.main import sanitize_data
 from app.lib import *
+from app.lib.quick_stats import save_current_stat
 from unidecode import unidecode
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
@@ -242,11 +243,35 @@ def charedit_export(username, url_name):
     
 # Route: rest
 @character_edit.route('/charedit/rest/<username>/<url_name>', methods=['GET'])
+@login_required
 def charedit_rest(username, url_name):
     user, character = get_char_data(username, url_name)
+    if character.owner != current_user.id:
+        abort(403)
     setattr(character,"hp",character.hp_max)
     db.session.commit()
-    return render_template('partial/charview/stats.html', user=user, character=character, username=username, url_name=url_name, is_owner=True)
+    return render_template('partial/charview/stats.html', user=user, character=character, username=username, url_name=url_name, is_owner=True, stat_form=FlaskForm())
+
+
+@character_edit.route('/charedit/<username>/<url_name>/stats', methods=['GET'])
+def character_stats(username, url_name):
+    user = User.query.filter_by(username=username).first_or_404()
+    character = Character.query.filter_by(owner=user.id, url_name=url_name).first_or_404()
+    is_owner = current_user.is_authenticated and current_user.id == character.owner
+    response = make_response(render_template('partial/charview/stats.html', character=character,
+                             username=username, url_name=url_name, is_owner=is_owner, stat_form=FlaskForm()))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@character_edit.route('/charedit/<username>/<url_name>/stat', methods=['POST'])
+@login_required
+def character_stat_save(username, url_name):
+    user = User.query.filter_by(username=username).first_or_404()
+    character = Character.query.filter_by(owner=user.id, url_name=url_name).first_or_404()
+    if character.owner != current_user.id:
+        abort(403)
+    return save_current_stat(character)
 
 # Route: roll omens on omen edit
 @character_edit.route('/charedit/omen-roll/<username>/<url_name>', methods=['POST'])

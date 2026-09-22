@@ -1,0 +1,13 @@
+<form class="quick-stat-form" action="{{ stat_action }}" method="post">
+  {% if stat_form.csrf_token is defined %}
+    {{ stat_form.csrf_token(id=stat_id ~ '-csrf') }}
+  {% endif %}
+  <input type="hidden" name="stat" value="{{ field }}" />
+  <label for="{{ stat_id }}">{{ label }}</label>
+  <div class="quick-stat-value">
+    <input id="{{ stat_id }}" type="number" name="value" min="0"
+           max="{{ character[field + '_max'] or 0 }}" value="{{ character[field] or 0 }}" required
+           aria-label="{{ character.name }}: {{ label }}" />
+    <span>/{{ character[field + '_max'] or 0 }}</span>
+  </div>
+</form>
