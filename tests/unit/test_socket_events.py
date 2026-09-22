@@ -67,3 +67,18 @@ def test_anonymous_connection_rejected(app):
 def test_malformed_roll_ignored(socket_party, data):
     socket_party[12].emit('roll_dice', data)
     assert all(client.get_received() == [] for client in socket_party.values())
+
+
+def test_roll_limit_is_shared_between_connections(app, socket_party):
+    app.config['SOCKET_EVENT_LIMIT'] = 2
+    for _ in range(3):
+        roll(socket_party[12])
+    assert len(socket_party[20].get_received()) == 2
+    assert socket_party[12].get_received()[-1]['name'] == 'rate_limited'
+    socket_party[12].disconnect()
+    http = app.test_client()
+    with http.session_transaction() as session:
+        session['_user_id'] = '12'
+    socket_party[12] = socketio.test_client(app, flask_test_client=http)
+    roll(socket_party[12])
+    assert socket_party[20].get_received() == []
