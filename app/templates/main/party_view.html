@@ -100,6 +100,7 @@
             </div>
             <div class="level is-mobile"> </div>
           </div>
+          <p class="character-card-inventory">{{ ngettext('%(num)s slot free', '%(num)s slots free', character.freeMainSlots()) }}</p>
         </div>
 
         {% endfor %} {% else %}

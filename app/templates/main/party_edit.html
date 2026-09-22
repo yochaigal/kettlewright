@@ -86,6 +86,7 @@
             </div>
             <div class="level is-mobile"> </div>
           </div>
+          <p class="character-card-inventory">{{ ngettext('%(num)s slot free', '%(num)s slots free', character.freeMainSlots()) }}</p>
           {% if is_owner %}
           <footer class="card-footer edit-mode">
             <button class="card-footer-item button is-danger is-light edit-mode character-remove-button" type="button"
