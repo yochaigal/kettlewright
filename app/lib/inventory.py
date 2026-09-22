@@ -400,7 +400,7 @@ class Inventory:
         
     
     # update item
-    def update_item(self, item_id, name, tags, uses, charges, max_charges, container, description, armor_active=None):
+    def update_item(self, item_id, name, tags, uses, charges, max_charges, container, description, armor_active=None, commit=True):
         item = self.get_item(item_id)
         if item == None:
             return
@@ -436,7 +436,8 @@ class Inventory:
                 result.append(it)
         result.append(item)
         self.character.items = json.dumps(result)
-        db.session.commit()
+        if commit:
+            db.session.commit()
         self.parse(self.character)
         return item
     

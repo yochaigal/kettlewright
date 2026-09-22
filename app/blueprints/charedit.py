@@ -348,7 +348,8 @@ def charedit_inplace_inventory_item_edit(username, url_name, item_id):
     return render_template('partial/modal/edit_item.html', user=user, character=character, username=username, url_name=url_name, 
                            inventory=inventory, item=item, mode=mode,
                            party_containers=json.loads(party.containers or '[]') if
-                           (party := db.session.get(Party, character.party_id)) else [])
+                           (party := db.session.get(Party, character.party_id)) and
+                           character.id in json.loads(party.members or '[]') else [])
 
 # Route: edit item save
 @character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/save', methods=['POST'])
@@ -359,7 +360,36 @@ def charedit_inplace_inventory_item_edit_save(username, url_name, item_id):
     mode = request.args.get('mode')
     if mode == None or mode == "":
         mode = "edit"
-    if mode == "edit":
+    destination = data["edit_item_container"]
+    if destination.startswith('party:'):
+        if not current_user.is_authenticated or character.owner != current_user.id:
+            abort(403)
+        if mode != 'edit':
+            abort(400)
+        source = inventory.get_item(item_id)
+        if source is None:
+            abort(404)
+        try:
+            party_container = int(destination.removeprefix('party:'))
+        except ValueError:
+            abort(400)
+        from werkzeug.exceptions import HTTPException
+        try:
+            # Persist the edits and transfer together; a rejected destination
+            # must leave both inventories unchanged.
+            inventory.update_item(item_id, data["edit_item_name"], data["edit_item_tags"],
+                                  data["edit_item_uses"], data["edit_item_charges"],
+                                  data["edit_item_max_charges"], source['location'],
+                                  data["edit_item_description"],
+                                  armor_active=data.get("edit_item_armor_active") == "on", commit=False)
+            inventory.move_item_to_party(item_id, party_container)
+        except HTTPException as error:
+            db.session.rollback()
+            response = make_response(render_template('partial/inventory_error.html', message=error.description))
+            response.headers['HX-Retarget'] = '#add-edit-item-modal-error-text'
+            return response
+        inventory.select(source['location'])
+    elif mode == "edit":
         item = inventory.update_item(item_id,data["edit_item_name"],data["edit_item_tags"],data["edit_item_uses"],
                                      data["edit_item_charges"], data["edit_item_max_charges"], data["edit_item_container"],
                                      data["edit_item_description"], armor_active=data.get("edit_item_armor_active") == "on")

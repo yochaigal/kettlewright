@@ -83,13 +83,18 @@
           </div>
 
           <div class="field flex-column-centered" style="min-width: 120px">
-            <label>{{_('Container')}}</label>
+            <label for="edit_item_container">{{_('Container')}}</label>
             <div class="select" style="max-width: 200px">
               <select id="edit_item_container" name="edit_item_container">
                 {% for c in inventory.containers %}
-                <option value="{{c.id}}" {% if mode=='edit' and item.location==c.id %} selected {% endif %}>{{c.name}}
+                <option value="{{c.id}}" {% if mode=='edit' and item.location==c.id %} selected {% endif %}>{{c.name}} ({{_('Personal')}})
                 </option>
                 {% endfor %}
+                {% if mode == 'edit' %}
+                {% for c in party_containers %}
+                <option value="party:{{c.id}}">{{c.name}} ({{_('Party')}})</option>
+                {% endfor %}
+                {% endif %}
               </select>
             </div>
           </div>
@@ -125,21 +130,6 @@
               %} hx-target="#inventory-container">
               {{_('Save')}}
             </button>
-            {% if mode == 'edit' and character.party_id != None %}
-            <label for="party-container">{{_('Party container')}}</label>
-            <select id="party-container" name="party_container">
-              {% for container in party_containers %}
-              <option value="{{container.id}}">{{container.name}}</option>
-              {% endfor %}
-            </select>
-            <button class="button" type="button" style="margin-left: auto"
-              hx-post="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{item.id}}/party"
-              hx-target="#inventory-container" hx-confirm="Do you want to move <br/>{{item.name}} to party storage?"
-              data-confirm-title="Move to party storage" data-confirm-button="Move">
-              <i class="fa-solid fa-share icon-in-button"></i>
-              {{_('Party Storage')}}
-            </button>
-            {% endif %}
           </div>
           <div>
             <button class="button inventory-modal-cancel-button" type="button" {% if mode=='edit' %}
