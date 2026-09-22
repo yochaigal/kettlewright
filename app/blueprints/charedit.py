@@ -191,9 +191,10 @@ def charedit_inplace_portrait_save(username, url_name):
     form = FlaskForm()
     if not form.validate_on_submit():
         abort(400)
+    from app.lib.portraits import save_portrait, delete_unreferenced_portrait
+    previous_portrait = character.image_url
     upload = request.files.get('portrait-file')
     if upload and upload.filename:
-        from app.lib.portraits import save_portrait
         try:
             portrait_url = save_portrait(upload)
         except ValueError as error:
@@ -203,6 +204,7 @@ def charedit_inplace_portrait_save(username, url_name):
         character.image_url = portrait_url
         character.custom_image = True
         db.session.commit()
+        delete_unreferenced_portrait(previous_portrait)
         response = make_response('Redirecting')
         response.headers['HX-Redirect'] = url_for('character_edit.charedit_show', username=username, url_name=url_name)
         return response
@@ -220,6 +222,7 @@ def charedit_inplace_portrait_save(username, url_name):
         setattr(character,"image_url", selected_portrait)
         setattr(character,"custom_image",False)
         db.session.commit()    
+    delete_unreferenced_portrait(previous_portrait)
     response = make_response("Redirecting")
     response.headers["HX-Redirect"] = "/charedit/"+username+"/"+url_name
     return response

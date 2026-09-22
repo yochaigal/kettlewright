@@ -74,3 +74,46 @@ def test_nonowner_upload_and_csrf_are_rejected(portrait_client):
     client.application.config['WTF_CSRF_ENABLED'] = True
     assert client.post(PATH, data={'portrait-file': (png(), 'image.png')}).status_code == 400
     assert not list(folder.iterdir())
+
+
+def test_replacing_upload_removes_previous_file(portrait_client):
+    client, folder = portrait_client
+    client.post(PATH, data={'portrait-file': (png(), 'first.png')})
+    previous_url = db.session.get(Character, 1).image_url
+    previous_file = folder / previous_url.rsplit('/', 1)[-1]
+    replacement = BytesIO()
+    Image.new('RGB', (100, 100), 'blue').save(replacement, 'PNG')
+    replacement.seek(0)
+    client.post(PATH, data={'portrait-file': (replacement, 'second.png')})
+    assert db.session.get(Character, 1).image_url != previous_url
+    assert not previous_file.exists()
+    assert len(list(folder.iterdir())) == 1
+
+
+def test_builtin_replacement_keeps_shared_image_until_last_reference(portrait_client):
+    client, folder = portrait_client
+    client.post(PATH, data={'portrait-file': (png(), 'first.png')})
+    previous_url = db.session.get(Character, 1).image_url
+    previous_file = folder / previous_url.rsplit('/', 1)[-1]
+    second = Character(name='Second', url_name='second', owner=1, background='Test',
+                       image_url=previous_url, custom_image=True)
+    db.session.add(second)
+    db.session.commit()
+    client.post(PATH, data={'selected-portrait': 'default-portrait.webp', 'custom-url': ''})
+    assert previous_file.exists()
+    client.post('/charedit/inplace-portrait/owner/second/save',
+                data={'selected-portrait': 'default-portrait.webp', 'custom-url': ''})
+    assert not previous_file.exists()
+
+
+def test_failed_or_identical_upload_keeps_current_file(portrait_client):
+    client, folder = portrait_client
+    client.post(PATH, data={'portrait-file': (png(), 'first.png')})
+    previous_url = db.session.get(Character, 1).image_url
+    previous_file = folder / previous_url.rsplit('/', 1)[-1]
+    client.post(PATH, data={'portrait-file': (BytesIO(b'invalid'), 'broken.png')})
+    assert db.session.get(Character, 1).image_url == previous_url
+    assert previous_file.exists()
+    client.post(PATH, data={'portrait-file': (png(), 'same.png')})
+    assert previous_file.exists()
+    assert len(list(folder.iterdir())) == 1

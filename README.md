@@ -176,7 +176,9 @@ Built-in portraits and custom image URLs remain available.
 Uploads live in `instance/portraits`, alongside the SQLite database in the existing
 Docker volume. Back up the whole `instance` directory. Character JSON exports
 contain the portrait URL, not the image bytes; keep the image files when moving
-an installation. Shared images are retained when a character is deleted.
+an installation. Replacing a portrait removes its previous uploaded file after
+the change is saved, unless another character still references the same file.
+Images are currently retained when a character is deleted.
 
 ## Attribution
 

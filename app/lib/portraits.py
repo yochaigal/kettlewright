@@ -1,10 +1,13 @@
 """Validate and normalize uploaded portraits into persistent instance storage."""
 import hashlib
+import re
 from io import BytesIO
 from pathlib import Path
 
 from flask import current_app, url_for
 from PIL import Image, ImageOps, UnidentifiedImageError
+
+from app.models import Character
 
 MAX_PORTRAIT_BYTES = 2 * 1024 * 1024
 
@@ -43,3 +46,19 @@ def save_portrait(upload):
     except FileExistsError:
         pass
     return url_for('character_edit.uploaded_portrait', filename=filename)
+
+
+def delete_unreferenced_portrait(previous_url):
+    """Remove a replaced local upload only after its last character reference is gone."""
+    match = re.fullmatch(r'/portraits/([0-9a-f]{64}\.webp)', previous_url or '')
+    if not match:
+        return
+    filename = match.group(1)
+    # Also retain references written as absolute or URL-encoded links by imports.
+    if Character.query.filter(Character.image_url.contains(filename)).first() is not None:
+        return
+    try:
+        (portrait_directory() / filename).unlink(missing_ok=True)
+    except OSError:
+        # The new portrait is already committed; failed cleanup must not undo it.
+        current_app.logger.warning('Could not remove replaced portrait %s', filename, exc_info=True)
