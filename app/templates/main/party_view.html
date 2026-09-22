@@ -7,7 +7,7 @@
 </script>
 {% if is_owner or is_subowner %}
 <script>
-  const joinCode = {{ join_code | tojson }};
+  joinCode = `{{ join_code }}`;
   const isOwner = "{{ is_owner }}";
 </script>
 {% endif %}
@@ -30,7 +30,7 @@
       </div>
       <div class="party-header-actions">
         {% if is_owner or is_subowner %}
-        <button class="button is-light no-margin-top" id="join-code-button" type="button" title="{{_('Join Code')}}" aria-expanded="false" aria-controls="party-invitation">
+        <button class="button is-light no-margin-top" id="join-code-button" type="button" title="Join Code">
           <span class="mobile-hidden">{{_('Join Code')}}</span>
           <i class="fa-solid fa-link icon-in-button"></i>
         </button>
@@ -42,12 +42,6 @@
       </div>
     </div>
 
-    {% if is_owner or is_subowner %}
-    <div class="party-invitation" id="party-invitation" hidden>
-      <output id="party-join-code">{{join_code}}</output>
-      <button id="copy-join-code" type="button">{{_("Copy code")}}</button>
-    </div>
-    {% endif %}
     <div>{{party.description}}</div>
 
     <div class="party-section">

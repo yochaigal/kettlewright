@@ -47,11 +47,11 @@ def test_delete_requires_owner_post_and_clears_members(party_setup):
     assert db.session.get(Character, 1).party_id is None
 
 
-def test_join_code_hidden_until_revealed_and_warden_label(party_setup):
+def test_original_join_code_button_and_warden_label(party_setup):
     login(party_setup, 1)
     page = party_setup.get('/users/warden/parties/party/').get_data(as_text=True)
-    assert 'id="party-invitation" hidden' in page
-    assert '<output id="party-join-code">join-secret</output>' in page
+    assert 'id="join-code-button"' in page
+    assert 'id="party-invitation"' not in page
     assert 'Warden' in page
     login(party_setup, 2)
     page = party_setup.get('/users/warden/parties/party/').get_data(as_text=True)

@@ -27,8 +27,6 @@ def get_party_data(ownername, party_url):
 
     if current_user.is_authenticated:
         is_subowner = current_user.id in subowners_list
-        if is_subowner:
-            join_code = party.join_code
     characters = []
 
     for member_id in members_list:

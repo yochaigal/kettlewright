@@ -226,14 +226,3 @@ body:has(.tools-page) {
   align-items: center;
   button { margin: 0; white-space: nowrap; }
 }
-.party-invitation {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: .75rem;
-  margin: 1rem 0;
-  output { overflow-wrap: anywhere; min-width: 0; }
-  button { margin: 0; }
-  &[hidden] { display: none; }
-}
