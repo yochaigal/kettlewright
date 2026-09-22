@@ -267,6 +267,7 @@ class CharacterJSONForm(FlaskForm):
 
     # Boolean field - allowing "true" or "false" (5 characters max)
     deprived = HiddenField(_l('Deprived'), validators=[Length(max=5)])
+    panicked = HiddenField(_l('Panicked'), validators=[Length(max=5)])
 
     notes = HiddenField(_l('Notes'), validators=[Length(max=2000)])
     description = HiddenField(_l('Description'), validators=[Length(max=2000)])

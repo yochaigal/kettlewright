@@ -5,7 +5,7 @@
 <h2>{{character.name}}</h2>
 <h4>{{character.background_name | tr}}</h4>
 <p>
-<div class="subtitle">🙛 {{_('Description')}}</div>
+<div class="subtitle left-symbol">{{_('Description')}}</div>
 <p>
     {{character.description | tr}}
 </p>
@@ -23,7 +23,7 @@
 </div>
 </p>
 <p>
-<div class="subtitle">🙛 {{_('Attributes')}}</div>
+<div class="subtitle left-symbol">{{_('Attributes')}}</div>
 <div>
     <div><b>{{_('HP')}}:</b> {{character.attributes.hp}}</div>
     <div><b>{{_('Armor')}}:</b> {{character.attributes.armor}}</div>
@@ -33,7 +33,7 @@
 </div>
 </p>
 <p>
-<div class="subtitle">🙛 {{_('Equipment')}} ({{character.slots}})</div>
+<div class="subtitle left-symbol">{{_('Equipment')}} ({{character.slots}})</div>
 <div>
     <div><b>{{_('Items')}}:</b></div>
     <ul style="list-style-position:inside; padding-inline-start:16px">
@@ -46,7 +46,7 @@
 </p>
 {% if character.containers|length > 1 %}
 <p>
-<div class="subtitle">🙛 {{_('Special')}}</div>
+<div class="subtitle left-symbol">{{_('Special')}}</div>
 <div>
     <ul style="list-style-position:inside; padding-inline-start:16px">
         {% for c in character.containers %}
@@ -60,7 +60,7 @@
 </p>
 {% endif %}
 <p>
-<div class="subtitle">🙛 {{_('Bonds')}}</div>
+<div class="subtitle left-symbol">{{_('Bonds')}}</div>
 {% if not 'items' in character.bond or character.bond['items']|length == 0 %}
 <div>
     {{character.bond['description']|tr}}
@@ -92,14 +92,14 @@
 </p>
 
 <p>
-<div class="subtitle">🙛 {{_('Omens')}}</div>
+<div class="subtitle left-symbol">{{_('Omens')}}</div>
 <div>
     {{character.omen | tr}}
 </div>
 </p>
 
 <p>
-<div class="subtitle">🙛 {{_('Your Past')}}</div>
+<div class="subtitle left-symbol">{{_('Your Past')}}</div>
 <p>
     <i>{{character.table1['question'] | tr}}</i><br />
     {{character.table1['option']['description']|tr}}

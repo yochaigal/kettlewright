@@ -22,11 +22,19 @@
 
 /* Changes to Magick.css */
 
-/* specifying content as uniciode, as Chrome sometimes had issues reading the symbol in magick.css*/
-h3:before {
-  content: "\1F65B  ";
+/* Use the original ornament as a local vector so missing font glyphs cannot
+   turn section decorations into boxes. Empty generated content is decorative. */
+h3::before,
+.left-symbol::before {
+  content: "";
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin-inline-end: 0.3em;
+  background-color: currentColor;
+  -webkit-mask: url("/static/icons/heading-ornament.svg") center / contain no-repeat;
+  mask: url("/static/icons/heading-ornament.svg") center / contain no-repeat;
 }
-
 
 body.dark-mode {
   // adjust magick.css variables for dark mode
@@ -360,10 +368,6 @@ button,
 }
 
 
-.left-symbol:before {
-  font-family: "Noto Sans Symbols 2", sans-serif;
-  content: "\1F65B  ";
-}
 
 .text-border {
   // border: 1px solid #dbdbdb;

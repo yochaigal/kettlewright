@@ -7,6 +7,15 @@ import sys
 import json
 from .globals import db
 
+def item_armor_value(item):
+    # Old Sloth-Tarps also require explicit activation; ordinary armor stays active.
+    active = item.get('armor_active', item.get('name') != 'Sloth-Tarp')
+    if not active or item.get('location') != 0:
+        return 0
+    tags = item.get('tags') or []
+    return sum(value for value in (1, 2, 3) if f'{value} Armor' in tags)
+
+
 class Character(db.Model):
     __tablename__ = 'characters'
 
@@ -80,27 +89,8 @@ class Character(db.Model):
     
     # Compute armor value based on possessed items
     def armorValue(self):
-        armor = 0
-        if self.items == None:
-            return 0
-        items = json.loads(self.items)
-        if  len(self.items) == 0:
-            return 0
-        for it in items:
-            if it["location"] != 0:
-                continue
-            if it["tags"] == None or len(it["tags"]) == 0:
-                continue
-            if "1 Armor" in it["tags"]:
-                armor += 1
-            if "2 Armor" in it["tags"]:
-                armor += 2
-            if "3 Armor" in it["tags"]:
-                armor += 3
-        if armor > 3:
-            armor = 3
-        return armor
-    
+        return min(3, sum(item_armor_value(item) for item in json.loads(self.items or '[]')))
+
     # Compute occupied slots based on possessed items
     # but only for a main container
     def occupiedMainSlots(self):
@@ -130,11 +120,10 @@ class Character(db.Model):
 
     # Serialize object to JSON
     def toJSON(self):
-        dictret = dict(self.__dict__); 
-        to_remove = ['party_id','party_code','_sa_instance_state','created_at','url_name','owner_username','owner']
-        for r in to_remove:
-            dictret.pop(r, None)
-        to_parse = ['containers','items']
-        for p in to_parse:
-            dictret[p] = json.loads(dictret[p])
-        return json.dumps(dictret, indent=4, sort_keys=True)
+        excluded = {'id', 'party_id', 'party_code', 'created_at', 'url_name', 'owner_username', 'owner'}
+        data = {column.name: getattr(self, column.name) for column in self.__table__.columns
+                if column.name not in excluded}
+        data['items'] = json.loads(self.items or '[]')
+        data['containers'] = json.loads(self.containers or '[]')
+        data['armor'] = self.armorValue()
+        return json.dumps(data, indent=4, sort_keys=True)

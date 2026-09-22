@@ -1,7 +1,3 @@
-<div class="row16spaced full-width">
-    {# <button class="button smaller-font" style="margin: 0px" hx-get="/marketplace/{{username}}/{{url_name}}"
-        hx-target="#modal-anchor"> Marketplace </button> #}
-</div>
 <div class="inventory-header flex-row" style="gap: 1.5rem">
     {% for cnt in inventory.containers %}
     <div class="row8">
@@ -80,6 +76,9 @@
 
 <div class="panel-block inventory-footer">
     <div class="inventory-footer-buttons">
+        <button class="button smaller-font" type="button"
+            hx-get="/marketplace/party/{{party.id}}/{{inventory.selected_container.id}}"
+            hx-target="#inventory-container">{{_('Marketplace')}}</button>
         <button class="button smaller-font" type="button"
             hx-get="/party/inventory/{{party.id}}/item-edit/None?mode=create" hx-target="#modal-anchor" {% if
             inventory.selected_container['encumbered'] %} disabled {% endif %}>

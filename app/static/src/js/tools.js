@@ -2,8 +2,34 @@ import utils, { handleClick, styledAlert } from "./utils.js";
 
 window.KW_alert = utils.styledAlert;
 
-const categorySelect = document.getElementById("category-select");
-const subcategorySelect = document.getElementById("subcategory-select");
+const toolTabs = [...document.querySelectorAll(".tools-tab-list [role=tab]")];
+const selectToolTab = (selected) => {
+  toolTabs.forEach((tab) => {
+    const active = tab === selected;
+    tab.setAttribute("aria-selected", String(active));
+    tab.tabIndex = active ? 0 : -1;
+    document.getElementById(tab.getAttribute("aria-controls")).hidden = !active;
+  });
+};
+toolTabs.forEach((tab, index) => {
+  tab.addEventListener("click", () => selectToolTab(tab));
+  tab.addEventListener("keydown", (event) => {
+    let next;
+    if (event.key === "ArrowRight") next = (index + 1) % toolTabs.length;
+    if (event.key === "ArrowLeft") next = (index + toolTabs.length - 1) % toolTabs.length;
+    if (event.key === "Home") next = 0;
+    if (event.key === "End") next = toolTabs.length - 1;
+    if (next === undefined) return;
+    event.preventDefault();
+    selectToolTab(toolTabs[next]);
+    toolTabs[next].focus();
+  });
+});
+
+const categoryButtons = document.getElementById("category-buttons");
+const subcategoryButtons = document.getElementById("subcategory-buttons");
+let selectedCategory = "";
+let selectedSubcategory = "";
 const rollButton = document.getElementById("roll-button");
 
 const categories = {
@@ -32,27 +58,41 @@ const categories = {
   },
 };
 
-// Setup Selects and Buttons
-const addOptionsToSelect = (data, element) => {
-  element.innerHTML = '<option value="" selected disabled>Choose...</option>';
-  for (let key in data) {
-    let option = document.createElement("option");
-    option.value = key;
-    option.text = key;
-    element.add(option);
-  }
+// Keep every choice visible and expose the current selection to keyboard and screen-reader users.
+const addChoiceButtons = (choices, element, onSelect) => {
+  element.replaceChildren();
+  Object.keys(choices).forEach((key) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "button tools-choice";
+    button.textContent = key;
+    button.setAttribute("aria-pressed", "false");
+    button.addEventListener("click", () => {
+      element.querySelectorAll("button").forEach((choice) => {
+        choice.setAttribute("aria-pressed", String(choice === button));
+      });
+      onSelect(key);
+    });
+    element.appendChild(button);
+  });
 };
 
-addOptionsToSelect(categories, categorySelect);
-
-categorySelect.addEventListener("change", () => {
-  const selectedCategory = categories[categorySelect.value];
-  addOptionsToSelect(selectedCategory, subcategorySelect);
+addChoiceButtons(categories, categoryButtons, (category) => {
+  selectedCategory = category;
+  document.getElementById("selected-category-label").textContent = ` · ${category}`;
+  document.getElementById("table-choice-hint").hidden = true;
+  selectedSubcategory = "";
+  rollButton.disabled = true;
+  addChoiceButtons(categories[category], subcategoryButtons, (subcategory) => {
+    selectedSubcategory = subcategory;
+    rollButton.disabled = false;
+  });
 });
 
 rollButton.addEventListener("click", () => {
-  const category = categorySelect.value;
-  const subcategory = subcategorySelect.value;
+  const category = selectedCategory;
+  const subcategory = selectedSubcategory;
+  if (!category || !subcategory) return;
 
   switch (category) {
     case "Monsters":

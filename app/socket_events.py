@@ -1,87 +1,77 @@
-from flask import request
-import sys
 import json
-from app.models import Party, User, Character
+
+from flask import current_app
 from flask_login import current_user
-from flask_socketio import emit, join_room, leave_room
+from flask_socketio import emit, join_room
+
+from app.models import Character, Party, db
+from app.lib.socket_rate_limit import SocketRateLimiter
+
+
+def party_recipient_ids(party):
+    """Resolve current membership for every broadcast, including already-open tabs."""
+    members = json.loads(party.members or '[]')
+    owners = db.session.query(Character.owner).filter(
+        Character.id.in_(members), Character.party_id == party.id
+    ).all()
+    return {party.owner, *(owner for (owner,) in owners)}
 
 
 def register_socket_events(socketio):
+    from app import redis_url
+    limiter = SocketRateLimiter(redis_url)
+
+    def allow_event(event):
+        try:
+            allowed = limiter.allow(
+                current_user.id, event,
+                current_app.config.get('SOCKET_EVENT_LIMIT', 20),
+                current_app.config.get('SOCKET_EVENT_WINDOW', 10),
+            )
+        except Exception:
+            current_app.logger.exception('Socket rate limiter unavailable')
+            return False
+        if not allowed:
+            emit('rate_limited', {'message': 'Too many events. Please wait a moment.'})
+        return allowed
+
     @socketio.on('connect')
     def handle_connect():
-        print('Client connected', file=sys.stderr)
-        print(current_user.id, file=sys.stderr)
-        join_user_parties()
-
-    @socketio.on('disconnect')
-    def handle_disconnect(reason=""): # according logs, it should have at least one parameter
-        if current_user and current_user.id:
-            print(f' User {current_user.id} disconnected. Reason: {reason}')
-        else:
-            print(f' User disconnected but probably was not logged. Reason: {reason}')
+        if not current_user.is_authenticated:
+            return False
+        join_room(f'user_{current_user.id}')
 
     @socketio.on('register')
     def handle_register():
-        join_user_parties()
-        print(f'User {current_user.id} registered and joined their party rooms')
-
-    def join_user_parties():
-        # Find all parties the user is a member of
-        user_parties = Party.query.filter(
-            (Party.owner == current_user.id) |
-            (Party.subowners.contains(str(current_user.id)))
-        ).all()
-
-        for party in user_parties:
-            party_room = f'party_{party.id}'
-            join_room(party_room)
-            print(f'User {current_user.id} joined party room {party_room}')
+        if current_user.is_authenticated and allow_event('register'):
+            join_room(f'user_{current_user.id}')
 
     @socketio.on('roll_dice')
     def handle_roll_dice(data):
+        if not current_user.is_authenticated or not isinstance(data, dict):
+            return
+        if not allow_event('roll_dice'):
+            return
         try:
-            print('Rolling dice', data)
-            print(current_user.id, file=sys.stderr)
-            character_id = data.get('character_id')
-            roll_result = data.get('roll')
-            party_id = data.get('party_id')
+            character_id = int(data.get('character_id'))
+            party_id = int(data.get('party_id'))
+        except (TypeError, ValueError):
+            return
+        roll_result = data.get('roll')
+        if not isinstance(roll_result, (str, int, float)) or isinstance(roll_result, bool):
+            return
+        if not str(roll_result) or len(str(roll_result)) > 500:
+            return
 
-            if not all([character_id, roll_result, party_id]):
-                print("Missing required data")
-                return
+        character = db.session.get(Character, character_id)
+        party = db.session.get(Party, party_id)
+        if not character or not party or character.owner != current_user.id:
+            return
+        if character.party_id != party.id or character.id not in json.loads(party.members or '[]'):
+            return
 
-            character = Character.query.get(int(character_id))
-            if not character:
-                print(f"Character {character_id} not found")
-                return
-
-            if str(character.owner) != str(current_user.id):
-                print(
-                    f"User {current_user.id} is not the owner of character {character_id}")
-                return
-
-            party = Party.query.get(int(party_id))
-            if not party:
-                print(f"Party {party_id} not found")
-                return
-
-            try:
-                party_members = json.loads(
-                    party.members) if party.members else []
-            except json.JSONDecodeError:
-                print(f"Invalid JSON in party {party_id} members list")
-                return
-
-            if int(character_id) not in party_members:
-                print(
-                    f"Character {character_id} not in party {party_id} members list. Members: {party_members}")
-                return
-
-            message = f'{character.name} rolled a {roll_result}'
-
-            party_room = f'party_{party_id}'
-            emit('dice_rolled', message, room=party_room)
-            print(f"Emitted dice roll to party room {party_room}")
-
-        except Exception as e:
-            print(f"Error in handle_roll_dice: {str(e)}", file=sys.stderr)
+        message = f'{character.name} rolled a {roll_result}'
+        # User rooms work across Redis workers, but party membership is never cached
+        # in a socket room: leaving a party takes effect on the next roll.
+        for user_id in party_recipient_ids(party):
+            emit('dice_rolled', message, room=f'user_{user_id}')

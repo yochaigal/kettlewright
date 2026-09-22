@@ -109,11 +109,22 @@ def create_unique_url_name(name):
 
 
 @main.route('/new_from_json/', methods=['GET', 'POST'])
+@login_required
 def new_from_json():
     form = CharacterJSONForm()
     user = current_user.username
     if current_user.is_authenticated:
         if form.validate_on_submit():
+            from app.lib.character_json import normalize_inventory
+            try:
+                items, containers = normalize_inventory(form.items.data, form.containers.data)
+                for field in ('strength', 'strength_max', 'dexterity', 'dexterity_max',
+                              'willpower', 'willpower_max', 'hp', 'hp_max', 'gold'):
+                    getattr(form, field).data = int(getattr(form, field).data)
+            except (ValueError, TypeError, KeyError):
+                flash(_('Invalid character stats or inventory in JSON file.'))
+                return render_template('main/new_from_json.html', form=form), 400
+
             # create url_name
             if form.name.data == 'Custom':
                 url_name = create_unique_url_name(form.custom_name.data)
@@ -144,16 +155,18 @@ def new_from_json():
                 image_url=sanitize_data(form.image_url.data or ''),
                 custom_image=string_to_bool(
                     sanitize_data(form.custom_image.data or False)),
-                items=sanitize_json_content(form.items.data or ''),
-                containers=sanitize_json_content(form.containers.data or ''),
+                items=sanitize_json_content(json.dumps(items)),
+                containers=sanitize_json_content(json.dumps(containers)),
                 custom_name=sanitize_data(form.custom_name.data),
                 custom_background=sanitize_data(form.custom_background.data),
                 deprived=string_to_bool(
                     sanitize_data(form.deprived.data or False)),
+                panicked=string_to_bool(form.panicked.data or False),
                 traits=sanitize_data(form.traits.data or ''),  # New field
                 armor=sanitize_data(form.armor.data or '')  # New field
             )
 
+            character.armor = str(character.armorValue())
             db.session.add(character)
             db.session.commit()
 

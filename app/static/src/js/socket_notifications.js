@@ -49,6 +49,10 @@ const socketNotificationManager = {
       }
     });
 
+    this.socket.on("rate_limited", (data) => {
+      notification.showNotification(data.message);
+    });
+
     this.socket.on("dice_rolled", (data) => {
       // console.log("Dice roll received:", data);
       notification.showNotification(data);

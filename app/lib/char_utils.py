@@ -1,3 +1,4 @@
+from app.models.character import item_armor_value
 from app.models import db, User, Character, Party
 from app.lib import load_backgrounds, load_traits, load_bonds, load_omens, roll_list, roll_dice, roll_multi_dice, roll_dict
 import random
@@ -103,21 +104,8 @@ class GeneratedCharacter:
         return slots
 
     def armor(self):
-        armor = 0
-        for it in self.items:
-            if "1 Armor" in it["tags"]:
-                armor += 1
-                continue
-            if "2 Armor" in it["tags"]:
-                armor += 2
-                continue
-            if "3 Armor" in it["tags"]:
-                armor += 3
-                continue
-        if armor > 3:
-            armor = 3
-        return armor
-    
+        return min(3, sum(item_armor_value(dict(item, location=item.get('location', 0))) for item in self.items))
+
     def container_items(self):
         r = []
         for c in self.containers:

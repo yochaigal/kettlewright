@@ -124,11 +124,15 @@
 }
 
 .modal-background {
+  // HTMX dialogs can sit between page sections without a .modal wrapper.
+  // Keep their backdrop above stacking contexts created by SVG masks.
+  z-index: 40;
   background-color: color-mix(in lab, transparent 40%, var(--bg));
 }
 
 .modal-content,
 .modal-card {
+  z-index: 41;
   margin: 0 20px;
   max-height: calc(100vh - 160px);
   overflow: auto;
@@ -148,6 +152,7 @@
 }
 
 .modal-close {
+  z-index: 42;
   background: none;
   height: 40px;
   position: fixed;

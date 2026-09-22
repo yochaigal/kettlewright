@@ -49,7 +49,10 @@ border-radius: 50%;
   width: 100%;
   max-width: 940px;
   padding: 1em;
-  min-height: 660px;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 940px) {
@@ -58,59 +61,146 @@ border-radius: 50%;
   }
 }
 
-.tools-roll-container {
-  // display: grid;
-  // grid-template-columns: 1fr 1fr 1fr;
-
+.tools-tabs {
   display: flex;
-  justify-content: flex-start;
-  gap: 1em;
-  align-items: center;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
+.tools-tab-list {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+
+  button {
+    margin: 0;
+    border: 1px solid color-mix(in lab, transparent 75%, var(--fg));
+    border-radius: 4px 4px 0 0;
+    padding: 0.75em 1em;
+
+    &[aria-selected="true"] {
+      font-weight: bold;
+      background: var(--bg);
+    }
+  }
+}
+
+.tools-tab-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  min-width: 0;
+  padding: 1em;
+  border: 1px solid color-mix(in lab, transparent 75%, var(--fg));
+  overflow-wrap: anywhere;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.tools-roll-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+  align-items: stretch;
+  width: 100%;
   margin-top: 1em;
 }
 
-.tools-select {
-  width: 180px;
+.tools-choice-group + .tools-choice-group {
+  border-top: 1px solid color-mix(in lab, transparent 75%, var(--fg));
+  padding-top: 0.75em;
 }
 
-.tools-category-title, .tools-select, .tools-dice {
-  margin: 0;
+.tools-choice-label {
+  font-weight: bold;
+  margin-bottom: 0.5em;
 }
 
-.tools-roll-container select {
+#table-choice-hint {
   margin: 0;
+  font-style: italic;
 }
 
-.tools-roll-container select:focus {
+.tools-choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+
+.tools-choice {
   margin: 0;
+
+  &[aria-pressed="true"] {
+    font-weight: bold;
+    outline: 2px solid currentColor;
+    outline-offset: 1px;
+  }
 }
 
 #tools-result-display,
 #pcgen-result-display  {
-  height: 400px;
-  max-height: 400px;
+  flex: 1;
+  min-height: 8rem;
+  height: auto;
+  max-height: none;
   overflow-y: auto;
 }
 
 .tools-generator {
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  gap: 0.5em;
   justify-content: end;
   display: flex;
   margin-top: 1em;
 }
 
-#tools-button-container {
+#tools-button-container,
+#pcgen-button-container {
   display: flex; 
   justify-content: flex-end; 
-  gap: 1em; 
-  width: 100%;
+  gap: 1em;
+  flex-wrap: wrap;
+  margin-left: auto;
 }
-@media (max-width: 600px) {
+// Keep the existing dice appearance while native disabled still blocks rolling.
+#roll-button:disabled {
+  opacity: 1;
+  border: none;
+  color: var(--fg);
+  text-decoration: none;
+}
 
-  .tools-roll-container {
-    flex-wrap: wrap;
-  }
-  // #tools-button-container {
-  //   justify-content: space-between;
+body:has(.tools-page) {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 
-  // }
+  .navbar { flex-shrink: 0; }
+}
+
+.tools-page {
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 48px;
+}
+
+.tools-roll-container { flex-shrink: 0; }
+
+#tab-content2 > form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+@media (max-width: 600px), (max-height: 700px) {
+  .tools-page { margin-top: 1rem; }
 }
