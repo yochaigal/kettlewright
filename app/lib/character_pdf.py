@@ -229,9 +229,22 @@ class CharacterSheet:
         self.ruled(_('Traits'), c.traits, layout['traits'])
         self.ruled(_('Bonds'), c.bonds, layout['bonds'])
         self.ruled(_('Omens'), c.omens, layout['omens'])
+        for index in (1, 2):
+            question = getattr(c, f'background_table{index}_question', None)
+            answer = getattr(c, f'background_table{index}_answer', None)
+            if question or answer:
+                self.section(question or _('Background answer %(number)s', number=index), answer or '')
         self.ruled(_('Notes'), c.notes, layout['notes'])
         self.section(_('Description'), c.description)
         self.section(_('Scars'), c.scars)
+        for pet in c.pets:
+            stats = ' · '.join(label + ' ' + (str(getattr(pet, stat)) + '/' + str(getattr(pet, stat+'_max')) if getattr(pet, stat) is not None else '—')
+                               for stat, label in [('hp','HP'),('strength','STR'),('dexterity','DEX'),('willpower','WIL')])
+            lines = [stats, _('Armor') + ': ' + str(pet.armorValue()), pet.attack, pet.notes]
+            for container in json.loads(pet.containers):
+                lines.append(container['name'] + ' (' + str(container['slots']) + ' ' + _('slots') + ')')
+                lines.extend(_item_title(it) for it in json.loads(pet.items) if it['location'] == container['id'])
+            self.section(_('Pet') + ': ' + pet.name, '\n'.join(lines))
         if self.party:
             self.section(_('Party'), self.party.name + '\n' + (self.party.description or ''))
         self.canvas.save()

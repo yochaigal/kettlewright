@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, jsonify, flash, request, make_response, send_file
 from flask_login import login_required, current_user
+from flask_wtf import FlaskForm
 from .models import User, Character, Party
 from . import db
 from .forms import CharacterForm, CharacterEditForm, CharacterJSONForm, PartyForm, PartyEditForm
@@ -116,8 +117,13 @@ def new_from_json():
     if current_user.is_authenticated:
         if form.validate_on_submit():
             from app.lib.character_json import normalize_inventory
+            from app.lib.companions import import_pet
             try:
                 items, containers = normalize_inventory(form.items.data, form.containers.data)
+                pets_data = json.loads(form.pets.data or '[]')
+                if not isinstance(pets_data, list) or len(pets_data) > 100:
+                    raise ValueError('Invalid pets')
+                pets = [import_pet(pet) for pet in pets_data]
                 for field in ('strength', 'strength_max', 'dexterity', 'dexterity_max',
                               'willpower', 'willpower_max', 'hp', 'hp_max', 'gold'):
                     getattr(form, field).data = int(getattr(form, field).data)
@@ -167,6 +173,10 @@ def new_from_json():
                 armor=sanitize_data(form.armor.data or '')  # New field
             )
 
+            from app.models.character import BACKGROUND_FIELDS
+            for field in BACKGROUND_FIELDS:
+                setattr(character, field, sanitize_data(getattr(form, field).data))
+            character.pets.extend(pets)
             character.armor = str(character.armorValue())
             db.session.add(character)
             db.session.commit()
@@ -324,7 +334,7 @@ def character(username, url_name):
     inventory = Inventory(character)
     inventory.select(0)
     inventory.decorate()
-    return render_template('main/character_view.html', character=character, items_json=items_json, containers_json=json.dumps(character.containers), username=username, url_name=url_name, party=party, party_url=party_url, party_name=party_name, party_description=party_description, base_url=base_url, is_owner=is_owner, scarlist=scarlist, portrait_src=portrait_src, inventory=inventory)
+    return render_template('main/character_view.html', character=character, items_json=items_json, containers_json=json.dumps(character.containers), username=username, url_name=url_name, party=party, party_url=party_url, party_name=party_name, party_description=party_description, base_url=base_url, is_owner=is_owner, scarlist=scarlist, portrait_src=portrait_src, inventory=inventory, stat_form=FlaskForm())
 
 
 @main.route('/users/<username>/characters/<url_name>/print/')

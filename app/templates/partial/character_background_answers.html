@@ -1,0 +1,17 @@
+{% if character.background_table1_answer or character.background_table2_answer or character.background_table1_question or character.background_table2_question %}
+<section class="background-table-answers">
+  <h3>{{_('Background table answers')}}</h3>
+  <div class="background-answers-grid">
+    {% for index in (1, 2) %}
+    {% set question = character['background_table' ~ index ~ '_question'] %}
+    {% set answer = character['background_table' ~ index ~ '_answer'] %}
+    {% if question or answer %}
+    <div class="character-section print-container">
+      <h4>{{question or _('Background answer %(number)s', number=index)}}</h4>
+      <p class="with-whitespace">{{answer or ''}}</p>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block content %}
+<script>const party = "None"; const isOwner = "{{editable and not editing}}";</script>
+<script src="{{url_for('static',filename='src/js/character_view.js')}}" type="module"></script>
+<div class="body-container">
+  <div class="sheet view-character-sheet companion-character-sheet">
+    <a href="{{back}}">← {{_('Back')}}</a>
+    {% if editing %}
+    <form id="companion-edit-form" method="post" class="no-space">{{form.hidden_tag()}}</form>
+    <form id="companion-cancel-form" method="post" action="{{url_for('companions.cancel_edit',companion_id=c.id)}}" class="no-space">
+      {{form.hidden_tag()}}<input type="hidden" name="old_items" value="{{c.items}}"><input type="hidden" name="old_containers" value="{{c.containers}}">
+    </form>{% endif %}
+    <div class="full-width row16spaced-top" style="margin-bottom: 1em">
+      <div class="companion-identity">
+        {% if editing %}
+        <input class="edit-mode" type="text" name="name" aria-label="{{_('Name')}}" maxlength="100" value="{{c.name}}" form="companion-edit-form" required>
+        <h2>{{c.role if c.role and c.role != c.name else (_('Hireling') if c.kind == 'hireling' else _('Pet'))}}</h2>
+        {% else %}<h1>{{c.name}}</h1><h2>{{c.role if c.role and c.role != c.name else (_('Hireling') if c.kind == 'hireling' else _('Pet'))}}</h2>{% endif %}
+      </div>
+      {% if editable %}
+      <div class="charview-action-pad">
+        {% if editing %}
+        <button class="dice-button ghost40" type="submit" form="companion-edit-form" title="{{_('Save')}}"><i class="fa-solid fa-check check"></i></button>
+        <button class="dice-button ghost40" type="submit" form="companion-cancel-form" title="{{_('Cancel')}}"><i class="fa-solid fa-xmark xmark"></i></button>
+        {% else %}
+        <button class="dice-button" type="button" id="character-dice-button" title="{{_('Roll Dice')}}"><i class="fa-solid fa-dice dice"></i></button>
+        {% include 'main/dice_modal.html' %}
+        <a class="dice-button ghost40" href="{{url_for('companions.sheet',companion_id=c.id,mode='edit')}}" title="{{_('Edit')}}"><i class="fa-solid fa-pen-to-square pen-to-square"></i></a>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+    <div class="character-stats-traits-inventory">
+      <div id="character-stats-container">
+        <h3>{{_('Stats')}}</h3>
+        <div class="stats-stats-container character-section">
+          {% for field,label,short in [('strength','STR','str'),('dexterity','DEX','dex'),('willpower','WIL','wil'),('hp','HP','hp')] %}
+          <div class="character-attribute-container" id="character-{{short}}-container">
+            {% if editing %}
+            <h4>{{label}}</h4><span class="character-attribute-field-container">
+              <input class="character-attribute-input" type="number" name="{{field}}" aria-label="{{label}}" min="0" max="100000" value="{{c[field] if c[field] is not none else ''}}" form="companion-edit-form">
+              <span>/</span><input class="character-attribute-input" type="number" name="{{field}}_max" aria-label="{{label}} {{_('Maximum')}}" min="0" max="100000" value="{{c[field+'_max'] if c[field+'_max'] is not none else ''}}" form="companion-edit-form">
+            </span>
+            {% elif editable and c[field] is not none %}
+            <form class="companion-stat-form quick-stat-form" data-error="{{_('Unable to save this stat. Please try again.')}}" data-saved="{{_('Saved')}}" method="post" action="{{url_for('companions.stat',companion_id=c.id)}}">
+              {{form.hidden_tag()}}<input type="hidden" name="stat" value="{{field}}">
+              <label for="companion-{{field}}">{{label}}</label>
+              <div class="quick-stat-value"><input id="companion-{{field}}" aria-label="{{c.name}}: {{label}}" type="number" name="value" min="0" max="{{c[field+'_max']}}" value="{{c[field]}}" required><span>/{{c[field+'_max']}}</span></div>
+              <span class="companion-save-status" role="status"></span>
+            </form>
+            {% else %}<h4>{{label}}</h4><p class="subtitle view-mode">{{c[field] if c[field] is not none else '—'}}{% if c[field+'_max'] is not none %}/{{c[field+'_max']}}{% endif %}</p>{% endif %}
+          </div>
+          {% endfor %}
+          <div class="character-attribute-container" id="character-gold-container"><h4>{{_('Gold')}}</h4>
+            {% if editing %}<input class="character-attribute-input" type="number" name="gold" min="0" max="100000" value="{{c.gold}}" form="companion-edit-form" required>
+            {% else %}<p class="subtitle view-mode">{{c.gold}}</p>{% endif %}
+          </div>
+          <div class="character-attribute-container" id="character-armor-container"><h4>{{_('Armor')}}</h4>
+            {% if editing %}<input class="character-attribute-input" type="number" name="armor" aria-label="{{_('Natural armor')}}" title="{{_('Natural armor')}}" min="0" max="3" value="{{c.armor}}" form="companion-edit-form" required>
+            {% else %}<p class="subtitle">{{c.armorValue()}}</p>{% endif %}
+          </div>
+        </div>
+        {% if editable and not editing %}<small>{{_('Changes to HP, STR, DEX and WIL save automatically.')}}</small>{% endif %}
+      </div>
+      <div id="character-traits-container">
+        {% if editing or c.attack %}<h3>{{_('Attack')}}</h3>
+        {% if editing %}<input class="inplace" type="text" name="attack" maxlength="200" value="{{c.attack}}" form="companion-edit-form">
+        {% else %}<p>{{c.attack}}</p>{% endif %}{% endif %}
+        {% if c.kind == 'hireling' %}<h3>{{_('Daily cost')}}</h3>
+        {% if editing %}<input class="character-attribute-input" type="number" name="daily_cost" min="0" max="100000" value="{{c.daily_cost}}" form="companion-edit-form" required>{% else %}{{c.daily_cost}}{% endif %} {{_('gp/day')}}
+        {% endif %}
+      </div>
+      <div class="inventory-container" id="inventory-container">
+        {% include 'partial/charedit/inventory.html' if editing else 'partial/charview/inventory.html' %}
+      </div>
+    </div>
+    <div class="character-descriptions-grid">
+      <div class="character-description-container companion-notes">
+        <h3>{{_('Notes')}}</h3>
+        {% if editing %}<textarea class="charedit-notes" name="notes" rows="8" maxlength="10000" form="companion-edit-form">{{c.notes}}</textarea>
+        {% else %}<p class="with-whitespace character-text-field">{{c.notes}}</p>{% endif %}
+      </div>
+      {% if editing and c.kind == 'hireling' and current_user.id == c.party.owner %}
+      <div class="character-description-container"><h3>{{_('Access')}}</h3><label><input type="checkbox" name="shared" form="companion-edit-form" {% if c.shared %}checked{% endif %}> {{_('Allow party members to manage this hireling')}}</label></div>
+      {% endif %}
+    </div>
+    {% if editing %}<details class="companion-section"><summary>{{_('Delete hireling') if c.kind == 'hireling' else _('Delete pet')}}</summary>
+      <p>{{_('This also removes their inventory.')}}</p><form method="post" action="{{url_for('companions.delete',companion_id=c.id)}}">{{form.hidden_tag()}}<button class="is-danger">{{_('Confirm deletion')}}</button></form>
+    </details>{% endif %}
+  </div>
+</div>
+{% endblock %}

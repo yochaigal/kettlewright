@@ -1,5 +1,7 @@
 import notification from "./notification.js";
 import { refreshRollHistory } from "./party_roll_history.js";
+import { refreshPartyMembers } from "./party_members.js";
+import { refreshCharacterStats } from "./character_stats.js";
 
 const socketNotificationManager = {
   socket: null,
@@ -36,6 +38,8 @@ const socketNotificationManager = {
       this.connectionAttempts = 0;
       this.registerUser();
       refreshRollHistory();
+      refreshPartyMembers();
+      refreshCharacterStats();
     });
 
     this.socket.on("connect_error", (error) => {
@@ -61,6 +65,10 @@ const socketNotificationManager = {
     });
     this.socket.on("roll_history_changed", (data) => {
       refreshRollHistory(data.party_id);
+    });
+    this.socket.on("party_members_changed", (data) => {
+      refreshPartyMembers(data.party_id);
+      refreshCharacterStats(data.party_id);
     });
   },
 

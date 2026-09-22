@@ -1,0 +1,37 @@
+{% for character in characters %}
+<article class="party-member card" data-character-id="{{ character.id }}">
+  <div class="party-member-identity">
+    <a href="/users/{{ character.owner_username }}/characters/{{ character.url_name }}/">
+      <img src="{{ character.image_url if character.custom_image else url_for('static', filename='images/portraits/' + (character.image_url or 'default-portrait.webp')) }}"
+           alt="" class="party-member-portrait" />
+    </a>
+    <div>
+      <a class="party-member-name" href="/users/{{ character.owner_username }}/characters/{{ character.url_name }}/">{{ character.name }}</a>
+      <p class="party-member-background">{{ character.background }}</p>
+      {% include "partial/dead_badge.html" %}
+      {% if character.deprived %}<small>{{_('DEPRIVED')}}</small>{% endif %}
+      {% if character.panicked %}<small>{{_('PANICKED')}}</small>{% endif %}
+    </div>
+  </div>
+  <div class="party-member-stats">
+    {% for field, label in [('hp', _('HP')), ('strength', _('STR')), ('dexterity', _('DEX')), ('willpower', _('WIL'))] %}
+    <div class="party-member-stat">
+      {% if current_user.id in (party.owner, character.owner) %}
+      {% with stat_id='party-' ~ character.id ~ '-' ~ field,
+              stat_action=url_for('party.update_member_stat', party_id=party.id, character_id=character.id) %}
+        {% include 'partial/quick_stat.html' %}
+      {% endwith %}
+      {% else %}
+      <span class="party-stat-label">{{ label }}</span>
+      <span class="quick-stat-value">{{ character[field] or 0 }}/{{ character[field + '_max'] or 0 }}</span>
+      {% endif %}
+    </div>
+    {% endfor %}
+    <div class="party-member-stat"><span class="party-stat-label">{{_('Armor')}}</span><span>{{ character.armorValue() }}</span></div>
+    <div class="party-member-stat"><span class="party-stat-label">{{_('Gold')}}</span><span>{{ character.gold or 0 }}</span></div>
+  </div>
+  <p class="party-member-slots">{{ ngettext('%(num)s slot free', '%(num)s slots free', character.freeMainSlots()) }}</p>
+</article>
+{% else %}
+<p>{{_('No members in this party')}}</p>
+{% endfor %}

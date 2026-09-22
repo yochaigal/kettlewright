@@ -49,68 +49,25 @@
         <i class="fa-solid fa-chevron-down" id="party-members-collapse-icon"></i>
       </span>
       <span class="subtitle bold">{{_('Members')}}</span>
-      <div id="party-members-content" class="party-section-content">
-        {% if characters %} {% for character in characters %}
-
-        <div class="card character-card party-member-card" style="cursor: pointer; padding: 20px"
-          hx-get="/party/show-user/{{character.owner_username}}/{{character.url_name}}">
-          <div class="card-content">
-            <div class="card-image">
-              <figure class="" style="display: flex; align-items: center; justify-content: center">
-                <img src="{{ character.portrait_src }}" alt="Character Portrait"
-                  style="height: 120px; width: 120px; object-fit: cover"
-                  data-custom-image="{{ character.custom_image }}" data-image-url="{{ character.image_url }}"
-                  class="character-card-image" />
-              </figure>
-            </div>
-            <div class="character-card-name-container">
-              <h2 class="character-card-name">{{ character.name }}</h2>
-              <h3 class="character-card-background">{{ character.background }}</h3>
-              {% include "partial/dead_badge.html" %}
-            </div>
-
-            <div class="character-card-stats-container">
-              <div>
-                <div class="card-attribute-container">
-                  <p class="character-card-attribute subtitle">
-                    {{_('STR')}} {{character.strength}}/{{character.strength_max}}
-                  </p>
-                </div>
-                <div class="card-attribute-container">
-                  <p class="character-card-attribute subtitle">
-                    {{_('DEX')}} {{character.dexterity}}/{{character.dexterity_max}}
-                  </p>
-                </div>
-                <div class="card-attribute-container">
-                  <p class="character-card-attribute subtitle">
-                    {{_('WIL')}} {{character.willpower}}/{{character.willpower_max}}
-                  </p>
-                </div>
-              </div>
-              <div>
-                <div class="card-attribute-container">
-                  <p class="character-card-attribute subtitle">{{_('Armor')}} {{character.armorValue()}}</p>
-                </div>
-                <div class="card-attribute-container">
-                  <p class="character-card-attribute subtitle hp-text">{{_('HP')}} {{character.hp}}/{{character.hp_max}}
-                  </p>
-                </div>
-                <div class="card-attribute-container">
-                  <p class="character-card-attribute subtitle">{{_('Gold')}} {{character.gold}}</p>
-                </div>
-              </div>
-            </div>
-            <div class="level is-mobile"> </div>
+      <div id="party-members" class="{% if is_owner %}party-compact{% endif %}"
+           data-party-id="{{ party.id }}" data-members-url="{{ url_for('party.members', party_id=party.id) }}"
+           data-save-error="{{_('Unable to save this stat. Please try again.')}}"
+           data-load-error="{{_('Unable to refresh party members.')}}" data-saved="{{_('Saved')}}">
+        <div class="party-view-controls">
+          <div role="group" aria-label="{{_('Member display')}}">
+            <button type="button" data-party-layout="compact" aria-pressed="{{ 'true' if is_owner else 'false' }}">{{_('Compact')}}</button>
+            <button type="button" data-party-layout="cards" aria-pressed="{{ 'false' if is_owner else 'true' }}">{{_('Cards')}}</button>
           </div>
-          <p class="character-card-inventory">{{ ngettext('%(num)s slot free', '%(num)s slots free', character.freeMainSlots()) }}</p>
+          <small>{{_('Changes to HP, STR, DEX and WIL save automatically.')}}</small>
         </div>
-
-        {% endfor %} {% else %}
-        <p>{{_('No members in this party')}}</p>
-
-        {% endif %}
+        <p class="party-members-status quick-stats-status" role="status" aria-live="polite"></p>
+        <div id="party-members-content" class="party-section-content">
+          {% include "partial/partyview/members.html" %}
+        </div>
       </div>
     </div>
+
+    {% include "partial/companions/hirelings.html" %}
 
     <div class="party-section">
       <span id="party-inventory-collapse-button" class="party-collapse-button">

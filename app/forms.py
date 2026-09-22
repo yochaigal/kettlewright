@@ -169,6 +169,11 @@ class CharacterForm(FlaskForm):
 
 
 class CharacterEditForm(FlaskForm):
+    background_table1_question = TextAreaField(_l('Background question 1'), validators=[Length(max=2000)])
+    background_table1_answer = TextAreaField(_l('Background answer 1'), validators=[Length(max=2000)])
+    background_table2_question = TextAreaField(_l('Background question 2'), validators=[Length(max=2000)])
+    background_table2_answer = TextAreaField(_l('Background answer 2'), validators=[Length(max=2000)])
+
     name = StringField(_l('Custom Name'), validators=[DataRequired(), Length(
         1, 32)])
     strength = IntegerField(_l('Strength'), validators=[InputRequired()])
@@ -238,6 +243,12 @@ class CharacterEditFormName(FlaskForm):
     
 
 class CharacterJSONForm(FlaskForm):
+    background_table1_question = HiddenField(_l('Background question 1'), validators=[Length(max=2000)])
+    background_table1_answer = HiddenField(_l('Background answer 1'), validators=[Length(max=2000)])
+    background_table2_question = HiddenField(_l('Background question 2'), validators=[Length(max=2000)])
+    background_table2_answer = HiddenField(_l('Background answer 2'), validators=[Length(max=2000)])
+
+    pets = HiddenField(_l('Pets'), validators=[Length(max=100000)])
     name = HiddenField(_l('Name'), validators=[DataRequired(), Length(max=2000)])
     background = HiddenField(_l('Background'), validators=[
                              DataRequired(), Length(max=2000)])

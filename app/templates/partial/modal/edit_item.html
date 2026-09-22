@@ -1,5 +1,6 @@
 <div class="inventory-modal">
   <form class="no-space">
+    {{ companion_form().hidden_tag() }}
     <input type="hidden" name="edit_item_tags" value id="edit_item_tags" />
     <input type="hidden" name="mode" value="{{mode}}" />
     <div class="modal-background inventory-modal-background"></div>
@@ -65,7 +66,7 @@
 
         {% include "partial/modal/extra_item_tags.html" %}
 
-        <div style="display: flex; justify-content: flex-start; gap: 40px">
+        <div class="item-amounts-container">
           <div class="field flex-column-centered">
             <label>{{_('Uses')}}</label>
             <div class="column number-field" style="padding-bottom: 0">
@@ -98,6 +99,11 @@
                 <option value="party:{{c.id}}">{{c.name}} ({{_('Party')}})</option>
                 {% endfor %}
                 {% endif %}
+              {% if companion_sheet %}
+                {% if mode == 'edit' %}{% for key, recipient in outgoing.items() %}{% for target in decode(recipient.containers) %}
+                <option value="recipient:{{key}}|{{target.id}}">{{target.name}} ({{recipient.name}})</option>
+                {% endfor %}{% endfor %}{% endif %}
+                {% else %}{% with source=character %}{% include "partial/companions/container_options.html" %}{% endwith %}{% endif %}
               </select>
             </div>
           </div>
@@ -129,16 +135,16 @@
         <div class="footer-button-container">
           <div>
             <button class="button is-success" type="button" {% if mode=='edit' %}
-              hx-post="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/{{item.id}}/save" {% else %}
-              hx-post="/charedit/inplace-inventory/{{username}}/{{url_name}}/item-edit/None/save?mode=create" {% endif
+              hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/item-edit/{{item.id}}/save" {% else %}
+              hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/item-edit/None/save?mode=create" {% endif
               %} hx-target="#inventory-container">
               {{_('Save')}}
             </button>
           </div>
           <div>
             <button class="button inventory-modal-cancel-button" type="button" {% if mode=='edit' %}
-              hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container.id}}" {% else
-              %} hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/None" {% endif %}
+              hx-get="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/{{inventory.selected_container.id}}" {% else
+              %} hx-get="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/None" {% endif %}
               hx-target="#inventory-container">
               {{_('Cancel')}}
             </button>

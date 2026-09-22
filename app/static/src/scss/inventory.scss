@@ -289,3 +289,12 @@
   object-fit: contain;
   margin: .5rem auto;
 }
+
+.item-amounts-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 1rem 2rem;
+  > .field { min-width: 0; }
+  .select, select { width: 100%; max-width: 100%; }
+}

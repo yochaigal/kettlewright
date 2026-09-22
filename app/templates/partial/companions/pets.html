@@ -1,0 +1,8 @@
+{% from 'partial/companions/cards.html' import cards with context %}
+<section id="character-pets" class="companion-section">
+  <h3>{{_('Pets')}}</h3>
+  {{ cards(character.pets, companion_cards_editable|default(true)) }}
+  {% if is_owner %}
+  <a class="button" href="{{ url_for('companions.add_pet', character_id=character.id) }}">{{_('Add pet')}}</a>
+  {% endif %}
+</section>

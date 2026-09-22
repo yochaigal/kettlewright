@@ -1,29 +1,28 @@
+<div id="character-quick-stats" data-party-id="{{ character.party_id }}"
+     data-stats-url="{{ url_for('character_edit.character_stats', username=username, url_name=url_name) }}"
+     data-save-error="{{_('Unable to save this stat. Please try again.')}}"
+     data-load-error="{{_('Unable to refresh character stats.')}}" data-saved="{{_('Saved')}}">
 <h3>{{_('Stats')}}</h3>
 <div class="stats-stats-container character-section">
-  <div class="character-attribute-container" id="character-str-container">
-    <h4>{{_('STR')}}</h4>
-    <p class="subtitle view-mode" id="strength-view-text">
-      {{ character.strength }}/{{ character.strength_max }}
-    </p>
+  {% for field, label, short in [('strength', _('STR'), 'str'), ('dexterity', _('DEX'), 'dex'), ('willpower', _('WIL'), 'wil'), ('hp', _('HP'), 'hp')] %}
+  <div class="character-attribute-container" id="character-{{ short }}-container">
+    {% if is_owner %}
+      {% with stat_id='character-quick-' ~ field,
+              stat_action=url_for('character_edit.character_stat_save', username=username, url_name=url_name) %}
+        {% include 'partial/quick_stat.html' %}
+      {% endwith %}
+      {% if field == 'hp' and (character.overburdened() or character.panicked) %}
+        <small class="red-text">{{_('Available HP: 0')}}</small>
+        <small>{% if character.overburdened() %}{{_('Your main inventory is full. Free a slot to use your HP.')}}{% else %}{{_('Panic reduces your available HP to 0.')}}{% endif %}</small>
+      {% endif %}
+    {% else %}
+      <h4>{{ label }}</h4>
+      <p class="subtitle view-mode {% if field == 'hp' and (character.overburdened() or character.panicked) %}red-text{% endif %}" id="{{ field }}-view-text">
+        {{ character.hpValue().0 if field == 'hp' else character[field] }}/{{ character[field + '_max'] }}
+      </p>
+    {% endif %}
   </div>
-  <div class="character-attribute-container" id="character-dex-container">
-    <h4>{{_('DEX')}}</h4>
-    <p class="subtitle view-mode" id="dexterity-view-text">
-      {{ character.dexterity }}/{{ character.dexterity_max }}
-    </p>
-  </div>
-  <div class="character-attribute-container" id="character-wil-container">
-    <h4>{{_('WIL')}}</h4>
-    <p class="subtitle view-mode" id="willpower-view-text">
-      {{ character.willpower }}/{{ character.willpower_max }}
-    </p>
-  </div>
-  <div class="character-attribute-container" id="character-hp-container">
-    <h4>{{_('HP')}}</h4>
-    <p class="subtitle view-mode {% if character.overburdened() or character.panicked %} red-text {% endif %}" id="hp-view-text">
-      {{ character.hpValue().0 }}/{{ character.hpValue().1 }}
-    </p>
-  </div>
+  {% endfor %}
 
 
 <div id="character-deprived-container" style="display:flex;flex-direction: column;justify-content:end;gap:8px">
@@ -60,5 +59,10 @@
     {% endif %}
   </div>
 </div>
-<div hx-trigger="refresh-stats from:body" hx-get="/charedit/inplace-stats/{{ username }}/{{ url_name }}/cancel"
+<div hx-trigger="refresh-stats from:body" hx-get="{{ url_for('character_edit.character_stats', username=username, url_name=url_name) }}"
   hx-target="#character-stats-container"></div>
+{% if is_owner %}
+<small>{{_('Changes to HP, STR, DEX and WIL save automatically.')}}</small>
+{% endif %}
+<p class="quick-stats-status" role="status" aria-live="polite"></p>
+</div>

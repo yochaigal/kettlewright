@@ -53,7 +53,9 @@ def test_departed_member_stops_receiving_without_reconnecting(app, socket_party)
         db.session.commit()
     roll(socket_party[12])
     assert socket_party[30].get_received() == []
-    assert len(socket_party[20].get_received()) == 2
+    assert [event['name'] for event in socket_party[20].get_received()] == [
+        'party_members_changed', 'dice_rolled', 'roll_history_changed',
+    ]
 
 
 def test_cannot_roll_another_users_character(socket_party):
@@ -141,6 +143,9 @@ def test_clear_history_owner_only_and_broadcasts_to_current_members(app, socket_
         db.session.add(PartyRoll(party_id=2, character_name='Other', result='keep'))
         db.session.get(Character, 2).party_id = None
         db.session.commit()
+    # Membership changes now also refresh the party overview.
+    for client in socket_party.values():
+        client.get_received()
     path = '/party/1/roll-history/clear'
     assert app.test_client().post(path).status_code == 302
     for user_id in (2, 12, 30):

@@ -138,7 +138,10 @@ class GeneratedCharacter:
             tritems.append(tit)
         r['items'] = tritems
         r['name'] = self.name
-        r['notes'] = _(self.table1.question)+"\n"+_(self.table1.option['description'])+'\n'+_(self.table2.question)+'\n'+_(self.table2.option['description'])
+        r['notes'] = ''
+        for index, table in enumerate((self.table1, self.table2), 1):
+            r[f'background_table{index}_question'] = _(table.question)
+            r[f'background_table{index}_answer'] = _(table.option['description'])
         r['omens'] = _(self.omen)
         r['scars'] = ''
         r['strength'] = self.attributes.str
@@ -147,6 +150,7 @@ class GeneratedCharacter:
         r['willpower'] = self.attributes.wil
         r['willpower_max'] = self.attributes.wil
         r['image_url'] = "default-portrait.webp"
+        r['pets'] = []
         return r
 
 def find_background(list, bkg):
@@ -273,7 +277,8 @@ def generate_character(bkg):
             idx += 1
             genchar.containers.append(c)            
             
-    json_data = json.dumps(genchar.toJSON())
+    generated_data = genchar.toJSON()
+    json_data = json.dumps(generated_data)
     
     return genchar, json_data
 

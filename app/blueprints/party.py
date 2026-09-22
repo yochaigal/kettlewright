@@ -3,12 +3,45 @@ from flask_login import login_required, current_user
 from app.lib import *
 from app.models import db, User, Character, Party, PartyRoll
 from app.socket_events import party_recipient_ids, notify_roll_history_changed
+from app.lib.quick_stats import save_current_stat
+from app.lib.companions import save_item_to_companion, finish_companion_transfers, can_transfer_from
 from flask_wtf import FlaskForm
 from app.forms import *
 import json
 from flask_babel import _
 
 party = Blueprint('party', __name__)
+
+
+def party_characters(target_party):
+    members = json.loads(target_party.members) if target_party.members and target_party.members.strip() else []
+    by_id = {character.id: character for character in Character.query.filter(
+        Character.id.in_(members), Character.party_id == target_party.id
+    ).all()}
+    return [by_id[member_id] for member_id in members if member_id in by_id]
+
+
+@party.route('/party/<int:party_id>/members', methods=['GET'])
+@login_required
+def members(party_id):
+    target_party = db.get_or_404(Party, party_id)
+    response = make_response(render_template(
+        'partial/partyview/members.html', party=target_party,
+        characters=party_characters(target_party), stat_form=FlaskForm()))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@party.route('/party/<int:party_id>/members/<int:character_id>/stat', methods=['POST'])
+@login_required
+def update_member_stat(party_id, character_id):
+    target_party = db.get_or_404(Party, party_id)
+    character = db.get_or_404(Character, character_id)
+    if character.party_id != target_party.id or character.id not in json.loads(target_party.members or '[]'):
+        abort(404)
+    if current_user.id not in (target_party.owner, character.owner):
+        abort(403)
+    return save_current_stat(character)
 
 
 def get_party_data(ownername, party_url):
@@ -22,25 +55,15 @@ def get_party_data(ownername, party_url):
         if party.owner == current_user.id:
             join_code = party.join_code
             is_owner = True
-    members_list = json.loads(
-        party.members) if party.members and party.members.strip() else []
     subowners_list = json.loads(
         party.subowners) if party.subowners and party.subowners.strip() else []
 
     if current_user.is_authenticated:
         is_subowner = current_user.id in subowners_list
-    characters = []
-
-    for member_id in members_list:
-        character = Character.query.filter_by(id=member_id).first()
-        if character:
-            characters.append(character)
-            # Update character portrait source
-            if not character.custom_image:
-                character.portrait_src = url_for(
-                    'static', filename='images/portraits/' + character.image_url)
-            else:
-                character.portrait_src = character.image_url
+    characters = party_characters(party)
+    for character in characters:
+        character.portrait_src = character.image_url if character.custom_image else url_for(
+            'static', filename='images/portraits/' + (character.image_url or 'default-portrait.webp'))
     
     inventory = Inventory(party)
     inventory.select(0)
@@ -59,7 +82,7 @@ def party_view(ownername, party_url):
     can_view_rolls = current_user.id in party_recipient_ids(party)
     return render_template('main/party_view.html', party_url=party_url, characters=characters, join_code=join_code, is_owner=is_owner,
                            is_subowner=is_subowner, party_id=party.id, ownername=ownername, inventory=inventory, party=party,
-                           can_view_rolls=can_view_rolls, roll_form=FlaskForm(),
+                           can_view_rolls=can_view_rolls, roll_form=FlaskForm(), stat_form=FlaskForm(),
                            rolls=PartyRoll.latest(party.id) if can_view_rolls else [])
 
 
@@ -112,11 +135,15 @@ def party_edit(ownername, party_url):
 @party.route('/party/edit/<ownername>/<party_url>/cancel', methods=['GET','POST'])
 def party_edit_cancel(ownername, party_url):
     party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party = get_party_data(ownername, party_url)
+    if not can_transfer_from(party):
+        abort(403)
     data = request.form
     changed = False
     # restore some data
     if data['old_items'] != None:
-        party.items = data['old_items']
+        restored_items = json.loads(data['old_items'])
+        finish_companion_transfers(party, restored_items)
+        party.items = json.dumps(restored_items)
         changed = True
     if data['old_containers'] != None:
         party.containers = data['old_containers']
@@ -145,6 +172,7 @@ def party_edit_save(ownername, party_url):
             it["id"] = uuid.uuid4().hex
         result.append(it)
     party.items = json.dumps(result)
+    finish_companion_transfers(party)
     db.session.commit()
     response = make_response("Redirect")
     response.headers["HX-Redirect"] = "/users/"+ownername+"/parties/"+party_url+"/"
@@ -308,7 +336,18 @@ def party_inventory_item_edit_save(party_id, item_id):
     mode = request.args.get('mode')
     if mode == None or mode == "":
         mode = "edit"
-    if mode == "edit":
+    if data["edit_item_container"].startswith('companion:'):
+        if mode != 'edit':
+            abort(400)
+        from werkzeug.exceptions import HTTPException
+        try:
+            save_item_to_companion(inventory, item_id, data["edit_item_container"])
+        except HTTPException as error:
+            db.session.rollback()
+            response = make_response(render_template('partial/inventory_error.html', message=error.description))
+            response.headers['HX-Retarget'] = '#add-edit-item-modal-error-text'
+            return response
+    elif mode == "edit":
         item = inventory.update_item(item_id,data["edit_item_name"],data["edit_item_tags"],data["edit_item_uses"],
                                      data["edit_item_charges"], data["edit_item_max_charges"], data["edit_item_container"],
                                      data["edit_item_description"], armor_active=data.get("edit_item_armor_active") == "on")

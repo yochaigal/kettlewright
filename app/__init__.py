@@ -154,6 +154,9 @@ def create_app():
     from app.blueprints import character_create as character_create_blueprint
     app.register_blueprint(character_create_blueprint)
 
+    from app.blueprints.companions import companions
+    app.register_blueprint(companions)
+
     from .socket_events import register_socket_events
     register_socket_events(socketio)
     

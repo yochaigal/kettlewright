@@ -1,0 +1,109 @@
+{
+  "Dematerialized Pet": {
+    "name": "Dematerialized Pet",
+    "notes": "You dematerialized a beloved pet. Now it follows you around, invisible but always present. Although it cannot interact with the physical realm, you are able to share its senses. (Add a Fatigue each time.) It follows basic commands."
+  },
+  "Living Nightmare": {
+    "name": "Living Nightmare",
+    "mirror": true,
+    "attack": "Claws (d8+d8)",
+    "notes": "A Living Nightmare that dwells within you but manifests whenever you are in danger. It has your same Attributes and HP and attacks with claws (d8+d8). It disappears on Critical Damage (take 1d4 WIL damage), re-appearing again on the next full moon."
+  },
+  "Raven Familiar": {
+    "name": "Raven Familiar",
+    "hp": 8,
+    "strength": 3,
+    "dexterity": 11,
+    "willpower": 13,
+    "attack": "Beak (d6)",
+    "notes": "A Raven Familiar [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as an intelligent being and is entirely devoted to you."
+  },
+  "Carrion Cat": {
+    "name": "Carrion Cat",
+    "notes": "A clever pet, small enough to hide in your pack (bulky), but strong enough to scare off smaller predators. Requires one Ration a day, and it must be meat."
+  },
+  "Alchemical Tattoo": {
+    "name": "Alchemical Tattoo",
+    "notes": "Alchemical Tattoo: A dog, cat, or bird that can leave your body on demand. It follows your commands to the best of its abilities and can pass its injuries (as STR loss) back onto you. Petty."
+  },
+  "Heavy Destrier": {
+    "name": "Heavy Destrier",
+    "hp": 8,
+    "slots": 2,
+    "armor": 1,
+    "attack": "Hooves (d10+d10)",
+    "notes": "Heavy Destrier: A beast built for war, an imposing creature. 8 HP, 1 Armor, hooves (d10+d10), +2 slots."
+  },
+  "Blacklegged Dandy": {
+    "name": "Blacklegged Dandy",
+    "hp": 6,
+    "slots": 4,
+    "notes": "Blacklegged Dandy: Hardy and adaptable. Tough or Perilous terrain are one step easier. 6 HP. +4 slots."
+  },
+  "Rivertooth": {
+    "name": "Rivertooth",
+    "hp": 4,
+    "slots": 6,
+    "notes": "Rivertooth: Impressively strong, capable of carrying heavy loads. 4 HP. +6 slots (only +2 slots if carrying two people)."
+  },
+  "Piebald Cob": {
+    "name": "Piebald Cob",
+    "hp": 6,
+    "slots": 4,
+    "notes": "Piebald Cob: Intelligent, it can understand simple commands, and even has an instinct for danger. 6 HP. +4 slots."
+  },
+  "Linden White": {
+    "name": "Linden White",
+    "hp": 4,
+    "slots": 3,
+    "notes": "Linden White: Highly trained and agile, it can perform intricate maneuvers in a time of need (no DEX save to flee). 4 HP. +3 slots."
+  },
+  "Stray Fogger": {
+    "name": "Stray Fogger",
+    "hp": 4,
+    "slots": 2,
+    "notes": "Stray Fogger: Wild but very fast (even in Tough terrain). Rides light. 4 HP. +2 slots."
+  },
+  "Hollow Wolf": {
+    "name": "Hollow Wolf",
+    "hp": 5,
+    "strength": 11,
+    "dexterity": 13,
+    "willpower": 8,
+    "attack": "Teeth (d6)",
+    "notes": "A hollow wolf that had been frightening travelers. You took pity on the half-starved creature and nursed it back to health. Now it is loyal to you unto death. It is also a great tunneler. 5 HP, 11 STR, 13 DEX, 8 WIL, teeth (d6)."
+  },
+  "Horse": {
+    "name": "Horse",
+    "slots": 4,
+    "notes": ""
+  },
+  "Mule": {
+    "name": "Mule",
+    "slots": 6,
+    "notes": "Slow."
+  },
+  "Homunculus": {
+    "name": "Homunculus",
+    "notes": "Homunculus: A miniature clay replica of yourself that follows your every command. It hates being enthralled to you and complains bitterly whenever possible. Any damage done to the homunculus is also done to you. 3 HP, 4 STR, 13 DEX, 5 WIL.",
+    "hp": 3,
+    "strength": 4,
+    "dexterity": 13,
+    "willpower": 5
+  },
+  "Raised Servant": {
+    "name": "Raised Servant",
+    "notes": "A Blood Pail (bulky) from a local death-cult. Empty it to raise a servant built from whatever is buried below, with 6 HP, 1 Armor, 13 STR, 11 DEX, 4 WIL, and shard fists (d8+d8). Only one servant can be raised at a time. If destroyed, you permanently lose 1d4 STR. Recharge: Fill with the blood of a dying warrior.",
+    "hp": 6,
+    "armor": 1,
+    "strength": 13,
+    "dexterity": 11,
+    "willpower": 4,
+    "attack": "Shard fists (d8+d8)"
+  },
+  "Donkey": {
+    "name": "Donkey",
+    "notes": "A burial wagon (+6 slots, slow) from your last job. It came with a stubborn old donkey (+4 slots, only +2 slots if pulling wagon).",
+    "slots": 4
+  }
+}
