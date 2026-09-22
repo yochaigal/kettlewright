@@ -7,6 +7,9 @@
       <h3 class="">{{_('Upload JSON Character File')}}</h3>
       <input type="file" id="jsonFile" accept=".json" style="display: flex; flex-direction: column" />
     </div>
+    <p id="json-error" role="alert" class="red-text" data-invalid="{{_('Choose a valid character JSON file.')}}"></p>
+    {% for message in get_flashed_messages() %}<p role="alert" class="red-text">{{message}}</p>{% endfor %}
+    {% for field in form %}{% for error in field.errors %}<p role="alert" class="red-text">{{field.label.text}}: {{error}}</p>{% endfor %}{% endfor %}
     <br /><br />
     {{ form.submit(class='button is-success', id="submit-button", style="margin-top: 0;") }}
   </form>

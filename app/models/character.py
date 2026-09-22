@@ -120,11 +120,10 @@ class Character(db.Model):
 
     # Serialize object to JSON
     def toJSON(self):
-        dictret = dict(self.__dict__); 
-        to_remove = ['party_id','party_code','_sa_instance_state','created_at','url_name','owner_username','owner']
-        for r in to_remove:
-            dictret.pop(r, None)
-        to_parse = ['containers','items']
-        for p in to_parse:
-            dictret[p] = json.loads(dictret[p])
-        return json.dumps(dictret, indent=4, sort_keys=True)
+        excluded = {'id', 'party_id', 'party_code', 'created_at', 'url_name', 'owner_username', 'owner'}
+        data = {column.name: getattr(self, column.name) for column in self.__table__.columns
+                if column.name not in excluded}
+        data['items'] = json.loads(self.items or '[]')
+        data['containers'] = json.loads(self.containers or '[]')
+        data['armor'] = self.armorValue()
+        return json.dumps(data, indent=4, sort_keys=True)
