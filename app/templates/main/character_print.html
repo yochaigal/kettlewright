@@ -22,38 +22,20 @@
     <div class="character-print-grid print-container">
       <div>
         <h3>{{_('Stats')}}</h3>
-        <div class="stats-stats-container character-section">
-          <div class="character-attribute-container" id="character-str-container">
-            <h4>{{_('STR')}}</h4>
-            <p class="subtitle view-mode" id="strength-view-text">{{character.strength}}/{{character.strength_max}}</p>
-          </div>
-          <div class="character-attribute-container" id="character-dex-container">
-            <h4>{{_('DEX')}}</h4>
-            <p class="subtitle view-mode" id="dexterity-view-text">{{character.dexterity}}/{{character.dexterity_max}}
-            </p>
-          </div>
-          <div class="character-attribute-container" id="character-wil-container">
-            <h4>{{_('WIL')}}</h4>
-            <p class="subtitle view-mode" id="willpower-view-text">{{character.willpower}}/{{character.willpower_max}}
-            </p>
-          </div>
-          <div class="character-attribute-container" id="character-hp-container">
-            <h4>{{_('HP')}}</h4>
-            <p class="subtitle view-mode" id="hp-view-text">{{character.hp}}/{{character.hp_max}}</p>
-          </div>
-          {% if character.deprived %}
-          <h4 class="character-deprived-text view-mode">{{_('DEPRIVED')}}</h4>
-          {% endif %}
-
-          <div class="character-attribute-container" id="character-gold-container">
-            <h4 class="view-attribute-font">{{_('Gold')}}</h4>
-            <p class="subtitle view-mode" id="gold-view-text">{{character.gold}}</p>
-          </div>
-          <div class="character-attribute-container" id="character-armor-container">
-            <h4>{{_('Armor')}}</h4>
-            <p class="subtitle" id="armor-counter" style="margin-left: 0px; margin-right: auto">{{character.armorValue()}}</p>
-          </div>
+        <dl class="character-print-stats">
+          <dt>{{_('STR')}}</dt><dd>{{character.strength}} / {{character.strength_max}}</dd>
+          <dt>{{_('Gold')}}</dt><dd>{{character.gold}}</dd>
+          <dt>{{_('DEX')}}</dt><dd>{{character.dexterity}} / {{character.dexterity_max}}</dd>
+          <dt>{{_('Armor')}}</dt><dd>{{character.armorValue()}}</dd>
+          <dt>{{_('WIL')}}</dt><dd>{{character.willpower}} / {{character.willpower_max}}</dd>
+          <dt>{{_('HP')}}</dt><dd>{{character.hp}} / {{character.hp_max}}</dd>
+        </dl>
+        {% if character.deprived or character.panicked %}
+        <div class="character-print-conditions">
+          {% if character.deprived %}<strong>{{_('DEPRIVED')}}</strong>{% endif %}
+          {% if character.panicked %}<strong>{{_('PANICKED')}}</strong>{% endif %}
         </div>
+        {% endif %}
       </div>
       <div>
         <h3>{{_('Traits')}}</h3>
@@ -64,12 +46,15 @@
       <h3>{{_('Inventory')}}</h3>
       <div id="additional-inventory-container" class="character-print-inventories">
         {% for c in inventory.containers if c.id == 0 or inventory.get_items_for_container(c.id, False) %}
-        <div style="margin-bottom: 1em" class="inventory-container print-container">
+        <div style="margin-bottom: 1em" class="inventory-container print-container" data-print-container="{{ c.id }}">
           <div class="inventory-container-title-selected subtitle">{{c.name}} ( {{inventory.container_slots(c)}}
             /
             {{c.slots}} )</div>
           {% for it in inventory.get_items_for_container(c.id, True) %}
-          <span class="inventory-item-container">{{it['title'] | safe}}</span>
+          <div class="character-print-item">{{it['title'] | safe}}</div>
+          {% endfor %}
+          {% for slot in range([0, (c.slots | int) - inventory.container_slots(c)] | max) %}
+          <div class="character-print-item character-print-empty-slot" aria-hidden="true"></div>
           {% endfor %}
         </div>
         {% endfor %}

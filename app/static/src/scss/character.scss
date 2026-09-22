@@ -329,6 +329,35 @@
   gap: 1em;
 }
 
+.character-print-stats {
+  display: grid;
+  grid-template-columns: max-content minmax(3rem, 1fr) max-content minmax(3rem, 1fr);
+  align-items: baseline;
+  gap: 2mm 3mm;
+  margin: 0;
+  dt, dd { margin: 0; padding: 1mm 0; }
+  dt { font-weight: bold; font-style: italic; }
+  dd {
+    min-width: 0;
+    border-bottom: .5pt solid currentColor;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+}
+.character-print-conditions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  margin-top: 2mm;
+}
+.character-print-item {
+  box-sizing: border-box;
+  min-height: 6mm;
+  padding: 2pt 0;
+  border-bottom: .5pt solid currentColor;
+  overflow-wrap: anywhere;
+}
+
 @media print {
   @page { margin: 12mm; }
   body:has(.character-print-page) {
@@ -356,8 +385,7 @@
     .subtitle { font-size: 10pt; }
     .portrait-image { width: 18mm; height: 18mm; }
     .character-print-grid { grid-template-columns: 1fr 1fr; gap: 12pt; }
-    .stats-stats-container { gap: 3pt 8pt; }
-    .inventory-item-container { min-height: 0; padding: 2pt 0; font-size: 10pt; }
+    .character-print-stats, .character-print-item { font-size: 10pt; line-height: 1.25; }
     .inventory-container { max-width: none; margin-bottom: 0 !important; }
     .character-print-details { columns: 2; column-gap: 12pt; }
     .print-container { break-inside: avoid; }
