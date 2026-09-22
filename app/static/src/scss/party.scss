@@ -204,3 +204,36 @@ body:has(.tools-page) {
 @media (max-width: 600px), (max-height: 700px) {
   .tools-page { margin-top: 1rem; }
 }
+
+.party-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.party-heading {
+  flex: 1 1 18rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  h1 { margin: 0; text-align: left; }
+  p { margin: .5rem 0; }
+}
+.party-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  align-items: center;
+  button { margin: 0; white-space: nowrap; }
+}
+.party-invitation {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin: 1rem 0;
+  output { overflow-wrap: anywhere; min-width: 0; }
+  button { margin: 0; }
+  &[hidden] { display: none; }
+}

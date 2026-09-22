@@ -10,9 +10,8 @@ document.addEventListener("DOMContentLoaded", function () {
     document
       .getElementById("join-code-button")
       .addEventListener("click", function () {
-        const output = document.getElementById("party-join-code");
+        const output = document.getElementById("party-invitation");
         output.hidden = !output.hidden;
-        document.getElementById("copy-join-code").hidden = output.hidden;
         this.setAttribute("aria-expanded", String(!output.hidden));
       });
   }

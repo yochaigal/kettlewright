@@ -23,19 +23,17 @@
   {% endfor %}
   {% endif %} {% endwith %}
   <div id="party-form" class="sheet box form">
-    <div style="display: flex; justify-content: space-between">
-      <div>
+    <div class="party-header">
+      <div class="party-heading">
         <h1 class="title level-item justify-centered">{{ party.name }}</h1>
         {% if is_owner %}<p class="subtitle">{{_("Warden")}}</p>{% endif %}
       </div>
-      <div class="charview-action-pad">
+      <div class="party-header-actions">
         {% if is_owner or is_subowner %}
-        <button class="button is-light no-margin-top" id="join-code-button" type="button" title="Join Code">
+        <button class="button is-light no-margin-top" id="join-code-button" type="button" title="{{_('Join Code')}}" aria-expanded="false" aria-controls="party-invitation">
           <span class="mobile-hidden">{{_('Join Code')}}</span>
           <i class="fa-solid fa-link icon-in-button"></i>
         </button>
-        <output id="party-join-code" hidden>{{join_code}}</output>
-        <button id="copy-join-code" type="button" hidden>{{_("Copy code")}}</button>
         <button class="button no-margin-top" type="button" title="{{_('Edit party')}}"
           hx-get="/party/edit/{{ownername}}/{{party_url}}" hx-target="body">
           {{_('Edit party')}}
@@ -44,6 +42,12 @@
       </div>
     </div>
 
+    {% if is_owner or is_subowner %}
+    <div class="party-invitation" id="party-invitation" hidden>
+      <output id="party-join-code">{{join_code}}</output>
+      <button id="copy-join-code" type="button">{{_("Copy code")}}</button>
+    </div>
+    {% endif %}
     <div>{{party.description}}</div>
 
     <div class="party-section">

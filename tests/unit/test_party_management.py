@@ -50,7 +50,8 @@ def test_delete_requires_owner_post_and_clears_members(party_setup):
 def test_join_code_hidden_until_revealed_and_warden_label(party_setup):
     login(party_setup, 1)
     page = party_setup.get('/users/warden/parties/party/').get_data(as_text=True)
-    assert '<output id="party-join-code" hidden>join-secret</output>' in page
+    assert 'id="party-invitation" hidden' in page
+    assert '<output id="party-join-code">join-secret</output>' in page
     assert 'Warden' in page
     login(party_setup, 2)
     page = party_setup.get('/users/warden/parties/party/').get_data(as_text=True)
