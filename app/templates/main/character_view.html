@@ -35,6 +35,7 @@
         <div>
           <div id="character-name-container">
             <h1>{{character.name}}</h1>
+            {% include "partial/dead_badge.html" %}
           </div>
           <h2 class="">{{character.background | tr}}</h2>
         </div>
@@ -125,13 +126,18 @@
         {% endif %}
       </div>
 
-      <div class="justify-space-between" style="margin-top: 2.5em">
-        <div class="row32">
+      <div class="justify-space-between character-sheet-actions-container" style="margin-top: 2.5em">
+        <div class="row32 character-sheet-actions">
           <a href="{{ url_for('main.print_character', username=username, url_name=url_name) }}">
             <button class="button is-light" id="" style="margin-right: 1em" type="button">
               {{_('Print')}}<i class="fa-solid fa-print icon-in-button"></i>
             </button>
           </a>
+
+          <a class="button is-light character-pdf-action" href="{{ url_for('main.print_character_landscape', username=username, url_name=url_name) }}"
+             target="_blank" rel="noopener">{{_('Print PDF (landscape)')}} <i class="fa-solid fa-file-pdf icon-in-button" aria-hidden="true"></i></a>
+          <a class="button is-light character-pdf-action" href="{{ url_for('main.print_character_portrait', username=username, url_name=url_name) }}"
+             target="_blank" rel="noopener">{{_('Print PDF (portrait)')}} <i class="fa-solid fa-file-pdf icon-in-button" aria-hidden="true"></i></a>
 
           {% if is_owner %}
           <a href="/charedit/export/{{username}}/{{url_name}}">

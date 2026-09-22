@@ -154,7 +154,8 @@
     "dex armor"
     "wil hp"
     "deprived rest"
-    "panicked something";
+    "panicked something"
+    "dead .";
 }
 
 #character-str-container {
@@ -322,3 +323,95 @@
   }
 }
 
+.character-print-inventories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(65mm, 1fr));
+  gap: 1em;
+}
+
+.character-sheet-actions-container { grid-column: 1 / -1; }
+.character-sheet-actions {
+  flex-wrap: wrap;
+  gap: 1rem;
+  button { margin: 0 !important; }
+  .character-pdf-action {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px;
+    border: 1.5px solid currentColor;
+    text-decoration: none;
+  }
+}
+
+.character-print-stats {
+  display: grid;
+  grid-template-columns: max-content minmax(3rem, 1fr) max-content minmax(3rem, 1fr);
+  align-items: baseline;
+  gap: 2mm 3mm;
+  margin: 0;
+  dt, dd { margin: 0; padding: 1mm 0; }
+  dt { font-weight: bold; font-style: italic; }
+  dd {
+    min-width: 0;
+    border-bottom: .5pt solid currentColor;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+}
+.character-print-conditions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  margin-top: 2mm;
+}
+.character-print-item {
+  box-sizing: border-box;
+  min-height: 6mm;
+  padding: 2pt 0;
+  border-bottom: .5pt solid currentColor;
+  overflow-wrap: anywhere;
+}
+
+@media print {
+  @page { margin: 12mm; }
+  body:has(.character-print-page) {
+    background: white;
+    color: black;
+    font-size: 10pt;
+    line-height: 1.25;
+    margin: 0;
+    padding: 0;
+  }
+  body:has(.character-print-page) #navbar { display: none; }
+  .character-print-page {
+    display: block;
+    margin: 0 !important;
+    padding: 0;
+    width: 100%;
+    max-width: none;
+    .view-character-sheet { max-width: none; padding: 0; box-shadow: none; }
+    h1 { font-size: 20pt; margin: 0 0 3pt; }
+    h2 { font-size: 12pt; margin: 0; }
+    h3 { font-size: 11pt; margin: 6pt 0 3pt; }
+    h4 { font-size: 10pt; margin: 0; }
+    h2::before, h3::before { display: none; }
+    p, .character-section { margin: 3pt 0; font-size: 10pt; line-height: 1.25; }
+    .subtitle { font-size: 10pt; }
+    .portrait-image { width: 18mm; height: 18mm; }
+    .character-print-grid { grid-template-columns: 1fr 1fr; gap: 12pt; }
+    .character-print-stats, .character-print-item { font-size: 10pt; line-height: 1.25; }
+    .inventory-container { max-width: none; margin-bottom: 0 !important; }
+    .character-print-details { columns: 2; column-gap: 12pt; }
+    .print-container { break-inside: avoid; }
+    .print-container p { overflow-wrap: anywhere; white-space: pre-wrap; }
+    h3 { break-after: avoid; }
+  }
+}
+
+#character-dead-container {
+  grid-area: dead;
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+  label { font: inherit; }
+}

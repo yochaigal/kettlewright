@@ -204,3 +204,59 @@ body:has(.tools-page) {
 @media (max-width: 600px), (max-height: 700px) {
   .tools-page { margin-top: 1rem; }
 }
+
+.party-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.party-heading {
+  flex: 1 1 18rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  h1 { margin: 0; text-align: left; }
+  p { margin: .5rem 0; }
+}
+.party-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  align-items: center;
+  button { margin: 0; white-space: nowrap; }
+}
+
+.roll-history-toggle {
+  border: 0;
+  padding: 0;
+  margin: 0 .25em 0 0;
+  background: transparent;
+  color: inherit;
+}
+.party-roll-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  margin-bottom: 1rem;
+  p, button { margin: 0; }
+  form { margin: 0; padding: 0; width: auto; }
+}
+.party-roll-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: .25rem 1rem;
+    padding: .5rem 0;
+    border-bottom: 1px dotted var(--fg);
+    overflow-wrap: anywhere;
+    span { min-width: 0; }
+    time { font-size: .85em; opacity: .7; }
+  }
+}

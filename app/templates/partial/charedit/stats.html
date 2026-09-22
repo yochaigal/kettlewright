@@ -57,6 +57,11 @@
     {{ form.panicked(class='checkbox edit-mode', type='checkbox',id='panicked-field') }}
   </div>
 
+  <div class="character-attribute-container edit-mode" id="character-dead-container">
+    <h4 class="character-deprived-text"><label for="dead-field">{{_('DEAD')}}</label></h4>
+    {{ form.dead(class='checkbox edit-mode', type='checkbox', id='dead-field') }}
+  </div>
+
 
   <div class="character-attribute-container" id="character-gold-container">
     <h4 class="view-attribute-font">{{_('Gold')}}</h4>

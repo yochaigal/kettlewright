@@ -279,3 +279,13 @@
   td:first-child { overflow-wrap: anywhere; }
   th, td:not(:first-child) { white-space: nowrap; }
 }
+
+.item-description-image {
+  display: block;
+  max-width: 100%;
+  max-height: 24rem;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  margin: .5rem auto;
+}

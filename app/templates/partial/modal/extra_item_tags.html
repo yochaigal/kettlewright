@@ -1,0 +1,7 @@
+<div id="item-extra-tags">
+  {% if mode == 'edit' %}
+  {% for tag in item.tags if tag not in ['bulky', 'petty', 'uses', 'charges', 'blast', 'd4', 'd6', 'd8', 'd10', 'd12', '1 Armor', '2 Armor', '3 Armor', 'bonus defense'] %}
+  <div class="tag button selected" data-tag="{{tag}}">{{_(tag)}}</div>
+  {% endfor %}
+  {% endif %}
+</div>

@@ -23,19 +23,20 @@
   {% endfor %}
   {% endif %} {% endwith %}
   <div id="party-form" class="sheet box form">
-    <div style="display: flex; justify-content: space-between">
-      <div>
-        <h1 class="title level-item justify-centered">{{ party.name }}</h1>
+    <div class="party-header">
+      <div class="party-heading">
+        <h1 class="title level-item">{{ party.name }}</h1>
+        {% if is_owner %}<p class="subtitle">{{_("Warden")}}</p>{% endif %}
       </div>
-      <div class="charview-action-pad">
+      <div class="party-header-actions">
         {% if is_owner or is_subowner %}
         <button class="button is-light no-margin-top" id="join-code-button" type="button" title="Join Code">
           <span class="mobile-hidden">{{_('Join Code')}}</span>
           <i class="fa-solid fa-link icon-in-button"></i>
         </button>
-        <button class="dice-button ghost40" type="button" title="Click to switch edit/view mode"
+        <button class="button no-margin-top" type="button" title="{{_('Edit party')}}"
           hx-get="/party/edit/{{ownername}}/{{party_url}}" hx-target="body">
-          <i class="fa-solid fa-pen-to-square pen-to-square"></i>
+          {{_('Edit party')}}
         </button>
         {% endif %}
       </div>
@@ -65,6 +66,7 @@
             <div class="character-card-name-container">
               <h2 class="character-card-name">{{ character.name }}</h2>
               <h3 class="character-card-background">{{ character.background }}</h3>
+              {% include "partial/dead_badge.html" %}
             </div>
 
             <div class="character-card-stats-container">
@@ -119,6 +121,10 @@
         <div> {% include "partial/partyview/inventory.html" %}</div>
       </div>
     </div>
+
+    {% if can_view_rolls %}
+      {% include "partial/partyview/roll_history.html" %}
+    {% endif %}
 
 
   </div>

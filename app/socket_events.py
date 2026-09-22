@@ -4,7 +4,7 @@ from flask import current_app
 from flask_login import current_user
 from flask_socketio import emit, join_room
 
-from app.models import Character, Party, db
+from app.models import Character, Party, PartyRoll, db
 from app.lib.socket_rate_limit import SocketRateLimiter
 
 
@@ -15,6 +15,12 @@ def party_recipient_ids(party):
         Character.id.in_(members), Character.party_id == party.id
     ).all()
     return {party.owner, *(owner for (owner,) in owners)}
+
+
+def notify_roll_history_changed(party):
+    from app import socketio
+    for user_id in party_recipient_ids(party):
+        socketio.emit('roll_history_changed', {'party_id': party.id}, room=f'user_{user_id}')
 
 
 def register_socket_events(socketio):
@@ -70,8 +76,12 @@ def register_socket_events(socketio):
         if character.party_id != party.id or character.id not in json.loads(party.members or '[]'):
             return
 
+        db.session.add(PartyRoll(party_id=party.id, character_name=character.name,
+                                 result=str(roll_result)))
+        db.session.commit()
         message = f'{character.name} rolled a {roll_result}'
         # User rooms work across Redis workers, but party membership is never cached
         # in a socket room: leaving a party takes effect on the next roll.
         for user_id in party_recipient_ids(party):
             emit('dice_rolled', message, room=f'user_{user_id}')
+        notify_roll_history_changed(party)

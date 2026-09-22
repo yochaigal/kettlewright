@@ -1,0 +1,12 @@
+{% if rolls %}
+<ol class="party-roll-list">
+  {% for roll in rolls %}
+  <li data-roll-id="{{ roll.id }}">
+    <span><strong>{{ roll.character_name }}</strong> — {{ roll.result }}</span>
+    <time datetime="{{ roll.created_at.isoformat() }}Z">{{ roll.created_at.strftime('%Y-%m-%d %H:%M:%S') }} UTC</time>
+  </li>
+  {% endfor %}
+</ol>
+{% else %}
+<p>{{_('No rolls yet.')}}</p>
+{% endif %}

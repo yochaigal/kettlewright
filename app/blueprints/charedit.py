@@ -1,6 +1,6 @@
 # Character inline editor blueprint
 
-from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response, abort
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response, abort, send_from_directory
 from flask_login import login_required, current_user
 from app.models import db, User, Character, Party
 from app.forms import *
@@ -51,10 +51,13 @@ def charedit_show(username, url_name):
 
 # Route: character page save
 @character_edit.route('/charedit/<username>/<url_name>/save', methods=['POST'])
+@login_required
 def charedit_save(username, url_name):
     user, character = get_char_data(username, url_name)
+    if character.owner != current_user.id:
+        abort(403)
     form = CharacterEditForm(obj=character)
-    fields_to_update = ['strength_max', 'strength','dexterity_max', 'dexterity', 'willpower_max', 'willpower','hp_max', 'hp', 'deprived', 'gold','description', 'name','omens', 'scars','traits','bonds','notes','panicked']
+    fields_to_update = ['strength_max', 'strength','dexterity_max', 'dexterity', 'willpower_max', 'willpower','hp_max', 'hp', 'deprived', 'gold','description', 'name','omens', 'scars','traits','bonds','notes','panicked','dead']
     for field in fields_to_update:
         setattr(character, field, sanitize_data(getattr(form, field).data))
     err = None
@@ -156,10 +159,13 @@ def charedit_inplace_scars_add(username, url_name):
 
 # Route: edit character portrait
 @character_edit.route('/charedit/inplace-portrait/<username>/<url_name>', methods=['GET'])
+@login_required
 def charedit_inplace_portrait(username, url_name):
     user, character = get_char_data(username, url_name)
+    if character.owner != current_user.id:
+        abort(403)
     images = load_images()
-    return render_template('partial/charedit/portrait.html', user=user, character=character, username=username, url_name=url_name, images=images)
+    return render_template('partial/charedit/portrait.html', user=user, character=character, username=username, url_name=url_name, images=images, portrait_form=FlaskForm())
 
 # Route: edit character portrait - cancel
 @character_edit.route('/charedit/inplace-portrait/<username>/<url_name>/cancel', methods=['GET'])
@@ -172,8 +178,36 @@ def charedit_inplace_portrait_cancel(username, url_name):
 
 # Route: edit character portrait - save
 @character_edit.route('/charedit/inplace-portrait/<username>/<url_name>/save', methods=['POST'])
+@login_required
 def charedit_inplace_portrait_save(username, url_name):
     user, character = get_char_data(username, url_name)
+    if character.owner != current_user.id:
+        abort(403)
+    if request.content_length and request.content_length > 3 * 1024 * 1024:
+        return render_template('partial/charedit/portrait.html', user=user, character=character,
+                               username=username, url_name=url_name, images=load_images(),
+                               portrait_form=FlaskForm(formdata=None),
+                               error=_('Choose an image smaller than 2 MB.'))
+    form = FlaskForm()
+    if not form.validate_on_submit():
+        abort(400)
+    from app.lib.portraits import save_portrait, delete_unreferenced_portrait
+    previous_portrait = character.image_url
+    upload = request.files.get('portrait-file')
+    if upload and upload.filename:
+        try:
+            portrait_url = save_portrait(upload)
+        except ValueError as error:
+            return render_template('partial/charedit/portrait.html', user=user, character=character,
+                                   username=username, url_name=url_name, images=load_images(),
+                                   portrait_form=form, error=_(str(error)))
+        character.image_url = portrait_url
+        character.custom_image = True
+        db.session.commit()
+        delete_unreferenced_portrait(previous_portrait)
+        response = make_response('Redirecting')
+        response.headers['HX-Redirect'] = url_for('character_edit.charedit_show', username=username, url_name=url_name)
+        return response
     data = request.form
     custom_url = data['custom-url']
     selected_portrait = data['selected-portrait']
@@ -188,6 +222,7 @@ def charedit_inplace_portrait_save(username, url_name):
         setattr(character,"image_url", selected_portrait)
         setattr(character,"custom_image",False)
         db.session.commit()    
+    delete_unreferenced_portrait(previous_portrait)
     response = make_response("Redirecting")
     response.headers["HX-Redirect"] = "/charedit/"+username+"/"+url_name
     return response
@@ -346,7 +381,7 @@ def charedit_inplace_inventory_item_edit(username, url_name, item_id):
     else:
         item = None
     return render_template('partial/modal/edit_item.html', user=user, character=character, username=username, url_name=url_name, 
-                           inventory=inventory, item=item, mode=mode,
+                           inventory=inventory, item=item, mode=mode, library=Market().buy([it["name"] for it in load_market()]),
                            party_containers=json.loads(party.containers or '[]') if
                            (party := db.session.get(Party, character.party_id)) and
                            character.id in json.loads(party.members or '[]') else [])
@@ -448,4 +483,15 @@ def charedit_inplace_inventory_item_edit_party(username, url_name, item_id):
     response = make_response(render_template('partial/charedit/inventory.html', user=user, character=character,
                              username=username, url_name=url_name, inventory=inventory))
     response.headers['HX-Trigger'] = 'refresh-stats'
+    return response
+
+
+@character_edit.get('/portraits/<filename>')
+def uploaded_portrait(filename):
+    import re
+    from app.lib.portraits import portrait_directory
+    if not re.fullmatch(r'[0-9a-f]{64}\.webp', filename):
+        abort(404)
+    response = send_from_directory(portrait_directory(), filename, mimetype='image/webp', max_age=31536000)
+    response.headers['X-Content-Type-Options'] = 'nosniff'
     return response

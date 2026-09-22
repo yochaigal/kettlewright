@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, jsonify, flash, request, make_response
+from flask import Blueprint, render_template, redirect, url_for, jsonify, flash, request, make_response, send_file
 from flask_login import login_required, current_user
 from .models import User, Character, Party
 from . import db
@@ -162,6 +162,7 @@ def new_from_json():
                 deprived=string_to_bool(
                     sanitize_data(form.deprived.data or False)),
                 panicked=string_to_bool(form.panicked.data or False),
+                dead=string_to_bool(form.dead.data or False),
                 traits=sanitize_data(form.traits.data or ''),  # New field
                 armor=sanitize_data(form.armor.data or '')  # New field
             )
@@ -337,6 +338,28 @@ def print_character(username, url_name):
                            containers_json=json.dumps(character.containers), party=party, inventory=inventory)
 
 
+@main.get('/users/<username>/characters/<url_name>/print/landscape.pdf')
+def print_character_landscape(username, url_name):
+    return _print_character_pdf(username, url_name, 'landscape')
+
+
+@main.get('/users/<username>/characters/<url_name>/print/portrait.pdf')
+def print_character_portrait(username, url_name):
+    return _print_character_pdf(username, url_name, 'portrait')
+
+
+def _print_character_pdf(username, url_name, orientation):
+    from app.lib.character_pdf import CharacterSheet
+    user = User.query.filter_by(username=username).first_or_404()
+    character = Character.query.filter_by(owner=user.id, url_name=url_name).first_or_404()
+    party = db.session.get(Party, character.party_id) if character.party_id else None
+    response = send_file(CharacterSheet(character, party, orientation).draw(), mimetype='application/pdf',
+                         download_name=f'{character.url_name}-{orientation}-a4.pdf', as_attachment=False)
+    response.headers['Cache-Control'] = 'private, no-store'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    return response
+
+
 @main.route('/delete-character/<int:character_id>/', methods=['POST', 'GET'])
 @login_required
 def delete(character_id):
@@ -506,4 +529,3 @@ def select_language():
         response.set_cookie("kw_lang", lang, expires=expire_date)        
     response.headers["HX-Redirect"] = request.headers['Referer']
     return response
-

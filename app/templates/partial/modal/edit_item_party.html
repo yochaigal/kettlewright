@@ -15,6 +15,7 @@
       </header>
 
       <section class="modal-card-body">
+        {% if mode != "edit" %}{% include "partial/modal/item_library.html" %}{% endif %}
         <div class="field">
           <label>{{_('Name')}}</label>
           <input class="input" type="text" placeholder="Item Name" name="edit_item_name" {% if mode=='edit' %}
@@ -62,6 +63,8 @@
           </div>
         </div>
 
+        {% include "partial/modal/extra_item_tags.html" %}
+
         <div style="display: flex; justify-content: flex-start; gap: 40px">
           <div class="field flex-column-centered">
             <label>{{_('Uses')}}</label>
@@ -107,6 +110,7 @@
 
         <div class="field">
           <label>{{_('Description')}}</label>
+          <small style="display:block">{{_('Include an image with ![description](https://example.org/image.png).')}}</small>
           <textarea class="textarea" placeholder="Item Description" id="edit_item_description"
             name="edit_item_description"
             oninput="resizeTextarea(this)">{% if mode == "edit" %}{{item.description}}{% endif %}</textarea>

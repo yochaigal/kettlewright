@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response, abort
 from flask_login import login_required, current_user
 from app.lib import *
-from app.models import db, User, Character, Party
+from app.models import db, User, Character, Party, PartyRoll
+from app.socket_events import party_recipient_ids, notify_roll_history_changed
+from flask_wtf import FlaskForm
 from app.forms import *
 import json
 from flask_babel import _
@@ -10,9 +12,9 @@ party = Blueprint('party', __name__)
 
 
 def get_party_data(ownername, party_url):
-    owner = User.query.filter_by(username=ownername).first()
+    owner = User.query.filter_by(username=ownername).first_or_404()
     party = Party.query.filter_by(
-        owner=owner.id, party_url=party_url).first()
+        owner=owner.id, party_url=party_url).first_or_404()
     join_code = None
     is_owner = False
     is_subowner = False
@@ -54,8 +56,37 @@ def party_view(ownername, party_url):
     if not current_user.is_authenticated:
         return redirect(url_for('main.index'))
     party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party = get_party_data(ownername, party_url)
+    can_view_rolls = current_user.id in party_recipient_ids(party)
     return render_template('main/party_view.html', party_url=party_url, characters=characters, join_code=join_code, is_owner=is_owner,
-                           is_subowner=is_subowner, party_id=party.id, ownername=ownername, inventory=inventory, party=party)
+                           is_subowner=is_subowner, party_id=party.id, ownername=ownername, inventory=inventory, party=party,
+                           can_view_rolls=can_view_rolls, roll_form=FlaskForm(),
+                           rolls=PartyRoll.latest(party.id) if can_view_rolls else [])
+
+
+@party.route('/party/<int:party_id>/roll-history', methods=['GET'])
+@login_required
+def roll_history(party_id):
+    target_party = db.get_or_404(Party, party_id)
+    if current_user.id not in party_recipient_ids(target_party):
+        abort(403)
+    response = make_response(render_template('partial/partyview/roll_history_entries.html',
+                                            rolls=PartyRoll.latest(party_id)))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@party.route('/party/<int:party_id>/roll-history/clear', methods=['POST'])
+@login_required
+def clear_roll_history(party_id):
+    target_party = db.get_or_404(Party, party_id)
+    if target_party.owner != current_user.id:
+        abort(403)
+    if not FlaskForm().validate_on_submit():
+        abort(400)
+    PartyRoll.query.filter_by(party_id=party_id).delete(synchronize_session=False)
+    db.session.commit()
+    notify_roll_history_changed(target_party)
+    return '', 204
 
 
 # Route: redirect to character view
@@ -120,11 +151,17 @@ def party_edit_save(ownername, party_url):
     return response
 
 # Route: remove character from party
-@party.route('/party/remove-char/<character_id>/<ownername>/<party_url>', methods=['GET'])
+@party.route('/party/remove-char/<character_id>/<ownername>/<party_url>', methods=['POST'])
+@login_required
 def party_remove_char(character_id, ownername, party_url):
+    target_party = get_party_by_owner(ownername, party_url)
+    if target_party is None:
+        abort(404)
+    if target_party.owner != current_user.id:
+        abort(403)
     character = get_character(character_id)
-    if not character:
-        flash("Character with id "+character_id+" not found")
+    if character is None or character.party_id != target_party.id:
+        abort(404)
     remove_character_from_party(character)
     db.session.commit()
     response = make_response("")
@@ -132,11 +169,14 @@ def party_remove_char(character_id, ownername, party_url):
     return response
 
 # Route: delete party
-@party.route('/party/delete/<party_id>', methods=['GET'])
+@party.route('/party/delete/<party_id>', methods=['POST'])
+@login_required
 def party_delete(party_id):
     party = get_party_by_id(party_id)
+    if party is None:
+        abort(404)
     if party.owner != current_user.id:
-        return redirect(url_for('main.parties', username=current_user.username))
+        abort(403)
 
     # remove party from all characters in the party
     characters = Character.query.filter_by(party_id=party.id).all()
@@ -144,6 +184,7 @@ def party_delete(party_id):
         character.party_id = None
         character.party_code = None
 
+    PartyRoll.query.filter_by(party_id=party.id).delete(synchronize_session=False)
     db.session.delete(party)
     db.session.commit()
     
@@ -252,7 +293,7 @@ def party_inventory_item_edit(party_id, item_id):
                 characters.append(character)
     else:
         item = None
-    render = render_template('partial/modal/edit_item_party.html', characters=characters, party=party, inventory=inventory, item=item, mode=mode)
+    render = render_template('partial/modal/edit_item_party.html', characters=characters, party=party, inventory=inventory, item=item, mode=mode, library=Market().buy([it["name"] for it in load_market()]))
     response = make_response(render)
     response.headers['HX-Trigger-After-Settle'] = "item-edit"
     return response
