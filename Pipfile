@@ -52,6 +52,8 @@ wsproto = "==1.2.0"
 wtforms = "==3.1.2"
 
 pillow = "*"
+reportlab = ">=4.4"
+pypdf = ">=6.0"
 
 [dev-packages]
 pytest = "*"

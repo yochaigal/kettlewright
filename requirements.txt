@@ -29,3 +29,5 @@ Werkzeug
 WTForms
 requests
 Pillow
+reportlab>=4.4
+pypdf>=6.0

@@ -329,6 +329,20 @@
   gap: 1em;
 }
 
+.character-sheet-actions-container { grid-column: 1 / -1; }
+.character-sheet-actions {
+  flex-wrap: wrap;
+  gap: 1rem;
+  button { margin: 0 !important; }
+  .character-pdf-action {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px;
+    border: 1.5px solid currentColor;
+    text-decoration: none;
+  }
+}
+
 .character-print-stats {
   display: grid;
   grid-template-columns: max-content minmax(3rem, 1fr) max-content minmax(3rem, 1fr);
