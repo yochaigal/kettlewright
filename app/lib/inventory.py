@@ -394,7 +394,7 @@ class Inventory:
             return None
         new_id = self.generate_item_id()
         items = json.loads(self.character.items)
-        items.append({"id":new_id,"name":"",tags:[],"location":0,"description":""})
+        items.append({"id":new_id,"name":"","tags":[],"location":0,"description":""})
         self.character.items = json.dumps(items)
         return self.update_item(new_id,name, tags, uses, charges, max_charges, container, description, armor_active=armor_active)
         
@@ -420,7 +420,6 @@ class Inventory:
                 del item["uses"]
         if "charges" in item["tags"]:
             item["charges"] = safeint(charges)
-        if "max_charges" in item:
             item["max_charges"] = safeint(max_charges)
         else:
             if "charges" in item:
@@ -557,6 +556,3 @@ class Inventory:
 
     def print(self):
         print(self.containers)
-                
-            
-    

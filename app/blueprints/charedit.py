@@ -346,7 +346,7 @@ def charedit_inplace_inventory_item_edit(username, url_name, item_id):
     else:
         item = None
     return render_template('partial/modal/edit_item.html', user=user, character=character, username=username, url_name=url_name, 
-                           inventory=inventory, item=item, mode=mode,
+                           inventory=inventory, item=item, mode=mode, library=Market().buy([it["name"] for it in load_market()]),
                            party_containers=json.loads(party.containers or '[]') if
                            (party := db.session.get(Party, character.party_id)) and
                            character.id in json.loads(party.members or '[]') else [])

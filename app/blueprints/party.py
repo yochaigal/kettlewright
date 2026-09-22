@@ -252,7 +252,7 @@ def party_inventory_item_edit(party_id, item_id):
                 characters.append(character)
     else:
         item = None
-    render = render_template('partial/modal/edit_item_party.html', characters=characters, party=party, inventory=inventory, item=item, mode=mode)
+    render = render_template('partial/modal/edit_item_party.html', characters=characters, party=party, inventory=inventory, item=item, mode=mode, library=Market().buy([it["name"] for it in load_market()]))
     response = make_response(render)
     response.headers['HX-Trigger-After-Settle'] = "item-edit"
     return response

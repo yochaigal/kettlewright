@@ -15,6 +15,7 @@
       </header>
 
       <section class="modal-card-body">
+        {% if mode != "edit" %}{% include "partial/modal/item_library.html" %}{% endif %}
         <div class="field">
           <label>{{_('Name')}}</label>
           <input class="input" type="text" placeholder="Item Name" name="edit_item_name" {% if mode=='edit' %}
