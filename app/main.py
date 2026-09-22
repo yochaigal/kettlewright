@@ -162,6 +162,7 @@ def new_from_json():
                 deprived=string_to_bool(
                     sanitize_data(form.deprived.data or False)),
                 panicked=string_to_bool(form.panicked.data or False),
+                dead=string_to_bool(form.dead.data or False),
                 traits=sanitize_data(form.traits.data or ''),  # New field
                 armor=sanitize_data(form.armor.data or '')  # New field
             )

@@ -40,6 +40,7 @@ class Character(db.Model):
     hp_max = db.Column(db.Integer)
     deprived = db.Column(db.Boolean)
     panicked = db.Column(db.Boolean)
+    dead = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
     items = db.Column(db.String)
     containers = db.Column(db.String)
     gold = db.Column(db.Integer)

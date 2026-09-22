@@ -13,7 +13,7 @@ def test_export_import_round_trip(app_with_babel):
         owner_id = owner.id
         source = Character(name='JSON Hero', background='Custom', custom_name='Alias',
             custom_background='Explorer', strength=3, strength_max=12, dexterity=7, dexterity_max=14,
-            willpower=8, willpower_max=11, hp=0, hp_max=6, gold=0, deprived=True, panicked=True,
+            willpower=8, willpower_max=11, hp=0, hp_max=6, gold=0, deprived=True, panicked=True, dead=True,
             custom_image=True, image_url='https://example.org/portrait.png', traits='Quiet',
             notes='Note', bonds='Bond', scars='Scar', omens='Omen', description='Description',
             items='[{"id": "shield", "name": "Shield", "tags": ["1 Armor"], "location": 0, "armor_active": false}]',

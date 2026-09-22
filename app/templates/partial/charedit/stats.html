@@ -43,6 +43,10 @@
       min='0', max='99', step='1', id='hp-max-input') }}
     </span>
   </div>
+  <div class="character-attribute-container edit-mode">
+    <label for="dead-field">{{_('Dead')}}</label>
+    {{ form.dead(class='checkbox edit-mode', id='dead-field') }}
+  </div>
   <!-- deprived -->
 
   <div class="character-attribute-container edit-mode" id="character-deprived-container">

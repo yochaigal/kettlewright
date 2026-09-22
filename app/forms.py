@@ -185,6 +185,7 @@ class CharacterEditForm(FlaskForm):
     containers = HiddenField()
     deprived = BooleanField(_l('Deprived'))
     panicked = BooleanField(_l('Panicked'))
+    dead = BooleanField(_l('Dead'))
     notes = TextAreaField(_l('Notes'), validators=[Length(
         0, 2000)], render_kw={"placeholder": _l("notes")})
     description = TextAreaField(_l('Description'), validators=[Length(
@@ -268,6 +269,7 @@ class CharacterJSONForm(FlaskForm):
     # Boolean field - allowing "true" or "false" (5 characters max)
     deprived = HiddenField(_l('Deprived'), validators=[Length(max=5)])
     panicked = HiddenField(_l('Panicked'), validators=[Length(max=5)])
+    dead = HiddenField(_l('Dead'), validators=[Length(max=5)])
 
     notes = HiddenField(_l('Notes'), validators=[Length(max=2000)])
     description = HiddenField(_l('Description'), validators=[Length(max=2000)])

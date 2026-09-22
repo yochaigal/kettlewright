@@ -51,10 +51,13 @@ def charedit_show(username, url_name):
 
 # Route: character page save
 @character_edit.route('/charedit/<username>/<url_name>/save', methods=['POST'])
+@login_required
 def charedit_save(username, url_name):
     user, character = get_char_data(username, url_name)
+    if character.owner != current_user.id:
+        abort(403)
     form = CharacterEditForm(obj=character)
-    fields_to_update = ['strength_max', 'strength','dexterity_max', 'dexterity', 'willpower_max', 'willpower','hp_max', 'hp', 'deprived', 'gold','description', 'name','omens', 'scars','traits','bonds','notes','panicked']
+    fields_to_update = ['strength_max', 'strength','dexterity_max', 'dexterity', 'willpower_max', 'willpower','hp_max', 'hp', 'deprived', 'gold','description', 'name','omens', 'scars','traits','bonds','notes','panicked','dead']
     for field in fields_to_update:
         setattr(character, field, sanitize_data(getattr(form, field).data))
     err = None
