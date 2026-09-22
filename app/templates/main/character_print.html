@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block content %}
-<div class="body-container" style="margin-top: 0px">
+<div class="body-container character-print-page" style="margin-top: 0px">
   <div class="view-character-sheet" style="padding-top: 0px">
     <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em">
       {% if character.custom_image == False and character.image_url == '' %}
@@ -62,8 +62,8 @@
     </div>
     <div class="print-container">
       <h3>{{_('Inventory')}}</h3>
-      <div id="additional-inventory-container" class="character-print-grid">
-        {% for c in inventory.containers %}
+      <div id="additional-inventory-container" class="character-print-inventories">
+        {% for c in inventory.containers if c.id == 0 or inventory.get_items_for_container(c.id, False) %}
         <div style="margin-bottom: 1em" class="inventory-container print-container">
           <div class="inventory-container-title-selected subtitle">{{c.name}} ( {{inventory.container_slots(c)}}
             /
@@ -76,8 +76,8 @@
       </div>
     </div>
 
-    <div>
-      {% if character.description != "" %}
+    <div class="character-print-details">
+      {% if character.description %}
       <div id="character-print-description-container" class="print-container">
         <div class="character-section">
           <h3>{{_('Description')}}</h3>
@@ -85,6 +85,7 @@
         </div>
       </div>
       {% endif %}
+      {% if character.bonds %}
       <div id="character-print-bonds-container" class="print-container">
         <div class="character-section">
           <h3>{{_('Bonds')}}</h3>
@@ -92,7 +93,8 @@
           <p id="character-bonds-view" class="with-whitespace">{{character.bonds}}</p>
         </div>
       </div>
-      {% if character.omens != "" %}
+      {% endif %}
+      {% if character.omens %}
       <div id="character-print-omens-container" class="print-container">
         <div class="character-section">
           <h3>{{_('Omens')}}</h3>
@@ -100,7 +102,7 @@
         </div>
       </div>
       {% endif %}
-      {% if character.scars != "" %}
+      {% if character.scars %}
       <div id="character-print-scars-container" class="print-container">
         <div class="character-section">
           <h3>{{_('Scars')}}</h3>
@@ -108,7 +110,7 @@
         </div>
       </div>
       {% endif %}
-      {% if character.notes != "" %}
+      {% if character.notes %}
       <div id="character-print-notes-container" class="print-container">
         <div class="character-section">
           <h3>{{_('Notes')}}</h3>
@@ -116,24 +118,20 @@
         </div>
       </div>
       {% endif %}
-      <div class="" id="character-party-container" class="print-container">
-        <h3 id="character-party-heading">Party</h3>
-        {% if party %}
-        <p id="character-party-name-description">
+      {% if party %}
+      <div id="character-party-container" class="print-container">
+        <h3 id="character-party-heading">{{_('Party')}}</h3>
         <div class="bold subtitle">{{ party.name }}</div>
-        <div class="text-border" id="character-party-description">{{ party.description}}</div>
-        </p>
-        {%else %}
-        <p id="character-no-party-description">{{_('This character does not belong to a party...')}}</p>
-        {% endif %}
+        {% if party.description %}<p>{{party.description}}</p>{% endif %}
       </div>
+      {% endif %}
     </div>
   </div>
 </div>
 <script>
   {% if not from_generator %}
   document.getElementById("navbar").classList.add("hidden");
-  window.print();
+  window.addEventListener('load', () => document.fonts.ready.then(() => window.print()), {once: true});
   {% endif %}
 </script>
 {% endblock %}

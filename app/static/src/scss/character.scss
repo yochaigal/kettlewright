@@ -322,3 +322,45 @@
   }
 }
 
+.character-print-inventories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(65mm, 1fr));
+  gap: 1em;
+}
+
+@media print {
+  @page { margin: 12mm; }
+  body:has(.character-print-page) {
+    background: white;
+    color: black;
+    font-size: 10pt;
+    line-height: 1.25;
+    margin: 0;
+    padding: 0;
+  }
+  body:has(.character-print-page) #navbar { display: none; }
+  .character-print-page {
+    display: block;
+    margin: 0 !important;
+    padding: 0;
+    width: 100%;
+    max-width: none;
+    .view-character-sheet { max-width: none; padding: 0; box-shadow: none; }
+    h1 { font-size: 20pt; margin: 0 0 3pt; }
+    h2 { font-size: 12pt; margin: 0; }
+    h3 { font-size: 11pt; margin: 6pt 0 3pt; }
+    h4 { font-size: 10pt; margin: 0; }
+    h2::before, h3::before { display: none; }
+    p, .character-section { margin: 3pt 0; font-size: 10pt; line-height: 1.25; }
+    .subtitle { font-size: 10pt; }
+    .portrait-image { width: 18mm; height: 18mm; }
+    .character-print-grid { grid-template-columns: 1fr 1fr; gap: 12pt; }
+    .stats-stats-container { gap: 3pt 8pt; }
+    .inventory-item-container { min-height: 0; padding: 2pt 0; font-size: 10pt; }
+    .inventory-container { max-width: none; margin-bottom: 0 !important; }
+    .character-print-details { columns: 2; column-gap: 12pt; }
+    .print-container { break-inside: avoid; }
+    .print-container p { overflow-wrap: anywhere; white-space: pre-wrap; }
+    h3 { break-after: avoid; }
+  }
+}
