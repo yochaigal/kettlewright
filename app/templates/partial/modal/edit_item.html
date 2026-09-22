@@ -97,11 +97,12 @@
 
         <div class="field">
           <label>
+            {% set has_armor = mode == 'edit' and ('1 Armor' in item.tags or '2 Armor' in item.tags or '3 Armor' in item.tags) %}
             <input type="checkbox" name="edit_item_armor_active"
-              {% if mode != 'edit' or item.get('armor_active', item.name != 'Sloth-Tarp') %}checked{% endif %} />
+              {% if not has_armor %}disabled{% elif item.get('armor_active', item.name != 'Sloth-Tarp') %}checked{% endif %} />
             {{_('Armor bonus active')}}
           </label>
-          <small>{{_('Only enable conditional armor while the item is in use.')}}</small>
+          <small style="display: block">{{_('Requires an Armor tag. Enable only while the item is in use.')}}</small>
         </div>
 
         <div class="field">
@@ -171,6 +172,9 @@
       }
     });
     document.getElementById("edit_item_tags").value = tags.join(',');
+    const armorActive = document.querySelector('[name="edit_item_armor_active"]');
+    armorActive.disabled = !tags.some(tag => ["1 Armor", "2 Armor", "3 Armor"].includes(tag));
+    if (armorActive.disabled) armorActive.checked = false;
   }
 
   function adjustTagSelection(tag) {

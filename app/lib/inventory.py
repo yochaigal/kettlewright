@@ -405,12 +405,14 @@ class Inventory:
         if item == None:
             return
         item["name"] = name
-        if armor_active is not None:
-            item["armor_active"] = armor_active
         if tags != "":
             item["tags"] = tags.split(",")
         else:
             item["tags"] = []
+        if not any(tag in item["tags"] for tag in ("1 Armor", "2 Armor", "3 Armor")):
+            item["armor_active"] = False
+        elif armor_active is not None:
+            item["armor_active"] = armor_active
         if "uses" in item["tags"]:
             item["uses"] = int(uses)
         else:
