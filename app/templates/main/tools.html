@@ -7,16 +7,22 @@
 <div class="body-container">
   <div class="sheet party-tools-sheet">
     <h2>{{_('Tools')}}</h2>
-    <div class="tabs" role="tablist">
-      <ul>
-        <li>
-          <input type="radio" name="tabs" id="tab1" checked />
-          <label for="tab1" role="tab" aria-selected="true" aria-controls="panel1" tabindex="0">{{_('Tables')}}</label>
-          <div id="tab-content1" class="tab-content flex-column-centered" role="tabpanel" aria-labelledby="description"
-            aria-hidden="false">
+    <div class="tools-tabs">
+      <div class="tools-tab-list" role="tablist" aria-label="{{_('Tools')}}">
+        <button type="button" id="tables-tab" role="tab" aria-selected="true" aria-controls="tab-content1">{{_('Tables')}}</button>
+        <button type="button" id="generator-tab" role="tab" aria-selected="false" aria-controls="tab-content2" tabindex="-1">{{_('Character Generator')}}</button>
+      </div>
+      <div id="tab-content1" class="tools-tab-panel" role="tabpanel" aria-labelledby="tables-tab">
             <div class="tools-roll-container">
-              <div id="category-buttons" class="tools-choice-row" role="group" aria-label="{{_('Categories')}}"></div>
-              <div id="subcategory-buttons" class="tools-choice-row" role="group" aria-label="{{_('Tables')}}"></div>
+              <div class="tools-choice-group">
+                <div id="category-label" class="tools-choice-label">{{_('Category')}}</div>
+                <div id="category-buttons" class="tools-choice-row" role="group" aria-labelledby="category-label"></div>
+              </div>
+              <div class="tools-choice-group">
+                <div id="table-label" class="tools-choice-label">{{_('Table')}}<span id="selected-category-label"></span></div>
+                <p id="table-choice-hint">{{_('Choose a category to see its tables.')}}</p>
+                <div id="subcategory-buttons" class="tools-choice-row" role="group" aria-labelledby="table-label"></div>
+              </div>
               <div id="tools-button-container">
                 <button class="roll button dice-button" type="button" id="roll-button" disabled aria-label="{{_('Roll')}}">
                   <i class="fa-solid fa-dice dice"></i>
@@ -30,19 +36,12 @@
               </div>
             </div>
             <div class="text-border" style="margin-top: 1em" id="tools-result-display"></div>
-          </div>
-        </li>
-        <li>
-          <input type="radio" name="tabs" id="tab2" />
-          <label for="tab2" role="tab" aria-selected="true" aria-controls="panel2" tabindex="0">{{_('Character
-            Generator')}}</label>
-          <div id="tab-content2" class="tab-content" role="tabpanel" aria-labelledby="description" aria-hidden="false">
-            {% include "partial/tools/pcgen.html" %}
-          </div>
-        </li>
-      </ul>
-    </div>
 
+      </div>
+      <div id="tab-content2" class="tools-tab-panel" role="tabpanel" aria-labelledby="generator-tab" hidden>
+        {% include "partial/tools/pcgen.html" %}
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

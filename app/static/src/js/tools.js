@@ -2,6 +2,30 @@ import utils, { handleClick, styledAlert } from "./utils.js";
 
 window.KW_alert = utils.styledAlert;
 
+const toolTabs = [...document.querySelectorAll(".tools-tab-list [role=tab]")];
+const selectToolTab = (selected) => {
+  toolTabs.forEach((tab) => {
+    const active = tab === selected;
+    tab.setAttribute("aria-selected", String(active));
+    tab.tabIndex = active ? 0 : -1;
+    document.getElementById(tab.getAttribute("aria-controls")).hidden = !active;
+  });
+};
+toolTabs.forEach((tab, index) => {
+  tab.addEventListener("click", () => selectToolTab(tab));
+  tab.addEventListener("keydown", (event) => {
+    let next;
+    if (event.key === "ArrowRight") next = (index + 1) % toolTabs.length;
+    if (event.key === "ArrowLeft") next = (index + toolTabs.length - 1) % toolTabs.length;
+    if (event.key === "Home") next = 0;
+    if (event.key === "End") next = toolTabs.length - 1;
+    if (next === undefined) return;
+    event.preventDefault();
+    selectToolTab(toolTabs[next]);
+    toolTabs[next].focus();
+  });
+});
+
 const categoryButtons = document.getElementById("category-buttons");
 const subcategoryButtons = document.getElementById("subcategory-buttons");
 let selectedCategory = "";
@@ -55,6 +79,8 @@ const addChoiceButtons = (choices, element, onSelect) => {
 
 addChoiceButtons(categories, categoryButtons, (category) => {
   selectedCategory = category;
+  document.getElementById("selected-category-label").textContent = ` · ${category}`;
+  document.getElementById("table-choice-hint").hidden = true;
   selectedSubcategory = "";
   rollButton.disabled = true;
   addChoiceButtons(categories[category], subcategoryButtons, (subcategory) => {
