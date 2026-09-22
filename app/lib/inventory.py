@@ -6,6 +6,7 @@ from app.models import db, Party, Character
 from app.models.character import item_armor_value
 from app.lib import sdv
 from flask_babel import _
+from flask import abort
 
 FATIGUE_NAME = "Fatigue"
 CARRYING_NAME = "Carrying"
@@ -466,21 +467,39 @@ class Inventory:
         self.parse(self.character)
         return item
     
-    # move item to party storage
-    def move_item_to_party(self, item_id):
+    def transfer_item(self, item_id, recipient, container_id=0):
+        """Validate both inventories before moving an item in one transaction."""
         item = self.get_item(item_id)
-        if item == None:
-            return
-        party = Party.query.filter_by(id=self.character.party_id).first()
-        if not party:
-            return
-        self.delete_item(item["location"], item_id)
-        items = json.loads(party.items)
-        items.append(item)
-        party.items = json.dumps(items)
+        if item is None:
+            abort(404)
+        if "carrying" in item:
+            abort(400, description="Carrying markers cannot be transferred.")
+        target = Inventory(recipient)
+        container = target.get_container(container_id)
+        if container is None:
+            abort(400, description="Destination container does not exist.")
+        tags = item.get("tags") or []
+        slots = 0 if "petty" in tags else 2 if "bulky" in tags else 1
+        if target.container_slots(container) + slots > int(container['slots']):
+            abort(400, description="Destination container has insufficient free slots.")
+        source_items = json.loads(self.character.items)
+        target_items = json.loads(recipient.items or '[]')
+        if any(str(existing['id']) == str(item_id) for existing in target_items):
+            abort(409, description="Item already exists in the destination.")
+        item['location'] = int(container_id)
+        self.character.items = json.dumps([it for it in source_items if str(it['id']) != str(item_id)])
+        recipient.items = json.dumps(target_items + [item])
         db.session.commit()
-        return item        
-    
+        self.parse(self.character)
+        return item
+
+    # move item to selected party container
+    def move_item_to_party(self, item_id, container_id=0):
+        party = db.session.get(Party, self.character.party_id) if self.character.party_id else None
+        if not party or self.character.id not in json.loads(party.members or '[]'):
+            abort(400, description="Character does not belong to this party.")
+        return self.transfer_item(item_id, party, container_id)
+
     # remove items from party storage
     def remove_items_from_party(self, char_items):
         party = Party.query.filter_by(id=self.character.party_id).first()
@@ -499,21 +518,14 @@ class Inventory:
         party.items = json.dumps(result)
         db.session.commit()
         
-    # move item from party storage to user
+    # move item from party storage to a current member's main inventory
     def move_item_to_user(self, item_id, user_id):
-        item = self.get_item(item_id)
-        if item == None:
-            return
-        character = Character.query.filter_by(id=user_id).first()
-        if not character:
-            return
-        self.delete_item(item["location"], item_id)
-        items = json.loads(character.items)
-        items.append(item)
-        character.items = json.dumps(items)
-        db.session.commit()
-        return item          
-    
+        character = db.session.get(Character, user_id)
+        if (not character or character.party_id != self.character.id
+                or character.id not in json.loads(self.character.members or '[]')):
+            abort(400, description="Destination character does not belong to this party.")
+        return self.transfer_item(item_id, character, 0)
+
     # remove items from characters
     def remove_items_from_characters(self, char_items):
         party = Party.query.filter_by(id=self.character.id).first()

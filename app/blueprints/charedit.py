@@ -1,6 +1,6 @@
 # Character inline editor blueprint
 
-from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response, abort
 from flask_login import login_required, current_user
 from app.models import db, User, Character, Party
 from app.forms import *
@@ -346,7 +346,9 @@ def charedit_inplace_inventory_item_edit(username, url_name, item_id):
     else:
         item = None
     return render_template('partial/modal/edit_item.html', user=user, character=character, username=username, url_name=url_name, 
-                           inventory=inventory, item=item, mode=mode)
+                           inventory=inventory, item=item, mode=mode,
+                           party_containers=json.loads(party.containers or '[]') if
+                           (party := db.session.get(Party, character.party_id)) else [])
 
 # Route: edit item save
 @character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/save', methods=['POST'])
@@ -388,12 +390,32 @@ def charedit_inplace_inventory_item_edit_amount(username, url_name, item_id):
     return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)    
 
 # Route: move item to party storage
-@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/party', methods=['GET'])
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/party', methods=['POST'])
+@login_required
 def charedit_inplace_inventory_item_edit_party(username, url_name, item_id):
     user, character = get_char_data(username, url_name)
+    if character.owner != current_user.id:
+        abort(403)
     inventory = Inventory(character)
-    item = inventory.move_item_to_party(item_id)
-    if "location" in item:
-        inventory.select(item["location"])
+    source = inventory.get_item(item_id)
+    if source is None:
+        abort(404)
+    source_container = source['location']
+    destination = request.form.get('party_container', '0')
+    try:
+        destination = int(destination)
+    except ValueError:
+        abort(400)
+    from werkzeug.exceptions import HTTPException
+    try:
+        inventory.move_item_to_party(item_id, destination)
+    except HTTPException as error:
+        response = make_response(render_template('partial/inventory_error.html', message=error.description))
+        response.headers['HX-Retarget'] = '#add-edit-item-modal-error-text'
+        return response
+    inventory.select(source_container)
     inventory.decorate()
-    return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)    
+    response = make_response(render_template('partial/charedit/inventory.html', user=user, character=character,
+                             username=username, url_name=url_name, inventory=inventory))
+    response.headers['HX-Trigger'] = 'refresh-stats'
+    return response

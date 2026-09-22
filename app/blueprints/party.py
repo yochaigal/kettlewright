@@ -336,7 +336,7 @@ def party_inventory_item_transfer_accept(party_id, container_id, item_id):
     inventory = Inventory(party)
     if data['member'] and data['member'] != "":
         item = inventory.move_item_to_user(item_id, int(data['member']))
-        inventory.select(item["location"])
+        inventory.select(int(container_id))
     inventory.setItemsWithRolls(False)
     inventory.decorate()
     return render_template('partial/partyedit/inventory.html', party=party, inventory=inventory)  
