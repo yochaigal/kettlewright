@@ -10,20 +10,24 @@ document.addEventListener("DOMContentLoaded", function () {
     document
       .getElementById("join-code-button")
       .addEventListener("click", function () {
-        navigator.clipboard.writeText(joinCode).then(
-          function () {
-            utils.styledAlert(
-              "Party join code",
-              "Party join code copied to clipboard",
-              "#party-form"
-            );
-          },
-          function (err) {
-            console.error("Could not copy text: ", err);
-          }
-        );
+        const output = document.getElementById("party-join-code");
+        output.hidden = !output.hidden;
+        document.getElementById("copy-join-code").hidden = output.hidden;
+        this.setAttribute("aria-expanded", String(!output.hidden));
       });
   }
+
+  document.getElementById("copy-join-code")?.addEventListener("click", () => {
+    navigator.clipboard.writeText(joinCode).then(() => {
+      utils.styledAlert("Party join code", "Party join code copied to clipboard", "#party-form");
+    }).catch(() => {
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(document.getElementById("party-join-code"));
+      selection.removeAllRanges();
+      selection.addRange(range);
+    });
+  });
 
   // Initialize all collapsible sections
 

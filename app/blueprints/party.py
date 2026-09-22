@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response, abort
 from flask_login import login_required, current_user
 from app.lib import *
 from app.models import db, User, Character, Party
@@ -10,9 +10,9 @@ party = Blueprint('party', __name__)
 
 
 def get_party_data(ownername, party_url):
-    owner = User.query.filter_by(username=ownername).first()
+    owner = User.query.filter_by(username=ownername).first_or_404()
     party = Party.query.filter_by(
-        owner=owner.id, party_url=party_url).first()
+        owner=owner.id, party_url=party_url).first_or_404()
     join_code = None
     is_owner = False
     is_subowner = False
@@ -27,6 +27,8 @@ def get_party_data(ownername, party_url):
 
     if current_user.is_authenticated:
         is_subowner = current_user.id in subowners_list
+        if is_subowner:
+            join_code = party.join_code
     characters = []
 
     for member_id in members_list:
@@ -120,11 +122,17 @@ def party_edit_save(ownername, party_url):
     return response
 
 # Route: remove character from party
-@party.route('/party/remove-char/<character_id>/<ownername>/<party_url>', methods=['GET'])
+@party.route('/party/remove-char/<character_id>/<ownername>/<party_url>', methods=['POST'])
+@login_required
 def party_remove_char(character_id, ownername, party_url):
+    target_party = get_party_by_owner(ownername, party_url)
+    if target_party is None:
+        abort(404)
+    if target_party.owner != current_user.id:
+        abort(403)
     character = get_character(character_id)
-    if not character:
-        flash("Character with id "+character_id+" not found")
+    if character is None or character.party_id != target_party.id:
+        abort(404)
     remove_character_from_party(character)
     db.session.commit()
     response = make_response("")
@@ -132,11 +140,14 @@ def party_remove_char(character_id, ownername, party_url):
     return response
 
 # Route: delete party
-@party.route('/party/delete/<party_id>', methods=['GET'])
+@party.route('/party/delete/<party_id>', methods=['POST'])
+@login_required
 def party_delete(party_id):
     party = get_party_by_id(party_id)
+    if party is None:
+        abort(404)
     if party.owner != current_user.id:
-        return redirect(url_for('main.parties', username=current_user.username))
+        abort(403)
 
     # remove party from all characters in the party
     characters = Character.query.filter_by(party_id=party.id).all()

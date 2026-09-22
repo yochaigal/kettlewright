@@ -90,10 +90,10 @@
           {% if is_owner %}
           <footer class="card-footer edit-mode">
             <button class="card-footer-item button is-danger is-light edit-mode character-remove-button" type="button"
-              id="character-remove-button" hx-get="/party/remove-char/{{character.id}}/{{ownername}}/{{party_url}}"
+              id="character-remove-button" hx-post="/party/remove-char/{{character.id}}/{{ownername}}/{{party_url}}"
               hx-target="#char-remove-anchor"
               hx-confirm="Do you want to remove {{character.name}} from party?<br/>This action is permanent,<br/>independent on later editor action."
-              data-confirm-title="Remove character" data-confirm-button="Remove">{{_('Remove')}}
+              data-confirm-title="Remove character" data-confirm-button="Remove">{{_('Remove from party')}}
             </button>
             <div id="char-remove-anchor"></div>
           </footer>
@@ -119,13 +119,15 @@
       </div>
     </div>
 
+    {% if is_owner %}
     <div>
       <button class="button is-danger edit-mode" type="button" id="delete-party-button" style="margin: 40px 0px"
-        hx-get="/party/delete/{{party.id}}" hx-confirm="Do you want to delete party {{party.name}}?"
+        hx-post="/party/delete/{{party.id}}" hx-confirm="Do you want to delete party {{party.name}}?"
         data-confirm-title="Delete party" data-confirm-button="Delete">
         {{_('Delete Party')}}
       </button>
     </div>
+    {% endif %}
 
   </div>
 </section>

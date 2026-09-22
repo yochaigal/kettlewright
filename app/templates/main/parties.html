@@ -18,6 +18,7 @@
       onclick="redirectToPartyPage(this)">
       <div class="card party-card" style="cursor: pointer">
         <h2 class="party-card-name">{{ party.name }}</h2>
+        {% if party.owner == current_user.id %}<p class="subtitle">{{_("Warden")}}</p>{% endif %}
         <p class="party-card-description">{{party.description}}</p>
         <h3 class="">{{_('Members')}}</h3>
         {% if party.member_names and party.member_names != "No members yet." %}
