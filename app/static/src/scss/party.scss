@@ -49,7 +49,10 @@ border-radius: 50%;
   width: 100%;
   max-width: 940px;
   padding: 1em;
-  min-height: 660px;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 940px) {
@@ -59,10 +62,15 @@ border-radius: 50%;
 }
 
 .tools-tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
   min-width: 0;
 }
 
 .tools-tab-list {
+  flex-shrink: 0;
   display: flex;
   flex-wrap: wrap;
 
@@ -80,6 +88,11 @@ border-radius: 50%;
 }
 
 .tools-tab-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
   min-width: 0;
   padding: 1em;
   border: 1px solid color-mix(in lab, transparent 75%, var(--fg));
@@ -132,30 +145,62 @@ border-radius: 50%;
 
 #tools-result-display,
 #pcgen-result-display  {
-  height: 400px;
-  max-height: 400px;
+  flex: 1;
+  min-height: 8rem;
+  height: auto;
+  max-height: none;
   overflow-y: auto;
 }
 
 .tools-generator {
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  gap: 0.5em;
   justify-content: end;
   display: flex;
   margin-top: 1em;
 }
 
-#tools-button-container {
+#tools-button-container,
+#pcgen-button-container {
   display: flex; 
   justify-content: flex-end; 
-  gap: 1em; 
-  width: 100%;
+  gap: 1em;
+  flex-wrap: wrap;
+  margin-left: auto;
 }
-@media (max-width: 600px) {
+// Keep the existing dice appearance while native disabled still blocks rolling.
+#roll-button:disabled {
+  opacity: 1;
+  border: none;
+  color: var(--fg);
+  text-decoration: none;
+}
 
-  .tools-roll-container {
-    flex-wrap: wrap;
-  }
-  // #tools-button-container {
-  //   justify-content: space-between;
+body:has(.tools-page) {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 
-  // }
+  .navbar { flex-shrink: 0; }
+}
+
+.tools-page {
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 48px;
+}
+
+.tools-roll-container { flex-shrink: 0; }
+
+#tab-content2 > form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+@media (max-width: 600px), (max-height: 700px) {
+  .tools-page { margin-top: 1rem; }
 }
