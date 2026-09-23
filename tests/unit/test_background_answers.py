@@ -37,7 +37,7 @@ def test_generator_answers_and_print(background_character):
     assert 'character-print-notes-container' not in page
 
 
-def test_manual_creation_stores_answers_and_no_automatic_pets(background_character):
+def test_manual_creation_stores_answers_and_starting_mount(background_character):
     app, client, generated, data = background_character
     form = dict(name='Custom', custom_name='New Rider', background='Outrider', custom_background='',
                 strength_max=10, dexterity_max=10, willpower_max=10, hp_max=4, gold=0, armor=0,
@@ -51,7 +51,8 @@ def test_manual_creation_stores_answers_and_no_automatic_pets(background_charact
     with app.app_context():
         character = Character.query.one()
         assert character.notes == ''
-        assert character.pets == []
+        assert len(character.pets) == 1
+        assert character.pets[0].name == generated.table2.option['pets'][0]
         for field in BACKGROUND_FIELDS:
             assert getattr(character,field) == data[field]
 

@@ -850,6 +850,10 @@ def charcreo_save():
                 description=description, traits=traits, notes="", **background_answers,
                 gold=form.gold.data, bonds=_(form.bonds.data), omens=_(form.omens.data), 
                 custom_image=custom_image, image_url=custom_fields['portrait_src'])
+    from app.lib.companions import starting_pets
+    options = [find_background_table_option(background, f'table{index}',
+               custom_fields.get(f'background_table{index}_select')) for index in (1, 2)] if background else []
+    new_character.pets.extend(starting_pets(new_character, options))
     db.session.add(new_character)
     db.session.commit()
     response = make_response("Redirecting")

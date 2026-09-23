@@ -71,6 +71,7 @@
           ]
         },
         {
+          "pets": ["Living Nightmare"],
           "description": "A Living Nightmare that dwells within you but manifests whenever you are in danger. It has your same Attributes and HP and attacks with claws (d8+d8). It disappears on Critical Damage (take 1d4 WIL damage), re-appearing again on the next full moon.",
           "items": [
             {
@@ -81,6 +82,7 @@
           ]
         },
         {
+          "pets": ["Raven Familiar"],
           "description": "A Raven Familiar [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as an intelligent being and is entirely devoted to you.",
           "items": [
             {

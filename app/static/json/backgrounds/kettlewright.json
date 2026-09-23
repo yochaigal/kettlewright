@@ -93,6 +93,7 @@
           ]
         },
         {
+          "pets": ["Donkey"],
           "description": "You scavenge raw tin and iron from battlefields, pulling teeth from still-twitching corpses. Start with a young Donkey (+4 slots, slow), a Crossbow (d8 damage, bulky), and a Saw (d6).",
           "items": [
             {
@@ -170,6 +171,7 @@
           ]
         },
         {
+          "pets": ["Carrion Cat"],
           "description": "A clever pet, small enough to hide in your pack (bulky), but strong enough to scare off smaller predators. Requires one Ration a day, and it must be meat.",
           "items": [
             {

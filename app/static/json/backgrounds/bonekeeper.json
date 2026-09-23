@@ -71,6 +71,7 @@
           ]
         },
         {
+          "pets": ["Donkey"],
           "description": "A burial wagon (+6 slots, slow) from your last job. It came with a stubborn old donkey (+4 slots, only +2 slots if pulling wagon).",
           "items": [],
           "containers": [

@@ -215,12 +215,13 @@ def test_hireling_cart_load_and_removal(world):
         assert not any('carrying' in it for it in json.loads(db.session.get(Companion,1).items))
 
 
-def test_generator_keeps_background_gear_without_creating_pets(app_with_babel):
+def test_generator_keeps_background_gear_and_creates_starting_pet(app_with_babel):
     from app.lib.char_utils import generate_character
     with app_with_babel.test_request_context('/'):
         character, raw = generate_character('Outrider')
         data = json.loads(raw)
-        assert data['pets'] == []
+        assert len(data['pets']) == 1
+        assert data['pets'][0]['name'] == character.table2.option['pets'][0]
         assert data['items'] == character.items
         assert data['containers'] == character.containers
 
