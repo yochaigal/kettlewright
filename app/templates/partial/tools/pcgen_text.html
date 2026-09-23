@@ -109,5 +109,9 @@
     {{character.table2['option']['description']|tr}}
 </p>
 </p>
+{% if character.pets %}
+<div class="subtitle left-symbol">{{_('Pets')}}</div>
+{% for pet in character.pets %}<p><strong>{{pet.name|tr}}</strong>: {{pet.notes}}</p>{% endfor %}
+{% endif %}
 <input type="hidden" name="json_data" id="json_data" value="{{json_data}}" />
 <input type="hidden" name="character_name" id="character_name" value="{{character.name}}" />

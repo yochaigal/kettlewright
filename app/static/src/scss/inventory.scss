@@ -3,6 +3,16 @@
     width: 100%;
 }
 
+.character-inventory-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1rem;
+    width: 100%;
+    h3 { margin-right: auto; }
+    button { margin: 0; }
+}
+
 .inventory-container-title {
     font-weight: 400;
     margin-top: 0px;

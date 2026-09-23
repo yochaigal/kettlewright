@@ -5,26 +5,26 @@
 ```bash
 # Activate pipenv shell
 pipenv shell
-python -m pytest
+python -m pytest -p no:flask
 
 # or run directly without shell activation
-pipenv run python -m pytest
+pipenv run python -m pytest -p no:flask
 ```
 
 ## Common Test Commands
 
 ```bash
 # Run all tests
-python -m pytest
+python -m pytest -p no:flask
 
 # Run specific test file
-python -m pytest tests/test_basic.py
+python -m pytest -p no:flask tests/test_basic.py
 
 # Run with verbose output
-python -m pytest -v
+python -m pytest -p no:flask -v
 
 # Run tests in a specific class
-python -m pytest tests/unit/test_template_filters.py::TestIntSumFilter
+python -m pytest -p no:flask tests/unit/test_template_filters.py::TestIntSumFilter
 ```
 
 ## Writing Tests
@@ -43,3 +43,7 @@ def test_something(app, client):
         # Your test code here
         pass
 ```
+
+The project supplies its own Flask fixtures. Disable the optional `pytest-flask`
+plugin (`-p no:flask`) so HTTP requests from different users do not share an
+application context or a cached login.

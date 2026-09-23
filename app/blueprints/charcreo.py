@@ -106,7 +106,12 @@ def get_custom_fields(data):
         if n in data:
             result[n] = data[n]
         else:
-            result[n] = None            
+            result[n] = None
+    # Keep optional item lists valid when rendered into hidden form fields.
+    # Older forms may submit the literal "None" produced by Jinja.
+    for n in ("bond_items", "bond_items_2", "t1_items", "t2_items", "bkg_items"):
+        if result[n] in (None, '', 'None'):
+            result[n] = '[]'
     return result
 
 # Fill all needed data from request
@@ -850,6 +855,10 @@ def charcreo_save():
                 description=description, traits=traits, notes="", **background_answers,
                 gold=form.gold.data, bonds=_(form.bonds.data), omens=_(form.omens.data), 
                 custom_image=custom_image, image_url=custom_fields['portrait_src'])
+    from app.lib.companions import starting_pets
+    options = [find_background_table_option(background, f'table{index}',
+               custom_fields.get(f'background_table{index}_select')) for index in (1, 2)] if background else []
+    new_character.pets.extend(starting_pets(new_character, options))
     db.session.add(new_character)
     db.session.commit()
     response = make_response("Redirecting")

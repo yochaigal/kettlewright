@@ -10,7 +10,7 @@ def party_setup(app_with_babel):
         db.session.add_all([User(id=1, username='warden'), User(id=2, username='other')])
         db.session.add(Party(id=1, owner=1, name='Party', party_url='party', members='[1]',
                              items='[]', containers='[{"id":0,"name":"Main","slots":10}]', join_code='join-secret'))
-        db.session.add(Character(id=1, owner=2, name='Member', background='Test', party_id=1,
+        db.session.add(Character(id=1, owner=2, owner_username='other', url_name='member', name='Member', background='Test', party_id=1,
                                  items='[]', image_url='default-portrait.webp', containers='[]'))
         db.session.commit()
         yield app_with_babel.test_client()

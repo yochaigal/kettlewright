@@ -1,0 +1,4 @@
+{% for category, message in get_flashed_messages(with_categories=true) %}
+<p role="status" class="notification {{'is-danger' if category == 'error' else 'is-success'}}">{{message}}</p>
+{% endfor %}
+{% for errors in form.errors.values() %}{% for error in errors %}<p role="alert">{{error}}</p>{% endfor %}{% endfor %}

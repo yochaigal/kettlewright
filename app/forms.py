@@ -323,3 +323,14 @@ class PartyEditForm(FlaskForm):
 class DeleteAccountForm(FlaskForm):
     password = PasswordField(_l('Confirm Password'), validators=[DataRequired()])
     submit = SubmitField(_l('Delete My Account'))
+
+
+class MFASettingsForm(FlaskForm):
+    password = PasswordField(_l('Current Password'), validators=[DataRequired()])
+    submit = SubmitField(_l('Send verification code'))
+
+
+class MFACodeForm(FlaskForm):
+    code = StringField(_l('Verification code'), validators=[DataRequired(), Regexp(r'^[0-9]{6}$')],
+                       render_kw={'inputmode': 'numeric', 'autocomplete': 'one-time-code', 'maxlength': 6})
+    submit = SubmitField(_l('Verify'))

@@ -2,7 +2,10 @@ from datetime import datetime, UTC
 
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, current_app
 from markupsafe import Markup
-from flask_login import login_user, login_required, logout_user, current_user
+from flask_login import login_user, login_required, fresh_login_required, confirm_login, logout_user, current_user
+from flask_wtf import FlaskForm
+from app.forms import MFASettingsForm, MFACodeForm
+from app.lib.mfa import issue_challenge, pending_challenge, consume_challenge
 from app.models import db, User
 from app.forms import LoginForm, RegistrationForm, PasswordResetRequestForm, PasswordResetForm, ResendConfirmationForm, PasswordUpdateForm, EmailUpdateForm, DeleteAccountForm
 from app.email import send_email
@@ -32,18 +35,20 @@ def login():
             flash(Markup('Please confirm your account before logging in. If you did not receive a confirmation link, please click <a href="/resend_confirmation" class="alert-link">here</a> to resend.'), 'error')
         elif user is not None and user.verify_password(form.password.data):
             if user.confirmed:
-                login_user(user, form.remember_me.data)
-
-                user.last_login = datetime.now(UTC)
-                db.session.commit()
-
-                session.permanent = True
-                # go to the next page if it exists, otherwise go to the profile page
-                next = request.args.get('next')
-                if next is None or not next.startswith('/'):
-                    next = url_for('main.characters',
-                                   username=current_user.username)
-                return redirect(next)
+                session.pop('mfa_pending', None)
+                if user.mfa_enabled:
+                    try:
+                        nonce = issue_challenge(user, 'login')
+                    except ValueError as error:
+                        flash(_(str(error)), 'error')
+                        return render_template('auth/login.html', form=form), 503
+                    if nonce is None:
+                        flash(_('Please wait a minute before requesting another code.'), 'error')
+                        return render_template('auth/login.html', form=form), 429
+                    session['mfa_pending'] = dict(nonce=nonce, remember=bool(form.remember_me.data),
+                                                  next=safe_next(request.args.get('next')))
+                    return redirect(url_for('auth.mfa_verify'))
+                return finish_login(user, form.remember_me.data, request.args.get('next'))
             else:
                 flash(Markup('Please confirm your account before logging in. If you did not receive a confirmation link, please click <a href="/resend_confirmation" class="alert-link">here</a> to resend.'), 'error')
         else:
@@ -228,7 +233,7 @@ def change_password():
             flash('Invalid password.', 'error')
         return redirect(url_for('auth.change_password'))
     elif form.submit2.data:
-        for _, errors in form.errors.items():
+        for field_name, errors in form.errors.items():
             for error in errors:
                 flash(error, 'error')
     return render_template('auth/change_password.html', form=form)
@@ -237,6 +242,9 @@ def change_password():
 @auth.route('/change_email', methods=['GET', 'POST'])
 @login_required
 def change_email():
+    if current_user.mfa_enabled:
+        flash(_('Disable email verification before changing your email address.'), 'error')
+        return redirect(url_for('auth.mfa_settings'))
     form = EmailUpdateForm()
 
     if form.validate_on_submit():
@@ -257,7 +265,7 @@ def change_email():
             flash('Invalid password.', 'error')
         return redirect(url_for('auth.change_email'))
     elif form.submit1.data:
-        for _, errors in form.errors.items():
+        for field_name, errors in form.errors.items():
             for error in errors:
                 flash(error, 'error')
 
@@ -334,3 +342,99 @@ def create_assessment(
     response = requests.post(url, json=msg, timeout=10)
     response.raise_for_status()
     return response.json()
+
+
+def safe_next(value):
+    from urllib.parse import urlsplit
+    if not value or not value.startswith('/') or value.startswith('//') or '\\' in value or any(ord(c) < 32 for c in value):
+        return None
+    parsed = urlsplit(value)
+    return value if not parsed.scheme and not parsed.netloc else None
+
+
+def finish_login(user, remember=False, destination=None):
+    login_user(user, remember)
+    user.last_login = datetime.now(UTC)
+    db.session.commit()
+    session.permanent = True
+    return redirect(safe_next(destination) or url_for('main.characters', username=user.username))
+
+
+@auth.route('/account/mfa', methods=['GET', 'POST'])
+@fresh_login_required
+def mfa_settings():
+    form = MFASettingsForm()
+    if form.validate_on_submit():
+        if not current_user.verify_password(form.password.data):
+            flash(_('Invalid password.'), 'error')
+        else:
+            try:
+                nonce = issue_challenge(current_user, 'disable' if current_user.mfa_enabled else 'enable')
+            except ValueError as error:
+                flash(_(str(error)), 'error')
+                return render_template('auth/mfa_settings.html', form=form), 503
+            if nonce:
+                session['mfa_pending'] = dict(nonce=nonce)
+                return redirect(url_for('auth.mfa_verify'))
+            flash(_('Please wait a minute before requesting another code.'), 'error')
+    return render_template('auth/mfa_settings.html', form=form)
+
+
+@auth.route('/mfa/verify', methods=['GET', 'POST'])
+def mfa_verify():
+    pending = session.get('mfa_pending', {})
+    challenge = pending_challenge(pending.get('nonce'))
+    if challenge is None:
+        session.pop('mfa_pending', None)
+        flash(_('Code expired or too many attempts. Please start again.'), 'error')
+        return redirect(url_for('auth.mfa_settings' if current_user.is_authenticated else 'auth.login'))
+    if challenge.purpose != 'login' and (not current_user.is_authenticated or current_user.id != challenge.user_id):
+        session.pop('mfa_pending', None)
+        return redirect(url_for('auth.login'))
+    form = MFACodeForm()
+    if form.validate_on_submit():
+        result = consume_challenge(challenge.nonce, form.code.data)
+        if result:
+            user, purpose = result
+            session.pop('mfa_pending', None)
+            if purpose == 'login':
+                return finish_login(user, pending.get('remember', False), pending.get('next'))
+            flash(_('Email verification enabled.') if purpose == 'enable' else _('Email verification disabled.'), 'success')
+            return redirect(url_for('auth.account'))
+        flash(_('Invalid verification code.'), 'error')
+    return render_template('auth/mfa_verify.html', form=form, resend_form=FlaskForm(), purpose=challenge.purpose)
+
+
+@auth.post('/mfa/resend')
+def mfa_resend():
+    if not FlaskForm().validate_on_submit():
+        return '', 400
+    pending = session.get('mfa_pending', {})
+    challenge = pending_challenge(pending.get('nonce'))
+    if challenge is None:
+        return redirect(url_for('auth.mfa_verify'))
+    if challenge.purpose != 'login' and (not current_user.is_authenticated or current_user.id != challenge.user_id):
+        return '', 403
+    try:
+        nonce = issue_challenge(challenge.user, challenge.purpose)
+    except ValueError as error:
+        flash(_(str(error)), 'error')
+        return redirect(url_for('auth.mfa_verify'))
+    if nonce:
+        session['mfa_pending'] = dict(pending, nonce=nonce)
+        flash(_('A new verification code has been sent.'), 'success')
+    else:
+        flash(_('Please wait a minute before requesting another code.'), 'error')
+    return redirect(url_for('auth.mfa_verify'))
+
+
+@auth.route('/reauthenticate', methods=['GET', 'POST'])
+@login_required
+def reauthenticate():
+    form = MFASettingsForm()
+    if form.validate_on_submit():
+        if current_user.verify_password(form.password.data):
+            confirm_login()
+            return redirect(safe_next(request.args.get('next')) or url_for('auth.mfa_settings'))
+        flash(_('Invalid password.'), 'error')
+    return render_template('auth/reauthenticate.html', form=form)

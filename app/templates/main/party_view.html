@@ -13,11 +13,11 @@
 {% endif %}
 <script src="{{ url_for('static', filename='src/js/party_view.js') }}" defer type="module"></script>
 <section class="body-container">
-  {% with messages = get_flashed_messages() %} {% if messages is not none and messages|length > 0 %}
-  {% for message in messages %}
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if messages is not none and messages|length > 0 %}
+  {% for category, message in messages %}
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      KW_alert("Error", '{{message|squote2js}}')
+      KW_alert({{ (_("Wilderness actions") if category == "wilderness" else _("Error"))|tojson }}, '{{message|squote2js}}')
     });
   </script>
   {% endfor %}
@@ -67,6 +67,7 @@
       </div>
     </div>
 
+    {% if is_owner %}{% include "partial/partyview/wilderness.html" %}{% endif %}
     {% include "partial/companions/hirelings.html" %}
 
     <div class="party-section">

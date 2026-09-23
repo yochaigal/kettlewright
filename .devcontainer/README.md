@@ -25,6 +25,16 @@ Flask; refresh the browser after editing templates, JavaScript, CSS or SCSS.
 SCSS is compiled automatically. Browser refresh is manual.
 Rebuild only after changing dependencies or the Dockerfile.
 
+The server uses `--no-debugger` to disable Flask's browser debugger while keeping
+Python auto-reload enabled. Otherwise, the debugger reports Engine.IO's normal
+WebSocket closure as a `ConnectionError` with HTTP 500. VS Code debugging remains
+available.
+
+If a build fails with `ReadTimeoutError` while downloading from
+`files.pythonhosted.org`, retry the build command above. Dependency installation
+uses a 120-second socket timeout and up to 10 connection attempts to tolerate
+slow connections; a persistent network outage still requires restoring access.
+
 If `requirements.txt` changes (for example, to add Pillow for portrait uploads),
 run `docker compose -f .devcontainer/docker-compose.yml up -d --build app`.
 A restart applies migrations but does not install new dependencies. Packages
@@ -66,7 +76,7 @@ to IDE-managed Dev Containers to free ports 8000 and 8025.
 3. Wait for the container to build and start (post-create script will set up the database automatically)
 4. Run the Flask development server:
    - **Option A (Recommended):** Select **Flask: Run with Auto-reload**, then press `F5`
-   - **Option B:** Run in terminal: `flask run --host=0.0.0.0 --port=8000`
+   - **Option B:** Run in terminal: `flask run --debug --no-debugger --host=0.0.0.0 --port=8000`
 5. The application will be available at `http://localhost:8000`
 
 ### 2. GitHub Codespaces (Cloud)
@@ -101,7 +111,7 @@ npm install -g @devcontainers/cli
 devcontainer up --workspace-folder .
 
 # Execute commands in the container
-devcontainer exec --workspace-folder . flask run
+devcontainer exec --workspace-folder . flask run --debug --no-debugger
 ```
 
 ### 4. JetBrains IDEs (IntelliJ, PyCharm, etc.)
@@ -153,7 +163,7 @@ Press **F5** or go to **Run and Debug** (Ctrl+Shift+D) and select one of these c
 
 ```bash
 # With Flask development server (with auto-reload)
-flask run --host=0.0.0.0 --port=8000
+flask run --debug --no-debugger --host=0.0.0.0 --port=8000
 
 # Or with gunicorn (production-like, stop Flask first)
 USE_FLASK=False FLASK_DEBUG=0 gunicorn -k eventlet -w 1 -b 0.0.0.0:8000 app:application

@@ -150,7 +150,10 @@ class GeneratedCharacter:
         r['willpower'] = self.attributes.wil
         r['willpower_max'] = self.attributes.wil
         r['image_url'] = "default-portrait.webp"
-        r['pets'] = []
+        from types import SimpleNamespace
+        from app.lib.companions import starting_pets
+        r['pets'] = [pet.export() for pet in starting_pets(
+            SimpleNamespace(**r), [self.table1.option, self.table2.option])]
         return r
 
 def find_background(list, bkg):
@@ -278,6 +281,7 @@ def generate_character(bkg):
             genchar.containers.append(c)            
             
     generated_data = genchar.toJSON()
+    genchar.pets = generated_data['pets']
     json_data = json.dumps(generated_data)
     
     return genchar, json_data

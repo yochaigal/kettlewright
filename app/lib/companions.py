@@ -44,6 +44,13 @@ def pet_data(template, parent):
     return result
 
 
+def starting_pets(parent, options):
+    """Resolve explicit background rewards before descriptions are translated."""
+    templates = catalog('pet')
+    keys = dict.fromkeys(key for option in options if option for key in option.get('pets', []))
+    return [import_pet(pet_data(templates[key], parent)) for key in keys]
+
+
 def import_pet(data):
     if not isinstance(data, dict):
         raise ValueError('Invalid pet')

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="body-container auth-container">
+  <form class="auth-card mfa-card" method="post">
+    {{ form.hidden_tag() }}
+    {% if current_user.mfa_enabled %}
+    <h1>{{ _('Disable email verification') }}</h1>
+    <p>{{ _('Email verification is currently enabled. After you disable it, you will sign in with your password only.') }}</p>
+    {% else %}
+    <h1>{{ _('Enable email verification') }}</h1>
+    <p>{{ _('Email verification is currently disabled. After you enable it, you will need a code from your email each time you sign in with your password.') }}</p>
+    {% endif %}
+    <p id="mfa-password-help">{{ _('Enter your current password. We will email you a code to confirm this change on the next screen.') }}</p>
+    <div class="field">
+      {{ form.password.label }}
+      {{ form.password(class='input', autocomplete='current-password', aria_describedby='mfa-password-help') }}
+    </div>
+    {% include 'auth/mfa_messages.html' %}
+    <div class="footer-button-container mfa-actions">
+      <a class="button" href="{{ url_for('auth.account') }}">{{ _('Back') }}</a>
+      <button class="button" type="submit">{{ _('Send code') }}</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -30,7 +30,19 @@
     <div class="party-member-stat"><span class="party-stat-label">{{_('Armor')}}</span><span>{{ character.armorValue() }}</span></div>
     <div class="party-member-stat"><span class="party-stat-label">{{_('Gold')}}</span><span>{{ character.gold or 0 }}</span></div>
   </div>
-  <p class="party-member-slots">{{ ngettext('%(num)s slot free', '%(num)s slots free', character.freeMainSlots()) }}</p>
+  <div class="party-member-inventory">
+    {% if current_user.id in (party.owner, character.owner) %}
+    <a class="party-member-inventory-link" href="{{ url_for('main.character', username=character.owner_username, url_name=character.url_name) }}#inventory-container"
+       title="{{_('Manage inventory')}}" aria-label="{{_('Manage inventory: %(name)s', name=character.name)}}">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <path d="M9 5V4a3 3 0 0 1 6 0v1M6 8H4v11a2 2 0 0 0 2 2m12-13h2v11a2 2 0 0 1-2 2" />
+        <rect x="6" y="5" width="12" height="17" rx="4" />
+        <path d="M9 9h6M9 14h6v5H9zM14 14v2" />
+      </svg>
+    </a>
+    {% endif %}
+    <p class="party-member-slots">{{ ngettext('%(num)s slot free', '%(num)s slots free', character.freeMainSlots()) }}</p>
+  </div>
 </article>
 {% else %}
 <p>{{_('No members in this party')}}</p>

@@ -83,7 +83,8 @@ def party_view(ownername, party_url):
     return render_template('main/party_view.html', party_url=party_url, characters=characters, join_code=join_code, is_owner=is_owner,
                            is_subowner=is_subowner, party_id=party.id, ownername=ownername, inventory=inventory, party=party,
                            can_view_rolls=can_view_rolls, roll_form=FlaskForm(), stat_form=FlaskForm(),
-                           rolls=PartyRoll.latest(party.id) if can_view_rolls else [])
+                           rolls=PartyRoll.latest(party.id) if can_view_rolls else [],
+                           wilderness_mounts=wilderness_mounts(party, characters))
 
 
 @party.route('/party/<int:party_id>/roll-history', methods=['GET'])
@@ -423,3 +424,66 @@ def party_inventory_item_transfer_accept(party_id, container_id, item_id):
 
       
     
+
+
+def wilderness_mounts(target_party, characters):
+    return [pet for parent in [*characters, *target_party.hirelings] for pet in parent.pets
+            if any(int(c.get('slots', 0)) > 0 for c in json.loads(pet.containers or '[]'))]
+
+
+@party.post('/party/<int:party_id>/wilderness')
+@login_required
+def wilderness_action(party_id):
+    from app.lib.wilderness import supply, make_camp
+    target = db.get_or_404(Party, party_id)
+    if target.owner != current_user.id:
+        abort(403)
+    if not FlaskForm().validate_on_submit():
+        abort(400)
+    characters = party_characters(target)
+    selected = request.form.getlist('participants')
+    by_id = {str(c.id): c for c in characters if not c.dead}
+    if not selected or len(set(selected)) != len(selected) or any(i not in by_id for i in selected):
+        abort(400)
+    participants = [by_id[i] for i in selected]
+    action = request.form.get('action')
+    try:
+        # Compare-and-swap prevents a second submission from spending or awarding twice.
+        version = int(request.form.get('version', ''))
+    except ValueError:
+        abort(400)
+    changed = Party.query.filter_by(id=target.id, version=version).update(
+        {Party.version: Party.version + 1}, synchronize_session=False)
+    if not changed:
+        db.session.rollback()
+        flash(_('The party changed. Review its current resources and try again.'), 'wilderness')
+        return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))
+    try:
+        if action == 'supply':
+            try:
+                bonus = int(request.form.get('bonus', '0'))
+            except ValueError:
+                abort(400)
+            if not 0 <= bonus <= 4:
+                abort(400)
+            sides, amount = supply(target, participants, bonus)
+            result = _('Supply: d%(sides)s → %(amount)s Rations (3 uses each), added to party storage.', sides=sides, amount=amount)
+            db.session.add(PartyRoll(party_id=target.id, character_name=current_user.username, result=result))
+        elif action == 'camp':
+            allowed_mounts = {str(c.id): c for c in wilderness_mounts(target, characters)}
+            mount_ids = request.form.getlist('mounts')
+            if len(set(mount_ids)) != len(mount_ids) or any(i not in allowed_mounts for i in mount_ids):
+                abort(400)
+            make_camp(target, participants, [allowed_mounts[i] for i in mount_ids],
+                      resolve_deprivation=request.form.get('resolve_deprivation') == 'on')
+            result = _('Camp complete: one Ration use consumed per selected character or mount; Fatigue removed where recovery is possible.')
+        else:
+            abort(400)
+        db.session.commit()
+        if action == 'supply':
+            notify_roll_history_changed(target)
+        flash(result, 'wilderness')
+    except ValueError as error:
+        db.session.rollback()
+        flash(_(str(error)), 'wilderness')
+    return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))

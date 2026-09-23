@@ -79,6 +79,17 @@ justify-content: space-around;
 }
 .quick-stat-value { display: flex; align-items: center; justify-content: center; white-space: nowrap; min-height: 2rem; }
 .party-member-slots { margin: 0; font-size: 1.3rem; text-align: center; }
+.party-member-inventory { display: flex; flex-direction: column; align-items: center; gap: .25rem; min-width: 0; }
+.party-member-inventory-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  color: var(--fg);
+  &:hover { background: color-mix(in lab, transparent 90%, var(--fg)); }
+}
 
 #party-form:has(.party-compact) { max-width: 1100px; padding: 2rem; }
 .party-section:has(.party-compact) { margin: 1em 0; }
@@ -109,7 +120,7 @@ justify-content: space-around;
 @media (max-width: 800px) {
   .party-compact #party-members-content .party-member { grid-template-columns: 1fr auto; }
   .party-compact .party-member-stats { grid-row: 2; grid-column: 1 / -1; }
-  .party-compact .party-member-slots { grid-row: 1; grid-column: 2; }
+  .party-compact .party-member-inventory { grid-row: 1; grid-column: 2; }
 }
 @media (max-width: 480px) {
   .party-compact .party-member-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -122,6 +133,55 @@ justify-content: space-around;
 }
 .party-section-content {
   padding: 2em 1em;
+}
+
+.wilderness-actions {
+  .wilderness-rules { margin: .5rem 0 1rem; font-size: 1.4rem; }
+  .wilderness-grid { display: grid; gap: 1.5rem; }
+  .wilderness-form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    h3, p { margin: 0; }
+    fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+    legend { margin: 0 0 .5rem; padding: 0; font-weight: 600; }
+    .button { align-self: flex-start; margin: auto 0 0; }
+    + .wilderness-form { border-top: 1px dotted var(--fg); padding-top: 1.5rem; }
+  }
+  .wilderness-choices { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
+  .wilderness-choice {
+    display: inline-flex;
+    align-items: baseline;
+    gap: .5rem;
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    input { flex-shrink: 0; margin: 0; }
+  }
+  .wilderness-bonus {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    input { flex: 0 0 4rem; width: 4rem; margin: 0; padding: .25rem; text-align: center; }
+  }
+}
+
+@media (min-width: 900px) {
+  .wilderness-actions {
+    .wilderness-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; }
+    .wilderness-form + .wilderness-form {
+      border-top: 0;
+      border-left: 1px dotted var(--fg);
+      padding-top: 0;
+      padding-left: 2rem;
+    }
+  }
 }
 
 .party-collapse-button {

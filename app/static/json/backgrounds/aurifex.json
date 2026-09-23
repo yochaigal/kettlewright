@@ -54,6 +54,7 @@
           ]
         },
         {
+          "pets": ["Dematerialized Pet"],
           "description": "You dematerialized a beloved pet. Now it follows you around, invisible but always present. Although it cannot interact with the physical realm, you are able to share its senses. (Add a Fatigue each time.) It follows basic commands."
         },
         {
@@ -148,6 +149,7 @@
           ]
         },
         {
+          "pets": ["Homunculus"],
           "description": "Homunculus: A miniature clay replica of yourself that follows your every command. It hates being enthralled to you and complains bitterly whenever possible. Any damage done to the homunculus is also done to you. 3 HP, 4 STR, 13 DEX, 5 WIL.",
           "items": [
             {

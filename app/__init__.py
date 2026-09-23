@@ -95,10 +95,14 @@ def create_app():
     # login
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
+    login_manager.refresh_view = 'auth.reauthenticate'
     login_manager.init_app(app)
 
     # flask-assets
     compile_static_assets(app)
+
+    # Verification codes and SMTP credentials must not appear in debug logs.
+    app.config['MAIL_DEBUG'] = False
 
     # Mail configuration
     app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER')
