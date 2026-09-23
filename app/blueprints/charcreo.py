@@ -106,7 +106,12 @@ def get_custom_fields(data):
         if n in data:
             result[n] = data[n]
         else:
-            result[n] = None            
+            result[n] = None
+    # Keep optional item lists valid when rendered into hidden form fields.
+    # Older forms may submit the literal "None" produced by Jinja.
+    for n in ("bond_items", "bond_items_2", "t1_items", "t2_items", "bkg_items"):
+        if result[n] in (None, '', 'None'):
+            result[n] = '[]'
     return result
 
 # Fill all needed data from request
