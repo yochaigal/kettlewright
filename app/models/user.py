@@ -15,6 +15,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(100), unique=True)
     password_hash = db.Column(db.String(100))
     username = db.Column(db.String(1000), unique=True)
+    mfa_enabled = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
     confirmed = db.Column(db.Boolean, default=False)
     characters = db.relationship('Character', backref='character_owner', cascade='all, delete-orphan')
     parties = db.relationship('Party', backref='party_owner', cascade='all, delete-orphan')

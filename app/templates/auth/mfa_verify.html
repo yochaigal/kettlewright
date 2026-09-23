@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="body-container auth-container">
+  <div class="auth-card mfa-card">
+    {% if purpose == 'enable' %}
+    <h1>{{ _('Enable email verification') }}</h1>
+    {% elif purpose == 'disable' %}
+    <h1>{{ _('Disable email verification') }}</h1>
+    {% else %}
+    <h1>{{ _('Check your email') }}</h1>
+    {% endif %}
+    <p id="mfa-code-help">{{ _('Enter the six-digit code we sent to your email. It expires in 10 minutes.') }}</p>
+    <form class="mfa-form" method="post">
+      {{ form.hidden_tag() }}
+      <div class="field">
+        {{ form.code.label }}
+        {{ form.code(class='input', autofocus=true, aria_describedby='mfa-code-help') }}
+      </div>
+      {% include 'auth/mfa_messages.html' %}
+      <div class="footer-button-container mfa-actions">
+        <a class="button" href="{{ url_for('auth.login') if purpose == 'login' else url_for('auth.mfa_settings') }}">{{ _('Back') }}</a>
+        <button class="button" type="submit">
+          {% if purpose == 'enable' %}{{ _('Enable verification') }}
+          {% elif purpose == 'disable' %}{{ _('Disable verification') }}
+          {% else %}{{ _('Sign in') }}{% endif %}
+        </button>
+      </div>
+    </form>
+    <form class="mfa-form mfa-resend" method="post" action="{{ url_for('auth.mfa_resend') }}">
+      {{ resend_form.hidden_tag() }}
+      <span>{{ _('Did not receive a code?') }}</span>
+      <button class="mfa-resend-button" type="submit">{{ _('Resend code') }}</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
