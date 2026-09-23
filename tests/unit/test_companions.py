@@ -346,7 +346,10 @@ def test_editor_transfer_failure_is_atomic(item_editor, failure):
         db.session.commit()
         pet_items = db.session.get(Companion,2).items
     response = client.post(ITEM_URL+'/save', data=data)
-    assert response.headers.get('HX-Retarget') == '#add-edit-item-modal-error-text'
+    if failure in ('outsider', 'csrf'):
+        assert response.status_code == (403 if failure == 'outsider' else 400)
+    else:
+        assert response.headers.get('HX-Retarget') == '#add-edit-item-modal-error-text'
     with app.app_context():
         assert json.loads(db.session.get(Character,1).items) == [original]
         assert db.session.get(Companion,2).items == pet_items

@@ -58,8 +58,8 @@
           oninput='resizeTextarea(this)') }}
         </div>
         <div class="character-inventory-pets">
-          <div class="inventory-container" id="inventory-container">
-            {% include "partial/charedit/inventory.html" %}
+          <div class="inventory-container" id="inventory-container" hx-vals='{"inventory_context": "character"}'>
+            {% with inventory_full_edit=true %}{% include "partial/charedit/inventory.html" %}{% endwith %}
           </div>
           {% with companion_cards_editable=false %}{% include "partial/companions/pets.html" %}{% endwith %}
         </div>

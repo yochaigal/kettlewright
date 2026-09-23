@@ -11,9 +11,9 @@ EDIT_URL = '/charedit/inplace-inventory/player/test/item-edit/item'
 def editor(app_with_babel):
     app = app_with_babel
     with app.app_context():
-        db.session.add_all([User(id=1, username='player'), User(id=2, username='outsider')])
+        db.session.add_all([User(id=1, username='player'), User(id=2, username='warden'), User(id=3, username='outsider')])
         containers = '[{"id":0,"name":"Main","slots":10},{"id":3,"name":"Bag","slots":2}]'
-        db.session.add(Party(id=1, owner=2, name='Party', members='[1]', items='[]', containers=containers))
+        db.session.add(Party(id=1, owner=2, name='Party', party_url='party', members='[1]', items='[]', containers=containers))
         db.session.add(Character(id=1, owner=1, name='Test', url_name='test', background='Test', party_id=1,
                                  containers=containers, items=json.dumps([
                                      dict(id='item', name='Shield', location=3, tags=['1 Armor'], armor_active=False)])))
@@ -94,7 +94,7 @@ def test_personal_container_save_does_not_transfer(editor):
 def test_nonowner_cannot_save_and_transfer(editor):
     app, client, data = editor
     with client.session_transaction() as session:
-        session['_user_id'] = '2'
+        session['_user_id'] = '3'
     assert client.post(EDIT_URL + '/save', data=data).status_code == 403
     with app.app_context():
         assert json.loads(db.session.get(Character, 1).items)[0]['name'] == 'Shield'
@@ -109,3 +109,69 @@ def test_stale_party_membership_hides_party_containers(editor):
     html = client.get(EDIT_URL).get_data(as_text=True)
     assert 'Main (Personal)' in html
     assert 'value="party:' not in html
+
+
+def test_warden_can_save_and_transfer(editor):
+    app, client, data = editor
+    with client.session_transaction() as session:
+        session['_user_id'] = '2'
+    assert client.post(EDIT_URL + '/save', data=data).status_code == 200
+    with app.app_context():
+        assert db.session.get(Character, 1).items == '[]'
+        assert json.loads(db.session.get(Party, 1).items)[0]['name'] == 'Updated shield'
+
+
+@pytest.mark.parametrize('suffix', ['/3/close', '/3'])
+def test_owner_inventory_fragments_keep_marketplace_and_dice(editor, suffix):
+    app, client, _ = editor
+    with app.app_context():
+        character = db.session.get(Character, 1)
+        items = json.loads(character.items)
+        items[0]['tags'] = ['d6']
+        character.items = json.dumps(items)
+        db.session.commit()
+    base = '/charedit/inplace-inventory/player/test' if suffix.endswith('close') else '/charedit/inventory-select-container/player/test'
+    html = client.get(base + suffix).get_data(as_text=True)
+    assert '/marketplace/player/test/3' in html
+    assert 'KW_rollDiceCallback' in html
+    assert html.count('id="modal-anchor"') == 1
+    with client.session_transaction() as session:
+        session['_user_id'] = '2'
+    warden_html = client.get(base + suffix).get_data(as_text=True)
+    assert '/marketplace/player/test/3' not in warden_html
+    assert 'KW_rollDiceCallback' not in warden_html
+    assert 'Edit inventory' in warden_html
+
+
+def test_full_character_editor_stays_in_edit_mode_through_inventory_actions(editor):
+    _, client, data = editor
+    page = client.get('/charedit/player/test')
+    assert page.status_code == 200
+    html = page.get_data(as_text=True)
+    assert '"inventory_context": "character"' in html
+    assert '>Done</button>' not in html
+    assert html.count('id="modal-anchor"') == 1
+    context = {'inventory_context': 'character'}
+    fragments = [
+        client.get('/charedit/inplace-inventory/player/test/3', query_string=context),
+        client.get('/charedit/inventory-select-container/player/test/0', query_string=dict(context, mode='edit')),
+        client.post(EDIT_URL + '/save', data=dict(data, **context, edit_item_container='0')),
+        client.post('/charedit/inplace-inventory/player/test/0/fatigue', data=context),
+    ]
+    for response in fragments:
+        assert response.status_code == 200
+        html = response.get_data(as_text=True)
+        assert '>Done</button>' not in html
+        assert 'Inventory changes save automatically.' not in html
+        assert html.count('id="modal-anchor"') == 1
+    standalone = client.get('/charedit/inplace-inventory/player/test/0').get_data(as_text=True)
+    assert '>Done</button>' in standalone
+    assert 'Inventory changes save automatically.' in standalone
+
+
+def test_container_changes_refresh_derived_character_stats(editor):
+    _, client, _ = editor
+    response = client.post('/charedit/inplace-inventory/player/test/container-edit/3/save',
+                           data=dict(mode='edit', name='Bag', slots='3', carried_by='0', load='1'))
+    assert response.status_code == 200
+    assert response.headers['HX-Trigger'] == 'refresh-stats'

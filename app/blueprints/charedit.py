@@ -2,6 +2,7 @@
 
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response, abort, send_from_directory
 from flask_login import login_required, current_user
+from flask_wtf import FlaskForm
 from app.models import db, User, Character, Party
 from app.forms import *
 from app.main import sanitize_data
@@ -17,6 +18,42 @@ from flask_babel import lazy_gettext as _l
 
 character_edit = Blueprint('character_edit', __name__)
 bool_fields = ['deprived']
+
+@character_edit.app_context_processor
+def inventory_permissions():
+    return dict(can_edit_inventory=can_transfer_from)
+
+
+@character_edit.context_processor
+def character_editor_context():
+    # HTMX fragments need the same ownership and edit context as the full page.
+    username = (request.view_args or {}).get('username')
+    return dict(is_owner=current_user.is_authenticated and current_user.username == username,
+                inventory_full_edit=request.values.get('inventory_context') == 'character')
+
+
+@character_edit.before_request
+def protect_inventory_editor():
+    endpoint = request.endpoint.rsplit('.', 1)[-1]
+    editing = endpoint.startswith('charedit_inplace_inventory') or (
+        endpoint == 'charedit_inventory_select_container' and request.args.get('mode') == 'edit')
+    if editing:
+        _, character = get_char_data(request.view_args['username'], request.view_args['url_name'])
+        if not can_transfer_from(character):
+            abort(403)
+        if request.method == 'POST' and not FlaskForm().validate_on_submit():
+            abort(400)
+
+
+@character_edit.after_request
+def refresh_inventory_stats(response):
+    # Container capacity and item uses can change armor or available HP too.
+    if (request.endpoint.rsplit('.', 1)[-1].startswith('charedit_inplace_inventory')
+            and request.method == 'POST' and response.status_code == 200
+            and 'HX-Retarget' not in response.headers):
+        response.headers.setdefault('HX-Trigger', 'refresh-stats')
+    return response
+
 
 
 # Prepare some party data for template
@@ -331,7 +368,7 @@ def charedit_inplace_inventory_close(username, url_name, container_id):
     return render_template('partial/charview/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
 
 # Route: remove inventory item
-@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/<container_id>/item-delete/<item_id>', methods=['GET'])
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/<container_id>/item-delete/<item_id>', methods=['POST'])
 def charedit_inplace_inventory_delete_item(username, url_name, container_id, item_id):
     user, character = get_char_data(username, url_name)
     inventory = Inventory(character)
@@ -344,7 +381,7 @@ def charedit_inplace_inventory_delete_item(username, url_name, container_id, ite
     return response
 
 # Route: add fatigue inventory item
-@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/<container_id>/fatigue', methods=['GET'])
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/<container_id>/fatigue', methods=['POST'])
 def charedit_inplace_inventory_add_fatigue(username, url_name, container_id):
     user, character = get_char_data(username, url_name)
     inventory = Inventory(character)
@@ -441,7 +478,7 @@ def charedit_inplace_inventory_item_edit_save(username, url_name, item_id):
             response.headers['HX-Retarget'] = '#add-edit-item-modal-error-text'
             return response
     elif destination.startswith('party:'):
-        if not current_user.is_authenticated or character.owner != current_user.id:
+        if not can_transfer_from(character):
             abort(403)
         if mode != 'edit':
             abort(400)
@@ -486,7 +523,7 @@ def charedit_inplace_inventory_item_edit_save(username, url_name, item_id):
     
     
 # Route: change some amount property in item
-@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/amount', methods=['GET'])
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/amount', methods=['POST'])
 def charedit_inplace_inventory_item_edit_amount(username, url_name, item_id):
     user, character = get_char_data(username, url_name)
     inventory = Inventory(character)
@@ -503,7 +540,7 @@ def charedit_inplace_inventory_item_edit_amount(username, url_name, item_id):
 @login_required
 def charedit_inplace_inventory_item_edit_party(username, url_name, item_id):
     user, character = get_char_data(username, url_name)
-    if character.owner != current_user.id:
+    if not can_transfer_from(character):
         abort(403)
     inventory = Inventory(character)
     source = inventory.get_item(item_id)

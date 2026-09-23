@@ -1,7 +1,13 @@
-{% if companion_sheet %}<div hx-vals='{"csrf_token": "{{form.csrf_token.current_token if form.csrf_token is defined else ""}}"}'>{% endif %}
-<div class="row16spaced full-width">
+<div hx-vals='{"csrf_token": "{{companion_form().csrf_token.current_token if companion_form().csrf_token is defined else ""}}"}'>
+<div class="character-inventory-heading">
     <h3>{{_('Inventory')}}</h3>
+    {% if not companion_sheet and not inventory_full_edit %}
+    <button class="button smaller-font" type="button" hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container.id}}/close" hx-target="#inventory-container">{{_('Done')}}</button>
+    {% endif %}
 </div>
+{% if not companion_sheet and not inventory_full_edit %}
+<small>{{_('Inventory changes save automatically.')}}</small>
+{% endif %}
 <div class="inventory-header flex-row" style="gap: 1.5rem">
     {% for cnt in inventory.containers %}
     <div class="row8">
@@ -33,12 +39,12 @@
             {% if "uses" in it.tags %}
             <div class="row8">
                 <div class="pointer item-edit-button-frame" title="Decrease"
-                    {% if companion_sheet %}hx-post{% else %}hx-get{% endif %}="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/item-edit/{{it.id}}/amount?action=minus&property=uses"
+                    hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/item-edit/{{it.id}}/amount?action=minus&property=uses"
                     hx-target="#inventory-container">
                     <i class="item-edit-button fa-solid fa-minus minus"></i>
                 </div>
                 <div class="pointer item-edit-button-frame" title="Increase"
-                    {% if companion_sheet %}hx-post{% else %}hx-get{% endif %}="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/item-edit/{{it.id}}/amount?action=plus&property=uses"
+                    hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/item-edit/{{it.id}}/amount?action=plus&property=uses"
                     hx-target="#inventory-container">
                     <i class="item-edit-button fa-solid fa-plus plus"></i>
                 </div>
@@ -47,12 +53,12 @@
             {% if "charges" in it.tags %}
             <div class="row8">
                 <div class="pointer item-edit-button-frame" title="Decrease"
-                    {% if companion_sheet %}hx-post{% else %}hx-get{% endif %}="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/item-edit/{{it.id}}/amount?action=minus&property=charges"
+                    hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/item-edit/{{it.id}}/amount?action=minus&property=charges"
                     hx-target="#inventory-container">
                     <i class="item-edit-button fa-solid fa-minus minus"></i>
                 </div>
                 <div class="pointer item-edit-button-frame" title="Increase"
-                    {% if companion_sheet %}hx-post{% else %}hx-get{% endif %}="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/item-edit/{{it.id}}/amount?action=plus&property=charges"
+                    hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/item-edit/{{it.id}}/amount?action=plus&property=charges"
                     hx-target="#inventory-container">
                     <i class="item-edit-button fa-solid fa-plus plus"></i>
                 </div>
@@ -67,7 +73,7 @@
             {% endif %}
             {% if it.removable %}
             <div class="pointer" title="Delete"
-                {% if companion_sheet %}hx-post{% else %}hx-get{% endif %}="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/{{inventory.selected_container['id']}}/item-delete/{{it.id}}"
+                hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/{{inventory.selected_container['id']}}/item-delete/{{it.id}}"
                 hx-target="#inventory-container" hx-confirm="Do you want to delete {{it.name}}?"
                 data-confirm-title="Delete item" data-confirm-button="Delete">
                 <i class="item-edit-button fa-solid fa-xmark xmark"></i>
@@ -87,7 +93,7 @@
             + {{_('Item')}}
         </button>
         <button class="button smaller-font" type="button"
-            {% if companion_sheet %}hx-post{% else %}hx-get{% endif %}="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/{{inventory.selected_container['id']}}/fatigue"
+            hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/{{inventory.selected_container['id']}}/fatigue"
             hx-target="#inventory-container" {% if inventory.selected_container["encumbered"] %} disabled {% endif %}>
             + {{_('Fatigue')}}
         </button>
@@ -99,4 +105,4 @@
         <div id="modal-anchor"></div>
     </div>
 </div>
-{% if companion_sheet %}</div>{% endif %}
+</div>

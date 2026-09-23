@@ -1,6 +1,6 @@
 <div class="inventory-modal">
   <form class="no-space">
-    {% if companion_sheet %}{{companion_form().hidden_tag()}}{% endif %}
+    {{ companion_form().hidden_tag() }}
     <input type="hidden" name="mode" value="{{mode}}" />
 
     <div class="modal-background inventory-modal-background"></div>
