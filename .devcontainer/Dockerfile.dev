@@ -6,7 +6,8 @@ WORKDIR /workspace
 
 # Copy and install dependencies
 COPY requirements.txt /workspace/
-RUN pip install --no-cache-dir -r /workspace/requirements.txt pytest pytest-flask pytest-cov
+RUN python -m pip install --no-cache-dir --timeout 120 --retries 10 \
+    -r /workspace/requirements.txt pytest pytest-flask pytest-cov
 
 # Expose ports
 EXPOSE 8000
