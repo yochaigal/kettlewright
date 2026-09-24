@@ -1,9 +1,13 @@
 <div class="inventory-modal">
   <form class="no-space" x-data="itemEditor"
-    data-item-tags='{{ (item.tags if mode == "edit" else []) | tojson }}'>
+    data-item-tags='{{ (item.tags if mode == "edit" else ['petty'] if request.args.get('petty') == '1' else []) | tojson }}'>
     {{ companion_form().hidden_tag() }}
-    <input type="hidden" name="edit_item_tags" value="{{ item.tags | join(',') if mode == 'edit' else '' }}"
+    <input type="hidden" name="edit_item_tags" value="{{ item.tags | join(',') if mode == 'edit' else 'petty' if request.args.get('petty') == '1' else '' }}"
       :value="tags.join(',')" id="edit_item_tags" />
+    {% if request.args.get('slot') is not none %}
+    <input type="hidden" name="edit_item_slot" value="{{request.args.get('slot')}}">
+    <input type="hidden" name="slot_container" value="{{inventory.selected_container.id}}">
+    {% endif %}
     <input type="hidden" name="mode" value="{{mode}}" />
     <div class="modal-background inventory-modal-background"></div>
     <div class="modal-card">
@@ -113,7 +117,7 @@
             <div class="select" style="max-width: 200px">
               <select id="edit_item_container" name="edit_item_container">
                 {% for c in inventory.containers %}
-                <option value="{{c.id}}" {% if mode=='edit' and item.location==c.id %} selected {% endif %}>{{c.name}} ({{_('Personal')}})
+                <option value="{{c.id}}" {% if (mode=='edit' and item.location==c.id) or (mode!='edit' and inventory.selected_container.id==c.id) %} selected {% endif %}>{{c.name}} ({{_('Personal')}})
                 </option>
                 {% endfor %}
                 {% if mode == 'edit' %}
@@ -166,7 +170,7 @@
           <div>
             <button class="button inventory-modal-cancel-button" type="button" {% if mode=='edit' %}
               hx-get="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/{{inventory.selected_container.id}}" {% else
-              %} hx-get="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/None" {% endif %}
+              %} hx-get="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/{{inventory.selected_container.id}}" {% endif %}
               hx-target="#inventory-container">
               {{_('Cancel')}}
             </button>

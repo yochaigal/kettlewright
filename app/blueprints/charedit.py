@@ -8,7 +8,7 @@ from app.forms import *
 from app.main import sanitize_data
 from app.lib import *
 from app.models.character import BACKGROUND_FIELDS
-from app.lib.quick_stats import save_current_stat
+from app.lib.quick_stats import save_character_stat
 from app.lib.companions import save_item_to_companion, finish_companion_transfers, can_transfer_from
 from unidecode import unidecode
 from flask_babel import _
@@ -65,6 +65,67 @@ def prepare_party_data(party_id):
     else:
         party_url = None
     return party, party_url
+
+
+# Each inline editor writes only its own fields, preserving other sheet changes.
+INLINE_SECTIONS = {
+    'name': ('name',),
+    **{field: (field,) for field in ('traits', 'description', 'bonds', 'omens', 'scars', 'notes')},
+    'background': BACKGROUND_FIELDS,
+    'party': ('party_code',),
+}
+
+
+@character_edit.route('/charedit/<username>/<url_name>/section/<section>', methods=['GET', 'POST'])
+@login_required
+def character_section(username, url_name, section):
+    user, character = get_char_data(username, url_name)
+    if character.owner != current_user.id:
+        abort(403)
+    if section not in INLINE_SECTIONS:
+        abort(404)
+    fields = INLINE_SECTIONS[section]
+    form = CharacterEditForm(obj=character)
+    editing = request.args.get('view') != '1'
+    errors = []
+    if request.method == 'POST':
+        if not FlaskForm().validate_on_submit():
+            abort(400)
+        editing = True
+        for field in fields:
+            if not form[field].validate(form):
+                errors.extend(form[field].errors)
+        if section == 'party' and not errors:
+            if request.form.get('leave_party') == '1':
+                remove_character_from_party(character)
+            else:
+                code = (form.party_code.data or '').strip()
+                party = Party.query.filter_by(join_code=code).first() if code else None
+                if not party:
+                    errors.append(_('Invalid party code: %(code)s', code=code))
+                else:
+                    if character.party_id != party.id:
+                        remove_character_from_party(character)
+                    character.party_id = party.id
+                    character.party_code = code
+                    add_character_to_party(character)
+        if not errors:
+            if section != 'party':
+                for field in fields:
+                    setattr(character, field, sanitize_data(form[field].data))
+            db.session.commit()
+            editing = False
+    party, party_url = prepare_party_data(character.party_id)
+    response = make_response(render_template(
+        'partial/charview/inline_section.html', section=section, editing=editing,
+        fields=fields, form=form, errors=errors, character=character, username=username,
+        url_name=url_name, is_owner=True, stat_form=FlaskForm(), party=party,
+        party_url=party_url, scarlist=load_scars()))
+    response.headers['Cache-Control'] = 'no-store'
+    if request.method == 'POST' and not errors:
+        response.headers['HX-Trigger'] = json.dumps({'character-section-saved': {
+            'section': section, 'partyId': character.party_id}})
+    return response
 
 
 # Route: edit character page
@@ -220,6 +281,11 @@ def charedit_inplace_portrait_cancel(username, url_name):
     portrait_src = character_portrait_link(character)
     response = make_response("Redirecting")
     response.headers["HX-Redirect"] = "/charedit/"+username+"/"+url_name
+    if request.values.get('sheet_context') == 'inline':
+        return render_template('partial/charview/portrait.html', character=character,
+                               username=username, url_name=url_name,
+                               is_owner=current_user.is_authenticated and current_user.id == character.owner,
+                               portrait_src=character_portrait_link(character))
     return response
 
 # Route: edit character portrait - save
@@ -253,6 +319,10 @@ def charedit_inplace_portrait_save(username, url_name):
         delete_unreferenced_portrait(previous_portrait)
         response = make_response('Redirecting')
         response.headers['HX-Redirect'] = url_for('character_edit.charedit_show', username=username, url_name=url_name)
+        if request.values.get('sheet_context') == 'inline':
+            return render_template('partial/charview/portrait.html', character=character,
+                                   username=username, url_name=url_name, is_owner=True,
+                                   portrait_src=character_portrait_link(character))
         return response
     data = request.form
     custom_url = data['custom-url']
@@ -271,6 +341,10 @@ def charedit_inplace_portrait_save(username, url_name):
     delete_unreferenced_portrait(previous_portrait)
     response = make_response("Redirecting")
     response.headers["HX-Redirect"] = "/charedit/"+username+"/"+url_name
+    if request.values.get('sheet_context') == 'inline':
+        return render_template('partial/charview/portrait.html', character=character,
+                               username=username, url_name=url_name, is_owner=True,
+                               portrait_src=character_portrait_link(character))
     return response
 
 # ----- JSON EXPORT -----
@@ -316,7 +390,7 @@ def character_stat_save(username, url_name):
     character = Character.query.filter_by(owner=user.id, url_name=url_name).first_or_404()
     if character.owner != current_user.id:
         abort(403)
-    return save_current_stat(character)
+    return save_character_stat(character)
 
 # Route: roll omens on omen edit
 @character_edit.route('/charedit/omen-roll/<username>/<url_name>', methods=['POST'])
@@ -366,6 +440,20 @@ def charedit_inplace_inventory_close(username, url_name, container_id):
     inventory.select(int(container_id))
     inventory.decorate()
     return render_template('partial/charview/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
+
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/move', methods=['POST'])
+def charedit_inplace_inventory_move(username, url_name):
+    _, character = get_char_data(username, url_name)
+    inventory = Inventory(character)
+    try:
+        slot = int(request.form['slot'])
+    except (KeyError, ValueError):
+        abort(400)
+    inventory.place_item(request.form.get('item_id'), slot)
+    inventory.decorate()
+    return render_template('partial/charview/inventory_slots.html', character=character,
+                           username=username, url_name=url_name, inventory=inventory)
+
 
 # Route: remove inventory item
 @character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/<container_id>/item-delete/<item_id>', methods=['POST'])
@@ -442,6 +530,8 @@ def charedit_inplace_inventory_container_delete(username, url_name, container_id
 def charedit_inplace_inventory_item_edit(username, url_name, item_id):
     user, character = get_char_data(username, url_name)
     inventory = Inventory(character)
+    if request.args.get('container', '').isdigit():
+        inventory.select(int(request.args['container']))
     inventory.decorate()
     mode = request.args.get('mode')
     if mode == None or mode == "":
@@ -513,8 +603,28 @@ def charedit_inplace_inventory_item_edit_save(username, url_name, item_id):
     else:
         item = inventory.create_item(data["edit_item_name"],data["edit_item_tags"],data["edit_item_uses"],
                                      data["edit_item_charges"], data["edit_item_max_charges"], data["edit_item_container"],
-                                     data["edit_item_description"], armor_active=data.get("edit_item_armor_active") == "on")
+                                     data["edit_item_description"], armor_active=data.get("edit_item_armor_active") == "on", commit=False)
+        if item is None:
+            response = make_response(render_template('partial/inventory_error.html',
+                message=_('The item does not fit in this container.')))
+            response.headers['HX-Retarget'] = '#add-edit-item-modal-error-text'
+            return response
         inventory.select(int(item["location"]))
+        requested_slot = data.get('edit_item_slot', '')
+        if requested_slot.isdigit() and str(item['location']) == data.get('slot_container'):
+            from app.lib.inventory_slots import item_size
+            size = item_size(item)
+            if size:
+                last_slot = int(inventory.selected_container['slots']) - size
+                from werkzeug.exceptions import HTTPException
+                try:
+                    inventory.place_item(item['id'], min(int(requested_slot), last_slot), commit=False)
+                except HTTPException as error:
+                    db.session.rollback()
+                    response = make_response(render_template('partial/inventory_error.html', message=error.description))
+                    response.headers['HX-Retarget'] = '#add-edit-item-modal-error-text'
+                    return response
+        db.session.commit()
     inventory.decorate()
     render = render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name,inventory=inventory)    
     response = make_response(render)
@@ -522,6 +632,32 @@ def charedit_inplace_inventory_item_edit_save(username, url_name, item_id):
     return response
     
     
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/uses', methods=['POST'])
+def charedit_inplace_inventory_item_uses(username, url_name, item_id):
+    _, character = get_char_data(username, url_name)
+    items = json.loads(character.items)
+    item = next((item for item in items if str(item['id']) == item_id), None)
+    if item is None:
+        abort(404)
+    if 'uses' not in item.get('tags', []):
+        abort(400)
+    maximum = max(1, item.get('max_uses', item.get('uses', 0)), item.get('uses', 0))
+    try:
+        uses = int(request.form['uses'])
+    except (KeyError, ValueError):
+        abort(400)
+    if not 0 <= uses <= maximum:
+        abort(400)
+    item['uses'], item['max_uses'] = uses, maximum
+    character.items = json.dumps(items)
+    db.session.commit()
+    inventory = Inventory(character)
+    inventory.select(item['location'])
+    inventory.decorate()
+    return render_template('partial/charview/inventory_slots.html', character=character,
+                           username=username, url_name=url_name, inventory=inventory)
+
+
 # Route: change some amount property in item
 @character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>/amount', methods=['POST'])
 def charedit_inplace_inventory_item_edit_amount(username, url_name, item_id):

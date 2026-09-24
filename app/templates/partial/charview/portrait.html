@@ -1,0 +1,7 @@
+{% if is_owner %}
+<button type="button" class="character-portrait-edit" title="{{_('Edit Portrait')}}" aria-label="{{_('Edit Portrait')}}"
+  hx-get="{{ url_for('character_edit.charedit_inplace_portrait', username=username, url_name=url_name) }}"
+  hx-target="#character-portrait-container">
+{% endif %}
+<img src="{{portrait_src | urldec}}" alt="character portrait" class="portrait-image" id="portrait-image" />
+{% if is_owner %}</button>{% endif %}

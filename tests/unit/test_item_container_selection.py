@@ -166,7 +166,7 @@ def test_full_character_editor_stays_in_edit_mode_through_inventory_actions(edit
         assert html.count('id="modal-anchor"') == 1
     standalone = client.get('/charedit/inplace-inventory/player/test/0').get_data(as_text=True)
     assert '>Done</button>' in standalone
-    assert 'Inventory changes save automatically.' in standalone
+    assert 'Inventory changes save automatically.' not in standalone
 
 
 def test_container_changes_refresh_derived_character_stats(editor):

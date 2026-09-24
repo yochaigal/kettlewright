@@ -1,4 +1,7 @@
 .view-character-sheet {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   max-width: 940px;
   padding: 4em;
 }
@@ -36,7 +39,7 @@
 .character-stats-traits-inventory {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
+  grid-template-rows: min-content 1fr;
   grid-template-areas:
     "stats inventory-container"
     "traits inventory-container";
@@ -60,6 +63,7 @@
 
 @media (max-width: 940px) {
   .character-stats-traits-inventory {
+    grid-template-rows: auto auto auto;
     grid-template-areas:
       "stats stats"
       "traits traits"
@@ -477,4 +481,181 @@
   .character-descriptions-grid { grid-template-areas: none; }
   .companion-notes { grid-column: 1 / -1; }
   .companion-notes textarea { width: 100%; min-height: 12rem; box-sizing: border-box; }
+}
+
+// Inline editing keeps the typography and spacing of the character sheet.
+.character-inline-trigger {
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background-color .15s;
+  &:hover, &:focus-visible {
+    background-color: color-mix(in srgb, var(--fg) 6%, transparent);
+    outline: 1px dashed color-mix(in srgb, var(--fg) 35%, transparent);
+    outline-offset: 3px;
+  }
+}
+.character-portrait-edit {
+  display: block;
+  background: none;
+  color: inherit;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  line-height: 0;
+  &:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+}
+.inline-edit-hint { margin: 0 0 1em; opacity: .65; }
+.character-inline-form {
+  width: 100%;
+  min-width: 0;
+  textarea { width: 100%; min-height: 6em; box-sizing: border-box; }
+  input:not([type="checkbox"]):not([type="hidden"]) { max-width: 100%; box-sizing: border-box; }
+  .inline-edit-actions { margin-top: .75em; }
+  .inline-edit-error:empty { display: none; }
+  .row8 { flex-wrap: wrap; }
+  select { max-width: 100%; }
+}
+#character-name-container:has(.character-inline-form) { display: block; }
+
+.view-character-sheet .full-width { min-width: 0; }
+#character-name-container h1 { overflow-wrap: anywhere; }
+
+// The play sheet keeps stats and inventory full-width, with details below.
+.character-priority-grid,
+.character-details-grid {
+  display: grid;
+  gap: 1.5em 2.5em;
+  margin: 2em 0;
+  > * { min-width: 0; }
+}
+.character-priority-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas: "omens bonds scars";
+}
+.inventory-container.character-sheet-inventory {
+  max-width: none;
+  margin-bottom: 2em;
+}
+.character-sheet-notes { margin-bottom: 2em; }
+.character-details-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas: "traits description";
+  #character-description-container { grid-area: description; }
+}
+
+#character-quick-stats {
+  > h3 {
+    display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.2rem;
+    text-transform: uppercase; letter-spacing: .18em;
+    &::before { display: none; }
+    &::after { content: ""; height: 1px; flex: 1; background: currentColor; opacity: .65; }
+  }
+  .character-stat-dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-areas: "str dex wil hp";
+    gap: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .character-stat-card {
+    min-width: 0;
+    padding: 1.6rem 1.1rem;
+    border: 2px solid currentColor;
+    border-radius: 3px 7px 4px 6px / 6px 3px 7px 4px;
+    outline: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+    outline-offset: -5px;
+    background: color-mix(in srgb, var(--fg) 2%, var(--form-bg));
+  }
+  #character-hp-container { color: var(--stat-hp-ink, #984039); }
+  .stat-card-heading { text-align: center; margin-bottom: 1.6rem; }
+  .stat-card-heading h4 {
+    margin: 0; font-size: 4.4rem; line-height: 1; font-style: normal;
+    font-weight: 700; letter-spacing: .04em;
+  }
+  .stat-card-values { display: grid; grid-template-columns: minmax(0, 1fr) .5rem minmax(0, 1fr); align-items: end; gap: .4rem; }
+  .sheet-stat-form { display: block; margin: 0; padding: 0; min-width: 0; max-width: 100%; box-sizing: border-box; box-shadow: none; background: transparent; }
+  .sheet-stat-form > label { display: block; text-align: center; font-size: 1rem; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .5rem; }
+  .stat-stepper { display: flex; align-items: center; gap: .2rem; }
+  .stat-stepper button {
+    min-width: 0; max-width: none; width: 1.8rem; height: 2.8rem; flex: 0 0 1.8rem;
+    padding: 0; margin: 0; font-size: 1.6rem; line-height: 1; color: inherit;
+    border: 1px solid color-mix(in srgb, currentColor 40%, transparent); border-radius: 2px;
+    background: transparent;
+    &:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
+    &:disabled { opacity: .3; cursor: default; }
+  }
+  .stat-stepper input[type="number"] {
+    appearance: textfield; min-width: 0; width: 100%; max-width: none; height: 3.4rem;
+    box-sizing: border-box; padding: .2rem 0; margin: 0;
+    text-align: center; font: inherit; font-size: 1.9rem; font-weight: 700; color: inherit;
+    border: 1px solid color-mix(in srgb, currentColor 50%, transparent); border-radius: 3px;
+    background: var(--form-bg);
+    &::-webkit-inner-spin-button, &::-webkit-outer-spin-button { appearance: none; margin: 0; }
+  }
+  .stat-stepper :focus-visible, .character-condition:has(:focus-visible) { outline: 2px solid currentColor; outline-offset: 2px; }
+  .stat-value-divider { align-self: end; line-height: 3.4rem; opacity: .6; font-size: 2rem; text-align: center; }
+  .stat-readonly { margin: 0; text-align: center; font-size: 3rem; span { opacity: .65; } }
+  .stat-warning { font-size: 1.1rem; line-height: 1.4; &:not(:empty) { margin-top: .75rem; } small { display: block; } }
+  .character-stat-toolbar {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: max-content max-content minmax(0, 1fr) max-content;
+    grid-template-areas: "gld armor deprived rest";
+    align-items: center;
+    gap: 1.6rem;
+  }
+  .character-stat-resource {
+    display: flex; flex-direction: row; align-items: center; justify-content: flex-start;
+    gap: .8rem; min-width: 0; padding: 0;
+    h4, .sheet-stat-form > label { margin: 0; white-space: nowrap; font-size: 1.2rem; text-align: left; font-weight: 400; text-transform: none; letter-spacing: .04em; }
+    p { margin: 0; font-size: 2.2rem; line-height: 1.5; }
+  }
+  #character-gold-container .sheet-stat-form { display: flex; align-items: center; gap: .8rem; width: auto; }
+  #character-gold-container .stat-stepper { width: 5.5rem; }
+  #character-deprived-container { justify-self: end; flex-grow: 0; justify-content: flex-end; }
+  #character-gold-container input { text-align: left; padding-left: .7rem; font-weight: 400; }
+  .character-condition-options { display: flex; flex-wrap: wrap; gap: .5rem; .sheet-stat-form { width: auto; } }
+  .character-condition, .sheet-stat-form > .character-condition {
+    margin: 0; text-transform: none; letter-spacing: normal;
+    display: inline-flex; align-items: center; gap: .45rem; padding: .55rem .7rem; min-height: 3.4rem; box-sizing: border-box;
+    border: 1px solid color-mix(in srgb, var(--fg) 35%, transparent); border-radius: 2px;
+    font-size: 1.2rem; line-height: 1.5; cursor: pointer;
+    input { width: 1.2rem; height: 1.2rem; margin: 0; accent-color: var(--fg); }
+    &:has(:checked), &.is-selected { background: color-mix(in srgb, var(--fg) 12%, var(--form-bg)); border-color: currentColor; }
+  }
+  .character-stat-rest {
+    display: flex; align-items: center; justify-content: flex-end;
+    .button {
+      margin: 0; padding: .55rem 1rem; min-height: 3.4rem; box-sizing: border-box;
+      border: 1px solid color-mix(in srgb, var(--fg) 35%, transparent);
+      background: transparent; color: var(--fg); font-size: 1.2rem; line-height: 1.5;
+      &:hover:not(:disabled) { background: color-mix(in srgb, var(--fg) 8%, var(--form-bg)); border-color: var(--fg); }
+      &:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+    }
+  }
+}
+body.dark-mode #character-quick-stats { --stat-hp-ink: #d98d82; }
+@media (max-width: 940px) {
+  .character-priority-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "omens" "bonds" "scars"; }
+  .character-details-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "traits" "description"; }
+}
+@media (max-width: 760px) {
+  #character-quick-stats .character-stat-dashboard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "str dex" "wil hp";
+  }
+}
+@media (max-width: 650px) {
+  #character-quick-stats .character-stat-toolbar {
+    grid-template-columns: minmax(0, 1fr) max-content;
+    grid-template-areas: "gld armor" "deprived rest";
+    gap: 1rem;
+  }
+  #character-quick-stats #character-deprived-container { justify-self: start; flex-wrap: wrap; justify-content: flex-start; }
+}
+@media (max-width: 370px) {
+  #character-quick-stats .character-stat-dashboard { gap: .7rem; }
+  #character-quick-stats .character-stat-card { padding: 1.2rem .7rem; }
+  #character-quick-stats .stat-stepper button { width: 1.5rem; flex-basis: 1.5rem; }
+  #character-quick-stats .stat-card-values { gap: .2rem; }
 }

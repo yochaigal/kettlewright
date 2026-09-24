@@ -1,0 +1,10 @@
+<form class="sheet-stat-form" action="{{ url_for('character_edit.character_stat_save', username=username, url_name=url_name) }}" method="post">
+  {{ stat_form.csrf_token(id='sheet-' ~ control ~ '-csrf') if stat_form.csrf_token is defined else '' }}
+  <input type="hidden" name="stat" value="{{ control }}">
+  <label for="character-quick-{{ control }}">{{ caption }}</label>
+  <div class="stat-stepper">
+    {% if control != 'gold' %}<button type="button" data-step="-1" aria-label="{{_('Decrease')}}: {{ label }} — {{ caption }}">−</button>{% endif %}
+    <input id="character-quick-{{ control }}" name="value" type="number" inputmode="numeric" min="0" max="{{ limit }}" value="{{ character[control] or 0 }}" required aria-label="{{ label }} — {{ caption }}">
+    {% if control != 'gold' %}<button type="button" data-step="1" aria-label="{{_('Increase')}}: {{ label }} — {{ caption }}">+</button>{% endif %}
+  </div>
+</form>

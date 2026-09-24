@@ -308,3 +308,108 @@
   > .field { min-width: 0; }
   .select, select { width: 100%; max-width: 100%; }
 }
+
+.slot-inventory {
+  --slot-height: 104px;
+  button.slot-icon, button.slot-move, button.slot-item-name, button.slot-add,
+  button.slot-tag, button.slot-use-dot, .slot-container-tabs button {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    color: inherit;
+    background: none;
+    box-shadow: none;
+    font: inherit;
+    min-width: 0;
+    max-width: none;
+    &:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+  }
+  button.slot-icon { width: 20px; min-height: 22px; font-size: 14px; opacity: .6; }
+  button.slot-icon:hover { opacity: 1; }
+  button.slot-icon:disabled { opacity: .25; }
+  .slot-container-tabs { display: flex; flex-wrap: wrap; gap: .5em; align-items: center; margin-bottom: 8px; }
+  .slot-container-tabs button { padding: .25em; font-size: 1.6rem; }
+  .slot-container-tabs .inventory-container-title-selected { font-weight: 600; }
+  .slot-container-tabs .slot-icon { margin-left: auto; }
+  &.slot-saving { opacity: .6; pointer-events: none; }
+}
+.inventory-slots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: var(--slot-height);
+  gap: 8px;
+}
+.inventory-slot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20px;
+  align-items: start;
+  gap: 4px;
+  border: 1px solid color-mix(in srgb, var(--fg) 35%, transparent);
+  background: color-mix(in srgb, var(--fg) 2%, var(--bg));
+  min-width: 0;
+  position: relative;
+  padding: 10px;
+  &.slot-empty { grid-template-columns: 1fr; background: none; border-style: dashed; }
+  &.slot-bulky { border-top: 2px solid color-mix(in srgb, var(--fg) 65%, transparent); }
+  &.slot-overflow { border-color: #b84141; }
+  &.slot-drop-target { outline: 2px solid var(--fg); outline-offset: -2px; background: color-mix(in srgb, var(--fg) 10%, var(--bg)); }
+  &.slot-picked { opacity: .45; }
+}
+.slot-number { position: absolute; bottom: 4px; right: 7px; font-size: 10px; opacity: .4; pointer-events: none; }
+.slot-inventory button.slot-move {
+  width: 20px;
+  height: 22px;
+  font-size: 14px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  opacity: .4;
+  &:active { cursor: grabbing; }
+}
+.slot-item-content { min-width: 0; width: 100%; }
+.slot-inventory .slot-item-name {
+  display: block;
+  text-align: left;
+  width: 100%;
+  line-height: 1.3;
+  font-size: 1.5rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.slot-item-actions { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.slot-item-details { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; align-items: center; max-height: 56px; overflow: auto; }
+.slot-inventory .slot-tag, .slot-inventory button.slot-tag {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 1px 4px; border: 1px solid color-mix(in srgb, var(--fg) 35%, transparent);
+  font-size: 1.1rem; line-height: 1.4; white-space: nowrap;
+}
+.slot-tag-inactive { opacity: .45; text-decoration: line-through; }
+.slot-damage:hover { background: color-mix(in srgb, var(--fg) 10%, transparent); }
+.slot-use-dots { display: flex; flex-wrap: wrap; align-items: center; gap: 0; }
+.slot-inventory .slot-use-dot, .slot-inventory button.slot-use-dot {
+  display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 20px;
+  &::before { content: ''; width: 8px; height: 8px; border: 1px solid var(--fg); border-radius: 50%; }
+  &.is-filled::before { background: var(--fg); }
+}
+.slot-charges { display: flex; align-items: center; gap: 2px; }
+.slot-inventory button.slot-add {
+  width: 100%; height: 100%; text-align: center; font-size: 2.2rem; opacity: .4;
+  &:hover { opacity: .8; }
+}
+.slot-petty-heading { margin: 1em 0 .5em; small { font-weight: normal; } }
+.slot-petty-items { display: flex; flex-wrap: wrap; gap: 6px; }
+.slot-petty-item {
+  display: flex; align-items: start; gap: 4px; min-width: 0; max-width: 100%;
+  border: 1px solid color-mix(in srgb, var(--fg) 25%, transparent); padding: 6px 8px;
+  .slot-item-actions { flex-direction: row; }
+  .slot-item-details:empty { display: none; }
+}
+.slot-footer { margin-top: 1em; gap: .5rem; }
+.slot-status { font-size: 1.3rem; &:empty { display: none; } }
+.slot-drag-preview {
+  position: fixed; z-index: 1000; pointer-events: none;
+  padding: 6px 10px; max-width: 260px; border: 1px solid var(--fg);
+  background: var(--bg); color: var(--fg); opacity: .9;
+}

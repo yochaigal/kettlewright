@@ -1,3 +1,6 @@
+{% if not companion_sheet and (inventory_sheet or request.values.get('inventory_context') == 'sheet') %}
+{% include "partial/charview/inventory_slots.html" %}
+{% else %}
 <div hx-vals='{"csrf_token": "{{companion_form().csrf_token.current_token if companion_form().csrf_token is defined else ""}}"}'>
 <div class="character-inventory-heading">
     <h3>{{_('Inventory')}}</h3>
@@ -5,9 +8,6 @@
     <button class="button smaller-font" type="button" hx-get="/charedit/inplace-inventory/{{username}}/{{url_name}}/{{inventory.selected_container.id}}/close" hx-target="#inventory-container">{{_('Done')}}</button>
     {% endif %}
 </div>
-{% if not companion_sheet and not inventory_full_edit %}
-<small>{{_('Inventory changes save automatically.')}}</small>
-{% endif %}
 <div class="inventory-header flex-row" style="gap: 1.5rem">
     {% for cnt in inventory.containers %}
     <div class="row8">
@@ -106,3 +106,5 @@
     </div>
 </div>
 </div>
+
+{% endif %}

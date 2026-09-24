@@ -1,68 +1,61 @@
 <div id="character-quick-stats" data-party-id="{{ character.party_id }}"
      data-stats-url="{{ url_for('character_edit.character_stats', username=username, url_name=url_name) }}"
      data-save-error="{{_('Unable to save this stat. Please try again.')}}"
-     data-load-error="{{_('Unable to refresh character stats.')}}" data-saved="{{_('Saved')}}">
+     data-load-error="{{_('Unable to refresh character stats.')}}">
 <h3>{{_('Stats')}}</h3>
-<div class="stats-stats-container character-section">
+<template data-dead-badge>{% include 'partial/dead_badge.html' %}</template>
+<div class="stats-stats-container character-stat-dashboard">
   {% for field, label, short in [('strength', _('STR'), 'str'), ('dexterity', _('DEX'), 'dex'), ('willpower', _('WIL'), 'wil'), ('hp', _('HP'), 'hp')] %}
-  <div class="character-attribute-container" id="character-{{ short }}-container">
-    {% if is_owner %}
-      {% with stat_id='character-quick-' ~ field,
-              stat_action=url_for('character_edit.character_stat_save', username=username, url_name=url_name) %}
-        {% include 'partial/quick_stat.html' %}
-      {% endwith %}
-      {% if field == 'hp' and (character.overburdened() or character.panicked) %}
-        <small class="red-text">{{_('Available HP: 0')}}</small>
-        <small>{% if character.overburdened() %}{{_('Your main inventory is full. Free a slot to use your HP.')}}{% else %}{{_('Panic reduces your available HP to 0.')}}{% endif %}</small>
-      {% endif %}
-    {% else %}
+  <div class="character-stat-card" id="character-{{ short }}-container">
+    <div class="stat-card-heading">
       <h4>{{ label }}</h4>
-      <p class="subtitle view-mode {% if field == 'hp' and (character.overburdened() or character.panicked) %}red-text{% endif %}" id="{{ field }}-view-text">
-        {{ character.hpValue().0 if field == 'hp' else character[field] }}/{{ character[field + '_max'] }}
-      </p>
+    </div>
+    {% if is_owner %}
+    <div class="stat-card-values">
+      {% with control=field, caption=_('Current'), limit=character[field ~ '_max'] or 0 %}{% include 'partial/charview/stat_control.html' %}{% endwith %}
+      <span class="stat-value-divider" aria-hidden="true">/</span>
+      {% with control=field ~ '_max', caption=_('Max'), limit=99 %}{% include 'partial/charview/stat_control.html' %}{% endwith %}
+    </div>
+    {% else %}
+      <p class="stat-readonly" id="{{ field }}-view-text">{{ character.hpValue().0 if field == 'hp' else character[field] }} <span>/ {{ character[field ~ '_max'] }}</span></p>
     {% endif %}
+    <div class="stat-warning">{% if field == 'hp' and is_owner and (character.overburdened() or character.panicked) %}
+      <small>{{_('Available HP: 0')}}</small>
+      <small>{% if character.overburdened() %}{{_('Your main inventory is full. Free a slot to use your HP.')}}{% else %}{{_('Panic reduces your available HP to 0.')}}{% endif %}</small>
+    {% endif %}</div>
   </div>
   {% endfor %}
-
-
-<div id="character-deprived-container" style="display:flex;flex-direction: column;justify-content:end;gap:8px">
-  {% if character.deprived %}
-  <div class="row16" >
-    <h4 class="character-deprived-text view-mode">{{_('DEPRIVED')}}</h4>
-  </div>
-  {% endif %}
-
-  {% if character.panicked %}
-  <div class="row16" >
-    <h4 class="character-deprived-text view-mode">{{_('PANICKED')}}</h4>
-  </div>
-  {% endif %}
-</div>
-
-  <div class="character-attribute-container" id="character-gold-container">
-    <h4 class="view-attribute-font">{{_('Gold')}}</h4>
-    <p class="subtitle view-mode" id="gold-view-text">{{ character.gold }}</p>
-  </div>
-  <div class="character-attribute-container" id="character-armor-container">
-    <h4>{{_('Armor')}}</h4>
-    <p class="subtitle" id="armor-counter" style="margin-left: 0px; margin-right: auto">
-      {{ character.armorValue() }}
-    </p>
-  </div>
-  <div id="character-rest-container">
-    {% if is_owner %}
-    <button class="button smaller-font" hx-get="/charedit/rest/{{username}}/{{url_name}}" hx-swap="innerHTML"
-      hx-target="#character-stats-container" hx-confirm="{{_('Do you want to restore all HP?')}}"
-      data-confirm-title="{{_('Rest')}}" data-confirm-button="{{_('Yes')}}"  data-cancel-button="{{_('No')}}" {% if character.deprived %} disabled {% endif %}>
-      {{_('Rest')}}
-    </button>
-    {% endif %}
+  <div class="character-stat-toolbar">
+    <div class="character-stat-resource" id="character-gold-container">
+      {% if is_owner %}
+        {% with control='gold', caption=_('Gold'), label=_('Gold'), limit=9999 %}{% include 'partial/charview/stat_control.html' %}{% endwith %}
+      {% else %}<h4>{{_('Gold')}}</h4><p id="gold-view-text">{{character.gold}}</p>{% endif %}
+    </div>
+    <div class="character-stat-resource" id="character-armor-container"><h4>{{_('Armor')}}</h4><p id="armor-counter">{{ character.armorValue() }}</p></div>
+    <div id="character-deprived-container" class="character-stat-resource character-stat-conditions">
+      <h4>{{_('Conditions')}}</h4>
+      <div class="character-condition-options">
+      {% for field, label in [('deprived', _('Deprived')), ('panicked', _('Panicked')), ('dead', _('Dead'))] %}
+        {% if is_owner %}
+        <form class="sheet-stat-form" action="{{ url_for('character_edit.character_stat_save', username=username, url_name=url_name) }}" method="post">
+          {{ stat_form.csrf_token(id='sheet-' ~ field ~ '-csrf') if stat_form.csrf_token is defined else '' }}
+          <input type="hidden" name="stat" value="{{field}}">
+          <label class="character-condition"><input type="checkbox" name="value" value="1" {% if character[field] %}checked{% endif %}><span>{{label}}</span></label>
+        </form>
+        {% elif character[field] %}<span class="character-condition is-selected">{{label}}</span>{% endif %}
+      {% endfor %}
+      {% if not is_owner and not character.deprived and not character.panicked and not character.dead %}<span>{{_('None')}}</span>{% endif %}
+      </div>
+    </div>
+    <div id="character-rest-container" class="character-stat-rest">
+      {% if is_owner %}
+      <button class="button smaller-font" hx-get="/charedit/rest/{{username}}/{{url_name}}" hx-swap="innerHTML"
+        hx-target="#character-stats-container" hx-confirm="{{_('Do you want to restore all HP?')}}"
+        data-confirm-title="{{_('Rest')}}" data-confirm-button="{{_('Yes')}}" data-cancel-button="{{_('No')}}" {% if character.deprived %}disabled{% endif %}>{{_('Rest')}}</button>
+      {% endif %}
+    </div>
   </div>
 </div>
-<div hx-trigger="refresh-stats from:body" hx-get="{{ url_for('character_edit.character_stats', username=username, url_name=url_name) }}"
-  hx-target="#character-stats-container"></div>
-{% if is_owner %}
-<small>{{_('Changes to HP, STR, DEX and WIL save automatically.')}}</small>
-{% endif %}
+<div hx-trigger="refresh-stats from:body" hx-get="{{ url_for('character_edit.character_stats', username=username, url_name=url_name) }}" hx-target="#character-stats-container"></div>
 <p class="quick-stats-status" role="status" aria-live="polite"></p>
 </div>

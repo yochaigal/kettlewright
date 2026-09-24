@@ -1,13 +1,13 @@
-<h3>{{_('Stats')}}</h3>
+{% if not inline_stats %}<h3>{{_('Stats')}}</h3>{% endif %}
 <div class="stats-stats-container character-section">
   <div class="character-attribute-container" id="character-str-container">
     <h4>{{_('STR')}}</h4>
 
     <span class="edit-mode character-attribute-field-container">
-      {{ form.strength(class='character-attribute-input', size=1, type='number',
+      {{ form.strength(aria_label=form.strength.label.text, class='character-attribute-input', size=1, type='number',
       min='0', max='99', step='1', id='strength-input') }}
       <p class="subtitle character-attribute-input">/</p>
-      {{ form.strength_max(class='character-attribute-input', size=1,
+      {{ form.strength_max(aria_label=form.strength_max.label.text, class='character-attribute-input', size=1,
       type='number', min='0', max='99', step='1', id='strength-max-input') }}
     </span>
   </div>
@@ -15,10 +15,10 @@
     <h4>{{_('DEX')}}</h4>
 
     <span class="edit-mode character-attribute-field-container">
-      {{ form.dexterity(class='character-attribute-input', size=1,
+      {{ form.dexterity(aria_label=form.dexterity.label.text, class='character-attribute-input', size=1,
       type='number', min='0', max='99', step='1', id='dexterity-input') }}
       <p class="subtitle character-attribute-input">/</p>
-      {{ form.dexterity_max(class='character-attribute-input', size=1,
+      {{ form.dexterity_max(aria_label=form.dexterity_max.label.text, class='character-attribute-input', size=1,
       type='number', min='0', max='99', step='1', id='dexterity-max-input') }}
     </span>
   </div>
@@ -26,20 +26,20 @@
     <h4>{{_('WIL')}}</h4>
 
     <span class="edit-mode character-attribute-field-container">
-      {{ form.willpower(class='character-attribute-input', size=1,
+      {{ form.willpower(aria_label=form.willpower.label.text, class='character-attribute-input', size=1,
       type='number', min='0', max='99', step='1', id='willpower-input') }}
       <p class="subtitle character-attribute-input">/</p>
-      {{ form.willpower_max(class='character-attribute-input', size=1,
+      {{ form.willpower_max(aria_label=form.willpower_max.label.text, class='character-attribute-input', size=1,
       type='number', min='0', max='99', step='1', id='willpower-max-input') }}
     </span>
   </div>
   <div class="character-attribute-container" id="character-hp-container">
     <h4>{{_('HP')}}</h4>
     <span class="edit-mode character-attribute-field-container">
-      {{ form.hp(class='character-attribute-input', size=1, type='number',
+      {{ form.hp(aria_label=form.hp.label.text, class='character-attribute-input', size=1, type='number',
       min='0', max='99', step='1', id='hp-input') }}
       <p class="subtitle character-attribute-input">/</p>
-      {{ form.hp_max(class='character-attribute-input', size=1, type='number',
+      {{ form.hp_max(aria_label=form.hp_max.label.text, class='character-attribute-input', size=1, type='number',
       min='0', max='99', step='1', id='hp-max-input') }}
     </span>
   </div>
@@ -47,19 +47,19 @@
 
   <div class="character-attribute-container edit-mode" id="character-deprived-container">
     <h4 class="character-deprived-text">{{_('DEPRIVED')}}</h4>
-    {{ form.deprived(class='checkbox edit-mode',
+    {{ form.deprived(aria_label=form.deprived.label.text, class='checkbox edit-mode',
     type='checkbox',id='deprived-field') }}
   </div>
 
    <!-- panicked -->
   <div class="character-attribute-container edit-mode" id="character-panicked-container">
     <h4 class="character-deprived-text">{{_('PANICKED')}}</h4>
-    {{ form.panicked(class='checkbox edit-mode', type='checkbox',id='panicked-field') }}
+    {{ form.panicked(aria_label=form.panicked.label.text, class='checkbox edit-mode', type='checkbox',id='panicked-field') }}
   </div>
 
   <div class="character-attribute-container edit-mode" id="character-dead-container">
     <h4 class="character-deprived-text"><label for="dead-field">{{_('DEAD')}}</label></h4>
-    {{ form.dead(class='checkbox edit-mode', type='checkbox', id='dead-field') }}
+    {{ form.dead(aria_label=form.dead.label.text, class='checkbox edit-mode', type='checkbox', id='dead-field') }}
   </div>
 
 
@@ -68,7 +68,7 @@
 
     <div class="edit-mode character-attribute-field-container">
       <div class="number-field">
-        {{ form.gold(class='input number-input character-attribute-input',
+        {{ form.gold(aria_label=form.gold.label.text, class='input number-input character-attribute-input',
         size=1, type='number', min='0', max='9999', step='1', id='gold-input')
         }}
       </div>

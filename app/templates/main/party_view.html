@@ -60,7 +60,7 @@
             <button type="button" data-party-layout="compact" aria-pressed="{{ 'true' if is_owner else 'false' }}">{{_('Compact')}}</button>
             <button type="button" data-party-layout="cards" aria-pressed="{{ 'false' if is_owner else 'true' }}">{{_('Cards')}}</button>
           </div>
-          <small>{{_('Changes to HP, STR, DEX and WIL save automatically.')}}</small>
+
         </div>
         <p class="party-members-status quick-stats-status" role="status" aria-live="polite"></p>
         <div id="party-members-content" class="party-section-content" :class="{ hidden: collapsed }">

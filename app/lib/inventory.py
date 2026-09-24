@@ -57,6 +57,56 @@ class Inventory:
                 c["items"].sort(key=bring_fatigue_to_end)
         self.containers = containers
         
+    def slot_layout(self):
+        from app.lib.inventory_slots import arrange_slots
+        return arrange_slots(self.selected_container['items'], self.selected_container['slots'])
+
+    def pin_slots(self, container_id):
+        """Keep legacy items in their displayed slots before changing the list."""
+        if not isinstance(self.character, Character):
+            return
+        from app.lib.inventory_slots import arrange_slots
+        container = self.get_container(container_id)
+        if container is None:
+            return
+        positions = arrange_slots(container['items'], container['slots'])['positions']
+        items = json.loads(self.character.items)
+        for item in items:
+            if item['location'] == int(container_id) and str(item['id']) in positions:
+                item['slot'] = positions[str(item['id'])]
+        self.character.items = json.dumps(items)
+
+    def place_item(self, item_id, slot, commit=True):
+        from app.lib.inventory_slots import arrange_slots, item_size
+        item = self.get_item(item_id)
+        if item is None:
+            abort(404)
+        container = self.get_container(item['location'])
+        size = item_size(item)
+        if not size or not 0 <= slot <= int(container['slots']) - size:
+            abort(400, description='The item does not fit in these slots.')
+        if size == 2:
+            slot -= slot % 2
+        current = arrange_slots(container['items'], container['slots'])
+        items = json.loads(self.character.items)
+        for entry in items:
+            if entry['location'] == item['location'] and item_size(entry):
+                entry['slot'] = current['positions'][str(entry['id'])]
+                if str(entry['id']) == str(item_id):
+                    entry['slot'] = slot
+        arranged = arrange_slots([entry for entry in items if entry['location'] == item['location']],
+                                 container['slots'], first_id=item_id)
+        if current['used'] <= int(container['slots']) and any(row['overflow'] for row in arranged['rows']):
+            abort(400, description='The item does not fit in these slots.')
+        for entry in items:
+            if entry['location'] == item['location'] and item_size(entry):
+                entry['slot'] = arranged['positions'][str(entry['id'])]
+        self.character.items = json.dumps(items)
+        if commit:
+            db.session.commit()
+        self.parse(self.character)
+        self.select(item['location'])
+
     # count slots for a container
     def container_slots(self, container):
         slots = 0
@@ -386,17 +436,20 @@ class Inventory:
         return None
     
     # create item
-    def create_item(self, name, tags, uses, charges, max_charges, container, description, armor_active=None):
+    def create_item(self, name, tags, uses, charges, max_charges, container, description, armor_active=None, commit=True):
         cnt = self.get_container(container)
         if cnt == None:
             return None
-        if self.container_slots(cnt) >= cnt["slots"]:
+        from app.lib.inventory_slots import item_size
+        size = item_size({'tags': tags.split(',') if tags else []})
+        if size and self.container_slots(cnt) + size > int(cnt['slots']):
             return None
+        self.pin_slots(container)
         new_id = self.generate_item_id()
         items = json.loads(self.character.items)
         items.append({"id":new_id,"name":"","tags":[],"location":0,"description":""})
         self.character.items = json.dumps(items)
-        return self.update_item(new_id,name, tags, uses, charges, max_charges, container, description, armor_active=armor_active)
+        return self.update_item(new_id,name, tags, uses, charges, max_charges, container, description, armor_active=armor_active, commit=commit)
         
     
     # update item
@@ -404,6 +457,10 @@ class Inventory:
         item = self.get_item(item_id)
         if item == None:
             return
+        self.pin_slots(item['location'])
+        if item['location'] != int(container):
+            self.pin_slots(container)
+        item = self.get_item(item_id)
         item["name"] = name
         if tags != "":
             item["tags"] = tags.split(",")
@@ -414,10 +471,12 @@ class Inventory:
         elif armor_active is not None:
             item["armor_active"] = armor_active
         if "uses" in item["tags"]:
+            item['max_uses'] = max(item.get('max_uses', item.get('uses', 0)), int(uses))
             item["uses"] = int(uses)
         else:
             if "uses" in item:
                 del item["uses"]
+            item.pop('max_uses', None)
         if "charges" in item["tags"]:
             item["charges"] = safeint(charges)
             item["max_charges"] = safeint(max_charges)
@@ -457,6 +516,8 @@ class Inventory:
             val = 0
         if prop == "charges" and val > item["max_charges"]:
             val = item["max_charges"]            
+        if prop == 'uses':
+            item['max_uses'] = max(item.get('max_uses', item[prop]), item[prop], val)
         item[prop] = val
         items = json.loads(self.character.items)
         result = []
