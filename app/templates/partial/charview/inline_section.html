@@ -1,0 +1,82 @@
+{% from "partial/charview/inline_macros.html" import edit_attrs with context %}
+{% set labels = {'name': _('Name'), 'traits': _('Traits'), 'description': _('Description'), 'bonds': _('Bonds'), 'omens': _('Omens'), 'scars': _('Scars'), 'notes': _('Notes'), 'background': _('Background table answers'), 'stats': _('Stats'), 'party': _('Party')} %}
+{% set empty = {'traits': _('This character has no traits...'), 'description': _('This character has no description...'), 'bonds': _('This character has no bonds...'), 'omens': _('This character has no omens...'), 'scars': _('This character has no scars...'), 'notes': _('This character has no notes...')} %}
+{% if editing %}
+<form class="character-inline-form no-space" method="post"
+      hx-post="{{ url_for('character_edit.character_section', username=username, url_name=url_name, section=section) }}"
+      hx-target="#character-{{section}}-container" hx-disabled-elt="#character-{{section}}-container button"
+      data-save-error="{{_('Unable to save changes. Please try again.')}}">
+  {{ form.csrf_token(id='inline-' ~ section ~ '-csrf') if form.csrf_token is defined else '' }}
+  <h3 class="no-space">{{ labels[section] }}</h3>
+  {% if errors %}<ul class="red-text" role="alert">{% for error in errors %}<li>{{error}}</li>{% endfor %}</ul>{% endif %}
+  {% if section == 'party' and party %}
+    <p>{{party.name}}</p>
+    <input type="hidden" name="leave_party" value="1">
+  {% else %}
+    {% for field in fields %}
+      {% if section == 'background' or section == 'party' %}{{ form[field].label }}{% endif %}
+      {{ form[field](class='inplace', id=field ~ '-field', aria_label=labels[section] if fields|length == 1 else form[field].label.text) }}
+    {% endfor %}
+    {% if section == 'name' %}<small>{{_('Changing the name does not change the character link.')}}</small>{% endif %}
+    {% if section == 'omens' %}
+      <button type="button" class="button smaller-font" hx-post="/charedit/omen-roll/{{username}}/{{url_name}}"
+              hx-target="#omens-field">{{_('Roll omens')}}</button>
+    {% elif section == 'scars' %}
+      <div class="row8">
+        <select name="scars-select" aria-label="{{_('Scars')}}">
+          {% for scar in scarlist %}<option value="{{scar}}">{{scar | tr}}</option>{% endfor %}
+        </select>
+        <button type="button" class="button smaller-font"
+          hx-post="/charedit/inplace-scars/{{username}}/{{url_name}}/add" hx-target="#scars-field">{{_('Add scar')}}</button>
+      </div>
+    {% endif %}
+  {% endif %}
+  <p class="inline-edit-error red-text" role="alert"></p>
+  <div class="row8 inline-edit-actions">
+    <button type="submit" class="button">{{_('Leave party') if section == 'party' and party else _('Save')}}</button>
+    <button type="button" class="button" data-inline-cancel
+      hx-get="{{ url_for('character_edit.character_section', username=username, url_name=url_name, section=section, view=1) }}">{{_('Cancel')}}</button>
+  </div>
+</form>
+{% elif section == 'name' %}
+  <h1 {{ edit_attrs(section, labels[section]) }}>{{character.name}}</h1>
+  <span id="character-dead-badge">{% include "partial/dead_badge.html" %}</span>
+{% elif section == 'background' %}
+  {% if is_owner %}
+    <section class="background-table-answers">
+      <h3 {{ edit_attrs(section, labels[section]) }}>{{labels[section]}}</h3>
+      <div {{ edit_attrs(section, labels[section]) }}>
+        {% if character.background_table1_question or character.background_table1_answer or character.background_table2_question or character.background_table2_answer %}
+          <div class="background-answers-grid">
+            {% for index in (1, 2) %}
+              {% set question = character['background_table' ~ index ~ '_question'] %}
+              {% set answer = character['background_table' ~ index ~ '_answer'] %}
+              {% if question or answer %}
+              <div class="character-section print-container">
+                <h4>{{question or _('Background answer %(number)s', number=index)}}</h4>
+                <p class="with-whitespace">{{answer or ''}}</p>
+              </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% else %}<p>{{_('Add background table answers')}}</p>{% endif %}
+      </div>
+    </section>
+  {% else %}{% include "partial/character_background_answers.html" %}{% endif %}
+{% elif section == 'party' %}
+  <h3 id="character-party-heading" {{ edit_attrs(section, labels[section]) }}>{{labels[section]}}</h3>
+  {% if party %}
+    <div id="character-party-name-description">
+      {% if is_owner %}<a class="bold subtitle" id="character-party-link" href="/{{party_url}}">{{party.name}}</a>
+      {% else %}<div class="bold subtitle">{{party.name}}</div>{% endif %}
+      <p class="character-text-field with-whitespace" id="character-party-description">{{party.description}}</p>
+    </div>
+  {% else %}
+    <div {{ edit_attrs(section, labels[section]) }}><p id="character-no-party-description">{{_('This character does not belong to a party...')}}</p></div>
+  {% endif %}
+{% else %}
+  <h3 class="no-space">{{labels[section]}}</h3>
+  <div {{ edit_attrs(section, labels[section]) }}>
+    <div id="character-{{section}}-view" class="with-whitespace character-text-field">{% if character[section] %}{{character[section]|safe if section in ('notes', 'scars') else character[section]}}{% else %}{{empty[section]}}{% endif %}</div>
+  </div>
+{% endif %}

@@ -182,7 +182,7 @@ class CharacterEditForm(FlaskForm):
     dexterity_max = IntegerField(_l('Dexterity Max'), validators=[InputRequired()])
     willpower = IntegerField(_l('Willpower'), validators=[InputRequired()])
     willpower_max = IntegerField(_l('Willpower Max'), validators=[InputRequired()])
-    hp = IntegerField(_l('Willpower'), validators=[InputRequired()])
+    hp = IntegerField(_l('HP'), validators=[InputRequired()])
     hp_max = IntegerField(_l('Willpower Max'), validators=[InputRequired()])
     gold = IntegerField(_l('Gold'), validators=[InputRequired()])
     submit = SubmitField(_l('Save'))

@@ -44,9 +44,11 @@
 
     <div>{{party.description}}</div>
 
-    <div class="party-section">
-      <span id="party-members-collapse-button" class="party-collapse-button">
-        <i class="fa-solid fa-chevron-down" id="party-members-collapse-icon"></i>
+    <div class="party-section" x-data="collapseSection('party-members-content')">
+      <span id="party-members-collapse-button" class="party-collapse-button" role="button" tabindex="0"
+        @click="toggle()" @keydown.enter.prevent="toggle()" @keydown.space.prevent="toggle()"
+        :aria-expanded="!collapsed" aria-controls="party-members-content">
+        <i class="fa-solid" :class="collapsed ? 'fa-chevron-right' : 'fa-chevron-down'" id="party-members-collapse-icon"></i>
       </span>
       <span class="subtitle bold">{{_('Members')}}</span>
       <div id="party-members" class="{% if is_owner %}party-compact{% endif %}"
@@ -58,10 +60,10 @@
             <button type="button" data-party-layout="compact" aria-pressed="{{ 'true' if is_owner else 'false' }}">{{_('Compact')}}</button>
             <button type="button" data-party-layout="cards" aria-pressed="{{ 'false' if is_owner else 'true' }}">{{_('Cards')}}</button>
           </div>
-          <small>{{_('Changes to HP, STR, DEX and WIL save automatically.')}}</small>
+
         </div>
         <p class="party-members-status quick-stats-status" role="status" aria-live="polite"></p>
-        <div id="party-members-content" class="party-section-content">
+        <div id="party-members-content" class="party-section-content" :class="{ hidden: collapsed }">
           {% include "partial/partyview/members.html" %}
         </div>
       </div>
@@ -70,12 +72,14 @@
     {% if is_owner %}{% include "partial/partyview/wilderness.html" %}{% endif %}
     {% include "partial/companions/hirelings.html" %}
 
-    <div class="party-section">
-      <span id="party-inventory-collapse-button" class="party-collapse-button">
-        <i class="fa-solid fa-chevron-down" id="party-inventory-collapse-icon"></i>
+    <div class="party-section" x-data="collapseSection('inventory-container')">
+      <span id="party-inventory-collapse-button" class="party-collapse-button" role="button" tabindex="0"
+        @click="toggle()" @keydown.enter.prevent="toggle()" @keydown.space.prevent="toggle()"
+        :aria-expanded="!collapsed" aria-controls="inventory-container">
+        <i class="fa-solid" :class="collapsed ? 'fa-chevron-right' : 'fa-chevron-down'" id="party-inventory-collapse-icon"></i>
       </span>
       <span class="subtitle bold">{{_('Storage')}}</span>
-      <div id="inventory-container" class="party-section-content">
+      <div id="inventory-container" class="party-section-content" :class="{ hidden: collapsed }">
         <div> {% include "partial/partyview/inventory.html" %}</div>
       </div>
     </div>

@@ -30,12 +30,14 @@
       </div>
       <div>{{ form.description(class='textarea charedit-notes', rows=5) }} </div>
     </form>
-    <div class="party-section">
-      <span id="party-members-collapse-button" class="party-collapse-button">
-        <i class="fa-solid fa-chevron-down" id="party-members-collapse-icon"></i>
+    <div class="party-section" x-data="collapseSection('party-members-content')">
+      <span id="party-members-collapse-button" class="party-collapse-button" role="button" tabindex="0"
+        @click="toggle()" @keydown.enter.prevent="toggle()" @keydown.space.prevent="toggle()"
+        :aria-expanded="!collapsed" aria-controls="party-members-content">
+        <i class="fa-solid" :class="collapsed ? 'fa-chevron-right' : 'fa-chevron-down'" id="party-members-collapse-icon"></i>
       </span>
       <span class="subtitle bold">{{_('Members')}}</span>
-      <div id="party-members-content" class="party-section-content">
+      <div id="party-members-content" class="party-section-content" :class="{ hidden: collapsed }">
         {% if characters %} {% for character in characters %}
 
         <div class="card character-card party-member-card" style="cursor: pointer; padding: 20px">
@@ -110,12 +112,14 @@
       </div>
     </div>
 
-    <div class="party-section">
-      <span id="party-inventory-collapse-button" class="party-collapse-button">
-        <i class="fa-solid fa-chevron-down" id="party-inventory-collapse-icon"></i>
+    <div class="party-section" x-data="collapseSection('inventory-container')">
+      <span id="party-inventory-collapse-button" class="party-collapse-button" role="button" tabindex="0"
+        @click="toggle()" @keydown.enter.prevent="toggle()" @keydown.space.prevent="toggle()"
+        :aria-expanded="!collapsed" aria-controls="inventory-container">
+        <i class="fa-solid" :class="collapsed ? 'fa-chevron-right' : 'fa-chevron-down'" id="party-inventory-collapse-icon"></i>
       </span>
       <span class="subtitle bold">{{_('Storage')}}</span>
-      <div id="inventory-container" class="party-section-content">
+      <div id="inventory-container" class="party-section-content" :class="{ hidden: collapsed }">
         {% include "partial/partyedit/inventory.html" %}
       </div>
     </div>

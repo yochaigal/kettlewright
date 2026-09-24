@@ -294,16 +294,50 @@
 }
 
 
+#edit-portrait-modal {
+  .modal-card {
+    width: 640px;
+    max-width: calc(100vw - 32px);
+    max-height: calc(100vh - 32px);
+    max-height: calc(100dvh - 32px);
+    align-items: stretch;
+  }
+
+  .modal-card-head,
+  .modal-card-body,
+  .modal-card-foot {
+    min-width: 0;
+    margin: 0;
+    padding: 12px;
+  }
+
+  .modal-card-title {
+    flex-shrink: 1;
+  }
+
+  .modal-card-body {
+    min-height: 0;
+  }
+
+  #edit-portrait-modal-custom-url {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
 .edit-portrait-modal-thumbnail {
   width: 86px;
   height: 86px;
   padding: 4px;
+  object-fit: contain;
 }
 
 #edit-portrait-modal-image-select-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 86px);
+  justify-content: space-evenly;
+  gap: 8px;
+  padding: 4px;
 }
 
 img.edit-portrait-modal-thumbnail.highlighted {
@@ -395,12 +429,16 @@ img.edit-portrait-modal-thumbnail.highlighted {
 .portrait-custom-options {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   gap: 1rem;
   text-align: left;
+  align-items: center;
+  .portrait-option-separator { text-align: center; }
   .field { min-width: 0; }
-  label, small { display: block; }
+  label { display: block; }
   input { width: 100%; max-width: 100%; box-sizing: border-box; }
+  .portrait-upload-button { width: 100%; margin: 0; }
+  #portrait-file-name { display: block; overflow-wrap: anywhere; }
   #edit-portrait-modal-custom-url-container { display: block; }
   @media (max-width: 600px) { grid-template-columns: 1fr; }
 }

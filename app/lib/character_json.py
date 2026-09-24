@@ -33,7 +33,7 @@ def normalize_inventory(items_json, containers_json):
             raise ValueError('Invalid item ID or location')
         if not isinstance(item['tags'], list) or any(not isinstance(tag, str) for tag in item['tags']):
             raise ValueError('Invalid tags')
-        for field in ('uses', 'charges', 'max_charges'):
+        for field in ('uses', 'max_uses', 'charges', 'max_charges'):
             if field in item:
                 item[field] = int(item[field])
         if 'armor_active' in item and not isinstance(item['armor_active'], bool):

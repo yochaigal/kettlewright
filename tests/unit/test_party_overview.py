@@ -167,7 +167,7 @@ def test_character_quick_edit_also_works_without_a_party(overview):
         db.session.commit()
     assert clients[2].post('/charedit/user2/hero1/stat', data={'stat': 'hp', 'value': 3}).status_code == 204
     page = clients[2].get('/users/user2/characters/hero1/').get_data(as_text=True)
-    assert page.count('class="quick-stat-form"') == 4
+    assert page.count('class="sheet-stat-form"') == 12
     assert 'id="character-quick-hp"' in page
     for client in (app.test_client(), clients[1]):
         page = client.get('/users/user2/characters/hero1/').get_data(as_text=True)
@@ -186,6 +186,6 @@ def test_character_snapshot_preserves_effective_hp_and_rest_editor(overview):
     assert b'value="6"' in snapshot.data
     assert clients[1].get('/charedit/rest/user2/hero1').status_code == 403
     rest = clients[2].get('/charedit/rest/user2/hero1')
-    assert rest.data.count(b'class="quick-stat-form"') == 4
+    assert rest.data.count(b'class="sheet-stat-form"') == 12
     assert b'/charedit/user2/hero1/stats' in rest.data
     assert b'value="8"' in rest.data

@@ -1,7 +1,13 @@
 <div class="inventory-modal">
-  <form class="no-space">
+  <form class="no-space" x-data="itemEditor"
+    data-item-tags='{{ (item.tags if mode == "edit" else ['petty'] if request.args.get('petty') == '1' else []) | tojson }}'>
     {{ companion_form().hidden_tag() }}
-    <input type="hidden" name="edit_item_tags" value id="edit_item_tags" />
+    <input type="hidden" name="edit_item_tags" value="{{ item.tags | join(',') if mode == 'edit' else 'petty' if request.args.get('petty') == '1' else '' }}"
+      :value="tags.join(',')" id="edit_item_tags" />
+    {% if request.args.get('slot') is not none %}
+    <input type="hidden" name="edit_item_slot" value="{{request.args.get('slot')}}">
+    <input type="hidden" name="slot_container" value="{{inventory.selected_container.id}}">
+    {% endif %}
     <input type="hidden" name="mode" value="{{mode}}" />
     <div class="modal-background inventory-modal-background"></div>
     <div class="modal-card">
@@ -19,48 +25,68 @@
         {% if mode != "edit" %}{% include "partial/modal/item_library.html" %}{% endif %}
         <div class="field">
           <label>{{_('Name')}}</label>
-          <input class="input" type="text" placeholder="Item Name" name="edit_item_name" {% if mode=='edit' %}
+          <input class="input" type="text" placeholder="Item Name" name="edit_item_name" x-model="name" {% if mode=='edit' %}
             value="{{item.name}}" {% endif %} />
         </div>
 
         <div class="tags-container field" style="margin: 20px 0px">
           <label>{{_('Tags')}}</label>
           <div>
-            <div class="tag button {% if mode == 'edit' and 'bulky' in item.tags %} selected {% endif %}"
-              data-tag="bulky">{{_('bulky')}}</div>
-            <div class="tag button {% if mode == 'edit' and 'petty' in item.tags %} selected {% endif %}"
-              data-tag="petty">{{_('petty')}}</div>
-            <div class="tag button {% if mode == 'edit' and  'uses' in item.tags %} selected {% endif %}"
-              data-tag="uses">{{_('uses')}}</div>
-            <div class="tag button {% if mode == 'edit' and 'charges' in item.tags %} selected {% endif %}"
-              data-tag="charges">{{_('charges')}}</div>
-            <div class="tag button {% if mode == 'edit' and 'blast' in item.tags %} selected {% endif %}"
-              data-tag="blast">{{_('blast')}}</div>
+            <button type="button" class="tag button" data-tag="bulky"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('bulky')}}</button>
+            <button type="button" class="tag button" data-tag="petty"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('petty')}}</button>
+            <button type="button" class="tag button" data-tag="uses"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('uses')}}</button>
+            <button type="button" class="tag button" data-tag="charges"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('charges')}}</button>
+            <button type="button" class="tag button" data-tag="blast"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('blast')}}</button>
           </div>
           <div>
-            <div class="tag button {% if mode == 'edit' and 'd4' in item.tags %} selected {% endif %}" data-tag="d4">
+            <button type="button" class="tag button" data-tag="d4"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">
               {{_('d4')}}
-            </div>
-            <div class="tag button {% if mode == 'edit' and 'd6' in item.tags %} selected {% endif %}" data-tag="d6">
+            </button>
+            <button type="button" class="tag button" data-tag="d6"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">
               {{_('d6')}}
-            </div>
-            <div class="tag button {% if mode == 'edit' and 'd8' in item.tags %} selected {% endif %}" data-tag="d8">
+            </button>
+            <button type="button" class="tag button" data-tag="d8"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">
               {{_('d8')}}
-            </div>
-            <div class="tag button {% if mode == 'edit' and 'd10' in item.tags %} selected {% endif %}" data-tag="d10">
-              {{_('d10')}}</div>
-            <div class="tag button {% if mode == 'edit' and 'd12' in item.tags %} selected {% endif %}" data-tag="d12">
-              {{_('d12')}}</div>
+            </button>
+            <button type="button" class="tag button" data-tag="d10"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">
+              {{_('d10')}}</button>
+            <button type="button" class="tag button" data-tag="d12"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">
+              {{_('d12')}}</button>
           </div>
           <div>
-            <div class="tag {% if mode == 'edit' and '1 Armor' in item.tags %} selected {% endif %}" data-tag="1 Armor">
-              {{_('1 Armor')}}</div>
-            <div class="tag button {% if mode == 'edit' and '2 Armor' in item.tags %} selected {% endif %}"
-              data-tag="2 Armor">{{_('2 Armor')}}</div>
-            <div class="tag button {% if mode == 'edit' and '3 Armor' in item.tags %} selected {% endif %}"
-              data-tag="3 Armor">{{_('3 Armor')}}</div>
-            <div class="tag button {% if mode == 'edit' and 'bonus defense' in item.tags %} selected {% endif %}"
-              data-tag="bonus defense">{{_('bonus defense')}}</div>
+            <button type="button" class="tag button" data-tag="1 Armor"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">
+              {{_('1 Armor')}}</button>
+            <button type="button" class="tag button" data-tag="2 Armor"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('2 Armor')}}</button>
+            <button type="button" class="tag button" data-tag="3 Armor"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('3 Armor')}}</button>
+            <button type="button" class="tag button" data-tag="bonus defense"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('bonus defense')}}</button>
           </div>
         </div>
 
@@ -71,7 +97,7 @@
             <label>{{_('Uses')}}</label>
             <div class="column number-field" style="padding-bottom: 0">
               <input class="input text-centered" type="number" min="0" placeholder="0" id="edit_item_uses"
-                name="edit_item_uses" {% if mode=='edit' %} value="{{item.uses}}" {% endif %} />
+                name="edit_item_uses" x-model="uses" {% if mode=='edit' %} value="{{item.uses}}" {% endif %} />
             </div>
           </div>
 
@@ -79,10 +105,10 @@
             <label>{{_('Charges / Max')}}</label>
             <div style="display: flex">
               <input class="input text-centered" type="number" min="0" placeholder="0" id="edit_item_charges"
-                name="edit_item_charges" {% if mode=='edit' %} value="{{item.charges}}" {% endif %} />
+                name="edit_item_charges" x-model="charges" {% if mode=='edit' %} value="{{item.charges}}" {% endif %} />
               <p style="margin: 0 4px; display: flex; align-items: center">/</p>
               <input class="input text-centered" type="number" min="0" placeholder="0" id="edit_item_max_charges"
-                name="edit_item_max_charges" {% if mode=='edit' %} value="{{item.max_charges}}" {% endif %} />
+                name="edit_item_max_charges" x-model="maxCharges" {% if mode=='edit' %} value="{{item.max_charges}}" {% endif %} />
             </div>
           </div>
 
@@ -91,7 +117,7 @@
             <div class="select" style="max-width: 200px">
               <select id="edit_item_container" name="edit_item_container">
                 {% for c in inventory.containers %}
-                <option value="{{c.id}}" {% if mode=='edit' and item.location==c.id %} selected {% endif %}>{{c.name}} ({{_('Personal')}})
+                <option value="{{c.id}}" {% if (mode=='edit' and item.location==c.id) or (mode!='edit' and inventory.selected_container.id==c.id) %} selected {% endif %}>{{c.name}} ({{_('Personal')}})
                 </option>
                 {% endfor %}
                 {% if mode == 'edit' %}
@@ -112,7 +138,7 @@
         <div class="field">
           <label>
             {% set has_armor = mode == 'edit' and ('1 Armor' in item.tags or '2 Armor' in item.tags or '3 Armor' in item.tags) %}
-            <input type="checkbox" name="edit_item_armor_active"
+            <input type="checkbox" name="edit_item_armor_active" x-model="armorActive" :disabled="!hasArmor"
               {% if not has_armor %}disabled{% elif item.get('armor_active', item.name != 'Sloth-Tarp') %}checked{% endif %} />
             {{_('Armor bonus active')}}
           </label>
@@ -123,8 +149,8 @@
           <label>{{_('Description')}}</label>
           <small style="display:block">{{_('Include an image with ![description](https://example.org/image.png).')}}</small>
           <textarea class="textarea" placeholder="Item Description" id="edit_item_description"
-            name="edit_item_description"
-            oninput="resizeTextarea(this)">{% if mode == 'edit' %}{{item.description}}{% endif %}</textarea>
+            name="edit_item_description" x-model="description"
+            @input="resizeTextarea($el)" x-effect="description; $nextTick(() => resizeTextarea($el))">{% if mode == 'edit' %}{{item.description}}{% endif %}</textarea>
         </div>
       </section>
 
@@ -144,7 +170,7 @@
           <div>
             <button class="button inventory-modal-cancel-button" type="button" {% if mode=='edit' %}
               hx-get="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/{{inventory.selected_container.id}}" {% else
-              %} hx-get="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/None" {% endif %}
+              %} hx-get="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/{{inventory.selected_container.id}}" {% endif %}
               hx-target="#inventory-container">
               {{_('Cancel')}}
             </button>
@@ -154,89 +180,3 @@
     </div>
   </form>
 </div>
-
-<script>
-  /* tags stored temporarily in hidden element */
-  function getTagsFromHidden() {
-    let tags = [];
-    if (document.getElementById("edit_item_tags").value != "")
-      tags = document.getElementById("edit_item_tags").value.split(',');
-    return tags;
-  }
-
-  function updateTagsInHidden() {
-    let tags = [];
-    document.querySelectorAll(".tag").forEach((item) => {
-      if (item.classList.contains("selected")) {
-        tags.push(item.dataset.tag);
-      }
-    });
-    document.getElementById("edit_item_tags").value = tags.join(',');
-    const armorActive = document.querySelector('[name="edit_item_armor_active"]');
-    armorActive.disabled = !tags.some(tag => ["1 Armor", "2 Armor", "3 Armor"].includes(tag));
-    if (armorActive.disabled) armorActive.checked = false;
-  }
-
-  function adjustTagSelection(tag) {
-    switch (tag) {
-      case "bulky":
-        document.querySelector('[data-tag="petty"]').classList.remove("selected"); break;
-      case "petty":
-        document.querySelector('[data-tag="bulky"]').classList.remove("selected"); break;
-      case "uses":
-        document.querySelector('[data-tag="charges"]').classList.remove("selected"); break;
-      case "charges":
-        document.querySelector('[data-tag="uses"]').classList.remove("selected"); break;
-      case "d4":
-        for (const x of ["d6", "d8", "d10", "d12"]) {
-          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
-        }; break;
-      case "d6":
-        for (const x of ["d4", "d8", "d10", "d12"]) {
-          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
-        }; break;
-      case "d8":
-        for (const x of ["d6", "d4", "d10", "d12"]) {
-          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
-        }; break;
-      case "d10":
-        for (const x of ["d6", "d8", "d4", "d12"]) {
-          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
-        }; break;
-      case "d12":
-        for (const x of ["d6", "d8", "d10", "d4"]) {
-          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
-        }; break;
-      case "1 Armor":
-        for (const x of ["2 Armor", "3 Armor"]) {
-          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
-        }; break;
-      case "2 Armor":
-        for (const x of ["1 Armor", "3 Armor"]) {
-          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
-        }; break;
-      case "3 Armor":
-        for (const x of ["2 Armor", "1 Armor"]) {
-          document.querySelector('[data-tag="' + x + '"]').classList.remove("selected");
-        }; break;
-    }
-  }
-
-  /* tag selection */
-
-  document.querySelectorAll(".tag").forEach((item) => {
-    item.addEventListener("click", (e) => {
-      item.classList.toggle("selected");
-      if (item.classList.contains("selected")) {
-        adjustTagSelection(item.dataset.tag);
-      }
-      updateTagsInHidden();
-      console.log(getTagsFromHidden());
-    });
-  });
-
-  updateTagsInHidden();
-  resizeTextarea(document.getElementById("edit_item_description"));
-
-
-</script>

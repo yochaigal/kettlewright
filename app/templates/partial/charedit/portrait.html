@@ -10,17 +10,30 @@
     el.classList.add("highlighted");
     selected.value = e;
     document.getElementById("portrait-file").value = "";
+    document.getElementById("portrait-file-name").textContent = "";
     document.getElementById('edit-portrait-modal-custom-url').value = "";
   }
 
   function changeCustom(e) {
     document.getElementById("portrait-file").value = "";
+    document.getElementById("portrait-file-name").textContent = "";
     document.querySelectorAll(".edit-portrait-modal-thumbnail").forEach((thumbnail) => {
       thumbnail.classList.remove("highlighted");
     });
     const selected = document.getElementById("selected-portrait");
     if (!selected) return;
     selected.value = "";
+  }
+
+  function changePortraitFile(input) {
+    const file = input.files[0];
+    document.getElementById("portrait-file-name").textContent = file ? file.name : "";
+    if (!file) return;
+    document.getElementById("selected-portrait").value = "";
+    document.getElementById("edit-portrait-modal-custom-url").value = "";
+    document.querySelectorAll(".edit-portrait-modal-thumbnail").forEach((thumbnail) => {
+      thumbnail.classList.remove("highlighted");
+    });
   }
 </script>
 
@@ -41,6 +54,24 @@
       </header>
       <section class="modal-card-body">
         {% if error %}<p role="alert" class="red-text">{{error}}</p>{% endif %}
+        <div class="portrait-custom-options">
+          <div class="field" id="edit-portrait-modal-custom-url-container">
+            <label for="edit-portrait-modal-custom-url">{{_('Custom Image URL')}}</label>
+            <input class="input" type="url" placeholder="https://…"
+              id="edit-portrait-modal-custom-url" name="custom-url" oninput="changeCustom()" />
+          </div>
+          <span class="portrait-option-separator">{{_('or')}}</span>
+          <div class="field">
+            <input type="file" id="portrait-file" name="portrait-file" accept="image/png,image/jpeg,image/webp,image/gif"
+              hidden onchange="changePortraitFile(this)" />
+            <button class="button portrait-upload-button" type="button"
+              onclick="document.getElementById('portrait-file').click()">
+              <i class="fa-solid fa-upload" aria-hidden="true"></i> {{_('Upload a portrait')}}
+            </button>
+            <span id="portrait-file-name" aria-live="polite"></span>
+          </div>
+        </div>
+        <small>{{_('You can also choose one of the predefined portraits:')}}</small>
         <div id="edit-portrait-modal-image-select-container">
           {% for image in images %}
           <img onClick="clickImage('{{image}}')" data_url="{{image}}" id="img-{{image}}"
@@ -48,21 +79,7 @@
           {% endfor %}
         </div>
       </section>
-      <footer class="modal-card-foot" style="flex-direction: column">
-        <div class="portrait-custom-options">
-        <div class="field">
-          <label for="portrait-file">{{_('Upload a portrait')}}</label>
-          <input type="file" id="portrait-file" name="portrait-file" accept="image/png,image/jpeg,image/webp,image/gif"
-            onchange="document.getElementById('selected-portrait').value=''; document.getElementById('edit-portrait-modal-custom-url').value='';" />
-          <small>{{_('PNG, JPEG, WebP or GIF, up to 2 MB and 4096 × 4096 pixels. Saved as a square 256 × 256 portrait, cropped from the center.')}}</small>
-        </div>
-          <div class="field" id="edit-portrait-modal-custom-url-container">
-            <label for="edit-portrait-modal-custom-url">{{_('Custom Image URL')}}</label>
-            <input class="input" type="url" placeholder="https://…"
-              id="edit-portrait-modal-custom-url" name="custom-url" oninput="changeCustom()" />
-            <small>{{_('Use a square image (1:1 aspect ratio).')}}</small>
-          </div>
-        </div>
+      <footer class="modal-card-foot">
         <div class="footer-button-container">
           <button class="button is-success" id="edit-portrait-modal-save"
             hx-post="/charedit/inplace-portrait/{{username}}/{{url_name}}/save"

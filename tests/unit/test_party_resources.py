@@ -103,7 +103,23 @@ def test_only_warden_can_apply_group_actions(resources,uid):
     assert clients[uid].post(ACTION,data={'action':'supply','participants':'1','version':'0'}).status_code==403
 
 
-@pytest.mark.parametrize('selected', [[],['99'],['1','1']])
+@pytest.mark.parametrize('action', ['supply', 'camp'])
+def test_no_pc_selection_returns_help_without_changing_resources(resources, action):
+    app, clients = resources
+    response = clients[1].post(ACTION, data={'action': action, 'version': '0', 'mounts': '1',
+                                            'resolve_deprivation': 'on'})
+    assert response.status_code == 302
+    assert response.location.endswith('/users/user1/parties/party/')
+    with clients[1].session_transaction() as session:
+        assert ('wilderness', 'You need to select a PC first') in session['_flashes']
+    with app.app_context():
+        party = db.session.get(Party, 1)
+        assert party.version == 0
+        assert party.items == '[]'
+        assert all(db.session.get(Character, i).items == '[]' for i in (1, 2))
+
+
+@pytest.mark.parametrize('selected', [['99'],['1','1']])
 def test_invalid_participants(resources,selected):
     _,clients=resources
     assert clients[1].post(ACTION,data={'action':'supply','participants':selected,'version':'0'}).status_code==400

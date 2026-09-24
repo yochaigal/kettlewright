@@ -443,7 +443,10 @@ def wilderness_action(party_id):
     characters = party_characters(target)
     selected = request.form.getlist('participants')
     by_id = {str(c.id): c for c in characters if not c.dead}
-    if not selected or len(set(selected)) != len(selected) or any(i not in by_id for i in selected):
+    if not selected:
+        flash(_('You need to select a PC first'), 'wilderness')
+        return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))
+    if len(set(selected)) != len(selected) or any(i not in by_id for i in selected):
         abort(400)
     participants = [by_id[i] for i in selected]
     action = request.form.get('action')

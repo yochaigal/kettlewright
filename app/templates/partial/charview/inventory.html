@@ -1,3 +1,6 @@
+{% if not companion_sheet and (inventory_sheet or request.values.get('inventory_context') == 'sheet') %}
+{% include "partial/charview/inventory_slots.html" %}
+{% else %}
 <div class="character-inventory-heading">
   <h3>{{_('Inventory')}}</h3>
   {% if not companion_sheet and can_edit_inventory(character) %}
@@ -52,3 +55,5 @@
   </div>
   {% endfor %}
 </div>
+
+{% endif %}

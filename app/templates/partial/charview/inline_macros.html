@@ -1,0 +1,8 @@
+{% macro edit_attrs(section, label) -%}
+{% if is_owner %}
+class="character-inline-trigger" role="button" tabindex="0" title="{{_('Edit')}}: {{label}}"
+aria-label="{{_('Edit')}}: {{label}}"
+hx-get="{{ url_for('character_edit.character_section', username=username, url_name=url_name, section=section) }}"
+hx-target="#character-{{section}}-container"
+{% endif %}
+{%- endmacro %}

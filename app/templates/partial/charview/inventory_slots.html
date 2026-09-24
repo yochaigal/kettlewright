@@ -1,0 +1,118 @@
+{% set editable = can_edit_inventory(character) %}
+{% set layout = inventory.slot_layout() %}
+{% set container = inventory.selected_container %}
+{% set edit_base = '/charedit/inplace-inventory/' ~ username ~ '/' ~ url_name %}
+{% set csrf = companion_form().csrf_token.current_token if companion_form().csrf_token is defined else '' %}
+{% macro item_content(it, slot=None) %}
+  <div class="slot-item-content">
+    {% if editable and it.editable %}
+    <button type="button" class="slot-item-name" title="{{it.name | tr}}"
+      hx-get="{{edit_base}}/item-edit/{{it.id}}?container={{container.id}}" hx-target="#modal-anchor">{{it.name | tr}}</button>
+    {% else %}<span class="slot-item-name" title="{{it.name | tr}}">{{it.name | tr}}</span>{% endif %}
+    <div class="slot-item-details">
+      {% if 'uses' in it.tags %}
+        {% set maximum = [1, it.get('max_uses', it.uses), it.uses] | max %}
+        <div class="slot-use-dots" role="group" aria-label="{{it.name | tr}}: {{_('Uses')}} {{it.uses}}/{{maximum}}">
+          {% for index in range(1, [maximum, 12] | min + 1) %}
+            {% if editable %}
+            <button type="button" class="slot-use-dot {% if index <= it.uses %}is-filled{% endif %}"
+              aria-label="{{_('Uses')}}: {{index}}/{{maximum}}" aria-pressed="{{'true' if index <= it.uses else 'false'}}"
+              title="{{_('Uses')}}: {{it.uses}}/{{maximum}}"
+              hx-post="{{edit_base}}/item-edit/{{it.id}}/uses"
+              hx-vals='{{ {"uses": index - 1 if index == it.uses else index} | tojson }}' hx-target="#inventory-container"></button>
+            {% else %}<span class="slot-use-dot {% if index <= it.uses %}is-filled{% endif %}" aria-hidden="true"></span>{% endif %}
+          {% endfor %}
+          {% if maximum > 12 %}<small>{{it.uses}}/{{maximum}}</small>{% endif %}
+        </div>
+      {% endif %}
+      {% for tag in it.tags if tag not in ('uses', 'charges', 'petty', 'bonus defense') %}
+        {% if tag.startswith('d') and it.dice|length > 0 and is_owner %}
+        <button type="button" class="slot-tag slot-damage" title="{{_('Roll dice')}}"
+          aria-label="{{_('Roll dice')}}: {{it.name | tr}}"
+          onclick="KW_rollDiceCallback({{ '[4]' if character.panicked else it.dice }})">{{tag | tr}}</button>
+        {% else %}
+        <span class="slot-tag {% if 'Armor' in tag and not it.get('armor_active', it.name != 'Sloth-Tarp') %}slot-tag-inactive{% endif %}">
+          {% if 'Armor' in tag %}<i class="fa-solid fa-shield-halved" aria-hidden="true"></i> {% if 'bonus defense' in it.tags %}+{% endif %}{% endif %}{{tag | tr}}
+        </span>
+        {% endif %}
+      {% endfor %}
+      {% if 'charges' in it.tags %}
+      <div class="slot-charges">
+        {% if editable %}<button type="button" class="slot-icon" aria-label="{{_('Decrease')}}: {{_('charges')}}"
+          hx-post="{{edit_base}}/item-edit/{{it.id}}/amount?action=minus&property=charges" hx-target="#inventory-container" {% if it.charges <= 0 %}disabled{% endif %}>−</button>{% endif %}
+        <span class="slot-tag">{{it.charges}}/{{it.max_charges}} {{_('charges')}}</span>
+        {% if editable %}<button type="button" class="slot-icon" aria-label="{{_('Increase')}}: {{_('charges')}}"
+          hx-post="{{edit_base}}/item-edit/{{it.id}}/amount?action=plus&property=charges" hx-target="#inventory-container" {% if it.charges >= it.max_charges %}disabled{% endif %}>+</button>{% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="slot-item-actions">
+    {% if editable and slot is not none %}
+    <button type="button" class="slot-move" data-move-item="{{it.id}}"
+      aria-label="{{_('Move')}}: {{it.name | tr}}" title="{{_('Drag to move. Arrow keys then Enter also work.')}}"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button>
+    {% endif %}
+    {% if it.description %}
+    <button type="button" class="slot-icon" title="{{_('Description')}}" aria-label="{{_('Description')}}: {{it.name | tr}}"
+      onclick="KW_alert({{it.name|tr|forceescape|tojson|forceescape}}, {{it.description|tr|item_description|tojson|forceescape}})"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button>
+    {% endif %}
+    {% if editable and it.removable %}
+    <button type="button" class="slot-icon" title="{{_('Delete')}}" aria-label="{{_('Delete')}}: {{it.name | tr}}"
+      hx-post="{{edit_base}}/{{container.id}}/item-delete/{{it.id}}" hx-target="#inventory-container"
+      hx-confirm="{{_('Are you sure you want to delete')}} {{it.name | tr}}?"
+      data-confirm-title="{{_('Delete item')}}" data-confirm-button="{{_('Delete')}}">×</button>
+    {% endif %}
+  </div>
+{% endmacro %}
+<div class="slot-inventory" data-move-url="{{edit_base}}/move" data-csrf="{{csrf}}"
+     data-capacity="{{layout.capacity}}" data-move-error="{{_('Unable to move this item. Please try again.')}}"
+     data-move-hint="{{_('Choose a slot. Arrow keys to move, Enter to place, Escape to cancel.')}}"
+     data-slot-label="{{_('Slot')}}" hx-vals='{{ {"csrf_token": csrf, "inventory_context": "sheet"} | tojson }}'>
+  <div class="character-inventory-heading">
+    <h3>{{_('Inventory')}}</h3>
+    {% if editable %}<button type="button" class="button smaller-font"
+      hx-get="/marketplace/{{username}}/{{url_name}}/{{container.id}}" hx-target="#modal-anchor">{{_('Marketplace')}}</button>{% endif %}
+  </div>
+  <div class="inventory-header slot-container-tabs">
+    {% for cnt in inventory.containers %}
+      <button type="button" class="inventory-container-title {% if cnt.is_selected %}inventory-container-title-selected{% endif %}"
+        aria-pressed="{{'true' if cnt.is_selected else 'false'}}"
+        hx-get="/charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt.id}}" hx-target="#inventory-container">{{cnt.title}}</button>
+    {% endfor %}
+    {% if editable %}<button type="button" class="slot-icon" title="{{_('Edit container')}}" aria-label="{{_('Edit container')}}"
+      hx-get="{{edit_base}}/container-edit/{{container.id}}" hx-target="#modal-anchor"><i class="fa-solid fa-gear" aria-hidden="true"></i></button>{% endif %}
+  </div>
+  <div class="inventory-slots" role="list" aria-label="{{container.name}}">
+    {% for row in layout.rows %}
+    <div class="inventory-slot {% if row.item %}slot-filled{% else %}slot-empty{% endif %} {% if row.span == 2 %}slot-bulky{% endif %} {% if row.overflow %}slot-overflow{% endif %} {% if row.item and row.item.blocker %}item-blocker-text{% endif %}"
+      role="listitem" data-slot="{{row.slot}}" data-span="{{row.span}}" {% if row.item %}data-item-id="{{row.item.id}}"{% endif %}
+      style="grid-row: {{row.slot // 2 + 1}}; grid-column: {{row.slot % 2 + 1}} / span {{row.span}}">
+      <span class="slot-number" aria-hidden="true">{{row.slot + 1}}{% if row.span == 2 %}–{{row.slot + 2}}{% endif %}</span>
+      {% if row.item %}{{ item_content(row.item, row.slot) }}
+      {% elif editable %}
+      <button type="button" class="slot-add" aria-label="{{_('Add item here')}}: {{row.slot + 1}}"
+        hx-get="{{edit_base}}/item-edit/None?mode=create&container={{container.id}}&slot={{row.slot}}"
+        hx-target="#modal-anchor" title="{{_('Add item here')}}"><span aria-hidden="true">+</span></button>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% if layout.overflow %}<small class="red-text">{{_('Some items do not fit in the available slots.')}}</small>{% endif %}
+  {% if editable or layout.petty %}
+  <h4 class="slot-petty-heading">{{_('Petty')}} <small>({{_('no slot')}})</small></h4>
+  <div class="slot-petty-items">
+    {% for it in layout.petty %}<div class="slot-petty-item">{{item_content(it)}}</div>{% endfor %}
+  </div>
+  {% endif %}
+  {% if editable %}
+  <div class="inventory-footer-buttons slot-footer">
+    <button type="button" class="button smaller-font" hx-get="{{edit_base}}/item-edit/None?mode=create&container={{container.id}}&petty=1" hx-target="#modal-anchor">+ {{_('Petty item')}}</button>
+    <button type="button" class="button smaller-font" hx-post="{{edit_base}}/{{container.id}}/fatigue"
+      hx-target="#inventory-container" {% if layout.used >= layout.capacity %}disabled{% endif %}>+ {{_('Fatigue')}}</button>
+    <button type="button" class="button smaller-font" hx-get="{{edit_base}}/container-edit/{{container.id}}?mode=create"
+      hx-target="#modal-anchor">+ {{_('Container')}}</button>
+  </div>
+  {% endif %}
+  <p class="slot-status" role="status" aria-live="polite"></p>
+  <div id="modal-anchor"></div>
+</div>
