@@ -13,7 +13,10 @@
     <label class="wilderness-bonus">{{_('Extra die steps from experience or equipment')}}
       <input class="input" type="number" name="bonus" value="0" min="0" max="4" required>
     </label>
-    <button class="button" type="submit">{{_('Gather supplies')}}</button>
+    <span class="wilderness-submit" data-selection-hint="{{_('You need to select a PC first')}}"
+          title="{{_('You need to select a PC first')}}" aria-label="{{_('You need to select a PC first')}}" tabindex="0">
+      <button class="button" type="submit" disabled>{{_('Gather supplies')}}</button>
+    </span>
   </form>
   <form class="wilderness-form" method="post" action="{{url_for('party.wilderness_action',party_id=party.id)}}">
     {{roll_form.hidden_tag()}}<input type="hidden" name="version" value="{{party.version}}">
@@ -27,7 +30,10 @@
     {% for mount in wilderness_mounts %}<label class="wilderness-choice"><input type="checkbox" name="mounts" value="{{mount.id}}"> {{mount.name}}</label> {% endfor %}
     </div></fieldset>{% endif %}
     <label class="wilderness-choice"><input type="checkbox" name="resolve_deprivation"> {{_('Food, water, warmth and uninterrupted sleep resolve deprivation for all selected characters.')}}</label>
-    <button class="button" type="submit">{{_('Make Camp')}}</button>
+    <span class="wilderness-submit" data-selection-hint="{{_('You need to select a PC first')}}"
+          title="{{_('You need to select a PC first')}}" aria-label="{{_('You need to select a PC first')}}" tabindex="0">
+      <button class="button" type="submit" disabled>{{_('Make Camp')}}</button>
+    </span>
   </form>
   </div>
 </details>
