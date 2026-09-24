@@ -17,14 +17,3 @@ const applyDarkMode = () => {
     document.body.classList.remove("dark-mode");
   }
 };
-
-// Document initialization
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("nav-mobile-button").addEventListener("click", () => {
-    document.getElementById("nav-menu").classList.toggle("is-active");
-  });
-
-  // Dark mode is enabled on page load directly in the HTML template, in order to prevent a flash of light mode
-
-  document.getElementById("dark-mode-toggle").addEventListener("click", toggleDarkMode);
-});

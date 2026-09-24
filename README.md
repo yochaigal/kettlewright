@@ -166,6 +166,27 @@ It can be helpful to run the app with flask, as you can see changes immediately 
 
        flask run --port=8000 --debug
 
+## Frontend components
+
+Flask/Jinja and HTMX own server-rendered content and persistence. Alpine.js owns
+local UI state: item editors, collapsible party sections, and the mobile menu.
+The browser loads native ES modules directly, without a JavaScript build step:
+
+```text
+app/static/src/js/alpine/
+  index.js                       # Alpine import, registration, and one start()
+  components/
+    item-editor.js               # Item draft, tags, and library selection
+    collapse-section.js          # Collapsed state and localStorage preference
+    mobile-menu.js               # Mobile navigation state
+```
+
+Each component exports a factory returning fresh state for one instance. Keep its logic and component-specific constants in that module. To add a component, create its file, import and register it with `Alpine.data()` in `index.js`, then use its registered name in `x-data`. Components do not register themselves or start Alpine. Extract shared helpers only when multiple components actually need them.
+
+`base.html` loads only `alpine/index.js`. It imports the pinned Alpine ESM build from the CDN and registers all components before calling `Alpine.start()`. HTMX fragments only declare `x-data`; Alpine initializes inserted components automatically. Do not add the auto-starting CDN script alongside this entry point.
+
+Keep component roots outside HTMX swap targets when their state must survive an update. Item editor drafts intentionally reset when the editor is replaced; the existing named form fields remain the contract with Flask. Socket.IO and the stat refresh modules continue to handle live updates and preserve active edits. Do not add a second owner for those same fields in Alpine.
+
 ## Uploaded portraits
 
 Uploads live in `instance/portraits`, alongside the SQLite database in the existing

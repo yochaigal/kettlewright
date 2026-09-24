@@ -25,7 +25,7 @@
     };
 </script>
 
-<nav class="navbar" role="navigation" aria-label="main navigation" id="navbar">
+<nav class="navbar" role="navigation" aria-label="main navigation" id="navbar" x-data="mobileMenu">
     <!-- {% set excluded_routes = ['main.about', 'auth.login', 'auth.signup'] %} {% if request.endpoint not in
       excluded_routes %}
       <div class="nav-logo-container">
@@ -35,7 +35,7 @@
       <div class="kettlewright-logo-placeholder"></div>
       {% endif %} -->
     <div class="kettlewright-logo-placeholder"></div>
-    <div class="navbar-menu" id="nav-menu">
+    <div class="navbar-menu" id="nav-menu" :class="{ 'is-active': menuOpen }">
         <div class="navbar-start">
             {% if current_user.is_authenticated %}
             <a href="{{ url_for('main.characters', username=current_user.username) }}" class="navbar-item">
@@ -48,7 +48,7 @@
             <a href="{{ url_for('main.tools')}}" class="navbar-item"> {{_('tools')}} </a>
         </div>
         <div class="navbar-end">
-            <button type="button" class="navbar-item navbar-desktop-item" id="dark-mode-toggle">
+            <button type="button" class="navbar-item navbar-desktop-item" id="dark-mode-toggle" @click="toggleDarkMode()">
                 <i class="fa-solid fa-circle-half-stroke"></i>
             </button>
             {{locale}}
@@ -66,7 +66,8 @@
             {% endif %} {% if current_user.is_authenticated %} {% endif %}
         </div>
     </div>
-    <button type="button" class="navbar-item navbar-mobile-item" id="nav-mobile-button" style="margin-left: 0px">
+    <button type="button" class="navbar-item navbar-mobile-item" id="nav-mobile-button" style="margin-left: 0px"
+        @click="toggle()" :aria-expanded="menuOpen" aria-controls="nav-menu">
         <i class="fa-solid fa-bars"></i>
     </button>
 </nav>

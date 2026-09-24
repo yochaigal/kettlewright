@@ -1,4 +1,6 @@
 import json
+import re
+from html import unescape
 
 from app.lib import Inventory, Market
 from app.models import Character, db
@@ -27,5 +29,5 @@ def test_unusual_marketplace_tags_are_available_when_reopening_editor(app_with_b
         item = Market().buy(['Trap'])[0]
         assert 'd6 STR' in item['tags']
         html = render_template('partial/modal/extra_item_tags.html', item=item, mode='edit')
-        assert 'data-tag="d6 STR"' in html
-        assert 'selected' in html
+        labels = json.loads(unescape(re.search(r"data-labels='(.*?)'", html, re.S).group(1)))
+        assert {'value': 'd6 STR', 'label': 'd6 STR'} in labels

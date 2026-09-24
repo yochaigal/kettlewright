@@ -1,7 +1,13 @@
-<div id="item-extra-tags">
-  {% if mode == 'edit' %}
+<div id="item-extra-tags" data-labels='[
+  {% if mode == "edit" %}
   {% for tag in item.tags if tag not in ['bulky', 'petty', 'uses', 'charges', 'blast', 'd4', 'd6', 'd8', 'd10', 'd12', '1 Armor', '2 Armor', '3 Armor', 'bonus defense'] %}
-  <div class="tag button selected" data-tag="{{tag}}">{{_(tag)}}</div>
+  {"value": {{ tag | tojson }}, "label": {{ _(tag) | tojson }}}{% if not loop.last %},{% endif %}
   {% endfor %}
   {% endif %}
+]'>
+  <template x-for="tag in extraTags" :key="tag.value">
+    <button type="button" class="tag button" :data-tag="tag.value" x-text="tag.label"
+      :class="{ selected: tags.includes(tag.value) }" :aria-pressed="tags.includes(tag.value)"
+      @click="toggleTag(tag.value)"></button>
+  </template>
 </div>

@@ -1,50 +1,12 @@
 <div class="field">
   <label for="item-library-search">{{_('Find equipment in the Marketplace')}}</label>
   <input id="item-library-search" type="search" list="item-library-options" autocomplete="off"
+    @input="selectLibraryItem($el.value, $el.list.options)"
     placeholder="{{_('Type an equipment name')}}" />
   <datalist id="item-library-options">
     {% for equipment in library %}
-    <option value="{{_(equipment.name)}}"></option>
+    <option value="{{_(equipment.name)}}" data-item='{{ equipment | tojson }}'></option>
     {% endfor %}
   </datalist>
   <small>{{_('Select equipment to fill the fields below, or enter a custom item. Gold is unchanged.')}}</small>
 </div>
-<script>
-  (() => {
-    const library = {{ library | tojson }};
-    const labels = [{% for equipment in library %}{{_(equipment.name)|tojson}}{% if not loop.last %},{% endif %}{% endfor %}];
-    const search = document.getElementById('item-library-search');
-    search.addEventListener('input', () => {
-      const index = labels.findIndex(label => label.toLocaleLowerCase() === search.value.toLocaleLowerCase());
-      if (index < 0) return;
-      const item = library[index];
-      const form = search.closest('form');
-      form.elements.edit_item_name.value = labels[index];
-      form.elements.edit_item_description.value = item.description;
-      form.elements.edit_item_uses.value = item.uses;
-      form.elements.edit_item_charges.value = item.charges;
-      form.elements.edit_item_max_charges.value = item.max_charges;
-      const extraTags = form.querySelector('#item-extra-tags');
-      extraTags.replaceChildren();
-      const knownTags = Array.from(form.querySelectorAll('[data-tag]'), tag => tag.dataset.tag);
-      item.tags.filter(tag => !knownTags.includes(tag)).forEach(value => {
-        const tag = document.createElement('button');
-        tag.type = 'button';
-        tag.className = 'tag button';
-        tag.dataset.tag = value;
-        tag.textContent = value;
-        tag.addEventListener('click', () => {
-          tag.classList.toggle('selected');
-          updateTagsInHidden();
-        });
-        extraTags.append(tag);
-      });
-      form.querySelectorAll('[data-tag]').forEach(tag => {
-        tag.classList.toggle('selected', item.tags.includes(tag.dataset.tag));
-      });
-      updateTagsInHidden();
-      form.elements.edit_item_armor_active.checked = !form.elements.edit_item_armor_active.disabled;
-      resizeTextarea(form.elements.edit_item_description);
-    });
-  })();
-</script>

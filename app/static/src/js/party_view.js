@@ -54,40 +54,4 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // Initialize all collapsible sections
-
-  function setupCollapseToggle(buttonId, contentId, iconId) {
-    const button = document.getElementById(buttonId);
-    const content = document.getElementById(contentId);
-    const icon = document.getElementById(iconId);
-
-    // Load initial state from localStorage
-    const isHidden = localStorage.getItem(contentId) === "hidden";
-    content.classList.toggle("hidden", isHidden);
-    icon.classList.toggle("fa-chevron-down", !isHidden);
-    icon.classList.toggle("fa-chevron-right", isHidden);
-
-    button.addEventListener("click", function () {
-      content.classList.toggle("hidden");
-      icon.classList.toggle("fa-chevron-down");
-      icon.classList.toggle("fa-chevron-right");
-
-      // Save state to localStorage
-      localStorage.setItem(
-        contentId,
-        content.classList.contains("hidden") ? "hidden" : "visible"
-      );
-    });
-  }
-
-  setupCollapseToggle(
-    "party-members-collapse-button",
-    "party-members-content",
-    "party-members-collapse-icon"
-  );
-  setupCollapseToggle(
-    "party-inventory-collapse-button",
-    "inventory-container",
-    "party-inventory-collapse-icon"
-  );
 });
