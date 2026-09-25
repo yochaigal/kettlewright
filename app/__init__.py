@@ -84,6 +84,9 @@ def create_app():
     CORS(app, resources={r"/*": {"origins": allowed_origins}})
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+    for key in ('APPLICATION_ID', 'PUBLIC_KEY', 'CLIENT_SECRET', 'BOT_TOKEN'):
+        app.config['DISCORD_' + key] = os.environ.get('DISCORD_' + key, '')
+    app.config['DISCORD_BASE_URL'] = os.environ.get('DISCORD_BASE_URL', base_url.split(',')[0])
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
         'SQLALCHEMY_DATABASE_URI')
 
@@ -160,6 +163,9 @@ def create_app():
 
     from app.blueprints.companions import companions
     app.register_blueprint(companions)
+
+    from app.blueprints.discord import discord
+    app.register_blueprint(discord)
 
     from .socket_events import register_socket_events
     register_socket_events(socketio)

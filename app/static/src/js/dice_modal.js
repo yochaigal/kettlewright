@@ -1,4 +1,4 @@
-import utils from "./utils.js";
+import notification from "./notification.js";
 
 const diceModal = {
   mode: "character",
@@ -9,24 +9,25 @@ const diceModal = {
       document.getElementById("dice-modal").classList.remove("is-active");
     });
 
-    const singleDiceTypes = [4, 6, 8, 10, 12, 20, 100];
-    singleDiceTypes.forEach((sides) => {
-      const buttonId = `dice-modal-d${sides}-button`;
-      document.getElementById(buttonId).addEventListener("click", () => {
-        let result = utils.rollDice(sides);
-        this.resultText.textContent = result.toString();
-        rollCallback(`${result} (d${sides})`);
-      });
+    const roll = async (dice) => {
+      const buttons = document.querySelectorAll("#dice-modal button");
+      buttons.forEach((button) => { button.disabled = true; });
+      try {
+        const result = await rollCallback(dice);
+        this.resultText.textContent = result.values.join(", ");
+      } catch (error) {
+        notification.showNotification(error.message);
+      } finally {
+        buttons.forEach((button) => { button.disabled = false; });
+      }
+    };
+    [4, 6, 8, 10, 12, 20, 100].forEach((sides) => {
+      document.getElementById(`dice-modal-d${sides}-button`)
+        .addEventListener("click", () => roll(`d${sides}`));
     });
-
-    const doubleDiceTypes = [4, 6, 8, 10, 12];
-    doubleDiceTypes.forEach((sides) => {
-      const buttonId = `dice-modal-d${sides}+d${sides}-button`;
-      document.getElementById(buttonId).addEventListener("click", () => {
-        let result = utils.rollDoubleDice(sides);
-        this.resultText.textContent = `${result[0]}, ${result[1]}`;
-        rollCallback(`${result[0]}, ${result[1]} (d${sides}+d${sides})`);
-      });
+    [4, 6, 8, 10, 12].forEach((sides) => {
+      document.getElementById(`dice-modal-d${sides}+d${sides}-button`)
+        .addEventListener("click", () => roll(`d${sides}+d${sides}`));
     });
 
     // Show/hide d100 based on mode

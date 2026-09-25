@@ -76,19 +76,26 @@ const socketNotificationManager = {
     this.socket.emit("register");
   },
 
-  rollDice(roll, partyId, characterId) {
-    const data = {
-      roll: roll,
-      party_id: partyId,
-      character_id: characterId,
-    };
-    if (this.socket && this.socket.connected) {
-      this.socket.emit("roll_dice", data);
-      // console.log("Dice roll sent:", data);
-    } else {
-      console.error("Socket not connected. Unable to send dice roll.");
-      notification.showNotification("Unable to send dice roll. Please check your connection.");
-    }
+  rollDice(dice, partyId, characterId) {
+    return new Promise((resolve, reject) => {
+      if (!this.socket?.connected) {
+        reject(new Error("Unable to roll dice. Please check your connection."));
+        return;
+      }
+      const timer = setTimeout(() => {
+        reject(new Error("No response received. Check the party roll history before rolling again."));
+      }, 5000);
+      this.socket.emit("roll_dice", {
+        dice, party_id: partyId, character_id: characterId,
+      }, (response) => {
+        clearTimeout(timer);
+        if (!response || response.error) {
+          reject(new Error(response?.error || "Unable to roll dice. Please try again."));
+        } else {
+          resolve(response);
+        }
+      });
+    });
   },
 };
 

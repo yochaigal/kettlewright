@@ -19,6 +19,9 @@ class User(UserMixin, db.Model):
     confirmed = db.Column(db.Boolean, default=False)
     characters = db.relationship('Character', backref='character_owner', cascade='all, delete-orphan')
     parties = db.relationship('Party', backref='party_owner', cascade='all, delete-orphan')
+    discord_account = db.relationship('DiscordAccount', uselist=False, cascade='all, delete-orphan')
+    discord_selections = db.relationship('DiscordSelection', cascade='all, delete-orphan')
+    discord_channels = db.relationship('DiscordChannel', cascade='all, delete-orphan')
 
     @property
     def password(self):
