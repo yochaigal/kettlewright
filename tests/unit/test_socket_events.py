@@ -33,7 +33,7 @@ def socket_party(app):
 
 
 def roll(client, **kwargs):
-    client.emit('roll_dice', dict(character_id=1, party_id=1, roll=4, **kwargs))
+    client.emit('roll_dice', dict(character_id=1, party_id=1, dice='d6', **kwargs))
 
 
 def test_exact_membership_and_warden_receive_roll(socket_party):
@@ -58,8 +58,9 @@ def test_departed_member_stops_receiving_without_reconnecting(app, socket_party)
     ]
 
 
-def test_cannot_roll_another_users_character(socket_party):
-    roll(socket_party[2])
+@pytest.mark.parametrize('user_id', [2, 20])
+def test_cannot_roll_another_users_character(socket_party, user_id):
+    roll(socket_party[user_id])
     assert all(client.get_received() == [] for client in socket_party.values())
 
 
@@ -96,12 +97,15 @@ def history_client(app, user_id):
 
 
 def test_roll_persisted_with_original_name_and_escaped_result(app, socket_party):
-    socket_party[12].emit('roll_dice', {'character_id': 1, 'party_id': 1, 'roll': '<img src=x onerror=alert(1)>'})
+    with app.app_context():
+        db.session.get(Character, 1).name = 'Player <img src=x onerror=alert(1)>'
+        db.session.commit()
+    roll(socket_party[12])
     with app.app_context():
         db.session.get(Character, 1).name = 'Renamed'
         db.session.commit()
         saved = PartyRoll.query.one()
-        assert saved.character_name == 'Player'
+        assert saved.character_name.startswith('Player <img')
         assert saved.created_at is not None
     response = history_client(app, 20).get('/party/1/roll-history')
     assert response.status_code == 200
@@ -173,6 +177,37 @@ def test_clear_history_requires_csrf(app, socket_party):
 
 def test_rejected_rolls_are_not_saved(app, socket_party):
     roll(socket_party[2])
-    socket_party[12].emit('roll_dice', {'character_id': 1, 'party_id': 999, 'roll': 3})
+    socket_party[12].emit('roll_dice', {'character_id': 1, 'party_id': 999, 'dice': 'd6'})
+    with app.app_context():
+        assert PartyRoll.query.count() == 0
+
+
+def test_socket_roll_uses_server_values_and_acknowledges(app, socket_party, monkeypatch):
+    monkeypatch.setattr('app.lib.character_rolls.secrets.randbelow', lambda sides: sides - 1)
+    result = socket_party[12].emit('roll_dice', {
+        'character_id': 1, 'party_id': 1, 'dice': 'd6+d8', 'roll': '999',
+    }, callback=True)
+    assert result == {'result': '6, 8 (d6+d8)', 'values': [6, 8]}
+    with app.app_context():
+        assert PartyRoll.query.one().result == '6, 8 (d6+d8)'
+
+
+def test_precomputed_legacy_results_are_rejected(app, socket_party):
+    result = socket_party[12].emit('roll_dice', {
+        'character_id': 1, 'party_id': 1, 'roll': '20 (d20)',
+    }, callback=True)
+    assert 'error' in result
+    with app.app_context():
+        assert PartyRoll.query.count() == 0
+
+
+def test_standalone_character_can_roll_without_party_history(app, socket_party):
+    with app.app_context():
+        db.session.get(Character, 1).party_id = None
+        db.session.commit()
+    result = socket_party[12].emit('roll_dice', {
+        'character_id': 1, 'party_id': 'None', 'dice': 'd20',
+    }, callback=True)
+    assert 1 <= result['values'][0] <= 20
     with app.app_context():
         assert PartyRoll.query.count() == 0

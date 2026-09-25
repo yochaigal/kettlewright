@@ -54,6 +54,7 @@ wtforms = "==3.1.2"
 pillow = "*"
 reportlab = ">=4.4"
 pypdf = ">=6.0"
+pynacl = ">=1.5"
 
 [dev-packages]
 pytest = "*"

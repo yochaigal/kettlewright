@@ -566,7 +566,6 @@
     outline-offset: -5px;
     background: color-mix(in srgb, var(--fg) 2%, var(--form-bg));
   }
-  #character-hp-container { color: var(--stat-hp-ink, #984039); }
   .stat-card-heading { text-align: center; margin-bottom: 1.6rem; }
   .stat-card-heading h4 {
     margin: 0; font-size: 4.4rem; line-height: 1; font-style: normal;
@@ -634,7 +633,6 @@
     }
   }
 }
-body.dark-mode #character-quick-stats { --stat-hp-ink: #d98d82; }
 @media (max-width: 940px) {
   .character-priority-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "omens" "bonds" "scars"; }
   .character-details-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "traits" "description"; }

@@ -87,6 +87,9 @@
     <div class="inventory-slot {% if row.item %}slot-filled{% else %}slot-empty{% endif %} {% if row.span == 2 %}slot-bulky{% endif %} {% if row.overflow %}slot-overflow{% endif %} {% if row.item and row.item.blocker %}item-blocker-text{% endif %}"
       role="listitem" data-slot="{{row.slot}}" data-span="{{row.span}}" {% if row.item %}data-item-id="{{row.item.id}}"{% endif %}
       style="grid-row: {{row.slot // 2 + 1}}; grid-column: {{row.slot % 2 + 1}} / span {{row.span}}">
+      {% if container.id == 0 and row.slot < 2 %}
+      <span class="slot-hand-label"><i class="fa-solid fa-hand" aria-hidden="true"></i> {{_('Currently held')}}</span>
+      {% endif %}
       <span class="slot-number" aria-hidden="true">{{row.slot + 1}}{% if row.span == 2 %}–{{row.slot + 2}}{% endif %}</span>
       {% if row.item %}{{ item_content(row.item, row.slot) }}
       {% elif editable %}

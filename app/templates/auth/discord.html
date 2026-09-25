@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="body-container auth-container">
+  <form class="auth-card mfa-card" method="post">
+    {{ form.hidden_tag() }}
+    <h1>{{ _('Discord') }}</h1>
+    {% include 'auth/mfa_messages.html' %}
+    {% if account %}
+    <p>{{ _('Connected as') }} <strong>{{ account.display_name }}</strong> ({{ account.discord_id }}).</p>
+    <p>{{ _('Use /kw select to choose your character in each party channel. Only you can roll for your characters.') }}</p>
+    <p>{{ _('Disconnecting clears your selections and any channel bindings you created.') }}</p>
+    {% elif enabled %}
+    <p>{{ _('Connect your Discord account to view your character and roll dice in your party’s channel.') }}</p>
+    <p>{{ _('Your Warden binds the channel with /kw bind. Then use /kw select to choose your character. The selection is personal to you in that channel.') }}</p>
+    <p>{{ _('Requested character cards, party summaries and rolls are visible to everyone who can read that Discord channel.') }}</p>
+    {% else %}
+    <p>{{ _('Discord integration is not configured on this server yet.') }}</p>
+    {% endif %}
+    <div class="footer-button-container mfa-actions">
+      <a class="button" href="{{ url_for('auth.account') }}">{{ _('Back') }}</a>
+      {% if account %}<button class="button" name="action" value="disconnect">{{ _('Disconnect Discord') }}</button>
+      {% elif enabled %}<button class="button" name="action" value="connect">{{ _('Connect Discord') }}</button>{% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

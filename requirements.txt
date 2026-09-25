@@ -31,3 +31,4 @@ requests
 Pillow
 reportlab>=4.4
 pypdf>=6.0
+PyNaCl>=1.5

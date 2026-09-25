@@ -357,6 +357,20 @@
   &.slot-picked { opacity: .45; }
 }
 .slot-number { position: absolute; bottom: 4px; right: 7px; font-size: 10px; opacity: .4; pointer-events: none; }
+.slot-hand-label {
+  position: absolute;
+  top: -8px;
+  left: 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 11px;
+  line-height: 14px;
+  pointer-events: none;
+}
 .slot-inventory button.slot-move {
   width: 20px;
   height: 22px;
