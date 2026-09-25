@@ -141,7 +141,9 @@ If you plan to launch Kettlewright with multiple workers, you _must_ use a redis
 
 7. Run the app:
 
-       pipenv run dotenv run -- gunicorn -k eventlet -w 1 -b 0.0.0.0:8000 --timeout 120 'app:application'
+       pipenv run dotenv run -- gunicorn -k gevent --preload -w 1 -b 0.0.0.0:8000 --timeout 120 'wsgi:application'
+
+   The production `wsgi` entry point applies gevent's networking patches before importing the application. This order is required with `--preload` so HTTPS requests (including Discord OAuth) use compatible SSL classes. The Flask development server and migration commands continue to use `app:application`.
 
 ## Running the app without Docker (flask)
 
