@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 <script>const party = "None"; const isOwner = "{{editable and not editing}}";</script>
+{% if editable and not editing %}
+<script>
+  let party_id = "None";
+  const character_id = "{{ c.id }}";
+</script>
+{% endif %}
 <script src="{{url_for('static',filename='src/js/character_view.js')}}" type="module"></script>
 <div class="body-container">
   <div class="sheet view-character-sheet companion-character-sheet">
