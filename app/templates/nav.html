@@ -51,6 +51,10 @@
             <button type="button" class="navbar-item navbar-desktop-item" id="dark-mode-toggle" @click="toggleDarkMode()">
                 <i class="fa-solid fa-circle-half-stroke"></i>
             </button>
+            <a href="{{ url_for('discord.settings') }}" class="navbar-item navbar-desktop-item" id="discord-toggle"
+                aria-label="{{ _('Discord integration') }}" title="{{ _('Discord integration') }}">
+                <i class="fa-brands fa-discord" aria-hidden="true"></i>
+            </a>
             {{locale}}
             <button type="button" onclick="selectLanguage('{{_('Language')}}', '{{_('Cancel')}}')"
                 class="navbar-item navbar-desktop-item" id="language-toggle">

@@ -4,18 +4,32 @@ Kettlewright handles Discord slash commands over HTTP in the existing Flask app.
 
 ## Playing
 
-1. Open **Account Settings → Discord → Connect Discord** in KW. Each player and the Warden connects their own accounts. Only Discord identity is requested; no email permission is needed. OAuth access tokens are not stored.
-2. The Warden runs `/kw bind party:…` in a server channel, choosing one of their own parties. They must also have **Manage Channels** (or Administrator) in Discord. This authorizes publishing requested cards, summaries and rolls in that channel.
-3. Each player runs `/kw select character:Bran`. Autocomplete lists only that player's characters in this channel's party, with IDs to distinguish identical names. Exact unambiguous names also work.
-4. `/kw character` shows the selected character's live stats, effective HP, armor, conditions and sheet link.
-5. `/kw roll dice:d20` rolls for that character. `2d6` and mixed dice such as `d6+d8` also work (at most two dice; d4, d6, d8, d10, d12, d20 and d100). Double rolls display the individual values, as on KW.****
-6. `/kw party` shows the party roster and current stats; `/kw party page:2` pages through larger parties. `/kw login` links to account connection settings.
+Open the Discord page from the icon beside the language selector in Kettlewright. It also links to the [Cairn Discord server](https://discord.gg/T5Ykgw74DF). Each Warden and player connects their own Discord account there. Only Discord identity is requested; no email permission is needed. OAuth access tokens are not stored.
+
+### Warden
+
+1. [Install the Kettlewright app](https://discord.com/oauth2/authorize?client_id=1553017013016723556) on the Discord server.
+2. Connect your Discord account on the Kettlewright Discord page. You must own the party in Kettlewright and have **Manage Channels** (or Administrator) in Discord.
+3. Run `/kw bind party:…` in each channel you want to use, choosing one of your parties.
+
+### Player
+
+1. Connect your Discord account on the Kettlewright Discord page. Your character must be in the channel's bound party.
+2. Run `/kw select character:…` in the bound channel. Autocomplete lists your characters there, with IDs to distinguish identical names. Exact unambiguous names also work.
+
+### Other commands
+
+- `/kw login` gives you a private link to the Kettlewright Discord page.
+- `/kw character` shows your selected character's live stats, effective HP, armor, conditions and sheet link.
+- `/kw party` shows the party roster and current stats; `/kw party page:2` pages through larger parties.
+- `/kw roll dice:d20` rolls for your selected character. `2d6` and mixed dice such as `d6+d8` also work (at most two dice; d4, d6, d8, d10, d12, d20 and d100). Double rolls display the individual values, as on KW.
+- `/kw unbind` removes the binding and all selections in the channel. It requires the current party's Warden and Manage Channels.
 
 Selection belongs to the **KW user + Discord server + channel** and survives app restarts. Selecting a character never changes another user's selection or another channel's context. There is no character override on `/kw roll`. The Warden can only select and roll their own characters, just like every other player. Ownership and party membership are checked on every command. A removed, deleted or transferred character cannot be rolled using an old selection.
 
 Several channels can be bound to the same party. A channel has at most one party. Threads are independent channels in this version: bind and select inside each thread. There is no implicit inheritance from categories or parent channels.
 
-`/kw unbind` removes the binding and all selections in that channel. Rebinding also clears selections. Both require the current party's Warden and Manage Channels. Disconnecting in KW clears that user's selections and any bindings they created. A party ownership change invalidates its binding until the new Warden binds it.
+Rebinding also clears selections. Both binding and unbinding require the current party's Warden and Manage Channels. Disconnecting in KW clears that user's selections and any bindings they created. A party ownership change invalidates its binding until the new Warden binds it.
 
 Cards, party summaries and rolls are public to **everyone who can read that Discord channel**. Only linked party members (or its Warden) can request them. Private notes and party join codes are never included. Login, selection, binding responses and errors are visible only to the invoking user. Mentions are disabled.
 

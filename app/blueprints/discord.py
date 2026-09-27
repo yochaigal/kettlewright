@@ -32,11 +32,12 @@ def enabled():
 
 
 @discord.route('/account/discord', methods=['GET', 'POST'])
-@login_required
 def settings():
     form = FlaskForm()
-    account = db.session.get(DiscordAccount, current_user.id)
+    account = db.session.get(DiscordAccount, current_user.id) if current_user.is_authenticated else None
     if request.method == 'POST':
+        if not current_user.is_authenticated:
+            return redirect(url_for('auth.login', next=url_for('discord.settings')))
         if not form.validate_on_submit():
             abort(400)
         if request.form.get('action') == 'disconnect':
