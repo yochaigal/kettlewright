@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-<script>const party = "None"; const isOwner = "{{editable and not editing}}";</script>
+<script>const party = "None"; const isOwner = "{{can_roll and not editing}}";</script>
+{% if can_roll and not editing %}
+<script>
+  let party_id = "{{ roll_party.id if roll_party else 'None' }}";
+  const companion_id = "{{ c.id }}";
+</script>
+{% endif %}
 <script src="{{url_for('static',filename='src/js/character_view.js')}}" type="module"></script>
 <div class="body-container">
   <div class="sheet view-character-sheet companion-character-sheet">
@@ -23,8 +29,10 @@
         <button class="dice-button ghost40" type="submit" form="companion-edit-form" title="{{_('Save')}}"><i class="fa-solid fa-check check"></i></button>
         <button class="dice-button ghost40" type="submit" form="companion-cancel-form" title="{{_('Cancel')}}"><i class="fa-solid fa-xmark xmark"></i></button>
         {% else %}
+        {% if can_roll %}
         <button class="dice-button" type="button" id="character-dice-button" title="{{_('Roll Dice')}}"><i class="fa-solid fa-dice dice"></i></button>
         {% include 'main/dice_modal.html' %}
+        {% endif %}
         <a class="dice-button ghost40" href="{{url_for('companions.sheet',companion_id=c.id,mode='edit')}}" title="{{_('Edit')}}"><i class="fa-solid fa-pen-to-square pen-to-square"></i></a>
         {% endif %}
       </div>

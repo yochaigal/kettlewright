@@ -431,3 +431,127 @@ def test_companion_has_one_name_field_and_keeps_its_role_on_save(world):
     assert clients[2].post('/companions/1', data=data).status_code == 302
     with app.app_context():
         assert db.session.get(Companion,1).role == 'Bodyguard'
+
+
+@pytest.fixture
+def companion_sockets(world):
+    from app import socketio
+    app, clients = world
+    sockets = {uid: socketio.test_client(app, flask_test_client=client)
+               for uid, client in clients.items()}
+    yield sockets
+    for client in sockets.values():
+        if client.is_connected():
+            client.disconnect()
+
+
+@pytest.mark.parametrize('companion_id,user_id,allowed', [
+    (1, 1, True), (1, 2, True), (1, 3, True), (1, 4, False),
+    (2, 1, False), (2, 2, True), (2, 3, False), (2, 4, False),
+])
+def test_companion_roll_permissions_and_attribution(world, companion_sockets, monkeypatch,
+                                                    companion_id, user_id, allowed):
+    from app.models import PartyRoll
+    app, clients = world
+    monkeypatch.setattr('app.lib.character_rolls.secrets.randbelow', lambda sides: sides - 1)
+    result = companion_sockets[user_id].emit('roll_dice', {
+        'companion_id': companion_id, 'character_id': None, 'party_id': 1,
+        'dice': 'd6+d8', 'roll': '999',
+    }, callback=True)
+    with app.app_context():
+        if allowed:
+            assert result == {'result': '6, 8 (d6+d8)', 'values': [6, 8]}
+            saved = PartyRoll.query.one()
+            name = db.session.get(Companion, companion_id).name
+            assert saved.character_name == name
+            assert saved.party_id == 1 and saved.result == result['result']
+        else:
+            assert 'error' in result
+            assert PartyRoll.query.count() == 0
+    for uid, socket in companion_sockets.items():
+        events = socket.get_received()
+        if allowed and uid != 4:
+            assert events == [
+                {'name': 'dice_rolled', 'args': [f'{name} rolled a 6, 8 (d6+d8)'], 'namespace': '/'},
+                {'name': 'roll_history_changed', 'args': [{'party_id': 1}], 'namespace': '/'},
+            ]
+        else:
+            assert events == []
+    if user_id != 4 or companion_id == 2:
+        html = clients[user_id].get(f'/companions/{companion_id}').get_data(as_text=True)
+        assert ('id="character-dice-button"' in html) == allowed
+        assert ('KW_rollDiceCallback(' in html) == (allowed and companion_id == 1)
+        if allowed:
+            assert f'const companion_id = "{companion_id}"' in html
+            assert 'let party_id = "1"' in html
+            assert 'const character_id =' not in html
+
+
+@pytest.mark.parametrize('change', ['restricted', 'left', 'removed'])
+def test_hireling_roll_permissions_rechecked_after_page_load(world, companion_sockets, change):
+    from app.models import PartyRoll
+    app, clients = world
+    assert b'character-dice-button' in clients[2].get('/companions/1').data
+    with app.app_context():
+        if change == 'restricted':
+            db.session.get(Companion, 1).shared = False
+        elif change == 'left':
+            db.session.get(Character, 1).party_id = None
+        else:
+            db.session.get(Party, 1).members = '[2]'
+        db.session.commit()
+    for socket in companion_sockets.values():
+        socket.get_received()
+    result = companion_sockets[2].emit('roll_dice', {
+        'companion_id': 1, 'party_id': 1, 'dice': 'd20',
+    }, callback=True)
+    assert 'error' in result
+    assert all(socket.get_received() == [] for socket in companion_sockets.values())
+    with app.app_context():
+        assert PartyRoll.query.count() == 0
+    # The warden keeps control even when player access is revoked.
+    result = companion_sockets[1].emit('roll_dice', {
+        'companion_id': 1, 'party_id': 1, 'dice': 'd20',
+    }, callback=True)
+    assert 1 <= result['values'][0] <= 20
+
+
+@pytest.mark.parametrize('payload', [
+    {'companion_id': 999, 'dice': 'd6'},
+    {'companion_id': 1, 'party_id': 999, 'dice': 'd6'},
+    {'companion_id': 2, 'party_id': 999, 'dice': 'd6'},
+    {'companion_id': 1, 'character_id': 1, 'dice': 'd6'},
+    {'companion_id': 1, 'dice': '3d6'},
+    {'companion_id': 1, 'roll': '20 (d20)'},
+])
+def test_invalid_companion_rolls_are_not_saved_or_broadcast(world, companion_sockets, payload):
+    from app.models import PartyRoll
+    app, _ = world
+    result = companion_sockets[2].emit('roll_dice', payload, callback=True)
+    assert 'error' in result
+    assert all(socket.get_received() == [] for socket in companion_sockets.values())
+    with app.app_context():
+        assert PartyRoll.query.count() == 0
+
+
+@pytest.mark.parametrize('membership', ['standalone', 'stale'])
+def test_pet_roll_without_current_party(world, companion_sockets, membership):
+    from app.models import PartyRoll
+    app, clients = world
+    with app.app_context():
+        if membership == 'standalone':
+            db.session.get(Character, 1).party_id = None
+        else:
+            db.session.get(Party, 1).members = '[2]'
+        db.session.commit()
+    for socket in companion_sockets.values():
+        socket.get_received()
+    html = clients[2].get('/companions/2').get_data(as_text=True)
+    assert 'let party_id = "None"' in html
+    result = companion_sockets[2].emit('roll_dice', {
+        'companion_id': 2, 'party_id': 'None', 'dice': 'd20',
+    }, callback=True)
+    assert 1 <= result['values'][0] <= 20
+    assert all(socket.get_received() == [] for socket in companion_sockets.values())
+    with app.app_context():
+        assert PartyRoll.query.count() == 0

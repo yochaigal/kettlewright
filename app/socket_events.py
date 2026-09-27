@@ -6,7 +6,7 @@ from flask_socketio import emit, join_room
 from sqlalchemy import event, inspect
 from sqlalchemy.orm import Session
 
-from app.models import Character, Party, db
+from app.models import Character, Companion, Party, db
 from app.lib.socket_rate_limit import SocketRateLimiter
 
 
@@ -102,19 +102,25 @@ def register_socket_events(socketio):
             return
         if not allow_event('roll_dice'):
             return
+        is_companion = data.get('companion_id') is not None
+        if is_companion and data.get('character_id') is not None:
+            return {'error': 'Choose either a character or a companion.'}
         try:
-            character_id = int(data.get('character_id'))
+            actor_id = int(data.get('companion_id' if is_companion else 'character_id'))
             raw_party = data.get('party_id')
             party_id = int(raw_party) if raw_party not in (None, 'None', '') else None
         except (TypeError, ValueError):
             return
-        from app.lib.character_rolls import roll_character, publish_roll
-        character = db.session.get(Character, character_id)
+        from app.lib.character_rolls import roll_character, roll_companion, publish_roll
+        actor = db.session.get(Companion if is_companion else Character, actor_id)
         try:
-            result, party = roll_character(current_user.id, character, data.get('dice'),
-                                           expected_party=party_id)
+            if is_companion:
+                result, party = roll_companion(actor, data.get('dice'), expected_party=party_id)
+            else:
+                result, party = roll_character(current_user.id, actor, data.get('dice'),
+                                               expected_party=party_id)
         except (ValueError, PermissionError) as error:
             return {'error': str(error)}
         db.session.commit()
-        publish_roll(party, character.name, result['result'])
+        publish_roll(party, actor.name, result['result'])
         return result

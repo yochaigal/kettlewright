@@ -34,6 +34,23 @@ def can_manage(companion):
     return can_manage(companion.hireling)
 
 
+def can_roll(companion):
+    if companion is None or not current_user.is_authenticated:
+        return False
+    if companion.kind == 'pet':
+        return companion.character is not None and companion.character.owner == current_user.id
+    return can_manage(companion)
+
+
+def companion_party(companion):
+    if companion.kind == 'hireling':
+        return companion.party
+    if companion.character:
+        from app.lib.character_rolls import character_party
+        return character_party(companion.character)
+    return None
+
+
 def pet_data(template, parent):
     result = dict(name=template['name'], role=template['name'], notes=_(template.get('notes', '')),
                   armor=template.get('armor', 0), attack=template.get('attack', ''), gold=0,

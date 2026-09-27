@@ -5,7 +5,7 @@ from flask import Blueprint, abort, redirect, render_template, request, url_for,
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from app.models import db, Character, Party, Companion
-from app.lib.companions import STATS, can_manage, catalog, import_pet, new_hireling, party_member, pet_data, companion_destinations, record_transfer, finish_companion_transfers
+from app.lib.companions import STATS, can_manage, can_roll, companion_party, catalog, import_pet, new_hireling, party_member, pet_data, companion_destinations, record_transfer, finish_companion_transfers
 from app.lib.inventory import Inventory
 from app.lib.data import sanitize_json_content
 from app.lib.quick_stats import save_current_stat
@@ -262,6 +262,7 @@ def sheet_context(c, selected=0):
     inventory.select(selected)
     inventory.decorate()
     return dict(c=c, character=c, form=FlaskForm(), editable=can_manage(c), is_owner=can_manage(c),
+                can_roll=can_roll(c), roll_party=companion_party(c),
                 companion_sheet=True, inventory=inventory, outgoing=inventories(c) if can_manage(c) else {},
                 inventory_edit_base=f'/companions/{c.id}/inventory',
                 inventory_select_base=f'/companions/{c.id}/containers', decode=json.loads,

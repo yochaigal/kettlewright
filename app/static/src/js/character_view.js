@@ -6,7 +6,9 @@ import notification from "./notification.js";
 const requestRoll = async (dice) => {
   const manager = window.socketNotificationManager;
   if (!manager) throw new Error("Unable to roll dice. Please check your connection.");
-  const result = await manager.rollDice(dice, party_id, character_id);
+  const result = typeof companion_id !== "undefined"
+    ? await manager.rollDice(dice, party_id, null, companion_id)
+    : await manager.rollDice(dice, party_id, character_id);
   if (party_id === "None") notification.showNotification(`You rolled a ${result.result}`);
   return result;
 };

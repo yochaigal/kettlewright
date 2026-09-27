@@ -39,7 +39,7 @@
         onclick="KW_alert({{it.name|tr|forceescape|tojson|forceescape}}, {{it.description|tr|item_description|tojson|forceescape}})">
         <i class="item-edit-button fa-solid fa-circle-info circle-info"></i>
       </div>
-      {% endif %} {% if it.dice|length > 0 and is_owner %}
+      {% endif %} {% if it.dice|length > 0 and is_owner and (not companion_sheet or can_roll) %}
       {% if character.panicked %}
       <div class="pointer" title="{{_('Roll dice (impaired)')}}" onclick="KW_rollDiceCallback('4')" style="color:#ff5555">
         <i class="fa-solid fa-dice dice"></i>

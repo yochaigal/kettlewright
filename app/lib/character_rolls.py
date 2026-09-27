@@ -32,12 +32,26 @@ def roll_character(user_id, character, expression, expected_party=None):
     party = character_party(character)
     if expected_party is not None and (not party or party.id != expected_party):
         raise PermissionError('This character is no longer in the channel’s party. Use /kw select again.')
+    return roll_for_party(character.name, expression, party), party
+
+
+def roll_companion(companion, expression, expected_party=None):
+    from app.lib.companions import can_roll, companion_party
+    if not can_roll(companion):
+        raise PermissionError('You cannot roll for this companion.')
+    party = companion_party(companion)
+    if expected_party is not None and (not party or party.id != expected_party):
+        raise PermissionError('This companion is no longer in this party. Reload the sheet.')
+    return roll_for_party(companion.name, expression, party), party
+
+
+def roll_for_party(name, expression, party):
     dice = parse_dice(expression)
     values = [secrets.randbelow(sides) + 1 for sides in dice]
     result = f'{", ".join(map(str, values))} ({"+".join(f"d{sides}" for sides in dice)})'
     if party:
-        db.session.add(PartyRoll(party_id=party.id, character_name=character.name, result=result))
-    return {'result': result, 'values': values}, party
+        db.session.add(PartyRoll(party_id=party.id, character_name=name, result=result))
+    return {'result': result, 'values': values}
 
 
 def publish_roll(party, name, result):
