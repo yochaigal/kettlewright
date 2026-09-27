@@ -1,26 +1,71 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="body-container auth-container">
-  <form class="auth-card mfa-card" method="post">
-    {{ form.hidden_tag() }}
-    <h1>{{ _('Discord') }}</h1>
+<main class="body-container discord-guide">
+  <h1>{{ _('Discord integration') }}</h1>
+  <p class="discord-guide-intro">
+    {{ _('Use Kettlewright characters, party summaries and dice rolls in your Discord server.') }}
+    <a href="https://discord.gg/T5Ykgw74DF" target="_blank" rel="noopener noreferrer">{{ _('Join the Cairn Discord server') }}</a>.
+  </p>
+
+  <section id="discord-account" class="discord-guide-section discord-guide-account" aria-labelledby="discord-account-title">
+    <h2 id="discord-account-title">{{ _('Connect your account') }}</h2>
     {% include 'auth/mfa_messages.html' %}
-    {% if account %}
-    <p>{{ _('Connected as') }} <strong>{{ account.display_name }}</strong> ({{ account.discord_id }}).</p>
-    <p>{{ _('Use /kw select to choose your character in each party channel. Only you can roll for your characters.') }}</p>
-    <p>{{ _('Disconnecting clears your selections and any channel bindings you created.') }}</p>
-    {% elif enabled %}
-    <p>{{ _('Connect your Discord account to view your character and roll dice in your party’s channel.') }}</p>
-    <p>{{ _('Your Warden binds the channel with /kw bind. Then use /kw select to choose your character. The selection is personal to you in that channel.') }}</p>
-    <p>{{ _('Requested character cards, party summaries and rolls are visible to everyone who can read that Discord channel.') }}</p>
+    {% if current_user.is_authenticated %}
+      {% if account %}
+        <p>{{ _('Connected as') }} <strong>{{ account.display_name }}</strong> ({{ account.discord_id }}).</p>
+        <p>{{ _('Disconnecting clears your character selections and any channel bindings you created.') }}</p>
+        <form method="post">
+          {{ form.hidden_tag() }}
+          <button class="button" type="submit" name="action" value="disconnect">{{ _('Disconnect Discord') }}</button>
+        </form>
+      {% elif enabled %}
+        <p>{{ _('Connect the Discord account you will use for Kettlewright commands. Each Warden and player connects their own account.') }}</p>
+        <form method="post">
+          {{ form.hidden_tag() }}
+          <button class="button" type="submit" name="action" value="connect">{{ _('Connect Discord') }}</button>
+        </form>
+      {% else %}
+        <p>{{ _('Discord integration is not configured on this server yet.') }}</p>
+      {% endif %}
     {% else %}
-    <p>{{ _('Discord integration is not configured on this server yet.') }}</p>
+      <p>{{ _('Sign in to connect your Kettlewright and Discord accounts.') }}</p>
+      <a class="button" href="{{ url_for('auth.login', next=url_for('discord.settings')) }}">{{ _('Login') }}</a>
     {% endif %}
-    <div class="footer-button-container mfa-actions">
-      <a class="button" href="{{ url_for('auth.account') }}">{{ _('Back') }}</a>
-      {% if account %}<button class="button" name="action" value="disconnect">{{ _('Disconnect Discord') }}</button>
-      {% elif enabled %}<button class="button" name="action" value="connect">{{ _('Connect Discord') }}</button>{% endif %}
-    </div>
-  </form>
-</div>
+  </section>
+
+  <div class="discord-guide-sections">
+    <section class="discord-guide-section" aria-labelledby="discord-warden-title">
+      <h2 id="discord-warden-title">{{ _('For the Warden') }}</h2>
+      <ol>
+        <li><a href="https://discord.com/oauth2/authorize?client_id=1553017013016723556" target="_blank" rel="noopener noreferrer">{{ _('Add the Kettlewright app to your Discord server') }}</a>.</li>
+        <li>{{ _('Connect your Discord account to Kettlewright using the button above. You must own the party in Kettlewright and have Manage Channels or Administrator permission in Discord.') }}</li>
+        <li>{{ _('In each channel you want to use, run') }} <code>/kw bind</code> {{ _('and select your party. Bind each channel separately.') }}</li>
+      </ol>
+    </section>
+    <section class="discord-guide-section" aria-labelledby="discord-player-title">
+      <h2 id="discord-player-title">{{ _('For players') }}</h2>
+      <ol>
+        <li>{{ _('Connect your Discord account to Kettlewright using the button above. Your character must belong to the party bound to the channel.') }}</li>
+        <li>{{ _('In a bound channel, run') }} <code>/kw select</code> {{ _('and choose one of your characters from the list. Your choice is personal to you in that channel.') }}</li>
+      </ol>
+    </section>
+  </div>
+
+  <section class="discord-guide-commands" aria-labelledby="discord-commands-title">
+    <h2 id="discord-commands-title">{{ _('Discord commands') }}</h2>
+    <table>
+      <thead><tr><th scope="col">{{ _('Command') }}</th><th scope="col">{{ _('What it does') }}</th></tr></thead>
+      <tbody>
+        <tr><td><code>/kw login</code></td><td>{{ _('Shows a private link to connect your Discord account to Kettlewright.') }}</td></tr>
+        <tr><td><code>/kw bind party:…</code></td><td>{{ _('Warden only: binds the current channel to one of your parties. Requires Manage Channels or Administrator permission. Binding again clears character selections in this channel.') }}</td></tr>
+        <tr><td><code>/kw unbind</code></td><td>{{ _('Warden only: removes the current channel’s party binding and clears its character selections. Requires Manage Channels or Administrator permission.') }}</td></tr>
+        <tr><td><code>/kw select character:…</code></td><td>{{ _('Selects one of your characters in this channel’s party. The selection applies only to you in this channel.') }}</td></tr>
+        <tr><td><code>/kw character</code></td><td>{{ _('Shows your selected character’s current stats, HP, armor, conditions and sheet link in the channel.') }}</td></tr>
+        <tr><td><code>/kw party</code></td><td>{{ _('Shows the party roster and current stats in the channel. Use /kw party page:2 for another page.') }}</td></tr>
+        <tr><td><code>/kw roll dice:d20</code></td><td>{{ _('Rolls for your selected character and posts the result in the channel and Kettlewright party history. Also accepts 2d6 or d6+d8; at most two dice of types d4, d6, d8, d10, d12, d20 or d100.') }}</td></tr>
+      </tbody>
+    </table>
+    <p>{{ _('Character cards, party summaries and rolls are visible to everyone who can read the channel. Account connection, binding, selection and error messages are private to you.') }}</p>
+  </section>
+</main>
 {% endblock %}

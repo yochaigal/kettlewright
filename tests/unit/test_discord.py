@@ -264,6 +264,21 @@ def test_oauth_rejects_wrong_state_and_existing_discord_owner(game, monkeypatch)
         assert db.session.get(DiscordAccount, 2).discord_id == '102'
 
 
+def test_public_discord_guide_and_account_actions_require_login(app_with_babel):
+    client = app_with_babel.test_client()
+    page = client.get('/account/discord')
+    assert page.status_code == 200
+    html = page.get_data(as_text=True)
+    assert 'id="discord-toggle"' in html
+    assert 'https://discord.gg/T5Ykgw74DF' in html
+    assert 'https://discord.com/oauth2/authorize?client_id=1553017013016723556' in html
+    for command in ('login', 'bind', 'unbind', 'select', 'character', 'party', 'roll'):
+        assert '/kw ' + command in html
+    assert 'name="action" value="connect"' not in html
+    assert 'name="action" value="disconnect"' not in html
+    assert client.post('/account/discord', data={'action': 'connect'}).status_code == 302
+
+
 def test_settings_csrf_and_warden_disconnect(game):
     app, _ = game
     client = logged_in(app, 3)

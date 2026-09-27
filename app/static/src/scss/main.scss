@@ -636,6 +636,7 @@ button,
 
 
 #dark-mode-toggle,
+#discord-toggle,
 #language-toggle,
 #nav-mobile-button {
   margin: 0px 1em 2px 0px;
@@ -951,4 +952,66 @@ button,
 
 .center-input {
   text-align: center;
+}
+
+.discord-guide {
+  align-items: stretch;
+  max-width: 960px;
+  margin: 2rem auto 4rem;
+  padding: 0 1.5rem;
+
+  .discord-guide-intro {
+    margin-bottom: 2rem;
+  }
+
+  .discord-guide-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 600px) {
+    .discord-guide-sections {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .discord-guide-section {
+    padding: 1.5rem;
+    background: var(--form-bg);
+  }
+
+  .discord-guide-section h2 {
+    margin-top: 0;
+  }
+
+  .discord-guide-section li + li {
+    margin-top: .75rem;
+  }
+
+  .discord-guide-commands {
+    overflow-x: auto;
+  }
+
+  .discord-guide-commands table {
+    width: 100%;
+  }
+
+  .discord-guide-commands th,
+  .discord-guide-commands td {
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .discord-guide-commands code {
+    white-space: nowrap;
+  }
+
+  .discord-guide-account {
+    margin-bottom: 2rem;
+  }
+
+  .discord-guide-account form {
+    margin-top: 1rem;
+  }
 }

@@ -76,7 +76,7 @@ const socketNotificationManager = {
     this.socket.emit("register");
   },
 
-  rollDice(dice, partyId, characterId) {
+  rollDice(dice, partyId, characterId, companionId = null) {
     return new Promise((resolve, reject) => {
       if (!this.socket?.connected) {
         reject(new Error("Unable to roll dice. Please check your connection."));
@@ -86,7 +86,7 @@ const socketNotificationManager = {
         reject(new Error("No response received. Check the party roll history before rolling again."));
       }, 5000);
       this.socket.emit("roll_dice", {
-        dice, party_id: partyId, character_id: characterId,
+        dice, party_id: partyId, character_id: characterId, companion_id: companionId,
       }, (response) => {
         clearTimeout(timer);
         if (!response || response.error) {
