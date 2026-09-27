@@ -1,0 +1,38 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token, category with context %}
+{% block workspace %}
+<h1>{{ _('Create and show') if party else (_('Edit material') if entry else _('New material')) }}</h1>
+{% if party %}<p>{{ _('This will be visible to members of') }} <strong>{{ party.name }}</strong>.</p>
+{% else %}<p>{{ _('Private original. Saving here does not change any party’s version.') }}</p>{% endif %}
+<form method="post" x-data="contentDraft" data-import="{{ 'true' if not entry else 'false' }}">
+{{ token(entry.version if entry else none) }}
+{% if party %}<input type="hidden" name="party_id" value="{{ party.id }}">{% endif %}
+{% if not entry or entry.category not in ('map', 'path') %}{{ category(entry.category if entry else 'note') }}{% endif %}
+<label>{{ _('Title') }}<input name="title" maxlength="200" value="{{ entry.title if entry else '' }}" {% if not entry %}required{% endif %}></label>
+<label>{{ _('Description') }}<textarea name="body" rows="10" maxlength="50000">{{ entry.body if entry else '' }}</textarea></label>
+{% if entry and entry.category == 'path' %}
+<label>{{ _('Path type') }}<select name="path_type">{% for kind in path_types %}<option value="{{ kind }}" {% if entry.path_type == kind %}selected{% endif %}>{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>
+{% endif %}
+{% if not party %}
+<label>{{ _('Campaign') }}<select name="campaign_id"><option value="">{{ _('Unfiled') }}</option>
+{% for item in campaigns %}<option value="{{ item.id }}" {% if campaign and campaign.id == item.id %}selected{% endif %}>{{ item.name }}</option>{% endfor %}
+</select></label>
+{% endif %}
+{% if entry %}
+<fieldset><legend>{{ _('Related materials') }}</legend>
+{% for item in candidates %}<label class="campaign-check"><input type="checkbox" name="links" value="{{ item.id }}" {% if item.id in selected_links %}checked{% endif %}>{{ item.title or _('Untitled private original') }}</label>{% endfor %}
+</fieldset>
+{% endif %}
+{% if party %}<details @toggle="preview($event)"><summary>{{ _('Preview') }}</summary><h2 x-text="title"></h2><p class="content-text" x-text="body"></p></details>{% endif %}
+<button type="submit">{{ _('Create and show') if party else _('Save private original') }}</button>
+</form>
+{% if entry %}
+<div class="campaign-actions"><a class="button" href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Reveal to party') }}</a>
+{% if entry.pointcrawl %}<a href="{{ url_for('campaigns.map_edit', map_id=entry.pointcrawl.id) }}">{{ _('Edit map') }}</a>{% endif %}
+</div>
+<details><summary>{{ _('Delete material') }}</summary>
+<p>{{ _('This also removes its published versions.') }}</p>
+<form method="post" action="{{ url_for('campaigns.delete_entry', entry_id=entry.id) }}">{{ token(entry.version) }}<button>{{ _('Delete material') }}</button></form>
+</details>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token with context %}
+{% block workspace %}
+<h1>{{ _('Campaigns') }}</h1>
+<p>{{ _('Prepare your world privately, then share what each party discovers.') }}</p>
+<ul>{% for campaign in campaigns %}<li><a href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}">{{ campaign.name }}</a></li>{% else %}<li>{{ _('No campaigns yet.') }}</li>{% endfor %}</ul>
+<form method="post">{{ token() }}
+<label>{{ _('Campaign name') }}<input name="name" required maxlength="200"></label>
+<button type="submit">{{ _('Create campaign') }}</button>
+</form>
+{% endblock %}

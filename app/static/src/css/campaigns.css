@@ -1,0 +1,26 @@
+.campaign-workspace {max-width:1100px;margin:auto;padding:1.25rem;}
+.campaign-workspace h1,.campaign-workspace h2,.campaign-workspace h3 {overflow-wrap:anywhere;}
+.campaign-workspace form {margin:1rem 0;padding:0;max-width:none;box-sizing:border-box;}
+.map-editor-grid ol {list-style:none;padding:0;}
+.campaign-workspace label {display:block;margin:.7rem 0;}
+.campaign-workspace input:not([type=checkbox]):not([type=hidden]),.campaign-workspace textarea,.campaign-workspace select {box-sizing:border-box;width:100%;max-width:100%;}
+.campaign-workspace textarea {min-height:6rem;}
+.campaign-actions {display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin:.8rem 0;}
+.campaign-cards {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1rem;}
+.campaign-card {border:1px solid currentColor;border-radius:.4rem;padding:1rem;min-width:0;}
+.campaign-check {display:flex!important;align-items:center;gap:.5rem;}
+.content-text {white-space:pre-wrap;overflow-wrap:anywhere;}
+.campaign-workspace fieldset {min-width:0;margin:1rem 0;padding:1rem;}
+.pointcrawl-canvas {display:block;width:100%;height:520px;border:1px solid currentColor;touch-action:none;background:var(--bg,#fff);}
+.pointcrawl-canvas line {stroke:currentColor;stroke-width:3;}
+.pointcrawl-canvas line.hidden-path {stroke-dasharray:8 7;}
+.pointcrawl-canvas line.conditional-path {stroke-dasharray:14 4 3 4;}
+.pointcrawl-canvas circle {fill:var(--bg,#fff);stroke:currentColor;stroke-width:2;}
+.pointcrawl-canvas text {fill:currentColor;user-select:none;font-size:14px;}
+.pointcrawl-canvas .selected circle {stroke-width:5;}
+.pointcrawl-canvas .map-node {cursor:pointer;}
+.map-editor-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;}
+.map-editor-grid label {min-width:0;}
+.campaign-status {min-height:1.5rem;white-space:pre-wrap;}
+[x-cloak] {display:none!important;}
+@media(max-width:600px) {.pointcrawl-canvas{height:360px}.map-editor-grid{grid-template-columns:1fr}.campaign-workspace{padding:.75rem}}

@@ -1,0 +1,33 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token with context %}
+{% block workspace %}
+<h1>{{ _('Reveal to party') }}</h1>
+<a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ entry.title or _('Private original') }}</a>
+<p>{{ _('Prepare what each party knows. Only selected parties are updated when you publish.') }}</p>
+{% if parties %}
+<form method="post" x-data="revealContent" data-rows="{{ initial|tojson|forceescape }}"
+ data-original="{{ {'title':entry.title, 'body':entry.body, 'path_type':entry.path_type}|tojson|forceescape }}">
+{{ token() }}
+<template x-for="row in rows" :key="row.id">
+<fieldset>
+<legend x-text="row.name"></legend>
+<label class="campaign-check"><input type="checkbox" name="party_ids" :value="row.id" x-model="row.selected">{{ _('Publish to this party') }}</label>
+<input type="hidden" :name="'version_' + row.id" :value="row.version">
+<p x-show="row.published">{{ _('Already published. Changes remain private until you publish.') }}</p>
+<label>{{ _('Title known to this party') }}<input :name="'title_' + row.id" x-model="row.title" maxlength="200" :required="row.selected"></label>
+<label>{{ _('What this party knows') }}<textarea :name="'body_' + row.id" x-model="row.body" rows="6" maxlength="50000"></textarea></label>
+{% if entry.category == 'path' %}<label>{{ _('Known path type') }}<select :name="'path_type_' + row.id" x-model="row.path_type">{% for kind in path_types %}<option value="{{ kind }}">{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>{% endif %}
+<div class="campaign-actions"><button type="button" @click="copyOriginal(row)">{{ _('Copy from private original') }}</button>
+<button type="button" @click="copySelected(row)">{{ _('Use this text for selected parties') }}</button></div>
+<details><summary>{{ _('Preview for this party') }}</summary><h2 x-text="row.title"></h2><p class="content-text" x-text="row.body"></p></details>
+</fieldset>
+</template>
+<button type="submit" :disabled="!rows.some(row => row.selected)">{{ _('Publish selected versions') }}</button>
+</form>
+{% for party in parties %}{% set row = presentations.get(party.id) %}{% if row and row.published %}
+<form method="post" action="{{ url_for('campaigns.revoke', entry_id=entry.id, party_id=party.id) }}">{{ token(row.version) }}
+<button>{{ _('Revoke publication') }} · {{ party.name }}</button>
+<a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}">{{ _('View as party') }}</a></form>
+{% endif %}{% endfor %}
+{% else %}<p>{{ _('Connect a party in campaign settings, or create a party first.') }}</p>{% endif %}
+{% endblock %}

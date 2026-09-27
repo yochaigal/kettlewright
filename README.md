@@ -189,6 +189,12 @@ Each component exports a factory returning fresh state for one instance. Keep it
 
 Keep component roots outside HTMX swap targets when their state must survive an update. Item editor drafts intentionally reset when the editor is replaced; the existing named form fields remain the contract with Flask. Socket.IO and the stat refresh modules continue to handle live updates and preserve active edits. Do not add a second owner for those same fields in Alpine.
 
+## Campaigns and maps
+
+See [Campaigns and party knowledge](docs/campaigns.md) for private preparation,
+independent party versions, Tools results and pointcrawl maps. Apply the database
+migrations (`flask db upgrade`) before serving the updated application.
+
 ## Uploaded portraits
 
 Uploads live in `instance/portraits`, alongside the SQLite database in the existing

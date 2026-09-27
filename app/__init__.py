@@ -167,6 +167,9 @@ def create_app():
     from app.blueprints.discord import discord
     app.register_blueprint(discord)
 
+    from app.blueprints.campaigns import campaigns
+    app.register_blueprint(campaigns)
+
     from .socket_events import register_socket_events
     register_socket_events(socketio)
     

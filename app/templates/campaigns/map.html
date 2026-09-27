@@ -1,0 +1,22 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token with context %}
+{% block workspace %}
+{% if not editing %}
+<div data-party-content="{{ party.id }}" data-map-url="{{ url_for('campaigns.party_map_data', party_id=party.id, map_id=graph.id) }}"></div>
+<script type="module" src="{{ url_for('static', filename='src/js/campaign_live.js') }}"></script>
+<a href="{{ url_for('campaigns.party_materials', party_id=party.id) }}">{{ party.name }} · {{ _('Materials') }}</a>
+{% endif %}
+<div x-data="pointcrawl" data-graph="{{ graph|tojson|forceescape }}" data-editing="{{ 'true' if editing else 'false' }}"
+ {% if editing %}data-save-url="{{ url_for('campaigns.map_data', map_id=pointcrawl.id) }}"{% endif %}
+ data-labels="{{ {'location':_('Location'),'saved':_('Map saved.'),'error':_('Unable to save. Check the connection, location numbers and linked maps.'),'conflict':_('This map changed in another tab. Reload before saving.'),'duplicate':_('This location or path already exists.')}|tojson|forceescape }}">
+<h1 x-text="graph.title"></h1>
+{% if editing %}<details><summary>{{ _('Map notes') }}</summary><p class="content-text" x-text="graph.body"></p></details>
+{% else %}<p class="content-text" x-text="graph.body"></p>{% endif %}
+{% if editing %}<p>{{ _('Geometry is shared. New locations and paths remain private until revealed.') }}</p>
+<div class="campaign-actions"><a href="{{ url_for('campaigns.edit_entry', entry_id=pointcrawl.entry_id) }}">{{ _('Edit map description') }}</a><a href="{{ url_for('campaigns.reveal', entry_id=pointcrawl.entry_id) }}">{{ _('Reveal map to party') }}</a></div>
+<form x-ref="saveForm" @submit.prevent="save()">{{ token() }}<button :disabled="saving">{{ _('Save map') }}</button><span x-show="dirty">{{ _('Unsaved changes') }}</span></form>
+{% endif %}
+<p class="campaign-status" role="status" x-text="status"></p>
+{% include 'campaigns/canvas.html' %}
+</div>
+{% endblock %}

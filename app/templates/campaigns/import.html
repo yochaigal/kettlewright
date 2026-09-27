@@ -1,0 +1,18 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token, category with context %}
+{% block workspace %}
+<h1>{{ _('Save or reveal a Tools result') }}</h1>
+<form method="post" action="{{ url_for('campaigns.new_entry') }}" x-data="contentDraft" data-import="true">
+{{ token() }}{{ category() }}
+<label>{{ _('Title') }}<input name="title" required maxlength="200"></label>
+<label>{{ _('Description') }}<textarea name="body" rows="12" maxlength="50000"></textarea></label>
+<fieldset x-data="{destination:'private'}"><legend>{{ _('Destination') }}</legend>
+<label class="campaign-check"><input type="radio" value="private" x-model="destination">{{ _('Save privately') }}</label>
+<label class="campaign-check"><input type="radio" value="party" x-model="destination">{{ _('Create and show to party') }}</label>
+<label x-show="destination === 'private'">{{ _('Campaign') }}<select name="campaign_id" :disabled="destination !== 'private'"><option value="">{{ _('Unfiled') }}</option>{% for campaign in campaigns %}<option value="{{ campaign.id }}">{{ campaign.name }}</option>{% endfor %}</select></label>
+<label x-show="destination === 'party'">{{ _('Party') }}<select name="party_id" :disabled="destination !== 'party'" :required="destination === 'party'"><option value="">{{ _('Choose a party') }}</option>{% for party in parties %}<option value="{{ party.id }}">{{ party.name }}</option>{% endfor %}</select></label>
+</fieldset>
+<details @toggle="preview($event)"><summary>{{ _('Preview') }}</summary><h2 x-text="title"></h2><p class="content-text" x-text="body"></p></details>
+<button>{{ _('Save') }}</button>
+</form>
+{% endblock %}

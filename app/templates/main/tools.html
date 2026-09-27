@@ -1,8 +1,9 @@
 {% extends "base.html" %} {% block content %}
-<script>
-  const dataRaw = `{{ events_data | safe }}`;
-  const data = JSON.parse(dataRaw);
-</script>
+<script>const data = JSON.parse({{ events_data | tojson }});</script>
+<script id="tools-content-labels" type="application/json">{{ {
+'authenticated': current_user.is_authenticated, 'save': _('Save or reveal'), 'map': _('Create map'),
+'copy': _('Copy text'), 'copied': _('Results copied to clipboard')}|tojson }}</script>
+
 <script src="{{ url_for('static', filename='src/js/tools.js') }}" type="module"></script>
 <div class="body-container tools-page">
   <div class="sheet party-tools-sheet">

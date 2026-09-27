@@ -1,0 +1,9 @@
+{% macro token(version=None) %}
+{{ content_form.csrf_token }}
+{% if version is not none %}<input type="hidden" name="version" value="{{ version }}">{% endif %}
+{% endmacro %}
+{% macro category(selected='note') %}
+<label>{{ _('Category') }}<select name="category">
+{% for key, label in content_categories.items() if key != 'map' %}<option value="{{ key }}" {% if key == selected %}selected{% endif %}>{{ _(label) }}</option>{% endfor %}
+</select></label>
+{% endmacro %}

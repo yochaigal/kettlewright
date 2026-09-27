@@ -1,0 +1,43 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token with context %}
+{% block workspace %}
+<h1>{{ campaign.name if campaign else _('Unfiled materials') }}</h1>
+<p>{{ _('Only you can see originals. Party versions are published separately.') }}</p>
+<div class="campaign-actions">
+<a class="button" href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id if campaign else '') }}">{{ _('New material') }}</a>
+<a class="button" href="{{ url_for('campaigns.new_map', campaign_id=campaign.id if campaign else '') }}">{{ _('New map') }}</a>
+<a href="{{ url_for('main.tools') }}">{{ _('Tools') }}</a>
+</div>
+{% for category, label in content_categories.items() %}
+<section><h2>{{ _(label) }}</h2><div class="campaign-cards">
+{% for entry in entries if entry.category == category %}
+<article class="campaign-card">
+<h3><a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ entry.title or _('Untitled private original') }}</a></h3>
+<div class="content-text">{{ render_content(entry.body[:300]) }}</div>
+<div class="campaign-actions">
+{% if entry.pointcrawl %}<a href="{{ url_for('campaigns.map_edit', map_id=entry.pointcrawl.id) }}">{{ _('Edit map') }}</a>{% endif %}
+<a href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Reveal to party') }}</a>
+</div>
+</article>
+{% else %}<p>{{ _('No materials in this section.') }}</p>{% endfor %}
+</div></section>
+{% endfor %}
+{% if campaign %}
+<details><summary>{{ _('Campaign settings and parties') }}</summary>
+<form method="post">{{ token(campaign.version) }}
+<label>{{ _('Campaign name') }}<input name="name" required maxlength="200" value="{{ campaign.name }}"></label>
+<fieldset><legend>{{ _('Connected parties') }}</legend>
+{% for party in parties %}
+<label class="campaign-check"><input type="checkbox" name="party_ids" value="{{ party.id }}" {% if party.id in linked %}checked{% endif %}>{{ party.name }}</label>
+{% if party.id in linked %}<a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}">{{ _('View as party') }}</a>{% endif %}
+{% else %}<p>{{ _('Create a party to share materials with its members.') }}</p>{% endfor %}
+</fieldset>
+<p>{{ _('Disconnecting a party hides this campaign’s published materials from it.') }}</p>
+<button>{{ _('Save settings') }}</button>
+</form>
+<form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}">{{ token(campaign.version) }}
+<p>{{ _('Deleting the campaign keeps its materials and existing party versions.') }}</p>
+<button>{{ _('Delete campaign') }}</button></form>
+</details>
+{% endif %}
+{% endblock %}

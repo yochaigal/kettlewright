@@ -1,0 +1,23 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token with context %}
+{% block workspace %}
+{% if party %}<p>{{ _('The map and every location and path in this draft will be shown to') }} <strong>{{ party.name }}</strong> {{ _('when you save.') }}</p>{% endif %}
+<h1>{{ _('New pointcrawl map') }}</h1>
+<form method="post" x-data="pointcrawl" data-editing="true" data-creating="true"
+ data-labels="{{ {'location':_('Location'),'error':_('Unable to generate a map. Please try again.'),'duplicate':_('This path already exists.')}|tojson|forceescape }}"
+ @submit="dirty=false">
+{{ token() }}
+{% if party %}<input type="hidden" name="party_id" value="{{ party.id }}">{% endif %}
+<label>{{ _('Title') }}<input name="title" required maxlength="200" x-ref="title"></label>
+<label>{{ _('Description') }}<textarea name="body" maxlength="50000" x-ref="body"></textarea></label>
+{% if not party %}<label>{{ _('Campaign') }}<select name="campaign_id"><option value="">{{ _('Unfiled') }}</option>{% for item in campaigns %}<option value="{{ item.id }}" {% if campaign and campaign.id == item.id %}selected{% endif %}>{{ item.name }}</option>{% endfor %}</select></label>{% endif %}
+<label>{{ _('Map type') }}<select name="kind" x-model="kind"><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option><option value="realm">{{ _('Region') }}</option></select></label>
+<button type="button" @click="generate()">{{ _('Generate a new draft') }}</button>
+<p>{{ _('Generating replaces this unsaved draft. Review and edit it before saving.') }}</p>
+<input type="hidden" name="draft" :value="JSON.stringify(graph)">
+<p class="campaign-status" role="status" x-text="status"></p>
+{% set editing = true %}{% set nested_maps = [] %}{% set locations = [] %}
+{% include 'campaigns/canvas.html' %}
+<button type="submit">{{ _('Create and show map') if party else _('Save private map') }}</button>
+</form>
+{% endblock %}

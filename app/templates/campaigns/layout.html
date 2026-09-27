@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='src/css/campaigns.css') }}">
+<section class="body-container"><div class="sheet campaign-workspace">
+<nav class="campaign-actions" aria-label="{{ _('Campaign navigation') }}">
+<a href="{{ url_for('campaigns.index') }}">{{ _('Campaigns') }}</a>
+<a href="{{ url_for('campaigns.library') }}">{{ _('Unfiled materials') }}</a>
+</nav>
+{% block workspace %}{% endblock %}
+</div></section>
+{% endblock %}

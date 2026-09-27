@@ -1,0 +1,62 @@
+<div class="campaign-actions">
+<button type="button" @click="zoom(1.2)" aria-label="{{ _('Zoom in') }}">+</button>
+<button type="button" @click="zoom(1/1.2)" aria-label="{{ _('Zoom out') }}">−</button>
+<button type="button" @click="fit()">{{ _('Fit map') }}</button>
+</div>
+<svg class="pointcrawl-canvas" x-ref="canvas" viewBox="0 0 1000 600" role="img" aria-label="{{ _('Pointcrawl map. Locations and paths are listed below.') }}"
+ @pointerdown="pointerDown($event)" @pointermove="pointerMove($event)" @pointerup="drag=null" @pointercancel="drag=null"
+ @keydown.enter.prevent="selectFromEvent($event)" @keydown.space.prevent="selectFromEvent($event)"
+ @wheel.prevent="zoom($event.deltaY < 0 ? 1.1 : 1/1.1)">
+<g :transform="transform"><g data-map-drawing x-ignore></g></g>
+</svg>
+<p>{{ _('Solid: standard · Dashed: hidden · Dash-dot: conditional') }}</p>
+<div class="map-editor-grid">
+<section><h2>{{ _('Locations') }}</h2>
+<ol><template x-for="item in graph.nodes" :key="item.id"><li><button type="button" @click="selected=String(item.id)" x-text="item.number+'. '+item.title"></button></li></template></ol>
+{% if editing %}
+{% if locations %}<label>{{ _('Existing location') }}<select x-model="locationId" x-ref="locationPicker"><option value="">{{ _('Create a new location') }}</option>{% for location in locations %}<option value="{{ location.id }}">{{ location.title or _('Untitled private original') }}</option>{% endfor %}</select></label>{% endif %}
+<button type="button" @click="addNode()">{{ _('Add location') }}</button>
+{% endif %}
+<template x-if="selectedNode"><div>
+<h3 x-text="selectedNode.title"></h3>
+{% if editing %}
+<label>{{ _('Number') }}<input type="number" min="1" x-model.number="selectedNode.number"></label>
+<label>X<input type="number" x-model.number="selectedNode.x"></label>
+<label>Y<input type="number" x-model.number="selectedNode.y"></label>
+<template x-if="isNew(selectedNode) && !selectedNode.entry_id"><div>
+<label>{{ _('Title') }}<input maxlength="200" x-model="selectedNode.title"></label>
+<label>{{ _('Description') }}<textarea maxlength="50000" x-model="selectedNode.body"></textarea></label>
+</div></template>
+<label>{{ _('Linked map') }}<select x-model="selectedNode.nested_map_id"><option value="">{{ _('None') }}</option>{% for item in nested_maps %}<option value="{{ item.id }}">{{ item.entry.title }}</option>{% endfor %}</select></label>
+<template x-if="selectedNode.entry_id"><div class="campaign-actions">
+<a :href="'/materials/'+selectedNode.entry_id+'/edit'">{{ _('Edit private description') }}</a>
+<a :href="'/materials/'+selectedNode.entry_id+'/reveal'">{{ _('Reveal to party') }}</a>
+</div></template>
+<button type="button" @click="removeNode()">{{ _('Remove from map') }}</button>
+{% else %}
+<p class="content-text" x-text="selectedNode.body"></p>
+<a :href="'/party/{{ party.id }}/materials/'+selectedNode.entry_id">{{ _('Open location') }}</a>
+<template x-if="selectedNode.nested_map_id"><a :href="'/party/{{ party.id }}/maps/'+selectedNode.nested_map_id+'/'">{{ _('Open linked map') }}</a></template>
+{% endif %}
+</div></template>
+</section>
+<section><h2>{{ _('Paths') }}</h2>
+{% if editing %}
+<label>{{ _('From') }}<select x-model="edgeSource"><option value="">{{ _('Choose location') }}</option><template x-for="item in graph.nodes" :key="item.id"><option :value="item.id" x-text="item.number+'. '+item.title"></option></template></select></label>
+<label>{{ _('To') }}<select x-model="edgeTarget"><option value="">{{ _('Choose location') }}</option><template x-for="item in graph.nodes" :key="item.id"><option :value="item.id" x-text="item.number+'. '+item.title"></option></template></select></label>
+<button type="button" @click="addEdge()">{{ _('Connect locations') }}</button>
+{% endif %}
+<template x-for="edge in graph.edges" :key="edge.id"><details>
+<summary><span x-text="edge.title"></span> <span x-text="'('+node(edge.source)?.number+' – '+node(edge.target)?.number+')'"></span></summary>
+{% if editing %}
+<template x-if="isNew(edge)"><div>
+<label>{{ _('Title') }}<input maxlength="200" x-model="edge.title"></label>
+<label>{{ _('Description and conditions') }}<textarea maxlength="50000" x-model="edge.body"></textarea></label>
+<label>{{ _('Path type') }}<select x-model="edge.path_type">{% for kind in path_types %}<option value="{{ kind }}">{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>
+</div></template>
+<template x-if="edge.entry_id"><div class="campaign-actions"><a :href="'/materials/'+edge.entry_id+'/edit'">{{ _('Edit private description') }}</a><a :href="'/materials/'+edge.entry_id+'/reveal'">{{ _('Reveal to party') }}</a></div></template>
+<button type="button" @click="removeEdge(edge.id)">{{ _('Remove path') }}</button>
+{% else %}<p class="content-text" x-text="edge.body"></p>{% endif %}
+</details></template>
+</section>
+</div>
