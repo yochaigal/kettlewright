@@ -31,6 +31,14 @@ def enabled():
                ('APPLICATION_ID', 'PUBLIC_KEY', 'CLIENT_SECRET', 'BASE_URL'))
 
 
+def bot_invite_url():
+    app_id = current_app.config.get('DISCORD_APPLICATION_ID')
+    if not app_id:
+        return ''
+    return 'https://discord.com/oauth2/authorize?' + urlencode(dict(
+        client_id=app_id, scope='bot applications.commands', permissions=current_app.config.get('DISCORD_BOT_PERMISSIONS', 0)))
+
+
 @discord.route('/account/discord', methods=['GET', 'POST'])
 @login_required
 def settings():
@@ -58,7 +66,7 @@ def settings():
         return redirect('https://discord.com/oauth2/authorize?' + urlencode(dict(
             client_id=current_app.config['DISCORD_APPLICATION_ID'], response_type='code', scope='identify',
             state=state, redirect_uri=site_url(url_for('discord.oauth_callback')))))
-    response = current_app.make_response(render_template('auth/discord.html', form=form, account=account, enabled=enabled()))
+    response = current_app.make_response(render_template('auth/discord.html', form=form, account=account, enabled=enabled(), bot_invite_url=bot_invite_url()))
     response.headers['Cache-Control'] = 'no-store'
     return response
 
@@ -194,8 +202,8 @@ def register(guild, dry_run):
         raise click.ClickException('Configure DISCORD_APPLICATION_ID and DISCORD_BOT_TOKEN; use a numeric guild ID.')
     path = f'/applications/{app_id}' + (f'/guilds/{guild}' if guild else '') + '/commands'
     if guild:
-        definition.pop('contexts')
-        definition.pop('integration_types')
+        definition.pop('contexts', None)
+        definition.pop('integration_types', None)
     try:
         response = requests.post(API + path, json=definition, headers={'Authorization': 'Bot ' + token}, timeout=10)
         response.raise_for_status()
