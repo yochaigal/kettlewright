@@ -3,9 +3,13 @@
 {% block workspace %}
 <h1>{{ _('Campaigns') }}</h1>
 <p>{{ _('Prepare your world privately, then share what each party discovers.') }}</p>
-<ul>{% for campaign in campaigns %}<li><a href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}">{{ campaign.name }}</a></li>{% else %}<li>{{ _('No campaigns yet.') }}</li>{% endfor %}</ul>
+{% if campaigns %}
+<ul class="campaign-list">{% for campaign in campaigns %}<li><a href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}">{{ campaign.name }}</a></li>{% endfor %}</ul>
+{% else %}
+<p>{{ _('No campaigns yet.') }}</p>
+{% endif %}
 <form method="post">{{ token() }}
-<label>{{ _('Campaign name') }}<input name="name" required maxlength="200"></label>
+<label>{{ _('Campaign name') }}<input type="text" name="name" required maxlength="200"></label>
 <button type="submit">{{ _('Create campaign') }}</button>
 </form>
 {% endblock %}

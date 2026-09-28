@@ -14,7 +14,7 @@
 {% if group %}<section><h2>{{ _(label) }}</h2><div class="campaign-cards">
 {% for entry in group %}
 <article class="campaign-card"><h3><a href="{{ url_for('campaigns.party_entry', party_id=party.id, entry_id=entry.id) }}">{{ entry.title }}</a></h3>
-<div class="content-text">{{ render_content(entry.body) }}</div>
+<div class="rich-content">{{ render_content(entry.body) }}</div>
 {% if entry.map_id %}<a href="{{ url_for('campaigns.party_map', party_id=party.id, map_id=entry.map_id) }}">{{ _('Open map') }}</a>{% endif %}
 {% if editing %}<div class="campaign-actions"><a href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Update party version') }}</a><a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ _('Private original') }}</a></div>{% endif %}
 </article>{% endfor %}</div></section>{% endif %}

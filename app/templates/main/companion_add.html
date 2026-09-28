@@ -12,7 +12,7 @@
       {% else %}{% for name in templates %}<option value="{{ name }}">{{ name | tr }}</option>{% endfor %}{% endif %}
       <option value="Custom">{{_('Custom')}}</option>
     </select>
-    <label for="name">{{_('Name')}}</label><input id="name" name="name" maxlength="100">
+    <label for="name">{{_('Name')}}</label><input type="text" id="name" name="name" maxlength="100">
     {% if kind == 'hireling' %}<p>{{_('Rolls 3d6 for each attribute and d6 for HP. Starting equipment is a suggestion you can edit. Leave the name blank to roll one.')}}</p>
     {% else %}<p>{{_('Custom pets require a name. Unknown stats can be filled in on the pet sheet.')}}</p>{% endif %}
     <button type="submit">{{_('Create')}}</button>

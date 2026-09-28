@@ -1,15 +1,13 @@
 """Authorization and explicit player projections for warden content."""
 import math
-from html import escape
-
-import bleach
-from markupsafe import Markup
 from flask import abort, current_app
 from flask_login import current_user
 
 from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
                         Party, PartyPresentation, PointcrawlMap, MapNode, MapEdge)
 from app.socket_events import party_recipient_ids
+from app.lib.map_drawing import EMPTY_DRAWING, validate_drawing
+from app.lib.rich_content import normalize_content, render_content
 
 CATEGORIES = {'overview': 'Overview', 'npc': 'NPCs', 'location': 'Locations',
               'lore': 'Lore', 'faction': 'Factions', 'relic': 'Relics',
@@ -74,15 +72,22 @@ def publishable_party(entry, party_id):
     return party
 
 
-def render_content(text):
-    # Escape first: descriptions are plain text, never trusted HTML/Markdown.
-    def safe_link(attrs, new=False):
-        href = attrs.get((None, 'href'), '')
-        if not href.lower().startswith(('https://', 'http://')):
-            return None
-        attrs[(None, 'rel')] = 'nofollow noopener noreferrer'
-        return attrs
-    return Markup(bleach.linkify(escape(text or ''), callbacks=[safe_link], parse_email=False).replace('\n', '<br>'))
+def content_value(value):
+    return normalize_content(text_value(value, 5 * 1024 * 1024))
+
+
+def map_related_ids(entry):
+    """Structural links follow geometry, including maps created before this feature."""
+    targets = set()
+    if entry.pointcrawl:
+        for node in entry.pointcrawl.nodes:
+            targets.add(node.entry_id)
+            if node.nested_map:
+                targets.add(node.nested_map.entry_id)
+    for node in entry.map_nodes:
+        if node.nested_map:
+            targets.add(node.nested_map.entry_id)
+    return targets - {entry.id}
 
 
 def known_entries(party_id):
@@ -103,8 +108,9 @@ def known_entries(party_id):
     for row in rows:
         if row.entry_id in known:
             known[row.entry_id]['links'] = [
-                {'id': link.target_id, 'title': known[link.target_id]['title']}
-                for link in row.entry.links if link.target_id in known]
+                {'id': target_id, 'title': known[target_id]['title']}
+                for target_id in sorted({link.target_id for link in row.entry.links} | map_related_ids(row.entry))
+                if target_id in known]
     return known
 
 
@@ -120,6 +126,11 @@ def map_projection(pointcrawl, party_id=None):
 
     root = content(pointcrawl.entry)
     result = {'id': pointcrawl.id, 'title': root['title'], 'body': root['body'], 'nodes': [], 'edges': []}
+    if party_id is None:
+        result['drawing'] = pointcrawl.drawing or EMPTY_DRAWING
+    else:
+        publication = PartyPresentation.query.filter_by(entry_id=pointcrawl.entry_id, party_id=party_id, published=True).first_or_404()
+        result['drawing'] = publication.drawing or EMPTY_DRAWING
     if known is None:
         result.update(version=pointcrawl.version, kind=pointcrawl.kind)
     for node in sorted(pointcrawl.nodes, key=lambda n: (n.number, n.id)):
@@ -158,12 +169,16 @@ def entry_audiences(entry):
     return {p.party_id for p in entry.presentations if p.published}
 
 
-def save_geometry(pointcrawl, data):
+def save_geometry(pointcrawl, data, *, nested_draft=False):
     """Replace geometry atomically, keeping existing prose in its own editor."""
     check_version(pointcrawl, data.get('version'))
+    if 'drawing' in data:
+        pointcrawl.drawing = validate_drawing(data['drawing'])
     nodes, edges = data.get('nodes'), data.get('edges')
     if not isinstance(nodes, list) or not isinstance(edges, list) or len(nodes) > 200 or len(edges) > 800:
         abort(400, 'A map supports up to 200 locations and 800 paths.')
+    if sum(isinstance(node, dict) and node.get('nested_draft') is not None for node in nodes) > 20:
+        abort(400, 'Generate at most 20 linked maps in one save.')
     existing_nodes = {n.id: n for n in pointcrawl.nodes}
     existing_edges = {e.id: e for e in pointcrawl.edges}
     resolved, used_entries, numbers = {}, set(), set()
@@ -181,7 +196,7 @@ def save_geometry(pointcrawl, data):
             else:
                 entry = ContentEntry(owner_id=current_user.id, campaign_id=pointcrawl.entry.campaign_id,
                     category='location', title=text_value(item.get('title', ''), 200, True),
-                    body=text_value(item.get('body', '')))
+                    body=content_value(item.get('body', '')))
                 db.session.add(entry)
                 db.session.flush()
             node = MapNode(map=pointcrawl, entry=entry)
@@ -199,6 +214,22 @@ def save_geometry(pointcrawl, data):
         numbers.add(node.number)
         node.x, node.y = coordinate(item.get('x')), coordinate(item.get('y'))
         nested_id = item.get('nested_map_id')
+        draft = item.get('nested_draft')
+        if draft is not None:
+            # Only one generated level per request; never overwrite a linked map's contents.
+            if nested_draft or nested_id not in (None, '') or not isinstance(draft, dict):
+                abort(400, 'Invalid nested map draft.')
+            if draft.get('kind') not in ('dungeon', 'forest'):
+                abort(400, 'Choose a dungeon or forest.')
+            nested_entry = ContentEntry(owner_id=current_user.id, campaign_id=pointcrawl.entry.campaign_id,
+                category='map', title=text_value(item.get('title', node.entry.title), 200, True),
+                body=content_value(draft.get('body', '')))
+            nested = PointcrawlMap(entry=nested_entry, kind=draft['kind'])
+            db.session.add(nested)
+            # Flush only once the parent node has all required geometry fields.
+            db.session.flush()
+            save_geometry(nested, {**draft, 'version': nested.version}, nested_draft=True)
+            nested_id = nested.id
         nested = owned(PointcrawlMap, integer(nested_id)) if nested_id not in (None, '') else None
         if nested and (nested.id == pointcrawl.id or nested.entry.campaign_id != pointcrawl.entry.campaign_id):
             abort(400, 'Choose another map from this campaign.')
@@ -224,7 +255,7 @@ def save_geometry(pointcrawl, data):
                 abort(400)
             entry = ContentEntry(owner_id=current_user.id, campaign_id=pointcrawl.entry.campaign_id,
                 category='path', title=text_value(item.get('title', 'Path'), 200, True),
-                body=text_value(item.get('body', '')), path_type=kind)
+                body=content_value(item.get('body', '')), path_type=kind)
             edge = MapEdge(map=pointcrawl, entry=entry)
             db.session.add(edge)
         else:

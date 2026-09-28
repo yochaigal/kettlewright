@@ -43,9 +43,9 @@
     </div>
 
     <div>{{party.description}}</div>
-    {% if can_view_rolls %}<div class="party-section">
+    {% if can_view_rolls %}<div class="party-section party-material-actions">
       <a class="button" href="{{ url_for('campaigns.party_materials', party_id=party.id) }}">{{ _('Materials') }}</a>
-      {% if is_owner %}<a href="{{ url_for('campaigns.new_entry', party_id=party.id) }}">{{ _('Create and show') }}</a>{% endif %}
+      {% if is_owner %}<a class="button" href="{{ url_for('campaigns.new_entry', party_id=party.id) }}">{{ _('Create and show') }}</a>{% endif %}
     </div>{% endif %}
 
     <div class="party-section" x-data="collapseSection('party-members-content')">

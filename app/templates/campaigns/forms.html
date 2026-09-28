@@ -2,6 +2,35 @@
 {{ content_form.csrf_token }}
 {% if version is not none %}<input type="hidden" name="version" value="{{ version }}">{% endif %}
 {% endmacro %}
+{% macro rich_editor(label, value='', name='body', model=None, name_expression=None) %}
+<div class="rich-editor" x-data="richText" {% if model %}x-modelable="value" x-model="{{ model }}"{% endif %}
+ :data-pending="uploading || tooLong" data-label="{{ label }}"
+ data-image-error="{{ _('Use PNG, JPEG, WebP or GIF images up to 10 MB and 25 megapixels. The complete description may be up to 5 MB.') }}"
+ data-url-error="{{ _('Enter a complete HTTP(S) image URL without credentials.') }}"
+ data-toolbar="{{ {'bold':_('Bold'),'italic':_('Italic'),'underline':_('Underline'),'strike':_('Strikethrough'),'ordered':_('Numbered list'),'bullet':_('Bullet list'),'blockquote':_('Quote'),'link':_('Link'),'image':_('Insert image'),'clean':_('Clear formatting')}|tojson|forceescape }}">
+<span class="rich-editor-label">{{ label }}</span>
+<textarea x-ref="source" aria-label="{{ label }}" {% if name %}name="{{ name }}"{% endif %}
+ {% if name_expression %}:name="{{ name_expression }}"{% endif %}
+ x-show="!ready && !isRich" @input="value=$event.target.value" rows="8" maxlength="5242880">{{ value }}</textarea>
+<input x-ref="file" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden @change="insertImages($event.target.files)">
+<div x-ref="host" x-show="ready"><div x-ignore></div></div>
+<div x-show="imagePanel" x-cloak class="rich-image-panel">
+<label>{{ _('Image URL') }}<input x-ref="imageLink" type="text" inputmode="url" x-model="imageLink" placeholder="https://example.com/image.jpg" @keydown.enter.prevent="insertLink()"></label>
+<div class="campaign-actions">
+<button type="button" @click="insertLink()" :disabled="uploading">{{ _('Insert URL') }}</button>
+<button type="button" @click="$refs.file.click()" :disabled="uploading">{{ _('Choose file') }}</button>
+<button type="button" @click="imagePanel=false">{{ _('Cancel') }}</button>
+</div>
+</div>
+<small x-show="ready">{{ _('Images: insert a URL or upload PNG, JPEG, WebP or GIF (up to 10 MB / 25 MP). Uploads are compressed to WebP, at most 1600 px and 500 KB; animations become still images. Description: up to 5 MB and 50,000 text characters.') }}</small>
+<div class="rich-content" x-show="!ready && isRich" x-html="$richHTML(value)"></div>
+<p x-show="failed" x-cloak>{{ _('The formatting editor could not load. Check your connection and retry.') }}
+<button type="button" @click="start()">{{ _('Retry') }}</button></p>
+<p role="status" x-show="uploading" x-cloak>{{ _('Inserting image…') }}</p>
+<p role="alert" x-show="imageError" x-text="imageError" x-cloak></p>
+<p role="alert" x-show="tooLong" x-cloak>{{ _('Description exceeds 5 MB or 50,000 text characters. Shorten it before saving.') }}</p>
+</div>
+{% endmacro %}
 {% macro category(selected='note') %}
 <label>{{ _('Category') }}<select name="category">
 {% for key, label in content_categories.items() if key != 'map' %}<option value="{{ key }}" {% if key == selected %}selected{% endif %}>{{ _(label) }}</option>{% endfor %}

@@ -447,6 +447,7 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
 
     const poiCount = Math.floor(random() * (8 - 3 + 1)) + 3;
     result.POIs = [];
+    const poiKinds = [];
     for (let i = 0; i < poiCount; i++) {
       let poi = "";
 
@@ -516,8 +517,11 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
             roll(setting.PointsOfInterest.Dungeons.Feature.length)
           ]
         }`;
+      } else if (type === "Forest") {
+        poi = poiName;
       }
       result.POIs.push(poi);
+      poiKinds.push(type.toLowerCase());
     }
 
     const realmNameFormula =
@@ -535,7 +539,7 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
       { type: "Rulers", word: realmRulerType },
     ]);
 
-    return {title: realmName, category: 'location', fields: result, mapKind: 'realm'};
+    return {title: realmName, category: 'location', fields: result, mapKind: 'realm', poiKinds};
   } else if (subcategory === "Faction") {
     result = rollStandaloneFaction(setting);
     return {title: result.Name, category: 'faction', fields: result};

@@ -204,6 +204,8 @@ an installation. Replacing a portrait removes its previous uploaded file after
 the change is saved, unless another character still references the same file.
 Images are currently retained when a character is deleted.
 
+Uploaded material-description images use the neighboring `instance/material-images` folder in the same volume; include it in backups. See [campaign documentation](docs/campaigns.md) for access rules and migrating older embedded images.
+
 
 ## Attribution
 

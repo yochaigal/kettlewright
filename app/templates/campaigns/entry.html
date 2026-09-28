@@ -1,5 +1,5 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token, category with context %}
+{% from 'campaigns/forms.html' import token, category, rich_editor with context %}
 {% block workspace %}
 <h1>{{ _('Create and show') if party else (_('Edit material') if entry else _('New material')) }}</h1>
 {% if party %}<p>{{ _('This will be visible to members of') }} <strong>{{ party.name }}</strong>.</p>
@@ -8,8 +8,8 @@
 {{ token(entry.version if entry else none) }}
 {% if party %}<input type="hidden" name="party_id" value="{{ party.id }}">{% endif %}
 {% if not entry or entry.category not in ('map', 'path') %}{{ category(entry.category if entry else 'note') }}{% endif %}
-<label>{{ _('Title') }}<input name="title" maxlength="200" value="{{ entry.title if entry else '' }}" {% if not entry %}required{% endif %}></label>
-<label>{{ _('Description') }}<textarea name="body" rows="10" maxlength="50000">{{ entry.body if entry else '' }}</textarea></label>
+<label>{{ _('Title') }}<input type="text" name="title" maxlength="200" value="{{ entry.title if entry else '' }}" {% if not entry %}required{% endif %}></label>
+{{ rich_editor(_('Description'), entry.body if entry else '') }}
 {% if entry and entry.category == 'path' %}
 <label>{{ _('Path type') }}<select name="path_type">{% for kind in path_types %}<option value="{{ kind }}" {% if entry.path_type == kind %}selected{% endif %}>{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>
 {% endif %}
@@ -20,10 +20,11 @@
 {% endif %}
 {% if entry %}
 <fieldset><legend>{{ _('Related materials') }}</legend>
-{% for item in candidates %}<label class="campaign-check"><input type="checkbox" name="links" value="{{ item.id }}" {% if item.id in selected_links %}checked{% endif %}>{{ item.title or _('Untitled private original') }}</label>{% endfor %}
+{% if automatic_links %}<p>{{ _('Locations and linked maps are included automatically.') }}</p>{% endif %}
+{% for item in candidates %}<label class="campaign-check"><input type="checkbox" name="links" value="{{ item.id }}" {% if item.id in selected_links or item.id in automatic_links %}checked{% endif %} {% if item.id in automatic_links %}disabled{% endif %}><a href="{{ url_for('campaigns.edit_entry', entry_id=item.id) }}">{{ item.title or _('Untitled private original') }}</a> · {{ _(content_categories.get(item.category, item.category)) }}</label>{% endfor %}
 </fieldset>
 {% endif %}
-{% if party %}<details @toggle="preview($event)"><summary>{{ _('Preview') }}</summary><h2 x-text="title"></h2><p class="content-text" x-text="body"></p></details>{% endif %}
+{% if party %}<details @toggle="preview($event)"><summary>{{ _('Preview') }}</summary><h2 x-text="title"></h2><div class="rich-content" x-html="$richHTML(body)"></div></details>{% endif %}
 <button type="submit">{{ _('Create and show') if party else _('Save private original') }}</button>
 </form>
 {% if entry %}

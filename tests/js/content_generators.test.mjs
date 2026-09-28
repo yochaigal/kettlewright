@@ -38,3 +38,39 @@ test('all existing Tools categories still produce structured content',()=>{
     assert(!resultText(result).includes('undefined'),`${category} ${type}`);
   }
 });
+
+test('region drafts generate real dungeon and forest maps without rerolling the region',()=>{
+  const tables=structuredClone(data);
+  tables.Realm.PointsOfInterest.POI=['Dungeon','Forest'];
+  const kinds=new Set();
+  for (let seed=1;seed<=12;seed++) {
+    const result=generateResult(tables,'Worldbuilding','Realm',rng(seed));
+    const before=JSON.stringify(result);
+    const graph=graphFromResult(result,rng(seed),tables);
+    assert.equal(JSON.stringify(result),before);
+    assert.deepEqual(graph,graphFromResult(result,rng(seed),tables));
+    for (const node of graph.nodes) {
+      const nested=node.nested_draft;
+      kinds.add(nested.kind);
+      assert.equal(nested.kind,node.poi_kind);
+      assert.equal(nested.title,node.title);
+      assert(nested.nodes.length>0);
+      assert(nested.edges.length>=nested.nodes.length);
+      assert(nested.nodes.every(child=>!child.nested_draft));
+    }
+  }
+  assert.deepEqual(kinds,new Set(['dungeon','forest']));
+});
+
+test('dungeon and region paths roll all three types reproducibly',()=>{
+  for (const type of ['Dungeon','Realm']) {
+    const kinds=new Set();
+    for (let seed=1;seed<=20;seed++) {
+      const result=generateResult(data,'Worldbuilding',type,rng(seed));
+      const graph=graphFromResult(result,rng(seed));
+      assert.deepEqual(graph,graphFromResult(result,rng(seed)));
+      for (const edge of graph.edges) kinds.add(edge.path_type);
+    }
+    assert.deepEqual([...kinds].sort(),['conditional','hidden','standard']);
+  }
+});

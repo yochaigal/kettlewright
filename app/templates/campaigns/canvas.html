@@ -1,15 +1,15 @@
+{% from 'campaigns/forms.html' import rich_editor with context %}
 <div class="campaign-actions">
-<button type="button" @click="zoom(1.2)" aria-label="{{ _('Zoom in') }}">+</button>
-<button type="button" @click="zoom(1/1.2)" aria-label="{{ _('Zoom out') }}">−</button>
-<button type="button" @click="fit()">{{ _('Fit map') }}</button>
+<button type="button" @click="fit()" :disabled="!canvasReady">{{ _('Fit map') }}</button>
+<button type="button" @click="loadCanvas()" x-show="!canvasReady">{{ _('Reload map editor') }}</button>
 </div>
-<svg class="pointcrawl-canvas" x-ref="canvas" viewBox="0 0 1000 600" role="img" aria-label="{{ _('Pointcrawl map. Locations and paths are listed below.') }}"
- @pointerdown="pointerDown($event)" @pointermove="pointerMove($event)" @pointerup="drag=null" @pointercancel="drag=null"
- @keydown.enter.prevent="selectFromEvent($event)" @keydown.space.prevent="selectFromEvent($event)"
- @wheel.prevent="zoom($event.deltaY < 0 ? 1.1 : 1/1.1)">
-<g :transform="transform"><g data-map-drawing x-ignore></g></g>
-</svg>
-<p>{{ _('Solid: standard · Dashed: hidden · Dash-dot: conditional') }}</p>
+<iframe class="pointcrawl-canvas" x-ref="canvas"
+ data-src="{{ url_for('static', filename='src/js/maps/editor.html') }}"
+ title="{{ _('Pointcrawl map editor') }}"></iframe>
+{% if editing %}<p>{{ _('Drag circles to move locations. Edit their names and remove locations or paths using the lists below.') }}</p>
+{% else %}<p>{{ _('Pan and zoom to explore the map. Select a location from the list below to read its details.') }}</p>{% endif %}
+<p>{{ _('Solid: standard · Dashed: hidden · Dotted: conditional') }}</p>
+{% if editing %}<p>{{ _('Drawing, text and images remain private until you publish the saved drawing. Use PNG, JPEG, WebP or GIF images; drawings may be up to 12 MB.') }}</p>{% endif %}
 <div class="map-editor-grid">
 <section><h2>{{ _('Locations') }}</h2>
 <ol><template x-for="item in graph.nodes" :key="item.id"><li><button type="button" @click="selected=String(item.id)" x-text="item.number+'. '+item.title"></button></li></template></ol>
@@ -24,17 +24,32 @@
 <label>X<input type="number" x-model.number="selectedNode.x"></label>
 <label>Y<input type="number" x-model.number="selectedNode.y"></label>
 <template x-if="isNew(selectedNode) && !selectedNode.entry_id"><div>
-<label>{{ _('Title') }}<input maxlength="200" x-model="selectedNode.title"></label>
-<label>{{ _('Description') }}<textarea maxlength="50000" x-model="selectedNode.body"></textarea></label>
+<label>{{ _('Title') }}<input type="text" maxlength="200" x-model="selectedNode.title"></label>
+{{ rich_editor(_('Description'), name=None, model='selectedNode.body') }}
 </div></template>
-<label>{{ _('Linked map') }}<select x-model="selectedNode.nested_map_id"><option value="">{{ _('None') }}</option>{% for item in nested_maps %}<option value="{{ item.id }}">{{ item.entry.title }}</option>{% endfor %}</select></label>
+<template x-if="!selectedNode.nested_draft"><div>
+<label>{{ _('Linked map') }}<select x-model="selectedNode.nested_map_id"><option value="">{{ _('None') }}</option><template x-if='selectedNode.nested_map_id && !{{ nested_maps|map(attribute="id")|list|tojson }}.includes(Number(selectedNode.nested_map_id))'><option :value="selectedNode.nested_map_id" x-text="selectedNode.title"></option></template>{% for item in nested_maps %}<option value="{{ item.id }}">{{ item.entry.title }}</option>{% endfor %}</select></label>
+<template x-if="selectedNode.nested_map_id"><a :href="'/maps/'+selectedNode.nested_map_id+'/edit'">{{ _('Open linked map') }}</a></template>
+<template x-if="!selectedNode.nested_map_id"><div class="campaign-actions">
+<label>{{ _('Generate linked map') }}<select x-model="nestedKind"><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option></select></label>
+<button type="button" @click="generateNested()" :disabled="generating">{{ _('Generate linked map') }}</button>
+</div></template>
+</div></template>
+<template x-if="selectedNode.nested_draft"><div>
+<p>{{ _('A generated linked map will be created privately when you save.') }} <span x-text="selectedNode.nested_draft.kind"></span></p>
+<details><summary>{{ _('Preview linked map') }}</summary>
+<div class="rich-content" x-html="$richHTML(selectedNode.nested_draft.body)"></div>
+<ol><template x-for="node in selectedNode.nested_draft.nodes" :key="node.id"><li x-text="node.body"></li></template></ol>
+</details>
+<button type="button" @click="delete selectedNode.nested_draft">{{ _('Discard linked map draft') }}</button>
+</div></template>
 <template x-if="selectedNode.entry_id"><div class="campaign-actions">
 <a :href="'/materials/'+selectedNode.entry_id+'/edit'">{{ _('Edit private description') }}</a>
 <a :href="'/materials/'+selectedNode.entry_id+'/reveal'">{{ _('Reveal to party') }}</a>
 </div></template>
 <button type="button" @click="removeNode()">{{ _('Remove from map') }}</button>
 {% else %}
-<p class="content-text" x-text="selectedNode.body"></p>
+<div class="rich-content" x-html="$richHTML(selectedNode.body)"></div>
 <a :href="'/party/{{ party.id }}/materials/'+selectedNode.entry_id">{{ _('Open location') }}</a>
 <template x-if="selectedNode.nested_map_id"><a :href="'/party/{{ party.id }}/maps/'+selectedNode.nested_map_id+'/'">{{ _('Open linked map') }}</a></template>
 {% endif %}
@@ -50,13 +65,13 @@
 <summary><span x-text="edge.title"></span> <span x-text="'('+node(edge.source)?.number+' – '+node(edge.target)?.number+')'"></span></summary>
 {% if editing %}
 <template x-if="isNew(edge)"><div>
-<label>{{ _('Title') }}<input maxlength="200" x-model="edge.title"></label>
-<label>{{ _('Description and conditions') }}<textarea maxlength="50000" x-model="edge.body"></textarea></label>
+<label>{{ _('Title') }}<input type="text" maxlength="200" x-model="edge.title"></label>
+{{ rich_editor(_('Description and conditions'), name=None, model='edge.body') }}
 <label>{{ _('Path type') }}<select x-model="edge.path_type">{% for kind in path_types %}<option value="{{ kind }}">{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>
 </div></template>
 <template x-if="edge.entry_id"><div class="campaign-actions"><a :href="'/materials/'+edge.entry_id+'/edit'">{{ _('Edit private description') }}</a><a :href="'/materials/'+edge.entry_id+'/reveal'">{{ _('Reveal to party') }}</a></div></template>
 <button type="button" @click="removeEdge(edge.id)">{{ _('Remove path') }}</button>
-{% else %}<p class="content-text" x-text="edge.body"></p>{% endif %}
+{% else %}<div class="rich-content" x-html="$richHTML(edge.body)"></div>{% endif %}
 </details></template>
 </section>
 </div>

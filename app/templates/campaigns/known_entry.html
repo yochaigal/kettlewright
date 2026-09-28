@@ -4,7 +4,7 @@
 <script type="module" src="{{ url_for('static', filename='src/js/campaign_live.js') }}"></script>
 <div id="party-content-results">
 <a href="{{ url_for('campaigns.party_materials', party_id=party.id) }}">{{ party.name }} · {{ _('Materials') }}</a>
-<h1>{{ entry.title }}</h1><div class="content-text">{{ render_content(entry.body) }}</div>
+<h1>{{ entry.title }}</h1><div class="rich-content">{{ render_content(entry.body) }}</div>
 {% if entry.map_id %}<a href="{{ url_for('campaigns.party_map', party_id=party.id, map_id=entry.map_id) }}">{{ _('Open map') }}</a>{% endif %}
 <ul>{% for link in entry.links %}<li><a href="{{ url_for('campaigns.party_entry', party_id=party.id, entry_id=link.id) }}">{{ link.title }}</a></li>{% endfor %}</ul>
 </div>

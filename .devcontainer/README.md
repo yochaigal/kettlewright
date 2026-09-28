@@ -35,12 +35,7 @@ If a build fails with `ReadTimeoutError` while downloading from
 uses a 120-second socket timeout and up to 10 connection attempts to tolerate
 slow connections; a persistent network outage still requires restoring access.
 
-If `requirements.txt` changes (for example, to add Pillow for portrait uploads),
-run `docker compose -f .devcontainer/docker-compose.yml up -d --build app`.
-A restart applies migrations but does not install new dependencies. Packages
-installed manually with `pip` inside a running container are lost when that
-container is recreated from the old image. Uploaded portraits persist in
-`instance/portraits` on the host, alongside the SQLite database.
+If `requirements.txt` changes (for example, to add Pillow for portrait uploads), run `docker compose -f .devcontainer/docker-compose.yml up -d --build app`. A restart applies migrations but does not install new dependencies. Packages installed manually with `pip` inside a running container are lost when that container is recreated from the old image. Uploaded portraits persist in `instance/portraits` on the host, alongside the SQLite database. Material-description images persist in the neighboring `instance/material-images` folder.
 
 ```bash
 # Stop containers (the SQLite database stays in instance/)

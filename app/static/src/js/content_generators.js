@@ -44,19 +44,22 @@ export function resultText(result) {
   return lines(result.fields);
 }
 
-export function graphFromResult(result, random = Math.random) {
+export function graphFromResult(result, random = Math.random, tables = null) {
   if (!result.mapKind || !Array.isArray(result.fields.POIs)) throw new Error('This result has no locations.');
   const pois = result.fields.POIs;
   const columns = Math.ceil(Math.sqrt(pois.length));
   const nodes = pois.map((body, i) => ({id:`new-node-${i}`, number:i+1,
     title:body.split(':')[0], body,
+    poi_kind:result.poiKinds?.[i] || null,
     x:100+(i%columns)*210+Math.round(random()*60),
     y:100+Math.floor(i/columns)*180+Math.round(random()*60), nested_map_id:null}));
   const edges = [], connected = new Set(nodes.length ? [0] : []), pairs = new Set();
   const distance = (a,b) => (nodes[a].x-nodes[b].x)**2+(nodes[a].y-nodes[b].y)**2;
   function add(a,b) {
     const trail = result.fields.trails?.[edges.length % result.fields.trails.length] || '';
-    const type = trail.split(',')[0].trim().toLowerCase();
+    // Fallback weights are generator choices, not a rules-table probability.
+    const type = trail ? trail.split(',')[0].trim().toLowerCase()
+      : ['standard','standard','standard','standard','hidden','conditional'][Math.floor(random()*6)];
     edges.push({id:`new-edge-${edges.length}`, source:nodes[a].id, target:nodes[b].id,
       title:`${a+1} – ${b+1}`, body:trail,
       path_type:['hidden','conditional'].includes(type) ? type : 'standard'});
@@ -77,5 +80,21 @@ export function graphFromResult(result, random = Math.random) {
   }
   candidates.sort((a,b)=>a.distance-b.distance);
   candidates.slice(0, Math.max(1, Math.floor(nodes.length/6))).forEach(({a,b})=>add(a,b));
+  if (tables && result.mapKind === 'realm') for (const node of nodes) {
+    const kind = node.poi_kind || suggestedMapKind(node);
+    if (['dungeon','forest'].includes(kind)) node.nested_draft = nestedMapDraft(node, kind, tables, random);
+  }
   return {title:result.title, body:resultText(result), kind:result.mapKind, nodes, edges};
+}
+
+// Older Tools results have no POI metadata; generated names include their type.
+export function suggestedMapKind(node) {
+  return node.poi_kind || (/\bforest\b/i.test(node.title) ? 'forest'
+    : /\bdungeon\b/i.test(node.title) ? 'dungeon' : null);
+}
+
+export function nestedMapDraft(node, kind, tables, random = Math.random) {
+  if (!['dungeon','forest'].includes(kind)) throw new Error('Unsupported nested map type.');
+  const result = generateResult(tables, 'Worldbuilding', kind === 'dungeon' ? 'Dungeon' : 'Forest', random);
+  return {...graphFromResult(result, random), title:node.title};
 }

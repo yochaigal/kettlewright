@@ -62,6 +62,7 @@ class PartyPresentation(Versioned, db.Model):
     body = db.Column(db.Text, nullable=False, default='')
     path_type = db.Column(db.String(20), nullable=False, default='standard')
     published = db.Column(db.Boolean, nullable=False, default=True)
+    drawing = db.Column(db.JSON, nullable=True)
     party = db.relationship('Party', backref=db.backref('content_presentations', cascade='all, delete-orphan'))
     __table_args__ = (db.UniqueConstraint('entry_id', 'party_id', name='uq_presentation_entry_party'),)
 
@@ -71,6 +72,7 @@ class PointcrawlMap(Versioned, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     entry_id = db.Column(db.Integer, db.ForeignKey('content_entries.id', ondelete='CASCADE'), nullable=False, unique=True)
     kind = db.Column(db.String(20), nullable=False, default='dungeon')
+    drawing = db.Column(db.JSON, nullable=True)
     entry = db.relationship('ContentEntry', backref=db.backref('pointcrawl', uselist=False, cascade='all, delete-orphan'))
     nodes = db.relationship('MapNode', foreign_keys='MapNode.map_id', cascade='all, delete-orphan', backref='map')
     edges = db.relationship('MapEdge', cascade='all, delete-orphan', backref='map')

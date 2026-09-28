@@ -1,5 +1,6 @@
 """Campaign workspaces, party knowledge, and pointcrawl editing."""
-from flask import Blueprint, abort, jsonify, redirect, render_template, request, url_for
+from copy import deepcopy
+from flask import Blueprint, abort, jsonify, redirect, render_template, request, url_for, send_from_directory
 from flask_babel import _
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
@@ -9,8 +10,10 @@ from sqlalchemy.orm.exc import StaleDataError
 from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
                         Party, PartyPresentation, PointcrawlMap)
 from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, check_version,
-    entry_audiences, integer, known_entries, map_projection, notify_parties, owned,
-    party_access, publishable_party, render_content, save_geometry, text_value)
+    entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
+    party_access, publishable_party, render_content, save_geometry, text_value, content_value)
+from app.lib.rich_content import content_excerpt
+from app.lib.material_images import LOCAL_IMAGE, image_directory, cleanup_images, image_references
 
 campaigns = Blueprint('campaigns', __name__)
 
@@ -20,12 +23,19 @@ campaigns = Blueprint('campaigns', __name__)
 def authorize():
     # Validate the whole operation before flushing partial edits or advancing versions.
     db.session.autoflush = False
+    if request.endpoint in ('campaigns.new_map', 'campaigns.map_data', 'campaigns.new_entry', 'campaigns.edit_entry', 'campaigns.reveal'):
+        request.max_content_length = 32 * 1024 * 1024
+        request.max_form_memory_size = 32 * 1024 * 1024
     if request.method == 'POST' and not FlaskForm().validate_on_submit():
         abort(400, 'Invalid CSRF token.')
 
 
 @campaigns.after_request
 def private_response(response):
+    if request.method == 'POST':
+        if response.status_code >= 400:
+            db.session.rollback()
+        cleanup_images()
     response.headers['Cache-Control'] = 'private, no-store'
     return response
 
@@ -40,7 +50,7 @@ def conflict(error):
 @campaigns.context_processor
 def common_context():
     return {'content_categories': CATEGORIES, 'path_types': PATH_TYPES,
-            'content_form': FlaskForm(), 'render_content': render_content}
+            'content_form': FlaskForm(), 'render_content': render_content, 'content_excerpt': content_excerpt}
 
 
 def my_parties():
@@ -106,9 +116,16 @@ def workspace(campaign_id):
 def delete_campaign(campaign_id):
     campaign = owned(Campaign, campaign_id)
     check_version(campaign, request.form.get('version'))
-    # Retain materials and party knowledge as standalone content.
+    # Delete owned contents through the ORM so maps, geometry, links and party
+    # presentations are removed together. Related materials outside this campaign
+    # and the connected parties themselves remain independent.
+    audiences = {link.party_id for link in campaign.parties}
+    for entry in list(campaign.entries):
+        audiences.update(presentation.party_id for presentation in entry.presentations)
+        db.session.delete(entry)
     db.session.delete(campaign)
     db.session.commit()
+    notify_parties(audiences)
     return redirect(url_for('campaigns.index'))
 
 
@@ -152,7 +169,7 @@ def new_entry():
         if category not in CATEGORIES or category == 'map':
             abort(400)
         title = text_value(request.form.get('title'), 200, True)
-        body = text_value(request.form.get('body', ''))
+        body = content_value(request.form.get('body', ''))
         entry = ContentEntry(owner_id=current_user.id, campaign=campaign, category=category,
                              title='' if party else title, body='' if party else body)
         db.session.add(entry)
@@ -175,7 +192,7 @@ def edit_entry(entry_id):
     if request.method == 'POST':
         check_version(entry, request.form.get('version'))
         entry.title = text_value(request.form.get('title', ''), 200)
-        entry.body = text_value(request.form.get('body', ''))
+        entry.body = content_value(request.form.get('body', ''))
         if entry.category not in ('map', 'path'):
             category = request.form.get('category')
             if category not in CATEGORIES or category == 'map':
@@ -210,7 +227,7 @@ def edit_entry(entry_id):
                     for presentation in item.presentations:
                         if presentation.party_id not in {link.party_id for link in campaign.parties}:
                             campaign.parties.append(CampaignParty(party_id=presentation.party_id))
-        targets = {integer(value) for value in request.form.getlist('links')}
+        targets = {integer(value) for value in request.form.getlist('links')} - map_related_ids(entry)
         if entry.id in targets:
             abort(400)
         for target_id in targets:
@@ -227,9 +244,12 @@ def edit_entry(entry_id):
         return entry_redirect(entry)
     candidates = ContentEntry.query.filter(ContentEntry.owner_id == current_user.id,
         ContentEntry.id != entry.id, ContentEntry.category != 'path').order_by(ContentEntry.id).all()
+    automatic_links = map_related_ids(entry)
+    selected_links = {link.target_id for link in entry.links}
+    candidates.sort(key=lambda item: (item.id not in automatic_links | selected_links, item.id))
     return render_template('campaigns/entry.html', entry=entry, campaign=entry.campaign, party=None,
                            campaigns=my_campaigns(), candidates=candidates,
-                           selected_links={link.target_id for link in entry.links})
+                           selected_links=selected_links, automatic_links=automatic_links)
 
 
 @campaigns.route('/materials/<int:entry_id>/delete', methods=['POST'])
@@ -258,6 +278,9 @@ def reveal(entry_id):
     entry = owned(ContentEntry, entry_id)
     presentations = {p.party_id: p for p in entry.presentations}
     if request.method == 'POST':
+        publish_drawing = entry.pointcrawl and request.form.get('publish_drawing') == '1'
+        if publish_drawing:
+            check_version(entry.pointcrawl, request.form.get('map_version'))
         selected = {integer(value) for value in request.form.getlist('party_ids')}
         if not selected:
             abort(400, 'Choose at least one party.')
@@ -266,7 +289,7 @@ def reveal(entry_id):
             row = presentations.get(party_id)
             check_version(row, request.form.get(f'version_{party_id}'))
             title = text_value(request.form.get(f'title_{party_id}'), 200, True)
-            body = text_value(request.form.get(f'body_{party_id}', ''))
+            body = content_value(request.form.get(f'body_{party_id}', ''))
             kind = request.form.get(f'path_type_{party_id}', 'standard')
             if kind not in PATH_TYPES:
                 abort(400)
@@ -274,6 +297,8 @@ def reveal(entry_id):
                 row = PartyPresentation(entry=entry, party=party)
                 db.session.add(row)
             row.title, row.body, row.path_type, row.published = title, body, kind, True
+            if publish_drawing:
+                row.drawing = deepcopy(entry.pointcrawl.drawing)
         db.session.commit()
         notify_parties(selected)
         return redirect(url_for('campaigns.reveal', entry_id=entry.id))
@@ -301,7 +326,7 @@ def revoke(entry_id, party_id):
 
 @campaigns.route('/maps/new', methods=['GET', 'POST'])
 def new_map():
-    campaign = campaign_for(request.values.get('campaign_id'))
+    campaign = campaign_for(request.form.get('campaign_id', request.args.get('campaign_id')))
     party_id = request.values.get('party_id')
     party = party_access(integer(party_id), editing=True) if party_id else None
     if party and campaign and not db.session.get(CampaignParty, (campaign.id, party.id)):
@@ -312,7 +337,7 @@ def new_map():
             abort(400)
         entry = ContentEntry(owner_id=current_user.id, campaign=campaign, category='map',
                              title=text_value(request.form.get('title'), 200, True),
-                             body=text_value(request.form.get('body', '')))
+                             body=content_value(request.form.get('body', '')))
         pointcrawl = PointcrawlMap(entry=entry, kind=kind)
         db.session.add(pointcrawl)
         db.session.flush()
@@ -333,7 +358,8 @@ def new_map():
                        *(edge.entry for edge in pointcrawl.edges)}
             for entry in entries:
                 entry.presentations.append(PartyPresentation(party_id=party.id,
-                    title=entry.title, body=entry.body, path_type=entry.path_type))
+                    title=entry.title, body=entry.body, path_type=entry.path_type,
+                    drawing=deepcopy(pointcrawl.drawing) if entry == pointcrawl.entry else None))
         db.session.commit()
         if party:
             notify_parties([party.id])
@@ -402,3 +428,46 @@ def map_tables():
     for name in ('dungeons', 'forests', 'realm'):
         data.update(json.loads((folder / f'{name}.json').read_text()))
     return jsonify(data)
+
+
+@campaigns.get('/material-images/<int:owner_id>/<filename>')
+def material_image(owner_id, filename):
+    url = f'/material-images/{owner_id}/{filename}'
+    if not LOCAL_IMAGE.fullmatch(url):
+        abort(404)
+    originals = ContentEntry.query.filter_by(owner_id=owner_id).filter(ContentEntry.body.contains(url)).all()
+    versions = PartyPresentation.query.join(ContentEntry).filter(
+        ContentEntry.owner_id == owner_id, PartyPresentation.body.contains(url)).all()
+    allowed = current_user.id == owner_id and bool(originals or versions)
+    if not allowed:
+        from app.socket_events import party_recipient_ids
+        for row in versions:
+            if (row.published and current_user.id in party_recipient_ids(row.party)
+                    and url in image_references(known_entries(row.party_id).get(row.entry_id, {}).get('body', ''))):
+                allowed = True
+                break
+    if not allowed:
+        abort(404)
+    response = send_from_directory(image_directory() / str(owner_id), filename, mimetype='image/webp')
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    return response
+
+
+@campaigns.cli.command('migrate-images')
+def migrate_images():
+    """Move existing embedded description images to instance storage."""
+    import click
+    from sqlalchemy.orm.attributes import flag_modified
+    count = 0
+    try:
+        for model in (ContentEntry, PartyPresentation):
+            for row in model.query.filter(model.body.contains('data:image/')).all():
+                flag_modified(row, 'body')
+                count += 1
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        raise
+    finally:
+        cleanup_images()
+    click.echo(f'Migrated {count} descriptions.')
