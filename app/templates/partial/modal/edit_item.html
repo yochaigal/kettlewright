@@ -159,6 +159,10 @@
           <p class="message-body red-text" id="add-edit-item-modal-error-text"></p>
         </div>
         <div class="footer-button-container">
+          {% if mode == 'edit' and not companion_sheet and current_user.is_authenticated and character.owner == current_user.id and character.party_id and item.name != 'Fatigue' and 'carrying' not in item %}
+          <button class="button" type="button" hx-get="{{ url_for('ground.drop', character_id=character.id, kind='item', object_id=item.id) }}"
+            hx-target="#modal-anchor">{{ _('Drop item') }}</button>
+          {% endif %}
           <div>
             <button class="button is-success" type="button" {% if mode=='edit' %}
               hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/item-edit/{{item.id}}/save" {% else %}

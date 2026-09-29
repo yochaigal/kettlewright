@@ -168,6 +168,8 @@ def create_app():
 
     from app.blueprints.discord import discord
     app.register_blueprint(discord)
+    from app.blueprints.ground import ground
+    app.register_blueprint(ground)
 
     from app.blueprints.campaigns import campaigns
     app.register_blueprint(campaigns)

@@ -38,10 +38,12 @@ class Inventory:
             containers = json.loads(character.containers)
         cdict = {}
         for c in containers:
+            if c.get('on_the_ground'):
+                c['name'] = 'on the ground'
             if not "items" in c:
                 c["items"] = []
             cdict[c["id"]] = c
-        items = json.loads(character.items)
+        items = json.loads(character.items or '[]')
         for i in items:
             if not "location" in i or not int(i["location"]) in cdict:
                 continue
@@ -125,6 +127,12 @@ class Inventory:
     def decorate(self):
         for c in self.containers:
             curr_slots = self.container_slots(c)
+            if c.get('on_the_ground'):
+                c['title'] = 'on the ground'
+                c['encumbered'] = False
+                for item in c['items']:
+                    self.decorate_item(item)
+                continue
             c["title"] = c["name"] + " ("+str(curr_slots)+"/"+str(c["slots"])+")"
             if curr_slots >= int(c["slots"]):
                 c["encumbered"] = True
@@ -208,12 +216,13 @@ class Inventory:
                 c["is_selected"] = False
                 
     # delete item
-    def delete_item(self,container_id,item_id):
+    def delete_item(self,container_id,item_id, commit=True):
+        self.require_regular_container(container_id)
         idx = 0
         items = json.loads(self.character.items)        
         deleted = None
         for it in items:
-            if it["id"] == str(item_id) and it["location"] == int(container_id):
+            if str(it["id"]) == str(item_id) and it["location"] == int(container_id):
                 deleted = items.pop(idx)
                 break
             idx += 1
@@ -221,7 +230,8 @@ class Inventory:
         if deleted != None and "carrying" in deleted and "location" in deleted:
             containers = self.remove_carried_by(deleted["location"])
             self.character.containers = json.dumps(containers)
-        db.session.commit()
+        if commit:
+            db.session.commit()
         self.parse(self.character)
         
     # get container
@@ -233,6 +243,11 @@ class Inventory:
                 cnt = c
                 break
         return cnt
+
+    def require_regular_container(self, container_id):
+        container = self.get_container(container_id)
+        if container and container.get('on_the_ground'):
+            abort(400, description='Use Drop item or Pick up for items on the ground.')
     
     def get_containers_wo_items(self):
         conts = self.containers
@@ -332,6 +347,7 @@ class Inventory:
     
     # update container data
     def update_container(self, container_id, name, slots, carried_by, load):
+        self.require_regular_container(container_id)
         cnt = self.get_container(container_id)
         cnt["name"] = name
         cnt["slots"] = int(slots)
@@ -367,6 +383,8 @@ class Inventory:
         
     # move items to other container
     def move_items(self, from_container, to_container):
+        self.require_regular_container(from_container)
+        self.require_regular_container(to_container)
         items = json.loads(self.character.items)
         for it in items:
             if int(it["location"]) == int(from_container):
@@ -377,6 +395,7 @@ class Inventory:
         
     # remove items from container
     def remove_items(self, container_id):
+        self.require_regular_container(container_id)
         items = json.loads(self.character.items)
         result = []
         for it in items:
@@ -388,6 +407,9 @@ class Inventory:
         
     # delete container
     def delete_container(self, container_id, move_to):
+        self.require_regular_container(container_id)
+        if move_to is not None and move_to != '':
+            self.require_regular_container(move_to)
         result = []
         containers = json.loads(self.character.containers)
         for c in containers:
@@ -431,7 +453,7 @@ class Inventory:
     def get_item(self, item_id):
         items = json.loads(self.character.items)
         for it in items:
-            if it["id"] == str(item_id):
+            if str(it["id"]) == str(item_id):
                 return it
         return None
     
@@ -440,6 +462,8 @@ class Inventory:
         cnt = self.get_container(container)
         if cnt == None:
             return None
+        if cnt.get('on_the_ground'):
+            abort(400, description='Drop items from your character and specify a place.')
         from app.lib.inventory_slots import item_size
         size = item_size({'tags': tags.split(',') if tags else []})
         if size and self.container_slots(cnt) + size > int(cnt['slots']):
@@ -457,6 +481,8 @@ class Inventory:
         item = self.get_item(item_id)
         if item == None:
             return
+        self.require_regular_container(item['location'])
+        self.require_regular_container(container)
         self.pin_slots(item['location'])
         if item['location'] != int(container):
             self.pin_slots(container)
@@ -504,6 +530,7 @@ class Inventory:
         item = self.get_item(item_id)
         if item == None:
             return None
+        self.require_regular_container(item['location'])
         if not prop in item:
             print("cannot find",prop,"in item",item["name"])
             return
@@ -530,7 +557,7 @@ class Inventory:
         self.parse(self.character)
         return item
     
-    def transfer_item(self, item_id, recipient, container_id=0):
+    def transfer_item(self, item_id, recipient, container_id=0, commit=True, ground_action=False):
         """Validate both inventories before moving an item in one transaction."""
         item = self.get_item(item_id)
         if item is None:
@@ -541,6 +568,9 @@ class Inventory:
         container = target.get_container(container_id)
         if container is None:
             abort(400, description="Destination container does not exist.")
+        source_container = self.get_container(item['location'])
+        if not ground_action and (container.get('on_the_ground') or (source_container and source_container.get('on_the_ground'))):
+            abort(400, description='Use Drop item or Pick up for items on the ground.')
         tags = item.get("tags") or []
         slots = 0 if "petty" in tags else 2 if "bulky" in tags else 1
         if target.container_slots(container) + slots > int(container['slots']):
@@ -552,7 +582,8 @@ class Inventory:
         item['location'] = int(container_id)
         self.character.items = json.dumps([it for it in source_items if str(it['id']) != str(item_id)])
         recipient.items = json.dumps(target_items + [item])
-        db.session.commit()
+        if commit:
+            db.session.commit()
         self.parse(self.character)
         return item
 

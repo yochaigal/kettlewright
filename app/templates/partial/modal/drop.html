@@ -1,0 +1,29 @@
+<div class="inventory-modal ground-drop-modal">
+  <form class="no-space" hx-post="{{ url_for('ground.drop', character_id=character.id, kind=kind, object_id=object_id) }}"
+    hx-target="#inventory-container">
+    {{ form.hidden_tag() }}
+    <input type="hidden" name="inventory_context" value="{{ request.values.get('inventory_context', 'sheet') }}">
+    <div class="modal-background inventory-modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head"><h3 class="modal-card-title">{{ _('Drop container') if kind == 'container' else _('Drop item') }}: {{ entry.name }}</h3></header>
+      <section class="modal-card-body">
+        {% if kind == 'container' %}<p>{{ _('The container and everything inside it will be left on the ground.') }}</p>{% endif %}
+        <div class="field">
+          <label for="drop-place">{{ _('Where are you leaving it?') }}</label>
+          <input id="drop-place" class="input" type="text" name="place" required maxlength="200" autofocus
+            placeholder="{{ _('For example: beside the old bridge') }}" value="{{ request.form.get('place', '') }}">
+        </div>
+        {% if error %}<p class="red-text" role="alert">{{ error }}</p>{% endif %}
+      </section>
+      <footer class="modal-card-foot">
+        <div class="footer-button-container">
+        <button class="button is-danger" type="submit">{{ _('Drop') }}</button>
+        <button class="button inventory-modal-cancel-button" type="button"
+          hx-get="/charedit/inplace-inventory/{{ current_user.username }}/{{ character.url_name }}/{{ entry.location if kind == 'item' else entry.id }}"
+          hx-vals='{{ {"inventory_context": request.values.get("inventory_context", "sheet")} | tojson }}'
+          hx-target="#inventory-container">{{ _('Cancel') }}</button>
+        </div>
+      </footer>
+    </div>
+  </form>
+</div>
