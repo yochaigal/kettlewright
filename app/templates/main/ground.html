@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="body-container ground-page">
+  <h1>{{ party.name }} — on the ground</h1>
+  <div id="inventory-container">{% include 'partial/partyview/ground.html' %}</div>
+</main>
+{% endblock %}

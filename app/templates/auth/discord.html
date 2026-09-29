@@ -63,9 +63,25 @@
         <tr><td><code>/kw character</code></td><td>{{ _('Shows your selected character’s current stats, HP, armor, conditions and sheet link in the channel.') }}</td></tr>
         <tr><td><code>/kw party</code></td><td>{{ _('Shows the party roster and current stats in the channel. Use /kw party page:2 for another page.') }}</td></tr>
         <tr><td><code>/kw roll dice:d20</code></td><td>{{ _('Rolls for your selected character and posts the result in the channel and Kettlewright party history. Also accepts 2d6 or d6+d8; at most two dice of types d4, d6, d8, d10, d12, d20 or d100.') }}</td></tr>
+        <tr><td><code>/kw roll</code></td><td>{{ _('Opens private dice buttons for your selected character. Tap to roll on mobile; results appear in the channel and KW history.') }}</td></tr>
+        <tr><td><code>/kw stat stat:hp value:-2</code></td><td>{{ _('Changes your current HP, STR, DEX or WIL. Use mode:set to set a value instead. Values must stay between zero and the maximum.') }}</td></tr>
+        <tr><td><code>/kw condition condition:deprived active:true</code></td><td>{{ _('Applies or clears Deprived or Panicked on your character. Use active:false to clear a condition.') }}</td></tr>
+        <tr><td><code>/kw fatigue amount:1</code></td><td>{{ _('Adds Fatigue to your main inventory if it fits. Use /kw remove to clear Fatigue.') }}</td></tr>
+        <tr><td><code>/kw inventory</code></td><td>{{ _('Privately lists your items, containers and remaining uses or charges. Use page:2 for more.') }}</td></tr>
+        <tr><td><code>/kw add name:Torch</code></td><td>{{ _('Adds a catalog or custom item to your inventory. Supports container, tags, uses, charges and description. Does not spend gold.') }}</td></tr>
+        <tr><td><code>/kw use item:Torch</code></td><td>{{ _('Spends one use. Supports amount and resource:charges. Add remove-empty:true to remove an exhausted item.') }}</td></tr>
+        <tr><td><code>/kw remove item:…</code></td><td>{{ _('Permanently removes one of your items. Choose it from autocomplete.') }}</td></tr>
+        <tr><td><code>/kw drop item:… place:…</code></td><td>{{ _('Leaves an item in the party’s on the ground container. You must describe where you left it.') }}</td></tr>
+        <tr><td><code>/kw drop-container container:… place:…</code></td><td>{{ _('Leaves a container and its contents on the ground. The main inventory cannot be dropped.') }}</td></tr>
+        <tr><td><code>/kw ground</code></td><td>{{ _('Lists the party’s dropped items and containers with their locations.') }}</td></tr>
+        <tr><td><code>/kw pickup item:…</code></td><td>{{ _('Picks up an item or restores a container with its contents to your selected character. Checks space before picking up.') }}</td></tr>
+        <tr><td><code>/kw move item:… container:…</code></td><td>{{ _('Moves an item between your personal containers.') }}</td></tr>
+        <tr><td><code>/kw transfer item:… character:…</code></td><td>{{ _('Gives one of your items to another character in this party if their main inventory has room.') }}</td></tr>
+        <tr><td><code>/kw note text:…</code></td><td>{{ _('Appends to your character notes without replacing existing text. The note is not posted to Discord.') }}</td></tr>
       </tbody>
     </table>
     <p>{{ _('Character cards, party summaries and rolls are visible to everyone who can read the channel. Account connection, binding, selection and error messages are private to you.') }}</p>
+    <p>{{ _('Sheet actions only affect your own selected character. Their confirmations, inventory lists and dice panels are private. Changes are saved in KW; reload an open character sheet to see them.') }}</p>
   </section>
 </main>
 {% endblock %}

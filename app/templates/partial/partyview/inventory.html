@@ -1,12 +1,4 @@
-<div class="inventory-header flex-row">
-  {% for cnt in inventory.containers %}
-  <div
-    class="inventory-container-title subtitle pointer {% if cnt.is_selected %} inventory-container-title-selected {% endif %} {% if cnt.encumbered %} red-text {% endif %}"
-    hx-get=" /party/inventory-select-container/{{party.id}}/{{cnt.id}}" hx-target="#inventory-container">
-    {{cnt.title}}
-  </div>
-  {% endfor %}
-</div>
+{% include 'partial/partyview/inventory_tabs.html' %}
 <div style="margin-top: 0px; width: 100%">
   {% for it in inventory.selected_container['items'] %}
   <div class="inventory-item-container {% if it.blocker %} item-blocker-text {% endif %}">

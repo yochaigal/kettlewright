@@ -27,7 +27,8 @@ def game(app_with_babel):
         db.session.add_all([Character(id=i, owner=1 if i < 3 else 2, name=name, background='Test',
                             url_name=name.lower(), party_id=1 if i < 4 else 2, hp=5, hp_max=6,
                             strength=12, strength_max=14, dexterity=9, dexterity_max=9,
-                            willpower=8, willpower_max=8, items='[]')
+                            willpower=8, willpower_max=8, items='[]',
+                            containers='[{"id": 0, "name": "Main", "slots": 10}]')
                             for i, name in enumerate(['Bran', 'Ada', 'Other', 'Far away'], 1)])
         db.session.add(DiscordChannel(guild_id='10', channel_id='20', party_id=1, linked_by=3))
         db.session.commit()
@@ -37,12 +38,12 @@ def game(app_with_babel):
 ids = itertools.count(1000)
 
 
-def command(game, name, user=101, channel='20', guild='10', kind=2, permissions='0', interaction_id=None, **options):
+def command(game, subcommand, user=101, channel='20', guild='10', kind=2, permissions='0', interaction_id=None, focused=None, **options):
     app, key = game
     payload = dict(id=str(interaction_id or next(ids)), application_id='900', type=kind, guild_id=guild,
                    channel_id=channel, member=dict(user=dict(id=str(user)), permissions=permissions),
-                   data=dict(name='kw', options=[dict(name=name, type=1, options=[
-                       dict(name=k, value=v, type=3) for k, v in options.items()])]))
+                   data=dict(name='kw', options=[dict(name=subcommand, type=1, options=[
+                       dict(name=k, value=v, type=3, focused=k == focused) for k, v in options.items()])]))
     return signed(app, key, payload)
 
 
@@ -323,3 +324,263 @@ def test_rate_limit_does_not_roll_or_break_autocomplete(game, monkeypatch):
     monkeypatch.setattr(limiter, 'allow', Mock(side_effect=ConnectionError))
     assert 'temporarily unavailable' in content(command(game, 'roll', dice='d20'))
     assert command(game, 'select', kind=4, character='').json == {'type': 8, 'data': {'choices': []}}
+
+
+def button(game, custom_id, user=101, interaction_id=None, channel='20'):
+    app, key = game
+    return signed(app, key, dict(id=str(interaction_id or next(ids)), application_id='900', type=3,
+        guild_id='10', channel_id=channel, member=dict(user=dict(id=str(user))),
+        data=dict(component_type=2, custom_id=custom_id)))
+
+
+def stored_character(game, character_id=1):
+    with game[0].app_context():
+        c = db.session.get(Character, character_id)
+        return dict(hp=c.hp, strength=c.strength, dexterity=c.dexterity, willpower=c.willpower,
+                    deprived=c.deprived, panicked=c.panicked, notes=c.notes,
+                    items=json.loads(c.items), containers=json.loads(c.containers))
+
+
+def test_mobile_dice_panel_uses_same_roll_history_and_deduplicates(game):
+    command(game, 'select', character='1')
+    panel = command(game, 'roll').json['data']
+    assert panel['flags'] == 64
+    buttons = [b for row in panel['components'] for b in row['components']]
+    assert [b['label'] for b in buttons] == ['d4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100', '2d6']
+    first = button(game, buttons[5]['custom_id'], interaction_id='987654')
+    assert 'Bran' in content(first) and '(d20)' in content(first)
+    assert 'flags' not in first.json['data']
+    assert button(game, buttons[5]['custom_id'], interaction_id='987654').json == first.json
+    with game[0].app_context():
+        assert PartyRoll.query.count() == 1
+
+
+def test_dice_buttons_cannot_roll_another_or_stale_selection(game):
+    command(game, 'select', character='1')
+    command(game, 'select', user=102, character='3')
+    assert 'another selection' in content(button(game, 'kw:roll:1:1:d20', user=102))
+    command(game, 'select', character='2')
+    assert 'another selection' in content(button(game, 'kw:roll:1:1:d20'))
+    assert 'Unknown button' in content(button(game, 'kw:roll:1:2:d7'))
+    with game[0].app_context():
+        db.session.get(Character, 2).owner = 2
+        db.session.commit()
+    assert '/kw select' in content(button(game, 'kw:roll:1:2:d20'))
+    with game[0].app_context():
+        assert PartyRoll.query.count() == 0
+
+
+def test_player_stats_conditions_and_private_notes(game):
+    command(game, 'select', character='1')
+    result = command(game, 'stat', stat='hp', value=-2, interaction_id='88001')
+    assert '5 → 3/6' in content(result)
+    assert result.json['data']['flags'] == 64
+    assert command(game, 'stat', stat='hp', value=-2, interaction_id='88001').json == result.json
+    assert stored_character(game)['hp'] == 3
+    assert '12 → 7/14' in content(command(game, 'stat', stat='str', value=7, mode='set'))
+    assert 'No changes' in content(command(game, 'stat', stat='hp', value=-99))
+    assert stored_character(game)['hp'] == 3
+    assert 'Effective HP: 0' in content(command(game, 'condition', condition='panicked', active=True))
+    assert stored_character(game)['hp'] == 3
+    command(game, 'condition', condition='panicked', active=False)
+    command(game, 'condition', condition='deprived', active=True)
+    assert stored_character(game)['deprived'] is True
+    for text in ('first note', '<script>alert(1)</script> @everyone'):
+        response = command(game, 'note', text=text)
+        assert text not in content(response)
+        assert response.json['data']['flags'] == 64
+    notes = stored_character(game)['notes']
+    assert notes.startswith('first note\n') and '<script>' not in notes
+    assert 'exceed 2000' in content(command(game, 'note', text='x' * 2000))
+    assert stored_character(game)['notes'] == notes
+
+
+@pytest.mark.parametrize('name,values', [
+    ('stat', dict(stat='hp', value=True)), ('stat', dict(stat='owner', value=2)),
+    ('stat', dict(stat='hp', value=99, mode='set')),
+    ('condition', dict(condition='dead', active=True)),
+    ('condition', dict(condition='deprived', active='false')),
+    ('fatigue', dict(amount=0)), ('fatigue', dict(amount=1.5)),
+    ('add', dict(name='Invalid', tags='petty,bulky')),
+])
+def test_invalid_player_input_leaves_sheet_unchanged(game, name, values):
+    command(game, 'select', character='1')
+    before = stored_character(game)
+    assert command(game, name, **values).json['data']['flags'] == 64
+    assert stored_character(game) == before
+
+
+def test_fatigue_batch_rollback_and_duplicate_receipt(game):
+    command(game, 'select', character='1')
+    command(game, 'fatigue', amount=9)
+    before = stored_character(game)
+    assert 'Nothing was added' in content(command(game, 'fatigue', amount=2))
+    assert stored_character(game) == before
+    first = command(game, 'fatigue', interaction_id='88002')
+    assert command(game, 'fatigue', interaction_id='88002').json == first.json
+    assert len(stored_character(game)['items']) == 10
+    assert 'HP 0/6' in content(command(game, 'character'))
+    fatigue = stored_character(game)['items'][0]['id']
+    for action in ('drop', 'move', 'transfer'):
+        assert 'Fatigue cannot' in content(command(game, action, item=fatigue, container='0', character='3'))
+    command(game, 'remove', item=fatigue)
+    assert len(stored_character(game)['items']) == 9
+
+
+def test_items_uses_charges_remove_and_catalog(game):
+    command(game, 'select', character='1')
+    assert 'added 1' in content(command(game, 'add', name='Torch', interaction_id='88003'))
+    command(game, 'add', name='Torch', interaction_id='88003')
+    items = stored_character(game)['items']
+    assert len(items) == 1 and items[0]['uses'] > 0 and 'uses' in items[0]['tags']
+    uses = items[0]['uses']
+    assert 'Nothing was changed' in content(command(game, 'use', item='Torch', amount=uses + 1))
+    first = command(game, 'use', item='Torch', interaction_id='88004')
+    command(game, 'use', item='Torch', interaction_id='88004')
+    assert stored_character(game)['items'][0]['uses'] == uses - 1
+    assert stored_character(game)['items'][0]['max_uses'] == uses
+    command(game, 'add', name='Wand', charges=2)
+    command(game, 'use', item='Wand', resource='charges', amount=2, **{'remove-empty': True})
+    assert [i['name'] for i in stored_character(game)['items']] == ['Torch']
+    command(game, 'remove', item='Torch')
+    assert stored_character(game)['items'] == []
+
+
+def test_drop_and_pickup_preserve_item_and_reject_full_destination(game):
+    command(game, 'select', character='1')
+    command(game, 'add', name='Shield')
+    original = stored_character(game)['items'][0]
+    assert '1–200' in content(command(game, 'drop', item=original['id']))
+    assert stored_character(game)['items'][0] == original
+    first = command(game, 'drop', item=original['id'], place='Old bridge', interaction_id='88010')
+    assert 'on the ground' in content(first)
+    assert command(game, 'drop', item=original['id'], place='Old bridge', interaction_id='88010').json == first.json
+    assert stored_character(game)['items'] == []
+    assert 'Old bridge' in content(command(game, 'ground'))
+    command(game, 'fatigue', amount=10)
+    assert 'insufficient free slots' in content(command(game, 'pickup', item=original['id']))
+    command(game, 'select', user=102, character='3')
+    command(game, 'pickup', user=102, item=original['id'])
+    restored = stored_character(game, 3)['items'][0]
+    assert {k: v for k, v in restored.items() if k != 'slot'} == {k: v for k, v in original.items() if k != 'slot'}
+    assert 'No items' in content(command(game, 'ground'))
+
+
+def test_transfer_is_atomic_and_only_to_current_party_member(game):
+    command(game, 'select', character='1')
+    command(game, 'add', name='Torch')
+    original = stored_character(game)['items'][0]
+    assert 'matching entry' in content(command(game, 'transfer', item='Torch', character='4'))
+    with game[0].app_context():
+        db.session.get(Character, 3).containers = '[{"id":0,"name":"Main","slots":0}]'
+        db.session.commit()
+    assert 'insufficient free slots' in content(command(game, 'transfer', item='Torch', character='3'))
+    assert stored_character(game)['items'][0] == original
+    assert stored_character(game, 3)['items'] == []
+    with game[0].app_context():
+        db.session.get(Character, 3).containers = '[{"id":0,"name":"Main","slots":10}]'
+        db.session.commit()
+    first = command(game, 'transfer', item='Torch', character='3', interaction_id='88005')
+    assert 'gave Torch' in content(first)
+    assert command(game, 'transfer', item='Torch', character='3', interaction_id='88005').json == first.json
+    assert stored_character(game)['items'] == []
+    assert stored_character(game, 3)['items'] == [original]
+    assert 'matching entry' in content(command(game, 'remove', item=original['id']))
+
+
+@pytest.mark.parametrize('name,values', [
+    ('stat', dict(stat='hp', value=-1)), ('condition', dict(condition='deprived', active=True)),
+    ('fatigue', {}), ('add', dict(name='Torch')), ('note', dict(text='private')),
+    ('remove', dict(item='x')), ('use', dict(item='x')), ('drop', dict(item='x')),
+    ('transfer', dict(item='x', character='3')), ('move', dict(item='x', container='0')),
+    ('pickup', dict(item='x')), ('ground', {}), ('drop-container', dict(container='1', place='Bridge')),
+])
+def test_every_player_action_rechecks_ownership(game, name, values):
+    command(game, 'select', character='1')
+    with game[0].app_context():
+        db.session.get(Character, 1).owner = 2
+        db.session.commit()
+    before = stored_character(game)
+    assert '/kw select' in content(command(game, name, **values))
+    assert stored_character(game) == before
+
+
+def test_player_mutation_publishes_only_after_outer_commit(game, monkeypatch):
+    app, _ = game
+    command(game, 'select', character='1')
+    emitted = []
+    def capture(event, *args, **kwargs):
+        if event == 'party_members_changed':
+            assert not db.session().in_nested_transaction()
+            emitted.append(event)
+    monkeypatch.setattr(socketio, 'emit', capture)
+    command(game, 'stat', stat='hp', value=-1, interaction_id='88006')
+    assert len(emitted) == 3
+    command(game, 'stat', stat='hp', value=-1, interaction_id='88006')
+    assert len(emitted) == 3
+    emitted.clear()
+    command(game, 'fatigue', amount=9)
+    emitted.clear()
+    command(game, 'fatigue', amount=2)
+    assert emitted == []
+
+
+def test_inventory_autocomplete_is_private_scoped_and_unambiguous(game):
+    command(game, 'select', character='1')
+    command(game, 'add', name='Torch')
+    command(game, 'add', name='Torch')
+    response = command(game, 'use', kind=4, item='torch', focused='item')
+    choices = response.json['data']['choices']
+    assert len(choices) == 2 and choices[0]['value'] != choices[1]['value']
+    assert 'names may not be unique' in content(command(game, 'remove', item='Torch'))
+    assert command(game, 'use', user=102, kind=4, item='', focused='item').json['data']['choices'] == []
+    targets = command(game, 'transfer', kind=4, character='', focused='character').json['data']['choices']
+    assert [t['value'] for t in targets] == ['2', '3']
+    catalog = command(game, 'add', kind=4, name='torch', focused='name').json['data']['choices']
+    assert {'name': 'Torch', 'value': 'Torch'} in catalog
+    command(game, 'drop', item=choices[0]['value'], place='Old bridge')
+    containers = command(game, 'move', kind=4, container='', focused='container').json['data']['choices']
+    assert len(containers) == 1
+    choices = command(game, 'pickup', kind=4, item='', focused='item').json['data']['choices']
+    assert len(choices) == 1 and 'Old bridge' in choices[0]['name']
+    with game[0].app_context():
+        db.session.get(Party, 1).members = '[2, 3]'
+        db.session.commit()
+    assert command(game, 'use', kind=4, item='', focused='item').json['data']['choices'] == []
+    before = stored_character(game)
+    assert '/kw select' in content(command(game, 'fatigue'))
+    assert stored_character(game) == before
+
+
+def test_discord_drop_container_and_pickup_restore_contents(game):
+    command(game, 'select', character='1')
+    with game[0].app_context():
+        c = db.session.get(Character, 1)
+        c.containers = '[{"id":0,"name":"Main","slots":10},{"id":2,"name":"Chest","slots":4}]'
+        c.items = '[{"id":"torch","name":"Torch","location":2,"tags":["uses"],"uses":3}]'
+        db.session.commit()
+    choices = command(game, 'drop-container', kind=4, container='', focused='container').json['data']['choices']
+    assert [c['value'] for c in choices] == ['2']
+    assert 'main inventory' in content(command(game, 'drop-container', container='0', place='Bridge'))
+    first = command(game, 'drop-container', container='2', place='Bridge cellar', interaction_id='88011')
+    assert 'with its contents' in content(first)
+    assert command(game, 'drop-container', container='2', place='Bridge cellar', interaction_id='88011').json == first.json
+    assert len(stored_character(game)['containers']) == 1
+    assert stored_character(game)['items'] == []
+    command(game, 'select', user=102, character='3')
+    assert 'Bridge cellar' in content(command(game, 'ground', user=102))
+    assert 'picked up' in content(command(game, 'pickup', user=102, item='Chest'))
+    assert stored_character(game, 3)['containers'][1]['name'] == 'Chest'
+    assert stored_character(game, 3)['items'][0]['uses'] == 3
+
+
+def test_legacy_item_ids_and_carrying_markers(game):
+    command(game, 'select', character='1')
+    with game[0].app_context():
+        db.session.get(Character, 1).items = json.dumps([
+            dict(id=123, name='Old torch', tags=['uses'], uses=1, location=0),
+            dict(id='carry', name='Carrying bag', tags=[], carrying=1, location=0)])
+        db.session.commit()
+    assert 'carrying markers' in content(command(game, 'remove', item='carry'))
+    command(game, 'use', item='123', **{'remove-empty': True})
+    assert [i['id'] for i in stored_character(game)['items']] == ['carry']

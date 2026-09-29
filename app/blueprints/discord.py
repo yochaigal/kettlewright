@@ -137,7 +137,7 @@ def interactions():
         abort(400)
     if payload.get('type') == 1:
         return jsonify(type=1)
-    if payload.get('type') not in (2, 4):
+    if payload.get('type') not in (2, 3, 4):
         return jsonify(reply('Unsupported interaction.'))
     member = payload.get('member')
     if not isinstance(member, dict) or not isinstance(member.get('user'), dict):
