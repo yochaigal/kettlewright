@@ -70,6 +70,8 @@ def get_locale():
     
 def create_app():
     app = Flask(__name__)
+    from app.lib.feature_access import init_feature_access
+    init_feature_access(app)
 
     # Ensure the consolidation is performed only once, in the main process
     if not app.config.get('JSON_CONSOLIDATED'):

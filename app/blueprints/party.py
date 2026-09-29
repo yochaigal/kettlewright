@@ -4,6 +4,7 @@ from app.lib import *
 from app.models import db, User, Character, Party, PartyRoll, PartyMap
 from app.socket_events import party_recipient_ids, notify_roll_history_changed
 from app.lib.quick_stats import save_current_stat
+from app.lib.feature_access import require_party_features
 from app.lib.companions import save_item_to_companion, finish_companion_transfers, can_transfer_from
 from flask_wtf import FlaskForm
 from app.forms import *
@@ -16,6 +17,7 @@ party = Blueprint('party', __name__)
 @party.route('/party/<int:party_id>/shared-map')
 @login_required
 def shared_map(party_id):
+    require_party_features(party_id)
     from flask_wtf.csrf import generate_csrf
     target = db.get_or_404(Party, party_id)
     if current_user.id not in party_recipient_ids(target):
@@ -29,6 +31,7 @@ def shared_map(party_id):
 @party.route('/party/<int:party_id>/shared-map/scene', methods=['GET', 'POST'])
 @login_required
 def shared_map_scene(party_id):
+    require_party_features(party_id)
     from sqlalchemy.exc import IntegrityError
     from app.lib.map_drawing import EMPTY_DRAWING, MAX_DRAWING_BYTES, validate_drawing
     target = db.get_or_404(Party, party_id)

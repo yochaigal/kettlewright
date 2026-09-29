@@ -88,6 +88,7 @@ def test_drawing_image_roundtrip_and_content_validation(setup):
 @pytest.fixture
 def setup(app_with_babel, tmp_path):
     app = app_with_babel
+    app.config.update(FEATURE_TEST_USER_IDS={1, 2, 3, 4}, FEATURE_TEST_PARTY_IDS={1, 2, 3})
     app.config['MATERIAL_IMAGE_UPLOAD_FOLDER'] = str(tmp_path / 'material-images')
     with app.app_context():
         db.session.add_all([User(id=i, username=f'user{i}') for i in range(1, 5)])

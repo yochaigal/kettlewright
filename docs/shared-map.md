@@ -1,5 +1,7 @@
 # Shared Map
 
+`FEATURE_TEST_USER_IDS` and `FEATURE_TEST_PARTY_IDS` are reusable tester allowlists for current and future experimental features. Shared maps currently use the party list: while this feature is in testing, it is available only for party IDs in `FEATURE_TEST_PARTY_IDS` (comma- or whitespace-separated). An empty/unset value disables access, including direct scene reads and writes. Existing owner/member permissions remain required; `FEATURE_TEST_USER_IDS` alone does not enable a party's map. Once shared maps are released to everyone, their allowlist check should be removed while the variables remain for testing other features. Restart application workers after changes. See [rollout configuration](campaigns.md#deployment-and-maintenance).
+
 The top-right Shared Map link on a party page opens that party's independent
 Excalidraw canvas, initially empty with the grid enabled. The Warden edits;
 current party members can pan and zoom in view mode. Every change is public to

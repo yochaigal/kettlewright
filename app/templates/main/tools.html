@@ -1,10 +1,10 @@
 {% extends "base.html" %} {% block content %}
 <script>const data = JSON.parse({{ events_data | tojson }});</script>
 <script id="tools-content-labels" type="application/json">{{ {
-'authenticated': current_user.is_authenticated, 'save': _('Save or reveal'), 'map': _('Create map'),
+'authenticated': user_features_enabled(), 'save': _('Save or reveal'), 'map': _('Create map'),
 'copy': _('Copy text'), 'copied': _('Results copied to clipboard')}|tojson }}</script>
 
-<script src="{{ url_for('static', filename='src/js/tools.js') }}" type="module"></script>
+<script src="{{ url_for('static', filename='src/js/tools.js' if user_features_enabled() else 'src/js/tools_legacy.js') }}" type="module"></script>
 <div class="body-container tools-page">
   <div class="sheet party-tools-sheet">
     <h2>{{_('Tools')}}</h2>

@@ -63,6 +63,19 @@ Each result can be saved privately or immediately shown to a party. Results are 
 
 ## Deployment and maintenance
 
+`FEATURE_TEST_USER_IDS` and `FEATURE_TEST_PARTY_IDS` are reusable tester allowlists for current and future experimental features, not settings specific to campaigns or maps. The first identifies users eligible for individual-user testing; the second identifies parties eligible for party-level testing under existing owner/member permissions. New features should use these same audiences during testing and stop checking them when released to everyone. The lists remain available for the next experimental features.
+
+Features restricted to these audiences are disabled by default in every environment. Set the two environment variables to positive database IDs separated by commas or whitespace, then restart all application workers:
+
+```dotenv
+FEATURE_TEST_USER_IDS=12,34
+FEATURE_TEST_PARTY_IDS=56,78
+```
+
+The current campaign/map rollout uses `FEATURE_TEST_USER_IDS` for personal campaigns, material authoring, map creation and the new Tools generator/save actions. Other users and guests retain the previous Tools generator. It uses `FEATURE_TEST_PARTY_IDS` for shared maps and published materials for the listed parties' owners and current members. Shared-map editing remains owner-only. Material creation/publication requires a tester Warden and a listed party; players need only membership in that listed party, not a personal tester ID. These lists are independent: a tester does not enable features in their other parties, and membership in a test party does not unlock personal authoring. Existing ownership, membership, publication and CSRF checks still apply.
+
+Empty or unset lists grant no access to features still restricted to testers; generally released features are unaffected. Invalid IDs stop application startup with the variable name in the error. There is no wildcard or automatic administrator/development bypass. In the current rollout, disabled features disappear from navigation, and direct requests to their pages, data, saves and protected images are rejected. Removing an ID hides access without deleting stored materials/maps; hidden party connections are preserved when saving campaign settings. Campaign notifications skip disabled parties. The lists affect feature access, not schema migrations: apply all migrations even when both lists are empty.
+
 Run `flask db upgrade` before serving this version. Revision `133a01` adds tables; it does not create campaigns for existing parties. Revision `297a01` adds private drawing and published-snapshot JSON columns; existing maps open with an empty drawing and retain their locations and paths. Deleting a party removes its knowledge and campaign connections, while retaining campaign originals. Disconnecting a party from a campaign revokes that campaign's publications. Deleting a campaign permanently deletes all materials assigned to it, including maps, nested maps, locations, paths, drawings and published party versions. Connected parties and their characters remain. Related materials belonging to other campaigns or **Unfiled materials** remain; their links to deleted content are removed. Move any material you want to retain out of the campaign first.
 
 Map geometry and content originals use separate optimistic version checks. Conflicting saves return HTTP 409 instead of overwriting another tab. Published views are built on the server without original prose. Socket.IO notifications contain only party IDs; the browser fetches an authorized projection again. Open views also recheck access on focus and every 30 seconds while visible.

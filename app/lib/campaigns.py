@@ -8,6 +8,7 @@ from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
 from app.socket_events import party_recipient_ids
 from app.lib.map_drawing import EMPTY_DRAWING, validate_drawing
 from app.lib.rich_content import normalize_content, render_content
+from app.lib.feature_access import require_party_features, party_features_enabled
 
 CATEGORIES = {'overview': 'Overview', 'npc': 'NPCs', 'location': 'Locations',
               'lore': 'Lore', 'faction': 'Factions', 'relic': 'Relics',
@@ -25,6 +26,7 @@ def owned(model, object_id):
 
 
 def party_access(party_id, editing=False):
+    require_party_features(party_id)
     party = db.get_or_404(Party, party_id)
     if (party.owner != current_user.id if editing else current_user.id not in party_recipient_ids(party)):
         abort(403)
@@ -248,6 +250,8 @@ def map_projection(pointcrawl, party_id=None):
 def notify_parties(party_ids):
     from app import socketio
     for party_id in set(party_ids):
+        if not party_features_enabled(party_id):
+            continue
         party = db.session.get(Party, party_id)
         if party is None:
             continue
