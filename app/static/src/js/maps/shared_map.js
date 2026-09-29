@@ -2,6 +2,7 @@ import {createElement as h} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Excalidraw, restoreElements, CaptureUpdateAction} from 'excalidraw';
 import {drawingFromScene} from './scene.js';
+import {loadLibraries, MAP_LIBRARIES} from './libraries.js';
 
 const config = JSON.parse(document.getElementById('shared-map-config').textContent);
 const editor = document.getElementById('editor');
@@ -13,28 +14,13 @@ const snapshot = (elements, files, appState) => ({...drawingFromScene(elements, 
 let api, version = -1, initialized = false, applying = false, stopped = false;
 let pending = null, saving = false, loading = false, refreshAgain = false, timer;
 let lastDrawing = '', saveBlocked = false;
-const libraries = new Map();
 let libraryLoadFailed = false;
-
-function loadLibrary(name) {
-  if (!libraries.has(name)) {
-    const request = fetch(`${config.libraryUrl}${name}.excalidrawlib`, {signal: AbortSignal.timeout(15000)})
-      .then(response => {
-        if (!response.ok) throw new Error('Library failed');
-        return response.json();
-      })
-      .then(data => data.libraryItems)
-      .catch(error => {libraries.delete(name); throw error;});
-    libraries.set(name, request);
-  }
-  return libraries.get(name);
-}
 
 // Library assets load alongside the scene, without delaying or populating it.
 const defaultLibraryItems = config.editing
-  ? Promise.allSettled(['creatures', 'clocks', 'planning'].map(loadLibrary)).then(results => {
-    libraryLoadFailed = results.some(result => result.status === 'rejected');
-    return results.flatMap(result => result.status === 'fulfilled' ? result.value : []);
+  ? loadLibraries([...MAP_LIBRARIES, 'clocks'], new URL(config.libraryUrl, location.href)).then(result => {
+    libraryLoadFailed = result.failed;
+    return result.items;
   })
   : [];
 const socket = io();

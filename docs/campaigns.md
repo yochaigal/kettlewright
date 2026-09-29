@@ -100,3 +100,5 @@ node --experimental-default-type=module --test tests/js/content_generators.test.
 ```
 
 The campaign tests cover disclosure isolation, direct publication, adoption, current party membership, CSRF, safe text, notification payloads, map graph validation and concurrent updates. A separate migration test upgrades a database with an existing party and checks downgrade compatibility. Generator tests use seeded random sources to verify connectivity, loops and preservation of results.
+
+Map editors preload the ready-made Excalidraw libraries **Architecture floor plan symbols** (Arqtangeles), **Maps** (swissarmysam), **DnD/TTRPG battle map creature tokens** (Maffen) and **DnD 5e planning** (DemonDarakna). Open **Library** to place an item on the canvas. Library assets are served locally and do not populate the drawing until selected. Upstream sources and MIT attribution are in `app/static/vendor/excalidraw-libraries/README.md`.

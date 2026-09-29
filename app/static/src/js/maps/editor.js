@@ -1,6 +1,7 @@
 import {h, render} from 'preact';
 import {Excalidraw, convertToExcalidrawElements, restoreElements, CaptureUpdateAction} from 'excalidraw';
 import {drawingFromScene, emptyDrawing, graphShapes, movedLocations, isManaged, graphHit} from './scene.js';
+import {loadLibraries} from './libraries.js';
 
 let api, state, applying = false, lastDrawing = '', inputDrawingKey = '', graphKey = '', disposed = false, repairing = false, initialized = false;
 const send = (type, detail = {}) => parent.postMessage({channel: 'kw-map', type, ...detail}, location.origin);
@@ -78,12 +79,18 @@ function onChange(elements, appState, files) {
 function mount(next) {
   state = next;
   const drawing = next.graph.drawing || emptyDrawing();
+  const library = next.editing ? loadLibraries() : Promise.resolve({items: [], failed: false});
   inputDrawingKey = JSON.stringify(drawing);
   render(h(Excalidraw, {
-    excalidrawAPI: instance => {api = instance;},
+    excalidrawAPI: instance => {
+      api = instance;
+      library.then(result => {
+        if (!disposed && result.failed) api?.setToast({message: 'Some map libraries could not load. Reload the editor to retry.'});
+      });
+    },
     initialData: {elements: [...restoreElements(drawing.elements, null),
       ...convertToExcalidrawElements(graphShapes(next.graph, next.selected, next.selectedEdge), {regenerateIds: false})],
-      files: drawing.files, appState: {gridModeEnabled: true}},
+      files: drawing.files, libraryItems: library.then(result => result.items), appState: {gridModeEnabled: true}},
     viewModeEnabled: !next.editing,
     theme: next.dark ? 'dark' : 'light',
     langCode: next.lang || 'en',
