@@ -32,3 +32,5 @@ Pillow
 reportlab>=4.4
 pypdf>=6.0
 PyNaCl>=1.5
+
+mistune==3.2.0

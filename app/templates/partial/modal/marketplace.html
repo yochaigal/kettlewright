@@ -118,7 +118,7 @@
           <tbody id="marketplace-table-body">
             {% for item in market.get_market_items() %}
             <tr>
-              <td>{{item.name}}</td>
+              <td>{{ item.name|markdown_inline }}</td>
               <td>{{item.cost}}</td>
               <td>{{item.category}}</td>
               <td>

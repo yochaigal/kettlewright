@@ -23,3 +23,12 @@ test('graph conversion preserves IDs and skips paths with hidden endpoints', () 
   assert.deepEqual(movedLocations([{...shapes[0], x: 25, y: 45}], graph), [{id: '1', x: 55, y: 75}]);
   assert.deepEqual(movedLocations([{...shapes[0], id: 'copy', x: 25}], graph), []);
 });
+
+test('locked paths and nodes are clickable without selecting hidden endpoints', async()=>{
+  const {graphHit}=await import('../../app/static/src/js/maps/scene.js');
+  const graph={nodes:[{id:1,x:0,y:0},{id:2,x:200,y:0}],edges:[{id:1,source:1,target:2}]};
+  assert.deepEqual(graphHit(graph,100,4),{id:'1',kind:'path'});
+  assert.deepEqual(graphHit(graph,0,0),{id:'1',kind:'location'});
+  assert.equal(graphHit(graph,100,50),null);
+  assert.equal(graphHit({...graph,nodes:graph.nodes.slice(0,1)},100,0),null);
+});

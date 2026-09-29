@@ -14,7 +14,7 @@
         <div class="inventory-container-title subtitle pointer {% if cnt.is_selected %} inventory-container-title-selected {% endif %} {% if cnt.encumbered %} red-text {% endif %} "
             hx-get="{{inventory_select_base|default("/charedit/inventory-select-container/" ~ username ~ "/" ~ url_name)}}/{{cnt.id}}?mode=edit"
             hx-target="#inventory-container">
-            {{cnt.title}}
+            {{ cnt.title|markdown_inline }}
         </div>
         {% if cnt.is_selected %}
         <div class="pointer" title="Edit {{cnt.name}}"
@@ -33,7 +33,7 @@
         <div class="inventory-item-text"></div>
         {% else %}
         <div class="inventory-item-text {% if it.name == 'Fatigue' %} fatigue-text {% endif %}">
-            {{it.title | safe}}
+            {{it.title | markdown_inline}}
         </div>
         <div class="inventory-item-button-container">
             {% if not companion_sheet and current_user.is_authenticated and character.owner == current_user.id and character.party_id and it.editable and 'carrying' not in it %}

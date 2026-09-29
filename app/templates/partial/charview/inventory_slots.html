@@ -7,8 +7,8 @@
   <div class="slot-item-content">
     {% if editable and it.editable %}
     <button type="button" class="slot-item-name" title="{{it.name | tr}}"
-      hx-get="{{edit_base}}/item-edit/{{it.id}}?container={{container.id}}" hx-target="#modal-anchor">{{it.name | tr}}</button>
-    {% else %}<span class="slot-item-name" title="{{it.name | tr}}">{{it.name | tr}}</span>{% endif %}
+      hx-get="{{edit_base}}/item-edit/{{it.id}}?container={{container.id}}" hx-target="#modal-anchor">{{ it.name | tr|markdown_inline }}</button>
+    {% else %}<span class="slot-item-name" title="{{it.name | tr}}">{{ it.name | tr|markdown_inline }}</span>{% endif %}
     <div class="slot-item-details">
       {% if 'uses' in it.tags %}
         {% set maximum = [1, it.get('max_uses', it.uses), it.uses] | max %}
@@ -81,7 +81,7 @@
     {% for cnt in inventory.containers %}
       <button type="button" class="inventory-container-title {% if cnt.is_selected %}inventory-container-title-selected{% endif %}"
         aria-pressed="{{'true' if cnt.is_selected else 'false'}}"
-        hx-get="/charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt.id}}" hx-target="#inventory-container">{{cnt.title}}</button>
+        hx-get="/charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt.id}}" hx-target="#inventory-container">{{ cnt.title|markdown_inline }}</button>
     {% endfor %}
     {% if editable %}<button type="button" class="slot-icon" title="{{_('Edit container')}}" aria-label="{{_('Edit container')}}"
       hx-get="{{edit_base}}/container-edit/{{container.id}}" hx-target="#modal-anchor"><i class="fa-solid fa-gear" aria-hidden="true"></i></button>{% endif %}

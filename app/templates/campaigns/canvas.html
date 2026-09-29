@@ -5,30 +5,33 @@
 </div>
 <iframe class="pointcrawl-canvas" x-ref="canvas"
  data-src="{{ url_for('static', filename='src/js/maps/editor.html') }}"
- title="{{ _('Pointcrawl map editor') }}"></iframe>
-{% if editing %}<p>{{ _('Drag circles to move locations. Edit their names and remove locations or paths using the lists below.') }}</p>
-{% else %}<p>{{ _('Pan and zoom to explore the map. Select a location from the list below to read its details.') }}</p>{% endif %}
+ title="{{ _('Map editor') }}"></iframe>
+<div x-show="showLocations">
+{% if editing %}<p>{{ _('Click a circle or path to highlight its details below. Drag circles to move locations.') }}</p>
+{% else %}<p>{{ _('Click a circle or path to read its details below. Pan and zoom to explore the map.') }}</p>{% endif %}
 <p>{{ _('Solid: standard · Dashed: hidden · Dotted: conditional') }}</p>
-{% if editing %}<p>{{ _('Drawing, text and images remain private until you publish the saved drawing. Use PNG, JPEG, WebP or GIF images; drawings may be up to 12 MB.') }}</p>{% endif %}
-<div class="map-editor-grid">
+</div>
+{% if not editing %}<p x-show="!showLocations">{{ _('Pan and zoom to explore the map.') }}</p>{% endif %}
+{% if editing %}<p>{% if party %}{{ _('This drawing will be shown to the party when you save.') }}{% else %}{{ _('Drawing, text and images remain private until you publish the saved drawing.') }}{% endif %} {{ _('Use PNG, JPEG, WebP or GIF images; drawings may be up to 12 MB.') }}</p>{% endif %}
+<div class="map-editor-grid" x-show="showLocations">
 <section><h2>{{ _('Locations') }}</h2>
-<ol><template x-for="item in graph.nodes" :key="item.id"><li><button type="button" @click="selected=String(item.id)" x-text="item.number+'. '+item.title"></button></li></template></ol>
+<ol><template x-for="item in graph.nodes" :key="item.id"><li :data-map-node="String(item.id)" :class="{'map-selected':selected===String(item.id)}"><button type="button" :aria-pressed="selected===String(item.id)" @click="selectedEdge='';selected=String(item.id)" x-text="item.number+'. '+item.title"></button></li></template></ol>
 {% if editing %}
-{% if locations %}<label>{{ _('Existing location') }}<select x-model="locationId" x-ref="locationPicker"><option value="">{{ _('Create a new location') }}</option>{% for location in locations %}<option value="{{ location.id }}">{{ location.title or _('Untitled private original') }}</option>{% endfor %}</select></label>{% endif %}
+{% if locations %}<label>{{ _('Existing location') }}<select x-model="locationId" x-ref="locationPicker"><option value="">{{ _('Create a new location') }}</option>{% for location in locations %}<option value="{{ location.id }}">{{ (location.title or _('Untitled private original'))|markdown_inline }}</option>{% endfor %}</select></label>{% endif %}
 <button type="button" @click="addNode()">{{ _('Add location') }}</button>
 {% endif %}
 <template x-if="selectedNode"><div>
-<h3 x-text="selectedNode.title"></h3>
+<h3 x-html="$markdownInline(selectedNode.title)"></h3>
 {% if editing %}
 <label>{{ _('Number') }}<input type="number" min="1" x-model.number="selectedNode.number"></label>
 <label>X<input type="number" x-model.number="selectedNode.x"></label>
 <label>Y<input type="number" x-model.number="selectedNode.y"></label>
-<template x-if="isNew(selectedNode) && !selectedNode.entry_id"><div>
+<template x-if="!isNew(selectedNode) || !selectedNode.entry_id"><div @input="selectedNode.content_changed=true">
 <label>{{ _('Title') }}<input type="text" maxlength="200" x-model="selectedNode.title"></label>
 {{ rich_editor(_('Description'), name=None, model='selectedNode.body') }}
 </div></template>
 <template x-if="!selectedNode.nested_draft"><div>
-<label>{{ _('Linked map') }}<select x-model="selectedNode.nested_map_id"><option value="">{{ _('None') }}</option><template x-if='selectedNode.nested_map_id && !{{ nested_maps|map(attribute="id")|list|tojson }}.includes(Number(selectedNode.nested_map_id))'><option :value="selectedNode.nested_map_id" x-text="selectedNode.title"></option></template>{% for item in nested_maps %}<option value="{{ item.id }}">{{ item.entry.title }}</option>{% endfor %}</select></label>
+<label>{{ _('Linked map') }}<select x-model="selectedNode.nested_map_id"><option value="">{{ _('None') }}</option><template x-if='selectedNode.nested_map_id && !{{ nested_maps|map(attribute="id")|list|tojson }}.includes(Number(selectedNode.nested_map_id))'><option :value="selectedNode.nested_map_id" x-html="$markdownInline(selectedNode.title)"></option></template>{% for item in nested_maps %}<option value="{{ item.id }}">{{ item.entry.title }}</option>{% endfor %}</select></label>
 <template x-if="selectedNode.nested_map_id"><a :href="'/maps/'+selectedNode.nested_map_id+'/edit'">{{ _('Open linked map') }}</a></template>
 <template x-if="!selectedNode.nested_map_id"><div class="campaign-actions">
 <label>{{ _('Generate linked map') }}<select x-model="nestedKind"><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option></select></label>
@@ -43,10 +46,10 @@
 </details>
 <button type="button" @click="delete selectedNode.nested_draft">{{ _('Discard linked map draft') }}</button>
 </div></template>
-<template x-if="selectedNode.entry_id"><div class="campaign-actions">
+<template x-if="selectedNode.entry_id"><div><div class="campaign-actions">
 <a :href="'/materials/'+selectedNode.entry_id+'/edit'">{{ _('Edit private description') }}</a>
 <a :href="'/materials/'+selectedNode.entry_id+'/reveal'">{{ _('Reveal to party') }}</a>
-</div></template>
+</div></div></template>
 <button type="button" @click="removeNode()">{{ _('Remove from map') }}</button>
 {% else %}
 <div class="rich-content" x-html="$richHTML(selectedNode.body)"></div>
@@ -61,15 +64,15 @@
 <label>{{ _('To') }}<select x-model="edgeTarget"><option value="">{{ _('Choose location') }}</option><template x-for="item in graph.nodes" :key="item.id"><option :value="item.id" x-text="item.number+'. '+item.title"></option></template></select></label>
 <button type="button" @click="addEdge()">{{ _('Connect locations') }}</button>
 {% endif %}
-<template x-for="edge in graph.edges" :key="edge.id"><details>
-<summary><span x-text="edge.title"></span> <span x-text="'('+node(edge.source)?.number+' – '+node(edge.target)?.number+')'"></span></summary>
+<template x-for="edge in graph.edges" :key="edge.id"><details :data-map-edge="String(edge.id)" :open="selectedEdge===String(edge.id)" :class="{'map-selected':selectedEdge===String(edge.id)}" @toggle="if($el.open){selectedEdge=String(edge.id);selected='';syncCanvas()}">
+<summary><span x-html="$markdownInline(edge.title)"></span> <span x-text="'('+node(edge.source)?.number+' – '+node(edge.target)?.number+')'"></span></summary>
 {% if editing %}
-<template x-if="isNew(edge)"><div>
+<template x-if="selectedEdge===String(edge.id)"><div @input="edge.content_changed=true">
 <label>{{ _('Title') }}<input type="text" maxlength="200" x-model="edge.title"></label>
 {{ rich_editor(_('Description and conditions'), name=None, model='edge.body') }}
 <label>{{ _('Path type') }}<select x-model="edge.path_type">{% for kind in path_types %}<option value="{{ kind }}">{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>
 </div></template>
-<template x-if="edge.entry_id"><div class="campaign-actions"><a :href="'/materials/'+edge.entry_id+'/edit'">{{ _('Edit private description') }}</a><a :href="'/materials/'+edge.entry_id+'/reveal'">{{ _('Reveal to party') }}</a></div></template>
+<template x-if="edge.entry_id"><div><div class="campaign-actions"><a :href="'/materials/'+edge.entry_id+'/edit'">{{ _('Edit private description') }}</a><a :href="'/materials/'+edge.entry_id+'/reveal'">{{ _('Reveal to party') }}</a></div></div></template>
 <button type="button" @click="removeEdge(edge.id)">{{ _('Remove path') }}</button>
 {% else %}<div class="rich-content" x-html="$richHTML(edge.body)"></div>{% endif %}
 </details></template>

@@ -7,11 +7,11 @@
       </header>
 
       <section class="modal-card-body">
-        <div>{{_('Transferring')}} <b>{{item.name}}</b> {{_('to')}}:</div>
+        <div>{{_('Transferring')}} <b>{{ item.name|markdown_inline }}</b> {{_('to')}}:</div>
         <div class="justify-centered">
           <select name="member" id="member">
             {% for c in characters %}
-            <option value="{{c.id}}">{{c.name}}</option>
+            <option value="{{c.id}}">{{ c.name|markdown_inline|striptags }}</option>
             {% endfor %}
           </select>
         </div>

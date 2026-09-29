@@ -2,7 +2,7 @@
 {% from 'campaigns/forms.html' import token, rich_editor with context %}
 {% block workspace %}
 <h1>{{ _('Reveal to party') }}</h1>
-<a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ entry.title or _('Private original') }}</a>
+<a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ (entry.title or _('Private original'))|markdown_inline }}</a>
 <p>{{ _('Prepare what each party knows. Only selected parties are updated when you publish.') }}</p>
 {% if parties %}
 <form method="post" x-data="revealContent" data-rows="{{ initial|tojson|forceescape }}"
@@ -25,15 +25,14 @@
 {% if entry.category == 'path' %}<label>{{ _('Known path type') }}<select :name="'path_type_' + row.id" x-model="row.path_type">{% for kind in path_types %}<option value="{{ kind }}">{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>{% endif %}
 <div class="campaign-actions"><button type="button" @click="copyOriginal(row)">{{ _('Copy from private original') }}</button>
 <button type="button" @click="copySelected(row)">{{ _('Use this text for selected parties') }}</button></div>
-<details><summary>{{ _('Preview for this party') }}</summary><h2 x-text="row.title"></h2><div class="rich-content" x-html="$richHTML(row.body)"></div></details>
 </fieldset>
 </template>
 <button type="submit" :disabled="!rows.some(row => row.selected)">{{ _('Publish selected versions') }}</button>
 </form>
 {% for party in parties %}{% set row = presentations.get(party.id) %}{% if row and row.published %}
-<form method="post" action="{{ url_for('campaigns.revoke', entry_id=entry.id, party_id=party.id) }}">{{ token(row.version) }}
-<button>{{ _('Revoke publication') }} · {{ party.name }}</button>
-<a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}">{{ _('View as party') }}</a></form>
+<div class="campaign-actions"><form method="post" action="{{ url_for('campaigns.revoke', entry_id=entry.id, party_id=party.id) }}">{{ token(row.version) }}
+<button>{{ _('Revoke publication') }} · {{ party.name }}</button></form>
+<a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}">{{ _('View as party') }}</a></div>
 {% endif %}{% endfor %}
 {% else %}<p>{{ _('Connect a party in campaign settings, or create a party first.') }}</p>{% endif %}
 {% endblock %}

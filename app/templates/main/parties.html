@@ -17,9 +17,9 @@
     <div class="column is-one-third" data-ownername="{{ party.owner_username }}" data-partyurl="{{ party.party_url }}"
       onclick="redirectToPartyPage(this)">
       <div class="card party-card" style="cursor: pointer">
-        <h2 class="party-card-name">{{ party.name }}</h2>
+        <h2 class="party-card-name">{{ party.name|markdown_inline }}</h2>
         {% if party.owner == current_user.id %}<p class="subtitle">{{_("Warden")}}</p>{% endif %}
-        <p class="party-card-description">{{party.description}}</p>
+        <div class="party-card-description rich-content">{{ party.description|markdown }}</div>
         <h3 class="">{{_('Members')}}</h3>
         {% if party.member_names and party.member_names != "No members yet." %}
         <div class="party-card-member-portraits">

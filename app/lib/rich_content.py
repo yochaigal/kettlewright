@@ -1,4 +1,4 @@
-"""Versioned rich descriptions coexist with existing literal plain text."""
+"""Sanitized Markdown throughout the app, including legacy rich descriptions."""
 from html import escape
 from html.parser import HTMLParser
 import base64
@@ -8,6 +8,7 @@ import re
 from urllib.parse import urlsplit
 
 import bleach
+import mistune
 from flask import abort
 from markupsafe import Markup
 from PIL import Image, ImageOps
@@ -16,7 +17,10 @@ from app.lib.material_images import LOCAL_IMAGE, validate_local_image
 
 RICH_PREFIX = '<!--kw-rich-text:1-->'
 TAGS = {'p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'h2', 'h3',
-        'blockquote', 'ol', 'ul', 'li', 'a', 'img'}
+        'blockquote', 'ol', 'ul', 'li', 'a', 'img', 'del', 'h1', 'h4', 'h5', 'h6',
+        'pre', 'code', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td'}
+markdown = mistune.create_markdown(escape=False, hard_wrap=True,
+    plugins=['strikethrough', 'table', 'url'])
 MAX_CONTENT_BYTES = 5 * 1024 * 1024
 IMAGE_URL = re.compile(r'^data:image/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+$')
 
@@ -83,8 +87,9 @@ def clean_html(html):
         if tag == 'a' and name == 'href':
             return value.lower().startswith(('http://', 'https://'))
         return tag == 'img' and (name == 'alt' or name == 'src' and (bool(IMAGE_URL.fullmatch(value)) or remote_image_url(value) or bool(LOCAL_IMAGE.fullmatch(value))))
-    return bleach.clean(html, tags=TAGS, attributes=attribute,
-                        protocols=['http', 'https', 'data'], strip=True)
+    cleaned = bleach.clean(html, tags=TAGS, attributes=attribute,
+                           protocols=['http', 'https', 'data'], strip=True)
+    return cleaned
 
 
 def normalize_content(text):
@@ -116,21 +121,26 @@ def normalize_content(text):
         if len(html.encode()) + len(RICH_PREFIX) > MAX_CONTENT_BYTES:
             abort(400, 'Description exceeds 5 MB.')
         return RICH_PREFIX + html
-    if len(text) > 50000:
+    # Validate image destinations parsed by Markdown, including reference images.
+    class Images(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            if tag == 'img':
+                optimize_image(dict(attrs).get('src', ''))
+    Images().feed(markdown(text))
+    text_only = re.sub(r'data:image/[^\s)]+', '', text)
+    if len(text_only) > 50000:
         abort(400, 'Description text exceeds 50000 characters.')
     return text
 
 
 def render_content(text):
     text = text or ''
-    html = clean_html(text[len(RICH_PREFIX):]) if text.startswith(RICH_PREFIX) else escape(text).replace('\n', '<br>')
-    return Markup(bleach.linkify(html, callbacks=[safe_link], parse_email=False))
+    html = clean_html(text[len(RICH_PREFIX):]) if text.startswith(RICH_PREFIX) else clean_html(markdown(text))
+    html = re.sub(r'<img\b(?![^>]*\bsrc=)[^>]*>', '', html)
+    return Markup(bleach.linkify(html, callbacks=[safe_link], parse_email=False, skip_tags=['pre', 'code']))
 
 
 def content_excerpt(text, limit=300):
-    if not (text or '').startswith(RICH_PREFIX):
-        return (text or '')[:limit]
-
     class PlainText(HTMLParser):
         def __init__(self):
             super().__init__()
@@ -144,5 +154,11 @@ def content_excerpt(text, limit=300):
                 self.parts.append(' ')
 
     parser = PlainText()
-    parser.feed(clean_html(text[len(RICH_PREFIX):]))
+    parser.feed(str(render_content(text)))
     return ' '.join(''.join(parser.parts).split())[:limit]
+
+
+def render_inline(text):
+    """Formatting for names and short fields, without nested blocks or links."""
+    return Markup(bleach.clean(str(render_content(text)),
+        tags={'strong', 'b', 'em', 'i', 'u', 's', 'del', 'code'}, strip=True).strip())

@@ -74,3 +74,23 @@ test('dungeon and region paths roll all three types reproducibly',()=>{
     assert.deepEqual([...kinds].sort(),['conditional','hidden','standard']);
   }
 });
+
+test('every Article category has a complete editable draft from shared rules tables', async()=>{
+  const {generateArticle}=await import('../../app/static/src/js/content_generators.js');
+  data.Equipment=JSON.parse(readFileSync(new URL('../../app/static/json/marketplace.json',import.meta.url)));
+  for(const category of ['overview','npc','location','lore','faction','relic','note','bestiary','item','spellbook','culture','map']) {
+    const draft=generateArticle(data,category,'',rng(9));
+    assert.equal(draft.category,category);
+    assert(draft.title.length>0 && draft.title.length<=200);
+    assert(draft.body.length>0 && !draft.body.includes('undefined'),category);
+  }
+  assert.equal(generateArticle(data,'custom'),null);
+});
+test('generated map labels retain their rolled descriptions without invented names',()=>{
+  for(const kind of ['Dungeon','Forest','Realm']){
+    const result=generateResult(data,'Worldbuilding',kind,rng(16));
+    assert(result.title.startsWith(kind+':'));
+    const graph=graphFromResult(result,rng(1));
+    for(const node of graph.nodes)assert.equal(node.title,node.body.replace(/\s+/g,' ').trim().slice(0,200));
+  }
+});

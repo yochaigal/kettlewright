@@ -1,6 +1,7 @@
 import {h, render} from 'preact';
 import {Excalidraw, convertToExcalidrawElements, restoreElements, CaptureUpdateAction} from 'excalidraw';
-import {drawingFromScene, emptyDrawing, graphShapes, movedLocations, isManaged} from './scene.js';
+import {drawingFromScene, emptyDrawing, graphShapes, movedLocations, isManaged, graphHit} from './scene.js';
+import {loadLibraries} from './libraries.js';
 
 let api, state, applying = false, lastDrawing = '', inputDrawingKey = '', graphKey = '', disposed = false, repairing = false, initialized = false;
 const send = (type, detail = {}) => parent.postMessage({channel: 'kw-map', type, ...detail}, location.origin);
@@ -12,13 +13,13 @@ function applyState(next) {
   applying = true;
   try {
     const drawing = state.graph.drawing || emptyDrawing();
-    const nextKey = JSON.stringify([state.graph.nodes, state.graph.edges]);
+    const nextKey = JSON.stringify([state.graph.nodes, state.graph.edges, state.selected, state.selectedEdge]);
     const drawingKey = JSON.stringify(drawing);
     if (nextKey !== graphKey || drawingKey !== inputDrawingKey) {
       const free = drawingKey === inputDrawingKey
         ? api.getSceneElements().filter(element => !isManaged(element))
         : restoreElements(drawing.elements, null);
-      const managed = convertToExcalidrawElements(graphShapes(state.graph), {regenerateIds: false});
+      const managed = convertToExcalidrawElements(graphShapes(state.graph, state.selected, state.selectedEdge), {regenerateIds: false});
       api.addFiles(Object.values(drawing.files));
       api.updateScene({elements: [...free, ...managed], captureUpdate: CaptureUpdateAction.NEVER});
       // Revoked/replaced snapshots must not remain in undo history.
@@ -40,7 +41,7 @@ function onChange(elements, appState, files) {
     if (appState.isLoading) return;
     initialized = true;
     lastDrawing = JSON.stringify(drawingFromScene(elements, files));
-    graphKey = JSON.stringify([state.graph.nodes, state.graph.edges]);
+    graphKey = JSON.stringify([state.graph.nodes, state.graph.edges, state.selected, state.selectedEdge]);
     send('mounted');
     setTimeout(() => {if (!disposed) {applyState(state); api.scrollToContent(undefined, {fitToContent: true, viewportZoomFactor: 0.7});}}, 0);
     return;
@@ -54,7 +55,7 @@ function onChange(elements, appState, files) {
   // Graph cards have their own delete/rename workflow. Restore erased, duplicated
   // or resized graph glyphs instead of silently diverging from the saved graph.
   const managed = elements.filter(element => isManaged(element) && !element.isDeleted);
-  const expected = graphShapes(state.graph);
+  const expected = graphShapes(state.graph, state.selected, state.selectedEdge);
   const damaged = managed.length !== expected.length || expected.some(shape => {
     const actual = managed.find(element => element.id === shape.id);
     return !actual || shape.type === 'ellipse' && (actual.width !== 60 || actual.height !== 60 || actual.angle !== 0)
@@ -78,12 +79,18 @@ function onChange(elements, appState, files) {
 function mount(next) {
   state = next;
   const drawing = next.graph.drawing || emptyDrawing();
+  const library = next.editing ? loadLibraries() : Promise.resolve({items: [], failed: false});
   inputDrawingKey = JSON.stringify(drawing);
   render(h(Excalidraw, {
-    excalidrawAPI: instance => {api = instance;},
+    excalidrawAPI: instance => {
+      api = instance;
+      library.then(result => {
+        if (!disposed && result.failed) api?.setToast({message: 'Some map libraries could not load. Reload the editor to retry.'});
+      });
+    },
     initialData: {elements: [...restoreElements(drawing.elements, null),
-      ...convertToExcalidrawElements(graphShapes(next.graph), {regenerateIds: false})],
-      files: drawing.files, appState: {gridModeEnabled: true}},
+      ...convertToExcalidrawElements(graphShapes(next.graph, next.selected, next.selectedEdge), {regenerateIds: false})],
+      files: drawing.files, libraryItems: library.then(result => result.items), appState: {gridModeEnabled: true}},
     viewModeEnabled: !next.editing,
     theme: next.dark ? 'dark' : 'light',
     langCode: next.lang || 'en',
@@ -110,3 +117,19 @@ window.addEventListener('message', event => {
   }
 });
 send('ready');
+
+let pointerStart;
+document.getElementById('editor').addEventListener('pointerdown',event=>{
+  if(event.target.tagName!=='CANVAS' || event.button!==0 || !api)return;
+  const tool=api.getAppState().activeTool.type;
+  if(state.editing && !['selection','hand'].includes(tool))return;
+  pointerStart={x:event.clientX,y:event.clientY};
+},true);
+document.getElementById('editor').addEventListener('pointerup',event=>{
+  const start=pointerStart;pointerStart=null;
+  if(!start || !api || Math.hypot(event.clientX-start.x,event.clientY-start.y)>6)return;
+  const view=api.getAppState(), zoom=view.zoom.value;
+  const hit=graphHit(state.graph,(event.clientX-view.offsetLeft)/zoom-view.scrollX,
+    (event.clientY-view.offsetTop)/zoom-view.scrollY,10/zoom);
+  if(hit)send('select',hit);
+},true);

@@ -39,3 +39,5 @@ docker compose -f .devcontainer/docker-compose.yml exec -T \
   app python -m pytest -p no:flask tests/unit/test_shared_map.py tests/unit/test_socket_events.py tests/unit/test_party_overview.py tests/unit/test_campaigns.py -q
 node --test tests/js/shared_map.test.mjs
 ```
+
+The same Architecture and Maps libraries used by Geography are also preloaded here, alongside the existing RPG token, planning and clock sets.

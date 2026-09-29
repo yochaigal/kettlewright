@@ -12,9 +12,11 @@ from app.lib.feature_access import require_party_features, party_features_enable
 
 CATEGORIES = {'overview': 'Overview', 'npc': 'NPCs', 'location': 'Locations',
               'lore': 'Lore', 'faction': 'Factions', 'relic': 'Relics',
-              'note': 'Notes', 'map': 'Maps'}
+              'note': 'Notes', 'bestiary': 'Bestiary', 'item': 'Items',
+              'spellbook': 'Spellbooks', 'culture': 'Culture', 'custom': 'Custom',
+              'map': 'Geography'}
 PATH_TYPES = ('standard', 'hidden', 'conditional')
-MAP_KINDS = ('dungeon', 'forest', 'realm')
+MAP_KINDS = ('realm', 'dungeon', 'forest', 'freeform')
 
 
 def owned(model, object_id):
@@ -220,7 +222,7 @@ def map_projection(pointcrawl, party_id=None):
         return {'id': entry.id, 'title': entry.title, 'body': entry.body, 'path_type': entry.path_type}
 
     root = content(pointcrawl.entry)
-    result = {'id': pointcrawl.id, 'title': root['title'], 'body': root['body'], 'nodes': [], 'edges': []}
+    result = {'id': pointcrawl.id, 'kind': pointcrawl.kind, 'title': root['title'], 'body': root['body'], 'nodes': [], 'edges': []}
     if party_id is None:
         result['drawing'] = pointcrawl.drawing or EMPTY_DRAWING
     else:
@@ -234,6 +236,7 @@ def map_projection(pointcrawl, party_id=None):
             continue
         nested = node.nested_map
         result['nodes'].append({'id': node.id, 'entry_id': node.entry_id,
+            **({'entry_version': node.entry.version} if known is None else {}),
             'number': node.number, 'x': node.x, 'y': node.y,
             'title': item['title'], 'body': item['body'],
             'nested_map_id': nested.id if nested and (known is None or nested.entry_id in known) else None})
@@ -242,6 +245,7 @@ def map_projection(pointcrawl, party_id=None):
         item = content(edge.entry)
         if item is not None and edge.source_id in visible and edge.target_id in visible:
             result['edges'].append({'id': edge.id, 'entry_id': edge.entry_id,
+                **({'entry_version': edge.entry.version} if known is None else {}),
                 'source': edge.source_id, 'target': edge.target_id,
                 'title': item['title'], 'body': item['body'], 'path_type': item['path_type']})
     return result
@@ -267,7 +271,7 @@ def entry_audiences(entry):
 
 
 def save_geometry(pointcrawl, data, *, nested_draft=False):
-    """Replace geometry atomically, keeping existing prose in its own editor."""
+    """Save geometry and explicitly edited private cards with separate version checks."""
     check_version(pointcrawl, data.get('version'))
     if 'drawing' in data:
         pointcrawl.drawing = validate_drawing(data['drawing'])
@@ -278,6 +282,18 @@ def save_geometry(pointcrawl, data, *, nested_draft=False):
         abort(400, 'Generate at most 20 linked maps in one save.')
     existing_nodes = {n.id: n for n in pointcrawl.nodes}
     existing_edges = {e.id: e for e in pointcrawl.edges}
+    def edit_card(entry, item):
+        if not item.get('content_changed'):
+            return
+        check_version(entry, item.get('entry_version'))
+        entry.title = text_value(item.get('title', ''), 200, True)
+        entry.body = content_value(item.get('body', ''))
+        if entry.category == 'path':
+            if item.get('path_type') not in PATH_TYPES:
+                abort(400, 'Invalid path type.')
+            entry.path_type = item['path_type']
+        entry.version += 1
+
     resolved, used_entries, numbers = {}, set(), set()
     for item in nodes:
         if not isinstance(item, dict):
@@ -302,6 +318,7 @@ def save_geometry(pointcrawl, data, *, nested_draft=False):
             node = existing_nodes.get(integer(key))
             if node is None:
                 abort(400, 'Location does not belong to this map.')
+            edit_card(node.entry, item)
         if node.entry.id in used_entries:
             abort(400, 'A location can appear only once on a map.')
         used_entries.add(node.entry.id)
@@ -359,6 +376,7 @@ def save_geometry(pointcrawl, data, *, nested_draft=False):
             edge = existing_edges.get(integer(key))
             if edge is None or edge.id in used_edges:
                 abort(400, 'Invalid path.')
+            edit_card(edge.entry, item)
         edge.source_id, edge.target_id = source.id, target.id
         used_edges.add(edge.id)
     # Explicitly remove path originals, including their party presentations.

@@ -4,6 +4,8 @@ import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 
 const source = readFileSync(new URL('../../app/static/src/js/maps/shared_map.js', import.meta.url), 'utf8').replace(/^import .*;\n/gm, '');
+const librarySource = readFileSync(new URL('../../app/static/src/js/maps/libraries.js', import.meta.url), 'utf8')
+  .replace(/^export /gm, '').replace('import.meta.url', 'location.href');
 const tick = () => new Promise(resolve => setImmediate(resolve));
 const empty = {elements: [], files: {}};
 const response = (body, status = 200) => ({ok: status === 200, status, json: async () => body});
@@ -25,12 +27,13 @@ async function setup(editing = true, failedLibrary = null) {
     window: {addEventListener() {}},
     io: () => ({on: (name, handler) => {handlers[name] = handler;}}),
     setTimeout: fn => {timers.set(++nextTimer, fn); return nextTimer;}, clearTimeout: id => timers.delete(id), setInterval() {},
-    AbortSignal, Excalidraw: {}, CaptureUpdateAction: {NEVER: 'never'},
+    AbortSignal, URL, location: {href: 'https://example.test/map/'}, Excalidraw: {}, CaptureUpdateAction: {NEVER: 'never'},
     restoreElements: elements => elements, drawingFromScene: (elements, files) => ({elements, files}),
     h: (_, value) => value,
     createRoot: () => ({unmount() {}, render(value) {if (!value) return; props = value; elements = value.initialData.elements;
       files = value.initialData.files; value.excalidrawAPI(api); value.onChange(elements, appState, files);}}),
     fetch: (url, options) => {
+      if (url instanceof URL) url = url.pathname;
       if (url.startsWith('/libraries/')) {
         libraryRequests.push(url);
         const name = url.split('/').pop();
@@ -40,7 +43,7 @@ async function setup(editing = true, failedLibrary = null) {
       return new Promise(resolve => requests.push({options, resolve}));
     },
   });
-  vm.runInContext(source, context);
+  vm.runInContext(librarySource + '\n' + source, context);
   requests.shift().resolve(response({version: 0, drawing: empty}));
   await tick();
   return {requests, libraryRequests, handlers, status, props,
@@ -115,7 +118,8 @@ test('failed saves retry the latest local drawing', async () => {
 test('all starter libraries preload without adding anything to the scene', async () => {
   const state = await setup();
   const items = await state.props.initialData.libraryItems;
-  assert.equal(state.libraryRequests.length, 3);
+  assert.equal(state.libraryRequests.length, 5);
+  assert.equal(items.length, 208);
   const tokens = items.filter(item => item.id.startsWith('creature-'));
   assert.equal(tokens.length, 99);
   assert.equal(tokens.flatMap(item => item.elements).length, 355);

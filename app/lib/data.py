@@ -59,8 +59,6 @@ def get_char_data(username, url_name):
 def sanitize_data(data):
     if isinstance(data, str):
         sanitized_value = bleach.clean(data)  # Sanitize strings
-        sanitized_value = sanitized_value.replace(
-            '`', "'")  # Replace backticks with single quotes
         return sanitized_value
     elif isinstance(data, list):
         # Recursively sanitize list items

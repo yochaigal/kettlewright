@@ -1,3 +1,5 @@
+import {marked} from '../../vendor/markdown/marked.js';
+import TurndownService from '../../vendor/markdown/turndown.js';
 export const RICH_PREFIX = '<!--kw-rich-text:1-->';
 export const MAX_CONTENT = 5*1024*1024;
 export function remoteImageURL(value) {
@@ -5,20 +7,13 @@ export function remoteImageURL(value) {
   try {const url=new URL(value); return !!url.hostname && !url.username && !url.password;} catch {return false;}
 }
 export const imageURL = value => /^\/material-images\/[1-9][0-9]*\/[0-9a-f]{32}\.webp$/.test(value) || remoteImageURL(value) || /^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(value);
-const tags = new Set(['P','BR','STRONG','B','EM','I','U','S','H2','H3','BLOCKQUOTE','OL','UL','LI','A','IMG']);
+const tags = new Set(['P','BR','STRONG','B','EM','I','U','S','H2','H3','BLOCKQUOTE','OL','UL','LI','A','IMG','DEL','H1','H4','H5','H6','PRE','CODE','HR','TABLE','THEAD','TBODY','TR','TH','TD']);
 
 // Build a fresh allowlisted tree; never insert stored HTML directly into the page.
 export function richContentHTML(value = '') {
   const output = document.createElement('div');
-  if (!value.startsWith(RICH_PREFIX)) {
-    for (const [index, line] of value.split('\n').entries()) {
-      if (index) output.append(document.createElement('br'));
-      output.append(document.createTextNode(line));
-    }
-    return output.innerHTML;
-  }
   const template = document.createElement('template');
-  template.innerHTML = value.slice(RICH_PREFIX.length);
+  template.innerHTML = value.startsWith(RICH_PREFIX) ? value.slice(RICH_PREFIX.length) : marked.parse(value, {gfm:true, breaks:true});
   function copy(source, target) {
     for (const node of source.childNodes) {
       if (node.nodeType === Node.TEXT_NODE) {target.append(document.createTextNode(node.textContent)); continue;}
@@ -44,4 +39,19 @@ export function richContentHTML(value = '') {
   }
   copy(template.content,output);
   return output.innerHTML;
+}
+
+const converter = new TurndownService({headingStyle:'atx', bulletListMarker:'-', codeBlockStyle:'fenced'});
+converter.addRule('strike', {filter:['s','del'], replacement:content=>`~~${content}~~`});
+converter.keep(['u', 'table', 'thead', 'tbody', 'tr', 'th', 'td']);
+export function markdownSource(value='') {
+  return value.startsWith(RICH_PREFIX) ? converter.turndown(richContentHTML(value)) : value;
+}
+export function inlineContentHTML(value='') {
+  const host=document.createElement('div');host.innerHTML=richContentHTML(value);
+  for(const element of [...host.querySelectorAll('*')].reverse()) {
+    if(element.tagName==='IMG')element.remove();
+    else if(!['STRONG','B','EM','I','U','S','DEL','CODE'].includes(element.tagName))element.replaceWith(...element.childNodes);
+  }
+  return host.innerHTML.trim();
 }

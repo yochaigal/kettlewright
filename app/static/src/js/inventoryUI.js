@@ -1,3 +1,4 @@
+import {inlineContentHTML} from './rich-content.js';
 import inventory from "./inventoryData.js";
 import inventoryModalUI from "./inventoryModalUI.js";
 import marketplace from "./marketplace.js";
@@ -142,7 +143,7 @@ const inventoryUI = {
         itemContainer.appendChild(rightSideIcons);
       }
 
-      nameDiv.innerHTML = name;
+      nameDiv.innerHTML = inlineContentHTML(name);
       nameDiv.id = "item-name-" + index; // Unique ID for each item
       nameDiv.classList.add("item-name", "inventory-item-text");
     } else if (name === "Fatigue" || carrying !== null) {
@@ -165,7 +166,7 @@ const inventoryUI = {
         nameDiv.innerHTML = "Fatigue";
         nameDiv.classList.add("fatigue-text");
       } else if (carrying !== null) {
-        nameDiv.innerHTML = name;
+        nameDiv.innerHTML = inlineContentHTML(name);
         nameDiv.classList.add("carrying-text");
       }
     }

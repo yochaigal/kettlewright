@@ -7,8 +7,8 @@
     {% set answer = character['background_table' ~ index ~ '_answer'] %}
     {% if question or answer %}
     <div class="character-section print-container">
-      <h4>{{question or _('Background answer %(number)s', number=index)}}</h4>
-      <p class="with-whitespace">{{answer or ''}}</p>
+      <h4>{{(question or _('Background answer %(number)s', number=index))|markdown_inline}}</h4>
+      <div class="with-whitespace rich-content">{{(answer or '')|markdown}}</div>
     </div>
     {% endif %}
     {% endfor %}

@@ -47,30 +47,25 @@
 [x-cloak] {display:none!important;}
 @media(max-width:600px) {.pointcrawl-canvas{height:520px}.map-editor-grid{grid-template-columns:1fr}.campaign-workspace{padding:.75rem}}
 
-/* Quill owns its toolbar and document; contain the site's generic form styles. */
-.rich-editor {margin:1rem 0;min-width:0;}
-.rich-editor-label {display:block;margin-bottom:.7rem;}
-.campaign-workspace .rich-editor .ql-toolbar {display:flex;flex-wrap:wrap;gap:.4rem;padding:.8rem;border-color:var(--fg);font:inherit;}
-.campaign-workspace .rich-editor .ql-toolbar .ql-formats {display:inline-flex;align-items:center;gap:.2rem;margin:0 .6rem 0 0;}
-.campaign-workspace .rich-editor .ql-toolbar button {width:32px;min-width:32px;max-width:32px;height:32px;margin:0;padding:5px;border:0;border-radius:2px;background:transparent;}
-.rich-editor .ql-container {border-color:var(--fg);font:inherit;}
-.campaign-workspace .rich-editor .ql-editor {min-height:180px;max-height:600px;overflow:auto;padding:1.2rem;color:var(--fg);}
-.campaign-workspace .rich-editor .ql-editor p {margin:0;}
-.rich-editor .ql-snow .ql-stroke {stroke:var(--fg);}
-.rich-editor .ql-snow .ql-fill {fill:var(--fg);}
-.rich-editor .ql-snow .ql-picker {color:var(--fg);}
-.rich-editor .ql-snow .ql-picker-options,.rich-editor .ql-snow .ql-tooltip {background:var(--form-bg);color:var(--fg);border-color:var(--fg);}
-.campaign-workspace .rich-editor .ql-tooltip input[type=text] {font:inherit;width:170px;padding:.3rem;margin:0;}
-.campaign-workspace .rich-editor .ql-editor h2,.campaign-workspace .rich-content h2 {font:inherit;font-size:1.4em;font-weight:bold;text-transform:none;margin:.75em 0 .4em;}
-.campaign-workspace .rich-editor .ql-editor h3,.campaign-workspace .rich-content h3 {font:inherit;font-size:1.2em;font-weight:bold;margin:.75em 0 .4em;}
-.rich-editor .ql-editor h3::before,.rich-content h3::before {display:none;}
-.rich-content {white-space:normal;overflow-wrap:anywhere;min-width:0;}
-.campaign-workspace .rich-content p {margin:.5em 0;}
-.rich-content > :first-child {margin-top:0;}
-.rich-content > :last-child {margin-bottom:0;}
-.campaign-workspace .rich-content ul,.campaign-workspace .rich-content ol {padding-inline-start:1.5em;margin:.5em 0;list-style-position:outside;}
-.campaign-workspace .rich-content ul {list-style-type:disc;}
-.campaign-workspace .rich-content ol {list-style-type:decimal;}
-.campaign-workspace .rich-content li {margin:.2em 0;}
-.campaign-workspace .rich-content blockquote,.campaign-workspace .rich-editor .ql-editor blockquote {margin:.75em 0;padding:.2em 1em;border-left:3px solid currentColor;font:inherit;}
-.rich-content img,.rich-editor .ql-editor img {display:inline-block;max-width:100%;height:auto;}
+
+.article-generator {border-block:1px solid currentColor;margin:1rem 0;padding:.25rem 0;}
+.article-generator .campaign-actions label {margin:0;min-width:180px;}
+.article-generator .campaign-actions span {font-size:.9em;opacity:.7;}
+.generated-article {padding:1.25rem;background:var(--form-bg,var(--bg));margin-bottom:1rem;border:1px solid currentColor;}
+.generated-article > .rich-content {max-height:420px;overflow:auto;}
+.map-editor-grid [data-map-node],.map-editor-grid [data-map-edge] {scroll-margin-top:1rem;}
+.map-editor-grid [data-map-node] button {width:100%;text-align:left;white-space:normal;}
+.map-editor-grid [data-map-edge] {padding:.6rem;margin:.5rem 0;border:1px solid transparent;}
+.map-editor-grid [data-map-edge] > summary {padding:.4rem .65rem;border-radius:2px;}
+.map-editor-grid [data-map-node].map-selected > button,
+.map-editor-grid [data-map-edge].map-selected > summary {
+  background:var(--form-bg,var(--bg));
+  background:color-mix(in srgb,var(--fg) 8%,var(--bg));
+  box-shadow:inset 3px 0 0 var(--fg);
+}
+.map-editor-grid [data-map-node] > button:focus-visible,
+.map-editor-grid [data-map-edge] > summary:focus-visible {outline:2px solid currentColor;outline-offset:3px;}
+.article-relations {margin:1.5rem 0;}
+.article-relations fieldset {max-height:360px;overflow:auto;}
+.article-relations legend {font-size:0;}
+.campaign-workspace .campaign-actions > form {margin:0;}

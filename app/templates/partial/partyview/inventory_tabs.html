@@ -3,7 +3,7 @@
   {% set selected = cnt.is_selected and not ground_active|default(false) %}
   <button class="inventory-container-title subtitle pointer{% if selected %} inventory-container-title-selected{% endif %}{% if cnt.encumbered %} red-text{% endif %}"
     type="button" aria-pressed="{{ 'true' if selected else 'false' }}"
-    hx-get="/party/inventory-select-container/{{ party.id }}/{{ cnt.id }}" hx-target="#inventory-container">{{ cnt.title }}</button>
+    hx-get="/party/inventory-select-container/{{ party.id }}/{{ cnt.id }}" hx-target="#inventory-container">{{ cnt.title|markdown_inline }}</button>
   {% endfor %}
   {% if current_user.is_authenticated %}
   <button class="inventory-container-title inventory-ground-tab subtitle pointer{% if ground_active|default(false) %} inventory-container-title-selected{% endif %}"

@@ -6,7 +6,7 @@
     <div class="inventory-item-text"></div>
     {% else %}
     <div class="inventory-item-text">
-      {{it.title | safe}}
+      {{it.title | markdown_inline}}
     </div>
     <div class="inventory-item-button-container">
       {% if "description" in it and it.description != "" %}

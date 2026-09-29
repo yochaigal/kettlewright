@@ -20,7 +20,7 @@
     class="inventory-container-title subtitle pointer {% if cnt.is_selected %} inventory-container-title-selected {% endif %} {% if cnt.encumbered %} red-text {% endif %}"
     hx-get=" {{inventory_select_base|default("/charedit/inventory-select-container/" ~ username ~ "/" ~ url_name)}}/{{cnt.id}}"
     hx-target="#inventory-container">
-    {{cnt.title}}
+    {{ cnt.title|markdown_inline }}
   </div>
   {% endfor %}
 </div>
@@ -31,7 +31,7 @@
     <div class="inventory-item-text"></div>
     {% else %}
     <div class="inventory-item-text">
-      {{it.title | safe}}
+      {{it.title | markdown_inline}}
     </div>
     <div class="inventory-item-button-container">
       {% if "description" in it and it.description != "" %}

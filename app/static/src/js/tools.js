@@ -1,5 +1,6 @@
 import utils, { styledAlert } from "./utils.js";
 import {generateResult, resultText} from "./content_generators.js";
+import {richContentHTML} from "./rich-content.js";
 
 window.KW_alert = utils.styledAlert;
 
@@ -99,7 +100,9 @@ rollButton.addEventListener('click', () => {
   const card = document.createElement('article');
   card.className = 'tools-generated-result';
   const title = document.createElement('h3'); title.textContent = result.title;
-  const body = document.createElement('p'); body.style.whiteSpace = 'pre-wrap'; body.textContent = resultText(result);
+  const markdown = resultText(result);
+  card.dataset.copyText = `${result.title}\n\n${markdown}`;
+  const body = document.createElement('div'); body.className = 'rich-content'; body.innerHTML = richContentHTML(markdown);
   card.append(title, body);
   if (labels.authenticated) {
     const actions = document.createElement('div'); actions.className = 'campaign-actions';
@@ -119,6 +122,6 @@ rollButton.addEventListener('click', () => {
 });
 document.getElementById('clear-button').addEventListener('click', () => resultDisplay.replaceChildren());
 document.getElementById('tools-copy-text-button').addEventListener('click', async () => {
-  await navigator.clipboard.writeText([...resultDisplay.querySelectorAll('h3,p')].map(node => node.textContent).join('\n\n'));
+  await navigator.clipboard.writeText([...resultDisplay.querySelectorAll('.tools-generated-result')].map(node => node.dataset.copyText).join('\n\n'));
   styledAlert(labels.copy, labels.copied);
 });

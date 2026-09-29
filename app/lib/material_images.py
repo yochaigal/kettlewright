@@ -34,7 +34,7 @@ def validate_local_image(url):
 
 def externalize_images(body, owner_id, candidates):
     from app.lib.rich_content import RICH_PREFIX, optimize_image
-    if not (body or '').startswith(RICH_PREFIX):
+    if not body:
         return body
     replacements = {}
 
@@ -50,9 +50,9 @@ def externalize_images(body, owner_id, candidates):
             with (folder / filename).open('xb') as output:
                 output.write(base64.b64decode(optimized.split(',', 1)[1]))
             replacements[data_url] = url
-        return f'src="{replacements[data_url]}"'
+        return replacements[data_url]
 
-    return re.sub(r'src="(data:image/[^\"]+)"', replace, body)
+    return re.sub(r'(data:image/(?:png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+)', replace, body)
 
 
 @event.listens_for(Session, 'before_flush')

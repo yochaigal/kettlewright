@@ -5,7 +5,7 @@
 {% if not editing %}
 <div data-party-content="{{ party.id }}" data-map-url="{{ url_for('campaigns.party_map_data', party_id=party.id, map_id=graph.id) }}"></div>
 <script type="module" src="{{ url_for('static', filename='src/js/campaign_live.js') }}"></script>
-<a href="{{ url_for('campaigns.party_materials', party_id=party.id) }}">{{ party.name }} · {{ _('Materials') }}</a>
+<a href="{{ url_for('campaigns.party_materials', party_id=party.id) }}">{{ party.name|markdown_inline }} · {{ _('Articles') }}</a>
 {% endif %}
 <div x-data="pointcrawl" data-graph="{{ graph|tojson|forceescape }}" data-editing="{{ 'true' if editing else 'false' }}"
  {% if editing %}data-save-url="{{ url_for('campaigns.map_data', map_id=pointcrawl.id) }}"{% endif %}
@@ -13,7 +13,7 @@
 <h1 x-text="graph.title"></h1>
 {% if editing %}<details><summary>{{ _('Map notes') }}</summary><div class="rich-content" x-html="$richHTML(graph.body)"></div></details>
 {% else %}<div class="rich-content" x-html="$richHTML(graph.body)"></div>{% endif %}
-{% if editing %}<p>{{ _('Geometry is shared. New locations and paths remain private until revealed.') }}</p>
+{% if editing %}<p x-show="showLocations">{{ _('Geometry is shared. New locations and paths remain private until revealed.') }}</p>
 <div class="campaign-actions"><a href="{{ url_for('campaigns.edit_entry', entry_id=pointcrawl.entry_id) }}">{{ _('Edit map description') }}</a><a href="{{ url_for('campaigns.reveal', entry_id=pointcrawl.entry_id) }}">{{ _('Reveal map to party') }}</a></div>
 <form x-ref="saveForm" @submit.prevent="save()">{{ token() }}<button :disabled="saving || !canvasReady || generating">{{ _('Save map') }}</button><span x-show="dirty">{{ _('Unsaved changes') }}</span></form>
 {% endif %}

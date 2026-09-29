@@ -4,7 +4,7 @@
     {% if party %}
     <button type="button" class="button" style="margin-top: 0px"
       hx-get="/charedit/leave-party/{{username}}/{{url_name}}" hx-target="#character-party-container"
-      hx-confirm="Do you want to leave party <br/>{{party.name}}?" data-confirm-title="Leave party"
+      hx-confirm="Do you want to leave party <br/>{{ party.name|markdown_inline }}?" data-confirm-title="Leave party"
       data-confirm-button="Leave">
       {{_('Leave party')}}
     </button>
@@ -13,8 +13,8 @@
 </div>
 {% if party %}
 <div id="character-party-name-description">
-  <a class="bold subtitle" id="character-party-link" href="{{ base_url }}/{{ party_url }}">{{ party.name }}</a>
-  <p class="" id="character-party-description">{{ party.description }}</p>
+  <a class="bold subtitle" id="character-party-link" href="{{ base_url }}/{{ party_url }}">{{ party.name|markdown_inline }}</a>
+  <div class=" rich-content" id="character-party-description">{{ party.description|markdown }}</div>
 </div>
 {% else %}
 <div class="column">

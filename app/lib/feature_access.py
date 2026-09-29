@@ -7,8 +7,9 @@ from flask_login import current_user
 
 
 def init_feature_access(app):
+    app.config['LOCAL_FEATURE_ACCESS'] = os.environ.get('LOCAL_FEATURE_ACCESS', '').lower() in {'1', 'true'}
     for key in ('FEATURE_TEST_USER_IDS', 'FEATURE_TEST_PARTY_IDS'):
-        values = re.split(r'[,\s]+', os.environ.get(key, '').strip())
+        values = re.split(r'[,\s]+', ('' if app.config['LOCAL_FEATURE_ACCESS'] else os.environ.get(key, '')).strip())
         if any(value and (not re.fullmatch(r'[0-9]+', value) or int(value) < 1)
                for value in values):
             raise ValueError(f'{key} must contain positive integer IDs separated by commas or whitespace.')
@@ -21,11 +22,13 @@ def init_feature_access(app):
 
 def user_features_enabled():
     return (current_user.is_authenticated
-            and current_user.id in current_app.config.get('FEATURE_TEST_USER_IDS', ()))
+            and (current_app.config.get('LOCAL_FEATURE_ACCESS', False)
+                 or current_user.id in current_app.config.get('FEATURE_TEST_USER_IDS', ())))
 
 
 def party_features_enabled(party_id):
-    return party_id in current_app.config.get('FEATURE_TEST_PARTY_IDS', ())
+    return (current_app.config.get('LOCAL_FEATURE_ACCESS', False)
+            or party_id in current_app.config.get('FEATURE_TEST_PARTY_IDS', ()))
 
 
 def require_party_features(party_id):

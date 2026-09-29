@@ -1,20 +1,4 @@
 // Shared structured generators. Table data is supplied by Tools or the map editor.
-const convertName = (nameFormula, replacements) => {
-  let name = nameFormula;
-
-  replacements.forEach(({ type, word }) => {
-    const regex = new RegExp(`\\[${type}\\]`, "g");
-    name = name.replace(regex, word);
-  });
-
-  // Remove optional parts if their content wasn't replaced
-  name = name.replace(/\([^()]*\[.*?\][^()]*\)/g, "");
-  // Remove any remaining brackets
-  name = name.replace(/[\[\]()]/g, "");
-  // Trim any extra spaces
-  return name.trim().replace(/\s+/g, " ");
-};
-
 export function generateWorldbuilding(data, subcategory, random = Math.random) {
   const roll = sides => Math.floor(random() * sides);
   const setting = data[subcategory];
@@ -34,32 +18,8 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
         ]
       );
     }
-    const nameFormula =
-      realmSetting.Theme.Factions.FactionNames.NameFormulas.Faction[
-        roll(realmSetting.Theme.Factions.FactionNames.NameFormulas.Faction.length)
-      ];
-    const adjective =
-      realmSetting.Theme.Factions.FactionNames.Adjectives[
-        roll(realmSetting.Theme.Factions.FactionNames.Adjectives.length)
-      ];
-    const noun =
-      realmSetting.Theme.Factions.FactionNames.Nouns[
-        roll(realmSetting.Theme.Factions.FactionNames.Nouns.length)
-      ];
-    const type =
-      realmSetting.Theme.Factions.FactionNames.FactionTypes[
-        roll(realmSetting.Theme.Factions.FactionNames.FactionTypes.length)
-      ];
-
-    const name = convertName(nameFormula, [
-      { type: "Noun", word: noun },
-      { type: "Adjective", word: adjective },
-      { type: "Group", word: type },
-    ]);
-
     let factions = {};
     factions = {
-      Name: name,
       Type: realmSetting.Theme.Factions.FactionTypes.Type[
         roll(realmSetting.Theme.Factions.FactionTypes.Type.length)
       ],
@@ -101,29 +61,6 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
       );
     }
 
-    const nameFormula =
-      factionSetting.FactionNames.NameFormulas[
-        roll(factionSetting.FactionNames.NameFormulas.length)
-      ];
-    const adjective =
-      factionSetting.FactionNames.Adjectives[
-        roll(factionSetting.FactionNames.Adjectives.length)
-      ];
-    const noun =
-      factionSetting.FactionNames.Nouns[
-        roll(factionSetting.FactionNames.Nouns.length)
-      ];
-    const group =
-      factionSetting.FactionNames.Group[
-        roll(factionSetting.FactionNames.Group.length)
-      ];
-
-    const name = convertName(nameFormula, [
-      { type: "Noun", word: noun },
-      { type: "Adjective", word: adjective },
-      { type: "Group", word: group },
-    ]);
-
     const agents = [
       "Leader",
       "Champion",
@@ -141,7 +78,6 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
 
     let factions = {};
     factions = {
-      Name: name,
       Type: factionSetting.FactionTypes[roll(factionSetting.FactionTypes.length)],
       Agent: agents[roll(agents.length)],
       "Trait 1":
@@ -269,7 +205,7 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
       }
     }
 
-    return {title: 'Dungeon', category: 'location', fields: result, mapKind: 'dungeon'};
+    return {title: `Dungeon: ${result.Purpose['Original Use']}`, category: 'location', fields: result, mapKind: 'dungeon'};
   } else if (subcategory === "Forest") {
     result.Traits = {
       Traits:
@@ -359,13 +295,6 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
         result.POIs.push(`Hazard: ${hazard}, ${feature}`);
       }
     }
-    const name =
-      setting.ForestNames.Adjectives[
-        roll(setting.ForestNames.Adjectives.length)
-      ] +
-      " " +
-      setting.ForestNames.Nouns[roll(setting.ForestNames.Nouns.length)];
-
     const trailsRepeat = poiRepeat;
     result.trails = [];
 
@@ -376,7 +305,7 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
       result.trails.push(`${path}, ${type}, ${marker}`);
     }
 
-    return {title: name, category: 'location', fields: result, mapKind: 'forest'};
+    return {title: `Forest: ${result.Traits.Traits}`, category: 'location', fields: result, mapKind: 'forest'};
   } else if (subcategory === "Realm") {
     result.Culture = {
       Character:
@@ -451,20 +380,8 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
     for (let i = 0; i < poiCount; i++) {
       let poi = "";
 
-      const poiNameForumla =
-        setting.Names.NameFormulas.POI[
-          roll(setting.Names.NameFormulas.POI.length)
-        ];
-      const adjective =
-        setting.Names.Adjectives[roll(setting.Names.Adjectives.length)];
-      const noun = setting.Names.Nouns[roll(setting.Names.Nouns.length)];
-      const type =
-        setting.PointsOfInterest.POI[roll(setting.PointsOfInterest.POI.length)];
-      const poiName = convertName(poiNameForumla, [
-        { type: "Noun", word: noun },
-        { type: "Adjective", word: adjective },
-        { type: "POI", word: type },
-      ]);
+      const type = setting.PointsOfInterest.POI[roll(setting.PointsOfInterest.POI.length)];
+      const poiName = type;
 
       if (type === "Waypoint") {
         poi = `${poiName}: ${
@@ -518,37 +435,22 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
           ]
         }`;
       } else if (type === "Forest") {
-        poi = poiName;
+        const traits = data.Forest.Properties.Traits;
+        poi = `Forest: ${traits.Description1[roll(traits.Description1.length)]}, ${traits.Description2[roll(traits.Description2.length)]}`;
       }
       result.POIs.push(poi);
       poiKinds.push(type.toLowerCase());
     }
 
-    const realmNameFormula =
-      setting.Names.NameFormulas.Realm[
-        roll(setting.Names.NameFormulas.Realm.length)
-      ];
-    const realmAdjective =
-      setting.Names.Adjectives[roll(setting.Names.Adjectives.length)];
-    const realmNoun = setting.Names.Nouns[roll(setting.Names.Nouns.length)];
-    const realmRulerType =
-      setting.Names.RulerTypes[roll(setting.Names.RulerTypes.length)];
-    const realmName = convertName(realmNameFormula, [
-      { type: "Noun", word: realmNoun },
-      { type: "Adjective", word: realmAdjective },
-      { type: "Rulers", word: realmRulerType },
-    ]);
-
-    return {title: realmName, category: 'location', fields: result, mapKind: 'realm', poiKinds};
+    return {title: `Realm: ${result.Culture.Character}`, category: 'location', fields: result, mapKind: 'realm', poiKinds};
   } else if (subcategory === "Faction") {
     result = rollStandaloneFaction(setting);
-    return {title: result.Name, category: 'faction', fields: result};
+    return {title: `Faction: ${result.Type}`, category: 'faction', fields: result};
   } else if (subcategory === "Faction Actions") {
     const actions = setting;
     const action = actions[roll(actions.length)];
     return {title: 'Faction Action', category: 'note', fields: action};
   } else if (subcategory === "NPC") {
-    const name = setting.NPCNames.Names[roll(setting.NPCNames.Names.length)];
     const background =
       setting.NPCBackgrounds[roll(setting.NPCBackgrounds.length)];
     const virtue =
@@ -557,6 +459,6 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
     const quirk = setting.NPCQuirks[roll(setting.NPCQuirks.length)];
     const goal = setting.NPCGoals.Goals[roll(setting.NPCGoals.Goals.length)];
 
-    return {title: name, category: 'npc', fields: {Name:name, Background:background, Virtue:virtue, Vice:vice, Quirk:quirk, Goal:goal}};
+    return {title: `NPC: ${background}`, category: 'npc', fields: {Background:background, Virtue:virtue, Vice:vice, Quirk:quirk, Goal:goal}};
   }
 };

@@ -65,9 +65,10 @@ def common_context():
 
 
 def my_parties():
-    return Party.query.filter_by(owner=current_user.id).filter(
-        Party.id.in_(current_app.config.get('FEATURE_TEST_PARTY_IDS', ()))
-    ).order_by(Party.name).all()
+    query = Party.query.filter_by(owner=current_user.id)
+    if not current_app.config.get('LOCAL_FEATURE_ACCESS', False):
+        query = query.filter(Party.id.in_(current_app.config.get('FEATURE_TEST_PARTY_IDS', ())))
+    return query.order_by(Party.name).all()
 
 
 def my_campaigns():
@@ -412,7 +413,10 @@ def new_map():
             notify_parties([party.id])
             return redirect(url_for('campaigns.party_map', party_id=party.id, map_id=pointcrawl.id))
         return redirect(url_for('campaigns.map_edit', map_id=pointcrawl.id))
-    return render_template('campaigns/new_map.html', campaign=campaign, campaigns=my_campaigns(), party=party)
+    kind = request.args.get('kind', 'realm')
+    if kind not in MAP_KINDS:
+        abort(400)
+    return render_template('campaigns/new_map.html', campaign=campaign, campaigns=my_campaigns(), party=party, kind=kind)
 
 
 @campaigns.route('/maps/<int:map_id>/edit')
@@ -467,14 +471,19 @@ def import_result():
     return render_template('campaigns/import.html', campaigns=my_campaigns(), parties=my_parties())
 
 
+@campaigns.route('/articles/tables')
 @campaigns.route('/maps/tables')
 def map_tables():
     import json
     from pathlib import Path
     data = {}
     folder = Path(__file__).resolve().parents[1] / 'static' / 'json' / 'generators'
-    for name in ('dungeons', 'forests', 'realm'):
+    for name in ('dungeons', 'forests', 'realm', 'factions', 'npcs', 'bestiary',
+                 'custom-monster', 'reliquary', 'spellbooks', 'dungeon-events', 'wilderness-events'):
         data.update(json.loads((folder / f'{name}.json').read_text()))
+    data['Equipment'] = json.loads((folder.parent / 'marketplace.json').read_text())
+    if request.path == '/maps/tables':
+        data = {key: data[key] for key in ('Dungeon', 'Forest', 'Realm')}
     return jsonify(data)
 
 

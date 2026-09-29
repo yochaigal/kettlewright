@@ -180,6 +180,10 @@ def create_app():
     from app.lib.item_description import render_item_description
     app.add_template_filter(render_item_description, 'item_description')
 
+    from app.lib.rich_content import render_content, render_inline
+    app.add_template_filter(render_content, 'markdown')
+    app.add_template_filter(render_inline, 'markdown_inline')
+
     # Convert end of line chars into HTML <br>
     @app.template_filter("eol2br")
     def eol2br_filter(text: str) -> str:

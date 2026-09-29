@@ -113,7 +113,7 @@
             <div class="select" style="max-width: 200px">
               <select id="edit_item_container" name="edit_item_container">
                 {% for c in inventory.containers %}
-                <option value="{{c.id}}" {% if mode=='edit' and item.location==c.id %} selected {% endif %}>{{c.name}}
+                <option value="{{c.id}}" {% if mode=='edit' and item.location==c.id %} selected {% endif %}>{{ c.name|markdown_inline|striptags }}
                 </option>
                 {% endfor %}
               {% with source=party %}{% include "partial/companions/container_options.html" %}{% endwith %}

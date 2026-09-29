@@ -15,9 +15,11 @@ def drawing(text='SECRET DRAWING'):
         'width': 100, 'height': 30, 'angle': 0, 'text': text}], 'files': {}}
 
 
-def test_drawing_publication_is_explicit_independent_and_revocable(setup):
+@pytest.mark.parametrize('kind', ['dungeon', 'freeform'])
+def test_drawing_publication_is_explicit_independent_and_revocable(setup, kind):
     app, client = setup
-    map_id, graph = create_map(client)
+    map_id, graph = create_map(client, kind=kind, nodes=0 if kind == 'freeform' else 2)
+    assert graph['kind'] == kind
     entry_id = map_entry_id(app, map_id)
     graph['drawing'] = drawing()
     response = client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)})
@@ -31,6 +33,7 @@ def test_drawing_publication_is_explicit_independent_and_revocable(setup):
     assert reveal(client, entry_id, version=2, publish_drawing='1', map_version=graph['version']).status_code == 409
     login(client, 2)
     published = client.get(f'/party/1/maps/{map_id}/data')
+    assert published.json['kind'] == kind
     assert 'SECRET DRAWING' in published.get_data(as_text=True)
     assert 'CHANGED PRIVATE DRAWING' not in published.get_data(as_text=True)
     assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)}).status_code == 403
@@ -54,14 +57,16 @@ def test_invalid_drawing_does_not_replace_saved_graph(setup, mutation):
     assert client.get(f'/maps/{map_id}/data').json == original
 
 
-def test_direct_map_publication_includes_drawing_and_drops_unused_files(setup):
+@pytest.mark.parametrize('kind', ['dungeon', 'freeform'])
+def test_direct_map_publication_includes_drawing_and_drops_unused_files(setup, kind):
     app, client = setup
     draft = {'nodes': [], 'edges': [], 'drawing': drawing('PUBLIC DRAWING')}
     draft['drawing']['files']['unused'] = {'dataURL': 'SECRET UNUSED FILE'}
     response = client.post('/maps/new', data={'party_id': 1, 'title': 'Shared map',
-        'kind': 'dungeon', 'draft': json.dumps(draft)})
+        'kind': kind, 'draft': json.dumps(draft)})
     assert response.status_code == 302
     graph = client.get(response.location + 'data').json
+    assert graph['kind'] == kind
     assert graph['drawing']['elements'][0]['text'] == 'PUBLIC DRAWING'
     assert graph['drawing']['files'] == {}
 
@@ -123,13 +128,13 @@ def reveal(client, entry_id, party_id=1, version=0, title='Known name', body='Kn
         f'version_{party_id}':version, f'title_{party_id}':title, f'body_{party_id}':body, **extra})
 
 
-def create_map(client, campaign_id=1, title='SECRET MAP', nodes=2):
+def create_map(client, campaign_id=1, title='SECRET MAP', nodes=2, kind='dungeon'):
     draft={'nodes':[{'id':f'new-node-{i}', 'number':i+1,'x':i*100,'y':100,
         'title':f'SECRET ROOM {i}', 'body':f'SECRET TRAP {i}'} for i in range(nodes)],
         'edges':[{'id':'new-edge-0','source':'new-node-0','target':'new-node-1',
                   'title':'SECRET PASSAGE','body':'SECRET KEY','path_type':'hidden'}] if nodes>1 else []}
     response=client.post('/maps/new',data={'campaign_id':campaign_id,'title':title,
-        'kind':'dungeon','draft':json.dumps(draft)})
+        'kind':kind,'draft':json.dumps(draft)})
     assert response.status_code==302, response.get_data(as_text=True)
     map_id=int(re.search(r'/maps/(\d+)/edit',response.location).group(1))
     return map_id,client.get(f'/maps/{map_id}/data').json
@@ -345,7 +350,7 @@ def test_disconnect_revokes_and_deleting_campaign_removes_materials(setup):
 def test_xss_and_protocols():
     value=str(render_content('<script>alert(1)</script>\njavascript:alert(1) https://example.com/path'))
     assert '<script>' not in value
-    assert '<br>' in value
+    assert '<p>' in value
     assert 'href="javascript:' not in value
     assert 'href="https://example.com/path"' in value
 
@@ -749,7 +754,7 @@ def test_rich_html_sanitization_and_literal_legacy_text(setup):
         assert '<strong>Safe</strong>' in body
         assert 'onclick' not in body and 'style=' not in body and '<script' not in body
         assert 'javascript:' not in body
-    assert str(render_content('<strong>literal</strong>\nnext')) == '&lt;strong&gt;literal&lt;/strong&gt;<br>next'
+    assert '<strong>literal</strong><br>' in str(render_content('<strong>literal</strong>\nnext'))
     assert content_excerpt(RICH_PREFIX + '<p>First</p><p><strong>Second</strong></p>', 8) == 'First Se'
     unsafe_image = RICH_PREFIX + '<img src="javascript:alert(1)">'
     assert client.post('/materials/new', data={'title': 'Bad image', 'category': 'note', 'body': unsafe_image}).status_code == 400
@@ -1124,3 +1129,61 @@ def test_bulk_delete_location_cleans_connected_paths_and_updates_surviving_map(s
     assert saved['version'] > graph['version']
     with app.app_context():
         assert ContentEntry.query.count() == 2
+
+
+def test_markdown_article_publication_preserves_source_and_safe_rendering(setup):
+    app, client = setup
+    body = '## A clue\n\n**Bold** and *italic*, ~~gone~~, `code`.\n\n- One\n- Two\n\n> Whisper\n\n| A | B |\n| - | - |\n| 1 | 2 |'
+    entry_id = create_entry(client, body=body)
+    with app.app_context():
+        assert db.session.get(ContentEntry, entry_id).body == body
+    assert reveal(client, entry_id, body=body).status_code == 302
+    login(client, 2)
+    page = client.get(f'/party/1/materials/{entry_id}').text
+    for tag in ('<h2>A clue</h2>', '<strong>Bold</strong>', '<em>italic</em>', '<del>gone</del>', '<code>code</code>', '<ul>', '<blockquote>', '<table>'):
+        assert tag in page
+
+
+def test_markdown_images_use_existing_private_storage_and_access_checks(setup):
+    app, client = setup
+    body = 'A token\n\n![Token](' + re.search(r'src="([^"]+)"', description_image(client))[1] + ')'
+    entry_id = create_entry(client, body=body)
+    with app.app_context():
+        saved = db.session.get(ContentEntry, entry_id).body
+    assert saved.startswith('A token\n\n![Token](/material-images/1/')
+    assert 'data:image/' not in saved
+    url = re.search(r'\]\(([^)]+)\)', saved)[1]
+    assert client.get(url).status_code == 200
+    login(client, 2)
+    assert client.get(url).status_code == 404
+
+
+@pytest.mark.parametrize('category', ['bestiary', 'item', 'spellbook', 'culture', 'custom'])
+def test_new_article_categories_can_be_created_directly_for_party(setup, category):
+    app, client = setup
+    response = client.post('/materials/new', data={'party_id': 1, 'category': category,
+        'title': '**Known** article', 'body': 'A *public* description'})
+    assert response.status_code == 302
+    with app.app_context():
+        entry = ContentEntry.query.one()
+        assert entry.campaign_id is None
+        assert entry.body == ''
+        assert entry.presentations[0].body == 'A *public* description'
+
+
+def test_map_inline_card_edits_are_private_and_version_checked(setup):
+    app, client = setup
+    map_id, graph = create_map(client)
+    edge = graph['edges'][0]
+    assert reveal(client, edge['entry_id'], body='Public path').status_code == 302
+    edge.update(content_changed=True, title='Secret tunnel', body='**Locked** gate', path_type='hidden')
+    response = client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)})
+    assert response.status_code == 200
+    saved = response.json
+    assert saved['edges'][0]['body'] == '**Locked** gate'
+    assert saved['edges'][0]['path_type'] == 'hidden'
+    with app.app_context():
+        assert PartyPresentation.query.filter_by(entry_id=edge['entry_id']).one().body == 'Public path'
+    saved['edges'][0].update(content_changed=True, entry_version=edge['entry_version'], body='Stale')
+    assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(saved)}).status_code == 409
+    assert client.get(f'/maps/{map_id}/data').json['edges'][0]['body'] == '**Locked** gate'

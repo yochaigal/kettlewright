@@ -10,7 +10,7 @@
   <h3 class="no-space">{{ labels[section] }}</h3>
   {% if errors %}<ul class="red-text" role="alert">{% for error in errors %}<li>{{error}}</li>{% endfor %}</ul>{% endif %}
   {% if section == 'party' and party %}
-    <p>{{party.name}}</p>
+    <p>{{ party.name|markdown_inline }}</p>
     <input type="hidden" name="leave_party" value="1">
   {% else %}
     {% for field in fields %}
@@ -39,7 +39,7 @@
   </div>
 </form>
 {% elif section == 'name' %}
-  <h1 {{ edit_attrs(section, labels[section]) }}>{{character.name}}</h1>
+  <h1 {{ edit_attrs(section, labels[section]) }}>{{ character.name|markdown_inline }}</h1>
   <span id="character-dead-badge">{% include "partial/dead_badge.html" %}</span>
 {% elif section == 'background' %}
   {% if is_owner %}
@@ -53,8 +53,8 @@
               {% set answer = character['background_table' ~ index ~ '_answer'] %}
               {% if question or answer %}
               <div class="character-section print-container">
-                <h4>{{question or _('Background answer %(number)s', number=index)}}</h4>
-                <p class="with-whitespace">{{answer or ''}}</p>
+                <h4>{{(question or _('Background answer %(number)s', number=index))|markdown_inline}}</h4>
+                <div class="with-whitespace rich-content">{{(answer or '')|markdown}}</div>
               </div>
               {% endif %}
             {% endfor %}
@@ -67,9 +67,9 @@
   <h3 id="character-party-heading" {{ edit_attrs(section, labels[section]) }}>{{labels[section]}}</h3>
   {% if party %}
     <div id="character-party-name-description">
-      {% if is_owner %}<a class="bold subtitle" id="character-party-link" href="/{{party_url}}">{{party.name}}</a>
-      {% else %}<div class="bold subtitle">{{party.name}}</div>{% endif %}
-      <p class="character-text-field with-whitespace" id="character-party-description">{{party.description}}</p>
+      {% if is_owner %}<a class="bold subtitle" id="character-party-link" href="/{{party_url}}">{{ party.name|markdown_inline }}</a>
+      {% else %}<div class="bold subtitle">{{ party.name|markdown_inline }}</div>{% endif %}
+      <div class="character-text-field with-whitespace rich-content" id="character-party-description">{{ party.description|markdown }}</div>
     </div>
   {% else %}
     <div {{ edit_attrs(section, labels[section]) }}><p id="character-no-party-description">{{_('This character does not belong to a party...')}}</p></div>
@@ -77,6 +77,6 @@
 {% else %}
   <h3 class="no-space">{{labels[section]}}</h3>
   <div {{ edit_attrs(section, labels[section]) }}>
-    <div id="character-{{section}}-view" class="with-whitespace character-text-field">{% if character[section] %}{{character[section]|safe if section in ('notes', 'scars') else character[section]}}{% else %}{{empty[section]}}{% endif %}</div>
+    <div id="character-{{section}}-view" class="rich-content character-text-field">{% if character[section] %}{{character[section]|markdown}}{% else %}{{empty[section]}}{% endif %}</div>
   </div>
 {% endif %}
