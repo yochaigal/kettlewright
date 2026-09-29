@@ -25,6 +25,26 @@
     /* border-bottom: solid 1px color-mix(in lab, transparent 50%, var(--fg)); */
 }
 
+.inventory-header button.inventory-container-title {
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+    font-family: inherit;
+    &:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+}
+
+.inventory-header .inventory-container-title {
+    &:hover, &:focus-visible { text-decoration: underline; text-underline-offset: .2em; }
+    &.inventory-ground-tab {
+        border-left: 1px solid color-mix(in srgb, var(--fg) 40%, transparent);
+        padding-left: 1rem;
+        margin-left: .5rem;
+    }
+}
+
 
 .inventory-header {
     /* border-top: .5px dotted ; */
@@ -426,4 +446,34 @@
   position: fixed; z-index: 1000; pointer-events: none;
   padding: 6px 10px; max-width: 260px; border: 1px solid var(--fg);
   background: var(--bg); color: var(--fg); opacity: .9;
+}
+.ground-entry {
+  padding: 1rem 0;
+  border-bottom: 1px solid currentColor;
+  overflow-wrap: anywhere;
+}
+.ground-place { margin: .25rem 0; white-space: pre-wrap; }
+.ground-item-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem; }
+form.ground-pickup {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: .75rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  width: 34rem;
+  max-width: 100%;
+  background: transparent;
+  box-shadow: none;
+  label { grid-column: auto; width: auto; margin: 0; white-space: nowrap; }
+  select, button { box-sizing: border-box; height: 4rem; margin: 0; }
+  select { width: 100%; min-width: 0; max-width: 100%; }
+}
+.ground-page { padding: 0 1.5rem; box-sizing: border-box; }
+.ground-drop-modal {
+  .modal-card { box-sizing: border-box; width: 48rem; max-width: calc(100vw - 3rem); padding: 1.5rem; }
+  .modal-card-head, .modal-card-body, .modal-card-foot { box-sizing: border-box; width: 100%; padding: 1rem; }
+  .modal-card-title { flex-shrink: 1; overflow-wrap: anywhere; line-height: 1.25; }
+  .footer-button-container { flex-wrap: nowrap; justify-content: center; }
+  .modal-card-foot .button { margin: 0; }
 }

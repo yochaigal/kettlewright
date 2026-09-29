@@ -36,6 +36,10 @@
             {{it.title | markdown_inline}}
         </div>
         <div class="inventory-item-button-container">
+            {% if not companion_sheet and current_user.is_authenticated and character.owner == current_user.id and character.party_id and it.editable and 'carrying' not in it %}
+            <button type="button" class="slot-icon" title="{{ _('Drop item') }}"
+                hx-get="{{ url_for('ground.drop', character_id=character.id, kind='item', object_id=it.id) }}" hx-target="#modal-anchor"><i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button>
+            {% endif %}
             {% if "uses" in it.tags %}
             <div class="row8">
                 <div class="pointer item-edit-button-frame" title="Decrease"
@@ -87,6 +91,10 @@
 
 <div class="panel-block inventory-footer">
     <div class="inventory-footer-buttons">
+        {% if not companion_sheet and current_user.is_authenticated and character.owner == current_user.id and character.party_id and inventory.selected_container.id != 0 %}
+        <button class="button smaller-font" type="button"
+            hx-get="{{ url_for('ground.drop', character_id=character.id, kind='container', object_id=inventory.selected_container.id) }}" hx-target="#modal-anchor">{{ _('Drop container') }}</button>
+        {% endif %}
         <button class="button smaller-font" type="button"
             hx-get="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/item-edit/None?mode=create"
             hx-target="#modal-anchor" {% if inventory.selected_container['encumbered'] %} disabled {% endif %}>

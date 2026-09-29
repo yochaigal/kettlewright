@@ -199,9 +199,11 @@ def charedit_cancel(username, url_name):
     if not current_user.is_authenticated or character.owner != current_user.id:
         abort(403)
     data = request.form
+    from app.lib.ground_items import ground_revision
+    ground_changed = ground_revision(data.get('old_containers')) != ground_revision(character.containers)
     changed = False
     # restore some data
-    if data['old_items'] != None:
+    if data['old_items'] != None and not ground_changed:
         restored_items = json.loads(data['old_items'])
         finish_companion_transfers(character, restored_items)
         character.items = json.dumps(restored_items)
@@ -210,7 +212,7 @@ def charedit_cancel(username, url_name):
     if data['old_gold'] != None:
         character.gold = data['old_gold']
         changed = True
-    if data['old_containers'] != None:
+    if data['old_containers'] != None and not ground_changed:
         character.containers = data['old_containers']
         changed = True
     if changed:
@@ -542,7 +544,7 @@ def charedit_inplace_inventory_item_edit(username, url_name, item_id):
         item = None
     return render_template('partial/modal/edit_item.html', user=user, character=character, username=username, url_name=url_name, 
                            inventory=inventory, item=item, mode=mode, library=Market().buy([it["name"] for it in load_market()]),
-                           party_containers=json.loads(party.containers or '[]') if
+                           party_containers=[c for c in json.loads(party.containers or '[]') if not c.get('on_the_ground')] if
                            (party := db.session.get(Party, character.party_id)) and
                            character.id in json.loads(party.members or '[]') else [])
 

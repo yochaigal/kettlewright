@@ -1,0 +1,37 @@
+<div class="ground-inventory" data-party-id="{{ party.id }}">
+  {% with ground_active=true %}{% include 'partial/partyview/inventory_tabs.html' %}{% endwith %}
+  {% if error %}<p class="red-text" role="alert">{{ error }}</p>{% endif %}
+  {% for it in ground_items %}
+  <div class="ground-entry">
+    <div><strong>{{ it.name }}</strong>{% if it.get('ground_bundle') %} <span>({{ _('Container') }})</span>{% endif %}</div>
+    <p class="ground-place">{{ _('Place') }}: {{ it.get('ground_place', '') }}</p>
+    <div class="ground-item-meta">
+      <small>{{ _('Dropped by') }}: {{ it.get('dropped_by', '') }}</small>
+      {% if 'uses' in it %}<small>· {{ it.uses }} {{ _('uses') }}</small>{% endif %}
+      {% if 'charges' in it %}<small>· {{ it.charges }}/{{ it.max_charges }} {{ _('charges') }}</small>{% endif %}
+    </div>
+    {% if it.get('ground_bundle') %}
+    <details><summary>{{ _('Contents') }}</summary>
+      {% for container in it.ground_bundle.containers %}
+      <strong>{{ container.name }}</strong><ul>
+        {% for content in it.ground_bundle['items'] if 'carrying' not in content and content.location == container.id %}
+        <li>{{ content.name }}{% if 'uses' in content %} — {{ content.uses }} {{ _('uses') }}{% endif %}</li>
+        {% else %}<li>{{ _('Empty') }}</li>{% endfor %}
+      </ul>
+      {% endfor %}
+    </details>
+    {% endif %}
+    {% if characters %}
+    <form class="ground-pickup no-space" hx-post="{{ url_for('ground.pickup', party_id=party.id, item_id=it.id) }}"
+      method="post" action="{{ url_for('ground.pickup', party_id=party.id, item_id=it.id) }}" hx-target="#inventory-container">
+      {{ form.hidden_tag() }}
+      <label for="ground-character-{{ it.id }}">{{ _('Pick up as') }}</label>
+      <select id="ground-character-{{ it.id }}" name="character" required>
+        {% for c in characters %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}
+      </select>
+      <button class="button smaller-font" type="submit">{{ _('Pick up') }}</button>
+    </form>
+    {% endif %}
+  </div>
+  {% else %}<p>{{ _('There is nothing on the ground.') }}</p>{% endfor %}
+</div>

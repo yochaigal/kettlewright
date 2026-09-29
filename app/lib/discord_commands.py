@@ -5,12 +5,9 @@ import re
 from flask import current_app, url_for
 
 from app.lib.character_rolls import roll_character
+from app.lib.discord_character import act, option, player_choices, player_commands
 from app.models import Character, DiscordAccount, DiscordChannel, DiscordSelection, Party, User, db
 from app.blueprints.party import party_characters
-
-
-def option(name, description, **kwargs):
-    return dict(type=3, name=name, description=description, **kwargs)
 
 
 def command_definition():
@@ -25,8 +22,8 @@ def command_definition():
         ('party', 'Show this channel’s party', [
             dict(type=4, name='page', description='Roster page', min_value=1)]),
         ('roll', 'Roll dice for your selected character', [
-            option('dice', 'For example d20, 2d6 or d6+d8; at most two dice', required=True, max_length=30)]),
-    ]
+            option('dice', 'For example d20, 2d6 or d6+d8; omit to show dice buttons', max_length=30)]),
+    ] + player_commands()
     return dict(name='kw', description='Kettlewright characters, parties and dice', type=1,
                 contexts=[0], integration_types=[0], options=[
                     dict(type=1, name=name, description=description, options=options)
@@ -46,9 +43,12 @@ def site_url(path):
     return current_app.config['DISCORD_BASE_URL'].rstrip('/') + path
 
 
-def linked_party(guild_id, channel_id):
+def linked_party(guild_id, channel_id, lock=False):
     binding = db.session.get(DiscordChannel, (guild_id, channel_id))
-    party = db.session.get(Party, binding.party_id) if binding else None
+    query = Party.query.filter_by(id=binding.party_id) if binding else None
+    # Serialize read-modify-write player actions within this party on databases
+    # with row locks. SQLite serializes writes when the receipt is inserted.
+    party = (query.with_for_update().populate_existing().first() if lock else query.first()) if binding else None
     # A transferred party or disconnected Warden must be explicitly bound again.
     if (not party or party.owner != binding.linked_by
             or not db.session.get(DiscordAccount, binding.linked_by)
@@ -68,6 +68,13 @@ def resolve_choice(objects, value):
 
 def command_parts(payload):
     data = payload.get('data', {})
+    if payload.get('type') == 3:
+        if data.get('component_type') != 2:
+            raise ValueError('Unknown button.')
+        match = re.fullmatch(r'kw:roll:(\d+):(\d+):(d(?:4|6|8|10|12|20|100)|2d6)', data.get('custom_id', ''))
+        if not match:
+            raise ValueError('Unknown button. Open /kw roll again.')
+        return 'roll', dict(button_user=int(match[1]), button_character=int(match[2]), dice=match[3])
     if data.get('name') != 'kw' or len(data.get('options', [])) != 1:
         raise ValueError('Unknown command.')
     subcommand = data['options'][0]
@@ -88,7 +95,16 @@ def autocomplete(payload, account):
             candidates = [c for c in party_characters(party) if c.owner == account.user_id]
             query = str(values.get('character', '')).casefold()
         else:
-            candidates, query = [], ''
+            _, party = linked_party(payload['guild_id'], payload['channel_id'])
+            characters = party_characters(party)
+            selection = db.session.get(DiscordSelection, (account.user_id, payload['guild_id'], payload['channel_id']))
+            character = next((c for c in characters if selection and c.id == selection.character_id
+                              and c.owner == account.user_id), None)
+            if character is None:
+                return {'type': 8, 'data': {'choices': []}}
+            focused = next((o['name'] for o in payload['data']['options'][0].get('options', [])
+                            if o.get('focused')), '')
+            return {'type': 8, 'data': {'choices': player_choices(name, focused, values, character, characters)}}
         choices = [dict(name=f'{c.name} (#{c.id})'[:100], value=str(c.id))
                    for c in candidates if query in c.name.casefold() or query == str(c.id)][:25]
     except (ValueError, KeyError):
@@ -127,7 +143,7 @@ def execute(payload, account):
         DiscordSelection.query.filter_by(**scope).delete()
         return reply(f'Bound to **{safe_name(party.name)}**. Party cards and rolls requested here will be visible '
                      'to everyone who can read this channel. Each player should use /kw select.'), None
-    _, party = linked_party(guild_id, channel_id)
+    _, party = linked_party(guild_id, channel_id, lock=True)
     characters = party_characters(party)
     if user_id != party.owner and not any(c.owner == user_id for c in characters):
         raise PermissionError('You are not a member of this party.')
@@ -156,6 +172,8 @@ def execute(payload, account):
                       and c.owner == user_id), None)
     if character is None:
         raise ValueError('Select one of your characters in this party first: /kw select.')
+    if payload.get('type') == 3 and (values['button_user'] != user_id or values['button_character'] != character.id):
+        raise PermissionError('These buttons belong to another selection. Open /kw roll for your current character.')
     if name == 'character':
         owner = db.session.get(User, user_id)
         link = site_url(url_for('main.character', username=owner.username, url_name=character.url_name or ''))
@@ -169,7 +187,16 @@ def execute(payload, account):
                 f'Conditions: {conditions}\n<{link}>')
         return reply(text, private=False), None
     if name == 'roll':
+        if 'dice' not in values:
+            response = reply(f'Roll for **{safe_name(character.name)}**. Results appear in this channel and KW.')
+            dice = ('d4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100', '2d6')
+            buttons = [dict(type=2, style=1, label=d, custom_id=f'kw:roll:{user_id}:{character.id}:{d}') for d in dice]
+            response['data']['components'] = [dict(type=1, components=buttons[:5]), dict(type=1, components=buttons[5:])]
+            return response, None
         result, party = roll_character(user_id, character, values.get('dice'), expected_party=party.id)
         return reply(f'**{safe_name(character.name)}** rolled **{result["result"]}**', private=False), (
             party, character.name, result['result'])
+    confirmation = act(name, values, character, characters, safe_name)
+    if confirmation is not None:
+        return reply(confirmation), None
     raise ValueError('Unknown command.')

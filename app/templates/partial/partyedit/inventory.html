@@ -1,5 +1,5 @@
 <div class="inventory-header flex-row" style="gap: 1.5rem">
-    {% for cnt in inventory.containers %}
+    {% for cnt in inventory.containers if not cnt.get('on_the_ground') %}
     <div class="row8">
         <div class="inventory-container-title subtitle pointer {% if cnt.is_selected %} inventory-container-title-selected {% endif %} {% if cnt.encumbered %} red-text {% endif %} "
             hx-get="/party/inventory-select-container/{{party.id}}/{{cnt.id}}?mode=edit"
@@ -15,6 +15,7 @@
         {% endif %}
     </div>
     {% endfor %}
+    <a class="inventory-container-title inventory-ground-tab subtitle pointer" href="{{ url_for('ground.view', party_id=party.id) }}">on the ground</a>
 </div>
 <div style="margin-top: 0px; width: 100%">
     {% for it in inventory.selected_container["items"] %}

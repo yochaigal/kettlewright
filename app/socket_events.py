@@ -50,6 +50,9 @@ def resolve_party_changes(session, flush_context):
 
 @event.listens_for(Session, 'after_commit')
 def publish_party_changes(session):
+    # Releasing the Discord action savepoint is not the durable outer commit.
+    if session.in_nested_transaction():
+        return
     from app import socketio
     for party_id, recipients in session.info.pop('party_update_recipients', {}).items():
         for user_id in recipients:

@@ -209,15 +209,17 @@ def party_edit_cancel(ownername, party_url):
     if not can_transfer_from(party):
         abort(403)
     data = request.form
+    from app.lib.ground_items import preserve_ground
+    restored_items, restored_containers = preserve_ground(party,
+        json.loads(data.get('old_items') or '[]'), json.loads(data.get('old_containers') or '[]'))
     changed = False
     # restore some data
     if data['old_items'] != None:
-        restored_items = json.loads(data['old_items'])
         finish_companion_transfers(party, restored_items)
         party.items = json.dumps(restored_items)
         changed = True
     if data['old_containers'] != None:
-        party.containers = data['old_containers']
+        party.containers = json.dumps(restored_containers)
         changed = True
     if changed:
         db.session.commit()
@@ -352,6 +354,8 @@ def party_inventory_select_container(party_id, container_id):
     party = get_party_by_id(party_id)
     inventory = Inventory(party)
     inventory.select(int(container_id))
+    if inventory.selected_container.get('on_the_ground'):
+        return redirect(url_for('ground.view', party_id=party.id))
     inventory.setItemsWithRolls(False)
     inventory.decorate()
     tpl = 'partial/partyview/inventory.html'

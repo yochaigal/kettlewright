@@ -48,6 +48,10 @@
     </div>
   </div>
   <div class="slot-item-actions">
+    {% if current_user.is_authenticated and character.owner == current_user.id and character.party_id and it.editable and 'carrying' not in it %}
+    <button type="button" class="slot-icon" title="{{ _('Drop item') }}" aria-label="{{ _('Drop item') }}: {{ it.name | tr }}"
+      hx-get="{{ url_for('ground.drop', character_id=character.id, kind='item', object_id=it.id) }}" hx-target="#modal-anchor"><i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button>
+    {% endif %}
     {% if editable and slot is not none %}
     <button type="button" class="slot-move" data-move-item="{{it.id}}"
       aria-label="{{_('Move')}}: {{it.name | tr}}" title="{{_('Drag to move. Arrow keys then Enter also work.')}}"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button>
@@ -109,6 +113,10 @@
   {% endif %}
   {% if editable %}
   <div class="inventory-footer-buttons slot-footer">
+    {% if current_user.is_authenticated and character.owner == current_user.id and character.party_id and container.id != 0 %}
+    <button type="button" class="button smaller-font"
+      hx-get="{{ url_for('ground.drop', character_id=character.id, kind='container', object_id=container.id) }}" hx-target="#modal-anchor">{{ _('Drop container') }}</button>
+    {% endif %}
     <button type="button" class="button smaller-font" hx-get="{{edit_base}}/item-edit/None?mode=create&container={{container.id}}&petty=1" hx-target="#modal-anchor">+ {{_('Petty item')}}</button>
     <button type="button" class="button smaller-font" hx-post="{{edit_base}}/{{container.id}}/fatigue"
       hx-target="#inventory-container" {% if layout.used >= layout.capacity %}disabled{% endif %}>+ {{_('Fatigue')}}</button>
