@@ -54,9 +54,17 @@
 .generated-article {padding:1.25rem;background:var(--form-bg,var(--bg));margin-bottom:1rem;border:1px solid currentColor;}
 .generated-article > .rich-content {max-height:420px;overflow:auto;}
 .map-editor-grid [data-map-node],.map-editor-grid [data-map-edge] {scroll-margin-top:1rem;}
-.map-editor-grid .map-selected {outline:2px solid currentColor;outline-offset:2px;background:var(--form-bg,var(--bg));}
 .map-editor-grid [data-map-node] button {width:100%;text-align:left;white-space:normal;}
 .map-editor-grid [data-map-edge] {padding:.6rem;margin:.5rem 0;border:1px solid transparent;}
+.map-editor-grid [data-map-edge] > summary {padding:.4rem .65rem;border-radius:2px;}
+.map-editor-grid [data-map-node].map-selected > button,
+.map-editor-grid [data-map-edge].map-selected > summary {
+  background:var(--form-bg,var(--bg));
+  background:color-mix(in srgb,var(--fg) 8%,var(--bg));
+  box-shadow:inset 3px 0 0 var(--fg);
+}
+.map-editor-grid [data-map-node] > button:focus-visible,
+.map-editor-grid [data-map-edge] > summary:focus-visible {outline:2px solid currentColor;outline-offset:3px;}
 .article-relations {margin:1.5rem 0;}
 .article-relations fieldset {max-height:360px;overflow:auto;}
 .article-relations legend {font-size:0;}
