@@ -21,7 +21,7 @@
         {% if editing %}
         <input class="edit-mode" type="text" name="name" aria-label="{{_('Name')}}" maxlength="100" value="{{c.name}}" form="companion-edit-form" required>
         <h2>{{c.role if c.role and c.role != c.name else (_('Hireling') if c.kind == 'hireling' else _('Pet'))}}</h2>
-        {% else %}<h1>{{c.name}}</h1><h2>{{c.role if c.role and c.role != c.name else (_('Hireling') if c.kind == 'hireling' else _('Pet'))}}</h2>{% endif %}
+        {% else %}<h1>{{ c.name|markdown_inline }}</h1><h2>{{c.role if c.role and c.role != c.name else (_('Hireling') if c.kind == 'hireling' else _('Pet'))}}</h2>{% endif %}
       </div>
       {% if editable %}
       <div class="charview-action-pad">
@@ -73,7 +73,7 @@
       <div id="character-traits-container">
         {% if editing or c.attack %}<h3>{{_('Attack')}}</h3>
         {% if editing %}<input class="inplace" type="text" name="attack" maxlength="200" value="{{c.attack}}" form="companion-edit-form">
-        {% else %}<p>{{c.attack}}</p>{% endif %}{% endif %}
+        {% else %}<p>{{ c.attack|markdown_inline }}</p>{% endif %}{% endif %}
         {% if c.kind == 'hireling' %}<h3>{{_('Daily cost')}}</h3>
         {% if editing %}<input class="character-attribute-input" type="number" name="daily_cost" min="0" max="100000" value="{{c.daily_cost}}" form="companion-edit-form" required>{% else %}{{c.daily_cost}}{% endif %} {{_('gp/day')}}
         {% endif %}
@@ -86,7 +86,7 @@
       <div class="character-description-container companion-notes">
         <h3>{{_('Notes')}}</h3>
         {% if editing %}<textarea class="charedit-notes" name="notes" rows="8" maxlength="10000" form="companion-edit-form">{{c.notes}}</textarea>
-        {% else %}<p class="with-whitespace character-text-field">{{c.notes}}</p>{% endif %}
+        {% else %}<div class="rich-content character-text-field">{{c.notes|markdown}}</div>{% endif %}
       </div>
       {% if editing and c.kind == 'hireling' and current_user.id == c.party.owner %}
       <div class="character-description-container"><h3>{{_('Access')}}</h3><label><input type="checkbox" name="shared" form="companion-edit-form" {% if c.shared %}checked{% endif %}> {{_('Allow party members to manage this hireling')}}</label></div>

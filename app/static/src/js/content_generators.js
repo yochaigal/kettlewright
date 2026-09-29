@@ -9,7 +9,7 @@ export function generateResult(data, category, subcategory, random = Math.random
   }
   if (category === 'Items') {
     const item = pick(data[subcategory]);
-    return {title:item.name, category:subcategory === 'Relics' ? 'relic' : 'note', fields:{...item}};
+    return {title:item.name, category:subcategory === 'Relics' ? 'relic' : 'spellbook', fields:{...item}};
   }
   if (category === 'Weather') {
     const type = pick(data.Weather.Types[subcategory]);
@@ -24,10 +24,10 @@ export function generateResult(data, category, subcategory, random = Math.random
   }
   if (subcategory === 'Random Monster') {
     const monster = pick(data[subcategory]);
-    return {title:monster.Name, category:'npc', fields:monster};
+    return {title:monster.Name, category:'bestiary', fields:monster};
   }
   const monster = data['Custom Monster'];
-  return {title:'Custom Monster', category:'npc', fields:{
+  return {title:'Custom Monster', category:'bestiary', fields:{
     Physique:pick(monster.MonsterAppearance.Physique), Feature:pick(monster.MonsterAppearance.Feature),
     Quirks:pick(monster.MonsterTraits.Quirks), Weakness:pick(monster.MonsterTraits.Weakness),
     Attack:pick(monster.MonsterAttacks.Type), 'Critical Damage':pick(monster.MonsterAttacks.CriticalDamage),
@@ -35,13 +35,14 @@ export function generateResult(data, category, subcategory, random = Math.random
 }
 
 export function resultText(result) {
-  function lines(value, indent = '') {
-    if (Array.isArray(value)) return value.map((item, i) => `${indent}${i+1}. ${typeof item === 'object' ? lines(item, indent+'  ') : item}`).join('\n');
-    if (value && typeof value === 'object') return Object.entries(value).map(([key, item]) =>
-      item && typeof item === 'object' ? `${indent}${key}:\n${lines(item, indent+'  ')}` : `${indent}${key}: ${item ?? ''}`).join('\n');
-    return `${indent}${value ?? ''}`;
+  function render(value, level=3) {
+    if(Array.isArray(value)) return value.map(item=>`- ${typeof item==='object' ? render(item,level) : item}`).join('\n');
+    if(value && typeof value==='object') return Object.entries(value).filter(([,item])=>!Array.isArray(item) || item.length).map(([key,item])=>
+      item && typeof item==='object' ? `${'#'.repeat(Math.min(level,6))} ${key.charAt(0).toUpperCase()+key.slice(1)}\n\n${render(item,level+1)}`
+        : `**${key.charAt(0).toUpperCase()+key.slice(1)}:** ${item ?? ''}`).join('\n\n');
+    return String(value ?? '');
   }
-  return lines(result.fields);
+  return render(result.fields);
 }
 
 export function graphFromResult(result, random = Math.random, tables = null) {
@@ -49,7 +50,7 @@ export function graphFromResult(result, random = Math.random, tables = null) {
   const pois = result.fields.POIs;
   const columns = Math.ceil(Math.sqrt(pois.length));
   const nodes = pois.map((body, i) => ({id:`new-node-${i}`, number:i+1,
-    title:body.split(':')[0], body,
+    title:body.replace(/\s+/g,' ').trim().slice(0,200), body,
     poi_kind:result.poiKinds?.[i] || null,
     x:100+(i%columns)*210+Math.round(random()*60),
     y:100+Math.floor(i/columns)*180+Math.round(random()*60), nested_map_id:null}));
@@ -97,4 +98,35 @@ export function nestedMapDraft(node, kind, tables, random = Math.random) {
   if (!['dungeon','forest'].includes(kind)) throw new Error('Unsupported nested map type.');
   const result = generateResult(tables, 'Worldbuilding', kind === 'dungeon' ? 'Dungeon' : 'Forest', random);
   return {...graphFromResult(result, random), title:node.title};
+}
+
+// Article categories reuse the same rules tables as Tools. No campaign is needed.
+export function generateArticle(data, category, variant='', random=Math.random) {
+  const pick=items=>items[Math.floor(random()*items.length)];
+  let result;
+  if(category==='npc') result=generateResult(data,'Worldbuilding','NPC',random);
+  else if(category==='faction') result=generateResult(data,'Worldbuilding','Faction',random);
+  else if(category==='bestiary') result=generateResult(data,'Monsters',variant || 'Random Monster',random);
+  else if(category==='relic' || category==='spellbook') result=generateResult(data,'Items',category==='relic'?'Relics':'Spellbooks',random);
+  else if(category==='item') {
+    const group=variant || 'Gear', [name,fields]=pick(Object.entries(data.Equipment[group]));
+    result={title:name,fields:{Type:group,...fields}};
+  } else if(category==='culture') {
+    const people=data.Realm.Theme.People;
+    result={title:'Culture',fields:{Character:pick(people.Culture.Character),Ambition:pick(people.Culture.Ambition),Abundance:pick(people.Resources.Abundance),Scarcity:pick(people.Resources.Scarcity)}};
+  } else if(category==='lore') {
+    const lore=data.Dungeon.POIs.Lore;
+    result={title:'Lore',fields:{'Found in':pick(lore.RoomType),Clue:pick(lore.Clue)}};
+  } else if(category==='location') {
+    const realm=generateResult(data,'Worldbuilding','Realm',random);
+    const poi=pick(realm.fields.POIs).replace(/\s+/g,' ').trim();
+    result={title:poi.slice(0,200),fields:{Description:poi}};
+  } else if(category==='overview') {
+    result=generateResult(data,'Worldbuilding','Realm',random);
+    result={title:result.title,fields:result.fields};
+  } else if(category==='note') result=generateResult(data,'Events',variant || 'Wilderness Events',random);
+  else if(category==='map') result=generateResult(data,'Worldbuilding',variant || 'Realm',random);
+  else if(category==='custom') return null;
+  else throw new Error('Unknown article category');
+  return {...result,category,body:resultText(result)};
 }

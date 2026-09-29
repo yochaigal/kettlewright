@@ -8,7 +8,7 @@
       class="inventory-container-title subtitle pointer {% if cnt.is_selected %} inventory-container-title-selected {% endif %} {% if cnt.encumbered %} red-text {% endif %}"
       hx-get=" /charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt.id}}"
       hx-target="#inventory-container"  hx-swap="innerHTML">
-      {{cnt.title}}
+      {{ cnt.title|markdown_inline }}
     </div>
     {% endfor %}
   </div>
@@ -19,12 +19,12 @@
       <div class="inventory-item-text"></div>
       {% else %}
       <div class="inventory-item-text">
-        {{it.title | safe}}
+        {{it.title | markdown_inline}}
       </div>
       <div class="inventory-item-button-container">
         {% if "description" in it and it.description != "" %}
         <div class="pointer" title="Description"
-          onclick="KW_alert('{{it.name|tr|squote2js}}','{{it.description|tr|squote2js|eol2br}}')">
+          onclick="KW_alert({{it.name|tr|forceescape|tojson|forceescape}},{{it.description|tr|item_description|tojson|forceescape}})">
           <i class="item-edit-button fa-solid fa-circle-info circle-info"></i>
         </div>
         {% endif %}

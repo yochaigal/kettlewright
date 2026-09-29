@@ -14,7 +14,7 @@
       {% endif %}
       {% endif %}
       <div>
-        <h1 class="view-mode">{{character.name}}</h1>
+        <h1 class="view-mode">{{ character.name|markdown_inline }}</h1>
             {% include "partial/dead_badge.html" %}
         <h2 class=""> {{character.background}} </h2>
       </div>
@@ -39,7 +39,7 @@
       </div>
       <div>
         <h3>{{_('Traits')}}</h3>
-        <p id="character-traits-view" class="character-section">{{character.traits}}</p>
+        <div id="character-traits-view" class="character-section rich-content">{{ character.traits|markdown }}</div>
       </div>
     </div>
     <div class="print-container">
@@ -47,7 +47,7 @@
       <div id="additional-inventory-container" class="character-print-inventories">
         {% for c in inventory.containers if c.id == 0 or inventory.get_items_for_container(c.id, False) %}
         <div style="margin-bottom: 1em" class="inventory-container print-container" data-print-container="{{ c.id }}">
-          <div class="inventory-container-title-selected subtitle">{{c.name}} ( {{inventory.container_slots(c)}}
+          <div class="inventory-container-title-selected subtitle">{{ c.name|markdown_inline }} ( {{inventory.container_slots(c)}}
             /
             {{c.slots}} )</div>
           {% for it in inventory.get_items_for_container(c.id, True) %}
@@ -66,17 +66,17 @@
       {% if character.pets %}
       <section class="print-container"><h3>{{_('Pets')}}</h3>
       {% for pet in character.pets %}
-        <h4>{{pet.name}}</h4>
+        <h4>{{ pet.name|markdown_inline }}</h4>
         <p>{% for stat,label in [('hp','HP'),('strength','STR'),('dexterity','DEX'),('willpower','WIL')] %}{{label}} {{pet[stat] if pet[stat] is not none else '—'}}{% if pet[stat+'_max'] is not none %}/{{pet[stat+'_max']}}{% endif %} · {% endfor %}{{_('Armor')}} {{pet.armorValue()}} · {{pet.attack}}</p>
-        <p class="with-whitespace">{{pet.notes}}</p>
-        {% for container in pet.export().containers %}<p>{{container.name}} ({{container.slots}} {{_('slots')}}): {% for item in pet.export()['items'] if item.location == container.id %}{{item.name}}{% if not loop.last %}, {% endif %}{% endfor %}</p>{% endfor %}
+        <div class="with-whitespace rich-content">{{ pet.notes|markdown }}</div>
+        {% for container in pet.export().containers %}<p>{{ container.name|markdown_inline }} ({{container.slots}} {{_('slots')}}): {% for item in pet.export()['items'] if item.location == container.id %}{{item.name}}{% if not loop.last %}, {% endif %}{% endfor %}</p>{% endfor %}
       {% endfor %}</section>
       {% endif %}
       {% if character.description %}
       <div id="character-print-description-container" class="print-container">
         <div class="character-section">
           <h3>{{_('Description')}}</h3>
-          <p id="character-description-view">{{character.description}}</p>
+          <div id="character-description-view" class="rich-content">{{ character.description|markdown }}</div>
         </div>
       </div>
       {% endif %}
@@ -85,7 +85,7 @@
         <div class="character-section">
           <h3>{{_('Bonds')}}</h3>
 
-          <p id="character-bonds-view" class="with-whitespace">{{character.bonds}}</p>
+          <div id="character-bonds-view" class="with-whitespace rich-content">{{ character.bonds|markdown }}</div>
         </div>
       </div>
       {% endif %}
@@ -93,7 +93,7 @@
       <div id="character-print-omens-container" class="print-container">
         <div class="character-section">
           <h3>{{_('Omens')}}</h3>
-          <p id="character-omens-view">{{character.omens|safe}}</p>
+          <div id="character-omens-view" class="rich-content">{{ character.omens|markdown }}</div>
         </div>
       </div>
       {% endif %}
@@ -101,7 +101,7 @@
       <div id="character-print-scars-container" class="print-container">
         <div class="character-section">
           <h3>{{_('Scars')}}</h3>
-          <p id="character-scars-view">{{character.scars|safe}}</p>
+          <div id="character-scars-view" class="rich-content">{{ character.scars|markdown }}</div>
         </div>
       </div>
       {% endif %}
@@ -109,15 +109,15 @@
       <div id="character-print-notes-container" class="print-container">
         <div class="character-section">
           <h3>{{_('Notes')}}</h3>
-          <p id="character-notes-view">{{character.notes|safe}}</p>
+          <div id="character-notes-view" class="rich-content">{{ character.notes|markdown }}</div>
         </div>
       </div>
       {% endif %}
       {% if party %}
       <div id="character-party-container" class="print-container">
         <h3 id="character-party-heading">{{_('Party')}}</h3>
-        <div class="bold subtitle">{{ party.name }}</div>
-        {% if party.description %}<p>{{party.description}}</p>{% endif %}
+        <div class="bold subtitle">{{ party.name|markdown_inline }}</div>
+        {% if party.description %}<div class="rich-content">{{ party.description|markdown }}</div>{% endif %}
       </div>
       {% endif %}
     </div>

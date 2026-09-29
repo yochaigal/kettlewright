@@ -1,3 +1,4 @@
+import {richContentHTML} from './rich-content.js';
 import inventory from "./inventoryData.js";
 import inventoryUI from "./inventoryUI.js";
 import utils, { createOption } from "./utils.js";
@@ -113,7 +114,9 @@ const inventoryModalUI = {
 
   showItemDescriptionModal(description) {
     document.getElementById("item-description-modal").classList.add("is-active");
-    document.getElementById("item-description-modal-content").textContent = description;
+    const content=document.getElementById("item-description-modal-content");
+    content.classList.add("rich-content");
+    content.innerHTML=richContentHTML(description);
   },
 
   // _____________ Item Add/Edit Modal _____________

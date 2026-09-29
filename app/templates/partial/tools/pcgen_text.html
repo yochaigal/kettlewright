@@ -2,7 +2,7 @@
 {% include "partial/tools/pcgen_darkmode.html"%}
 {% endif %}
 
-<h2>{{character.name}}</h2>
+<h2>{{ character.name|markdown_inline }}</h2>
 <h4>{{character.background_name | tr}}</h4>
 <p>
 <div class="subtitle left-symbol">{{_('Description')}}</div>
@@ -38,7 +38,7 @@
     <div><b>{{_('Items')}}:</b></div>
     <ul style="list-style-position:inside; padding-inline-start:16px">
         {% for it in character.items %}
-        <li style="float:none; display: list-item;">{{it.title}}</li>
+        <li style="float:none; display: list-item;">{{ it.title|markdown_inline }}</li>
         {% endfor %}
     </ul>
 </div>
@@ -51,7 +51,7 @@
     <ul style="list-style-position:inside; padding-inline-start:16px">
         {% for c in character.containers %}
         {% if c.id != 0 %}
-        <li style="float:none; display: list-item;">{{c.name}} ({{c.slots}}
+        <li style="float:none; display: list-item;">{{ c.name|markdown_inline }} ({{c.slots}}
             slots)</li>
         {% endif %}
         {% endfor %}
@@ -111,7 +111,7 @@
 </p>
 {% if character.pets %}
 <div class="subtitle left-symbol">{{_('Pets')}}</div>
-{% for pet in character.pets %}<p><strong>{{pet.name|tr}}</strong>: {{pet.notes}}</p>{% endfor %}
+{% for pet in character.pets %}<div class="rich-content"><strong>{{ pet.name|tr|markdown_inline }}</strong>: {{ pet.notes|markdown }}</div>{% endfor %}
 {% endif %}
 <input type="hidden" name="json_data" id="json_data" value="{{json_data}}" />
 <input type="hidden" name="character_name" id="character_name" value="{{character.name}}" />

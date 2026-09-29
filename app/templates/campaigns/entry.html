@@ -2,43 +2,58 @@
 {% from 'campaigns/forms.html' import token, category, rich_editor with context %}
 {% block workspace %}
 {% if entry %}{% include 'campaigns/parents.html' %}{% endif %}
-<h1>{{ _('Create and show') if party else (_('Edit material') if entry else _('New material')) }}</h1>
-{% if party %}<p>{{ _('This will be visible to members of') }} <strong>{{ party.name }}</strong>.</p>
+<h1>{{ _('Create and show') if party else (_('Edit article') if entry else _('New article')) }}</h1>
+{% if party %}<p>{{ _('This will be visible to members of') }} <strong>{{ party.name|markdown_inline }}</strong>.</p>
 {% else %}<p>{{ _('Private original. Saving here does not change any party’s version.') }}</p>{% endif %}
-<form method="post" x-data="contentDraft" data-import="{{ 'true' if not entry else 'false' }}">
+<form method="post" x-data="contentDraft" data-import="{{ 'true' if not entry else 'false' }}" data-generate-error="{{ _('Unable to generate an article. Please try again.') }}">
 {{ token(entry.version if entry else none) }}
 {% if party %}<input type="hidden" name="party_id" value="{{ party.id }}">{% endif %}
-{% if not entry or entry.category not in ('map', 'path') %}{{ category(entry.category if entry else 'note') }}{% endif %}
-<label>{{ _('Title') }}<input type="text" name="title" maxlength="200" value="{{ entry.title if entry else '' }}" {% if not entry %}required{% endif %}></label>
-{{ rich_editor(_('Description'), entry.body if entry else '') }}
+{% if not entry or entry.category not in ('map', 'path') %}{{ category(entry.category if entry else 'custom', generate=not entry) }}{% endif %}
+{% if not party %}
+<label>{{ _('Campaign') }}<select name="campaign_id"><option value="">{{ _('Unfiled') }}</option>
+{% for item in campaigns %}<option value="{{ item.id }}" {% if campaign and campaign.id == item.id %}selected{% endif %}>{{ item.name|markdown_inline|striptags }}</option>{% endfor %}
+</select></label>
+{% endif %}
+{% if not entry %}
+<div class="article-generator" x-show="category!=='custom'" x-cloak>
+<div class="campaign-actions">
+<template x-if="variants.length"><label>{{ _('Generator') }}<select x-model="variant"><template x-for="choice in variants" :key="choice"><option :value="choice" x-text="choice"></option></template></select></label></template>
+<button type="button" @click="generate()" :disabled="generating">{{ _('Generate draft') }}</button>
+<span>{{ _('Review a generated draft before using it.') }}</span>
+</div>
+<p role="status" x-text="status" x-show="status"></p>
+<template x-if="generated"><div class="generated-article">
+<h2 x-text="generated.title"></h2><div class="rich-content" x-html="$richHTML(generated.body)"></div>
+<div class="campaign-actions"><button type="button" @click="useGenerated()">{{ _('Use this draft') }}</button><button type="button" @click="generated=null">{{ _('Discard') }}</button></div>
+</div></template>
+</div>
+{% endif %}
+<div {% if not entry %}x-show="category!=='map'"{% endif %}>
+<label>{{ _('Title') }}<input type="text" name="title" maxlength="200" value="{{ entry.title if entry else '' }}" x-model="title" {% if not entry %}:required="category!=='map'"{% endif %}></label>
+{{ rich_editor(_('Description'), entry.body if entry else '', model='body') }}
 {% if entry and entry.category == 'path' %}
 <label>{{ _('Path type') }}<select name="path_type">{% for kind in path_types %}<option value="{{ kind }}" {% if entry.path_type == kind %}selected{% endif %}>{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>
 {% endif %}
-{% if not party %}
-<label>{{ _('Campaign') }}<select name="campaign_id"><option value="">{{ _('Unfiled') }}</option>
-{% for item in campaigns %}<option value="{{ item.id }}" {% if campaign and campaign.id == item.id %}selected{% endif %}>{{ item.name }}</option>{% endfor %}
-</select></label>
-{% endif %}
 {% if entry %}
-<fieldset><legend>{{ _('Related materials') }}</legend>
+<details class="article-relations"><summary>{{ _('Related articles') }}</summary><fieldset><legend class="sr-only">{{ _('Related articles') }}</legend>
 {% if automatic_links %}<p>{{ _('Locations and linked maps are included automatically.') }}</p>{% endif %}
-{% for item in candidates %}<label class="campaign-check"><input type="checkbox" name="links" value="{{ item.id }}" {% if item.id in selected_links or item.id in automatic_links %}checked{% endif %} {% if item.id in automatic_links %}disabled{% endif %}><a href="{{ url_for('campaigns.edit_entry', entry_id=item.id) }}">{{ item.title or _('Untitled private original') }}</a> · {{ _(content_categories.get(item.category, item.category)) }}</label>{% endfor %}
-</fieldset>
+{% for item in candidates %}<label class="campaign-check"><input type="checkbox" name="links" value="{{ item.id }}" {% if item.id in selected_links or item.id in automatic_links %}checked{% endif %} {% if item.id in automatic_links %}disabled{% endif %}><a href="{{ url_for('campaigns.edit_entry', entry_id=item.id) }}">{{ (item.title or _('Untitled private original'))|markdown_inline }}</a> · {{ _(content_categories.get(item.category, item.category)) }}</label>{% endfor %}
+</fieldset></details>
 {% endif %}
-{% if party %}<details @toggle="preview($event)"><summary>{{ _('Preview') }}</summary><h2 x-text="title"></h2><div class="rich-content" x-html="$richHTML(body)"></div></details>{% endif %}
 <button type="submit">{{ _('Create and show') if party else _('Save private original') }}</button>
+</div>
 </form>
 {% if entry %}
 <div class="campaign-actions"><a class="button" href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Reveal to party') }}</a>
 {% if entry.pointcrawl %}<a href="{{ url_for('campaigns.map_edit', map_id=entry.pointcrawl.id) }}">{{ _('Edit map') }}</a>{% endif %}
 </div>
-<details><summary>{{ _('Delete material') }}</summary>
+<details><summary>{{ _('Delete article') }}</summary>
 <p>{{ _('This also removes nested contents, connected paths and published versions. Review the complete list before deleting.') }}</p>
 <form method="post" action="{{ url_for('campaigns.bulk_delete') }}">{{ token() }}
 <input type="hidden" name="campaign_id" value="{{ entry.campaign_id or '' }}">
 <input type="hidden" name="entry_ids" value="{{ entry.id }}">
 <input type="hidden" name="version_{{ entry.id }}" value="{{ entry.version }}">
-<button>{{ _('Delete material…') }}</button></form>
+<button>{{ _('Delete article…') }}</button></form>
 </details>
 {% endif %}
 {% endblock %}

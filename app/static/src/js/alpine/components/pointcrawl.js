@@ -4,7 +4,7 @@ import {emptyDrawing} from '../../maps/scene.js';
 export default function pointcrawl() {
   return {
     graph:{nodes:[],edges:[]}, editing:false, creating:false, dirty:false, saving:false,
-    status:'', selected:'', saveUrl:'', serial:0, canvasReady:false, generating:false, nestedKind:'dungeon',
+    status:'', selectedEdge:'', selected:'', saveUrl:'', serial:0, canvasReady:false, generating:false, nestedKind:'dungeon',
     edgeSource:'', edgeTarget:'', kind:'dungeon', tables:null, labels:{}, locationId:'', draftBody:'',
     init() {
       this.graph=JSON.parse(this.$el.dataset.graph || '{"nodes":[],"edges":[]}');
@@ -56,8 +56,15 @@ export default function pointcrawl() {
         const data=event.data;
         if (data.type === 'ready') this.syncCanvas();
         if (data.type === 'mounted') {this.canvasReady=true;clearTimeout(this.canvasTimer);this.status='';}
-        if (data.type === 'select' && this.node(data.id) && this.selected!==String(data.id)) {
-          this.selectionFromCanvas=true;this.selected=String(data.id);
+        if (data.type === 'select') {
+          if(data.kind==='path' && this.graph.edges.some(edge=>String(edge.id)===String(data.id))) {
+            this.selected='';this.selectedEdge=String(data.id);this.syncCanvas();
+          } else if(this.node(data.id)) {this.selectedEdge='';this.selected=String(data.id);this.syncCanvas();}
+          this.$nextTick(()=>{
+            const attribute=data.kind==='path'?'data-map-edge':'data-map-node';
+            const row=[...this.$el.querySelectorAll(`[${attribute}]`)].find(row=>row.getAttribute(attribute)===String(data.id));
+            row?.scrollIntoView({behavior:'smooth',block:'nearest'});
+          });
         }
         if (data.type === 'change' && this.editing && !this.saving) {
           for (const move of data.moves || []) {
@@ -83,7 +90,7 @@ export default function pointcrawl() {
     },
     syncCanvas() {
       this.sendCanvas('state',{graph:JSON.parse(JSON.stringify(this.graph)),editing:this.editing,
-        selected:this.selected,dark:document.body.classList.contains('dark-mode'),lang:this.$el.dataset.lang || 'en'});
+        selected:this.selected,selectedEdge:this.selectedEdge,dark:document.body.classList.contains('dark-mode'),lang:this.$el.dataset.lang || 'en'});
     },
     node(id) {return this.graph.nodes.find(node => String(node.id)===String(id));},
     get selectedNode() {return this.node(this.selected);},

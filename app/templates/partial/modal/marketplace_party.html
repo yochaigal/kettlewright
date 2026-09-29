@@ -19,7 +19,7 @@
           <tbody>
             {% for item in items %}
             <tr>
-              <td>{{item.name|tr}}{% if item.tags %}<small> ({{item.tags|join(', ')}})</small>{% endif %}</td>
+              <td>{{ item.name|tr|markdown_inline }}{% if item.tags %}<small> ({{item.tags|join(', ')}})</small>{% endif %}</td>
               <td>{{item.cost}}</td>
               <td><button type="button" class="button smaller-font"
                 aria-label="{{_('Add')}} {{item.name|tr}}"

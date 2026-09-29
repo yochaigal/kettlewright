@@ -4,7 +4,7 @@
         <div class="inventory-container-title subtitle pointer {% if cnt.is_selected %} inventory-container-title-selected {% endif %} {% if cnt.encumbered %} red-text {% endif %} "
             hx-get="/party/inventory-select-container/{{party.id}}/{{cnt.id}}?mode=edit"
             hx-target="#inventory-container">
-            {{cnt.title}}
+            {{ cnt.title|markdown_inline }}
         </div>
         {% if cnt.is_selected %}
         <div class="pointer" title="Edit {{cnt.name}}"
@@ -23,7 +23,7 @@
         <div class="inventory-item-text"></div>
         {% else %}
         <div class="inventory-item-text {% if it.name == 'Fatigue' %} fatigue-text {% endif %}">
-            {{it.title | safe}}
+            {{it.title | markdown_inline}}
         </div>
         <div class="inventory-item-button-container">
             {% if "uses" in it.tags %}

@@ -2,10 +2,10 @@
 {% from 'campaigns/forms.html' import token with context %}
 {% from 'campaigns/material_tree.html' import material_children, material_selection with context %}
 {% block workspace %}
-<h1>{{ campaign.name if campaign else _('Unfiled materials') }}</h1>
+<h1>{{ campaign.name if campaign else _('Unfiled articles') }}</h1>
 <p>{{ _('Only you can see originals. Party versions are published separately.') }}</p>
 <div class="campaign-actions">
-<a class="button" href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id if campaign else '') }}">{{ _('New material') }}</a>
+<a class="button" href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id if campaign else '') }}">{{ _('New article') }}</a>
 <a class="button" href="{{ url_for('campaigns.new_map', campaign_id=campaign.id if campaign else '') }}">{{ _('New map') }}</a>
 <a href="{{ url_for('main.tools') }}">{{ _('Tools') }}</a>
 </div>
@@ -27,7 +27,7 @@
 {% set entry = item.entry %}
 <article class="campaign-card" data-root-entry-id="{{ entry.id }}">
 {{ material_selection(entry) }}
-<h3><a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ entry.title or _('Untitled private original') }}</a></h3>
+<h3><a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ (entry.title or _('Untitled private original'))|markdown_inline }}</a></h3>
 <div class="content-text">{{ content_excerpt(entry.body) }}</div>
 <div class="campaign-actions">
 {% if entry.pointcrawl %}<a href="{{ url_for('campaigns.map_edit', map_id=entry.pointcrawl.id) }}">{{ _('Edit map') }}</a>{% endif %}
@@ -37,7 +37,7 @@
 {{ material_children(item.children) }}
 </details>{% endif %}
 </article>
-{% else %}<p>{{ _('No materials in this section.') }}</p>{% endfor %}
+{% else %}<p>{{ _('No articles in this section.') }}</p>{% endfor %}
 </div></section>
 {% endfor %}
 </form>
@@ -47,16 +47,16 @@
 <label>{{ _('Campaign name') }}<input type="text" name="name" required maxlength="200" value="{{ campaign.name }}"></label>
 <fieldset><legend>{{ _('Connected parties') }}</legend>
 {% for party in parties %}
-<label class="campaign-check"><input type="checkbox" name="party_ids" value="{{ party.id }}" {% if party.id in linked %}checked{% endif %}>{{ party.name }}</label>
+<label class="campaign-check"><input type="checkbox" name="party_ids" value="{{ party.id }}" {% if party.id in linked %}checked{% endif %}>{{ party.name|markdown_inline }}</label>
 {% if party.id in linked %}<a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}">{{ _('View as party') }}</a>{% endif %}
-{% else %}<p>{{ _('Create a party to share materials with its members.') }}</p>{% endfor %}
+{% else %}<p>{{ _('Create a party to share articles with its members.') }}</p>{% endfor %}
 </fieldset>
-<p>{{ _('Disconnecting a party hides this campaign’s published materials from it.') }}</p>
+<p>{{ _('Disconnecting a party hides this campaign’s published articles from it.') }}</p>
 <button>{{ _('Save settings') }}</button>
 </form>
 <form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}">{{ token(campaign.version) }}
-<p>{{ _('Deleting this campaign permanently deletes all its materials, maps, locations, paths and published party versions. This cannot be undone. Connected parties and their characters are kept.') }}</p>
-<button>{{ _('Delete campaign and all materials') }}</button></form>
+<p>{{ _('Deleting this campaign permanently deletes all its articles, maps, locations, paths and published party versions. This cannot be undone. Connected parties and their characters are kept.') }}</p>
+<button>{{ _('Delete campaign and all articles') }}</button></form>
 </details>
 {% endif %}
 {% endblock %}

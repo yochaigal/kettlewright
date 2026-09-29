@@ -56,6 +56,8 @@
   <meta name="msapplication-config" content="{{ url_for('static', filename='icons/browserconfig.xml') }}" />
   <meta name="theme-color" content="#ffffff" />
 
+  <link rel="stylesheet" href="{{ url_for('static', filename='src/css/markdown.css') }}">
+  <script type="module" src="{{ url_for('static', filename='src/js/markdown-fields.js') }}"></script>
   <!-- Server-rendered updates and local UI components -->
   <script src="https://unpkg.com/htmx.org@2.0.3"
     integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq"

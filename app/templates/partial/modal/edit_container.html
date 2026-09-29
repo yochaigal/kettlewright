@@ -40,11 +40,11 @@
                 {% if mode == "edit" %}
                 {% for c in inventory.get_other_containers(container.id) %}
                 <option value="{{c.id}}" {% if "carried_by" in container and c.id==container.carried_by|int %} selected
-                  {% endif %}>{{c.name}}</option>
+                  {% endif %}>{{ c.name|markdown_inline|striptags }}</option>
                 {% endfor %}
                 {% else %}
                 {% for c in inventory.containers %}
-                <option value="{{c.id}}">{{c.name}}</option>
+                <option value="{{c.id}}">{{ c.name|markdown_inline|striptags }}</option>
                 {% endfor %}
                 {% endif %}
               </select>

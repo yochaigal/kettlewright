@@ -117,12 +117,12 @@
             <div class="select" style="max-width: 200px">
               <select id="edit_item_container" name="edit_item_container">
                 {% for c in inventory.containers %}
-                <option value="{{c.id}}" {% if (mode=='edit' and item.location==c.id) or (mode!='edit' and inventory.selected_container.id==c.id) %} selected {% endif %}>{{c.name}} ({{_('Personal')}})
+                <option value="{{c.id}}" {% if (mode=='edit' and item.location==c.id) or (mode!='edit' and inventory.selected_container.id==c.id) %} selected {% endif %}>{{ c.name|markdown_inline|striptags }} ({{_('Personal')}})
                 </option>
                 {% endfor %}
                 {% if mode == 'edit' %}
                 {% for c in party_containers %}
-                <option value="party:{{c.id}}">{{c.name}} ({{_('Party')}})</option>
+                <option value="party:{{c.id}}">{{ c.name|markdown_inline|striptags }} ({{_('Party')}})</option>
                 {% endfor %}
                 {% endif %}
               {% if companion_sheet %}

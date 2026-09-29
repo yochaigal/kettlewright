@@ -5,7 +5,7 @@
 {% if not editing %}
 <div data-party-content="{{ party.id }}" data-map-url="{{ url_for('campaigns.party_map_data', party_id=party.id, map_id=graph.id) }}"></div>
 <script type="module" src="{{ url_for('static', filename='src/js/campaign_live.js') }}"></script>
-<a href="{{ url_for('campaigns.party_materials', party_id=party.id) }}">{{ party.name }} · {{ _('Materials') }}</a>
+<a href="{{ url_for('campaigns.party_materials', party_id=party.id) }}">{{ party.name|markdown_inline }} · {{ _('Articles') }}</a>
 {% endif %}
 <div x-data="pointcrawl" data-graph="{{ graph|tojson|forceescape }}" data-editing="{{ 'true' if editing else 'false' }}"
  {% if editing %}data-save-url="{{ url_for('campaigns.map_data', map_id=pointcrawl.id) }}"{% endif %}

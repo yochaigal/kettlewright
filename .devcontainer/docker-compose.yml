@@ -17,6 +17,7 @@ services:
       - FLASK_APP=app:application
       - FLASK_DEBUG=1
       - USE_FLASK=True
+      - LOCAL_FEATURE_ACCESS=True
       - PYTHONUNBUFFERED=1
       - USE_REDIS=False
       - REQUIRE_SIGNUP_CODE=False

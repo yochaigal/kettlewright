@@ -2,13 +2,13 @@
 {% block content %}
 <section class="body-container"><div class="sheet companion-sheet">
   <h1>{{_('Add hireling') if kind == 'hireling' else _('Add pet')}}</h1>
-  <p>{{ parent.name }}</p>
+  <p>{{ parent.name|markdown_inline }}</p>
   <form method="post">
     {{ form.hidden_tag() }}
     <label for="template">{{_('Role') if kind == 'hireling' else _('Pet')}}</label>
     <select id="template" name="template">
       {% if kind == 'hireling' %}
-      {% for entry in templates %}<option value="{{ entry.name }}">{{ entry.name | tr }} · {{ entry.daily_cost }} {{_('gp/day')}}</option>{% endfor %}
+      {% for entry in templates %}<option value="{{ entry.name }}">{{ entry.name | tr|markdown_inline|striptags }} · {{ entry.daily_cost }} {{_('gp/day')}}</option>{% endfor %}
       {% else %}{% for name in templates %}<option value="{{ name }}">{{ name | tr }}</option>{% endfor %}{% endif %}
       <option value="Custom">{{_('Custom')}}</option>
     </select>

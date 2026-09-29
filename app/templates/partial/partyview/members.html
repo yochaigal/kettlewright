@@ -6,7 +6,7 @@
            alt="" class="party-member-portrait" />
     </a>
     <div>
-      <a class="party-member-name" href="/users/{{ character.owner_username }}/characters/{{ character.url_name }}/">{{ character.name }}</a>
+      <a class="party-member-name" href="/users/{{ character.owner_username }}/characters/{{ character.url_name }}/">{{ character.name|markdown_inline }}</a>
       <p class="party-member-background">{{ character.background }}</p>
       {% include "partial/dead_badge.html" %}
       {% if character.deprived %}<small>{{_('DEPRIVED')}}</small>{% endif %}

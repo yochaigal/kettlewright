@@ -165,3 +165,24 @@ def test_content_notifications_skip_disabled_parties(shared):
     assert sockets[1].get_received() == []
     assert sockets[2].get_received() == []
     assert sockets[4].get_received()[0]['name'] == 'campaign_content_changed'
+
+
+def test_local_mode_ignores_lists_but_preserves_ownership_and_membership(setup):
+    app, client = setup
+    app.config.update(LOCAL_FEATURE_ACCESS=True, FEATURE_TEST_USER_IDS=set(), FEATURE_TEST_PARTY_IDS=set())
+    entry_id = create_entry(client)
+    assert client.get('/articles/tables').status_code == 200
+    assert client.get('/campaigns/').status_code == 200
+    assert 'Party 2' in client.get(f'/materials/{entry_id}/reveal').text
+    login(client, 3)
+    assert client.get(f'/materials/{entry_id}/edit').status_code == 403
+    assert client.get('/party/1/materials/').status_code == 403
+
+
+def test_local_mode_ignores_even_invalid_lists(monkeypatch):
+    monkeypatch.setenv('LOCAL_FEATURE_ACCESS', 'True')
+    monkeypatch.setenv('FEATURE_TEST_USER_IDS', '*')
+    monkeypatch.setenv('FEATURE_TEST_PARTY_IDS', 'invalid')
+    app = Flask(__name__)
+    init_feature_access(app)
+    assert app.config['LOCAL_FEATURE_ACCESS'] is True
