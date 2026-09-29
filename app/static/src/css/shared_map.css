@@ -1,0 +1,9 @@
+html, body { margin: 0; height: 100%; overflow: hidden; }
+body { display: flex; flex-direction: column; font-family: system-ui, sans-serif; }
+.map-header { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 10px 16px; background: #f8f6f1; border-bottom: 1px solid #ddd; }
+.map-header a { color: #383838; }
+.map-header button { cursor: pointer; padding: 6px 10px; }
+.map-header button { border: 1px solid #ccc; border-radius: 5px; background: white; color: #222; }
+#map-status { margin-left: auto; font-size: 13px; max-width: 38em; }
+#editor { flex: 1; min-height: 0; width: 100%; }
+@media (max-width: 600px) { .map-header { gap: 6px; padding: 8px; font-size: 13px; } #map-status { width: 100%; } }

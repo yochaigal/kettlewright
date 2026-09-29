@@ -1,6 +1,7 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import token, category, rich_editor with context %}
 {% block workspace %}
+{% if entry %}{% include 'campaigns/parents.html' %}{% endif %}
 <h1>{{ _('Create and show') if party else (_('Edit material') if entry else _('New material')) }}</h1>
 {% if party %}<p>{{ _('This will be visible to members of') }} <strong>{{ party.name }}</strong>.</p>
 {% else %}<p>{{ _('Private original. Saving here does not change any party’s version.') }}</p>{% endif %}
@@ -32,8 +33,12 @@
 {% if entry.pointcrawl %}<a href="{{ url_for('campaigns.map_edit', map_id=entry.pointcrawl.id) }}">{{ _('Edit map') }}</a>{% endif %}
 </div>
 <details><summary>{{ _('Delete material') }}</summary>
-<p>{{ _('This also removes its published versions.') }}</p>
-<form method="post" action="{{ url_for('campaigns.delete_entry', entry_id=entry.id) }}">{{ token(entry.version) }}<button>{{ _('Delete material') }}</button></form>
+<p>{{ _('This also removes nested contents, connected paths and published versions. Review the complete list before deleting.') }}</p>
+<form method="post" action="{{ url_for('campaigns.bulk_delete') }}">{{ token() }}
+<input type="hidden" name="campaign_id" value="{{ entry.campaign_id or '' }}">
+<input type="hidden" name="entry_ids" value="{{ entry.id }}">
+<input type="hidden" name="version_{{ entry.id }}" value="{{ entry.version }}">
+<button>{{ _('Delete material…') }}</button></form>
 </details>
 {% endif %}
 {% endblock %}

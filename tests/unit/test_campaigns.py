@@ -450,6 +450,83 @@ def nested_draft(kind='dungeon'):
 
 
 @pytest.mark.parametrize('kind', ['dungeon', 'forest'])
+@pytest.mark.parametrize('campaign_id', [1, ''])
+def test_map_pois_are_children_not_workspace_locations(setup, kind, campaign_id):
+    app, client = setup
+    standalone = create_entry(client, campaign_id=campaign_id, category='location', title='Standalone')
+    response = client.post('/maps/new', data={'campaign_id': campaign_id, 'title': 'Root map',
+        'kind': kind, 'draft': json.dumps(nested_draft(kind))})
+    map_id = int(re.search(r'/maps/(\d+)/edit', response.location)[1])
+    graph = client.get(f'/maps/{map_id}/data').json
+    root_id = map_entry_id(app, map_id)
+    workspace = f'/campaigns/{campaign_id}/' if campaign_id else '/materials/'
+    html = client.get(workspace).get_data(as_text=True)
+    assert set(map(int, re.findall(r'data-root-entry-id="(\d+)"', html))) == {standalone, root_id}
+    assert set(map(int, re.findall(r'data-child-entry-id="(\d+)"', html))) == {n['entry_id'] for n in graph['nodes']}
+    for node in graph['nodes']:
+        page = client.get(f'/materials/{node["entry_id"]}/edit').get_data(as_text=True)
+        parents = re.search(r'<nav class="material-parents".*?</nav>', page, re.S)[0]
+        assert f'href="/maps/{map_id}/edit"' in parents
+        assert 'Root map' in parents
+    # A detached original still exists and becomes standalone, as before.
+    removed_id = graph['nodes'].pop()['entry_id']
+    graph['edges'] = []
+    assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)}).status_code == 200
+    html = client.get(workspace).get_data(as_text=True)
+    assert f'data-root-entry-id="{removed_id}"' in html
+
+
+@pytest.mark.parametrize('kind', ['dungeon', 'forest'])
+def test_nested_maps_follow_entrance_in_material_hierarchy(setup, kind):
+    from app.lib.campaigns import material_hierarchy
+    app, client = setup
+    map_id, graph = create_map(client)
+    graph['nodes'][0]['nested_draft'] = nested_draft(kind)
+    saved = client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)}).json
+    child_map_id = saved['nodes'][0]['nested_map_id']
+    child_id = map_entry_id(app, child_map_id)
+    root_id = map_entry_id(app, map_id)
+    with app.app_context():
+        tree = material_hierarchy(ContentEntry.query.filter_by(owner_id=1, campaign_id=1).all())
+        assert [item['entry'].id for item in tree] == [root_id]
+        entrance = tree[0]['children'][0]
+        assert entrance['entry'].id == saved['nodes'][0]['entry_id']
+        assert entrance['number'] == 1
+        nested = entrance['children'][0]
+        assert nested['entry'].id == child_id
+        assert [item['entry'].title for item in nested['children']] == ['Entrance', 'Treasure']
+    html = client.get('/campaigns/1/').get_data(as_text=True)
+    assert re.findall(r'data-root-entry-id="(\d+)"', html) == [str(root_id)]
+    child_page = client.get(f'/maps/{child_map_id}/edit').get_data(as_text=True)
+    parents = re.search(r'<nav class="material-parents".*?</nav>', child_page, re.S)[0]
+    assert f'/materials/{saved["nodes"][0]["entry_id"]}/edit' in parents
+
+
+def test_legacy_hierarchy_cycles_remain_accessible_and_scoped(setup):
+    from app.lib.campaigns import material_hierarchy
+    app, client = setup
+    first, first_graph = create_map(client, nodes=1)
+    second, second_graph = create_map(client, nodes=1)
+    with app.app_context():
+        a, b = db.session.get(PointcrawlMap, first), db.session.get(PointcrawlMap, second)
+        a.nodes[0].nested_map = b
+        b.nodes[0].nested_map = a
+        # Old/externally written geometry can contain cycles. Do not lose all roots.
+        db.session.commit()
+        entries = ContentEntry.query.filter_by(owner_id=1, campaign_id=1).all()
+        tree = material_hierarchy(entries)
+        def flattened(items):
+            return [entry_id for item in items for entry_id in [item['entry'].id, *flattened(item['children'])]]
+        ids = flattened(tree)
+        assert set(ids) == {entry.id for entry in entries}
+        assert len(ids) <= len(entries) + 1
+        # A scope missing a linked map must never pull its private original in.
+        scoped = material_hierarchy([a.entry, a.nodes[0].entry])
+        assert set(flattened(scoped)) == {a.entry_id, a.nodes[0].entry_id}
+    assert client.get('/campaigns/1/').status_code == 200
+
+
+@pytest.mark.parametrize('kind', ['dungeon', 'forest'])
 def test_generated_nested_map_is_atomic_private_and_not_duplicated(setup, kind):
     app, client = setup
     map_id, graph = create_map(client)
@@ -872,3 +949,177 @@ def test_existing_embedded_descriptions_can_be_migrated_to_files(setup):
     repeat = app.test_cli_runner().invoke(args=['campaigns', 'migrate-images'])
     assert repeat.exit_code == 0
     assert 'Migrated 0 descriptions' in repeat.output
+
+
+def deletion_preview(client, entry_ids, campaign_id=1, versions=None):
+    versions = versions or {}
+    response = client.post('/materials/bulk-delete', data={
+        'campaign_id': campaign_id, 'entry_ids': [str(entry_id) for entry_id in entry_ids],
+        **{f'version_{entry_id}': versions.get(entry_id, 1) for entry_id in entry_ids}})
+    assert response.status_code == 200, response.get_data(as_text=True)
+    html = response.get_data(as_text=True)
+    return re.search(r'name="deletion_token" value="([^"]+)"', html)[1], {
+        int(value) for value in re.findall(r'data-delete-entry-id="(\d+)"', html)}
+
+
+@pytest.mark.parametrize('kind', ['dungeon', 'forest'])
+def test_delete_map_removes_nested_contents_and_publications(setup, kind):
+    app, client = setup
+    map_id, graph = create_map(client)
+    graph['nodes'][0]['nested_draft'] = nested_draft(kind)
+    assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)}).status_code == 200
+    root_id = map_entry_id(app, map_id)
+    keep_id = create_entry(client, title='Keep unrelated')
+    with app.app_context():
+        doomed = [entry.id for entry in ContentEntry.query.filter(ContentEntry.id != keep_id)]
+        for entry_id in doomed:
+            db.session.add(PartyPresentation(entry=db.session.get(ContentEntry, entry_id), party_id=1, title='Known', body=''))
+        db.session.commit()
+    assert client.post(f'/materials/{root_id}/delete', data={'version': 1}).status_code == 302
+    with app.app_context():
+        assert [e.id for e in ContentEntry.query.all()] == [keep_id]
+        assert PointcrawlMap.query.count() == MapNode.query.count() == MapEdge.query.count() == 0
+        assert PartyPresentation.query.count() == 0
+        assert Campaign.query.count() == 1
+        assert Party.query.count() == 3
+        assert Character.query.count() == 2
+
+
+def test_bulk_delete_preview_then_atomic_scoped_delete(setup, monkeypatch):
+    from app import socketio
+    from app.models import PartyMap
+    app, client = setup
+    first = create_entry(client, campaign_id='', title='Trap')
+    second = create_entry(client, campaign_id='', title='Lore')
+    keep = create_entry(client, title='Campaign material')
+    reveal(client, first)
+    with app.app_context():
+        db.session.add(PartyMap(party_id=1, drawing=drawing()))
+        db.session.add(ContentLink(source_id=keep, target_id=first))
+        db.session.commit()
+    notifications = []
+    monkeypatch.setattr(socketio, 'emit', lambda event, payload, **kw: notifications.append(payload))
+    token, listed = deletion_preview(client, [first, second], campaign_id='')
+    assert listed == {first, second}
+    with app.app_context():
+        assert ContentEntry.query.count() == 3  # Preview is read-only.
+    response = client.post('/materials/bulk-delete', data={'deletion_token': token})
+    assert response.status_code == 302 and response.location.endswith('/materials/')
+    with app.app_context():
+        assert [entry.id for entry in ContentEntry.query.all()] == [keep]
+        assert PartyPresentation.query.count() == ContentLink.query.count() == 0
+        assert db.session.get(PartyMap, 1).drawing == drawing()
+        assert Campaign.query.count() == 1 and Party.query.count() == 3
+    assert notifications and {payload['party_id'] for payload in notifications} == {1}
+
+
+def test_bulk_delete_map_preview_includes_all_descendants_and_paths(setup):
+    app, client = setup
+    map_id, graph = create_map(client)
+    graph['nodes'][0]['nested_draft'] = nested_draft('forest')
+    assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)}).status_code == 200
+    root_id = map_entry_id(app, map_id)
+    token, listed = deletion_preview(client, [root_id, graph['nodes'][0]['entry_id']])
+    with app.app_context():
+        assert listed == {entry.id for entry in ContentEntry.query.all()}
+    assert client.post('/materials/bulk-delete', data={'deletion_token': token}).status_code == 302
+    with app.app_context():
+        assert ContentEntry.query.count() == PointcrawlMap.query.count() == 0
+
+
+@pytest.mark.parametrize('change', ['material', 'geometry', 'descendant', 'tampered', 'owner'])
+def test_bulk_delete_rejects_changed_preview_without_partial_deletion(setup, change):
+    app, client = setup
+    map_id, graph = create_map(client)
+    root_id = map_entry_id(app, map_id)
+    token, _ = deletion_preview(client, [root_id])
+    if change in ('material', 'descendant'):
+        with app.app_context():
+            entry_id = root_id if change == 'material' else graph['nodes'][0]['entry_id']
+            db.session.get(ContentEntry, entry_id).title = 'Changed since preview'
+            db.session.commit()
+    elif change == 'geometry':
+        graph['nodes'].append({'id': 'new-after-preview', 'number': 3, 'x': 10, 'y': 20, 'title': 'New room'})
+        assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)}).status_code == 200
+    elif change == 'tampered':
+        token = 'changed' + token
+    else:
+        login(client, 2)
+    result = client.post('/materials/bulk-delete', data={'deletion_token': token})
+    assert result.status_code == (403 if change == 'owner' else 409)
+    with app.app_context():
+        assert db.session.get(ContentEntry, root_id) is not None
+        assert db.session.get(ContentEntry, graph['nodes'][0]['entry_id']) is not None
+        assert PointcrawlMap.query.count() == 1
+
+
+def test_bulk_delete_validates_selection_scope_versions_and_csrf(setup):
+    app, client = setup
+    entry_id = create_entry(client)
+    unfiled = create_entry(client, campaign_id='')
+    data = {'entry_ids': [entry_id, unfiled], f'version_{entry_id}': 1, f'version_{unfiled}': 1}
+    assert client.post('/materials/bulk-delete', data=data).status_code == 409
+    assert client.post('/materials/bulk-delete', data={'campaign_id': 1}).status_code == 400
+    data = {'campaign_id': 1, 'entry_ids': [entry_id], f'version_{entry_id}': 0}
+    assert client.post('/materials/bulk-delete', data=data).status_code == 409
+    login(client, 2)
+    data[f'version_{entry_id}'] = 1
+    assert client.post('/materials/bulk-delete', data=data).status_code == 403
+    login(client, 1)
+    app.config['WTF_CSRF_ENABLED'] = True
+    assert client.post('/materials/bulk-delete', data=data).status_code == 400
+    with app.app_context():
+        assert ContentEntry.query.count() == 2
+
+
+def test_deleting_nested_map_keeps_entrance_and_invalidates_parent_editor(setup):
+    app, client = setup
+    parent_id, graph = create_map(client)
+    graph['nodes'][0]['nested_draft'] = nested_draft()
+    saved = client.post(f'/maps/{parent_id}/data', data={'graph': json.dumps(graph)}).json
+    nested_id = saved['nodes'][0]['nested_map_id']
+    root_id = map_entry_id(app, nested_id)
+    token, _ = deletion_preview(client, [root_id])
+    assert client.post('/materials/bulk-delete', data={'deletion_token': token}).status_code == 302
+    parent = client.get(f'/maps/{parent_id}/data').json
+    assert parent['nodes'][0]['entry_id'] == saved['nodes'][0]['entry_id']
+    assert parent['nodes'][0]['nested_map_id'] is None
+    assert parent['version'] > saved['version']
+    assert client.post(f'/maps/{parent_id}/data', data={'graph': json.dumps(saved)}).status_code == 409
+    with app.app_context():
+        assert PointcrawlMap.query.count() == 1
+        assert ContentEntry.query.count() == 4
+
+
+def test_bulk_delete_handles_cycles_without_following_arbitrary_links(setup):
+    app, client = setup
+    first, _ = create_map(client, nodes=1)
+    second, _ = create_map(client, nodes=1)
+    keep = create_entry(client)
+    with app.app_context():
+        a, b = db.session.get(PointcrawlMap, first), db.session.get(PointcrawlMap, second)
+        a.nodes[0].nested_map = b
+        b.nodes[0].nested_map = a
+        root_id = a.entry_id
+        db.session.add(ContentLink(source_id=root_id, target_id=keep))
+        db.session.commit()
+    token, listed = deletion_preview(client, [root_id])
+    assert len(listed) == 4 and keep not in listed
+    assert client.post('/materials/bulk-delete', data={'deletion_token': token}).status_code == 302
+    with app.app_context():
+        assert [entry.id for entry in ContentEntry.query.all()] == [keep]
+        assert PointcrawlMap.query.count() == MapNode.query.count() == 0
+
+
+def test_bulk_delete_location_cleans_connected_paths_and_updates_surviving_map(setup):
+    app, client = setup
+    map_id, graph = create_map(client)
+    location_id = graph['nodes'][0]['entry_id']
+    token, listed = deletion_preview(client, [location_id])
+    assert listed == {location_id, graph['edges'][0]['entry_id']}
+    assert client.post('/materials/bulk-delete', data={'deletion_token': token}).status_code == 302
+    saved = client.get(f'/maps/{map_id}/data').json
+    assert len(saved['nodes']) == 1 and saved['edges'] == []
+    assert saved['version'] > graph['version']
+    with app.app_context():
+        assert ContentEntry.query.count() == 2

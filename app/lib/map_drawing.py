@@ -14,7 +14,7 @@ MAX_DRAWING_BYTES = 12 * 1024 * 1024
 DRAWING_TYPES = {'rectangle', 'ellipse', 'diamond', 'text', 'line', 'arrow', 'freedraw', 'image'}
 
 
-def validate_drawing(value):
+def validate_drawing(value, *, allow_frames=False):
     if value is None:
         return copy.deepcopy(EMPTY_DRAWING)
     if not isinstance(value, dict):
@@ -29,7 +29,7 @@ def validate_drawing(value):
         abort(400, 'A drawing supports up to 2000 elements.')
     result, ids, used_files = [], set(), set()
     for original in elements:
-        if not isinstance(original, dict) or original.get('type') not in DRAWING_TYPES:
+        if not isinstance(original, dict) or original.get('type') not in (DRAWING_TYPES | ({'frame'} if allow_frames else set())):
             abort(400, 'Unsupported drawing element.')
         element = copy.deepcopy(original)
         key = element.get('id')
@@ -59,7 +59,8 @@ def validate_drawing(value):
         # Drawings carry no card metadata, external embeds or executable links.
         element.pop('customData', None)
         element['link'] = None
-        element['frameId'] = None
+        if not allow_frames:
+            element['frameId'] = None
         if element.get('isDeleted'):
             continue
         if element['type'] == 'image':
@@ -69,7 +70,10 @@ def validate_drawing(value):
             used_files.add(file_id)
         result.append(element)
     retained_ids = {element['id'] for element in result}
+    frame_ids = {element['id'] for element in result if element['type'] == 'frame'}
     for element in result:
+        if allow_frames and element.get('frameId') not in frame_ids:
+            element['frameId'] = None
         for field in ('startBinding', 'endBinding'):
             binding = element.get(field)
             if binding is not None and (not isinstance(binding, dict) or binding.get('elementId') not in retained_ids):

@@ -1,6 +1,7 @@
 """Campaign workspaces, party knowledge, and pointcrawl editing."""
 from copy import deepcopy
-from flask import Blueprint, abort, jsonify, redirect, render_template, request, url_for, send_from_directory
+from flask import Blueprint, abort, current_app, jsonify, redirect, render_template, request, url_for, send_from_directory
+from itsdangerous import BadSignature, URLSafeTimedSerializer
 from flask_babel import _
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
@@ -11,7 +12,8 @@ from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
                         Party, PartyPresentation, PointcrawlMap)
 from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, check_version,
     entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
-    party_access, publishable_party, render_content, save_geometry, text_value, content_value)
+    party_access, publishable_party, render_content, save_geometry, text_value, content_value,
+    material_hierarchy, material_parents, material_deletion_plan, delete_material_plan)
 from app.lib.rich_content import content_excerpt
 from app.lib.material_images import LOCAL_IMAGE, image_directory, cleanup_images, image_references
 
@@ -108,7 +110,7 @@ def workspace(campaign_id):
         notify_parties(removed)
         return redirect(url_for('campaigns.workspace', campaign_id=campaign.id))
     entries = ContentEntry.query.filter_by(owner_id=current_user.id, campaign_id=campaign.id).order_by(ContentEntry.id).all()
-    return render_template('campaigns/workspace.html', campaign=campaign, entries=entries,
+    return render_template('campaigns/workspace.html', campaign=campaign, hierarchy=material_hierarchy(entries),
                            parties=my_parties(), linked={p.party_id for p in campaign.parties})
 
 
@@ -132,7 +134,7 @@ def delete_campaign(campaign_id):
 @campaigns.route('/materials/')
 def library():
     entries = ContentEntry.query.filter_by(owner_id=current_user.id, campaign_id=None).order_by(ContentEntry.id).all()
-    return render_template('campaigns/workspace.html', campaign=None, entries=entries, parties=[], linked=set())
+    return render_template('campaigns/workspace.html', campaign=None, hierarchy=material_hierarchy(entries), parties=[], linked=set())
 
 
 @campaigns.route('/party/<int:party_id>/materials/')
@@ -248,6 +250,7 @@ def edit_entry(entry_id):
     selected_links = {link.target_id for link in entry.links}
     candidates.sort(key=lambda item: (item.id not in automatic_links | selected_links, item.id))
     return render_template('campaigns/entry.html', entry=entry, campaign=entry.campaign, party=None,
+                           parent_entries=material_parents(entry),
                            campaigns=my_campaigns(), candidates=candidates,
                            selected_links=selected_links, automatic_links=automatic_links)
 
@@ -256,21 +259,51 @@ def edit_entry(entry_id):
 def delete_entry(entry_id):
     entry = owned(ContentEntry, entry_id)
     check_version(entry, request.form.get('version'))
-    audiences = entry_audiences(entry)
     campaign_id = entry.campaign_id
-    affected_maps = {node.map for node in entry.map_nodes} | {edge.map for edge in entry.map_edges}
-    paths = {edge.entry for node in entry.map_nodes for edge in list(node.outgoing) + list(node.incoming)}
-    if entry.pointcrawl:
-        paths.update(edge.entry for edge in entry.pointcrawl.edges)
-    for pointcrawl in affected_maps:
-        pointcrawl.version += 1
-        audiences.update(entry_audiences(pointcrawl.entry))
-    for path in paths:
-        db.session.delete(path)
-    db.session.delete(entry)
-    db.session.commit()
-    notify_parties(audiences)
+    delete_material_plan(*material_deletion_plan([entry], current_user.id, campaign_id))
     return redirect(url_for('campaigns.workspace', campaign_id=campaign_id) if campaign_id else url_for('campaigns.library'))
+
+
+@campaigns.route('/materials/bulk-delete', methods=['POST'])
+def bulk_delete():
+    signer = URLSafeTimedSerializer(current_app.secret_key, salt='material-deletion')
+    confirmation = request.form.get('deletion_token')
+    if confirmation:
+        try:
+            snapshot = signer.loads(confirmation, max_age=1800)
+        except BadSignature:
+            abort(409, 'Deletion preview expired or changed. Select the materials again.')
+        if snapshot['owner_id'] != current_user.id:
+            abort(403)
+        campaign_id = snapshot['campaign_id']
+        selected_ids = snapshot['selected_ids']
+    else:
+        campaign = campaign_for(request.form.get('campaign_id'))
+        campaign_id = campaign.id if campaign else None
+        selected_ids = sorted({integer(value) for value in request.form.getlist('entry_ids')})
+        if not selected_ids:
+            abort(400, 'Select at least one material.')
+    if campaign_id:
+        owned(Campaign, campaign_id)
+    selected = [owned(ContentEntry, entry_id) for entry_id in selected_ids]
+    if not confirmation:
+        for entry in selected:
+            check_version(entry, request.form.get(f'version_{entry.id}'))
+    entries, maps = material_deletion_plan(selected, current_user.id, campaign_id)
+    state = {'owner_id': current_user.id, 'campaign_id': campaign_id,
+             'selected_ids': selected_ids,
+             'entries': {str(key): entry.version for key, entry in entries.items()},
+             'maps': {str(key): pointcrawl.version for key, pointcrawl in maps.items()}}
+    back_url = (url_for('campaigns.workspace', campaign_id=campaign_id)
+                if campaign_id else url_for('campaigns.library'))
+    if confirmation:
+        if snapshot != state:
+            abort(409, 'The materials or map contents changed. Review the deletion again.')
+        delete_material_plan(entries, maps)
+        return redirect(back_url)
+    return render_template('campaigns/delete_materials.html',
+        entries=sorted(entries.values(), key=lambda entry: (entry.category, entry.id)),
+        deletion_token=signer.dumps(state), back_url=back_url)
 
 
 @campaigns.route('/materials/<int:entry_id>/reveal', methods=['GET', 'POST'])
@@ -376,6 +409,7 @@ def map_edit(map_id):
     locations = ContentEntry.query.filter_by(owner_id=current_user.id,
         campaign_id=pointcrawl.entry.campaign_id, category='location').all()
     return render_template('campaigns/map.html', pointcrawl=pointcrawl, graph=map_projection(pointcrawl),
+        parent_entries=material_parents(pointcrawl.entry), campaign=pointcrawl.entry.campaign,
         editing=True, party=None, nested_maps=candidates, locations=locations)
 
 

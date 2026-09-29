@@ -27,8 +27,16 @@
 .campaign-cards {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1rem;}
 .campaign-card {display:flex;flex-direction:column;gap:.75rem;box-sizing:border-box;width:auto;max-width:none;margin:0;border:1px solid currentColor;border-radius:.4rem;padding:1rem;min-width:0;}
 .campaign-card h3 {margin:0;}
+.campaign-workspace .material-children {list-style:none;margin:.6rem 0 0;padding-left:1rem;border-left:1px solid currentColor;}
+.campaign-workspace .material-children > li {margin:.65rem 0;overflow-wrap:anywhere;}
+.campaign-workspace .material-children > li > a + a {margin-left:.6rem;font-size:.85em;}
+.campaign-workspace .material-tree {margin-top:.5rem;}
+.campaign-workspace .material-parents {display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin-bottom:1rem;}
 .campaign-workspace .campaign-card .campaign-actions {margin:auto 0 0;padding-top:.25rem;}
 .campaign-check {display:flex!important;align-items:center;gap:.5rem;}
+.campaign-workspace .material-selection {margin:0;font-size:.85em;}
+.campaign-workspace .material-children .material-selection {display:inline-flex!important;margin-right:.6rem;}
+.campaign-workspace .campaign-actions > button:disabled {opacity:.45;cursor:default;}
 .content-text {white-space:pre-wrap;overflow-wrap:anywhere;}
 .campaign-workspace fieldset {min-width:0;margin:1rem 0;padding:1rem;}
 .pointcrawl-canvas {display:block;box-sizing:border-box;width:100%;height:640px;border:1px solid currentColor;background:var(--bg,#fff);}

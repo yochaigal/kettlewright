@@ -29,6 +29,9 @@
         {% if is_owner %}<p class="subtitle">{{_("Warden")}}</p>{% endif %}
       </div>
       <div class="party-header-actions">
+        {% if can_view_rolls %}
+        <a class="button no-margin-top" href="{{ url_for('party.shared_map', party_id=party.id) }}">{{ _('Shared Map') }}</a>
+        {% endif %}
         {% if is_owner or is_subowner %}
         <button class="button is-light no-margin-top" id="join-code-button" type="button" title="Join Code">
           <span class="mobile-hidden">{{_('Join Code')}}</span>

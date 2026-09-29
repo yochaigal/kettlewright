@@ -14,6 +14,31 @@ Rich bodies have a versioned marker and are sanitized on save and rendering. Exi
 
 ## Pointcrawl maps
 
+Campaign workspaces and Unfiled materials display map contents hierarchically.
+The Locations section contains standalone locations; map POIs appear under their
+map's expandable Contents instead. A linked Dungeon or Forest is nested below
+its entrance location, with its own POIs below it. This uses existing map links,
+so older generated maps are organized immediately without migrating records.
+Reused locations remain navigable from every containing map. Material and map
+editors link back to their parent and campaign. Removing a location from its last
+map makes its retained original a standalone location again. Publication and
+party visibility rules are unchanged.
+
+Campaign workspaces and Unfiled materials support selecting individual materials
+or **Select all**, followed by **Delete selected…**. A confirmation page lists
+every original to be removed, including paths and nested contents. Selection is
+limited to the current workspace. Cancel leaves all records intact.
+
+Deleting a map (including Dungeon, Forest and Realm) deletes its descendant
+locations, paths and nested maps, together with published party versions.
+Deleting a location also deletes its linked nested map and connected paths.
+This applies to both single and bulk deletion. Reused descendants are removed
+from all containing maps; arbitrary related-material links do not cascade.
+Campaign containers, parties, characters and Shared Map drawings are preserved.
+The preview expires after 30 minutes; changes to originals or affected map
+geometry require a new preview. Existing standalone leftovers from maps deleted
+before this behavior can be selected and deleted from Unfiled materials.
+
 Create an empty map or generate a draft using the existing Dungeon, Forest or Realm tables. Inspect the draft before saving; generating another draft replaces only the unsaved draft. Tools results also offer **Create map**, which preserves the already-rolled content and adds a connected layout with loops.
 
 Region drafts include generated Dungeon and Forest maps for matching points of interest. Saving creates these maps, their locations and paths in the same campaign and links them to the region's locations. Existing locations offer **Generate linked map**; review or discard the nested draft before saving. Existing linked maps are never regenerated. Nested maps remain private even with **Create and show map**.

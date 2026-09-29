@@ -1,0 +1,7 @@
+<nav class="material-parents" aria-label="{{ _('Material hierarchy') }}">
+<a href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) if campaign else url_for('campaigns.library') }}">{{ campaign.name if campaign else _('Unfiled materials') }}</a>
+{% if parent_entries %}<span>{{ _('Part of') }}:</span>
+{% for parent in parent_entries %}
+<a href="{{ url_for('campaigns.map_edit', map_id=parent.pointcrawl.id) if parent.pointcrawl else url_for('campaigns.edit_entry', entry_id=parent.id) }}">{{ parent.title or _('Untitled private original') }}</a>
+{% endfor %}{% endif %}
+</nav>

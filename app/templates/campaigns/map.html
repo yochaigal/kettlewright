@@ -1,6 +1,7 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import token with context %}
 {% block workspace %}
+{% if editing %}{% include 'campaigns/parents.html' %}{% endif %}
 {% if not editing %}
 <div data-party-content="{{ party.id }}" data-map-url="{{ url_for('campaigns.party_map_data', party_id=party.id, map_id=graph.id) }}"></div>
 <script type="module" src="{{ url_for('static', filename='src/js/campaign_live.js') }}"></script>

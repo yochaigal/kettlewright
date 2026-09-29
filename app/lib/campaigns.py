@@ -90,6 +90,99 @@ def map_related_ids(entry):
     return targets - {entry.id}
 
 
+def material_hierarchy(entries):
+    """Project existing map containment, without turning POIs into root cards.
+
+    Locations may be reused and legacy maps may contain cycles. Expand each
+    original once, keeping subsequent occurrences as navigable references.
+    Only entries in the requested owner/workspace scope can enter the tree.
+    """
+    by_id = {entry.id: entry for entry in entries if entry.category != 'path'}
+    maps = {pointcrawl.id: pointcrawl.entry_id for pointcrawl in
+            PointcrawlMap.query.filter(PointcrawlMap.entry_id.in_(by_id)).all()}
+    children = {entry_id: {} for entry_id in by_id}
+    contained = set()
+    for node in MapNode.query.filter(MapNode.map_id.in_(maps)).order_by(MapNode.number, MapNode.id):
+        if node.entry_id not in by_id:
+            continue
+        children[maps[node.map_id]][node.entry_id] = node.number
+        contained.add(node.entry_id)
+        if node.nested_map_id in maps:
+            nested_id = maps[node.nested_map_id]
+            children[node.entry_id][nested_id] = None
+            contained.add(nested_id)
+    expanded = set()
+
+    def branch(entry_id, number=None, depth=0):
+        item = {'entry': by_id[entry_id], 'number': number, 'children': []}
+        if entry_id in expanded or depth >= 20:
+            return item
+        expanded.add(entry_id)
+        item['children'] = [branch(child_id, child_number, depth + 1)
+                            for child_id, child_number in children[entry_id].items()]
+        return item
+
+    roots = [branch(entry_id) for entry_id in by_id if entry_id not in contained]
+    # Keep rootless legacy cycles accessible instead of silently hiding them.
+    for entry_id in by_id:
+        if entry_id not in expanded:
+            roots.append(branch(entry_id))
+    return roots
+
+
+def material_parents(entry):
+    parents = {node.map.entry_id: node.map.entry for node in entry.map_nodes}
+    if entry.pointcrawl:
+        parents.update({node.entry_id: node.entry for node in entry.pointcrawl.entrances})
+    return [parent for _, parent in sorted(parents.items())
+            if parent.id != entry.id and parent.owner_id == entry.owner_id
+            and parent.campaign_id == entry.campaign_id]
+
+
+def material_deletion_plan(selected, owner_id, campaign_id):
+    """Follow containment, never arbitrary related-material links; tolerate cycles."""
+    entries, maps = {}, {}
+    pending = list(selected)
+    while pending:
+        entry = pending.pop()
+        if entry.id in entries:
+            continue
+        if entry.owner_id != owner_id or entry.campaign_id != campaign_id:
+            abort(409, 'Linked content belongs to another workspace. Move it before deleting.')
+        entries[entry.id] = entry
+        if entry.pointcrawl:
+            pointcrawl = entry.pointcrawl
+            maps[pointcrawl.id] = pointcrawl
+            pending.extend(node.entry for node in pointcrawl.nodes)
+            pending.extend(edge.entry for edge in pointcrawl.edges)
+            for entrance in pointcrawl.entrances:
+                maps[entrance.map_id] = entrance.map
+        for node in entry.map_nodes:
+            maps[node.map_id] = node.map
+            if node.nested_map:
+                pending.append(node.nested_map.entry)
+            pending.extend(edge.entry for edge in list(node.outgoing) + list(node.incoming))
+        for edge in entry.map_edges:
+            maps[edge.map_id] = edge.map
+    # Even indirect changes to geometry must remain in the authorized workspace.
+    if any(m.entry.owner_id != owner_id or m.entry.campaign_id != campaign_id for m in maps.values()):
+        abort(409, 'Linked content belongs to another workspace. Move it before deleting.')
+    return entries, maps
+
+
+def delete_material_plan(entries, maps):
+    audiences = set()
+    for pointcrawl in maps.values():
+        audiences.update(entry_audiences(pointcrawl.entry))
+        if pointcrawl.entry_id not in entries:
+            pointcrawl.version += 1
+    for entry in entries.values():
+        audiences.update(entry_audiences(entry))
+        db.session.delete(entry)
+    db.session.commit()
+    notify_parties(audiences)
+
+
 def known_entries(party_id):
     """Only independently published fields; never serialize an ORM original."""
     rows = PartyPresentation.query.filter_by(party_id=party_id, published=True).all()

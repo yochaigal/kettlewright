@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/index.css">
+  <title>{{ _('Shared Map') }} · {{ party.name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='src/css/shared_map.css') }}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  <script>window.EXCALIDRAW_ASSET_PATH = 'https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/';</script>
+  <script type="importmap">
+  {"imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react-dom": "https://esm.sh/react-dom@18.3.1?external=react",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client?external=react",
+    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+    "excalidraw": "https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/index.js?external=react,react-dom"
+  }}
+  </script>
+</head>
+<body>
+  <header class="map-header">
+    <a href="{{ url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) }}">← {{ party.name }}</a>
+    <strong>{{ _('Shared Map') }}</strong>
+    <span>{{ _('Warden') if editing else _('View only') }}</span>
+    <button type="button" id="fit-map">{{ _('Fit map') }}</button>
+    <span id="map-status" role="status" aria-live="polite">{{ _('Loading…') }}</span>
+  </header>
+  <div id="editor"></div>
+  <script id="shared-map-config" type="application/json">{{ {
+    'partyId': party.id, 'editing': editing, 'csrfToken': csrf_token,
+    'sceneUrl': url_for('party.shared_map_scene', party_id=party.id),
+    'libraryUrl': url_for('static', filename='vendor/excalidraw-libraries/'),
+    'messages': {
+      'saved': _('Saved'), 'live': _('Live'), 'saving': _('Saving…'),
+      'offline': _('Connection lost. Retrying…'),
+      'failed': _('Unable to save. Your changes are still here; retrying…'),
+      'invalid': _('Unable to save this drawing. Use up to 2000 elements and 12 MB of PNG, JPEG, WebP or GIF images.'),
+      'conflict': _('Map changed in another tab. Export your changes, then reload this page.'),
+      'denied': _('Map access is no longer available.'),
+      'loadFailed': _('Unable to load the map. Please reload this page.'),
+      'libraryFailed': _('Unable to load the library. Please reload this page.')
+    }
+  }|tojson }}</script>
+  <script type="module">
+    import({{ url_for('static', filename='src/js/maps/shared_map.js')|tojson }}).catch(() => {
+      document.getElementById('map-status').textContent = JSON.parse(document.getElementById('shared-map-config').textContent).messages.loadFailed;
+    });
+  </script>
+</body>
+</html>
