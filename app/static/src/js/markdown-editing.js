@@ -1,7 +1,7 @@
 // Native selection, input events and form submission remain the source of truth.
 export function markdownEdit(value, start, end, action) {
   const selected=value.slice(start,end);
-  const wraps={bold:['**','**'],italic:['*','*'],strike:['~~','~~'],code:['`','`'],link:['[','](https://example.com)']};
+  const wraps={bold:['**','**'],italic:['*','*'],strike:['~~','~~'],code:['`','`'],link:['[','](https://example.com)'],image:['![',']()']};
   let from=start,to=end,replacement,selectionStart,selectionEnd;
   if(wraps[action]) {
     const [left,right]=wraps[action];
@@ -11,11 +11,12 @@ export function markdownEdit(value, start, end, action) {
     };
     const selectedLeft=selected.match(/^[*~`]+/)?.[0] || '';
     const selectedRight=selected.match(/[*~`]+$/)?.[0] || '';
-    if(action!=='link' && hasFormatting(selectedLeft,selectedRight) && selected.length>=left.length+right.length){
+    if(!['link','image'].includes(action) && hasFormatting(selectedLeft,selectedRight) && selected.length>=left.length+right.length){
       replacement=selected.slice(left.length,-right.length);selectionStart=from;selectionEnd=from+replacement.length;
-    } else if(action!=='link' && hasFormatting(value.slice(0,start),value.slice(end))){
+    } else if(!['link','image'].includes(action) && hasFormatting(value.slice(0,start),value.slice(end))){
       from-=left.length;to+=right.length;replacement=selected;selectionStart=from;selectionEnd=from+replacement.length;
     } else {replacement=left+selected+right;selectionStart=from+left.length;selectionEnd=selectionStart+selected.length;}
+    if(action==='image')selectionStart=selectionEnd=from+replacement.length-1;
   } else {
     from=start===0?0:value.lastIndexOf('\n',start-1)+1;
     const next=value.indexOf('\n',end);to=next<0?value.length:next;
@@ -33,4 +34,4 @@ export function formatMarkdown(field, action) {
   field.setSelectionRange(edit.selectionStart,edit.selectionEnd);
   field.dispatchEvent(new Event('input',{bubbles:true}));
 }
-export const markdownTools=[['bold','Bold','bold'],['italic','Italic','italic'],['heading','Heading','heading'],['strike','Strikethrough','strikethrough'],['bullet','Bullet list','list-ul'],['ordered','Numbered list','list-ol'],['quote','Quote','quote-left'],['link','Link','link'],['code','Code','code']];
+export const markdownTools=[['bold','Bold','bold'],['italic','Italic','italic'],['heading','Heading','heading'],['strike','Strikethrough','strikethrough'],['bullet','Bullet list','list-ul'],['ordered','Numbered list','list-ol'],['quote','Quote','quote-left'],['link','Link','link'],['code','Code','code'],['image','Insert image','image']];
