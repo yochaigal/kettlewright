@@ -189,6 +189,12 @@ Each component exports a factory returning fresh state for one instance. Keep it
 
 Keep component roots outside HTMX swap targets when their state must survive an update. Item editor drafts intentionally reset when the editor is replaced; the existing named form fields remain the contract with Flask. Socket.IO and the stat refresh modules continue to handle live updates and preserve active edits. Do not add a second owner for those same fields in Alpine.
 
+## Campaigns and maps
+
+See [Campaigns and party knowledge](docs/campaigns.md) for private preparation,
+independent party versions, Tools results and pointcrawl maps. Apply the database
+migrations (`flask db upgrade`) before serving the updated application.
+
 ## Uploaded portraits
 
 Uploads live in `instance/portraits`, alongside the SQLite database in the existing
@@ -197,6 +203,8 @@ contain the portrait URL, not the image bytes; keep the image files when moving
 an installation. Replacing a portrait removes its previous uploaded file after
 the change is saved, unless another character still references the same file.
 Images are currently retained when a character is deleted.
+
+Uploaded material-description images use the neighboring `instance/material-images` folder in the same volume; include it in backups. See [campaign documentation](docs/campaigns.md) for access rules and migrating older embedded images.
 
 
 ## Attribution

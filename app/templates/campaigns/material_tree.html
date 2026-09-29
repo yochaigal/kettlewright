@@ -1,0 +1,19 @@
+{% macro material_selection(entry) %}
+<label class="campaign-check material-selection"><input type="checkbox" name="entry_ids" value="{{ entry.id }}" x-model="selected"
+ aria-label="{{ _('Select') }} {{ entry.title or _('Untitled private original') }}">{{ _('Select') }}</label>
+<input type="hidden" name="version_{{ entry.id }}" value="{{ entry.version }}">
+{% endmacro %}
+{% macro material_children(items) %}
+<ul class="material-children">
+{% for item in items %}
+<li data-child-entry-id="{{ item.entry.id }}">
+  {{ material_selection(item.entry) }}
+  <a href="{{ url_for('campaigns.edit_entry', entry_id=item.entry.id) }}">{% if item.number is not none %}{{ item.number }}. {% endif %}{{ item.entry.title or _('Untitled private original') }}</a>
+  {% if item.entry.pointcrawl %}<a href="{{ url_for('campaigns.map_edit', map_id=item.entry.pointcrawl.id) }}">{{ _('Open map') }}</a>{% endif %}
+  {% if item.children %}<details><summary>{{ _('Contents') }} ({{ item.children|length }})</summary>
+  {{ material_children(item.children) }}
+  </details>{% endif %}
+</li>
+{% endfor %}
+</ul>
+{% endmacro %}

@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response, abort
 from flask_login import login_required, current_user
 from app.lib import *
-from app.models import db, User, Character, Party, PartyRoll
+from app.models import db, User, Character, Party, PartyRoll, PartyMap
 from app.socket_events import party_recipient_ids, notify_roll_history_changed
 from app.lib.quick_stats import save_current_stat
+from app.lib.feature_access import require_party_features
 from app.lib.companions import save_item_to_companion, finish_companion_transfers, can_transfer_from
 from flask_wtf import FlaskForm
 from app.forms import *
@@ -11,6 +12,75 @@ import json
 from flask_babel import _
 
 party = Blueprint('party', __name__)
+
+
+@party.route('/party/<int:party_id>/shared-map')
+@login_required
+def shared_map(party_id):
+    require_party_features(party_id)
+    from flask_wtf.csrf import generate_csrf
+    target = db.get_or_404(Party, party_id)
+    if current_user.id not in party_recipient_ids(target):
+        abort(403)
+    response = make_response(render_template('main/shared_map.html', party=target,
+        editing=current_user.id == target.owner, csrf_token=generate_csrf()))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@party.route('/party/<int:party_id>/shared-map/scene', methods=['GET', 'POST'])
+@login_required
+def shared_map_scene(party_id):
+    require_party_features(party_id)
+    from sqlalchemy.exc import IntegrityError
+    from app.lib.map_drawing import EMPTY_DRAWING, MAX_DRAWING_BYTES, validate_drawing
+    target = db.get_or_404(Party, party_id)
+    if current_user.id not in party_recipient_ids(target):
+        abort(403)
+    if request.method == 'GET':
+        saved = db.session.get(PartyMap, party_id)
+        response = make_response({'version': saved.version if saved else 0,
+                                 'drawing': saved.drawing if saved else EMPTY_DRAWING})
+        response.headers['Cache-Control'] = 'no-store'
+        return response
+    if current_user.id != target.owner:
+        abort(403)
+    request.max_content_length = MAX_DRAWING_BYTES + 65536
+    if not FlaskForm().validate_on_submit():
+        abort(400)
+    data = request.get_json()
+    if not isinstance(data, dict) or type(data.get('version')) is not int or data['version'] < 0 or 'drawing' not in data:
+        abort(400)
+    drawing = validate_drawing(data['drawing'], allow_frames=True)
+    import re
+    state = data['drawing'].get('appState', {}) if isinstance(data['drawing'], dict) else {}
+    background = state.get('viewBackgroundColor', '#ffffff') if isinstance(state, dict) else None
+    if not isinstance(background, str) or not re.fullmatch(r'#[0-9a-fA-F]{6}', background):
+        abort(400, 'Invalid canvas background.')
+    drawing['appState'] = {'viewBackgroundColor': background}
+    version = data['version']
+    try:
+        if version == 0:
+            db.session.add(PartyMap(party_id=party_id, drawing=drawing, version=1))
+        else:
+            updated = PartyMap.query.filter_by(party_id=party_id, version=version).update(
+                {'drawing': drawing, 'version': version + 1}, synchronize_session=False)
+            if not updated:
+                db.session.rollback()
+                abort(409, 'Map changed in another tab. Reload before editing.')
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        abort(409, 'Map changed in another tab. Reload before editing.')
+    from app import socketio
+    from flask import current_app
+    for user_id in party_recipient_ids(target):
+        try:
+            socketio.emit('shared_map_changed', {'party_id': party_id, 'version': version + 1},
+                          room=f'user_{user_id}')
+        except Exception:
+            current_app.logger.exception('Unable to publish shared map update')
+    return {'version': version + 1}
 
 
 def party_characters(target_party):
@@ -214,6 +284,7 @@ def party_delete(party_id):
         character.party_code = None
 
     PartyRoll.query.filter_by(party_id=party.id).delete(synchronize_session=False)
+    PartyMap.query.filter_by(party_id=party.id).delete(synchronize_session=False)
     db.session.delete(party)
     db.session.commit()
     

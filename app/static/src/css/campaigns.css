@@ -1,0 +1,76 @@
+.campaign-workspace {width:100%;max-width:1440px;min-width:0;box-sizing:border-box;margin:auto;padding:1.25rem;}
+.campaign-workspace h1,.campaign-workspace h2,.campaign-workspace h3 {overflow-wrap:anywhere;}
+.campaign-workspace section {margin:2rem 0 0;padding:0;min-width:0;}
+.campaign-workspace h1 {margin:0 0 1rem;}
+.campaign-workspace h2 {margin:0 0 1rem;}
+.campaign-workspace h3 {margin:0 0 .75rem;}
+.campaign-workspace form {margin:1rem 0;padding:0;max-width:none;box-sizing:border-box;}
+.map-editor-grid ol {list-style:none;padding:0;}
+.campaign-list {padding-inline-start:1.25rem;}
+.campaign-workspace label {display:block;margin:.7rem 0;}
+.campaign-workspace input:not([type=checkbox]):not([type=radio]):not([type=hidden]),.campaign-workspace textarea,.campaign-workspace select {box-sizing:border-box;width:100%;max-width:100%;}
+.campaign-workspace textarea {min-height:6rem;}
+.campaign-workspace .campaign-actions {display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin:1rem 0;padding:0;}
+.campaign-workspace > nav.campaign-actions {margin:0 0 1.5rem;}
+.campaign-workspace .campaign-actions > a,
+.campaign-workspace .campaign-actions > button {
+  display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
+  min-width:0;max-width:100%;min-height:44px;margin:0;padding:.6rem 1rem;
+  border:1.5px solid currentColor;border-radius:2px;background:transparent;color:var(--fg);
+  font:inherit;font-weight:600;line-height:1.3;text-align:center;text-decoration:none;
+  overflow-wrap:anywhere;cursor:pointer;
+}
+.campaign-workspace .campaign-actions > a:hover,
+.campaign-workspace .campaign-actions > button:not(:disabled):hover {background:var(--fg);color:var(--bg);border-color:var(--fg);}
+.campaign-workspace .campaign-actions > a:focus-visible,
+.campaign-workspace .campaign-actions > button:focus-visible {outline:2px solid currentColor;outline-offset:3px;}
+.campaign-cards {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1rem;}
+.campaign-card {display:flex;flex-direction:column;gap:.75rem;box-sizing:border-box;width:auto;max-width:none;margin:0;border:1px solid currentColor;border-radius:.4rem;padding:1rem;min-width:0;}
+.campaign-card h3 {margin:0;}
+.campaign-workspace .material-children {list-style:none;margin:.6rem 0 0;padding-left:1rem;border-left:1px solid currentColor;}
+.campaign-workspace .material-children > li {margin:.65rem 0;overflow-wrap:anywhere;}
+.campaign-workspace .material-children > li > a + a {margin-left:.6rem;font-size:.85em;}
+.campaign-workspace .material-tree {margin-top:.5rem;}
+.campaign-workspace .material-parents {display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin-bottom:1rem;}
+.campaign-workspace .campaign-card .campaign-actions {margin:auto 0 0;padding-top:.25rem;}
+.campaign-check {display:flex!important;align-items:center;gap:.5rem;}
+.campaign-workspace .material-selection {margin:0;font-size:.85em;}
+.campaign-workspace .material-children .material-selection {display:inline-flex!important;margin-right:.6rem;}
+.campaign-workspace .campaign-actions > button:disabled {opacity:.45;cursor:default;}
+.content-text {white-space:pre-wrap;overflow-wrap:anywhere;}
+.campaign-workspace fieldset {min-width:0;margin:1rem 0;padding:1rem;}
+.pointcrawl-canvas {display:block;box-sizing:border-box;width:100%;height:640px;border:1px solid currentColor;background:var(--bg,#fff);}
+.map-editor-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;}
+.campaign-workspace .map-editor-grid > section {margin:0;}
+.map-editor-grid label {min-width:0;}
+.campaign-status {min-height:1.5rem;white-space:pre-wrap;}
+[x-cloak] {display:none!important;}
+@media(max-width:600px) {.pointcrawl-canvas{height:520px}.map-editor-grid{grid-template-columns:1fr}.campaign-workspace{padding:.75rem}}
+
+/* Quill owns its toolbar and document; contain the site's generic form styles. */
+.rich-editor {margin:1rem 0;min-width:0;}
+.rich-editor-label {display:block;margin-bottom:.7rem;}
+.campaign-workspace .rich-editor .ql-toolbar {display:flex;flex-wrap:wrap;gap:.4rem;padding:.8rem;border-color:var(--fg);font:inherit;}
+.campaign-workspace .rich-editor .ql-toolbar .ql-formats {display:inline-flex;align-items:center;gap:.2rem;margin:0 .6rem 0 0;}
+.campaign-workspace .rich-editor .ql-toolbar button {width:32px;min-width:32px;max-width:32px;height:32px;margin:0;padding:5px;border:0;border-radius:2px;background:transparent;}
+.rich-editor .ql-container {border-color:var(--fg);font:inherit;}
+.campaign-workspace .rich-editor .ql-editor {min-height:180px;max-height:600px;overflow:auto;padding:1.2rem;color:var(--fg);}
+.campaign-workspace .rich-editor .ql-editor p {margin:0;}
+.rich-editor .ql-snow .ql-stroke {stroke:var(--fg);}
+.rich-editor .ql-snow .ql-fill {fill:var(--fg);}
+.rich-editor .ql-snow .ql-picker {color:var(--fg);}
+.rich-editor .ql-snow .ql-picker-options,.rich-editor .ql-snow .ql-tooltip {background:var(--form-bg);color:var(--fg);border-color:var(--fg);}
+.campaign-workspace .rich-editor .ql-tooltip input[type=text] {font:inherit;width:170px;padding:.3rem;margin:0;}
+.campaign-workspace .rich-editor .ql-editor h2,.campaign-workspace .rich-content h2 {font:inherit;font-size:1.4em;font-weight:bold;text-transform:none;margin:.75em 0 .4em;}
+.campaign-workspace .rich-editor .ql-editor h3,.campaign-workspace .rich-content h3 {font:inherit;font-size:1.2em;font-weight:bold;margin:.75em 0 .4em;}
+.rich-editor .ql-editor h3::before,.rich-content h3::before {display:none;}
+.rich-content {white-space:normal;overflow-wrap:anywhere;min-width:0;}
+.campaign-workspace .rich-content p {margin:.5em 0;}
+.rich-content > :first-child {margin-top:0;}
+.rich-content > :last-child {margin-bottom:0;}
+.campaign-workspace .rich-content ul,.campaign-workspace .rich-content ol {padding-inline-start:1.5em;margin:.5em 0;list-style-position:outside;}
+.campaign-workspace .rich-content ul {list-style-type:disc;}
+.campaign-workspace .rich-content ol {list-style-type:decimal;}
+.campaign-workspace .rich-content li {margin:.2em 0;}
+.campaign-workspace .rich-content blockquote,.campaign-workspace .rich-editor .ql-editor blockquote {margin:.75em 0;padding:.2em 1em;border-left:3px solid currentColor;font:inherit;}
+.rich-content img,.rich-editor .ql-editor img {display:inline-block;max-width:100%;height:auto;}

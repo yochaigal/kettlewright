@@ -70,6 +70,8 @@ def get_locale():
     
 def create_app():
     app = Flask(__name__)
+    from app.lib.feature_access import init_feature_access
+    init_feature_access(app)
 
     # Ensure the consolidation is performed only once, in the main process
     if not app.config.get('JSON_CONSOLIDATED'):
@@ -166,6 +168,9 @@ def create_app():
 
     from app.blueprints.discord import discord
     app.register_blueprint(discord)
+
+    from app.blueprints.campaigns import campaigns
+    app.register_blueprint(campaigns)
 
     from .socket_events import register_socket_events
     register_socket_events(socketio)

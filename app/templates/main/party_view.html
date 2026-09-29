@@ -29,6 +29,9 @@
         {% if is_owner %}<p class="subtitle">{{_("Warden")}}</p>{% endif %}
       </div>
       <div class="party-header-actions">
+        {% if can_view_rolls and party_features_enabled(party.id) %}
+        <a class="button no-margin-top" href="{{ url_for('party.shared_map', party_id=party.id) }}">{{ _('Shared Map') }}</a>
+        {% endif %}
         {% if is_owner or is_subowner %}
         <button class="button is-light no-margin-top" id="join-code-button" type="button" title="Join Code">
           <span class="mobile-hidden">{{_('Join Code')}}</span>
@@ -43,6 +46,10 @@
     </div>
 
     <div>{{party.description}}</div>
+    {% if can_view_rolls and party_features_enabled(party.id) %}<div class="party-section party-material-actions">
+      <a class="button" href="{{ url_for('campaigns.party_materials', party_id=party.id) }}">{{ _('Materials') }}</a>
+      {% if is_owner and user_features_enabled() %}<a class="button" href="{{ url_for('campaigns.new_entry', party_id=party.id) }}">{{ _('Create and show') }}</a>{% endif %}
+    </div>{% endif %}
 
     <div class="party-section" x-data="collapseSection('party-members-content')">
       <span id="party-members-collapse-button" class="party-collapse-button" role="button" tabindex="0"

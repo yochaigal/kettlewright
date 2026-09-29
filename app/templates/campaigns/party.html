@@ -1,0 +1,24 @@
+{% extends 'campaigns/layout.html' %}
+{% block workspace %}
+<div data-party-content="{{ party.id }}" data-refresh-url="{{ url_for('campaigns.party_materials_data', party_id=party.id) }}"></div>
+<script type="module" src="{{ url_for('static', filename='src/js/campaign_live.js') }}"></script>
+<h1>{{ party.name }} · {{ _('Materials') }}</h1>
+<div class="campaign-actions"><a href="{{ url_for('party.party_view', ownername=party.owner_username or party.party_owner.username, party_url=party.party_url) }}">{{ _('Back to party') }}</a>
+{% if editing %}<a class="button" href="{{ url_for('campaigns.new_entry', party_id=party.id) }}">{{ _('Create and show') }}</a>
+<a href="{{ url_for('campaigns.new_map', party_id=party.id) }}">{{ _('Create and show map') }}</a>
+<a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}">{{ _('View as party') }}</a>{% endif %}</div>
+{% if preview %}<p>{{ _('You are viewing only this party’s published knowledge.') }}</p>{% endif %}
+<div id="party-content-results">
+{% for category, label in content_categories.items() %}
+{% set group = entries|selectattr('category', 'equalto', category)|list %}
+{% if group %}<section><h2>{{ _(label) }}</h2><div class="campaign-cards">
+{% for entry in group %}
+<article class="campaign-card"><h3><a href="{{ url_for('campaigns.party_entry', party_id=party.id, entry_id=entry.id) }}">{{ entry.title }}</a></h3>
+<div class="rich-content">{{ render_content(entry.body) }}</div>
+{% if entry.map_id %}<a href="{{ url_for('campaigns.party_map', party_id=party.id, map_id=entry.map_id) }}">{{ _('Open map') }}</a>{% endif %}
+{% if editing %}<div class="campaign-actions"><a href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Update party version') }}</a><a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ _('Private original') }}</a></div>{% endif %}
+</article>{% endfor %}</div></section>{% endif %}
+{% endfor %}
+{% if not entries %}<p>{{ _('Nothing has been revealed yet.') }}</p>{% endif %}
+</div>
+{% endblock %}

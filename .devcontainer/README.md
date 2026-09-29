@@ -6,41 +6,22 @@ This dev container provides a complete development environment for Kettlewright.
 
 ### Docker Compose (any editor)
 
-Prepare the root `.env` as described under **Environment Variables** below.
-From the repository root, run:
+Prepare the root `.env` as described under **Environment Variables** below. From the repository root, run:
 
 ```bash
 docker compose -f .devcontainer/docker-compose.yml up -d --build
 docker compose -f .devcontainer/docker-compose.yml logs -f --tail=100 app
 ```
 
-The first build downloads Python and installs application and test dependencies.
-The shared `post-create.sh` setup runs before Flask starts, compiling translations
-and applying database migrations. Open http://127.0.0.1:8000 when the server is ready.
-Register an account, then open http://127.0.0.1:8025 to find the confirmation
-email in Mailpit. Messages stay local; no external SMTP account is needed.
+The first build downloads Python and installs application and test dependencies. The shared `post-create.sh` setup runs before Flask starts, compiling translations and applying database migrations. Open http://127.0.0.1:8000 when the server is ready. Register an account, then open http://127.0.0.1:8025 to find the confirmation email in Mailpit. Messages stay local; no external SMTP account is needed.
 
-The repository is mounted in `/workspace`. Python edits automatically restart
-Flask; refresh the browser after editing templates, JavaScript, CSS or SCSS.
-SCSS is compiled automatically. Browser refresh is manual.
-Rebuild only after changing dependencies or the Dockerfile.
+The repository is mounted in `/workspace`. Python edits automatically restart Flask; refresh the browser after editing templates, JavaScript, CSS or SCSS. SCSS is compiled automatically. Browser refresh is manual. Rebuild only after changing dependencies or the Dockerfile.
 
-The server uses `--no-debugger` to disable Flask's browser debugger while keeping
-Python auto-reload enabled. Otherwise, the debugger reports Engine.IO's normal
-WebSocket closure as a `ConnectionError` with HTTP 500. VS Code debugging remains
-available.
+The server uses `--no-debugger` to disable Flask's browser debugger while keeping Python auto-reload enabled. Otherwise, the debugger reports Engine.IO's normal WebSocket closure as a `ConnectionError` with HTTP 500. VS Code debugging remains available.
 
-If a build fails with `ReadTimeoutError` while downloading from
-`files.pythonhosted.org`, retry the build command above. Dependency installation
-uses a 120-second socket timeout and up to 10 connection attempts to tolerate
-slow connections; a persistent network outage still requires restoring access.
+If a build fails with `ReadTimeoutError` while downloading from `files.pythonhosted.org`, retry the build command above. Dependency installation uses a 120-second socket timeout and up to 10 connection attempts to tolerate slow connections; a persistent network outage still requires restoring access.
 
-If `requirements.txt` changes (for example, to add Pillow for portrait uploads),
-run `docker compose -f .devcontainer/docker-compose.yml up -d --build app`.
-A restart applies migrations but does not install new dependencies. Packages
-installed manually with `pip` inside a running container are lost when that
-container is recreated from the old image. Uploaded portraits persist in
-`instance/portraits` on the host, alongside the SQLite database.
+If `requirements.txt` changes (for example, to add Pillow for portrait uploads), run `docker compose -f .devcontainer/docker-compose.yml up -d --build app`. A restart applies migrations but does not install new dependencies. Packages installed manually with `pip` inside a running container are lost when that container is recreated from the old image. Uploaded portraits persist in `instance/portraits` on the host, alongside the SQLite database. Material-description images persist in the neighboring `instance/material-images` folder.
 
 ```bash
 # Stop containers (the SQLite database stays in instance/)
@@ -56,10 +37,7 @@ docker compose -f .devcontainer/docker-compose.yml restart app
 docker compose -f .devcontainer/docker-compose.yml up -d --force-recreate app
 ```
 
-Do not start a second Flask server via F5 when using this mode. For IDE-managed
-Dev Containers, `overrideCommand` keeps the app container idle so you can start
-the server with the debugger instead. Stop the Compose session before switching
-to IDE-managed Dev Containers to free ports 8000 and 8025.
+Do not start a second Flask server via F5 when using this mode. For IDE-managed Dev Containers, `overrideCommand` keeps the app container idle so you can start the server with the debugger instead. Stop the Compose session before switching to IDE-managed Dev Containers to free ports 8000 and 8025.
 
 ### 1. VS Code (Local) ⭐ Recommended
 
@@ -171,9 +149,7 @@ USE_FLASK=False FLASK_DEBUG=0 gunicorn -k eventlet -w 1 -b 0.0.0.0:8000 app:appl
 
 ### Running Tests
 
-Run these inside the container. Use an isolated database instead of the development
-database. The suite provides its own Flask fixtures; disable pytest-flask's
-automatic request context so separate test clients keep separate login sessions.
+Run these inside the container. Use an isolated database instead of the development database. The suite provides its own Flask fixtures; disable pytest-flask's automatic request context so separate test clients keep separate login sessions.
 
 ```bash
 export SQLALCHEMY_DATABASE_URI=sqlite:///:memory:
@@ -191,20 +167,12 @@ pytest -p no:flask --cov=app
 
 ### Initialization and post-create.sh
 
-Run `.devcontainer/post-create.sh` **inside the container**, not on the host.
-Both startup modes use the same script:
+Run `.devcontainer/post-create.sh` **inside the container**, not on the host. Both startup modes use the same script:
 
-- **Docker Compose:** the app command runs it on every container start, before
-  Flask. A setup failure prevents the server from starting.
-- **IDE-managed Dev Containers / devcontainer CLI:** `postCreateCommand` runs it
-  when the container is created or rebuilt, before you start Flask manually.
-  Simply reopening an existing container does not rerun it.
+- **Docker Compose:** the app command runs it on every container start, before Flask. A setup failure prevents the server from starting.
+- **IDE-managed Dev Containers / devcontainer CLI:** `postCreateCommand` runs it when the container is created or rebuilt, before you start Flask manually. Simply reopening an existing container does not rerun it.
 
-The script creates `instance/`, compiles translation catalogs, and runs
-`flask db upgrade`. Loading the Flask app also compiles the static assets.
-It applies only pending migrations and preserves existing data; no separate
-`flask db init` or manual database creation is needed.
-Dependencies are installed in `Dockerfile.dev`, so setup does not reinstall them.
+The script creates `instance/`, compiles translation catalogs, and runs `flask db upgrade`. Loading the Flask app also compiles the static assets. It applies only pending migrations and preserves existing data; no separate `flask db init` or manual database creation is needed. Dependencies are installed in `Dockerfile.dev`, so setup does not reinstall them.
 
 To rerun setup with plain Docker Compose, restart the app:
 
@@ -213,8 +181,7 @@ docker compose -f .devcontainer/docker-compose.yml restart app
 docker compose -f .devcontainer/docker-compose.yml logs -f --tail=100 app
 ```
 
-In an IDE-managed container, stop Flask and run this from `/workspace`, then
-start Flask again:
+In an IDE-managed container, stop Flask and run this from `/workspace`, then start Flask again:
 
 ```bash
 bash .devcontainer/post-create.sh
@@ -222,9 +189,7 @@ bash .devcontainer/post-create.sh
 
 ### Database Migrations
 
-After pulling changes containing new migrations, restart the app in Compose
-mode, or rerun the setup script in an IDE-managed container as described above.
-Python auto-reload does not apply database migrations.
+After pulling changes containing new migrations, restart the app in Compose mode, or rerun the setup script in an IDE-managed container as described above. Python auto-reload does not apply database migrations.
 
 From the repository root on the host, inspect migration status with:
 
@@ -233,8 +198,7 @@ docker compose -f .devcontainer/docker-compose.yml exec app flask db current
 docker compose -f .devcontainer/docker-compose.yml exec app flask db heads
 ```
 
-If the app has exited because a migration failed, inspect its logs and fix the
-reported problem. You can then retry migrations in a one-off container:
+If the app has exited because a migration failed, inspect its logs and fix the reported problem. You can then retry migrations in a one-off container:
 
 ```bash
 docker compose -f .devcontainer/docker-compose.yml stop app
@@ -248,8 +212,7 @@ Only create a new migration when you intentionally change database models:
 docker compose -f .devcontainer/docker-compose.yml exec app flask db migrate -m "Description of changes"
 ```
 
-Review the generated file under `migrations/versions/`, then restart the app to
-apply it. Commit the migration alongside the model changes.
+Review the generated file under `migrations/versions/`, then restart the app to apply it. Commit the migration alongside the model changes.
 
 Inside an IDE-managed container, use the same Flask commands directly:
 
@@ -261,9 +224,7 @@ flask db upgrade
 
 ## Environment Variables
 
-Compose reads `.env` from the repository root. This file is ignored by Git.
-For a fresh checkout, create it with these local settings (replace the secret
-with a random value, for example from `openssl rand -hex 32`):
+Compose reads `.env` from the repository root. This file is ignored by Git. For a fresh checkout, create it with these local settings (replace the secret with a random value, for example from `openssl rand -hex 32`):
 
 ```dotenv
 BASE_URL=http://127.0.0.1:8000
@@ -278,13 +239,9 @@ USE_CAPTCHA=False
 CAPTCHA_BLOCK=False
 ```
 
-Keep `MAIL_USE_TLS` empty: the app currently reads it as a string, so `False`
-would also enable TLS. Mailpit accepts the local SMTP credentials above.
-Its messages are temporary and may disappear when the container is recreated.
+Keep `MAIL_USE_TLS` empty: the app currently reads it as a string, so `False` would also enable TLS. Mailpit accepts the local SMTP credentials above. Its messages are temporary and may disappear when the container is recreated.
 
-Compose enables `FLASK_DEBUG=1`, `USE_FLASK=True`, `USE_REDIS=False` and
-`REQUIRE_SIGNUP_CODE=False`. The SQLite database persists in `instance/db.sqlite`.
-Keep `.env` with database backups to preserve the secret key.
+Compose enables `FLASK_DEBUG=1`, `USE_FLASK=True`, `USE_REDIS=False` and `REQUIRE_SIGNUP_CODE=False`. The SQLite database persists in `instance/db.sqlite`. Keep `.env` with database backups to preserve the secret key.
 
 ## Using Redis (Optional)
 
@@ -292,8 +249,7 @@ To enable Redis for development:
 
 1. Uncomment the Redis service in `.devcontainer/docker-compose.yml`
 2. Rebuild the container
-3. Set `USE_REDIS=True` in the Compose environment and add
-   `REDIS_URL=redis://redis:6379/0` to `.env`
+3. Set `USE_REDIS=True` in the Compose environment and add `REDIS_URL=redis://redis:6379/0` to `.env`
 
 ## Tips
 

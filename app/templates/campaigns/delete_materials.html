@@ -1,0 +1,19 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token with context %}
+{% block workspace %}
+<h1>{{ _('Delete materials') }}</h1>
+<p>{{ _('These materials will be permanently deleted, including their published party versions. This cannot be undone.') }}</p>
+<p>{{ _('The list includes nested maps, their locations and connected paths. Materials reused on other maps will also be removed from those maps.') }}</p>
+<p><strong>{{ _('Total:') }} {{ entries|length }}</strong></p>
+<ul class="campaign-list">
+{% for entry in entries %}
+<li data-delete-entry-id="{{ entry.id }}"><a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ entry.title or _('Untitled private original') }}</a>
+— {{ _(content_categories.get(entry.category, 'Paths')) }}</li>
+{% endfor %}
+</ul>
+<form method="post" action="{{ url_for('campaigns.bulk_delete') }}">{{ token() }}
+<input type="hidden" name="deletion_token" value="{{ deletion_token }}">
+<div class="campaign-actions"><a href="{{ back_url }}">{{ _('Cancel') }}</a>
+<button>{{ _('Permanently delete') }} ({{ entries|length }})</button></div>
+</form>
+{% endblock %}

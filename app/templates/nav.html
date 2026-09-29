@@ -44,6 +44,7 @@
             <a href="{{ url_for('main.parties', username=current_user.username) }}" class="navbar-item">
                 {{_('parties')}}
             </a>
+            {% if user_features_enabled() %}<a href="{{ url_for('campaigns.index') }}" class="navbar-item">{{_('Campaigns')|lower}}</a>{% endif %}
             {% endif %}
             <a href="{{ url_for('main.tools')}}" class="navbar-item"> {{_('tools')}} </a>
         </div>
