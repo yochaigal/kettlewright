@@ -3,16 +3,17 @@ import {emptyDrawing} from '../../maps/scene.js';
 
 export default function pointcrawl() {
   return {
-    graph:{nodes:[],edges:[]}, editing:false, creating:false, dirty:false, saving:false,
+    graph:{nodes:[],edges:[]}, editing:false, creating:false, dirty:false, saving:false, receivingCanvas:false,
     status:'', selectedEdge:'', selected:'', saveUrl:'', serial:0, canvasReady:false, generating:false, nestedKind:'dungeon',
     edgeSource:'', edgeTarget:'', kind:'dungeon', tables:null, labels:{}, locationId:'', draftBody:'',
     init() {
       this.graph=JSON.parse(this.$el.dataset.graph || '{"nodes":[],"edges":[]}');
+      this.kind=this.graph.kind || this.$el.dataset.kind || 'realm';
       this.editing=this.$el.dataset.editing === 'true';
       this.saveUrl=this.$el.dataset.saveUrl;
       this.creating=this.$el.dataset.creating === 'true';
       this.labels=JSON.parse(this.$el.dataset.labels || '{}');
-      this.$watch('graph', () => {this.dirty=true;this.syncCanvas();});
+      this.$watch('graph', () => {this.dirty=true;if(!this.receivingCanvas)this.syncCanvas();});
       this.$watch('selected', () => {
         this.nestedKind=suggestedMapKind(this.selectedNode || {}) || 'dungeon';
         if (this.selectionFromCanvas) {this.selectionFromCanvas=false;return;}
@@ -67,11 +68,15 @@ export default function pointcrawl() {
           });
         }
         if (data.type === 'change' && this.editing && !this.saving) {
+          // Do not echo an in-progress stroke back to the iframe. A delayed
+          // snapshot would replace the newer points still being drawn there.
+          this.receivingCanvas=true;
           for (const move of data.moves || []) {
             const node=this.node(move.id);
             if (node) {node.x=move.x;node.y=move.y;}
           }
           this.graph.drawing=data.drawing;
+          this.$nextTick(()=>{this.receivingCanvas=false;});
         }
       };
       window.addEventListener('message',this.onCanvasMessage);
@@ -94,6 +99,7 @@ export default function pointcrawl() {
     },
     node(id) {return this.graph.nodes.find(node => String(node.id)===String(id));},
     get selectedNode() {return this.node(this.selected);},
+    get showLocations() {return this.kind!=='freeform' || this.graph.nodes.length>0;},
     newId(type) {return `new-${type}-${Date.now()}-${++this.serial}`;},
     isNew(item) {return String(item.id).startsWith('new-');},
     fit() {this.sendCanvas('fit');},
@@ -162,7 +168,7 @@ export default function pointcrawl() {
       this.selected='';this.$nextTick(()=>this.fit());
     },
     async generate() {
-      if (this.generating) return;
+      if (this.generating || this.kind==='freeform') return;
       this.generating=true;
       try {
         await this.loadTables();

@@ -14,9 +14,9 @@ CATEGORIES = {'overview': 'Overview', 'npc': 'NPCs', 'location': 'Locations',
               'lore': 'Lore', 'faction': 'Factions', 'relic': 'Relics',
               'note': 'Notes', 'bestiary': 'Bestiary', 'item': 'Items',
               'spellbook': 'Spellbooks', 'culture': 'Culture', 'custom': 'Custom',
-              'map': 'Realm / Map / Geography'}
+              'map': 'Geography'}
 PATH_TYPES = ('standard', 'hidden', 'conditional')
-MAP_KINDS = ('dungeon', 'forest', 'realm')
+MAP_KINDS = ('realm', 'dungeon', 'forest', 'freeform')
 
 
 def owned(model, object_id):
@@ -222,7 +222,7 @@ def map_projection(pointcrawl, party_id=None):
         return {'id': entry.id, 'title': entry.title, 'body': entry.body, 'path_type': entry.path_type}
 
     root = content(pointcrawl.entry)
-    result = {'id': pointcrawl.id, 'title': root['title'], 'body': root['body'], 'nodes': [], 'edges': []}
+    result = {'id': pointcrawl.id, 'kind': pointcrawl.kind, 'title': root['title'], 'body': root['body'], 'nodes': [], 'edges': []}
     if party_id is None:
         result['drawing'] = pointcrawl.drawing or EMPTY_DRAWING
     else:

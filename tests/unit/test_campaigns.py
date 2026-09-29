@@ -15,9 +15,11 @@ def drawing(text='SECRET DRAWING'):
         'width': 100, 'height': 30, 'angle': 0, 'text': text}], 'files': {}}
 
 
-def test_drawing_publication_is_explicit_independent_and_revocable(setup):
+@pytest.mark.parametrize('kind', ['dungeon', 'freeform'])
+def test_drawing_publication_is_explicit_independent_and_revocable(setup, kind):
     app, client = setup
-    map_id, graph = create_map(client)
+    map_id, graph = create_map(client, kind=kind, nodes=0 if kind == 'freeform' else 2)
+    assert graph['kind'] == kind
     entry_id = map_entry_id(app, map_id)
     graph['drawing'] = drawing()
     response = client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)})
@@ -31,6 +33,7 @@ def test_drawing_publication_is_explicit_independent_and_revocable(setup):
     assert reveal(client, entry_id, version=2, publish_drawing='1', map_version=graph['version']).status_code == 409
     login(client, 2)
     published = client.get(f'/party/1/maps/{map_id}/data')
+    assert published.json['kind'] == kind
     assert 'SECRET DRAWING' in published.get_data(as_text=True)
     assert 'CHANGED PRIVATE DRAWING' not in published.get_data(as_text=True)
     assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)}).status_code == 403
@@ -54,14 +57,16 @@ def test_invalid_drawing_does_not_replace_saved_graph(setup, mutation):
     assert client.get(f'/maps/{map_id}/data').json == original
 
 
-def test_direct_map_publication_includes_drawing_and_drops_unused_files(setup):
+@pytest.mark.parametrize('kind', ['dungeon', 'freeform'])
+def test_direct_map_publication_includes_drawing_and_drops_unused_files(setup, kind):
     app, client = setup
     draft = {'nodes': [], 'edges': [], 'drawing': drawing('PUBLIC DRAWING')}
     draft['drawing']['files']['unused'] = {'dataURL': 'SECRET UNUSED FILE'}
     response = client.post('/maps/new', data={'party_id': 1, 'title': 'Shared map',
-        'kind': 'dungeon', 'draft': json.dumps(draft)})
+        'kind': kind, 'draft': json.dumps(draft)})
     assert response.status_code == 302
     graph = client.get(response.location + 'data').json
+    assert graph['kind'] == kind
     assert graph['drawing']['elements'][0]['text'] == 'PUBLIC DRAWING'
     assert graph['drawing']['files'] == {}
 
@@ -123,13 +128,13 @@ def reveal(client, entry_id, party_id=1, version=0, title='Known name', body='Kn
         f'version_{party_id}':version, f'title_{party_id}':title, f'body_{party_id}':body, **extra})
 
 
-def create_map(client, campaign_id=1, title='SECRET MAP', nodes=2):
+def create_map(client, campaign_id=1, title='SECRET MAP', nodes=2, kind='dungeon'):
     draft={'nodes':[{'id':f'new-node-{i}', 'number':i+1,'x':i*100,'y':100,
         'title':f'SECRET ROOM {i}', 'body':f'SECRET TRAP {i}'} for i in range(nodes)],
         'edges':[{'id':'new-edge-0','source':'new-node-0','target':'new-node-1',
                   'title':'SECRET PASSAGE','body':'SECRET KEY','path_type':'hidden'}] if nodes>1 else []}
     response=client.post('/maps/new',data={'campaign_id':campaign_id,'title':title,
-        'kind':'dungeon','draft':json.dumps(draft)})
+        'kind':kind,'draft':json.dumps(draft)})
     assert response.status_code==302, response.get_data(as_text=True)
     map_id=int(re.search(r'/maps/(\d+)/edit',response.location).group(1))
     return map_id,client.get(f'/maps/{map_id}/data').json

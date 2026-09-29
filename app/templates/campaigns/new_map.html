@@ -2,8 +2,8 @@
 {% from 'campaigns/forms.html' import token, rich_editor with context %}
 {% block workspace %}
 {% if party %}<p>{{ _('The map and every location and path in this draft will be shown to') }} <strong>{{ party.name|markdown_inline }}</strong> {{ _('when you save.') }}</p>{% endif %}
-<h1>{{ _('New pointcrawl map') }}</h1>
-<form method="post" x-data="pointcrawl" data-editing="true" data-creating="true"
+<h1>{{ _('New geography') }}</h1>
+<form method="post" x-data="pointcrawl" data-editing="true" data-creating="true" data-kind="{{ kind }}"
  data-labels="{{ {'loadError':_('Unable to load the map editor. Check your connection and retry.'),'location':_('Location'),'error':_('Unable to generate a map. Please try again.'),'duplicate':_('This path already exists.')}|tojson|forceescape }}"
  @submit="if (!canvasReady || generating) $event.preventDefault(); else dirty=false">
 {{ token() }}
@@ -11,10 +11,13 @@
 <label>{{ _('Title') }}<input type="text" name="title" required maxlength="200" x-ref="title"></label>
 {{ rich_editor(_('Description'), model='draftBody') }}
 {% if not party %}<label>{{ _('Campaign') }}<select name="campaign_id"><option value="">{{ _('Unfiled') }}</option>{% for item in campaigns %}<option value="{{ item.id }}" {% if campaign and campaign.id == item.id %}selected{% endif %}>{{ item.name|markdown_inline|striptags }}</option>{% endfor %}</select></label>{% endif %}
-<label>{{ _('Map type') }}<select name="kind" x-model="kind"><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option><option value="realm">{{ _('Region') }}</option></select></label>
+<label>{{ _('Geography type') }}<select name="kind" x-model="kind"><option value="realm">{{ _('Realm') }}</option><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option><option value="freeform">{{ _('Freeform') }}</option></select></label>
+<div x-show="kind!=='freeform'">
 <button type="button" @click="generate()" :disabled="generating">{{ _('Generate a new draft') }}</button>
 <p>{{ _('Generating replaces this unsaved draft. Review and edit it before saving.') }}</p>
-<p>{{ _('Dungeon and Forest locations in a region receive generated linked maps. Linked maps remain private until revealed separately.') }}</p>
+<p x-show="kind==='realm'">{{ _('Dungeon and Forest locations in a realm receive generated linked maps. Linked maps remain private until revealed separately.') }}</p>
+</div>
+<p x-show="kind==='freeform'">{{ _('Draw a city, settlement or any place with freehand lines, shapes, labels and images.') }}</p>
 <input type="hidden" name="draft" :value="JSON.stringify(graph)">
 <p class="campaign-status" role="status" x-text="status"></p>
 {% set editing = true %}{% set nested_maps = [] %}{% set locations = [] %}

@@ -20,10 +20,16 @@ export function contentDraft() {
     },
     get variants() {
       return {bestiary:['Random Monster','Custom Monster'],item:['Gear','Armor','Weapons'],
-        note:['Wilderness Events','Dungeon Events'],map:['Realm','Dungeon','Forest']}[this.category] || [];
+        note:['Wilderness Events','Dungeon Events'],map:['Realm','Dungeon','Forest','Freeform']}[this.category] || [];
+    },
+    get freeform() {return this.category==='map' && this.variant==='Freeform';},
+    openFreeform() {
+      const params=new URLSearchParams({kind:'freeform'});
+      for(const key of ['party_id','campaign_id']){const value=this.formElement.elements[key]?.value;if(value)params.set(key,value);}
+      location.href='/maps/new?'+params;
     },
     async generate() {
-      if(this.generating || this.category==='custom')return;
+      if(this.generating || this.category==='custom' || this.freeform)return;
       this.generating=true;this.status='';
       try {
         if(!this.tables){const response=await fetch('/articles/tables');if(!response.ok)throw new Error();this.tables=await response.json();}

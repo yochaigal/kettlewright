@@ -13,7 +13,7 @@
 <h1 x-text="graph.title"></h1>
 {% if editing %}<details><summary>{{ _('Map notes') }}</summary><div class="rich-content" x-html="$richHTML(graph.body)"></div></details>
 {% else %}<div class="rich-content" x-html="$richHTML(graph.body)"></div>{% endif %}
-{% if editing %}<p>{{ _('Geometry is shared. New locations and paths remain private until revealed.') }}</p>
+{% if editing %}<p x-show="showLocations">{{ _('Geometry is shared. New locations and paths remain private until revealed.') }}</p>
 <div class="campaign-actions"><a href="{{ url_for('campaigns.edit_entry', entry_id=pointcrawl.entry_id) }}">{{ _('Edit map description') }}</a><a href="{{ url_for('campaigns.reveal', entry_id=pointcrawl.entry_id) }}">{{ _('Reveal map to party') }}</a></div>
 <form x-ref="saveForm" @submit.prevent="save()">{{ token() }}<button :disabled="saving || !canvasReady || generating">{{ _('Save map') }}</button><span x-show="dirty">{{ _('Unsaved changes') }}</span></form>
 {% endif %}

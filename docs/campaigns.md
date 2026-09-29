@@ -18,9 +18,9 @@ Existing versioned Quill HTML still renders and converts to Markdown when opened
 
 The UI calls materials **Articles**; existing `/materials/` URLs and database records remain compatible. **New article** and a party's **Create and show** offer the same category generators, without requiring a campaign. Generation opens a separate draft to review; **Use this draft** replaces the form content, while **Discard** preserves it. Nothing is saved or published until the form is submitted. **Custom** starts with a blank editor.
 
-NPCs, Factions, Bestiary, Relics, Spellbooks and Notes reuse Tools tables. Items roll from the existing Marketplace gear, armor or weapons. Culture draws from [Setting Seeds](https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/) (character, ambition and resources); Lore draws room types and clues from [Dungeon Seeds](https://cairnrpg.com/second-edition/wardens-guide/dungeon-seeds/). Overview uses a setting seed and Locations use a realm point of interest. These are application selections from the rules tables, not additional Cairn procedures. Realm / Map / Geography offers Realm, Dungeon and Forest drafts and carries the selected campaign or party into the map editor without rerolling the result. New generated titles identify the type and rolled description rather than inventing proper names; saved articles retain their names.
+NPCs, Factions, Bestiary, Relics, Spellbooks and Notes reuse Tools tables. Items roll from the existing Marketplace gear, armor or weapons. Culture draws from [Setting Seeds](https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/) (character, ambition and resources); Lore draws room types and clues from [Dungeon Seeds](https://cairnrpg.com/second-edition/wardens-guide/dungeon-seeds/). Overview uses a setting seed and Locations use a realm point of interest. These are application selections from the rules tables, not additional Cairn procedures. Geography offers Realm, Dungeon and Forest drafts, plus a blank Freeform canvas and carries the selected campaign or party into the map editor without rerolling the result. New generated titles identify the type and rolled description rather than inventing proper names; saved articles retain their names.
 
-## Pointcrawl maps
+## Geography
 
 Campaign workspaces and Unfiled materials display map contents hierarchically.
 The Locations section contains standalone locations; map POIs appear under their
@@ -47,13 +47,15 @@ The preview expires after 30 minutes; changes to originals or affected map
 geometry require a new preview. Existing standalone leftovers from maps deleted
 before this behavior can be selected and deleted from Unfiled materials.
 
+Choose Freeform for a blank canvas to draw cities, settlements and other places with freehand lines, shapes, labels and images. Freeform maps need no locations or paths and use the same private saving and explicit party publication as generated maps. Existing maps and linked-map selections remain compatible; no database migration is needed.
+
 Create an empty map or generate a draft using the existing Dungeon, Forest or Realm tables. Inspect the draft before saving; generating another draft replaces only the unsaved draft. Tools results also offer **Create map**, which preserves the already-rolled content and adds a connected layout with loops.
 
-Region drafts include generated Dungeon and Forest maps for matching points of interest. Saving creates these maps, their locations and paths in the same campaign and links them to the region's locations. Existing locations offer **Generate linked map**; review or discard the nested draft before saving. Existing linked maps are never regenerated. Nested maps remain private even with **Create and show map**.
+Realm drafts include generated Dungeon and Forest maps for matching points of interest. Saving creates these maps, their locations and paths in the same campaign and links them to the realm's locations. Existing locations offer **Generate linked map**; review or discard the nested draft before saving. Existing linked maps are never regenerated. Nested maps remain private even with **Create and show map**.
 
 **Related materials** automatically includes a map's locations and linked maps; location cards also include their linked map. These structural relations work for older maps and disappear when the corresponding geometry link is removed. Players still see only independently published materials and their party-specific titles.
 
-Forest paths retain their rolled trail types. Dungeon and region paths without a trail table use random types: 4/6 standard, 1/6 hidden, 1/6 conditional. These weights are an application choice, not probabilities prescribed by the rules. Regenerating a draft rolls new types; saving preserves the draft's types.
+Forest paths retain their rolled trail types. Dungeon and realm paths without a trail table use random types: 4/6 standard, 1/6 hidden, 1/6 conditional. These weights are an application choice, not probabilities prescribed by the rules. Regenerating a draft rolls new types; saving preserves the draft's types.
 
 Maps use Excalidraw with Preact in an isolated iframe. No npm install or frontend build is required: the iframe imports pinned modules from esm.sh, using the Excalidraw 0.18.0 production browser entrypoint and Preact 10.29.8 compatibility aliases. React imports, including JSX runtime, resolve to Preact. Editor styles and fonts are also loaded from the CDN; it must be reachable to open the editor. The rest of the application continues to use Alpine and HTMX. Map contents are saved through the existing authenticated Flask routes, not a hosted drawing room.
 

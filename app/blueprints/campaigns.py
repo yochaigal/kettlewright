@@ -413,7 +413,10 @@ def new_map():
             notify_parties([party.id])
             return redirect(url_for('campaigns.party_map', party_id=party.id, map_id=pointcrawl.id))
         return redirect(url_for('campaigns.map_edit', map_id=pointcrawl.id))
-    return render_template('campaigns/new_map.html', campaign=campaign, campaigns=my_campaigns(), party=party)
+    kind = request.args.get('kind', 'realm')
+    if kind not in MAP_KINDS:
+        abort(400)
+    return render_template('campaigns/new_map.html', campaign=campaign, campaigns=my_campaigns(), party=party, kind=kind)
 
 
 @campaigns.route('/maps/<int:map_id>/edit')
