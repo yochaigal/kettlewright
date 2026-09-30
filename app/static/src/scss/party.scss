@@ -91,6 +91,40 @@ justify-content: space-around;
   &:hover { background: color-mix(in lab, transparent 90%, var(--fg)); }
 }
 
+// Cards follow the character cards: attributes left, resources right.
+#party-members:not(.party-compact) {
+  .party-member-stats {
+    grid-template-columns: repeat(2, max-content);
+    grid-template-areas: "str armor" "dex hp" "wil gold";
+    justify-content: center;
+    gap: 1rem 2.5em;
+  }
+  .party-member-stat {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: .3em;
+    &:nth-child(1) { grid-area: hp; }
+    &:nth-child(2) { grid-area: str; }
+    &:nth-child(3) { grid-area: dex; }
+    &:nth-child(4) { grid-area: wil; }
+    &:nth-child(5) { grid-area: armor; }
+    &:nth-child(6) { grid-area: gold; }
+  }
+  .party-stat-label, .quick-stat-form label { font: inherit; }
+  .quick-stat-form {
+    display: flex;
+    align-items: center;
+    gap: .3em;
+    box-shadow: none;
+    font: inherit;
+    input[type="number"] {
+      font-size: inherit !important;
+      font-style: inherit;
+      font-weight: inherit;
+    }
+  }
+}
+
 #party-form:has(.party-compact) { max-width: 1100px; padding: 2rem; }
 .party-section:has(.party-compact) { margin: 1em 0; }
 

@@ -143,6 +143,25 @@ select:focus {
   padding: .5em;
 }
 
+// Use the same open chevron as the collapsible party sections.
+details > summary {
+  list-style: none;
+  cursor: pointer;
+  &::-webkit-details-marker { display: none; }
+  &::marker { content: ""; }
+  &::before {
+    content: "";
+    display: inline-block;
+    width: .55em;
+    height: .55em;
+    margin: 0 .7em .1em .15em;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(-45deg);
+  }
+}
+details[open] > summary::before { transform: translateY(-.15em) rotate(45deg); }
+
 
 
 input {
@@ -366,7 +385,7 @@ button,
   text-align: center;
 }
 
-.subtitle {
+.subtitle, #party-members:not(.party-compact) .party-member-stat {
   /* copy of magicks H4 */
   font-weight: 600;
   font-style: italic;
