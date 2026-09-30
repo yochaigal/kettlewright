@@ -53,4 +53,4 @@ docker compose -f .devcontainer/docker-compose.yml exec -T \
 node --test tests/js/shared_map*.test.mjs tests/js/whiteboard*.test.mjs tests/js/party_tokens.test.mjs
 ```
 
-The pre-existing `test_background_frames_and_curated_libraries` failure treats all upstream libraries as v2; it also fails on the unchanged baseline. Report it separately, rather than treating an excluded test as a complete passing suite. Browser checks require independent Warden/player sessions and should cover imports, both themes, fog editing/undo, pan/zoom, player editing, replacement and reconnect.
+Library validation covers both Excalidraw v1 and v2 formats, including legacy freehand points with pressure values. Browser checks require independent Warden/player sessions and should cover imports, both themes, fog editing/undo, pan/zoom, player editing, replacement and reconnect.

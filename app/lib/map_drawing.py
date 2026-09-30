@@ -52,6 +52,14 @@ def validate_drawing(value, *, allow_frames=False):
             if not isinstance(points, list) or len(points) > 50000:
                 abort(400, 'Invalid drawing points.')
             for point in points:
+                # Legacy library freehand points may include a pressure value.
+                # Validate it before retaining only the scene's x/y coordinates.
+                if element['type'] == 'freedraw' and isinstance(point, list) and len(point) == 3:
+                    pressure = point[2]
+                    if (isinstance(pressure, bool) or not isinstance(pressure, (int, float))
+                            or not math.isfinite(pressure) or not 0 <= pressure <= 1):
+                        abort(400, 'Invalid drawing points.')
+                    point.pop()
                 if not isinstance(point, list) or len(point) != 2 or any(
                     isinstance(n, bool) or not isinstance(n, (int, float)) or not math.isfinite(n) or abs(n) > 1000000 for n in point
                 ):

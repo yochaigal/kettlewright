@@ -133,5 +133,39 @@ def test_background_frames_and_curated_libraries(shared):
     assert saved['elements'][1]['frameId'] == 'frame'
     with app.test_request_context():
         for path in Path('app/static/vendor/excalidraw-libraries').glob('*.excalidrawlib'):
-            for item in json.loads(path.read_text())['libraryItems']:
-                assert validate_drawing({'elements': item['elements'], 'files': {}}, allow_frames=True)['elements']
+            library = json.loads(path.read_text())
+            assert library['type'] == 'excalidrawlib', path.name
+            assert library['version'] in (1, 2), path.name
+            drawings = (library['library'] if library['version'] == 1
+                        else [item['elements'] for item in library['libraryItems']])
+            assert drawings, path.name
+            for elements in drawings:
+                assert validate_drawing({'elements': elements, 'files': {}}, allow_frames=True)['elements'], path.name
+
+
+@pytest.mark.parametrize('pressure', [0, 0.5, 1])
+def test_legacy_freehand_points_are_normalized_without_mutating_input(shared, pressure):
+    from app.lib.map_drawing import validate_drawing
+    app, _, _ = shared
+    drawing = {'elements': [{'id': 'legacy', 'type': 'freedraw',
+                            'points': [[0, 0], [10, 20, pressure]]}], 'files': {}}
+    with app.test_request_context():
+        saved = validate_drawing(drawing)
+    assert saved['elements'][0]['points'] == [[0, 0], [10, 20]]
+    assert drawing['elements'][0]['points'][1] == [10, 20, pressure]
+
+
+@pytest.mark.parametrize('kind, point', [
+    ('freedraw', [1, 2, True]), ('freedraw', [1, 2, '0.5']),
+    ('freedraw', [1, 2, -0.1]), ('freedraw', [1, 2, 1.1]),
+    ('freedraw', [1, 2, float('nan')]), ('freedraw', [True, 2, 0.5]),
+    ('freedraw', [1, 2, 0.5, 0]), ('line', [1, 2, 0.5]),
+    ('arrow', [1, 2, 0.5]),
+])
+def test_invalid_legacy_points_are_rejected(shared, kind, point):
+    from app.lib.map_drawing import validate_drawing
+    from werkzeug.exceptions import BadRequest
+    app, _, _ = shared
+    with app.test_request_context(), pytest.raises(BadRequest):
+        validate_drawing({'elements': [{'id': 'invalid', 'type': kind,
+                                       'points': [[0, 0], point]}], 'files': {}})
