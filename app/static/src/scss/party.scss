@@ -270,8 +270,9 @@ left: 50%;
 transform: translate(-50%, -50%);
 width: 30px;
 height: 30px;
-background-color: #f0f0f0;
+background: color-mix(in srgb, var(--fg) 8%, var(--form-bg));
 border-radius: 50%;
+pointer-events: none;
 }
 
 .party-events-button-container {
