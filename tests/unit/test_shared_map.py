@@ -44,7 +44,7 @@ def test_empty_map_and_access(shared):
             'fog': {'enabled': False, 'base': 'covered', 'strokes': [], 'applied': []}}
         assert result.headers['Cache-Control'] == 'no-store'
         html = clients[i].get('/party/1/shared-map').get_data(as_text=True)
-        assert 'Shared Map' in html
+        assert 'Whiteboard' in html
         config = json.loads(re.search(r'id="shared-map-config" type="application/json">(.*?)</script>', html, re.S)[1])
         assert config['editing'] is True
         assert 'data-library=' not in html
