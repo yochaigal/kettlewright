@@ -260,7 +260,7 @@ justify-content: space-around;
 .party-collapse-button:hover::before {
 content: "";
 position: absolute;
-top: 50%;
+top: calc(50% - 2px);
 left: 50%;
 transform: translate(-50%, -50%);
 width: 30px;
