@@ -257,11 +257,6 @@ justify-content: space-around;
     margin-right: .25em;
   }
   
-.party-collapse-button i {
-position: relative;
-z-index: 1;
-}
-
 .party-collapse-button:hover::before {
 content: "";
 position: absolute;

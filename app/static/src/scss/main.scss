@@ -143,7 +143,7 @@ select:focus {
   padding: .5em;
 }
 
-// Use the same open chevron as the collapsible party sections.
+// Use Font Awesome for every disclosure, including native details elements.
 details > summary {
   position: relative;
   list-style: none;
@@ -151,22 +151,14 @@ details > summary {
   &::-webkit-details-marker { display: none; }
   &::marker { content: ""; }
   &::before {
-    content: "";
-    display: inline-block;
-    position: relative;
-    z-index: 1;
-    width: .55em;
-    height: .55em;
-    margin: 0 .7em .1em .15em;
-    border-right: 2px solid currentColor;
-    border-bottom: 2px solid currentColor;
-    transform: rotate(-45deg);
+    content: "\f054";
+    margin-right: 8px;
   }
   &:hover::after {
     content: "";
     position: absolute;
     top: calc(.65em + var(--disclosure-padding-y, 0px));
-    left: calc(.425em + var(--disclosure-padding-x, 0px));
+    left: calc(9px + var(--disclosure-padding-x, 0px));
     transform: translate(-50%, -50%);
     width: 30px;
     height: 30px;
@@ -175,7 +167,21 @@ details > summary {
     pointer-events: none;
   }
 }
-details[open] > summary::before { transform: translateY(-.15em) rotate(45deg); }
+details > summary::before, .party-collapse-button i {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  width: 18px;
+  height: 22px;
+  vertical-align: middle;
+  text-align: center;
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-style: normal;
+  font-size: 18px;
+  line-height: 22px;
+}
+details[open] > summary::before { content: "\f078"; }
 
 
 
