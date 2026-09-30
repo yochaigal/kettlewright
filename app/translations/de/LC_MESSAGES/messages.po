@@ -18883,3 +18883,149 @@ msgid ""
 "Warden can instead choose to reveal the primary feature of the area."
 msgstr ""
 
+
+#: app/templates/main/shared_map.html
+msgid "Whiteboard"
+msgstr "Whiteboard"
+
+#: app/templates/main/shared_map.html
+msgid "Everyone in the party can edit"
+msgstr "Alle Gruppenmitglieder können bearbeiten"
+
+#: app/templates/main/shared_map.html
+msgid "Fit map"
+msgstr "Karte einpassen"
+
+#: app/templates/main/shared_map.html
+msgid "Light / dark"
+msgstr "Hell / dunkel"
+
+#: app/templates/main/shared_map.html
+msgid "Load map"
+msgstr "Karte laden"
+
+#: app/templates/main/shared_map.html
+msgid "Fog of War"
+msgstr "Kriegsnebel"
+
+#: app/templates/main/shared_map.html
+msgid "Reveal"
+msgstr "Aufdecken"
+
+#: app/templates/main/shared_map.html
+msgid "Cover"
+msgstr "Verdecken"
+
+#: app/templates/main/shared_map.html
+msgid "Brush size"
+msgstr "Pinselgröße"
+
+#: app/templates/main/shared_map.html
+msgid "Undo fog stroke"
+msgstr "Nebelstrich rückgängig"
+
+#: app/templates/main/shared_map.html
+msgid "Hide all"
+msgstr "Alles verdecken"
+
+#: app/templates/main/shared_map.html
+msgid "Reveal all"
+msgstr "Alles aufdecken"
+
+#: app/templates/main/shared_map.html
+msgid "Player view"
+msgstr "Spieleransicht"
+
+#: app/templates/main/shared_map.html
+msgid "Discard unsaved fog"
+msgstr "Ungespeicherten Nebel verwerfen"
+
+#: app/templates/main/shared_map.html
+msgid "Choose a map"
+msgstr "Karte auswählen"
+
+#: app/templates/main/shared_map.html
+msgid "Cover with fog"
+msgstr "Mit Nebel verdecken"
+
+#: app/templates/main/shared_map.html
+msgid "This replaces the current whiteboard and its fog for everyone. The original map stays unchanged."
+msgstr "Dies ersetzt das aktuelle Whiteboard und seinen Nebel für alle. Die ursprüngliche Karte bleibt unverändert."
+
+#: app/templates/main/shared_map.html
+msgid "Replace whiteboard"
+msgstr "Whiteboard ersetzen"
+
+#: app/templates/main/shared_map.html
+msgid "Unable to check for updates. Retrying…"
+msgstr "Aktualisierungen konnten nicht geprüft werden. Erneuter Versuch…"
+
+#: app/templates/main/shared_map.html
+msgid "Whiteboard access is no longer available."
+msgstr "Der Zugriff auf das Whiteboard ist nicht mehr verfügbar."
+
+#: app/templates/main/shared_map.html
+msgid "No maps available."
+msgstr "Keine Karten verfügbar."
+
+#: app/templates/main/shared_map.html
+msgid "Unable to load this map. Try again."
+msgstr "Diese Karte konnte nicht geladen werden. Bitte erneut versuchen."
+
+#: app/templates/main/shared_map.html
+msgid "The map or whiteboard changed. Close this dialog and preview the map again."
+msgstr "Die Karte oder das Whiteboard wurde geändert. Schließe diesen Dialog und öffne die Vorschau erneut."
+
+#: app/templates/main/shared_map.html
+msgid "Wait for your changes to finish saving, then try again."
+msgstr "Warte, bis deine Änderungen gespeichert sind, und versuche es erneut."
+
+#: app/templates/main/shared_map.html
+msgid "The Warden loaded a new whiteboard."
+msgstr "Die Spielleitung hat ein neues Whiteboard geladen."
+
+#: app/templates/main/shared_map.html
+msgid "Download unsaved drawing from the previous whiteboard"
+msgstr "Ungespeicherte Zeichnung des vorherigen Whiteboards herunterladen"
+
+#: app/templates/main/shared_map.html
+msgid "Change fog for everyone in the party?"
+msgstr "Nebel für alle Gruppenmitglieder ändern?"
+
+#: app/templates/main/shared_map.html
+msgid "Fog changes could not be saved. Retrying…"
+msgstr "Nebeländerungen konnten nicht gespeichert werden. Erneuter Versuch…"
+
+#: app/templates/main/shared_map.html
+msgid "Fog changes were rejected. Discard the unsaved fog changes to continue."
+msgstr "Nebeländerungen wurden abgelehnt. Verwirf die ungespeicherten Nebeländerungen, um fortzufahren."
+
+#: app/templates/main/shared_map.html
+msgid "Discard your unsaved fog changes?"
+msgstr "Ungespeicherte Nebeländerungen verwerfen?"
+
+#: app/templates/main/shared_map.html
+msgid "Party tokens"
+msgstr "Gruppenmarker"
+
+#: app/templates/main/shared_map.html
+msgid "Choose a portrait to add a token to the center of your view."
+msgstr "Wähle ein Porträt, um einen Marker in der Mitte deiner Ansicht hinzuzufügen."
+
+#: app/templates/main/shared_map.html
+msgid "No characters in this party yet."
+msgstr "Noch keine Charaktere in dieser Gruppe."
+
+#: app/templates/main/shared_map.html
+msgid "Unable to load party tokens. Close and try again."
+msgstr "Gruppenmarker konnten nicht geladen werden. Schließe das Fenster und versuche es erneut."
+
+#: app/templates/main/shared_map.html
+msgid "Portrait unavailable. Using initials."
+msgstr "Porträt nicht verfügbar. Initialen werden verwendet."
+
+msgid "Pet"
+msgstr "Haustier"
+
+msgid "Hireling"
+msgstr "Gefolgsmann"

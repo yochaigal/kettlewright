@@ -19937,3 +19937,149 @@ msgid ""
 msgstr ""
 "Silêncio: O grupo encontra comida, tesouro ou outros recursos úteis. O Warden pode, em "
 "vez disso, escolher revelar a característica primária da área."
+
+#: app/templates/main/shared_map.html
+msgid "Whiteboard"
+msgstr "Quadro"
+
+#: app/templates/main/shared_map.html
+msgid "Everyone in the party can edit"
+msgstr "Todos os membros do grupo podem editar"
+
+#: app/templates/main/shared_map.html
+msgid "Fit map"
+msgstr "Ajustar mapa"
+
+#: app/templates/main/shared_map.html
+msgid "Light / dark"
+msgstr "Claro / escuro"
+
+#: app/templates/main/shared_map.html
+msgid "Load map"
+msgstr "Carregar mapa"
+
+#: app/templates/main/shared_map.html
+msgid "Fog of War"
+msgstr "Névoa de guerra"
+
+#: app/templates/main/shared_map.html
+msgid "Reveal"
+msgstr "Revelar"
+
+#: app/templates/main/shared_map.html
+msgid "Cover"
+msgstr "Cobrir"
+
+#: app/templates/main/shared_map.html
+msgid "Brush size"
+msgstr "Tamanho do pincel"
+
+#: app/templates/main/shared_map.html
+msgid "Undo fog stroke"
+msgstr "Desfazer pincelada de névoa"
+
+#: app/templates/main/shared_map.html
+msgid "Hide all"
+msgstr "Ocultar tudo"
+
+#: app/templates/main/shared_map.html
+msgid "Reveal all"
+msgstr "Revelar tudo"
+
+#: app/templates/main/shared_map.html
+msgid "Player view"
+msgstr "Visão do jogador"
+
+#: app/templates/main/shared_map.html
+msgid "Discard unsaved fog"
+msgstr "Descartar névoa não salva"
+
+#: app/templates/main/shared_map.html
+msgid "Choose a map"
+msgstr "Escolha um mapa"
+
+#: app/templates/main/shared_map.html
+msgid "Cover with fog"
+msgstr "Cobrir com névoa"
+
+#: app/templates/main/shared_map.html
+msgid "This replaces the current whiteboard and its fog for everyone. The original map stays unchanged."
+msgstr "Isso substitui o quadro atual e sua névoa para todos. O mapa original permanece inalterado."
+
+#: app/templates/main/shared_map.html
+msgid "Replace whiteboard"
+msgstr "Substituir quadro"
+
+#: app/templates/main/shared_map.html
+msgid "Unable to check for updates. Retrying…"
+msgstr "Não foi possível verificar atualizações. Tentando novamente…"
+
+#: app/templates/main/shared_map.html
+msgid "Whiteboard access is no longer available."
+msgstr "O acesso ao quadro não está mais disponível."
+
+#: app/templates/main/shared_map.html
+msgid "No maps available."
+msgstr "Nenhum mapa disponível."
+
+#: app/templates/main/shared_map.html
+msgid "Unable to load this map. Try again."
+msgstr "Não foi possível carregar este mapa. Tente novamente."
+
+#: app/templates/main/shared_map.html
+msgid "The map or whiteboard changed. Close this dialog and preview the map again."
+msgstr "O mapa ou o quadro mudou. Feche esta janela e visualize o mapa novamente."
+
+#: app/templates/main/shared_map.html
+msgid "Wait for your changes to finish saving, then try again."
+msgstr "Aguarde as alterações serem salvas e tente novamente."
+
+#: app/templates/main/shared_map.html
+msgid "The Warden loaded a new whiteboard."
+msgstr "O Guardião carregou um novo quadro."
+
+#: app/templates/main/shared_map.html
+msgid "Download unsaved drawing from the previous whiteboard"
+msgstr "Baixar desenho não salvo do quadro anterior"
+
+#: app/templates/main/shared_map.html
+msgid "Change fog for everyone in the party?"
+msgstr "Alterar a névoa para todo o grupo?"
+
+#: app/templates/main/shared_map.html
+msgid "Fog changes could not be saved. Retrying…"
+msgstr "Não foi possível salvar as alterações de névoa. Tentando novamente…"
+
+#: app/templates/main/shared_map.html
+msgid "Fog changes were rejected. Discard the unsaved fog changes to continue."
+msgstr "As alterações de névoa foram rejeitadas. Descarte as alterações não salvas para continuar."
+
+#: app/templates/main/shared_map.html
+msgid "Discard your unsaved fog changes?"
+msgstr "Descartar suas alterações de névoa não salvas?"
+
+#: app/templates/main/shared_map.html
+msgid "Party tokens"
+msgstr "Fichas do grupo"
+
+#: app/templates/main/shared_map.html
+msgid "Choose a portrait to add a token to the center of your view."
+msgstr "Escolha um retrato para adicionar uma ficha ao centro da sua visualização."
+
+#: app/templates/main/shared_map.html
+msgid "No characters in this party yet."
+msgstr "Ainda não há personagens neste grupo."
+
+#: app/templates/main/shared_map.html
+msgid "Unable to load party tokens. Close and try again."
+msgstr "Não foi possível carregar as fichas. Feche e tente novamente."
+
+#: app/templates/main/shared_map.html
+msgid "Portrait unavailable. Using initials."
+msgstr "Retrato indisponível. Usando iniciais."
+
+msgid "Pet"
+msgstr "Animal de estimação"
+
+msgid "Hireling"
+msgstr "Mercenário"

@@ -42,7 +42,7 @@ locations, paths and nested maps, together with published party versions.
 Deleting a location also deletes its linked nested map and connected paths.
 This applies to both single and bulk deletion. Reused descendants are removed
 from all containing maps; arbitrary related-material links do not cascade.
-Campaign containers, parties, characters and Shared Map drawings are preserved.
+Campaign containers, parties, characters and Whiteboard drawings are preserved.
 The preview expires after 30 minutes; changes to originals or affected map
 geometry require a new preview. Existing standalone leftovers from maps deleted
 before this behavior can be selected and deleted from Unfiled materials.

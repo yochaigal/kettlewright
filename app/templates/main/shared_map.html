@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/index.css">
-  <title>{{ _('Shared Map') }} · {{ party.name }}</title>
+  <title>{{ _('Whiteboard') }} · {{ party.name }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/shared_map.css') }}">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
   <script>window.EXCALIDRAW_ASSET_PATH = 'https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/';</script>
@@ -21,25 +21,85 @@
 <body>
   <header class="map-header">
     <a href="{{ url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) }}">← {{ party.name }}</a>
-    <strong>{{ _('Shared Map') }}</strong>
-    <span>{{ _('Warden') if editing else _('View only') }}</span>
+    <strong>{{ _('Whiteboard') }}</strong>
+    <span>{{ _('Everyone in the party can edit') }}</span>
     <button type="button" id="fit-map">{{ _('Fit map') }}</button>
+    <button type="button" id="board-theme">{{ _('Light / dark') }}</button>
+    {% if warden %}<button type="button" id="load-map">{{ _('Load map') }}</button>{% endif %}
+    <button type="button" id="mobile-party-tokens">{{ _('Party tokens') }}</button>
     <span id="map-status" role="status" aria-live="polite">{{ _('Loading…') }}</span>
   </header>
+  {% if warden %}
+  <section class="fog-toolbar" aria-label="{{ _('Fog of War') }}">
+    <button type="button" id="fog-enabled" aria-pressed="false">{{ _('Fog of War') }}</button>
+    <button type="button" data-fog-tool="reveal" aria-pressed="false" disabled>{{ _('Reveal') }}</button>
+    <button type="button" data-fog-tool="cover" aria-pressed="false" disabled>{{ _('Cover') }}</button>
+    <label for="fog-radius">{{ _('Brush size') }}</label>
+    <input id="fog-radius" type="range" min="10" max="300" value="60" step="5">
+    <button type="button" data-fog-action="undo">{{ _('Undo fog stroke') }}</button>
+    <button type="button" data-fog-action="hide_all">{{ _('Hide all') }}</button>
+    <button type="button" data-fog-action="reveal_all">{{ _('Reveal all') }}</button>
+    <button type="button" id="player-preview" aria-pressed="false">{{ _('Player view') }}</button>
+    <span id="fog-status" role="status" aria-live="polite"></span>
+    <button type="button" id="discard-fog" hidden>{{ _('Discard unsaved fog') }}</button>
+  </section>
+  {% endif %}
+  <div id="board-notices" aria-live="polite"></div>
   <div id="editor"></div>
+  <dialog id="party-tokens" aria-labelledby="tokens-title">
+    <div class="tokens-heading"><h2 id="tokens-title">{{ _('Party tokens') }}</h2>
+      <button type="button" id="close-tokens">{{ _('Close') }}</button></div>
+    <p>{{ _('Choose a portrait to add a token to the center of your view.') }}</p>
+    <div id="tokens-grid"></div>
+    <p id="tokens-status" role="status" aria-live="polite"></p>
+  </dialog>
+  {% if warden %}
+  <dialog id="map-import" aria-labelledby="import-title">
+    <h2 id="import-title">{{ _('Load map') }}</h2>
+    <label for="map-source">{{ _('Choose a map') }}</label>
+    <select id="map-source"></select>
+    <div id="map-preview"></div>
+    <label class="import-cover"><input id="import-cover" type="checkbox" checked> {{ _('Cover with fog') }}</label>
+    <p>{{ _('This replaces the current whiteboard and its fog for everyone. The original map stays unchanged.') }}</p>
+    <p id="import-error" role="alert"></p>
+    <div class="dialog-actions">
+      <button type="button" id="cancel-import">{{ _('Cancel') }}</button>
+      <button type="button" id="confirm-import" disabled>{{ _('Replace whiteboard') }}</button>
+    </div>
+  </dialog>
+  {% endif %}
   <script id="shared-map-config" type="application/json">{{ {
-    'partyId': party.id, 'editing': editing, 'csrfToken': csrf_token,
+    'partyId': party.id, 'editing': editing, 'warden': warden, 'csrfToken': csrf_token,
+    'tokensUrl': url_for('party.shared_map_tokens', party_id=party.id),
     'sceneUrl': url_for('party.shared_map_scene', party_id=party.id),
+    'fogUrl': url_for('party.shared_map_fog', party_id=party.id),
+    'sourcesUrl': url_for('party.shared_map_sources', party_id=party.id),
+    'importUrl': url_for('party.shared_map_import', party_id=party.id),
     'libraryUrl': url_for('static', filename='vendor/excalidraw-libraries/'),
     'messages': {
+      'tokens': _('Party tokens'), 'tokensLoading': _('Loading…'),
+      'pet': _('Pet'), 'hireling': _('Hireling'),
+      'tokensEmpty': _('No characters in this party yet.'),
+      'tokensFailed': _('Unable to load party tokens. Close and try again.'),
+      'tokenFallback': _('Portrait unavailable. Using initials.'),
       'saved': _('Saved'), 'live': _('Live'), 'saving': _('Saving…'),
-      'offline': _('Connection lost. Retrying…'),
+      'offline': _('Unable to check for updates. Retrying…'),
       'failed': _('Unable to save. Your changes are still here; retrying…'),
       'invalid': _('Unable to save this drawing. Use up to 2000 elements and 12 MB of PNG, JPEG, WebP or GIF images.'),
-      'conflict': _('Map changed in another tab. Export your changes, then reload this page.'),
-      'denied': _('Map access is no longer available.'),
+      'conflict': _('Syncing changes…'),
+      'denied': _('Whiteboard access is no longer available.'),
       'loadFailed': _('Unable to load the map. Please reload this page.'),
-      'libraryFailed': _('Unable to load the library. Please reload this page.')
+      'libraryFailed': _('Unable to load the library. Please reload this page.'),
+      'unfiled': _('Unfiled'), 'noMaps': _('No maps available.'),
+      'importFailed': _('Unable to load this map. Try again.'),
+      'importChanged': _('The map or whiteboard changed. Close this dialog and preview the map again.'),
+      'waitForSave': _('Wait for your changes to finish saving, then try again.'),
+      'replaced': _('The Warden loaded a new whiteboard.'),
+      'draft': _('Download unsaved drawing from the previous whiteboard'),
+      'confirmFog': _('Change fog for everyone in the party?'),
+      'fogFailed': _('Fog changes could not be saved. Retrying…'),
+      'fogInvalid': _('Fog changes were rejected. Discard the unsaved fog changes to continue.'),
+      'discardFog': _('Discard your unsaved fog changes?')
     }
   }|tojson }}</script>
   <script type="module">

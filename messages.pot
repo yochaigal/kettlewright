@@ -18948,3 +18948,149 @@ msgid ""
 msgstr ""
 
 
+
+#: app/templates/main/shared_map.html
+msgid "Whiteboard"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Everyone in the party can edit"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Fit map"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Light / dark"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Load map"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Fog of War"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Reveal"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Cover"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Brush size"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Undo fog stroke"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Hide all"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Reveal all"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Player view"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Discard unsaved fog"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Choose a map"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Cover with fog"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "This replaces the current whiteboard and its fog for everyone. The original map stays unchanged."
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Replace whiteboard"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Unable to check for updates. Retrying…"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Whiteboard access is no longer available."
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "No maps available."
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Unable to load this map. Try again."
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "The map or whiteboard changed. Close this dialog and preview the map again."
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Wait for your changes to finish saving, then try again."
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "The Warden loaded a new whiteboard."
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Download unsaved drawing from the previous whiteboard"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Change fog for everyone in the party?"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Fog changes could not be saved. Retrying…"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Fog changes were rejected. Discard the unsaved fog changes to continue."
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Discard your unsaved fog changes?"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Party tokens"
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Choose a portrait to add a token to the center of your view."
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "No characters in this party yet."
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Unable to load party tokens. Close and try again."
+msgstr ""
+
+#: app/templates/main/shared_map.html
+msgid "Portrait unavailable. Using initials."
+msgstr ""
+
+msgid "Pet"
+msgstr ""
+
+msgid "Hireling"
+msgstr ""

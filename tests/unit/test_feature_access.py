@@ -152,7 +152,7 @@ def test_disabled_shared_map_rejects_writes_without_mutation_or_notifications(sh
     app.config.update(FEATURE_TEST_USER_IDS=set(), FEATURE_TEST_PARTY_IDS={1})
     assert clients[1].post(URL, json={'version': 0, 'drawing': DRAWING}).status_code == 200
     assert clients[2].get(URL).status_code == 200
-    assert clients[2].post(URL, json={'version': 1, 'drawing': DRAWING}).status_code == 403
+    assert clients[2].post(URL, json={'version': 1, 'drawing': DRAWING}).status_code == 200
     assert clients[3].get(URL).status_code == 403
 
 

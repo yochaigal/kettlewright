@@ -99,6 +99,52 @@ def register_socket_events(socketio):
         if current_user.is_authenticated and allow_event('register'):
             join_room(f'user_{current_user.id}')
 
+    @socketio.on('whiteboard_laser')
+    def handle_whiteboard_laser(data):
+        import math
+        from flask import request
+        from flask_wtf.csrf import validate_csrf
+        from wtforms.validators import ValidationError
+        from app.lib.feature_access import party_features_enabled
+        from app.models import PartyMap
+        if not current_user.is_authenticated or not isinstance(data, dict):
+            return
+        party_id, generation = data.get('party_id'), data.get('generation')
+        if type(party_id) is not int or type(generation) is not int or not party_features_enabled(party_id):
+            return
+        if current_app.config.get('WTF_CSRF_ENABLED', True):
+            try:
+                validate_csrf(data.get('csrf_token'))
+            except ValidationError:
+                return
+        pointer, button = data.get('pointer'), data.get('button')
+        if button not in ('up', 'down'):
+            return
+        if pointer is not None and (not isinstance(pointer, dict) or pointer.get('tool') != 'laser'
+            or button not in ('up', 'down') or any(type(pointer.get(key)) not in (int, float)
+                or not math.isfinite(pointer[key]) or abs(pointer[key]) > 1000000 for key in ('x', 'y'))):
+            return
+        try:
+            if not limiter.allow(current_user.id, 'whiteboard_laser', 40, 1):
+                return
+        except Exception:
+            current_app.logger.exception('Laser rate limiter unavailable')
+            return
+        target = db.session.get(Party, party_id)
+        if target is None:
+            return
+        recipients = party_recipient_ids(target)
+        if current_user.id not in recipients:
+            return
+        board = db.session.get(PartyMap, party_id)
+        if generation != (board.generation if board else 1):
+            return
+        payload = {'party_id': party_id, 'generation': generation, 'sender': request.sid,
+                   'pointer': {key: pointer[key] for key in ('x', 'y', 'tool')} if pointer else None,
+                   'button': button, 'username': current_user.username}
+        for user_id in recipients:
+            socketio.emit('whiteboard_laser', payload, room=f'user_{user_id}', skip_sid=request.sid)
+
     @socketio.on('roll_dice')
     def handle_roll_dice(data):
         if not current_user.is_authenticated or not isinstance(data, dict):
