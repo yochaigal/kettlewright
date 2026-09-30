@@ -23,7 +23,7 @@ def shared_map(party_id):
     if current_user.id not in party_recipient_ids(target):
         abort(403)
     response = make_response(render_template('main/shared_map.html', party=target,
-        editing=current_user.id == target.owner, csrf_token=generate_csrf()))
+        editing=True, csrf_token=generate_csrf()))
     response.headers['Cache-Control'] = 'no-store'
     return response
 
@@ -43,8 +43,6 @@ def shared_map_scene(party_id):
                                  'drawing': saved.drawing if saved else EMPTY_DRAWING})
         response.headers['Cache-Control'] = 'no-store'
         return response
-    if current_user.id != target.owner:
-        abort(403)
     request.max_content_length = MAX_DRAWING_BYTES + 65536
     if not FlaskForm().validate_on_submit():
         abort(400)
@@ -67,11 +65,11 @@ def shared_map_scene(party_id):
                 {'drawing': drawing, 'version': version + 1}, synchronize_session=False)
             if not updated:
                 db.session.rollback()
-                abort(409, 'Map changed in another tab. Reload before editing.')
+                abort(409, 'Map changed. Fetch the latest scene before retrying.')
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        abort(409, 'Map changed in another tab. Reload before editing.')
+        abort(409, 'Map changed. Fetch the latest scene before retrying.')
     from app import socketio
     from flask import current_app
     for user_id in party_recipient_ids(target):

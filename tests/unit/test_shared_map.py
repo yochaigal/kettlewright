@@ -43,6 +43,8 @@ def test_empty_map_and_access(shared):
         assert result.headers['Cache-Control'] == 'no-store'
         html = clients[i].get('/party/1/shared-map').get_data(as_text=True)
         assert 'Shared Map' in html
+        config = json.loads(re.search(r'id="shared-map-config" type="application/json">(.*?)</script>', html, re.S)[1])
+        assert config['editing'] is True
         assert 'data-library=' not in html
     for i in (3, 4):
         assert clients[i].get(URL).status_code == 403
@@ -54,9 +56,9 @@ def test_empty_map_and_access(shared):
 
 def test_save_persists_and_notifies_only_current_party(shared):
     app, clients, sockets = shared
-    for i in (2, 3, 4):
+    for i in (3, 4):
         assert clients[i].post(URL, json={'version': 0, 'drawing': DRAWING}).status_code == 403
-    assert clients[1].post(URL, json={'version': 0, 'drawing': DRAWING}).json == {'version': 1}
+    assert clients[2].post(URL, json={'version': 0, 'drawing': DRAWING}).json == {'version': 1}
     saved = clients[2].get(URL).json
     assert saved['drawing']['elements'][0]['x'] == 20
     assert saved['version'] == 1
@@ -86,17 +88,19 @@ def test_departed_player_loses_read_and_live_updates(shared):
     for client in sockets.values():
         client.get_received()
     assert clients[2].get(URL).status_code == 403
+    assert clients[2].post(URL, json={'version': 0, 'drawing': DRAWING}).status_code == 403
     assert clients[1].post(URL, json={'version': 0, 'drawing': DRAWING}).status_code == 200
     assert sockets[2].get_received() == []
 
 
-def test_csrf_and_valid_token(shared):
+@pytest.mark.parametrize('user_id', [1, 2])
+def test_csrf_and_valid_token(shared, user_id):
     app, clients, _ = shared
     app.config['WTF_CSRF_ENABLED'] = True
-    assert clients[1].post(URL, json={'version': 0, 'drawing': DRAWING}).status_code == 400
-    html = clients[1].get('/party/1/shared-map').get_data(as_text=True)
+    assert clients[user_id].post(URL, json={'version': 0, 'drawing': DRAWING}).status_code == 400
+    html = clients[user_id].get('/party/1/shared-map').get_data(as_text=True)
     config = json.loads(re.search(r'id="shared-map-config" type="application/json">(.*?)</script>', html, re.S)[1])
-    assert clients[1].post(URL, json={'version': 0, 'drawing': DRAWING, 'csrf_token': config['csrfToken']}).status_code == 200
+    assert clients[user_id].post(URL, json={'version': 0, 'drawing': DRAWING, 'csrf_token': config['csrfToken']}).status_code == 200
 
 
 @pytest.mark.parametrize('payload', [[], {}, {'version': True, 'drawing': DRAWING},

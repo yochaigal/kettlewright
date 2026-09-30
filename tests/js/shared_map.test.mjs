@@ -6,6 +6,7 @@ import vm from 'node:vm';
 const source = readFileSync(new URL('../../app/static/src/js/maps/shared_map.js', import.meta.url), 'utf8').replace(/^import .*;\n/gm, '');
 const librarySource = readFileSync(new URL('../../app/static/src/js/maps/libraries.js', import.meta.url), 'utf8')
   .replace(/^export /gm, '').replace('import.meta.url', 'location.href');
+const mergeSource = readFileSync(new URL('../../app/static/src/js/maps/shared_map_merge.js', import.meta.url), 'utf8').replace(/^export /gm, '');
 const tick = () => new Promise(resolve => setImmediate(resolve));
 const empty = {elements: [], files: {}};
 const response = (body, status = 200) => ({ok: status === 200, status, json: async () => body});
@@ -43,7 +44,7 @@ async function setup(editing = true, failedLibrary = null) {
       return new Promise(resolve => requests.push({options, resolve}));
     },
   });
-  vm.runInContext(librarySource + '\n' + source, context);
+  vm.runInContext(librarySource + '\n' + mergeSource + '\n' + source, context);
   requests.shift().resolve(response({version: 0, drawing: empty}));
   await tick();
   return {requests, libraryRequests, handlers, status, props,
@@ -52,10 +53,10 @@ async function setup(editing = true, failedLibrary = null) {
     elements: () => elements};
 }
 
-test('players are read-only and remote changes never trigger writes', async () => {
+test('remote changes never trigger writes on a view-only canvas', async () => {
   const state = await setup(false);
   assert.equal(state.props.viewModeEnabled, true);
-  assert.equal(state.props.isCollaborating, false);
+  assert.equal(state.props.isCollaborating, true);
   assert.equal(state.props.initialData.appState.gridModeEnabled, true);
   state.change('unauthorized');
   await state.timers();
@@ -90,18 +91,78 @@ test('a stale refresh cannot overwrite edits started while it was loading', asyn
   read.resolve(response({version: 2, drawing: empty})); await tick();
   assert.equal(state.elements()[0].id, 'local');
   await state.timers();
-  assert.equal(JSON.parse(state.requests.shift().options.body).version, 0);
+  const save = JSON.parse(state.requests.shift().options.body);
+  assert.equal(save.version, 2);
+  assert.equal(save.drawing.elements[0].id, 'local');
 });
 
-test('conflict preserves local work and blocks automatic overwrite', async () => {
+test('concurrent edits rebase against the latest scene and retry without reload', async () => {
   const state = await setup();
+  assert.equal(state.props.viewModeEnabled, false);
   state.change('local'); await state.timers();
   state.requests.shift().resolve(response({}, 409)); await tick();
+  const refresh = state.requests.shift();
+  assert.equal(refresh.options.method, undefined);
   state.change('more'); await state.timers();
-  state.handlers.connect();
   assert.equal(state.requests.length, 0);
-  assert.equal(state.status.textContent, 'conflict');
-  assert.equal(state.elements()[0].id, 'more');
+  refresh.resolve(response({version: 1, drawing: {elements: [{id: 'remote'}], files: {}}}));
+  await tick(); await state.timers();
+  const retry = state.requests.shift();
+  const payload = JSON.parse(retry.options.body);
+  assert.equal(payload.version, 1);
+  assert.deepEqual(payload.drawing.elements.map(element => element.id), ['remote', 'more']);
+  retry.resolve(response({version: 2})); await tick();
+  assert.equal(state.status.textContent, 'saved');
+});
+
+test('remote notification during save is fetched after acknowledgement', async () => {
+  const state = await setup();
+  state.change('local'); await state.timers();
+  const save = state.requests.shift();
+  state.handlers.shared_map_changed({party_id: 1, version: 2});
+  assert.equal(state.requests.length, 0);
+  save.resolve(response({version: 1})); await tick();
+  state.requests.shift().resolve(response({version: 2, drawing: {elements: [{id: 'local'}, {id: 'remote'}], files: {}}}));
+  await tick(); await state.timers();
+  assert.deepEqual(Array.from(state.elements(), element => element.id), ['local', 'remote']);
+  assert.equal(state.requests.length, 0);
+});
+
+test('two simultaneous editors converge without losing either drawing', async () => {
+  const warden = await setup();
+  const player = await setup();
+  warden.change('warden'); player.change('player');
+  await warden.timers(); await player.timers();
+  const first = warden.requests.shift();
+  const stale = player.requests.shift();
+  assert.equal(JSON.parse(first.options.body).version, 0);
+  assert.equal(JSON.parse(stale.options.body).version, 0);
+  const saved = JSON.parse(first.options.body).drawing;
+  first.resolve(response({version: 1}));
+  stale.resolve(response({}, 409)); await tick();
+  player.requests.shift().resolve(response({version: 1, drawing: saved}));
+  await tick(); await player.timers();
+  const retry = player.requests.shift();
+  const merged = JSON.parse(retry.options.body);
+  assert.equal(merged.version, 1);
+  assert.deepEqual(merged.drawing.elements.map(element => element.id), ['warden', 'player']);
+  retry.resolve(response({version: 2})); await tick();
+  warden.handlers.shared_map_changed({party_id: 1, version: 2});
+  warden.requests.shift().resolve(response({version: 2, drawing: merged.drawing}));
+  await tick(); await warden.timers(); await player.timers();
+  assert.deepEqual(JSON.parse(JSON.stringify(warden.elements())), JSON.parse(JSON.stringify(player.elements())));
+  assert.equal(warden.requests.length + player.requests.length, 0);
+  assert.equal(warden.status.textContent, 'saved');
+  assert.equal(player.status.textContent, 'saved');
+});
+
+test('membership is revalidated even with unsaved work', async () => {
+  const state = await setup();
+  state.change('local');
+  state.handlers.party_members_changed({party_id: 1});
+  state.requests.shift().resolve(response({}, 403)); await tick(); await state.timers();
+  assert.equal(state.status.textContent, 'denied');
+  assert.equal(state.requests.length, 0);
 });
 
 test('failed saves retry the latest local drawing', async () => {

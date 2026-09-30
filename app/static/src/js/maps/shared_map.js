@@ -2,6 +2,7 @@ import {createElement as h} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Excalidraw, restoreElements, CaptureUpdateAction} from 'excalidraw';
 import {drawingFromScene} from './scene.js';
+import {mergeDrawings, sameDrawing} from './shared_map_merge.js';
 import {loadLibraries, MAP_LIBRARIES} from './libraries.js';
 
 const config = JSON.parse(document.getElementById('shared-map-config').textContent);
@@ -13,8 +14,9 @@ const snapshot = (elements, files, appState) => ({...drawingFromScene(elements, 
   appState: {viewBackgroundColor: appState.viewBackgroundColor || '#ffffff'}});
 let api, version = -1, initialized = false, applying = false, stopped = false;
 let pending = null, saving = false, loading = false, refreshAgain = false, timer;
-let lastDrawing = '', saveBlocked = false;
+let lastDrawing = null, saveBlocked = false;
 let libraryLoadFailed = false;
+let baseDrawing = null;
 
 // Library assets load alongside the scene, without delaying or populating it.
 const defaultLibraryItems = config.editing
@@ -39,7 +41,7 @@ function scheduleSave(delay = 180) {
 }
 
 async function save() {
-  if (!pending || saving || stopped || saveBlocked) return;
+  if (!pending || saving || loading || stopped || saveBlocked) return;
   const drawing = pending;
   pending = null;
   saving = true;
@@ -53,7 +55,7 @@ async function save() {
     if (response.redirected || [401, 403, 404].includes(response.status)) {revoke(); return;}
     if (response.status === 409) {
       pending ||= drawing;
-      saveBlocked = true;
+      refreshAgain = true;
       tell('conflict');
       return;
     }
@@ -65,6 +67,7 @@ async function save() {
     }
     if (!response.ok) throw new Error('Save failed');
     version = (await response.json()).version;
+    baseDrawing = drawing;
     tell('saved');
   } catch (_) {
     pending ||= drawing;
@@ -72,24 +75,25 @@ async function save() {
     scheduleSave(2500);
   } finally {
     saving = false;
-    if (pending) scheduleSave();
+    if (refreshAgain) {refreshAgain = false; refresh();}
+    else if (pending) scheduleSave();
   }
 }
 
 function onChange(elements, appState, files) {
   if (!api || stopped || applying || appState.isLoading) return;
   const drawing = snapshot(elements, files, appState);
-  const key = JSON.stringify(drawing);
   if (!initialized) {
     initialized = true;
-    lastDrawing = key;
+    lastDrawing = drawing;
+    baseDrawing = drawing;
     setTimeout(() => {if (!stopped) api?.scrollToContent(undefined, {fitToContent: true});}, 0);
     return;
   }
-  if (!config.editing || key === lastDrawing) return;
-  lastDrawing = key;
+  if (!config.editing || sameDrawing(drawing, lastDrawing)) return;
+  lastDrawing = drawing;
   pending = drawing;
-  // Validation failures can be corrected on the canvas; conflicts require reload.
+  // Validation failures can be corrected on the canvas.
   if (saveBlocked && status.textContent === config.messages.invalid) saveBlocked = false;
   if (!saveBlocked) {tell('saving'); scheduleSave();}
 }
@@ -107,7 +111,7 @@ function mount(data) {
       libraryItems: defaultLibraryItems,
       appState: {...data.drawing.appState, gridModeEnabled: true}},
     viewModeEnabled: !config.editing,
-    isCollaborating: false,
+    isCollaborating: true,
     onChange,
     validateEmbeddable: () => false,
     UIOptions: {tools: {image: config.editing}, canvasActions: {
@@ -116,35 +120,45 @@ function mount(data) {
   }));
 }
 
+function applyDrawing(drawing) {
+  applying = true;
+  try {
+    const elements = restoreElements(drawing.elements, null);
+    // Set the expected snapshot before updateScene's asynchronous onChange.
+    lastDrawing = snapshot(elements, drawing.files, drawing.appState || {});
+    api.addFiles(Object.values(drawing.files));
+    api.updateScene({elements, appState: drawing.appState, captureUpdate: CaptureUpdateAction.NEVER});
+    api.history.clear();
+  } finally {applying = false;}
+}
+
 async function refresh() {
-  if (stopped || saving || pending || saveBlocked) return;
-  if (loading) {refreshAgain = true; return;}
+  if (stopped) return;
+  if (saving || loading) {refreshAgain = true; return;}
   loading = true;
+  let loaded = false;
   try {
     const response = await fetch(config.sceneUrl, {cache: 'no-store', signal: AbortSignal.timeout(15000)});
     if (response.redirected || [401, 403, 404].includes(response.status)) {revoke(); return;}
     if (!response.ok) throw new Error('Load failed');
     const data = await response.json();
-    // A fetch started before a local edit must never replace that edit.
-    if (stopped || pending || saving || saveBlocked) return;
+    if (stopped) return;
     if (version < 0) mount(data);
     else if (data.version > version && api && initialized) {
-      applying = true;
-      try {
-        api.addFiles(Object.values(data.drawing.files));
-        api.updateScene({elements: restoreElements(data.drawing.elements, null),
-          appState: data.drawing.appState, captureUpdate: CaptureUpdateAction.NEVER});
-        api.history.clear();
-        lastDrawing = JSON.stringify(snapshot(api.getSceneElements(), api.getFiles(),
-          {...api.getAppState(), ...data.drawing.appState}));
-        version = data.version;
-      } finally {applying = false;}
+      const remote = snapshot(restoreElements(data.drawing.elements, null), data.drawing.files, data.drawing.appState || {});
+      const drawing = pending ? mergeDrawings(baseDrawing, pending, remote) : remote;
+      baseDrawing = remote;
+      version = data.version;
+      if (pending) pending = drawing;
+      applyDrawing(drawing);
     }
-    tell(config.editing ? 'saved' : 'live');
+    loaded = true;
+    if (!saveBlocked) tell(pending ? 'saving' : config.editing ? 'saved' : 'live');
   } catch (_) {if (!stopped) tell(version < 0 ? 'loadFailed' : 'offline');}
   finally {
     loading = false;
     if (refreshAgain) {refreshAgain = false; refresh();}
+    else if (pending) scheduleSave(loaded ? 180 : 2500);
   }
 }
 
