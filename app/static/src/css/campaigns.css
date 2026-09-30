@@ -56,7 +56,7 @@
 .map-editor-grid [data-map-node],.map-editor-grid [data-map-edge] {scroll-margin-top:1rem;}
 .map-editor-grid [data-map-node] button {width:100%;text-align:left;white-space:normal;}
 .map-editor-grid [data-map-edge] {padding:.6rem;margin:.5rem 0;border:1px solid transparent;}
-.map-editor-grid [data-map-edge] > summary {padding:.4rem .65rem;border-radius:2px;}
+.map-editor-grid [data-map-edge] > summary {padding:.4rem .65rem;border-radius:2px;--disclosure-padding-y:.4rem;--disclosure-padding-x:.65rem;}
 .map-editor-grid [data-map-node].map-selected > button,
 .map-editor-grid [data-map-edge].map-selected > summary {
   background:var(--form-bg,var(--bg));

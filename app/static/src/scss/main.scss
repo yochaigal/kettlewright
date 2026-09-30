@@ -143,6 +143,47 @@ select:focus {
   padding: .5em;
 }
 
+// Use Font Awesome for every disclosure, including native details elements.
+details > summary {
+  position: relative;
+  list-style: none;
+  cursor: pointer;
+  &::-webkit-details-marker { display: none; }
+  &::marker { content: ""; }
+  &::before {
+    content: "\f054";
+    margin-right: 8px;
+  }
+  &:hover::after {
+    content: "";
+    position: absolute;
+    top: calc(.65em + var(--disclosure-padding-y, 0px) - 2px);
+    left: calc(9px + var(--disclosure-padding-x, 0px));
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    background: color-mix(in srgb, var(--fg) 8%, var(--form-bg));
+    border-radius: 50%;
+    pointer-events: none;
+  }
+}
+details > summary::before, .party-collapse-button i {
+  display: inline-block;
+  position: relative;
+  top: -2px;
+  z-index: 1;
+  width: 18px;
+  height: 22px;
+  vertical-align: middle;
+  text-align: center;
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-style: normal;
+  font-size: 18px;
+  line-height: 22px;
+}
+details[open] > summary::before { content: "\f078"; }
+
 
 
 input {
@@ -366,7 +407,7 @@ button,
   text-align: center;
 }
 
-.subtitle {
+.subtitle, #party-members:not(.party-compact) .party-member-stat {
   /* copy of magicks H4 */
   font-weight: 600;
   font-style: italic;
