@@ -2,7 +2,7 @@ import json
 import re
 import uuid
 from app.lib.data import safeint
-from app.models import db, Party, Character
+from app.models import db, Party, Character, Companion
 from app.models.character import item_armor_value
 from app.lib import sdv
 from flask_babel import _
@@ -65,7 +65,7 @@ class Inventory:
 
     def pin_slots(self, container_id):
         """Keep legacy items in their displayed slots before changing the list."""
-        if not isinstance(self.character, Character):
+        if not isinstance(self.character, (Character, Companion)):
             return
         from app.lib.inventory_slots import arrange_slots
         container = self.get_container(container_id)

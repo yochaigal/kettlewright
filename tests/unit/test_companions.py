@@ -103,7 +103,7 @@ def test_csrf_and_delete(world):
     app.config['WTF_CSRF_ENABLED'] = True
     for path in ('/companions/1/delete','/companions/1/stat','/companions/1/inventory','/companions/1/transfer'):
         assert clients[2].post(path).status_code == 400
-    html = clients[1].get('/companions/1?mode=edit').get_data(as_text=True)
+    html = clients[1].get('/companions/1').get_data(as_text=True)
     token = re.search(r'name="csrf_token"[^>]*value="([^"]+)"',html)[1]
     assert clients[1].post('/companions/1/delete',data={'csrf_token':token}).status_code == 302
     with app.app_context():
@@ -359,13 +359,13 @@ def test_companion_uses_character_sheet_and_shared_inventory_modals(world):
     app, clients = world
     client = clients[2]
     page = client.get('/companions/1').get_data(as_text=True)
-    assert 'view-character-sheet' in page and 'inventory-item-container' in page
+    assert 'view-character-sheet' in page and 'slot-inventory' in page
     assert '<h3>Pets</h3>' not in page and 'Add pet' not in page
     assert 'Receive item' not in page and 'Give item' not in page
-    page = client.get('/companions/1?mode=edit').get_data(as_text=True)
-    assert 'companion-edit-form' in page and 'character-attribute-input' in page
-    assert 'name="shared"' not in page
-    assert 'name="shared"' in clients[1].get('/companions/1?mode=edit').get_data(as_text=True)
+    assert client.get('/companions/1?mode=edit').location == '/companions/1'
+    assert 'companion-edit-form' not in page and 'sheet-stat-form' in page
+    assert 'companion-access-container' not in page
+    assert 'name="shared"' in clients[1].get('/companions/1/section/access').get_data(as_text=True)
     with app.app_context():
         c = db.session.get(Companion,1)
         original_items, original_containers = c.items, c.containers
@@ -419,10 +419,10 @@ def test_character_edit_keeps_pet_cards_and_links(world):
 
 def test_companion_has_one_name_field_and_keeps_its_role_on_save(world):
     app, clients = world
-    page = clients[2].get('/companions/1?mode=edit').get_data(as_text=True)
+    page = clients[2].get('/companions/1/section/name').get_data(as_text=True)
     assert page.count('name="name"') == 1
     assert 'name="role"' not in page
-    assert 'companion-notes' in page
+    assert 'companion-notes' in clients[2].get('/companions/1').get_data(as_text=True)
     with app.app_context():
         c = db.session.get(Companion,1)
         data = {key:getattr(c,key) for key in ('name','attack','notes','gold','armor','daily_cost',
@@ -867,3 +867,135 @@ def test_import_upload_errors_and_csrf(world):
     token = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', page)[1]
     assert post_companion_import(clients[2], 'pet', data, 'character:1', csrf_token=token).status_code == 302
     assert clients[2].post('/companions/import/dragon').status_code == 404
+
+
+@pytest.mark.parametrize('cid,user', [(1, 1), (1, 2), (2, 2)])
+def test_companion_inline_sections_preserve_unrelated_fields(world, cid, user):
+    app, clients = world
+    response = clients[user].post(f'/companions/{cid}/section/name', data={'name': 'New name', 'notes': 'Must not replace notes', 'shared': ''})
+    assert response.status_code == 200 and b'New name' in response.data
+    assert b'character-inline-form' not in response.data
+    assert response.headers['Cache-Control'] == 'no-store'
+    with app.app_context():
+        c = db.session.get(Companion, cid)
+        assert c.name == 'New name' and c.notes != 'Must not replace notes'
+        assert c.shared
+    assert clients[user].post(f'/companions/{cid}/section/notes', data={'notes': '**Saved** notes'}).status_code == 200
+    with app.app_context():
+        assert db.session.get(Companion, cid).name == 'New name'
+        assert db.session.get(Companion, cid).notes == '**Saved** notes'
+    canceled = clients[user].get(f'/companions/{cid}/section/notes?view=1')
+    assert b'<strong>Saved</strong>' in canceled.data and b'<textarea' not in canceled.data
+
+
+@pytest.mark.parametrize('section,data', [('name', {'name': ' '}), ('role', {'role': 'x' * 101}), ('attack', {'attack': 'x' * 201}), ('notes', {'notes': 'x' * 10001}), ('daily_cost', {'daily_cost': '-1'})])
+def test_inline_validation_retains_draft_without_writing(world, section, data):
+    app, clients = world
+    with app.app_context():
+        original = db.session.get(Companion, 1).export()
+    response = clients[1].post('/companions/1/section/' + section, data=data)
+    assert response.status_code == 200 and b'role="alert"' in response.data
+    assert b'character-inline-form' in response.data
+    with app.app_context():
+        assert db.session.get(Companion, 1).export() == original
+
+
+def test_inline_access_and_visibility_boundaries(world):
+    app, clients = world
+    assert clients[1].post('/companions/1/section/access', data={}).status_code == 200
+    for suffix in ('section/name', 'section/access', 'stats', 'containers/0'):
+        assert clients[4].get('/companions/1/' + suffix).status_code == 403
+    assert clients[2].post('/companions/1/section/name', data={'name': 'forbidden'}).status_code == 403
+    assert clients[1].get('/companions/2/section/name').status_code == 403
+    assert clients[2].get('/companions/2/section/daily_cost').status_code == 404
+    assert clients[1].get('/companions/1/section/items').status_code == 404
+    readonly = clients[2].get('/companions/1').get_data(as_text=True)
+    for token in ('sheet-stat-form', 'character-inline-trigger', 'Confirm deletion', 'data-move-item='):
+        assert token not in readonly
+    assert clients[1].post('/companions/1/section/access', data={'shared': 'on'}).status_code == 200
+    assert clients[2].post('/companions/1/section/access', data={}).status_code == 403
+    assert clients[2].get('/companions/1/section/name').status_code == 200
+
+
+def test_sheet_stats_clamp_and_clear_nullable_pairs(world):
+    app, clients = world
+    client = clients[2]
+    url = '/companions/2/sheet-stat'
+    assert client.post(url, data={'stat': 'hp_max', 'value': 3}).status_code == 204
+    with app.app_context():
+        c = db.session.get(Companion, 2)
+        assert c.hp <= c.hp_max == 3
+    assert client.post(url, data={'stat': 'hp', 'value': 4}).status_code == 400
+    assert client.post(url, data={'stat': 'hp_max', 'value': ''}).status_code == 204
+    with app.app_context():
+        c = db.session.get(Companion, 2)
+        assert c.hp is None and c.hp_max is None
+    assert client.post(url, data={'stat': 'hp', 'value': 5}).status_code == 204
+    assert client.post(url, data={'stat': 'gold', 'value': 17}).status_code == 204
+    assert client.post(url, data={'stat': 'armor', 'value': 2}).status_code == 204
+    for field, value in [('gold', ''), ('armor', 4), ('hp', -1), ('party_id', 1), ('hp_max', 100001)]:
+        assert client.post(url, data={'stat': field, 'value': value}).status_code == 400
+    with app.app_context():
+        c = db.session.get(Companion, 2)
+        assert c.hp == c.hp_max == 5 and c.gold == 17 and c.armor == 2
+    assert clients[1].post(url, data={'stat': 'hp_max', 'value': 2}).status_code == 403
+    # The compact party-card endpoint still edits current values only.
+    assert client.post('/companions/2/stat', data={'stat': 'hp_max', 'value': 7}).status_code == 400
+
+
+def test_inline_endpoints_require_csrf_and_deletion_stays_available(world):
+    app, clients = world
+    app.config['WTF_CSRF_ENABLED'] = True
+    for suffix, data in [('section/name', {'name': 'X'}), ('sheet-stat', {'stat': 'gold', 'value': 9}), ('inventory/move', {'item_id': 'x', 'slot': 0}), ('inventory/item-edit/x/uses', {'uses': 0}), ('delete', {})]:
+        assert clients[2].post('/companions/1/' + suffix, data=data).status_code == 400
+    page = clients[2].get('/companions/2').get_data(as_text=True)
+    assert 'Delete pet' in page and 'Confirm deletion' in page
+    assert 'companion-edit-form' not in page
+    token = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', page)[1]
+    assert clients[2].post('/companions/2/delete', data={'csrf_token': token}).status_code == 302
+    with app.app_context():
+        assert db.session.get(Companion, 2) is None
+
+
+def test_companion_slot_inventory_placement_uses_and_armor_refresh(world):
+    app, clients = world
+    client = clients[2]
+    base = '/companions/1/inventory'
+    data = dict(edit_item_name='Test shield', edit_item_tags='1 Armor,uses', edit_item_uses='3',
+                edit_item_charges='', edit_item_max_charges='', edit_item_description='',
+                edit_item_container='0', edit_item_slot='8', slot_container='0', edit_item_armor_active='on', inventory_context='sheet')
+    response = client.post(base + '/item-edit/None/save?mode=create', data=data)
+    assert response.status_code == 200 and response.headers['HX-Trigger'] == 'refresh-stats'
+    with app.app_context():
+        c = db.session.get(Companion, 1)
+        item = next(it for it in json.loads(c.items) if it['name'] == 'Test shield')
+        assert item['slot'] == 8
+        item_id = item['id']
+    assert client.post(base + '/move', data={'item_id': item_id, 'slot': 6}).status_code == 200
+    assert client.post(base + f'/item-edit/{item_id}/uses', data={'uses': 1}).status_code == 200
+    assert clients[4].post(base + '/move', data={'item_id': item_id, 'slot': 0}).status_code == 403
+    assert client.post(base + f'/item-edit/{item_id}/uses', data={'uses': 4}).status_code == 400
+    with app.app_context():
+        c = db.session.get(Companion, 1)
+        item = next(it for it in json.loads(c.items) if it['id'] == item_id)
+        assert item['slot'] == 6 and item['uses'] == 1 and item['max_uses'] == 3
+    assert b'slot-inventory' in client.get('/companions/1/containers/0').data
+    assert client.post(base + '/0/item-delete/' + item_id).headers['HX-Trigger'] == 'refresh-stats'
+
+
+def test_hireling_delete_cascades_pets_and_nested_sheets_require_membership(world):
+    app, clients = world
+    with app.app_context():
+        pet = import_pet(db.session.get(Companion, 2).export())
+        pet.hireling_id = 1
+        db.session.add(pet)
+        db.session.commit()
+        pet_id = pet.id
+    for suffix in ('', '/stats', '/containers/0', '/section/notes'):
+        assert clients[4].get(f'/companions/{pet_id}' + suffix).status_code == 403
+    assert clients[4].post('/companions/1/delete').status_code == 403
+    assert clients[1].post('/companions/1/delete').status_code == 302
+    with app.app_context():
+        assert db.session.get(Companion, 1) is None
+        assert db.session.get(Companion, pet_id) is None
+        assert db.session.get(Companion, 2) is not None

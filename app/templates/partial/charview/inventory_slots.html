@@ -1,7 +1,7 @@
-{% set editable = can_edit_inventory(character) %}
+{% set editable = can_manage_companion(character) if companion_sheet else can_edit_inventory(character) %}
 {% set layout = inventory.slot_layout() %}
 {% set container = inventory.selected_container %}
-{% set edit_base = '/charedit/inplace-inventory/' ~ username ~ '/' ~ url_name %}
+{% set edit_base = inventory_edit_base|default('/charedit/inplace-inventory/' ~ username ~ '/' ~ url_name) %}
 {% set csrf = companion_form().csrf_token.current_token if companion_form().csrf_token is defined else '' %}
 {% macro item_content(it, slot=None) %}
   <div class="slot-item-content">
@@ -26,7 +26,7 @@
         </div>
       {% endif %}
       {% for tag in it.tags if tag not in ('uses', 'charges', 'petty', 'bonus defense') %}
-        {% if tag.startswith('d') and it.dice|length > 0 and is_owner %}
+        {% if tag.startswith('d') and it.dice|length > 0 and is_owner and (not companion_sheet or can_roll) %}
         <button type="button" class="slot-tag slot-damage" title="{{_('Roll dice')}}"
           aria-label="{{_('Roll dice')}}: {{it.name | tr}}"
           onclick="KW_rollDiceCallback({{ '[4]' if character.panicked else it.dice }})">{{tag | tr}}</button>
@@ -48,7 +48,7 @@
     </div>
   </div>
   <div class="slot-item-actions">
-    {% if current_user.is_authenticated and character.owner == current_user.id and character.party_id and it.editable and 'carrying' not in it %}
+    {% if not companion_sheet and current_user.is_authenticated and character.owner == current_user.id and character.party_id and it.editable and 'carrying' not in it %}
     <button type="button" class="slot-icon" title="{{ _('Drop item') }}" aria-label="{{ _('Drop item') }}: {{ it.name | tr }}"
       hx-get="{{ url_for('ground.drop', character_id=character.id, kind='item', object_id=it.id) }}" hx-target="#modal-anchor"><i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button>
     {% endif %}
@@ -74,14 +74,14 @@
      data-slot-label="{{_('Slot')}}" hx-vals='{{ {"csrf_token": csrf, "inventory_context": "sheet"} | tojson }}'>
   <div class="character-inventory-heading">
     <h3>{{_('Inventory')}}</h3>
-    {% if editable %}<button type="button" class="button smaller-font"
+    {% if editable and not companion_sheet %}<button type="button" class="button smaller-font"
       hx-get="/marketplace/{{username}}/{{url_name}}/{{container.id}}" hx-target="#modal-anchor">{{_('Marketplace')}}</button>{% endif %}
   </div>
   <div class="inventory-header slot-container-tabs">
     {% for cnt in inventory.containers %}
       <button type="button" class="inventory-container-title {% if cnt.is_selected %}inventory-container-title-selected{% endif %}"
         aria-pressed="{{'true' if cnt.is_selected else 'false'}}"
-        hx-get="/charedit/inventory-select-container/{{username}}/{{url_name}}/{{cnt.id}}" hx-target="#inventory-container">{{ cnt.title|markdown_inline }}</button>
+        hx-get="{{inventory_select_base|default("/charedit/inventory-select-container/" ~ username ~ "/" ~ url_name)}}/{{cnt.id}}" hx-target="#inventory-container">{{ cnt.title|markdown_inline }}</button>
     {% endfor %}
     {% if editable %}<button type="button" class="slot-icon" title="{{_('Edit container')}}" aria-label="{{_('Edit container')}}"
       hx-get="{{edit_base}}/container-edit/{{container.id}}" hx-target="#modal-anchor"><i class="fa-solid fa-gear" aria-hidden="true"></i></button>{% endif %}
@@ -113,7 +113,7 @@
   {% endif %}
   {% if editable %}
   <div class="inventory-footer-buttons slot-footer">
-    {% if current_user.is_authenticated and character.owner == current_user.id and character.party_id and container.id != 0 %}
+    {% if not companion_sheet and current_user.is_authenticated and character.owner == current_user.id and character.party_id and container.id != 0 %}
     <button type="button" class="button smaller-font"
       hx-get="{{ url_for('ground.drop', character_id=character.id, kind='container', object_id=container.id) }}" hx-target="#modal-anchor">{{ _('Drop container') }}</button>
     {% endif %}

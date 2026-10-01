@@ -1,0 +1,39 @@
+{% set labels = {'name': _('Name'), 'role': _('Role'), 'attack': _('Attack'), 'notes': _('Notes'), 'daily_cost': _('Daily cost'), 'access': _('Access')} %}
+{% set endpoint = url_for('companions.section', companion_id=c.id, section=section) %}
+{% macro edit_attrs() -%}
+{% if editable %}class="character-inline-trigger" role="button" tabindex="0" title="{{_('Edit')}}: {{labels[section]}}" aria-label="{{_('Edit')}}: {{labels[section]}}" hx-get="{{endpoint}}" hx-target="#companion-{{section}}-container"{% endif %}
+{%- endmacro %}
+{% if editing %}
+<form class="character-inline-form no-space" method="post" hx-post="{{endpoint}}" hx-target="#companion-{{section}}-container"
+      hx-disabled-elt="#companion-{{section}}-container button" data-save-error="{{_('Unable to save changes. Please try again.')}}">
+  {{form.hidden_tag()}}
+  <h3 class="no-space">{{labels[section]}}</h3>
+  {% if error %}<p class="red-text" role="alert">{{error}}</p>{% endif %}
+  {% set value = request.form.get(section, '') if error else c[section] %}
+  {% if section == 'access' %}
+  <label><input type="checkbox" name="shared" {% if c.shared %}checked{% endif %}> {{_('Allow party members to manage this hireling')}}</label>
+  {% elif section == 'notes' %}
+  <textarea class="inplace" name="notes" rows="6" maxlength="10000" aria-label="{{labels[section]}}">{{value}}</textarea>
+  {% else %}
+  <input class="inplace" name="{{section}}" aria-label="{{labels[section]}}" value="{{value}}"
+         {% if section == 'daily_cost' %}type="number" min="0" max="100000" required{% else %}type="text" maxlength="{{200 if section == 'attack' else 100}}" {% if section == 'name' %}required{% endif %}{% endif %}>
+  {% endif %}
+  <p class="inline-edit-error red-text" role="alert"></p>
+  <div class="row8 inline-edit-actions">
+    <button type="submit" class="button">{{_('Save')}}</button>
+    <button type="button" class="button" data-inline-cancel hx-get="{{endpoint}}?view=1">{{_('Cancel')}}</button>
+  </div>
+</form>
+{% elif section == 'name' %}
+<h1 {{edit_attrs()}}>{{c.name|markdown_inline}}</h1>
+{% elif section == 'role' %}
+<h2 {{edit_attrs()}}>{{c.role or (_('Hireling') if c.kind == 'hireling' else _('Pet'))}}</h2>
+{% else %}
+<h3 class="no-space">{{labels[section]}}</h3>
+<div {{edit_attrs()}}>
+  {% if section == 'access' %}<p>{{_('Party members can manage this hireling.') if c.shared else _('Only the party owner can manage this hireling.')}}</p>
+  {% elif section == 'daily_cost' %}<p>{{c.daily_cost}} {{_('gp/day')}}</p>
+  {% elif section == 'notes' %}<div class="rich-content character-text-field">{{c.notes|markdown if c.notes else _('No notes yet.')}}</div>
+  {% else %}<p>{{c.attack|markdown_inline if c.attack else _('No attack set.')}}</p>{% endif %}
+</div>
+{% endif %}
