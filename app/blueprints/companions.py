@@ -554,3 +554,49 @@ def convert(companion_id):
             return redirect(url_for('main.character', username=character.owner_username, url_name=character.url_name))
     return render_template('main/companion_convert.html', c=c, owners=owners, error=error,
                            form=FlaskForm()), 400 if error else 200
+
+
+@companions.route('/companions/import/<kind>', methods=['POST'])
+@login_required
+def import_sheet(kind):
+    from flask_babel import _
+    from app.lib.companions import import_companion, import_destinations, render_import_page
+    if kind not in ('pet', 'hireling'):
+        abort(404)
+    destinations = import_destinations(kind)
+    selected = request.form.get('parent', '')
+    error = None
+    csrf()
+    parent = dict(destinations).get(selected)
+    if parent is None:
+        abort(403)
+    upload = request.files.get('json_file')
+    try:
+        if not upload or not upload.filename:
+            raise ValueError('Choose a JSON file to import.')
+        raw = upload.stream.read(2 * 1024 * 1024 + 1)
+        if len(raw) > 2 * 1024 * 1024:
+            raise ValueError('Choose a JSON file smaller than 2 MB.')
+        try:
+            data = json.loads(raw)
+        except (ValueError, UnicodeError, RecursionError):
+            raise ValueError('Choose a valid JSON file.')
+        try:
+            c = import_companion(data, kind)
+        except (ValueError, TypeError, KeyError, OverflowError, RecursionError):
+            raise ValueError('The JSON file does not contain a valid %(kind)s export with valid stats, inventory and pets.')
+    except ValueError as problem:
+        error = _(str(problem), kind=_('pet') if kind == 'pet' else _('hireling'))
+    else:
+        # Never take parent IDs, the row ID or shared access from the file.
+        if kind == 'hireling':
+            c.party = parent
+            c.shared = request.form.get('shared') == 'on'
+        elif selected.startswith('character:'):
+            c.character = parent
+        else:
+            c.hireling = parent
+        db.session.add(c)
+        db.session.commit()
+        return redirect(url_for('companions.sheet', companion_id=c.id))
+    return render_import_page(error=error, selected=selected, kind=kind), 400

@@ -95,6 +95,13 @@
       <div class="character-description-container"><h3>{{_('Access')}}</h3><label><input type="checkbox" name="shared" form="companion-edit-form" {% if c.shared %}checked{% endif %}> {{_('Allow party members to manage this hireling')}}</label></div>
       {% endif %}
     </div>
+    {% if c.kind == 'hireling' and c.pets and not editing %}
+    {% from 'partial/companions/cards.html' import cards with context %}
+    <section class="companion-section" id="hireling-pets">
+      <h3>{{_('Pets')}}</h3>
+      {{cards(c.pets)}}
+    </section>
+    {% endif %}
     {% if editable and not editing %}
     <div class="character-pdf-actions">
       <a class="button is-light" href="{{url_for('companions.export',companion_id=c.id)}}">{{_('Export JSON')}} <i class="fa-solid fa-download icon-in-button" aria-hidden="true"></i></a>

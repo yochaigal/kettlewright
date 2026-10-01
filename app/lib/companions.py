@@ -81,6 +81,8 @@ def import_pet(data):
         raise ValueError('Missing pet name')
     for field in (*STATS, *(s + '_max' for s in STATS), 'armor', 'gold'):
         value = data.get(field, 0 if field in ('armor','gold') else None)
+        if value is None and field in ('armor', 'gold'):
+            raise ValueError('Invalid pet stat')
         if value is not None and (type(value) is not int or not 0 <= value <= (3 if field == 'armor' else 100000)):
             raise ValueError('Invalid pet stat')
         result[field] = value
@@ -279,3 +281,47 @@ def convert_hireling(c, owner):
     finish_companion_transfers(c)
     db.session.delete(c)
     return character
+
+
+def import_companion(data, kind):
+    """Read an exported sheet; ownership and sharing always come from the UI."""
+    if not isinstance(data, dict) or data.get('kind') != kind:
+        raise ValueError('Choose an exported JSON file of the selected creature type.')
+    companion = import_pet(data)
+    pets = data.get('pets', [])
+    if not isinstance(pets, list) or len(pets) > 100 or (kind == 'pet' and pets):
+        raise ValueError('Invalid pets in JSON file.')
+    if kind == 'hireling':
+        cost = data.get('daily_cost', 0)
+        if type(cost) is not int or not 0 <= cost <= 100000:
+            raise ValueError('Invalid daily cost in JSON file.')
+        companion.kind = 'hireling'
+        companion.daily_cost = cost
+        for pet in pets:
+            if not isinstance(pet, dict) or pet.get('kind', 'pet') != 'pet' or pet.get('pets'):
+                raise ValueError('Invalid pets in JSON file.')
+            companion.pets.append(import_pet(pet))
+    return companion
+
+
+def import_destinations(kind):
+    """Return only parents the current user can add this kind of creature to."""
+    if kind == 'hireling':
+        return [('party:' + str(p.id), p) for p in Party.query.filter_by(owner=current_user.id).order_by(Party.name)]
+    characters = Character.query.filter_by(owner=current_user.id).order_by(Character.name).all()
+    # Avoid enumerating every party's hirelings; use the same roster membership
+    # semantics as can_manage, including the shared flag.
+    member_ids = db.session.query(Character.party_id).filter_by(owner=current_user.id).distinct()
+    hirelings = Companion.query.join(Party, Companion.party_id == Party.id).filter(
+        Companion.kind == 'hireling', db.or_(Party.owner == current_user.id, Party.id.in_(member_ids)))
+    return ([('character:' + str(c.id), c) for c in characters] +
+            [('hireling:' + str(h.id), h) for h in hirelings.order_by(Companion.name) if can_manage(h)])
+
+
+def render_import_page(form=None, error=None, selected='', kind=None):
+    from flask import render_template
+    from app.forms import CharacterJSONForm
+    return render_template('main/new_from_json.html', form=form or CharacterJSONForm(),
+                           import_error=error, selected=selected, import_kind=kind,
+                           pet_destinations=import_destinations('pet'),
+                           hireling_destinations=import_destinations('hireling'))
