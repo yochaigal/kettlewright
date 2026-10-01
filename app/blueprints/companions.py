@@ -518,3 +518,39 @@ def export(companion_id):
     response.headers['Cache-Control'] = 'private, no-store'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
+
+
+@companions.route('/companions/<int:companion_id>/convert', methods=['GET', 'POST'])
+@login_required
+def convert(companion_id):
+    from flask_babel import _
+    from app.lib.companions import conversion_owners, convert_hireling
+    c = db.get_or_404(Companion, companion_id)
+    if c.kind != 'hireling':
+        abort(400)
+    if c.party.owner != current_user.id:
+        abort(403)
+    if request.method == 'POST':
+        csrf()
+        # Serialize membership updates and prevent two conversions of one hireling.
+        db.session.execute(db.select(Party).where(Party.id == c.party_id).with_for_update()
+                           .execution_options(populate_existing=True)).scalar_one()
+        c = db.session.execute(db.select(Companion).where(Companion.id == companion_id)
+                               .with_for_update().execution_options(populate_existing=True)).scalar_one_or_none()
+        if c is None:
+            abort(404)
+    owners = conversion_owners(c.party)
+    error = None
+    if request.method == 'POST':
+        owner = next((owner for owner in owners if str(owner.id) == request.form.get('owner_id')), None)
+        if owner is None:
+            abort(400, description='Choose a current party member.')
+        try:
+            character = convert_hireling(c, owner)
+        except ValueError as problem:
+            error = _(str(problem))
+        else:
+            db.session.commit()
+            return redirect(url_for('main.character', username=character.owner_username, url_name=character.url_name))
+    return render_template('main/companion_convert.html', c=c, owners=owners, error=error,
+                           form=FlaskForm()), 400 if error else 200

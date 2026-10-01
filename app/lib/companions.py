@@ -219,3 +219,63 @@ def finish_companion_transfers(source, restored_items=None):
             # It has since moved elsewhere or the companion was deleted.
             # Don't manufacture a second copy from the old edit snapshot.
             restored_items[:] = [it for it in restored_items if str(it['id']) != item_id]
+
+
+def conversion_owners(party):
+    """The keeper and owners of current party characters can receive a PC."""
+    from app.models import User
+    owner_ids = {party.owner}
+    owner_ids.update(owner for (owner,) in db.session.query(Character.owner).filter(
+        Character.party_id == party.id, Character.id.in_(json.loads(party.members or '[]'))))
+    return User.query.filter(User.id.in_(owner_ids)).order_by(User.username).all()
+
+
+def convert_hireling(c, owner):
+    """Move a hireling and their pets into a PC in the same transaction."""
+    from slugify import slugify
+    if any(getattr(c, field) is None for stat in STATS for field in (stat, stat + '_max')):
+        raise ValueError('Fill in all current and maximum stats before converting this hireling.')
+    background = c.role or 'Hireling'
+    if len(c.name) > 64 or len(background) > 64:
+        raise ValueError('Character names and backgrounds must be 64 characters or fewer. Edit this hireling first.')
+    notes = c.notes or ''
+    if c.attack:
+        notes += ('\n\n' if notes else '') + _('Attack') + ': ' + c.attack
+    notes += ('\n\n' if notes else '') + _('Daily cost') + ': ' + str(c.daily_cost) + ' ' + _('gp/day')
+    if len(notes) > 2000:
+        raise ValueError('Character notes must be 2000 characters or fewer, including attack and daily cost. Export this hireling and shorten their notes first.')
+    base = slugify(c.name) or 'character'
+    slug, suffix = base, 1
+    while Character.query.filter_by(owner=owner.id, url_name=slug).first():
+        slug = f'{base}-{suffix}'
+        suffix += 1
+    items = json.loads(c.items or '[]')
+    if c.armor:
+        # PCs derive armor from inventory, so carry natural armor as a petty item.
+        items.append(dict(id=uuid.uuid4().hex, name=_('Natural armor'),
+                          tags=['petty', f'{c.armor} Armor'], location=0, armor_active=True))
+    character = Character(name=c.name, custom_name=c.name, background=background,
+                          custom_background=background, url_name=slug, owner=owner.id,
+                          owner_username=owner.username, party_id=c.party_id,
+                          items=json.dumps(items), containers=c.containers, gold=c.gold,
+                          notes=notes, description='', traits='', bonds='', omens='', scars='',
+                          deprived=False, panicked=False, dead=False,
+                          image_url=c.image_url or 'default-portrait.webp', custom_image=c.custom_image)
+    for stat in STATS:
+        setattr(character, stat, getattr(c, stat))
+        setattr(character, stat + '_max', getattr(c, stat + '_max'))
+    character.armor = str(character.armorValue())
+    db.session.add(character)
+    db.session.flush()
+    members = json.loads(c.party.members or '[]')
+    members.append(character.id)
+    c.party.members = json.dumps(members)
+    # Both parent relationships use delete-orphan. Reparent in one UPDATE
+    # rather than orphaning a pet through the relationship collection.
+    db.session.execute(db.update(Companion).where(Companion.hireling_id == c.id)
+                       .values(hireling_id=None, character_id=character.id))
+    db.session.expire(c, ['pets'])
+    db.session.flush()
+    finish_companion_transfers(c)
+    db.session.delete(c)
+    return character

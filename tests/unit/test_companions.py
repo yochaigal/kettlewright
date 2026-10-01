@@ -652,3 +652,90 @@ def test_companion_export_permissions_and_uploaded_portrait(world):
     assert clients[2].get('/companions/1/export').status_code == 403
     data = clients[1].get('/companions/1/export').get_json()
     assert data['image_url'].startswith('http://localhost/portraits/')
+
+
+def test_convert_hireling_preserves_sheet_party_and_pets(world):
+    app, clients = world
+    with app.app_context():
+        c = db.session.get(Companion, 1)
+        c.name = 'Hero1'
+        c.notes = 'A trusted guide.'
+        c.attack = 'Spear (d8)'
+        c.gold = 37
+        c.armor = 1
+        c.image_url = 'https://example.com/hireling.png'
+        c.custom_image = True
+        pet = import_pet(pet_data(catalog('pet')['Raven Familiar'], c))
+        c.pets.append(pet)
+        db.session.commit()
+        pet_id = pet.id
+        exported = c.export()
+        armor = c.armorValue()
+    saved = clients[1].get('/companions/1/export').get_json()
+    assert saved['pets'][0]['role'] == 'Raven Familiar'
+    assert 'hireling_id' not in saved['pets'][0]
+    response = clients[1].post('/companions/1/convert', data={'owner_id': '2'})
+    assert response.status_code == 302
+    assert response.location.endswith('/users/keeper2/characters/hero1-1/')
+    assert clients[2].get(response.location).status_code == 200
+    with app.app_context():
+        assert db.session.get(Companion, 1) is None
+        character = Character.query.filter_by(url_name='hero1-1').one()
+        assert character.owner == 2
+        assert character.owner_username == 'keeper2'
+        assert character.background == 'Bodyguard'
+        assert character.gold == 37
+        assert character.image_url == exported['image_url']
+        assert character.custom_image is True
+        assert character.party_id == 1
+        assert json.loads(db.session.get(Party, 1).members) == [1, 2, character.id]
+        assert json.loads(character.items)[:-1] == exported['items']
+        assert character.armorValue() == armor
+        assert json.loads(character.containers) == exported['containers']
+        for stat in ('hp', 'strength', 'dexterity', 'willpower'):
+            assert getattr(character, stat) == exported[stat]
+            assert getattr(character, stat + '_max') == exported[stat + '_max']
+        assert character.notes == 'A trusted guide.\n\nAttack: Spear (d8)\n\nDaily cost: 10 gp/day'
+        pet = db.session.get(Companion, pet_id)
+        assert pet is not None
+        assert pet.character_id == character.id
+        assert pet.hireling_id is None
+        assert [p.id for p in character.pets] == [pet_id]
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '2'}).status_code == 404
+
+
+@pytest.mark.parametrize('user', [2, 3, 4])
+def test_only_keeper_can_convert(world, user):
+    _, clients = world
+    assert clients[user].get('/companions/1/convert').status_code == 403
+    assert clients[user].post('/companions/1/convert', data={'owner_id': str(user)}).status_code == 403
+
+
+def test_conversion_owner_selection_and_csrf(world):
+    app, clients = world
+    assert clients[1].post('/companions/2/convert', data={'owner_id': '1'}).status_code == 400
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '4'}).status_code == 400
+    with app.app_context():
+        db.session.get(Character, 1).party_id = None
+        db.session.commit()
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '2'}).status_code == 400
+    app.config['WTF_CSRF_ENABLED'] = True
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '1'}).status_code == 400
+    html = clients[1].get('/companions/1/convert').get_data(as_text=True)
+    token = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', html)[1]
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '1', 'csrf_token': token}).status_code == 302
+
+
+@pytest.mark.parametrize('field,value', [('hp', None), ('name', 'A' * 65), ('notes', 'N' * 2000)])
+def test_conversion_reports_incompatible_data_without_loss(world, field, value):
+    app, clients = world
+    with app.app_context():
+        setattr(db.session.get(Companion, 1), field, value)
+        db.session.commit()
+    response = clients[1].post('/companions/1/convert', data={'owner_id': '1'})
+    assert response.status_code == 400
+    assert b'role="alert"' in response.data
+    with app.app_context():
+        assert Character.query.count() == 2
+        assert getattr(db.session.get(Companion, 1), field) == value
+        assert json.loads(db.session.get(Party, 1).members) == [1, 2]
