@@ -476,10 +476,7 @@
 .companion-character-sheet {
   .companion-identity { min-width: 0; flex: 1; }
   .companion-identity input { width: 100%; }
-  input[form="companion-edit-form"][type="number"] { max-width: 40px; padding: 0; }
-  input[form="companion-edit-form"][type="text"] { background: transparent; border: 0; border-bottom: 1px solid currentColor; color: var(--fg); }
-  .character-descriptions-grid { grid-template-areas: none; }
-  .companion-notes { grid-column: 1 / -1; }
+  .character-details-grid { grid-template-areas: none; }
   .companion-notes textarea { width: 100%; min-height: 12rem; box-sizing: border-box; }
 }
 
@@ -657,3 +654,12 @@
   #character-quick-stats .stat-stepper button { width: 1.5rem; flex-basis: 1.5rem; }
   #character-quick-stats .stat-card-values { gap: .2rem; }
 }
+
+.companion-card-portrait { width: 56px; height: 56px; object-fit: cover; border-radius: 4px; float: right; margin: 0 0 .5rem .75rem; }
+.companion-character-sheet > .row16spaced-top { flex-wrap: wrap; }
+@media (max-width: 600px) {
+  .companion-character-sheet .portrait-image { width: 64px; height: 64px; }
+}
+
+.companion-identity h1, .companion-identity h2 { overflow-wrap: anywhere; }
+#character-quick-stats .companion-stat-toolbar { display: flex; flex-wrap: wrap; gap: 1.5rem; }

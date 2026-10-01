@@ -81,6 +81,8 @@ def import_pet(data):
         raise ValueError('Missing pet name')
     for field in (*STATS, *(s + '_max' for s in STATS), 'armor', 'gold'):
         value = data.get(field, 0 if field in ('armor','gold') else None)
+        if value is None and field in ('armor', 'gold'):
+            raise ValueError('Invalid pet stat')
         if value is not None and (type(value) is not int or not 0 <= value <= (3 if field == 'armor' else 100000)):
             raise ValueError('Invalid pet stat')
         result[field] = value
@@ -89,6 +91,10 @@ def import_pet(data):
             raise ValueError('Invalid pet maximum')
     items, containers = normalize_inventory(json.dumps(data.get('items', [])), json.dumps(data.get('containers', [])))
     result.update(items=sanitize_json_content(json.dumps(items)), containers=sanitize_json_content(json.dumps(containers)))
+    from app.lib.portraits import validate_portrait_reference
+    image_url, custom_image = data.get('image_url') or '', data.get('custom_image', False)
+    validate_portrait_reference(image_url, custom_image)
+    result.update(image_url=image_url, custom_image=custom_image)
     return Companion(kind='pet', **result)
 
 
@@ -215,3 +221,107 @@ def finish_companion_transfers(source, restored_items=None):
             # It has since moved elsewhere or the companion was deleted.
             # Don't manufacture a second copy from the old edit snapshot.
             restored_items[:] = [it for it in restored_items if str(it['id']) != item_id]
+
+
+def conversion_owners(party):
+    """The keeper and owners of current party characters can receive a PC."""
+    from app.models import User
+    owner_ids = {party.owner}
+    owner_ids.update(owner for (owner,) in db.session.query(Character.owner).filter(
+        Character.party_id == party.id, Character.id.in_(json.loads(party.members or '[]'))))
+    return User.query.filter(User.id.in_(owner_ids)).order_by(User.username).all()
+
+
+def convert_hireling(c, owner):
+    """Move a hireling and their pets into a PC in the same transaction."""
+    from slugify import slugify
+    if any(getattr(c, field) is None for stat in STATS for field in (stat, stat + '_max')):
+        raise ValueError('Fill in all current and maximum stats before converting this hireling.')
+    background = c.role or 'Hireling'
+    if len(c.name) > 64 or len(background) > 64:
+        raise ValueError('Character names and backgrounds must be 64 characters or fewer. Edit this hireling first.')
+    notes = c.notes or ''
+    if c.attack:
+        notes += ('\n\n' if notes else '') + _('Attack') + ': ' + c.attack
+    notes += ('\n\n' if notes else '') + _('Daily cost') + ': ' + str(c.daily_cost) + ' ' + _('gp/day')
+    if len(notes) > 2000:
+        raise ValueError('Character notes must be 2000 characters or fewer, including attack and daily cost. Export this hireling and shorten their notes first.')
+    base = slugify(c.name) or 'character'
+    slug, suffix = base, 1
+    while Character.query.filter_by(owner=owner.id, url_name=slug).first():
+        slug = f'{base}-{suffix}'
+        suffix += 1
+    items = json.loads(c.items or '[]')
+    if c.armor:
+        # PCs derive armor from inventory, so carry natural armor as a petty item.
+        items.append(dict(id=uuid.uuid4().hex, name=_('Natural armor'),
+                          tags=['petty', f'{c.armor} Armor'], location=0, armor_active=True))
+    character = Character(name=c.name, custom_name=c.name, background=background,
+                          custom_background=background, url_name=slug, owner=owner.id,
+                          owner_username=owner.username, party_id=c.party_id,
+                          items=json.dumps(items), containers=c.containers, gold=c.gold,
+                          notes=notes, description='', traits='', bonds='', omens='', scars='',
+                          deprived=False, panicked=False, dead=False,
+                          image_url=c.image_url or 'default-portrait.webp', custom_image=c.custom_image)
+    for stat in STATS:
+        setattr(character, stat, getattr(c, stat))
+        setattr(character, stat + '_max', getattr(c, stat + '_max'))
+    character.armor = str(character.armorValue())
+    db.session.add(character)
+    db.session.flush()
+    members = json.loads(c.party.members or '[]')
+    members.append(character.id)
+    c.party.members = json.dumps(members)
+    # Both parent relationships use delete-orphan. Reparent in one UPDATE
+    # rather than orphaning a pet through the relationship collection.
+    db.session.execute(db.update(Companion).where(Companion.hireling_id == c.id)
+                       .values(hireling_id=None, character_id=character.id))
+    db.session.expire(c, ['pets'])
+    db.session.flush()
+    finish_companion_transfers(c)
+    db.session.delete(c)
+    return character
+
+
+def import_companion(data, kind):
+    """Read an exported sheet; ownership and sharing always come from the UI."""
+    if not isinstance(data, dict) or data.get('kind') != kind:
+        raise ValueError('Choose an exported JSON file of the selected creature type.')
+    companion = import_pet(data)
+    pets = data.get('pets', [])
+    if not isinstance(pets, list) or len(pets) > 100 or (kind == 'pet' and pets):
+        raise ValueError('Invalid pets in JSON file.')
+    if kind == 'hireling':
+        cost = data.get('daily_cost', 0)
+        if type(cost) is not int or not 0 <= cost <= 100000:
+            raise ValueError('Invalid daily cost in JSON file.')
+        companion.kind = 'hireling'
+        companion.daily_cost = cost
+        for pet in pets:
+            if not isinstance(pet, dict) or pet.get('kind', 'pet') != 'pet' or pet.get('pets'):
+                raise ValueError('Invalid pets in JSON file.')
+            companion.pets.append(import_pet(pet))
+    return companion
+
+
+def import_destinations(kind):
+    """Return only parents the current user can add this kind of creature to."""
+    if kind == 'hireling':
+        return [('party:' + str(p.id), p) for p in Party.query.filter_by(owner=current_user.id).order_by(Party.name)]
+    characters = Character.query.filter_by(owner=current_user.id).order_by(Character.name).all()
+    # Avoid enumerating every party's hirelings; use the same roster membership
+    # semantics as can_manage, including the shared flag.
+    member_ids = db.session.query(Character.party_id).filter_by(owner=current_user.id).distinct()
+    hirelings = Companion.query.join(Party, Companion.party_id == Party.id).filter(
+        Companion.kind == 'hireling', db.or_(Party.owner == current_user.id, Party.id.in_(member_ids)))
+    return ([('character:' + str(c.id), c) for c in characters] +
+            [('hireling:' + str(h.id), h) for h in hirelings.order_by(Companion.name) if can_manage(h)])
+
+
+def render_import_page(form=None, error=None, selected='', kind=None):
+    from flask import render_template
+    from app.forms import CharacterJSONForm
+    return render_template('main/new_from_json.html', form=form or CharacterJSONForm(),
+                           import_error=error, selected=selected, import_kind=kind,
+                           pet_destinations=import_destinations('pet'),
+                           hireling_destinations=import_destinations('hireling'))

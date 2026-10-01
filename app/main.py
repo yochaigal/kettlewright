@@ -112,6 +112,7 @@ def create_unique_url_name(name):
 @main.route('/new_from_json/', methods=['GET', 'POST'])
 @login_required
 def new_from_json():
+    from app.lib.companions import render_import_page
     form = CharacterJSONForm()
     user = current_user.username
     if current_user.is_authenticated:
@@ -129,7 +130,7 @@ def new_from_json():
                     getattr(form, field).data = int(getattr(form, field).data)
             except (ValueError, TypeError, KeyError):
                 flash(_('Invalid character stats or inventory in JSON file.'))
-                return render_template('main/new_from_json.html', form=form), 400
+                return render_import_page(form=form), 400
 
             # create url_name
             if form.name.data == 'Custom':
@@ -195,7 +196,7 @@ def new_from_json():
             print(" ".join(error_messages), file=sys.stderr)
     else:
         return redirect(url_for('main.index'))
-    return render_template('main/new_from_json.html', form=form)
+    return render_import_page(form=form)
 
 
 def string_to_bool(value):

@@ -1,3 +1,5 @@
+{% set portrait_cancel_url = portrait_cancel_url|default('/charedit/inplace-portrait/' ~ username ~ '/' ~ url_name ~ '/cancel') %}
+{% set portrait_save_url = portrait_save_url|default('/charedit/inplace-portrait/' ~ username ~ '/' ~ url_name ~ '/save') %}
 <script>
   function clickImage(e) {
     const el = document.getElementById("img-" + e);
@@ -46,7 +48,7 @@
       <header class="modal-card-head" style="width:100%">
         <div class="row16spaced">
           <h3 class="modal-card-title">{{_('Edit Portrait')}}</h3>
-          <div title="Close" hx-get="/charedit/inplace-portrait/{{username}}/{{url_name}}/cancel"
+          <div title="Close" hx-get="{{portrait_cancel_url}}"
             hx-target="#character-portrait-container">
             <i class="fa-solid fa-xmark xmark"></i>
           </div>
@@ -82,12 +84,12 @@
       <footer class="modal-card-foot">
         <div class="footer-button-container">
           <button class="button is-success" id="edit-portrait-modal-save"
-            hx-post="/charedit/inplace-portrait/{{username}}/{{url_name}}/save"
+            hx-post="{{portrait_save_url}}"
             hx-target="#character-portrait-container">
             {{_('Save')}}
           </button>
           <button class="button" id="edit-portrait-modal-cancel"
-            hx-get="/charedit/inplace-portrait/{{username}}/{{url_name}}/cancel"
+            hx-get="{{portrait_cancel_url}}"
             hx-target="#character-portrait-container">
             {{_('Cancel')}}
           </button>

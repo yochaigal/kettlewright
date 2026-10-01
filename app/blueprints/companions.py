@@ -150,10 +150,10 @@ def sheet(companion_id):
         finish_companion_transfers(c)
         db.session.commit()
         return redirect(url_for('companions.sheet',companion_id=c.id))
-    editing = request.args.get('mode') == 'edit'
-    if editing and not can_manage(c):
-        abort(403)
-    return render_template('main/companion.html', editing=editing, back=parent_url(c),
+    if request.args.get('mode') == 'edit':
+        editable(c.id)
+        return redirect(url_for('companions.sheet', companion_id=c.id))
+    return render_template('main/companion.html', back=parent_url(c),
                            **sheet_context(c))
 
 
@@ -262,28 +262,29 @@ def sheet_context(c, selected=0):
     inventory.select(selected)
     inventory.decorate()
     return dict(c=c, character=c, form=FlaskForm(), editable=can_manage(c), is_owner=can_manage(c),
-                can_roll=can_roll(c), roll_party=companion_party(c),
+                can_roll=can_roll(c), roll_party=companion_party(c), stat_form=FlaskForm(),
                 companion_sheet=True, inventory=inventory, outgoing=inventories(c) if can_manage(c) else {},
                 inventory_edit_base=f'/companions/{c.id}/inventory',
                 inventory_select_base=f'/companions/{c.id}/containers', decode=json.loads,
                 username='', url_name='', party_containers=[])
 
 
-def inventory_response(c, selected=0, editing=True):
-    return render_template('partial/charedit/inventory.html' if editing else 'partial/charview/inventory.html',
-                           **sheet_context(c, selected))
+def inventory_response(c, selected=0):
+    response = make_response(render_template('partial/charview/inventory_slots.html', **sheet_context(c, selected)))
+    response.headers['HX-Trigger'] = 'refresh-stats'
+    return response
 
 
 @companions.route('/companions/<int:companion_id>/containers/<int:container_id>')
 @login_required
 def select_container(companion_id, container_id):
     c = db.get_or_404(Companion, companion_id)
-    if c.kind == 'hireling' and not party_member(c.party):
+    if (c.kind == 'hireling' and not party_member(c.party)) or (c.hireling and not party_member(c.hireling.party)):
         abort(403)
     editing = request.args.get('mode') == 'edit'
     if editing and not can_manage(c):
         abort(403)
-    return inventory_response(c, container_id, editing)
+    return inventory_response(c, container_id)
 
 
 @companions.route('/companions/<int:companion_id>/inventory/<container_id>')
@@ -296,7 +297,7 @@ def close_modal(companion_id, container_id):
 @login_required
 def item_modal(companion_id, item_id):
     c = editable(companion_id)
-    context = sheet_context(c)
+    context = sheet_context(c, request.args.get('container', 0, type=int))
     item = context['inventory'].get_item(item_id)
     mode = request.args.get('mode', 'edit')
     if mode == 'edit' and not item:
@@ -334,12 +335,23 @@ def item_save(companion_id, item_id):
                 abort(403)
             inventory.update_item(item_id, *values, armor_active=data.get('edit_item_armor_active') == 'on', commit=False)
             inventory.transfer_item(item_id, target, int(parts[1]))
-            record_transfer(c, target, item_id)
+            if data.get('inventory_context') != 'sheet':
+                record_transfer(c, target, item_id)
         else:
             if not str(location).isdigit() or not inventory.get_container(location):
                 abort(400)
             if creating:
-                inventory.create_item(*values, armor_active=data.get('edit_item_armor_active') == 'on')
+                item = inventory.create_item(*values, armor_active=data.get('edit_item_armor_active') == 'on', commit=False)
+                if item is None:
+                    abort(400, description='The item does not fit in this container.')
+                requested_slot = data.get('edit_item_slot', '')
+                if requested_slot.isdigit() and str(item['location']) == data.get('slot_container'):
+                    from app.lib.inventory_slots import item_size
+                    if item_size(item):
+                        inventory.select(int(item['location']))
+                        last_slot = int(inventory.selected_container['slots']) - item_size(item)
+                        inventory.place_item(item['id'], min(int(requested_slot), last_slot), commit=False)
+                db.session.commit()
             else:
                 inventory.update_item(item_id, *values, armor_active=data.get('edit_item_armor_active') == 'on')
     except HTTPException as error:
@@ -444,3 +456,262 @@ def cancel_edit(companion_id):
     c.containers = sanitize_json_content(json.dumps(containers))
     db.session.commit()
     return redirect(url_for('companions.sheet', companion_id=c.id))
+
+
+@companions.get('/companions/<int:companion_id>/portrait')
+@login_required
+def portrait(companion_id):
+    c = editable(companion_id)
+    return portrait_picker(c)
+
+
+def portrait_picker(c, error=None):
+    from app.lib.data import load_images
+    return render_template('partial/charedit/portrait.html', images=load_images(),
+                           portrait_form=FlaskForm(), error=error,
+                           portrait_cancel_url=url_for('companions.portrait_cancel', companion_id=c.id),
+                           portrait_save_url=url_for('companions.portrait_save', companion_id=c.id))
+
+
+@companions.get('/companions/<int:companion_id>/portrait/cancel')
+@login_required
+def portrait_cancel(companion_id):
+    return render_template('partial/companions/portrait.html', c=editable(companion_id), editable=True)
+
+
+@companions.post('/companions/<int:companion_id>/portrait')
+@login_required
+def portrait_save(companion_id):
+    from flask_babel import _
+    from app.lib.portraits import save_portrait, delete_unreferenced_portrait, validate_portrait_reference
+    c = editable(companion_id)
+    csrf()
+    upload = request.files.get('portrait-file')
+    previous = c.image_url
+    try:
+        if upload and upload.filename:
+            image_url, custom_image = save_portrait(upload), True
+        else:
+            custom_url = request.form.get('custom-url', '').strip()
+            selected = request.form.get('selected-portrait', '')
+            image_url, custom_image = (custom_url, True) if custom_url else (selected, False)
+            validate_portrait_reference(image_url, custom_image)
+            if not image_url:
+                return portrait_cancel(c.id)
+    except ValueError as error:
+        return portrait_picker(c, _(str(error)))
+    c.image_url, c.custom_image = image_url, custom_image
+    db.session.commit()
+    delete_unreferenced_portrait(previous)
+    return render_template('partial/companions/portrait.html', c=c, editable=True)
+
+
+@companions.get('/companions/<int:companion_id>/export')
+@login_required
+def export(companion_id):
+    from io import BytesIO
+    from flask import send_file
+    from slugify import slugify
+    c = editable(companion_id)
+    data = c.export()
+    data['kind'] = c.kind
+    if c.kind == 'hireling':
+        data['daily_cost'] = c.daily_cost
+        data['pets'] = [pet.export() for pet in c.pets]
+    # Uploaded portraits are links, just as in character exports. Make them usable
+    # outside this host's URL context without embedding private ownership data.
+    for creature in [data, *data.get('pets', [])]:
+        if creature.get('custom_image') and (creature.get('image_url') or '').startswith('/portraits/'):
+            creature['image_url'] = url_for('character_edit.uploaded_portrait',
+                                           filename=creature['image_url'].rsplit('/', 1)[1], _external=True)
+    response = send_file(BytesIO(json.dumps(data, ensure_ascii=False, indent=2).encode('utf-8')),
+                         mimetype='application/json', as_attachment=True,
+                         download_name=(slugify(c.name) or c.kind) + '.json')
+    response.headers['Cache-Control'] = 'private, no-store'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    return response
+
+
+@companions.route('/companions/<int:companion_id>/convert', methods=['GET', 'POST'])
+@login_required
+def convert(companion_id):
+    from flask_babel import _
+    from app.lib.companions import conversion_owners, convert_hireling
+    c = db.get_or_404(Companion, companion_id)
+    if c.kind != 'hireling':
+        abort(400)
+    if c.party.owner != current_user.id:
+        abort(403)
+    if request.method == 'POST':
+        csrf()
+        # Serialize membership updates and prevent two conversions of one hireling.
+        db.session.execute(db.select(Party).where(Party.id == c.party_id).with_for_update()
+                           .execution_options(populate_existing=True)).scalar_one()
+        c = db.session.execute(db.select(Companion).where(Companion.id == companion_id)
+                               .with_for_update().execution_options(populate_existing=True)).scalar_one_or_none()
+        if c is None:
+            abort(404)
+    owners = conversion_owners(c.party)
+    error = None
+    if request.method == 'POST':
+        owner = next((owner for owner in owners if str(owner.id) == request.form.get('owner_id')), None)
+        if owner is None:
+            abort(400, description='Choose a current party member.')
+        try:
+            character = convert_hireling(c, owner)
+        except ValueError as problem:
+            error = _(str(problem))
+        else:
+            db.session.commit()
+            return redirect(url_for('main.character', username=character.owner_username, url_name=character.url_name))
+    return render_template('main/companion_convert.html', c=c, owners=owners, error=error,
+                           form=FlaskForm()), 400 if error else 200
+
+
+@companions.route('/companions/import/<kind>', methods=['POST'])
+@login_required
+def import_sheet(kind):
+    from flask_babel import _
+    from app.lib.companions import import_companion, import_destinations, render_import_page
+    if kind not in ('pet', 'hireling'):
+        abort(404)
+    destinations = import_destinations(kind)
+    selected = request.form.get('parent', '')
+    error = None
+    csrf()
+    parent = dict(destinations).get(selected)
+    if parent is None:
+        abort(403)
+    upload = request.files.get('json_file')
+    try:
+        if not upload or not upload.filename:
+            raise ValueError('Choose a JSON file to import.')
+        raw = upload.stream.read(2 * 1024 * 1024 + 1)
+        if len(raw) > 2 * 1024 * 1024:
+            raise ValueError('Choose a JSON file smaller than 2 MB.')
+        try:
+            data = json.loads(raw)
+        except (ValueError, UnicodeError, RecursionError):
+            raise ValueError('Choose a valid JSON file.')
+        try:
+            c = import_companion(data, kind)
+        except (ValueError, TypeError, KeyError, OverflowError, RecursionError):
+            raise ValueError('The JSON file does not contain a valid %(kind)s export with valid stats, inventory and pets.')
+    except ValueError as problem:
+        error = _(str(problem), kind=_('pet') if kind == 'pet' else _('hireling'))
+    else:
+        # Never take parent IDs, the row ID or shared access from the file.
+        if kind == 'hireling':
+            c.party = parent
+            c.shared = request.form.get('shared') == 'on'
+        elif selected.startswith('character:'):
+            c.character = parent
+        else:
+            c.hireling = parent
+        db.session.add(c)
+        db.session.commit()
+        return redirect(url_for('companions.sheet', companion_id=c.id))
+    return render_import_page(error=error, selected=selected, kind=kind), 400
+
+
+@companions.route('/companions/<int:companion_id>/section/<section>', methods=['GET', 'POST'])
+@login_required
+def section(companion_id, section):
+    from werkzeug.exceptions import HTTPException
+    c = editable(companion_id)
+    limits = {'name': 100, 'role': 100, 'attack': 200, 'notes': 10000}
+    if section not in (*limits, 'daily_cost', 'access') or (section in ('daily_cost', 'access') and c.kind != 'hireling'):
+        abort(404)
+    if section == 'access' and c.party.owner != current_user.id:
+        abort(403)
+    editing, error = request.args.get('view') != '1', None
+    if request.method == 'POST':
+        csrf()
+        editing = True
+        try:
+            value = (number('daily_cost') if section == 'daily_cost' else
+                     request.form.get('shared') == 'on' if section == 'access' else
+                     text(section, limits[section], section == 'name'))
+        except HTTPException as problem:
+            error = problem.description
+        else:
+            setattr(c, 'shared' if section == 'access' else section, value)
+            db.session.commit()
+            editing = False
+    response = make_response(render_template('partial/companions/inline_section.html',
+        c=c, editable=True, section=section, editing=editing, error=error, form=FlaskForm()))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@companions.get('/companions/<int:companion_id>/stats')
+@login_required
+def stats(companion_id):
+    c = db.get_or_404(Companion, companion_id)
+    if (c.kind == 'hireling' and not party_member(c.party)) or (c.hireling and not party_member(c.hireling.party)):
+        abort(403)
+    response = make_response(render_template('partial/companions/stats.html', **sheet_context(c)))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@companions.post('/companions/<int:companion_id>/sheet-stat')
+@login_required
+def sheet_stat(companion_id):
+    from flask import jsonify
+    from werkzeug.exceptions import HTTPException
+    c = editable(companion_id)
+    csrf()
+    field = request.form.get('stat', '')
+    maxima = tuple(stat + '_max' for stat in STATS)
+    if field not in (*STATS, *maxima, 'gold', 'armor'):
+        abort(400)
+    try:
+        value = number('value', 3 if field == 'armor' else 100000, optional=field in (*STATS, *maxima))
+        if field in STATS and value is not None and getattr(c, field + '_max') is not None and value > getattr(c, field + '_max'):
+            abort(400, description='Current stats cannot exceed their maximum.')
+    except HTTPException as problem:
+        return jsonify(error=problem.description), 400
+    if field in STATS or field in maxima:
+        stat = field.removesuffix('_max')
+        if value is None:
+            setattr(c, stat, None)
+            setattr(c, stat + '_max', None)
+        elif field in maxima:
+            setattr(c, stat, min(getattr(c, stat) or 0, value))
+        elif getattr(c, stat + '_max') is None:
+            setattr(c, stat + '_max', value)
+    setattr(c, field, value)
+    db.session.commit()
+    return '', 204
+
+
+@companions.post('/companions/<int:companion_id>/inventory/move')
+@login_required
+def item_move(companion_id):
+    c = editable(companion_id)
+    csrf()
+    inventory = Inventory(c)
+    item = inventory.get_item(request.form.get('item_id'))
+    if item is None:
+        abort(404)
+    inventory.place_item(item['id'], number('slot'))
+    return inventory_response(c, item['location'])
+
+
+@companions.post('/companions/<int:companion_id>/inventory/item-edit/<item_id>/uses')
+@login_required
+def item_uses(companion_id, item_id):
+    c = editable(companion_id)
+    csrf()
+    items = json.loads(c.items)
+    item = next((item for item in items if str(item['id']) == item_id), None)
+    if item is None:
+        abort(404)
+    if 'uses' not in item.get('tags', []):
+        abort(400)
+    maximum = max(1, item.get('max_uses', item.get('uses', 0)), item.get('uses', 0))
+    item['uses'], item['max_uses'] = number('uses', maximum), maximum
+    c.items = json.dumps(items)
+    db.session.commit()
+    return inventory_response(c, item['location'])

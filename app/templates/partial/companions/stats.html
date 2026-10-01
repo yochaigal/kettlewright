@@ -1,0 +1,32 @@
+{% set stat_save_url = url_for('companions.sheet_stat',companion_id=c.id) %}
+<div id="character-quick-stats" data-party-id="{{roll_party.id if roll_party else 'None'}}"
+     data-stats-url="{{url_for('companions.stats',companion_id=c.id)}}"
+     data-save-error="{{_('Unable to save this stat. Please try again.')}}" data-load-error="{{_('Unable to refresh character stats.')}}">
+<h3>{{_('Stats')}}</h3>
+<div class="stats-stats-container character-stat-dashboard">
+  {% for field, label, short in [('strength', _('STR'), 'str'), ('dexterity', _('DEX'), 'dex'), ('willpower', _('WIL'), 'wil'), ('hp', _('HP'), 'hp')] %}
+  <div class="character-stat-card" id="character-{{short}}-container">
+    <div class="stat-card-heading"><h4>{{label}}</h4></div>
+    {% if editable %}
+    <div class="stat-card-values">
+      {% with control=field, caption=_('Current'), limit=c[field ~ '_max'] if c[field ~ '_max'] is not none else 100000, stat_nullable=true %}{% include 'partial/charview/stat_control.html' %}{% endwith %}
+      <span class="stat-value-divider" aria-hidden="true">/</span>
+      {% with control=field ~ '_max', caption=_('Max'), limit=100000, stat_nullable=true %}{% include 'partial/charview/stat_control.html' %}{% endwith %}
+    </div>
+    {% else %}<p class="stat-readonly">{{c[field] if c[field] is not none else '—'}} <span>/ {{c[field ~ '_max'] if c[field ~ '_max'] is not none else '—'}}</span></p>{% endif %}
+    <div class="stat-warning"></div>
+  </div>
+  {% endfor %}
+  <div class="character-stat-toolbar companion-stat-toolbar">
+    {% for control, label, limit in [('gold', _('Gold'), 100000), ('armor', _('Natural armor'), 3)] %}
+    <div class="character-stat-resource" id="character-{{'gold' if control == 'gold' else 'natural-armor'}}-container">
+      {% if editable %}{% with caption=label %}{% include 'partial/charview/stat_control.html' %}{% endwith %}
+      {% else %}<h4>{{label}}</h4><p>{{c[control]}}</p>{% endif %}
+    </div>
+    {% endfor %}
+    <div class="character-stat-resource" id="character-armor-container"><h4>{{_('Armor')}}</h4><p>{{c.armorValue()}}</p></div>
+  </div>
+</div>
+<div hx-trigger="refresh-stats from:body" hx-get="{{url_for('companions.stats',companion_id=c.id)}}" hx-target="#character-stats-container"></div>
+<p class="quick-stats-status" role="status" aria-live="polite"></p>
+</div>

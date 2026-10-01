@@ -2,6 +2,7 @@
 <div class="companion-cards">
   {% for c in creatures %}
   <article class="companion-card">
+    {% if c.image_url %}<img src="{{c.portrait_src}}" alt="{{c.name}}" class="companion-card-portrait">{% endif %}
     <h4><a href="{{ url_for('companions.sheet', companion_id=c.id) }}">{{ c.name|markdown_inline }}</a></h4>
     {% if c.role and c.role != c.name %}<p>{{ c.role | tr }}</p>{% endif %}
     <div class="companion-stats">

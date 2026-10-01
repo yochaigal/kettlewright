@@ -103,7 +103,7 @@ def test_csrf_and_delete(world):
     app.config['WTF_CSRF_ENABLED'] = True
     for path in ('/companions/1/delete','/companions/1/stat','/companions/1/inventory','/companions/1/transfer'):
         assert clients[2].post(path).status_code == 400
-    html = clients[1].get('/companions/1?mode=edit').get_data(as_text=True)
+    html = clients[1].get('/companions/1').get_data(as_text=True)
     token = re.search(r'name="csrf_token"[^>]*value="([^"]+)"',html)[1]
     assert clients[1].post('/companions/1/delete',data={'csrf_token':token}).status_code == 302
     with app.app_context():
@@ -359,13 +359,13 @@ def test_companion_uses_character_sheet_and_shared_inventory_modals(world):
     app, clients = world
     client = clients[2]
     page = client.get('/companions/1').get_data(as_text=True)
-    assert 'view-character-sheet' in page and 'inventory-item-container' in page
+    assert 'view-character-sheet' in page and 'slot-inventory' in page
     assert '<h3>Pets</h3>' not in page and 'Add pet' not in page
     assert 'Receive item' not in page and 'Give item' not in page
-    page = client.get('/companions/1?mode=edit').get_data(as_text=True)
-    assert 'companion-edit-form' in page and 'character-attribute-input' in page
-    assert 'name="shared"' not in page
-    assert 'name="shared"' in clients[1].get('/companions/1?mode=edit').get_data(as_text=True)
+    assert client.get('/companions/1?mode=edit').location == '/companions/1'
+    assert 'companion-edit-form' not in page and 'sheet-stat-form' in page
+    assert 'companion-access-container' not in page
+    assert 'name="shared"' in clients[1].get('/companions/1/section/access').get_data(as_text=True)
     with app.app_context():
         c = db.session.get(Companion,1)
         original_items, original_containers = c.items, c.containers
@@ -419,10 +419,10 @@ def test_character_edit_keeps_pet_cards_and_links(world):
 
 def test_companion_has_one_name_field_and_keeps_its_role_on_save(world):
     app, clients = world
-    page = clients[2].get('/companions/1?mode=edit').get_data(as_text=True)
+    page = clients[2].get('/companions/1/section/name').get_data(as_text=True)
     assert page.count('name="name"') == 1
     assert 'name="role"' not in page
-    assert 'companion-notes' in page
+    assert 'companion-notes' in clients[2].get('/companions/1').get_data(as_text=True)
     with app.app_context():
         c = db.session.get(Companion,1)
         data = {key:getattr(c,key) for key in ('name','attack','notes','gold','armor','daily_cost',
@@ -555,3 +555,447 @@ def test_pet_roll_without_current_party(world, companion_sockets, membership):
     assert all(socket.get_received() == [] for socket in companion_sockets.values())
     with app.app_context():
         assert PartyRoll.query.count() == 0
+
+
+def test_companion_portrait_upload_and_shared_cleanup(world, tmp_path):
+    from io import BytesIO
+    from PIL import Image
+    from app.lib.portraits import delete_unreferenced_portrait
+    app, clients = world
+    app.config['PORTRAIT_UPLOAD_FOLDER'] = str(tmp_path)
+    image = BytesIO()
+    Image.new('RGB', (300, 400), 'blue').save(image, 'PNG')
+    image.seek(0)
+    response = clients[1].post('/companions/1/portrait', data={'portrait-file': (image, 'avatar.png')})
+    assert response.status_code == 200
+    with app.app_context():
+        hireling = db.session.get(Companion, 1)
+        assert hireling.custom_image
+        saved = hireling.image_url
+        assert saved in response.get_data(as_text=True)
+        db.session.get(Character, 1).image_url = saved
+        db.session.commit()
+        delete_unreferenced_portrait(saved)
+        assert len(list(tmp_path.iterdir())) == 1
+    assert clients[2].post('/companions/2/portrait', data={'custom-url': saved}).status_code == 200
+    clients[1].post('/companions/1/portrait', data={'selected-portrait': 'default-portrait.webp'})
+    with app.app_context():
+        db.session.get(Character, 1).image_url = None
+        db.session.commit()
+        delete_unreferenced_portrait(saved)
+        assert len(list(tmp_path.iterdir())) == 1
+    clients[2].post('/companions/2/portrait', data={'selected-portrait': 'default-portrait.webp'})
+    assert list(tmp_path.iterdir()) == []
+
+
+@pytest.mark.parametrize('data', [
+    {'custom-url': 'javascript:alert(1)'}, {'custom-url': '//example.com/test.png'},
+    {'custom-url': 'https://user:pass@example.com/test.png'},
+    {'selected-portrait': '../../secret'},
+])
+def test_companion_portrait_rejects_invalid_references(world, data):
+    app, clients = world
+    response = clients[1].post('/companions/1/portrait', data=data)
+    assert b'role="alert"' in response.data
+    with app.app_context():
+        assert db.session.get(Companion, 1).image_url is None
+
+
+def test_companion_portrait_permissions_csrf_and_pet_roundtrip(world):
+    app, clients = world
+    assert clients[4].get('/companions/1/portrait').status_code == 403
+    assert clients[1].post('/companions/2/portrait', data={'custom-url': 'https://example.com/pet.png'}).status_code == 403
+    assert clients[2].post('/companions/2/portrait', data={'custom-url': 'https://example.com/pet.png'}).status_code == 200
+    with app.app_context():
+        pet = db.session.get(Companion, 2)
+        restored = import_pet(pet.export())
+        assert restored.image_url == pet.image_url
+        assert restored.custom_image is True
+    app.config['WTF_CSRF_ENABLED'] = True
+    assert clients[1].post('/companions/1/portrait').status_code == 400
+
+
+@pytest.mark.parametrize('companion_id,user,kind', [(1, 1, 'hireling'), (2, 2, 'pet')])
+def test_companion_json_export(world, companion_id, user, kind):
+    app, clients = world
+    response = clients[user].get(f'/companions/{companion_id}/export')
+    assert response.status_code == 200
+    assert response.mimetype == 'application/json'
+    assert 'attachment;' in response.headers['Content-Disposition']
+    assert 'no-store' in response.headers['Cache-Control']
+    data = response.get_json()
+    assert data['kind'] == kind
+    assert not {'id', 'party_id', 'character_id', 'hireling_id', 'owner', 'shared'} & data.keys()
+    with app.app_context():
+        c = db.session.get(Companion, companion_id)
+        assert data['name'] == c.name
+        assert data['items'] == json.loads(c.items)
+        assert data['containers'] == json.loads(c.containers)
+        assert data['hp'] == c.hp
+        if kind == 'hireling':
+            assert data['daily_cost'] == c.daily_cost
+            assert data['pets'] == []
+        else:
+            assert import_pet(data).name == c.name
+
+
+def test_companion_export_permissions_and_uploaded_portrait(world):
+    app, clients = world
+    assert clients[4].get('/companions/1/export').status_code == 403
+    assert clients[1].get('/companions/2/export').status_code == 403
+    with app.app_context():
+        c = db.session.get(Companion, 1)
+        c.shared = False
+        c.image_url = '/portraits/' + 'a' * 64 + '.webp'
+        c.custom_image = True
+        db.session.commit()
+    assert clients[2].get('/companions/1/export').status_code == 403
+    data = clients[1].get('/companions/1/export').get_json()
+    assert data['image_url'].startswith('http://localhost/portraits/')
+
+
+def test_convert_hireling_preserves_sheet_party_and_pets(world):
+    app, clients = world
+    with app.app_context():
+        c = db.session.get(Companion, 1)
+        c.name = 'Hero1'
+        c.notes = 'A trusted guide.'
+        c.attack = 'Spear (d8)'
+        c.gold = 37
+        c.armor = 1
+        c.image_url = 'https://example.com/hireling.png'
+        c.custom_image = True
+        pet = import_pet(pet_data(catalog('pet')['Raven Familiar'], c))
+        c.pets.append(pet)
+        db.session.commit()
+        pet_id = pet.id
+        exported = c.export()
+        armor = c.armorValue()
+    saved = clients[1].get('/companions/1/export').get_json()
+    assert saved['pets'][0]['role'] == 'Raven Familiar'
+    assert 'hireling_id' not in saved['pets'][0]
+    response = clients[1].post('/companions/1/convert', data={'owner_id': '2'})
+    assert response.status_code == 302
+    assert response.location.endswith('/users/keeper2/characters/hero1-1/')
+    assert clients[2].get(response.location).status_code == 200
+    with app.app_context():
+        assert db.session.get(Companion, 1) is None
+        character = Character.query.filter_by(url_name='hero1-1').one()
+        assert character.owner == 2
+        assert character.owner_username == 'keeper2'
+        assert character.background == 'Bodyguard'
+        assert character.gold == 37
+        assert character.image_url == exported['image_url']
+        assert character.custom_image is True
+        assert character.party_id == 1
+        assert json.loads(db.session.get(Party, 1).members) == [1, 2, character.id]
+        assert json.loads(character.items)[:-1] == exported['items']
+        assert character.armorValue() == armor
+        assert json.loads(character.containers) == exported['containers']
+        for stat in ('hp', 'strength', 'dexterity', 'willpower'):
+            assert getattr(character, stat) == exported[stat]
+            assert getattr(character, stat + '_max') == exported[stat + '_max']
+        assert character.notes == 'A trusted guide.\n\nAttack: Spear (d8)\n\nDaily cost: 10 gp/day'
+        pet = db.session.get(Companion, pet_id)
+        assert pet is not None
+        assert pet.character_id == character.id
+        assert pet.hireling_id is None
+        assert [p.id for p in character.pets] == [pet_id]
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '2'}).status_code == 404
+
+
+@pytest.mark.parametrize('user', [2, 3, 4])
+def test_only_keeper_can_convert(world, user):
+    _, clients = world
+    assert clients[user].get('/companions/1/convert').status_code == 403
+    assert clients[user].post('/companions/1/convert', data={'owner_id': str(user)}).status_code == 403
+
+
+def test_conversion_owner_selection_and_csrf(world):
+    app, clients = world
+    assert clients[1].post('/companions/2/convert', data={'owner_id': '1'}).status_code == 400
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '4'}).status_code == 400
+    with app.app_context():
+        db.session.get(Character, 1).party_id = None
+        db.session.commit()
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '2'}).status_code == 400
+    app.config['WTF_CSRF_ENABLED'] = True
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '1'}).status_code == 400
+    html = clients[1].get('/companions/1/convert').get_data(as_text=True)
+    token = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', html)[1]
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '1', 'csrf_token': token}).status_code == 302
+
+
+@pytest.mark.parametrize('field,value', [('hp', None), ('name', 'A' * 65), ('notes', 'N' * 2000)])
+def test_conversion_reports_incompatible_data_without_loss(world, field, value):
+    app, clients = world
+    with app.app_context():
+        setattr(db.session.get(Companion, 1), field, value)
+        db.session.commit()
+    response = clients[1].post('/companions/1/convert', data={'owner_id': '1'})
+    assert response.status_code == 400
+    assert b'role="alert"' in response.data
+    with app.app_context():
+        assert Character.query.count() == 2
+        assert getattr(db.session.get(Companion, 1), field) == value
+        assert json.loads(db.session.get(Party, 1).members) == [1, 2]
+
+
+def post_companion_import(client, kind, data, parent, **fields):
+    from io import BytesIO
+    return client.post('/companions/import/' + kind, data={
+        'json_file': (BytesIO(json.dumps(data).encode()), 'creature.json'),
+        'parent': parent, **fields,
+    })
+
+
+@pytest.mark.parametrize('parent', ['character:1', 'hireling:1'])
+def test_pet_file_roundtrip_with_explicit_parent(world, parent):
+    app, clients = world
+    data = clients[2].get('/companions/2/export').get_json()
+    original = dict(data)
+    data.update(id=2, character_id=2, hireling_id=999, party_id=999, shared=False)
+    response = post_companion_import(clients[2], 'pet', data, parent)
+    assert response.status_code == 302
+    assert clients[2].get(response.location + '/export').get_json() == original
+    with app.app_context():
+        imported = db.session.get(Companion, int(response.location.rsplit('/', 1)[1]))
+        assert imported.id != 2 and imported.party_id is None
+        assert imported.character_id == (1 if parent == 'character:1' else None)
+        assert imported.hireling_id == (1 if parent == 'hireling:1' else None)
+        assert db.session.get(Companion, 2).character_id == 1
+    assert clients[2].get(response.location).status_code == 200
+
+
+def test_hireling_import_preserves_nested_pets_and_uses_selected_party(world):
+    app, clients = world
+    with app.app_context():
+        db.session.add(Party(id=2, owner=1, owner_username='keeper1', name='Second', party_url='second', members='[]'))
+        pet = import_pet(db.session.get(Companion, 2).export())
+        pet.hireling_id = 1
+        db.session.get(Companion, 1).image_url = 'default-portrait.webp'
+        pet.image_url = 'default-portrait.webp'
+        db.session.add(pet)
+        db.session.commit()
+    data = clients[1].get('/companions/1/export').get_json()
+    data.update(party_id=999, character_id=1, id=1, shared=True)
+    response = post_companion_import(clients[1], 'hireling', data, 'party:2')
+    assert response.status_code == 302
+    exported = clients[1].get(response.location + '/export').get_json()
+    assert exported == {key: value for key, value in data.items() if key not in ('party_id', 'character_id', 'id', 'shared')}
+    with app.app_context():
+        imported = db.session.get(Companion, int(response.location.rsplit('/', 1)[1]))
+        assert imported.party_id == 2 and imported.shared is False
+        assert len(imported.pets) == 1 and imported.pets[0].character_id is None
+        assert imported.pets[0].hireling_id == imported.id
+        assert len(db.session.get(Companion, 1).pets) == 1
+    assert b'Hollow Wolf' in clients[1].get(response.location).data
+
+
+@pytest.mark.parametrize('user,kind,parent', [
+    (1, 'pet', 'character:1'), (2, 'pet', 'character:2'),
+    (4, 'pet', 'hireling:1'), (2, 'hireling', 'party:1'),
+    (1, 'hireling', 'character:1'), (2, 'pet', 'party:1'),
+    (1, 'hireling', 'party:999'), (2, 'pet', ''),
+])
+def test_import_rejects_unauthorized_or_wrong_parent(world, user, kind, parent):
+    app, clients = world
+    data = clients[2].get('/companions/2/export').get_json()
+    assert post_companion_import(clients[user], kind, data, parent).status_code == 403
+    with app.app_context():
+        assert Companion.query.count() == 2
+
+
+def test_import_parent_options_follow_current_permissions(world):
+    app, clients = world
+    page = clients[2].get('/new_from_json/').get_data(as_text=True)
+    assert 'value="character:1"' in page and 'value="hireling:1"' in page
+    assert 'value="character:2"' not in page
+    assert b'value="party:1"' not in clients[2].get('/new_from_json/').data
+    for shared, members, party_id in ((False, '[1,2]', 1), (True, '[2]', 1), (True, '[1,2]', None)):
+        with app.app_context():
+            db.session.get(Companion, 1).shared = shared
+            db.session.get(Party, 1).members = members
+            db.session.get(Character, 1).party_id = party_id
+            db.session.commit()
+        assert b'value="hireling:1"' not in clients[2].get('/new_from_json/').data
+        data = clients[2].get('/companions/2/export').get_json()
+        assert post_companion_import(clients[2], 'pet', data, 'hireling:1').status_code == 403
+
+
+@pytest.mark.parametrize('change', [
+    {'kind': 'hireling'}, {'name': ''}, {'hp': 999999}, {'armor': None},
+    {'gold': None}, {'items': [{'id': 'bad', 'location': 100}]},
+    {'containers': [{'id': 0, 'slots': -1}]}, {'image_url': 'javascript:alert(1)', 'custom_image': True},
+    {'pets': [{}]}, {'pets': None},
+])
+def test_invalid_import_is_atomic_and_keeps_destination(world, change):
+    app, clients = world
+    data = clients[2].get('/companions/2/export').get_json()
+    data.update(change)
+    response = post_companion_import(clients[2], 'pet', data, 'character:1')
+    assert response.status_code == 400
+    assert b'role="alert"' in response.data
+    assert b'value="character:1" selected' in response.data
+    with app.app_context():
+        assert Companion.query.count() == 2
+
+
+def test_import_invalid_nested_pet_rolls_back_entire_hireling(world):
+    app, clients = world
+    data = clients[1].get('/companions/1/export').get_json()
+    data['pets'] = [clients[2].get('/companions/2/export').get_json(), {'name': ''}]
+    assert post_companion_import(clients[1], 'hireling', data, 'party:1').status_code == 400
+    data['pets'] = []
+    data['daily_cost'] = -1
+    assert post_companion_import(clients[1], 'hireling', data, 'party:1').status_code == 400
+    with app.app_context():
+        assert Companion.query.count() == 2
+
+
+def test_import_upload_errors_and_csrf(world):
+    from io import BytesIO
+    app, clients = world
+    for content in (b'{broken', b'\xff', b' ' * (2 * 1024 * 1024 + 1)):
+        response = clients[2].post('/companions/import/pet', data={'parent': 'character:1', 'json_file': (BytesIO(content), 'bad.json')})
+        assert response.status_code == 400 and b'role="alert"' in response.data
+    assert clients[2].post('/companions/import/pet', data={'parent': 'character:1'}).status_code == 400
+    app.config['WTF_CSRF_ENABLED'] = True
+    data = clients[2].get('/companions/2/export').get_json()
+    assert post_companion_import(clients[2], 'pet', data, 'character:1').status_code == 400
+    page = clients[2].get('/new_from_json/').get_data(as_text=True)
+    token = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', page)[1]
+    assert post_companion_import(clients[2], 'pet', data, 'character:1', csrf_token=token).status_code == 302
+    assert clients[2].post('/companions/import/dragon').status_code == 404
+
+
+@pytest.mark.parametrize('cid,user', [(1, 1), (1, 2), (2, 2)])
+def test_companion_inline_sections_preserve_unrelated_fields(world, cid, user):
+    app, clients = world
+    response = clients[user].post(f'/companions/{cid}/section/name', data={'name': 'New name', 'notes': 'Must not replace notes', 'shared': ''})
+    assert response.status_code == 200 and b'New name' in response.data
+    assert b'character-inline-form' not in response.data
+    assert response.headers['Cache-Control'] == 'no-store'
+    with app.app_context():
+        c = db.session.get(Companion, cid)
+        assert c.name == 'New name' and c.notes != 'Must not replace notes'
+        assert c.shared
+    assert clients[user].post(f'/companions/{cid}/section/notes', data={'notes': '**Saved** notes'}).status_code == 200
+    with app.app_context():
+        assert db.session.get(Companion, cid).name == 'New name'
+        assert db.session.get(Companion, cid).notes == '**Saved** notes'
+    canceled = clients[user].get(f'/companions/{cid}/section/notes?view=1')
+    assert b'<strong>Saved</strong>' in canceled.data and b'<textarea' not in canceled.data
+
+
+@pytest.mark.parametrize('section,data', [('name', {'name': ' '}), ('role', {'role': 'x' * 101}), ('attack', {'attack': 'x' * 201}), ('notes', {'notes': 'x' * 10001}), ('daily_cost', {'daily_cost': '-1'})])
+def test_inline_validation_retains_draft_without_writing(world, section, data):
+    app, clients = world
+    with app.app_context():
+        original = db.session.get(Companion, 1).export()
+    response = clients[1].post('/companions/1/section/' + section, data=data)
+    assert response.status_code == 200 and b'role="alert"' in response.data
+    assert b'character-inline-form' in response.data
+    with app.app_context():
+        assert db.session.get(Companion, 1).export() == original
+
+
+def test_inline_access_and_visibility_boundaries(world):
+    app, clients = world
+    assert clients[1].post('/companions/1/section/access', data={}).status_code == 200
+    for suffix in ('section/name', 'section/access', 'stats', 'containers/0'):
+        assert clients[4].get('/companions/1/' + suffix).status_code == 403
+    assert clients[2].post('/companions/1/section/name', data={'name': 'forbidden'}).status_code == 403
+    assert clients[1].get('/companions/2/section/name').status_code == 403
+    assert clients[2].get('/companions/2/section/daily_cost').status_code == 404
+    assert clients[1].get('/companions/1/section/items').status_code == 404
+    readonly = clients[2].get('/companions/1').get_data(as_text=True)
+    for token in ('sheet-stat-form', 'character-inline-trigger', 'Confirm deletion', 'data-move-item='):
+        assert token not in readonly
+    assert clients[1].post('/companions/1/section/access', data={'shared': 'on'}).status_code == 200
+    assert clients[2].post('/companions/1/section/access', data={}).status_code == 403
+    assert clients[2].get('/companions/1/section/name').status_code == 200
+
+
+def test_sheet_stats_clamp_and_clear_nullable_pairs(world):
+    app, clients = world
+    client = clients[2]
+    url = '/companions/2/sheet-stat'
+    assert client.post(url, data={'stat': 'hp_max', 'value': 3}).status_code == 204
+    with app.app_context():
+        c = db.session.get(Companion, 2)
+        assert c.hp <= c.hp_max == 3
+    assert client.post(url, data={'stat': 'hp', 'value': 4}).status_code == 400
+    assert client.post(url, data={'stat': 'hp_max', 'value': ''}).status_code == 204
+    with app.app_context():
+        c = db.session.get(Companion, 2)
+        assert c.hp is None and c.hp_max is None
+    assert client.post(url, data={'stat': 'hp', 'value': 5}).status_code == 204
+    assert client.post(url, data={'stat': 'gold', 'value': 17}).status_code == 204
+    assert client.post(url, data={'stat': 'armor', 'value': 2}).status_code == 204
+    for field, value in [('gold', ''), ('armor', 4), ('hp', -1), ('party_id', 1), ('hp_max', 100001)]:
+        assert client.post(url, data={'stat': field, 'value': value}).status_code == 400
+    with app.app_context():
+        c = db.session.get(Companion, 2)
+        assert c.hp == c.hp_max == 5 and c.gold == 17 and c.armor == 2
+    assert clients[1].post(url, data={'stat': 'hp_max', 'value': 2}).status_code == 403
+    # The compact party-card endpoint still edits current values only.
+    assert client.post('/companions/2/stat', data={'stat': 'hp_max', 'value': 7}).status_code == 400
+
+
+def test_inline_endpoints_require_csrf_and_deletion_stays_available(world):
+    app, clients = world
+    app.config['WTF_CSRF_ENABLED'] = True
+    for suffix, data in [('section/name', {'name': 'X'}), ('sheet-stat', {'stat': 'gold', 'value': 9}), ('inventory/move', {'item_id': 'x', 'slot': 0}), ('inventory/item-edit/x/uses', {'uses': 0}), ('delete', {})]:
+        assert clients[2].post('/companions/1/' + suffix, data=data).status_code == 400
+    page = clients[2].get('/companions/2').get_data(as_text=True)
+    assert 'Delete pet' in page and 'Confirm deletion' in page
+    assert 'companion-edit-form' not in page
+    token = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', page)[1]
+    assert clients[2].post('/companions/2/delete', data={'csrf_token': token}).status_code == 302
+    with app.app_context():
+        assert db.session.get(Companion, 2) is None
+
+
+def test_companion_slot_inventory_placement_uses_and_armor_refresh(world):
+    app, clients = world
+    client = clients[2]
+    base = '/companions/1/inventory'
+    data = dict(edit_item_name='Test shield', edit_item_tags='1 Armor,uses', edit_item_uses='3',
+                edit_item_charges='', edit_item_max_charges='', edit_item_description='',
+                edit_item_container='0', edit_item_slot='8', slot_container='0', edit_item_armor_active='on', inventory_context='sheet')
+    response = client.post(base + '/item-edit/None/save?mode=create', data=data)
+    assert response.status_code == 200 and response.headers['HX-Trigger'] == 'refresh-stats'
+    with app.app_context():
+        c = db.session.get(Companion, 1)
+        item = next(it for it in json.loads(c.items) if it['name'] == 'Test shield')
+        assert item['slot'] == 8
+        item_id = item['id']
+    assert client.post(base + '/move', data={'item_id': item_id, 'slot': 6}).status_code == 200
+    assert client.post(base + f'/item-edit/{item_id}/uses', data={'uses': 1}).status_code == 200
+    assert clients[4].post(base + '/move', data={'item_id': item_id, 'slot': 0}).status_code == 403
+    assert client.post(base + f'/item-edit/{item_id}/uses', data={'uses': 4}).status_code == 400
+    with app.app_context():
+        c = db.session.get(Companion, 1)
+        item = next(it for it in json.loads(c.items) if it['id'] == item_id)
+        assert item['slot'] == 6 and item['uses'] == 1 and item['max_uses'] == 3
+    assert b'slot-inventory' in client.get('/companions/1/containers/0').data
+    assert client.post(base + '/0/item-delete/' + item_id).headers['HX-Trigger'] == 'refresh-stats'
+
+
+def test_hireling_delete_cascades_pets_and_nested_sheets_require_membership(world):
+    app, clients = world
+    with app.app_context():
+        pet = import_pet(db.session.get(Companion, 2).export())
+        pet.hireling_id = 1
+        db.session.add(pet)
+        db.session.commit()
+        pet_id = pet.id
+    for suffix in ('', '/stats', '/containers/0', '/section/notes'):
+        assert clients[4].get(f'/companions/{pet_id}' + suffix).status_code == 403
+    assert clients[4].post('/companions/1/delete').status_code == 403
+    assert clients[1].post('/companions/1/delete').status_code == 302
+    with app.app_context():
+        assert db.session.get(Companion, 1) is None
+        assert db.session.get(Companion, pet_id) is None
+        assert db.session.get(Companion, 2) is not None
