@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="body-container"><div class="sheet companion-sheet">
+  <a href="{{url_for('companions.sheet',companion_id=c.id)}}">← {{_('Back')}}</a>
+  <h1>{{_('Convert to character')}}</h1>
+  <h2>{{c.name}}</h2>
+  <p>{{_('This replaces the hireling with a full player character in the same party. Their stats, portrait, gold, inventory, notes and pets are kept.')}}</p>
+  <p>{{_('Their role becomes their background. Attack and daily cost are kept in notes; natural armor becomes a petty inventory item.')}}</p>
+  {% if error %}<p role="alert" class="red-text">{{error}}</p>{% endif %}
+  <form method="post">
+    {{form.hidden_tag()}}
+    <label for="owner_id">{{_('Character owner')}}</label>
+    <select id="owner_id" name="owner_id" required>
+      {% for owner in owners %}<option value="{{owner.id}}" {% if request.form.get('owner_id', current_user.id|string) == owner.id|string %}selected{% endif %}>{{owner.username}}</option>{% endfor %}
+    </select>
+    <p>{{_('The selected player will own and edit this character. Other party members will no longer be able to manage it as a shared hireling.')}}</p>
+    <div class="character-pdf-actions">
+      <button type="submit">{{_('Convert to character')}}</button>
+      <a class="button is-light" href="{{url_for('companions.sheet',companion_id=c.id)}}">{{_('Cancel')}}</a>
+    </div>
+  </form>
+</div></section>
+{% endblock %}

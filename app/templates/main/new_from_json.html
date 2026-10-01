@@ -1,17 +1,39 @@
 {% extends "base.html" %} {% block content %}
 <section class="body-container">
   <script src="{{url_for('static', filename='src/js/new_from_json.js')}}" defer type="module"></script>
-  <form class="" id="character-form" method="post" style="max-width: 460px">
+  <form id="character-form" method="post" action="{{url_for('main.new_from_json')}}" enctype="multipart/form-data" style="max-width: 460px">
     {{ form.hidden_tag() }}
-    <div>
-      <h3 class="">{{_('Upload JSON Character File')}}</h3>
-      <input type="file" id="jsonFile" accept=".json" style="display: flex; flex-direction: column" />
-    </div>
-    <p id="json-error" role="alert" class="red-text" data-invalid="{{_('Choose a valid character JSON file.')}}"></p>
+    <h3>{{_('Import JSON')}}</h3>
+    <p>{{_('Choose an exported character, pet or hireling.')}}</p>
+    <label for="jsonFile">{{_('JSON file')}}</label>
+    <input type="file" id="jsonFile" name="json_file" accept=".json,application/json" required style="max-width: 100%" />
+    <p id="json-error" role="alert" class="red-text" data-invalid="{{_('Choose a valid character, pet or hireling JSON file.')}}" data-too-large="{{_('Choose a JSON file smaller than 2 MB.')}}"></p>
+    {% if import_error %}<p role="alert" class="red-text">{{import_error}} {{_('Choose the file again to retry.')}}</p>{% endif %}
     {% for message in get_flashed_messages() %}<p role="alert" class="red-text">{{message}}</p>{% endfor %}
     {% for field in form %}{% for error in field.errors %}<p role="alert" class="red-text">{{field.label.text}}: {{error}}</p>{% endfor %}{% endfor %}
-    <br /><br />
-    {{ form.submit(class='button is-success', id="submit-button", style="margin-top: 0;") }}
+    {% for kind, destinations in [('pet', pet_destinations), ('hireling', hireling_destinations)] %}
+    <div id="import-{{kind}}" hidden data-action="{{url_for('companions.import_sheet',kind=kind)}}" data-submit="{{_('Import pet') if kind == 'pet' else _('Import hireling')}}">
+      <p><strong>{{_('Pet detected') if kind == 'pet' else _('Hireling detected')}}</strong></p>
+      {% if destinations %}
+      <label for="{{kind}}-parent">{{_('Belongs to')}}</label>
+      <select id="{{kind}}-parent" name="parent" required disabled style="max-width: 100%">
+        <option value="">{{_('Choose a character or hireling') if kind == 'pet' else _('Choose a party')}}</option>
+        {% for key, parent in destinations %}
+        <option value="{{key}}" {% if selected == key %}selected{% endif %}>{{_('Character') if key.startswith('character:') else (_('Hireling') if key.startswith('hireling:') else _('Party'))}}: {{parent.name}}{% if key.startswith('hireling:') %} · {{parent.party.name}}{% endif %}</option>
+        {% endfor %}
+      </select>
+      {% if kind == 'hireling' %}
+      <p><label><input type="checkbox" name="shared" disabled {% if not import_kind or request.form.get('shared') == 'on' %}checked{% endif %}> {{_('Allow party members to manage this hireling')}}</label></p>
+      <p>{{_('Any pets in the file will belong to the imported hireling.')}}</p>
+      {% endif %}
+      <p>{{_('Importing creates a new creature with its stats, portrait, notes and inventory. Existing sheets stay unchanged.')}}</p>
+      {% else %}
+      <p>{{_('You need a character or an editable hireling before importing a pet.') if kind == 'pet' else _('You need to own a party before importing a hireling.')}}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+    <p id="import-character" hidden>{{_('Character detected. It will be added to your characters.')}}</p>
+    {{ form.submit(class='button is-success', id="submit-button", style="margin-top: 1rem;") }}
   </form>
 </section>
 {% endblock %}

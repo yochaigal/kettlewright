@@ -555,3 +555,315 @@ def test_pet_roll_without_current_party(world, companion_sockets, membership):
     assert all(socket.get_received() == [] for socket in companion_sockets.values())
     with app.app_context():
         assert PartyRoll.query.count() == 0
+
+
+def test_companion_portrait_upload_and_shared_cleanup(world, tmp_path):
+    from io import BytesIO
+    from PIL import Image
+    from app.lib.portraits import delete_unreferenced_portrait
+    app, clients = world
+    app.config['PORTRAIT_UPLOAD_FOLDER'] = str(tmp_path)
+    image = BytesIO()
+    Image.new('RGB', (300, 400), 'blue').save(image, 'PNG')
+    image.seek(0)
+    response = clients[1].post('/companions/1/portrait', data={'portrait-file': (image, 'avatar.png')})
+    assert response.status_code == 200
+    with app.app_context():
+        hireling = db.session.get(Companion, 1)
+        assert hireling.custom_image
+        saved = hireling.image_url
+        assert saved in response.get_data(as_text=True)
+        db.session.get(Character, 1).image_url = saved
+        db.session.commit()
+        delete_unreferenced_portrait(saved)
+        assert len(list(tmp_path.iterdir())) == 1
+    assert clients[2].post('/companions/2/portrait', data={'custom-url': saved}).status_code == 200
+    clients[1].post('/companions/1/portrait', data={'selected-portrait': 'default-portrait.webp'})
+    with app.app_context():
+        db.session.get(Character, 1).image_url = None
+        db.session.commit()
+        delete_unreferenced_portrait(saved)
+        assert len(list(tmp_path.iterdir())) == 1
+    clients[2].post('/companions/2/portrait', data={'selected-portrait': 'default-portrait.webp'})
+    assert list(tmp_path.iterdir()) == []
+
+
+@pytest.mark.parametrize('data', [
+    {'custom-url': 'javascript:alert(1)'}, {'custom-url': '//example.com/test.png'},
+    {'custom-url': 'https://user:pass@example.com/test.png'},
+    {'selected-portrait': '../../secret'},
+])
+def test_companion_portrait_rejects_invalid_references(world, data):
+    app, clients = world
+    response = clients[1].post('/companions/1/portrait', data=data)
+    assert b'role="alert"' in response.data
+    with app.app_context():
+        assert db.session.get(Companion, 1).image_url is None
+
+
+def test_companion_portrait_permissions_csrf_and_pet_roundtrip(world):
+    app, clients = world
+    assert clients[4].get('/companions/1/portrait').status_code == 403
+    assert clients[1].post('/companions/2/portrait', data={'custom-url': 'https://example.com/pet.png'}).status_code == 403
+    assert clients[2].post('/companions/2/portrait', data={'custom-url': 'https://example.com/pet.png'}).status_code == 200
+    with app.app_context():
+        pet = db.session.get(Companion, 2)
+        restored = import_pet(pet.export())
+        assert restored.image_url == pet.image_url
+        assert restored.custom_image is True
+    app.config['WTF_CSRF_ENABLED'] = True
+    assert clients[1].post('/companions/1/portrait').status_code == 400
+
+
+@pytest.mark.parametrize('companion_id,user,kind', [(1, 1, 'hireling'), (2, 2, 'pet')])
+def test_companion_json_export(world, companion_id, user, kind):
+    app, clients = world
+    response = clients[user].get(f'/companions/{companion_id}/export')
+    assert response.status_code == 200
+    assert response.mimetype == 'application/json'
+    assert 'attachment;' in response.headers['Content-Disposition']
+    assert 'no-store' in response.headers['Cache-Control']
+    data = response.get_json()
+    assert data['kind'] == kind
+    assert not {'id', 'party_id', 'character_id', 'hireling_id', 'owner', 'shared'} & data.keys()
+    with app.app_context():
+        c = db.session.get(Companion, companion_id)
+        assert data['name'] == c.name
+        assert data['items'] == json.loads(c.items)
+        assert data['containers'] == json.loads(c.containers)
+        assert data['hp'] == c.hp
+        if kind == 'hireling':
+            assert data['daily_cost'] == c.daily_cost
+            assert data['pets'] == []
+        else:
+            assert import_pet(data).name == c.name
+
+
+def test_companion_export_permissions_and_uploaded_portrait(world):
+    app, clients = world
+    assert clients[4].get('/companions/1/export').status_code == 403
+    assert clients[1].get('/companions/2/export').status_code == 403
+    with app.app_context():
+        c = db.session.get(Companion, 1)
+        c.shared = False
+        c.image_url = '/portraits/' + 'a' * 64 + '.webp'
+        c.custom_image = True
+        db.session.commit()
+    assert clients[2].get('/companions/1/export').status_code == 403
+    data = clients[1].get('/companions/1/export').get_json()
+    assert data['image_url'].startswith('http://localhost/portraits/')
+
+
+def test_convert_hireling_preserves_sheet_party_and_pets(world):
+    app, clients = world
+    with app.app_context():
+        c = db.session.get(Companion, 1)
+        c.name = 'Hero1'
+        c.notes = 'A trusted guide.'
+        c.attack = 'Spear (d8)'
+        c.gold = 37
+        c.armor = 1
+        c.image_url = 'https://example.com/hireling.png'
+        c.custom_image = True
+        pet = import_pet(pet_data(catalog('pet')['Raven Familiar'], c))
+        c.pets.append(pet)
+        db.session.commit()
+        pet_id = pet.id
+        exported = c.export()
+        armor = c.armorValue()
+    saved = clients[1].get('/companions/1/export').get_json()
+    assert saved['pets'][0]['role'] == 'Raven Familiar'
+    assert 'hireling_id' not in saved['pets'][0]
+    response = clients[1].post('/companions/1/convert', data={'owner_id': '2'})
+    assert response.status_code == 302
+    assert response.location.endswith('/users/keeper2/characters/hero1-1/')
+    assert clients[2].get(response.location).status_code == 200
+    with app.app_context():
+        assert db.session.get(Companion, 1) is None
+        character = Character.query.filter_by(url_name='hero1-1').one()
+        assert character.owner == 2
+        assert character.owner_username == 'keeper2'
+        assert character.background == 'Bodyguard'
+        assert character.gold == 37
+        assert character.image_url == exported['image_url']
+        assert character.custom_image is True
+        assert character.party_id == 1
+        assert json.loads(db.session.get(Party, 1).members) == [1, 2, character.id]
+        assert json.loads(character.items)[:-1] == exported['items']
+        assert character.armorValue() == armor
+        assert json.loads(character.containers) == exported['containers']
+        for stat in ('hp', 'strength', 'dexterity', 'willpower'):
+            assert getattr(character, stat) == exported[stat]
+            assert getattr(character, stat + '_max') == exported[stat + '_max']
+        assert character.notes == 'A trusted guide.\n\nAttack: Spear (d8)\n\nDaily cost: 10 gp/day'
+        pet = db.session.get(Companion, pet_id)
+        assert pet is not None
+        assert pet.character_id == character.id
+        assert pet.hireling_id is None
+        assert [p.id for p in character.pets] == [pet_id]
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '2'}).status_code == 404
+
+
+@pytest.mark.parametrize('user', [2, 3, 4])
+def test_only_keeper_can_convert(world, user):
+    _, clients = world
+    assert clients[user].get('/companions/1/convert').status_code == 403
+    assert clients[user].post('/companions/1/convert', data={'owner_id': str(user)}).status_code == 403
+
+
+def test_conversion_owner_selection_and_csrf(world):
+    app, clients = world
+    assert clients[1].post('/companions/2/convert', data={'owner_id': '1'}).status_code == 400
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '4'}).status_code == 400
+    with app.app_context():
+        db.session.get(Character, 1).party_id = None
+        db.session.commit()
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '2'}).status_code == 400
+    app.config['WTF_CSRF_ENABLED'] = True
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '1'}).status_code == 400
+    html = clients[1].get('/companions/1/convert').get_data(as_text=True)
+    token = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', html)[1]
+    assert clients[1].post('/companions/1/convert', data={'owner_id': '1', 'csrf_token': token}).status_code == 302
+
+
+@pytest.mark.parametrize('field,value', [('hp', None), ('name', 'A' * 65), ('notes', 'N' * 2000)])
+def test_conversion_reports_incompatible_data_without_loss(world, field, value):
+    app, clients = world
+    with app.app_context():
+        setattr(db.session.get(Companion, 1), field, value)
+        db.session.commit()
+    response = clients[1].post('/companions/1/convert', data={'owner_id': '1'})
+    assert response.status_code == 400
+    assert b'role="alert"' in response.data
+    with app.app_context():
+        assert Character.query.count() == 2
+        assert getattr(db.session.get(Companion, 1), field) == value
+        assert json.loads(db.session.get(Party, 1).members) == [1, 2]
+
+
+def post_companion_import(client, kind, data, parent, **fields):
+    from io import BytesIO
+    return client.post('/companions/import/' + kind, data={
+        'json_file': (BytesIO(json.dumps(data).encode()), 'creature.json'),
+        'parent': parent, **fields,
+    })
+
+
+@pytest.mark.parametrize('parent', ['character:1', 'hireling:1'])
+def test_pet_file_roundtrip_with_explicit_parent(world, parent):
+    app, clients = world
+    data = clients[2].get('/companions/2/export').get_json()
+    original = dict(data)
+    data.update(id=2, character_id=2, hireling_id=999, party_id=999, shared=False)
+    response = post_companion_import(clients[2], 'pet', data, parent)
+    assert response.status_code == 302
+    assert clients[2].get(response.location + '/export').get_json() == original
+    with app.app_context():
+        imported = db.session.get(Companion, int(response.location.rsplit('/', 1)[1]))
+        assert imported.id != 2 and imported.party_id is None
+        assert imported.character_id == (1 if parent == 'character:1' else None)
+        assert imported.hireling_id == (1 if parent == 'hireling:1' else None)
+        assert db.session.get(Companion, 2).character_id == 1
+    assert clients[2].get(response.location).status_code == 200
+
+
+def test_hireling_import_preserves_nested_pets_and_uses_selected_party(world):
+    app, clients = world
+    with app.app_context():
+        db.session.add(Party(id=2, owner=1, owner_username='keeper1', name='Second', party_url='second', members='[]'))
+        pet = import_pet(db.session.get(Companion, 2).export())
+        pet.hireling_id = 1
+        db.session.get(Companion, 1).image_url = 'default-portrait.webp'
+        pet.image_url = 'default-portrait.webp'
+        db.session.add(pet)
+        db.session.commit()
+    data = clients[1].get('/companions/1/export').get_json()
+    data.update(party_id=999, character_id=1, id=1, shared=True)
+    response = post_companion_import(clients[1], 'hireling', data, 'party:2')
+    assert response.status_code == 302
+    exported = clients[1].get(response.location + '/export').get_json()
+    assert exported == {key: value for key, value in data.items() if key not in ('party_id', 'character_id', 'id', 'shared')}
+    with app.app_context():
+        imported = db.session.get(Companion, int(response.location.rsplit('/', 1)[1]))
+        assert imported.party_id == 2 and imported.shared is False
+        assert len(imported.pets) == 1 and imported.pets[0].character_id is None
+        assert imported.pets[0].hireling_id == imported.id
+        assert len(db.session.get(Companion, 1).pets) == 1
+    assert b'Hollow Wolf' in clients[1].get(response.location).data
+
+
+@pytest.mark.parametrize('user,kind,parent', [
+    (1, 'pet', 'character:1'), (2, 'pet', 'character:2'),
+    (4, 'pet', 'hireling:1'), (2, 'hireling', 'party:1'),
+    (1, 'hireling', 'character:1'), (2, 'pet', 'party:1'),
+    (1, 'hireling', 'party:999'), (2, 'pet', ''),
+])
+def test_import_rejects_unauthorized_or_wrong_parent(world, user, kind, parent):
+    app, clients = world
+    data = clients[2].get('/companions/2/export').get_json()
+    assert post_companion_import(clients[user], kind, data, parent).status_code == 403
+    with app.app_context():
+        assert Companion.query.count() == 2
+
+
+def test_import_parent_options_follow_current_permissions(world):
+    app, clients = world
+    page = clients[2].get('/new_from_json/').get_data(as_text=True)
+    assert 'value="character:1"' in page and 'value="hireling:1"' in page
+    assert 'value="character:2"' not in page
+    assert b'value="party:1"' not in clients[2].get('/new_from_json/').data
+    for shared, members, party_id in ((False, '[1,2]', 1), (True, '[2]', 1), (True, '[1,2]', None)):
+        with app.app_context():
+            db.session.get(Companion, 1).shared = shared
+            db.session.get(Party, 1).members = members
+            db.session.get(Character, 1).party_id = party_id
+            db.session.commit()
+        assert b'value="hireling:1"' not in clients[2].get('/new_from_json/').data
+        data = clients[2].get('/companions/2/export').get_json()
+        assert post_companion_import(clients[2], 'pet', data, 'hireling:1').status_code == 403
+
+
+@pytest.mark.parametrize('change', [
+    {'kind': 'hireling'}, {'name': ''}, {'hp': 999999}, {'armor': None},
+    {'gold': None}, {'items': [{'id': 'bad', 'location': 100}]},
+    {'containers': [{'id': 0, 'slots': -1}]}, {'image_url': 'javascript:alert(1)', 'custom_image': True},
+    {'pets': [{}]}, {'pets': None},
+])
+def test_invalid_import_is_atomic_and_keeps_destination(world, change):
+    app, clients = world
+    data = clients[2].get('/companions/2/export').get_json()
+    data.update(change)
+    response = post_companion_import(clients[2], 'pet', data, 'character:1')
+    assert response.status_code == 400
+    assert b'role="alert"' in response.data
+    assert b'value="character:1" selected' in response.data
+    with app.app_context():
+        assert Companion.query.count() == 2
+
+
+def test_import_invalid_nested_pet_rolls_back_entire_hireling(world):
+    app, clients = world
+    data = clients[1].get('/companions/1/export').get_json()
+    data['pets'] = [clients[2].get('/companions/2/export').get_json(), {'name': ''}]
+    assert post_companion_import(clients[1], 'hireling', data, 'party:1').status_code == 400
+    data['pets'] = []
+    data['daily_cost'] = -1
+    assert post_companion_import(clients[1], 'hireling', data, 'party:1').status_code == 400
+    with app.app_context():
+        assert Companion.query.count() == 2
+
+
+def test_import_upload_errors_and_csrf(world):
+    from io import BytesIO
+    app, clients = world
+    for content in (b'{broken', b'\xff', b' ' * (2 * 1024 * 1024 + 1)):
+        response = clients[2].post('/companions/import/pet', data={'parent': 'character:1', 'json_file': (BytesIO(content), 'bad.json')})
+        assert response.status_code == 400 and b'role="alert"' in response.data
+    assert clients[2].post('/companions/import/pet', data={'parent': 'character:1'}).status_code == 400
+    app.config['WTF_CSRF_ENABLED'] = True
+    data = clients[2].get('/companions/2/export').get_json()
+    assert post_companion_import(clients[2], 'pet', data, 'character:1').status_code == 400
+    page = clients[2].get('/new_from_json/').get_data(as_text=True)
+    token = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', page)[1]
+    assert post_companion_import(clients[2], 'pet', data, 'character:1', csrf_token=token).status_code == 302
+    assert clients[2].post('/companions/import/dragon').status_code == 404

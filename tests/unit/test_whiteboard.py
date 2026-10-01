@@ -224,6 +224,15 @@ def test_party_tokens_include_pets_hirelings_and_their_pets(shared):
             {'id': 'companion:3', 'name': 'Pip', 'portrait': None, 'kind': 'pet', 'parent': 'Ada'},
         ]
     with app.app_context():
+        db.session.get(Companion, 1).image_url = 'default-portrait.webp'
+        hireling = db.session.get(Companion, 2)
+        hireling.image_url = 'https://example.com/ada.png'
+        hireling.custom_image = True
+        db.session.commit()
+    tokens = clients[1].get(path).json['tokens']
+    assert tokens[1]['portrait'] == '/static/images/portraits/default-portrait.webp'
+    assert tokens[2]['portrait'] == 'https://example.com/ada.png'
+    with app.app_context():
         db.session.get(Character, 1).party_id = None
         db.session.commit()
     assert [t['name'] for t in clients[1].get(path).json['tokens']] == ['Ada', 'Pip']
