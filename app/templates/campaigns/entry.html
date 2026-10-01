@@ -18,7 +18,7 @@
 <div class="article-generator" x-show="category!=='custom'" x-cloak>
 <div class="campaign-actions">
 <template x-if="variants.length"><label><span x-text="category==='map' ? {{ _('Geography type')|tojson|forceescape }} : {{ _('Generator')|tojson|forceescape }}"></span><select x-model="variant" @change="generated=null"><template x-for="choice in variants" :key="choice"><option :value="choice" x-text="choice"></option></template></select></label></template>
-<button type="button" x-show="!freeform" @click="generate()" :disabled="generating">{{ _('Generate draft') }}</button>
+<button type="button" x-show="!freeform" @click="generate()" :disabled="generating">{{ _('Random') }}</button>
 <button type="button" x-show="freeform" @click="openFreeform()">{{ _('Open blank map') }}</button>
 <span x-show="!freeform">{{ _('Review a generated draft before using it.') }}</span>
 <span x-show="freeform">{{ _('Draw a city, settlement or any place on a blank canvas.') }}</span>

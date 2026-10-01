@@ -1,15 +1,24 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import token with context %}
+{% from 'campaigns/material_tree.html' import material_children, tree_toolbar with context %}
 {% block workspace %}
 <h1>{{ _('Campaigns') }}</h1>
-<p>{{ _('Prepare your world privately, then share what each party discovers.') }}</p>
-{% if campaigns %}
-<ul class="campaign-list">{% for campaign in campaigns %}<li><a href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}">{{ campaign.name|markdown_inline }}</a></li>{% endfor %}</ul>
-{% else %}
-<p>{{ _('No campaigns yet.') }}</p>
-{% endif %}
+<p>{{ _('Your world at a glance. Expand a branch, open an article, or review what you have shared.') }}</p>
+<div class="campaign-actions"><a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a><a href="{{ url_for('campaigns.new_entry') }}">{{ _('New article') }}</a></div>
+<div x-data="materialTree">
+{{ tree_toolbar() }}
+{% for campaign in campaigns %}
+<details open class="campaign-tree-root" data-tree-key="campaign-{{ campaign.id }}" data-tree-row data-search="{{ campaign.name|lower }}">
+<summary><span class="tree-row"><a class="tree-title" href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}">{{ campaign.name }}</a><span class="tree-meta">{{ _('Campaign') }}</span><span>{{ campaign.entries|rejectattr('category', 'equalto', 'path')|list|length }} {{ _('articles') }}</span><span class="tree-excerpt">{% for link in campaign.parties %}{{ link.party.name }}{% if not loop.last %}, {% endif %}{% else %}{{ _('No connected parties') }}{% endfor %}</span></span></summary>
+{{ material_children(trees[campaign.id], False) }}
+{% if not trees[campaign.id] %}<p>{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id) }}">{{ _('New article') }}</a></p>{% endif %}
+</details>
+{% else %}<p>{{ _('No campaigns yet.') }}</p>{% endfor %}
+<details open class="campaign-tree-root" data-tree-key="unfiled" data-tree-row data-search="unfiled articles"><summary><a href="{{ url_for('campaigns.library') }}">{{ _('Unfiled articles') }}</a></summary>{{ material_children(unfiled, False) }}</details>
+</div>
+<details class="new-campaign"><summary>{{ _('Create campaign') }}</summary>
 <form method="post">{{ token() }}
 <label>{{ _('Campaign name') }}<input type="text" name="name" required maxlength="200"></label>
 <button type="submit">{{ _('Create campaign') }}</button>
-</form>
+</form></details>
 {% endblock %}

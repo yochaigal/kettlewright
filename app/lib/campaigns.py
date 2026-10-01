@@ -13,8 +13,8 @@ from app.lib.feature_access import require_party_features, party_features_enable
 CATEGORIES = {'overview': 'Overview', 'npc': 'NPCs', 'location': 'Locations',
               'lore': 'Lore', 'faction': 'Factions', 'relic': 'Relics',
               'note': 'Notes', 'bestiary': 'Bestiary', 'item': 'Items',
-              'spellbook': 'Spellbooks', 'culture': 'Culture', 'custom': 'Custom',
-              'map': 'Geography'}
+              'spellbook': 'Spellbooks', 'culture': 'Culture',
+              'map': 'Geography', 'custom': 'Custom'}
 PATH_TYPES = ('standard', 'hidden', 'conditional')
 MAP_KINDS = ('realm', 'dungeon', 'forest', 'freeform')
 
@@ -106,6 +106,10 @@ def material_hierarchy(entries):
             PointcrawlMap.query.filter(PointcrawlMap.entry_id.in_(by_id)).all()}
     children = {entry_id: {} for entry_id in by_id}
     contained = set()
+    for entry in by_id.values():
+        if entry.parent_id in by_id:
+            children[entry.parent_id][entry.id] = None
+            contained.add(entry.id)
     for node in MapNode.query.filter(MapNode.map_id.in_(maps)).order_by(MapNode.number, MapNode.id):
         if node.entry_id not in by_id:
             continue
@@ -136,6 +140,8 @@ def material_hierarchy(entries):
 
 def material_parents(entry):
     parents = {node.map.entry_id: node.map.entry for node in entry.map_nodes}
+    if entry.parent:
+        parents[entry.parent.id] = entry.parent
     if entry.pointcrawl:
         parents.update({node.entry_id: node.entry for node in entry.pointcrawl.entrances})
     return [parent for _, parent in sorted(parents.items())
@@ -154,6 +160,7 @@ def material_deletion_plan(selected, owner_id, campaign_id):
         if entry.owner_id != owner_id or entry.campaign_id != campaign_id:
             abort(409, 'Linked content belongs to another workspace. Move it before deleting.')
         entries[entry.id] = entry
+        pending.extend(entry.children)
         if entry.pointcrawl:
             pointcrawl = entry.pointcrawl
             maps[pointcrawl.id] = pointcrawl

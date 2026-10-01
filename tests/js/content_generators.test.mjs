@@ -51,6 +51,7 @@ test('region drafts generate real dungeon and forest maps without rerolling the 
     assert.deepEqual(graph,graphFromResult(result,rng(seed),tables));
     for (const node of graph.nodes) {
       const nested=node.nested_draft;
+      if (node.number===1) {assert.equal(node.poi_kind,'settlement');assert(!nested);continue;}
       kinds.add(nested.kind);
       assert.equal(nested.kind,node.poi_kind);
       assert.equal(nested.title,node.title);
@@ -60,6 +61,25 @@ test('region drafts generate real dungeon and forest maps without rerolling the 
     }
   }
   assert.deepEqual(kinds,new Set(['dungeon','forest']));
+});
+
+test('map dice counts are respected and Realm starts with its Heart',()=>{
+  for(const type of ['Dungeon','Forest','Realm']) for(const count of [3,6,8,12,20]) {
+    const result=generateResult(data,'Worldbuilding',type,rng(4),{poiCount:count});
+    assert.equal(result.fields.POIs.length,count);
+    if(type==='Realm') {
+      assert.equal(result.poiKinds[0],'settlement');
+      assert.match(result.fields.POIs[0],/^Heart · Settlement:/);
+    }
+  }
+});
+
+test('spellbooks and equipment use compact Cairn descriptions',()=>{
+  assert.equal(resultText({category:'spellbook',fields:{name:'Illusion',description:'A sound appears.',personality:'Whispers at night.'}}),
+    'A sound appears. _Whispers at night._');
+  assert.equal(resultText({category:'item',title:'Shield',fields:{tags:['1 Armor','bonus defense'],cost:10}}),'Shield (+1 Armor). 10gp.');
+  assert.equal(resultText({category:'item',title:'Rations',fields:{tags:['uses'],uses:3,cost:10}}),'Rations (3 uses). 10gp.');
+  assert.equal(resultText({category:'item',title:'Sword',fields:{tags:['d8','bulky'],cost:20}}),'Sword (d8, bulky). 20gp.');
 });
 
 test('dungeon and region paths roll all three types reproducibly',()=>{

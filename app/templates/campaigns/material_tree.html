@@ -1,19 +1,35 @@
 {% macro material_selection(entry) %}
-<label class="campaign-check material-selection"><input type="checkbox" name="entry_ids" value="{{ entry.id }}" x-model="selected"
- aria-label="{{ _('Select') }} {{ entry.title or _('Untitled private original') }}">{{ _('Select') }}</label>
+<label class="campaign-check material-selection" title="{{ _('Select for deletion') }}"><input type="checkbox" name="entry_ids" value="{{ entry.id }}" x-model="selected" aria-label="{{ _('Select for deletion') }}: {{ entry.title or _('Untitled private original') }}"><span class="sr-only">{{ _('Select for deletion') }}</span></label>
 <input type="hidden" name="version_{{ entry.id }}" value="{{ entry.version }}">
 {% endmacro %}
-{% macro material_children(items) %}
-<ul class="material-children">
+{% macro material_row(item, selectable) %}
+{% set entry = item.entry %}
+<span class="tree-row">
+{% if selectable %}{{ material_selection(entry) }}{% endif %}
+<a class="tree-title" href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{% if item.number is not none %}{{ item.number }}. {% endif %}{{ entry.title or _('Untitled private original') }}</a>
+<span class="tree-meta">{{ _(entry.pointcrawl.kind|capitalize) if entry.pointcrawl else _(content_categories.get(entry.category, entry.category)) }}</span>
+{% if item.children %}<span class="tree-count" title="{{ _('Direct children') }}">{{ item.children|length }}</span>{% endif %}
+<span class="tree-excerpt">{{ content_excerpt(entry.body) }}</span>
+<a class="tree-visibility" href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{% set published = entry.presentations|selectattr('published')|list %}{% if published %}{{ _('Shared') }} · {{ published|length }}{% else %}{{ _('Private') }}{% endif %}</a>
+{% if entry.pointcrawl %}<a class="tree-map" href="{{ url_for('campaigns.map_edit', map_id=entry.pointcrawl.id) }}">{{ _('Map') }}</a>{% endif %}
+</span>
+{% endmacro %}
+{% macro material_children(items, selectable=True, root=True) %}
+<ul class="article-tree">
 {% for item in items %}
-<li data-child-entry-id="{{ item.entry.id }}">
-  {{ material_selection(item.entry) }}
-  <a href="{{ url_for('campaigns.edit_entry', entry_id=item.entry.id) }}">{% if item.number is not none %}{{ item.number }}. {% endif %}{{ item.entry.title or _('Untitled private original') }}</a>
-  {% if item.entry.pointcrawl %}<a href="{{ url_for('campaigns.map_edit', map_id=item.entry.pointcrawl.id) }}">{{ _('Open map') }}</a>{% endif %}
-  {% if item.children %}<details><summary>{{ _('Contents') }} ({{ item.children|length }})</summary>
-  {{ material_children(item.children) }}
-  </details>{% endif %}
+<li data-tree-row data-search="{{ (item.entry.title ~ ' ' ~ item.entry.category ~ ' ' ~ content_excerpt(item.entry.body))|lower }}" {{ 'data-root-entry-id' if root else 'data-child-entry-id' }}="{{ item.entry.id }}">
+{% if item.children %}<details open data-tree-key="entry-{{ item.entry.id }}"><summary>{{ material_row(item, selectable) }}</summary>
+{{ material_children(item.children, selectable, False) }}
+</details>{% else %}<div class="tree-leaf">{{ material_row(item, selectable) }}</div>{% endif %}
 </li>
 {% endfor %}
 </ul>
+{% endmacro %}
+{% macro tree_toolbar() %}
+<div class="campaign-actions tree-toolbar">
+<label>{{ _('Find in tree') }}<input type="search" x-model="query" @input="filter()" placeholder="{{ _('Title, type or description') }}"></label>
+<button type="button" @click="expand(true)">{{ _('Expand all') }}</button>
+<button type="button" @click="expand(false)">{{ _('Collapse all') }}</button>
+</div>
+<p x-show="query && !matches" x-cloak>{{ _('No matching articles.') }}</p>
 {% endmacro %}

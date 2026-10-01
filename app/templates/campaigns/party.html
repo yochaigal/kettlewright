@@ -2,7 +2,7 @@
 {% block workspace %}
 <div data-party-content="{{ party.id }}" data-refresh-url="{{ url_for('campaigns.party_materials_data', party_id=party.id) }}"></div>
 <script type="module" src="{{ url_for('static', filename='src/js/campaign_live.js') }}"></script>
-<h1>{{ party.name|markdown_inline }} · {{ _('Articles') }}</h1>
+<h1>{{ party.name|markdown_inline }} · {{ _('Campaign details') }}</h1>
 <div class="campaign-actions"><a href="{{ url_for('party.party_view', ownername=party.owner_username or party.party_owner.username, party_url=party.party_url) }}">{{ _('Back to party') }}</a>
 {% if editing %}<a class="button" href="{{ url_for('campaigns.new_entry', party_id=party.id) }}">{{ _('Create and show') }}</a>
 <a href="{{ url_for('campaigns.new_map', party_id=party.id) }}">{{ _('Create and show map') }}</a>

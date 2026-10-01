@@ -47,7 +47,7 @@
 
     <div>{{ party.description|markdown }}</div>
     {% if can_view_rolls and party_features_enabled(party.id) %}<div class="party-section party-material-actions">
-      <a class="button" href="{{ url_for('campaigns.party_materials', party_id=party.id) }}">{{ _('Articles') }}</a>
+      <a class="button" href="{{ url_for('campaigns.party_materials', party_id=party.id) }}">{{ _('Campaign details') }}</a>
       {% if is_owner and user_features_enabled() %}<a class="button" href="{{ url_for('campaigns.new_entry', party_id=party.id) }}">{{ _('Create and show') }}</a>{% endif %}
     </div>{% endif %}
 

@@ -4,6 +4,7 @@
 <h1>{{ _('Reveal to party') }}</h1>
 <a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ (entry.title or _('Private original'))|markdown_inline }}</a>
 <p>{{ _('Prepare what each party knows. Only selected parties are updated when you publish.') }}</p>
+<p>{{ _('Checking a party selects it for publication. Finish with Publish selected versions, then use View as party to verify the saved result. Private descriptions are copied only when you choose Copy from private original.') }}</p>
 {% if parties %}
 <form method="post" x-data="revealContent" data-rows="{{ initial|tojson|forceescape }}"
  data-original="{{ {'title':entry.title, 'body':entry.body, 'path_type':entry.path_type}|tojson|forceescape }}">
