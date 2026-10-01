@@ -17,6 +17,9 @@
       {{form.hidden_tag()}}<input type="hidden" name="old_items" value="{{c.items}}"><input type="hidden" name="old_containers" value="{{c.containers}}">
     </form>{% endif %}
     <div class="full-width row16spaced-top" style="margin-bottom: 1em">
+      <div class="no-space" id="character-portrait-container">
+        {% include "partial/companions/portrait.html" %}
+      </div>
       <div class="companion-identity">
         {% if editing %}
         <input class="edit-mode" type="text" name="name" aria-label="{{_('Name')}}" maxlength="100" value="{{c.name}}" form="companion-edit-form" required>
@@ -92,6 +95,11 @@
       <div class="character-description-container"><h3>{{_('Access')}}</h3><label><input type="checkbox" name="shared" form="companion-edit-form" {% if c.shared %}checked{% endif %}> {{_('Allow party members to manage this hireling')}}</label></div>
       {% endif %}
     </div>
+    {% if editable and not editing %}
+    <div class="character-pdf-actions">
+      <a class="button is-light" href="{{url_for('companions.export',companion_id=c.id)}}">{{_('Export JSON')}} <i class="fa-solid fa-download icon-in-button" aria-hidden="true"></i></a>
+    </div>
+    {% endif %}
     {% if editing %}<details class="companion-section"><summary>{{_('Delete hireling') if c.kind == 'hireling' else _('Delete pet')}}</summary>
       <p>{{_('This also removes their inventory.')}}</p><form method="post" action="{{url_for('companions.delete',companion_id=c.id)}}">{{form.hidden_tag()}}<button class="is-danger">{{_('Confirm deletion')}}</button></form>
     </details>{% endif %}

@@ -444,3 +444,77 @@ def cancel_edit(companion_id):
     c.containers = sanitize_json_content(json.dumps(containers))
     db.session.commit()
     return redirect(url_for('companions.sheet', companion_id=c.id))
+
+
+@companions.get('/companions/<int:companion_id>/portrait')
+@login_required
+def portrait(companion_id):
+    c = editable(companion_id)
+    return portrait_picker(c)
+
+
+def portrait_picker(c, error=None):
+    from app.lib.data import load_images
+    return render_template('partial/charedit/portrait.html', images=load_images(),
+                           portrait_form=FlaskForm(), error=error,
+                           portrait_cancel_url=url_for('companions.portrait_cancel', companion_id=c.id),
+                           portrait_save_url=url_for('companions.portrait_save', companion_id=c.id))
+
+
+@companions.get('/companions/<int:companion_id>/portrait/cancel')
+@login_required
+def portrait_cancel(companion_id):
+    return render_template('partial/companions/portrait.html', c=editable(companion_id), editable=True)
+
+
+@companions.post('/companions/<int:companion_id>/portrait')
+@login_required
+def portrait_save(companion_id):
+    from flask_babel import _
+    from app.lib.portraits import save_portrait, delete_unreferenced_portrait, validate_portrait_reference
+    c = editable(companion_id)
+    csrf()
+    upload = request.files.get('portrait-file')
+    previous = c.image_url
+    try:
+        if upload and upload.filename:
+            image_url, custom_image = save_portrait(upload), True
+        else:
+            custom_url = request.form.get('custom-url', '').strip()
+            selected = request.form.get('selected-portrait', '')
+            image_url, custom_image = (custom_url, True) if custom_url else (selected, False)
+            validate_portrait_reference(image_url, custom_image)
+            if not image_url:
+                return portrait_cancel(c.id)
+    except ValueError as error:
+        return portrait_picker(c, _(str(error)))
+    c.image_url, c.custom_image = image_url, custom_image
+    db.session.commit()
+    delete_unreferenced_portrait(previous)
+    return render_template('partial/companions/portrait.html', c=c, editable=True)
+
+
+@companions.get('/companions/<int:companion_id>/export')
+@login_required
+def export(companion_id):
+    from io import BytesIO
+    from flask import send_file
+    from slugify import slugify
+    c = editable(companion_id)
+    data = c.export()
+    data['kind'] = c.kind
+    if c.kind == 'hireling':
+        data['daily_cost'] = c.daily_cost
+        data['pets'] = [pet.export() for pet in c.pets]
+    # Uploaded portraits are links, just as in character exports. Make them usable
+    # outside this host's URL context without embedding private ownership data.
+    for creature in [data, *data.get('pets', [])]:
+        if creature.get('custom_image') and (creature.get('image_url') or '').startswith('/portraits/'):
+            creature['image_url'] = url_for('character_edit.uploaded_portrait',
+                                           filename=creature['image_url'].rsplit('/', 1)[1], _external=True)
+    response = send_file(BytesIO(json.dumps(data, ensure_ascii=False, indent=2).encode('utf-8')),
+                         mimetype='application/json', as_attachment=True,
+                         download_name=(slugify(c.name) or c.kind) + '.json')
+    response.headers['Cache-Control'] = 'private, no-store'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    return response

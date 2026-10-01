@@ -1,0 +1,4 @@
+{% if editable %}<button type="button" class="character-portrait-edit" title="{{_('Edit Portrait')}}" aria-label="{{_('Edit Portrait')}}"
+  hx-get="{{url_for('companions.portrait', companion_id=c.id)}}" hx-target="#character-portrait-container">{% endif %}
+<img src="{{c.portrait_src}}" alt="{{c.name}}" class="portrait-image" id="portrait-image">
+{% if editable %}</button>{% endif %}

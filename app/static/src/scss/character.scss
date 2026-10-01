@@ -657,3 +657,9 @@
   #character-quick-stats .stat-stepper button { width: 1.5rem; flex-basis: 1.5rem; }
   #character-quick-stats .stat-card-values { gap: .2rem; }
 }
+
+.companion-card-portrait { width: 56px; height: 56px; object-fit: cover; border-radius: 4px; float: right; margin: 0 0 .5rem .75rem; }
+.companion-character-sheet > .row16spaced-top { flex-wrap: wrap; }
+@media (max-width: 600px) {
+  .companion-character-sheet .portrait-image { width: 64px; height: 64px; }
+}

@@ -117,9 +117,8 @@ def shared_map_tokens(party_id):
     target = _board_party(party_id)
     tokens = []
     def companion_token(companion, parent):
-        # Companions have no portrait field; generate their initials in the picker.
         return {'id': f'companion:{companion.id}', 'name': companion.name,
-                'portrait': None, 'kind': companion.kind, 'parent': parent}
+                'portrait': companion.portrait_src if companion.image_url else None, 'kind': companion.kind, 'parent': parent}
 
     for character in party_characters(target):
         portrait = character.image_url if character.custom_image else url_for(

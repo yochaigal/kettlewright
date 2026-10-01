@@ -555,3 +555,100 @@ def test_pet_roll_without_current_party(world, companion_sockets, membership):
     assert all(socket.get_received() == [] for socket in companion_sockets.values())
     with app.app_context():
         assert PartyRoll.query.count() == 0
+
+
+def test_companion_portrait_upload_and_shared_cleanup(world, tmp_path):
+    from io import BytesIO
+    from PIL import Image
+    from app.lib.portraits import delete_unreferenced_portrait
+    app, clients = world
+    app.config['PORTRAIT_UPLOAD_FOLDER'] = str(tmp_path)
+    image = BytesIO()
+    Image.new('RGB', (300, 400), 'blue').save(image, 'PNG')
+    image.seek(0)
+    response = clients[1].post('/companions/1/portrait', data={'portrait-file': (image, 'avatar.png')})
+    assert response.status_code == 200
+    with app.app_context():
+        hireling = db.session.get(Companion, 1)
+        assert hireling.custom_image
+        saved = hireling.image_url
+        assert saved in response.get_data(as_text=True)
+        db.session.get(Character, 1).image_url = saved
+        db.session.commit()
+        delete_unreferenced_portrait(saved)
+        assert len(list(tmp_path.iterdir())) == 1
+    assert clients[2].post('/companions/2/portrait', data={'custom-url': saved}).status_code == 200
+    clients[1].post('/companions/1/portrait', data={'selected-portrait': 'default-portrait.webp'})
+    with app.app_context():
+        db.session.get(Character, 1).image_url = None
+        db.session.commit()
+        delete_unreferenced_portrait(saved)
+        assert len(list(tmp_path.iterdir())) == 1
+    clients[2].post('/companions/2/portrait', data={'selected-portrait': 'default-portrait.webp'})
+    assert list(tmp_path.iterdir()) == []
+
+
+@pytest.mark.parametrize('data', [
+    {'custom-url': 'javascript:alert(1)'}, {'custom-url': '//example.com/test.png'},
+    {'custom-url': 'https://user:pass@example.com/test.png'},
+    {'selected-portrait': '../../secret'},
+])
+def test_companion_portrait_rejects_invalid_references(world, data):
+    app, clients = world
+    response = clients[1].post('/companions/1/portrait', data=data)
+    assert b'role="alert"' in response.data
+    with app.app_context():
+        assert db.session.get(Companion, 1).image_url is None
+
+
+def test_companion_portrait_permissions_csrf_and_pet_roundtrip(world):
+    app, clients = world
+    assert clients[4].get('/companions/1/portrait').status_code == 403
+    assert clients[1].post('/companions/2/portrait', data={'custom-url': 'https://example.com/pet.png'}).status_code == 403
+    assert clients[2].post('/companions/2/portrait', data={'custom-url': 'https://example.com/pet.png'}).status_code == 200
+    with app.app_context():
+        pet = db.session.get(Companion, 2)
+        restored = import_pet(pet.export())
+        assert restored.image_url == pet.image_url
+        assert restored.custom_image is True
+    app.config['WTF_CSRF_ENABLED'] = True
+    assert clients[1].post('/companions/1/portrait').status_code == 400
+
+
+@pytest.mark.parametrize('companion_id,user,kind', [(1, 1, 'hireling'), (2, 2, 'pet')])
+def test_companion_json_export(world, companion_id, user, kind):
+    app, clients = world
+    response = clients[user].get(f'/companions/{companion_id}/export')
+    assert response.status_code == 200
+    assert response.mimetype == 'application/json'
+    assert 'attachment;' in response.headers['Content-Disposition']
+    assert 'no-store' in response.headers['Cache-Control']
+    data = response.get_json()
+    assert data['kind'] == kind
+    assert not {'id', 'party_id', 'character_id', 'hireling_id', 'owner', 'shared'} & data.keys()
+    with app.app_context():
+        c = db.session.get(Companion, companion_id)
+        assert data['name'] == c.name
+        assert data['items'] == json.loads(c.items)
+        assert data['containers'] == json.loads(c.containers)
+        assert data['hp'] == c.hp
+        if kind == 'hireling':
+            assert data['daily_cost'] == c.daily_cost
+            assert data['pets'] == []
+        else:
+            assert import_pet(data).name == c.name
+
+
+def test_companion_export_permissions_and_uploaded_portrait(world):
+    app, clients = world
+    assert clients[4].get('/companions/1/export').status_code == 403
+    assert clients[1].get('/companions/2/export').status_code == 403
+    with app.app_context():
+        c = db.session.get(Companion, 1)
+        c.shared = False
+        c.image_url = '/portraits/' + 'a' * 64 + '.webp'
+        c.custom_image = True
+        db.session.commit()
+    assert clients[2].get('/companions/1/export').status_code == 403
+    data = clients[1].get('/companions/1/export').get_json()
+    assert data['image_url'].startswith('http://localhost/portraits/')

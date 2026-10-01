@@ -1,5 +1,6 @@
 """Small sheets for party hirelings and character (or hireling) pets."""
 import json
+from flask import url_for
 from .globals import db
 from .character import item_armor_value
 
@@ -22,6 +23,8 @@ class Companion(db.Model):
     willpower = db.Column(db.Integer)
     willpower_max = db.Column(db.Integer)
     armor = db.Column(db.Integer, nullable=False, default=0)
+    image_url = db.Column(db.String(512))
+    custom_image = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
     attack = db.Column(db.String(200), nullable=False, default='')
     daily_cost = db.Column(db.Integer, nullable=False, default=0)
     gold = db.Column(db.Integer, nullable=False, default=0)
@@ -37,12 +40,18 @@ class Companion(db.Model):
         "(kind = 'pet' AND party_id IS NULL AND ((character_id IS NOT NULL AND hireling_id IS NULL) OR "
         "(character_id IS NULL AND hireling_id IS NOT NULL)))", name='companion_parent'),)
 
+    @property
+    def portrait_src(self):
+        if self.custom_image and self.image_url:
+            return self.image_url
+        return url_for('static', filename='images/portraits/' + (self.image_url or 'default-portrait.webp'))
+
     def armorValue(self):
         return min(3, (self.armor or 0) + sum(item_armor_value(it) for it in json.loads(self.items or '[]')))
 
     def export(self):
         fields = ('name', 'role', 'hp', 'hp_max', 'strength', 'strength_max', 'dexterity', 'dexterity_max',
-                  'willpower', 'willpower_max', 'armor', 'attack', 'gold', 'notes')
+                  'willpower', 'willpower_max', 'armor', 'attack', 'gold', 'notes', 'image_url', 'custom_image')
         result = {field: getattr(self, field) for field in fields}
         result.update(items=json.loads(self.items or '[]'), containers=json.loads(self.containers or '[]'))
         return result

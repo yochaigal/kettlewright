@@ -6,7 +6,7 @@ from pathlib import Path
 
 from flask import current_app, url_for
 
-from app.models import Character
+from app.models import Character, Companion
 
 MAX_PORTRAIT_BYTES = 2 * 1024 * 1024
 
@@ -51,7 +51,7 @@ def save_portrait(upload):
 
 
 def delete_unreferenced_portrait(previous_url):
-    """Remove a replaced local upload only after its last character reference is gone."""
+    """Remove a replaced local upload only after its last character or companion reference is gone."""
     match = re.fullmatch(r'/portraits/([0-9a-f]{64}\.webp)', previous_url or '')
     if not match:
         return
@@ -59,8 +59,36 @@ def delete_unreferenced_portrait(previous_url):
     # Also retain references written as absolute or URL-encoded links by imports.
     if Character.query.filter(Character.image_url.contains(filename)).first() is not None:
         return
+    if Companion.query.filter(Companion.image_url.contains(filename)).first() is not None:
+        return
     try:
         (portrait_directory() / filename).unlink(missing_ok=True)
     except OSError:
         # The new portrait is already committed; failed cleanup must not undo it.
         current_app.logger.warning('Could not remove replaced portrait %s', filename, exc_info=True)
+
+
+def validate_portrait_reference(image_url, custom_image):
+    """Accept bundled portraits and passive HTTP links without fetching remote URLs."""
+    from urllib.parse import urlsplit
+    from app.lib.data import load_images
+
+    if not isinstance(image_url, str) or len(image_url) > 512 or type(custom_image) is not bool:
+        raise ValueError('Choose a valid portrait.')
+    if not image_url:
+        return
+    if not custom_image:
+        if image_url not in load_images():
+            raise ValueError('Choose one of the predefined portraits.')
+        return
+    if re.fullmatch(r'/portraits/[0-9a-f]{64}\.webp', image_url):
+        return
+    try:
+        parsed = urlsplit(image_url)
+        valid = (parsed.scheme in ('http', 'https') and parsed.hostname
+                 and not parsed.username and not parsed.password
+                 and not any(char.isspace() or ord(char) < 32 for char in image_url))
+    except ValueError:
+        valid = False
+    if not valid:
+        raise ValueError('Enter an http or https image URL.')

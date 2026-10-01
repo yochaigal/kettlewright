@@ -89,6 +89,10 @@ def import_pet(data):
             raise ValueError('Invalid pet maximum')
     items, containers = normalize_inventory(json.dumps(data.get('items', [])), json.dumps(data.get('containers', [])))
     result.update(items=sanitize_json_content(json.dumps(items)), containers=sanitize_json_content(json.dumps(containers)))
+    from app.lib.portraits import validate_portrait_reference
+    image_url, custom_image = data.get('image_url') or '', data.get('custom_image', False)
+    validate_portrait_reference(image_url, custom_image)
+    result.update(image_url=image_url, custom_image=custom_image)
     return Companion(kind='pet', **result)
 
 
