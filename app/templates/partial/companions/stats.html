@@ -27,7 +27,6 @@
     <div class="character-stat-resource" id="character-armor-container"><h4>{{_('Armor')}}</h4><p>{{c.armorValue()}}</p></div>
   </div>
 </div>
-{% if editable %}<small>{{_('Leave a stat blank if it is unknown. Clearing it also clears its current or maximum value.')}}</small>{% endif %}
 <div hx-trigger="refresh-stats from:body" hx-get="{{url_for('companions.stats',companion_id=c.id)}}" hx-target="#character-stats-container"></div>
 <p class="quick-stats-status" role="status" aria-live="polite"></p>
 </div>
