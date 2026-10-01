@@ -476,10 +476,7 @@
 .companion-character-sheet {
   .companion-identity { min-width: 0; flex: 1; }
   .companion-identity input { width: 100%; }
-  input[form="companion-edit-form"][type="number"] { max-width: 40px; padding: 0; }
-  input[form="companion-edit-form"][type="text"] { background: transparent; border: 0; border-bottom: 1px solid currentColor; color: var(--fg); }
-  .character-descriptions-grid { grid-template-areas: none; }
-  .companion-notes { grid-column: 1 / -1; }
+  .character-details-grid { grid-template-areas: none; }
   .companion-notes textarea { width: 100%; min-height: 12rem; box-sizing: border-box; }
 }
 
@@ -663,3 +660,6 @@
 @media (max-width: 600px) {
   .companion-character-sheet .portrait-image { width: 64px; height: 64px; }
 }
+
+.companion-identity h1, .companion-identity h2 { overflow-wrap: anywhere; }
+#character-quick-stats .companion-stat-toolbar { display: flex; flex-wrap: wrap; gap: 1.5rem; }
