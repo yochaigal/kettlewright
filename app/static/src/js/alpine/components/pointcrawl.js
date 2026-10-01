@@ -5,7 +5,7 @@ export default function pointcrawl() {
   return {
     graph:{nodes:[],edges:[]}, editing:false, creating:false, dirty:false, saving:false, receivingCanvas:false,
     status:'', selectedEdge:'', selected:'', saveUrl:'', serial:0, canvasReady:false, generating:false, nestedKind:'dungeon',
-    edgeSource:'', edgeTarget:'', kind:'dungeon', tables:null, labels:{}, locationId:'', draftBody:'',
+    edgeSource:'', edgeTarget:'', kind:'dungeon', tables:null, labels:{}, locationId:'', draftBody:'', poiCount:'',
     init() {
       this.graph=JSON.parse(this.$el.dataset.graph || '{"nodes":[],"edges":[]}');
       this.kind=this.graph.kind || this.$el.dataset.kind || 'realm';
@@ -173,7 +173,8 @@ export default function pointcrawl() {
       try {
         await this.loadTables();
         const subcategory={dungeon:'Dungeon',forest:'Forest',realm:'Realm'}[this.kind];
-        await this.useResult(generateResult(this.tables,'Worldbuilding',subcategory));
+        await this.useResult(generateResult(this.tables,'Worldbuilding',subcategory,Math.random,
+          this.poiCount ? {poiCount:Number(this.poiCount)} : {}));
         this.status='';
       } catch {this.status=this.labels.error;}
       finally {this.generating=false;}

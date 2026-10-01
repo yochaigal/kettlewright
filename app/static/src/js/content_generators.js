@@ -1,11 +1,11 @@
 import {generateWorldbuilding} from './worldbuilding.js';
 
 // All consumers retain this result object; saving never rolls the tables again.
-export function generateResult(data, category, subcategory, random = Math.random) {
+export function generateResult(data, category, subcategory, random = Math.random, options = {}) {
   const pick = values => values[Math.floor(random() * values.length)];
   if (category === 'Worldbuilding') {
     return generateWorldbuilding({Dungeon:data.Dungeon, Forest:data.Forest, Realm:data.Realm,
-      Faction:data.FactionGenerator, 'Faction Actions':data.FactionActions, NPC:data.NPCGenerator}, subcategory, random);
+      Faction:data.FactionGenerator, 'Faction Actions':data.FactionActions, NPC:data.NPCGenerator}, subcategory, random, options);
   }
   if (category === 'Items') {
     const item = pick(data[subcategory]);
@@ -35,6 +35,16 @@ export function generateResult(data, category, subcategory, random = Math.random
 }
 
 export function resultText(result) {
+  if (result.category === 'spellbook') {
+    return [result.fields.description, result.fields.personality ? `_${result.fields.personality}_` : ''].filter(Boolean).join(' ');
+  }
+  if (result.category === 'item') {
+    const fields=result.fields, tags=fields.tags || [];
+    const traits=tags.filter(tag=>!['uses','bonus defense'].includes(tag)).map(tag=>
+      tags.includes('bonus defense') && /Armor/i.test(tag) ? `+${tag}` : tag);
+    if (fields.uses) traits.push(`${fields.uses} uses`);
+    return `${result.title}${traits.length ? ` (${traits.join(', ')})` : ''}. ${fields.cost}gp.`;
+  }
   function render(value, level=3) {
     if(Array.isArray(value)) return value.map(item=>`- ${typeof item==='object' ? render(item,level) : item}`).join('\n');
     if(value && typeof value==='object') return Object.entries(value).filter(([,item])=>!Array.isArray(item) || item.length).map(([key,item])=>
@@ -110,7 +120,7 @@ export function generateArticle(data, category, variant='', random=Math.random) 
   else if(category==='relic' || category==='spellbook') result=generateResult(data,'Items',category==='relic'?'Relics':'Spellbooks',random);
   else if(category==='item') {
     const group=variant || 'Gear', [name,fields]=pick(Object.entries(data.Equipment[group]));
-    result={title:name,fields:{Type:group,...fields}};
+    result={title:name,category:'item',fields:{Type:group,...fields}};
   } else if(category==='culture') {
     const people=data.Realm.Theme.People;
     result={title:'Culture',fields:{Character:pick(people.Culture.Character),Ambition:pick(people.Culture.Ambition),Abundance:pick(people.Resources.Abundance),Scarcity:pick(people.Resources.Scarcity)}};

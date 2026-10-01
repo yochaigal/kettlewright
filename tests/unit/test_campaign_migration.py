@@ -15,7 +15,7 @@ def test_campaign_migration_preserves_existing_parties_and_matches_models(tmp_pa
         upgrade()
         inspector = inspect(db.engine)
         names = ('campaigns','campaign_parties','content_entries','content_links','party_presentations',
-                 'pointcrawl_maps','map_nodes','map_edges')
+                 'pointcrawl_maps','map_nodes','map_edges','campaign_imports')
         for name in names:
             assert {c['name'] for c in inspector.get_columns(name)} == set(db.metadata.tables[name].columns.keys())
         assert db.session.execute(text('SELECT name FROM parties WHERE id=1')).scalar() == 'Existing party'

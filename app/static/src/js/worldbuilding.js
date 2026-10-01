@@ -1,5 +1,7 @@
 // Shared structured generators. Table data is supplied by Tools or the map editor.
-export function generateWorldbuilding(data, subcategory, random = Math.random) {
+export function generateWorldbuilding(data, subcategory, random = Math.random, options = {}) {
+  const count = fallback => options.poiCount === undefined ? fallback
+    : Math.max(3, Math.min(20, Math.trunc(Number(options.poiCount)) || fallback));
   const roll = sides => Math.floor(random() * sides);
   const setting = data[subcategory];
   let result = {};
@@ -155,7 +157,7 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
     // POIs
     const min = setting.POIs.Repeat.Min;
     const max = setting.POIs.Repeat.Max;
-    const repeat = Math.floor(random() * (max - min + 1)) + min;
+    const repeat = count(Math.floor(random() * (max - min + 1)) + min);
     result.POIs = [];
     let groups = [];
     for (let group in setting.POIs.Monster.Group) {
@@ -243,7 +245,7 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
     const poeMin = setting.ForestPOIs.Repeat.Min;
     const poeMax = setting.ForestPOIs.Repeat.Max;
     const poiRepeat =
-      Math.floor(random() * (poeMax - poeMin + 1)) + poeMin;
+      count(Math.floor(random() * (poeMax - poeMin + 1)) + poeMin);
     result.POIs = [];
     for (let i = 0; i < poiRepeat; i++) {
       const poi =
@@ -374,14 +376,14 @@ export function generateWorldbuilding(data, subcategory, random = Math.random) {
         ],
     };
 
-    const poiCount = Math.floor(random() * (8 - 3 + 1)) + 3;
+    const poiCount = count(Math.floor(random() * (8 - 3 + 1)) + 3);
     result.POIs = [];
     const poiKinds = [];
     for (let i = 0; i < poiCount; i++) {
       let poi = "";
 
-      const type = setting.PointsOfInterest.POI[roll(setting.PointsOfInterest.POI.length)];
-      const poiName = type;
+      const type = i === 0 ? 'Settlement' : setting.PointsOfInterest.POI[roll(setting.PointsOfInterest.POI.length)];
+      const poiName = i === 0 ? 'Heart · Settlement' : type;
 
       if (type === "Waypoint") {
         poi = `${poiName}: ${

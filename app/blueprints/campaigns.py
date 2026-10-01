@@ -1,15 +1,19 @@
 """Campaign workspaces, party knowledge, and pointcrawl editing."""
 from copy import deepcopy
-from flask import Blueprint, abort, current_app, jsonify, redirect, render_template, request, url_for, send_from_directory
+from datetime import datetime, timedelta, timezone
+from uuid import uuid4
+from flask import Blueprint, abort, current_app, flash, jsonify, redirect, render_template, request, url_for, send_from_directory
 from itsdangerous import BadSignature, URLSafeTimedSerializer
 from flask_babel import _
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import StaleDataError
+from sqlalchemy.orm import selectinload
 
 from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
-                        Party, PartyPresentation, PointcrawlMap)
+                        Party, PartyPresentation, PointcrawlMap, CampaignImport)
+from app.lib.campaign_import import preview_archive, import_preview, ImportError, MAX_ARCHIVE
 from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, check_version,
     entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
     party_access, publishable_party, render_content, save_geometry, text_value, content_value,
@@ -37,6 +41,8 @@ def authorize():
     if request.endpoint in ('campaigns.new_map', 'campaigns.map_data', 'campaigns.new_entry', 'campaigns.edit_entry', 'campaigns.reveal'):
         request.max_content_length = 32 * 1024 * 1024
         request.max_form_memory_size = 32 * 1024 * 1024
+    if request.endpoint == 'campaigns.import_archive':
+        request.max_content_length = MAX_ARCHIVE + 1024 * 1024
     if request.method == 'POST' and not FlaskForm().validate_on_submit():
         abort(400, 'Invalid CSRF token.')
 
@@ -72,7 +78,14 @@ def my_parties():
 
 
 def my_campaigns():
-    return Campaign.query.filter_by(owner_id=current_user.id).order_by(Campaign.name).all()
+    return Campaign.query.filter_by(owner_id=current_user.id).options(
+        selectinload(Campaign.parties).selectinload(CampaignParty.party),
+        selectinload(Campaign.entries)).order_by(Campaign.name).all()
+
+
+def library_entries():
+    return ContentEntry.query.filter_by(owner_id=current_user.id).options(
+        selectinload(ContentEntry.pointcrawl), selectinload(ContentEntry.presentations))
 
 
 def available_parties(entry):
@@ -94,7 +107,11 @@ def index():
         db.session.add(campaign)
         db.session.commit()
         return redirect(url_for('campaigns.workspace', campaign_id=campaign.id))
-    return render_template('campaigns/index.html', campaigns=my_campaigns())
+    campaigns_list = my_campaigns()
+    entries = library_entries().order_by(ContentEntry.title).all()
+    return render_template('campaigns/index.html', campaigns=campaigns_list,
+        trees={campaign.id: material_hierarchy([e for e in entries if e.campaign_id == campaign.id]) for campaign in campaigns_list},
+        unfiled=material_hierarchy([e for e in entries if e.campaign_id is None]))
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/', methods=['GET', 'POST'])
@@ -124,7 +141,7 @@ def workspace(campaign_id):
         db.session.commit()
         notify_parties(removed)
         return redirect(url_for('campaigns.workspace', campaign_id=campaign.id))
-    entries = ContentEntry.query.filter_by(owner_id=current_user.id, campaign_id=campaign.id).order_by(ContentEntry.id).all()
+    entries = library_entries().filter_by(campaign_id=campaign.id).order_by(ContentEntry.id).all()
     return render_template('campaigns/workspace.html', campaign=campaign, hierarchy=material_hierarchy(entries),
                            parties=my_parties(), linked={p.party_id for p in campaign.parties})
 
@@ -148,7 +165,7 @@ def delete_campaign(campaign_id):
 
 @campaigns.route('/materials/')
 def library():
-    entries = ContentEntry.query.filter_by(owner_id=current_user.id, campaign_id=None).order_by(ContentEntry.id).all()
+    entries = library_entries().filter_by(campaign_id=None).order_by(ContentEntry.id).all()
     return render_template('campaigns/workspace.html', campaign=None, hierarchy=material_hierarchy(entries), parties=[], linked=set())
 
 
@@ -228,16 +245,35 @@ def edit_entry(entry_id):
         if entry.pointcrawl:
             moved += [n.entry for n in entry.pointcrawl.nodes] + [e.entry for e in entry.pointcrawl.edges]
         if campaign_id != entry.campaign_id:
+            # Imported descendants move with their parent, just like map contents.
+            pending = list(moved)
+            moved_by_id = {}
+            while pending:
+                item = pending.pop()
+                if item.id in moved_by_id:
+                    continue
+                moved_by_id[item.id] = item
+                pending.extend(item.children)
+                if item.pointcrawl:
+                    pending.extend(n.entry for n in item.pointcrawl.nodes)
+                    pending.extend(e.entry for e in item.pointcrawl.edges)
+                    pending.extend(n.nested_map.entry for n in item.pointcrawl.nodes if n.nested_map)
+            moved = list(moved_by_id.values())
+            if any(item.owner_id != current_user.id for item in moved):
+                abort(403)
+            if any(item.campaign_id != entry.campaign_id for item in moved):
+                abort(409, 'Linked content belongs to another workspace. Unlink it before moving.')
             moved_ids = {item.id for item in moved}
+            if entry.parent_id and entry.parent_id not in moved_ids:
+                entry.parent = None
             for item in moved:
                 if any(node.map.entry_id not in moved_ids and node.map.entry.campaign_id != campaign_id for node in item.map_nodes):
                     abort(400, 'Move this location together with its map.')
                 if item.category == 'path' and any(edge.map.entry_id not in moved_ids for edge in item.map_edges):
                     abort(400, 'Move this path together with its map.')
-            if entry.pointcrawl and any(n.map.entry.campaign_id != campaign_id for n in entry.pointcrawl.entrances):
-                abort(400, 'Unlink entrances from other maps before moving this map.')
-            if entry.pointcrawl and any(n.nested_map and n.nested_map.entry.campaign_id != campaign_id for n in entry.pointcrawl.nodes):
-                abort(400, 'Unlink nested maps before moving this map to another campaign.')
+                if item.pointcrawl and any(n.map.entry_id not in moved_ids and n.map.entry.campaign_id != campaign_id
+                                          for n in item.pointcrawl.entrances):
+                    abort(400, 'Unlink entrances from other maps before moving this map.')
             for item in moved:
                 item.campaign = campaign
                 if campaign:
@@ -349,15 +385,52 @@ def reveal(entry_id):
                 row.drawing = deepcopy(entry.pointcrawl.drawing)
         db.session.commit()
         notify_parties(selected)
+        flash(_('Published to the selected parties. Use View as party below to see the saved version.'))
         return redirect(url_for('campaigns.reveal', entry_id=entry.id))
     return render_template('campaigns/reveal.html', entry=entry, parties=available_parties(entry),
         presentations=presentations, initial=[{'id': p.id, 'name': p.name, 'selected': False,
             'version': presentations[p.id].version if p.id in presentations else 0,
             'published': presentations[p.id].published if p.id in presentations else False,
-            'title': presentations[p.id].title if p.id in presentations else '',
+            'title': presentations[p.id].title if p.id in presentations else entry.title,
             'body': presentations[p.id].body if p.id in presentations else '',
             'path_type': presentations[p.id].path_type if p.id in presentations else 'standard'}
             for p in available_parties(entry)])
+
+
+@campaigns.route('/materials/import-archive', methods=['GET', 'POST'])
+def import_archive():
+    preview, preview_id, message = None, None, None
+    cutoff = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(hours=1)
+    if request.method == 'POST':
+        preview_id = request.form.get('preview_id')
+        if preview_id:
+            batch = CampaignImport.query.filter_by(id=preview_id, owner_id=current_user.id).first_or_404()
+            if batch.consumed or batch.created_at < cutoff:
+                abort(409, 'This preview was already imported or expired. Upload the archive again.')
+            claimed = CampaignImport.query.filter_by(id=batch.id, owner_id=current_user.id, consumed=False).filter(
+                CampaignImport.created_at >= cutoff).update({'consumed': True}, synchronize_session=False)
+            if not claimed:
+                abort(409, 'This preview was already imported.')
+            import_preview(batch.payload, current_user.id)
+            batch.payload = {}
+            db.session.commit()
+            return redirect(url_for('campaigns.index'))
+        upload = request.files.get('archive')
+        if not upload:
+            message = _('Choose a ZIP or TAR archive.')
+        else:
+            try:
+                preview = preview_archive(upload.stream.read(MAX_ARCHIVE + 1))
+            except ImportError as exc:
+                message = str(exc)
+            if preview and not preview['errors']:
+                preview_id = uuid4().hex
+                # Keep staging bounded; expired previews never contain library records.
+                CampaignImport.query.filter(CampaignImport.created_at < cutoff).delete(synchronize_session=False)
+                CampaignImport.query.filter_by(owner_id=current_user.id, consumed=False).delete(synchronize_session=False)
+                db.session.add(CampaignImport(id=preview_id, owner_id=current_user.id, payload=preview))
+                db.session.commit()
+    return render_template('campaigns/import_archive.html', preview=preview, preview_id=preview_id, message=message)
 
 
 @campaigns.route('/materials/<int:entry_id>/revoke/<int:party_id>', methods=['POST'])

@@ -34,3 +34,4 @@ pypdf>=6.0
 PyNaCl>=1.5
 
 mistune==3.2.0
+PyYAML>=6.0,<7

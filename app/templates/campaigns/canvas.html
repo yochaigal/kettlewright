@@ -1,6 +1,6 @@
 {% from 'campaigns/forms.html' import rich_editor with context %}
 <div class="campaign-actions">
-<button type="button" @click="fit()" :disabled="!canvasReady">{{ _('Fit map') }}</button>
+<button type="button" @click="fit()" :disabled="!canvasReady">{{ _('Center map') }}</button>
 <button type="button" @click="loadCanvas()" x-show="!canvasReady">{{ _('Reload map editor') }}</button>
 </div>
 <iframe class="pointcrawl-canvas" x-ref="canvas"

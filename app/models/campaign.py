@@ -4,6 +4,7 @@ Map roots, locations and paths share the same publication boundary. Geometry
 contains no player-facing prose.
 """
 from sqlalchemy.orm import declared_attr
+from datetime import datetime, timezone
 from .globals import db
 
 
@@ -37,6 +38,8 @@ class ContentEntry(Versioned, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id', ondelete='SET NULL'), index=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey('content_entries.id', ondelete='SET NULL'), index=True)
+    parent = db.relationship('ContentEntry', remote_side='ContentEntry.id', backref='children')
     category = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(200), nullable=False, default='')
     body = db.Column(db.Text, nullable=False, default='')
@@ -51,6 +54,15 @@ class ContentLink(db.Model):
     __tablename__ = 'content_links'
     source_id = db.Column(db.Integer, db.ForeignKey('content_entries.id', ondelete='CASCADE'), primary_key=True)
     target_id = db.Column(db.Integer, db.ForeignKey('content_entries.id', ondelete='CASCADE'), primary_key=True)
+
+
+class CampaignImport(db.Model):
+    __tablename__ = 'campaign_imports'
+    id = db.Column(db.String(32), primary_key=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    consumed = db.Column(db.Boolean, nullable=False, default=False)
+    payload = db.Column(db.JSON, nullable=False)
 
 
 class PartyPresentation(Versioned, db.Model):
