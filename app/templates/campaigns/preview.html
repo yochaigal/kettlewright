@@ -1,0 +1,25 @@
+<h2>{{ entry.title or _('Untitled private original') }}</h2>
+<p class="tree-meta">{{ _(content_categories.get(entry.category, entry.category)) }}</p>
+{% if graph %}
+<div class="article-preview-map" x-data="pointcrawl" data-graph="{{ graph|tojson|forceescape }}" data-editing="false"
+ data-labels="{{ {'loadError':_('Unable to load the drawing editor. Check your connection and retry.')}|tojson|forceescape }}">
+  <div class="article-preview-map-actions">
+    <button type="button" @click="fit()" :disabled="!canvasReady">{{ _('Center drawing') }}</button>
+    <button type="button" @click="loadCanvas()" x-show="!canvasReady">{{ _('Reload drawing editor') }}</button>
+  </div>
+  <p role="status" x-text="status"></p>
+  <iframe class="article-preview-map-canvas" x-ref="canvas"
+    data-src="{{ url_for('static', filename='src/js/maps/editor.html') }}"
+    title="{{ _('Drawing') }}: {{ entry.title or _('Untitled private original') }}"></iframe>
+  <template x-if="selectedNode"><div>
+    <h3 x-html="$markdownInline(selectedNode.title)"></h3>
+    <div class="rich-content" x-html="$richHTML(selectedNode.body)"></div>
+  </div></template>
+  <template x-for="edge in graph.edges.filter(item=>String(item.id)===selectedEdge)" :key="edge.id"><div>
+    <h3 x-html="$markdownInline(edge.title)"></h3>
+    <div class="rich-content" x-html="$richHTML(edge.body)"></div>
+  </div></template>
+</div>
+{% endif %}
+<div class="rich-content">{{ render_content(entry.body) }}</div>
+<p><a href="{{ article_url }}">{{ _('Open article') }}</a></p>

@@ -2,10 +2,6 @@
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='src/css/campaigns.css') }}">
 <section class="body-container"><div class="sheet campaign-workspace">
-{% if user_features_enabled() %}<nav class="campaign-actions" aria-label="{{ _('Campaign navigation') }}">
-<a href="{{ url_for('campaigns.index') }}">{{ _('Campaigns') }}</a>
-<a href="{{ url_for('campaigns.library') }}">{{ _('Unfiled articles') }}</a>
-</nav>{% endif %}
 {% block workspace %}{% endblock %}
 </div></section>
 {% endblock %}

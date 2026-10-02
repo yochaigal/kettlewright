@@ -17,8 +17,10 @@ from app.lib.campaign_import import preview_archive, import_preview, ImportError
 from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, check_version,
     entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
     party_access, publishable_party, render_content, save_geometry, text_value, content_value,
-    material_hierarchy, material_parents, material_deletion_plan, delete_material_plan)
+    material_hierarchy, material_parents, material_deletion_plan, delete_material_plan, save_article_children, set_article_parent, POINT_TYPES)
 from app.lib.rich_content import content_excerpt
+from app.lib.content_types import CATEGORY_GROUPS, CATEGORY_ROOTS, ARTICLE_MAP_KINDS
+from app.lib.campaigns import ensure_article_map, ensure_article_tree_maps, populate_realm_map
 from app.lib.material_images import LOCAL_IMAGE, image_directory, cleanup_images, image_references
 from app.lib.feature_access import user_features_enabled, party_features_enabled
 
@@ -33,7 +35,7 @@ def authorize():
     if request.endpoint not in {
         'campaigns.party_materials', 'campaigns.party_materials_data',
         'campaigns.party_entry', 'campaigns.party_map', 'campaigns.party_map_data',
-        'campaigns.material_image',
+        'campaigns.material_image', 'campaigns.party_entry_preview',
     } and not user_features_enabled():
         abort(404)
     # Validate the whole operation before flushing partial edits or advancing versions.
@@ -66,7 +68,8 @@ def conflict(error):
 
 @campaigns.context_processor
 def common_context():
-    return {'content_categories': CATEGORIES, 'path_types': PATH_TYPES,
+    return {'content_categories': CATEGORIES, 'category_groups': CATEGORY_GROUPS, 'category_roots': CATEGORY_ROOTS, 'article_map_kinds': ARTICLE_MAP_KINDS,
+            'point_categories': {k: CATEGORIES[k] for k in CATEGORIES if k in POINT_TYPES}, 'path_types': PATH_TYPES,
             'content_form': FlaskForm(), 'render_content': render_content, 'content_excerpt': content_excerpt}
 
 
@@ -173,15 +176,25 @@ def library():
 def party_materials(party_id):
     party = party_access(party_id)
     preview = request.args.get('preview') == '1'
+    entries = {entry_id: entry for entry_id, entry in known_entries(party.id).items()
+               if entry['category'] != 'path' or not db.session.get(ContentEntry, entry_id).map_edges}
+    hierarchy = material_hierarchy(ContentEntry.query.filter(ContentEntry.id.in_(entries)).all())
+
+    def published_items(items):
+        for item in items:
+            item['entry'] = entries[item['entry'].id]
+            published_items(item['children'])
+
+    published_items(hierarchy)
     return render_template('campaigns/party.html', party=party,
-        entries=[entry for entry in known_entries(party.id).values() if entry['category'] != 'path'],
+        entries=list(entries.values()), hierarchy=hierarchy,
         editing=party.owner == current_user.id and user_features_enabled() and not preview, preview=preview)
 
 
 @campaigns.route('/party/<int:party_id>/materials/data')
 def party_materials_data(party_id):
     party_access(party_id)
-    return jsonify(entries=[entry for entry in known_entries(party_id).values() if entry['category'] != 'path'])
+    return jsonify(entries=[entry for entry in known_entries(party_id).values() if entry['category'] != 'path' or not db.session.get(ContentEntry, entry['id']).map_edges])
 
 
 @campaigns.route('/party/<int:party_id>/materials/<int:entry_id>')
@@ -190,7 +203,28 @@ def party_entry(party_id, entry_id):
     entry = known_entries(party_id).get(entry_id)
     if entry is None:
         abort(404)
-    return render_template('campaigns/known_entry.html', party=party, entry=entry)
+    graph = map_projection(db.get_or_404(PointcrawlMap, entry['map_id']), party.id) if entry['map_id'] else None
+    return render_template('campaigns/known_entry.html', party=party, entry=entry,
+        graph=graph, pointcrawl=None, editing=False, embedded=True, nested_maps=[], locations=[])
+
+
+@campaigns.route('/materials/<int:entry_id>/preview')
+def entry_preview(entry_id):
+    entry = owned(ContentEntry, entry_id)
+    return render_template('campaigns/preview.html', entry=entry,
+                           graph=map_projection(entry.pointcrawl) if entry.pointcrawl else None,
+                           article_url=url_for('campaigns.edit_entry', entry_id=entry.id))
+
+
+@campaigns.route('/party/<int:party_id>/materials/<int:entry_id>/preview')
+def party_entry_preview(party_id, entry_id):
+    party_access(party_id)
+    entry = known_entries(party_id).get(entry_id)
+    if entry is None:
+        abort(404)
+    return render_template('campaigns/preview.html', entry=entry,
+                           graph=map_projection(db.get_or_404(PointcrawlMap, entry['map_id']), party_id) if entry['map_id'] else None,
+                           article_url=url_for('campaigns.party_entry', party_id=party_id, entry_id=entry_id))
 
 
 @campaigns.route('/materials/new', methods=['GET', 'POST'])
@@ -200,13 +234,28 @@ def new_entry():
     party = party_access(integer(party_id), editing=True) if party_id else None
     if request.method == 'POST':
         category = request.form.get('category')
-        if category not in CATEGORIES or category == 'map':
+        if category == 'location':
+            from app.lib.content_types import legacy_point_type
+            category = legacy_point_type(request.form.get('title'))
+        if category not in CATEGORIES or category in ('map', 'overview'):
             abort(400)
         title = text_value(request.form.get('title'), 200, True)
         body = content_value(request.form.get('body', ''))
         entry = ContentEntry(owner_id=current_user.id, campaign=campaign, category=category,
-                             title='' if party else title, body='' if party else body)
+                             title='' if party else title, body='' if party else body,
+                             is_heart=category == 'settlement' and request.form.get('is_heart') == 'on',
+                             path_type=request.form.get('path_type', 'standard'))
+        if entry.path_type not in PATH_TYPES:
+            abort(400)
         db.session.add(entry)
+        set_article_parent(entry, request.form.get('parent_id'))
+        import json
+        try:
+            children = json.loads(request.form.get('children', '[]'))
+        except (ValueError, TypeError):
+            abort(400, 'Invalid article draft.')
+        save_article_children(entry, children)
+        ensure_article_tree_maps(entry)
         if party:
             if campaign and not db.session.get(CampaignParty, (campaign.id, party.id)):
                 abort(400)
@@ -217,7 +266,8 @@ def new_entry():
             return redirect(url_for('campaigns.party_materials', party_id=party.id))
         return entry_redirect(entry)
     return render_template('campaigns/entry.html', entry=None, campaign=campaign, party=party,
-                           campaigns=my_campaigns(), candidates=[], selected_links=set())
+                           campaigns=my_campaigns(), candidates=[], selected_links=set(),
+                           parent_candidates=library_entries(), selected_parent=request.args.get('parent_id', ''))
 
 
 @campaigns.route('/materials/<int:entry_id>/edit', methods=['GET', 'POST'])
@@ -225,15 +275,33 @@ def edit_entry(entry_id):
     entry = owned(ContentEntry, entry_id)
     if request.method == 'POST':
         check_version(entry, request.form.get('version'))
+        if 'graph' in request.form:
+            import json
+            try:
+                graph = json.loads(request.form['graph'])
+            except (ValueError, TypeError):
+                abort(400, 'Invalid article drawing.')
+            if not entry.pointcrawl or not isinstance(graph, dict):
+                abort(400, 'Invalid article drawing.')
+            with db.session.no_autoflush:
+                save_geometry(entry.pointcrawl, graph)
         entry.title = text_value(request.form.get('title', ''), 200)
         entry.body = content_value(request.form.get('body', ''))
         if entry.category not in ('map', 'path'):
-            category = request.form.get('category')
+            category = request.form.get('category', entry.category)
+            if entry.pointcrawl and category == 'map':
+                category = entry.pointcrawl.kind
+            if category == 'location':
+                from app.lib.content_types import legacy_point_type
+                category = legacy_point_type(entry.title)
             if category not in CATEGORIES or category == 'map':
                 abort(400)
-            if entry.map_nodes and category != 'location':
-                abort(400, 'A location used on a map must remain a location.')
+            if entry.map_nodes and category not in POINT_TYPES:
+                abort(400, 'Choose a point of interest type for an article on a map.')
+            if entry.pointcrawl and ARTICLE_MAP_KINDS.get(category) != entry.pointcrawl.kind:
+                abort(400, 'Keep the map type for this article.')
             entry.category = category
+        entry.is_heart = entry.category == 'settlement' and request.form.get('is_heart') == 'on'
         if entry.category == 'path':
             kind = request.form.get('path_type')
             if kind not in PATH_TYPES:
@@ -280,6 +348,8 @@ def edit_entry(entry_id):
                     for presentation in item.presentations:
                         if presentation.party_id not in {link.party_id for link in campaign.parties}:
                             campaign.parties.append(CampaignParty(party_id=presentation.party_id))
+        if 'parent_id' in request.form:
+            set_article_parent(entry, request.form.get('parent_id'))
         targets = {integer(value) for value in request.form.getlist('links')} - map_related_ids(entry)
         if entry.id in targets:
             abort(400)
@@ -290,6 +360,7 @@ def edit_entry(entry_id):
             db.session.delete(old_links[target_id])
         for target_id in targets - set(old_links):
             entry.links.append(ContentLink(target_id=target_id))
+        ensure_article_map(entry)
         entry.version += 1
         audiences = entry_audiences(entry)
         db.session.commit()
@@ -300,10 +371,19 @@ def edit_entry(entry_id):
     automatic_links = map_related_ids(entry)
     selected_links = {link.target_id for link in entry.links}
     candidates.sort(key=lambda item: (item.id not in automatic_links | selected_links, item.id))
-    return render_template('campaigns/entry.html', entry=entry, campaign=entry.campaign, party=None,
+    map_context = {}
+    if entry.pointcrawl:
+        map_context = dict(pointcrawl=entry.pointcrawl, graph=map_projection(entry.pointcrawl),
+            editing=True, embedded=True,
+            nested_maps=PointcrawlMap.query.join(ContentEntry).filter(ContentEntry.owner_id == current_user.id,
+                ContentEntry.campaign_id == entry.campaign_id, PointcrawlMap.id != entry.pointcrawl.id).all(),
+            locations=ContentEntry.query.filter_by(owner_id=current_user.id,campaign_id=entry.campaign_id)
+                .filter(ContentEntry.category.in_(POINT_TYPES)).all())
+    return render_template('campaigns/entry.html', **map_context, entry=entry, campaign=entry.campaign, party=None,
                            parent_entries=material_parents(entry),
                            campaigns=my_campaigns(), candidates=candidates,
-                           selected_links=selected_links, automatic_links=automatic_links)
+                           selected_links=selected_links, automatic_links=automatic_links,
+                           parent_candidates=library_entries(), selected_parent=entry.parent_id or '')
 
 
 @campaigns.route('/materials/<int:entry_id>/delete', methods=['POST'])
@@ -355,6 +435,67 @@ def bulk_delete():
     return render_template('campaigns/delete_materials.html',
         entries=sorted(entries.values(), key=lambda entry: (entry.category, entry.id)),
         deletion_token=signer.dumps(state), back_url=back_url)
+
+
+@campaigns.route('/materials/bulk-reveal', methods=['POST'])
+def bulk_reveal():
+    signer = URLSafeTimedSerializer(current_app.secret_key, salt='material-reveal')
+    confirmation = request.form.get('reveal_token')
+    if confirmation:
+        try:
+            snapshot = signer.loads(confirmation, max_age=1800)
+        except BadSignature:
+            abort(409, 'Publication preview expired. Select the articles again.')
+        if snapshot['owner_id'] != current_user.id:
+            abort(403)
+        campaign_id = snapshot['campaign_id']
+        selected_ids = snapshot['selected_ids']
+    else:
+        campaign = campaign_for(request.form.get('campaign_id'))
+        campaign_id = campaign.id if campaign else None
+        selected_ids = sorted({integer(value) for value in request.form.getlist('entry_ids')})
+        if not selected_ids:
+            abort(400, 'Select at least one article.')
+    if campaign_id:
+        owned(Campaign, campaign_id)
+    entries = [owned(ContentEntry, entry_id) for entry_id in selected_ids]
+    if any(entry.campaign_id != campaign_id for entry in entries):
+        abort(400, 'Select articles from this workspace only.')
+    if not confirmation:
+        for entry in entries:
+            check_version(entry, request.form.get(f'version_{entry.id}'))
+    parties = available_parties(entries[0])
+    presentations = {entry.id: {row.party_id: row for row in entry.presentations} for entry in entries}
+    state = {'owner_id': current_user.id, 'campaign_id': campaign_id, 'selected_ids': selected_ids,
+             'entries': {str(entry.id): entry.version for entry in entries},
+             'maps': {str(entry.id): entry.pointcrawl.version for entry in entries if entry.pointcrawl},
+             'presentations': {str(entry.id): {str(p.id): presentations[entry.id][p.id].version
+                 if p.id in presentations[entry.id] else 0 for p in parties} for entry in entries}}
+    back_url = url_for('campaigns.workspace', campaign_id=campaign_id) if campaign_id else url_for('campaigns.library')
+    if confirmation:
+        if snapshot != state:
+            abort(409, 'The articles or party versions changed. Review publication again.')
+        selected = {integer(value) for value in request.form.getlist('party_ids')}
+        if not selected:
+            abort(400, 'Choose at least one party.')
+        # Validate every audience and title before creating or changing any version.
+        audiences = {party_id: publishable_party(entries[0], party_id) for party_id in selected}
+        titles = {entry.id: text_value(entry.title, 200, True) for entry in entries}
+        for entry in entries:
+            for party_id, party in audiences.items():
+                row = presentations[entry.id].get(party_id)
+                if row is None:
+                    row = PartyPresentation(entry=entry, party=party)
+                    db.session.add(row)
+                row.title, row.body, row.path_type, row.published = titles[entry.id], entry.body, entry.path_type, True
+                if entry.pointcrawl and request.form.get('publish_drawing') == '1':
+                    row.drawing = deepcopy(entry.pointcrawl.drawing)
+        db.session.commit()
+        notify_parties(selected)
+        flash(_('Published selected articles to the selected parties.'))
+        return redirect(back_url)
+    return render_template('campaigns/reveal_materials.html', entries=entries, parties=parties,
+                           reveal_token=signer.dumps(state), back_url=back_url)
 
 
 @campaigns.route('/materials/<int:entry_id>/reveal', methods=['GET', 'POST'])
@@ -445,8 +586,22 @@ def revoke(entry_id, party_id):
     return redirect(url_for('campaigns.reveal', entry_id=entry.id))
 
 
+@campaigns.route('/materials/<int:entry_id>/map', methods=['POST'])
+def article_map(entry_id):
+    entry = owned(ContentEntry, entry_id)
+    check_version(entry, request.form.get('version'))
+    if entry.category not in ARTICLE_MAP_KINDS and not entry.pointcrawl:
+        abort(400, 'This article type does not have a map.')
+    ensure_article_tree_maps(entry)
+    db.session.commit()
+    return entry_redirect(entry)
+
+
 @campaigns.route('/maps/new', methods=['GET', 'POST'])
+@campaigns.route('/materials/generate', methods=['GET', 'POST'])
 def new_map():
+    if request.method == 'GET' and request.path == '/maps/new':
+        return redirect(url_for('campaigns.new_map', **request.args))
     campaign = campaign_for(request.form.get('campaign_id', request.args.get('campaign_id')))
     party_id = request.values.get('party_id')
     party = party_access(integer(party_id), editing=True) if party_id else None
@@ -456,13 +611,15 @@ def new_map():
         kind = request.form.get('kind')
         if kind not in MAP_KINDS:
             abort(400)
-        entry = ContentEntry(owner_id=current_user.id, campaign=campaign, category='map',
+        entry = ContentEntry(owner_id=current_user.id, campaign=campaign, category=kind if kind != 'freeform' else 'topography',
                              title=text_value(request.form.get('title'), 200, True),
                              body=content_value(request.form.get('body', '')))
         pointcrawl = PointcrawlMap(entry=entry, kind=kind)
         db.session.add(pointcrawl)
         db.session.flush()
         draft = request.form.get('draft')
+        public_node_bodies = {}
+        public_entries = {entry}
         if draft:
             import json
             try:
@@ -474,18 +631,34 @@ def new_map():
             data['version'] = pointcrawl.version
             with db.session.no_autoflush:
                 save_geometry(pointcrawl, data)
+            public_node_bodies = {integer(row['number']): content_value(row.get('body', ''))
+                                 for row in data['nodes'] if row.get('nested_draft')}
+            public_entries.update(node.entry for node in pointcrawl.nodes)
+            public_entries.update(edge.entry for edge in pointcrawl.edges)
+            save_article_children(entry, data.get('children', []))
+            groups = {child.category: child for child in entry.children if child.category in ('pois', 'paths')}
+            for node in pointcrawl.nodes:
+                if 'pois' in groups:
+                    node.entry.parent = groups['pois']
+            for edge in pointcrawl.edges:
+                if 'paths' in groups:
+                    edge.entry.parent = groups['paths']
+            if kind == 'realm':
+                db.session.flush()
+                ensure_article_tree_maps(entry)
+                populate_realm_map(pointcrawl)
         if party:
-            entries = {pointcrawl.entry, *(node.entry for node in pointcrawl.nodes),
-                       *(edge.entry for edge in pointcrawl.edges)}
-            for entry in entries:
+            for entry in public_entries:
+                public_body = next((public_node_bodies[node.number] for node in pointcrawl.nodes
+                                    if node.entry is entry and node.number in public_node_bodies), entry.body)
                 entry.presentations.append(PartyPresentation(party_id=party.id,
-                    title=entry.title, body=entry.body, path_type=entry.path_type,
+                    title=entry.title, body=public_body, path_type=entry.path_type,
                     drawing=deepcopy(pointcrawl.drawing) if entry == pointcrawl.entry else None))
         db.session.commit()
         if party:
             notify_parties([party.id])
-            return redirect(url_for('campaigns.party_map', party_id=party.id, map_id=pointcrawl.id))
-        return redirect(url_for('campaigns.map_edit', map_id=pointcrawl.id))
+            return redirect(url_for('campaigns.party_entry', party_id=party.id, entry_id=pointcrawl.entry_id))
+        return entry_redirect(pointcrawl.entry)
     kind = request.args.get('kind', 'realm')
     if kind not in MAP_KINDS:
         abort(400)
@@ -495,13 +668,38 @@ def new_map():
 @campaigns.route('/maps/<int:map_id>/edit')
 def map_edit(map_id):
     pointcrawl = owned(PointcrawlMap, map_id)
-    candidates = PointcrawlMap.query.join(ContentEntry).filter(ContentEntry.owner_id == current_user.id,
-        ContentEntry.campaign_id == pointcrawl.entry.campaign_id, PointcrawlMap.id != map_id).all()
-    locations = ContentEntry.query.filter_by(owner_id=current_user.id,
-        campaign_id=pointcrawl.entry.campaign_id, category='location').all()
-    return render_template('campaigns/map.html', pointcrawl=pointcrawl, graph=map_projection(pointcrawl),
-        parent_entries=material_parents(pointcrawl.entry), campaign=pointcrawl.entry.campaign,
-        editing=True, party=None, nested_maps=candidates, locations=locations)
+    return entry_redirect(pointcrawl.entry)
+
+
+@campaigns.route('/maps/<int:map_id>/geography', methods=['POST'])
+def realm_geography(map_id):
+    import json
+    pointcrawl = owned(PointcrawlMap, map_id)
+    if pointcrawl.kind != 'realm':
+        abort(400)
+    check_version(pointcrawl, request.form.get('version'))
+    check_version(pointcrawl.entry, request.form.get('article_version'))
+    try:
+        children = json.loads(request.form.get('children', '[]'))
+    except (ValueError, TypeError):
+        abort(400)
+    existing = {child.category for child in pointcrawl.entry.children}
+    if not isinstance(children, list):
+        abort(400)
+    for child in children:
+        if not isinstance(child, dict) or child.get('category') not in ('topography', 'pois', 'paths'):
+            abort(400, 'Choose setting geography.')
+        if child['category'] in existing:
+            abort(409, 'This section already exists. Reload to use its saved articles.')
+        existing.add(child['category'])
+    save_article_children(pointcrawl.entry, children)
+    db.session.flush()
+    ensure_article_tree_maps(pointcrawl.entry)
+    changed = populate_realm_map(pointcrawl)
+    if changed or children:
+        pointcrawl.version += 1
+    db.session.commit()
+    return jsonify(map_projection(pointcrawl))
 
 
 @campaigns.route('/maps/<int:map_id>/data', methods=['GET', 'POST'])
@@ -528,9 +726,8 @@ def map_data(map_id):
 def party_map(party_id, map_id):
     party = party_access(party_id)
     pointcrawl = db.get_or_404(PointcrawlMap, map_id)
-    graph = map_projection(pointcrawl, party.id)
-    return render_template('campaigns/map.html', graph=graph, pointcrawl=None, editing=False,
-                           party=party, nested_maps=[], locations=[])
+    map_projection(pointcrawl, party.id)  # Authorize the legacy URL before redirecting.
+    return redirect(url_for('campaigns.party_entry', party_id=party.id, entry_id=pointcrawl.entry_id))
 
 
 @campaigns.route('/party/<int:party_id>/maps/<int:map_id>/data')
@@ -551,12 +748,12 @@ def map_tables():
     from pathlib import Path
     data = {}
     folder = Path(__file__).resolve().parents[1] / 'static' / 'json' / 'generators'
-    for name in ('dungeons', 'forests', 'realm', 'factions', 'npcs', 'bestiary',
+    for name in ('dungeons', 'forests', 'realm', 'factions', 'npcs', 'names', 'bestiary',
                  'custom-monster', 'reliquary', 'spellbooks', 'dungeon-events', 'wilderness-events'):
         data.update(json.loads((folder / f'{name}.json').read_text()))
     data['Equipment'] = json.loads((folder.parent / 'marketplace.json').read_text())
     if request.path == '/maps/tables':
-        data = {key: data[key] for key in ('Dungeon', 'Forest', 'Realm')}
+        data = {key: data[key] for key in ('Dungeon', 'Forest', 'Realm', 'NPCGenerator', 'Names')}
     return jsonify(data)
 
 

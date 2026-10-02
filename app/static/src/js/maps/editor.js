@@ -1,10 +1,17 @@
 import {h, render} from 'preact';
 import {Excalidraw, convertToExcalidrawElements, restoreElements, CaptureUpdateAction} from 'excalidraw';
-import {drawingFromScene, emptyDrawing, graphShapes, movedLocations, isManaged, graphHit} from './scene.js';
+import {drawingFromScene, emptyDrawing, graphShapes, movedLocations, isManaged, graphHit, editableGeography, shapeGeometry} from './scene.js';
 import {loadLibraries} from './libraries.js';
 
 let api, state, applying = false, lastDrawing = '', inputDrawingKey = '', graphKey = '', disposed = false, repairing = false, initialized = false;
+let waterTarget=null, brushStartIds=null;
 const send = (type, detail = {}) => parent.postMessage({channel: 'kw-map', type, ...detail}, location.origin);
+const managedElements = graph => restoreElements(convertToExcalidrawElements(graphShapes(graph, state.selected, state.selectedEdge), {regenerateIds:false}), null);
+const orderedScene = (free, managed) => [
+  ...managed.filter(e=>e.customData?.nodeId && state.graph.nodes.some(n=>String(n.id)===e.customData.nodeId && n.category==='terrain')),
+  ...free,
+  ...managed.filter(e=>!e.customData?.nodeId || !state.graph.nodes.some(n=>String(n.id)===e.customData.nodeId && n.category==='terrain')),
+];
 
 function applyState(next) {
   const selectionChanged = state?.selected !== next.selected;
@@ -19,9 +26,9 @@ function applyState(next) {
       const free = drawingKey === inputDrawingKey
         ? api.getSceneElements().filter(element => !isManaged(element))
         : restoreElements(drawing.elements, null);
-      const managed = convertToExcalidrawElements(graphShapes(state.graph, state.selected, state.selectedEdge), {regenerateIds: false});
+      const managed = managedElements(state.graph);
       api.addFiles(Object.values(drawing.files));
-      api.updateScene({elements: [...free, ...managed], captureUpdate: CaptureUpdateAction.NEVER});
+      api.updateScene({elements: orderedScene(free, managed), captureUpdate: CaptureUpdateAction.NEVER});
       // Revoked/replaced snapshots must not remain in undo history.
       if (!state.editing || drawingKey !== inputDrawingKey) api.history.clear();
       graphKey = nextKey;
@@ -49,16 +56,19 @@ function onChange(elements, appState, files) {
   const selected = elements.find(element => appState.selectedElementIds[element.id] && element.customData?.kwType === 'location');
   if (selected && selected.customData.nodeId !== state.selected) {
     state.selected = selected.customData.nodeId;
-    send('select', {id: state.selected});
+    send('select', {id: state.selected, scroll:false});
   }
   if (!state.editing) return;
+  if(waterTarget!==null && appState.activeTool.type!=='freedraw') {waterTarget=null;brushStartIds=null;}
   // Graph cards have their own delete/rename workflow. Restore erased, duplicated
-  // or resized graph glyphs instead of silently diverging from the saved graph.
+  // graph glyphs instead of silently diverging from the saved graph. Terrain
+  // and water explicitly support resized and reshaped geometry.
   const managed = elements.filter(element => isManaged(element) && !element.isDeleted);
   const expected = graphShapes(state.graph, state.selected, state.selectedEdge);
   const damaged = managed.length !== expected.length || expected.some(shape => {
     const actual = managed.find(element => element.id === shape.id);
-    return !actual || shape.type === 'ellipse' && (actual.width !== 60 || actual.height !== 60 || actual.angle !== 0)
+    const node=state.graph.nodes.find(node=>String(node.id)===shape.customData?.nodeId);
+    return !actual || shape.customData?.kwType === 'location' && !editableGeography(node) && (actual.type !== shape.type || actual.width !== shape.width || actual.height !== shape.height || actual.angle !== 0)
       || shape.type === 'text' && actual.text !== shape.text;
   });
   if (damaged && !repairing) {
@@ -88,8 +98,7 @@ function mount(next) {
         if (!disposed && result.failed) api?.setToast({message: 'Some map libraries could not load. Reload the editor to retry.'});
       });
     },
-    initialData: {elements: [...restoreElements(drawing.elements, null),
-      ...convertToExcalidrawElements(graphShapes(next.graph, next.selected, next.selectedEdge), {regenerateIds: false})],
+    initialData: {elements: orderedScene(restoreElements(drawing.elements, null),managedElements(next.graph)),
       files: drawing.files, libraryItems: library.then(result => result.items), appState: {gridModeEnabled: true}},
     viewModeEnabled: !next.editing,
     theme: next.dark ? 'dark' : 'light',
@@ -110,6 +119,19 @@ window.addEventListener('message', event => {
       api?.updateScene({appState: {theme: message.dark ? 'dark' : 'light'}});
     }
   } else if (message.type === 'fit') api?.scrollToContent(undefined, {fitToContent: true, viewportZoomFactor: 0.7});
+  else if (message.type === 'water-brush' && state?.editing && api) {
+    const target=state.graph.nodes.find(node=>String(node.id)===String(message.nodeId) && node.category==='water');
+    if(!target)return;
+    waterTarget=null;
+    api.updateScene({appState:{selectedElementIds:{},currentItemStrokeColor:'#1971c2',currentItemBackgroundColor:'transparent',
+      currentItemStrokeWidth:[2,4,8].includes(message.width)?message.width:4,currentItemRoughness:0}});
+    api.setActiveTool({type:'freedraw'});
+    waterTarget=target.id;
+    brushStartIds=new Set(api.getSceneElements().map(e=>e.id));
+  }
+  else if (message.type === 'select-tool' && state?.editing && api) {
+    waterTarget=null;brushStartIds=null;api.setActiveTool({type:'selection'});
+  }
   else if (message.type === 'clear') {
     disposed = true;
     render(null, document.getElementById('editor'));
@@ -119,6 +141,11 @@ window.addEventListener('message', event => {
 send('ready');
 
 let pointerStart;
+document.getElementById('editor').addEventListener('keyup',event=>{
+  if(event.key.startsWith('Arrow') && state?.editing && state.graph.kind==='realm') {
+    graphKey='';applyState(state);
+  }
+});
 document.getElementById('editor').addEventListener('pointerdown',event=>{
   if(event.target.tagName!=='CANVAS' || event.button!==0 || !api)return;
   const tool=api.getAppState().activeTool.type;
@@ -126,7 +153,31 @@ document.getElementById('editor').addEventListener('pointerdown',event=>{
   pointerStart={x:event.clientX,y:event.clientY};
 },true);
 document.getElementById('editor').addEventListener('pointerup',event=>{
+  if(waterTarget!==null && api?.getAppState().activeTool.type==='freedraw') {
+    const target=waterTarget, previousIds=brushStartIds;
+    setTimeout(()=>{
+      if(disposed || !api)return;
+      const stroke=api.getSceneElements().find(e=>e.type==='freedraw' && !previousIds.has(e.id));
+      const node=state.graph.nodes.find(n=>n.id===target);
+      if(!stroke || !node || stroke.points.length<2)return;
+      // The stroke belongs to this water article, so it follows the same
+      // visibility rules as its former marker rather than the free drawing.
+      node.geometry=shapeGeometry(stroke);
+      node.x=stroke.x+stroke.width/2;node.y=stroke.y+stroke.height/2;
+      const drawing=drawingFromScene(api.getSceneElements().filter(e=>e.id!==stroke.id),api.getFiles());
+      state.graph.drawing=drawing;
+      waterTarget=null;brushStartIds=null;
+      inputDrawingKey='';graphKey='';
+      send('change',{drawing,moves:[{id:String(node.id),x:node.x,y:node.y,geometry:node.geometry}]});
+      api.setActiveTool({type:'selection'});applyState(state);
+    },0);
+  }
   const start=pointerStart;pointerStart=null;
+  // Rebuild terrain around the final landmark position after a drag, without
+  // replacing the scene while the pointer is still down.
+  if(start && state?.editing && state.graph.kind==='realm' && Math.hypot(event.clientX-start.x,event.clientY-start.y)>6) {
+    setTimeout(()=>{if(!disposed){graphKey='';applyState(state);}},0);
+  }
   if(!start || !api || Math.hypot(event.clientX-start.x,event.clientY-start.y)>6)return;
   const view=api.getAppState(), zoom=view.zoom.value;
   const hit=graphHit(state.graph,(event.clientX-view.offsetLeft)/zoom-view.scrollX,

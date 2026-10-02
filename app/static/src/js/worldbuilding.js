@@ -1,5 +1,14 @@
 // Shared structured generators. Table data is supplied by Tools or the map editor.
+import {settingName} from './naming.js';
 export function generateWorldbuilding(data, subcategory, random = Math.random, options = {}) {
+  const result=rollWorldbuilding(data,subcategory,random,options);
+  result.title=settingName(data,result.category,result.fields,result.title,random);
+  if(result.mapKind==='realm')result.poiNames=result.fields.POIs.map((body,i)=>
+    settingName(data,result.poiKinds[i],{},body.replace(/\s+/g,' ').trim(),random));
+  return result;
+}
+
+function rollWorldbuilding(data, subcategory, random = Math.random, options = {}) {
   const count = fallback => options.poiCount === undefined ? fallback
     : Math.max(3, Math.min(20, Math.trunc(Number(options.poiCount)) || fallback));
   const roll = sides => Math.floor(random() * sides);
@@ -12,14 +21,9 @@ export function generateWorldbuilding(data, subcategory, random = Math.random, o
       realmSetting.Theme.Factions.FactionAdvantages.NumberOfAdvantages[
         roll(realmSetting.Theme.Factions.FactionAdvantages.NumberOfAdvantages.length)
       ];
-    let advantages = [];
-    for (let i = 0; i < advantageNumber; i++) {
-      advantages.push(
-        realmSetting.Theme.Factions.FactionAdvantages.Advantage[
-          roll(realmSetting.Theme.Factions.FactionAdvantages.Advantage.length)
-        ]
-      );
-    }
+    const available=[...realmSetting.Theme.Factions.FactionAdvantages.Advantage];
+    const advantages=[];
+    for(let i=0;i<advantageNumber;i++) advantages.push(available.splice(roll(available.length),1)[0]);
     let factions = {};
     factions = {
       Type: realmSetting.Theme.Factions.FactionTypes.Type[
@@ -207,7 +211,7 @@ export function generateWorldbuilding(data, subcategory, random = Math.random, o
       }
     }
 
-    return {title: `Dungeon: ${result.Purpose['Original Use']}`, category: 'location', fields: result, mapKind: 'dungeon'};
+    return {title: `Dungeon: ${result.Purpose['Original Use']}`, category: 'dungeon', fields: result, mapKind: 'dungeon'};
   } else if (subcategory === "Forest") {
     result.Traits = {
       Traits:
@@ -307,7 +311,7 @@ export function generateWorldbuilding(data, subcategory, random = Math.random, o
       result.trails.push(`${path}, ${type}, ${marker}`);
     }
 
-    return {title: `Forest: ${result.Traits.Traits}`, category: 'location', fields: result, mapKind: 'forest'};
+    return {title: `Forest: ${result.Traits.Traits}`, category: 'forest', fields: result, mapKind: 'forest'};
   } else if (subcategory === "Realm") {
     result.Culture = {
       Character:
@@ -444,7 +448,7 @@ export function generateWorldbuilding(data, subcategory, random = Math.random, o
       poiKinds.push(type.toLowerCase());
     }
 
-    return {title: `Realm: ${result.Culture.Character}`, category: 'location', fields: result, mapKind: 'realm', poiKinds};
+    return {title: `Realm: ${result.Culture.Character}`, category: 'realm', fields: result, mapKind: 'realm', poiKinds};
   } else if (subcategory === "Faction") {
     result = rollStandaloneFaction(setting);
     return {title: `Faction: ${result.Type}`, category: 'faction', fields: result};

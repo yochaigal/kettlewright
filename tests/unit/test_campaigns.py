@@ -1,4 +1,5 @@
 import json
+from html import unescape
 import re
 
 import pytest
@@ -65,7 +66,7 @@ def test_direct_map_publication_includes_drawing_and_drops_unused_files(setup, k
     response = client.post('/maps/new', data={'party_id': 1, 'title': 'Shared map',
         'kind': kind, 'draft': json.dumps(draft)})
     assert response.status_code == 302
-    graph = client.get(response.location + 'data').json
+    graph = graph_from_article(client,response.location)
     assert graph['kind'] == kind
     assert graph['drawing']['elements'][0]['text'] == 'PUBLIC DRAWING'
     assert graph['drawing']['files'] == {}
@@ -128,6 +129,11 @@ def reveal(client, entry_id, party_id=1, version=0, title='Known name', body='Kn
         f'version_{party_id}':version, f'title_{party_id}':title, f'body_{party_id}':body, **extra})
 
 
+def graph_from_article(client, url):
+    page = client.get(url, follow_redirects=True).get_data(as_text=True)
+    return json.loads(unescape(re.search(r'data-graph="([^"]+)"', page)[1]))
+
+
 def create_map(client, campaign_id=1, title='SECRET MAP', nodes=2, kind='dungeon'):
     draft={'nodes':[{'id':f'new-node-{i}', 'number':i+1,'x':i*100,'y':100,
         'title':f'SECRET ROOM {i}', 'body':f'SECRET TRAP {i}'} for i in range(nodes)],
@@ -136,7 +142,7 @@ def create_map(client, campaign_id=1, title='SECRET MAP', nodes=2, kind='dungeon
     response=client.post('/maps/new',data={'campaign_id':campaign_id,'title':title,
         'kind':kind,'draft':json.dumps(draft)})
     assert response.status_code==302, response.get_data(as_text=True)
-    map_id=int(re.search(r'/maps/(\d+)/edit',response.location).group(1))
+    map_id=graph_from_article(client,response.location)['id']
     return map_id,client.get(f'/maps/{map_id}/data').json
 
 
@@ -391,12 +397,12 @@ def test_parallel_session_updates_are_rejected(setup):
 def test_templates_and_tools_handoff(setup):
     app,client=setup
     for path in ['/campaigns/','/campaigns/1/','/materials/','/materials/new',
-                 '/materials/new?party_id=1','/materials/import','/maps/new','/tools/']:
+                 '/materials/new?party_id=1','/materials/import','/materials/generate','/tools/']:
         response=client.get(path)
         assert response.status_code==200, (path,response.get_data(as_text=True))
     map_id,_=create_map(client)
-    assert client.get(f'/maps/{map_id}/edit').status_code==200
-    assert set(client.get('/maps/tables').json)=={'Dungeon','Forest','Realm'}
+    assert client.get(f'/maps/{map_id}/edit').location == f'/materials/{map_entry_id(app,map_id)}/edit'
+    assert set(client.get('/maps/tables').json)=={'Dungeon','Forest','Realm','NPCGenerator','Names'}
 
 
 def test_delete_location_cleans_paths_and_conflicts_with_old_map_editor(setup):
@@ -434,13 +440,13 @@ def test_direct_map_publication_without_campaign_is_atomic(setup):
     response=client.post('/maps/new',data={'party_id':1,'title':'Drawn during play',
         'kind':'realm','draft':json.dumps(draft)})
     assert response.status_code==302
-    assert '/party/1/maps/' in response.location
+    assert '/party/1/materials/' in response.location
     with app.app_context():
         assert Campaign.query.count()==1 # Existing campaign only, no implicit campaign.
         assert all(entry.campaign_id is None for entry in ContentEntry.query.all())
         assert PartyPresentation.query.count()==2
     login(client,2)
-    data=client.get(response.location+'data').json
+    data=graph_from_article(client,response.location)
     assert data['title']=='Drawn during play'
     assert data['nodes'][0]['title']=='Known place'
     login(client,3)
@@ -462,17 +468,17 @@ def test_map_pois_are_children_not_workspace_locations(setup, kind, campaign_id)
     standalone = create_entry(client, campaign_id=campaign_id, category='location', title='Standalone')
     response = client.post('/maps/new', data={'campaign_id': campaign_id, 'title': 'Root map',
         'kind': kind, 'draft': json.dumps(nested_draft(kind))})
-    map_id = int(re.search(r'/maps/(\d+)/edit', response.location)[1])
+    map_id = graph_from_article(client,response.location)['id']
     graph = client.get(f'/maps/{map_id}/data').json
     root_id = map_entry_id(app, map_id)
     workspace = f'/campaigns/{campaign_id}/' if campaign_id else '/materials/'
     html = client.get(workspace).get_data(as_text=True)
     assert set(map(int, re.findall(r'data-root-entry-id="(\d+)"', html))) == {standalone, root_id}
-    assert set(map(int, re.findall(r'data-child-entry-id="(\d+)"', html))) == {n['entry_id'] for n in graph['nodes']}
+    assert set(map(int, re.findall(r'data-child-entry-id="(\d+)"', html))) == {n['entry_id'] for n in graph['nodes'] + graph['edges']}
     for node in graph['nodes']:
         page = client.get(f'/materials/{node["entry_id"]}/edit').get_data(as_text=True)
         parents = re.search(r'<nav class="material-parents".*?</nav>', page, re.S)[0]
-        assert f'href="/maps/{map_id}/edit"' in parents
+        assert f'href="/materials/{root_id}/edit"' in parents
         assert 'Root map' in parents
     # A detached original still exists and becomes standalone, as before.
     removed_id = graph['nodes'].pop()['entry_id']
@@ -498,14 +504,13 @@ def test_nested_maps_follow_entrance_in_material_hierarchy(setup, kind):
         entrance = tree[0]['children'][0]
         assert entrance['entry'].id == saved['nodes'][0]['entry_id']
         assert entrance['number'] == 1
-        nested = entrance['children'][0]
-        assert nested['entry'].id == child_id
-        assert [item['entry'].title for item in nested['children']] == ['Entrance', 'Treasure']
+        assert entrance['entry'].id == child_id
+        assert [item['entry'].title for item in entrance['children']] == ['Entrance', 'Treasure', 'Secret door']
     html = client.get('/campaigns/1/').get_data(as_text=True)
     assert re.findall(r'data-root-entry-id="(\d+)"', html) == [str(root_id)]
-    child_page = client.get(f'/maps/{child_map_id}/edit').get_data(as_text=True)
+    child_page = client.get(f'/materials/{child_id}/edit').get_data(as_text=True)
     parents = re.search(r'<nav class="material-parents".*?</nav>', child_page, re.S)[0]
-    assert f'/materials/{saved["nodes"][0]["entry_id"]}/edit' in parents
+    assert f'/materials/{root_id}/edit' in parents
 
 
 def test_legacy_hierarchy_cycles_remain_accessible_and_scoped(setup):
@@ -547,7 +552,8 @@ def test_generated_nested_map_is_atomic_private_and_not_duplicated(setup, kind):
     assert child['title'] == graph['nodes'][0]['title']
     assert len(child['nodes']) == 2
     assert child['edges'][0]['path_type'] == 'hidden'
-    assert child['body'] == 'GENERATED PRIVATE INTERIOR'
+    assert child['body'] == graph['nodes'][0]['body'] + '\n\nGENERATED PRIVATE INTERIOR'
+    assert map_entry_id(app, nested_id) == saved['nodes'][0]['entry_id']
     child_entry_id = map_entry_id(app, nested_id)
     with app.app_context():
         assert db.session.get(ContentEntry, child_entry_id).campaign_id == 1
@@ -562,8 +568,8 @@ def test_generated_nested_map_is_atomic_private_and_not_duplicated(setup, kind):
     public = client.get('/party/1/materials/data').json['entries']
     root = next(item for item in public if item['id'] == root_id)
     assert root['links'] == [{'id': saved['nodes'][0]['entry_id'], 'title': 'Known dungeon'}]
-    assert client.get(f'/party/1/maps/{nested_id}/data').status_code == 404
-    assert reveal(client, child_entry_id, title='Known interior').status_code == 302
+    assert client.get(f'/party/1/maps/{nested_id}/data').json['nodes'] == []
+    assert reveal(client, child_entry_id, version=1, title='Known interior').status_code == 302
     public = client.get('/party/1/materials/data').json['entries']
     root = next(item for item in public if item['id'] == root_id)
     assert {'id': child_entry_id, 'title': 'Known interior'} in root['links']
@@ -612,13 +618,15 @@ def test_create_and_show_region_keeps_generated_interiors_private(setup):
     response = client.post('/maps/new', data={'party_id': 1, 'campaign_id': 1,
         'title': 'Region', 'kind': 'realm', 'draft': json.dumps(draft)})
     assert response.status_code == 302
-    graph = client.get(response.location + 'data').json
+    graph = graph_from_article(client,response.location)
     assert len(graph['nodes']) == 1
-    assert graph['nodes'][0]['nested_map_id'] is None
+    assert graph['nodes'][0]['nested_map_id'] is not None
+    assert 'GENERATED PRIVATE INTERIOR' not in graph['nodes'][0]['body']
     with app.app_context():
         assert PointcrawlMap.query.count() == 2
         child = PointcrawlMap.query.filter_by(kind='dungeon').one()
-        assert not child.entry.presentations
+        assert child.entry.presentations
+        assert 'GENERATED PRIVATE INTERIOR' not in child.entry.presentations[0].body
         assert all(not node.entry.presentations for node in child.nodes)
 
 
@@ -770,7 +778,7 @@ def test_rich_map_notes_locations_and_paths_roundtrip(setup):
     response = client.post('/maps/new', data={'campaign_id': 1, 'kind': 'dungeon',
         'title': 'Rich map', 'body': rich, 'draft': json.dumps(draft)})
     assert response.status_code == 302
-    map_id = int(re.search(r'/maps/(\d+)/edit', response.location).group(1))
+    map_id = graph_from_article(client,response.location)['id']
     graph = client.get(f'/maps/{map_id}/data').json
     assert graph['body'] == rich
     assert graph['nodes'][0]['body'] == rich
@@ -1025,7 +1033,8 @@ def test_bulk_delete_map_preview_includes_all_descendants_and_paths(setup):
     graph['nodes'][0]['nested_draft'] = nested_draft('forest')
     assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)}).status_code == 200
     root_id = map_entry_id(app, map_id)
-    token, listed = deletion_preview(client, [root_id, graph['nodes'][0]['entry_id']])
+    token, listed = deletion_preview(client, [root_id, graph['nodes'][0]['entry_id']],
+        versions={graph['nodes'][0]['entry_id']: 2})
     with app.app_context():
         assert listed == {entry.id for entry in ContentEntry.query.all()}
     assert client.post('/materials/bulk-delete', data={'deletion_token': token}).status_code == 302
@@ -1078,23 +1087,24 @@ def test_bulk_delete_validates_selection_scope_versions_and_csrf(setup):
         assert ContentEntry.query.count() == 2
 
 
-def test_deleting_nested_map_keeps_entrance_and_invalidates_parent_editor(setup):
+def test_deleting_article_with_map_removes_entrance_and_invalidates_parent_editor(setup):
     app, client = setup
     parent_id, graph = create_map(client)
     graph['nodes'][0]['nested_draft'] = nested_draft()
     saved = client.post(f'/maps/{parent_id}/data', data={'graph': json.dumps(graph)}).json
     nested_id = saved['nodes'][0]['nested_map_id']
     root_id = map_entry_id(app, nested_id)
-    token, _ = deletion_preview(client, [root_id])
+    token, _ = deletion_preview(client, [root_id], versions={root_id: saved['nodes'][0]['entry_version']})
     assert client.post('/materials/bulk-delete', data={'deletion_token': token}).status_code == 302
     parent = client.get(f'/maps/{parent_id}/data').json
-    assert parent['nodes'][0]['entry_id'] == saved['nodes'][0]['entry_id']
+    assert [node['entry_id'] for node in parent['nodes']] == [saved['nodes'][1]['entry_id']]
+    assert parent['edges'] == []
     assert parent['nodes'][0]['nested_map_id'] is None
     assert parent['version'] > saved['version']
     assert client.post(f'/maps/{parent_id}/data', data={'graph': json.dumps(saved)}).status_code == 409
     with app.app_context():
         assert PointcrawlMap.query.count() == 1
-        assert ContentEntry.query.count() == 4
+        assert ContentEntry.query.count() == 2
 
 
 def test_bulk_delete_handles_cycles_without_following_arbitrary_links(setup):
@@ -1187,3 +1197,28 @@ def test_map_inline_card_edits_are_private_and_version_checked(setup):
     saved['edges'][0].update(content_changed=True, entry_version=edge['entry_version'], body='Stale')
     assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(saved)}).status_code == 409
     assert client.get(f'/maps/{map_id}/data').json['edges'][0]['body'] == '**Locked** gate'
+
+
+def test_party_tree_uses_published_fields_and_promotes_children_of_hidden_parents(setup):
+    app, client = setup
+    parent = create_entry(client)
+    child = create_entry(client)
+    hidden = create_entry(client)
+    orphan = create_entry(client)
+    with app.app_context():
+        db.session.get(ContentEntry, child).parent_id = parent
+        db.session.get(ContentEntry, orphan).parent_id = hidden
+        db.session.commit()
+    for entry_id, title in [(parent, 'Published parent'), (child, 'Published child'),
+                            (orphan, 'Published orphan')]:
+        assert reveal(client, entry_id, title=title).status_code == 302
+    login(client, 2)
+    html = client.get('/party/1/materials/').get_data(as_text=True)
+    assert f'data-tree-key="entry-{parent}"' in html
+    assert 'Published parent' in html and 'Published child' in html and 'Published orphan' in html
+    assert 'SECRET NAME' not in html and 'SECRET BODY' not in html
+    assert f'/party/1/materials/{hidden}' not in html
+    assert 'campaign-card' not in html
+    assert 'x-data="materialTree"' in html
+    assert client.get(f'/party/1/materials/{child}/preview').status_code == 200
+    assert client.get(f'/party/1/materials/{hidden}/preview').status_code == 404

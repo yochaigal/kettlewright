@@ -1,3 +1,9 @@
+{% macro page_header(title, level=1, title_model=None) %}
+<div class="campaign-page-header">
+<h{{ level }}{% if title_model %} x-text="{{ title_model }}"{% endif %}>{{ title }}</h{{ level }}>
+{% if caller is defined %}<div class="campaign-actions campaign-page-actions">{{ caller() }}</div>{% endif %}
+</div>
+{% endmacro %}
 {% macro token(version=None) %}
 {{ content_form.csrf_token }}
 {% if version is not none %}<input type="hidden" name="version" value="{{ version }}">{% endif %}
@@ -22,7 +28,19 @@
 </div>
 {% endmacro %}
 {% macro category(selected='custom', generate=False) %}
-<label>{{ _('Category') }}<select name="category" {% if generate %}x-model="category" @change="variant=''; generated=null"{% endif %}>
-{% for key, label in content_categories.items() if key != 'map' or generate %}<option value="{{ key }}" {% if key == selected %}selected{% endif %}>{{ _(label) }}</option>{% endfor %}
+{% set groups = [] %}
+{% for label, keys in category_groups.items() %}
+{% set choices = [] %}
+{% for key in keys if key != 'map' or generate %}{% set unused = choices.append({'value': key, 'label': (_('None') if category_roots.get(label) == key else _(content_categories[key]))}) %}{% endfor %}
+{% if choices %}{% set unused = groups.append({'value': label, 'label': _(label), 'choices': choices}) %}{% endif %}
+{% endfor %}
+{% if selected in ('overview', 'map') %}{% set unused = groups.append({'value': 'Legacy', 'label': _('Legacy'), 'choices': [{'value': selected, 'label': _(content_categories[selected])}]}) %}{% endif %}
+<div data-category-groups="{{ groups|tojson|forceescape }}" data-selected-category="{{ selected }}">
+<label>{{ _('Top Category') }}<select name="top_category" x-model="topCategory" @change="changeTopCategory()">
+{% for group in groups %}<option value="{{ group.value }}" {% if selected in category_groups.get(group.value, (selected,)) %}selected{% endif %}>{{ group.label }}</option>{% endfor %}
 </select></label>
+<label x-show="subCategories.length > 1">{{ _('Sub Category') }}<select name="category" x-model="category" @change="resetDraft()">
+<template x-for="choice in subCategories" :key="choice.value"><option :value="choice.value" x-text="choice.label" :selected="choice.value===category"></option></template>
+</select></label>
+</div>
 {% endmacro %}

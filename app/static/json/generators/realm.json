@@ -698,7 +698,7 @@
       ]
     },
     "PointsOfInterest": {
-      "POI": ["Waypoint", "Settlement", "Curiosity", "Curiosity", "Lair", "Dungeon", "Dungeon", "Forest"],
+      "POI": ["Waypoint", "Settlement", "Curiosity", "Curiosity", "Curiosity", "Curiosity", "Lair", "Lair", "Dungeon", "Dungeon", "Dungeon", "Dungeon"],
       "Settlements": {
         "Settlement": [
           "Academy",

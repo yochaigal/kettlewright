@@ -1,0 +1,14 @@
+.article-preview { position: fixed; z-index: 1100; width: 760px; height: 680px; min-width: min(240px, calc(100vw - 16px)); min-height: min(160px, calc(100vh - 16px)); max-width: calc(100vw - 16px); max-height: calc(100vh - 16px); box-sizing: border-box; display: flex; flex-direction: column; resize: both; overflow: hidden; background: #fffdf7; color: #222; border: 1px solid #777; border-radius: 6px; box-shadow: 0 6px 24px #0004; }
+.dark-mode .article-preview { background: #292929; color: #eee; }
+.article-preview-bar { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 1px solid #8886; cursor: move; touch-action: none; }
+.article-preview-bar span { flex: 1; font-weight: bold; }
+.article-preview-bar button { cursor: pointer; padding: 4px 8px; }
+.article-preview-content { padding: 12px 16px; overflow: auto; flex: 1; min-width: 0; min-height: 0; container-type: size; overflow-wrap: anywhere; }
+.article-preview-content h2 { margin-top: 0; }
+.article-preview-content img { max-width: 100%; }
+.article-preview-content pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.article-preview-content table { width: 100%; table-layout: fixed; }
+.article-preview-with-map { width: 1240px; height: 1160px; }
+.article-preview-map-canvas { display: block; width: 100%; height: clamp(160px, 60cqh, 640px); border: 1px solid #8886; box-sizing: border-box; }
+.article-preview-map-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.article-preview-map [role=status]:empty { display: none; }

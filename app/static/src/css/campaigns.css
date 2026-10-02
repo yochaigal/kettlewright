@@ -104,3 +104,28 @@
   .campaign-workspace .article-tree .article-tree {margin-left:.35rem;padding-left:.35rem;}
   .import-preview > li {margin-left:min(calc(var(--tree-depth)*.5rem),3rem);}
 }
+
+.campaign-page-header {display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;}
+.campaign-page-header h1,.campaign-page-header h2,.campaign-page-header .campaign-actions {margin:0;}
+
+.map-legend {display:flex;flex-wrap:wrap;gap:0.7rem 1.3rem;list-style:none;padding:0;margin:1rem 0;}
+.map-legend li {display:flex;align-items:center;gap:0.5rem;}
+.map-key {display:inline-block;width:1rem;height:1rem;border:2px solid;flex-shrink:0;}
+.map-key.terrain {border-color:#5c713b;background:repeating-linear-gradient(45deg,#e9efcf,#e9efcf 3px,#b9c793 3px,#b9c793 4px);width:1.5rem;}
+.map-key.landmark {border:0;background:#765329;clip-path:polygon(50% 0,100% 100%,0 100%);}
+.map-key.water {border-color:#1971c2;background:#d0ebff;border-radius:50%;width:1.5rem;}
+.map-key.waypoint {border-color:#9c5b00;background:#ffec99;transform:rotate(45deg);}
+.map-key.settlement {border-color:#9c4221;background:#ffe8cc;}
+.map-key.forest {border-color:#2b6d3d;background:#d3f9d8;transform:rotate(45deg);}
+.map-key.dungeon {border-color:#6741a5;background:#e5dbff;}
+.realm-geography {margin:1rem 0;}
+
+.map-key.lair {border-color:#c92a2a;background:#ffe3e3;transform:rotate(45deg);}
+.map-key.curiosity {border-color:#087f8c;background:#c5f6fa;border-radius:50%;}
+
+.campaign-page-header > h1,.campaign-page-header > h2 {flex:1 1 14rem;min-width:0;}
+.campaign-page-header .campaign-page-actions {flex:0 1 auto;justify-content:flex-end;margin-left:auto;}
+.campaign-workspace > .campaign-page-form {margin-top:0;}
+.campaign-workspace .material-bulk-actions {justify-content:flex-end;}
+.material-bulk-actions .material-selection-count {margin-right:auto;}
+.campaign-workspace form[hidden] {display:none!important;}

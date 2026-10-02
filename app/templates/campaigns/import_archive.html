@@ -1,7 +1,10 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token with context %}
+{% from 'campaigns/forms.html' import token, page_header with context %}
 {% block workspace %}
-<h1>{{ _('Import campaigns and articles') }}</h1>
+{% call page_header(_('Import campaigns and articles')) %}
+<button type="submit" form="archive-upload-form">{{ _('Preview import') }}</button>
+{% if preview and not preview.errors %}<button type="submit" form="archive-confirm-form">{{ _('Import all into my library') }}</button>{% endif %}
+{% endcall %}
 <p>{{ _('Upload a ZIP, TAR or TAR.GZ archive of UTF-8 Markdown files. Nothing enters your library until you confirm the preview.') }}</p>
 <details><summary>{{ _('Markdown format and limits') }}</summary>
 <p>{{ _('Every file needs layout: default, title and type in YAML Front Matter. parent refers to an exact, unique title inside this archive. Folders do not determine hierarchy.') }}</p>
@@ -18,14 +21,13 @@ parent: My Campaign
 type: Dungeon
 ---
 Dungeon description</pre>
-<p>{{ _('Types: Campaign, Realm, Dungeon, Forest, Freeform, Overview, NPC, Location, Lore, Faction, Relic, Note, Bestiary, Item, Spellbook, Culture, Custom. Category plurals are also accepted.') }}</p>
-<p>{{ _('Campaigns become new campaigns; their descriptions become Overview articles. Articles without a parent go to Unfiled articles. Map types create empty editable maps with the Markdown description. All imported content remains private. Existing library records are never replaced.') }}</p>
+<p>{{ _('Types:') }} Campaign, Freeform, {{ content_categories.values()|reject('equalto', 'Geography')|join(', ') }}.</p>
+<p>{{ _('Campaigns become new campaigns; their descriptions become Overview articles. Articles without a parent go to Unfiled articles. Spatial article types include an editable drawing alongside their description. All imported content remains private. Existing library records are never replaced.') }}</p>
 <p>{{ _('Limits: 10 MB archive, 500 entries, 512 KB per file, 50,000 description characters, 20 MB unpacked, 20 hierarchy levels. Non-Markdown files are skipped; linked images and attachments are not imported. Previews expire after one hour; a new preview replaces your previous one.') }}</p>
 </details>
 {% if message %}<p role="alert">{{ message }}</p>{% endif %}
-<form method="post" enctype="multipart/form-data">{{ token() }}
+<form id="archive-upload-form" method="post" enctype="multipart/form-data">{{ token() }}
 <label>{{ _('Archive') }}<input type="file" name="archive" accept=".zip,.tar,.tar.gz,.tgz" required></label>
-<button type="submit">{{ _('Preview import') }}</button>
 </form>
 {% if preview %}
 <h2>{{ _('Import preview') }} · {{ preview.rows|length }} {{ _('Markdown files') }}</h2>
@@ -38,8 +40,7 @@ Dungeon description</pre>
 {% if row.body %}<details><summary>{{ _('Preview content') }}</summary><div class="rich-content">{{ render_content(row.body) }}</div></details>{% endif %}</li>
 {% endfor %}
 </ol>
-{% if not preview.errors %}<form method="post">{{ token() }}<input type="hidden" name="preview_id" value="{{ preview_id }}">
-<button type="submit">{{ _('Import all into my library') }}</button>
+{% if not preview.errors %}<form id="archive-confirm-form" method="post" hidden>{{ token() }}<input type="hidden" name="preview_id" value="{{ preview_id }}">
 </form>{% endif %}
 {% endif %}
 {% endblock %}

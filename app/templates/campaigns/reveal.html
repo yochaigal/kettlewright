@@ -1,19 +1,21 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token, rich_editor with context %}
+{% from 'campaigns/forms.html' import token, rich_editor, page_header with context %}
 {% block workspace %}
-<h1>{{ _('Reveal to party') }}</h1>
-<a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ (entry.title or _('Private original'))|markdown_inline }}</a>
+{% if parties %}
+<form class="campaign-page-form" method="post" x-data="revealContent" data-rows="{{ initial|tojson|forceescape }}"
+ data-original="{{ {'title':entry.title, 'body':entry.body, 'path_type':entry.path_type}|tojson|forceescape }}">
+{% call page_header(_('Reveal to party')) %}
+<a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ _('Private original') }}</a>
+<button type="submit" :disabled="!rows.some(row => row.selected)">{{ _('Publish selected versions') }}</button>
+{% endcall %}
 <p>{{ _('Prepare what each party knows. Only selected parties are updated when you publish.') }}</p>
 <p>{{ _('Checking a party selects it for publication. Finish with Publish selected versions, then use View as party to verify the saved result. Private descriptions are copied only when you choose Copy from private original.') }}</p>
-{% if parties %}
-<form method="post" x-data="revealContent" data-rows="{{ initial|tojson|forceescape }}"
- data-original="{{ {'title':entry.title, 'body':entry.body, 'path_type':entry.path_type}|tojson|forceescape }}">
 {{ token() }}
 {% if entry.pointcrawl %}
 <input type="hidden" name="map_version" value="{{ entry.pointcrawl.version }}">
 <label class="campaign-check"><input type="checkbox" name="publish_drawing" value="1">{{ _('Also publish the entire saved drawing to selected parties') }}</label>
-<p>{{ _('Includes every freehand mark, text and image. Locations and paths are revealed separately. Leave unchecked to keep each party’s existing drawing.') }}</p>
-<a href="{{ url_for('campaigns.map_edit', map_id=entry.pointcrawl.id) }}" target="_blank" rel="noopener">{{ _('Review saved drawing') }}</a>
+<p>{{ _('Includes every freehand mark, text and image. Points of interest and paths are revealed separately. Leave unchecked to keep each party’s existing drawing.') }}</p>
+<a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}" target="_blank" rel="noopener">{{ _('Review saved drawing') }}</a>
 {% endif %}
 <template x-for="row in rows" :key="row.id">
 <fieldset>
@@ -28,12 +30,13 @@
 <button type="button" @click="copySelected(row)">{{ _('Use this text for selected parties') }}</button></div>
 </fieldset>
 </template>
-<button type="submit" :disabled="!rows.some(row => row.selected)">{{ _('Publish selected versions') }}</button>
+
 </form>
 {% for party in parties %}{% set row = presentations.get(party.id) %}{% if row and row.published %}
 <div class="campaign-actions"><form method="post" action="{{ url_for('campaigns.revoke', entry_id=entry.id, party_id=party.id) }}">{{ token(row.version) }}
 <button>{{ _('Revoke publication') }} · {{ party.name }}</button></form>
 <a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}">{{ _('View as party') }}</a></div>
 {% endif %}{% endfor %}
-{% else %}<p>{{ _('Connect a party in campaign settings, or create a party first.') }}</p>{% endif %}
+{% else %}{% call page_header(_('Reveal to party')) %}<a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ _('Private original') }}</a>{% endcall %}
+<p>{{ _('Connect a party in campaign settings, or create a party first.') }}</p>{% endif %}
 {% endblock %}

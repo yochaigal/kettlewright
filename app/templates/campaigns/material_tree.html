@@ -1,5 +1,5 @@
 {% macro material_selection(entry) %}
-<label class="campaign-check material-selection" title="{{ _('Select for deletion') }}"><input type="checkbox" name="entry_ids" value="{{ entry.id }}" x-model="selected" aria-label="{{ _('Select for deletion') }}: {{ entry.title or _('Untitled private original') }}"><span class="sr-only">{{ _('Select for deletion') }}</span></label>
+<label class="campaign-check material-selection"><input type="checkbox" name="entry_ids" value="{{ entry.id }}" x-model="selected" aria-label="{{ _('Select article') }}: {{ entry.title or _('Untitled private original') }}"><span class="sr-only">{{ _('Select article') }}</span></label>
 <input type="hidden" name="version_{{ entry.id }}" value="{{ entry.version }}">
 {% endmacro %}
 {% macro material_row(item, selectable) %}
@@ -7,11 +7,11 @@
 <span class="tree-row">
 {% if selectable %}{{ material_selection(entry) }}{% endif %}
 <a class="tree-title" href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{% if item.number is not none %}{{ item.number }}. {% endif %}{{ entry.title or _('Untitled private original') }}</a>
-<span class="tree-meta">{{ _(entry.pointcrawl.kind|capitalize) if entry.pointcrawl else _(content_categories.get(entry.category, entry.category)) }}</span>
+<span class="tree-meta">{{ _(content_categories.get(entry.category, entry.category)) }}</span>
+{% if entry.is_heart %}<span class="tree-meta">{{ _('Heart') }}</span>{% endif %}
 {% if item.children %}<span class="tree-count" title="{{ _('Direct children') }}">{{ item.children|length }}</span>{% endif %}
 <span class="tree-excerpt">{{ content_excerpt(entry.body) }}</span>
 <a class="tree-visibility" href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{% set published = entry.presentations|selectattr('published')|list %}{% if published %}{{ _('Shared') }} · {{ published|length }}{% else %}{{ _('Private') }}{% endif %}</a>
-{% if entry.pointcrawl %}<a class="tree-map" href="{{ url_for('campaigns.map_edit', map_id=entry.pointcrawl.id) }}">{{ _('Map') }}</a>{% endif %}
 </span>
 {% endmacro %}
 {% macro material_children(items, selectable=True, root=True) %}

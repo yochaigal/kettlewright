@@ -1,0 +1,25 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token, page_header with context %}
+{% block workspace %}
+{% call page_header(_('Reveal selected articles')) %}
+<a href="{{ back_url }}">{{ _('Cancel') }}</a>
+{% if parties %}<button type="submit" form="reveal-articles-form">{{ _('Publish selected articles') }} ({{ entries|length }})</button>{% endif %}
+{% endcall %}
+<p>{{ _('Publishes the saved private titles and descriptions of the checked articles. Existing party text will be replaced. Child articles are included only if checked separately.') }}</p>
+{% if parties %}
+<form id="reveal-articles-form" method="post" action="{{ url_for('campaigns.bulk_reveal') }}">
+{{ token() }}<input type="hidden" name="reveal_token" value="{{ reveal_token }}">
+<fieldset><legend>{{ _('Reveal to party') }}</legend>
+{% for party in parties %}<label class="campaign-check"><input type="checkbox" name="party_ids" value="{{ party.id }}">{{ party.name|markdown_inline }}</label>{% endfor %}
+</fieldset>
+{% if entries|selectattr('pointcrawl')|list %}
+<label class="campaign-check"><input type="checkbox" name="publish_drawing" value="1">{{ _('Also publish the entire saved drawing to selected parties') }}</label>
+<p>{{ _('Includes every freehand mark, text and image. Leave unchecked to keep each party’s existing drawing.') }}</p>
+{% endif %}
+</form>
+{% else %}<p>{{ _('Connect a party in campaign settings, or create a party first.') }}</p>{% endif %}
+{% for entry in entries %}<details><summary>{{ entry.title or _('Untitled private original') }} · {{ _(content_categories.get(entry.category, entry.category)) }}</summary>
+<div class="rich-content">{{ render_content(entry.body) }}</div>
+<a href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Prepare individual party versions') }}</a>
+</details>{% endfor %}
+{% endblock %}

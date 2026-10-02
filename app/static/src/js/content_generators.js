@@ -1,10 +1,12 @@
+import {generateSettingArticle, settingTypes, article} from './setting_articles.js';
 import {generateWorldbuilding} from './worldbuilding.js';
+import {settingName} from './naming.js';
 
 // All consumers retain this result object; saving never rolls the tables again.
 export function generateResult(data, category, subcategory, random = Math.random, options = {}) {
   const pick = values => values[Math.floor(random() * values.length)];
   if (category === 'Worldbuilding') {
-    return generateWorldbuilding({Dungeon:data.Dungeon, Forest:data.Forest, Realm:data.Realm,
+    return generateWorldbuilding({Names:data.Names,Dungeon:data.Dungeon, Forest:data.Forest, Realm:data.Realm,
       Faction:data.FactionGenerator, 'Faction Actions':data.FactionActions, NPC:data.NPCGenerator}, subcategory, random, options);
   }
   if (category === 'Items') {
@@ -13,7 +15,7 @@ export function generateResult(data, category, subcategory, random = Math.random
   }
   if (category === 'Weather') {
     const type = pick(data.Weather.Types[subcategory]);
-    return {title:'Weather', category:'note', fields:{Season:subcategory, Type:type, ...data.Weather.Difficulty[type]}};
+    return {title:'Weather', category:'weather', fields:{Season:subcategory, Type:type, ...data.Weather.Difficulty[type]}};
   }
   if (category === 'Events') {
     return {title:subcategory, category:'note', fields:pick(data[subcategory])};
@@ -55,21 +57,27 @@ export function resultText(result) {
   return render(result.fields);
 }
 
-export function graphFromResult(result, random = Math.random, tables = null) {
+export function graphFromResult(result, random = Math.random, tables = null, options = {}) {
   if (!result.mapKind || !Array.isArray(result.fields.POIs)) throw new Error('This result has no locations.');
-  const pois = result.fields.POIs;
+  const pois = options.generateChildren === false ? [] : result.fields.POIs;
   const columns = Math.ceil(Math.sqrt(pois.length));
   const nodes = pois.map((body, i) => ({id:`new-node-${i}`, number:i+1,
-    title:body.replace(/\s+/g,' ').trim().slice(0,200), body,
+    title:result.poiNames?.[i] || body.replace(/\s+/g,' ').trim().slice(0,200), body,
     poi_kind:result.poiKinds?.[i] || null,
+    category:result.poiKinds?.[i] || (body.startsWith('Heart')?'settlement':body.split(':')[0].trim().toLowerCase()),
+    is_heart:result.mapKind==='realm' && i===0,
     x:100+(i%columns)*210+Math.round(random()*60),
     y:100+Math.floor(i/columns)*180+Math.round(random()*60), nested_map_id:null}));
   const edges = [], connected = new Set(nodes.length ? [0] : []), pairs = new Set();
   const distance = (a,b) => (nodes[a].x-nodes[b].x)**2+(nodes[a].y-nodes[b].y)**2;
   function add(a,b) {
-    const trail = result.fields.trails?.[edges.length % result.fields.trails.length] || '';
+    let trail = result.fields.trails?.[edges.length % result.fields.trails.length] || '';
+    if(!trail && tables?.Realm && result.mapKind==='realm') {
+      const fields=tables.Realm.Paths.PathFeatures;
+      trail=Object.entries(fields).map(([key,values])=>`${key}: ${values[Math.floor(random()*values.length)]}`).join('. ');
+    }
     // Fallback weights are generator choices, not a rules-table probability.
-    const type = trail ? trail.split(',')[0].trim().toLowerCase()
+    const type = result.fields.trails?.length ? trail.split(',')[0].trim().toLowerCase()
       : ['standard','standard','standard','standard','hidden','conditional'][Math.floor(random()*6)];
     edges.push({id:`new-edge-${edges.length}`, source:nodes[a].id, target:nodes[b].id,
       title:`${a+1} – ${b+1}`, body:trail,
@@ -91,16 +99,41 @@ export function graphFromResult(result, random = Math.random, tables = null) {
   }
   candidates.sort((a,b)=>a.distance-b.distance);
   candidates.slice(0, Math.max(1, Math.floor(nodes.length/6))).forEach(({a,b})=>add(a,b));
-  if (tables && result.mapKind === 'realm') for (const node of nodes) {
+  if (options.generateChildren !== false && tables && result.mapKind === 'realm') for (const node of nodes) {
     const kind = node.poi_kind || suggestedMapKind(node);
     if (['dungeon','forest'].includes(kind)) node.nested_draft = nestedMapDraft(node, kind, tables, random);
   }
-  return {title:result.title, body:resultText(result), kind:result.mapKind, nodes, edges};
+  const children=[];
+  if(tables?.NPCGenerator && result.mapKind==='realm' && options.generateChildren !== false) {
+    const rolled=result.fields;
+    children.push({category:'people',title:'People',body:'',children:[
+      article('culture','Culture',rolled.Culture),
+      article('resources','Resources',rolled.Resources),
+      generateArticle(tables,'npc','',random)]});
+    const faction=rolled.Factions;
+    children.push(article('faction',settingName(tables,'faction',faction,`Faction: ${faction.Type}`,random),{},[
+      article('faction_type','Faction types',{Type:faction.Type,Agent:faction.Agent}),
+      article('faction_trait','Faction traits',{'Trait 1':faction['Trait 1'],'Trait 2':faction['Trait 2']}),
+      article('advantage','Advantages',{Advantages:faction.Advantages}),
+      article('agenda','Agendas',{Agenda:faction.Agenda,Obstacle:faction.Obstacle})]));
+    const terrains=rolled.Terrain.map(description=>{
+      const match=/^(.*?)\. Difficulty: (.*?)\. Landmark: (.*?)\./.exec(description);
+      return generateSettingArticle(tables,'terrain',random,{...options,
+        terrainDifficulty:match[2],terrainFields:{Terrain:match[1],Landmark:match[3]}});
+    });
+    // The already rolled climate is shared by this region, not rolled again.
+    for(const terrain of terrains) terrain.children=terrain.children.filter(child=>child.category!=='weather');
+    children.push(article('topography','Topography',{},[...terrains,article('weather','Weather',rolled.Weather)]),
+      article('pois','POIs'),article('paths','Paths'));
+  }
+  if(tables && result.mapKind==='forest' && options.generateChildren !== false
+    && random()*100<Number(options.dungeonChance ?? 25)) children.push(generateSettingArticle(tables,'dungeon',random,options));
+  return {title:result.title, body:resultText(result), kind:result.mapKind, nodes, edges, children};
 }
 
 // Older Tools results have no POI metadata; generated names include their type.
 export function suggestedMapKind(node) {
-  return node.poi_kind || (/\bforest\b/i.test(node.title) ? 'forest'
+  return node.poi_kind || (['forest','dungeon'].includes(node.category)?node.category:null) || (/\bforest\b/i.test(node.title) ? 'forest'
     : /\bdungeon\b/i.test(node.title) ? 'dungeon' : null);
 }
 
@@ -111,19 +144,16 @@ export function nestedMapDraft(node, kind, tables, random = Math.random) {
 }
 
 // Article categories reuse the same rules tables as Tools. No campaign is needed.
-export function generateArticle(data, category, variant='', random=Math.random) {
+export function generateArticle(data, category, variant='', random=Math.random, options={}) {
+  if(settingTypes.has(category)) return generateSettingArticle(data,category,random,options);
   const pick=items=>items[Math.floor(random()*items.length)];
   let result;
   if(category==='npc') result=generateResult(data,'Worldbuilding','NPC',random);
-  else if(category==='faction') result=generateResult(data,'Worldbuilding','Faction',random);
   else if(category==='bestiary') result=generateResult(data,'Monsters',variant || 'Random Monster',random);
   else if(category==='relic' || category==='spellbook') result=generateResult(data,'Items',category==='relic'?'Relics':'Spellbooks',random);
   else if(category==='item') {
     const group=variant || 'Gear', [name,fields]=pick(Object.entries(data.Equipment[group]));
     result={title:name,category:'item',fields:{Type:group,...fields}};
-  } else if(category==='culture') {
-    const people=data.Realm.Theme.People;
-    result={title:'Culture',fields:{Character:pick(people.Culture.Character),Ambition:pick(people.Culture.Ambition),Abundance:pick(people.Resources.Abundance),Scarcity:pick(people.Resources.Scarcity)}};
   } else if(category==='lore') {
     const lore=data.Dungeon.POIs.Lore;
     result={title:'Lore',fields:{'Found in':pick(lore.RoomType),Clue:pick(lore.Clue)}};

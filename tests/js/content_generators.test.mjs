@@ -1,10 +1,27 @@
 import test from 'node:test';
+import {article} from '../../app/static/src/js/setting_articles.js';
 import assert from 'node:assert/strict';
+
+test('setting headings use rolled values and preserve custom names',()=>{
+  for(const [category,placeholder,fields,expected] of [
+    ['culture','Culture',{Character:'Struggling',Ambition:'Conversion'},'Struggling · Conversion'],
+    ['resources','Resources',{Abundance:'Gemstones',Scarcity:'Land'},'Gemstones · Scarce: Land'],
+    ['faction_type','Faction types',{Type:'Commoners',Agent:'Gravedigger'},'Commoners · Gravedigger'],
+    ['faction_trait','Faction traits',{'Trait 1':'Connected','Trait 2':'Selfish'},'Connected · Selfish'],
+    ['advantage','Advantages',{Advantages:['Apparatus','Information']},'Apparatus, Information'],
+    ['agenda','Agendas',{Agenda:'Explore Uncharted Lands',Obstacle:'A powerful foe'},'Explore Uncharted Lands'],
+  ]) {
+    const generated=article(category,placeholder,fields);
+    assert.equal(generated.title,expected);
+    assert.deepEqual(generated.fields,fields);
+    assert.equal(article(category,'My own name',fields).title,'My own name');
+  }
+});
 import {readFileSync} from 'node:fs';
 import {generateResult, graphFromResult, resultText} from '../../app/static/src/js/content_generators.js';
 
 const data={};
-for (const name of ['dungeons','forests','realm','factions','npcs','faction-events','bestiary','custom-monster','reactions','weather','dungeon-events','wilderness-events','reliquary','spellbooks']) {
+for (const name of ['dungeons','forests','realm','factions','npcs','names','faction-events','bestiary','custom-monster','reactions','weather','dungeon-events','wilderness-events','reliquary','spellbooks']) {
   Object.assign(data,JSON.parse(readFileSync(new URL(`../../app/static/json/generators/${name}.json`,import.meta.url))));
 }
 function rng(seed) {return () => {seed=(seed*1664525+1013904223)>>>0; return seed/4294967296;};}
@@ -106,11 +123,111 @@ test('every Article category has a complete editable draft from shared rules tab
   }
   assert.equal(generateArticle(data,'custom'),null);
 });
-test('generated map labels retain their rolled descriptions without invented names',()=>{
+test('generated names preserve rolled descriptions and survive graph conversion',()=>{
   for(const kind of ['Dungeon','Forest','Realm']){
     const result=generateResult(data,'Worldbuilding',kind,rng(16));
-    assert(result.title.startsWith(kind+':'));
+    assert(!result.title.startsWith(kind+':'));
     const graph=graphFromResult(result,rng(1));
-    for(const node of graph.nodes)assert.equal(node.title,node.body.replace(/\s+/g,' ').trim().slice(0,200));
+    assert.deepEqual(graph.nodes.map(n=>n.body),result.fields.POIs);
+    if(kind==='Realm')assert.deepEqual(graph.nodes.map(n=>n.title),result.poiNames);
   }
+});
+
+const {generateArticle}=await import('../../app/static/src/js/content_generators.js');
+const {settingTypes,parentTypes,draftPreview}=await import('../../app/static/src/js/setting_articles.js');
+const flatten=draft=>[draft,...(draft.children||[]).flatMap(flatten)];
+test('setting entities form deterministic typed trees, with an explicit opt-out',()=>{
+  for(const category of settingTypes) {
+    const draft=generateArticle(data,category,'',rng(5));
+    assert.deepEqual(draft,generateArticle(data,category,'',rng(5)),category);
+    for(const child of flatten(draft)) {
+      assert(child.title && child.title.length<=200,category);
+      assert(!/undefined|\[object Object\]/.test(child.body),`${category}: ${child.body}`);
+      assert.notEqual(child.category,'location');
+    }
+    if(parentTypes.has(category)) assert.equal(generateArticle(data,category,'',rng(5),{generateChildren:false}).children.length,0);
+  }
+  const realm=generateArticle(data,'realm','',rng(5));
+  assert.deepEqual(realm.children.map(x=>x.category),['people','faction','topography','pois','paths']);
+  assert.deepEqual(realm.children[0].children.map(x=>x.category),['culture','resources','npc']);
+  const pois=realm.children.find(x=>x.category==='pois').children;
+  assert.equal(pois.filter(x=>x.is_heart).length,1);
+  assert.equal(pois[0].category,'settlement');
+  assert(draftPreview(realm).includes(realm.children[0].children[0].title));
+});
+test('forest and dungeon chance boundaries and terrain difficulty use the selected options',()=>{
+  for(const forestChance of [0,100]) {
+    const draft=generateArticle(data,'terrain','',rng(1),{terrainDifficulty:'Tough',forestTerrain:true,forestChance,dungeonChance:100});
+    assert.equal(draft.fields.Difficulty,'Tough');
+    const forest=draft.children.find(x=>x.category==='forest');
+    assert.equal(!!forest,forestChance===100);
+    if(forest) assert(forest.children.some(x=>x.category==='dungeon'));
+  }
+  assert(!generateArticle(data,'forest','',rng(1),{dungeonChance:0}).children.some(x=>x.category==='dungeon'));
+  const advantages=generateArticle(data,'advantage','',()=>0.99).fields.Advantages;
+  assert.equal(advantages.length,4);
+  assert.equal(new Set(advantages).size,4);
+});
+test('map hierarchy preserves the rolled realm and disabled children produce an empty graph',()=>{
+  const result=generateResult(data,'Worldbuilding','Realm',rng(12));
+  const graph=graphFromResult(result,rng(12),data);
+  assert.equal(graph.children[0].children[0].body,resultText({fields:result.fields.Culture}));
+  assert.equal(graph.children[1].children[0].fields.Type,result.fields.Factions.Type);
+  assert.equal(graph.children[2].children.filter(x=>x.category==='terrain').length,result.fields.Terrain.length);
+  for(const terrain of graph.children[2].children.filter(x=>x.category==='terrain')) {
+    assert.equal(terrain.children.find(x=>x.category==='landmark').fields.Landmark,terrain.fields.Landmark);
+  }
+  assert(graph.nodes.every(x=>['settlement','waypoint','curiosity','lair','dungeon'].includes(x.category)));
+  assert(graph.edges.every(x=>x.body.includes('Feature:') && x.body.includes('Condition:')));
+  const empty=graphFromResult(result,rng(1),data,{generateChildren:false});
+  assert.deepEqual([empty.nodes,empty.edges,empty.children],[[],[],[]]);
+});
+
+test('realm terrain follows the d6 count and difficulty weights with a landmark for every seed',()=>{
+  for(const [random,count] of [[()=>0,1],[()=>0.999,6]]) {
+    const realm=generateArticle(data,'realm','',random);
+    const terrain=realm.children.find(x=>x.category==='topography').children;
+    assert.equal(terrain.length,count);
+    for(const region of terrain) {
+      assert.equal(region.children.filter(x=>x.category==='landmark').length,1);
+      assert.equal(region.children.find(x=>x.category==='landmark').fields.Landmark,region.fields.Landmark);
+    }
+    const tools=generateResult(data,'Worldbuilding','Realm',random);
+    assert.equal(tools.fields.Terrain.length,count);
+  }
+  for(let die=1;die<=6;die++) {
+    const region=generateArticle(data,'terrain','',()=>(die-.5)/6,{generateChildren:false});
+    assert.equal(region.fields.Difficulty,die<=3?'Easy':die<=5?'Tough':'Perilous');
+    assert(region.fields.Landmark);
+  }
+});
+
+test('using a path draft preserves its rolled path type in the form',async()=>{
+  const {contentDraft}=await import('../../app/static/src/js/alpine/components/content-draft.js');
+  const component=contentDraft();
+  component.formElement={elements:{title:{},body:{dispatchEvent(){}},path_type:{value:'standard'}}};
+  component.generated=generateArticle(data,'path','',rng(1),{pathType:'hidden'});
+  component.useGenerated();
+  assert.equal(component.formElement.elements.path_type.value,'hidden');
+  assert.equal(component.generated,null);
+});
+
+test('category picker restores existing leaves and clears stale drafts when changing groups',async()=>{
+  const {contentDraft}=await import('../../app/static/src/js/alpine/components/content-draft.js');
+  const component=contentDraft();
+  component.categoryGroups=[{value:'People',choices:[{value:'people'},{value:'npc'}]},
+    {value:'POIs',choices:[{value:'pois'},{value:'settlement'}]}];
+  component.category='npc';
+  component.syncTopCategory();
+  assert.equal(component.topCategory,'People');
+  assert.deepEqual(component.subCategories.map(x=>x.value),['people','npc']);
+  component.generated={title:'Old draft'};component.children=[{category:'npc'}];component.variant='Old';
+  component.topCategory='POIs';
+  component.changeTopCategory();
+  assert.equal(component.category,'pois');
+  assert.equal(component.generated,null);
+  assert.deepEqual(component.children,[]);
+  assert.equal(component.variant,'');
+  component.category='settlement';component.syncTopCategory();
+  assert.equal(component.topCategory,'POIs');
 });
