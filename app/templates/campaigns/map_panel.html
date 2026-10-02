@@ -1,0 +1,29 @@
+{% from 'campaigns/forms.html' import token, page_header with context %}
+<div x-data="pointcrawl" data-graph="{{ graph|tojson|forceescape }}" data-editing="{{ 'true' if editing else 'false' }}"
+ {% if editing %}data-geography-url="{{ url_for('campaigns.realm_geography', map_id=pointcrawl.id) }}" data-save-url="{{ url_for('campaigns.map_data', map_id=pointcrawl.id) }}"{% endif %}
+ data-labels="{{ {'loadError':_('Unable to load the drawing editor. Check your connection and retry.'),'location':_('Article'),'saved':_('Drawing saved.'),'error':_('Unable to save. Check the connection, numbering and linked articles.'),'conflict':_('This drawing changed in another tab. Reload before saving.'),'duplicate':_('This article or path already exists.')}|tojson|forceescape }}">
+{% call page_header(_('Drawing'), level=2) %}
+{% if editing %}<small :style="{visibility: dirty ? 'visible' : 'hidden'}">{{ _('Unsaved changes') }}</small>{% endif %}
+{% endcall %}
+{% if editing %}<input type="hidden" form="article-form" name="graph" :disabled="!dirty" :value="JSON.stringify(graph)">{% endif %}
+{% if editing %}<p x-show="showLocations">{{ _('Geometry is shared. New articles and paths remain private until revealed.') }}</p>
+
+<form x-ref="saveForm" @submit.prevent="save()" hidden>{{ token() }}</form>
+{% endif %}
+{% if editing and pointcrawl.kind == 'realm' and not graph.has_contents %}
+<div class="realm-geography" x-show="!graph.has_contents" x-cloak>
+<p>{{ _('Place terrain, water and points of interest from this article. Existing positions and drawings are preserved.') }}</p>
+<button type="button" @click="prepareGeography()" :disabled="dirty || saving || generating">{{ _('Prepare realm geography') }}</button>
+<small x-show="dirty">{{ _('Save article changes before preparing geography.') }}</small>
+<template x-if="geographyDraft"><div>
+<details open x-show.important="geographyDraft.length"><summary>{{ _('Geography preview') }}</summary><div class="rich-content" x-html="$richHTML(previewGeography())"></div></details>
+<p x-show="!geographyDraft.length">{{ _('The article already has its geography sections. Any missing drawing objects will be placed from those articles.') }}</p>
+<p>{{ _('Existing articles will be placed without copying them. Missing sections shown above will be created privately.') }}</p>
+<button type="button" @click="applyGeography()" :disabled="saving || dirty">{{ _('Apply geography') }}</button>
+<button type="button" @click="geographyDraft=null">{{ _('Discard') }}</button>
+</div></template>
+</div>
+{% endif %}
+<p class="campaign-status" role="status" x-text="status"></p>
+<div :inert="saving">{% include 'campaigns/canvas.html' %}</div>
+</div>

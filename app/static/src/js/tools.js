@@ -110,12 +110,11 @@ rollButton.addEventListener('click', () => {
       const button = document.createElement('button'); button.type = 'button'; button.textContent = label;
       button.addEventListener('click', () => {
         sessionStorage.setItem('kw-content-result', JSON.stringify({...result, body:resultText(result)}));
-        window.location.href = map ? '/maps/new?from_tools=1' : '/materials/import';
+        window.location.href = map ? '/materials/generate?from_tools=1' : '/materials/import';
       });
       actions.append(button);
     }
-    action(labels.save, false);
-    if (result.mapKind) action(labels.map, true);
+    action(labels.save, !!result.mapKind);
     card.append(actions);
   }
   resultDisplay.prepend(card);

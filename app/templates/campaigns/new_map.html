@@ -1,15 +1,19 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token, rich_editor with context %}
+{% from 'campaigns/forms.html' import token, rich_editor, page_header with context %}
 {% block workspace %}
-{% if party %}<p>{{ _('The map and every location and path in this draft will be shown to') }} <strong>{{ party.name|markdown_inline }}</strong> {{ _('when you save.') }}</p>{% endif %}
-<h1>{{ _('New geography') }}</h1>
-<form method="post" x-data="pointcrawl" data-editing="true" data-creating="true" data-kind="{{ kind }}"
- data-labels="{{ {'loadError':_('Unable to load the map editor. Check your connection and retry.'),'location':_('Location'),'error':_('Unable to generate a map. Please try again.'),'duplicate':_('This path already exists.')}|tojson|forceescape }}"
+<form class="campaign-page-form" method="post" x-data="pointcrawl" data-editing="true" data-creating="true" data-kind="{{ kind }}"
+ data-labels="{{ {'loadError':_('Unable to load the drawing editor. Check your connection and retry.'),'location':_('Article'),'error':_('Unable to generate an article. Please try again.'),'duplicate':_('This path already exists.')}|tojson|forceescape }}"
  @submit="if (!canvasReady || generating) $event.preventDefault(); else dirty=false">
+{% call page_header(_('New article')) %}<button type="submit" :disabled="!canvasReady || generating">{{ _('Create and show') if party else _('Save private article') }}</button>{% endcall %}
+{% if party %}<p>{{ _('The article and every child article and path in this draft will be shown to') }} <strong>{{ party.name|markdown_inline }}</strong> {{ _('when you save.') }}</p>{% endif %}
 {{ token() }}
 {% if party %}<input type="hidden" name="party_id" value="{{ party.id }}">{% endif %}
-<label>{{ _('Geography type') }}<select name="kind" x-model="kind"><option value="realm">{{ _('Realm') }}</option><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option><option value="freeform">{{ _('Freeform') }}</option></select></label>
+{% if not party %}<label>{{ _('Campaign') }}<select name="campaign_id"><option value="">{{ _('Unfiled') }}</option>{% for item in campaigns %}<option value="{{ item.id }}" {% if campaign and campaign.id == item.id %}selected{% endif %}>{{ item.name|markdown_inline|striptags }}</option>{% endfor %}</select></label>{% endif %}
+<label>{{ _('Article type') }}<select name="kind" x-model="kind"><option value="realm">{{ _('Realm') }}</option><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option><option value="freeform">{{ _('Topography') }}</option></select></label>
 <div x-show="kind!=='freeform'">
+<label class="campaign-check"><input type="checkbox" x-model="generateChildren">{{ _('Generate all child articles') }}</label>
+<label x-show="kind==='realm' && generateChildren">{{ _('Forest contents chance') }} (%)<input type="number" min="0" max="100" x-model.number="forestChance"></label>
+<label x-show="generateChildren && (kind==='realm' || kind==='forest')">{{ _('Dungeon in forest chance') }} (%)<input type="number" min="0" max="100" x-model.number="dungeonChance"></label>
 <fieldset class="poi-options"><legend>{{ _('Dice / points of interest') }}</legend>
 {% for value, label in [('', _('Random count')), ('3', '3'), ('6', '6'), ('8', '8'), ('12', '12'), ('20', '20')] %}
 <label class="campaign-check"><input type="radio" name="poi_count" value="{{ value }}" x-model="poiCount">{{ label }}</label>
@@ -18,16 +22,17 @@
 </fieldset>
 <button type="button" @click="generate()" :disabled="generating">{{ _('Random') }}</button>
 <p>{{ _('Generating replaces this unsaved draft. Review and edit it before saving.') }}</p>
-<p x-show="kind==='realm'">{{ _('Dungeon and Forest locations in a realm receive generated linked maps. Linked maps remain private until revealed separately.') }}</p>
+<p x-show="kind==='realm'">{{ _('With child generation enabled, dungeon points receive linked articles and forest terrain may receive forest contents. Child articles remain private until revealed separately.') }}</p>
 </div>
 <p x-show="kind==='freeform'">{{ _('Draw a city, settlement or any place with freehand lines, shapes, labels and images.') }}</p>
 <label>{{ _('Title') }}<input type="text" name="title" required maxlength="200" x-ref="title"></label>
 {{ rich_editor(_('Description'), model='draftBody') }}
-{% if not party %}<label>{{ _('Campaign') }}<select name="campaign_id"><option value="">{{ _('Unfiled') }}</option>{% for item in campaigns %}<option value="{{ item.id }}" {% if campaign and campaign.id == item.id %}selected{% endif %}>{{ item.name|markdown_inline|striptags }}</option>{% endfor %}</select></label>{% endif %}
+
+<details x-show="graph.children?.length"><summary>{{ _('Child articles') }}</summary><div class="rich-content" x-html="$richHTML(childrenPreview())"></div></details>
 <input type="hidden" name="draft" :value="JSON.stringify(graph)">
 <p class="campaign-status" role="status" x-text="status"></p>
 {% set editing = true %}{% set nested_maps = [] %}{% set locations = [] %}
 {% include 'campaigns/canvas.html' %}
-<button type="submit" :disabled="!canvasReady || generating">{{ _('Create and show map') if party else _('Save private map') }}</button>
+
 </form>
 {% endblock %}

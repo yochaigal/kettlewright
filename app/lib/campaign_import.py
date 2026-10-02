@@ -98,7 +98,9 @@ def parse_markdown(name, text):
     kind = metadata['type'].casefold()
     aliases = {label.casefold(): key for key, label in CATEGORIES.items()}
     aliases.update({key: key for key in CATEGORIES})
-    aliases.update({'article': 'custom', 'gear': 'item', 'weapon': 'item', 'weapons': 'item', 'armor': 'item'})
+    aliases.update({'npcs': 'npc', 'factions': 'faction', 'settlements': 'settlement',
+                    'waypoints': 'waypoint', 'curiosities': 'curiosity', 'lairs': 'lair'})
+    aliases.update({'location': 'custom', 'locations': 'custom', 'article': 'custom', 'gear': 'item', 'weapon': 'item', 'weapons': 'item', 'armor': 'item'})
     category = 'campaign' if kind == 'campaign' else 'map' if kind in MAP_KINDS else aliases.get(kind)
     if category is None:
         raise ImportError(f'Unknown type: {metadata["type"]}')
@@ -205,5 +207,7 @@ def import_preview(payload, owner_id):
         db.session.add(entry)
         if row['category'] == 'map':
             db.session.add(PointcrawlMap(entry=entry, kind=row['kind']))
+            if row['kind'] != 'freeform':
+                entry.category = row['kind']
         objects[i] = entry
     return len(campaigns), len(objects)

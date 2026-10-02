@@ -14,6 +14,25 @@ MAX_DRAWING_BYTES = 12 * 1024 * 1024
 DRAWING_TYPES = {'rectangle', 'ellipse', 'diamond', 'text', 'line', 'arrow', 'freedraw', 'image'}
 
 
+def validate_node_geometry(value, category):
+    if value is None:
+        return None
+    allowed = {'terrain': {'line', 'rectangle'}, 'water': {'line', 'ellipse', 'freedraw'}}
+    if not isinstance(value, dict) or value.get('type') not in allowed.get(category, set()):
+        abort(400, 'Invalid geography shape.')
+    # Reuse drawing limits, retaining geometry only: never links or card metadata.
+    fields = ('type', 'x', 'y', 'width', 'height', 'angle', 'points', 'strokeWidth')
+    shape = {key: value[key] for key in fields if key in value}
+    shape['id'] = 'geometry'
+    clean = validate_drawing({'elements': [shape], 'files': {}})['elements'][0]
+    width = clean.get('strokeWidth', 2)
+    if isinstance(width, bool) or not isinstance(width, (int, float)) or not math.isfinite(width) or not 0 < width <= 100:
+        abort(400, 'Invalid brush width.')
+    if clean['type'] in ('line', 'freedraw') and len(clean['points']) < 2:
+        abort(400, 'Draw at least two points.')
+    return {key: clean[key] for key in fields if key in clean}
+
+
 def validate_drawing(value, *, allow_frames=False):
     if value is None:
         return copy.deepcopy(EMPTY_DRAWING)

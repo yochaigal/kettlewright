@@ -1,54 +1,69 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token, category, rich_editor with context %}
+{% from 'campaigns/forms.html' import token, category, rich_editor, page_header with context %}
 {% block workspace %}
 {% if entry %}{% include 'campaigns/parents.html' %}{% endif %}
-<h1>{{ _('Create and show') if party else (_('Edit article') if entry else _('New article')) }}</h1>
+{% call page_header(_('Create and show') if party else (_('Edit article') if entry else _('New article'))) %}
+{% if entry %}
+<a href="{{ url_for('campaigns.new_entry', campaign_id=entry.campaign_id or '', parent_id=entry.id) }}">{{ _('Add child article') }}</a>
+<a href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Reveal to party') }}</a>
+{% endif %}
+<button type="submit" form="article-form">{{ _('Create and show') if party else _('Save private original') }}</button>
+{% endcall %}
 {% if party %}<p>{{ _('This will be visible to members of') }} <strong>{{ party.name|markdown_inline }}</strong>.</p>
 {% else %}<p>{{ _('Private original. Saving here does not change any party’s version.') }}</p>{% endif %}
-<form method="post" x-data="contentDraft" data-import="{{ 'true' if not entry else 'false' }}" data-generate-error="{{ _('Unable to generate an article. Please try again.') }}">
+<form id="article-form" method="post" x-data="contentDraft" data-category="{{ entry.category if entry else 'custom' }}" data-import="{{ 'true' if not entry else 'false' }}" data-generate-error="{{ _('Unable to generate an article. Please try again.') }}">
 {{ token(entry.version if entry else none) }}
 {% if party %}<input type="hidden" name="party_id" value="{{ party.id }}">{% endif %}
-{% if not entry or entry.category not in ('map', 'path') %}{{ category(entry.category if entry else 'custom', generate=not entry) }}{% endif %}
 {% if not party %}
-<label>{{ _('Campaign') }}<select name="campaign_id"><option value="">{{ _('Unfiled') }}</option>
+<label>{{ _('Campaign') }}<select name="campaign_id" @change="formElement.elements.parent_id.value=''"><option value="">{{ _('Unfiled') }}</option>
 {% for item in campaigns %}<option value="{{ item.id }}" {% if campaign and campaign.id == item.id %}selected{% endif %}>{{ item.name|markdown_inline|striptags }}</option>{% endfor %}
 </select></label>
 {% endif %}
+{% if not entry or entry.category not in ('map', 'path') %}{{ category(entry.category if entry else 'custom', generate=not entry) }}{% endif %}
+<label>{{ _('Parent article') }}<select name="parent_id">
+<option value="">{{ _('None') }}</option>
+{% for item in parent_candidates if not entry or item.id != entry.id %}<option value="{{ item.id }}" x-show="String(formElement.elements.campaign_id?.value || '')==='{{ item.campaign_id or '' }}'" {% if selected_parent|string == item.id|string %}selected{% endif %}>{{ item.title }} · {{ item.campaign.name if item.campaign else _('Unfiled') }}</option>{% endfor %}
+</select></label>
+<label class="campaign-check" x-show.important="category==='settlement'" x-cloak><input type="checkbox" name="is_heart" x-model="isHeart" {% if entry and entry.is_heart %}checked{% endif %}>{{ _('Heart') }}</label>
+<input type="hidden" name="children" :value="JSON.stringify(children)">
+{% if not entry %}
+<p x-show="children.length" x-cloak>{{ _('Child articles will be saved privately with this article.') }} <button type="button" @click="children=[]">{{ _('Discard child articles') }}</button></p>
+<details x-show="children.length" x-cloak><summary>{{ _('Child articles') }}</summary><div class="rich-content" x-html="$richHTML(preview({body:'',children}))"></div></details>
+{% endif %}
 {% if not entry %}
 <div class="article-generator" x-show="category!=='custom'" x-cloak>
+<label class="campaign-check" x-show.important="canGenerateChildren"><input type="checkbox" x-model="generateChildren">{{ _('Generate all child articles') }}</label>
+<label x-show="generateChildren && ['realm','topography','terrain'].includes(category)">{{ _('Forest contents chance') }} (%)<input type="number" min="0" max="100" x-model.number="forestChance"></label>
+<label x-show="generateChildren && ['realm','topography','terrain','forest'].includes(category)">{{ _('Dungeon in forest chance') }} (%)<input type="number" min="0" max="100" x-model.number="dungeonChance"></label>
 <div class="campaign-actions">
-<template x-if="variants.length"><label><span x-text="category==='map' ? {{ _('Geography type')|tojson|forceescape }} : {{ _('Generator')|tojson|forceescape }}"></span><select x-model="variant" @change="generated=null"><template x-for="choice in variants" :key="choice"><option :value="choice" x-text="choice"></option></template></select></label></template>
-<button type="button" x-show="!freeform" @click="generate()" :disabled="generating">{{ _('Random') }}</button>
-<button type="button" x-show="freeform" @click="openFreeform()">{{ _('Open blank map') }}</button>
-<span x-show="!freeform">{{ _('Review a generated draft before using it.') }}</span>
-<span x-show="freeform">{{ _('Draw a city, settlement or any place on a blank canvas.') }}</span>
+<template x-if="variants.length"><label>{{ _('Generator') }}<select x-model="variant" @change="generated=null"><template x-for="choice in variants" :key="choice"><option :value="choice" x-text="choice"></option></template></select></label></template>
+<button type="button" @click="generate()" :disabled="generating">{{ _('Random') }}</button>
+<span>{{ _('Review a generated draft before using it.') }}</span>
 </div>
 <p role="status" x-text="status" x-show="status"></p>
 <template x-if="generated"><div class="generated-article">
-<h2 x-text="generated.title"></h2><div class="rich-content" x-html="$richHTML(generated.body)"></div>
+<h2 x-text="generated.title"></h2><div class="rich-content" x-html="$richHTML(preview(generated))"></div>
 <div class="campaign-actions"><button type="button" @click="useGenerated()">{{ _('Use this draft') }}</button><button type="button" @click="generated=null">{{ _('Discard') }}</button></div>
 </div></template>
 </div>
 {% endif %}
-<div {% if not entry %}x-show="category!=='map'"{% endif %}>
-<label>{{ _('Title') }}<input type="text" name="title" maxlength="200" value="{{ entry.title if entry else '' }}" x-model="title" {% if not entry %}:required="category!=='map'"{% endif %}></label>
+<div>
+<label>{{ _('Title') }}<input type="text" name="title" maxlength="200" value="{{ entry.title if entry else '' }}" x-model="title" {% if not entry %}required{% endif %}></label>
 {{ rich_editor(_('Description'), entry.body if entry else '', model='body') }}
-{% if entry and entry.category == 'path' %}
-<label>{{ _('Path type') }}<select name="path_type">{% for kind in path_types %}<option value="{{ kind }}" {% if entry.path_type == kind %}selected{% endif %}>{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>
-{% endif %}
+<div x-show="category==='path'" x-cloak>
+<label>{{ _('Path type') }}<select name="path_type">{% for kind in path_types %}<option value="{{ kind }}" {% if entry and entry.path_type == kind %}selected{% endif %}>{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>
+</div>
 {% if entry %}
 <details class="article-relations"><summary>{{ _('Related articles') }}</summary><fieldset><legend class="sr-only">{{ _('Related articles') }}</legend>
-{% if automatic_links %}<p>{{ _('Locations and linked maps are included automatically.') }}</p>{% endif %}
+{% if automatic_links %}<p>{{ _('Points of interest and linked articles are included automatically.') }}</p>{% endif %}
 {% for item in candidates %}<label class="campaign-check"><input type="checkbox" name="links" value="{{ item.id }}" {% if item.id in selected_links or item.id in automatic_links %}checked{% endif %} {% if item.id in automatic_links %}disabled{% endif %}><a href="{{ url_for('campaigns.edit_entry', entry_id=item.id) }}">{{ (item.title or _('Untitled private original'))|markdown_inline }}</a> · {{ _(content_categories.get(item.category, item.category)) }}</label>{% endfor %}
 </fieldset></details>
 {% endif %}
-<button type="submit">{{ _('Create and show') if party else _('Save private original') }}</button>
 </div>
 </form>
 {% if entry %}
-<div class="campaign-actions"><a class="button" href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Reveal to party') }}</a>
-{% if entry.pointcrawl %}<a href="{{ url_for('campaigns.map_edit', map_id=entry.pointcrawl.id) }}">{{ _('Edit map') }}</a>{% endif %}
-</div>
+{% if not entry.pointcrawl and entry.category in article_map_kinds %}<form method="post" action="{{ url_for('campaigns.article_map', entry_id=entry.id) }}">{{ token(entry.version) }}<button>{{ _('Add drawing') }}</button></form>{% endif %}
+{% if entry.pointcrawl %}{% include 'campaigns/map_panel.html' %}{% endif %}
 <details><summary>{{ _('Delete article') }}</summary>
 <p>{{ _('This also removes nested contents, connected paths and published versions. Review the complete list before deleting.') }}</p>
 <form method="post" action="{{ url_for('campaigns.bulk_delete') }}">{{ token() }}

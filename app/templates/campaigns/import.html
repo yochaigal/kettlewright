@@ -1,9 +1,10 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token, category, rich_editor with context %}
+{% from 'campaigns/forms.html' import token, category, rich_editor, page_header with context %}
 {% block workspace %}
-<h1>{{ _('Save or reveal a Tools result') }}</h1>
-<form method="post" action="{{ url_for('campaigns.new_entry') }}" x-data="contentDraft" data-import="true">
+{% call page_header(_('Save or reveal a Tools result')) %}<button type="submit" form="tools-import-form">{{ _('Save') }}</button>{% endcall %}
+<form id="tools-import-form" method="post" action="{{ url_for('campaigns.new_entry') }}" x-data="contentDraft" data-import="true">
 {{ token() }}{{ category() }}
+<input type="hidden" name="children" :value="JSON.stringify(children)">
 <label>{{ _('Title') }}<input type="text" name="title" required maxlength="200"></label>
 {{ rich_editor(_('Description')) }}
 <fieldset x-data="{destination:'private'}"><legend>{{ _('Destination') }}</legend>
@@ -12,6 +13,5 @@
 <label x-show="destination === 'private'">{{ _('Campaign') }}<select name="campaign_id" :disabled="destination !== 'private'"><option value="">{{ _('Unfiled') }}</option>{% for campaign in campaigns %}<option value="{{ campaign.id }}">{{ campaign.name|markdown_inline|striptags }}</option>{% endfor %}</select></label>
 <label x-show="destination === 'party'">{{ _('Party') }}<select name="party_id" :disabled="destination !== 'party'" :required="destination === 'party'"><option value="">{{ _('Choose a party') }}</option>{% for party in parties %}<option value="{{ party.id }}">{{ party.name|markdown_inline|striptags }}</option>{% endfor %}</select></label>
 </fieldset>
-<button>{{ _('Save') }}</button>
 </form>
 {% endblock %}

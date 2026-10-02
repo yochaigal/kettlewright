@@ -1,15 +1,13 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token with context %}
+{% from 'campaigns/forms.html' import token, page_header with context %}
 {% from 'campaigns/material_tree.html' import material_children, tree_toolbar with context %}
 {% block workspace %}
-<h1>{{ campaign.name if campaign else _('Unfiled articles') }}</h1>
-<p>{{ _('Only you can see originals. Party versions are published separately.') }}</p>
-<div class="campaign-actions">
-<a class="button" href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id if campaign else '') }}">{{ _('New article') }}</a>
-<a class="button" href="{{ url_for('campaigns.new_map', campaign_id=campaign.id if campaign else '') }}">{{ _('New map') }}</a>
+{% call page_header(campaign.name if campaign else _('Unfiled articles')) %}
+<a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id if campaign else '') }}">{{ _('New article') }}</a>
 <a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a>
 <a href="{{ url_for('main.tools') }}">{{ _('Tools') }}</a>
-</div>
+{% endcall %}
+<p>{{ _('Only you can see originals. Party versions are published separately.') }}</p>
 <form method="post" action="{{ url_for('campaigns.bulk_delete') }}" x-data="materialTree">
 {{ token() }}
 <input type="hidden" name="campaign_id" value="{{ campaign.id if campaign else '' }}">
@@ -20,7 +18,7 @@
 <span role="status">{{ _('Selected:') }} <span x-text="selected.length">0</span></span>
 <button type="submit" :disabled="selected.length === 0">{{ _('Delete selected…') }}</button>
 </div>
-<p>{{ _('Selected maps and locations include their nested contents. Review the complete list before deleting.') }}</p>
+<p>{{ _('Selected articles include their nested contents. Review the complete list before deleting.') }}</p>
 {% endif %}
 {{ tree_toolbar() }}
 {{ material_children(hierarchy) }}
@@ -40,7 +38,7 @@
 <button>{{ _('Save settings') }}</button>
 </form>
 <form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}">{{ token(campaign.version) }}
-<p>{{ _('Deleting this campaign permanently deletes all its articles, maps, locations, paths and published party versions. This cannot be undone. Connected parties and their characters are kept.') }}</p>
+<p>{{ _('Deleting this campaign permanently deletes all its articles, drawings and published party versions. This cannot be undone. Connected parties and their characters are kept.') }}</p>
 <button>{{ _('Delete campaign and all articles') }}</button></form>
 </details>
 {% endif %}

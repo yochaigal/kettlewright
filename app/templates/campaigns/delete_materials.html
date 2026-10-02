@@ -1,9 +1,12 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token with context %}
+{% from 'campaigns/forms.html' import token, page_header with context %}
 {% block workspace %}
-<h1>{{ _('Delete articles') }}</h1>
+{% call page_header(_('Delete articles')) %}
+<a href="{{ back_url }}">{{ _('Cancel') }}</a>
+<button type="submit" form="delete-articles-form">{{ _('Permanently delete') }} ({{ entries|length }})</button>
+{% endcall %}
 <p>{{ _('These articles will be permanently deleted, including their published party versions. This cannot be undone.') }}</p>
-<p>{{ _('The list includes nested maps, their locations and connected paths. Articles reused on other maps will also be removed from those maps.') }}</p>
+<p>{{ _('The list includes child articles and connected paths. References to these articles will also be removed from other drawings.') }}</p>
 <p><strong>{{ _('Total:') }} {{ entries|length }}</strong></p>
 <ul class="campaign-list">
 {% for entry in entries %}
@@ -11,9 +14,8 @@
 — {{ _(content_categories.get(entry.category, 'Paths')) }}</li>
 {% endfor %}
 </ul>
-<form method="post" action="{{ url_for('campaigns.bulk_delete') }}">{{ token() }}
+<form id="delete-articles-form" method="post" hidden action="{{ url_for('campaigns.bulk_delete') }}">{{ token() }}
 <input type="hidden" name="deletion_token" value="{{ deletion_token }}">
-<div class="campaign-actions"><a href="{{ back_url }}">{{ _('Cancel') }}</a>
-<button>{{ _('Permanently delete') }} ({{ entries|length }})</button></div>
+
 </form>
 {% endblock %}

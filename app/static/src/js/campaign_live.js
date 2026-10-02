@@ -24,6 +24,9 @@ export async function refreshPartyContent(partyId = null) {
         const page=new DOMParser().parseFromString(await response.text(),'text/html');
         const container=document.getElementById('party-content-results'), updated=page.getElementById('party-content-results');
         if (container && updated) container.replaceChildren(...updated.childNodes);
+        const drawing=page.querySelector('[data-graph]');
+        if(drawing)window.dispatchEvent(new CustomEvent('campaign-refresh',{detail:{graph:JSON.parse(drawing.dataset.graph)}}));
+        else if(document.querySelector('[data-graph]'))window.dispatchEvent(new CustomEvent('campaign-access-lost'));
       }
     }
   } catch { /* Retain the last view during transient connection failures. */ }
