@@ -1197,3 +1197,28 @@ def test_map_inline_card_edits_are_private_and_version_checked(setup):
     saved['edges'][0].update(content_changed=True, entry_version=edge['entry_version'], body='Stale')
     assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(saved)}).status_code == 409
     assert client.get(f'/maps/{map_id}/data').json['edges'][0]['body'] == '**Locked** gate'
+
+
+def test_party_tree_uses_published_fields_and_promotes_children_of_hidden_parents(setup):
+    app, client = setup
+    parent = create_entry(client)
+    child = create_entry(client)
+    hidden = create_entry(client)
+    orphan = create_entry(client)
+    with app.app_context():
+        db.session.get(ContentEntry, child).parent_id = parent
+        db.session.get(ContentEntry, orphan).parent_id = hidden
+        db.session.commit()
+    for entry_id, title in [(parent, 'Published parent'), (child, 'Published child'),
+                            (orphan, 'Published orphan')]:
+        assert reveal(client, entry_id, title=title).status_code == 302
+    login(client, 2)
+    html = client.get('/party/1/materials/').get_data(as_text=True)
+    assert f'data-tree-key="entry-{parent}"' in html
+    assert 'Published parent' in html and 'Published child' in html and 'Published orphan' in html
+    assert 'SECRET NAME' not in html and 'SECRET BODY' not in html
+    assert f'/party/1/materials/{hidden}' not in html
+    assert 'campaign-card' not in html
+    assert 'x-data="materialTree"' in html
+    assert client.get(f'/party/1/materials/{child}/preview').status_code == 200
+    assert client.get(f'/party/1/materials/{hidden}/preview').status_code == 404

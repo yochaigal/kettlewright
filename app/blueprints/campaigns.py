@@ -176,8 +176,18 @@ def library():
 def party_materials(party_id):
     party = party_access(party_id)
     preview = request.args.get('preview') == '1'
+    entries = {entry_id: entry for entry_id, entry in known_entries(party.id).items()
+               if entry['category'] != 'path' or not db.session.get(ContentEntry, entry_id).map_edges}
+    hierarchy = material_hierarchy(ContentEntry.query.filter(ContentEntry.id.in_(entries)).all())
+
+    def published_items(items):
+        for item in items:
+            item['entry'] = entries[item['entry'].id]
+            published_items(item['children'])
+
+    published_items(hierarchy)
     return render_template('campaigns/party.html', party=party,
-        entries=[entry for entry in known_entries(party.id).values() if entry['category'] != 'path' or not db.session.get(ContentEntry, entry['id']).map_edges],
+        entries=list(entries.values()), hierarchy=hierarchy,
         editing=party.owner == current_user.id and user_features_enabled() and not preview, preview=preview)
 
 

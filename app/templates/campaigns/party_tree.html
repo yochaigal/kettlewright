@@ -1,0 +1,21 @@
+{% macro party_row(item) %}
+{% set entry = item.entry %}
+<span class="tree-row">
+<a class="tree-title" href="{{ url_for('campaigns.party_entry', party_id=party.id, entry_id=entry.id) }}">{% if item.number is not none %}{{ item.number }}. {% endif %}{{ entry.title|markdown_inline }}</a>
+<span class="tree-meta">{{ _(content_categories.get(entry.category, entry.category)) }}</span>
+{% if item.children %}<span class="tree-count" title="{{ _('Direct children') }}">{{ item.children|length }}</span>{% endif %}
+<span class="tree-excerpt">{{ content_excerpt(entry.body) }}</span>
+{% if editing %}<a href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Update party version') }}</a><a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ _('Private original') }}</a>{% endif %}
+</span>
+{% endmacro %}
+{% macro party_children(items) %}
+<ul class="article-tree">
+{% for item in items %}
+<li data-tree-row data-search="{{ (item.entry.title ~ ' ' ~ item.entry.category ~ ' ' ~ content_excerpt(item.entry.body))|lower }}">
+{% if item.children %}<details open data-tree-key="entry-{{ item.entry.id }}"><summary>{{ party_row(item) }}</summary>
+{{ party_children(item.children) }}
+</details>{% else %}<div class="tree-leaf">{{ party_row(item) }}</div>{% endif %}
+</li>
+{% endfor %}
+</ul>
+{% endmacro %}
