@@ -127,4 +127,5 @@
 .campaign-page-header .campaign-page-actions {flex:0 1 auto;justify-content:flex-end;margin-left:auto;}
 .campaign-workspace > .campaign-page-form {margin-top:0;}
 .campaign-workspace .material-bulk-actions {justify-content:flex-end;}
+.material-bulk-actions .material-selection-count {margin-right:auto;}
 .campaign-workspace form[hidden] {display:none!important;}

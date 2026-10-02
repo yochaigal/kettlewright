@@ -35,7 +35,7 @@ def authorize():
     if request.endpoint not in {
         'campaigns.party_materials', 'campaigns.party_materials_data',
         'campaigns.party_entry', 'campaigns.party_map', 'campaigns.party_map_data',
-        'campaigns.material_image',
+        'campaigns.material_image', 'campaigns.party_entry_preview',
     } and not user_features_enabled():
         abort(404)
     # Validate the whole operation before flushing partial edits or advancing versions.
@@ -196,6 +196,25 @@ def party_entry(party_id, entry_id):
     graph = map_projection(db.get_or_404(PointcrawlMap, entry['map_id']), party.id) if entry['map_id'] else None
     return render_template('campaigns/known_entry.html', party=party, entry=entry,
         graph=graph, pointcrawl=None, editing=False, embedded=True, nested_maps=[], locations=[])
+
+
+@campaigns.route('/materials/<int:entry_id>/preview')
+def entry_preview(entry_id):
+    entry = owned(ContentEntry, entry_id)
+    return render_template('campaigns/preview.html', entry=entry,
+                           graph=map_projection(entry.pointcrawl) if entry.pointcrawl else None,
+                           article_url=url_for('campaigns.edit_entry', entry_id=entry.id))
+
+
+@campaigns.route('/party/<int:party_id>/materials/<int:entry_id>/preview')
+def party_entry_preview(party_id, entry_id):
+    party_access(party_id)
+    entry = known_entries(party_id).get(entry_id)
+    if entry is None:
+        abort(404)
+    return render_template('campaigns/preview.html', entry=entry,
+                           graph=map_projection(db.get_or_404(PointcrawlMap, entry['map_id']), party_id) if entry['map_id'] else None,
+                           article_url=url_for('campaigns.party_entry', party_id=party_id, entry_id=entry_id))
 
 
 @campaigns.route('/materials/new', methods=['GET', 'POST'])
@@ -406,6 +425,67 @@ def bulk_delete():
     return render_template('campaigns/delete_materials.html',
         entries=sorted(entries.values(), key=lambda entry: (entry.category, entry.id)),
         deletion_token=signer.dumps(state), back_url=back_url)
+
+
+@campaigns.route('/materials/bulk-reveal', methods=['POST'])
+def bulk_reveal():
+    signer = URLSafeTimedSerializer(current_app.secret_key, salt='material-reveal')
+    confirmation = request.form.get('reveal_token')
+    if confirmation:
+        try:
+            snapshot = signer.loads(confirmation, max_age=1800)
+        except BadSignature:
+            abort(409, 'Publication preview expired. Select the articles again.')
+        if snapshot['owner_id'] != current_user.id:
+            abort(403)
+        campaign_id = snapshot['campaign_id']
+        selected_ids = snapshot['selected_ids']
+    else:
+        campaign = campaign_for(request.form.get('campaign_id'))
+        campaign_id = campaign.id if campaign else None
+        selected_ids = sorted({integer(value) for value in request.form.getlist('entry_ids')})
+        if not selected_ids:
+            abort(400, 'Select at least one article.')
+    if campaign_id:
+        owned(Campaign, campaign_id)
+    entries = [owned(ContentEntry, entry_id) for entry_id in selected_ids]
+    if any(entry.campaign_id != campaign_id for entry in entries):
+        abort(400, 'Select articles from this workspace only.')
+    if not confirmation:
+        for entry in entries:
+            check_version(entry, request.form.get(f'version_{entry.id}'))
+    parties = available_parties(entries[0])
+    presentations = {entry.id: {row.party_id: row for row in entry.presentations} for entry in entries}
+    state = {'owner_id': current_user.id, 'campaign_id': campaign_id, 'selected_ids': selected_ids,
+             'entries': {str(entry.id): entry.version for entry in entries},
+             'maps': {str(entry.id): entry.pointcrawl.version for entry in entries if entry.pointcrawl},
+             'presentations': {str(entry.id): {str(p.id): presentations[entry.id][p.id].version
+                 if p.id in presentations[entry.id] else 0 for p in parties} for entry in entries}}
+    back_url = url_for('campaigns.workspace', campaign_id=campaign_id) if campaign_id else url_for('campaigns.library')
+    if confirmation:
+        if snapshot != state:
+            abort(409, 'The articles or party versions changed. Review publication again.')
+        selected = {integer(value) for value in request.form.getlist('party_ids')}
+        if not selected:
+            abort(400, 'Choose at least one party.')
+        # Validate every audience and title before creating or changing any version.
+        audiences = {party_id: publishable_party(entries[0], party_id) for party_id in selected}
+        titles = {entry.id: text_value(entry.title, 200, True) for entry in entries}
+        for entry in entries:
+            for party_id, party in audiences.items():
+                row = presentations[entry.id].get(party_id)
+                if row is None:
+                    row = PartyPresentation(entry=entry, party=party)
+                    db.session.add(row)
+                row.title, row.body, row.path_type, row.published = titles[entry.id], entry.body, entry.path_type, True
+                if entry.pointcrawl and request.form.get('publish_drawing') == '1':
+                    row.drawing = deepcopy(entry.pointcrawl.drawing)
+        db.session.commit()
+        notify_parties(selected)
+        flash(_('Published selected articles to the selected parties.'))
+        return redirect(back_url)
+    return render_template('campaigns/reveal_materials.html', entries=entries, parties=parties,
+                           reveal_token=signer.dumps(state), back_url=back_url)
 
 
 @campaigns.route('/materials/<int:entry_id>/reveal', methods=['GET', 'POST'])

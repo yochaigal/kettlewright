@@ -1,5 +1,5 @@
 {% macro material_selection(entry) %}
-<label class="campaign-check material-selection" title="{{ _('Select for deletion') }}"><input type="checkbox" name="entry_ids" value="{{ entry.id }}" x-model="selected" aria-label="{{ _('Select for deletion') }}: {{ entry.title or _('Untitled private original') }}"><span class="sr-only">{{ _('Select for deletion') }}</span></label>
+<label class="campaign-check material-selection"><input type="checkbox" name="entry_ids" value="{{ entry.id }}" x-model="selected" aria-label="{{ _('Select article') }}: {{ entry.title or _('Untitled private original') }}"><span class="sr-only">{{ _('Select article') }}</span></label>
 <input type="hidden" name="version_{{ entry.id }}" value="{{ entry.version }}">
 {% endmacro %}
 {% macro material_row(item, selectable) %}
