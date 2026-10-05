@@ -109,7 +109,7 @@ def index():
         campaign = Campaign(owner_id=current_user.id, name=text_value(request.form.get('name'), 200, True))
         db.session.add(campaign)
         db.session.commit()
-        return redirect(url_for('campaigns.workspace', campaign_id=campaign.id))
+        return redirect(url_for('campaigns.new_entry', campaign_id=campaign.id))
     campaigns_list = my_campaigns()
     entries = library_entries().order_by(ContentEntry.title).all()
     return render_template('campaigns/index.html', campaigns=campaigns_list,

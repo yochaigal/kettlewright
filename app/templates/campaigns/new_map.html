@@ -12,8 +12,8 @@
 <label>{{ _('Article type') }}<select name="kind" x-model="kind"><option value="realm">{{ _('Realm') }}</option><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option><option value="freeform">{{ _('Topography') }}</option></select></label>
 <div x-show="kind!=='freeform'">
 <label class="campaign-check"><input type="checkbox" x-model="generateChildren">{{ _('Generate all child articles') }}</label>
-<label x-show="kind==='realm' && generateChildren">{{ _('Forest contents chance') }} (%)<input type="number" min="0" max="100" x-model.number="forestChance"></label>
-<label x-show="generateChildren && (kind==='realm' || kind==='forest')">{{ _('Dungeon in forest chance') }} (%)<input type="number" min="0" max="100" x-model.number="dungeonChance"></label>
+<label x-show="kind==='realm' && generateChildren">{{ _('Forest') }} (%)<input type="number" min="0" max="100" x-model.number="forestChance"></label>
+<label x-show="generateChildren && (kind==='realm' || kind==='forest')">{{ _('Forest POIs') }} (%)<input type="number" min="0" max="100" x-model.number="dungeonChance"></label>
 <fieldset class="poi-options"><legend>{{ _('Dice / points of interest') }}</legend>
 {% for value, label in [('', _('Random count')), ('3', '3'), ('6', '6'), ('8', '8'), ('12', '12'), ('20', '20')] %}
 <label class="campaign-check"><input type="radio" name="poi_count" value="{{ value }}" x-model="poiCount">{{ label }}</label>

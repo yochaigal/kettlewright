@@ -91,7 +91,7 @@ def test_map_draft_children_remain_private_and_form_has_types(setup):
         assert len(root.children) == 3
         assert all(not row.presentations for row in ContentEntry.query.filter(ContentEntry.id != root.id))
     html=client.get('/materials/new').get_data(as_text=True)
-    assert 'Top Category' in html and 'Sub Category' in html and 'name="parent_id"' in html
+    assert 'Category' in html and 'Sub Category' in html and 'name="parent_id"' in html
     assert html.index('name="campaign_id"') < html.index('name="top_category"') < html.index('name="category"') < html.index('name="parent_id"')
     from app.lib.content_types import CATEGORIES, CATEGORY_GROUPS
     grouped = [key for keys in CATEGORY_GROUPS.values() for key in keys]
@@ -473,3 +473,15 @@ def test_legacy_direct_publish_does_not_publish_new_geography_sections(setup):
         root = PointcrawlMap.query.filter_by(kind='realm').one()
         assert len(root.nodes) == 5
         assert all(not node.entry.presentations for node in root.nodes)
+
+
+def test_campaign_creation_opens_realm_article_form(setup):
+    app, client = setup
+    response = client.post('/campaigns/', data={'name': 'New world'})
+    assert response.status_code == 302
+    assert '/materials/new?campaign_id=' in response.location
+    html = client.get(response.location).get_data(as_text=True)
+    assert 'data-selected-category="realm"' in html
+    assert 'Top Category' not in html
+    assert 'Dungeon contents' not in html and 'Forest contents' not in html
+    assert 'Forest POIs' in html

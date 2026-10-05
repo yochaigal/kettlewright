@@ -11,7 +11,7 @@
 {% endcall %}
 {% if party %}<p>{{ _('This will be visible to members of') }} <strong>{{ party.name|markdown_inline }}</strong>.</p>
 {% else %}<p>{{ _('Private original. Saving here does not change any party’s version.') }}</p>{% endif %}
-<form id="article-form" method="post" x-data="contentDraft" data-category="{{ entry.category if entry else 'custom' }}" data-import="{{ 'true' if not entry else 'false' }}" data-generate-error="{{ _('Unable to generate an article. Please try again.') }}">
+<form id="article-form" method="post" x-data="contentDraft" data-category="{{ entry.category if entry else 'realm' }}" data-import="{{ 'true' if not entry else 'false' }}" data-generate-error="{{ _('Unable to generate an article. Please try again.') }}">
 {{ token(entry.version if entry else none) }}
 {% if party %}<input type="hidden" name="party_id" value="{{ party.id }}">{% endif %}
 {% if not party %}
@@ -19,7 +19,7 @@
 {% for item in campaigns %}<option value="{{ item.id }}" {% if campaign and campaign.id == item.id %}selected{% endif %}>{{ item.name|markdown_inline|striptags }}</option>{% endfor %}
 </select></label>
 {% endif %}
-{% if not entry or entry.category not in ('map', 'path') %}{{ category(entry.category if entry else 'custom', generate=not entry) }}{% endif %}
+{% if not entry or entry.category not in ('map', 'path') %}{{ category(entry.category if entry else 'realm', generate=not entry) }}{% endif %}
 <label>{{ _('Parent article') }}<select name="parent_id">
 <option value="">{{ _('None') }}</option>
 {% for item in parent_candidates if not entry or item.id != entry.id %}<option value="{{ item.id }}" x-show="String(formElement.elements.campaign_id?.value || '')==='{{ item.campaign_id or '' }}'" {% if selected_parent|string == item.id|string %}selected{% endif %}>{{ item.title }} · {{ item.campaign.name if item.campaign else _('Unfiled') }}</option>{% endfor %}
@@ -33,8 +33,8 @@
 {% if not entry %}
 <div class="article-generator" x-show="category!=='custom'" x-cloak>
 <label class="campaign-check" x-show.important="canGenerateChildren"><input type="checkbox" x-model="generateChildren">{{ _('Generate all child articles') }}</label>
-<label x-show="generateChildren && ['realm','topography','terrain'].includes(category)">{{ _('Forest contents chance') }} (%)<input type="number" min="0" max="100" x-model.number="forestChance"></label>
-<label x-show="generateChildren && ['realm','topography','terrain','forest'].includes(category)">{{ _('Dungeon in forest chance') }} (%)<input type="number" min="0" max="100" x-model.number="dungeonChance"></label>
+<label x-show="generateChildren && ['realm','topography','terrain'].includes(category)">{{ _('Forest') }} (%)<input type="number" min="0" max="100" x-model.number="forestChance"></label>
+<label x-show="generateChildren && ['realm','topography','terrain','forest'].includes(category)">{{ _('Forest POIs') }} (%)<input type="number" min="0" max="100" x-model.number="dungeonChance"></label>
 <div class="campaign-actions">
 <template x-if="variants.length"><label>{{ _('Generator') }}<select x-model="variant" @change="generated=null"><template x-for="choice in variants" :key="choice"><option :value="choice" x-text="choice"></option></template></select></label></template>
 <button type="button" @click="generate()" :disabled="generating">{{ _('Random') }}</button>
