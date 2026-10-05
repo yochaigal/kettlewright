@@ -1,7 +1,8 @@
 import {h, render} from 'preact';
-import {Excalidraw, convertToExcalidrawElements, restoreElements, CaptureUpdateAction} from 'excalidraw';
+import {Excalidraw, convertToExcalidrawElements, restoreElements, CaptureUpdateAction, getCommonBounds} from 'excalidraw';
 import {drawingFromScene, emptyDrawing, graphShapes, movedLocations, isManaged, graphHit, editableGeography, shapeGeometry} from './scene.js';
 import {loadLibraries} from './libraries.js';
+import {fittedViewport} from './viewport.js';
 
 let api, state, applying = false, lastDrawing = '', inputDrawingKey = '', graphKey = '', disposed = false, repairing = false, initialized = false;
 let waterTarget=null, brushStartIds=null;
@@ -12,6 +13,15 @@ const orderedScene = (free, managed) => [
   ...free,
   ...managed.filter(e=>!e.customData?.nodeId || !state.graph.nodes.some(n=>String(n.id)===e.customData.nodeId && n.category==='terrain')),
 ];
+
+function fitDrawing() {
+  if (!api) return;
+  const elements = api.getSceneElements();
+  if (!elements.length) return;
+  const {width, height} = api.getAppState();
+  api.updateScene({appState: fittedViewport(getCommonBounds(elements), width, height),
+    captureUpdate: CaptureUpdateAction.NEVER});
+}
 
 function applyState(next) {
   const selectionChanged = state?.selected !== next.selected;
@@ -50,7 +60,7 @@ function onChange(elements, appState, files) {
     lastDrawing = JSON.stringify(drawingFromScene(elements, files));
     graphKey = JSON.stringify([state.graph.nodes, state.graph.edges, state.selected, state.selectedEdge]);
     send('mounted');
-    setTimeout(() => {if (!disposed) {applyState(state); api.scrollToContent(undefined, {fitToViewport: true, viewportZoomFactor: 0.9});}}, 0);
+    setTimeout(() => {if (!disposed) {applyState(state); fitDrawing();}}, 0);
     return;
   }
   const selected = elements.find(element => appState.selectedElementIds[element.id] && element.customData?.kwType === 'location');
@@ -118,7 +128,7 @@ window.addEventListener('message', event => {
       // Keep the host's theme in sync without remounting the editor.
       api?.updateScene({appState: {theme: message.dark ? 'dark' : 'light'}});
     }
-  } else if (message.type === 'fit') api?.scrollToContent(undefined, {fitToViewport: true, viewportZoomFactor: 0.9});
+  } else if (message.type === 'fit') fitDrawing();
   else if (message.type === 'water-brush' && state?.editing && api) {
     const target=state.graph.nodes.find(node=>String(node.id)===String(message.nodeId) && node.category==='water');
     if(!target)return;
