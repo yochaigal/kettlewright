@@ -172,7 +172,8 @@ test('map hierarchy preserves the rolled realm and disabled children produce an 
   const result=generateResult(data,'Worldbuilding','Realm',rng(12));
   const graph=graphFromResult(result,rng(12),data);
   assert.equal(graph.children[0].children[0].body,resultText({fields:result.fields.Culture}));
-  assert.equal(graph.children[1].children[0].fields.Type,result.fields.Factions.Type);
+  assert.equal(graph.children[1].title,'Factions');
+  assert.equal(graph.children[1].children[0].children[0].fields.Type,result.fields.Factions.Type);
   assert.equal(graph.children[2].children.filter(x=>x.category==='terrain').length,result.fields.Terrain.length);
   for(const terrain of graph.children[2].children.filter(x=>x.category==='terrain')) {
     assert.equal(terrain.children.find(x=>x.category==='landmark').fields.Landmark,terrain.fields.Landmark);
@@ -230,4 +231,20 @@ test('category picker restores existing leaves and clears stale drafts when chan
   assert.equal(component.variant,'');
   component.category='settlement';component.syncTopCategory();
   assert.equal(component.topCategory,'POIs');
+});
+
+test('realm groups named factions under Factions and water is optional geography',()=>{
+  const realm=generateArticle(data,'realm','',rng(5));
+  const factions=realm.children.find(child=>child.category==='faction');
+  assert.equal(factions.title,'Factions');
+  assert.equal(factions.children[0].category,'faction');
+  assert.notEqual(factions.children[0].title,'Factions');
+  assert(factions.children[0].children.some(child=>child.category==='agenda'));
+  for(const [value,expected] of [[0.249,true],[0.25,false],[0.99,false]]) {
+    const terrain=generateArticle(data,'terrain','',()=>value,{forestChance:0});
+    assert.equal(terrain.children.some(child=>child.category==='water'),expected);
+    assert(terrain.children.some(child=>child.category==='landmark'));
+    assert(terrain.children.some(child=>child.category==='weather'));
+  }
+  assert.equal(generateArticle(data,'water','',rng(1)).category,'water');
 });

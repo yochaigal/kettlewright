@@ -84,7 +84,9 @@ function rollSettingArticle(data, category, random=Math.random, options={}) {
     if(options.forestTerrain) fields.Terrain='Forests';
     const landmark=article('landmark',fields.Landmark,{Landmark:fields.Landmark});
     landmark.title=settingName(data,'landmark',landmark.fields,landmark.title,random);
-    const children=all?[landmark,sub('water'),sub('weather')]:[];
+    const children=all?[landmark]:[];
+    if(all && random()<0.25) children.push(sub('water'));
+    if(all) children.push(sub('weather'));
     if(all && /forest|woodland|jungle|taiga|mangrove|thicket/i.test(fields.Terrain)
       && random()*100<Number(options.forestChance ?? 50)) children.push(sub('forest'));
     return article(category,`Terrain: ${fields.Terrain}`,{Difficulty:difficulty,...fields},children);
@@ -105,7 +107,7 @@ function rollSettingArticle(data, category, random=Math.random, options={}) {
     return article(category,'POIs',{},children);
   }
   if(category==='realm') {
-    const children=all?[sub('people'),sub('faction'),sub('topography'),sub('pois',{poiCount:count}),sub('paths',{poiCount:count})]:[];
+    const children=all?[sub('people'),article('faction','Factions',{},[sub('faction')]),sub('topography'),sub('pois',{poiCount:count}),sub('paths',{poiCount:count})]:[];
     const character=children[0]?.children[0]?.fields.Character || pick(people.Culture.Character);
     return article(category,`Realm: ${character}`,{Character:character},children);
   }

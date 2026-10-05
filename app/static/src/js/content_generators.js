@@ -111,11 +111,11 @@ export function graphFromResult(result, random = Math.random, tables = null, opt
       article('resources','Resources',rolled.Resources),
       generateArticle(tables,'npc','',random)]});
     const faction=rolled.Factions;
-    children.push(article('faction',settingName(tables,'faction',faction,`Faction: ${faction.Type}`,random),{},[
+    children.push(article('faction','Factions',{},[article('faction',settingName(tables,'faction',faction,`Faction: ${faction.Type}`,random),{},[
       article('faction_type','Faction types',{Type:faction.Type,Agent:faction.Agent}),
       article('faction_trait','Faction traits',{'Trait 1':faction['Trait 1'],'Trait 2':faction['Trait 2']}),
       article('advantage','Advantages',{Advantages:faction.Advantages}),
-      article('agenda','Agendas',{Agenda:faction.Agenda,Obstacle:faction.Obstacle})]));
+      article('agenda','Agendas',{Agenda:faction.Agenda,Obstacle:faction.Obstacle})])]));
     const terrains=rolled.Terrain.map(description=>{
       const match=/^(.*?)\. Difficulty: (.*?)\. Landmark: (.*?)\./.exec(description);
       return generateSettingArticle(tables,'terrain',random,{...options,
