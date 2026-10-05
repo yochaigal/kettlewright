@@ -1,4 +1,5 @@
 import {previewPosition} from './preview-position.js';
+import {addPreviewResizeHandles} from './preview-resize.js';
 
 // Delegated listeners also cover dynamically rendered map/article links.
 export function previewURL(href, origin = location.origin) {
@@ -13,10 +14,12 @@ export function previewURL(href, origin = location.origin) {
 
 let transient, openTimer, closeTimer, layer = 1100;
 const labels = document.documentElement.lang?.startsWith('ru')
-  ? {preview:'Предпросмотр', pin:'Закрепить', pinned:'Закреплено', close:'Закрыть', loading:'Загрузка…', error:'Не удалось загрузить статью.'}
-  : {preview:'Preview', pin:'Pin', pinned:'Pinned', close:'Close', loading:'Loading…', error:'Unable to load article.'};
+  ? {preview:'Предпросмотр', move:'Переместить', pin:'Закрепить', pinned:'Закреплено', close:'Закрыть', loading:'Загрузка…', error:'Не удалось загрузить статью.'}
+  : {preview:'Preview', move:'Move', pin:'Pin', pinned:'Pinned', close:'Close', loading:'Loading…', error:'Unable to load article.'};
+const icon = paths => '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + paths + '</svg>';
 function close(panel) {
   panel?.resizeObserver?.disconnect();
+  panel?.contentObserver?.disconnect();
   clearTimeout(panel?.fitTimer);
   panel?.controller.abort();
   panel?.remove();
@@ -25,6 +28,7 @@ function close(panel) {
 function scheduleClose() {
   clearTimeout(openTimer);
   clearTimeout(closeTimer);
+  if (transient?.interacting) return;
   closeTimer = setTimeout(() => close(transient), 250);
 }
 function position(panel, link) {
@@ -34,6 +38,16 @@ function position(panel, link) {
   panel.style.top=placement.top+'px';
   panel.style.maxHeight=Math.max(0,placement.maxHeight)+'px';
 }
+function fitContent(panel, content, bar) {
+  const last = content.lastElementChild;
+  if (!last || panel.manuallySized) return;
+  const panelStyle = getComputedStyle(panel), contentStyle = getComputedStyle(content);
+  const contentHeight = last.getBoundingClientRect().bottom - content.getBoundingClientRect().top
+    + parseFloat(getComputedStyle(last).marginBottom) + parseFloat(contentStyle.paddingBottom);
+  const frameHeight = ['paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth']
+    .reduce((sum, property) => sum + parseFloat(panelStyle[property]), 0);
+  panel.style.height = Math.ceil(contentHeight + bar.offsetHeight + frameHeight) + 'px';
+}
 async function show(link, url) {
   close(transient);
   const panel = document.createElement('section');
@@ -41,13 +55,20 @@ async function show(link, url) {
   panel.dataset.previewUrl = url;
   panel.setAttribute('role', 'region');
   panel.setAttribute('aria-label', labels.preview + ': ' + link.textContent.trim());
-  panel.innerHTML = '<header class="article-preview-bar"><span></span><button type="button" data-pin></button><button type="button" data-close></button></header><div class="article-preview-content" aria-live="polite"></div>';
+  panel.innerHTML = '<header class="article-preview-bar"><h2 class="article-preview-title"></h2><button type="button" data-drag></button><button type="button" data-pin aria-pressed="false"></button><button type="button" data-close></button></header><div class="article-preview-content" aria-live="polite"></div>';
   const bar = panel.querySelector('header'), content = panel.querySelector('.article-preview-content');
-  bar.querySelector('span').textContent = labels.preview;
+  const title = bar.querySelector('.article-preview-title');
+  title.textContent = link.textContent.trim();
+  const drag = bar.querySelector('[data-drag]');
+  drag.innerHTML = icon('<path d="M12 3v18M3 12h18M9 6l3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3"/>');
   const pin = bar.querySelector('[data-pin]');
-  pin.textContent = labels.pin;
+  pin.innerHTML = icon('<path d="M8 3h8l-1 7 3 3v2H6v-2l3-3-1-7ZM12 15v6"/>');
   const dismiss = bar.querySelector('[data-close]');
-  dismiss.textContent = '×'; dismiss.setAttribute('aria-label', labels.close);
+  dismiss.innerHTML = icon('<path d="m6 6 12 12M18 6 6 18"/>');
+  for (const [button, label] of [[drag, labels.move], [pin, labels.pin], [dismiss, labels.close]]) {
+    button.setAttribute('aria-label', label);
+    button.title = label;
+  }
   content.textContent = labels.loading;
   panel.controller = new AbortController();
   transient = panel;
@@ -59,27 +80,57 @@ async function show(link, url) {
   panel.addEventListener('focusin', () => clearTimeout(closeTimer));
   pin.onclick = () => {
     if (transient === panel) transient = null;
-    pin.textContent = labels.pinned; pin.disabled = true;
+    pin.setAttribute('aria-pressed', 'true');
+    pin.setAttribute('aria-label', labels.pinned);
+    pin.title = labels.pinned; pin.disabled = true;
   };
   dismiss.onclick = () => close(panel);
+  const beginInteraction = () => {
+    clearTimeout(openTimer); clearTimeout(closeTimer);
+    panel.interacting = true;
+    panel.manuallyPositioned = true;
+    panel.style.zIndex = ++layer;
+  };
+  const endInteraction = () => {
+    panel.interacting = false;
+    if (transient === panel && !panel.matches(':hover') && !panel.contains(document.activeElement)) scheduleClose();
+  };
+  addPreviewResizeHandles(panel, () => {
+    panel.manuallySized = true;
+    panel.classList.add('article-preview-sized');
+    beginInteraction();
+  }, endInteraction);
   bar.addEventListener('pointerdown', event => {
-    if (event.target.closest('button')) return;
+    if (event.button !== 0 || event.target.closest('button:not([data-drag])')) return;
+    event.preventDefault();
+    beginInteraction();
     const bounds = panel.getBoundingClientRect(), x = event.clientX, y = event.clientY;
     bar.setPointerCapture(event.pointerId);
     panel.style.zIndex = ++layer;
     bar.onpointermove = move => {
+      if (move.pointerId !== event.pointerId) return;
       panel.style.left = Math.max(8, Math.min(innerWidth - panel.offsetWidth - 8, bounds.left + move.clientX - x)) + 'px';
       panel.style.top = Math.max(8, Math.min(innerHeight - panel.offsetHeight - 8, bounds.top + move.clientY - y)) + 'px';
     };
-    bar.onpointerup = bar.onpointercancel = () => { bar.onpointermove = null; };
+    const finish = end => {
+      if (end.pointerId !== event.pointerId) return;
+      bar.onpointermove = bar.onpointerup = bar.onpointercancel = bar.onlostpointercapture = null;
+      if (bar.hasPointerCapture(event.pointerId)) bar.releasePointerCapture(event.pointerId);
+      endInteraction();
+    };
+    bar.onpointerup = bar.onpointercancel = bar.onlostpointercapture = finish;
   });
   try {
     const response = await fetch(url, {signal: panel.controller.signal, headers: {'Accept':'text/html'}});
     if (!response.ok || response.redirected) throw new Error('Unavailable');
     content.innerHTML = await response.text(); // Server renders sanitized rich content and escaped metadata.
+    const heading = content.firstElementChild;
+    if (heading?.tagName === 'H2') {
+      title.textContent = heading.textContent;
+      heading.remove();
+    }
     if (content.querySelector('.article-preview-map') && panel.isConnected) {
       panel.classList.add('article-preview-with-map');
-      position(panel, link);
       const canvas = content.querySelector('.article-preview-map-canvas');
       panel.resizeObserver = new ResizeObserver(() => {
         clearTimeout(panel.fitTimer);
@@ -88,6 +139,17 @@ async function show(link, url) {
         }, 120);
       });
       panel.resizeObserver.observe(canvas);
+    }
+    if (panel.isConnected) {
+      const fit = () => {
+        fitContent(panel, content, bar);
+        if (!panel.manuallyPositioned) position(panel, link);
+      };
+      fit();
+      panel.contentObserver = new MutationObserver(fit);
+      panel.contentObserver.observe(content, {subtree: true, childList: true, attributes: true, attributeFilter: ['style', 'hidden']});
+      // Images may acquire their natural dimensions after the HTML arrives.
+      for (const img of content.querySelectorAll('img')) img.addEventListener('load', fit, {once: true});
     }
   } catch (error) {
     if (error.name !== 'AbortError') content.textContent = labels.error;
