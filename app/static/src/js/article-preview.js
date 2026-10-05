@@ -1,3 +1,5 @@
+import {previewPosition} from './preview-position.js';
+
 // Delegated listeners also cover dynamically rendered map/article links.
 export function previewURL(href, origin = location.origin) {
   const url = new URL(href, origin);
@@ -25,6 +27,13 @@ function scheduleClose() {
   clearTimeout(closeTimer);
   closeTimer = setTimeout(() => close(transient), 250);
 }
+function position(panel, link) {
+  panel.style.maxHeight='';
+  const placement=previewPosition(link.getBoundingClientRect(),panel.offsetWidth,panel.offsetHeight,innerWidth,innerHeight);
+  panel.style.left=placement.left+'px';
+  panel.style.top=placement.top+'px';
+  panel.style.maxHeight=Math.max(0,placement.maxHeight)+'px';
+}
 async function show(link, url) {
   close(transient);
   const panel = document.createElement('section');
@@ -43,9 +52,7 @@ async function show(link, url) {
   panel.controller = new AbortController();
   transient = panel;
   document.body.append(panel);
-  const rect = link.getBoundingClientRect();
-  panel.style.left = Math.max(8, Math.min(rect.left, innerWidth - panel.offsetWidth - 8)) + 'px';
-  panel.style.top = Math.max(8, Math.min(rect.bottom + 6, innerHeight - panel.offsetHeight - 8)) + 'px';
+  position(panel, link);
   panel.style.zIndex = ++layer;
   panel.addEventListener('pointerenter', () => clearTimeout(closeTimer));
   panel.addEventListener('pointerleave', () => { if (transient === panel) scheduleClose(); });
@@ -72,8 +79,7 @@ async function show(link, url) {
     content.innerHTML = await response.text(); // Server renders sanitized rich content and escaped metadata.
     if (content.querySelector('.article-preview-map') && panel.isConnected) {
       panel.classList.add('article-preview-with-map');
-      panel.style.left = Math.max(8, Math.min(parseFloat(panel.style.left), innerWidth - panel.offsetWidth - 8)) + 'px';
-      panel.style.top = Math.max(8, Math.min(parseFloat(panel.style.top), innerHeight - panel.offsetHeight - 8)) + 'px';
+      position(panel, link);
       const canvas = content.querySelector('.article-preview-map-canvas');
       panel.resizeObserver = new ResizeObserver(() => {
         clearTimeout(panel.fitTimer);
