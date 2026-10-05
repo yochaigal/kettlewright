@@ -121,6 +121,7 @@ export function graphFromResult(result, random = Math.random, tables = null, opt
       return generateSettingArticle(tables,'terrain',random,{...options,
         terrainDifficulty:match[2],terrainFields:{Terrain:match[1],Landmark:match[3]}});
     });
+    if(terrains.length) terrains[Math.floor(random()*terrains.length)].children.push(generateSettingArticle(tables,'water',random,options));
     // The already rolled climate is shared by this region, not rolled again.
     for(const terrain of terrains) terrain.children=terrain.children.filter(child=>child.category!=='weather');
     children.push(article('topography','Topography',{},[...terrains,article('weather','Weather',rolled.Weather)]),

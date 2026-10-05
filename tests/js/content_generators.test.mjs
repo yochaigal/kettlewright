@@ -233,18 +233,27 @@ test('category picker restores existing leaves and clears stale drafts when chan
   assert.equal(component.topCategory,'POIs');
 });
 
-test('realm groups named factions under Factions and water is optional geography',()=>{
+test('realm groups named factions under Factions',()=>{
   const realm=generateArticle(data,'realm','',rng(5));
   const factions=realm.children.find(child=>child.category==='faction');
   assert.equal(factions.title,'Factions');
   assert.equal(factions.children[0].category,'faction');
   assert.notEqual(factions.children[0].title,'Factions');
   assert(factions.children[0].children.some(child=>child.category==='agenda'));
-  for(const [value,expected] of [[0.249,true],[0.25,false],[0.99,false]]) {
-    const terrain=generateArticle(data,'terrain','',()=>value,{forestChance:0});
-    assert.equal(terrain.children.some(child=>child.category==='water'),expected);
-    assert(terrain.children.some(child=>child.category==='landmark'));
-    assert(terrain.children.some(child=>child.category==='weather'));
-  }
   assert.equal(generateArticle(data,'water','',rng(1)).category,'water');
+});
+
+
+test('each generated Realm has exactly one water source on a terrain',()=>{
+  const waters=draft=>[...(draft.category==='water'?[draft]:[]),...(draft.children || []).flatMap(waters)];
+  for(let seed=1;seed<=40;seed++) {
+    const realm=generateArticle(data,'realm','',rng(seed));
+    const graph=graphFromResult(generateResult(data,'Worldbuilding','Realm',rng(seed)),rng(seed),data);
+    for(const draft of [realm,graph]) {
+      assert.equal(waters(draft).length,1);
+      const terrains=draft.children.find(child=>child.category==='topography').children.filter(child=>child.category==='terrain');
+      assert.equal(terrains.filter(terrain=>waters(terrain).length===1).length,1);
+    }
+  }
+  assert.equal(waters(generateArticle(data,'realm','',rng(1),{generateChildren:false})).length,0);
 });
