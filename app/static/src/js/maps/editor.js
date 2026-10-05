@@ -50,7 +50,7 @@ function onChange(elements, appState, files) {
     lastDrawing = JSON.stringify(drawingFromScene(elements, files));
     graphKey = JSON.stringify([state.graph.nodes, state.graph.edges, state.selected, state.selectedEdge]);
     send('mounted');
-    setTimeout(() => {if (!disposed) {applyState(state); api.scrollToContent(undefined, {fitToContent: true, viewportZoomFactor: 0.7});}}, 0);
+    setTimeout(() => {if (!disposed) {applyState(state); api.scrollToContent(undefined, {fitToViewport: true, viewportZoomFactor: 0.9});}}, 0);
     return;
   }
   const selected = elements.find(element => appState.selectedElementIds[element.id] && element.customData?.kwType === 'location');
@@ -118,7 +118,7 @@ window.addEventListener('message', event => {
       // Keep the host's theme in sync without remounting the editor.
       api?.updateScene({appState: {theme: message.dark ? 'dark' : 'light'}});
     }
-  } else if (message.type === 'fit') api?.scrollToContent(undefined, {fitToContent: true, viewportZoomFactor: 0.7});
+  } else if (message.type === 'fit') api?.scrollToContent(undefined, {fitToViewport: true, viewportZoomFactor: 0.9});
   else if (message.type === 'water-brush' && state?.editing && api) {
     const target=state.graph.nodes.find(node=>String(node.id)===String(message.nodeId) && node.category==='water');
     if(!target)return;
