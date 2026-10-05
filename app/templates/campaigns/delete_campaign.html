@@ -1,0 +1,15 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token, page_header with context %}
+{% block workspace %}
+{{ page_header(_('Delete campaign?')) }}
+<p><strong>{{ campaign.name }}</strong></p>
+<p>{{ _('Deleting this campaign permanently deletes all its articles, drawings and published party versions. This cannot be undone. Connected parties and their characters are kept.') }}</p>
+<p>{{ _('Articles to delete:') }} {{ campaign.entries|length }}</p>
+<form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}">
+{{ token(campaign.version) }}
+<div class="campaign-actions">
+<a href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}">{{ _('Cancel') }}</a>
+<button type="submit" name="confirm" value="delete">{{ _('Permanently delete campaign and all articles') }}</button>
+</div>
+</form>
+{% endblock %}

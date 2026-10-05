@@ -1,4 +1,4 @@
-.article-preview { position: fixed; z-index: 1100; width: 760px; height: 680px; min-width: min(240px, calc(100vw - 16px)); min-height: min(160px, calc(100vh - 16px)); max-width: calc(100vw - 16px); max-height: calc(100vh - 16px); box-sizing: border-box; display: flex; flex-direction: column; resize: both; overflow: hidden; background: #fffdf7; color: #222; border: 1px solid #777; border-radius: 6px; box-shadow: 0 6px 24px #0004; }
+.article-preview { position: fixed; margin: 0; z-index: 1100; width: 760px; height: 680px; min-width: min(240px, calc(100vw - 16px)); min-height: min(160px, calc(100vh - 16px)); max-width: calc(100vw - 16px); max-height: calc(100vh - 16px); box-sizing: border-box; display: flex; flex-direction: column; resize: both; overflow: hidden; background: #fffdf7; color: #222; border: 1px solid #777; border-radius: 6px; box-shadow: 0 6px 24px #0004; }
 .dark-mode .article-preview { background: #292929; color: #eee; }
 .article-preview-bar { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 1px solid #8886; cursor: move; touch-action: none; }
 .article-preview-bar span { flex: 1; font-weight: bold; }

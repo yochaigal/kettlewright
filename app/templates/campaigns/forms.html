@@ -36,7 +36,7 @@
 {% endfor %}
 {% if selected in ('overview', 'map') %}{% set unused = groups.append({'value': 'Legacy', 'label': _('Legacy'), 'choices': [{'value': selected, 'label': _(content_categories[selected])}]}) %}{% endif %}
 <div data-category-groups="{{ groups|tojson|forceescape }}" data-selected-category="{{ selected }}">
-<label>{{ _('Top Category') }}<select name="top_category" x-model="topCategory" @change="changeTopCategory()">
+<label>{{ _('Category') }}<select name="top_category" x-model="topCategory" @change="changeTopCategory()">
 {% for group in groups %}<option value="{{ group.value }}" {% if selected in category_groups.get(group.value, (selected,)) %}selected{% endif %}>{{ group.label }}</option>{% endfor %}
 </select></label>
 <label x-show="subCategories.length > 1">{{ _('Sub Category') }}<select name="category" x-model="category" @change="resetDraft()">

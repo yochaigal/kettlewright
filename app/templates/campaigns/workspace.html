@@ -39,7 +39,7 @@
 </form>
 <form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}">{{ token(campaign.version) }}
 <p>{{ _('Deleting this campaign permanently deletes all its articles, drawings and published party versions. This cannot be undone. Connected parties and their characters are kept.') }}</p>
-<button>{{ _('Delete campaign and all articles') }}</button></form>
+<button>{{ _('Delete campaign and all articles…') }}</button></form>
 </details>
 {% endif %}
 {% endblock %}

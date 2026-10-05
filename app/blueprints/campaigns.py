@@ -109,7 +109,7 @@ def index():
         campaign = Campaign(owner_id=current_user.id, name=text_value(request.form.get('name'), 200, True))
         db.session.add(campaign)
         db.session.commit()
-        return redirect(url_for('campaigns.workspace', campaign_id=campaign.id))
+        return redirect(url_for('campaigns.new_entry', campaign_id=campaign.id))
     campaigns_list = my_campaigns()
     entries = library_entries().order_by(ContentEntry.title).all()
     return render_template('campaigns/index.html', campaigns=campaigns_list,
@@ -153,6 +153,8 @@ def workspace(campaign_id):
 def delete_campaign(campaign_id):
     campaign = owned(Campaign, campaign_id)
     check_version(campaign, request.form.get('version'))
+    if request.form.get('confirm') != 'delete':
+        return render_template('campaigns/delete_campaign.html', campaign=campaign)
     # Delete owned contents through the ORM so maps, geometry, links and party
     # presentations are removed together. Related materials outside this campaign
     # and the connected parties themselves remain independent.

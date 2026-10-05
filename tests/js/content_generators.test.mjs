@@ -172,7 +172,8 @@ test('map hierarchy preserves the rolled realm and disabled children produce an 
   const result=generateResult(data,'Worldbuilding','Realm',rng(12));
   const graph=graphFromResult(result,rng(12),data);
   assert.equal(graph.children[0].children[0].body,resultText({fields:result.fields.Culture}));
-  assert.equal(graph.children[1].children[0].fields.Type,result.fields.Factions.Type);
+  assert.equal(graph.children[1].title,'Factions');
+  assert.equal(graph.children[1].children[0].children[0].fields.Type,result.fields.Factions.Type);
   assert.equal(graph.children[2].children.filter(x=>x.category==='terrain').length,result.fields.Terrain.length);
   for(const terrain of graph.children[2].children.filter(x=>x.category==='terrain')) {
     assert.equal(terrain.children.find(x=>x.category==='landmark').fields.Landmark,terrain.fields.Landmark);
@@ -230,4 +231,29 @@ test('category picker restores existing leaves and clears stale drafts when chan
   assert.equal(component.variant,'');
   component.category='settlement';component.syncTopCategory();
   assert.equal(component.topCategory,'POIs');
+});
+
+test('realm groups named factions under Factions',()=>{
+  const realm=generateArticle(data,'realm','',rng(5));
+  const factions=realm.children.find(child=>child.category==='faction');
+  assert.equal(factions.title,'Factions');
+  assert.equal(factions.children[0].category,'faction');
+  assert.notEqual(factions.children[0].title,'Factions');
+  assert(factions.children[0].children.some(child=>child.category==='agenda'));
+  assert.equal(generateArticle(data,'water','',rng(1)).category,'water');
+});
+
+
+test('each generated Realm has exactly one water source on a terrain',()=>{
+  const waters=draft=>[...(draft.category==='water'?[draft]:[]),...(draft.children || []).flatMap(waters)];
+  for(let seed=1;seed<=40;seed++) {
+    const realm=generateArticle(data,'realm','',rng(seed));
+    const graph=graphFromResult(generateResult(data,'Worldbuilding','Realm',rng(seed)),rng(seed),data);
+    for(const draft of [realm,graph]) {
+      assert.equal(waters(draft).length,1);
+      const terrains=draft.children.find(child=>child.category==='topography').children.filter(child=>child.category==='terrain');
+      assert.equal(terrains.filter(terrain=>waters(terrain).length===1).length,1);
+    }
+  }
+  assert.equal(waters(generateArticle(data,'realm','',rng(1),{generateChildren:false})).length,0);
 });

@@ -347,7 +347,7 @@ def test_disconnect_revokes_and_deleting_campaign_removes_materials(setup):
     login(client,2)
     assert client.get('/party/1/materials/data').json['entries']==[]
     login(client,1)
-    assert client.post('/campaigns/1/delete',data={'version':2}).status_code==302
+    assert client.post('/campaigns/1/delete',data={'version':2,'confirm':'delete'}).status_code==302
     with app.app_context():
         assert db.session.get(ContentEntry,entry_id) is None
         assert PartyPresentation.query.filter_by(entry_id=entry_id).count() == 0
@@ -670,7 +670,12 @@ def test_delete_campaign_removes_nested_maps_but_keeps_external_materials_and_pa
     from app import socketio
     notifications = []
     monkeypatch.setattr(socketio, 'emit', lambda event, payload, **kw: notifications.append((event, payload, kw)))
-    assert client.post('/campaigns/1/delete', data={'version': 1}).status_code == 302
+    preview = client.post('/campaigns/1/delete', data={'version': 1})
+    assert preview.status_code == 200
+    assert 'Delete campaign?' in preview.get_data(as_text=True)
+    assert 'Cancel' in preview.get_data(as_text=True)
+    assert client.get(f'/maps/{map_id}/data').status_code == 200
+    assert client.post('/campaigns/1/delete', data={'version': 1, 'confirm': 'delete'}).status_code == 302
     with app.app_context():
         assert db.session.get(Campaign, 1) is None
         assert db.session.get(Campaign, 2) is not None
@@ -700,7 +705,7 @@ def test_delete_campaign_checks_owner_and_version_before_removing_contents(setup
     login(client, 2)
     assert client.post('/campaigns/1/delete', data={'version': 1}).status_code == 403
     login(client, 1)
-    assert client.post('/campaigns/1/delete', data={'version': 0}).status_code == 409
+    assert client.post('/campaigns/1/delete', data={'version': 0, 'confirm': 'delete'}).status_code == 409
     assert client.get(f'/maps/{map_id}/data').json == graph
     assert client.get('/campaigns/1/').status_code == 200
 
@@ -925,7 +930,7 @@ def test_material_files_keep_publication_access_and_references(setup):
     assert client.get(url).status_code == 404
     login(client, 1)
     assert client.get(url).status_code == 200  # Warden can still edit the revoked draft.
-    assert client.post('/campaigns/1/delete', data={'version': 1}).status_code == 302
+    assert client.post('/campaigns/1/delete', data={'version': 1, 'confirm': 'delete'}).status_code == 302
     assert client.get(url).status_code == 404
     assert not list(Path(app.config['MATERIAL_IMAGE_UPLOAD_FOLDER']).rglob('*.webp'))
 

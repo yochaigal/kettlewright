@@ -6,6 +6,9 @@
 .campaign-workspace h3 {margin:0 0 .75rem;}
 .campaign-workspace form {margin:1rem 0;padding:0;max-width:none;box-sizing:border-box;}
 .map-editor-grid ol {list-style:none;padding:0;}
+.map-editor-grid .map-article-group {margin:1.5rem 0;}
+.map-editor-grid .map-article-group ol {margin:0;}
+.map-editor-grid .map-article-group li + li {margin-top:.5rem;}
 .campaign-list {padding-inline-start:1.25rem;}
 .campaign-workspace label {display:block;margin:.7rem 0;}
 .campaign-workspace input:not([type=checkbox]):not([type=radio]):not([type=hidden]),.campaign-workspace textarea,.campaign-workspace select {box-sizing:border-box;width:100%;max-width:100%;}
