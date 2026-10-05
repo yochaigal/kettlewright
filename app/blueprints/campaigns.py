@@ -153,6 +153,8 @@ def workspace(campaign_id):
 def delete_campaign(campaign_id):
     campaign = owned(Campaign, campaign_id)
     check_version(campaign, request.form.get('version'))
+    if request.form.get('confirm') != 'delete':
+        return render_template('campaigns/delete_campaign.html', campaign=campaign)
     # Delete owned contents through the ORM so maps, geometry, links and party
     # presentations are removed together. Related materials outside this campaign
     # and the connected parties themselves remain independent.
