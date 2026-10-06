@@ -13,10 +13,13 @@
     {% if current_user.is_authenticated %}
       {% if account %}
         <p>{{ _('Connected as') }} <strong>{{ account.display_name }}</strong> ({{ account.discord_id }}).</p>
-        <p>{{ _('Disconnecting clears your character selections and any channel bindings you created.') }}</p>
+        <div class="discord-disconnect-warning" id="discord-disconnect-warning">
+          <p><strong>{{ _('Disconnecting resets your Discord setup.') }}</strong></p>
+          <p>{{ _('This removes your character selections and every channel binding you created, including other players’ selections in those channels. After reconnecting, you will need to bind the channels and players will need to select their characters again.') }}</p>
+        </div>
         <form method="post">
           {{ form.hidden_tag() }}
-          <button class="button" type="submit" name="action" value="disconnect">{{ _('Disconnect Discord') }}</button>
+          <button class="button discord-disconnect-button" type="submit" name="action" value="disconnect" aria-describedby="discord-disconnect-warning">{{ _('Disconnect Discord') }}</button>
         </form>
       {% elif enabled %}
         <p>{{ _('Connect the Discord account you will use for Kettlewright commands. Each Warden and player connects their own account.') }}</p>

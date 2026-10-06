@@ -15,7 +15,7 @@ export function article(category, title, fields={}, children=[]) {
   const generic={culture:'Culture',resources:'Resources',faction_type:'Faction types',faction_trait:'Faction traits',advantage:'Advantages',agenda:'Agendas'};
   if(title===generic[category]) {
     const values=category==='resources'
-      ? [fields.Abundance,fields.Scarcity && `Scarce: ${fields.Scarcity}`]
+      ? [fields.Abundance && `Abundance: ${fields.Abundance}`,fields.Scarcity && `Scarcity: ${fields.Scarcity}`]
       : ({culture:[fields.Character,fields.Ambition],faction_type:[fields.Type,fields.Agent],
           faction_trait:[fields['Trait 1'],fields['Trait 2']],advantage:[fields.Advantages],agenda:[fields.Agenda]})[category];
     title=values?.filter(Boolean).map(value=>Array.isArray(value)?value.join(', '):value).join(' · ') || title;

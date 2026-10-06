@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 test('setting headings use rolled values and preserve custom names',()=>{
   for(const [category,placeholder,fields,expected] of [
     ['culture','Culture',{Character:'Struggling',Ambition:'Conversion'},'Struggling · Conversion'],
-    ['resources','Resources',{Abundance:'Gemstones',Scarcity:'Land'},'Gemstones · Scarce: Land'],
+    ['resources','Resources',{Abundance:'Gemstones',Scarcity:'Land'},'Abundance: Gemstones · Scarcity: Land'],
     ['faction_type','Faction types',{Type:'Commoners',Agent:'Gravedigger'},'Commoners · Gravedigger'],
     ['faction_trait','Faction traits',{'Trait 1':'Connected','Trait 2':'Selfish'},'Connected · Selfish'],
     ['advantage','Advantages',{Advantages:['Apparatus','Information']},'Apparatus, Information'],

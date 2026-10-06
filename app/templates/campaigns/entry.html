@@ -7,10 +7,10 @@
 <a href="{{ url_for('campaigns.new_entry', campaign_id=entry.campaign_id or '', parent_id=entry.id) }}">{{ _('Add child article') }}</a>
 <a href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Reveal to party') }}</a>
 {% endif %}
-<button type="submit" form="article-form">{{ _('Create and show') if party else _('Save private original') }}</button>
+<button type="submit" form="article-form">{{ _('Create and show') if party else _('Save Article') }}</button>
 {% endcall %}
 {% if party %}<p>{{ _('This will be visible to members of') }} <strong>{{ party.name|markdown_inline }}</strong>.</p>
-{% else %}<p>{{ _('Private original. Saving here does not change any party’s version.') }}</p>{% endif %}
+{% else %}<p>{{ _('Articles are private by default until you reveal them to a party. Saving here does not change any party’s version.') }}</p>{% endif %}
 <form id="article-form" method="post" x-data="contentDraft" data-category="{{ entry.category if entry else 'realm' }}" data-import="{{ 'true' if not entry else 'false' }}" data-generate-error="{{ _('Unable to generate an article. Please try again.') }}">
 {{ token(entry.version if entry else none) }}
 {% if party %}<input type="hidden" name="party_id" value="{{ party.id }}">{% endif %}

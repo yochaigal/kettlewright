@@ -1,0 +1,51 @@
+{% from 'campaigns/forms.html' import rich_editor with context %}
+<template x-if="selected===String(item.id)"><div>
+{% if editing %}
+<div class="map-article-meta">
+<template x-if="!isNew(selectedNode) || !selectedNode.entry_id"><div class="map-article-type" @input="selectedNode.content_changed=true">
+<label>{{ _('Type') }}<select x-model="selectedNode.category" @change="if(selectedNode.category!=='settlement')selectedNode.is_heart=false">{% for key,label in point_categories.items() %}<option value="{{ key }}">{{ _(label) }}</option>{% endfor %}</select></label>
+<label class="campaign-check" x-show.important="selectedNode.category==='settlement'"><input type="checkbox" x-model="selectedNode.is_heart">{{ _('Heart') }}</label>
+</div></template>
+<div class="map-article-coordinates">
+<label>{{ _('Number') }}<input type="number" min="1" x-model.number="selectedNode.number"></label>
+<label>X<input type="number" :value="selectedNode.x" @input="setNodeCoordinate('x', Number($event.target.value))"></label>
+<label>Y<input type="number" :value="selectedNode.y" @input="setNodeCoordinate('y', Number($event.target.value))"></label>
+</div>
+</div>
+<div class="campaign-actions" x-show="selectedNode.category==='water' || selectedNode.geometry">
+<div x-show="selectedNode.category==='water'"><label>{{ _('Brush width') }}<select x-model.number="waterBrushWidth"><option value="2">{{ _('Thin') }}</option><option value="4">{{ _('Medium') }}</option><option value="8">{{ _('Wide') }}</option></select></label></div>
+<button type="button" x-show="selectedNode.category==='water'" @click="waterBrush()" :disabled="!canvasReady">{{ _('Draw this watercourse') }}</button>
+<button type="button" x-show="selectedNode.geometry" @click="resetGeometry()">{{ _('Reset shape') }}</button>
+</div>
+<p x-show="selectedNode.category==='water'">{{ _('Draw this watercourse replaces the selected Water article’s marker with your next brush stroke. Save the article to keep your changes.') }}</p>
+<template x-if="!isNew(selectedNode) || !selectedNode.entry_id"><div @input="selectedNode.content_changed=true">
+
+<label>{{ _('Title') }}<input type="text" maxlength="200" x-model="selectedNode.title"></label>
+{{ rich_editor(_('Description'), name=None, model='selectedNode.body') }}
+</div></template>
+<template x-if="!selectedNode.nested_draft"><div>
+<template x-if="selectedNode.nested_entry_id && selectedNode.nested_entry_id!==selectedNode.entry_id"><a :href="'/materials/'+selectedNode.nested_entry_id+'/edit'">{{ _('Open linked article') }}</a></template>
+<template x-if="!selectedNode.nested_map_id && !selectedNode.has_contents"><div class="campaign-actions">
+<label>{{ _('Generate article contents') }}<select x-model="nestedKind"><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option></select></label>
+<button type="button" @click="generateNested()" :disabled="generating">{{ _('Generate article contents') }}</button>
+</div></template>
+</div></template>
+<template x-if="selectedNode.nested_draft"><div>
+<p>{{ _('The generated contents and drawing will be saved privately in this article.') }} <span x-text="selectedNode.nested_draft.kind"></span></p>
+<details><summary>{{ _('Preview article contents') }}</summary>
+<div class="rich-content" x-html="$richHTML(selectedNode.nested_draft.body)"></div>
+<ol><template x-for="node in selectedNode.nested_draft.nodes" :key="node.id"><li x-text="node.body"></li></template></ol>
+</details>
+<button type="button" @click="delete selectedNode.nested_draft">{{ _('Discard generated contents') }}</button>
+</div></template>
+<template x-if="selectedNode.entry_id"><div><div class="campaign-actions">
+<a :href="'/materials/'+selectedNode.entry_id+'/edit'">{{ _('Edit article') }}</a>
+<a :href="'/materials/'+selectedNode.entry_id+'/reveal'">{{ _('Reveal to party') }}</a>
+</div></div></template>
+<button type="button" @click="removeNode()">{{ _('Remove from drawing') }}</button>
+{% else %}
+<div class="rich-content" x-html="$richHTML(selectedNode.body)"></div>
+<a :href="'/party/{{ party.id }}/materials/'+selectedNode.entry_id">{{ _('Open article') }}</a>
+<template x-if="selectedNode.nested_entry_id && selectedNode.nested_entry_id!==selectedNode.entry_id"><a :href="'/party/{{ party.id }}/materials/'+selectedNode.nested_entry_id">{{ _('Open linked article') }}</a></template>
+{% endif %}
+</div></template>

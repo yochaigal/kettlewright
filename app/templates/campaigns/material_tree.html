@@ -11,7 +11,8 @@
 {% if entry.is_heart %}<span class="tree-meta">{{ _('Heart') }}</span>{% endif %}
 {% if item.children %}<span class="tree-count" title="{{ _('Direct children') }}">{{ item.children|length }}</span>{% endif %}
 <span class="tree-excerpt">{{ content_excerpt(entry.body) }}</span>
-<a class="tree-visibility" href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{% set published = entry.presentations|selectattr('published')|list %}{% if published %}{{ _('Shared') }} · {{ published|length }}{% else %}{{ _('Private') }}{% endif %}</a>
+{% set published = entry.presentations|selectattr('published')|list %}
+{% if published %}<a class="tree-visibility" href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Shared') }} · {{ published|length }}</a>{% endif %}
 </span>
 {% endmacro %}
 {% macro material_children(items, selectable=True, root=True) %}
