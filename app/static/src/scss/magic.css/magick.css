@@ -62,7 +62,7 @@ body {
     font-size: 1.8rem; /* 1 */
     background-color: var(--bg); /* 2 */
     color: var(--fg); /* 2 */
-    font-family: "Averia Serif Libre", serif; /* 3 */
+    font-family: "Averia Serif Libre", Alegreya, 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif; /* 3 */
     font-style: normal; /* 3 */
     line-height: 2.2rem; /* 3 */
     font-weight: 300; /* 3 */
@@ -179,7 +179,7 @@ h1,
 h2,
 h3,
 h4 {
-    font-family: "Averia Libre", cursive; /* 1 */
+    font-family: "Averia Libre", Alegreya, 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif; /* 1 */
     color: var(--fg); /* 1 */
     font-style: normal; /* 1 */
     font-weight: 600; /* 1 */
