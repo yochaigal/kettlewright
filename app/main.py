@@ -525,8 +525,9 @@ _EVENTS_UNTRANSLATED_PATHS = {
 }
 
 # Contexts follow the data's table paths, not the value's spelling. A word can
-# name a spell, an NPC, or a trait without sharing its Russian translation.
+# name a spell, an NPC, or a trait without sharing its translation.
 _EVENTS_TRANSLATION_CONTEXTS = {
+    ('Spellbooks', 'name'): 'spell name',
     ('NPCNames', 'Names'): 'npc name',
     ('NPCs', 'Names', 'd100'): 'npc name',
     ('RulerTypes',): 'ruler type',

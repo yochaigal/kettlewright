@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2025-01-28 23:33+0100\n"
-"PO-Revision-Date: 2026-09-09 16:01+0200\n"
+"PO-Revision-Date: 2026-10-07 20:17+0000\n"
 "Last-Translator: Andrew Borisenko <seigiard@gmail.com>\n"
 "Language-Team: uk <LL@li.org>\n"
 "Language: uk\n"
@@ -4100,7 +4100,7 @@ msgid ""
 msgstr ""
 "Ченці відлюдного лісового монастиря. Коли їхні правила стали надто суворими,"
 " ви тихцем утекли. Візьміть Чернечу рясу (тепла, дріб’язкове) і Книгу "
-"заклять «Керування рослинами»."
+"заклять «Контроль рослин»."
 
 #: app/static/json/backgrounds/foundling.json:114
 msgid "Monk's Habit"
@@ -4112,7 +4112,7 @@ msgstr "Тепла"
 
 #: app/static/json/backgrounds/foundling.json:119
 msgid "Spellbook (Control Plants)"
-msgstr "Книга заклять (Керування рослинами)"
+msgstr "Книга заклять (Контроль рослин)"
 
 #: app/static/json/backgrounds/foundling.json:120
 msgid ""
@@ -4581,7 +4581,7 @@ msgid ""
 "Ward: A silver circle 50ft across appears on the ground. Choose one species "
 "that cannot cross it."
 msgstr ""
-"Оберіг: На землі з’являється срібне коло 50 футів (15 м) у поперечнику. "
+"Охорона: На землі з’являється срібне коло 50 футів (15 м) у поперечнику. "
 "Оберіть один вид істот, який не може його перетнути."
 
 #: app/static/json/backgrounds/greenwise.json:51
@@ -4783,7 +4783,7 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:31
 msgid "Spellbook (Thicket)"
-msgstr "Книга заклять (Гущавина)"
+msgstr "Книга заклять (Зарості)"
 
 #: app/static/json/backgrounds/half-witch.json:33
 msgid ""
@@ -5209,13 +5209,13 @@ msgid ""
 "Poverty. You carry the Disassemble Spellbook. Only you can use it. If your "
 "vow is broken, it explodes (d12 STR damage)."
 msgstr ""
-"Бідність. Ви носите Книгу заклять «Роз’єднання». Лише ви можете нею "
+"Бідність. Ви носите Книгу заклять «Розібрати». Лише ви можете нею "
 "користуватися. Якщо ваша обітниця порушена, вона вибухає (к12 пошкоджень "
 "СИЛ)."
 
 #: app/static/json/backgrounds/hexenbane.json:127
 msgid "Spellbook (Disassemble)"
-msgstr "Книга заклять (Роз’єднання)"
+msgstr "Книга заклять (Розібрати)"
 
 #: app/static/json/backgrounds/hexenbane.json:129
 msgid ""
@@ -5235,7 +5235,7 @@ msgid ""
 "charm, hatred, frenzy, and so on. If you break this vow, you lose d6 WIL."
 msgstr ""
 "Безкорисливість. Ви маєте імунітет до магічних ефектів, що впливають на "
-"розум: зачарування, ненависть, шаленство тощо. Якщо ви порушите цю обітницю,"
+"розум: зачарування, ненависть, божевілля тощо. Якщо ви порушите цю обітницю,"
 " ви втрачаєте к6 ВОЛ."
 
 #: app/static/json/backgrounds/hexenbane.json:138
@@ -5606,7 +5606,7 @@ msgid ""
 "Spyglass, a Necklace (petty) worth 20gp, and a Scroll of Mirrorwalk (petty)."
 msgstr ""
 "Ви продаєте рідкісні та якісні речі монастирям і шляхті. Візьміть Підзорну "
-"трубу, Намисто (дріб’язкове) варте 20 зм і Сувій «Дзеркальний перехід» "
+"трубу, Намисто (дріб’язкове) варте 20 зм і Сувій «Дзеркальний прохід» "
 "(дріб’язкове)."
 
 #: app/static/json/backgrounds/kettlewright.json:67
@@ -5624,7 +5624,7 @@ msgstr "Варте 20 зм."
 
 #: app/static/json/backgrounds/kettlewright.json:76
 msgid "Scroll (Mirrorwalk)"
-msgstr "Сувій (Дзеркальний перехід)"
+msgstr "Сувій (Дзеркальний прохід)"
 
 #: app/static/json/backgrounds/kettlewright.json:78
 #: app/static/json/party_events/spellbooks.json:330
@@ -5985,13 +5985,13 @@ msgid ""
 "(Exchange their lost STR with your own.) Recharge: Wear the ring while in "
 "perfect health. You will lose 1 STR, permanently. Petty."
 msgstr ""
-"Перстень болю: торкніться пораненої істоти, щоб перебрати її рани на себе. "
-"(Обміняйте її втрачену СИЛ на власну.) Перезарядження: носіть перстень, "
+"Каблучка болю: торкніться пораненої істоти, щоб перебрати її рани на себе. "
+"(Обміняйте її втрачену СИЛ на власну.) Перезарядження: носіть каблучку, "
 "будучи цілком здоровим. Ви назавжди втратите 1 СИЛ. Дріб’язкове."
 
 #: app/static/json/backgrounds/marchguard.json:160
 msgid "Pain Band"
-msgstr "Перстень болю"
+msgstr "Каблучка болю"
 
 #: app/static/json/backgrounds/marchguard.json:164
 msgid ""
@@ -6000,7 +6000,7 @@ msgid ""
 "You will lose 1 STR, permanently."
 msgstr ""
 "Торкніться пораненої істоти, щоб перебрати її рани на себе. (Обміняйте її "
-"втрачену СИЛ на власну.) Перезарядження: носіть перстень, будучи цілком "
+"втрачену СИЛ на власну.) Перезарядження: носіть каблучку, будучи цілком "
 "здоровим. Ви назавжди втратите 1 СИЛ."
 
 #: app/static/json/backgrounds/marchguard.json:169
@@ -6131,7 +6131,7 @@ msgid ""
 "secret. Start with the Spellbook and a bundle of scarves."
 msgstr ""
 "Ваші «сеанси» з мертвими насправді були виставою з хитро схованою книгою "
-"заклять «Слухова ілюзія». Неминуче один із відвідувачів розкрив ваш секрет. "
+"заклять «Звукова ілюзія». Неминуче один із відвідувачів розкрив ваш секрет. "
 "Почніть із цієї Книги заклять і оберемка хустин."
 
 #: app/static/json/backgrounds/mountebank.json:110
@@ -7226,7 +7226,7 @@ msgstr ""
 
 #: app/static/json/party_events/bestiary.json:13
 msgid "Carry a holy symbol (Ward once per day)."
-msgstr "Носять святий символ («Оберіг» раз на день)."
+msgstr "Носять святий символ («Охорона» раз на день)."
 
 #: app/static/json/party_events/bestiary.json:17
 #: app/static/json/party_events/dungeons.json:257
@@ -7254,7 +7254,7 @@ msgid ""
 "and Command spellbooks at all times."
 msgstr ""
 "Провадять магічні дослідження в темних, обплетених павутинням печерах. "
-"Завжди носять при собі Книги заклять «Чари» і «Наказ»."
+"Завжди носять при собі Книги заклять «Зачарування» і «Наказ»."
 
 #: app/static/json/party_events/bestiary.json:26
 msgid "Fire damage against Aranea is enhanced."
@@ -7549,7 +7549,7 @@ msgstr ""
 #: app/static/json/party_events/bestiary.json:174
 #: app/static/json/party_events/dungeons.json:248
 msgid "Cobblehounds"
-msgstr "Брукові гончаки"
+msgstr "Кам’яні гончаки"
 
 #: app/static/json/party_events/bestiary.json:182
 msgid ""
@@ -7645,7 +7645,7 @@ msgid ""
 "Befuddle: Target becomes confused, gradually moving further and further away"
 " from the host tree. WIL save once per round to break free."
 msgstr ""
-"Запаморочення: ціль спантеличується і поступово відходить усе далі від "
+"Дурман: ціль спантеличується і поступово відходить усе далі від "
 "рідного дерева. Перевірка ВОЛ раз на раунд, щоб звільнитися."
 
 #: app/static/json/party_events/bestiary.json:225
@@ -7691,15 +7691,15 @@ msgid ""
 "Shuffle, Vision. Magic used against them requires a WIL save or it fizzles "
 "out."
 msgstr ""
-"Можуть на власний розсуд накладати такі закляття: «Чари», «Фобія», "
-"«Телекінез», «Сон», «Перетасування», «Видіння». Магія, вжита проти них, "
+"Можуть на власний розсуд накладати такі закляття: «Зачарування», «Фобія», "
+"«Телекінез», «Сон», «Тасування», «Видіння». Магія, вжита проти них, "
 "вимагає перевірки ВОЛ, інакше вона згасає."
 
 #: app/static/json/party_events/bestiary.json:247
 #: app/static/json/party_events/dungeons.json:251
 #: app/static/json/party_events/dungeons.json:254
 msgid "Frost Elf"
-msgstr "Морозний ельф"
+msgstr "Крижаний ельф"
 
 #: app/static/json/party_events/bestiary.json:253
 msgid "icicle dagger (d6)"
@@ -8078,7 +8078,7 @@ msgstr ""
 #: app/static/json/party_events/bestiary.json:431
 #: app/static/json/party_events/dungeons.json:254
 msgid "Hooded Men"
-msgstr "Люди в каптурах"
+msgstr "Люди в капюшонах"
 
 #: app/static/json/party_events/bestiary.json:436
 msgid "leystaff (d8)"
@@ -8101,7 +8101,7 @@ msgid ""
 "Carries two of the following spellbooks: Charm, Hypnotize, Push/Pull, "
 "Shield."
 msgstr ""
-"Носять дві з таких Книг заклять: «Чари», «Гіпноз», «Штовхання/Притягання», "
+"Носять дві з таких Книг заклять: «Зачарування», «Гіпноз», «Тягнути/Штовхати», "
 "«Щит»."
 
 #: app/static/json/party_events/bestiary.json:444
@@ -8275,11 +8275,11 @@ msgid ""
 "Owner, Knock, Pacify, Raise Dead, Raise Spirit, Shield, Sleep, Smoke Form, "
 "Telekinesis, Telepathy, Teleport, Vision, Wizard Mark."
 msgstr ""
-"Носять до шести з таких Книг заклять: Оживлення предмета, Таємне око, "
-"Оглушення, Розбирання, Стіна стихій, Шаленство, Брама, Ширяння, Ненависть, "
-"Визначення власника, Відмикання, Умиротворення, Підняття мертвих, Підняття "
-"духа, Щит, Сон, Димова форма, Телекінез, Телепатія, Телепортація, Видіння, "
-"Знак чарівника."
+"Носять до шести з таких Книг заклять: Оживлення предмета, Чарівне око, "
+"Глухота, Розібрати, Стихійна стіна, Божевілля, Брама, Левітація, Ненависть, "
+"Визначення власника, Стук, Заспокоєння, Підняти мертвих, Підняти "
+"дух, Щит, Сон, Форма диму, Телекінез, Телепатія, Телепортація, Видіння, "
+"Відмітка чарівника."
 
 #: app/static/json/party_events/bestiary.json:521
 #: app/static/json/party_events/dungeons.json:255
@@ -8500,8 +8500,8 @@ msgid ""
 "Carry three of the following spellbooks: Arcane Eye, Disguise, Fog Cloud, "
 "Identify Owner, Smoke Form."
 msgstr ""
-"Носять три з таких Книг заклять: Таємне око, Маскування, Хмара туману, "
-"Визначення власника, Димова форма."
+"Носять три з таких Книг заклять: Чарівне око, Маскування, Хмара туману, "
+"Визначення власника, Форма диму."
 
 #: app/static/json/party_events/bestiary.json:624
 #: app/static/json/party_events/dungeons.json:249
@@ -8982,7 +8982,7 @@ msgid ""
 "Charm: Target obeys the swine's every command until it is killed. WIL save "
 "once per round to break free."
 msgstr ""
-"Чари: ціль виконує кожен наказ потвори, доки ту не вбито. Перевірка ВОЛ раз "
+"Зачарування: ціль виконує кожен наказ потвори, доки ту не вбито. Перевірка ВОЛ раз "
 "на раунд, щоб звільнитися."
 
 #: app/static/json/party_events/bestiary.json:864
@@ -9333,7 +9333,7 @@ msgstr "Якщо впіймати змалку, їх можна з певним�
 #: app/static/json/party_events/dungeons.json:253
 #: app/static/json/party_events/forests.json:169
 msgid "Wood Troll"
-msgstr "Лісовий троль"
+msgstr "Деревний троль"
 
 #: app/static/json/party_events/bestiary.json:1048
 msgid "bite (d8), club (d10)"
@@ -11476,7 +11476,7 @@ msgstr "Заглушує"
 #: app/static/json/party_events/dungeons.json:377
 #: app/static/json/party_events/spellbooks.json:520
 msgid "Teleport"
-msgstr "Телепортує"
+msgstr "Телепортація"
 
 #: app/static/json/party_events/dungeons.json:385
 msgid "Captures"
@@ -13233,7 +13233,7 @@ msgstr "Кволість"
 #: app/static/json/party_events/forests.json:127
 #: app/static/json/party_events/spellbooks.json:214
 msgid "Greed"
-msgstr "Жадібність"
+msgstr "Жадоба"
 
 #: app/static/json/party_events/forests.json:129
 msgid "Infestation"
@@ -13439,7 +13439,7 @@ msgstr "Прихований сховок"
 
 #: app/static/json/party_events/forests.json:229
 msgid "Hooded Men Completing a Ritual"
-msgstr "Люди в каптурах завершують ритуал"
+msgstr "Люди в капюшонах завершують ритуал"
 
 #: app/static/json/party_events/forests.json:230
 msgid "Inaudible Whispers from All Directions"
@@ -14539,7 +14539,7 @@ msgstr "Плетиво"
 #: app/static/json/party_events/names.json:113
 #: app/static/json/party_events/spellbooks.json:532
 msgid "Thicket"
-msgstr "Гущавина"
+msgstr "Зарості"
 
 #: app/static/json/party_events/forests.json:517
 #: app/static/json/party_events/names.json:113
@@ -18940,7 +18940,7 @@ msgstr ""
 # =============================================
 #: app/static/json/party_events/spellbooks.json:4
 msgid "Adhere"
-msgstr "Приклеювання"
+msgstr "Липкість"
 
 #: app/static/json/party_events/spellbooks.json:6
 msgid "An object is covered in extremely sticky slime."
@@ -18984,7 +18984,7 @@ msgstr "М’яка й пластична, наче глина. Зі сторі�
 
 #: app/static/json/party_events/spellbooks.json:22
 msgid "Anthropomorphize"
-msgstr "Олюднення"
+msgstr "Антропоморфність"
 
 #: app/static/json/party_events/spellbooks.json:24
 msgid ""
@@ -18997,7 +18997,7 @@ msgstr "Скиглить, муркоче й гарчить залежно від
 
 #: app/static/json/party_events/spellbooks.json:28
 msgid "Arcane Eye"
-msgstr "Чаклунське око"
+msgstr "Чарівне око"
 
 #: app/static/json/party_events/spellbooks.json:31
 msgid "Needs a spritz of water to open."
@@ -19020,7 +19020,7 @@ msgstr "Мовчазні абстрактні обличчя кричать у �
 
 #: app/static/json/party_events/spellbooks.json:40
 msgid "Attract"
-msgstr "Притягання"
+msgstr "Приваблення"
 
 #: app/static/json/party_events/spellbooks.json:42
 msgid ""
@@ -19052,7 +19052,7 @@ msgstr "Упродовж дня видає випадкові й часом не
 
 #: app/static/json/party_events/spellbooks.json:52
 msgid "Babble"
-msgstr "Белькотіння"
+msgstr "Базікання"
 
 #: app/static/json/party_events/spellbooks.json:54
 msgid ""
@@ -19094,7 +19094,7 @@ msgstr "Вкрита густим хутром, а її краї всіяні д
 
 #: app/static/json/party_events/spellbooks.json:70
 msgid "Befuddle"
-msgstr "Запаморочення"
+msgstr "Дурман"
 
 #: app/static/json/party_events/spellbooks.json:72
 msgid ""
@@ -19151,7 +19151,7 @@ msgstr "З часом тоншає, аж поки остаточно не зни
 
 #: app/static/json/party_events/spellbooks.json:94
 msgid "Comprehend"
-msgstr "Розуміння"
+msgstr "Знання мов"
 
 #: app/static/json/party_events/spellbooks.json:96
 msgid "You become fluent in all languages for a short while."
@@ -19175,7 +19175,7 @@ msgstr "Губчаста й волога, з мильним нальотом."
 
 #: app/static/json/party_events/spellbooks.json:106
 msgid "Control Plants"
-msgstr "Керування рослинами"
+msgstr "Контроль рослин"
 
 #: app/static/json/party_events/spellbooks.json:108
 msgid ""
@@ -19190,7 +19190,7 @@ msgstr "Уздовж корінця ростуть листки, а сама к�
 
 #: app/static/json/party_events/spellbooks.json:112
 msgid "Control Weather"
-msgstr "Керування погодою"
+msgstr "Контроль погоди"
 
 #: app/static/json/party_events/spellbooks.json:114
 msgid ""
@@ -19205,7 +19205,7 @@ msgstr "Дуже стійка до пошкоджень вогнем і водо
 
 #: app/static/json/party_events/spellbooks.json:118
 msgid "Cure Wounds"
-msgstr "Лікування ран"
+msgstr "Зцілення ран"
 
 #: app/static/json/party_events/spellbooks.json:120
 msgid "Restore 1d4 STR per day to a creature you can touch."
@@ -19217,7 +19217,7 @@ msgstr "Пахне оцтом і чебрецем. Після використа
 
 #: app/static/json/party_events/spellbooks.json:124
 msgid "Deafen"
-msgstr "Оглушення"
+msgstr "Глухота"
 
 #: app/static/json/party_events/spellbooks.json:126
 msgid "All nearby creatures are deafened."
@@ -19241,7 +19241,7 @@ msgstr "Стає теплою на дотик, якщо поблизу вико�
 
 #: app/static/json/party_events/spellbooks.json:136
 msgid "Disassemble"
-msgstr "Розбирання"
+msgstr "Розібрати"
 
 #: app/static/json/party_events/spellbooks.json:138
 msgid ""
@@ -19257,7 +19257,7 @@ msgstr "Відновлює будь-які вирвані чи пошкодже�
 
 #: app/static/json/party_events/spellbooks.json:142
 msgid "Disguise"
-msgstr "Личина"
+msgstr "Маскування"
 
 #: app/static/json/party_events/spellbooks.json:144
 msgid ""
@@ -19274,7 +19274,7 @@ msgstr "Її поверхня — ідеальне дзеркало."
 
 #: app/static/json/party_events/spellbooks.json:148
 msgid "Displace"
-msgstr "Зміщення"
+msgstr "Переміщення"
 
 #: app/static/json/party_events/spellbooks.json:150
 msgid "An object appears to be up to 15ft from its actual position."
@@ -19358,7 +19358,7 @@ msgstr "Сильно пахне морем. Приваблює диких тва
 
 #: app/static/json/party_events/spellbooks.json:184
 msgid "Flare"
-msgstr "Сигнальний спалах"
+msgstr "Спалах"
 
 #: app/static/json/party_events/spellbooks.json:186
 msgid ""
@@ -19387,7 +19387,7 @@ msgstr "Якщо занурити книгу у воду, вона зрешто�
 
 #: app/static/json/party_events/spellbooks.json:196
 msgid "Frenzy"
-msgstr "Шаленство"
+msgstr "Божевілля"
 
 #: app/static/json/party_events/spellbooks.json:198
 msgid "A nearby creature erupts in a frenzy of violence."
@@ -19416,7 +19416,7 @@ msgstr ""
 
 #: app/static/json/party_events/spellbooks.json:208
 msgid "Gravity Shift"
-msgstr "Зсув тяжіння"
+msgstr "Зміна тяжіння"
 
 #: app/static/json/party_events/spellbooks.json:210
 msgid "You can change the direction of gravity, but only for yourself."
@@ -19477,7 +19477,7 @@ msgstr ""
 
 #: app/static/json/party_events/spellbooks.json:232
 msgid "Hear Whispers"
-msgstr "Чути шепіт"
+msgstr "Слухати шепіт"
 
 #: app/static/json/party_events/spellbooks.json:234
 msgid "You can hear faint sounds clearly."
@@ -19489,7 +19489,7 @@ msgstr "Після читання голос читача на короткий 
 
 #: app/static/json/party_events/spellbooks.json:238
 msgid "Hover"
-msgstr "Ширяння"
+msgstr "Левітація"
 
 #: app/static/json/party_events/spellbooks.json:240
 msgid ""
@@ -19582,7 +19582,7 @@ msgstr ""
 
 #: app/static/json/party_events/spellbooks.json:274
 msgid "Knock"
-msgstr "Відмикання"
+msgstr "Стук"
 
 #: app/static/json/party_events/spellbooks.json:276
 msgid "A nearby mundane or magical lock unlocks loudly."
@@ -19618,7 +19618,7 @@ msgstr "Ширяє сама собою, відскакуючи від усьог
 
 #: app/static/json/party_events/spellbooks.json:292
 msgid "Magic Dampener"
-msgstr "Глушник магії"
+msgstr "Послаблення магії"
 
 #: app/static/json/party_events/spellbooks.json:294
 msgid "All nearby magical effects have their effectiveness halved."
@@ -19690,7 +19690,7 @@ msgstr "Текст сміховинно, комічно великий."
 
 #: app/static/json/party_events/spellbooks.json:322
 msgid "Mirror Image"
-msgstr "Дзеркальний двійник"
+msgstr "Дзеркальне відображення"
 
 #: app/static/json/party_events/spellbooks.json:324
 msgid "An illusory duplicate of yourself appears and is under your control."
@@ -19704,7 +19704,7 @@ msgstr "З часом власник починає сумніватися, хт
 
 #: app/static/json/party_events/spellbooks.json:328
 msgid "Mirrorwalk"
-msgstr "Дзеркальний перехід"
+msgstr "Дзеркальний прохід"
 
 #: app/static/json/party_events/spellbooks.json:331
 msgid "Will not open unless the owner politely knocks on the cover."
@@ -19725,7 +19725,7 @@ msgstr ""
 
 #: app/static/json/party_events/spellbooks.json:340
 msgid "Night Sphere"
-msgstr "Нічна сфера"
+msgstr "Сфера ночі"
 
 #: app/static/json/party_events/spellbooks.json:342
 msgid ""
@@ -19740,7 +19740,7 @@ msgstr "На обкладинці красується виразне сузір
 
 #: app/static/json/party_events/spellbooks.json:346
 msgid "Objectify"
-msgstr "Упредметнення"
+msgstr "Подоба предмета"
 
 #: app/static/json/party_events/spellbooks.json:348
 msgid ""
@@ -19755,7 +19755,7 @@ msgstr "Кілька днів після використання власник
 
 #: app/static/json/party_events/spellbooks.json:352
 msgid "Ooze Form"
-msgstr "Подоба слизу"
+msgstr "Форма слизу"
 
 #: app/static/json/party_events/spellbooks.json:354
 msgid "You become a living jelly."
@@ -19767,7 +19767,7 @@ msgstr "Повільно сочиться кислотою, що зрештою 
 
 #: app/static/json/party_events/spellbooks.json:358
 msgid "Pacify"
-msgstr "Замирення"
+msgstr "Заспокоєння"
 
 #: app/static/json/party_events/spellbooks.json:360
 msgid "A creature near you has an aversion to violence."
@@ -19817,7 +19817,7 @@ msgstr "Власника переслідують дивні видіння йо
 
 #: app/static/json/party_events/spellbooks.json:382
 msgid "Push/Pull"
-msgstr "Штовхання/Притягання"
+msgstr "Тягнути/Штовхати"
 
 #: app/static/json/party_events/spellbooks.json:384
 msgid ""
@@ -19833,7 +19833,7 @@ msgstr "Будь-яка сила, застосована до книги, ком
 
 #: app/static/json/party_events/spellbooks.json:388
 msgid "Raise Dead"
-msgstr "Підняття мертвих"
+msgstr "Підняти мертвих"
 
 #: app/static/json/party_events/spellbooks.json:390
 msgid ""
@@ -19849,7 +19849,7 @@ msgstr "Із кожним використанням власника дедал
 
 #: app/static/json/party_events/spellbooks.json:394
 msgid "Raise Spirit"
-msgstr "Підняття духа"
+msgstr "Підняти дух"
 
 #: app/static/json/party_events/spellbooks.json:396
 msgid "The spirit of a nearby corpse manifests and will answer 1 question."
@@ -19896,7 +19896,7 @@ msgstr ""
 
 #: app/static/json/party_events/spellbooks.json:412
 msgid "Scry"
-msgstr "Ясновидіння"
+msgstr "Підглядання"
 
 #: app/static/json/party_events/spellbooks.json:414
 msgid "You can see through the eyes of a creature you touched earlier today."
@@ -19924,7 +19924,7 @@ msgstr ""
 
 #: app/static/json/party_events/spellbooks.json:424
 msgid "Sense"
-msgstr "Чуття"
+msgstr "Відчуття"
 
 #: app/static/json/party_events/spellbooks.json:426
 msgid ""
@@ -19965,7 +19965,7 @@ msgstr "Невидима для всіх, крім поточного власн
 
 #: app/static/json/party_events/spellbooks.json:442
 msgid "Shuffle"
-msgstr "Перетасування"
+msgstr "Тасування"
 
 #: app/static/json/party_events/spellbooks.json:444
 msgid "Two creatures you can see instantly switch places."
@@ -19992,7 +19992,7 @@ msgstr "М’яка, як подушка, але дарує лише неспо�
 
 #: app/static/json/party_events/spellbooks.json:454
 msgid "Slick"
-msgstr "Слизота"
+msgstr "Слизькість"
 
 #: app/static/json/party_events/spellbooks.json:456
 msgid "Every surface in a 30ft radius becomes extremely slippery."
@@ -20007,7 +20007,7 @@ msgstr ""
 
 #: app/static/json/party_events/spellbooks.json:460
 msgid "Smoke Form"
-msgstr "Подоба диму"
+msgstr "Форма диму"
 
 #: app/static/json/party_events/spellbooks.json:462
 msgid "Your body becomes a living smoke that you can control."
@@ -20033,7 +20033,7 @@ msgstr "Видає сильний запах, який відчуває лише
 
 #: app/static/json/party_events/spellbooks.json:472
 msgid "Snuff"
-msgstr "Гасіння"
+msgstr "Загасити"
 
 #: app/static/json/party_events/spellbooks.json:474
 msgid "The source of any mundane light you can see is instantly snuffed out."
@@ -20049,7 +20049,7 @@ msgstr ""
 
 #: app/static/json/party_events/spellbooks.json:478
 msgid "Sort"
-msgstr "Впорядкування"
+msgstr "Сортування"
 
 #: app/static/json/party_events/spellbooks.json:480
 msgid "Inanimate items sort themselves according to categories you set."
@@ -20074,7 +20074,7 @@ msgstr ""
 
 #: app/static/json/party_events/spellbooks.json:490
 msgid "Spellsaw"
-msgstr "Чароріз"
+msgstr "Магічна пила"
 
 #: app/static/json/party_events/spellbooks.json:492
 msgid ""
@@ -20091,7 +20091,7 @@ msgstr ""
 
 #: app/static/json/party_events/spellbooks.json:496
 msgid "Spider Climb"
-msgstr "Павуче лазіння"
+msgstr "Павуче лазання"
 
 #: app/static/json/party_events/spellbooks.json:498
 msgid "You can climb surfaces like a spider."
@@ -20170,7 +20170,7 @@ msgstr "Книгу можна знищити, щоб створити порта
 
 #: app/static/json/party_events/spellbooks.json:526
 msgid "Target Lure"
-msgstr "Принада для цілі"
+msgstr "Ціль-приманка"
 
 #: app/static/json/party_events/spellbooks.json:528
 msgid "An object you touch becomes the target of any nearby spell."
@@ -20208,7 +20208,7 @@ msgstr "Предмет, покладений на книгу, неминуче �
 
 #: app/static/json/party_events/spellbooks.json:544
 msgid "Time Control"
-msgstr "Керування часом"
+msgstr "Контроль часу"
 
 #: app/static/json/party_events/spellbooks.json:546
 #, no-python-format
@@ -20271,7 +20271,7 @@ msgstr ""
 
 #: app/static/json/party_events/spellbooks.json:574
 msgid "Ward"
-msgstr "Оберіг"
+msgstr "Охорона"
 
 #: app/static/json/party_events/spellbooks.json:576
 msgid ""
@@ -20304,7 +20304,7 @@ msgstr "Текст чужинський, але якимось чином зро
 
 #: app/static/json/party_events/spellbooks.json:586
 msgid "Widget"
-msgstr "Штуковина"
+msgstr "Інструмент"
 
 #: app/static/json/party_events/spellbooks.json:588
 msgid ""
@@ -20324,7 +20324,7 @@ msgstr ""
 
 #: app/static/json/party_events/spellbooks.json:592
 msgid "Wizard Mark"
-msgstr "Знак чарівника"
+msgstr "Відмітка чарівника"
 
 #: app/static/json/party_events/spellbooks.json:594
 msgid ""
@@ -20484,7 +20484,7 @@ msgid ""
 "Quiet: The party finds food, treasure, or other useful resources. The Warden"
 " can instead choose to reveal the primary feature of the area."
 msgstr ""
-"Затишшя: група знаходить їжу, скарби чи інші корисні ресурси. Натомість "
+"Знахідка: група знаходить їжу, скарби чи інші корисні ресурси. Натомість "
 "Хранитель може розкрити головну особливість цієї території."
 
 #: app/templates/main/shared_map.html
@@ -21757,3 +21757,1239 @@ msgstr "Оберіть категорію, щоб побачити її табл
 #: app/templates/main/tools.html
 msgid "Roll"
 msgstr "Кинути"
+
+# Table-specific terms keep equipment, spells, names, and traits distinct.
+
+msgid "Air bladder"
+msgstr "Повітряний міхур"
+
+msgid "Alchemical Tools"
+msgstr "Алхімічні інструменти"
+
+msgid "Alchemist"
+msgstr "Алхімік"
+
+msgid "Animal Feed"
+msgstr "Корм для тварин"
+
+msgid "Animal Handler"
+msgstr "Дресирувальник"
+
+msgid "Animal feed"
+msgstr "Корм для тварин"
+
+msgid "Axe"
+msgstr "Сокира"
+
+msgid "Bastion"
+msgstr "Бастіон"
+
+msgid "Bathing Goods (Soap, Perfume, etc.)"
+msgstr "Банні речі (мило, парфуми тощо)"
+
+msgid "Bodyguard"
+msgstr "Охоронець"
+
+msgid "Book"
+msgstr "Книга"
+
+msgid "Bow"
+msgstr "Лук"
+
+msgid "Caltrops"
+msgstr "Кальтропи"
+
+msgid "Card deck"
+msgstr "Колода карт"
+
+msgid "Catastrophic"
+msgstr "Катастрофічна"
+
+msgid "Chain (10ft)"
+msgstr "Ланцюг (10 футів)"
+
+msgid "Chalk"
+msgstr "Крейда"
+
+msgid "Chest"
+msgstr "Скриня"
+
+msgid "Chisel"
+msgstr "Зубило"
+
+msgid "Common Agents (Glue, Grease, etc.)"
+msgstr "Звичайні речовини (клей, жир тощо)"
+
+msgid "Common Tools (Hammer, Shovel, etc.)"
+msgstr "Звичайні інструменти (молоток, лопата тощо)"
+
+msgid "Complex Instruments (Bagpipes, Fiddle, etc.)"
+msgstr "Складні музичні інструменти (волинка, скрипка тощо)"
+
+msgid "Containers (Sack, Waterskin, etc.)"
+msgstr "Вмістилища (мішок, бурдюк тощо)"
+
+msgid "Cooking Gear (Pots, Utensils, etc.)"
+msgstr "Кухонне приладдя (каструлі, столові прибори тощо)"
+
+msgid "Costume Gear (Face Paint, Disguise)"
+msgstr "Реквізит (грим, маскування)"
+
+msgid "Cudgel"
+msgstr "Дубина"
+
+msgid "Dematerialized Pet"
+msgstr "Дематеріалізований улюбленець"
+
+msgid "Dowsing rod"
+msgstr "Лоза для пошуку води"
+
+msgid "Expeditionary Gear (Climbing Spikes, Pulley), etc."
+msgstr "Експедиційне спорядження (альпіністські гаки, шків тощо)"
+
+msgid "Fire oil"
+msgstr "Вогняне масло"
+
+msgid "Fishing rod"
+msgstr "Вудочка"
+
+msgid "Flail"
+msgstr "Ціп"
+
+msgid "Folly"
+msgstr "Безрозсудство"
+
+msgid "Games (Cards, Dice, etc.)"
+msgstr "Ігри (карти, кості тощо)"
+
+msgid "Glimmer"
+msgstr "Мерехтіння"
+
+msgid "Grappling hook"
+msgstr "Абордажний гак"
+
+msgid "Halberd"
+msgstr "Алебарда"
+
+msgid "Haunt"
+msgstr "Оселя"
+
+msgid "Haven"
+msgstr "Пристанище"
+
+msgid "Helmet"
+msgstr "Шолом"
+
+msgid "Hollow Wolf"
+msgstr "Порожнистий вовк"
+
+msgid "Horse"
+msgstr "Кінь"
+
+msgid "Local Guide"
+msgstr "Місцевий провідник"
+
+msgid "Lockpick"
+msgstr "Зламувач замків"
+
+msgid "Mace"
+msgstr "Булава"
+
+msgid "Mule"
+msgstr "Мул"
+
+msgid "Navigator"
+msgstr "Навігатор"
+
+msgid "Net"
+msgstr "Сітка"
+
+msgid "Outdoor Comfort (Blanket, Hammock, etc.)"
+msgstr "Табірні зручності (ковдра, гамак тощо)"
+
+msgid "Parchment"
+msgstr "Пергамент"
+
+msgid "Plate"
+msgstr "Лати"
+
+msgid "Pole (10ft)"
+msgstr "Жердина (10 футів)"
+
+msgid "Raised Servant"
+msgstr "Піднятий слуга"
+
+msgid "Repellent (Wolfsbane, Mugwort, etc.)"
+msgstr "Відлякувальні засоби (тоя, полин тощо)"
+
+msgid "Rope"
+msgstr "Мотузка"
+
+msgid "Sailor"
+msgstr "Моряк"
+
+msgid "Sedative"
+msgstr "Заспокійливий засіб"
+
+msgid "Sewing kit"
+msgstr "Швейний набір"
+
+msgid "Shroud"
+msgstr "Пелена"
+
+msgid "Sickle"
+msgstr "Серп"
+
+msgid "Simple Instruments (Pipes, Lute, etc.)"
+msgstr "Прості музичні інструменти (сопілка, лютня тощо)"
+
+msgid "Slow."
+msgstr "Повільний."
+
+msgid "Smithing Tools"
+msgstr "Ковальські інструменти"
+
+msgid "Smoking pipe"
+msgstr "Люлька"
+
+msgid "Spear"
+msgstr "Спис"
+
+msgid "Specialized Tools (Ink, etc.)"
+msgstr "Спеціальне приладдя (чорнило тощо)"
+
+msgid "Spiked boots"
+msgstr "Шиповані черевики"
+
+msgid "Staff"
+msgstr "Посох"
+
+msgid "Sword"
+msgstr "Меч"
+
+msgid "Tent (fits 2, bulky)"
+msgstr "Намет (вміщує 2 людини, громіздке)"
+
+msgid "Thieving Tools"
+msgstr "Злодійські інструменти"
+
+msgid "Thieving Tools (Lockpick, Metal File, etc.)"
+msgstr "Злодійські інструменти (відмички, напилок по металу тощо)"
+
+msgid "Tracker"
+msgstr "Слідопит"
+
+msgid "Trapper"
+msgstr "Звіролов"
+
+msgid "Veteran Bodyguard"
+msgstr "Досвідчений охоронець"
+
+msgid "War Hammer"
+msgstr "Бойовий молот"
+
+msgid "Warden"
+msgstr "Хранитель"
+
+msgid "Wilderness Clothes (Poncho, Cloak, etc.)"
+msgstr "Похідний одяг (пончо, плащ тощо)"
+
+msgid "Writing Tools"
+msgstr "Письмове приладдя"
+
+msgid "You crossed a creature of the Wood, and it cursed you with a Stone Heart. With each passing month, the stone grows heavier by one slot. Until your debt is lifted, you cannot truly die."
+msgstr "Ви перейшли дорогу істоті Хащі, і вона прокляла вас Кам’яним серцем. Щомісяця камінь важчає на один слот. Доки ваш борг не сплачено, ви не можете померти по-справжньому."
+
+msgid "runnel creek"
+msgstr "струмок"
+
+msgid "vasts"
+msgstr "простори"
+
+msgctxt "culture character"
+msgid "Altruistic"
+msgstr "Альтруїстична"
+
+msgctxt "culture character"
+msgid "Artistic"
+msgstr "Мистецька"
+
+msgctxt "culture character"
+msgid "Curious"
+msgstr "Допитлива"
+
+msgctxt "culture character"
+msgid "Devious"
+msgstr "Підступна"
+
+msgctxt "culture character"
+msgid "Enlightened"
+msgstr "Освічена"
+
+msgctxt "culture character"
+msgid "Hardy"
+msgstr "Витривала"
+
+msgctxt "culture character"
+msgid "Harmonious"
+msgstr "Гармонійна"
+
+msgctxt "culture character"
+msgid "Inventive"
+msgstr "Винахідлива"
+
+msgctxt "culture character"
+msgid "Mercantile"
+msgstr "Торговельна"
+
+msgctxt "culture character"
+msgid "Nomadic"
+msgstr "Кочова"
+
+msgctxt "culture character"
+msgid "Reclusive"
+msgstr "Відлюдькувата"
+
+msgctxt "culture character"
+msgid "Religious"
+msgstr "Релігійна"
+
+msgctxt "culture character"
+msgid "Resilient"
+msgstr "Стійка"
+
+msgctxt "culture character"
+msgid "Scholarly"
+msgstr "Ерудована"
+
+msgctxt "culture character"
+msgid "Stoic"
+msgstr "Стоїчна"
+
+msgctxt "culture character"
+msgid "Struggling"
+msgstr "Знедолена"
+
+msgctxt "culture character"
+msgid "Traditional"
+msgstr "Традиційна"
+
+msgctxt "culture character"
+msgid "War-like"
+msgstr "Войовнича"
+
+msgctxt "culture character"
+msgid "Wealthy"
+msgstr "Заможна"
+
+msgctxt "culture character"
+msgid "Xenophobic"
+msgstr "Ксенофобна"
+
+msgctxt "dungeon condition"
+msgid "Abandoned"
+msgstr "Покинуте"
+
+msgctxt "dungeon condition"
+msgid "Crystalline"
+msgstr "Кристалічне"
+
+msgctxt "dungeon condition"
+msgid "Flooded"
+msgstr "Затоплене"
+
+msgctxt "dungeon condition"
+msgid "Fungal"
+msgstr "Грибне"
+
+msgctxt "dungeon condition"
+msgid "Toxic"
+msgstr "Отруйне"
+
+msgctxt "dungeon faction trait"
+msgid "Aloof"
+msgstr "Відсторонений"
+
+msgctxt "dungeon faction trait"
+msgid "Courageous"
+msgstr "Сміливий"
+
+msgctxt "dungeon faction trait"
+msgid "Critical"
+msgstr "Прискіпливий"
+
+msgctxt "dungeon faction trait"
+msgid "Deductive"
+msgstr "Дедуктивний"
+
+msgctxt "dungeon faction trait"
+msgid "Greedy"
+msgstr "Жадібний"
+
+msgctxt "dungeon faction trait"
+msgid "Individualistic"
+msgstr "Індивідуалістичний"
+
+msgctxt "dungeon faction trait"
+msgid "Inflexible"
+msgstr "Негнучкий"
+
+msgctxt "dungeon faction trait"
+msgid "Obstinate"
+msgstr "Затятий"
+
+msgctxt "dungeon faction trait"
+msgid "Resilient"
+msgstr "Стійкий"
+
+msgctxt "dungeon faction trait"
+msgid "Scholarly"
+msgstr "Ерудований"
+
+msgctxt "dungeon faction trait"
+msgid "Stubborn"
+msgstr "Впертий"
+
+msgctxt "dungeon faction trait"
+msgid "Studious"
+msgstr "Старанний"
+
+msgctxt "dungeon faction trait"
+msgid "Suave"
+msgstr "Галантний"
+
+msgctxt "dungeon faction trait"
+msgid "Unfocused"
+msgstr "Незібраний"
+
+msgctxt "dungeon faction trait"
+msgid "Vain"
+msgstr "Марнославний"
+
+msgctxt "dungeon feature"
+msgid "Illusion"
+msgstr "Створює ілюзію"
+
+msgctxt "dungeon feature"
+msgid "Teleport"
+msgstr "Телепортує"
+
+msgctxt "dungeon room"
+msgid "Armory"
+msgstr "Зброярня"
+
+msgctxt "dungeon room"
+msgid "Shrine"
+msgstr "Святилище"
+
+msgctxt "dungeon room"
+msgid "Storage"
+msgstr "Склад"
+
+msgctxt "equipment"
+msgid "Trap"
+msgstr "Капкан"
+
+msgctxt "faction trait"
+msgid "Adaptable"
+msgstr "Гнучка"
+
+msgctxt "faction trait"
+msgid "Aloof"
+msgstr "Відсторонена"
+
+msgctxt "faction trait"
+msgid "Bankrupt"
+msgstr "Збанкрутіла"
+
+msgctxt "faction trait"
+msgid "Brutal"
+msgstr "Жорстока"
+
+msgctxt "faction trait"
+msgid "Cautious"
+msgstr "Обережна"
+
+msgctxt "faction trait"
+msgid "Collaborative"
+msgstr "Схильна до співпраці"
+
+msgctxt "faction trait"
+msgid "Connected"
+msgstr "Зі зв’язками"
+
+msgctxt "faction trait"
+msgid "Corrupt"
+msgstr "Корумпована"
+
+msgctxt "faction trait"
+msgid "Craven"
+msgstr "Боягузлива"
+
+msgctxt "faction trait"
+msgid "Cruel"
+msgstr "Жорстока"
+
+msgctxt "faction trait"
+msgid "Cunning"
+msgstr "Хитра"
+
+msgctxt "faction trait"
+msgid "Cynical"
+msgstr "Цинічна"
+
+msgctxt "faction trait"
+msgid "Decadent"
+msgstr "Декадентська"
+
+msgctxt "faction trait"
+msgid "Deceptive"
+msgstr "Оманлива"
+
+msgctxt "faction trait"
+msgid "Disciplined"
+msgstr "Дисциплінована"
+
+msgctxt "faction trait"
+msgid "Discreet"
+msgstr "Обачна"
+
+msgctxt "faction trait"
+msgid "Dogmatic"
+msgstr "Догматична"
+
+msgctxt "faction trait"
+msgid "Enigmatic"
+msgstr "Загадкова"
+
+msgctxt "faction trait"
+msgid "Fierce"
+msgstr "Люта"
+
+msgctxt "faction trait"
+msgid "Generous"
+msgstr "Щедра"
+
+msgctxt "faction trait"
+msgid "Greedy"
+msgstr "Жадібна"
+
+msgctxt "faction trait"
+msgid "Honest"
+msgstr "Чесна"
+
+msgctxt "faction trait"
+msgid "Impulsive"
+msgstr "Імпульсивна"
+
+msgctxt "faction trait"
+msgid "Incompetent"
+msgstr "Некомпетентна"
+
+msgctxt "faction trait"
+msgid "Incorruptible"
+msgstr "Непідкупна"
+
+msgctxt "faction trait"
+msgid "Intellectual"
+msgstr "Інтелектуальна"
+
+msgctxt "faction trait"
+msgid "Judicious"
+msgstr "Розважлива"
+
+msgctxt "faction trait"
+msgid "Keen"
+msgstr "Завзята"
+
+msgctxt "faction trait"
+msgid "Loyal"
+msgstr "Віддана"
+
+msgctxt "faction trait"
+msgid "Manipulative"
+msgstr "Маніпулятивна"
+
+msgctxt "faction trait"
+msgid "Mercurial"
+msgstr "Мінлива"
+
+msgctxt "faction trait"
+msgid "Meticulous"
+msgstr "Скрупульозна"
+
+msgctxt "faction trait"
+msgid "Naive"
+msgstr "Наївна"
+
+msgctxt "faction trait"
+msgid "Popular"
+msgstr "Популярна"
+
+msgctxt "faction trait"
+msgid "Pragmatic"
+msgstr "Прагматична"
+
+msgctxt "faction trait"
+msgid "Repressed"
+msgstr "Пригноблена"
+
+msgctxt "faction trait"
+msgid "Resourceful"
+msgstr "Винахідлива"
+
+msgctxt "faction trait"
+msgid "Ruthless"
+msgstr "Безжальна"
+
+msgctxt "faction trait"
+msgid "Secretive"
+msgstr "Потайна"
+
+msgctxt "faction trait"
+msgid "Selfish"
+msgstr "Егоїстична"
+
+msgctxt "faction trait"
+msgid "Shrewd"
+msgstr "Прониклива"
+
+msgctxt "faction trait"
+msgid "Stealthy"
+msgstr "Потайна"
+
+msgctxt "faction trait"
+msgid "Stubborn"
+msgstr "Вперта"
+
+msgctxt "faction trait"
+msgid "Tenacious"
+msgstr "Наполеглива"
+
+msgctxt "faction trait"
+msgid "Threatened"
+msgstr "Під загрозою"
+
+msgctxt "faction trait"
+msgid "Vain"
+msgstr "Марнославна"
+
+msgctxt "faction trait"
+msgid "Witty"
+msgstr "Дотепна"
+
+msgctxt "faction trait"
+msgid "Xenophobic"
+msgstr "Ксенофобна"
+
+msgctxt "forest description"
+msgid "Awakening"
+msgstr "Що пробуджується"
+
+msgctxt "forest description"
+msgid "Dying"
+msgstr "Що відмирає"
+
+msgctxt "forest description"
+msgid "Frozen"
+msgstr "Замерзлий"
+
+msgctxt "forest description"
+msgid "Infested"
+msgstr "Заселений паразитами"
+
+msgctxt "forest description"
+msgid "Overgrown"
+msgstr "Зарослий"
+
+msgctxt "forest description"
+msgid "Petrified"
+msgstr "Скам’янілий"
+
+msgctxt "forest description"
+msgid "Scorched"
+msgstr "Випалений"
+
+msgctxt "forest goal"
+msgid "Awakening"
+msgstr "Пробудження"
+
+msgctxt "forest name adjective"
+msgid "Crystal"
+msgstr "Кристальний"
+
+msgctxt "forest name adjective"
+msgid "Frozen"
+msgstr "Замерзлий"
+
+msgctxt "forest name adjective"
+msgid "Haunted"
+msgstr "Населений привидами"
+
+msgctxt "forest name adjective"
+msgid "Overgrown"
+msgstr "Зарослий"
+
+msgctxt "forest name adjective"
+msgid "Rugged"
+msgstr "Кострубатий"
+
+msgctxt "forest name adjective"
+msgid "Serene"
+msgstr "Спокійний"
+
+msgctxt "forest name adjective"
+msgid "Towering"
+msgstr "Високий"
+
+msgctxt "forest name adjective"
+msgid "Weathered"
+msgstr "Обвітрений"
+
+msgctxt "forest name noun"
+msgid "Growth"
+msgstr "Поросль"
+
+msgctxt "forest name noun"
+msgid "Thicket"
+msgstr "Гущавина"
+
+msgctxt "forest spirit trait"
+msgid "Adaptive"
+msgstr "Гнучкий"
+
+msgctxt "forest spirit trait"
+msgid "Aggressive"
+msgstr "Агресивний"
+
+msgctxt "forest spirit trait"
+msgid "Aloof"
+msgstr "Відсторонений"
+
+msgctxt "forest spirit trait"
+msgid "Covetous"
+msgstr "Захланний"
+
+msgctxt "forest spirit trait"
+msgid "Cultivating"
+msgstr "Дбайливий"
+
+msgctxt "forest spirit trait"
+msgid "Detached"
+msgstr "Байдужий"
+
+msgctxt "forest spirit trait"
+msgid "Empathic"
+msgstr "Емпатійний"
+
+msgctxt "forest spirit trait"
+msgid "Enduring"
+msgstr "Довговічний"
+
+msgctxt "forest spirit trait"
+msgid "Graceful"
+msgstr "Граційний"
+
+msgctxt "forest spirit trait"
+msgid "Hardy"
+msgstr "Витривалий"
+
+msgctxt "forest spirit trait"
+msgid "Learned"
+msgstr "Освічений"
+
+msgctxt "forest spirit trait"
+msgid "Nurturing"
+msgstr "Турботливий"
+
+msgctxt "forest spirit trait"
+msgid "Obscuring"
+msgstr "Затуманювальний"
+
+msgctxt "forest spirit trait"
+msgid "Overzealous"
+msgstr "Фанатичний"
+
+msgctxt "forest spirit trait"
+msgid "Parasitic"
+msgstr "Паразитичний"
+
+msgctxt "forest spirit trait"
+msgid "Predatory"
+msgstr "Хижий"
+
+msgctxt "forest spirit trait"
+msgid "Rigid"
+msgstr "Закостенілий"
+
+msgctxt "forest spirit trait"
+msgid "Scatterbrained"
+msgstr "Розсіяний"
+
+msgctxt "forest spirit trait"
+msgid "Sensible"
+msgstr "Розсудливий"
+
+msgctxt "forest spirit trait"
+msgid "Sharp"
+msgstr "Проникливий"
+
+msgctxt "forest spirit trait"
+msgid "Stable"
+msgstr "Стабільний"
+
+msgctxt "name adjective"
+msgid "Amber"
+msgstr "Бурштиновий"
+
+msgctxt "name adjective"
+msgid "Bitter"
+msgstr "Гіркий"
+
+msgctxt "name adjective"
+msgid "Cold"
+msgstr "Холодний"
+
+msgctxt "name adjective"
+msgid "Copper"
+msgstr "Мідний"
+
+msgctxt "name adjective"
+msgid "Crimson"
+msgstr "Багряний"
+
+msgctxt "name adjective"
+msgid "Crumbling"
+msgstr "Напівзруйнований"
+
+msgctxt "name adjective"
+msgid "Frayed"
+msgstr "Потертий"
+
+msgctxt "name adjective"
+msgid "Frozen"
+msgstr "Замерзлий"
+
+msgctxt "name adjective"
+msgid "Glow"
+msgstr "Сяйливий"
+
+msgctxt "name adjective"
+msgid "Granite"
+msgstr "Гранітний"
+
+msgctxt "name adjective"
+msgid "Overgrown"
+msgstr "Зарослий"
+
+msgctxt "name adjective"
+msgid "Slaughter"
+msgstr "Убивчий"
+
+msgctxt "name adjective"
+msgid "Sunken"
+msgstr "Затонулий"
+
+msgctxt "name noun"
+msgid "Black"
+msgstr "Чорнота"
+
+msgctxt "name noun"
+msgid "Bright"
+msgstr "Яскравість"
+
+msgctxt "name noun"
+msgid "Dead"
+msgstr "Мрець"
+
+msgctxt "name noun"
+msgid "Toxic"
+msgstr "Отрута"
+
+msgctxt "name noun"
+msgid "Tranquil"
+msgstr "Спокій"
+
+msgctxt "npc name"
+msgid "Ainsley"
+msgstr "Ейнслі"
+
+msgctxt "npc name"
+msgid "Alaric"
+msgstr "Аларік"
+
+msgctxt "npc name"
+msgid "Alder"
+msgstr "Альдер"
+
+msgctxt "npc name"
+msgid "Alistair"
+msgstr "Алістер"
+
+msgctxt "npc name"
+msgid "Azura"
+msgstr "Азура"
+
+msgctxt "npc name"
+msgid "Brave"
+msgstr "Брейв"
+
+msgctxt "npc name"
+msgid "Caius"
+msgstr "Кайус"
+
+msgctxt "npc name"
+msgid "Callan"
+msgstr "Каллан"
+
+msgctxt "npc name"
+msgid "Carver"
+msgstr "Карвер"
+
+msgctxt "npc name"
+msgid "Cedric"
+msgstr "Седрік"
+
+msgctxt "npc name"
+msgid "Cleaver"
+msgstr "Клівер"
+
+msgctxt "npc name"
+msgid "Crow"
+msgstr "Кроу"
+
+msgctxt "npc name"
+msgid "Dain"
+msgstr "Дейн"
+
+msgctxt "npc name"
+msgid "Darnel"
+msgstr "Дарнелл"
+
+msgctxt "npc name"
+msgid "Dax"
+msgstr "Дакс"
+
+msgctxt "npc name"
+msgid "Dorian"
+msgstr "Доріан"
+
+msgctxt "npc name"
+msgid "Eoin"
+msgstr "Еойн"
+
+msgctxt "npc name"
+msgid "Evander"
+msgstr "Евандер"
+
+msgctxt "npc name"
+msgid "Finch"
+msgstr "Фінч"
+
+msgctxt "npc name"
+msgid "Glyph"
+msgstr "Ґліф"
+
+msgctxt "npc name"
+msgid "Godric"
+msgstr "Ґодрік"
+
+msgctxt "npc name"
+msgid "Gunnar"
+msgstr "Ґуннар"
+
+msgctxt "npc name"
+msgid "Harkin"
+msgstr "Гаркін"
+
+msgctxt "npc name"
+msgid "Harper"
+msgstr "Гарпер"
+
+msgctxt "npc name"
+msgid "Hemlock"
+msgstr "Гемлок"
+
+msgctxt "npc name"
+msgid "Hildred"
+msgstr "Гілдред"
+
+msgctxt "npc name"
+msgid "Kael"
+msgstr "Каель"
+
+msgctxt "npc name"
+msgid "Kavi"
+msgstr "Каві"
+
+msgctxt "npc name"
+msgid "Liora"
+msgstr "Ліора"
+
+msgctxt "npc name"
+msgid "Luna"
+msgstr "Луна"
+
+msgctxt "npc name"
+msgid "Lysander"
+msgstr "Лісандер"
+
+msgctxt "npc name"
+msgid "Marcellus"
+msgstr "Марцелл"
+
+msgctxt "npc name"
+msgid "Mariner"
+msgstr "Марінер"
+
+msgctxt "npc name"
+msgid "Marius"
+msgstr "Маріус"
+
+msgctxt "npc name"
+msgid "Mend"
+msgstr "Менд"
+
+msgctxt "npc name"
+msgid "Milo"
+msgstr "Майло"
+
+msgctxt "npc name"
+msgid "Nazira"
+msgstr "Назіра"
+
+msgctxt "npc name"
+msgid "Neria"
+msgstr "Нерія"
+
+msgctxt "npc name"
+msgid "Onyx"
+msgstr "Онікс"
+
+msgctxt "npc name"
+msgid "Pan"
+msgstr "Пан"
+
+msgctxt "npc name"
+msgid "Quill"
+msgstr "Квілл"
+
+msgctxt "npc name"
+msgid "Rolan"
+msgstr "Ролан"
+
+msgctxt "npc name"
+msgid "Rush"
+msgstr "Раш"
+
+msgctxt "npc name"
+msgid "Shade"
+msgstr "Шейд"
+
+msgctxt "npc name"
+msgid "Shroud"
+msgstr "Шрауд"
+
+msgctxt "npc name"
+msgid "Sky"
+msgstr "Скай"
+
+msgctxt "npc name"
+msgid "Spade"
+msgstr "Спейд"
+
+msgctxt "npc name"
+msgid "Spike"
+msgstr "Спайк"
+
+msgctxt "npc name"
+msgid "Storm"
+msgstr "Сторм"
+
+msgctxt "npc name"
+msgid "Taros"
+msgstr "Тарос"
+
+msgctxt "npc name"
+msgid "Thaddeus"
+msgstr "Таддеус"
+
+msgctxt "npc name"
+msgid "Thyme"
+msgstr "Тайм"
+
+msgctxt "npc quirk"
+msgid "Bald"
+msgstr "Лисий"
+
+msgctxt "npc quirk"
+msgid "Bright Eyes"
+msgstr "Ясні очі"
+
+msgctxt "npc quirk"
+msgid "Good Posture"
+msgstr "Гарна постава"
+
+msgctxt "npc quirk"
+msgid "Grimy"
+msgstr "Замурзаний"
+
+msgctxt "npc quirk"
+msgid "Heavy Brow"
+msgstr "Масивне надбрів’я"
+
+msgctxt "npc quirk"
+msgid "Lanky"
+msgstr "Довгов’язий"
+
+msgctxt "npc quirk"
+msgid "Missing Ear"
+msgstr "Без вуха"
+
+msgctxt "npc quirk"
+msgid "Notable Hair"
+msgstr "Примітне волосся"
+
+msgctxt "npc quirk"
+msgid "Scarred"
+msgstr "Пошрамований"
+
+msgctxt "npc quirk"
+msgid "Strong"
+msgstr "Сильний"
+
+msgctxt "npc quirk"
+msgid "Tired"
+msgstr "Втомлений"
+
+msgctxt "npc role"
+msgid "Mystic"
+msgstr "Містик"
+
+msgctxt "npc trait"
+msgid "Aloof"
+msgstr "Відсторонений"
+
+msgctxt "npc trait"
+msgid "Cautious"
+msgstr "Обережний"
+
+msgctxt "npc trait"
+msgid "Connected"
+msgstr "Зі зв’язками"
+
+msgctxt "npc trait"
+msgid "Corrupt"
+msgstr "Корумпований"
+
+msgctxt "npc trait"
+msgid "Courageous"
+msgstr "Сміливий"
+
+msgctxt "npc trait"
+msgid "Craven"
+msgstr "Боягузливий"
+
+msgctxt "npc trait"
+msgid "Cruel"
+msgstr "Жорстокий"
+
+msgctxt "npc trait"
+msgid "Deceptive"
+msgstr "Оманливий"
+
+msgctxt "npc trait"
+msgid "Disciplined"
+msgstr "Дисциплінований"
+
+msgctxt "npc trait"
+msgid "Discreet"
+msgstr "Обачний"
+
+msgctxt "npc trait"
+msgid "Greedy"
+msgstr "Жадібний"
+
+msgctxt "npc trait"
+msgid "Incompetent"
+msgstr "Некомпетентний"
+
+msgctxt "npc trait"
+msgid "Inflexible"
+msgstr "Негнучкий"
+
+msgctxt "npc trait"
+msgid "Intelligent"
+msgstr "Розумний"
+
+msgctxt "npc trait"
+msgid "Judicious"
+msgstr "Розважливий"
+
+msgctxt "npc trait"
+msgid "Manipulative"
+msgstr "Маніпулятивний"
+
+msgctxt "npc trait"
+msgid "Mercurial"
+msgstr "Мінливий"
+
+msgctxt "npc trait"
+msgid "Meticulous"
+msgstr "Скрупульозний"
+
+msgctxt "npc trait"
+msgid "Popular"
+msgstr "Популярний"
+
+msgctxt "npc trait"
+msgid "Pragmatic"
+msgstr "Прагматичний"
+
+msgctxt "npc trait"
+msgid "Resourceful"
+msgstr "Винахідливий"
+
+msgctxt "npc trait"
+msgid "Ruthless"
+msgstr "Безжальний"
+
+msgctxt "npc trait"
+msgid "Shrewd"
+msgstr "Проникливий"
+
+msgctxt "npc trait"
+msgid "Stubborn"
+msgstr "Впертий"
+
+msgctxt "npc trait"
+msgid "Suave"
+msgstr "Галантний"
+
+msgctxt "npc trait"
+msgid "Tenacious"
+msgstr "Наполегливий"
+
+msgctxt "npc trait"
+msgid "Vain"
+msgstr "Марнославний"
+
+msgctxt "npc trait"
+msgid "Xenophobic"
+msgstr "Ксенофобний"
+
+msgctxt "ruler type"
+msgid "Alliance"
+msgstr "Альянс"
+
+msgctxt "ruler type"
+msgid "Dominion"
+msgstr "Домініон"
+
+msgctxt "ruler type"
+msgid "Realm"
+msgstr "Царство"
+
+msgctxt "spell name"
+msgid "Vision"
+msgstr "Видіння"
