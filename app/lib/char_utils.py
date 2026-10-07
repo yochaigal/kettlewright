@@ -179,7 +179,7 @@ def generate_character(bkg):
     genchar.description = genchar.background['background_description']
     genchar.background_name = selected
     
-    genchar.name = genchar.background['names'][random.randint(0,len(genchar.background['names'])-1)]
+    genchar.name = str(_(genchar.background['names'][random.randint(0,len(genchar.background['names'])-1)]))
     
     omens = load_omens()
     genchar.omen = omens[random.randint(0, len(omens)-1)]
@@ -343,12 +343,12 @@ def random_background():
 
 def random_name(background):
     if background != None and 'names' in background:
-        return roll_list(background['names'])
+        return str(_(roll_list(background['names'])))
     names = []
     bkgs = load_backgrounds()
     for key in bkgs:
         names.extend(bkgs[key]['names'])
-    return roll_list(names)
+    return str(_(roll_list(names)))
 
 def random_table_option(background, name):
     if not background or not name in background:

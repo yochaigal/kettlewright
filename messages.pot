@@ -19094,3 +19094,723 @@ msgstr ""
 
 msgid "Hireling"
 msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Aasim"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Ada"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Adair"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Akshara"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Aldric"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Aludel"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Amara"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Ambrose"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Arawan"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Aria"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Arlo"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Artea"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Aster"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Baladria"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Barnaby"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Baruani"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Basil"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Bea"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Beatrix"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Beauregard"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Berek"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Boreas"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Bram"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Brie"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Brielle"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Brim"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Brunhilda"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Bryn"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Bull"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Cai"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Chayse"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Cliff"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Cobb"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Cornelius"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Crier"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Current"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Cutwell"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Cyra"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Darius"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Darragh"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Delphine"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Dev"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Dibber"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Dirk"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Drake"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Eamon"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Ebon"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Eira"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Elara"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Eon"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Falcon"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Faunus"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Feather"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Felix"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Fergus"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Flax"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Flint"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Freki"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Freya"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Gale"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Galen"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Gann"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Gerrik"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Goodeye"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Gossamer"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Harrow"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Hawk"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Hazel"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Hester"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Hestia"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Hilda"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Hugo"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Humor"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Idris"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Indigo"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Isolde"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Ivor"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Ivy"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Iwan"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Jax"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Jazia"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Ji-Yun"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Johanna"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Jory"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Jubilo"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Julius"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Kalam"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Kalamos"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Keir"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Lal"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Lancet"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Landsford"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Lantos"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Lazlo"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Leder"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Leif"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Leth"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Lorenz"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Lucius"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Lyra"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Madrigal"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Matheus"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Mireille"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Mordant"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Moro"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Morth"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Mourella"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Needle"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Noa"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Nuja"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Nyx"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Oswin"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Pall"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Patch"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Per"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Percival"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Piper"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Pisa"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Pluck"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Prism"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Quintess"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Ragnar"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Ratan"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Raven"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Razvan"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Reed"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Robin"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Rook"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Rorik"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Rowena"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Rui"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Rune"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Rye"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Rónán"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Sabine"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Sable"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Salaman"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Salina"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Saoirse"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Sawbones"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Saylor"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Seed"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Selene"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Seren"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Shui"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Silas"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Silverdew"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Snowdrop"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Solena"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Solene"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Solstice"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Soren"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Sow"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Sparrow"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Stalk"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Steeleye"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Stilo"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Talon"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Theo"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Theron"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Thresh"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Toph"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Tripp"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Unther"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Valen"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Veda"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Veles"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Vesper"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Vex"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Warsong"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Wilmot"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Winda"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Wisp"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Wolfram"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Woozy"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Wren"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Wulf"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Yara"
+msgstr ""
+
+#: app/static/json/backgrounds:1
+msgid "Yew"
+msgstr ""
+
+#: app/blueprints/charcreo.py:23
+msgid "** Custom **"
+msgstr ""

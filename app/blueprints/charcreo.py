@@ -22,7 +22,8 @@ character_create = Blueprint('character_create', __name__)
 def rebuild_names(names):
     result = [('', _l('Name (d10)...')), ('Custom', _l('** Custom **'))]
     for name in names:
-        result.append((name, name))
+        translated = str(_(name))
+        result.append((translated, translated))
     return result
 
 def rebuild_all_names():
@@ -30,7 +31,8 @@ def rebuild_all_names():
     result = [('', _l('Name (d10)...')), ('Custom', _l('** Custom **'))]
     for bkg in backgrounds:
         for name in backgrounds[bkg]['names']:
-            result.append((name, name))
+            translated = str(_(name))
+            result.append((translated, translated))
     return result
 
 def get_background(form):
