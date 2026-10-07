@@ -3,11 +3,12 @@ import {formatMarkdown, markdownTools} from './markdown-editing.js';
 
 // Enhance ordinary forms too, including HTMX replacements. Never change field names,
 // submitted source, Alpine models, validation, or credential/number controls.
+// SweetAlert2 builds every popup with a hidden .swal2-textarea, so skip its dialogs.
 const enhanced=new WeakSet();
 function enhance(root) {
   const fields=[...(root.matches?.('textarea,input[type=text]') ? [root] : []),...root.querySelectorAll('textarea,input[type=text]')];
   for(const field of fields) {
-    if(enhanced.has(field) || field.closest('.rich-editor') || field.hidden || field.readOnly || field.closest('[data-no-markdown]') || /json|password|username|email|url|search|filter|token/i.test(field.name || field.id)) continue;
+    if(enhanced.has(field) || field.closest('.rich-editor, .swal2-container') || field.hidden || field.readOnly || field.closest('[data-no-markdown]') || /json|password|username|email|url|search|filter|token/i.test(field.name || field.id)) continue;
     enhanced.add(field);
     if(field.tagName==='INPUT') {
       const preview=document.createElement('div'); preview.className='rich-content markdown-inline-preview';preview.hidden=true;preview.setAttribute('aria-hidden','true');field.after(preview);
