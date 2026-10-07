@@ -52,7 +52,8 @@ def companion_party(companion):
 
 
 def pet_data(template, parent):
-    result = dict(name=template['name'], role=template['name'], notes=_(template.get('notes', '')),
+    notes = template.get('notes', '')
+    result = dict(name=template['name'], role=template['name'], notes=_(notes) if notes else '',
                   armor=template.get('armor', 0), attack=template.get('attack', ''), gold=0,
                   items=[], containers=[dict(id=0, name='Main', slots=template.get('slots', 0))])
     for stat in STATS:

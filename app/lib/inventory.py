@@ -6,6 +6,7 @@ from app.models import db, Party, Character, Companion
 from app.models.character import item_armor_value
 from app.lib import sdv
 from flask_babel import _
+from app.lib.translations import translate_term
 from flask import abort
 
 FATIGUE_NAME = "Fatigue"
@@ -146,7 +147,7 @@ class Inventory:
         
     # decorate single item
     def decorate_item(self, item):
-        title = _(item["name"])
+        title = translate_term(item["name"], 'equipment')
         item["blocker"] = False
         item["editable"] = True
         item["removable"] = True

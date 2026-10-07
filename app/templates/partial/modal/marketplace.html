@@ -118,9 +118,9 @@
           <tbody id="marketplace-table-body">
             {% for item in market.get_market_items() %}
             <tr>
-              <td>{{ item.name|markdown_inline }}</td>
+              <td>{{ item.name|tr('equipment')|markdown_inline }}</td>
               <td>{{item.cost}}</td>
-              <td>{{item.category}}</td>
+              <td>{{item.category|tr}}</td>
               <td>
                 <div class="row8">
                   <div class="pointer item-edit-button-frame" title="Decrease"
