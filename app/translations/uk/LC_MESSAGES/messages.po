@@ -21733,3 +21733,27 @@ msgstr "повідомляйте про помилки"
 #: app/templates/main/about.html
 msgid "source code"
 msgstr "вихідний код"
+
+#: app/templates/nav.html
+msgid "Campaigns"
+msgstr "Кампанії"
+
+#: app/templates/nav.html
+msgid "Discord integration"
+msgstr "Інтеграція з Discord"
+
+#: app/templates/main/tools.html
+msgid "Character Generator"
+msgstr "Генератор персонажів"
+
+#: app/templates/main/tools.html
+msgid "Category"
+msgstr "Категорія"
+
+#: app/templates/main/tools.html
+msgid "Choose a category to see its tables."
+msgstr "Оберіть категорію, щоб побачити її таблиці."
+
+#: app/templates/main/tools.html
+msgid "Roll"
+msgstr "Кинути"

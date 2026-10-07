@@ -20182,3 +20182,27 @@ msgstr ""
 #: app/templates/main/about.html
 msgid "source code"
 msgstr ""
+
+#: app/templates/nav.html
+msgid "Campaigns"
+msgstr ""
+
+#: app/templates/nav.html
+msgid "Discord integration"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Character Generator"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Category"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Choose a category to see its tables."
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Roll"
+msgstr ""

@@ -20348,3 +20348,27 @@ msgstr "relate problemas"
 #: app/templates/main/about.html
 msgid "source code"
 msgstr "código-fonte"
+
+#: app/templates/nav.html
+msgid "Campaigns"
+msgstr "Campanhas"
+
+#: app/templates/nav.html
+msgid "Discord integration"
+msgstr "Integração com o Discord"
+
+#: app/templates/main/tools.html
+msgid "Character Generator"
+msgstr "Gerador de Personagem"
+
+#: app/templates/main/tools.html
+msgid "Category"
+msgstr "Categoria"
+
+#: app/templates/main/tools.html
+msgid "Choose a category to see its tables."
+msgstr "Escolha uma categoria para ver suas tabelas."
+
+#: app/templates/main/tools.html
+msgid "Roll"
+msgstr "Rolar"
