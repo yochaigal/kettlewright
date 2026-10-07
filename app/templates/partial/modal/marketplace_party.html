@@ -19,10 +19,10 @@
           <tbody>
             {% for item in items %}
             <tr>
-              <td>{{ item.name|tr|markdown_inline }}{% if item.tags %}<small> ({{item.tags|join(', ')}})</small>{% endif %}</td>
+              <td>{{ item.name|tr('equipment')|markdown_inline }}{% if item.tags %}<small> ({{item.tags|join(', ')}})</small>{% endif %}</td>
               <td>{{item.cost}}</td>
               <td><button type="button" class="button smaller-font"
-                aria-label="{{_('Add')}} {{item.name|tr}}"
+                aria-label="{{_('Add')}} {{item.name|tr('equipment')}}"
                 hx-post="/marketplace/party/{{party.id}}/{{container.id}}"
                 hx-vals='{{ {"item":item.name}|tojson }}' hx-include="#shared-market-filter" hx-target="#inventory-container">+</button></td>
             </tr>

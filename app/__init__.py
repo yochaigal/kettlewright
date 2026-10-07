@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from datetime import timedelta
 from flask_babel import Babel
 from flask_babel import _
+from app.lib.translations import translate_term
 import urllib.parse
 
 UTC = timezone.utc
@@ -199,8 +200,8 @@ def create_app():
     
     # Translate
     @app.template_filter("tr")
-    def tr_filter(text: str) -> str:
-        return _(text)
+    def tr_filter(text: str, context=None) -> str:
+        return translate_term(text, context)
     
     # URL decode
     @app.template_filter("urldec")

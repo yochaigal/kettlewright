@@ -5,7 +5,7 @@
     placeholder="{{_('Type an equipment name')}}" />
   <datalist id="item-library-options">
     {% for equipment in library %}
-    <option value="{{_(equipment.name)}}" data-item='{{ equipment | tojson }}'></option>
+    <option value="{{equipment.name | tr('equipment')}}" data-item='{{ equipment | tojson }}'></option>
     {% endfor %}
   </datalist>
   <small>{{_('Select equipment to fill the fields below, or enter a custom item. Gold is unchanged.')}}</small>

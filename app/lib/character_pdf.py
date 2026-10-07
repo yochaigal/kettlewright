@@ -107,6 +107,7 @@ def _portrait(character):
 
 
 def _item_title(item):
+    from app.lib.translations import translate_term
     details = []
     tags = item.get('tags') or []
     for tag in tags:
@@ -121,7 +122,7 @@ def _item_title(item):
             details.append('+' + _(tag))
         else:
             details.append(_(tag))
-    name = plain_text(_(item.get('name') or ''))
+    name = plain_text(translate_term(item.get('name') or '', 'equipment'))
     return name + (' (' + ', '.join(details) + ')' if details else '')
 
 

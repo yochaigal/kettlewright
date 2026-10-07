@@ -4,15 +4,16 @@
 {% set edit_base = inventory_edit_base|default('/charedit/inplace-inventory/' ~ username ~ '/' ~ url_name) %}
 {% set csrf = companion_form().csrf_token.current_token if companion_form().csrf_token is defined else '' %}
 {% macro item_content(it, slot=None) %}
+  {% set item_name = it.name | tr('equipment') %}
   <div class="slot-item-content">
     {% if editable and it.editable %}
-    <button type="button" class="slot-item-name" title="{{it.name | tr}}"
-      hx-get="{{edit_base}}/item-edit/{{it.id}}?container={{container.id}}" hx-target="#modal-anchor">{{ it.name | tr|markdown_inline }}</button>
-    {% else %}<span class="slot-item-name" title="{{it.name | tr}}">{{ it.name | tr|markdown_inline }}</span>{% endif %}
+    <button type="button" class="slot-item-name" title="{{item_name}}"
+      hx-get="{{edit_base}}/item-edit/{{it.id}}?container={{container.id}}" hx-target="#modal-anchor">{{ item_name|markdown_inline }}</button>
+    {% else %}<span class="slot-item-name" title="{{item_name}}">{{ item_name|markdown_inline }}</span>{% endif %}
     <div class="slot-item-details">
       {% if 'uses' in it.tags %}
         {% set maximum = [1, it.get('max_uses', it.uses), it.uses] | max %}
-        <div class="slot-use-dots" role="group" aria-label="{{it.name | tr}}: {{_('Uses')}} {{it.uses}}/{{maximum}}">
+        <div class="slot-use-dots" role="group" aria-label="{{item_name}}: {{_('Uses')}} {{it.uses}}/{{maximum}}">
           {% for index in range(1, [maximum, 12] | min + 1) %}
             {% if editable %}
             <button type="button" class="slot-use-dot {% if index <= it.uses %}is-filled{% endif %}"
@@ -28,7 +29,7 @@
       {% for tag in it.tags if tag not in ('uses', 'charges', 'petty', 'bonus defense') %}
         {% if tag.startswith('d') and it.dice|length > 0 and is_owner and (not companion_sheet or can_roll) %}
         <button type="button" class="slot-tag slot-damage" title="{{_('Roll dice')}}"
-          aria-label="{{_('Roll dice')}}: {{it.name | tr}}"
+          aria-label="{{_('Roll dice')}}: {{item_name}}"
           onclick="KW_rollDiceCallback({{ '[4]' if character.panicked else it.dice }})">{{tag | tr}}</button>
         {% else %}
         <span class="slot-tag {% if 'Armor' in tag and not it.get('armor_active', it.name != 'Sloth-Tarp') %}slot-tag-inactive{% endif %}">
@@ -49,21 +50,21 @@
   </div>
   <div class="slot-item-actions">
     {% if not companion_sheet and current_user.is_authenticated and character.owner == current_user.id and character.party_id and it.editable and 'carrying' not in it %}
-    <button type="button" class="slot-icon" title="{{ _('Drop item') }}" aria-label="{{ _('Drop item') }}: {{ it.name | tr }}"
+    <button type="button" class="slot-icon" title="{{ _('Drop item') }}" aria-label="{{ _('Drop item') }}: {{ item_name }}"
       hx-get="{{ url_for('ground.drop', character_id=character.id, kind='item', object_id=it.id) }}" hx-target="#modal-anchor"><i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button>
     {% endif %}
     {% if editable and slot is not none %}
     <button type="button" class="slot-move" data-move-item="{{it.id}}"
-      aria-label="{{_('Move')}}: {{it.name | tr}}" title="{{_('Drag to move. Arrow keys then Enter also work.')}}"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button>
+      aria-label="{{_('Move')}}: {{item_name}}" title="{{_('Drag to move. Arrow keys then Enter also work.')}}"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button>
     {% endif %}
     {% if it.description %}
-    <button type="button" class="slot-icon" title="{{_('Description')}}" aria-label="{{_('Description')}}: {{it.name | tr}}"
-      onclick="KW_alert({{it.name|tr|forceescape|tojson|forceescape}}, {{it.description|tr|item_description|tojson|forceescape}})"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button>
+    <button type="button" class="slot-icon" title="{{_('Description')}}" aria-label="{{_('Description')}}: {{item_name}}"
+      onclick="KW_alert({{item_name|forceescape|tojson|forceescape}}, {{it.description|tr|item_description|tojson|forceescape}})"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button>
     {% endif %}
     {% if editable and it.removable %}
-    <button type="button" class="slot-icon" title="{{_('Delete')}}" aria-label="{{_('Delete')}}: {{it.name | tr}}"
+    <button type="button" class="slot-icon" title="{{_('Delete')}}" aria-label="{{_('Delete')}}: {{item_name}}"
       hx-post="{{edit_base}}/{{container.id}}/item-delete/{{it.id}}" hx-target="#inventory-container"
-      hx-confirm="{{_('Are you sure you want to delete')}} {{it.name | tr}}?"
+      hx-confirm="{{_('Are you sure you want to delete')}} {{item_name}}?"
       data-confirm-title="{{_('Delete item')}}" data-confirm-button="{{_('Delete')}}">×</button>
     {% endif %}
   </div>

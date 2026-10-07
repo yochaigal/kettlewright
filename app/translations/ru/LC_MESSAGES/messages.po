@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2025-01-28 23:33+0100\n"
-"PO-Revision-Date: 2026-09-09 16:01+0200\n"
+"PO-Revision-Date: 2026-10-07 00:00+0000\n"
 "Last-Translator: Andrew Borisenko <seigiard@gmail.com>\n"
 "Language-Team: ru <LL@li.org>\n"
 "Language: ru\n"
@@ -594,7 +594,7 @@ msgstr "заряд"
 #: app/static/json/party_events/reliquary.json:171
 #: app/static/json/party_events/reliquary.json:239
 msgid "+1 Armor"
-msgstr "+1 Брони"
+msgstr "Броня +1"
 
 #: app/static/json/party_events/reliquary.json:47
 msgid "use"
@@ -1279,13 +1279,13 @@ msgid ""
 "relative. It arrived with a warning: squander your newfound riches, and a "
 "debt long thought forgotten would be called."
 msgstr ""
-"Вы унаследовали Единственный самоцвет (500 зм, холодный и хрупкий) от давно "
+"Вы унаследовали Самоцвет (500 зм, холодный и хрупкий) от давно "
 "умершего родственника. Он прибыл с предупреждением: растратите нежданное "
 "богатство — и с вас взыщут долг, о котором давно забыли."
 
 #: app/static/json/bonds.json:7
 msgid "Single Gem"
-msgstr "Единственный самоцвет"
+msgstr "Самоцвет"
 
 #: app/static/json/bonds.json:18
 msgid "Ornate Compass"
@@ -1485,7 +1485,7 @@ msgid ""
 "You carved a Whistle (petty) from an Oak Lord’s branch. Your act did not go "
 "unnoticed. You cannot seem to rid yourself of the whistle either."
 msgstr ""
-"Вы вырезали Свисток (мелкий) из ветви Дубового владыки. Ваш поступок не "
+"Вы вырезали Свисток (мелкий) из ветви Владыки Дуба. Ваш поступок не "
 "остался незамеченным. Избавиться от свистка вы тоже никак не можете."
 
 #: app/static/json/bonds.json:183
@@ -1498,7 +1498,7 @@ msgid ""
 "Flower (petty) as proof. When the flower turns white, it means the favor is "
 "owed."
 msgstr ""
-"Бригада Рассвета оказала вашей семье услугу, оставив в подтверждение "
+"Отряд Рассвета оказал вашей семье услугу, оставив в подтверждение "
 "засушенный Кроваво-красный цветок (мелкий). Когда цветок побелеет — придет "
 "время платить за услугу."
 
@@ -1751,7 +1751,7 @@ msgstr ""
 # =============================================
 #: app/static/json/scars.json:4
 msgid "1 HP - Lasting Scar"
-msgstr "1 ОЗ - Неизгладимый шрам"
+msgstr "1 ОЗ - Шрам"
 
 #: app/static/json/scars.json:5
 msgid ""
@@ -1769,7 +1769,7 @@ msgstr ""
 
 #: app/static/json/scars.json:8
 msgid "2 HP - Rattling Blow"
-msgstr "2 ОЗ - Оглушительный удар"
+msgstr "2 ОЗ - Ошеломление"
 
 #: app/static/json/scars.json:9
 msgid ""
@@ -1787,7 +1787,7 @@ msgstr ""
 
 #: app/static/json/scars.json:12
 msgid "3 HP - Walloped"
-msgstr "3 ОЗ - Взбучка"
+msgstr "3 ОЗ - Опрокидывание"
 
 #: app/static/json/scars.json:13
 msgid ""
@@ -1805,7 +1805,7 @@ msgstr ""
 
 #: app/static/json/scars.json:16
 msgid "4 HP - Broken Limb"
-msgstr "4 ОЗ - Сломанная конечность"
+msgstr "4 ОЗ - Перелом"
 
 #: app/static/json/scars.json:17
 msgid ""
@@ -1841,7 +1841,7 @@ msgstr ""
 
 #: app/static/json/scars.json:24
 msgid "6 HP - Reorienting Head Wound"
-msgstr "6 ОЗ - Переориентирующая рана головы"
+msgstr "6 ОЗ - Травма головы"
 
 #: app/static/json/scars.json:25
 msgid ""
@@ -1859,7 +1859,7 @@ msgstr ""
 
 #: app/static/json/scars.json:28
 msgid "7 HP - Hamstrung"
-msgstr "7 ОЗ - Подрезанные сухожилия"
+msgstr "7 ОЗ - Разрыв сухожилий"
 
 #: app/static/json/scars.json:29
 msgid ""
@@ -1877,7 +1877,7 @@ msgstr ""
 
 #: app/static/json/scars.json:32
 msgid "8 HP - Deafened"
-msgstr "8 ОЗ - Оглушен"
+msgstr "8 ОЗ - Потеря слуха"
 
 #: app/static/json/scars.json:33
 msgid ""
@@ -1895,7 +1895,7 @@ msgstr ""
 
 #: app/static/json/scars.json:36
 msgid "9 HP - Re-brained"
-msgstr "9 ОЗ - Перестройка мозга"
+msgstr "9 ОЗ - Изменение психики"
 
 #: app/static/json/scars.json:37
 msgid ""
@@ -1913,7 +1913,7 @@ msgstr ""
 
 #: app/static/json/scars.json:40
 msgid "10 HP - Sundered"
-msgstr "10 ОЗ - Разорван"
+msgstr "10 ОЗ - Разрыв"
 
 #: app/static/json/scars.json:41
 msgid ""
@@ -2878,7 +2878,7 @@ msgstr "Приманка"
 #: app/static/json/backgrounds/beast-handler.json:45
 #: app/static/json/backgrounds/fungal-forager.json:23
 msgid "Rope (25ft)"
-msgstr "Веревка (25 фут)"
+msgstr "Веревка (25 фт)"
 
 #: app/static/json/backgrounds/beast-handler.json:50
 msgid "What creature is your specialty?"
@@ -2921,12 +2921,12 @@ msgid ""
 "Canines: Take a wreath of Wolfsbane and a Large Net. Effective against "
 "werewolves as well."
 msgstr ""
-"Псовые: возьмите венок Волкобоя и Большую сеть. Действует и против "
+"Псовые: возьмите венок Аконита и Большую сеть. Действует и против "
 "оборотней."
 
 #: app/static/json/backgrounds/beast-handler.json:82
 msgid "Wolfsbane"
-msgstr "Волкобой"
+msgstr "Аконит"
 
 #: app/static/json/backgrounds/beast-handler.json:84
 msgid "Effective against werewolves as well."
@@ -3319,7 +3319,7 @@ msgstr "к6+к6"
 
 #: app/static/json/backgrounds/cutpurse.json:24
 msgid "Padded leather"
-msgstr "Стеганая кожа"
+msgstr "Кожаная броня"
 
 #: app/static/json/backgrounds/cutpurse.json:28
 #: app/static/json/backgrounds/marchguard.json:52
@@ -3381,7 +3381,7 @@ msgstr "Лестница"
 
 #: app/static/json/backgrounds/cutpurse.json:64
 msgid "10ft"
-msgstr "10 фут"
+msgstr "10 фт"
 
 #: app/static/json/backgrounds/cutpurse.json:67
 msgid "Blinding Powder"
@@ -3422,7 +3422,7 @@ msgstr "Прочная шелковая веревка"
 
 #: app/static/json/backgrounds/cutpurse.json:89
 msgid "30ft"
-msgstr "30 фут"
+msgstr "30 фт"
 
 #: app/static/json/backgrounds/cutpurse.json:94
 msgid ""
@@ -3430,11 +3430,11 @@ msgid ""
 "Smoke Pellets (3 uses)."
 msgstr ""
 "Университет. Вас заметили, но не стали преследовать. Вы до сих пор не знаете"
-" почему. Возьмите Дымовые шарики (3 использования)."
+" почему. Возьмите Дымовые бомбы (3 использования)."
 
 #: app/static/json/backgrounds/cutpurse.json:97
 msgid "Smoke Pellets"
-msgstr "Дымовые шарики"
+msgstr "Дымовые бомбы"
 
 #: app/static/json/backgrounds/cutpurse.json:106
 msgid "What helps you steal?"
@@ -4041,7 +4041,7 @@ msgid ""
 "Weathered Longbow (d8, bulky) and a Leather Jerkin (1 Armor)."
 msgstr ""
 "Старый охотник. Вы оба были вполне счастливы, пока все не кончилось. "
-"Возьмите Потрепанный длинный лук (к8, громоздкий) и Кожаный камзол (Броня "
+"Возьмите Потрепанный длинный лук (к8, громоздкий) и Кожаный жакет (Броня "
 "1)."
 
 #: app/static/json/backgrounds/foundling.json:55
@@ -4050,7 +4050,7 @@ msgstr "Потрепанный длинный лук"
 
 #: app/static/json/backgrounds/foundling.json:59
 msgid "Leather Jerkin"
-msgstr "Кожаный камзол"
+msgstr "Кожаный жакет"
 
 #: app/static/json/backgrounds/foundling.json:65
 msgid ""
@@ -4058,11 +4058,11 @@ msgid ""
 "clinical detachment. Take a Healing Unguent (restores d4 STR)."
 msgstr ""
 "Умудренный аптекарь, обучивший вас искусству врачевания, но державшийся с "
-"холодной отстраненностью. Возьмите Целебную мазь (восстанавливает к4 СИЛ)."
+"холодной отстраненностью. Возьмите Лечебную мазь (восстанавливает к4 СИЛ)."
 
 #: app/static/json/backgrounds/foundling.json:68
 msgid "Healing Unguent"
-msgstr "Целебная мазь"
+msgstr "Лечебная мазь"
 
 #: app/static/json/backgrounds/foundling.json:71
 msgid "Restores d4 STR"
@@ -4153,12 +4153,12 @@ msgid ""
 "Pipeweed: Your good luck charm. Conversations tend to flow more easily after"
 " a smoke. 6 uses."
 msgstr ""
-"Ароматные травы: ваш талисман удачи. После перекура разговоры идут куда "
+"Трубочный табак: ваш талисман удачи. После перекура разговоры идут куда "
 "легче. 6 использований."
 
 #: app/static/json/backgrounds/foundling.json:134
 msgid "Pipeweed"
-msgstr "Ароматные травы"
+msgstr "Трубочный табак"
 
 #: app/static/json/backgrounds/foundling.json:137
 msgid ""
@@ -5241,12 +5241,12 @@ msgid ""
 "Poverty. You carry the Disassemble Spellbook. Only you can use it. If your "
 "vow is broken, it explodes (d12 STR damage)."
 msgstr ""
-"Бедность. Вы носите Книгу заклинания «Разборка». Только вы можете ею "
+"Бедность. Вы носите Книгу заклинания «Разбор». Только вы можете ею "
 "пользоваться. Если вы нарушите обет, она взрывается (к12 урона СИЛ)."
 
 #: app/static/json/backgrounds/hexenbane.json:127
 msgid "Spellbook (Disassemble)"
-msgstr "Книга заклинания «Разборка»"
+msgstr "Книга заклинания «Разбор»"
 
 #: app/static/json/backgrounds/hexenbane.json:129
 msgid ""
@@ -5445,19 +5445,19 @@ msgid ""
 "False Cuffs: Comfortable, realistic-looking cuffs. Only you know the trick "
 "to get out of them."
 msgstr ""
-"Фальшивые оковы: удобные, правдоподобные с виду оковы. Только вы знаете, как"
-" из них выбраться."
+"Фальшивые наручники: удобные, правдоподобные с виду наручники. Только вы "
+"знаете, как из них выбраться."
 
 #: app/static/json/backgrounds/jongleur.json:120
 msgid "False Cuffs"
-msgstr "Фальшивые оковы"
+msgstr "Фальшивые наручники"
 
 #: app/static/json/backgrounds/jongleur.json:122
 msgid ""
 "Comfortable, realistic-looking cuffs. Only you know the trick to get out of "
 "them."
 msgstr ""
-"Удобные, правдоподобные с виду оковы. Только вы знаете, как из них "
+"Удобные, правдоподобные с виду наручники. Только вы знаете, как из них "
 "выбраться."
 
 #: app/static/json/backgrounds/jongleur.json:127
@@ -5618,13 +5618,13 @@ msgid ""
 "smelting hammer (d10, bulky) and a tin helm (+1 Armor). Given time and "
 "adequate materials, you can repair armor."
 msgstr ""
-"Вы были военным плавильщиком, пока мир не разрушил ваш заработок. Возьмите "
-"плавильный молот (к10, громоздкий) и жестяной шлем (+1 Брони). Имея время и "
+"Вы были военным литейщиком, пока мир не разрушил ваш заработок. Возьмите "
+"литейный молот (к10, громоздкий) и жестяной шлем (+1 Брони). Имея время и "
 "подходящие материалы, вы можете чинить броню."
 
 #: app/static/json/backgrounds/kettlewright.json:53
 msgid "Smelting Hammer"
-msgstr "Плавильный молот"
+msgstr "Литейный молот"
 
 #: app/static/json/backgrounds/kettlewright.json:55
 msgid "Given time and adequate materials, you can repair armor."
@@ -5641,7 +5641,7 @@ msgid ""
 msgstr ""
 "Вы продаете редкие и качественные товары монастырям и знати. Возьмите "
 "Подзорную трубу, Ожерелье (мелкий) стоимостью 20 зм и Свиток «Зеркальный "
-"путь» (мелкий)."
+"переход» (мелкий)."
 
 #: app/static/json/backgrounds/kettlewright.json:67
 #: app/static/json/backgrounds/outrider.json:43
@@ -5658,7 +5658,7 @@ msgstr "Стоит 20 зм."
 
 #: app/static/json/backgrounds/kettlewright.json:76
 msgid "Scroll (Mirrorwalk)"
-msgstr "Свиток «Зеркальный путь»"
+msgstr "Свиток «Зеркальный переход»"
 
 #: app/static/json/backgrounds/kettlewright.json:78
 #: app/static/json/party_events/spellbooks.json:330
@@ -5914,12 +5914,12 @@ msgid ""
 "drawings."
 msgstr ""
 "Вашу жизнь спас один из Стражей пограничья, и вы вдохновились вступить в их "
-"ряды. Возьмите Ловушку-силок и Альбом для рисования, заполненный подробными "
+"ряды. Возьмите Силок и Альбом для рисования, заполненный подробными "
 "рисунками."
 
 #: app/static/json/backgrounds/marchguard.json:90
 msgid "Snare Trap"
-msgstr "Ловушка-силок"
+msgstr "Силок"
 
 #: app/static/json/backgrounds/marchguard.json:94
 msgid "Sketchbook"
@@ -6026,13 +6026,13 @@ msgid ""
 "(Exchange their lost STR with your own.) Recharge: Wear the ring while in "
 "perfect health. You will lose 1 STR, permanently. Petty."
 msgstr ""
-"Браслет боли: коснитесь раненого существа, чтобы перенести его раны на себя."
+"Повязка боли: коснитесь раненого существа, чтобы перенести его раны на себя."
 " (Обменяйте его потерянную СИЛ на свою.) Перезарядка: носите кольцо, будучи "
 "полностью здоровым. Вы навсегда потеряете 1 СИЛ. Мелкий."
 
 #: app/static/json/backgrounds/marchguard.json:160
 msgid "Pain Band"
-msgstr "Браслет боли"
+msgstr "Повязка боли"
 
 #: app/static/json/backgrounds/marchguard.json:164
 msgid ""
@@ -6326,12 +6326,12 @@ msgid ""
 "the weapon are enhanced until STR damage is dealt."
 msgstr ""
 "Чтите орудия смерти: К оружию следует относиться с уважением и содержать его"
-" в порядке. Возьмите Оселок из кости вирма. После получасовой ритуальной "
+" в порядке. Возьмите Оселок из вирмовой кости. После получасовой ритуальной "
 "заточки атаки этим оружием усилены, пока оно не нанесет урон СИЛ."
 
 #: app/static/json/backgrounds/outrider.json:64
 msgid "Wyrmbone Whetstone"
-msgstr "Оселок из кости вирма"
+msgstr "Оселок из вирмовой кости"
 
 #: app/static/json/backgrounds/outrider.json:66
 msgid ""
@@ -6348,13 +6348,13 @@ msgid ""
 "(save WIL or flee). Recharge: Capture the final breath of a dying warrior."
 msgstr ""
 "Биться насмерть, всегда: Вы никогда не отступаете из боя, какими бы ни были "
-"шансы. Возьмите Свисток смерти (1 заряд). Его крик обращает в бегство всех, "
+"шансы. Возьмите Смерть-свисток (1 заряд). Его крик обращает в бегство всех, "
 "кто его слышит (спасбросок ВОЛ или бегство). Перезарядка: поймайте последний"
 " вздох умирающего воина."
 
 #: app/static/json/backgrounds/outrider.json:74
 msgid "Death-Whistle"
-msgstr "Свисток смерти"
+msgstr "Смерть-свисток"
 
 #: app/static/json/backgrounds/outrider.json:78
 msgid ""
@@ -6382,21 +6382,21 @@ msgid ""
 " will snap in half if the vow is ever broken."
 msgstr ""
 "Верность делу: Ваше слово — ваша порука. Взявшись за работу, вы доводите ее "
-"до конца. Возьмите потертую Счетную палку. Когда на ее поверхности отмечена "
-"клятва, палка твердеет (к8), пока клятва не будет исполнена. Если клятва "
-"будет нарушена, палка переломится пополам."
+"до конца. Возьмите потертую Счетную палочку. Когда на ее поверхности отмечена "
+"клятва, палочка твердеет (к8), пока клятва не будет исполнена. Если клятва "
+"будет нарушена, палочка переломится пополам."
 
 #: app/static/json/backgrounds/outrider.json:91
 msgid "Tally Stick"
-msgstr "Счетная палка"
+msgstr "Счетная палочка"
 
 #: app/static/json/backgrounds/outrider.json:93
 msgid ""
 "Once a vow is marked onto its face, the stick hardens (d8) until it is "
 "complete. The stick will snap in half if the vow is ever broken."
 msgstr ""
-"Когда на ее поверхности отмечена клятва, палка твердеет (к8), пока клятва не"
-" будет исполнена. Если клятва будет нарушена, палка переломится пополам."
+"Когда на ее поверхности отмечена клятва, палочка твердеет (к8), пока клятва не"
+" будет исполнена. Если клятва будет нарушена, палочка переломится пополам."
 
 #: app/static/json/backgrounds/outrider.json:98
 msgid ""
@@ -6526,7 +6526,7 @@ msgid ""
 "Oil Can (6 uses). The limb is immune to heat and poison. Needs to be oiled "
 "daily."
 msgstr ""
-"Ложный светлячок, приманивавший водоносов своим светящимся огоньком. "
+"Светлячок-имитатор, приманивавший водоносов своим светящимся огоньком. "
 "Возьмите Алхимический протез (к8, мелкий, когда надет) взамен оторванной им "
 "конечности и Масленку (6 использований). Протез невосприимчив к жару и яду. "
 "Нуждается в ежедневной смазке."
@@ -6548,13 +6548,13 @@ msgid ""
 "It freezes any body of water, no matter the size. Don't eat it."
 msgstr ""
 "Ледяная крапива, ловившая и иссушавшая овец. Вы лишились заказа, когда "
-"занесенный вами грибок погубил половину стада. Возьмите Семя инея (1 "
-"использование). Оно замораживает любой водоем, каким бы огромным он ни был. "
+"занесенный вами грибок погубил половину стада. Возьмите Семя ледяной крапивы "
+"(1 использование). Оно замораживает любой водоем, каким бы огромным он ни был. "
 "Не ешьте его."
 
 #: app/static/json/backgrounds/prowler.json:70
 msgid "Rime Seed"
-msgstr "Семя инея"
+msgstr "Семя ледяной крапивы"
 
 #: app/static/json/backgrounds/prowler.json:73
 msgid "Freezes any body of water, no matter the size. Don't eat it."
@@ -6611,7 +6611,7 @@ msgid ""
 "unto death. It is also a great tunneler. 5 HP, 11 STR, 13 DEX, 8 WIL, teeth "
 "(d6)."
 msgstr ""
-"Полый волк, наводивший страх на путников. Вы сжалились над полуголодным "
+"Пустотелый волк, наводивший страх на путников. Вы сжалились над полуголодным "
 "существом и выходили его. Теперь оно предано вам до самой смерти. А еще оно "
 "отлично роет туннели. 5 ОЗ, 11 СИЛ, 13 ЛОВ, 8 ВОЛ, зубы (к6)."
 
@@ -6621,13 +6621,13 @@ msgid ""
 "extracted. You succeeded but left its nest to the wolves. Take a Paring "
 "Knife (d6), an extra 20gp, and a pang of regret."
 msgstr ""
-"Лазурная славка. Ее гаметы приносят немалую прибыль, если извлечь их как "
+"Лазурная камышовка. Ее гаметы приносят немалую прибыль, если извлечь их как "
 "следует. Вам это удалось, но гнездо вы бросили на растерзание волкам. "
-"Возьмите Тонкий нож (к6), дополнительно 20 зм и укол сожаления."
+"Возьмите Разделочный нож (к6), дополнительно 20 зм и укол сожаления."
 
 #: app/static/json/backgrounds/prowler.json:109
 msgid "Paring Knife"
-msgstr "Тонкий нож"
+msgstr "Разделочный нож"
 
 #: app/static/json/backgrounds/prowler.json:118
 msgid "What tool is always in your pack?"
@@ -10132,7 +10132,7 @@ msgstr "Время"
 #: app/static/json/party_events/custom-monster.json:180
 #: app/static/json/party_events/spellbooks.json:562
 msgid "Vision"
-msgstr "Зрение"
+msgstr "Видение"
 
 #: app/static/json/party_events/custom-monster.json:181
 #: app/static/json/party_events/setting.json:70
@@ -10928,7 +10928,7 @@ msgstr "Господство"
 
 #: app/static/json/party_events/dungeons.json:195
 msgid "Enlightenment"
-msgstr "Просветление"
+msgstr "Просвещение"
 
 #: app/static/json/party_events/dungeons.json:196
 #: app/static/json/party_events/setting.json:35
@@ -11009,7 +11009,7 @@ msgstr "Выживание"
 
 #: app/static/json/party_events/dungeons.json:209
 msgid "Transformation"
-msgstr "Преображение"
+msgstr "Преобразование"
 
 #: app/static/json/party_events/dungeons.json:210
 #: app/static/json/party_events/factions.json:78
@@ -11104,7 +11104,7 @@ msgstr "Жертва"
 
 #: app/static/json/party_events/dungeons.json:230
 msgid "Stagnation"
-msgstr "Застой"
+msgstr "Стагнация"
 
 #: app/static/json/party_events/dungeons.json:231
 msgid "Tradition"
@@ -11131,7 +11131,7 @@ msgstr "Монстр"
 
 #: app/static/json/party_events/dungeons.json:242
 msgid "Lore"
-msgstr "Предания"
+msgstr "Знания"
 
 #: app/static/json/party_events/dungeons.json:242
 #: app/templates/partial/tools/pcgen_text.html:49
@@ -11538,7 +11538,7 @@ msgstr "Заглушает"
 #: app/static/json/party_events/dungeons.json:377
 #: app/static/json/party_events/spellbooks.json:520
 msgid "Teleport"
-msgstr "Телепортирует"
+msgstr "Телепортация"
 
 #: app/static/json/party_events/dungeons.json:385
 msgid "Captures"
@@ -11704,7 +11704,7 @@ msgstr "Ничего не приобретено, но ничего и не по
 
 #: app/static/json/party_events/faction-events.json:16
 msgid "Mixed Success"
-msgstr "Смешанный успех"
+msgstr "Переменный успех"
 
 #: app/static/json/party_events/faction-events.json:17
 msgid "A goal is achieved, but an Advantage is lost."
@@ -11720,7 +11720,7 @@ msgstr "Цель достигнута, и ни одно Преимущество
 
 #: app/static/json/party_events/faction-events.json:24
 msgid "Major Success"
-msgstr "Крупный успех"
+msgstr "Значительный успех"
 
 #: app/static/json/party_events/faction-events.json:25
 msgid "A goal is achieved, and a new Advantage is found."
@@ -11825,7 +11825,7 @@ msgstr "Шпионы"
 #: app/static/json/party_events/factions.json:23
 #: app/static/json/party_events/setting.json:120
 msgid "Tribe"
-msgstr "Племя"
+msgstr "Соплеменники"
 
 #: app/static/json/party_events/factions.json:28
 #: app/static/json/party_events/names.json:150
@@ -11948,7 +11948,7 @@ msgstr "Анонимность"
 #: app/static/json/party_events/factions.json:64
 #: app/static/json/party_events/setting.json:196
 msgid "Apparatus"
-msgstr "Аппарат"
+msgstr "Устройство"
 
 #: app/static/json/party_events/factions.json:65
 #: app/static/json/party_events/setting.json:198
@@ -11964,7 +11964,7 @@ msgstr "Убежденность"
 #: app/static/json/party_events/setting.json:36
 #: app/static/json/party_events/setting.json:200
 msgid "Fealty"
-msgstr "Преданность"
+msgstr "Верность"
 
 #: app/static/json/party_events/factions.json:68
 #: app/static/json/party_events/setting.json:201
@@ -12009,42 +12009,42 @@ msgstr "Ресурсы"
 #: app/static/json/party_events/factions.json:77
 #: app/static/json/party_events/setting.json:212
 msgid "Subterfuge"
-msgstr "Хитрость"
+msgstr "Ухищрения"
 
 #: app/static/json/party_events/factions.json:82
 #: app/static/json/party_events/setting.json:218
 msgid "Ascend to a Higher Plane"
-msgstr "Вознестись на высший план"
+msgstr "Подняться на более высокий план"
 
 #: app/static/json/party_events/factions.json:83
 #: app/static/json/party_events/setting.json:219
 msgid "Collect Artifacts"
-msgstr "Собирать артефакты"
+msgstr "Собрать артефакты"
 
 #: app/static/json/party_events/factions.json:84
 #: app/static/json/party_events/setting.json:220
 msgid "Cultivate a Rare Resource"
-msgstr "Взрастить редкий ресурс"
+msgstr "Обработать редкий ресурс"
 
 #: app/static/json/party_events/factions.json:85
 #: app/static/json/party_events/setting.json:221
 msgid "Defend Something"
-msgstr "Защитить нечто"
+msgstr "Защитить что-то"
 
 #: app/static/json/party_events/factions.json:86
 #: app/static/json/party_events/setting.json:222
 msgid "Destroy Something"
-msgstr "Уничтожить нечто"
+msgstr "Уничтожить что-то"
 
 #: app/static/json/party_events/factions.json:87
 #: app/static/json/party_events/setting.json:223
 msgid "Dominate Others"
-msgstr "Господствовать над другими"
+msgstr "Доминировать над другими"
 
 #: app/static/json/party_events/factions.json:88
 #: app/static/json/party_events/setting.json:224
 msgid "Enrich Themselves"
-msgstr "Обогатиться"
+msgstr "Обогатить себя"
 
 #: app/static/json/party_events/factions.json:89
 #: app/static/json/party_events/setting.json:226
@@ -12059,12 +12059,12 @@ msgstr "Исследовать неизведанные земли"
 #: app/static/json/party_events/factions.json:91
 #: app/static/json/party_events/setting.json:228
 msgid "Forge an Alliance"
-msgstr "Заключить союз"
+msgstr "Создать союз"
 
 #: app/static/json/party_events/factions.json:92
 #: app/static/json/party_events/setting.json:229
 msgid "Infiltrate Another Faction"
-msgstr "Внедриться в другую фракцию"
+msgstr "Проникнуть в другую фракцию"
 
 #: app/static/json/party_events/factions.json:93
 #: app/static/json/party_events/setting.json:230
@@ -12074,7 +12074,7 @@ msgstr "Сохранить статус-кво"
 #: app/static/json/party_events/factions.json:94
 #: app/static/json/party_events/setting.json:231
 msgid "Protect a Secret"
-msgstr "Защитить тайну"
+msgstr "Сохранить секрет"
 
 #: app/static/json/party_events/factions.json:95
 #: app/static/json/party_events/setting.json:232
@@ -12084,7 +12084,7 @@ msgstr "Очистить землю"
 #: app/static/json/party_events/factions.json:96
 #: app/static/json/party_events/setting.json:233
 msgid "Reveal a Secret"
-msgstr "Раскрыть тайну"
+msgstr "Раскрыть секрет"
 
 #: app/static/json/party_events/factions.json:98
 #: app/static/json/party_events/setting.json:235
@@ -12094,7 +12094,7 @@ msgstr "Возродить былую мощь"
 #: app/static/json/party_events/factions.json:99
 #: app/static/json/party_events/setting.json:236
 msgid "Seek New Leadership"
-msgstr "Найти нового лидера"
+msgstr "Искать нового лидера"
 
 #: app/static/json/party_events/factions.json:100
 #: app/static/json/party_events/setting.json:237
@@ -12837,7 +12837,7 @@ msgstr "Коллектив"
 #: app/static/json/party_events/names.json:55
 #: app/static/json/party_events/setting.json:481
 msgid "Covenant"
-msgstr "Завет"
+msgstr "Ковенант"
 
 #: app/static/json/party_events/factions.json:239
 #: app/static/json/party_events/names.json:55
@@ -13315,7 +13315,7 @@ msgstr "Загрязнение"
 
 #: app/static/json/party_events/forests.json:135
 msgid "Scarcity"
-msgstr "Нехватка"
+msgstr "Дефицит"
 
 #: app/static/json/party_events/forests.json:136
 msgid "Stasis"
@@ -13339,7 +13339,7 @@ msgstr "Укрытие"
 
 #: app/static/json/party_events/forests.json:147
 msgid "Hazard"
-msgstr "Угроза"
+msgstr "Опасность"
 
 #: app/static/json/party_events/forests.json:172
 msgid "Burrowing"
@@ -14601,7 +14601,7 @@ msgstr "Сплетение"
 #: app/static/json/party_events/names.json:113
 #: app/static/json/party_events/spellbooks.json:532
 msgid "Thicket"
-msgstr "Чаща"
+msgstr "Заросли"
 
 #: app/static/json/party_events/forests.json:517
 #: app/static/json/party_events/names.json:113
@@ -15387,7 +15387,7 @@ msgstr "Война"
 #: app/static/json/party_events/names.json:56
 #: app/static/json/party_events/setting.json:488
 msgid "Market"
-msgstr "Рынок"
+msgstr "Торговый союз"
 
 #: app/static/json/party_events/names.json:56
 #: app/static/json/party_events/setting.json:489
@@ -15467,7 +15467,7 @@ msgstr "Баронство"
 #: app/static/json/party_events/names.json:62
 #: app/static/json/party_events/setting.json:1221
 msgid "Fiefdom"
-msgstr "Феод"
+msgstr "Вотчина"
 
 #: app/static/json/party_events/names.json:62
 #: app/static/json/party_events/setting.json:1222
@@ -15482,7 +15482,7 @@ msgstr "Монархия"
 #: app/static/json/party_events/names.json:62
 #: app/static/json/party_events/setting.json:1224
 msgid "Realm"
-msgstr "Держава"
+msgstr "Королевство"
 
 #: app/static/json/party_events/names.json:62
 #: app/static/json/party_events/setting.json:1225
@@ -15492,7 +15492,7 @@ msgstr "Регентство"
 #: app/static/json/party_events/names.json:62
 #: app/static/json/party_events/setting.json:1226
 msgid "State"
-msgstr "Государство"
+msgstr "Штат"
 
 #: app/static/json/party_events/names.json:65
 #: app/static/json/party_events/names.json:83
@@ -16190,7 +16190,7 @@ msgstr "Богатая"
 
 #: app/static/json/party_events/setting.json:29
 msgid "Bounty"
-msgstr "Изобилие"
+msgstr "Вознаграждение"
 
 #: app/static/json/party_events/setting.json:30
 msgid "Conquest"
@@ -16202,7 +16202,7 @@ msgstr "Контроль"
 
 #: app/static/json/party_events/setting.json:32
 msgid "Conversion"
-msgstr "Обращение"
+msgstr "Преобразование"
 
 #: app/static/json/party_events/setting.json:34
 msgid "Dominance"
@@ -16214,7 +16214,7 @@ msgstr "Независимость"
 
 #: app/static/json/party_events/setting.json:39
 msgid "Natural Harmony"
-msgstr "Гармония с природой"
+msgstr "Природная гармония"
 
 #: app/static/json/party_events/setting.json:42
 msgid "Purity"
@@ -16243,7 +16243,7 @@ msgstr "Объединение"
 #: app/static/json/party_events/setting.json:53
 #: app/static/json/party_events/setting.json:75
 msgid "Food"
-msgstr "Продовольствие"
+msgstr "Еда"
 
 #: app/static/json/party_events/setting.json:54
 #: app/static/json/party_events/setting.json:76
@@ -16278,7 +16278,7 @@ msgstr "Скот"
 #: app/static/json/party_events/setting.json:61
 #: app/static/json/party_events/setting.json:83
 msgid "Medicine"
-msgstr "Лекарства"
+msgstr "Медицина"
 
 #: app/static/json/party_events/setting.json:62
 #: app/static/json/party_events/setting.json:84
@@ -16288,7 +16288,7 @@ msgstr "Руда"
 #: app/static/json/party_events/setting.json:63
 #: app/static/json/party_events/setting.json:85
 msgid "Skilled Labor"
-msgstr "Квалифицированные работники"
+msgstr "Рабочие"
 
 #: app/static/json/party_events/setting.json:64
 #: app/static/json/party_events/setting.json:86
@@ -16298,7 +16298,7 @@ msgstr "Специи"
 #: app/static/json/party_events/setting.json:66
 #: app/static/json/party_events/setting.json:88
 msgid "Textiles"
-msgstr "Ткани"
+msgstr "Текстиль"
 
 #: app/static/json/party_events/setting.json:67
 #: app/static/json/party_events/setting.json:89
@@ -16314,7 +16314,7 @@ msgstr "Товары"
 #: app/static/json/party_events/setting.json:69
 #: app/static/json/party_events/setting.json:91
 msgid "Vessels"
-msgstr "Суда"
+msgstr "Корабли"
 
 #: app/static/json/party_events/setting.json:71
 #: app/static/json/party_events/setting.json:93
@@ -16654,7 +16654,7 @@ msgstr "Тайга"
 
 #: app/static/json/party_events/setting.json:567
 msgid "Thickets"
-msgstr "Заросли"
+msgstr "Дебри"
 
 #: app/static/json/party_events/setting.json:568
 msgid "Tundra"
@@ -17123,7 +17123,7 @@ msgstr "Поселение"
 
 #: app/static/json/party_events/setting.json:701
 msgid "Curiosity"
-msgstr "Диковина"
+msgstr "Диковинка"
 
 #: app/static/json/party_events/setting.json:701
 msgid "Lair"
@@ -18038,7 +18038,7 @@ msgstr "Фермер"
 #: app/static/json/party_events/npcs.json:72
 #: app/static/json/party_events/setting.json:127
 msgid "General"
-msgstr "Генерал"
+msgstr "Полководец"
 
 #: app/static/json/party_events/names.json:135
 #: app/static/json/party_events/npcs.json:73
@@ -18056,7 +18056,7 @@ msgstr "Стражник"
 #: app/static/json/party_events/npcs.json:75
 #: app/static/json/party_events/setting.json:130
 msgid "Healer"
-msgstr "Целитель"
+msgstr "Лекарь"
 
 #: app/static/json/party_events/names.json:135
 #: app/static/json/party_events/npcs.json:76
@@ -18068,7 +18068,7 @@ msgstr "Тюремщик"
 #: app/static/json/party_events/npcs.json:77
 #: app/static/json/party_events/setting.json:132
 msgid "Laborer"
-msgstr "Чернорабочий"
+msgstr "Рабочий"
 
 #: app/static/json/party_events/names.json:136
 #: app/static/json/party_events/npcs.json:78
@@ -18122,7 +18122,7 @@ msgstr "Вор"
 #: app/static/json/party_events/npcs.json:87
 #: app/static/json/party_events/setting.json:142
 msgid "Thug"
-msgstr "Головорез"
+msgstr "Бандит"
 
 #: app/static/json/party_events/names.json:142
 #: app/static/json/party_events/npcs.json:163
@@ -19685,7 +19685,7 @@ msgstr "Парит сама по себе, отскакивая от всего,
 
 #: app/static/json/party_events/spellbooks.json:292
 msgid "Magic Dampener"
-msgstr "Гаситель магии"
+msgstr "Подавление магии"
 
 #: app/static/json/party_events/spellbooks.json:294
 msgid "All nearby magical effects have their effectiveness halved."
@@ -20527,7 +20527,7 @@ msgid ""
 "Don’t forget to roll for NPC reactions if applicable."
 msgstr ""
 "Встреча: Сделайте бросок по таблице встреч для этого типа местности или "
-"локации. Не забудьте бросить на реакцию НИП, если это уместно."
+"локации. Не забудьте бросить на реакцию ПС, если это уместно."
 
 #: app/static/json/party_events/wilderness-events.json:7
 msgid ""
@@ -20565,7 +20565,7 @@ msgid ""
 "Quiet: The party finds food, treasure, or other useful resources. The Warden"
 " can instead choose to reveal the primary feature of the area."
 msgstr ""
-"Спокойствие: Группа находит еду, сокровища или другие полезные ресурсы. "
+"Открытие: Группа находит еду, сокровища или другие полезные ресурсы. "
 "Вместо этого Смотритель может раскрыть главную особенность области."
 
 #: app/templates/main/shared_map.html
@@ -21498,7 +21498,7 @@ msgstr "Действия фракций"
 
 #: app/templates/main/tools.html
 msgid "NPC"
-msgstr "НИП"
+msgstr "ПС"
 
 #: app/templates/main/tools.html
 msgid "Relics"
@@ -21586,7 +21586,7 @@ msgstr "Последствие"
 
 #: app/templates/main/tools.html
 msgid "Impact"
-msgstr "Влияние"
+msgstr "Воздействие"
 
 #: app/templates/main/tools.html
 msgid "Purpose"
@@ -21594,7 +21594,7 @@ msgstr "Назначение"
 
 #: app/templates/main/tools.html
 msgid "Construction"
-msgstr "Постройка"
+msgstr "Строительство"
 
 #: app/templates/main/tools.html
 msgid "Ruination"
@@ -21610,7 +21610,7 @@ msgstr "Места интереса"
 
 #: app/templates/main/tools.html
 msgid "Original Use"
-msgstr "Изначальное назначение"
+msgstr "Изначальное применение"
 
 #: app/templates/main/tools.html
 msgid "Built By"
@@ -21622,7 +21622,7 @@ msgstr "Вход"
 
 #: app/templates/main/tools.html
 msgid "Composition"
-msgstr "Материал"
+msgstr "Структура"
 
 #: app/templates/main/tools.html
 msgid "Condition"
@@ -21662,7 +21662,7 @@ msgstr "Преимущества"
 
 #: app/templates/main/tools.html
 msgid "Agenda"
-msgstr "Замысел"
+msgstr "Повестка"
 
 #: app/templates/main/tools.html
 msgid "Terrain"
@@ -21742,17 +21742,17 @@ msgstr "Заряды"
 #: app/templates/main/tools.html
 msgctxt "terrain difficulty"
 msgid "Easy"
-msgstr "Простой"
+msgstr "Легкая"
 
 #: app/templates/main/tools.html
 msgctxt "terrain difficulty"
 msgid "Tough"
-msgstr "Трудный"
+msgstr "Трудная"
 
 #: app/templates/main/tools.html
 msgctxt "terrain difficulty"
 msgid "Perilous"
-msgstr "Опасный"
+msgstr "Опасная"
 
 #: app/templates/main/tools.html
 msgctxt "trail"
@@ -21840,3 +21840,1232 @@ msgstr "Выберите категорию, чтобы увидеть её та
 #: app/templates/main/tools.html
 msgid "Roll"
 msgstr "Бросить"
+
+# Marketplace equipment names use the Russian Players' Guide.
+#: app/static/json/marketplace.json
+msgid "Air bladder"
+msgstr "Воздушный мешок"
+
+#: app/static/json/marketplace.json
+msgid "Animal feed"
+msgstr "Корм для животных"
+
+#: app/static/json/marketplace.json
+msgid "Axe"
+msgstr "Топор"
+
+#: app/static/json/marketplace.json
+msgid "Bathing Goods (Soap, Perfume, etc.)"
+msgstr "Банные принадлежности (мыло, парфюм и т. д.)"
+
+#: app/static/json/marketplace.json
+msgid "Book"
+msgstr "Книга"
+
+#: app/static/json/marketplace.json
+msgid "Bow"
+msgstr "Лук"
+
+#: app/static/json/marketplace.json
+msgid "Caltrops"
+msgstr "Шипы"
+
+#: app/static/json/marketplace.json
+msgid "Card deck"
+msgstr "Колода карт"
+
+#: app/static/json/marketplace.json
+msgid "Chain (10ft)"
+msgstr "Цепь (10 фт)"
+
+#: app/static/json/marketplace.json
+msgid "Chalk"
+msgstr "Мел"
+
+#: app/static/json/marketplace.json
+msgid "Chest"
+msgstr "Сундук"
+
+#: app/static/json/marketplace.json
+msgid "Chisel"
+msgstr "Зубило"
+
+#: app/static/json/marketplace.json
+msgid "Common Agents (Glue, Grease, etc.)"
+msgstr "Простейшие реактивы (клей, смазка и т. д.)"
+
+#: app/static/json/marketplace.json
+msgid "Common Tools (Hammer, Shovel, etc.)"
+msgstr "Обычные инструменты (молоток, лопата и т. д.)"
+
+#: app/static/json/marketplace.json
+msgid "Complex Instruments (Bagpipes, Fiddle, etc.)"
+msgstr "Сложные инструменты (волынка, скрипка и т. д.)"
+
+#: app/static/json/marketplace.json
+msgid "Containers (Sack, Waterskin, etc.)"
+msgstr "Контейнеры (мешок, бурдюк и т. д.)"
+
+#: app/static/json/marketplace.json
+msgid "Cooking Gear (Pots, Utensils, etc.)"
+msgstr "Кухонные принадлежности (кастрюли, вилки и т. д.)"
+
+#: app/static/json/marketplace.json
+msgid "Costume Gear (Face Paint, Disguise)"
+msgstr "Театральный реквизит (грим, маскировка)"
+
+#: app/static/json/marketplace.json
+msgid "Cudgel"
+msgstr "Дубина"
+
+#: app/static/json/marketplace.json
+msgid "Dowsing rod"
+msgstr "Лоза для поиска воды"
+
+#: app/static/json/marketplace.json
+msgid "Expeditionary Gear (Climbing Spikes, Pulley), etc."
+msgstr "Снаряжение для экспедиций (колья, шкив и т. д.)"
+
+#: app/static/json/marketplace.json
+msgid "Fire oil"
+msgstr "Горючее масло"
+
+#: app/static/json/marketplace.json
+msgid "Fishing rod"
+msgstr "Удочка"
+
+#: app/static/json/marketplace.json
+msgid "Flail"
+msgstr "Цеп"
+
+#: app/static/json/marketplace.json
+msgid "Games (Cards, Dice, etc.)"
+msgstr "Игральные наборы (карты, кости и т. д.)"
+
+#: app/static/json/marketplace.json
+msgid "Grappling hook"
+msgstr "Крюк-кошка"
+
+#: app/static/json/marketplace.json
+msgid "Halberd"
+msgstr "Алебарда"
+
+#: app/static/json/marketplace.json
+msgid "Helmet"
+msgstr "Шлем"
+
+#: app/static/json/marketplace.json
+msgid "Mace"
+msgstr "Булава"
+
+#: app/static/json/marketplace.json
+msgid "Net"
+msgstr "Сеть"
+
+#: app/static/json/marketplace.json
+msgid "Outdoor Comfort (Blanket, Hammock, etc.)"
+msgstr "Удобства для лагеря (одеяло, гамак и т. д.)"
+
+#: app/static/json/marketplace.json
+msgid "Parchment"
+msgstr "Пергамент"
+
+#: app/static/json/marketplace.json
+msgid "Plate"
+msgstr "Латы"
+
+#: app/static/json/marketplace.json
+msgid "Pole (10ft)"
+msgstr "Шест (10 фт)"
+
+#: app/static/json/marketplace.json
+msgid "Repellent (Wolfsbane, Mugwort, etc.)"
+msgstr "Репеллент (аконит, полынь и т. д.)"
+
+#: app/static/json/marketplace.json
+msgid "Sedative"
+msgstr "Успокоительное"
+
+#: app/static/json/marketplace.json
+msgid "Sewing kit"
+msgstr "Набор для шитья"
+
+#: app/static/json/marketplace.json
+msgid "Sickle"
+msgstr "Серп"
+
+#: app/static/json/marketplace.json
+msgid "Simple Instruments (Pipes, Lute, etc.)"
+msgstr "Простые инструменты (свирель, лютня и т. д.)"
+
+#: app/static/json/marketplace.json
+msgid "Smoking pipe"
+msgstr "Курительная трубка"
+
+#: app/static/json/marketplace.json
+msgid "Spear"
+msgstr "Копье"
+
+#: app/static/json/marketplace.json
+msgid "Specialized Tools (Ink, etc.)"
+msgstr "Специализированные инструменты (чернила и т. д.)"
+
+#: app/static/json/marketplace.json
+msgid "Spiked boots"
+msgstr "Ботинки с шипами"
+
+#: app/static/json/marketplace.json
+msgid "Staff"
+msgstr "Посох"
+
+#: app/static/json/marketplace.json
+msgid "Sword"
+msgstr "Меч"
+
+#: app/static/json/marketplace.json
+msgid "Tent (fits 2, bulky)"
+msgstr "Палатка (на 2 человека, громоздкий)"
+
+#: app/static/json/marketplace.json
+msgid "Thieving Tools (Lockpick, Metal File, etc.)"
+msgstr "Воровские инструменты (отмычка, напильник и т. д.)"
+
+#: app/static/json/marketplace.json
+msgid "War Hammer"
+msgstr "Боевой молот"
+
+#: app/static/json/marketplace.json
+msgid "Wilderness Clothes (Poncho, Cloak, etc.)"
+msgstr "Одежда для природы (пончо, плащ и т. д.)"
+
+#: app/static/json/generators/spellbooks.json
+msgid "Shroud"
+msgstr "Пелена"
+
+#: app/main.py
+msgctxt "dungeon feature"
+msgid "Teleport"
+msgstr "Телепортирует"
+
+msgctxt "ruler type"
+msgid "Realm"
+msgstr "Царство"
+
+msgctxt "ruler type"
+msgid "Alliance"
+msgstr "Альянс"
+
+msgctxt "ruler type"
+msgid "Dominion"
+msgstr "Власть"
+
+msgctxt "npc name"
+msgid "Alaric"
+msgstr "Аларик"
+
+msgctxt "npc name"
+msgid "Carver"
+msgstr "Карвер"
+
+msgctxt "npc name"
+msgid "Cleaver"
+msgstr "Кливер"
+
+msgctxt "npc name"
+msgid "Darnel"
+msgstr "Дарнелл"
+
+msgctxt "npc name"
+msgid "Eoin"
+msgstr "Эойн"
+
+msgctxt "npc name"
+msgid "Evander"
+msgstr "Эвандер"
+
+msgctxt "npc name"
+msgid "Glyph"
+msgstr "Глиф"
+
+msgctxt "npc name"
+msgid "Hemlock"
+msgstr "Хемлок"
+
+msgctxt "npc name"
+msgid "Luna"
+msgstr "Луна"
+
+msgctxt "npc name"
+msgid "Lysander"
+msgstr "Лисандер"
+
+msgctxt "npc name"
+msgid "Marius"
+msgstr "Мариус"
+
+msgctxt "npc name"
+msgid "Mend"
+msgstr "Менд"
+
+msgctxt "npc name"
+msgid "Milo"
+msgstr "Майло"
+
+msgctxt "npc name"
+msgid "Neria"
+msgstr "Нерия"
+
+msgctxt "npc name"
+msgid "Pan"
+msgstr "Пан"
+
+msgctxt "npc name"
+msgid "Quill"
+msgstr "Куилл"
+
+msgctxt "npc name"
+msgid "Ainsley"
+msgstr "Эйнсли"
+
+msgctxt "npc name"
+msgid "Azura"
+msgstr "Азура"
+
+msgctxt "npc name"
+msgid "Brave"
+msgstr "Брейв"
+
+msgctxt "npc name"
+msgid "Callan"
+msgstr "Каллан"
+
+msgctxt "npc name"
+msgid "Cedric"
+msgstr "Седрик"
+
+msgctxt "npc name"
+msgid "Crow"
+msgstr "Кроу"
+
+msgctxt "npc name"
+msgid "Finch"
+msgstr "Финч"
+
+msgctxt "npc name"
+msgid "Gunnar"
+msgstr "Гуннар"
+
+msgctxt "npc name"
+msgid "Harper"
+msgstr "Харпер"
+
+msgctxt "npc name"
+msgid "Liora"
+msgstr "Лиора"
+
+msgctxt "npc name"
+msgid "Marcellus"
+msgstr "Марцелл"
+
+msgctxt "npc name"
+msgid "Shade"
+msgstr "Шейд"
+
+msgctxt "npc name"
+msgid "Shroud"
+msgstr "Шрауд"
+
+msgctxt "npc name"
+msgid "Spade"
+msgstr "Спейд"
+
+msgctxt "npc name"
+msgid "Spike"
+msgstr "Спайк"
+
+msgctxt "npc name"
+msgid "Thyme"
+msgstr "Тайм"
+
+msgctxt "npc name"
+msgid "Alder"
+msgstr "Альдер"
+
+msgctxt "npc name"
+msgid "Alistair"
+msgstr "Алистер"
+
+msgctxt "npc name"
+msgid "Caius"
+msgstr "Кайус"
+
+msgctxt "npc name"
+msgid "Dain"
+msgstr "Дейн"
+
+msgctxt "npc name"
+msgid "Dax"
+msgstr "Дакс"
+
+msgctxt "npc name"
+msgid "Dorian"
+msgstr "Дориан"
+
+msgctxt "npc name"
+msgid "Godric"
+msgstr "Годрик"
+
+msgctxt "npc name"
+msgid "Harkin"
+msgstr "Харкин"
+
+msgctxt "npc name"
+msgid "Hildred"
+msgstr "Хилдред"
+
+msgctxt "npc name"
+msgid "Kael"
+msgstr "Каэль"
+
+msgctxt "npc name"
+msgid "Kavi"
+msgstr "Кави"
+
+msgctxt "npc name"
+msgid "Mariner"
+msgstr "Маринер"
+
+msgctxt "npc name"
+msgid "Nazira"
+msgstr "Назира"
+
+msgctxt "npc name"
+msgid "Onyx"
+msgstr "Оникс"
+
+msgctxt "npc name"
+msgid "Rolan"
+msgstr "Ролан"
+
+msgctxt "npc name"
+msgid "Rush"
+msgstr "Раш"
+
+msgctxt "npc name"
+msgid "Sky"
+msgstr "Скай"
+
+msgctxt "npc name"
+msgid "Storm"
+msgstr "Сторм"
+
+msgctxt "npc name"
+msgid "Taros"
+msgstr "Тарос"
+
+msgctxt "npc name"
+msgid "Thaddeus"
+msgstr "Таддеус"
+
+msgctxt "npc trait"
+msgid "Cautious"
+msgstr "Осторожный"
+
+msgctxt "npc trait"
+msgid "Connected"
+msgstr "Объединенный"
+
+msgctxt "npc trait"
+msgid "Courageous"
+msgstr "Храбрый"
+
+msgctxt "npc trait"
+msgid "Disciplined"
+msgstr "Дисциплинированный"
+
+msgctxt "npc trait"
+msgid "Discreet"
+msgstr "Сдержанный"
+
+msgctxt "npc trait"
+msgid "Judicious"
+msgstr "Рассудительный"
+
+msgctxt "npc trait"
+msgid "Meticulous"
+msgstr "Дотошный"
+
+msgctxt "npc trait"
+msgid "Pragmatic"
+msgstr "Прагматичный"
+
+msgctxt "npc trait"
+msgid "Resourceful"
+msgstr "Находчивый"
+
+msgctxt "npc trait"
+msgid "Suave"
+msgstr "Учтивый"
+
+msgctxt "npc trait"
+msgid "Shrewd"
+msgstr "Дальновидный"
+
+msgctxt "npc trait"
+msgid "Tenacious"
+msgstr "Настойчивый"
+
+msgctxt "npc trait"
+msgid "Aloof"
+msgstr "Отчужденный"
+
+msgctxt "npc trait"
+msgid "Corrupt"
+msgstr "Коррумпированный"
+
+msgctxt "npc trait"
+msgid "Craven"
+msgstr "Трусливый"
+
+msgctxt "npc trait"
+msgid "Cruel"
+msgstr "Жестокий"
+
+msgctxt "npc trait"
+msgid "Deceptive"
+msgstr "Обманчивый"
+
+msgctxt "npc trait"
+msgid "Greedy"
+msgstr "Жадный"
+
+msgctxt "npc trait"
+msgid "Inflexible"
+msgstr "Упрямый"
+
+msgctxt "npc trait"
+msgid "Manipulative"
+msgstr "Манипулятивный"
+
+msgctxt "npc trait"
+msgid "Mercurial"
+msgstr "Непостоянный"
+
+msgctxt "npc trait"
+msgid "Ruthless"
+msgstr "Безжалостный"
+
+msgctxt "npc trait"
+msgid "Stubborn"
+msgstr "Непреклонный"
+
+msgctxt "npc trait"
+msgid "Vain"
+msgstr "Тщеславный"
+
+msgctxt "npc trait"
+msgid "Xenophobic"
+msgstr "Ксенофобный"
+
+msgctxt "npc role"
+msgid "Mystic"
+msgstr "Мистик"
+
+msgctxt "npc quirk"
+msgid "Bald"
+msgstr "Лысый"
+
+msgctxt "npc quirk"
+msgid "Bright Eyes"
+msgstr "Яркие глаза"
+
+msgctxt "npc quirk"
+msgid "Good Posture"
+msgstr "Правильная осанка"
+
+msgctxt "npc quirk"
+msgid "Grimy"
+msgstr "Грязный"
+
+msgctxt "npc quirk"
+msgid "Heavy Brow"
+msgstr "Нависшие брови"
+
+msgctxt "npc quirk"
+msgid "Missing Ear"
+msgstr "Отсутствующее ухо"
+
+msgctxt "npc quirk"
+msgid "Notable Hair"
+msgstr "Особенные волосы"
+
+msgctxt "npc quirk"
+msgid "Strong"
+msgstr "Крепкий"
+
+msgctxt "npc quirk"
+msgid "Tired"
+msgstr "Уставший"
+
+msgctxt "faction trait"
+msgid "Cautious"
+msgstr "Осторожные"
+
+msgctxt "faction trait"
+msgid "Connected"
+msgstr "Объединенные"
+
+msgctxt "faction trait"
+msgid "Decadent"
+msgstr "Упаднические"
+
+msgctxt "faction trait"
+msgid "Disciplined"
+msgstr "Дисциплинированные"
+
+msgctxt "faction trait"
+msgid "Discreet"
+msgstr "Сдержанные"
+
+msgctxt "faction trait"
+msgid "Dogmatic"
+msgstr "Догматичные"
+
+msgctxt "faction trait"
+msgid "Enigmatic"
+msgstr "Загадочные"
+
+msgctxt "faction trait"
+msgid "Fierce"
+msgstr "Свирепые"
+
+msgctxt "faction trait"
+msgid "Incorruptible"
+msgstr "Неподкупные"
+
+msgctxt "faction trait"
+msgid "Intellectual"
+msgstr "Интеллектуальные"
+
+msgctxt "faction trait"
+msgid "Judicious"
+msgstr "Рассудительные"
+
+msgctxt "faction trait"
+msgid "Keen"
+msgstr "Чуткие"
+
+msgctxt "faction trait"
+msgid "Loyal"
+msgstr "Верные"
+
+msgctxt "faction trait"
+msgid "Meticulous"
+msgstr "Дотошные"
+
+msgctxt "faction trait"
+msgid "Popular"
+msgstr "Популярные"
+
+msgctxt "faction trait"
+msgid "Pragmatic"
+msgstr "Прагматичные"
+
+msgctxt "faction trait"
+msgid "Resourceful"
+msgstr "Находчивые"
+
+msgctxt "faction trait"
+msgid "Secretive"
+msgstr "Замкнутые"
+
+msgctxt "faction trait"
+msgid "Shrewd"
+msgstr "Дальновидные"
+
+msgctxt "faction trait"
+msgid "Tenacious"
+msgstr "Настойчивые"
+
+msgctxt "faction trait"
+msgid "Adaptable"
+msgstr "Гибкие"
+
+msgctxt "faction trait"
+msgid "Bankrupt"
+msgstr "Банкроты"
+
+msgctxt "faction trait"
+msgid "Brutal"
+msgstr "Грубые"
+
+msgctxt "faction trait"
+msgid "Collaborative"
+msgstr "Сотрудничающие"
+
+msgctxt "faction trait"
+msgid "Corrupt"
+msgstr "Коррумпированные"
+
+msgctxt "faction trait"
+msgid "Craven"
+msgstr "Трусливые"
+
+msgctxt "faction trait"
+msgid "Cruel"
+msgstr "Жестокие"
+
+msgctxt "faction trait"
+msgid "Cunning"
+msgstr "Лукавые"
+
+msgctxt "faction trait"
+msgid "Cynical"
+msgstr "Циничные"
+
+msgctxt "faction trait"
+msgid "Deceptive"
+msgstr "Обманчивые"
+
+msgctxt "faction trait"
+msgid "Generous"
+msgstr "Щедрые"
+
+msgctxt "faction trait"
+msgid "Incompetent"
+msgstr "Некомпетентные"
+
+msgctxt "faction trait"
+msgid "Manipulative"
+msgstr "Манипулятивные"
+
+msgctxt "faction trait"
+msgid "Mercurial"
+msgstr "Непостоянные"
+
+msgctxt "faction trait"
+msgid "Repressed"
+msgstr "Угнетенные"
+
+msgctxt "faction trait"
+msgid "Ruthless"
+msgstr "Безжалостные"
+
+msgctxt "faction trait"
+msgid "Selfish"
+msgstr "Эгоистичные"
+
+msgctxt "faction trait"
+msgid "Stealthy"
+msgstr "Скрытные"
+
+msgctxt "faction trait"
+msgid "Threatened"
+msgstr "Запуганные"
+
+msgctxt "faction trait"
+msgid "Xenophobic"
+msgstr "Ксенофобные"
+
+msgctxt "culture character"
+msgid "Altruistic"
+msgstr "Альтруистичный"
+
+msgctxt "culture character"
+msgid "Artistic"
+msgstr "Артистичный"
+
+msgctxt "culture character"
+msgid "Curious"
+msgstr "Любопытный"
+
+msgctxt "culture character"
+msgid "Devious"
+msgstr "Коварный"
+
+msgctxt "culture character"
+msgid "Enlightened"
+msgstr "Образованный"
+
+msgctxt "culture character"
+msgid "Hardy"
+msgstr "Выносливый"
+
+msgctxt "culture character"
+msgid "Inventive"
+msgstr "Изобретательный"
+
+msgctxt "culture character"
+msgid "Mercantile"
+msgstr "Меркантильный"
+
+msgctxt "culture character"
+msgid "Nomadic"
+msgstr "Кочевой"
+
+msgctxt "culture character"
+msgid "Reclusive"
+msgstr "Затворнический"
+
+msgctxt "culture character"
+msgid "Religious"
+msgstr "Религиозный"
+
+msgctxt "culture character"
+msgid "Resilient"
+msgstr "Гибкий"
+
+msgctxt "culture character"
+msgid "Scholarly"
+msgstr "Эрудированный"
+
+msgctxt "culture character"
+msgid "Stoic"
+msgstr "Стоический"
+
+msgctxt "culture character"
+msgid "Struggling"
+msgstr "Тягостный"
+
+msgctxt "culture character"
+msgid "Traditional"
+msgstr "Традиционный"
+
+msgctxt "culture character"
+msgid "War-like"
+msgstr "Боевой"
+
+msgctxt "culture character"
+msgid "Wealthy"
+msgstr "Состоятельный"
+
+msgctxt "culture character"
+msgid "Xenophobic"
+msgstr "Ксенофобный"
+
+msgctxt "forest spirit trait"
+msgid "Adaptive"
+msgstr "Приспосабливающийся"
+
+msgctxt "forest spirit trait"
+msgid "Cultivating"
+msgstr "Культивирующий"
+
+msgctxt "forest spirit trait"
+msgid "Empathic"
+msgstr "Эмпатический"
+
+msgctxt "forest spirit trait"
+msgid "Enduring"
+msgstr "Стойкий"
+
+msgctxt "forest spirit trait"
+msgid "Graceful"
+msgstr "Изящный"
+
+msgctxt "forest spirit trait"
+msgid "Hardy"
+msgstr "Выносливый"
+
+msgctxt "forest spirit trait"
+msgid "Learned"
+msgstr "Ведающий"
+
+msgctxt "forest spirit trait"
+msgid "Nurturing"
+msgstr "Воспитывающий"
+
+msgctxt "forest spirit trait"
+msgid "Sensible"
+msgstr "Рассудительный"
+
+msgctxt "forest spirit trait"
+msgid "Sharp"
+msgstr "Проницательный"
+
+msgctxt "forest spirit trait"
+msgid "Stable"
+msgstr "Надежный"
+
+msgctxt "forest spirit trait"
+msgid "Aggressive"
+msgstr "Агрессивный"
+
+msgctxt "forest spirit trait"
+msgid "Aloof"
+msgstr "Отчужденный"
+
+msgctxt "forest spirit trait"
+msgid "Covetous"
+msgstr "Алчный"
+
+msgctxt "forest spirit trait"
+msgid "Detached"
+msgstr "Беспристрастный"
+
+msgctxt "forest spirit trait"
+msgid "Obscuring"
+msgstr "Скрывающий"
+
+msgctxt "forest spirit trait"
+msgid "Overzealous"
+msgstr "Ревностный"
+
+msgctxt "forest spirit trait"
+msgid "Parasitic"
+msgstr "Паразитирующий"
+
+msgctxt "forest spirit trait"
+msgid "Predatory"
+msgstr "Хищнический"
+
+msgctxt "forest spirit trait"
+msgid "Rigid"
+msgstr "Строгий"
+
+msgctxt "forest spirit trait"
+msgid "Scatterbrained"
+msgstr "Легкомысленный"
+
+msgctxt "dungeon faction trait"
+msgid "Courageous"
+msgstr "Храбрый"
+
+msgctxt "dungeon faction trait"
+msgid "Deductive"
+msgstr "Дедуктивный"
+
+msgctxt "dungeon faction trait"
+msgid "Individualistic"
+msgstr "Индивидуалистический"
+
+msgctxt "dungeon faction trait"
+msgid "Resilient"
+msgstr "Устойчивый"
+
+msgctxt "dungeon faction trait"
+msgid "Scholarly"
+msgstr "Эрудированный"
+
+msgctxt "dungeon faction trait"
+msgid "Studious"
+msgstr "Усердный"
+
+msgctxt "dungeon faction trait"
+msgid "Suave"
+msgstr "Учтивый"
+
+msgctxt "dungeon faction trait"
+msgid "Aloof"
+msgstr "Отчужденный"
+
+msgctxt "dungeon faction trait"
+msgid "Critical"
+msgstr "Придирчивый"
+
+msgctxt "dungeon faction trait"
+msgid "Greedy"
+msgstr "Жадный"
+
+msgctxt "dungeon faction trait"
+msgid "Inflexible"
+msgstr "Упрямый"
+
+msgctxt "dungeon faction trait"
+msgid "Obstinate"
+msgstr "Своевольный"
+
+msgctxt "dungeon faction trait"
+msgid "Stubborn"
+msgstr "Непреклонный"
+
+msgctxt "dungeon faction trait"
+msgid "Unfocused"
+msgstr "Несосредоточенный"
+
+msgctxt "dungeon faction trait"
+msgid "Vain"
+msgstr "Тщеславный"
+
+msgctxt "name adjective"
+msgid "Amber"
+msgstr "Янтарный"
+
+msgctxt "name adjective"
+msgid "Bitter"
+msgstr "Горький"
+
+msgctxt "name adjective"
+msgid "Cold"
+msgstr "Холодный"
+
+msgctxt "name adjective"
+msgid "Copper"
+msgstr "Медный"
+
+msgctxt "name adjective"
+msgid "Crimson"
+msgstr "Багровый"
+
+msgctxt "name adjective"
+msgid "Crumbling"
+msgstr "Рушащийся"
+
+msgctxt "name adjective"
+msgid "Frayed"
+msgstr "Изношенный"
+
+msgctxt "name adjective"
+msgid "Frozen"
+msgstr "Замерзший"
+
+msgctxt "name adjective"
+msgid "Glow"
+msgstr "Светящийся"
+
+msgctxt "name adjective"
+msgid "Granite"
+msgstr "Гранитный"
+
+msgctxt "name adjective"
+msgid "Overgrown"
+msgstr "Заросший"
+
+msgctxt "name adjective"
+msgid "Slaughter"
+msgstr "Убийственный"
+
+msgctxt "name adjective"
+msgid "Sunken"
+msgstr "Затонувший"
+
+msgctxt "name noun"
+msgid "Black"
+msgstr "Чернота"
+
+msgctxt "name noun"
+msgid "Bright"
+msgstr "Яркость"
+
+msgctxt "name noun"
+msgid "Dead"
+msgstr "Покойник"
+
+msgctxt "name noun"
+msgid "Toxic"
+msgstr "Яд"
+
+msgctxt "name noun"
+msgid "Tranquil"
+msgstr "Спокойствие"
+
+msgctxt "forest name adjective"
+msgid "Crystal"
+msgstr "Кристальный"
+
+msgctxt "forest name adjective"
+msgid "Haunted"
+msgstr "Одержимый"
+
+msgctxt "forest name adjective"
+msgid "Overgrown"
+msgstr "Заросший"
+
+msgctxt "forest name adjective"
+msgid "Rugged"
+msgstr "Суровый"
+
+msgctxt "forest name adjective"
+msgid "Serene"
+msgstr "Безмятежный"
+
+msgctxt "forest name adjective"
+msgid "Towering"
+msgstr "Возвышающийся"
+
+msgctxt "forest name adjective"
+msgid "Weathered"
+msgstr "Закаленный"
+
+msgctxt "forest name noun"
+msgid "Growth"
+msgstr "Поросль"
+
+msgctxt "forest name noun"
+msgid "Thicket"
+msgstr "Глушь"
+
+msgctxt "dungeon room"
+msgid "Storage"
+msgstr "Склад"
+
+msgctxt "dungeon room"
+msgid "Armory"
+msgstr "Арсенал"
+
+msgctxt "dungeon room"
+msgid "Shrine"
+msgstr "Храм"
+
+msgctxt "dungeon condition"
+msgid "Abandoned"
+msgstr "Заброшенное"
+
+msgctxt "dungeon condition"
+msgid "Flooded"
+msgstr "Затопленное"
+
+msgctxt "dungeon condition"
+msgid "Fungal"
+msgstr "Грибное"
+
+msgctxt "dungeon condition"
+msgid "Toxic"
+msgstr "Токсичное"
+
+msgctxt "forest description"
+msgid "Dying"
+msgstr "Умирающий"
+
+msgctxt "forest description"
+msgid "Petrified"
+msgstr "Окаменевший"
+
+msgctxt "forest description"
+msgid "Scorched"
+msgstr "Выжженный"
+
+msgctxt "forest description"
+msgid "Frozen"
+msgstr "Замерзший"
+
+msgctxt "forest description"
+msgid "Infested"
+msgstr "Зараженный"
+
+msgctxt "forest description"
+msgid "Overgrown"
+msgstr "Заросший"
+
+msgctxt "forest goal"
+msgid "Awakening"
+msgstr "Пробуждение"
+
+msgctxt "equipment"
+msgid "Trap"
+msgstr "Капкан"
+
+#: app/templates/main/parties.html
+msgid "Warden"
+msgstr "Смотритель"
+
+#: app/static/json/generators/weather.json app/templates/main/tools.html
+msgid "Catastrophic"
+msgstr "Катастрофическая"
+
+msgid "Bastion"
+msgstr "Бастион"
+
+msgid "Folly"
+msgstr "Безрассудство"
+
+msgid "Glimmer"
+msgstr "Мерцание"
+
+msgid "Haunt"
+msgstr "Обитель"
+
+msgid "Haven"
+msgstr "Владение"
+
+#: app/static/json/hirelings.json
+msgid "Alchemist"
+msgstr "Алхимик"
+
+msgid "Animal Handler"
+msgstr "Дрессировщик"
+
+msgid "Bodyguard"
+msgstr "Телохранитель"
+
+msgid "Local Guide"
+msgstr "Местный гид"
+
+msgid "Lockpick"
+msgstr "Взломщик"
+
+msgid "Navigator"
+msgstr "Навигатор"
+
+msgid "Sailor"
+msgstr "Моряк"
+
+msgid "Tracker"
+msgstr "Следопыт"
+
+msgid "Trapper"
+msgstr "Зверолов"
+
+msgid "Veteran Bodyguard"
+msgstr "Телохранитель-опытный"
+
+msgid "Alchemical Tools"
+msgstr "Алхимические инструменты"
+
+msgid "Animal Feed"
+msgstr "Корм для животных"
+
+msgid "Rope"
+msgstr "Веревка"
+
+msgid "Smithing Tools"
+msgstr "Кузнечные инструменты"
+
+msgid "Thieving Tools"
+msgstr "Воровские инструменты"
+
+msgid "Writing Tools"
+msgstr "Письменные принадлежности"
+
+#: app/static/json/pets.json
+msgid "Dematerialized Pet"
+msgstr "Развоплощенный питомец"
+
+msgid "Hollow Wolf"
+msgstr "Пустотелый волк"
+
+msgid "Horse"
+msgstr "Лошадь"
+
+msgid "Mule"
+msgstr "Мул"
+
+msgid "Raised Servant"
+msgstr "Поднятый слуга"
+
+msgid "Slow."
+msgstr "Медленный."
+
+msgid "vasts"
+msgstr "просторы"
+
+msgid "runnel creek"
+msgstr "ручей"
+
+msgctxt "dungeon feature"
+msgid "Illusion"
+msgstr "Создает иллюзию"
+
+msgctxt "dungeon condition"
+msgid "Crystalline"
+msgstr "Кристаллическое"
+
+#: app/static/json/bonds.json:165
+msgid ""
+"You crossed a creature of the Wood, and it cursed you with a Stone Heart. "
+"With each passing month, the stone grows heavier by one slot. Until your "
+"debt is lifted, you cannot truly die."
+msgstr ""
+"Вы перешли дорогу существу Леса, и оно прокляло вас Каменным сердцем. "
+"С каждым месяцем камень тяжелеет на один слот. Пока долг не снят, вы не "
+"можете умереть по-настоящему."

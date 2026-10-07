@@ -6,6 +6,7 @@ import json
 import re
 from flask import render_template
 from flask_babel import _
+from app.lib.translations import translate_term
 NO_ARMOR = 'No upper body protection, no helmet nor shield'
 
 # Retrieve character data
@@ -15,7 +16,7 @@ def get_character(character_id):
 
 
 def item_text(item):
-    name = _(item['name'])
+    name = translate_term(item['name'], 'equipment')
     tags = []
     for t in item['tags']:
         if t == 'bonus defense':

@@ -14,6 +14,7 @@ import os
 import bleach
 from flask_htmx import HTMX
 from flask_babel import _
+from app.lib.translations import translate_term
 import datetime
 import urllib.parse
 
@@ -523,6 +524,43 @@ _EVENTS_UNTRANSLATED_PATHS = {
     ('Trails', 'Path'),
 }
 
+# Contexts follow the data's table paths, not the value's spelling. A word can
+# name a spell, an NPC, or a trait without sharing its Russian translation.
+_EVENTS_TRANSLATION_CONTEXTS = {
+    ('NPCNames', 'Names'): 'npc name',
+    ('NPCs', 'Names', 'd100'): 'npc name',
+    ('RulerTypes',): 'ruler type',
+    ('Special', 'Feature'): 'dungeon feature',
+    ('NPCTraits', 'Virtues'): 'npc trait',
+    ('NPCTraits', 'Vices'): 'npc trait',
+    ('NPCs', 'Traits', 'Virtues', 'd20'): 'npc trait',
+    ('NPCs', 'Traits', 'Vices', 'd20'): 'npc trait',
+    ('FactionTraits', 'Trait1'): 'faction trait',
+    ('FactionTraits', 'Trait2'): 'faction trait',
+    ('FactionTraits', 'Virtues'): 'faction trait',
+    ('FactionTraits', 'Vices'): 'faction trait',
+    ('SpiritTraits', 'Virtue'): 'forest spirit trait',
+    ('SpiritTraits', 'Vice'): 'forest spirit trait',
+    ('Factions', 'Traits', 'Virtue'): 'dungeon faction trait',
+    ('Factions', 'Traits', 'Vice'): 'dungeon faction trait',
+    ('ForestNames', 'Adjectives'): 'forest name adjective',
+    ('ForestNames', 'Nouns'): 'forest name noun',
+    ('Adjectives',): 'name adjective',
+    ('Nouns',): 'name noun',
+    ('NPCBackgrounds',): 'npc role',
+    ('NPCs', 'Background', 'd20'): 'npc role',
+    ('FactionTypes', 'Agent'): 'npc role',
+    ('NPCQuirks',): 'npc quirk',
+    ('NPCs', 'Quirks', 'Quirk1', 'd20'): 'npc quirk',
+    ('NPCs', 'Quirks', 'Quirk2', 'd20'): 'npc quirk',
+    ('Culture', 'Character'): 'culture character',
+    ('PointsOfInterest', 'Dungeons', 'Feature'): 'dungeon condition',
+    ('Traits', 'Description1'): 'forest description',
+    ('Traits', 'Description2'): 'forest description',
+    ('ForestAgenda', 'Goal'): 'forest goal',
+    ('Lore', 'RoomType'): 'dungeon room',
+}
+
 
 def translate_events_data(node, path=()):
     if path[-2:] in _EVENTS_UNTRANSLATED_PATHS:
@@ -534,6 +572,9 @@ def translate_events_data(node, path=()):
     if isinstance(node, list):
         return [translate_events_data(item, path) for item in node]
     if isinstance(node, str) and node:
+        for suffix, context in _EVENTS_TRANSLATION_CONTEXTS.items():
+            if path[-len(suffix):] == suffix:
+                return translate_term(node, context)
         return _(node)
     return node
 
