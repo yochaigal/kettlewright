@@ -1,11 +1,11 @@
 """Separate background answers from personal notes throughout creation and printing."""
+from html import unescape
 from io import BytesIO
 import json
 import re
 
 import pytest
 from pypdf import PdfReader
-from markupsafe import escape
 from app.lib.char_utils import generate_character
 from app.models import Character, User, db
 from app.models.character import BACKGROUND_FIELDS
@@ -32,8 +32,11 @@ def test_generator_answers_and_print(background_character):
         assert data[f'background_table{index}_question'] == table.question
         assert data[f'background_table{index}_answer'] == table.option['description']
     page = client.post('/gen/character/print', data={'json_data':json.dumps(data)}).get_data(as_text=True)
+    # Answers go through the markdown filter, which escapes differently from
+    # markupsafe (an apostrophe stays literal), so compare the visible text.
+    visible_text = unescape(re.sub(r'<[^>]+>', '', page))
     for field in BACKGROUND_FIELDS:
-        assert str(escape(data[field])) in page
+        assert data[field] in visible_text
     assert 'character-print-notes-container' not in page
 
 
@@ -76,8 +79,9 @@ def test_import_export_and_every_saved_print_preserves_separate_answers(backgrou
         path = f'/users/answers/characters/{character.url_name}/print/'
     if output == 'html':
         page = client.get(path).get_data(as_text=True)
+        visible_text = unescape(re.sub(r'<[^>]+>', '', page))
         for field in (*BACKGROUND_FIELDS, 'notes'):
-            assert str(escape(data[field])) in page
+            assert data[field] in visible_text
     else:
         response = client.get(path + output + '.pdf')
         assert response.status_code == 200
