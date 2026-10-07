@@ -1,0 +1,35 @@
+{
+  "article_id": "article-0001",
+  "kind": "realm",
+  "drawing": {
+    "elements": [],
+    "files": {}
+  },
+  "nodes": [
+    {
+      "id": "node-0001",
+      "article_id": "article-0002",
+      "number": 1,
+      "x": 180,
+      "y": 240,
+      "geometry": null,
+      "nested_map": null
+    },
+    {
+      "id": "node-0002",
+      "article_id": "article-0004",
+      "number": 2,
+      "x": 620,
+      "y": 180,
+      "geometry": null,
+      "nested_map": "article-0004"
+    }
+  ],
+  "edges": [
+    {
+      "article_id": "article-0005",
+      "source": "node-0001",
+      "target": "node-0002"
+    }
+  ]
+}
