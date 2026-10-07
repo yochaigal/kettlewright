@@ -144,6 +144,8 @@ export function setupLinkCompletion(field, context) {
     for(const item of suggestions){const button=document.createElement('button');button.type='button';button.id=`${menu.id}-${menu.children.length}`;button.setAttribute('role','option');button.dataset.target=item.target;
       const title=document.createElement('span');title.className='article-link-title';title.textContent=item.label;button.append(title);
       if(item.path){const path=document.createElement('span');path.className='article-link-path';path.textContent=item.path;button.append(path);}
+      const index=menu.children.length;
+      button.addEventListener('pointermove',()=>{if(selected!==index){selected=index;paint();}});
       button.addEventListener('mousedown',event=>event.preventDefault());button.onclick=()=>choose(item.target);menu.append(button);}
     menu.hidden=!suggestions.length;field.setAttribute('aria-expanded',String(!menu.hidden));position();paint();
   };
