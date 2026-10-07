@@ -9,6 +9,7 @@ from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
 from app.socket_events import party_recipient_ids
 from app.lib.map_drawing import EMPTY_DRAWING, validate_drawing, validate_node_geometry
 from app.lib.rich_content import normalize_content, render_content, RICH_PREFIX
+from app.lib.article_references import private_reference_urls, reference_urls
 from app.lib.feature_access import require_party_features, party_features_enabled
 
 from app.lib.content_types import CATEGORIES, POINT_TYPES, ARTICLE_MAP_KINDS, legacy_point_type
@@ -206,6 +207,7 @@ def known_entries(party_id):
     """Only independently published fields; never serialize an ORM original."""
     rows = PartyPresentation.query.filter_by(party_id=party_id, published=True).all()
     known = {row.entry_id: {'id': row.entry_id, 'category': row.entry.category,
+                           'reference_key': row.entry.reference_key,
                            'title': row.title, 'body': row.body, 'path_type': row.path_type,
                            'links': [], 'map_id': row.entry.pointcrawl.id if row.entry.pointcrawl else None}
              for row in rows}
@@ -219,10 +221,13 @@ def known_entries(party_id):
                 known.pop(row.entry_id, None)
     for row in rows:
         if row.entry_id in known:
+            known[row.entry_id]['references'] = reference_urls(row.body, row.references, known, party_id)
             known[row.entry_id]['links'] = [
                 {'id': target_id, 'title': known[target_id]['title']}
                 for target_id in sorted({link.target_id for link in row.entry.links} | map_related_ids(row.entry))
                 if target_id in known]
+    for entry in known.values():
+        entry.pop('reference_key', None)
     return known
 
 
@@ -234,7 +239,8 @@ def map_projection(pointcrawl, party_id=None):
     def content(entry):
         if known is not None:
             return known.get(entry.id)
-        return {'id': entry.id, 'title': entry.title, 'body': entry.body, 'path_type': entry.path_type}
+        return {'id': entry.id, 'title': entry.title, 'body': entry.body, 'path_type': entry.path_type,
+                'references': private_reference_urls(entry)}
 
     root = content(pointcrawl.entry)
     result = {'id': pointcrawl.id, 'kind': pointcrawl.kind, 'title': root['title'], 'body': root['body'], 'nodes': [], 'edges': []}
@@ -265,6 +271,7 @@ def map_projection(pointcrawl, party_id=None):
             'category': node.entry.category if known is None else item['category'],
             **({'is_heart': node.entry.is_heart} if known is None else {}),
             'title': item['title'], 'body': item['body'],
+            'references': item.get('references', {}),
             'nested_map_id': nested.id if nested and (known is None or nested.entry_id in known) else None,
             'nested_entry_id': nested.entry_id if nested and (known is None or nested.entry_id in known) else None})
     visible = {node['id'] for node in result['nodes']}
@@ -281,7 +288,8 @@ def map_projection(pointcrawl, party_id=None):
             result['edges'].append({'id': edge.id, 'entry_id': edge.entry_id,
                 **({'entry_version': edge.entry.version} if known is None else {}),
                 'source': edge.source_id, 'target': edge.target_id,
-                'title': item['title'], 'body': item['body'], 'path_type': item['path_type']})
+                'title': item['title'], 'body': item['body'], 'path_type': item['path_type'],
+                'references': item.get('references', {})})
     return result
 
 

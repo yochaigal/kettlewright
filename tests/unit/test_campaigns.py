@@ -1155,7 +1155,7 @@ def test_markdown_article_publication_preserves_source_and_safe_rendering(setup)
     assert reveal(client, entry_id, body=body).status_code == 302
     login(client, 2)
     page = client.get(f'/party/1/materials/{entry_id}').text
-    for tag in ('<h2>A clue</h2>', '<strong>Bold</strong>', '<em>italic</em>', '<del>gone</del>', '<code>code</code>', '<ul>', '<blockquote>', '<table>'):
+    for tag in ('<h2 id="kw-h-a-clue">A clue</h2>', '<strong>Bold</strong>', '<em>italic</em>', '<del>gone</del>', '<code>code</code>', '<ul>', '<blockquote>', '<table>'):
         assert tag in page
 
 

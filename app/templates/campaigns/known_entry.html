@@ -7,7 +7,7 @@
 {% call page_header(entry.title|markdown_inline) %}
 <a href="{{ url_for('campaigns.party_materials', party_id=party.id) }}">{{ _('Campaign details') }}</a>
 {% endcall %}
-<div class="rich-content">{{ render_content(entry.body) }}</div>
+<div class="rich-content">{{ render_content(entry.body, entry.references) }}</div>
 <ul>{% for link in entry.links %}<li><a href="{{ url_for('campaigns.party_entry', party_id=party.id, entry_id=link.id) }}">{{ link.title }}</a></li>{% endfor %}</ul>
 </div>
 {% if graph %}{% include 'campaigns/map_panel.html' %}{% endif %}

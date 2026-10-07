@@ -2,7 +2,7 @@
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
-from flask import Blueprint, abort, current_app, flash, jsonify, redirect, render_template, request, url_for, send_from_directory
+from flask import Blueprint, abort, current_app, flash, jsonify, redirect, render_template, request, url_for, send_from_directory, send_file
 from itsdangerous import BadSignature, URLSafeTimedSerializer
 from flask_babel import _
 from flask_login import current_user, login_required
@@ -14,11 +14,14 @@ from sqlalchemy.orm import selectinload
 from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
                         Party, PartyPresentation, PointcrawlMap, CampaignImport)
 from app.lib.campaign_import import preview_archive, import_preview, ImportError, MAX_ARCHIVE
+from app.lib.campaign_export import export_campaign
 from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, check_version,
     entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
     party_access, publishable_party, render_content, save_geometry, text_value, content_value,
     material_hierarchy, material_parents, material_deletion_plan, delete_material_plan, save_article_children, set_article_parent, POINT_TYPES)
 from app.lib.rich_content import content_excerpt
+from app.lib.article_references import (private_reference_urls, bind_references, reference_urls,
+    headings, tokens)
 from app.lib.content_types import CATEGORY_GROUPS, CATEGORY_ROOTS, ARTICLE_MAP_KINDS
 from app.lib.campaigns import ensure_article_map, ensure_article_tree_maps, populate_realm_map
 from app.lib.material_images import LOCAL_IMAGE, image_directory, cleanup_images, image_references
@@ -70,7 +73,36 @@ def conflict(error):
 def common_context():
     return {'content_categories': CATEGORIES, 'category_groups': CATEGORY_GROUPS, 'category_roots': CATEGORY_ROOTS, 'article_map_kinds': ARTICLE_MAP_KINDS,
             'point_categories': {k: CATEGORIES[k] for k in CATEGORIES if k in POINT_TYPES}, 'path_types': PATH_TYPES,
-            'content_form': FlaskForm(), 'render_content': render_content, 'content_excerpt': content_excerpt}
+            'content_form': FlaskForm(), 'render_content': render_content, 'content_excerpt': content_excerpt,
+            'private_reference_urls': private_reference_urls}
+
+
+@campaigns.route('/materials/reference-catalog')
+def reference_catalog():
+    campaign = campaign_for(request.args.get('campaign_id'))
+    entries = ContentEntry.query.filter_by(owner_id=current_user.id,
+        campaign_id=campaign.id if campaign else None).order_by(ContentEntry.title, ContentEntry.id).all()
+    return jsonify(articles=[{'id': entry.id, 'title': entry.title, 'path': entry.source_path,
+        'headings': headings(entry.body)} for entry in entries])
+
+
+@campaigns.route('/materials/reference-preview', methods=['POST'])
+def reference_preview():
+    body = content_value(request.form.get('body', ''))
+    campaign = campaign_for(request.form.get('campaign_id'))
+    entry_id = request.form.get('entry_id')
+    entry = owned(ContentEntry, integer(entry_id)) if entry_id else ContentEntry(
+        owner_id=current_user.id, campaign_id=campaign.id if campaign else None)
+    entries = ContentEntry.query.filter_by(owner_id=current_user.id,
+        campaign_id=campaign.id if campaign else None).all()
+    bindings = bind_references(entry, body, entry.references, entries)
+    targets = {item.id: item for item in entries}
+    if entry.id:
+        # Self-heading links in an unsaved draft use that draft's headings.
+        targets[entry.id] = {'body': body, 'reference_key': entry.reference_key}
+    refs = reference_urls(body, bindings, targets)
+    return jsonify(html=str(render_content(body, refs)), references=refs,
+        unresolved=[token for token in tokens(body) if token not in refs])
 
 
 def my_parties():
@@ -149,6 +181,13 @@ def workspace(campaign_id):
                            parties=my_parties(), linked={p.party_id for p in campaign.parties})
 
 
+@campaigns.route('/campaigns/<int:campaign_id>/export')
+def campaign_export(campaign_id):
+    campaign = owned(Campaign, campaign_id)
+    return send_file(export_campaign(campaign), mimetype='application/zip',
+                     as_attachment=True, download_name=f'campaign-{campaign.id}.zip')
+
+
 @campaigns.route('/campaigns/<int:campaign_id>/delete', methods=['POST'])
 def delete_campaign(campaign_id):
     campaign = owned(Campaign, campaign_id)
@@ -215,6 +254,7 @@ def entry_preview(entry_id):
     entry = owned(ContentEntry, entry_id)
     return render_template('campaigns/preview.html', entry=entry,
                            graph=map_projection(entry.pointcrawl) if entry.pointcrawl else None,
+                           references=private_reference_urls(entry),
                            article_url=url_for('campaigns.edit_entry', entry_id=entry.id))
 
 
@@ -226,6 +266,7 @@ def party_entry_preview(party_id, entry_id):
         abort(404)
     return render_template('campaigns/preview.html', entry=entry,
                            graph=map_projection(db.get_or_404(PointcrawlMap, entry['map_id']), party_id) if entry['map_id'] else None,
+                           references=entry.get('references', {}),
                            article_url=url_for('campaigns.party_entry', party_id=party_id, entry_id=entry_id))
 
 

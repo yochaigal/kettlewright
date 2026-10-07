@@ -8,13 +8,16 @@ from pathlib import PurePosixPath
 import yaml
 from werkzeug.exceptions import HTTPException
 
-from app.models import db, Campaign, ContentEntry, PointcrawlMap
-from app.lib.campaigns import CATEGORIES, MAP_KINDS
+from app.models import db, Campaign, ContentEntry, PointcrawlMap, MapNode, MapEdge, ContentLink
+from app.lib.campaigns import CATEGORIES, MAP_KINDS, PATH_TYPES
 from app.lib.rich_content import normalize_content
+from app.lib.campaign_map_import import prepare_maps
+from app.lib.article_references import prepare_archive_references
 
-MAX_ARCHIVE = 10 * 1024 * 1024
-MAX_TOTAL = 20 * 1024 * 1024
+MAX_ARCHIVE = 50 * 1024 * 1024
+MAX_TOTAL = 100 * 1024 * 1024
 MAX_FILE = 512 * 1024
+MAX_MAP_FILE = 16 * 1024 * 1024
 MAX_MEMBERS = 500
 
 
@@ -24,7 +27,7 @@ class ImportError(ValueError):
 
 def archive_files(data):
     if len(data) > MAX_ARCHIVE:
-        raise ImportError('Archive exceeds 10 MB.')
+        raise ImportError('Archive exceeds 50 MB.')
     stream = io.BytesIO(data)
     total = 0
     seen = set()
@@ -46,20 +49,22 @@ def archive_files(data):
                     raise ImportError(f'Links and special files are not supported: {name}')
                 size = member.file_size if zipped else member.size
                 total += size
-                if size > MAX_FILE or total > MAX_TOTAL:
-                    raise ImportError('Files exceed the 512 KB per-file or 20 MB total limit.')
+                is_map = path.suffix.lower() in ('.json', '.excalidraw') and path.name != 'manifest.json'
+                limit = MAX_MAP_FILE if is_map else MAX_FILE
+                if size > limit or total > MAX_TOTAL:
+                    raise ImportError('Files exceed the 512 KB Markdown/attachment, 16 MB map or 100 MB total limit.')
                 normalized = str(path)
                 if normalized in seen:
                     raise ImportError(f'Duplicate archive path: {name}')
                 seen.add(normalized)
-                if path.suffix.lower() != '.md':
+                if path.suffix.lower() not in ('.md', '.json', '.excalidraw') or name.lower().endswith('.excalidraw.md'):
                     yield name, None
                     continue
                 with (archive.open(member) if zipped else archive.extractfile(member)) as file:
-                    contents = file.read(MAX_FILE + 1)
-                if len(contents) > MAX_FILE:
-                    raise ImportError(f'File exceeds 512 KB: {name}')
-                yield name, contents.decode('utf-8-sig')
+                    contents = file.read(limit + 1)
+                if len(contents) > limit:
+                    raise ImportError(f'File exceeds its size limit: {name}')
+                yield normalized, contents.decode('utf-8-sig')
     except (tarfile.TarError, zipfile.BadZipFile, UnicodeError, RuntimeError, OSError, EOFError) as exc:
         raise ImportError('Use a valid ZIP or TAR archive containing UTF-8 Markdown files.') from exc
 
@@ -106,6 +111,16 @@ def parse_markdown(name, text):
         raise ImportError(f'Unknown type: {metadata["type"]}')
     if category == 'campaign' and metadata.get('parent'):
         raise ImportError('A Campaign cannot have a parent.')
+    if category == 'campaign' and metadata.get('parent_id'):
+        raise ImportError('A Campaign cannot have a parent.')
+    if metadata.get('heart', 'false').casefold() not in ('true', 'false'):
+        raise ImportError('heart must be true or false.')
+    if metadata.get('path_type', 'standard') not in PATH_TYPES:
+        raise ImportError('Unknown path_type.')
+    source_path = metadata.get('source_path', name)
+    path = PurePosixPath(source_path)
+    if len(source_path) > 500 or path.is_absolute() or '..' in path.parts or any(c in source_path for c in ('\\', ':', '\x00')):
+        raise ImportError('Invalid source_path.')
     try:
         body = normalize_content('\n'.join(lines[end + 1:]).strip())
     except HTTPException as exc:
@@ -113,14 +128,22 @@ def parse_markdown(name, text):
     return {'file': name, 'title': metadata['title'], 'type': metadata['type'],
             'category': category, 'kind': kind if kind in MAP_KINDS else 'freeform',
             'parent_title': metadata.get('parent', ''), 'parent': None,
+            'id': metadata.get('id', ''), 'parent_id': metadata.get('parent_id', ''),
+            'is_heart': metadata.get('heart', 'false').casefold() == 'true',
+            'path_type': metadata.get('path_type', 'standard'),
+            'map_file': metadata.get('map', ''),
+            'source_path': str(path),
             'body': body}
 
 
 def preview_archive(data):
-    rows, errors, ignored = [], [], []
+    rows, errors, ignored, files = [], [], [], {}
     for name, text in archive_files(data):
+        files[name] = text
         if text is None:
             ignored.append(name)
+            continue
+        if PurePosixPath(name).suffix.lower() != '.md':
             continue
         try:
             rows.append(parse_markdown(name, text))
@@ -128,11 +151,20 @@ def preview_archive(data):
             errors.append(f'{name}: {exc}')
     if not rows and not errors:
         errors.append('No Markdown files found.')
-    titles = {}
+    titles, ids = {}, {}
     for i, row in enumerate(rows):
         titles.setdefault(row['title'], []).append(i)
+        if row['id']:
+            if row['id'] in ids:
+                errors.append(f'{row["file"]}: duplicate id "{row["id"]}".')
+            ids[row['id']] = i
     for row in rows:
-        if row['parent_title']:
+        if row['parent_id']:
+            if row['parent_id'] not in ids:
+                errors.append(f'{row["file"]}: parent_id "{row["parent_id"]}" is missing.')
+            else:
+                row['parent'] = ids[row['parent_id']]
+        elif row['parent_title']:
             matches = titles.get(row['parent_title'], [])
             if len(matches) != 1:
                 errors.append(f'{row["file"]}: parent "{row["parent_title"]}" is missing or ambiguous.')
@@ -181,7 +213,14 @@ def preview_archive(data):
         for i, row in enumerate(rows):
             if row['parent'] is None:
                 show(i)
-    return {'rows': rows, 'order': order, 'display': display, 'errors': errors, 'ignored': ignored}
+    payload = {'rows': rows, 'order': order, 'display': display, 'errors': errors, 'ignored': ignored}
+    if not errors:
+        try:
+            prepare_maps(payload, files)
+            prepare_archive_references(payload)
+        except ValueError as exc:
+            errors.append(str(exc))
+    return payload
 
 
 def import_preview(payload, owner_id):
@@ -203,11 +242,37 @@ def import_preview(payload, owner_id):
         if parent_entry:
             campaign = parent_entry.campaign
         entry = ContentEntry(owner_id=owner_id, campaign=campaign, parent=parent_entry,
-            title=row['title'], category=row['category'], body=normalize_content(row['body']))
+            title=row['title'], category=row['category'], body=normalize_content(row['body']),
+            source_path=row.get('source_path', row['file']), references={},
+            is_heart=row.get('is_heart', False), path_type=row.get('path_type', 'standard'))
         db.session.add(entry)
-        if row['category'] == 'map':
-            db.session.add(PointcrawlMap(entry=entry, kind=row['kind']))
+        graph = row.get('map')
+        if graph or row['category'] == 'map':
+            db.session.add(PointcrawlMap(entry=entry, kind=graph['kind'] if graph else row['kind'],
+                                         drawing=graph['drawing'] if graph else None))
             if row['kind'] != 'freeform':
                 entry.category = row['kind']
         objects[i] = entry
+    # Create all articles and canvases before resolving graph references. Archive
+    # identifiers are never interpreted as existing database identifiers.
+    db.session.flush()
+    for i, entry in objects.items():
+        entry.references = {token: objects[target].reference_key for token, target in payload['rows'][i].get('references', {}).items()}
+    for i, entry in objects.items():
+        graph = payload['rows'][i].get('map')
+        if not graph:
+            continue
+        nodes = {}
+        for item in graph['nodes']:
+            node = MapNode(map=entry.pointcrawl, entry=objects[item['article']],
+                number=item['number'], x=item['x'], y=item['y'], geometry=item['geometry'],
+                nested_map=objects[item['nested_map']].pointcrawl if item['nested_map'] is not None else None)
+            db.session.add(node)
+            nodes[item['id']] = node
+        db.session.flush()
+        for item in graph['edges']:
+            db.session.add(MapEdge(map=entry.pointcrawl, entry=objects[item['article']],
+                source_id=nodes[item['source']].id, target_id=nodes[item['target']].id))
+    for link in payload.get('links', []):
+        db.session.add(ContentLink(source_id=objects[link['source']].id, target_id=objects[link['target']].id))
     return len(campaigns), len(objects)
