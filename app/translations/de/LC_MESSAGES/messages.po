@@ -19029,3 +19029,266 @@ msgstr "Haustier"
 
 msgid "Hireling"
 msgstr "Gefolgsmann"
+
+msgid "Save or reveal"
+msgstr "Speichern oder aufdecken"
+
+msgid "Copy text"
+msgstr "Text kopieren"
+
+msgid "Results copied to clipboard"
+msgstr "Ergebnisse in die Zwischenablage kopiert"
+
+msgid "Monsters"
+msgstr "Monster"
+
+msgid "Events"
+msgstr "Ereignisse"
+
+msgid "Worldbuilding"
+msgstr "Weltenbau"
+
+msgid "Random Monster"
+msgstr "Zufälliges Monster"
+
+msgid "Custom Monster"
+msgstr "Eigenes Monster"
+
+msgid "Reaction Roll"
+msgstr "Reaktionswurf"
+
+msgid "Dungeon Events"
+msgstr "Dungeon-Ereignisse"
+
+msgid "Wilderness Events"
+msgstr "Wildnis-Ereignisse"
+
+msgid "Faction"
+msgstr "Fraktion"
+
+msgid "Faction Actions"
+msgstr "Fraktionsaktionen"
+
+msgid "NPC"
+msgstr "NSC"
+
+msgid "Relics"
+msgstr "Relikte"
+
+msgid "Spellbooks"
+msgstr "Zauberbücher"
+
+msgid "Summer"
+msgstr "Sommer"
+
+msgid "Fall"
+msgstr "Herbst"
+
+msgid "Winter"
+msgstr "Winter"
+
+msgid "Faction Action"
+msgstr "Fraktionsaktion"
+
+msgid "Dungeon Event"
+msgstr "Dungeon-Ereignis"
+
+msgid "Wilderness Event"
+msgstr "Wildnis-Ereignis"
+
+msgid "Season"
+msgstr "Jahreszeit"
+
+msgid "Effect"
+msgstr "Effekt"
+
+msgid "Examples"
+msgstr "Beispiele"
+
+msgid "Reaction"
+msgstr "Reaktion"
+
+msgid "Attack"
+msgstr "Angriff"
+
+msgid "Feature"
+msgstr "Merkmal"
+
+msgid "Quirks"
+msgstr "Eigenheiten"
+
+msgid "Critical Damage"
+msgstr "Kritischer Schaden"
+
+msgid "Ability"
+msgstr "Fähigkeit"
+
+msgid "Target"
+msgstr "Ziel"
+
+msgid "Max charges"
+msgstr "Maximale Ladungen"
+
+msgid "Personality"
+msgstr "Persönlichkeit"
+
+msgid "Consequence"
+msgstr "Folge"
+
+msgid "Impact"
+msgstr "Auswirkung"
+
+msgid "Purpose"
+msgstr "Zweck"
+
+msgid "Construction"
+msgstr "Bauweise"
+
+msgid "Ruination"
+msgstr "Verfall"
+
+msgid "Factions"
+msgstr "Fraktionen"
+
+msgid "POIs"
+msgstr "Orte von Interesse"
+
+msgid "Original Use"
+msgstr "Ursprünglicher Zweck"
+
+msgid "Built By"
+msgstr "Erbaut von"
+
+msgid "Entrance"
+msgstr "Eingang"
+
+msgid "Composition"
+msgstr "Material"
+
+msgid "Condition"
+msgstr "Zustand"
+
+msgid "Cause"
+msgstr "Ursache"
+
+msgid "Goal"
+msgstr "Ziel"
+
+msgid "Obstacle"
+msgstr "Hindernis"
+
+msgid "Culture"
+msgstr "Kultur"
+
+msgid "Agent"
+msgstr "Agent"
+
+msgid "Trait 1"
+msgstr "Eigenschaft 1"
+
+msgid "Trait 2"
+msgstr "Eigenschaft 2"
+
+msgid "Advantages"
+msgstr "Vorteile"
+
+msgid "Agenda"
+msgstr "Agenda"
+
+msgid "Terrain"
+msgstr "Gelände"
+
+msgid "Unusual Weather (optional)"
+msgstr "Ungewöhnliches Wetter (optional)"
+
+msgid "Quirk"
+msgstr "Eigenheit"
+
+msgid "Heart"
+msgstr "Herz"
+
+msgid "Difficulty"
+msgstr "Schwierigkeit"
+
+msgid "Landmark"
+msgstr "Landmarke"
+
+msgid "Leader"
+msgstr "Anführer"
+
+msgid "Champion"
+msgstr "Streiter"
+
+msgid "Envoy"
+msgstr "Gesandter"
+
+msgid "Fixer"
+msgstr "Vermittler"
+
+msgid "Priest"
+msgstr "Priester"
+
+msgid "Scholar"
+msgstr "Gelehrter"
+
+msgid "Magician"
+msgstr "Magier"
+
+msgid "Quartermaster"
+msgstr "Quartiermeister"
+
+msgid "Captain"
+msgstr "Hauptmann"
+
+msgctxt "season"
+msgid "Spring"
+msgstr "Frühling"
+
+msgctxt "culture"
+msgid "Character"
+msgstr "Charakter"
+
+msgctxt "relic"
+msgid "Charges"
+msgstr "Ladungen"
+
+msgctxt "terrain difficulty"
+msgid "Easy"
+msgstr "Leicht"
+
+msgctxt "terrain difficulty"
+msgid "Tough"
+msgstr "Schwierig"
+
+msgctxt "terrain difficulty"
+msgid "Perilous"
+msgstr "Gefährlich"
+
+msgctxt "trail"
+msgid "Hidden"
+msgstr "Verborgen"
+
+msgctxt "faction agent"
+msgid "Herald"
+msgstr "Herold"
+
+msgid "Confirm Password"
+msgstr "Passwort bestätigen"
+
+msgid "Confirm your password"
+msgstr "Bestätige dein Passwort"
+
+msgid "Delete Account"
+msgstr "Konto löschen"
+
+msgid "Delete My Account"
+msgstr "Mein Konto löschen"
+
+msgid "Enter your password"
+msgstr "Gib dein Passwort ein"
+
+msgid "This action cannot be undone."
+msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
+
+msgid "Warning:"
+msgstr "Warnung:"

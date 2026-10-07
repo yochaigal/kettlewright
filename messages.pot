@@ -19814,3 +19814,351 @@ msgstr ""
 #: app/blueprints/charcreo.py:23
 msgid "** Custom **"
 msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Save or reveal"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Copy text"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Results copied to clipboard"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Monsters"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Events"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Worldbuilding"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Random Monster"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Custom Monster"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Reaction Roll"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Dungeon Events"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Wilderness Events"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Faction"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Faction Actions"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "NPC"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Relics"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Spellbooks"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Summer"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Fall"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Winter"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Faction Action"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Dungeon Event"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Wilderness Event"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Season"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Effect"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Examples"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Reaction"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Attack"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Feature"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Quirks"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Critical Damage"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Ability"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Target"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Max charges"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Personality"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Consequence"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Impact"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Purpose"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Construction"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Ruination"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Factions"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "POIs"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Original Use"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Built By"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Entrance"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Composition"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Condition"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Cause"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Goal"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Obstacle"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Culture"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Agent"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Trait 1"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Trait 2"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Advantages"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Agenda"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Terrain"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Unusual Weather (optional)"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Quirk"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Heart"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Difficulty"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Landmark"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Leader"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Champion"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Envoy"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Fixer"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Priest"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Scholar"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Magician"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Quartermaster"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Captain"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgctxt "season"
+msgid "Spring"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgctxt "culture"
+msgid "Character"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgctxt "relic"
+msgid "Charges"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgctxt "terrain difficulty"
+msgid "Easy"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgctxt "terrain difficulty"
+msgid "Tough"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgctxt "terrain difficulty"
+msgid "Perilous"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgctxt "trail"
+msgid "Hidden"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgctxt "faction agent"
+msgid "Herald"
+msgstr ""
+
+#: app/forms.py
+msgid "Confirm Password"
+msgstr ""
+
+#: app/templates/auth/delete_account.html app/templates/auth/reauthenticate.html
+msgid "Confirm your password"
+msgstr ""
+
+#: app/templates/auth/account.html app/templates/auth/delete_account.html
+msgid "Delete Account"
+msgstr ""
+
+#: app/forms.py
+msgid "Delete My Account"
+msgstr ""
+
+#: app/templates/auth/delete_account.html
+msgid "Enter your password"
+msgstr ""
+
+#: app/templates/auth/delete_account.html
+msgid "This action cannot be undone."
+msgstr ""
+
+#: app/templates/auth/delete_account.html
+msgid "Warning:"
+msgstr ""

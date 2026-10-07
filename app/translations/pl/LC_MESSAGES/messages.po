@@ -3000,7 +3000,7 @@ msgid ""
 msgstr ""
 "Emituje wysoki dźwięk, który mogą usłyszeć "
 "tylko gryzonie. Dopóki grasz, gryzonie podążają za tobą, nawet jeśli oznacza "
-"to ich zgubę.""
+"to ich zgubę."
 
 #: app/static/json/backgrounds/beast-handler.json:115
 msgid ""
@@ -3219,7 +3219,7 @@ msgid ""
 msgstr ""
 "Odziedziczona po właścicielu, który zmarł na zarazę. "
 "Plagę, która zniszczyła wszystkich, których kiedyś znałeś. Trzeba było "
-"ją pochować razem z właścicielem.""
+"ją pochować razem z właścicielem."
 
 #: app/static/json/backgrounds/bonekeeper.json:109
 msgid "What tool was invaluable in your work?"
@@ -19388,3 +19388,266 @@ msgstr "Zwierzę"
 
 msgid "Hireling"
 msgstr "Najemnik"
+
+msgid "Save or reveal"
+msgstr "Zapisz lub odkryj"
+
+msgid "Copy text"
+msgstr "Kopiowanie tekstu"
+
+msgid "Results copied to clipboard"
+msgstr "Wyniki skopiowano do schowka"
+
+msgid "Monsters"
+msgstr "Potwory"
+
+msgid "Events"
+msgstr "Wydarzenia"
+
+msgid "Worldbuilding"
+msgstr "Tworzenie świata"
+
+msgid "Random Monster"
+msgstr "Losowy potwór"
+
+msgid "Custom Monster"
+msgstr "Własny potwór"
+
+msgid "Reaction Roll"
+msgstr "Rzut na reakcję"
+
+msgid "Dungeon Events"
+msgstr "Wydarzenia w lochu"
+
+msgid "Wilderness Events"
+msgstr "Wydarzenia w dziczy"
+
+msgid "Faction"
+msgstr "Frakcja"
+
+msgid "Faction Actions"
+msgstr "Działania frakcji"
+
+msgid "NPC"
+msgstr "BN"
+
+msgid "Relics"
+msgstr "Relikwie"
+
+msgid "Spellbooks"
+msgstr "Księgi zaklęć"
+
+msgid "Summer"
+msgstr "Lato"
+
+msgid "Fall"
+msgstr "Jesień"
+
+msgid "Winter"
+msgstr "Zima"
+
+msgid "Faction Action"
+msgstr "Działanie frakcji"
+
+msgid "Dungeon Event"
+msgstr "Wydarzenie w lochu"
+
+msgid "Wilderness Event"
+msgstr "Wydarzenie w dziczy"
+
+msgid "Season"
+msgstr "Pora roku"
+
+msgid "Effect"
+msgstr "Efekt"
+
+msgid "Examples"
+msgstr "Przykłady"
+
+msgid "Reaction"
+msgstr "Reakcja"
+
+msgid "Attack"
+msgstr "Atak"
+
+msgid "Feature"
+msgstr "Cecha szczególna"
+
+msgid "Quirks"
+msgstr "Dziwactwa"
+
+msgid "Critical Damage"
+msgstr "Obrażenia krytyczne"
+
+msgid "Ability"
+msgstr "Zdolność"
+
+msgid "Target"
+msgstr "Cel"
+
+msgid "Max charges"
+msgstr "Maksymalne ładunki"
+
+msgid "Personality"
+msgstr "Osobowość"
+
+msgid "Consequence"
+msgstr "Konsekwencja"
+
+msgid "Impact"
+msgstr "Wpływ"
+
+msgid "Purpose"
+msgstr "Przeznaczenie"
+
+msgid "Construction"
+msgstr "Konstrukcja"
+
+msgid "Ruination"
+msgstr "Ruina"
+
+msgid "Factions"
+msgstr "Frakcje"
+
+msgid "POIs"
+msgstr "Interesujące miejsca"
+
+msgid "Original Use"
+msgstr "Pierwotne przeznaczenie"
+
+msgid "Built By"
+msgstr "Zbudowane przez"
+
+msgid "Entrance"
+msgstr "Wejście"
+
+msgid "Composition"
+msgstr "Materiał"
+
+msgid "Condition"
+msgstr "Stan"
+
+msgid "Cause"
+msgstr "Przyczyna"
+
+msgid "Goal"
+msgstr "Cel"
+
+msgid "Obstacle"
+msgstr "Przeszkoda"
+
+msgid "Culture"
+msgstr "Kultura"
+
+msgid "Agent"
+msgstr "Agent"
+
+msgid "Trait 1"
+msgstr "Cecha 1"
+
+msgid "Trait 2"
+msgstr "Cecha 2"
+
+msgid "Advantages"
+msgstr "Atuty"
+
+msgid "Agenda"
+msgstr "Zamiary"
+
+msgid "Terrain"
+msgstr "Teren"
+
+msgid "Unusual Weather (optional)"
+msgstr "Niezwykła pogoda (opcjonalnie)"
+
+msgid "Quirk"
+msgstr "Dziwactwo"
+
+msgid "Heart"
+msgstr "Serce"
+
+msgid "Difficulty"
+msgstr "Trudność"
+
+msgid "Landmark"
+msgstr "Punkt orientacyjny"
+
+msgid "Leader"
+msgstr "Przywódca"
+
+msgid "Champion"
+msgstr "Czempion"
+
+msgid "Envoy"
+msgstr "Wysłannik"
+
+msgid "Fixer"
+msgstr "Pośrednik"
+
+msgid "Priest"
+msgstr "Kapłan"
+
+msgid "Scholar"
+msgstr "Uczony"
+
+msgid "Magician"
+msgstr "Mag"
+
+msgid "Quartermaster"
+msgstr "Kwatermistrz"
+
+msgid "Captain"
+msgstr "Kapitan"
+
+msgctxt "season"
+msgid "Spring"
+msgstr "Wiosna"
+
+msgctxt "culture"
+msgid "Character"
+msgstr "Charakter"
+
+msgctxt "relic"
+msgid "Charges"
+msgstr "Ładunki"
+
+msgctxt "terrain difficulty"
+msgid "Easy"
+msgstr "Łatwy"
+
+msgctxt "terrain difficulty"
+msgid "Tough"
+msgstr "Trudny"
+
+msgctxt "terrain difficulty"
+msgid "Perilous"
+msgstr "Niebezpieczny"
+
+msgctxt "trail"
+msgid "Hidden"
+msgstr "Ukryta"
+
+msgctxt "faction agent"
+msgid "Herald"
+msgstr "Herold"
+
+msgid "Confirm Password"
+msgstr "Potwierdź hasło"
+
+msgid "Confirm your password"
+msgstr "Potwierdź swoje hasło"
+
+msgid "Delete Account"
+msgstr "Usuń konto"
+
+msgid "Delete My Account"
+msgstr "Usuń moje konto"
+
+msgid "Enter your password"
+msgstr "Wpisz swoje hasło"
+
+msgid "This action cannot be undone."
+msgstr "Tej operacji nie można cofnąć."
+
+msgid "Warning:"
+msgstr "Uwaga:"

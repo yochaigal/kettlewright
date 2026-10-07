@@ -20083,3 +20083,245 @@ msgstr "Animal de estimação"
 
 msgid "Hireling"
 msgstr "Mercenário"
+
+msgid "Save or reveal"
+msgstr "Salvar ou revelar"
+
+msgid "Copy text"
+msgstr "Copiar texto"
+
+msgid "Results copied to clipboard"
+msgstr "Resultados copiados para a área de transferência"
+
+msgid "Monsters"
+msgstr "Monstros"
+
+msgid "Events"
+msgstr "Eventos"
+
+msgid "Worldbuilding"
+msgstr "Criação de Mundo"
+
+msgid "Random Monster"
+msgstr "Monstro Aleatório"
+
+msgid "Custom Monster"
+msgstr "Monstro Personalizado"
+
+msgid "Reaction Roll"
+msgstr "Rolagem de Reação"
+
+msgid "Dungeon Events"
+msgstr "Eventos de Masmorra"
+
+msgid "Wilderness Events"
+msgstr "Eventos dos Ermos"
+
+msgid "Faction"
+msgstr "Facção"
+
+msgid "Faction Actions"
+msgstr "Ações de Facção"
+
+msgid "NPC"
+msgstr "NPC"
+
+msgid "Relics"
+msgstr "Relíquias"
+
+msgid "Spellbooks"
+msgstr "Livros de Feitiços"
+
+msgid "Summer"
+msgstr "Verão"
+
+msgid "Fall"
+msgstr "Outono"
+
+msgid "Winter"
+msgstr "Inverno"
+
+msgid "Faction Action"
+msgstr "Ação de Facção"
+
+msgid "Dungeon Event"
+msgstr "Evento de Masmorra"
+
+msgid "Wilderness Event"
+msgstr "Evento dos Ermos"
+
+msgid "Season"
+msgstr "Estação"
+
+msgid "Effect"
+msgstr "Efeito"
+
+msgid "Examples"
+msgstr "Exemplos"
+
+msgid "Reaction"
+msgstr "Reação"
+
+msgid "Attack"
+msgstr "Ataque"
+
+msgid "Feature"
+msgstr "Característica"
+
+msgid "Quirks"
+msgstr "Peculiaridades"
+
+msgid "Critical Damage"
+msgstr "Dano Crítico"
+
+msgid "Ability"
+msgstr "Habilidade"
+
+msgid "Target"
+msgstr "Alvo"
+
+msgid "Max charges"
+msgstr "Cargas máximas"
+
+msgid "Personality"
+msgstr "Personalidade"
+
+msgid "Consequence"
+msgstr "Consequência"
+
+msgid "Impact"
+msgstr "Impacto"
+
+msgid "Purpose"
+msgstr "Propósito"
+
+msgid "Construction"
+msgstr "Construção"
+
+msgid "Ruination"
+msgstr "Ruína"
+
+msgid "Factions"
+msgstr "Facções"
+
+msgid "POIs"
+msgstr "Pontos de Interesse"
+
+msgid "Original Use"
+msgstr "Uso Original"
+
+msgid "Built By"
+msgstr "Construída Por"
+
+msgid "Entrance"
+msgstr "Entrada"
+
+msgid "Composition"
+msgstr "Composição"
+
+msgid "Condition"
+msgstr "Condição"
+
+msgid "Cause"
+msgstr "Causa"
+
+msgid "Goal"
+msgstr "Objetivo"
+
+msgid "Obstacle"
+msgstr "Obstáculo"
+
+msgid "Culture"
+msgstr "Cultura"
+
+msgid "Agent"
+msgstr "Agente"
+
+msgid "Trait 1"
+msgstr "Traço 1"
+
+msgid "Trait 2"
+msgstr "Traço 2"
+
+msgid "Advantages"
+msgstr "Vantagens"
+
+msgid "Agenda"
+msgstr "Agenda"
+
+msgid "Terrain"
+msgstr "Terreno"
+
+msgid "Unusual Weather (optional)"
+msgstr "Clima Incomum (opcional)"
+
+msgid "Quirk"
+msgstr "Peculiaridade"
+
+msgid "Heart"
+msgstr "Coração"
+
+msgid "Difficulty"
+msgstr "Dificuldade"
+
+msgid "Landmark"
+msgstr "Ponto de Referência"
+
+msgid "Leader"
+msgstr "Líder"
+
+msgid "Champion"
+msgstr "Campeão"
+
+msgid "Envoy"
+msgstr "Emissário"
+
+msgid "Fixer"
+msgstr "Intermediário"
+
+msgid "Priest"
+msgstr "Sacerdote"
+
+msgid "Scholar"
+msgstr "Erudito"
+
+msgid "Magician"
+msgstr "Mago"
+
+msgid "Quartermaster"
+msgstr "Intendente"
+
+msgid "Captain"
+msgstr "Capitão"
+
+msgctxt "season"
+msgid "Spring"
+msgstr "Primavera"
+
+msgctxt "culture"
+msgid "Character"
+msgstr "Caráter"
+
+msgctxt "relic"
+msgid "Charges"
+msgstr "Cargas"
+
+msgctxt "terrain difficulty"
+msgid "Easy"
+msgstr "Fácil"
+
+msgctxt "terrain difficulty"
+msgid "Tough"
+msgstr "Difícil"
+
+msgctxt "terrain difficulty"
+msgid "Perilous"
+msgstr "Perigoso"
+
+msgctxt "trail"
+msgid "Hidden"
+msgstr "Oculta"
+
+msgctxt "faction agent"
+msgid "Herald"
+msgstr "Arauto"

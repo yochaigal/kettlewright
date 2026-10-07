@@ -2,7 +2,46 @@
 <script>const data = JSON.parse({{ events_data | tojson }});</script>
 <script id="tools-content-labels" type="application/json">{{ {
 'authenticated': user_features_enabled(), 'save': _('Save or reveal'),
-'copy': _('Copy text'), 'copied': _('Results copied to clipboard')}|tojson }}</script>
+'copy': _('Copy text'), 'copied': _('Results copied to clipboard'),
+'terms': {
+'Monsters': _('Monsters'), 'Events': _('Events'), 'Weather': _('Weather'),
+'Worldbuilding': _('Worldbuilding'), 'Items': _('Items'), 'Random Monster': _('Random Monster'),
+'Custom Monster': _('Custom Monster'), 'Reaction Roll': _('Reaction Roll'),
+'Dungeon Events': _('Dungeon Events'), 'Wilderness Events': _('Wilderness Events'), 'Dungeon': _('Dungeon'),
+'Forest': _('Forest'), 'Realm': _('Realm'), 'Faction': _('Faction'), 'Faction Actions': _('Faction Actions'),
+'NPC': _('NPC'), 'Relics': _('Relics'), 'Spellbooks': _('Spellbooks'),
+'Spring': pgettext('season', 'Spring'), 'Summer': _('Summer'), 'Fall': _('Fall'), 'Winter': _('Winter'),
+'Faction Action': _('Faction Action'), 'Dungeon Event': _('Dungeon Event'), 'Wilderness Event': _('Wilderness Event'),
+'Season': _('Season'), 'Type': _('Type'), 'Effect': _('Effect'),
+'Examples': _('Examples'), 'Reaction': _('Reaction'), 'Name': _('Name'), 'HP': _('HP'), 'Armor': _('Armor'),
+'STR': _('STR'), 'DEX': _('DEX'), 'WIL': _('WIL'), 'Attack': _('Attack'), 'Traits': _('Traits'),
+'Physique': _('Physique'), 'Feature': _('Feature'), 'Quirks': _('Quirks'), 'Weakness': _('Weakness'),
+'Critical Damage': _('Critical Damage'), 'Ability': _('Ability'), 'Target': _('Target'), 'name': _('Name'),
+'tags': _('Tags'), 'description': _('Description'), 'uses': _('Uses'),
+'charges': pgettext('relic', 'Charges'), 'charge': pgettext('relic', 'Charges'),
+'max_charges': _('Max charges'), 'personality': _('Personality'), 'Consequence': _('Consequence'),
+'Impact': _('Impact'), 'Purpose': _('Purpose'), 'Construction': _('Construction'),
+'Ruination': _('Ruination'), 'Factions': _('Factions'), 'POIs': _('POIs'), 'trails': _('Trails'),
+'Original Use': _('Original Use'), 'Built By': _('Built By'), 'Entrance': _('Entrance'),
+'Composition': _('Composition'), 'Condition': _('Condition'), 'Cause': _('Cause'), 'Virtue': _('Virtue'),
+'Vice': _('Vice'), 'Goal': _('Goal'), 'Obstacle': _('Obstacle'), 'Culture': _('Culture'),
+'Resources': _('Resources'), 'Character': pgettext('culture', 'Character'), 'Ambition': _('Ambition'),
+'Abundance': _('Abundance'), 'Scarcity': _('Scarcity'), 'Agent': _('Agent'), 'Trait 1': _('Trait 1'),
+'Trait 2': _('Trait 2'), 'Advantages': _('Advantages'), 'Agenda': _('Agenda'), 'Terrain': _('Terrain'),
+'Unusual Weather (optional)': _('Unusual Weather (optional)'), 'Background': _('Background'),
+'Quirk': _('Quirk'), 'Monster': _('Monster'), 'Lore': _('Lore'), 'Special': _('Special'), 'Trap': _('Trap'),
+'Ruins': _('Ruins'), 'Shelter': _('Shelter'), 'Hazard': _('Hazard'), 'Waypoint': _('Waypoint'),
+'Settlement': _('Settlement'), 'Curiosity': _('Curiosity'), 'Lair': _('Lair'), 'Heart': _('Heart'),
+'Difficulty': _('Difficulty'), 'Landmark': _('Landmark'), 'Easy': pgettext('terrain difficulty', 'Easy'),
+'Tough': pgettext('terrain difficulty', 'Tough'), 'Perilous': pgettext('terrain difficulty', 'Perilous'),
+'Standard': _('Standard'), 'Hidden': pgettext('trail', 'Hidden'), 'Conditional': _('Conditional'),
+'Nice': _('Nice'), 'Fair': _('Fair'), 'Unpleasant': _('Unpleasant'), 'Inclement': _('Inclement'),
+'Extreme': _('Extreme'), 'Leader': _('Leader'), 'Champion': _('Champion'), 'Envoy': _('Envoy'),
+'Spy': _('Spy'), 'Fixer': _('Fixer'), 'Priest': _('Priest'), 'Scholar': _('Scholar'),
+'Assassin': _('Assassin'), 'Magician': _('Magician'), 'Quartermaster': _('Quartermaster'),
+'Captain': _('Captain'), 'Herald': pgettext('faction agent', 'Herald'), 'petty': _('petty'),
+'bulky': _('bulky')
+}}|tojson }}</script>
 
 <script src="{{ url_for('static', filename='src/js/tools.js' if user_features_enabled() else 'src/js/tools_legacy.js') }}" type="module"></script>
 <div class="body-container tools-page">
