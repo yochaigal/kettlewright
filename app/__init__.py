@@ -59,12 +59,15 @@ else:
 socketio = SocketIO(**socketio_config)
 
 # Determine locale
+SUPPORTED_LOCALES = {'en'} | set(os.listdir(os.path.join(os.path.dirname(__file__), 'translations')))
+
 def get_locale():
+    # Babel raises UnknownLocaleError on an unknown code, so ignore anything we don't ship.
     lang = request.args.get('lang')
-    if lang != None and lang != "":
-        return lang    
+    if lang in SUPPORTED_LOCALES:
+        return lang
     lang = request.cookies.get('kw_lang')
-    if lang != None and lang != "":
+    if lang in SUPPORTED_LOCALES:
         return lang
     return "en"
     
@@ -250,6 +253,15 @@ def create_app():
     @app.context_processor
     def inject_locale():
         return dict(locale=get_locale())
+
+    # ?lang= only covers its own request; the HTMX and fetch calls a page makes
+    # afterwards read the kw_lang cookie, so keep the cookie in step with it.
+    @app.after_request
+    def remember_lang_param(response):
+        lang = request.args.get('lang')
+        if lang in SUPPORTED_LOCALES and request.cookies.get('kw_lang') != lang:
+            response.set_cookie('kw_lang', lang, expires=datetime.now() + timedelta(days=180))
+        return response
 
     return app
 

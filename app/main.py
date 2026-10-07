@@ -513,12 +513,38 @@ def delete_party(party_id):
     return redirect(url_for('main.parties', username=current_user.username))
 
 
+# The Tools generators read these values back as lookup keys or markers (and
+# saved maps parse them), so they stay English; tools.js translates them for display.
+_EVENTS_UNTRANSLATED_KEYS = {'DungeonDieDropTable', 'ForestDieDropTable', 'tags'}
+_EVENTS_UNTRANSLATED_PATHS = {
+    ('Weather', 'Types'),
+    ('Topography', 'Difficulty'),
+    ('PointsOfInterest', 'POI'),
+    ('Trails', 'Path'),
+}
+
+
+def translate_events_data(node, path=()):
+    if path[-2:] in _EVENTS_UNTRANSLATED_PATHS:
+        return node
+    if isinstance(node, dict):
+        return {key: node[key] if key in _EVENTS_UNTRANSLATED_KEYS
+                else translate_events_data(node[key], path + (key,))
+                for key in node}
+    if isinstance(node, list):
+        return [translate_events_data(item, path) for item in node]
+    if isinstance(node, str) and node:
+        return _(node)
+    return node
+
+
 @ main.route('/tools/', methods=['GET'])
 def tools():
     events_path = os.path.join(os.path.dirname(os.path.abspath(
         __file__)), 'static', 'json', 'generators', 'event_data.json')
     with open(events_path, 'r') as file:
         events_data = json.load(file)
+    events_data = translate_events_data(events_data)
     backgrounds = load_backgrounds()
     return render_template('main/tools.html', events_data=json.dumps(events_data),pcgen_value="", backgrounds=backgrounds)
 

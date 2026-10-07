@@ -19021,3 +19021,313 @@ msgstr "Mascota"
 
 msgid "Hireling"
 msgstr "Mercenario"
+
+msgid "Save or reveal"
+msgstr "Guardar o revelar"
+
+msgid "Copy text"
+msgstr "Copiar texto"
+
+msgid "Results copied to clipboard"
+msgstr "Resultados copiados al portapapeles"
+
+msgid "Monsters"
+msgstr "Monstruos"
+
+msgid "Events"
+msgstr "Eventos"
+
+msgid "Worldbuilding"
+msgstr "Creación de mundos"
+
+msgid "Random Monster"
+msgstr "Monstruo aleatorio"
+
+msgid "Custom Monster"
+msgstr "Monstruo personalizado"
+
+msgid "Reaction Roll"
+msgstr "Tirada de reacción"
+
+msgid "Dungeon Events"
+msgstr "Eventos de mazmorra"
+
+msgid "Wilderness Events"
+msgstr "Eventos en tierras salvajes"
+
+msgid "Faction"
+msgstr "Facción"
+
+msgid "Faction Actions"
+msgstr "Acciones de facción"
+
+msgid "NPC"
+msgstr "PNJ"
+
+msgid "Relics"
+msgstr "Reliquias"
+
+msgid "Spellbooks"
+msgstr "Libros de hechizos"
+
+msgid "Summer"
+msgstr "Verano"
+
+msgid "Fall"
+msgstr "Otoño"
+
+msgid "Winter"
+msgstr "Invierno"
+
+msgid "Faction Action"
+msgstr "Acción de facción"
+
+msgid "Dungeon Event"
+msgstr "Evento de mazmorra"
+
+msgid "Wilderness Event"
+msgstr "Evento en tierras salvajes"
+
+msgid "Season"
+msgstr "Estación"
+
+msgid "Effect"
+msgstr "Efecto"
+
+msgid "Examples"
+msgstr "Ejemplos"
+
+msgid "Reaction"
+msgstr "Reacción"
+
+msgid "Attack"
+msgstr "Ataque"
+
+msgid "Feature"
+msgstr "Característica"
+
+msgid "Quirks"
+msgstr "Peculiaridades"
+
+msgid "Critical Damage"
+msgstr "Daño crítico"
+
+msgid "Ability"
+msgstr "Habilidad"
+
+msgid "Target"
+msgstr "Objetivo"
+
+msgid "Max charges"
+msgstr "Cargas máximas"
+
+msgid "Personality"
+msgstr "Personalidad"
+
+msgid "Consequence"
+msgstr "Consecuencia"
+
+msgid "Impact"
+msgstr "Impacto"
+
+msgid "Purpose"
+msgstr "Propósito"
+
+msgid "Construction"
+msgstr "Construcción"
+
+msgid "Ruination"
+msgstr "Ruina"
+
+msgid "Factions"
+msgstr "Facciones"
+
+msgid "POIs"
+msgstr "Puntos de interés"
+
+msgid "Original Use"
+msgstr "Uso original"
+
+msgid "Built By"
+msgstr "Construido por"
+
+msgid "Entrance"
+msgstr "Entrada"
+
+msgid "Composition"
+msgstr "Composición"
+
+msgid "Condition"
+msgstr "Estado"
+
+msgid "Cause"
+msgstr "Causa"
+
+msgid "Goal"
+msgstr "Meta"
+
+msgid "Obstacle"
+msgstr "Obstáculo"
+
+msgid "Culture"
+msgstr "Cultura"
+
+msgid "Agent"
+msgstr "Agente"
+
+msgid "Trait 1"
+msgstr "Rasgo 1"
+
+msgid "Trait 2"
+msgstr "Rasgo 2"
+
+msgid "Advantages"
+msgstr "Ventajas"
+
+msgid "Agenda"
+msgstr "Agenda"
+
+msgid "Terrain"
+msgstr "Terreno"
+
+msgid "Unusual Weather (optional)"
+msgstr "Clima inusual (opcional)"
+
+msgid "Quirk"
+msgstr "Peculiaridad"
+
+msgid "Heart"
+msgstr "Corazón"
+
+msgid "Difficulty"
+msgstr "Dificultad"
+
+msgid "Landmark"
+msgstr "Punto de referencia"
+
+msgid "Leader"
+msgstr "Líder"
+
+msgid "Champion"
+msgstr "Campeón"
+
+msgid "Envoy"
+msgstr "Emisario"
+
+msgid "Fixer"
+msgstr "Intermediario"
+
+msgid "Priest"
+msgstr "Sacerdote"
+
+msgid "Scholar"
+msgstr "Erudito"
+
+msgid "Magician"
+msgstr "Mago"
+
+msgid "Quartermaster"
+msgstr "Intendente"
+
+msgid "Captain"
+msgstr "Capitán"
+
+msgctxt "season"
+msgid "Spring"
+msgstr "Primavera"
+
+msgctxt "culture"
+msgid "Character"
+msgstr "Carácter"
+
+msgctxt "relic"
+msgid "Charges"
+msgstr "Cargas"
+
+msgctxt "terrain difficulty"
+msgid "Easy"
+msgstr "Fácil"
+
+msgctxt "terrain difficulty"
+msgid "Tough"
+msgstr "Difícil"
+
+msgctxt "terrain difficulty"
+msgid "Perilous"
+msgstr "Peligroso"
+
+msgctxt "trail"
+msgid "Hidden"
+msgstr "Oculta"
+
+msgctxt "faction agent"
+msgid "Herald"
+msgstr "Heraldo"
+
+msgid "Confirm Password"
+msgstr "Confirmar contraseña"
+
+msgid "Confirm your password"
+msgstr "Confirma tu contraseña"
+
+msgid "Delete Account"
+msgstr "Eliminar cuenta"
+
+msgid "Delete My Account"
+msgstr "Eliminar mi cuenta"
+
+msgid "Enter your password"
+msgstr "Introduce tu contraseña"
+
+msgid "This action cannot be undone."
+msgstr "Esta acción no se puede deshacer."
+
+msgid "Warning:"
+msgstr "Advertencia:"
+
+#: app/templates/main/about.html
+#, python-format
+msgid ""
+"Kettlewright is a free, open-source application for managing characters and "
+"parties for the %(cairn)s adventure game, currently in Beta. View the "
+"%(wiki)s, %(issues)s, or check out the %(source)s on GitHub."
+msgstr ""
+"Kettlewright es una aplicación gratuita y de código abierto para gestionar "
+"personajes y grupos del juego de aventuras %(cairn)s, actualmente en fase "
+"beta. Consulta la %(wiki)s, %(issues)s o revisa el %(source)s en GitHub."
+
+#: app/templates/main/about.html
+msgid "wiki"
+msgstr "wiki"
+
+#: app/templates/main/about.html
+msgid "submit issues"
+msgstr "informa de problemas"
+
+#: app/templates/main/about.html
+msgid "source code"
+msgstr "código fuente"
+
+#: app/templates/nav.html
+msgid "Campaigns"
+msgstr "Campañas"
+
+#: app/templates/nav.html
+msgid "Discord integration"
+msgstr "Integración con Discord"
+
+#: app/templates/main/tools.html
+msgid "Character Generator"
+msgstr "Generador de personajes"
+
+#: app/templates/main/tools.html
+msgid "Category"
+msgstr "Categoría"
+
+#: app/templates/main/tools.html
+msgid "Choose a category to see its tables."
+msgstr "Elige una categoría para ver sus tablas."
+
+#: app/templates/main/tools.html
+msgid "Roll"
+msgstr "Tirar"

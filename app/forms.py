@@ -108,7 +108,7 @@ def load_data_from_json(file_path):
     for background, data in backgrounds_data.items():
         # Extracting names
         for name in data["names"]:
-            names_choices.append((name, name))
+            names_choices.append((_l(name), _l(name)))
 
         # Adding background to choices
         background_choices.append((background, _l(background)))
