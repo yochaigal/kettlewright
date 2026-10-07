@@ -19292,3 +19292,27 @@ msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
 msgid "Warning:"
 msgstr "Warnung:"
+
+#: app/templates/nav.html
+msgid "Campaigns"
+msgstr "Kampagnen"
+
+#: app/templates/nav.html
+msgid "Discord integration"
+msgstr "Discord-Integration"
+
+#: app/templates/main/tools.html
+msgid "Character Generator"
+msgstr "Charaktergenerator"
+
+#: app/templates/main/tools.html
+msgid "Category"
+msgstr "Kategorie"
+
+#: app/templates/main/tools.html
+msgid "Choose a category to see its tables."
+msgstr "Wähle eine Kategorie, um ihre Tabellen zu sehen."
+
+#: app/templates/main/tools.html
+msgid "Roll"
+msgstr "Würfeln"

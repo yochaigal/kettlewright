@@ -21792,3 +21792,27 @@ msgstr "Это действие нельзя отменить."
 #: app/templates/auth/delete_account.html
 msgid "Warning:"
 msgstr "Внимание:"
+
+#: app/templates/nav.html
+msgid "Campaigns"
+msgstr "Кампании"
+
+#: app/templates/nav.html
+msgid "Discord integration"
+msgstr "Интеграция с Discord"
+
+#: app/templates/main/tools.html
+msgid "Character Generator"
+msgstr "Генератор персонажей"
+
+#: app/templates/main/tools.html
+msgid "Category"
+msgstr "Категория"
+
+#: app/templates/main/tools.html
+msgid "Choose a category to see its tables."
+msgstr "Выберите категорию, чтобы увидеть её таблицы."
+
+#: app/templates/main/tools.html
+msgid "Roll"
+msgstr "Бросить"

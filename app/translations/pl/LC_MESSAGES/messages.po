@@ -19651,3 +19651,27 @@ msgstr "Tej operacji nie można cofnąć."
 
 msgid "Warning:"
 msgstr "Uwaga:"
+
+#: app/templates/nav.html
+msgid "Campaigns"
+msgstr "Kampanie"
+
+#: app/templates/nav.html
+msgid "Discord integration"
+msgstr "Integracja z Discordem"
+
+#: app/templates/main/tools.html
+msgid "Character Generator"
+msgstr "Generator postaci"
+
+#: app/templates/main/tools.html
+msgid "Category"
+msgstr "Kategoria"
+
+#: app/templates/main/tools.html
+msgid "Choose a category to see its tables."
+msgstr "Wybierz kategorię, aby zobaczyć jej tabele."
+
+#: app/templates/main/tools.html
+msgid "Roll"
+msgstr "Losuj"
