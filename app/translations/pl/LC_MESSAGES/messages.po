@@ -19651,3 +19651,26 @@ msgstr "Tej operacji nie można cofnąć."
 
 msgid "Warning:"
 msgstr "Uwaga:"
+
+#: app/templates/main/about.html
+#, python-format
+msgid ""
+"Kettlewright is a free, open-source application for managing characters and "
+"parties for the %(cairn)s adventure game, currently in Beta. View the "
+"%(wiki)s, %(issues)s, or check out the %(source)s on GitHub."
+msgstr ""
+"Kettlewright to darmowa aplikacja o otwartym kodzie źródłowym do zarządzania"
+" postaciami i drużynami w grze przygodowej %(cairn)s, obecnie w wersji beta."
+" Zajrzyj do %(wiki)s, %(issues)s lub zobacz %(source)s na GitHubie."
+
+#: app/templates/main/about.html
+msgid "wiki"
+msgstr "wiki"
+
+#: app/templates/main/about.html
+msgid "submit issues"
+msgstr "zgłaszaj błędy"
+
+#: app/templates/main/about.html
+msgid "source code"
+msgstr "kod źródłowy"

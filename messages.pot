@@ -20162,3 +20162,23 @@ msgstr ""
 #: app/templates/auth/delete_account.html
 msgid "Warning:"
 msgstr ""
+
+#: app/templates/main/about.html
+#, python-format
+msgid ""
+"Kettlewright is a free, open-source application for managing characters and "
+"parties for the %(cairn)s adventure game, currently in Beta. View the "
+"%(wiki)s, %(issues)s, or check out the %(source)s on GitHub."
+msgstr ""
+
+#: app/templates/main/about.html
+msgid "wiki"
+msgstr ""
+
+#: app/templates/main/about.html
+msgid "submit issues"
+msgstr ""
+
+#: app/templates/main/about.html
+msgid "source code"
+msgstr ""

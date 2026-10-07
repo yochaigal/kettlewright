@@ -21710,3 +21710,26 @@ msgstr "Цю дію неможливо скасувати."
 #: app/templates/auth/delete_account.html
 msgid "Warning:"
 msgstr "Увага:"
+
+#: app/templates/main/about.html
+#, python-format
+msgid ""
+"Kettlewright is a free, open-source application for managing characters and "
+"parties for the %(cairn)s adventure game, currently in Beta. View the "
+"%(wiki)s, %(issues)s, or check out the %(source)s on GitHub."
+msgstr ""
+"Kettlewright — безкоштовний застосунок із відкритим кодом для ведення "
+"персонажів і груп у пригодницькій грі %(cairn)s, наразі в бета-версії. "
+"Зазирніть у %(wiki)s, %(issues)s або перегляньте %(source)s на GitHub."
+
+#: app/templates/main/about.html
+msgid "wiki"
+msgstr "вікі"
+
+#: app/templates/main/about.html
+msgid "submit issues"
+msgstr "повідомляйте про помилки"
+
+#: app/templates/main/about.html
+msgid "source code"
+msgstr "вихідний код"
