@@ -5,9 +5,11 @@
 {% call page_header(campaign.name if campaign else _('Unfiled articles')) %}
 <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id if campaign else '') }}">{{ _('New article') }}</a>
 <a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a>
+{% if campaign %}<a href="{{ url_for('campaigns.campaign_export', campaign_id=campaign.id) }}">{{ _('Export campaign') }}</a>{% endif %}
 <a href="{{ url_for('main.tools') }}">{{ _('Tools') }}</a>
 {% endcall %}
 <p>{{ _('Only you can see originals. Party versions are published separately.') }}</p>
+{% if campaign %}<p>{{ _('Export includes private articles, maps, drawings and article links. Markdown image URLs are kept as references. Party publications and connections are not exported.') }}</p>{% endif %}
 <form method="post" action="{{ url_for('campaigns.bulk_delete') }}" x-data="materialTree">
 {{ token() }}
 <input type="hidden" name="campaign_id" value="{{ campaign.id if campaign else '' }}">

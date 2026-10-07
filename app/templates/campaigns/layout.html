@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='src/css/campaigns.css') }}">
-<section class="body-container"><div class="sheet campaign-workspace">
+<section class="body-container"><div class="sheet campaign-workspace"
+ data-reference-context="{{ {'campaign_id': campaign.id if campaign is defined and campaign else (entry.campaign_id if entry is defined and entry and entry.campaign_id is defined else ''), 'entry_id': entry.id if entry is defined and entry else '', 'catalog_url':url_for('campaigns.reference_catalog'), 'preview_url':url_for('campaigns.reference_preview')}|tojson|forceescape }}">
 {% block workspace %}{% endblock %}
 </div></section>
 {% endblock %}

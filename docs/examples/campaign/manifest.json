@@ -1,0 +1,23 @@
+{
+  "format": "kettlewright-campaign",
+  "version": 1,
+  "campaign": "campaign.md",
+  "articles": [
+    "articles/article-0001.md",
+    "articles/article-0002.md",
+    "articles/article-0003.md",
+    "articles/article-0004.md",
+    "articles/article-0005.md"
+  ],
+  "maps": [
+    "maps/article-0001.json",
+    "maps/article-0004.json"
+  ],
+  "links": [
+    {
+      "source": "article-0003",
+      "target": "article-0004"
+    }
+  ],
+  "warnings": []
+}

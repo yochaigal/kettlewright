@@ -76,16 +76,22 @@ def optimize_image(url):
 
 def safe_link(attrs, new=False):
     href = attrs.get((None, 'href'), '')
-    if not href.lower().startswith(('https://', 'http://')):
+    if not href.lower().startswith(('https://', 'http://')) and not internal_article_url(href):
         return None
     attrs[(None, 'rel')] = 'nofollow noopener noreferrer'
     return attrs
 
 
-def clean_html(html):
+def internal_article_url(value):
+    return bool(re.fullmatch(r'(?:/materials/[1-9]\d*/edit|/party/[1-9]\d*/materials/[1-9]\d*)(?:#kw-h-[\w-]+)?', value))
+
+
+def clean_html(html, internal_urls=()):
     def attribute(tag, name, value):
         if tag == 'a' and name == 'href':
-            return value.lower().startswith(('http://', 'https://'))
+            return value.lower().startswith(('http://', 'https://')) or internal_article_url(value) and value in internal_urls
+        if tag in {'h1', 'h2', 'h3', 'h4', 'h5', 'h6'} and name == 'id':
+            return bool(re.fullmatch(r'kw-h-[\w-]+', value))
         return tag == 'img' and (name == 'alt' or name == 'src' and (bool(IMAGE_URL.fullmatch(value)) or remote_image_url(value) or bool(LOCAL_IMAGE.fullmatch(value))))
     cleaned = bleach.clean(html, tags=TAGS, attributes=attribute,
                            protocols=['http', 'https', 'data'], strip=True)
@@ -133,9 +139,13 @@ def normalize_content(text):
     return text
 
 
-def render_content(text):
+def render_content(text, references=None):
     text = text or ''
-    html = clean_html(text[len(RICH_PREFIX):]) if text.startswith(RICH_PREFIX) else clean_html(markdown(text))
+    from app.lib.article_references import ReferenceRenderer, wiki_plugin
+    renderer = mistune.create_markdown(renderer=ReferenceRenderer(references), hard_wrap=True,
+        plugins=['strikethrough', 'table', 'url', wiki_plugin])
+    allowed = set((references or {}).values())
+    html = clean_html(text[len(RICH_PREFIX):], allowed) if text.startswith(RICH_PREFIX) else clean_html(renderer(text), allowed)
     html = re.sub(r'<img\b(?![^>]*\bsrc=)[^>]*>', '', html)
     return Markup(bleach.linkify(html, callbacks=[safe_link], parse_email=False, skip_tags=['pre', 'code']))
 

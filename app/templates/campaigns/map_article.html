@@ -44,7 +44,7 @@
 </div></div></template>
 <button type="button" @click="removeNode()">{{ _('Remove from drawing') }}</button>
 {% else %}
-<div class="rich-content" x-html="$richHTML(selectedNode.body)"></div>
+<div class="rich-content" x-html="$richHTML(selectedNode.body, selectedNode.references)"></div>
 <a :href="'/party/{{ party.id }}/materials/'+selectedNode.entry_id">{{ _('Open article') }}</a>
 <template x-if="selectedNode.nested_entry_id && selectedNode.nested_entry_id!==selectedNode.entry_id"><a :href="'/party/{{ party.id }}/materials/'+selectedNode.nested_entry_id">{{ _('Open linked article') }}</a></template>
 {% endif %}

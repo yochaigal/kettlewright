@@ -1,5 +1,5 @@
-import {marked} from '../../vendor/markdown/marked.js';
 import TurndownService from '../../vendor/markdown/turndown.js';
+import {renderArticleMarkdown, articleURL} from './article-links.js';
 export const RICH_PREFIX = '<!--kw-rich-text:1-->';
 export const MAX_CONTENT = 5*1024*1024;
 export function remoteImageURL(value) {
@@ -10,10 +10,10 @@ export const imageURL = value => /^\/material-images\/[1-9][0-9]*\/[0-9a-f]{32}\
 const tags = new Set(['P','BR','STRONG','B','EM','I','U','S','H2','H3','BLOCKQUOTE','OL','UL','LI','A','IMG','DEL','H1','H4','H5','H6','PRE','CODE','HR','TABLE','THEAD','TBODY','TR','TH','TD']);
 
 // Build a fresh allowlisted tree; never insert stored HTML directly into the page.
-export function richContentHTML(value = '') {
+export function richContentHTML(value = '', references = {}) {
   const output = document.createElement('div');
   const template = document.createElement('template');
-  template.innerHTML = value.startsWith(RICH_PREFIX) ? value.slice(RICH_PREFIX.length) : marked.parse(value, {gfm:true, breaks:true});
+  template.innerHTML = value.startsWith(RICH_PREFIX) ? value.slice(RICH_PREFIX.length) : renderArticleMarkdown(value, references || {});
   function copy(source, target) {
     for (const node of source.childNodes) {
       if (node.nodeType === Node.TEXT_NODE) {target.append(document.createTextNode(node.textContent)); continue;}
@@ -28,11 +28,12 @@ export function richContentHTML(value = '') {
       }
       if (node.tagName === 'A') {
         const href = node.getAttribute('href') || '';
-        if (/^https?:\/\//i.test(href)) {
+        if (/^https?:\/\//i.test(href) || articleURL(href) && Object.values(references || {}).includes(href)) {
           element.setAttribute('href',href);
           element.setAttribute('rel','nofollow noopener noreferrer');
         }
       }
+      if(/^H[1-6]$/.test(node.tagName) && /^kw-h-[\w\p{L}\p{N}-]+$/u.test(node.id))element.id=node.id;
       copy(node,element);
       target.append(element);
     }

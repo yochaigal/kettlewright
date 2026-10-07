@@ -5,6 +5,7 @@ contains no player-facing prose.
 """
 from sqlalchemy.orm import declared_attr
 from datetime import datetime, timezone
+from uuid import uuid4
 from .globals import db
 
 
@@ -43,6 +44,9 @@ class ContentEntry(Versioned, db.Model):
     category = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(200), nullable=False, default='')
     body = db.Column(db.Text, nullable=False, default='')
+    source_path = db.Column(db.String(500), nullable=False, default='', server_default='')
+    reference_key = db.Column(db.String(32), nullable=False, unique=True, default=lambda: uuid4().hex)
+    references = db.Column(db.JSON, nullable=False, default=dict, server_default='{}')
     is_heart = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     path_type = db.Column(db.String(20), nullable=False, default='standard')
     owner = db.relationship('User', backref=db.backref('content_entries', cascade='all, delete-orphan'))
@@ -73,6 +77,7 @@ class PartyPresentation(Versioned, db.Model):
     party_id = db.Column(db.Integer, db.ForeignKey('parties.id', ondelete='CASCADE'), nullable=False, index=True)
     title = db.Column(db.String(200), nullable=False)
     body = db.Column(db.Text, nullable=False, default='')
+    references = db.Column(db.JSON, nullable=False, default=dict, server_default='{}')
     path_type = db.Column(db.String(20), nullable=False, default='standard')
     published = db.Column(db.Boolean, nullable=False, default=True)
     drawing = db.Column(db.JSON, nullable=True)
