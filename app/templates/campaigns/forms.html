@@ -10,7 +10,7 @@
 {% endmacro %}
 {% macro rich_editor(label, value='', name='body', model=None, name_expression=None) %}
 <div class="rich-editor" x-data="richText" {% if model %}x-modelable="value" x-model="{{ model }}"{% endif %}
- :data-pending="tooLong" data-label="{{ label }}">
+ :data-pending="tooLong" data-label="{{ label }}"{% if model == 'selectedNode.body' %} :data-reference-entry-id="selectedNode.entry_id || ''"{% elif model == 'edge.body' %} :data-reference-entry-id="edge.entry_id || ''"{% endif %}>
 <span class="rich-editor-label">{{ label }}</span>
 <div class="markdown-toolbar" role="toolbar" aria-label="{{ _('Text formatting') }}">
 {% for action, title, glyph in [('bold','Bold','bold'),('italic','Italic','italic'),('heading','Heading','heading'),('strike','Strikethrough','strikethrough'),('bullet','Bullet list','list-ul'),('ordered','Numbered list','list-ol'),('quote','Quote','quote-left'),('link','Link','link'),('code','Code','code')] %}
@@ -22,8 +22,8 @@
 <textarea x-ref="source" aria-label="{{ label }}" {% if name %}name="{{ name }}"{% endif %}
  {% if name_expression %}:name="{{ name_expression }}"{% endif %}
  x-show="!previewing" @input="value=$event.target.value" rows="9" maxlength="5242880">{{ value }}</textarea>
-<div class="rich-content markdown-preview" x-show="previewing" x-cloak x-html="$richHTML(value)"></div>
-<small>{{ _('Markdown supported. Use the toolbar or type formatting directly.') }}</small>
+<div class="rich-content markdown-preview" x-show="previewing" x-cloak x-html="previewHTML"></div>
+<small>{{ _('Markdown supported. Use the toolbar or type formatting directly. Type [[ to link an article.') }}</small>
 <p role="alert" x-show="tooLong" x-cloak>{{ _('Description exceeds 5 MB or 50,000 text characters. Shorten it before saving.') }}</p>
 </div>
 {% endmacro %}

@@ -61,7 +61,7 @@
 </div></template>
 <template x-if="edge.entry_id"><div><div class="campaign-actions"><a :href="'/materials/'+edge.entry_id+'/edit'">{{ _('Edit article') }}</a><a :href="'/materials/'+edge.entry_id+'/reveal'">{{ _('Reveal to party') }}</a></div></div></template>
 <button type="button" @click="removeEdge(edge.id)">{{ _('Remove path') }}</button>
-{% else %}<div class="rich-content" x-html="$richHTML(edge.body)"></div>{% endif %}
+{% else %}<div class="rich-content" x-html="$richHTML(edge.body, edge.references)"></div>{% endif %}
 </details></template>
 </section>
 </div>
