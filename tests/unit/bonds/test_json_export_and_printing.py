@@ -1,5 +1,7 @@
 """Test that proves JSON export includes second bonds (bug fix verification)."""
+import html as html_lib
 import json
+import re
 from app.lib.char_utils import generate_character
 
 
@@ -33,5 +35,9 @@ def test_fieldwarden_print_rendering_includes_both_bonds(app_with_babel):
             assert genchar.bond['description'] in html, "First bond should appear in print view"
             assert genchar.bond2['description'] in html, "Second bond should appear in print view"
             
-            assert 'id="character-bonds-view"' in html
-            assert 'class="with-whitespace"' in html
+            bonds_view = re.search(r'<div id="character-bonds-view"[^>]*>(.*?)</div>', html, re.S)
+            assert bonds_view is not None, "Print view should have a bonds section"
+            paragraphs = [html_lib.unescape(p).strip()
+                          for p in re.findall(r'<p>(.*?)</p>', bonds_view.group(1), re.S)]
+            assert paragraphs == [genchar.bond['description'], genchar.bond2['description']], \
+                "Each bond should render as its own paragraph"
