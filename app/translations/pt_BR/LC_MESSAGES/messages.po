@@ -20325,3 +20325,26 @@ msgstr "Oculta"
 msgctxt "faction agent"
 msgid "Herald"
 msgstr "Arauto"
+
+#: app/templates/main/about.html
+#, python-format
+msgid ""
+"Kettlewright is a free, open-source application for managing characters and "
+"parties for the %(cairn)s adventure game, currently in Beta. View the "
+"%(wiki)s, %(issues)s, or check out the %(source)s on GitHub."
+msgstr ""
+"Kettlewright é um aplicativo gratuito e de código aberto para gerenciar "
+"personagens e equipes do jogo de aventura %(cairn)s, atualmente em Beta. "
+"Consulte a %(wiki)s, %(issues)s ou confira o %(source)s no GitHub."
+
+#: app/templates/main/about.html
+msgid "wiki"
+msgstr "wiki"
+
+#: app/templates/main/about.html
+msgid "submit issues"
+msgstr "relate problemas"
+
+#: app/templates/main/about.html
+msgid "source code"
+msgstr "código-fonte"

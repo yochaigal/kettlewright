@@ -19292,3 +19292,27 @@ msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
 msgid "Warning:"
 msgstr "Warnung:"
+
+#: app/templates/main/about.html
+#, python-format
+msgid ""
+"Kettlewright is a free, open-source application for managing characters and "
+"parties for the %(cairn)s adventure game, currently in Beta. View the "
+"%(wiki)s, %(issues)s, or check out the %(source)s on GitHub."
+msgstr ""
+"Kettlewright ist eine kostenlose Open-Source-Anwendung zur Verwaltung von "
+"Charakteren und Gruppen für das Abenteuerspiel %(cairn)s und befindet sich "
+"derzeit in der Beta-Phase. Wirf einen Blick ins %(wiki)s, %(issues)s oder "
+"sieh dir den %(source)s auf GitHub an."
+
+#: app/templates/main/about.html
+msgid "wiki"
+msgstr "Wiki"
+
+#: app/templates/main/about.html
+msgid "submit issues"
+msgstr "melde Probleme"
+
+#: app/templates/main/about.html
+msgid "source code"
+msgstr "Quellcode"

@@ -19284,3 +19284,26 @@ msgstr "Esta acción no se puede deshacer."
 
 msgid "Warning:"
 msgstr "Advertencia:"
+
+#: app/templates/main/about.html
+#, python-format
+msgid ""
+"Kettlewright is a free, open-source application for managing characters and "
+"parties for the %(cairn)s adventure game, currently in Beta. View the "
+"%(wiki)s, %(issues)s, or check out the %(source)s on GitHub."
+msgstr ""
+"Kettlewright es una aplicación gratuita y de código abierto para gestionar "
+"personajes y grupos del juego de aventuras %(cairn)s, actualmente en fase "
+"beta. Consulta la %(wiki)s, %(issues)s o revisa el %(source)s en GitHub."
+
+#: app/templates/main/about.html
+msgid "wiki"
+msgstr "wiki"
+
+#: app/templates/main/about.html
+msgid "submit issues"
+msgstr "informa de problemas"
+
+#: app/templates/main/about.html
+msgid "source code"
+msgstr "código fuente"
