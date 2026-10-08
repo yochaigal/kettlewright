@@ -22,6 +22,10 @@ export function article(category, title, fields={}, children=[]) {
   }
   return {category,title:title.slice(0,200),fields,body:fieldText(fields),children};
 }
+export function addTerrainWater(terrain, water) {
+  terrain.fields.Water=water.fields;
+  terrain.body=fieldText(terrain.fields);
+}
 export function draftPreview(draft, level=2) {
   if(draft.draft_key !== undefined) return draft.body;
   return [draft.body,...(draft.children || []).map(child=>`${'#'.repeat(Math.min(level,6))} ${child.is_heart?'Heart · ':''}${child.title}\n\n${draftPreview(child,level+1)}`)].filter(Boolean).join('\n\n');
@@ -61,12 +65,8 @@ function rollSettingArticle(data, category, random=Math.random, options={}) {
   if(category==='culture') return simple(category,people.Culture);
   if(category==='resources') return simple(category,people.Resources);
   if(category==='people') {
-    const children=all?[sub('culture'),sub('resources')]:[];
-    if(all) {
-      const npc=generateWorldbuilding({NPC:data.NPCGenerator},'NPC',random);
-      children.push(article('npc',npc.title,npc.fields));
-    }
-    return article(category,'People',{},children);
+    const culture=sub('culture'), resources=sub('resources');
+    return article(category,'People',{Culture:culture.fields,Resources:resources.fields});
   }
   if(category==='faction_type') return simple(category,factions.FactionTypes);
   if(category==='faction_trait') return simple(category,factions.FactionTraits);
@@ -79,8 +79,8 @@ function rollSettingArticle(data, category, random=Math.random, options={}) {
   }
   if(category==='faction') {
     const type=sub('faction_type');
-    return article(category,`Faction: ${type.fields.Type}`,type.fields,
-      all?[type,sub('faction_trait'),sub('advantage'),sub('agenda')]:[]);
+    return article(category,`Faction: ${type.fields.Type}`,{
+      ...type.fields,...sub('faction_trait').fields,...sub('advantage').fields,...sub('agenda').fields});
   }
   if(category==='weather') return simple(category,realm.Weather.SeasonalWeather);
   if(category==='water') {
@@ -97,17 +97,15 @@ function rollSettingArticle(data, category, random=Math.random, options={}) {
     const difficulty=options.terrainDifficulty || pick(realm.Topography.Difficulty);
     const fields=options.terrainFields || fieldsFrom(realm.Topography.Terrain[difficulty]);
     if(options.forestTerrain) fields.Terrain='Forests';
-    const landmark=article('landmark',fields.Landmark,{Landmark:fields.Landmark});
-    landmark.title=settingName(data,'landmark',landmark.fields,landmark.title,random);
-    const children=all?[landmark]:[];
-    if(all) children.push(sub('weather'));
+    const children=[];
+    const weather=options.weatherFields || sub('weather').fields;
     if(all && /forest|woodland|jungle|taiga|mangrove|thicket/i.test(fields.Terrain)
       && random()*100<Number(options.forestChance ?? 50)) children.push(sub('forest'));
-    return article(category,`Terrain: ${fields.Terrain}`,{Difficulty:difficulty,...fields},children);
+    return article(category,`Terrain: ${fields.Terrain}`,{Difficulty:difficulty,...fields,Weather:weather},children);
   }
   if(category==='topography') {
     const terrains=all?Array.from({length:roll(6)},()=>sub('terrain')):[];
-    if(terrains.length) pick(terrains).children.push(sub('water'));
+    if(terrains.length) addTerrainWater(pick(terrains),sub('water'));
     return article(category,'Topography',{},terrains);
   }
   if(category==='path') {
@@ -126,8 +124,7 @@ function rollSettingArticle(data, category, random=Math.random, options={}) {
   }
   if(category==='realm') {
     const children=all?[sub('people'),article('faction','Factions',{},[sub('faction')]),sub('topography'),sub('pois',{poiCount:count}),sub('paths',{poiCount:count})]:[];
-    const character=children[0]?.children[0]?.fields.Character || pick(people.Culture.Character);
-    return article(category,`Realm: ${character}`,{Character:character},children);
+    return article(category,'Realm',{},children);
   }
   const poiTables={settlement:'Settlements',waypoint:'Waypoints',curiosity:'Curiosities',lair:'Lairs'};
   if(poiTables[category]) {

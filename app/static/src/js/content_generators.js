@@ -1,4 +1,4 @@
-import {generateSettingArticle, settingTypes, article, prepareArticleDraft} from './setting_articles.js';
+import {generateSettingArticle, settingTypes, article, prepareArticleDraft, addTerrainWater} from './setting_articles.js';
 import {generateWorldbuilding} from './worldbuilding.js';
 import {settingName} from './naming.js';
 
@@ -104,27 +104,20 @@ export function graphFromResult(result, random = Math.random, tables = null, opt
     if (['dungeon','forest'].includes(kind)) node.nested_draft = nestedMapDraft(node, kind, tables, random);
   }
   const children=[];
-  if(tables?.NPCGenerator && result.mapKind==='realm' && options.generateChildren !== false) {
+  if(tables?.Realm && result.mapKind==='realm' && options.generateChildren !== false) {
     const rolled=result.fields;
-    children.push({category:'people',title:'People',body:'',children:[
-      article('culture','Culture',rolled.Culture),
-      article('resources','Resources',rolled.Resources),
-      generateArticle(tables,'npc','',random)]});
+    children.push(article('people','People',{Culture:rolled.Culture,Resources:rolled.Resources}));
     const faction=rolled.Factions;
-    children.push(article('faction','Factions',{},[article('faction',settingName(tables,'faction',faction,`Faction: ${faction.Type}`,random),{},[
-      article('faction_type','Faction types',{Type:faction.Type,Agent:faction.Agent}),
-      article('faction_trait','Faction traits',{'Trait 1':faction['Trait 1'],'Trait 2':faction['Trait 2']}),
-      article('advantage','Advantages',{Advantages:faction.Advantages}),
-      article('agenda','Agendas',{Agenda:faction.Agenda,Obstacle:faction.Obstacle})])]));
+    children.push(article('faction','Factions',{},[article('faction',
+      settingName(tables,'faction',faction,`Faction: ${faction.Type}`,random),faction)]));
+    // The already rolled climate is shared by the terrains, not rolled again.
     const terrains=rolled.Terrain.map(description=>{
       const match=/^(.*?)\. Difficulty: (.*?)\. Landmark: (.*?)\./.exec(description);
       return generateSettingArticle(tables,'terrain',random,{...options,
-        terrainDifficulty:match[2],terrainFields:{Terrain:match[1],Landmark:match[3]}});
+        terrainDifficulty:match[2],terrainFields:{Terrain:match[1],Landmark:match[3]},weatherFields:rolled.Weather});
     });
-    if(terrains.length) terrains[Math.floor(random()*terrains.length)].children.push(generateSettingArticle(tables,'water',random,options));
-    // The already rolled climate is shared by this region, not rolled again.
-    for(const terrain of terrains) terrain.children=terrain.children.filter(child=>child.category!=='weather');
-    children.push(article('topography','Topography',{},[...terrains,article('weather','Weather',rolled.Weather)]),
+    if(terrains.length) addTerrainWater(terrains[Math.floor(random()*terrains.length)],generateSettingArticle(tables,'water',random,options));
+    children.push(article('topography','Topography',{},terrains),
       article('pois','POIs'),article('paths','Paths'));
   }
   if(tables && result.mapKind==='forest' && options.generateChildren !== false
