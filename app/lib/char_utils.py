@@ -180,7 +180,8 @@ def generate_character(bkg):
     genchar.description = genchar.background['background_description']
     genchar.background_name = selected
     
-    genchar.name = str(_(genchar.background['names'][random.randint(0,len(genchar.background['names'])-1)]))
+    name = genchar.background['names'][random.randint(0,len(genchar.background['names'])-1)]
+    genchar.name = str(_(name))
     
     omens = load_omens()
     genchar.omen = omens[random.randint(0, len(omens)-1)]

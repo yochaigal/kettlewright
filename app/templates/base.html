@@ -58,7 +58,16 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/markdown.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/article-preview.css') }}">
-  <script type="module" src="{{ url_for('static', filename='src/js/article-preview.js') }}"></script>
+<script id="interface-labels" type="application/json">{{ {
+  'preview': _('Preview'), 'move': _('Move'), 'pin': _('Pin'), 'pinned': _('Pinned'),
+  'close': _('Close'), 'loading': _('Loading…'), 'error': _('Unable to load article.'),
+  'formatting': _('Text formatting'), 'markdown': _('Markdown supported'), 'write': _('Write'),
+  'Bold': _('Bold'), 'Italic': _('Italic'), 'Heading': _('Heading'),
+  'Strikethrough': _('Strikethrough'), 'Bullet list': _('Bullet list'),
+  'Numbered list': _('Numbered list'), 'Quote': _('Quote'), 'Link': _('Link'), 'Code': _('Code'),
+  'Insert image': _('Insert image')
+}|tojson }}</script>
+<script type="module" src="{{ url_for('static', filename='src/js/article-preview.js') }}"></script>
   <script type="module" src="{{ url_for('static', filename='src/js/markdown-fields.js') }}"></script>
   <!-- Server-rendered updates and local UI components -->
   <script src="https://unpkg.com/htmx.org@2.0.3"

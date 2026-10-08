@@ -10,6 +10,7 @@
   <p role="status" x-text="status"></p>
   <iframe class="article-preview-map-canvas" x-ref="canvas"
     data-src="{{ url_for('static', filename='src/js/maps/editor.html') }}"
+    data-library-error="{{ _('Some map libraries could not load. Reload the editor to retry.') }}"
     title="{{ _('Drawing') }}: {{ entry.title or _('Untitled private original') }}"></iframe>
   <template x-if="selectedNode"><div>
     <h3 x-html="$markdownInline(selectedNode.title)"></h3>

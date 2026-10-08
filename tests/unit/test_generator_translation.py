@@ -19,7 +19,7 @@ DATA = Path(__file__).resolve().parents[2] / 'app/static/json/generators'
 @pytest.fixture
 def generator_data():
     data = {}
-    for filename in ('dungeons', 'forests', 'realm', 'names', 'npcs', 'spellbooks'):
+    for filename in ('dungeons', 'forests', 'realm', 'names', 'npcs', 'spellbooks', 'custom-monster'):
         data.update(json.loads((DATA / f'{filename}.json').read_text()))
     return data
 
@@ -104,7 +104,7 @@ def test_russian_equipment_label_keeps_marketplace_identity(app_with_babel):
 
 
 def test_context_lookup_preserves_existing_ukrainian_translations(app_with_babel, generator_data):
-    # #given: the existing Ukrainian catalog has ordinary translations only.
+    # #given: dungeon features and NPC traits retain their Ukrainian forms.
     with app_with_babel.app_context(), force_locale('uk'):
         # #when
         data = translate_events_data(generator_data)
@@ -113,6 +113,35 @@ def test_context_lookup_preserves_existing_ukrainian_translations(app_with_babel
         data['Dungeon']['POIs']['Special']['Feature'][18],
         data['NPCGenerator']['NPCTraits']['Virtues'][0],
     ) == ('Телепортує', 'Обережний')
+
+
+def test_ukrainian_spell_titles_keep_their_published_names(app_with_babel, generator_data):
+    # #given: Ukrainian Cairn, physical pages 35 and 39, names these spells.
+    data = generator_data
+    vision_index = next(i for i, book in enumerate(data['Spellbooks']) if book['name'] == 'Vision')
+    teleport_index = next(i for i, book in enumerate(data['Spellbooks']) if book['name'] == 'Teleport')
+    target_index = data['Custom Monster']['MonsterAbilities']['Target'].index('Vision')
+    with app_with_babel.app_context(), force_locale('uk'):
+        # #when
+        translated = translate_events_data(data)
+    # #then
+    assert (
+        translated['Spellbooks'][vision_index]['name'],
+        translated['Spellbooks'][teleport_index]['name'],
+        translated['Custom Monster']['MonsterAbilities']['Target'][target_index],
+        translated['Dungeon']['POIs']['Special']['Feature'][18],
+    ) == ('Видіння', 'Телепортація', 'Зір', 'Телепортує')
+
+
+def test_ukrainian_marketplace_item_keeps_its_catalog_identity(app_with_babel):
+    # #given: Ukrainian Cairn, physical page 20, names the Marketplace item.
+    equipment = {'name': 'Air bladder', 'tags': []}
+    with app_with_babel.test_request_context('/?lang=uk'), force_locale('uk'):
+        # #when
+        html = render_template('partial/modal/item_library.html', library=[equipment])
+    # #then
+    option = re.search(r'<option value="([^"]+)" data-item=\'([^\']+)\'', html)
+    assert (option[1], json.loads(option[2])['name']) == ('Повітряний міхур', 'Air bladder')
 
 
 def test_dungeon_features_keep_their_grammatical_form(app_with_babel, generator_data):
