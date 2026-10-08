@@ -9,7 +9,7 @@
 {% endif %}
 <button type="submit" form="article-form">{{ _('Create and show') if party else _('Save Article') }}</button>
 {% endcall %}
-{% if party %}<p>{{ _('This will be visible to members of') }} <strong>{{ party.name|markdown_inline }}</strong>.</p>
+{% if party %}<p>{% trans party=party.name|markdown_inline %}This will be visible to members of <strong>{{ party }}</strong>.{% endtrans %}</p>
 {% else %}<p>{{ _('Articles are private by default until you reveal them to a party. Saving here does not change any party’s version.') }}</p>{% endif %}
 <form id="article-form" method="post" x-data="contentDraft" data-category="{{ entry.category if entry else 'realm' }}" data-import="{{ 'true' if not entry else 'false' }}" data-generate-error="{{ _('Unable to generate an article. Please try again.') }}">
 {{ token(entry.version if entry else none) }}

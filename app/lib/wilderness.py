@@ -2,18 +2,19 @@
 import json
 import secrets
 import uuid
+from app.lib.translations import N_
 
 DICE = (4, 6, 8, 10, 12)
 
 
 def supply(party, participants, bonus=0):
     if not participants or not 0 <= bonus <= 4:
-        raise ValueError('Select at least one participant.')
+        raise ValueError(N_('Select at least one participant.'))
     sides = DICE[min(len(participants) - 1 + bonus, len(DICE) - 1)]
     amount = secrets.randbelow(sides) + 1
     items = json.loads(party.items or '[]')
     if not any(c['id'] == 0 for c in json.loads(party.containers or '[]')):
-        raise ValueError('Party storage needs a Main container.')
+        raise ValueError(N_('Party storage needs a Main container.'))
     for _ in range(amount):
         items.append(dict(id=uuid.uuid4().hex, name='Rations', tags=['uses'], uses=3, location=0))
     party.items = json.dumps(items)
@@ -41,13 +42,13 @@ def consume_ration(items):
 
 def make_camp(party, participants, mounts=(), resolve_deprivation=False):
     if not participants:
-        raise ValueError('Select at least one participant.')
+        raise ValueError(N_('Select at least one participant.'))
     storage = json.loads(party.items or '[]')
     inventories = []
     for member in [*participants, *mounts]:
         items = json.loads(member.items or '[]')
         if not consume_ration(items) and not consume_ration(storage):
-            raise ValueError('Not enough Rations. Add provisions before making camp.')
+            raise ValueError(N_('Not enough Rations. Add provisions before making camp.'))
         inventories.append((member, items))
     # Apply only after everyone can eat. Existing deprivation can have other causes.
     for member, items in inventories:

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {renderArticleMarkdown, articleURL, headingID, wikiQuery, linkSuggestions} from '../../app/static/src/js/article-links.js';
-globalThis.document={documentElement:{lang:'en'},addEventListener(){}};
+globalThis.document={documentElement:{lang:'en'},getElementById(){return null;},addEventListener(){}};
 const {previewURL}=await import('../../app/static/src/js/article-preview.js');
 
 test('wiki and relative Markdown links resolve only through supplied audience bindings',()=>{

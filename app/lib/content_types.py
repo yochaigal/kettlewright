@@ -1,19 +1,20 @@
 """Shared article types, including typed map points and setting seed branches."""
 import re
+from app.lib.translations import N_
 
 CATEGORIES = {
-    'realm': 'Realm', 'people': 'People', 'culture': 'Culture', 'resources': 'Resources',
-    'npc': 'NPC', 'faction': 'Faction', 'faction_type': 'Faction types',
-    'faction_trait': 'Faction traits', 'advantage': 'Advantages', 'agenda': 'Agendas',
-    'topography': 'Topography', 'terrain': 'Terrain', 'landmark': 'Landmark', 'water': 'Water', 'weather': 'Weather',
-    'pois': 'POIs', 'settlement': 'Settlement', 'waypoint': 'Waypoint',
-    'curiosity': 'Curiosity', 'lair': 'Lair', 'dungeon': 'Dungeon', 'forest': 'Forest',
-    'paths': 'Paths', 'path': 'Path', 'room': 'Dungeon room',
-    'monster': 'Monster encounter', 'ruins': 'Ruins', 'shelter': 'Shelter',
-    'hazard': 'Hazard', 'trap': 'Trap', 'special': 'Special',
-    'overview': 'Overview', 'lore': 'Lore', 'relic': 'Relics', 'note': 'Notes',
-    'bestiary': 'Bestiary', 'item': 'Items', 'spellbook': 'Spellbooks',
-    'map': 'Geography', 'custom': 'Custom',
+    'realm': N_('Realm'), 'people': N_('People'), 'culture': N_('Culture'), 'resources': N_('Resources'),
+    'npc': N_('NPC'), 'faction': N_('Faction'), 'faction_type': N_('Faction types'),
+    'faction_trait': N_('Faction traits'), 'advantage': N_('Advantages'), 'agenda': N_('Agendas'),
+    'topography': N_('Topography'), 'terrain': N_('Terrain'), 'landmark': N_('Landmark'), 'water': N_('Water'), 'weather': N_('Weather'),
+    'pois': N_('POIs'), 'settlement': N_('Settlement'), 'waypoint': N_('Waypoint'),
+    'curiosity': N_('Curiosity'), 'lair': N_('Lair'), 'dungeon': N_('Dungeon'), 'forest': N_('Forest'),
+    'paths': N_('Paths'), 'path': N_('Path'), 'room': N_('Dungeon room'),
+    'monster': N_('Monster encounter'), 'ruins': N_('Ruins'), 'shelter': N_('Shelter'),
+    'hazard': N_('Hazard'), 'trap': N_('Trap'), 'special': N_('Special'),
+    'overview': N_('Overview'), 'lore': N_('Lore'), 'relic': N_('Relics'), 'note': N_('Notes'),
+    'bestiary': N_('Bestiary'), 'item': N_('Items'), 'spellbook': N_('Spellbooks'),
+    'map': N_('Geography'), 'custom': N_('Custom'),
 }
 # Two-level authoring picker. Stored article types remain the leaf values.
 CATEGORY_GROUPS = {
@@ -25,7 +26,7 @@ CATEGORY_GROUPS = {
     'Paths': ('paths', 'path'),
     'Dungeon': ('room', 'lore', 'trap', 'special'),
     'Forest': ('ruins', 'shelter', 'hazard'),
-    'Creatures': ('bestiary', 'monster'),
+    N_('Creatures'): ('bestiary', 'monster'),
     'Items': ('item', 'relic', 'spellbook'),
     'Notes': ('note', 'custom'),
 }

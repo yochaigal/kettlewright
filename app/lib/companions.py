@@ -7,6 +7,7 @@ from flask_login import current_user
 from app.models import db, Character, Companion, Party
 from app.lib.character_json import normalize_inventory
 from app.lib.data import sanitize_json_content
+from app.lib.translations import N_
 
 STATS = ('hp', 'strength', 'dexterity', 'willpower')
 DATA = Path(__file__).resolve().parents[1] / 'static' / 'json'
@@ -237,16 +238,16 @@ def convert_hireling(c, owner):
     """Move a hireling and their pets into a PC in the same transaction."""
     from slugify import slugify
     if any(getattr(c, field) is None for stat in STATS for field in (stat, stat + '_max')):
-        raise ValueError('Fill in all current and maximum stats before converting this hireling.')
+        raise ValueError(N_('Fill in all current and maximum stats before converting this hireling.'))
     background = c.role or 'Hireling'
     if len(c.name) > 64 or len(background) > 64:
-        raise ValueError('Character names and backgrounds must be 64 characters or fewer. Edit this hireling first.')
+        raise ValueError(N_('Character names and backgrounds must be 64 characters or fewer. Edit this hireling first.'))
     notes = c.notes or ''
     if c.attack:
         notes += ('\n\n' if notes else '') + _('Attack') + ': ' + c.attack
     notes += ('\n\n' if notes else '') + _('Daily cost') + ': ' + str(c.daily_cost) + ' ' + _('gp/day')
     if len(notes) > 2000:
-        raise ValueError('Character notes must be 2000 characters or fewer, including attack and daily cost. Export this hireling and shorten their notes first.')
+        raise ValueError(N_('Character notes must be 2000 characters or fewer, including attack and daily cost. Export this hireling and shorten their notes first.'))
     base = slugify(c.name) or 'character'
     slug, suffix = base, 1
     while Character.query.filter_by(owner=owner.id, url_name=slug).first():

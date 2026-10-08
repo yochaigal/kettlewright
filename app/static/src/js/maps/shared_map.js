@@ -9,6 +9,7 @@ import {setupMapImport} from './whiteboard_import.js';
 import {setupPartyTokens} from './party_tokens.js';
 import {createLaserSync} from './whiteboard_laser.js';
 import {stateFromUpdate} from './whiteboard_updates.js';
+import {editorLocale} from './locale.js';
 
 const config = JSON.parse(document.getElementById('shared-map-config').textContent);
 const editor = document.getElementById('editor'), root = createRoot(editor);
@@ -54,7 +55,7 @@ function showStatus() {
 
 function renderEditor() {
   if (!props || stopped) return;
-  root.render(h(Excalidraw, {...props,
+  root.render(h(Excalidraw, {...props, langCode: editorLocale(document.documentElement.lang),
     renderTopRightUI: () => h('button', {type: 'button', className: 'party-tokens-button',
       disabled: !config.editing || playerPreview || importing, onClick: tokens.open}, config.messages.tokens),
     viewModeEnabled: !config.editing || playerPreview || importing,

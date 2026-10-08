@@ -13,8 +13,8 @@
  :data-pending="tooLong" data-label="{{ label }}"{% if model == 'selectedNode.body' %} :data-reference-entry-id="selectedNode.entry_id || ''"{% elif model == 'edge.body' %} :data-reference-entry-id="edge.entry_id || ''"{% endif %}>
 <span class="rich-editor-label">{{ label }}</span>
 <div class="markdown-toolbar" role="toolbar" aria-label="{{ _('Text formatting') }}">
-{% for action, title, glyph in [('bold','Bold','bold'),('italic','Italic','italic'),('heading','Heading','heading'),('strike','Strikethrough','strikethrough'),('bullet','Bullet list','list-ul'),('ordered','Numbered list','list-ol'),('quote','Quote','quote-left'),('link','Link','link'),('code','Code','code')] %}
-<button type="button" @mousedown.prevent @click="format('{{ action }}')" title="{{ _(title) }}" aria-label="{{ _(title) }}" class="markdown-{{ action }}"><i class="fa-solid fa-{{ glyph }}" aria-hidden="true"></i></button>
+{% for action, title, glyph in [('bold',_('Bold'),'bold'),('italic',_('Italic'),'italic'),('heading',_('Heading'),'heading'),('strike',_('Strikethrough'),'strikethrough'),('bullet',_('Bullet list'),'list-ul'),('ordered',_('Numbered list'),'list-ol'),('quote',_('Quote'),'quote-left'),('link',_('Link'),'link'),('code',_('Code'),'code')] %}
+<button type="button" @mousedown.prevent @click="format('{{ action }}')" title="{{ title }}" aria-label="{{ title }}" class="markdown-{{ action }}"><i class="fa-solid fa-{{ glyph }}" aria-hidden="true"></i></button>
 {% endfor %}
 <button type="button" @mousedown.prevent @click="format('image')" title="{{ _('Insert image') }}" aria-label="{{ _('Insert image') }}"><i class="fa-regular fa-image" aria-hidden="true"></i></button>
 <button type="button" class="markdown-mode" @click="previewing=!previewing" :aria-pressed="previewing" x-text="previewing ? {{ _('Write')|tojson|forceescape }} : {{ _('Preview')|tojson|forceescape }}">{{ _('Preview') }}</button>

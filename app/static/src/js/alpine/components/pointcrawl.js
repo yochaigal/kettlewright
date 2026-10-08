@@ -109,7 +109,9 @@ export default function pointcrawl() {
     },
     syncCanvas() {
       this.sendCanvas('state',{graph:JSON.parse(JSON.stringify(this.graph)),editing:this.editing,
-        selected:this.selected,selectedEdge:this.selectedEdge,dark:document.body.classList.contains('dark-mode'),lang:this.$el.dataset.lang || 'en'});
+        selected:this.selected,selectedEdge:this.selectedEdge,dark:document.body.classList.contains('dark-mode'),
+        lang:this.$el.dataset.lang || document.documentElement.lang || 'en',
+        libraryError:this.$refs.canvas?.dataset.libraryError});
     },
     childrenPreview(){return draftPreview({body:'',children:this.graph.children || []});},
     node(id) {return this.graph.nodes.find(node => String(node.id)===String(id));},

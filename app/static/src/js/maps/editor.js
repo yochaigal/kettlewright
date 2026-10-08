@@ -3,6 +3,7 @@ import {Excalidraw, convertToExcalidrawElements, restoreElements, CaptureUpdateA
 import {drawingFromScene, emptyDrawing, graphShapes, movedLocations, isManaged, graphHit, editableGeography, shapeGeometry} from './scene.js';
 import {loadLibraries} from './libraries.js';
 import {fittedViewport} from './viewport.js';
+import {editorLocale} from './locale.js';
 
 let api, state, applying = false, lastDrawing = '', inputDrawingKey = '', graphKey = '', disposed = false, repairing = false, initialized = false;
 let waterTarget=null, brushStartIds=null;
@@ -105,14 +106,14 @@ function mount(next) {
     excalidrawAPI: instance => {
       api = instance;
       library.then(result => {
-        if (!disposed && result.failed) api?.setToast({message: 'Some map libraries could not load. Reload the editor to retry.'});
+        if (!disposed && result.failed) api?.setToast({message: next.libraryError || 'Some map libraries could not load. Reload the editor to retry.'});
       });
     },
     initialData: {elements: orderedScene(restoreElements(drawing.elements, null),managedElements(next.graph)),
       files: drawing.files, libraryItems: library.then(result => result.items), appState: {gridModeEnabled: true}},
     viewModeEnabled: !next.editing,
     theme: next.dark ? 'dark' : 'light',
-    langCode: next.lang || 'en',
+    langCode: editorLocale(next.lang),
     onChange, validateEmbeddable: () => false,
     UIOptions: {canvasActions: {loadScene: false, saveToActiveFile: false, export: false, toggleTheme: false}},
   }), document.getElementById('editor'));

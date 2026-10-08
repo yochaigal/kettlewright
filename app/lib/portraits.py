@@ -7,6 +7,7 @@ from pathlib import Path
 from flask import current_app, url_for
 
 from app.models import Character, Companion
+from app.lib.translations import N_
 
 MAX_PORTRAIT_BYTES = 2 * 1024 * 1024
 
@@ -22,11 +23,11 @@ def save_portrait(upload):
 
     raw = upload.stream.read(MAX_PORTRAIT_BYTES + 1)
     if len(raw) > MAX_PORTRAIT_BYTES:
-        raise ValueError('Choose an image smaller than 2 MB.')
+        raise ValueError(N_('Choose an image smaller than 2 MB.'))
     try:
         with Image.open(BytesIO(raw), formats=['PNG', 'JPEG', 'WEBP', 'GIF']) as image:
             if image.width > 4096 or image.height > 4096:
-                raise ValueError('Image dimensions must not exceed 4096 × 4096 pixels.')
+                raise ValueError(N_('Image dimensions must not exceed 4096 × 4096 pixels.'))
             image.load()
             image = ImageOps.exif_transpose(image).convert('RGBA')
             portrait = ImageOps.fit(image, (256, 256), method=Image.Resampling.LANCZOS)
@@ -35,7 +36,7 @@ def save_portrait(upload):
             # Re-encoding discards active content, metadata and animation.
             portrait.save(output, format='WEBP', quality=90)
     except (UnidentifiedImageError, OSError, Image.DecompressionBombError) as error:
-        raise ValueError('Choose a valid PNG, JPEG, WebP or GIF image.') from error
+        raise ValueError(N_('Choose a valid PNG, JPEG, WebP or GIF image.')) from error
     content = output.getvalue()
     filename = hashlib.sha256(content).hexdigest() + '.webp'
     folder = portrait_directory()
@@ -74,12 +75,12 @@ def validate_portrait_reference(image_url, custom_image):
     from app.lib.data import load_images
 
     if not isinstance(image_url, str) or len(image_url) > 512 or type(custom_image) is not bool:
-        raise ValueError('Choose a valid portrait.')
+        raise ValueError(N_('Choose a valid portrait.'))
     if not image_url:
         return
     if not custom_image:
         if image_url not in load_images():
-            raise ValueError('Choose one of the predefined portraits.')
+            raise ValueError(N_('Choose one of the predefined portraits.'))
         return
     if re.fullmatch(r'/portraits/[0-9a-f]{64}\.webp', image_url):
         return
@@ -91,4 +92,4 @@ def validate_portrait_reference(image_url, custom_image):
     except ValueError:
         valid = False
     if not valid:
-        raise ValueError('Enter an http or https image URL.')
+        raise ValueError(N_('Enter an http or https image URL.'))

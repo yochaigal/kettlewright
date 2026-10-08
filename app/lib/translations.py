@@ -1,6 +1,11 @@
 from flask_babel import _, pgettext
 
 
+def N_(text):
+    """Mark a message for extraction while retaining its English value."""
+    return text
+
+
 def translate_term(text, context=None):
     """Use a table-specific term when available, then the ordinary catalog."""
     if not text:

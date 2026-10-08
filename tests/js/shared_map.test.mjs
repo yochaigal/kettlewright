@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
+import {editorLocale} from '../../app/static/src/js/maps/locale.js';
 
 const source = readFileSync(new URL('../../app/static/src/js/maps/shared_map.js', import.meta.url), 'utf8').replace(/^import .*;\n/gm, '');
 const librarySource = readFileSync(new URL('../../app/static/src/js/maps/libraries.js', import.meta.url), 'utf8')
@@ -12,7 +13,7 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
 const empty = {elements: [], files: {}};
 const response = (body, status = 200) => ({ok: status === 200, status, json: async () => body});
 
-async function setup(editing = true, failedLibrary = null) {
+async function setup(editing = true, failedLibrary = null, language = 'en') {
   const requests = [], libraryRequests = [], handlers = {}, windowHandlers = {}, intervals = [], drafts = [], timers = new Map();
   let nextTimer = 0, props, elements = [], files = {}, appState = {viewBackgroundColor: '#ffffff', theme: 'light'};
   const config = {editing, partyId: 1, sceneUrl: '/scene', libraryUrl: '/libraries/', messages: Object.fromEntries(
@@ -25,13 +26,13 @@ async function setup(editing = true, failedLibrary = null) {
     updateScene(data) {if (data.elements) elements = data.elements; Object.assign(appState, data.appState); props.onChange(elements, appState, files);},
   };
   const context = vm.createContext({
-    document: {body: {classList: {toggle() {}}}, createElement: () => ({}), getElementById: id => id === 'shared-map-config' ? {textContent: JSON.stringify(config)} : id === 'map-status' ? status : {addEventListener(name, fn) {uiHandlers[id + ':' + name] = fn;}, setAttribute() {}, append(value) {drafts.push(value);}},
+    document: {documentElement: {lang: language}, body: {classList: {toggle() {}}}, createElement: () => ({}), getElementById: id => id === 'shared-map-config' ? {textContent: JSON.stringify(config)} : id === 'map-status' ? status : {addEventListener(name, fn) {uiHandlers[id + ':' + name] = fn;}, setAttribute() {}, append(value) {drafts.push(value);}},
       addEventListener() {}, querySelectorAll: () => []},
     window: {addEventListener(name, fn) {windowHandlers[name] = fn;}},
     localStorage: {getItem: key => stored.get(key) || 'false', setItem: (key, value) => stored.set(key, value)},
     createFogLayer: () => ({redraw() {}, destroy() {}, setState() {}, setTool() {}}),
     applyFogOperation: (fog) => fog, setupMapImport() {}, setupPartyTokens: () => ({open() {}, close() {}}),
-    Blob, structuredClone, createLaserSync: () => ({pointerUpdate() {}, stop() {}, clear() {}, destroy() {}}),
+    Blob, structuredClone, editorLocale, createLaserSync: () => ({pointerUpdate() {}, stop() {}, clear() {}, destroy() {}}),
     io: () => ({on: (name, handler) => {handlers[name] = handler;}}),
     setTimeout: fn => {timers.set(++nextTimer, fn); return nextTimer;}, clearTimeout: id => timers.delete(id), setInterval(fn, delay) {intervals.push({fn, delay}); return intervals.length;}, clearInterval() {},
     AbortSignal, URL, location: {href: 'https://example.test/map/'}, Excalidraw: {}, CaptureUpdateAction: {NEVER: 'never'},
@@ -58,6 +59,17 @@ async function setup(editing = true, failedLibrary = null) {
     moveInPlace(x) {elements[0].x = x; elements[0].version = (elements[0].version || 1) + 1; props.onChange(elements, appState, files);},
     async timers() {const queued = [...timers.values()]; timers.clear(); queued.forEach(fn => fn()); await tick();},
     elements: () => elements};
+}
+
+for (const [locale, code] of [['ru', 'ru-RU'], ['uk', 'uk-UA']]) {
+  test(`the shared board sends the accepted ${locale} locale to the editor`, async () => {
+    // #given
+    const state = await setup(true, null, locale);
+    // #when
+    const received = state.props.langCode;
+    // #then
+    assert.equal(received, code);
+  });
 }
 
 test('remote changes never trigger writes on a view-only canvas', async () => {
