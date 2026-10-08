@@ -168,11 +168,14 @@ test('setting entities form deterministic typed trees, with an explicit opt-out'
   }
   const realm=generateArticle(data,'realm','',rng(5));
   assert.deepEqual(realm.children.map(x=>x.category),['people','faction','topography','pois','paths']);
-  assert.deepEqual(realm.children[0].children.map(x=>x.category),['culture','resources','npc']);
+  assert.deepEqual(realm.children[0].children,[]);
+  assert(!('Character' in realm.fields));
+  assert(!realm.body.startsWith('**Character:**'));
+  assert(realm.children[0].body.includes(`**Character:** ${realm.children[0].fields.Culture.Character}`));
   const pois=realm.children.find(x=>x.category==='pois').children;
   assert.equal(pois.filter(x=>x.is_heart).length,1);
   assert.equal(pois[0].category,'settlement');
-  assert(draftPreview(realm).includes(realm.children[0].children[0].title));
+  assert(draftPreview(realm).includes(realm.children[0].fields.Culture.Character));
 });
 test('forest and dungeon chance boundaries and terrain difficulty use the selected options',()=>{
   for(const forestChance of [0,100]) {
@@ -190,12 +193,16 @@ test('forest and dungeon chance boundaries and terrain difficulty use the select
 test('map hierarchy preserves the rolled realm and disabled children produce an empty graph',()=>{
   const result=generateResult(data,'Worldbuilding','Realm',rng(12));
   const graph=graphFromResult(result,rng(12),data);
-  assert.equal(graph.children[0].children[0].body,resultText({fields:result.fields.Culture}));
+  assert.deepEqual(graph.children[0].fields.Culture,result.fields.Culture);
+  assert.deepEqual(graph.children[0].fields.Resources,result.fields.Resources);
+  assert.equal(graph.children[0].children.length,0);
   assert.equal(graph.children[1].title,'Factions');
-  assert.equal(graph.children[1].children[0].children[0].fields.Type,result.fields.Factions.Type);
+  assert.deepEqual(graph.children[1].children[0].fields,result.fields.Factions);
+  assert.equal(graph.children[1].children[0].children.length,0);
   assert.equal(graph.children[2].children.filter(x=>x.category==='terrain').length,result.fields.Terrain.length);
   for(const terrain of graph.children[2].children.filter(x=>x.category==='terrain')) {
-    assert.equal(terrain.children.find(x=>x.category==='landmark').fields.Landmark,terrain.fields.Landmark);
+    assert(terrain.fields.Landmark);
+    assert.deepEqual(terrain.fields.Weather,result.fields.Weather);
   }
   assert(graph.nodes.every(x=>['settlement','waypoint','curiosity','lair','dungeon'].includes(x.category)));
   assert(graph.edges.every(x=>x.body.includes('Feature:') && x.body.includes('Condition:')));
@@ -209,8 +216,9 @@ test('realm terrain follows the d6 count and difficulty weights with a landmark 
     const terrain=realm.children.find(x=>x.category==='topography').children;
     assert.equal(terrain.length,count);
     for(const region of terrain) {
-      assert.equal(region.children.filter(x=>x.category==='landmark').length,1);
-      assert.equal(region.children.find(x=>x.category==='landmark').fields.Landmark,region.fields.Landmark);
+      assert.equal(region.children.filter(x=>x.category==='landmark').length,0);
+      assert(region.fields.Landmark);
+      assert(region.body.includes(region.fields.Landmark));
     }
     const tools=generateResult(data,'Worldbuilding','Realm',random);
     assert.equal(tools.fields.Terrain.length,count);
@@ -258,13 +266,14 @@ test('realm groups named factions under Factions',()=>{
   assert.equal(factions.title,'Factions');
   assert.equal(factions.children[0].category,'faction');
   assert.notEqual(factions.children[0].title,'Factions');
-  assert(factions.children[0].children.some(child=>child.category==='agenda'));
+  assert.equal(factions.children[0].children.length,0);
+  assert(factions.children[0].fields.Agenda);
   assert.equal(generateArticle(data,'water','',rng(1)).category,'water');
 });
 
 
-test('each generated Realm has exactly one water source on a terrain',()=>{
-  const waters=draft=>[...(draft.category==='water'?[draft]:[]),...(draft.children || []).flatMap(waters)];
+test('each generated Realm describes exactly one water source on a terrain',()=>{
+  const waters=draft=>flatten(draft).filter(child=>child.fields?.Water);
   for(let seed=1;seed<=40;seed++) {
     const realm=generateArticle(data,'realm','',rng(seed));
     const graph=graphFromResult(generateResult(data,'Worldbuilding','Realm',rng(seed)),rng(seed),data);
@@ -275,4 +284,77 @@ test('each generated Realm has exactly one water source on a terrain',()=>{
     }
   }
   assert.equal(waters(generateArticle(data,'realm','',rng(1),{generateChildren:false})).length,0);
+});
+
+test('compound descriptions retain descendant text and unambiguous draft links without duplicate previews',()=>{
+  for(const category of ['realm','topography','pois','paths','dungeon','forest']) {
+    const draft=generateArticle(data,category,'',rng(5));
+    const descendants=flatten(draft).slice(1);
+    assert(descendants.length>0,category);
+    assert.equal(new Set(descendants.map(child=>child.draft_key)).size,descendants.length);
+    for(const child of descendants) {
+      assert(draft.body.includes(`](kw-generated/${child.draft_key})`),`${category}: ${child.title}`);
+      assert(draft.body.includes(child.body),`${category}: ${child.title}`);
+    }
+    assert.equal(draftPreview(draft),draft.body);
+  }
+});
+
+test('Dungeon and Forest retain the Tools POIs and trails even without child articles',()=>{
+  for(const kind of ['Dungeon','Forest']) {
+    const options={generateChildren:false};
+    const tools=generateResult(data,'Worldbuilding',kind,rng(17),options);
+    const draft=generateArticle(data,kind.toLowerCase(),'',rng(17),options);
+    assert.equal(draft.children.length,0);
+    for(const text of [...tools.fields.POIs,...(tools.fields.trails || [])]) assert(draft.body.includes(text));
+  }
+});
+
+test('Tools map drafts retain the original description and link their generated article sections',()=>{
+  const result=generateResult(data,'Worldbuilding','Realm',rng(5));
+  const graph=graphFromResult(result,rng(5),data);
+  assert(graph.body.startsWith(resultText(result)));
+  for(const child of graph.children) {
+    assert(graph.body.includes(`](kw-generated/${child.draft_key})`));
+    for(const descendant of flatten(child).slice(1)) assert(child.body.includes(descendant.body));
+  }
+});
+
+test('Realm detail rolls stay in parent descriptions without child articles',()=>{
+  const removed=new Set(['culture','resources','npc','faction_type','faction_trait','advantage','agenda','landmark','weather','water']);
+  for(let seed=1;seed<=20;seed++) {
+    for(const draft of [generateArticle(data,'realm','',rng(seed)),
+      graphFromResult(generateResult(data,'Worldbuilding','Realm',rng(seed)),rng(seed),data)]) {
+      assert(!flatten(draft).some(child=>removed.has(child.category)));
+      const people=draft.children.find(child=>child.category==='people');
+      assert.deepEqual(Object.keys(people.fields),['Culture','Resources']);
+      for(const section of ['Culture','Resources']) {
+        assert(people.fields[section]);
+        assert(people.body.includes(`### ${section}`));
+      }
+      const faction=draft.children.find(child=>child.category==='faction').children[0];
+      for(const field of ['Type','Agent','Trait 1','Trait 2','Advantages','Agenda','Obstacle']) {
+        const key=field in faction.fields?field:field.replace(' ','');
+        assert(faction.fields[key],field);
+        assert(faction.body.includes(`**${key}:**`));
+      }
+      const terrains=draft.children.find(child=>child.category==='topography').children;
+      for(const terrain of terrains) {
+        assert(terrain.body.includes('**Landmark:**'));
+        assert(terrain.body.includes('### Weather'));
+        if(terrain.fields.Water) assert(terrain.body.includes('### Water'));
+      }
+    }
+  }
+  for(const category of ['people','faction','terrain']) {
+    const draft=generateArticle(data,category,'',rng(1),{generateChildren:false});
+    assert(draft.body.length>0);
+    assert.equal(draft.children.length,0);
+    if(category==='people') assert(!draft.fields.NPC && draft.fields.Resources && draft.fields.Culture);
+    if(category==='faction') assert(draft.fields.Agenda && draft.fields.Advantages);
+    if(category==='terrain') assert(draft.fields.Weather && draft.fields.Landmark);
+  }
+  const realm=generateArticle(data,'realm','',rng(1),{generateChildren:false});
+  assert.deepEqual(realm.fields,{});
+  assert.equal(realm.body,'');
 });

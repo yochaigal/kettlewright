@@ -25523,3 +25523,7 @@ msgstr "Не вдалося завантажити матеріал."
 #: app/templates/base.html:64
 msgid "Markdown supported"
 msgstr "Підтримується Markdown"
+
+#: app/templates/base.html:62
+msgid "Unpin"
+msgstr "Відкріпити"

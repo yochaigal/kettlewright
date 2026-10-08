@@ -77,10 +77,17 @@ async function show(link, url) {
   panel.addEventListener('pointerleave', () => { if (transient === panel) scheduleClose(); });
   panel.addEventListener('focusin', () => clearTimeout(closeTimer));
   pin.onclick = () => {
-    if (transient === panel) transient = null;
-    pin.setAttribute('aria-pressed', 'true');
-    pin.setAttribute('aria-label', labels.pinned);
-    pin.title = labels.pinned; pin.disabled = true;
+    clearTimeout(openTimer); clearTimeout(closeTimer);
+    const pinned = pin.getAttribute('aria-pressed') !== 'true';
+    if (pinned) {
+      if (transient === panel) transient = null;
+    } else {
+      if (transient !== panel) close(transient);
+      transient = panel;
+    }
+    pin.setAttribute('aria-pressed', String(pinned));
+    pin.setAttribute('aria-label', pinned ? labels.unpin : labels.pin);
+    pin.title = pinned ? labels.unpin : labels.pin;
   };
   dismiss.onclick = () => close(panel);
   const beginInteraction = () => {

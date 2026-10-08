@@ -297,7 +297,7 @@ def new_entry():
             children = json.loads(request.form.get('children', '[]'))
         except (ValueError, TypeError):
             abort(400, 'Invalid article draft.')
-        save_article_children(entry, children)
+        body = save_article_children(entry, children, body=body)
         ensure_article_tree_maps(entry)
         if party:
             if campaign and not db.session.get(CampaignParty, (campaign.id, party.id)):

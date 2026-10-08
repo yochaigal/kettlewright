@@ -20206,3 +20206,7 @@ msgstr ""
 #: app/templates/main/tools.html
 msgid "Roll"
 msgstr ""
+
+#: app/templates/base.html:62
+msgid "Unpin"
+msgstr ""
