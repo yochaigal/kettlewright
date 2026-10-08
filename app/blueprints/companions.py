@@ -572,6 +572,7 @@ def convert(companion_id):
 @login_required
 def import_sheet(kind):
     from flask_babel import _
+    from app.lib.translations import N_
     from app.lib.companions import import_companion, import_destinations, render_import_page
     if kind not in ('pet', 'hireling'):
         abort(404)
@@ -585,18 +586,18 @@ def import_sheet(kind):
     upload = request.files.get('json_file')
     try:
         if not upload or not upload.filename:
-            raise ValueError('Choose a JSON file to import.')
+            raise ValueError(N_('Choose a JSON file to import.'))
         raw = upload.stream.read(2 * 1024 * 1024 + 1)
         if len(raw) > 2 * 1024 * 1024:
-            raise ValueError('Choose a JSON file smaller than 2 MB.')
+            raise ValueError(N_('Choose a JSON file smaller than 2 MB.'))
         try:
             data = json.loads(raw)
         except (ValueError, UnicodeError, RecursionError):
-            raise ValueError('Choose a valid JSON file.')
+            raise ValueError(N_('Choose a valid JSON file.'))
         try:
             c = import_companion(data, kind)
         except (ValueError, TypeError, KeyError, OverflowError, RecursionError):
-            raise ValueError('The JSON file does not contain a valid %(kind)s export with valid stats, inventory and pets.')
+            raise ValueError(N_('The JSON file does not contain a valid %(kind)s export with valid stats, inventory and pets.'))
     except ValueError as problem:
         error = _(str(problem), kind=_('pet') if kind == 'pet' else _('hireling'))
     else:

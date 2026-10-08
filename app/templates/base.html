@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ locale|replace('_', '-') }}">
 
 <head>
   <meta charset="utf-8" />
@@ -7,7 +7,7 @@
   <title>Kettlewright</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
   <link
-    href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,400;0,700;1,400;1,700&family=Averia+Serif+Libre:ital,wght@0,300;0,700;1,300;1,700&family=Caveat&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,300;0,600;1,300;1,600&display=swap&family=Noto+Sans+Symbols+2&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Averia+Libre:ital,wght@0,400;0,700;1,400;1,700&family=Averia+Serif+Libre:ital,wght@0,300;0,700;1,300;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,300;0,600;1,300;1,600&family=Noto+Sans+Symbols+2&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
@@ -58,7 +58,16 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/markdown.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/article-preview.css') }}">
-  <script type="module" src="{{ url_for('static', filename='src/js/article-preview.js') }}"></script>
+<script id="interface-labels" type="application/json">{{ {
+  'preview': _('Preview'), 'move': _('Move'), 'pin': _('Pin'), 'unpin': _('Unpin'),
+  'close': _('Close'), 'loading': _('Loading…'), 'error': _('Unable to load article.'),
+  'formatting': _('Text formatting'), 'markdown': _('Markdown supported'), 'write': _('Write'),
+  'Bold': _('Bold'), 'Italic': _('Italic'), 'Heading': _('Heading'),
+  'Strikethrough': _('Strikethrough'), 'Bullet list': _('Bullet list'),
+  'Numbered list': _('Numbered list'), 'Quote': _('Quote'), 'Link': _('Link'), 'Code': _('Code'),
+  'Insert image': _('Insert image')
+}|tojson }}</script>
+<script type="module" src="{{ url_for('static', filename='src/js/article-preview.js') }}"></script>
   <script type="module" src="{{ url_for('static', filename='src/js/markdown-fields.js') }}"></script>
   <!-- Server-rendered updates and local UI components -->
   <script src="https://unpkg.com/htmx.org@2.0.3"

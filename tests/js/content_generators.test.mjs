@@ -18,7 +18,7 @@ test('setting headings use rolled values and preserve custom names',()=>{
   }
 });
 import {readFileSync} from 'node:fs';
-import {generateResult, graphFromResult, resultText} from '../../app/static/src/js/content_generators.js';
+import {generateResult, graphFromResult, localizeText, resultText} from '../../app/static/src/js/content_generators.js';
 
 const data={};
 for (const name of ['dungeons','forests','realm','factions','npcs','names','faction-events','bestiary','custom-monster','reactions','weather','dungeon-events','wilderness-events','reliquary','spellbooks']) {
@@ -54,6 +54,25 @@ test('all existing Tools categories still produce structured content',()=>{
     assert(resultText(result).length>0);
     assert(!resultText(result).includes('undefined'),`${category} ${type}`);
   }
+});
+
+test('Tools display translation leaves the generated result machine-readable',()=>{
+  const terms={Difficulty:'Сложность',Landmark:'Ориентир',Easy:'Простой',Tough:'Трудный',Perilous:'Опасный',Heart:'Сердце',
+    Settlement:'Поселение',Monster:'Монстр',Hidden:'Скрытая',Terrain:'Местность',POIs:'Места интереса',Weather:'Погода'};
+  const t=key=>terms[key] ?? key;
+  for (const type of ['Dungeon','Forest','Realm']) for (let seed=1;seed<=10;seed++) {
+    const result=generateResult(data,'Worldbuilding',type,rng(seed));
+    const before=structuredClone(result);
+    const shown=resultText(result,t);
+    assert.deepEqual(result,before);
+    assert.equal(resultText(result,key=>key),resultText(result));
+    assert(!/Difficulty: |Landmark: |Heart · |\bMonster: /.test(shown),shown);
+    graphFromResult(result,rng(seed),data);
+  }
+  assert.equal(localizeText('Heart · Settlement: Hamlet, walls',t),'Сердце · Поселение: Hamlet, walls');
+  assert.equal(localizeText('Bogs. Difficulty: Tough. Landmark: Bones.',t),'Bogs. Сложность: Трудный. Ориентир: Bones.');
+  assert.equal(localizeText('Hidden, Deer Crossing, cairn',t),'Скрытая, Deer Crossing, cairn');
+  assert.equal(localizeText('Weather',t),'Погода');
 });
 
 test('region drafts generate real dungeon and forest maps without rerolling the region',()=>{

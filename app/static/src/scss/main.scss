@@ -132,7 +132,7 @@ main {
 
 textarea,
 select {
-  font-family: "Averia Serif Libre", serif;
+  font-family: "Averia Serif Libre", Alegreya, 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
   font-size: 13pt;
 }
 
@@ -187,7 +187,7 @@ details[open] > summary::before { content: "\f078"; }
 
 
 input {
-  font-family: "Averia Serif Libre", serif !important;
+  font-family: "Averia Serif Libre", Alegreya, 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif !important;
   font-size: 13pt !important;
 }
 
@@ -1096,5 +1096,34 @@ body.dark-mode .discord-guide {
 
   .discord-disconnect-warning {
     background: rgba(255, 155, 155, .08);
+  }
+}
+
+// Cyrillic locales: Averia has no Cyrillic glyphs, so the browser mixes
+// Averia for Latin with a system fallback for Cyrillic. Lead with faces
+// that cover both scripts: Vollkorn for text, Alegreya for headings.
+html[lang="ru"],
+html[lang="uk"] {
+
+  body,
+  textarea,
+  select {
+    font-family: Vollkorn, "Averia Serif Libre", 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
+  }
+
+  body {
+    // Vollkorn starts at 400; the default 300 would be faux-rendered
+    font-weight: 400;
+  }
+
+  input {
+    font-family: Vollkorn, "Averia Serif Libre", 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: Alegreya, "Averia Libre", 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
   }
 }

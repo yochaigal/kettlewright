@@ -11,7 +11,10 @@ function previews(lang='en') {
     setAttribute(key,value){this.attributes[key]=value;},
     getAttribute(key){return this.attributes[key];},
     addEventListener(name,handler){this.listeners[name]=handler;}});
+  const labels={pin:lang==='ru'?'Закрепить':lang==='uk'?'Закріпити':'Pin',
+    unpin:lang==='ru'?'Открепить':lang==='uk'?'Відкріпити':'Unpin'};
   const document={documentElement:{lang},addEventListener(){},
+    getElementById(id){return id==='interface-labels'?{textContent:JSON.stringify(labels)}:null;},
     body:{append(panel){panels.push(panel);}},
     createElement(){
       const panel=element(), bar=element();
@@ -40,17 +43,17 @@ function previews(lang='en') {
 }
 
 test('Pin toggles to Unpin and back; unpinned previews close on pointer leave',async()=>{
-  for(const lang of ['en','ru']) {
+  for(const lang of ['en','ru','uk']) {
     const ui=previews(lang), panel=await ui.show();
     panel.pin.onclick();
     assert.equal(panel.pin.getAttribute('aria-pressed'),'true');
-    assert.equal(panel.pin.title,lang==='ru'?'Открепить':'Unpin');
+    assert.equal(panel.pin.title,lang==='ru'?'Открепить':lang==='uk'?'Відкріпити':'Unpin');
     assert(!panel.pin.disabled);
     panel.listeners.pointerleave();ui.flush();
     assert(!panel.removed);
     panel.pin.onclick();
     assert.equal(panel.pin.getAttribute('aria-pressed'),'false');
-    assert.equal(panel.pin.title,lang==='ru'?'Закрепить':'Pin');
+    assert.equal(panel.pin.title,lang==='ru'?'Закрепить':lang==='uk'?'Закріпити':'Pin');
     panel.listeners.pointerleave();ui.flush();
     assert(panel.removed);
     assert(panel.controller.signal.aborted);

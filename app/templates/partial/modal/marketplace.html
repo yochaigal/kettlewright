@@ -21,20 +21,21 @@
     let capacityEl = document.getElementById("capacity");
     let capacityNum = Number.parseInt(capacityEl.value);
     if (plus && currCapacityNum <= 0) {
-      KW_alert('Not enough space', 'Cannot buy more items, container would be overloaded');
+      KW_alert({{ _('Not enough space')|tojson }}, {{ _('Cannot buy more items, container would be overloaded')|tojson }});
       return;
     }
 
     let gold = Number.parseInt(document.getElementById("current-gold").value);
     if (plus) gold -= cost; else gold += cost;
     if (gold < 0) {
-      KW_alert("Not enough gold", "Cannot buy " + name);
+      const label = document.getElementById("cart-" + name).closest("tr").cells[0].textContent.trim();
+      KW_alert({{ _('Not enough gold')|tojson }}, {{ _('Cannot buy %(item)s', item='%(item)s')|tojson }}.replace("%(item)s", label));
       return
     }
     if (gold > maxgold) {
       gold = maxgold;
     }
-    document.getElementById("gold-display").innerHTML = "Gold: " + gold;
+    document.getElementById("gold-display").textContent = {{ _('Gold: %(amount)s', amount='%(amount)s')|tojson }}.replace("%(amount)s", gold);
     document.getElementById("current-gold").value = gold;
 
 
@@ -72,7 +73,7 @@
     document.querySelectorAll(".cart-amount").forEach((it) => it.innerHTML = '0');
     document.getElementById("current-cart").value = "";
     document.getElementById("current-gold").value = "{{ character.gold }}";
-    document.getElementById("gold-display").innerHTML = "Gold: {{ character.gold }}";
+    document.getElementById("gold-display").textContent = {{ _('Gold: %(amount)s', amount=character.gold)|tojson }};
     let currCapacityEl = document.getElementById("current-capacity");
     let currCapacityNum = Number.parseInt(currCapacityEl.innerText);
     let capacityEl = document.getElementById("capacity");
@@ -118,17 +119,17 @@
           <tbody id="marketplace-table-body">
             {% for item in market.get_market_items() %}
             <tr>
-              <td>{{ item.name|markdown_inline }}</td>
+              <td>{{ item.name|tr('equipment')|markdown_inline }}</td>
               <td>{{item.cost}}</td>
-              <td>{{item.category}}</td>
+              <td>{{item.category|tr}}</td>
               <td>
                 <div class="row8">
-                  <div class="pointer item-edit-button-frame" title="Decrease"
+                  <div class="pointer item-edit-button-frame" title="{{ _('Decrease') }}"
                     onclick="KW_modify_cart({{character.gold}},'{{item.name}}',{{item.cost}},false, {{item.tags}})">
                     <i class="item-edit-button fa-solid fa-minus minus"></i>
                   </div>
                   <div id="cart-{{item.name}}" class="cart-amount">0</div>
-                  <div class="pointer item-edit-button-frame" title="Increase"
+                  <div class="pointer item-edit-button-frame" title="{{ _('Increase') }}"
                     onclick="KW_modify_cart({{character.gold}},'{{item.name}}',{{item.cost}},true,{{item.tags}})">
                     <i class="item-edit-button fa-solid fa-plus plus"></i>
                   </div>
@@ -140,7 +141,7 @@
         </table>
       </div>
       <footer class="modal-card-foot">
-        <h4 id="gold-display">Gold: {{character.gold}}</h4>
+        <h4 id="gold-display">{{ _('Gold: %(amount)s', amount=character.gold) }}</h4>
         <div class="footer-button-container">
           <button class="button is-success" type="button" id="marketplace-save-button"
             hx-post="/marketplace/{{username}}/{{url_name}}/{{container.id}}/buy" hx-target="#inventory-container">

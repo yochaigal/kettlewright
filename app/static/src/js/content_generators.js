@@ -36,7 +36,22 @@ export function generateResult(data, category, subcategory, random = Math.random
     Ability:pick(monster.MonsterAbilities.Ability), Target:pick(monster.MonsterAbilities.Target)}};
 }
 
-export function resultText(result) {
+// Generated text keeps English markers because graphFromResult and saved maps
+// parse them; `t` translates them, and field labels, for display only.
+const MARKER = /(^|\. )(Heart · )?(Monster|Lore|Special|Trap|Ruins|Shelter|Hazard|Waypoint|Settlement|Curiosity|Lair|Dungeon|Forest|Realm|Faction|NPC|Difficulty|Landmark): /g;
+
+export function localizeText(value, t) {
+  if (typeof value !== 'string') return value;
+  const whole = t(value);
+  if (whole !== value) return whole;
+  return value.replace(/Difficulty: (Easy|Tough|Perilous)\./g, (_, difficulty) => `Difficulty: ${t(difficulty)}.`)
+    .replace(/^(Standard|Hidden|Conditional), /, (_, path) => `${t(path)}, `)
+    .replace(MARKER, (_, lead, heart, label) => `${lead}${heart ? `${t('Heart')} · ` : ''}${t(label)}: `);
+}
+
+export function resultText(result, t = null) {
+  const label = key => t ? t(key) : key;
+  const text = value => t ? localizeText(value, t) : value;
   if (result.category === 'spellbook') {
     return [result.fields.description, result.fields.personality ? `_${result.fields.personality}_` : ''].filter(Boolean).join(' ');
   }
@@ -48,11 +63,12 @@ export function resultText(result) {
     return `${result.title}${traits.length ? ` (${traits.join(', ')})` : ''}. ${fields.cost}gp.`;
   }
   function render(value, level=3) {
-    if(Array.isArray(value)) return value.map(item=>`- ${typeof item==='object' ? render(item,level) : item}`).join('\n');
+    const heading = key => { const name = label(key); return name.charAt(0).toUpperCase()+name.slice(1); };
+    if(Array.isArray(value)) return value.map(item=>`- ${typeof item==='object' ? render(item,level) : text(item)}`).join('\n');
     if(value && typeof value==='object') return Object.entries(value).filter(([,item])=>!Array.isArray(item) || item.length).map(([key,item])=>
-      item && typeof item==='object' ? `${'#'.repeat(Math.min(level,6))} ${key.charAt(0).toUpperCase()+key.slice(1)}\n\n${render(item,level+1)}`
-        : `**${key.charAt(0).toUpperCase()+key.slice(1)}:** ${item ?? ''}`).join('\n\n');
-    return String(value ?? '');
+      item && typeof item==='object' ? `${'#'.repeat(Math.min(level,6))} ${heading(key)}\n\n${render(item,level+1)}`
+        : `**${heading(key)}:** ${text(item) ?? ''}`).join('\n\n');
+    return String(text(value) ?? '');
   }
   return render(result.fields);
 }

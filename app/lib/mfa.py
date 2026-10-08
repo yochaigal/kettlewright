@@ -5,6 +5,8 @@ import time
 
 from flask import current_app
 from app.models import db, MFAChallenge
+from app.lib.translations import N_
+from flask_babel import _
 
 LIFETIME = 600
 COOLDOWN = 60
@@ -44,13 +46,13 @@ def issue_challenge(user, purpose):
         return None
     from app.email import send_email
     try:
-        send_email(user.email, 'Kettlewright verification code', 'auth/email/mfa',
+        send_email(user.email, _('Kettlewright verification code'), 'auth/email/mfa',
                    code=code, user=user, synchronous=True)
     except Exception:
         MFAChallenge.query.filter_by(user_id=user.id, nonce=nonce).delete()
         db.session.commit()
         current_app.logger.warning('Unable to deliver MFA email')
-        raise ValueError('Unable to send a verification code. Please try again.') from None
+        raise ValueError(N_('Unable to send a verification code. Please try again.')) from None
     return nonce
 
 

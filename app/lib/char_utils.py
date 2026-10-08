@@ -6,6 +6,7 @@ import json
 import re
 from flask import render_template
 from flask_babel import _
+from app.lib.translations import translate_term
 NO_ARMOR = 'No upper body protection, no helmet nor shield'
 
 # Retrieve character data
@@ -15,7 +16,7 @@ def get_character(character_id):
 
 
 def item_text(item):
-    name = _(item['name'])
+    name = translate_term(item['name'], 'equipment')
     tags = []
     for t in item['tags']:
         if t == 'bonus defense':
@@ -179,7 +180,8 @@ def generate_character(bkg):
     genchar.description = genchar.background['background_description']
     genchar.background_name = selected
     
-    genchar.name = genchar.background['names'][random.randint(0,len(genchar.background['names'])-1)]
+    name = genchar.background['names'][random.randint(0,len(genchar.background['names'])-1)]
+    genchar.name = str(_(name))
     
     omens = load_omens()
     genchar.omen = omens[random.randint(0, len(omens)-1)]
@@ -343,12 +345,12 @@ def random_background():
 
 def random_name(background):
     if background != None and 'names' in background:
-        return roll_list(background['names'])
+        return str(_(roll_list(background['names'])))
     names = []
     bkgs = load_backgrounds()
     for key in bkgs:
         names.extend(bkgs[key]['names'])
-    return roll_list(names)
+    return str(_(roll_list(names)))
 
 def random_table_option(background, name):
     if not background or not name in background:

@@ -3,11 +3,13 @@ import {formatMarkdown, markdownTools} from './markdown-editing.js';
 
 // Enhance ordinary forms too, including HTMX replacements. Never change field names,
 // submitted source, Alpine models, validation, or credential/number controls.
+// SweetAlert2 builds every popup with a hidden .swal2-textarea, so skip its dialogs.
 const enhanced=new WeakSet();
+const labels=JSON.parse(document.getElementById('interface-labels')?.textContent || '{}');
 function enhance(root) {
   const fields=[...(root.matches?.('textarea,input[type=text]') ? [root] : []),...root.querySelectorAll('textarea,input[type=text]')];
   for(const field of fields) {
-    if(enhanced.has(field) || field.closest('.rich-editor') || field.hidden || field.readOnly || field.closest('[data-no-markdown]') || /json|password|username|email|url|search|filter|token/i.test(field.name || field.id)) continue;
+    if(enhanced.has(field) || field.closest('.rich-editor, .swal2-container') || field.hidden || field.readOnly || field.closest('[data-no-markdown]') || /json|password|username|email|url|search|filter|token/i.test(field.name || field.id)) continue;
     enhanced.add(field);
     if(field.tagName==='INPUT') {
       const preview=document.createElement('div'); preview.className='rich-content markdown-inline-preview';preview.hidden=true;preview.setAttribute('aria-hidden','true');field.after(preview);
@@ -18,15 +20,15 @@ function enhance(root) {
     field.before(wrapper);wrapper.append(field);
     if(document.querySelector('.view-character-sheet') || field.closest('.character-inline-form')) {
       wrapper.classList.add('markdown-compact');
-      const hint=document.createElement('small');hint.className='markdown-hint';hint.textContent='Markdown supported';wrapper.append(hint);
+      const hint=document.createElement('small');hint.className='markdown-hint';hint.textContent=labels.markdown || 'Markdown supported';wrapper.append(hint);
       continue;
     }
-    const toolbar=document.createElement('div');toolbar.className='markdown-toolbar';toolbar.setAttribute('role','toolbar');toolbar.setAttribute('aria-label','Text formatting');
+    const toolbar=document.createElement('div');toolbar.className='markdown-toolbar';toolbar.setAttribute('role','toolbar');toolbar.setAttribute('aria-label',labels.formatting || 'Text formatting');
     const preview=document.createElement('div');preview.className='rich-content markdown-preview';preview.hidden=true;
-    const toggle=document.createElement('button');toggle.type='button';toggle.className='markdown-mode';toggle.textContent='Preview';toggle.setAttribute('aria-pressed','false');
-    function write(){field.hidden=false;preview.hidden=true;toggle.textContent='Preview';toggle.setAttribute('aria-pressed','false');}
-    for(const [action,title,glyph] of markdownTools){const button=document.createElement('button');button.type='button';const icon=document.createElement('i');icon.className=`fa-solid fa-${glyph}`;icon.setAttribute('aria-hidden','true');button.append(icon);button.title=title;button.setAttribute('aria-label',title);button.className=`markdown-${action}`;button.addEventListener('mousedown',e=>e.preventDefault());button.addEventListener('click',()=>{write();formatMarkdown(field,action);});toolbar.append(button);}
-    toggle.addEventListener('click',()=>{if(field.hidden)write();else{preview.innerHTML=richContentHTML(field.value);field.hidden=true;preview.hidden=false;toggle.textContent='Write';toggle.setAttribute('aria-pressed','true');}});
+    const toggle=document.createElement('button');toggle.type='button';toggle.className='markdown-mode';toggle.textContent=labels.preview || 'Preview';toggle.setAttribute('aria-pressed','false');
+    function write(){field.hidden=false;preview.hidden=true;toggle.textContent=labels.preview || 'Preview';toggle.setAttribute('aria-pressed','false');}
+    for(const [action,title,glyph] of markdownTools){const button=document.createElement('button');button.type='button';const icon=document.createElement('i');icon.className=`fa-solid fa-${glyph}`;icon.setAttribute('aria-hidden','true');button.append(icon);button.title=labels[title] || title;button.setAttribute('aria-label',labels[title] || title);button.className=`markdown-${action}`;button.addEventListener('mousedown',e=>e.preventDefault());button.addEventListener('click',()=>{write();formatMarkdown(field,action);});toolbar.append(button);}
+    toggle.addEventListener('click',()=>{if(field.hidden)write();else{preview.innerHTML=richContentHTML(field.value);field.hidden=true;preview.hidden=false;toggle.textContent=labels.write || 'Write';toggle.setAttribute('aria-pressed','true');}});
     field.addEventListener('input',()=>{if(!preview.hidden)preview.innerHTML=richContentHTML(field.value);});
     toolbar.append(toggle);wrapper.prepend(toolbar);wrapper.append(preview);
   }

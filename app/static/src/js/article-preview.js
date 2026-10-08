@@ -13,9 +13,7 @@ export function previewURL(href, origin = location.origin) {
 }
 
 let transient, openTimer, closeTimer, layer = 1100;
-const labels = document.documentElement.lang?.startsWith('ru')
-  ? {preview:'Предпросмотр', move:'Переместить', pin:'Закрепить', unpin:'Открепить', close:'Закрыть', loading:'Загрузка…', error:'Не удалось загрузить статью.'}
-  : {preview:'Preview', move:'Move', pin:'Pin', unpin:'Unpin', close:'Close', loading:'Loading…', error:'Unable to load article.'};
+const labels = JSON.parse(document.getElementById('interface-labels')?.textContent || '{}');
 const icon = paths => '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + paths + '</svg>';
 function close(panel) {
   panel?.resizeObserver?.disconnect();

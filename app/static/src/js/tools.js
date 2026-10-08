@@ -1,8 +1,12 @@
 import utils, { styledAlert } from "./utils.js";
-import {generateResult, resultText} from "./content_generators.js";
+import {generateResult, localizeText, resultText} from "./content_generators.js";
 import {richContentHTML} from "./rich-content.js";
 
 window.KW_alert = utils.styledAlert;
+
+const labels = JSON.parse(document.getElementById('tools-content-labels').textContent);
+// Choice values stay English: they are lookup keys into the table data.
+const t = (key) => Object.hasOwn(labels.terms, key) ? labels.terms[key] : key;
 
 const toolTabs = [...document.querySelectorAll(".tools-tab-list [role=tab]")];
 const selectToolTab = (selected) => {
@@ -67,7 +71,7 @@ const addChoiceButtons = (choices, element, onSelect) => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "button tools-choice";
-    button.textContent = key;
+    button.textContent = t(key);
     button.setAttribute("aria-pressed", "false");
     button.addEventListener("click", () => {
       element.querySelectorAll("button").forEach((choice) => {
@@ -81,7 +85,7 @@ const addChoiceButtons = (choices, element, onSelect) => {
 
 addChoiceButtons(categories, categoryButtons, (category) => {
   selectedCategory = category;
-  document.getElementById("selected-category-label").textContent = ` · ${category}`;
+  document.getElementById("selected-category-label").textContent = ` · ${t(category)}`;
   document.getElementById("table-choice-hint").hidden = true;
   selectedSubcategory = "";
   rollButton.disabled = true;
@@ -93,15 +97,15 @@ addChoiceButtons(categories, categoryButtons, (category) => {
 
 
 const resultDisplay = document.getElementById('tools-result-display');
-const labels = JSON.parse(document.getElementById('tools-content-labels').textContent);
 rollButton.addEventListener('click', () => {
   if (!selectedCategory || !selectedSubcategory) return;
   const result = generateResult(data, selectedCategory, selectedSubcategory);
   const card = document.createElement('article');
   card.className = 'tools-generated-result';
-  const title = document.createElement('h3'); title.textContent = result.title;
-  const markdown = resultText(result);
-  card.dataset.copyText = `${result.title}\n\n${markdown}`;
+  const shownTitle = localizeText(result.title, t);
+  const title = document.createElement('h3'); title.textContent = shownTitle;
+  const markdown = resultText(result, t);
+  card.dataset.copyText = `${shownTitle}\n\n${markdown}`;
   const body = document.createElement('div'); body.className = 'rich-content'; body.innerHTML = richContentHTML(markdown);
   card.append(title, body);
   if (labels.authenticated) {
@@ -109,7 +113,7 @@ rollButton.addEventListener('click', () => {
     function action(label, map) {
       const button = document.createElement('button'); button.type = 'button'; button.textContent = label;
       button.addEventListener('click', () => {
-        sessionStorage.setItem('kw-content-result', JSON.stringify({...result, body:resultText(result)}));
+        sessionStorage.setItem('kw-content-result', JSON.stringify({...result, title:shownTitle, body:markdown}));
         window.location.href = map ? '/materials/generate?from_tools=1' : '/materials/import';
       });
       actions.append(button);

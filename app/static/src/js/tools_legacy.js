@@ -1,10 +1,14 @@
 import {generateWorldbuilding} from './worldbuilding.js';
-import {resultText} from './content_generators.js';
+import {localizeText, resultText} from './content_generators.js';
 import {richContentHTML} from './rich-content.js';
 // Pre-campaign Tools retained while the experimental generator is allowlisted.
 import utils, { handleClick, styledAlert } from "./utils.js";
 
 window.KW_alert = utils.styledAlert;
+
+const labels = JSON.parse(document.getElementById("tools-content-labels").textContent);
+// Choice values stay English: they are lookup keys into the table data.
+const t = (key) => Object.hasOwn(labels.terms, key) ? labels.terms[key] : key;
 
 const toolTabs = [...document.querySelectorAll(".tools-tab-list [role=tab]")];
 const selectToolTab = (selected) => {
@@ -69,7 +73,7 @@ const addChoiceButtons = (choices, element, onSelect) => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "button tools-choice";
-    button.textContent = key;
+    button.textContent = t(key);
     button.setAttribute("aria-pressed", "false");
     button.addEventListener("click", () => {
       element.querySelectorAll("button").forEach((choice) => {
@@ -83,7 +87,7 @@ const addChoiceButtons = (choices, element, onSelect) => {
 
 addChoiceButtons(categories, categoryButtons, (category) => {
   selectedCategory = category;
-  document.getElementById("selected-category-label").textContent = ` · ${category}`;
+  document.getElementById("selected-category-label").textContent = ` · ${t(category)}`;
   document.getElementById("table-choice-hint").hidden = true;
   selectedSubcategory = "";
   rollButton.disabled = true;
@@ -134,7 +138,7 @@ handleClick("#tools-copy-text-button", (event, element) => {
   const resultDisplay = document.getElementById("tools-result-display");
   const text = resultDisplay.innerText;
   navigator.clipboard.writeText(text);
-  styledAlert("Copy text", "Results copied to clipboard");
+  styledAlert(labels.copy, labels.copied);
 });
 
 const roll = (sides) => {
@@ -147,7 +151,7 @@ const formatObjectToString = (obj) => {
     .filter(([key, value]) => !(Array.isArray(value) && value.length === 0))
     .map(([key, value]) => {
       let formattedValue = Array.isArray(value) ? value.join(", ") : value;
-      return `<b>${key}:</b> ${formattedValue}`;
+      return `<b>${t(key)}:</b> ${formattedValue}`;
     })
     .join("<br>");
 };
@@ -192,9 +196,9 @@ const rollMonsters = (data, subcategory) => {
     const formattedTraits = result.Traits.map((trait) =>
       trait.replace(/Critical Damage/g, "<b>Critical Damage</b>")
     );
-    const textResult = `<b><u>${result.Name}</u></b><br><br>HP: ${result.HP}, ${
-      result.Armor ? `Armor: ${result.Armor},` : ""
-    } STR: ${result.STR}, DEX: ${result.DEX}, WIL: ${result.WIL}${
+    const textResult = `<b><u>${result.Name}</u></b><br><br>${t("HP")}: ${result.HP}, ${
+      result.Armor ? `${t("Armor")}: ${result.Armor},` : ""
+    } ${t("STR")}: ${result.STR}, ${t("DEX")}: ${result.DEX}, ${t("WIL")}: ${result.WIL}${
       result.Attack ? `, ${result.Attack}<br><br>` : ""
     }• ${formattedTraits.join("<br>• ")}`;
     displayResult(textResult);
@@ -227,12 +231,12 @@ const rollMonsters = (data, subcategory) => {
       Monsters.MonsterAbilities.Target[
         roll(Monsters.MonsterAbilities.Target.length)
       ];
-    const textResult = `<b><u>Custom Monster</u></b><br><br><b>Physique:</b> ${physique}<br><b>Feature:</b> ${feature}<br><b>Quirks:</b> ${quirks}<br><b>Weakness:</b> ${weakness}<br><b>Attack:</b> ${attack}<br><b>Critical Damage:</b> ${criticalDamage}<br><b>Ability:</b> ${ability}<br><b>Target:</b> ${target}`;
+    const textResult = `<b><u>${t("Custom Monster")}</u></b><br><br><b>${t("Physique")}:</b> ${physique}<br><b>${t("Feature")}:</b> ${feature}<br><b>${t("Quirks")}:</b> ${quirks}<br><b>${t("Weakness")}:</b> ${weakness}<br><b>${t("Attack")}:</b> ${attack}<br><b>${t("Critical Damage")}:</b> ${criticalDamage}<br><b>${t("Ability")}:</b> ${ability}<br><b>${t("Target")}:</b> ${target}`;
     displayResult(textResult);
   } else if (subcategory === "Reaction Roll") {
     let roll = utils.roll(2, 6);
     const result = Monsters[roll - 2]; //2-12 -> 0-10
-    const textResult = `<b><u>Reaction Roll</u></b><br><br><b>${result}</b>`;
+    const textResult = `<b><u>${t("Reaction Roll")}</u></b><br><br><b>${result}</b>`;
     displayResult(textResult);
   }
 };
@@ -241,11 +245,11 @@ const rollEvents = (data, subcategory) => {
   const events = data[subcategory];
   if (subcategory === "Dungeon Events") {
     const result = events[roll(events.length)];
-    const textResult = `<b><u>Dungeon Event</u></b><br><br>${result.description}`;
+    const textResult = `<b><u>${t("Dungeon Event")}</u></b><br><br>${result.description}`;
     displayResult(textResult);
   } else if (subcategory === "Wilderness Events") {
     const result = events[roll(events.length)];
-    const textResult = `<b><u>Wilderness Event</u></b><br><br>${result.description}`;
+    const textResult = `<b><u>${t("Wilderness Event")}</u></b><br><br>${result.description}`;
     displayResult(textResult);
   }
 };
@@ -256,7 +260,7 @@ const rollWeather = (data, subcategory) => {
   const type = weather[roll(weather.length)];
   console.log(type);
   const difficulty = data.Difficulty[type];
-  const textResult = `<b><u>Weather</u></b><br><br><b>Season:</b> ${subcategory}<br><b>Type:</b> ${type}<br><b>Effect:</b> ${difficulty.Effect} <br><b>Examples:</b> ${difficulty.Examples}`;
+  const textResult = `<b><u>${t("Weather")}</u></b><br><br><b>${t("Season")}:</b> ${t(subcategory)}<br><b>${t("Type")}:</b> ${t(type)}<br><b>${t("Effect")}:</b> ${difficulty.Effect} <br><b>${t("Examples")}:</b> ${difficulty.Examples}`;
   displayResult(textResult);
 };
 
@@ -266,9 +270,9 @@ const rollRelics = (data, subcategory) => {
   let name = result.name;
   let weight = "";
   if (result.tags.includes("petty")) {
-    weight = " (petty)";
+    weight = ` (${t("petty")})`;
   } else if (result.tags.includes("bulky")) {
-    weight = " (bulky)";
+    weight = ` (${t("bulky")})`;
   }
 
   let tags = [];
@@ -279,19 +283,17 @@ const rollRelics = (data, subcategory) => {
       !["bulky", "petty", "uses", "charges", "use", "charge"].includes(tag)
   );
   if (regularTags.length > 0) {
-    tags.push(regularTags.join(", "));
+    tags.push(regularTags.map((tag) => t(tag)).join(", "));
   }
 
   // Add uses if present
   if (result.uses) {
-    tags.push(`${result.uses} use${result.uses > 1 ? "s" : ""}`);
+    tags.push(`${t("uses")}: ${result.uses}`);
   }
 
   // Add charges if present
   if (result.max_charges) {
-    tags.push(
-      `${result.max_charges} charge${result.max_charges > 1 ? "s" : ""}`
-    );
+    tags.push(`${t("charges")}: ${result.max_charges}`);
   }
 
   // Join all tags with proper comma placement
@@ -319,7 +321,7 @@ const rollRelics = (data, subcategory) => {
   // Add personality if it exists
   if (result.personality) {
     descriptionText += descriptionText ? "<br>" : ""; // Add a line break if there's already a description
-    descriptionText += `• Personality: ${result.personality}`;
+    descriptionText += `• ${t("personality")}: ${result.personality}`;
   }
 
   const textResult = `<b><u>${name}</u></b>${tagsString}<i>${weight}</i><br><br>${descriptionText}`;
@@ -329,5 +331,5 @@ const rollRelics = (data, subcategory) => {
 
 const rollWorldbuilding = (data, subcategory) => {
   const result=generateWorldbuilding(data,subcategory);
-  displayResult(richContentHTML(`## ${result.title}\n\n${resultText(result)}`));
+  displayResult(richContentHTML(`## ${localizeText(result.title, t)}\n\n${resultText(result, t)}`));
 };

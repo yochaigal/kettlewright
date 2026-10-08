@@ -19,6 +19,7 @@
 </div>
 <iframe class="pointcrawl-canvas" x-ref="canvas"
  data-src="{{ url_for('static', filename='src/js/maps/editor.html') }}"
+ data-library-error="{{ _('Some map libraries could not load. Reload the editor to retry.') }}"
  title="{{ _('Drawing editor') }}"></iframe>
 <div x-show="showLocations">
 {% if editing %}<p>{{ _('Select terrain to move or resize it. Press Ctrl/Cmd+Enter to edit its border points. Manually edited terrain keeps its shape when landmarks move. Select a Water article below to draw its watercourse.') }}</p>
@@ -29,8 +30,8 @@
 {% if editing %}<p>{% if party %}{{ _('This drawing will be shown to the party when you save.') }}{% else %}{{ _('Drawing, text and images remain private until you publish the saved drawing.') }}{% endif %} {{ _('Use PNG, JPEG, WebP or GIF images; drawings may be up to 12 MB.') }}</p>{% endif %}
 <div class="map-editor-grid" x-show="showLocations">
 <section><h2>{{ _('Articles') }}</h2>
-{% for group, title in [('pois', 'Points of Interest'), ('topography', 'Topography'), ('other', 'Other articles')] %}
-<div class="map-article-group" x-show="nodesForGroup('{{ group }}').length"><h3>{{ _(title) }}</h3>
+{% for group, title in [('pois', _('Points of Interest')), ('topography', _('Topography')), ('other', _('Other articles'))] %}
+<div class="map-article-group" x-show="nodesForGroup('{{ group }}').length"><h3>{{ title }}</h3>
 <ol><template x-for="item in nodesForGroup('{{ group }}')" :key="item.id"><li>
 <details :data-map-node="String(item.id)" :open="selected===String(item.id)" :class="{'map-selected':selected===String(item.id)}" @toggle="if($el.open){selectedEdge='';selected=String(item.id)}else if(selected===String(item.id)){selected=''}">
 <summary><span x-text="item.number+'. '"></span><span x-html="$markdownInline(item.title)"></span></summary>
