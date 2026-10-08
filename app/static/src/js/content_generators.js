@@ -1,4 +1,4 @@
-import {generateSettingArticle, settingTypes, article} from './setting_articles.js';
+import {generateSettingArticle, settingTypes, article, prepareArticleDraft} from './setting_articles.js';
 import {generateWorldbuilding} from './worldbuilding.js';
 import {settingName} from './naming.js';
 
@@ -129,7 +129,9 @@ export function graphFromResult(result, random = Math.random, tables = null, opt
   }
   if(tables && result.mapKind==='forest' && options.generateChildren !== false
     && random()*100<Number(options.dungeonChance ?? 25)) children.push(generateSettingArticle(tables,'dungeon',random,options));
-  return {title:result.title, body:resultText(result), kind:result.mapKind, nodes, edges, children};
+  prepareArticleDraft({body:'',children});
+  const links=children.map(child=>`- [${child.title.replace(/[\\`*\[\]<>_]/g,'\\$&')}](kw-generated/${child.draft_key})`).join('\n');
+  return {title:result.title, body:resultText(result)+(links ? `\n\n## Articles\n\n${links}` : ''), kind:result.mapKind, nodes, edges, children};
 }
 
 // Older Tools results have no POI metadata; generated names include their type.
@@ -146,7 +148,7 @@ export function nestedMapDraft(node, kind, tables, random = Math.random) {
 
 // Article categories reuse the same rules tables as Tools. No campaign is needed.
 export function generateArticle(data, category, variant='', random=Math.random, options={}) {
-  if(settingTypes.has(category)) return generateSettingArticle(data,category,random,options);
+  if(settingTypes.has(category)) return prepareArticleDraft(generateSettingArticle(data,category,random,options));
   const pick=items=>items[Math.floor(random()*items.length)];
   let result;
   if(category==='npc') result=generateResult(data,'Worldbuilding','NPC',random);

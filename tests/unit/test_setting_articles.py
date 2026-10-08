@@ -13,6 +13,66 @@ def draft():
         {'category':'paths','title':'Paths','children':[{'category':'path','title':'Trail','path_type':'hidden'}]}]
 
 
+def test_generated_description_links_bind_exact_children_and_remain_private(setup):
+    from app.lib.article_references import private_reference_urls
+    app, client = setup
+    children = [
+        {'category':'people','title':'People','draft_key':'root/0',
+         'body':'### [Twin](kw-generated/root/0/0)\n\nPrivate culture',
+         'children':[{'category':'culture','title':'Twin','draft_key':'root/0/0','body':'Private culture'}]},
+        {'category':'culture','title':'Twin','draft_key':'root/1','body':'Other culture'}]
+    body = '## [People](kw-generated/root/0)\n\nPrivate culture\n\n## [Twin](kw-generated/root/1)'
+    root_id = create_entry(client, category='realm', body=body, children=json.dumps(children))
+    with app.app_context():
+        root = db.session.get(ContentEntry, root_id)
+        people = next(child for child in root.children if child.category == 'people')
+        twin = next(child for child in root.children if child.category == 'culture')
+        nested = people.children[0]
+        for entry, targets in [(root, [people, twin]), (people, [nested])]:
+            assert 'kw-generated/' not in entry.body
+            assert set(private_reference_urls(entry).values()) == {f'/materials/{target.id}/edit' for target in targets}
+        twin.title = 'Renamed'
+        db.session.commit()
+        assert f'/materials/{twin.id}/edit' in private_reference_urls(root).values()
+        saved_body, target_id = root.body, twin.id
+    assert reveal(client, root_id, body=saved_body).status_code == 302
+    login(client, 2)
+    html = client.get(f'/party/1/materials/{root_id}').get_data(as_text=True)
+    assert 'Private culture' in html
+    assert f'href="/party/1/materials/{target_id}"' not in html
+    assert f'href="/materials/{target_id}/edit"' not in html
+    login(client, 1)
+    assert reveal(client, target_id).status_code == 302
+    login(client, 2)
+    html = client.get(f'/party/1/materials/{root_id}').get_data(as_text=True)
+    assert f'href="/party/1/materials/{target_id}"' in html
+    assert f'href="/materials/{target_id}/edit"' not in html
+
+
+def test_duplicate_generated_targets_roll_back(setup):
+    app, client = setup
+    children = [{'category':'culture','title':'Twin','draft_key':'same'}] * 2
+    response = client.post('/materials/new', data={'category':'realm','title':'Root',
+        'campaign_id':1,'children':json.dumps(children)})
+    assert response.status_code == 400
+    with app.app_context():
+        assert ContentEntry.query.count() == 0
+
+
+def test_generated_map_description_links_its_article_sections(setup):
+    from app.lib.article_references import private_reference_urls
+    app, client = setup
+    children = [{'category':'people','title':'People','body':'Culture summary','draft_key':'root/0'}]
+    response = client.post('/maps/new', data={'campaign_id':1,'kind':'realm','title':'Map',
+        'body':'Original Tools text\n\n[People](kw-generated/root/0)',
+        'draft':json.dumps({'nodes':[],'edges':[],'children':children})})
+    assert response.status_code == 302
+    with app.app_context():
+        root = PointcrawlMap.query.filter_by(kind='realm').one().entry
+        assert root.body.startswith('Original Tools text')
+        assert set(private_reference_urls(root).values()) == {f'/materials/{root.children[0].id}/edit'}
+
+
 def test_tree_roundtrip_scope_publication_and_move(setup):
     app, client = setup
     root_id = create_entry(client,category='realm',children=json.dumps(draft()))

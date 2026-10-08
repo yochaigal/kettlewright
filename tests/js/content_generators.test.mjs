@@ -257,3 +257,37 @@ test('each generated Realm has exactly one water source on a terrain',()=>{
   }
   assert.equal(waters(generateArticle(data,'realm','',rng(1),{generateChildren:false})).length,0);
 });
+
+test('compound descriptions retain descendant text and unambiguous draft links without duplicate previews',()=>{
+  for(const category of ['realm','people','faction','topography','pois','paths','dungeon','forest']) {
+    const draft=generateArticle(data,category,'',rng(5));
+    const descendants=flatten(draft).slice(1);
+    assert(descendants.length>0,category);
+    assert.equal(new Set(descendants.map(child=>child.draft_key)).size,descendants.length);
+    for(const child of descendants) {
+      assert(draft.body.includes(`](kw-generated/${child.draft_key})`),`${category}: ${child.title}`);
+      assert(draft.body.includes(child.body),`${category}: ${child.title}`);
+    }
+    assert.equal(draftPreview(draft),draft.body);
+  }
+});
+
+test('Dungeon and Forest retain the Tools POIs and trails even without child articles',()=>{
+  for(const kind of ['Dungeon','Forest']) {
+    const options={generateChildren:false};
+    const tools=generateResult(data,'Worldbuilding',kind,rng(17),options);
+    const draft=generateArticle(data,kind.toLowerCase(),'',rng(17),options);
+    assert.equal(draft.children.length,0);
+    for(const text of [...tools.fields.POIs,...(tools.fields.trails || [])]) assert(draft.body.includes(text));
+  }
+});
+
+test('Tools map drafts retain the original description and link their generated article sections',()=>{
+  const result=generateResult(data,'Worldbuilding','Realm',rng(5));
+  const graph=graphFromResult(result,rng(5),data);
+  assert(graph.body.startsWith(resultText(result)));
+  for(const child of graph.children) {
+    assert(graph.body.includes(`](kw-generated/${child.draft_key})`));
+    for(const descendant of flatten(child).slice(1)) assert(child.body.includes(descendant.body));
+  }
+});

@@ -487,9 +487,10 @@ def heart_value(item, category, fallback=False):
     return value
 
 
-def save_article_children(parent, children):
+def save_article_children(parent, children, *, body=None):
     """Persist a reviewed draft with server-owned ancestry and a bounded size."""
     remaining = 1000
+    drafts, created = {}, []
     def create(owner, rows, depth):
         nonlocal remaining
         if not isinstance(rows, list) or depth > 10:
@@ -509,8 +510,33 @@ def save_article_children(parent, children):
                 body=content_value(row.get('body', '')), path_type=path_type,
                 is_heart=heart_value(row, category))
             db.session.add(child)
+            created.append(child)
+            key = row.get('draft_key')
+            if key is not None:
+                if not isinstance(key, str) or len(key) > 200 or key in drafts:
+                    abort(400, 'Invalid generated article target.')
+                drafts[key] = child
             create(child, row.get('children', []), depth + 1)
     create(parent, children, 0)
+    if not drafts:
+        return body
+    # Flush once to obtain stable reference keys and unique article paths. All
+    # replacements still belong to the caller's transaction.
+    db.session.flush()
+    from urllib.parse import quote
+    def resolve(text, entry):
+        references = dict(entry.references or {})
+        for key, child in drafts.items():
+            placeholder = f'](kw-generated/{key})'
+            if placeholder in text:
+                target = child.source_path
+                text = text.replace(placeholder, f']({quote(target, safe="/")})')
+                references[target] = child.reference_key
+        entry.references = references
+        return text
+    for entry in [parent, *created]:
+        entry.body = resolve(entry.body, entry)
+    return resolve(body, parent) if body is not None else None
 
 
 def set_article_parent(entry, value):
