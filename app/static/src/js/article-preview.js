@@ -14,8 +14,8 @@ export function previewURL(href, origin = location.origin) {
 
 let transient, openTimer, closeTimer, layer = 1100;
 const labels = document.documentElement.lang?.startsWith('ru')
-  ? {preview:'Предпросмотр', move:'Переместить', pin:'Закрепить', pinned:'Закреплено', close:'Закрыть', loading:'Загрузка…', error:'Не удалось загрузить статью.'}
-  : {preview:'Preview', move:'Move', pin:'Pin', pinned:'Pinned', close:'Close', loading:'Loading…', error:'Unable to load article.'};
+  ? {preview:'Предпросмотр', move:'Переместить', pin:'Закрепить', unpin:'Открепить', close:'Закрыть', loading:'Загрузка…', error:'Не удалось загрузить статью.'}
+  : {preview:'Preview', move:'Move', pin:'Pin', unpin:'Unpin', close:'Close', loading:'Loading…', error:'Unable to load article.'};
 const icon = paths => '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + paths + '</svg>';
 function close(panel) {
   panel?.resizeObserver?.disconnect();
@@ -79,10 +79,17 @@ async function show(link, url) {
   panel.addEventListener('pointerleave', () => { if (transient === panel) scheduleClose(); });
   panel.addEventListener('focusin', () => clearTimeout(closeTimer));
   pin.onclick = () => {
-    if (transient === panel) transient = null;
-    pin.setAttribute('aria-pressed', 'true');
-    pin.setAttribute('aria-label', labels.pinned);
-    pin.title = labels.pinned; pin.disabled = true;
+    clearTimeout(openTimer); clearTimeout(closeTimer);
+    const pinned = pin.getAttribute('aria-pressed') !== 'true';
+    if (pinned) {
+      if (transient === panel) transient = null;
+    } else {
+      if (transient !== panel) close(transient);
+      transient = panel;
+    }
+    pin.setAttribute('aria-pressed', String(pinned));
+    pin.setAttribute('aria-label', pinned ? labels.unpin : labels.pin);
+    pin.title = pinned ? labels.unpin : labels.pin;
   };
   dismiss.onclick = () => close(panel);
   const beginInteraction = () => {
