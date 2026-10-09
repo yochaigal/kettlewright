@@ -189,3 +189,47 @@ def test_character_snapshot_preserves_effective_hp_and_rest_editor(overview):
     assert rest.data.count(b'class="sheet-stat-form"') == 12
     assert b'/charedit/user2/hero1/stats' in rest.data
     assert b'value="8"' in rest.data
+
+
+def test_initial_party_page_filters_private_rolls_and_warden_controls(overview):
+    from app.models import PartyRoll
+    app, clients, sockets = overview
+    with app.app_context():
+        db.session.add_all([
+            PartyRoll(party_id=1, character_name='Hero1', result='public-roll'),
+            PartyRoll(party_id=1, character_name='user1', result='private-warden-roll', private_user_id=1),
+        ])
+        db.session.commit()
+    for user_id in (1, 2, 3, 4):
+        response = clients[user_id].get('/users/user1/parties/party/')
+        assert response.status_code == 200
+        html = response.get_data(as_text=True)
+        assert ('private-warden-roll' in html) == (user_id == 1)
+        assert ('id="warden-dice"' in html) == (user_id == 1)
+        assert ('public-roll' in html) == (user_id in (1, 2, 3))
+
+
+def test_tools_only_lists_owned_parties(overview):
+    app, clients, sockets = overview
+    with app.app_context():
+        db.session.add(Party(id=2, owner=4, name='Secret other party', party_url='other'))
+        db.session.commit()
+    owner_html = clients[1].get('/tools/').get_data(as_text=True)
+    assert 'id="warden-roll-party"' in owner_html
+    assert '<option value="1">Party</option>' in owner_html
+    assert 'Secret other party' not in owner_html
+    player_html = clients[2].get('/tools/').get_data(as_text=True)
+    assert '<option value="1">' not in player_html
+    anonymous_html = app.test_client().get('/tools/').get_data(as_text=True)
+    assert 'id="warden-dice"' not in anonymous_html
+
+
+def test_warden_roll_accepts_csrf_from_rendered_form(overview):
+    app, clients, sockets = overview
+    app.config['WTF_CSRF_ENABLED'] = True
+    response = clients[1].get('/users/user1/parties/party/')
+    assert response.headers['Cache-Control'] == 'no-store'
+    token = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', response.get_data(as_text=True))[1]
+    result = clients[1].post('/warden/roll', data={'party_id': 1, 'kind': 'fate', 'csrf_token': token})
+    assert result.status_code == 200
+    assert 1 <= result.json['values'][0] <= 6

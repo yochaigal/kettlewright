@@ -543,7 +543,7 @@
     {
       "name": "Time Control",
       "tags": [],
-      "description": "Time in a 50ft bubble slows down or increases by 10% for 30 seconds.",
+      "description": "Time in a 50ft bubble slows down or increases by 10 percent for 30 seconds.",
       "personality": "Alternates its appearance as either impossibly old or freshly written."
     },
     {

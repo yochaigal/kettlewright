@@ -2,7 +2,12 @@
 <ol class="party-roll-list">
   {% for roll in rolls %}
   <li data-roll-id="{{ roll.id }}">
-    <span><strong>{{ roll.character_name }}</strong> — {{ roll.result }}</span>
+    {% set is_warden_roll = roll.private_user_id is not none or roll.character_name == 'Warden' or roll.character_name == party.owner_username %}
+    <span>{% if is_warden_roll %}
+    {% set visibility_label = _('Only you can see these rolls.') if roll.private_user_id is not none else _('Everyone in the party can see these rolls.') %}
+      <i class="fa-solid {{ 'fa-eye-slash' if roll.private_user_id is not none else 'fa-eye' }} party-roll-visibility"
+             role="img" title="{{ visibility_label }}" aria-label="{{ visibility_label }}"></i>
+      {% endif %}<strong>{{ _('Warden') if is_warden_roll else roll.character_name }}</strong> — {{ roll.result }}</span>
     <time datetime="{{ roll.created_at.isoformat() }}Z">{{ roll.created_at.strftime('%Y-%m-%d %H:%M:%S') }} UTC</time>
   </li>
   {% endfor %}

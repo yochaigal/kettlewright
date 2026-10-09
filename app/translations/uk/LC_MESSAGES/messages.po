@@ -20161,8 +20161,7 @@ msgid "Time Control"
 msgstr "Контроль часу"
 
 #: app/static/json/party_events/spellbooks.json:546
-#, no-python-format
-msgid "Time in a 50ft bubble slows down or increases by 10% for 30 seconds."
+msgid "Time in a 50ft bubble slows down or increases by 10 percent for 30 seconds."
 msgstr ""
 "Час у бульбашці завширшки 50 футів (15 м) сповільнюється або пришвидшується "
 "на 10% на 30 секунд."
@@ -25527,3 +25526,27 @@ msgstr "Підтримується Markdown"
 #: app/templates/base.html:62
 msgid "Unpin"
 msgstr "Відкріпити"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "Die of Fate"
+msgstr "Кістка долі"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "No party"
+msgstr "Без партії"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "Only you can see these rolls."
+msgstr "Ці кидки бачите лише ви."
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "Unable to roll dice. Please try again."
+msgstr "Не вдалося кинути кістки. Спробуйте ще раз."
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "Public roll"
+msgstr "Публічний кидок"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "Everyone in the party can see these rolls."
+msgstr "Ці кидки бачать усі учасники партії."

@@ -30,22 +30,30 @@
       </div>
       <div class="party-header-actions">
         {% if can_view_rolls and party_features_enabled(party.id) %}
-        <a class="button no-margin-top" href="{{ url_for('party.shared_map', party_id=party.id) }}">{{ _('Whiteboard') }}</a>
+        <a class="button dice-button no-margin-top" href="{{ url_for('party.shared_map', party_id=party.id) }}"
+          title="{{ _('Whiteboard') }}" aria-label="{{ _('Whiteboard') }}"><i class="fa-solid fa-chalkboard" aria-hidden="true"></i></a>
         {% endif %}
         {% if is_owner or is_subowner %}
         <button class="button is-light no-margin-top" id="join-code-button" type="button" title="Join Code">
           <span class="mobile-hidden">{{_('Join Code')}}</span>
           <i class="fa-solid fa-link icon-in-button"></i>
         </button>
-        <button class="button no-margin-top" type="button" title="{{_('Edit party')}}"
+        <button class="button dice-button no-margin-top" type="button" title="{{_('Edit party')}}" aria-label="{{_('Edit party')}}"
           hx-get="/party/edit/{{ownername}}/{{party_url}}" hx-target="body">
-          {{_('Edit party')}}
+          <i class="fa-solid fa-pencil" aria-hidden="true"></i>
+        </button>
+        {% endif %}
+        {% if is_owner %}
+        <button class="button dice-button no-margin-top" type="button" id="warden-dice-button"
+          title="{{ _('Roll Dice') }}" aria-label="{{ _('Roll Dice') }}" aria-haspopup="dialog" aria-controls="dice-modal">
+          <i class="fa-solid fa-dice dice" aria-hidden="true"></i>
         </button>
         {% endif %}
       </div>
     </div>
 
     <div>{{ party.description|markdown }}</div>
+    {% if is_owner %}{% include 'partial/partyview/warden_dice.html' %}{% endif %}
     {% if can_view_rolls and party_features_enabled(party.id) %}<div class="party-section party-material-actions">
       <a class="button" href="{{ url_for('campaigns.party_materials', party_id=party.id) }}">{{ _('Campaign details') }}</a>
       {% if is_owner and user_features_enabled() %}<a class="button" href="{{ url_for('campaigns.new_entry', party_id=party.id) }}">{{ _('Create and show') }}</a>{% endif %}
