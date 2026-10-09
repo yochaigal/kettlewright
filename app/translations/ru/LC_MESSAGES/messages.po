@@ -25610,3 +25610,7 @@ msgstr "Публичный бросок"
 #: app/templates/partial/partyview/warden_dice.html
 msgid "Everyone in the party can see these rolls."
 msgstr "Эти броски видны всем участникам партии."
+
+#: app/templates/main/character_view.html
+msgid "Export Attributes"
+msgstr "Экспортировать характеристики"

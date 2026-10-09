@@ -31,6 +31,8 @@ LAYOUTS = {
         page_size=(841.89, 595.276), portrait=(252.5, 185.5, 105, 105),
         name=(48, 164, 157), background=(48, 208, 157),
         deprived=(481, 83), status=(399, 305, 95),
+        attributes=[(134, 300, 134, 345), (207, 300, 207, 345), (279, 300, 279, 345), (350, 300, 350, 345)],
+        armor=(481, 140), gold=(469, 337),
         inventory=(536, 166, 18.7, 169), fatigue=(726, 164),
         petty=[(399, 196 + i * 16.5, 93) for i in range(6)],
         traits=[(227 if i < 4 else 265, 410 + i * 16.5, 118 if i < 4 else 80) for i in range(10)],
@@ -42,6 +44,8 @@ LAYOUTS = {
         page_size=(595.321191, 841.921684), portrait=(87, 216, 110, 110),
         name=(65, 282, 155), background=(345, 193, 190),
         deprived=(234, 594), status=(52, 309, 180),
+        attributes=[(400, 413, 456, 413), (400, 459, 456, 459), (400, 505, 456, 505), (156, 551, 207, 551)],
+        armor=(234, 642), gold=(526, 790),
         inventory=(374, 580, 15.5, 151), fatigue=(538, 580),
         petty=[(366, 759 + i * 15, 107) for i in range(4)],
         traits=[(345, 244 + i * 17, 205) for i in range(4)],
@@ -127,13 +131,14 @@ def _item_title(item):
 
 
 class CharacterSheet:
-    def __init__(self, character, party=None, orientation='landscape'):
+    def __init__(self, character, party=None, orientation='landscape', export_attributes=True):
         _register_fonts()
         self.orientation = orientation
         self.layout = LAYOUTS[orientation]
         self.page_size = self.layout['page_size']
         self.character = character
         self.party = party
+        self.export_attributes = export_attributes
         self.sections = []
         self.buffer = BytesIO()
         self.canvas = canvas.Canvas(self.buffer, pagesize=self.page_size)
@@ -185,11 +190,19 @@ class CharacterSheet:
             self.section(_('Portrait URL'), c.image_url)
         self.single_line(c.name, *layout['name'], 16, BOLD, _('Name'))
         self.single_line(_(c.background), *layout['background'], 12, title=_('Background'))
-        # Mutable numbers are intentionally blank for handwritten play at the table.
         if self.orientation == 'landscape':
             for center in (134, 207, 279, 350):
                 self.text(_('current'), center, 277, 7, centered=True)
                 self.text(_('max'), center, 327, 7, centered=True)
+        for index, attribute in enumerate(('strength', 'dexterity', 'willpower', 'hp')):
+            x, current_top, maximum_x, maximum_top = layout['attributes'][index]
+            self.text(getattr(c, attribute + '_max'), maximum_x, maximum_top, 14, centered=True)
+            if self.export_attributes:
+                value = c.hpValue()[0] if attribute == 'hp' else getattr(c, attribute)
+                self.text(value, x, current_top, 14, centered=True)
+        if self.export_attributes:
+            self.text(c.armorValue(), *layout['armor'], 12, centered=True)
+            self.text(c.gold, *layout['gold'], 10, centered=True)
         if c.deprived:
             self.text('X', *layout['deprived'], 14, centered=True)
         states = [label for condition, label in ((c.dead, _('Dead')), (c.panicked, _('PANICKED'))) if condition]

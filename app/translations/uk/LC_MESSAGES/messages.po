@@ -20,7 +20,7 @@ msgstr ""
 "Generated-By: Babel 2.18.0\n"
 
 # ============================================= BASIC
-# =============================================
+# ======================================
 #: app/forms.py:10 app/forms.py:19 app/forms.py:53 app/forms.py:68
 #: app/forms.py:77 app/forms.py:79
 msgid "Email"
@@ -1272,7 +1272,7 @@ msgid "You are %(num)s years old."
 msgstr "Вам %(num)s років."
 
 # ============================================= BONDS
-# =============================================
+# ======================================
 #: app/static/json/bonds.json:4 app/static/json/bonds.json:8
 msgid ""
 "You inherited a Single Gem (500gp, cold and brittle) from a long-dead "
@@ -1545,7 +1545,7 @@ msgstr ""
 "викривають ілюзії."
 
 # ============================================= OMENS
-# =============================================
+# ======================================
 #: app/static/json/omens.json:4
 msgid ""
 "The once rich waters of a life-giving river have turned black and putrid, "
@@ -1742,7 +1742,7 @@ msgstr ""
 "повторює те саме застереження: насувається вогонь, і він поглине всіх."
 
 # ============================================= SCARS
-# =============================================
+# ======================================
 #: app/static/json/scars.json:4
 msgid "1 HP - Lasting Scar"
 msgstr "1 ПЗ - Довічний шрам"
@@ -1968,7 +1968,7 @@ msgstr ""
 "Якщо сума вища за ваш максимум ПЗ, візьміть новий результат."
 
 # ============================================= TRAITS
-# =============================================
+# ======================================
 #: app/static/json/traits.json:3
 msgid "Athletic"
 msgstr "Атлетична"
@@ -2315,7 +2315,7 @@ msgid "Vengeful"
 msgstr "Мстивий"
 
 # ============================================= BACKGROUNDS
-# =============================================
+# ======================================
 #: app/static/json/backgrounds/aurifex.json:1
 msgid "Aurifex"
 msgstr "Аурифекс"
@@ -7191,7 +7191,7 @@ msgstr ""
 "поволі проступають дрібним почерком."
 
 # ============================================= BESTIARY
-# =============================================
+# ======================================
 #: app/static/json/party_events/bestiary.json:4
 #: app/static/json/party_events/dungeons.json:254
 msgid "Acolyte"
@@ -9393,7 +9393,7 @@ msgstr ""
 "допомоги фахівця чи цілителя вона за 1к4 дні стане зомбі."
 
 # ============================================= CUSTOM MONSTER
-# =============================================
+# ======================================
 #: app/static/json/party_events/custom-monster.json:5
 msgid "Albino"
 msgstr "Альбінос"
@@ -10053,7 +10053,7 @@ msgid "Weather"
 msgstr "Погода"
 
 # ============================================= DUNGEONS
-# =============================================
+# ======================================
 #: app/static/json/party_events/dungeon-events.json:4
 msgid ""
 "Encounter: Roll on an encounter table. Possibly hostile. (See Reactions.)"
@@ -11583,7 +11583,7 @@ msgid "Tripping"
 msgstr "Спотикання"
 
 # ============================================= FACTIONS
-# =============================================
+# ======================================
 #: app/static/json/party_events/faction-events.json:4
 msgid "Failure"
 msgstr "Провал"
@@ -12800,7 +12800,7 @@ msgid "Syndicate"
 msgstr "Синдикат"
 
 # ============================================= FORESTS
-# =============================================
+# ======================================
 #: app/static/json/party_events/forests.json:6
 msgid "Barren"
 msgstr "Безплідний"
@@ -14765,7 +14765,7 @@ msgid "Tree Carvings"
 msgstr "Різьблення на деревах"
 
 # ============================================= SETTING
-# =============================================
+# ======================================
 #: app/static/json/party_events/names.json:5
 #: app/static/json/party_events/setting.json:989
 msgid "(The) [Noun] [POI]"
@@ -17913,7 +17913,7 @@ msgid "Uneven, Soggy Ground"
 msgstr "Нерівна, багниста земля"
 
 # ============================================= NPCS
-# =============================================
+# ======================================
 #: app/static/json/party_events/names.json:135
 #: app/static/json/party_events/npcs.json:68
 #: app/static/json/party_events/setting.json:123
@@ -18263,7 +18263,7 @@ msgid "Tanner"
 msgstr "Таннер"
 
 # ============================================= RELIQUARY
-# =============================================
+# ======================================
 #: app/static/json/party_events/reliquary.json:4
 msgid "A Blade Called Hope"
 msgstr "Клинок на ім’я Надія"
@@ -18901,7 +18901,7 @@ msgstr ""
 "бути поруч."
 
 # ============================================= SPELLBOOKS
-# =============================================
+# ======================================
 #: app/static/json/party_events/spellbooks.json:4
 msgid "Adhere"
 msgstr "Липкість"
@@ -20305,7 +20305,7 @@ msgstr ""
 "Тривале використання може спричинити випадіння волосся, розмитий зір і втому."
 
 # ============================================= WEATHER
-# =============================================
+# ======================================
 #: app/static/json/party_events/weather.json:4
 #: app/static/json/party_events/weather.json:5
 msgid "Nice"
@@ -20387,7 +20387,7 @@ msgid "Tornados, tidal waves, hurricane, volcanic eruption"
 msgstr "Торнадо, припливні хвилі, ураган, виверження вулкана"
 
 # ============================================= WILDERNESS_EVENTS
-# =============================================
+# ======================================
 #: app/static/json/party_events/wilderness-events.json:4
 msgid ""
 "Encounter: Roll on an encounter table for that terrain type or location. "
@@ -25550,3 +25550,7 @@ msgstr "Публічний кидок"
 #: app/templates/partial/partyview/warden_dice.html
 msgid "Everyone in the party can see these rolls."
 msgstr "Ці кидки бачать усі учасники партії."
+
+#: app/templates/main/character_view.html
+msgid "Export Attributes"
+msgstr "Експортувати характеристики"
