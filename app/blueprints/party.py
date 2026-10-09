@@ -284,11 +284,49 @@ def party_view(ownername, party_url):
         return redirect(url_for('main.index'))
     party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party = get_party_data(ownername, party_url)
     can_view_rolls = current_user.id in party_recipient_ids(party)
-    return render_template('main/party_view.html', party_url=party_url, characters=characters, join_code=join_code, is_owner=is_owner,
+    response = make_response(render_template('main/party_view.html', party_url=party_url, characters=characters, join_code=join_code, is_owner=is_owner,
                            is_subowner=is_subowner, party_id=party.id, ownername=ownername, inventory=inventory, party=party,
                            can_view_rolls=can_view_rolls, roll_form=FlaskForm(), stat_form=FlaskForm(),
-                           rolls=PartyRoll.latest(party.id) if can_view_rolls else [],
-                           wilderness_mounts=wilderness_mounts(party, characters))
+                           rolls=PartyRoll.latest(party.id, current_user.id) if can_view_rolls else [],
+                           wilderness_mounts=wilderness_mounts(party, characters)))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@party.post('/warden/roll')
+@login_required
+def warden_roll():
+    from app.lib.warden_rolls import roll_warden
+    from app.lib.character_rolls import publish_roll
+    from app import socketio
+    if not FlaskForm().validate_on_submit():
+        abort(400)
+    raw_party = request.form.get('party_id')
+    target = None
+    if raw_party:
+        try:
+            party_id = int(raw_party)
+        except ValueError:
+            abort(400)
+        target = db.get_or_404(Party, party_id)
+    public = request.form.get('public_roll') == 'on'
+    try:
+        result = roll_warden(current_user, target, request.form.get('kind'), request.form.get('dice'), public=public)
+    except PermissionError:
+        abort(403)
+    except ValueError as error:
+        return _board_json({'error': str(error)}), 400
+    db.session.commit()
+    if public:
+        publish_roll(target, _('Warden'), result['result'])
+    elif target is not None:
+        # Even a history-change signal would reveal that the Warden rolled.
+        try:
+            socketio.emit('roll_history_changed', {'party_id': target.id}, room=f'user_{current_user.id}')
+        except Exception:
+            from flask import current_app
+            current_app.logger.exception('Unable to publish private roll update')
+    return _board_json(result)
 
 
 @party.route('/party/<int:party_id>/roll-history', methods=['GET'])
@@ -298,7 +336,7 @@ def roll_history(party_id):
     if current_user.id not in party_recipient_ids(target_party):
         abort(403)
     response = make_response(render_template('partial/partyview/roll_history_entries.html',
-                                            rolls=PartyRoll.latest(party_id)))
+                                            party=target_party, rolls=PartyRoll.latest(party_id, current_user.id)))
     response.headers['Cache-Control'] = 'no-store'
     return response
 

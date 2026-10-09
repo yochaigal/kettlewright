@@ -1,0 +1,36 @@
+{% extends 'main/dice_modal.html' %}
+{% block dice_modal_body %}
+<div id="warden-dice" data-roll-url="{{ url_for('party.warden_roll') }}"
+     data-error="{{ _('Unable to roll dice. Please try again.') }}">
+  <form id="warden-dice-form">
+    {{ roll_form.hidden_tag() }}
+    {% if warden_parties is defined %}
+    <label for="warden-roll-party">{{ _('Party') }}</label>
+    <select id="warden-roll-party" name="party_id">
+      <option value="">{{ _('No party') }}</option>
+      {% for target in warden_parties %}<option value="{{ target.id }}">{{ target.name }}</option>{% endfor %}
+    </select>
+    {% else %}
+    <input type="hidden" name="party_id" value="{{ party.id }}">
+    {% endif %}
+    <div>
+      <label class="warden-roll-toggle">
+        <input class="checkbox" type="checkbox" id="warden-public-roll" name="public_roll" value="on"
+               aria-describedby="warden-roll-visibility">
+        {{ _('Public roll') }}
+      </label>
+      <p id="warden-roll-visibility" data-private="{{ _('Only you can see these rolls.') }}"
+         data-public="{{ _('Everyone in the party can see these rolls.') }}">{{ _('Only you can see these rolls.') }}</p>
+    </div>
+    {{ super() }}
+    <div class="dice-modal-buttons-container">
+      <button type="button" class="button" data-warden-roll="reaction">{{ _('Reaction Roll') }}</button>
+      <button type="button" class="button" data-warden-roll="fate">{{ _('Die of Fate') }}</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block dice_modal_scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='src/js/warden_dice.js') }}" type="module"></script>
+{% endblock %}

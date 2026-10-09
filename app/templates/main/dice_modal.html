@@ -1,14 +1,15 @@
 <div class="modal" id="dice-modal">
-  <script src="{{ url_for('static', filename='src/js/dice_modal.js') }}" type="module"></script>
+  {% block dice_modal_scripts %}<script src="{{ url_for('static', filename='src/js/dice_modal.js') }}" type="module"></script>{% endblock %}
   <div class="modal-background" id="dice-modal-background"></div>
   <div class="modal-card" id="dice-modal-card">
     <header class="modal-card-head">
       <h3 class="modal-card-title" style="margin-left: -33.51px">{{_('Roll Dice')}}</h3>
     </header>
     <section class="modal-card-body">
+      {% block dice_modal_body %}
       <div class="dice-modal-result-container">
         <div class="dice-modal-result-center">
-          <p id="dice-modal-roll-result">0</p>
+          <p id="dice-modal-roll-result" role="status" aria-live="polite">0</p>
         </div>
       </div>
       <div class="dice-modal-buttons-container">
@@ -33,6 +34,7 @@
         <button class="button is-yellow dice-modal-button" id="dice-modal-d12+d12-button"
           type="button">{{_('d12+d12')}}</button>
       </div>
+      {% endblock %}
     </section>
   </div>
 </div>

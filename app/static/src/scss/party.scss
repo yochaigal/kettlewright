@@ -491,6 +491,7 @@ body:has(.tools-page) {
     border-bottom: 1px dotted var(--fg);
     overflow-wrap: anywhere;
     span { min-width: 0; }
+    .party-roll-visibility { font-size: .8em; margin-right: .25rem; }
     time { font-size: .85em; opacity: .7; }
   }
 }

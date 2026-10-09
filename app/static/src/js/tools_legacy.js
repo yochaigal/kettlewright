@@ -97,10 +97,26 @@ addChoiceButtons(categories, categoryButtons, (category) => {
   });
 });
 
-rollButton.addEventListener("click", () => {
+rollButton.addEventListener("click", async () => {
   const category = selectedCategory;
   const subcategory = selectedSubcategory;
   if (!category || !subcategory) return;
+
+  if (subcategory === 'Reaction Roll' && document.getElementById('warden-dice')) {
+    rollButton.disabled = true;
+    try {
+      const { requestWardenRoll } = await import('./warden_dice.js');
+      const result = await requestWardenRoll('reaction');
+      const text = document.createElement('p');
+      text.textContent = result.result;
+      displayResult(text.outerHTML);
+    } catch (error) {
+      utils.styledAlert(t('Reaction Roll'), error.message);
+    } finally {
+      rollButton.disabled = !selectedSubcategory;
+    }
+    return;
+  }
 
   switch (category) {
     case "Monsters":

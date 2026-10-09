@@ -97,9 +97,24 @@ addChoiceButtons(categories, categoryButtons, (category) => {
 
 
 const resultDisplay = document.getElementById('tools-result-display');
-rollButton.addEventListener('click', () => {
+rollButton.addEventListener('click', async () => {
   if (!selectedCategory || !selectedSubcategory) return;
-  const result = generateResult(data, selectedCategory, selectedSubcategory);
+  let result;
+  if (selectedSubcategory === 'Reaction Roll' && document.getElementById('warden-dice')) {
+    rollButton.disabled = true;
+    try {
+      const { requestWardenRoll } = await import('./warden_dice.js');
+      const rolled = await requestWardenRoll('reaction');
+      result = { title: 'Reaction Roll', category: 'note', fields: { Reaction: rolled.result } };
+    } catch (error) {
+      styledAlert(t('Reaction Roll'), error.message);
+      return;
+    } finally {
+      rollButton.disabled = !selectedSubcategory;
+    }
+  } else {
+    result = generateResult(data, selectedCategory, selectedSubcategory);
+  }
   const card = document.createElement('article');
   card.className = 'tools-generated-result';
   const shownTitle = localizeText(result.title, t);

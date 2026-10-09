@@ -393,6 +393,24 @@ img.edit-portrait-modal-thumbnail.highlighted {
   border: none;
 }
 
+#warden-dice-form {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+
+  select { width: 100%; }
+  .warden-roll-toggle {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin: .5rem 0;
+    input { margin: 0; flex: 0 0 auto; }
+  }
+  #warden-roll-visibility { margin: .5rem 0; font-size: .9em; }
+  .dice-modal-buttons-container button { margin: 0; }
+  #dice-modal-roll-result { font-size: 2em; overflow-wrap: anywhere; text-align: center; }
+}
+
 /* --- Modal alert --- */
 
 .modal-alert {

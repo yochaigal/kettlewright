@@ -46,7 +46,16 @@
 <script src="{{ url_for('static', filename='src/js/tools.js' if user_features_enabled() else 'src/js/tools_legacy.js') }}" type="module"></script>
 <div class="body-container tools-page">
   <div class="sheet party-tools-sheet">
-    <h2>{{_('Tools')}}</h2>
+    <div class="party-header">
+      <h2>{{_('Tools')}}</h2>
+      {% if current_user.is_authenticated %}
+      <button class="button dice-button" type="button" id="warden-dice-button"
+        title="{{ _('Roll Dice') }}" aria-label="{{ _('Roll Dice') }}" aria-haspopup="dialog" aria-controls="dice-modal">
+        <i class="fa-solid fa-dice dice" aria-hidden="true"></i>
+      </button>
+      {% endif %}
+    </div>
+    {% if current_user.is_authenticated %}{% include 'partial/partyview/warden_dice.html' %}{% endif %}
     <div class="tools-tabs">
       <div class="tools-tab-list" role="tablist" aria-label="{{_('Tools')}}">
         <button type="button" id="tables-tab" role="tab" aria-selected="true" aria-controls="tab-content1">{{_('Tables')}}</button>
