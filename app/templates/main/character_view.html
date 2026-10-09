@@ -94,16 +94,19 @@
     </div>
 
     <div class="justify-space-between character-sheet-actions-container" style="margin-top: 2.5em">
-      <div class="row32 character-sheet-actions">
+      <div class="row32 character-sheet-actions" x-data="{ exportAttributes: true }">
         <a href="{{ url_for('main.print_character', username=username, url_name=url_name) }}">
           <button class="button is-light" id="" style="margin-right: 1em" type="button">
             {{_('Print')}}<i class="fa-solid fa-print icon-in-button"></i>
           </button>
         </a>
 
+        <label class="character-pdf-attributes"><input type="checkbox" x-model="exportAttributes" checked> {{_('Export Attributes')}}</label>
         <a class="button is-light character-pdf-action" href="{{ url_for('main.print_character_landscape', username=username, url_name=url_name) }}"
+           :href='{{ url_for("main.print_character_landscape", username=username, url_name=url_name) | tojson }} + "?export_attributes=" + (exportAttributes ? "1" : "0")'
            target="_blank" rel="noopener">{{_('Print PDF (landscape)')}} <i class="fa-solid fa-file-pdf icon-in-button" aria-hidden="true"></i></a>
         <a class="button is-light character-pdf-action" href="{{ url_for('main.print_character_portrait', username=username, url_name=url_name) }}"
+           :href='{{ url_for("main.print_character_portrait", username=username, url_name=url_name) | tojson }} + "?export_attributes=" + (exportAttributes ? "1" : "0")'
            target="_blank" rel="noopener">{{_('Print PDF (portrait)')}} <i class="fa-solid fa-file-pdf icon-in-button" aria-hidden="true"></i></a>
 
         {% if is_owner %}

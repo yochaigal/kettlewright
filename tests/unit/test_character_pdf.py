@@ -31,8 +31,8 @@ def pdf_character(app_with_babel):
 PATH = '/users/printer/characters/hero/print/{orientation}.pdf'
 
 
-def rendered(app, orientation):
-    response = app.test_client().get(PATH.format(orientation=orientation))
+def rendered(app, orientation, query_string=None):
+    response = app.test_client().get(PATH.format(orientation=orientation), query_string=query_string)
     assert response.status_code == 200
     assert response.mimetype == 'application/pdf'
     return response, PdfReader(BytesIO(response.data))
@@ -56,21 +56,35 @@ def test_pdf_route_embeds_fonts_and_builtin_portrait_without_mutating_character(
     assert app.test_client().get(PATH.format(orientation=orientation).replace('/hero/', '/missing/')).status_code == 404
 
 
-def test_pdf_leaves_current_max_gold_and_armor_blank_for_handwriting(pdf_character, orientation):
+@pytest.mark.parametrize('query,include_current', [(None, True), ({'export_attributes': '1'}, True), ({'export_attributes': '0'}, False)])
+def test_pdf_exports_attributes_by_default_and_always_keeps_maxima(pdf_character, orientation, query, include_current):
     app, character = pdf_character
+    character.strength, character.strength_max = 17, 18
+    character.dexterity, character.dexterity_max = 11, 12
+    character.willpower, character.willpower_max = 13, 14
+    character.hp, character.hp_max = 5, 6
     character.gold = 31415
     character.items = json.dumps([dict(name='Leather armor', tags=['2 Armor'], location=0)])
     db.session.commit()
-    _, reader = rendered(app, orientation)
+    _, reader = rendered(app, orientation, query)
     text = reader.pages[0].extract_text()
     if orientation == 'landscape':
         assert text.count('current') == 4 and text.count('max') == 4
-    # Template labels are raster artwork; generated standalone numeric values
-    # would indicate that a stat, Gold or Armor field was accidentally filled.
-    assert not re.findall(r'^\s*\d+\s*$', text, flags=re.M)
-    assert '31415' not in text
+    values = re.findall(r'^\s*(\d+)\s*$', text, flags=re.M)
+    assert values == (['18', '17', '12', '11', '14', '13', '6', '5', '2', '31415']
+                      if include_current else ['18', '12', '14', '6'])
     assert 'Leather armor (2 Armor)' in text
-    assert character.gold == 31415 and character.strength == 10
+    assert character.gold == 31415 and character.strength == 17
+
+
+def test_pdf_uses_effective_hp_when_panicked(pdf_character, orientation):
+    app, character = pdf_character
+    character.panicked = True
+    db.session.commit()
+    _, reader = rendered(app, orientation)
+    values = re.findall(r'^\s*(\d+)\s*$', reader.pages[0].extract_text(), flags=re.M)
+    assert values[6:8] == ['3', '0']
+    assert character.hp == 3
 
 
 def test_long_sections_paginate_and_keep_unicode_and_html_text(pdf_character, orientation):
@@ -160,3 +174,6 @@ def test_character_view_keeps_html_print_and_adds_pdf_option(pdf_character, orie
     assert response.status_code == 200
     assert b'/users/printer/characters/hero/print/"' in response.data
     assert PATH.format(orientation=orientation).encode() in response.data
+    assert b'x-model="exportAttributes" checked' in response.data
+    assert b'Export Attributes' in response.data
+    assert b'?export_attributes=' in response.data

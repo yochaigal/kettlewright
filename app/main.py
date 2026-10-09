@@ -365,7 +365,8 @@ def _print_character_pdf(username, url_name, orientation):
     user = User.query.filter_by(username=username).first_or_404()
     character = Character.query.filter_by(owner=user.id, url_name=url_name).first_or_404()
     party = db.session.get(Party, character.party_id) if character.party_id else None
-    response = send_file(CharacterSheet(character, party, orientation).draw(), mimetype='application/pdf',
+    export_attributes = request.args.get('export_attributes', '1') != '0'
+    response = send_file(CharacterSheet(character, party, orientation, export_attributes=export_attributes).draw(), mimetype='application/pdf',
                          download_name=f'{character.url_name}-{orientation}-a4.pdf', as_attachment=False)
     response.headers['Cache-Control'] = 'private, no-store'
     response.headers['X-Content-Type-Options'] = 'nosniff'

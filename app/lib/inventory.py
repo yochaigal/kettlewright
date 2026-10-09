@@ -359,10 +359,8 @@ class Inventory:
             cnt["carried_by"] = carried_by
             cnt["load"] = load
         else:
-            if "carried_by" in cnt:
-                del cnt["carried_by"]
-            # if "load" in cnt:
-            #     del cnt["load"]
+            cnt.pop("carried_by", None)
+            cnt.pop("load", None)
             
         containers = json.loads(self.character.containers)
         result = []
@@ -371,11 +369,10 @@ class Inventory:
                 result.append(c)
         result.append(cnt)
         
+        # Replace all old reservations, including duplicates from earlier edits.
+        self.character.items = json.dumps(self.remove_carrying(container_id))
         if has_carried:
             items = self.add_carrying(carried_by,container_id, name, int(load))
-            self.character.items = json.dumps(items)
-        else:
-            items =  self.remove_carrying(container_id)
             self.character.items = json.dumps(items)
             
         self.character.containers = json.dumps(result)
@@ -441,8 +438,7 @@ class Inventory:
         if has_carried:
             obj["carried_by"] = carried_by
             obj["load"] = load
-            for i in range(int(load)):
-                items = self.add_carrying(carried_by,new_id, name, int(load))
+            items = self.add_carrying(carried_by,new_id, name, int(load))
             self.character.items = json.dumps(items)
         containers.append(obj)
         self.character.containers = json.dumps(containers)                        
