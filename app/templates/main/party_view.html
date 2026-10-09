@@ -29,15 +29,17 @@
         {% if is_owner %}<p class="subtitle">{{_("Warden")}}</p>{% endif %}
       </div>
       <div class="party-header-actions">
-        {% if can_view_rolls and party_features_enabled(party.id) %}
-        <a class="button dice-button no-margin-top" href="{{ url_for('party.shared_map', party_id=party.id) }}"
-          title="{{ _('Whiteboard') }}" aria-label="{{ _('Whiteboard') }}"><i class="fa-solid fa-chalkboard" aria-hidden="true"></i></a>
-        {% endif %}
         {% if is_owner or is_subowner %}
         <button class="button is-light no-margin-top" id="join-code-button" type="button" title="Join Code">
           <span class="mobile-hidden">{{_('Join Code')}}</span>
           <i class="fa-solid fa-link icon-in-button"></i>
         </button>
+        {% endif %}
+        {% if can_view_rolls and party_features_enabled(party.id) %}
+        <a class="button no-margin-top" href="{{ url_for('party.shared_map', party_id=party.id) }}"
+          title="{{ _('Whiteboard') }}" aria-label="{{ _('Whiteboard') }}">{{ _('Whiteboard') }}</a>
+        {% endif %}
+        {% if is_owner or is_subowner %}
         <button class="button dice-button no-margin-top" type="button" title="{{_('Edit party')}}" aria-label="{{_('Edit party')}}"
           hx-get="/party/edit/{{ownername}}/{{party_url}}" hx-target="body">
           <i class="fa-solid fa-pencil" aria-hidden="true"></i>
