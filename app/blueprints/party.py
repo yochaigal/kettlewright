@@ -4,7 +4,7 @@ from app.lib import *
 from app.models import db, User, Character, Party, PartyRoll, PartyMap
 from app.socket_events import party_recipient_ids, notify_roll_history_changed
 from app.lib.quick_stats import save_current_stat
-from app.lib.feature_access import require_party_features
+from app.lib.feature_access import require_party_features, user_features_enabled, party_features_enabled
 from app.lib.companions import save_item_to_companion, finish_companion_transfers, can_transfer_from
 from flask_wtf import FlaskForm
 from app.forms import *
@@ -15,11 +15,16 @@ party = Blueprint('party', __name__)
 
 
 def _board_party(party_id, owner=False):
-    require_party_features(party_id)
     target = db.get_or_404(Party, party_id)
     if current_user.id not in party_recipient_ids(target) or owner and current_user.id != target.owner:
         abort(403)
     return target
+
+
+def _board_campaign_access(party_id):
+    require_party_features(party_id)
+    if not user_features_enabled():
+        abort(404)
 
 
 def _board_data():
@@ -81,7 +86,9 @@ def shared_map(party_id):
     from flask_wtf.csrf import generate_csrf
     target = _board_party(party_id)
     response = make_response(render_template('main/shared_map.html', party=target,
-        editing=True, warden=current_user.id == target.owner, csrf_token=generate_csrf()))
+        editing=True, warden=current_user.id == target.owner,
+        can_load_maps=current_user.id == target.owner and user_features_enabled() and party_features_enabled(party_id),
+        csrf_token=generate_csrf()))
     response.headers['Cache-Control'] = 'no-store'
     return response
 
@@ -142,6 +149,7 @@ def shared_map_tokens(party_id):
 @login_required
 def shared_map_sources(party_id):
     _board_party(party_id, owner=True)
+    _board_campaign_access(party_id)
     from app.models import ContentEntry, PointcrawlMap
     maps = PointcrawlMap.query.join(ContentEntry).filter(ContentEntry.owner_id == current_user.id).all()
     return _board_json({'maps': [{'id': item.id, 'title': item.entry.title,
@@ -161,6 +169,7 @@ def _board_source(source_id):
 @login_required
 def shared_map_preview(party_id, source_id):
     _board_party(party_id, owner=True)
+    _board_campaign_access(party_id)
     from app.lib.whiteboard import source_snapshot
     item = _board_source(source_id)
     drawing, digest = source_snapshot(item)
@@ -172,6 +181,7 @@ def shared_map_preview(party_id, source_id):
 def shared_map_import(party_id):
     from app.lib.whiteboard import board_state, source_snapshot, empty_fog, integer
     target = _board_party(party_id, owner=True)
+    _board_campaign_access(party_id)
     data = _board_data()
     saved = db.session.get(PartyMap, party_id)
     state = board_state(saved)

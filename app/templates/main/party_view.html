@@ -35,7 +35,7 @@
           <i class="fa-solid fa-link icon-in-button"></i>
         </button>
         {% endif %}
-        {% if can_view_rolls and party_features_enabled(party.id) %}
+        {% if can_view_rolls %}
         <a class="button no-margin-top" href="{{ url_for('party.shared_map', party_id=party.id) }}"
           title="{{ _('Whiteboard') }}" aria-label="{{ _('Whiteboard') }}">{{ _('Whiteboard') }}</a>
         {% endif %}

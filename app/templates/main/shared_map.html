@@ -25,7 +25,7 @@
     <span>{{ _('Everyone in the party can edit') }}</span>
     <button type="button" id="fit-map">{{ _('Fit map') }}</button>
     <button type="button" id="board-theme">{{ _('Light / dark') }}</button>
-    {% if warden %}<button type="button" id="load-map">{{ _('Load map') }}</button>{% endif %}
+    {% if can_load_maps %}<button type="button" id="load-map">{{ _('Load map') }}</button>{% endif %}
     <button type="button" id="mobile-party-tokens">{{ _('Party tokens') }}</button>
     <span id="map-status" role="status" aria-live="polite">{{ _('Loading…') }}</span>
   </header>
@@ -53,7 +53,7 @@
     <div id="tokens-grid"></div>
     <p id="tokens-status" role="status" aria-live="polite"></p>
   </dialog>
-  {% if warden %}
+  {% if can_load_maps %}
   <dialog id="map-import" aria-labelledby="import-title">
     <h2 id="import-title">{{ _('Load map') }}</h2>
     <label for="map-source">{{ _('Choose a map') }}</label>
@@ -69,12 +69,12 @@
   </dialog>
   {% endif %}
   <script id="shared-map-config" type="application/json">{{ {
-    'partyId': party.id, 'editing': editing, 'warden': warden, 'csrfToken': csrf_token,
+    'partyId': party.id, 'editing': editing, 'warden': warden, 'canLoadMaps': can_load_maps, 'csrfToken': csrf_token,
     'tokensUrl': url_for('party.shared_map_tokens', party_id=party.id),
     'sceneUrl': url_for('party.shared_map_scene', party_id=party.id),
     'fogUrl': url_for('party.shared_map_fog', party_id=party.id),
-    'sourcesUrl': url_for('party.shared_map_sources', party_id=party.id),
-    'importUrl': url_for('party.shared_map_import', party_id=party.id),
+    'sourcesUrl': url_for('party.shared_map_sources', party_id=party.id) if can_load_maps else none,
+    'importUrl': url_for('party.shared_map_import', party_id=party.id) if can_load_maps else none,
     'libraryUrl': url_for('static', filename='vendor/excalidraw-libraries/'),
     'messages': {
       'tokens': _('Party tokens'), 'tokensLoading': _('Loading…'),
