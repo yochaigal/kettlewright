@@ -14,7 +14,6 @@ function roller(active = '1') {
   modal.resultText = result;
   const select = {...element(), value: '', options: [{value: ''}, {value: '1'}]};
   const publicToggle = {...element(), checked: true};
-  const visibility = {dataset: {private: 'Only you', public: 'Everyone'}, textContent: ''};
   const panel = {dataset: {rollUrl: '/warden/roll', error: 'Roll failed'},
     querySelectorAll(selector) { return selector === 'button' ? buttons : buttons.slice(1); }};
   const form = {elements: {party_id: select}};
@@ -24,7 +23,7 @@ function roller(active = '1') {
     document: {getElementById(id) { return {
       'warden-dice': panel, 'warden-dice-form': form, 'warden-roll-result': result,
       'warden-roll-party': select, 'warden-dice-button': buttons[0],
-      'warden-public-roll': publicToggle, 'warden-roll-visibility': visibility,
+      'warden-public-roll': publicToggle,
     }[id] || null; }},
     diceModal: modal,
     notification: {showNotification() {}}, refreshRollHistory() {},
@@ -38,7 +37,7 @@ function roller(active = '1') {
   const source = readFileSync(new URL('../../app/static/src/js/warden_dice.js', import.meta.url), 'utf8')
     .replace(/^import .*;\n/gm, '').replace('export async function', 'async function');
   vm.runInContext(source, context);
-  return {context, buttons, result, select, requests, stored, publicToggle, visibility, modal};
+  return {context, buttons, result, select, requests, stored, publicToggle, modal};
 }
 
 test('header opens the shared modal and every roll uses its result display', async () => {
@@ -81,19 +80,15 @@ test('stale active party falls back to no party', () => {
 });
 
 test('public mode requires an explicit choice and resets when the party is cleared', async () => {
-  const {context, publicToggle, visibility, requests, select} = roller();
+  const {context, publicToggle, requests, select} = roller();
   assert.equal(publicToggle.checked, false);
-  assert.equal(visibility.textContent, 'Only you');
   publicToggle.checked = true;
-  publicToggle.listeners.change();
-  assert.equal(visibility.textContent, 'Everyone');
   await context.requestWardenRoll('fate');
   assert.equal(requests[0].body.get('public_roll'), 'on');
   select.value = '';
   select.listeners.change();
   assert.equal(publicToggle.disabled, true);
   assert.equal(publicToggle.checked, false);
-  assert.equal(visibility.textContent, 'Only you');
   select.value = '1';
   select.listeners.change();
   assert.equal(publicToggle.disabled, false);

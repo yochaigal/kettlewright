@@ -350,13 +350,36 @@ img.edit-portrait-modal-thumbnail.highlighted {
 // Dice Modal
 
 #dice-modal-card {
-  max-width: 400px;
+  width: 400px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100dvh - 32px);
+  padding: 24px;
+  align-items: stretch;
+
+  .modal-card-head {
+    padding: 0 0 20px;
+  }
+
+  .modal-card-title {
+    margin: 0;
+    flex-shrink: 1;
+    text-align: center;
+  }
+
+  .modal-card-body {
+    padding: 0;
+    min-height: 0;
+    gap: 16px;
+  }
 }
 
 .dice-modal-result-container {
   display: flex;
   justify-content: center;
   width: 100%;
+  min-height: 80px;
+  padding: 12px 0;
+  border-block: 1px solid color-mix(in srgb, var(--fg) 15%, transparent);
 }
 
 .dice-modal-result-center {
@@ -365,16 +388,52 @@ img.edit-portrait-modal-thumbnail.highlighted {
 }
 
 #dice-modal-roll-result {
-  font-size: 3em;
+  margin: 0;
+  font-size: 2.5em;
   font-weight: bold;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 
 .dice-modal-buttons-container {
-  display: flex;
-  justify-content: center;
-  gap: .5em;
-  flex-wrap: wrap;
-  margin-top: 1em;
+  display: grid;
+  gap: 8px;
+  margin: 0;
+
+  button {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    min-height: 44px;
+    margin: 0;
+    padding: 8px 4px;
+    justify-content: center;
+  }
+}
+
+.dice-modal-single-dice {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  #dice-modal-d100-button { grid-column: span 2; }
+  button[hidden] { display: none; }
+
+  &:has(#dice-modal-d100-button[hidden]) {
+    #dice-modal-d12-button,
+    #dice-modal-d20-button { grid-column: span 2; }
+  }
+}
+
+.dice-modal-paired-dice {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  button { grid-column: span 2; }
+  button:nth-child(n + 4) { grid-column: span 3; }
+}
+
+.warden-special-rolls {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-top: 16px;
+  border-top: 1px solid color-mix(in srgb, var(--fg) 15%, transparent);
+  button { white-space: normal; }
 }
 
 .dice-modal-button.is-blue {
@@ -394,21 +453,30 @@ img.edit-portrait-modal-thumbnail.highlighted {
 }
 
 #warden-dice-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   margin: 0;
   padding: 0;
   width: 100%;
+  background: transparent;
 
-  select { width: 100%; }
+  .warden-roll-party-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    select { width: 100%; min-width: 0; }
+  }
+
   .warden-roll-toggle {
     display: flex;
     align-items: center;
-    gap: .5rem;
-    margin: .5rem 0;
+    gap: 8px;
+    margin: 0;
+    cursor: pointer;
     input { margin: 0; flex: 0 0 auto; }
+    &:has(input:disabled) { opacity: .5; cursor: default; }
   }
-  #warden-roll-visibility { margin: .5rem 0; font-size: .9em; }
-  .dice-modal-buttons-container button { margin: 0; }
-  #dice-modal-roll-result { font-size: 2em; overflow-wrap: anywhere; text-align: center; }
 }
 
 /* --- Modal alert --- */

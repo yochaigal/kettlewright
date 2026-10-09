@@ -288,7 +288,7 @@ if (config.warden) {
   document.getElementById('discard-fog').addEventListener('click', () => {
     if (confirm(config.messages.discardFog)) {fogQueue = []; fogBlocked = fogFailed = false; displayFog(); refresh();}
   });
-  setupMapImport({config, tell, replace: async (source, cover) => {
+  if (config.canLoadMaps) setupMapImport({config, tell, replace: async (source, cover) => {
     if (pending || saving || loading || fogQueue.length || fogSaving || version < 0) throw new Error(config.messages.waitForSave);
     importing = true; renderEditor(); showStatus();
     try {

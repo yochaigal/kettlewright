@@ -5,15 +5,12 @@ import { refreshRollHistory } from './party_roll_history.js';
 const panel = document.getElementById('warden-dice');
 const form = document.getElementById('warden-dice-form');
 const publicToggle = document.getElementById('warden-public-roll');
-const visibility = document.getElementById('warden-roll-visibility');
 // Do not restore a public mode from browser form-state or a previous visit.
 publicToggle.checked = false;
-function updateVisibility() {
+function updatePublicToggle() {
   publicToggle.disabled = !form.elements.party_id.value;
   if (publicToggle.disabled) publicToggle.checked = false;
-  visibility.textContent = publicToggle.checked ? visibility.dataset.public : visibility.dataset.private;
 }
-publicToggle.addEventListener('change', updateVisibility);
 let rolling = false;
 
 export async function requestWardenRoll(kind, dice = '') {
@@ -59,9 +56,9 @@ if (select) {
   } catch (_) { /* Optional preference. */ }
   select.addEventListener('change', () => {
     try { localStorage.setItem('warden-roll-party', select.value); } catch (_) { /* Optional preference. */ }
-    updateVisibility();
+    updatePublicToggle();
   });
 } else {
   try { localStorage.setItem('warden-roll-party', form.elements.party_id.value); } catch (_) { /* Optional preference. */ }
 }
-updateVisibility();
+updatePublicToggle();
