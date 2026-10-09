@@ -25527,3 +25527,7 @@ msgstr "Підтримується Markdown"
 #: app/templates/base.html:62
 msgid "Unpin"
 msgstr "Відкріпити"
+
+#: app/templates/main/character_view.html
+msgid "Export Attributes"
+msgstr "Експортувати характеристики"

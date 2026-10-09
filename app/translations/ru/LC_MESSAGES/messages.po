@@ -25587,3 +25587,7 @@ msgstr "Поддерживается Markdown"
 #: app/templates/base.html:62
 msgid "Unpin"
 msgstr "Открепить"
+
+#: app/templates/main/character_view.html
+msgid "Export Attributes"
+msgstr "Экспортировать характеристики"
