@@ -14,6 +14,29 @@ export function previewURL(href, origin = location.origin) {
 
 let transient, openTimer, closeTimer, layer = 1100;
 const labels = JSON.parse(document.getElementById('interface-labels')?.textContent || '{}');
+const preferenceKey = 'kw-article-previews';
+let previewsEnabled = true;
+try { previewsEnabled = localStorage.getItem(preferenceKey) !== 'off'; } catch { /* Use the default when storage is unavailable. */ }
+function updatePreviewControls() {
+  for (const button of document.querySelectorAll?.('[data-preview-toggle]') || []) {
+    button.setAttribute('aria-pressed', String(previewsEnabled));
+    button.textContent = previewsEnabled ? labels.previewsOn : labels.previewsOff;
+  }
+}
+function setPreviewsEnabled(enabled) {
+  previewsEnabled = enabled;
+  clearTimeout(openTimer); clearTimeout(closeTimer);
+  if (!enabled) {
+    close(transient);
+    for (const panel of document.querySelectorAll?.('.article-preview') || []) close(panel);
+  }
+  try { localStorage.setItem(preferenceKey, enabled ? 'on' : 'off'); } catch { /* Keep the preference for this page. */ }
+  updatePreviewControls();
+}
+updatePreviewControls();
+document.addEventListener('click', event => {
+  if (event.target.closest('[data-preview-toggle]')) setPreviewsEnabled(!previewsEnabled);
+});
 const icon = paths => '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + paths + '</svg>';
 function close(panel) {
   panel?.resizeObserver?.disconnect();
@@ -47,6 +70,7 @@ function fitContent(panel, content, bar) {
   panel.style.height = Math.ceil(contentHeight + bar.offsetHeight + frameHeight) + 'px';
 }
 async function show(link, url) {
+  if (!previewsEnabled) return;
   close(transient);
   const panel = document.createElement('section');
   panel.className = 'article-preview';
@@ -161,6 +185,7 @@ async function show(link, url) {
   }
 }
 function enter(event) {
+  if (!previewsEnabled) return;
   const link = event.target.closest('a[href]');
   if (!link || link.contains(event.relatedTarget)) return;
   const url = previewURL(link.href);

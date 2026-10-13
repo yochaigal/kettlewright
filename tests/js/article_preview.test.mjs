@@ -4,8 +4,9 @@ import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 
 // Exercise the actual panel handlers with a minimal DOM and controlled timers.
-function previews(lang='en') {
+function previews(lang='en', preference='on') {
   const timers=new Map(), panels=[];
+  const stored=new Map([['kw-article-previews',preference]]);
   let timerId=0;
   const element=()=>({style:{},attributes:{},listeners:{},textContent:'',
     setAttribute(key,value){this.attributes[key]=value;},
@@ -14,6 +15,7 @@ function previews(lang='en') {
   const labels={pin:lang==='ru'?'Закрепить':lang==='uk'?'Закріпити':'Pin',
     unpin:lang==='ru'?'Открепить':lang==='uk'?'Відкріпити':'Unpin'};
   const document={documentElement:{lang},addEventListener(){},
+    querySelectorAll(selector){return selector==='.article-preview'?panels.filter(panel=>!panel.removed):[];},
     getElementById(id){return id==='interface-labels'?{textContent:JSON.stringify(labels)}:null;},
     body:{append(panel){panels.push(panel);}},
     createElement(){
@@ -28,6 +30,7 @@ function previews(lang='en') {
       return panel;
     }};
   const context=vm.createContext({document,URL,AbortController,location:{origin:'https://example.test'},
+    localStorage:{getItem:key=>stored.get(key),setItem:(key,value)=>stored.set(key,value)},
     innerWidth:1280,innerHeight:800,
     setTimeout(fn){timers.set(++timerId,fn);return timerId;},clearTimeout(id){timers.delete(id);},
     previewPosition:()=>({left:8,top:8,maxHeight:780}),addPreviewResizeHandles(){},
@@ -35,12 +38,29 @@ function previews(lang='en') {
   const source=readFileSync(new URL('../../app/static/src/js/article-preview.js',import.meta.url),'utf8')
     .replace(/^import .*;\n/gm,'').replace('export function previewURL','function previewURL');
   vm.runInContext(source,context);
-  return {panels,async show(){
+  return {panels,stored,setEnabled(enabled){context.enabled=enabled;vm.runInContext('setPreviewsEnabled(enabled)',context);},async show(){
     context.link={textContent:'Article',getBoundingClientRect:()=>({})};
     await vm.runInContext("show(link, '/materials/1/preview')",context);
     return panels.at(-1);
   },flush(){for(const [id,fn] of [...timers]) {timers.delete(id);fn();}}};
 }
+
+test('disabling previews closes pinned panels and persists across page loads',async()=>{
+  const ui=previews(), panel=await ui.show();
+  panel.pin.onclick();
+  ui.setEnabled(false);
+  assert(panel.removed);
+  assert(panel.controller.signal.aborted);
+  assert.equal(ui.stored.get('kw-article-previews'),'off');
+  await ui.show();
+  assert.equal(ui.panels.length,1);
+  const restored=previews('en',ui.stored.get('kw-article-previews'));
+  await restored.show();
+  assert.equal(restored.panels.length,0);
+  restored.setEnabled(true);
+  await restored.show();
+  assert.equal(restored.panels.length,1);
+});
 
 test('Pin toggles to Unpin and back; unpinned previews close on pointer leave',async()=>{
   for(const lang of ['en','ru','uk']) {

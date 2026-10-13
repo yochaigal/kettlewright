@@ -1,0 +1,29 @@
+.account-settings {box-sizing:border-box;width:100%;max-width:42rem;margin:0 auto;padding:0 1.5rem;}
+.account-settings .account-profile {margin:0 0 2.5rem;padding:0;text-align:left;}
+.account-profile h1 {margin:0 0 .5rem;padding:0;font-size:3rem;text-align:left;overflow-wrap:anywhere;}
+.account-profile h1::before,.account-profile h1::after {content:none;}
+.account-settings > section {margin:0;padding:0;}
+.account-profile p {margin:0;overflow-wrap:anywhere;}
+.account-settings h2 {margin:0 0 1rem;}
+.account-actions {display:grid;gap:.75rem;}
+.account-settings .account-action,.account-settings .account-button {
+  box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  min-height:44px;max-width:100%;margin:0;padding:.85rem 1rem;
+  border:1.5px solid var(--fg);border-radius:2px;background:var(--form-bg);color:var(--fg);
+  font:inherit;font-weight:600;line-height:1.4;text-align:left;text-decoration:none;
+  overflow-wrap:anywhere;cursor:pointer;
+}
+.account-settings .account-action:hover,.account-settings .account-button:hover {
+  background:color-mix(in srgb,var(--fg) 8%,var(--form-bg));
+}
+.account-settings .account-action:focus-visible,.account-settings .account-button:focus-visible {
+  outline:2px solid var(--fg);outline-offset:3px;
+}
+.account-session {margin-top:2rem;}
+.account-settings .account-button {display:inline-flex;justify-content:center;min-width:9rem;}
+.account-delete {margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--fg);}
+.account-settings .account-button.is-danger {color:var(--fg);}
+@media(max-width:600px) {
+  .account-settings {max-width:100%;}
+  .account-profile h1 {font-size:2.6rem;}
+}
