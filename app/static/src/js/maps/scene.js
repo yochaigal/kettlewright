@@ -26,11 +26,11 @@ export function nodeAppearance(node, kind) {
     terrain: {type:'rectangle', width:640, height:700, stroke:'#5c713b', fill:'#e9efcf', label:'Terrain', background:true},
     landmark: {type:'line', width:54, height:48, stroke:'#765329', fill:'#ffe8a3', label:'Landmark'},
     water: {type:'ellipse', width:170, height:80, stroke:'#1971c2', fill:'#d0ebff', label:'Water'},
-    waypoint: {type:'diamond', width:64, height:64, stroke:'#9c5b00', fill:'#ffec99', label:'Waypoint'},
-    settlement: {type:'rectangle', width:64, height:54, stroke:'#9c4221', fill:'#ffe8cc', label:'Settlement'},
-    forest: {type:'diamond', width:72, height:72, stroke:'#2b6d3d', fill:'#d3f9d8', label:'Forest'},
-    dungeon: {type:'rectangle', width:60, height:60, stroke:'#6741a5', fill:'#e5dbff', label:'Dungeon'},
-    lair: {type:'diamond', width:60, height:60, stroke:'#c92a2a', fill:'#ffe3e3', label:'Lair'},
+    waypoint: {type:'ellipse', width:64, height:64, stroke:'#9c5b00', fill:'#ffec99', label:'Waypoint'},
+    settlement: {type:'ellipse', width:64, height:64, stroke:'#9c4221', fill:'#ffe8cc', label:'Settlement'},
+    forest: {type:'ellipse', width:72, height:72, stroke:'#2b6d3d', fill:'#d3f9d8', label:'Forest'},
+    dungeon: {type:'ellipse', width:60, height:60, stroke:'#6741a5', fill:'#e5dbff', label:'Dungeon'},
+    lair: {type:'ellipse', width:60, height:60, stroke:'#c92a2a', fill:'#ffe3e3', label:'Lair'},
     curiosity: {type:'ellipse', width:60, height:60, stroke:'#087f8c', fill:'#c5f6fa', label:'Curiosity'},
   };
   const style = types[node.category];

@@ -123,6 +123,50 @@ def test_parent_owner_workspace_and_cycles(setup):
     assert client.post('/materials/new',data={'category':'npc','title':'Wrong owner','parent_id':root}).status_code == 403
 
 
+def test_new_dungeon_in_realm_pois_is_placed_with_its_existing_contents(setup):
+    app,client=setup
+    realm=create_entry(client,category='realm',title='Realm')
+    pois=create_entry(client,category='pois',parent_id=realm)
+    first=create_entry(client,category='settlement',parent_id=pois)
+    before=graph_from_article(client,f'/materials/{realm}/edit')
+    assert [node['entry_id'] for node in before['nodes']]==[first]
+    dungeon=create_entry(client,category='dungeon',title='Dungeon',parent_id=pois,
+        children=json.dumps([{'category':'room','title':'Already rolled room','body':'Treasure'}]))
+    after=graph_from_article(client,f'/materials/{realm}/edit')
+    assert after['version']>before['version']
+    assert after['nodes'][0]==before['nodes'][0]
+    node=next(node for node in after['nodes'] if node['entry_id']==dungeon)
+    assert node['nested_map_id'] and node['has_contents']
+    with app.app_context():
+        entry=db.session.get(ContentEntry,dungeon)
+        assert node['nested_map_id']==entry.pointcrawl.id
+        assert entry.children[0].title=='Already rolled room'
+        assert len(entry.pointcrawl.nodes)==1
+    assert client.post(f'/maps/{before["id"]}/data',data={'graph':json.dumps(before)}).status_code==409
+    assert client.post(f'/materials/{dungeon}/edit',data={'category':'dungeon','title':'Renamed',
+        'campaign_id':1,'parent_id':pois,'version':1}).status_code==302
+    again=graph_from_article(client,f'/materials/{realm}/edit')
+    assert len(again['nodes'])==2 and again['version']==after['version']
+
+
+def test_reparenting_existing_dungeon_places_it_once_and_picker_reports_contents(setup):
+    app,client=setup
+    realm=create_entry(client,category='realm')
+    pois=create_entry(client,category='pois',parent_id=realm)
+    dungeon=create_entry(client,category='dungeon',title='Dungeon',
+        children=json.dumps([{'category':'room','title':'Room'}]))
+    with app.app_context():
+        nested_id=db.session.get(ContentEntry,dungeon).pointcrawl.id
+    html=client.get(f'/materials/{realm}/edit').get_data(as_text=True)
+    assert f'value="{dungeon}" data-category="dungeon" data-nested-map-id="{nested_id}" data-has-contents="true"' in html
+    assert client.post(f'/materials/{dungeon}/edit',data={'category':'dungeon','title':'Dungeon',
+        'campaign_id':1,'parent_id':pois,'version':1}).status_code==302
+    graph=graph_from_article(client,f'/materials/{realm}/edit')
+    assert len(graph['nodes'])==1
+    assert graph['nodes'][0]['entry_id']==dungeon
+    assert graph['nodes'][0]['nested_map_id']==nested_id
+
+
 @pytest.mark.parametrize('category,parent_category,allowed', [
     ('dungeon','pois',True), ('dungeon','forest',True), ('dungeon','realm',False),
     ('dungeon','people',False), ('room','dungeon',True), ('trap','dungeon',True),

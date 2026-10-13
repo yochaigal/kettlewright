@@ -1,5 +1,23 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+
+test('adding an existing article retains its map and contents and prevents generation',async()=>{
+  const {default:pointcrawl}=await import('../../app/static/src/js/alpine/components/pointcrawl.js');
+  for (const dataset of [{category:'dungeon',nestedMapId:'42',hasContents:'true'},
+    {category:'dungeon',nestedMapId:'',hasContents:'true'}]) {
+    const component=pointcrawl();
+    component.graph={nodes:[],edges:[]};component.locationId='12';
+    component.$refs={locationPicker:{selectedOptions:[{textContent:'Dungeon',dataset}]}};
+    component.addNode();
+    const node=component.graph.nodes[0];
+    assert.equal(node.entry_id,12);
+    assert.equal(node.has_contents,true);
+    assert.equal(node.nested_map_id,dataset.nestedMapId?42:null);
+    let loads=0;component.loadTables=async()=>{loads++;};
+    await component.generateNested();
+    assert.equal(loads,0);assert(!node.nested_draft);
+  }
+});
 import {drawingFromScene, graphShapes, movedLocations} from '../../app/static/src/js/maps/scene.js';
 
 test('geography is separate from POIs and the water brush requires a Water article',async()=>{
@@ -65,7 +83,7 @@ test('realm geography has layered distinct markers and foreground-first hit test
   assert.equal(shapes[0].locked,false);
   assert.equal(shapes[0].points.length,5);
   assert.equal(shapes.find(shape=>shape.id==='kw-node-2').type,'ellipse');
-  assert.equal(shapes.find(shape=>shape.id==='kw-node-3').type,'diamond');
+  assert.equal(shapes.find(shape=>shape.id==='kw-node-3').type,'ellipse');
   assert.match(shapes.find(shape=>shape.id==='kw-label-2').text,/Water/);
   assert.equal(new Set(graph.nodes.map(node=>nodeAppearance(node,'realm').fill)).size,4);
   assert.deepEqual(graphHit(graph,300,250),{id:'3',kind:'location'});

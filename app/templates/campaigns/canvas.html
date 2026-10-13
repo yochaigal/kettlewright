@@ -41,7 +41,7 @@
 </div>
 {% endfor %}
 {% if editing %}
-{% if locations %}<label>{{ _('Existing article') }}<select x-model="locationId" x-ref="locationPicker"><option value="">{{ _('Create a new article') }}</option>{% for location in locations %}<option value="{{ location.id }}" data-category="{{ location.category }}">{{ (location.title or _('Untitled private original'))|markdown_inline }}</option>{% endfor %}</select></label>{% endif %}
+{% if locations %}<label>{{ _('Existing article') }}<select x-model="locationId" x-ref="locationPicker"><option value="">{{ _('Create a new article') }}</option>{% for location in locations %}<option value="{{ location.id }}" data-category="{{ location.category }}" data-nested-map-id="{{ location.pointcrawl.id if location.pointcrawl else '' }}" data-has-contents="{{ 'true' if location.children or (location.pointcrawl and (location.pointcrawl.nodes or location.pointcrawl.edges or (location.pointcrawl.drawing or {}).get('elements'))) else 'false' }}">{{ (location.title or _('Untitled private original'))|markdown_inline }}</option>{% endfor %}</select></label>{% endif %}
 <button type="button" @click="addNode()">{{ _('Add article to drawing') }}</button>
 {% endif %}
 

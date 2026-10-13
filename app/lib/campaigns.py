@@ -621,6 +621,28 @@ def ensure_article_tree_maps(entry):
     ensure_article_map(entry)
 
 
+def place_new_realm_poi(entry):
+    """Place a newly attached POI without restoring deliberately removed points."""
+    parent = entry.parent
+    realm = parent.parent if parent and parent.category == 'pois' else None
+    if not realm or realm.category != 'realm' or entry.category not in POINT_TYPES:
+        return
+    if entry.owner_id != realm.owner_id or entry.campaign is not realm.campaign:
+        abort(409, 'The point of interest must belong to the same campaign and owner.')
+    # Populate a missing realm canvas from persisted IDs and campaign keys.
+    db.session.flush()
+    canvas = ensure_article_map(realm)
+    if any(node.entry is entry for node in canvas.nodes):
+        return
+    if len(canvas.nodes) >= 200:
+        abort(400, 'A map supports up to 200 points of interest.')
+    number = max((node.number for node in canvas.nodes), default=0) + 1
+    x = max((node.x for node in canvas.nodes), default=100) + 220
+    db.session.add(MapNode(map=canvas, entry=entry, number=number, x=x, y=220,
+                           nested_map=entry.pointcrawl))
+    canvas.version += 1
+
+
 def populate_realm_map(canvas):
     """Place existing setting articles without duplicating or moving saved points."""
     root = canvas.entry

@@ -23,7 +23,7 @@ from app.lib.rich_content import content_excerpt
 from app.lib.article_references import (private_reference_urls, bind_references, reference_urls,
     headings, tokens)
 from app.lib.content_types import CATEGORY_GROUPS, CATEGORY_ROOTS, ARTICLE_MAP_KINDS, ARTICLE_PARENT_TYPES
-from app.lib.campaigns import ensure_article_map, ensure_article_tree_maps, populate_realm_map, article_parent_choices
+from app.lib.campaigns import ensure_article_map, ensure_article_tree_maps, populate_realm_map, article_parent_choices, place_new_realm_poi
 from app.lib.material_images import LOCAL_IMAGE, image_directory, cleanup_images, image_references
 from app.lib.feature_access import user_features_enabled, party_features_enabled
 
@@ -299,6 +299,7 @@ def new_entry():
             abort(400, 'Invalid article draft.')
         body = save_article_children(entry, children, body=body)
         ensure_article_tree_maps(entry)
+        place_new_realm_poi(entry)
         if party:
             if campaign and not db.session.get(CampaignParty, (campaign.id, party.id)):
                 abort(400)
@@ -317,6 +318,7 @@ def new_entry():
 def edit_entry(entry_id):
     entry = owned(ContentEntry, entry_id)
     previous_category = entry.category
+    previous_parent = entry.parent
     if request.method == 'POST':
         check_version(entry, request.form.get('version'))
         if 'graph' in request.form:
@@ -407,6 +409,8 @@ def edit_entry(entry_id):
         for target_id in targets - set(old_links):
             entry.links.append(ContentLink(target_id=target_id))
         ensure_article_map(entry)
+        if entry.parent is not previous_parent:
+            place_new_realm_poi(entry)
         entry.version += 1
         audiences = entry_audiences(entry)
         db.session.commit()

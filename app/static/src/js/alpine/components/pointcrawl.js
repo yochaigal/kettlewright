@@ -153,6 +153,8 @@ export default function pointcrawl() {
         if (this.graph.nodes.some(n=>String(n.entry_id)===String(this.locationId))) {this.status=this.labels.duplicate;return;}
         node.entry_id=Number(this.locationId);node.title=option.textContent;
         node.category=option.dataset.category || 'custom';
+        node.nested_map_id=option.dataset.nestedMapId?Number(option.dataset.nestedMapId):null;
+        node.has_contents=option.dataset.hasContents==='true';
       }
       this.graph.nodes.push(node);this.selected=String(node.id);this.locationId='';
     },
@@ -231,7 +233,7 @@ export default function pointcrawl() {
     },
     async generateNested() {
       const node=this.selectedNode, kind=this.nestedKind;
-      if (!node || node.nested_map_id || node.nested_draft || this.generating) return;
+      if (!node || node.nested_map_id || node.has_contents || node.nested_draft || this.generating) return;
       this.generating=true;
       try {
         await this.loadTables();
