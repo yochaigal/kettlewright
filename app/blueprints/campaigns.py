@@ -22,8 +22,8 @@ from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, 
 from app.lib.rich_content import content_excerpt
 from app.lib.article_references import (private_reference_urls, bind_references, reference_urls,
     headings, tokens)
-from app.lib.content_types import CATEGORY_GROUPS, CATEGORY_ROOTS, ARTICLE_MAP_KINDS
-from app.lib.campaigns import ensure_article_map, ensure_article_tree_maps, populate_realm_map
+from app.lib.content_types import CATEGORY_GROUPS, CATEGORY_ROOTS, ARTICLE_MAP_KINDS, ARTICLE_PARENT_TYPES
+from app.lib.campaigns import ensure_article_map, ensure_article_tree_maps, populate_realm_map, article_parent_choices
 from app.lib.material_images import LOCAL_IMAGE, image_directory, cleanup_images, image_references
 from app.lib.feature_access import user_features_enabled, party_features_enabled
 
@@ -71,7 +71,7 @@ def conflict(error):
 
 @campaigns.context_processor
 def common_context():
-    return {'content_categories': CATEGORIES, 'category_groups': CATEGORY_GROUPS, 'category_roots': CATEGORY_ROOTS, 'article_map_kinds': ARTICLE_MAP_KINDS,
+    return {'content_categories': CATEGORIES, 'category_groups': CATEGORY_GROUPS, 'category_roots': CATEGORY_ROOTS, 'article_map_kinds': ARTICLE_MAP_KINDS, 'article_parent_types': ARTICLE_PARENT_TYPES,
             'point_categories': {k: CATEGORIES[k] for k in CATEGORIES if k in POINT_TYPES}, 'path_types': PATH_TYPES,
             'content_form': FlaskForm(), 'render_content': render_content, 'content_excerpt': content_excerpt,
             'private_reference_urls': private_reference_urls}
@@ -141,7 +141,7 @@ def index():
         campaign = Campaign(owner_id=current_user.id, name=text_value(request.form.get('name'), 200, True))
         db.session.add(campaign)
         db.session.commit()
-        return redirect(url_for('campaigns.new_entry', campaign_id=campaign.id))
+        return redirect(url_for('campaigns.new_map', campaign_id=campaign.id, kind='realm'))
     campaigns_list = my_campaigns()
     entries = library_entries().order_by(ContentEntry.title).all()
     return render_template('campaigns/index.html', campaigns=campaigns_list,
@@ -310,12 +310,13 @@ def new_entry():
         return entry_redirect(entry)
     return render_template('campaigns/entry.html', entry=None, campaign=campaign, party=party,
                            campaigns=my_campaigns(), candidates=[], selected_links=set(),
-                           parent_candidates=library_entries(), selected_parent=request.args.get('parent_id', ''))
+                           parent_candidates=article_parent_choices(library_entries()), selected_parent=request.args.get('parent_id', ''))
 
 
 @campaigns.route('/materials/<int:entry_id>/edit', methods=['GET', 'POST'])
 def edit_entry(entry_id):
     entry = owned(ContentEntry, entry_id)
+    previous_category = entry.category
     if request.method == 'POST':
         check_version(entry, request.form.get('version'))
         if 'graph' in request.form:
@@ -392,7 +393,9 @@ def edit_entry(entry_id):
                         if presentation.party_id not in {link.party_id for link in campaign.parties}:
                             campaign.parties.append(CampaignParty(party_id=presentation.party_id))
         if 'parent_id' in request.form:
-            set_article_parent(entry, request.form.get('parent_id'))
+            set_article_parent(entry, request.form.get('parent_id'), previous_category=previous_category)
+        elif entry.category != previous_category and entry.parent:
+            set_article_parent(entry, entry.parent_id, previous_category=previous_category)
         targets = {integer(value) for value in request.form.getlist('links')} - map_related_ids(entry)
         if entry.id in targets:
             abort(400)
@@ -426,7 +429,7 @@ def edit_entry(entry_id):
                            parent_entries=material_parents(entry),
                            campaigns=my_campaigns(), candidates=candidates,
                            selected_links=selected_links, automatic_links=automatic_links,
-                           parent_candidates=library_entries(), selected_parent=entry.parent_id or '')
+                           parent_candidates=article_parent_choices(library_entries(), entry), selected_parent=entry.parent_id or '')
 
 
 @campaigns.route('/materials/<int:entry_id>/delete', methods=['POST'])

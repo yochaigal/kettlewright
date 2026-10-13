@@ -123,6 +123,62 @@ def test_parent_owner_workspace_and_cycles(setup):
     assert client.post('/materials/new',data={'category':'npc','title':'Wrong owner','parent_id':root}).status_code == 403
 
 
+@pytest.mark.parametrize('category,parent_category,allowed', [
+    ('dungeon','pois',True), ('dungeon','forest',True), ('dungeon','realm',False),
+    ('dungeon','people',False), ('room','dungeon',True), ('trap','dungeon',True),
+    ('room','forest',False), ('ruins','forest',True), ('hazard','dungeon',False),
+    ('forest','terrain',True), ('terrain','topography',True), ('terrain','dungeon',False),
+    ('culture','people',True), ('agenda','faction',True), ('realm','realm',False),
+])
+def test_parent_type_is_enforced_on_create_and_edit(setup, category, parent_category, allowed):
+    app, client = setup
+    with app.app_context():
+        root=ContentEntry(owner_id=1,campaign_id=1,category='realm',title='Parent realm')
+        parent=ContentEntry(owner_id=1,campaign_id=1,category=parent_category,title='Target parent',parent=root)
+        entry=ContentEntry(owner_id=1,campaign_id=1,category=category,title='Editable child')
+        db.session.add_all([root,parent,entry]);db.session.commit()
+        parent_id,entry_id=parent.id,entry.id
+    data={'category':category,'title':'Child','campaign_id':1,'parent_id':parent_id}
+    assert client.post('/materials/new',data=data).status_code == (302 if allowed else 400)
+    assert client.post(f'/materials/{entry_id}/edit',data={**data,'version':1}).status_code == (302 if allowed else 400)
+    with app.app_context():
+        assert db.session.get(ContentEntry,entry_id).parent_id == (parent_id if allowed else None)
+
+
+def test_parent_picker_excludes_descendants_and_labels_full_paths(setup):
+    import re
+    from html import unescape
+    app,client=setup
+    root=create_entry(client,category='realm',title='Region')
+    pois=create_entry(client,category='pois',title='POIs',parent_id=root)
+    dungeon=create_entry(client,category='dungeon',title='Dungeon',parent_id=pois)
+    room=create_entry(client,category='room',title='Room',parent_id=dungeon)
+    html=client.get(f'/materials/{dungeon}/edit').get_data(as_text=True)
+    choices=json.loads(unescape(re.search(r'data-parent-candidates="([^"]+)"',html)[1]))
+    assert str(dungeon) not in {item['id'] for item in choices}
+    assert str(room) not in {item['id'] for item in choices}
+    assert next(item for item in choices if item['id']==str(pois))['label']=='Region / POIs'
+    assert 'x-show="String(formElement.elements.campaign_id' not in html
+    loose_pois=create_entry(client,category='pois',title='Loose POIs')
+    assert client.post('/materials/new',data={'category':'dungeon','title':'Wrong POIs',
+        'campaign_id':1,'parent_id':loose_pois}).status_code==400
+
+
+def test_legacy_parent_is_preserved_but_new_invalid_links_are_rejected(setup):
+    app,client=setup
+    with app.app_context():
+        root=ContentEntry(owner_id=1,campaign_id=1,category='realm',title='Old region')
+        child=ContentEntry(owner_id=1,campaign_id=1,category='dungeon',title='Legacy',parent=root)
+        db.session.add_all([root,child]);db.session.commit()
+        root_id,child_id=root.id,child.id
+    data={'category':'dungeon','title':'Edited legacy','campaign_id':1,'parent_id':root_id}
+    assert client.post(f'/materials/{child_id}/edit',data={**data,'version':1}).status_code==302
+    assert client.post('/materials/new',data=data).status_code==400
+    assert client.post(f'/materials/{child_id}/edit',data={**data,'category':'forest','version':2}).status_code==400
+    assert client.post(f'/materials/{child_id}/edit',data={'category':'forest','title':'Direct request',
+        'campaign_id':1,'version':2}).status_code==400
+
+
 def test_typed_map_roundtrip_and_standalone_path_publication(setup):
     app,client=setup
     map_id,graph=create_map(client)
@@ -224,6 +280,10 @@ def test_picker_omits_legacy_types_and_root_labels_do_not_repeat(setup):
     for name in ('Realm', 'People', 'Topography'):
         group = next(group for group in groups if group['value'] == name)
         assert group['choices'][0]['label'] == 'None'
+    for name, value, label in [('Dungeon', 'dungeon', 'Entire dungeon'), ('Forest', 'forest', 'Entire forest')]:
+        group = next(group for group in groups if group['value'] == name)
+        assert group['choices'][0] == {'value': value, 'label': label}
+    assert 'data-selected-category="custom"' in html
     assert client.post('/materials/new', data={'title':'Old overview','category':'overview'}).status_code == 400
 
 
@@ -535,13 +595,15 @@ def test_legacy_direct_publish_does_not_publish_new_geography_sections(setup):
         assert all(not node.entry.presentations for node in root.nodes)
 
 
-def test_campaign_creation_opens_realm_article_form(setup):
+def test_campaign_creation_opens_distinct_realm_generator(setup):
     app, client = setup
     response = client.post('/campaigns/', data={'name': 'New world'})
     assert response.status_code == 302
-    assert '/materials/new?campaign_id=' in response.location
+    assert '/materials/generate?campaign_id=' in response.location
+    assert 'kind=realm' in response.location
     html = client.get(response.location).get_data(as_text=True)
-    assert 'data-selected-category="realm"' in html
+    assert 'data-kind="realm"' in html
+    assert 'New Campaign' in html and 'Save Campaign' in html
     assert 'Top Category' not in html
     assert 'Dungeon contents' not in html and 'Forest contents' not in html
     assert 'Forest POIs' in html

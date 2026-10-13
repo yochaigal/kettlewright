@@ -31,7 +31,7 @@
 {% set groups = [] %}
 {% for label, keys in category_groups.items() %}
 {% set choices = [] %}
-{% for key in keys if key != 'map' or generate %}{% set unused = choices.append({'value': key, 'label': (_('None') if category_roots.get(label) == key else _(content_categories[key]))}) %}{% endfor %}
+{% for key in keys if key != 'map' or generate %}{% set unused = choices.append({'value': key, 'label': (_('Entire dungeon') if label == 'Dungeon' and key == 'dungeon' else (_('Entire forest') if label == 'Forest' and key == 'forest' else (_('None') if category_roots.get(label) == key else _(content_categories[key]))))}) %}{% endfor %}
 {% if choices %}{% set unused = groups.append({'value': label, 'label': _(label), 'choices': choices}) %}{% endif %}
 {% endfor %}
 {% if selected in ('overview', 'map') %}{% set unused = groups.append({'value': 'Legacy', 'label': _('Legacy'), 'choices': [{'value': selected, 'label': _(content_categories[selected])}]}) %}{% endif %}

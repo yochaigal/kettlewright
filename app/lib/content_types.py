@@ -21,11 +21,11 @@ CATEGORY_GROUPS = {
     'Realm': ('realm',),
     'People': ('people', 'culture', 'resources', 'npc'),
     'Factions': ('faction', 'faction_type', 'faction_trait', 'advantage', 'agenda'),
-    'Topography': ('topography', 'terrain', 'landmark', 'water', 'weather', 'forest'),
-    'POIs': ('pois', 'settlement', 'waypoint', 'curiosity', 'lair', 'dungeon'),
+    'Topography': ('topography', 'terrain', 'landmark', 'water', 'weather'),
+    'POIs': ('pois', 'settlement', 'waypoint', 'curiosity', 'lair'),
     'Paths': ('paths', 'path'),
-    'Dungeon': ('room', 'lore', 'trap', 'special'),
-    'Forest': ('ruins', 'shelter', 'hazard'),
+    'Dungeon': ('dungeon', 'room', 'lore', 'trap', 'special'),
+    'Forest': ('forest', 'ruins', 'shelter', 'hazard'),
     N_('Creatures'): ('bestiary', 'monster'),
     'Items': ('item', 'relic', 'spellbook'),
     'Notes': ('note', 'custom'),
@@ -49,3 +49,32 @@ ARTICLE_MAP_KINDS = {key: key if key in ('realm', 'forest', 'dungeon') else 'fre
 CATEGORY_ROOTS = {'Realm': 'realm', 'People': 'people', 'Factions': 'faction',
                   'Topography': 'topography', 'POIs': 'pois', 'Paths': 'paths',
                   'Items': 'item', 'Notes': 'note'}
+
+# Authoring containment. A missing parent always permits a standalone article.
+# General library articles (notes, custom content, equipment) are unrestricted.
+ARTICLE_PARENT_TYPES = {
+    'realm': (), 'people': ('realm',),
+    'culture': ('people',), 'resources': ('people',), 'npc': ('people', 'faction'),
+    'faction': ('realm', 'faction'),
+    'faction_type': ('faction',), 'faction_trait': ('faction',),
+    'advantage': ('faction',), 'agenda': ('faction',),
+    'topography': ('realm',), 'terrain': ('topography',),
+    'landmark': ('terrain',), 'water': ('terrain', 'topography'), 'weather': ('terrain',),
+    'pois': ('realm',),
+    'settlement': ('pois',), 'waypoint': ('pois',), 'curiosity': ('pois',), 'lair': ('pois',),
+    'dungeon': ('pois', 'forest'), 'forest': ('terrain',),
+    'paths': ('realm', 'dungeon', 'forest'), 'path': ('paths',),
+    'room': ('dungeon',), 'lore': ('dungeon',), 'trap': ('dungeon',), 'special': ('dungeon',),
+    'monster': ('dungeon', 'forest', 'bestiary'),
+    'ruins': ('forest',), 'shelter': ('forest',), 'hazard': ('forest',),
+}
+
+
+def accepts_article_parent(category, parent):
+    allowed = ARTICLE_PARENT_TYPES.get(category)
+    if allowed is None:
+        return True
+    if parent.category not in allowed:
+        return False
+    # POIs are the region's container, not an arbitrary article with that label.
+    return parent.category != 'pois' or bool(parent.parent and parent.parent.category == 'realm')

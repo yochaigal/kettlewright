@@ -147,3 +147,9 @@
 .article-link-completion .article-link-title {display:block;}
 .article-link-completion .article-link-path {display:block;margin-top:1px;font-size:12px;opacity:.8;}
 .article-link-completion button[aria-selected="true"] {background:var(--bg);background:color-mix(in srgb,var(--fg) 8%,var(--form-bg,var(--bg)));outline:none;}
+
+.campaign-workspace .article-delete {margin-top:3rem;padding-top:1.5rem;border-top:1px solid currentColor;}
+@media(max-width:600px) {
+  .campaign-page-header > h1,.campaign-page-header > h2 {flex-basis:100%;}
+  .campaign-page-header .campaign-page-actions {justify-content:flex-start;margin-left:0;}
+}

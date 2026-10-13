@@ -12,7 +12,7 @@ from app.lib.rich_content import normalize_content, render_content, RICH_PREFIX
 from app.lib.article_references import private_reference_urls, reference_urls
 from app.lib.feature_access import require_party_features, party_features_enabled
 
-from app.lib.content_types import CATEGORIES, POINT_TYPES, ARTICLE_MAP_KINDS, legacy_point_type
+from app.lib.content_types import CATEGORIES, POINT_TYPES, ARTICLE_MAP_KINDS, legacy_point_type, accepts_article_parent
 PATH_TYPES = ('standard', 'hidden', 'conditional')
 MAP_KINDS = ('realm', 'dungeon', 'forest', 'freeform')
 
@@ -539,23 +539,44 @@ def save_article_children(parent, children, *, body=None):
     return resolve(body, parent) if body is not None else None
 
 
-def set_article_parent(entry, value):
+def article_descendant_ids(entry):
+    pending, descendants = [entry], set()
+    while pending:
+        child = pending.pop()
+        if child.id in descendants:
+            continue
+        descendants.add(child.id)
+        pending.extend(child.children)
+        if child.pointcrawl:
+            pending.extend(node.entry for node in child.pointcrawl.nodes)
+            pending.extend(edge.entry for edge in child.pointcrawl.edges)
+        pending.extend(node.nested_map.entry for node in child.map_nodes if node.nested_map)
+    return descendants
+
+
+def article_parent_choices(entries, entry=None):
+    excluded = article_descendant_ids(entry) if entry else set()
+    choices = []
+    for item in entries:
+        if item.id in excluded:
+            continue
+        titles, seen, cursor = [], set(), item
+        while cursor and cursor.owner_id == item.owner_id and cursor.campaign_id == item.campaign_id and cursor.id not in seen and len(titles) < 20:
+            seen.add(cursor.id)
+            titles.append(cursor.title)
+            cursor = cursor.parent
+        choices.append({'id': str(item.id), 'campaign_id': str(item.campaign_id or ''),
+            'category': item.category, 'parent_category': item.parent.category if item.parent else '',
+            'label': ' / '.join(reversed(titles))})
+    return choices
+
+
+def set_article_parent(entry, value, *, previous_category=None):
     parent = owned(ContentEntry, integer(value)) if value not in (None, '') else None
     if parent and (parent.campaign.id if parent.campaign else None) != (entry.campaign.id if entry.campaign else None):
         abort(400, 'Choose a parent in the same campaign.')
     if parent and entry.id:
-        pending, descendants = [entry], set()
-        while pending:
-            child = pending.pop()
-            if child.id in descendants:
-                continue
-            descendants.add(child.id)
-            pending.extend(child.children)
-            if child.pointcrawl:
-                pending.extend(node.entry for node in child.pointcrawl.nodes)
-                pending.extend(edge.entry for edge in child.pointcrawl.edges)
-            pending.extend(node.nested_map.entry for node in child.map_nodes if node.nested_map)
-        if parent.id in descendants:
+        if parent.id in article_descendant_ids(entry):
             abort(400, 'An article cannot contain itself.')
     seen = {entry.id} if entry.id else set()
     cursor = parent
@@ -564,6 +585,9 @@ def set_article_parent(entry, value):
             abort(400, 'An article cannot contain itself.')
         seen.add(cursor.id)
         cursor = cursor.parent
+    unchanged = entry.parent is parent and previous_category == entry.category
+    if parent and not unchanged and not accepts_article_parent(entry.category, parent):
+        abort(400, 'Choose a parent compatible with this article type.')
     if entry.parent is not parent:
         entry.parent = parent
 
