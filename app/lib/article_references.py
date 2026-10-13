@@ -194,6 +194,8 @@ def prepare_archive_references(payload):
     def root(i):
         while rows[i]['parent'] is not None:
             i = rows[i]['parent']
+        if rows[i].get('existing_campaign'):
+            return ('existing', rows[i]['existing_campaign']['id'])
         return i if rows[i]['category'] == 'campaign' else None
     by_id = {article.id: article for article in articles}
     explicit = {}

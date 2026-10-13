@@ -260,6 +260,62 @@ test('category picker restores existing leaves and clears stale drafts when chan
   assert.equal(component.topCategory,'POIs');
 });
 
+test('Dungeon and Forest groups start with a complete site and restore their own category',async()=>{
+  const {contentDraft}=await import('../../app/static/src/js/alpine/components/content-draft.js');
+  const component=contentDraft();
+  component.categoryGroups=[{value:'POIs',choices:[{value:'pois'}]},
+    {value:'Topography',choices:[{value:'topography'}]},
+    {value:'Dungeon',choices:[{value:'dungeon'},{value:'room'}]},
+    {value:'Forest',choices:[{value:'forest'},{value:'ruins'}]}];
+  for (const [group,category] of [['Dungeon','dungeon'],['Forest','forest']]) {
+    component.category=category;component.syncTopCategory();
+    assert.equal(component.topCategory,group);
+    component.category='room';component.topCategory=group;component.changeTopCategory();
+    assert.equal(component.category,category);
+    assert(component.canGenerateChildren);
+    const draft=generateArticle(data,category,'',rng(2));
+    assert.equal(draft.category,category);
+    assert(draft.children.length>0);
+  }
+});
+
+test('parent choices enforce category and campaign and clear incompatible selections',async()=>{
+  const {contentDraft}=await import('../../app/static/src/js/alpine/components/content-draft.js');
+  const component=contentDraft();
+  component.category='dungeon';component.campaignId='1';
+  component.parentTypes={dungeon:['pois','forest'],room:['dungeon'],realm:[]};
+  component.parentCandidates=[
+    {id:'1',category:'realm',campaign_id:'1',label:'Realm'},
+    {id:'2',category:'pois',parent_category:'realm',campaign_id:'1',label:'Realm / POIs'},
+    {id:'3',category:'forest',campaign_id:'1',label:'Forest'},
+    {id:'4',category:'dungeon',campaign_id:'1',label:'Dungeon'},
+    {id:'5',category:'pois',parent_category:'',campaign_id:'1',label:'Loose POIs'},
+    {id:'6',category:'pois',parent_category:'realm',campaign_id:'2',label:'Other campaign'},
+  ];
+  assert.deepEqual(component.parentChoices.map(item=>item.id),['2','3']);
+  component.parentId='2';component.category='room';component.resetDraft();
+  assert.equal(component.parentId,'');
+  assert.deepEqual(component.parentChoices.map(item=>item.id),['4']);
+  component.category='realm';assert.deepEqual(component.parentChoices,[]);
+  component.category='dungeon';component.campaignId='2';
+  assert.deepEqual(component.parentChoices.map(item=>item.id),['6']);
+  component.category='note';component.campaignId='1';
+  assert.equal(component.parentChoices.length,5);
+});
+
+test('existing incompatible hierarchy stays editable but is unavailable after a type change',async()=>{
+  const {contentDraft}=await import('../../app/static/src/js/alpine/components/content-draft.js');
+  const component=contentDraft();
+  Object.assign(component,{category:'dungeon',campaignId:'1',parentId:'1',originalParent:'1',
+    originalCategory:'dungeon',originalCampaign:'1',existingParentLabel:'Existing parent',
+    parentTypes:{dungeon:['pois','forest'],room:['dungeon']},
+    parentCandidates:[{id:'1',category:'realm',campaign_id:'1',label:'Old realm'}]});
+  assert.equal(component.parentChoices[0].legacy,true);
+  component.syncParent();assert.equal(component.parentId,'1');
+  component.category='room';component.resetDraft();
+  assert.equal(component.parentId,'');assert.deepEqual(component.parentChoices,[]);
+});
+
 test('realm groups named factions under Factions',()=>{
   const realm=generateArticle(data,'realm','',rng(5));
   const factions=realm.children.find(child=>child.category==='faction');

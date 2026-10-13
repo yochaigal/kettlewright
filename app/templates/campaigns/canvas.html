@@ -41,7 +41,7 @@
 </div>
 {% endfor %}
 {% if editing %}
-{% if locations %}<label>{{ _('Existing article') }}<select x-model="locationId" x-ref="locationPicker"><option value="">{{ _('Create a new article') }}</option>{% for location in locations %}<option value="{{ location.id }}" data-category="{{ location.category }}">{{ (location.title or _('Untitled private original'))|markdown_inline }}</option>{% endfor %}</select></label>{% endif %}
+{% if locations %}<label>{{ _('Existing article') }}<select x-model="locationId" x-ref="locationPicker"><option value="">{{ _('Create a new article') }}</option>{% for location in locations %}<option value="{{ location.id }}" data-category="{{ location.category }}" data-nested-map-id="{{ location.pointcrawl.id if location.pointcrawl else '' }}" data-has-contents="{{ 'true' if location.children or (location.pointcrawl and (location.pointcrawl.nodes or location.pointcrawl.edges or (location.pointcrawl.drawing or {}).get('elements'))) else 'false' }}">{{ (location.title or _('Untitled private original'))|markdown_inline }}</option>{% endfor %}</select></label>{% endif %}
 <button type="button" @click="addNode()">{{ _('Add article to drawing') }}</button>
 {% endif %}
 
@@ -50,7 +50,7 @@
 {% if editing %}
 <label>{{ _('From') }}<select x-model="edgeSource"><option value="">{{ _('Choose article') }}</option><template x-for="item in graph.nodes" :key="item.id"><option :value="item.id" x-text="item.number+'. '+item.title"></option></template></select></label>
 <label>{{ _('To') }}<select x-model="edgeTarget"><option value="">{{ _('Choose article') }}</option><template x-for="item in graph.nodes" :key="item.id"><option :value="item.id" x-text="item.number+'. '+item.title"></option></template></select></label>
-<button type="button" @click="addEdge()">{{ _('Connect articles') }}</button>
+<button type="button" @click="addEdge()" :disabled="generating || saving">{{ _('Connect articles') }}</button>
 {% endif %}
 <template x-for="edge in graph.edges" :key="edge.id"><details :data-map-edge="String(edge.id)" :open="selectedEdge===String(edge.id)" :class="{'map-selected':selectedEdge===String(edge.id)}" @toggle="if($el.open){selectedEdge=String(edge.id);selected='';syncCanvas()}">
 <summary><span x-html="$markdownInline(edge.title)"></span> <span x-text="'('+node(edge.source)?.number+' – '+node(edge.target)?.number+')'"></span></summary>

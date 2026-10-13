@@ -62,6 +62,8 @@ def prepare_maps(payload, files):
     def campaign_root(i):
         while rows[i]['parent'] is not None:
             i = rows[i]['parent']
+        if rows[i].get('existing_campaign'):
+            return ('existing', rows[i]['existing_campaign']['id'])
         return i if rows[i]['category'] == 'campaign' else None
 
     def same_campaign(source, target):

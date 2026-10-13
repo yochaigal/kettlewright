@@ -126,13 +126,13 @@
 .map-key.terrain {border-color:#5c713b;background:repeating-linear-gradient(45deg,#e9efcf,#e9efcf 3px,#b9c793 3px,#b9c793 4px);width:1.5rem;}
 .map-key.landmark {border:0;background:#765329;clip-path:polygon(50% 0,100% 100%,0 100%);}
 .map-key.water {border-color:#1971c2;background:#d0ebff;border-radius:50%;width:1.5rem;}
-.map-key.waypoint {border-color:#9c5b00;background:#ffec99;transform:rotate(45deg);}
-.map-key.settlement {border-color:#9c4221;background:#ffe8cc;}
-.map-key.forest {border-color:#2b6d3d;background:#d3f9d8;transform:rotate(45deg);}
-.map-key.dungeon {border-color:#6741a5;background:#e5dbff;}
+.map-key.waypoint {border-color:#9c5b00;background:#ffec99;border-radius:50%;}
+.map-key.settlement {border-color:#9c4221;background:#ffe8cc;border-radius:50%;}
+.map-key.forest {border-color:#2b6d3d;background:#d3f9d8;border-radius:50%;}
+.map-key.dungeon {border-color:#6741a5;background:#e5dbff;border-radius:50%;}
 .realm-geography {margin:1rem 0;}
 
-.map-key.lair {border-color:#c92a2a;background:#ffe3e3;transform:rotate(45deg);}
+.map-key.lair {border-color:#c92a2a;background:#ffe3e3;border-radius:50%;}
 .map-key.curiosity {border-color:#087f8c;background:#c5f6fa;border-radius:50%;}
 
 .campaign-page-header > h1,.campaign-page-header > h2 {flex:1 1 14rem;min-width:0;}
@@ -147,3 +147,14 @@
 .article-link-completion .article-link-title {display:block;}
 .article-link-completion .article-link-path {display:block;margin-top:1px;font-size:12px;opacity:.8;}
 .article-link-completion button[aria-selected="true"] {background:var(--bg);background:color-mix(in srgb,var(--fg) 8%,var(--form-bg,var(--bg)));outline:none;}
+
+.campaign-workspace .article-delete {margin-top:3rem;padding-top:1.5rem;border-top:1px solid currentColor;}
+.import-instructions {margin:1.5rem 0;}
+.campaign-workspace .import-instructions h3 {margin:2rem 0 .75rem;}
+.import-instructions pre {margin:0 0 2rem;padding:1.25rem;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--form-bg);border:1px solid currentColor;}
+.import-instructions pre code {white-space:inherit;}
+.import-error {margin:1.5rem 0;padding:1rem;border:2px solid currentColor;font-weight:600;}
+@media(max-width:600px) {
+  .campaign-page-header > h1,.campaign-page-header > h2 {flex-basis:100%;}
+  .campaign-page-header .campaign-page-actions {justify-content:flex-start;margin-left:0;}
+}

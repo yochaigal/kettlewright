@@ -6,27 +6,31 @@
 {% if preview and not preview.errors %}<button type="submit" form="archive-confirm-form">{{ _('Import all into my library') }}</button>{% endif %}
 {% endcall %}
 <p>{{ _('Upload a ZIP, TAR or TAR.GZ archive of Markdown articles and optional map JSON or .excalidraw files. Nothing enters your library until you confirm the preview.') }}</p>
-<details><summary>{{ _('Markdown format and limits') }}</summary>
-<p>{{ _('Every file needs layout: default, title and type in YAML Front Matter. parent refers to an exact, unique title inside this archive. Folders do not determine hierarchy.') }}</p>
-<p>{{ _('Use id and parent_id when titles repeat. To attach a hand-drawn map, add map: maps/world.excalidraw to an article. Export Obsidian drawings to ordinary .excalidraw JSON first. Drawing shapes remain editable; they do not automatically become interactive article points or paths.') }}</p>
-<pre>---
+<p><a href="{{ url_for('campaigns.import_example') }}">{{ _('Download an example archive') }}</a> · {{ _('Import it as-is, or unzip it and edit the Markdown files before creating a new ZIP archive.') }}</p>
+<details class="import-instructions"><summary>{{ _('Markdown format and limits') }}</summary>
+<p>{{ _('Every file needs layout: default, title and type in YAML Front Matter. parent first refers to an exact, unique title inside this archive. If that title is absent, it can name one of your existing campaigns. Duplicate campaign names are an error. Folders do not determine hierarchy.') }}</p>
+<p>{{ _('Use id and parent_id when titles repeat; these IDs refer only to files inside this archive. To attach a hand-drawn map, add map: maps/world.excalidraw to an article. Export Obsidian drawings to ordinary .excalidraw JSON first. Drawing shapes remain editable; they do not automatically become interactive article points or paths.') }}</p>
+<h3>campaign.md</h3>
+<pre><code>---
 layout: default
 title: My Campaign
 type: Campaign
 ---
-Campaign description</pre>
-<pre>---
+Campaign description</code></pre>
+<h3>dungeon.md</h3>
+<pre><code>---
 layout: default
 title: My Dungeon
 parent: My Campaign
 type: Dungeon
 ---
-Dungeon description</pre>
+Dungeon description</code></pre>
+<p>{{ _('Copy each complete block, including both --- lines, into its own .md file. Place those files together in one archive.') }}</p>
 <p>{{ _('Types:') }} Campaign, Freeform, {{ content_categories.values()|reject('equalto', 'Geography')|join(', ') }}.</p>
 <p>{{ _('Campaigns become new campaigns; their descriptions become Overview articles. Articles without a parent go to Unfiled articles. Spatial article types include an editable drawing alongside their description. All imported content remains private. Existing library records are never replaced.') }}</p>
 <p>{{ _('Limits: 50 MB archive, 500 entries, 512 KB per Markdown/attachment, 16 MB per map file, 100 MB unpacked, 50,000 description characters and 20 hierarchy levels. Each map supports 200 points, 800 paths and a 12 MB drawing with 2000 elements. Unreferenced map files and attachments are skipped. Markdown image URLs stay as references. Previews expire after one hour; a new preview replaces your previous one.') }}</p>
 </details>
-{% if message %}<p role="alert">{{ message }}</p>{% endif %}
+{% if message %}<p class="import-error" role="alert">{{ message }}</p>{% endif %}
 <form id="archive-upload-form" method="post" enctype="multipart/form-data">{{ token() }}
 <label>{{ _('Archive') }}<input type="file" name="archive" accept=".zip,.tar,.tar.gz,.tgz" required></label>
 </form>
@@ -39,6 +43,7 @@ Dungeon description</pre>
 {% for i in preview.display %}{% set row = preview.rows[i] %}
 <li style="--tree-depth:{{ row.depth }}"><strong>{{ row.title }}</strong> <span class="tree-meta">{{ row.type }}</span>
 <div>{{ _('Destination:') }} {{ row.destination }}</div><small>{{ row.file }}</small>
+{% if row.existing_campaign %}<div>{{ _('Existing campaign:') }} {{ row.existing_campaign.name }}</div>{% endif %}
 {% if row.map %}<div>{{ _('Map:') }} {{ row.map.file }} · {{ row.map.nodes|length }} {{ _('points') }} · {{ row.map.edges|length }} {{ _('paths') }} · {{ row.map.drawing.elements|length }} {{ _('drawing elements') }}</div>{% endif %}
 {% if row.body %}<details><summary>{{ _('Preview content') }}</summary><div class="rich-content">{{ render_content(row.body) }}</div></details>{% endif %}</li>
 {% endfor %}

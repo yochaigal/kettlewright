@@ -4,7 +4,7 @@
 <form class="campaign-page-form" method="post" x-data="pointcrawl" data-editing="true" data-creating="true" data-kind="{{ kind }}"
  data-labels="{{ {'loadError':_('Unable to load the drawing editor. Check your connection and retry.'),'location':_('Article'),'error':_('Unable to generate an article. Please try again.'),'duplicate':_('This path already exists.')}|tojson|forceescape }}"
  @submit="if (!canvasReady || generating) $event.preventDefault(); else dirty=false">
-{% call page_header(_('New article')) %}<button type="submit" :disabled="!canvasReady || generating">{{ _('Create and show') if party else _('Save private article') }}</button>{% endcall %}
+{% call page_header(_('New Campaign') if kind == 'realm' else _('New article'), title_model="kind==='realm' ? " ~ (_('New Campaign')|tojson|forceescape) ~ " : " ~ (_('New article')|tojson|forceescape)) %}<button type="submit" :disabled="!canvasReady || generating"{% if not party %} x-text="kind==='realm' ? {{ _('Save Campaign')|tojson|forceescape }} : {{ _('Save private article')|tojson|forceescape }}"{% endif %}>{{ _('Create and show') if party else (_('Save Campaign') if kind == 'realm' else _('Save private article')) }}</button>{% endcall %}
 {% if party %}<p>{% trans party=party.name|markdown_inline %}The article and every child article and path in this draft will be shown to <strong>{{ party }}</strong> when you save.{% endtrans %}</p>{% endif %}
 {{ token() }}
 {% if party %}<input type="hidden" name="party_id" value="{{ party.id }}">{% endif %}

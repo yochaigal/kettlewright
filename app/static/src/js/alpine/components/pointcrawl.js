@@ -2,6 +2,7 @@ import {localizeDraft, localizeGraph, localizeText} from '../../generator-locale
 import {draftPreview, generateSettingArticle} from '../../setting_articles.js';
 import {generateResult, graphFromResult, nestedMapDraft, suggestedMapKind} from '../../content_generators.js';
 import {emptyDrawing} from '../../maps/scene.js';
+import {settingName} from '../../naming.js';
 
 export default function pointcrawl() {
   return {
@@ -153,6 +154,8 @@ export default function pointcrawl() {
         if (this.graph.nodes.some(n=>String(n.entry_id)===String(this.locationId))) {this.status=this.labels.duplicate;return;}
         node.entry_id=Number(this.locationId);node.title=option.textContent;
         node.category=option.dataset.category || 'custom';
+        node.nested_map_id=option.dataset.nestedMapId?Number(option.dataset.nestedMapId):null;
+        node.has_contents=option.dataset.hasContents==='true';
       }
       this.graph.nodes.push(node);this.selected=String(node.id);this.locationId='';
     },
@@ -162,12 +165,22 @@ export default function pointcrawl() {
       this.graph.nodes=this.graph.nodes.filter(n=>String(n.id)!==id);
       this.selected='';
     },
-    addEdge() {
-      if (!this.node(this.edgeSource) || !this.node(this.edgeTarget) || this.edgeSource===this.edgeTarget) return;
-      if (this.graph.edges.some(e=>[String(e.source),String(e.target)].includes(this.edgeSource) &&
-          [String(e.source),String(e.target)].includes(this.edgeTarget))) {this.status=this.labels.duplicate;return;}
-      this.graph.edges.push({id:this.newId('edge'),source:this.edgeSource,target:this.edgeTarget,
-        title:`${this.node(this.edgeSource).number} – ${this.node(this.edgeTarget).number}`,body:'',path_type:'standard'});
+    async addEdge() {
+      if (this.generating || this.saving) return;
+      const source=this.edgeSource, target=this.edgeTarget;
+      const duplicate=()=>this.graph.edges.some(e=>[String(e.source),String(e.target)].includes(source) &&
+        [String(e.source),String(e.target)].includes(target));
+      if (!this.node(source) || !this.node(target) || source===target) return;
+      if (duplicate()) {this.status=this.labels.duplicate;return;}
+      this.generating=true;this.status='';
+      try {
+        const tables=await this.loadTables();
+        if (!this.node(source) || !this.node(target)) return;
+        if (duplicate()) {this.status=this.labels.duplicate;return;}
+        this.graph.edges.push({id:this.newId('edge'),source,target,
+          title:localizeText(settingName(tables,'path',{},'Path')),body:'',path_type:'standard'});
+      } catch {this.status=this.labels.error;}
+      finally {this.generating=false;}
     },
     removeEdge(id) {this.graph.edges=this.graph.edges.filter(edge=>edge.id!==id);},
     async save() {
@@ -231,7 +244,7 @@ export default function pointcrawl() {
     },
     async generateNested() {
       const node=this.selectedNode, kind=this.nestedKind;
-      if (!node || node.nested_map_id || node.nested_draft || this.generating) return;
+      if (!node || node.nested_map_id || node.has_contents || node.nested_draft || this.generating) return;
       this.generating=true;
       try {
         await this.loadTables();
