@@ -405,7 +405,7 @@ msgstr "теги"
 
 #: app/static/json/marketplace.json:5 app/static/json/marketplace.json:10
 msgid "cost"
-msgstr "вартість"
+msgstr "ціна"
 
 #: app/static/json/backgrounds/aurifex.json:20
 #: app/static/json/marketplace.json:8 app/static/json/marketplace.json:9
@@ -11054,7 +11054,7 @@ msgstr "Птах Рух"
 
 #: app/static/json/party_events/dungeons.json:267
 msgid "Building"
-msgstr "Будує"
+msgstr "Будівля"
 
 #: app/static/json/party_events/dungeons.json:268
 #: app/static/json/party_events/forests.json:175
@@ -11395,7 +11395,7 @@ msgstr "Оживає"
 
 #: app/static/json/party_events/dungeons.json:363
 msgid "Charges"
-msgstr "Кидається"
+msgstr "Заряди"
 
 #: app/static/json/party_events/dungeons.json:364
 msgid "Closes"
@@ -12832,7 +12832,7 @@ msgstr "Тьмяний"
 #: app/static/json/party_events/forests.json:15
 #: app/static/json/party_events/setting.json:500
 msgid "Perilous"
-msgstr "Небезпечний"
+msgstr "Небезпечна"
 
 #: app/static/json/party_events/forests.json:17
 msgid "Polluted"
@@ -12907,7 +12907,7 @@ msgstr "Грибний"
 #: app/static/json/party_events/forests.json:539
 #: app/static/json/party_events/names.json:96
 msgid "Hidden"
-msgstr "Прихований"
+msgstr "Прихована"
 
 #: app/static/json/party_events/forests.json:39
 #: app/static/json/party_events/forests.json:385
@@ -14461,7 +14461,7 @@ msgstr "Схил"
 #: app/static/json/party_events/forests.json:507
 #: app/static/json/party_events/names.json:112
 msgid "Spring"
-msgstr "Джерело"
+msgstr "Весна"
 
 #: app/static/json/party_events/forests.json:508
 #: app/static/json/party_events/names.json:113
@@ -16331,7 +16331,7 @@ msgstr "Потрібен фахівець незвичного штибу."
 
 #: app/static/json/party_events/setting.json:500
 msgid "Easy"
-msgstr "Легкий"
+msgstr "Легка"
 
 #: app/static/json/party_events/setting.json:504
 msgid "Bluffs"
@@ -18164,7 +18164,7 @@ msgstr "Пов’язка на оці"
 #: app/static/json/party_events/names.json:173
 #: app/static/json/party_events/setting.json:500
 msgid "Tough"
-msgstr "Міцний"
+msgstr "Важка"
 
 #: app/static/json/party_events/names.json:173
 msgid "Clumsy"
@@ -25554,3 +25554,707 @@ msgstr "Ці кидки бачать усі учасники партії."
 #: app/templates/main/character_view.html
 msgid "Export Attributes"
 msgstr "Експортувати характеристики"
+
+
+#. Application interface
+msgid "Found in"
+msgstr "Знайдено в"
+
+#. Application interface
+msgid "Group"
+msgstr "Вид"
+
+#. Application interface
+msgid "Activity"
+msgstr "Діяльність"
+
+#. Application interface
+msgid "Trigger"
+msgstr "Активація"
+
+#. Application interface
+msgid "Property"
+msgstr "Властивість"
+
+#. Application interface
+msgid "Structure"
+msgstr "Структура"
+
+#. Application interface
+msgid "Description 1"
+msgstr "Опис 1"
+
+#. Application interface
+msgid "Description 2"
+msgstr "Опис 2"
+
+#. Application interface
+msgid "Room"
+msgstr "Кімната"
+
+#. Application interface
+msgid "Spells"
+msgstr "Закляття"
+
+#. Application interface
+msgid "gp"
+msgstr "зм"
+
+#. Application interface
+msgid "Claws (d8+d8)"
+msgstr "Пазурі (к8+к8)"
+
+#. Application interface
+msgid "Beak (d6)"
+msgstr "Дзьоб (к6)"
+
+#. Application interface
+msgid "Hooves (d10+d10)"
+msgstr "Копита (к10+к10)"
+
+#. Application interface
+msgid "Teeth (d6)"
+msgstr "Зуби (к6)"
+
+#. Application interface
+msgid "Shard fists (d8+d8)"
+msgstr "Кулаки з уламків (к8+к8)"
+
+#. Application interface
+msgid "Avian"
+msgstr "Пташиний"
+
+#. Application interface
+msgid "Beast"
+msgstr "Звір"
+
+#. Application interface
+msgid "Behemoth"
+msgstr "Бегемот"
+
+#. Application interface
+msgid "Construct"
+msgstr "Конструкт"
+
+#. Application interface
+msgid "Demon"
+msgstr "Демон"
+
+#. Application interface
+msgid "Extraplanar"
+msgstr "Потойбічний"
+
+#. Application interface
+msgid "Fey"
+msgstr "Фея"
+
+#. Application interface
+msgid "Goblinoid"
+msgstr "Гобліноїд"
+
+#. Application interface
+msgid "Humanoid"
+msgstr "Гуманоїд"
+
+#. Application interface
+msgid "Hybrid"
+msgstr "Гібрид"
+
+#. Application interface
+msgid "Incorporeal"
+msgstr "Безтілесний"
+
+#. Application interface
+msgid "Insectoid"
+msgstr "Інсектоїд"
+
+#. Application interface
+msgid "Lizard"
+msgstr "Ящірка"
+
+#. Application interface
+msgid "Magical"
+msgstr "Магічний"
+
+#. Application interface
+msgid "Mythical"
+msgstr "Міфічний"
+
+#. Application interface
+msgid "Plant"
+msgstr "Рослина"
+
+#. Application interface
+msgid "Shape Shifter"
+msgstr "Перевертень"
+
+#. Application interface
+msgid "Undead"
+msgstr "Нежить"
+
+#. Application interface
+msgid "Unusual"
+msgstr "Незвичайний"
+
+#. Application interface
+msgid ""
+"A free, open-source application for managing characters and parties in the "
+"Cairn roleplaying game."
+msgstr ""
+"Безкоштовний застосунок із відкритим кодом для керування персонажами та "
+"групами в рольовій грі Cairn."
+
+#. Application interface
+msgid "Add Container"
+msgstr "Додати контейнер"
+
+#. Application interface
+msgid "Not carried"
+msgstr "Ніхто не несе"
+
+#. Application interface
+msgid "Delete items"
+msgstr "Видалити предмети"
+
+#. Application interface
+msgid "View Item Description"
+msgstr "Переглянути опис предмета"
+
+#. Application interface
+msgid "Delete Item"
+msgstr "Видалити предмет"
+
+#. Application interface
+msgid "Decrease Uses or Charges"
+msgstr "Зменшити використання або заряди"
+
+#. Application interface
+msgid "Increase Uses or Charges"
+msgstr "Збільшити використання або заряди"
+
+#. Application interface
+msgid "OK"
+msgstr "Гаразд"
+
+#. Application interface
+msgid "Not enough gold to purchase this item!"
+msgstr "Недостатньо золота для купівлі цього предмета!"
+
+#. Application interface
+#, python-format
+msgid "Item name must be between 1 and %(maximum)s characters"
+msgstr "Назва предмета має містити від 1 до %(maximum)s символів"
+
+#. Application interface
+#, python-format
+msgid "Item description must be less than %(maximum)s characters"
+msgstr "Опис предмета має бути коротшим за %(maximum)s символів"
+
+#. Application interface
+#, python-format
+msgid "Uses must be less than %(maximum)s"
+msgstr "Кількість використань має бути меншою за %(maximum)s"
+
+#. Application interface
+#, python-format
+msgid "Charges must be less than %(maximum)s"
+msgstr "Кількість зарядів має бути меншою за %(maximum)s"
+
+#. Application interface
+#, python-format
+msgid "Max charges must be less than %(maximum)s"
+msgstr "Максимум зарядів має бути меншим за %(maximum)s"
+
+#. Application interface
+#, python-format
+msgid "Container name must be unique and between 1 and %(maximum)s characters"
+msgstr "Назва контейнера має бути унікальною та містити від 1 до %(maximum)s символів"
+
+#. Application interface
+#, python-format
+msgid "Slots must be between 1 and %(maximum)s"
+msgstr "Кількість слотів має бути від 1 до %(maximum)s"
+
+#. Application interface
+msgid "Load must be set if container is carried"
+msgstr "Укажіть навантаження для контейнера, який переносять"
+
+#. Application interface
+msgid "Software Development, QA, Testing."
+msgstr "Розробка, контроль якості, тестування."
+
+#. Application interface
+msgid "Project Design, DevOps, Documentation."
+msgstr "Проєктування, DevOps, документація."
+
+#. Application interface
+msgid "Token Art licensed under CC-BY 4.0."
+msgstr "Зображення жетонів за ліцензією CC-BY 4.0."
+
+#. Application interface
+msgid "Logo/favicon Art."
+msgstr "Логотип і значок сайту."
+
+#. Application interface
+msgid "A lightweight Python framework for building web applications."
+msgstr "Легкий Python-фреймворк для створення вебзастосунків."
+
+#. Application interface
+msgid "A \"green\" python-based WSGI HTTP Server for UNIX-like systems."
+msgstr ""
+"WSGI HTTP-сервер на Python із підтримкою легких потоків для UNIX-подібних "
+"систем."
+
+#. Application interface
+msgid "A fast, self-contained and full-featured SQL database engine."
+msgstr "Швидкий, автономний і повнофункціональний рушій баз даних SQL."
+
+#. Application interface
+msgid ""
+"A real-time in-memory data structure store used as a database, cache, and "
+"message broker."
+msgstr ""
+"Сховище структур даних у пам’яті, яке використовують як базу даних, кеш і "
+"брокер повідомлень."
+
+#. Application interface
+msgid "A platform for building and managing containerized applications."
+msgstr "Платформа для створення застосунків у контейнерах і керування ними."
+
+#. Application interface
+#, python-format
+msgid "A classless CSS framework designed by %(author)s."
+msgstr "CSS-фреймворк без класів, розроблений %(author)s."
+
+#. Application interface
+msgid "A modern CSS framework based on Flexbox."
+msgstr "Сучасний CSS-фреймворк на основі Flexbox."
+
+#. Application interface
+msgid "Modern browser features directly from HTML."
+msgstr "Сучасні можливості браузера просто з HTML."
+
+#. Application interface
+msgid "A collaborative whiteboard for drawing maps and diagrams."
+msgstr "Спільна дошка для малювання мап і схем."
+
+#. Application interface
+msgid "Fork me on GitHub"
+msgstr "Створити копію на GitHub"
+
+#. Application interface
+#, python-format
+msgid ""
+"Do you want to remove %(name)s from the party? This action is permanent, "
+"regardless of later edits."
+msgstr ""
+"Видалити персонажа %(name)s із групи? Ця дія незворотна й не залежить від "
+"подальших змін."
+
+#. Application interface
+msgid "Remove character"
+msgstr "Видалити персонажа з групи"
+
+#. Application interface
+#, python-format
+msgid "Do you want to delete party %(name)s?"
+msgstr "Видалити групу %(name)s?"
+
+#. Application interface
+msgid "Delete party"
+msgstr "Видалити групу"
+
+#. Application interface
+msgid "Transfer"
+msgstr "Передати"
+
+#. Application interface
+msgid "on the ground"
+msgstr "на землі"
+
+#. Contextual form of existing translation
+msgctxt "cairn table: Dungeon.POIs.Monster.Activity"
+msgid "Building"
+msgstr "Будує"
+
+#. Contextual form of existing translation
+msgctxt "dungeon feature"
+msgid "Charges"
+msgstr "Кидається"
+
+#. Contextual form of existing translation
+msgctxt "forest description"
+msgid "Perilous"
+msgstr "Небезпечний"
+
+#. Contextual form of existing translation
+msgctxt "forest description"
+msgid "Hidden"
+msgstr "Прихований"
+
+#. Contextual form of existing translation
+msgctxt "forest name adjective"
+msgid "Hidden"
+msgstr "Прихований"
+
+#. Contextual form of existing translation
+msgctxt "forest name noun"
+msgid "Spring"
+msgstr "Джерело"
+
+#. Contextual form of existing translation
+msgctxt "npc quirk"
+msgid "Tough"
+msgstr "Міцний"
+
+
+#. Application interface
+msgid "Course"
+msgstr "Русло"
+
+#. Application interface
+msgid "Site"
+msgstr "Місце"
+
+#. Application interface
+msgid ""
+"Connect higher ground to lower ground; the water may end in a lake, sea, or "
+"beyond the map."
+msgstr ""
+"З'єднайте височину з низиною; водотік може впадати в озеро, море або виходити"
+" за межі карти."
+
+#. Application interface
+msgid "Custom Image URL (1:1 aspect ratio)"
+msgstr "URL власного зображення (співвідношення сторін 1:1)"
+
+#. Application interface
+msgid "Item Name"
+msgstr "Назва предмета"
+
+#. Application interface
+msgid "Item Description"
+msgstr "Опис предмета"
+
+
+#. Application interface
+msgid "River"
+msgstr "Річка"
+
+#. Application interface
+msgid "Lake"
+msgstr "Озеро"
+
+#. Application interface
+msgid "Sea"
+msgstr "Море"
+
+#. Application interface
+msgid "Clue"
+msgstr "Зачіпка"
+
+
+#. Naming table fallback
+msgid "Aeloria"
+msgstr "Елорія"
+
+#. Naming table fallback
+msgid "Ainsley"
+msgstr "Ейнслі"
+
+#. Naming table fallback
+msgid "Aislin"
+msgstr "Айслін"
+
+#. Naming table fallback
+msgid "Alaric"
+msgstr "Аларік"
+
+#. Naming table fallback
+msgid "Alder"
+msgstr "Альдер"
+
+#. Naming table fallback
+msgid "Alistair"
+msgstr "Алістер"
+
+#. Naming table fallback
+msgid "Anika"
+msgstr "Аніка"
+
+#. Naming table fallback
+msgid "Azura"
+msgstr "Азура"
+
+#. Naming table fallback
+msgid "Birch"
+msgstr "Берч"
+
+#. Naming table fallback
+msgid "Cade"
+msgstr "Кейд"
+
+#. Naming table fallback
+msgid "Caelan"
+msgstr "Кейлан"
+
+#. Naming table fallback
+msgid "Caius"
+msgstr "Кайус"
+
+#. Naming table fallback
+msgid "Callan"
+msgstr "Каллан"
+
+#. Naming table fallback
+msgid "Carver"
+msgstr "Карвер"
+
+#. Naming table fallback
+msgid "Cedric"
+msgstr "Седрік"
+
+#. Naming table fallback
+msgid "Ciaran"
+msgstr "Кіаран"
+
+#. Naming table fallback
+msgid "Cinder"
+msgstr "Сіндер"
+
+#. Naming table fallback
+msgid "Cleaver"
+msgstr "Клівер"
+
+#. Naming table fallback
+msgid "Coraline"
+msgstr "Коралін"
+
+#. Naming table fallback
+msgid "Crow"
+msgstr "Кроу"
+
+#. Naming table fallback
+msgid "Crucible"
+msgstr "Крусібл"
+
+#. Naming table fallback
+msgid "Dain"
+msgstr "Дейн"
+
+#. Naming table fallback
+msgid "Darnel"
+msgstr "Дарнелл"
+
+#. Naming table fallback
+msgid "Dax"
+msgstr "Дакс"
+
+#. Naming table fallback
+msgid "Dorian"
+msgstr "Доріан"
+
+#. Naming table fallback
+msgid "Elia"
+msgstr "Елія"
+
+#. Naming table fallback
+msgid "Eoin"
+msgstr "Еойн"
+
+#. Naming table fallback
+msgid "Evander"
+msgstr "Евандер"
+
+#. Naming table fallback
+msgid "Ewan"
+msgstr "Юен"
+
+#. Naming table fallback
+msgid "Faris"
+msgstr "Фаріс"
+
+#. Naming table fallback
+msgid "Finch"
+msgstr "Фінч"
+
+#. Naming table fallback
+msgid "Gerda"
+msgstr "Герда"
+
+#. Naming table fallback
+msgid "Glyph"
+msgstr "Ґліф"
+
+#. Naming table fallback
+msgid "Godric"
+msgstr "Ґодрік"
+
+#. Naming table fallback
+msgid "Gunnar"
+msgstr "Ґуннар"
+
+#. Naming table fallback
+msgid "Harkin"
+msgstr "Гаркін"
+
+#. Naming table fallback
+msgid "Harper"
+msgstr "Гарпер"
+
+#. Naming table fallback
+msgid "Hildred"
+msgstr "Гілдред"
+
+#. Naming table fallback
+msgid "Hemlock"
+msgstr "Гемлок"
+
+#. Naming table fallback
+msgid "Jarek"
+msgstr "Ярек"
+
+#. Naming table fallback
+msgid "Juniper"
+msgstr "Джуніпер"
+
+#. Naming table fallback
+msgid "Kade"
+msgstr "Кейд"
+
+#. Naming table fallback
+msgid "Kael"
+msgstr "Каель"
+
+#. Naming table fallback
+msgid "Kavi"
+msgstr "Каві"
+
+#. Naming table fallback
+msgid "Lian"
+msgstr "Ліан"
+
+#. Naming table fallback
+msgid "Leo"
+msgstr "Лео"
+
+#. Naming table fallback
+msgid "Liora"
+msgstr "Ліора"
+
+#. Naming table fallback
+msgid "Luna"
+msgstr "Луна"
+
+#. Naming table fallback
+msgid "Lysander"
+msgstr "Лісандер"
+
+#. Naming table fallback
+msgid "Mariner"
+msgstr "Марінер"
+
+#. Naming table fallback
+msgid "Marcellus"
+msgstr "Марцелл"
+
+#. Naming table fallback
+msgid "Marius"
+msgstr "Маріус"
+
+#. Naming table fallback
+msgid "Mend"
+msgstr "Менд"
+
+#. Naming table fallback
+msgid "Milo"
+msgstr "Майло"
+
+#. Naming table fallback
+msgid "Mirth"
+msgstr "Мірт"
+
+#. Naming table fallback
+msgid "Neria"
+msgstr "Нерія"
+
+#. Naming table fallback
+msgid "Nazira"
+msgstr "Назіра"
+
+#. Naming table fallback
+msgid "Nox"
+msgstr "Нокс"
+
+#. Naming table fallback
+msgid "Onyx"
+msgstr "Онікс"
+
+#. Naming table fallback
+msgid "Pan"
+msgstr "Пан"
+
+#. Naming table fallback
+msgid "Plow"
+msgstr "Плау"
+
+#. Naming table fallback
+msgid "Rush"
+msgstr "Раш"
+
+#. Naming table fallback
+msgid "Rolan"
+msgstr "Ролан"
+
+#. Naming table fallback
+msgid "Sharpsight"
+msgstr "Шарпсайт"
+
+#. Naming table fallback
+msgid "Spade"
+msgstr "Спейд"
+
+#. Naming table fallback
+msgid "Spike"
+msgstr "Спайк"
+
+#. Naming table fallback
+msgid "Stellan"
+msgstr "Стеллан"
+
+#. Naming table fallback
+msgid "Stem"
+msgstr "Стем"
+
+#. Naming table fallback
+msgid "Taran"
+msgstr "Таран"
+
+#. Naming table fallback
+msgid "Taros"
+msgstr "Тарос"
+
+#. Naming table fallback
+msgid "Thaddeus"
+msgstr "Таддеус"
+
+#. Naming table fallback
+msgid "Thistle"
+msgstr "Тісл"
+
+#. Naming table fallback
+msgid "Thyme"
+msgstr "Тайм"
+
+#. Naming table fallback
+msgid "Tiberius"
+msgstr "Тіберій"
+
+
+#. Background equipment description
+msgid ""
+"Blast Sphere: A head-sized iron ball filled with explosive powder that "
+"detonates on impact. "
+msgstr ""
+"Вибухова сфера: залізна куля завбільшки з голову, наповнена вибуховим "
+"порошком, який детонує від удару. "

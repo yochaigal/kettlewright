@@ -1,3 +1,4 @@
+import {interfaceText} from './locale.js';
 export const createElement = (type, options = {}) => {
   const element = document.createElement(type);
   if (options.classes) {
@@ -123,7 +124,7 @@ export const styledAlert = (title, message) => {
   Swal.fire({
     title: title,
     html: message,
-    confirmButtonText: 'Close',
+    confirmButtonText: interfaceText('Close'),
     background: 'var(--bg)',
     color: 'var(--fg)',
     buttonsStyling: false,
@@ -146,8 +147,8 @@ export const styledConfirm = (title, message, confirmButton, cancelButton) => {
   return Swal.fire({
     title: title,
     html: message,
-    confirmButtonText: confirmButton ? confirmButton : "OK",
-    cancelButtonText: cancelButton ? cancelButton : "Cancel",
+    confirmButtonText: confirmButton ? confirmButton : interfaceText('OK'),
+    cancelButtonText: cancelButton ? cancelButton : interfaceText('Cancel'),
     showCancelButton: true,
     background: 'var(--bg)',
     color: 'var(--fg)',

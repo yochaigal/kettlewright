@@ -49,7 +49,7 @@ def test_russian_generators_keep_terms_in_their_source_context(app_with_babel, g
             translated['NPCGenerator']['NPCBackgrounds'][13],
         ) == (
             'Сердце', 'Телепортация', 'Телепортирует', 'Шрауд',
-            'Королевство', 'Царство', 'Осторожность', 'Осторожный',
+            'Регион', 'Царство', 'Осторожность', 'Осторожный',
             'Осторожные', 'Надежный', 'Конюшня', 'Горький', 'Мистик',
         )
 
@@ -187,3 +187,52 @@ def test_decorated_inventory_uses_equipment_name_and_keeps_stored_key(app_with_b
         item = inventory.selected_container['items'][0]
     # #then
     assert (item['name'], item['title'].strip()) == ('Trap', 'Капкан (к6 СИЛ)')
+
+
+def test_russian_book_equipment_and_trait_contexts(app_with_babel):
+    from app.lib.translations import translate_term
+    from app.lib.generator_labels import generator_labels
+    with app_with_babel.app_context(), force_locale('ru'):
+        labels = generator_labels()
+        # Player pp. 10-11 and 17: the same word has different table forms.
+        assert translate_term('Oily', 'character trait: Hair') == 'Сальные'
+        assert translate_term('Oily', 'character trait: Skin') == 'Жирная'
+        assert translate_term('Soiled', 'character trait: Clothing') == 'Засаленная'
+        assert _('Caltrops') == 'Калтропы'
+        assert labels['Trap'] == 'Ловушка'
+        assert labels['equipment:Trap'] == 'Капкан'
+
+
+def test_russian_book_spell_and_relic_names(app_with_babel, generator_data):
+    with app_with_babel.app_context(), force_locale('ru'):
+        spells = {book['name'] for book in translate_events_data(generator_data)['Spellbooks']}
+        # Warden pp. 134-147, including previously inconsistent spell titles.
+        assert {'Управление погодой', 'Телепортация'} <= spells
+        assert _('Mace of the Kingslayer') == 'Булава цареубийцы'
+        assert _('Lightsucker Candle') == 'Свеча-светопоглотитель'
+        assert _('Cobblehounds') == 'Каменная гончая'
+
+
+def test_campaign_tables_use_request_language_without_translating_identity_keys(app_with_babel):
+    from app.models import User, db
+    from flask_babel import Babel
+    Babel(app_with_babel, locale_selector=lambda: 'ru')
+    app_with_babel.config['FEATURE_TEST_USER_IDS'] = {1}
+    with app_with_babel.app_context():
+        db.session.add(User(id=1, username='translation-reader'))
+        db.session.commit()
+    with app_with_babel.test_client() as client:
+        with client.session_transaction() as session:
+            session['_user_id'] = '1'
+            session['_fresh'] = True
+        with force_locale('ru'):
+            response = client.get('/articles/tables?lang=ru')
+            maps = client.get('/maps/tables?lang=ru')
+    assert response.status_code == maps.status_code == 200
+    data = response.json
+    topography = data['Realm']['Topography']
+    assert 'Forests' not in topography['Terrain']['Tough']['Terrain']
+    assert topography['TerrainKeys']['Леса'] == 'Forests'
+    assert data['Forest']['Trails']['Path'] == ['Standard', 'Hidden', 'Conditional']
+    assert data['Equipment']['Gear']['Caltrops']['cost'] == 10
+    assert maps.json['Realm'] == data['Realm']

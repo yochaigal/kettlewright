@@ -1,3 +1,6 @@
+import {localizeText} from './generator-locale.js';
+import {generatorTerm, equipmentTerm} from './locale.js';
+export {localizeText} from './generator-locale.js';
 import {generateSettingArticle, settingTypes, article, prepareArticleDraft, addTerrainWater} from './setting_articles.js';
 import {generateWorldbuilding} from './worldbuilding.js';
 import {settingName} from './naming.js';
@@ -38,18 +41,7 @@ export function generateResult(data, category, subcategory, random = Math.random
 
 // Generated text keeps English markers because graphFromResult and saved maps
 // parse them; `t` translates them, and field labels, for display only.
-const MARKER = /(^|\. )(Heart · )?(Monster|Lore|Special|Trap|Ruins|Shelter|Hazard|Waypoint|Settlement|Curiosity|Lair|Dungeon|Forest|Realm|Faction|NPC|Difficulty|Landmark): /g;
-
-export function localizeText(value, t) {
-  if (typeof value !== 'string') return value;
-  const whole = t(value);
-  if (whole !== value) return whole;
-  return value.replace(/Difficulty: (Easy|Tough|Perilous)\./g, (_, difficulty) => `Difficulty: ${t(difficulty)}.`)
-    .replace(/^(Standard|Hidden|Conditional), /, (_, path) => `${t(path)}, `)
-    .replace(MARKER, (_, lead, heart, label) => `${lead}${heart ? `${t('Heart')} · ` : ''}${t(label)}: `);
-}
-
-export function resultText(result, t = null) {
+export function resultText(result, t = generatorTerm) {
   const label = key => t ? t(key) : key;
   const text = value => t ? localizeText(value, t) : value;
   if (result.category === 'spellbook') {
@@ -59,8 +51,9 @@ export function resultText(result, t = null) {
     const fields=result.fields, tags=fields.tags || [];
     const traits=tags.filter(tag=>!['uses','bonus defense'].includes(tag)).map(tag=>
       tags.includes('bonus defense') && /Armor/i.test(tag) ? `+${tag}` : tag);
-    if (fields.uses) traits.push(`${fields.uses} uses`);
-    return `${result.title}${traits.length ? ` (${traits.join(', ')})` : ''}. ${fields.cost}gp.`;
+    const shownTraits = traits.map(tag => text(tag));
+    if (fields.uses) shownTraits.push(`${fields.uses} ${label('uses')}`);
+    return `${t === generatorTerm ? equipmentTerm(result.title) : text(result.title)}${shownTraits.length ? ` (${shownTraits.join(', ')})` : ''}. ${fields.cost}${label('gp') === 'gp' ? '' : ' '}${label('gp')}.`;
   }
   function render(value, level=3) {
     const heading = key => { const name = label(key); return name.charAt(0).toUpperCase()+name.slice(1); };

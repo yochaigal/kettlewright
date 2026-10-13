@@ -10,15 +10,15 @@
     {{character.description | tr}}
 </p>
 <div>
-    {{_('You have a')}} {{character.traits[0].value | tr}} {{character.traits[0].name | tr}},
-    {{character.traits[1].value | tr}} {{character.traits[1].name | tr}},
-    {{_('and')}} {{character.traits[2].value | tr}}
+    {{_('You have a')}} {{character.traits[0].value | tr('character trait: ' ~ character.traits[0].name)}} {{character.traits[0].name | tr}},
+    {{character.traits[1].value | tr('character trait: ' ~ character.traits[1].name)}} {{character.traits[1].name | tr}},
+    {{_('and')}} {{character.traits[2].value | tr('character trait: ' ~ character.traits[2].name)}}
     {{character.traits[2].name | tr}}. {{_('Your')}} {{character.traits[3].name | tr}} {{_('is')}}
-    {{character.traits[3].value | tr}}, {{_('your')}}
-    {{character.traits[4].name | tr}} {{character.traits[4].value | tr}}. {{_('You have')}}
-    {{character.traits[5].value | tr}} {{character.traits[5].name | tr}}. {{_('You are')}}
-    {{character.traits[6].value | tr}} {{_('and')}}
-    {{character.traits[7].value | tr}}.
+    {{character.traits[3].value | tr('character trait: ' ~ character.traits[3].name)}}, {{_('your')}}
+    {{character.traits[4].name | tr}} {{character.traits[4].value | tr('character trait: ' ~ character.traits[4].name)}}. {{_('You have')}}
+    {{character.traits[5].value | tr('character trait: ' ~ character.traits[5].name)}} {{character.traits[5].name | tr}}. {{_('You are')}}
+    {{character.traits[6].value | tr('character trait: ' ~ character.traits[6].name)}} {{_('and')}}
+    {{character.traits[7].value | tr('character trait: ' ~ character.traits[7].name)}}.
     {{_('Your age')}}: {{character.age}}.
 </div>
 </p>
@@ -52,7 +52,7 @@
         {% for c in character.containers %}
         {% if c.id != 0 %}
         <li style="float:none; display: list-item;">{{ c.name|markdown_inline }} ({{c.slots}}
-            slots)</li>
+            {{_('slots')}})</li>
         {% endif %}
         {% endfor %}
     </ul>

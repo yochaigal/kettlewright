@@ -230,7 +230,7 @@ Every actions should be performed in venv (after pipenv shell).
 
 ### Extracting strings
 
-`pybabel extract -F babel.cfg -k _l -o messages.pot .`
+`python -m babel.messages.frontend extract -F babel.cfg -k _l -k N_ -o messages.pot .`
 
 ### Generating language catalog
 
@@ -243,6 +243,6 @@ Every actions should be performed in venv (after pipenv shell).
 ### Updating translations
 
 ```python
-       pybabel extract -F babel.cfg -k _l -o messages.pot . # generate new definitions
+       python -m babel.messages.frontend extract -F babel.cfg -k _l -k N_ -o messages.pot . # generate new definitions, including JSON tables
        pybabel update -i messages.pot -d app/translations   # merge with existing translations
 ```

@@ -21,7 +21,7 @@
         <div class="row16spaced">
           <button class="button is-success" type="button"
             hx-post="/party/inventory/{{party.id}}/item-transfer/{{container_id}}/{{item.id}}/transfer"
-            hx-target="#inventory-container">Transfer</button>
+            hx-target="#inventory-container">{{ _('Transfer') }}</button>
           <button class="button inventory-modal-cancel-button" type="button"
             hx-get="/party/inventory/{{party.id}}/{{container_id}}" hx-target="#inventory-container">
             {{_('Cancel')}}

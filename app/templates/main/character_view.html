@@ -22,7 +22,7 @@
   {% for message in messages %}
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      KW_alert("Error", '{{message|squote2js}}')
+      KW_alert({{_('Error')|tojson}}, '{{message|squote2js}}')
     });
   </script>
   {% endfor %}

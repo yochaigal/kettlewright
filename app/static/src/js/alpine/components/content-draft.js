@@ -1,10 +1,12 @@
+import {localizeDraft} from '../../generator-locale.js';
+import {generatorTerm} from '../../locale.js';
 import {parentTypes, draftPreview} from '../../setting_articles.js';
 import {generateArticle} from '../../content_generators.js';
 
 export function contentDraft() {
   return {
     title:'', body:'', category:'custom', variant:'', formElement:null, tables:null,
-    categoryGroups:[], topCategory:'',
+    categoryGroups:[], topCategory:'', term:generatorTerm,
     generating:false, generated:null, status:'', children:[], generateChildren:true, forestChance:50, dungeonChance:25, isHeart:false,
     get canGenerateChildren(){return parentTypes.has(this.category);},
     preview(draft){return draftPreview(draft);},
@@ -41,6 +43,7 @@ export function contentDraft() {
       try {
         if(!this.tables){const response=await fetch('/articles/tables');if(!response.ok)throw new Error();this.tables=await response.json();}
         this.generated=generateArticle(this.tables,this.category,this.variant || this.variants[0],Math.random,{generateChildren:this.generateChildren,forestChance:this.forestChance,dungeonChance:this.dungeonChance,isHeart:this.isHeart,terrainDifficulty:this.category==='terrain' && this.variant && this.variant!=='Random'?(this.variant==='Forest'?'Tough':this.variant):undefined,forestTerrain:this.category==='terrain' && this.variant==='Forest'});
+        if(this.generated && !this.generated.mapKind)localizeDraft(this.generated);
       }catch{this.status=this.$el.dataset.generateError;}finally{this.generating=false;}
     },
     useGenerated() {
