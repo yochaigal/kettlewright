@@ -61,7 +61,7 @@
           <button class="button is-success" type="button" {% if mode=="edit" %}
             hx-post="/party/inventory/{{party.id}}/container-edit/{{container.id}}/save" {% else %}
             hx-post="/party/inventory/{{party.id}}/container-edit/None/save" {% endif %}
-            hx-target="#inventory-container">Save</button>
+            hx-target="#inventory-container">{{_('Save')}}</button>
         </div>
 
         {% if mode == "edit" and container.id != 0 %}

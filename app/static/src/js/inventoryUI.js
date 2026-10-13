@@ -1,3 +1,4 @@
+import {interfaceText} from './locale.js';
 import {inlineContentHTML} from './rich-content.js';
 import inventory from "./inventoryData.js";
 import inventoryModalUI from "./inventoryModalUI.js";
@@ -98,7 +99,7 @@ const inventoryUI = {
         if (diceInfo) {
           const diceIcon = createElement("i", {
             classes: ["fa-solid", "fa-dice", "inventory-dice"],
-            ariaLabel: "Roll Dice",
+            ariaLabel: interfaceText('Roll Dice'),
             events: {
               click: () => {
                 this.rollDiceCallback(diceInfo);
@@ -114,8 +115,8 @@ const inventoryUI = {
         const editButton = createElement("span", {
           classes: ["inventory-item-edit-button"],
           attributes: { "data-item-id": id.toString() },
-          ariaLabel: "Edit Item",
-          content: "edit",
+          ariaLabel: interfaceText('Edit Item'),
+          content: interfaceText("Edit"),
           events: {
             click: () => {
               this.editItem(id);
@@ -128,7 +129,7 @@ const inventoryUI = {
       else if (description !== "" && description !== "This item has no description...") {
         const infoButton = createElement("span", {
           classes: ["inventory-item-info-button"],
-          ariaLabel: "View Item Description",
+          ariaLabel: interfaceText('View Item Description'),
           content: "( i )",
           events: {
             click: () => {
@@ -150,7 +151,7 @@ const inventoryUI = {
       if (this.mode === "edit") {
         const deleteIcon = createElement("i", {
           classes: ["inventory-item-button-container", "inventory-item-edit-button"],
-          ariaLabel: "Delete Item",
+          ariaLabel: interfaceText('Delete Item'),
           events: {
             click: () => {
               inventory.deleteItem(id);
@@ -163,7 +164,7 @@ const inventoryUI = {
         itemContainer.appendChild(deleteIcon);
       }
       if (name === "Fatigue") {
-        nameDiv.innerHTML = "Fatigue";
+        nameDiv.textContent = interfaceText("Fatigue");
         nameDiv.classList.add("fatigue-text");
       } else if (carrying !== null) {
         nameDiv.innerHTML = inlineContentHTML(name);
@@ -192,7 +193,7 @@ const inventoryUI = {
             if (this.mode === "edit") {
               const decrementIcon = createElement("span", {
                 classes: ["inventory-item-button", "inventory-item-plus-minus"],
-                ariaLabel: "Decrease Uses or Charges",
+                ariaLabel: interfaceText('Decrease Uses or Charges'),
                 content: "[ -",
               });
               decrementIcon.addEventListener("click", () => {
@@ -205,7 +206,7 @@ const inventoryUI = {
 
               const incrementIcon = createElement("span", {
                 classes: ["inventory-item-button", "inventory-item-plus-minus"],
-                ariaLabel: "Increase Uses or Charges",
+                ariaLabel: interfaceText('Increase Uses or Charges'),
                 content: "+ ]",
               });
 
@@ -427,7 +428,7 @@ const inventoryUI = {
       if (this.mode === "edit" && container.id !== 0) {
         const editIcon = createElement("p", {
           classes: ["inventory-container-edit-button"],
-          content: "edit",
+          content: interfaceText("Edit"),
           events: {
             click: () => {
               inventoryModalUI.showContainerModal(container);

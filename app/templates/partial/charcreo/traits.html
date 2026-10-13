@@ -4,7 +4,7 @@
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Physique')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Physique'] %}
-        <option value="{{t}}" {% if custom_fields['Physique']==t %} selected {%endif%}>{{t | tr}}</option>
+        <option value="{{t}}" {% if custom_fields['Physique']==t %} selected {%endif%}>{{t | tr('character trait: Physique')}}</option>
         {% endfor %}
     </select>
 </div>
@@ -14,7 +14,7 @@
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Skin')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Skin'] %}
-        <option value="{{t}}" {% if custom_fields['Skin']==t %} selected {%endif%}>{{t | tr}}</option>
+        <option value="{{t}}" {% if custom_fields['Skin']==t %} selected {%endif%}>{{t | tr('character trait: Skin')}}</option>
         {% endfor %}
     </select>
 </div>
@@ -24,7 +24,7 @@
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Hair')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Hair'] %}
-        <option value="{{t}}" {% if custom_fields['Hair']==t %} selected {%endif%}>{{t | tr}}</option>
+        <option value="{{t}}" {% if custom_fields['Hair']==t %} selected {%endif%}>{{t | tr('character trait: Hair')}}</option>
         {% endfor %}
     </select>
 </div>
@@ -34,7 +34,7 @@
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Face')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Face'] %}
-        <option value="{{t}}" {% if custom_fields['Face']==t %} selected {%endif%}>{{t | tr}}</option>
+        <option value="{{t}}" {% if custom_fields['Face']==t %} selected {%endif%}>{{t | tr('character trait: Face')}}</option>
         {% endfor %}
     </select>
 </div>
@@ -44,7 +44,7 @@
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Speech')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Speech'] %}
-        <option value="{{t}}" {% if custom_fields['Speech']==t %} selected {%endif%}>{{t | tr}}</option>
+        <option value="{{t}}" {% if custom_fields['Speech']==t %} selected {%endif%}>{{t | tr('character trait: Speech')}}</option>
         {% endfor %}
     </select>
 </div>
@@ -54,7 +54,7 @@
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Clothing')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Clothing'] %}
-        <option value="{{t}}" {% if custom_fields['Clothing']==t %} selected {%endif%}>{{t | tr}}</option>
+        <option value="{{t}}" {% if custom_fields['Clothing']==t %} selected {%endif%}>{{t | tr('character trait: Clothing')}}</option>
         {% endfor %}
     </select>
 </div>
@@ -64,7 +64,7 @@
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Virtue')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Virtue'] %}
-        <option value="{{t}}" {% if custom_fields['Virtue']==t %} selected {%endif%}>{{t | tr}}</option>
+        <option value="{{t}}" {% if custom_fields['Virtue']==t %} selected {%endif%}>{{t | tr('character trait: Virtue')}}</option>
         {% endfor %}
     </select>
 </div>
@@ -74,7 +74,7 @@
         hx-target="#traits-container" hx-swap="innerHTML">
         <option value="___">{{_('Vice')}} ({{_('d10')}})...</option>
         {% for t in custom_fields['traits']['Vice'] %}
-        <option value="{{t}}" {% if custom_fields['Vice']==t %} selected {%endif%}>{{t | tr}}</option>
+        <option value="{{t}}" {% if custom_fields['Vice']==t %} selected {%endif%}>{{t | tr('character trait: Vice')}}</option>
         {% endfor %}
     </select>
 </div>

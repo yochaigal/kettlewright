@@ -387,7 +387,7 @@ msgstr "tags"
 
 #: app/static/json/marketplace.json:5 app/static/json/marketplace.json:10
 msgid "cost"
-msgstr "custo"
+msgstr "preço"
 
 #: app/static/json/backgrounds/aurifex.json:20 app/static/json/marketplace.json:8
 #: app/static/json/marketplace.json:9 app/static/json/party_events/reliquary.json:15
@@ -1239,7 +1239,7 @@ msgstr "Erro"
 
 #: app/blueprints/charcreo.py:58
 msgid "You are %(num)s years old."
-msgstr ""
+msgstr "Você tem %(num)s anos."
 
 # ============================================= BONDS
 # =============================================
@@ -10761,7 +10761,7 @@ msgstr "Rocha"
 
 #: app/static/json/party_events/dungeons.json:267
 msgid "Building"
-msgstr "Prédio"
+msgstr "Edifício"
 
 #: app/static/json/party_events/dungeons.json:268
 #: app/static/json/party_events/forests.json:175
@@ -11102,7 +11102,7 @@ msgstr "Anima"
 
 #: app/static/json/party_events/dungeons.json:363
 msgid "Charges"
-msgstr "Dispara"
+msgstr "Cargas"
 
 #: app/static/json/party_events/dungeons.json:364
 msgid "Closes"
@@ -12584,7 +12584,7 @@ msgstr "Fúngico"
 #: app/static/json/party_events/forests.json:539
 #: app/static/json/party_events/names.json:96
 msgid "Hidden"
-msgstr "Escondido"
+msgstr "Oculto"
 
 #: app/static/json/party_events/forests.json:39
 #: app/static/json/party_events/forests.json:385
@@ -20372,3 +20372,2857 @@ msgstr "Escolha uma categoria para ver suas tabelas."
 #: app/templates/main/tools.html
 msgid "Roll"
 msgstr "Rolar"
+
+
+#. Application interface
+msgid "Found in"
+msgstr "Encontrado em"
+
+#. Application interface
+msgid "Group"
+msgstr "Grupo"
+
+#. Application interface
+msgid "Activity"
+msgstr "Atividade"
+
+#. Application interface
+msgid "Trigger"
+msgstr "Ativação"
+
+#. Application interface
+msgid "Property"
+msgstr "Propriedade"
+
+#. Application interface
+msgid "Structure"
+msgstr "Estrutura"
+
+#. Application interface
+msgid "Description 1"
+msgstr "Descrição 1"
+
+#. Application interface
+msgid "Description 2"
+msgstr "Descrição 2"
+
+#. Application interface
+msgid "Room"
+msgstr "Sala"
+
+#. Application interface
+msgid "Spells"
+msgstr "Feitiços"
+
+#. Application interface
+msgid "gp"
+msgstr "po"
+
+#. Application interface
+msgid "Claws (d8+d8)"
+msgstr "Garras (d8+d8)"
+
+#. Application interface
+msgid "Beak (d6)"
+msgstr "Bico (d6)"
+
+#. Application interface
+msgid "Hooves (d10+d10)"
+msgstr "Cascos (d10+d10)"
+
+#. Application interface
+msgid "Teeth (d6)"
+msgstr "Dentes (d6)"
+
+#. Application interface
+msgid "Shard fists (d8+d8)"
+msgstr "Punhos de estilhaços (d8+d8)"
+
+#. Application interface
+msgid "Avian"
+msgstr "Aviário"
+
+#. Application interface
+msgid "Beast"
+msgstr "Fera"
+
+#. Application interface
+msgid "Behemoth"
+msgstr "Colosso"
+
+#. Application interface
+msgid "Construct"
+msgstr "Construto"
+
+#. Application interface
+msgid "Demon"
+msgstr "Demônio"
+
+#. Application interface
+msgid "Extraplanar"
+msgstr "Extraplanar"
+
+#. Application interface
+msgid "Fey"
+msgstr "Feérico"
+
+#. Application interface
+msgid "Goblinoid"
+msgstr "Goblinoide"
+
+#. Application interface
+msgid "Humanoid"
+msgstr "Humanoide"
+
+#. Application interface
+msgid "Hybrid"
+msgstr "Híbrido"
+
+#. Application interface
+msgid "Incorporeal"
+msgstr "Incorpóreo"
+
+#. Application interface
+msgid "Insectoid"
+msgstr "Insetoide"
+
+#. Application interface
+msgid "Lizard"
+msgstr "Lagarto"
+
+#. Application interface
+msgid "Magical"
+msgstr "Mágico"
+
+#. Application interface
+msgid "Mythical"
+msgstr "Mítico"
+
+#. Application interface
+msgid "Plant"
+msgstr "Planta"
+
+#. Application interface
+msgid "Shape Shifter"
+msgstr "Metamorfo"
+
+#. Application interface
+msgid "Undead"
+msgstr "Morto-vivo"
+
+#. Application interface
+msgid "Unusual"
+msgstr "Incomum"
+
+#. Application interface
+msgid ""
+"A free, open-source application for managing characters and parties in the "
+"Cairn roleplaying game."
+msgstr ""
+"Um aplicativo gratuito e de código aberto para gerenciar personagens e grupos"
+" no RPG Cairn."
+
+#. Application interface
+msgid "Add Container"
+msgstr "Adicionar recipiente"
+
+#. Application interface
+msgid "Not carried"
+msgstr "Não carregado"
+
+#. Application interface
+msgid "Delete items"
+msgstr "Excluir itens"
+
+#. Application interface
+msgid "View Item Description"
+msgstr "Ver descrição do item"
+
+#. Application interface
+msgid "Delete Item"
+msgstr "Excluir item"
+
+#. Application interface
+msgid "Decrease Uses or Charges"
+msgstr "Diminuir usos ou cargas"
+
+#. Application interface
+msgid "Increase Uses or Charges"
+msgstr "Aumentar usos ou cargas"
+
+#. Application interface
+msgid "OK"
+msgstr "OK"
+
+#. Application interface
+msgid "Not enough gold to purchase this item!"
+msgstr "Não há ouro suficiente para comprar este item!"
+
+#. Application interface
+#, python-format
+msgid "Item name must be between 1 and %(maximum)s characters"
+msgstr "O nome do item deve ter de 1 a %(maximum)s caracteres"
+
+#. Application interface
+#, python-format
+msgid "Item description must be less than %(maximum)s characters"
+msgstr "A descrição do item deve ter menos de %(maximum)s caracteres"
+
+#. Application interface
+#, python-format
+msgid "Uses must be less than %(maximum)s"
+msgstr "Os usos devem ser menores que %(maximum)s"
+
+#. Application interface
+#, python-format
+msgid "Charges must be less than %(maximum)s"
+msgstr "As cargas devem ser menores que %(maximum)s"
+
+#. Application interface
+#, python-format
+msgid "Max charges must be less than %(maximum)s"
+msgstr "O máximo de cargas deve ser menor que %(maximum)s"
+
+#. Application interface
+#, python-format
+msgid "Container name must be unique and between 1 and %(maximum)s characters"
+msgstr "O nome do recipiente deve ser único e ter de 1 a %(maximum)s caracteres"
+
+#. Application interface
+#, python-format
+msgid "Slots must be between 1 and %(maximum)s"
+msgstr "Os espaços devem estar entre 1 e %(maximum)s"
+
+#. Application interface
+msgid "Load must be set if container is carried"
+msgstr "Informe a carga do recipiente carregado"
+
+#. Application interface
+msgid "Software Development, QA, Testing."
+msgstr "Desenvolvimento de software, controle de qualidade e testes."
+
+#. Application interface
+msgid "Project Design, DevOps, Documentation."
+msgstr "Design do projeto, DevOps e documentação."
+
+#. Application interface
+msgid "Token Art licensed under CC-BY 4.0."
+msgstr "Arte de fichas sob a licença CC-BY 4.0."
+
+#. Application interface
+msgid "Logo/favicon Art."
+msgstr "Logotipo e ícone do site."
+
+#. Application interface
+msgid "A lightweight Python framework for building web applications."
+msgstr "Um framework leve de Python para criar aplicativos web."
+
+#. Application interface
+msgid "A \"green\" python-based WSGI HTTP Server for UNIX-like systems."
+msgstr "Um servidor HTTP WSGI em Python com threads leves para sistemas do tipo UNIX."
+
+#. Application interface
+msgid "A fast, self-contained and full-featured SQL database engine."
+msgstr "Um mecanismo de banco de dados SQL rápido, independente e completo."
+
+#. Application interface
+msgid ""
+"A real-time in-memory data structure store used as a database, cache, and "
+"message broker."
+msgstr ""
+"Um armazenamento de estruturas de dados em memória usado como banco de dados,"
+" cache e intermediário de mensagens."
+
+#. Application interface
+msgid "A platform for building and managing containerized applications."
+msgstr "Uma plataforma para criar e gerenciar aplicativos em contêineres."
+
+#. Application interface
+#, python-format
+msgid "A classless CSS framework designed by %(author)s."
+msgstr "Um framework CSS sem classes criado por %(author)s."
+
+#. Application interface
+msgid "A modern CSS framework based on Flexbox."
+msgstr "Um framework CSS moderno baseado em Flexbox."
+
+#. Application interface
+msgid "Modern browser features directly from HTML."
+msgstr "Recursos modernos do navegador diretamente do HTML."
+
+#. Application interface
+msgid "A collaborative whiteboard for drawing maps and diagrams."
+msgstr "Um quadro colaborativo para desenhar mapas e diagramas."
+
+#. Application interface
+msgid "Fork me on GitHub"
+msgstr "Criar uma cópia no GitHub"
+
+#. Application interface
+#, python-format
+msgid ""
+"Do you want to remove %(name)s from the party? This action is permanent, "
+"regardless of later edits."
+msgstr ""
+"Remover %(name)s do grupo? Esta ação é permanente, independentemente das "
+"edições posteriores."
+
+#. Application interface
+msgid "Remove character"
+msgstr "Remover personagem"
+
+#. Application interface
+#, python-format
+msgid "Do you want to delete party %(name)s?"
+msgstr "Excluir o grupo %(name)s?"
+
+#. Application interface
+msgid "Delete party"
+msgstr "Excluir grupo"
+
+#. Application interface
+msgid "Transfer"
+msgstr "Transferir"
+
+#. Application interface
+msgid "on the ground"
+msgstr "no chão"
+
+#. Contextual form of existing translation
+msgctxt "cairn table: Dungeon.POIs.Monster.Activity"
+msgid "Building"
+msgstr "Prédio"
+
+#. Contextual form of existing translation
+msgctxt "dungeon feature"
+msgid "Charges"
+msgstr "Dispara"
+
+#. Contextual form of existing translation
+msgctxt "forest description"
+msgid "Hidden"
+msgstr "Escondido"
+
+#. Contextual form of existing translation
+msgctxt "forest name adjective"
+msgid "Hidden"
+msgstr "Escondido"
+
+
+#. Application interface
+msgid "** Custom **"
+msgstr "** Personalizado **"
+
+#. Application interface
+msgid "Background question 1"
+msgstr "Pergunta de antecedente 1"
+
+#. Application interface
+msgid "Background answer 1"
+msgstr "Resposta de antecedente 1"
+
+#. Application interface
+msgid "Background question 2"
+msgstr "Pergunta de antecedente 2"
+
+#. Application interface
+msgid "Background answer 2"
+msgstr "Resposta de antecedente 2"
+
+#. Application interface
+msgid "Pets"
+msgstr "Animais"
+
+#. Application interface
+msgid "Send verification code"
+msgstr "Enviar código de verificação"
+
+#. Application interface
+msgid "Verification code"
+msgstr "Código de verificação"
+
+#. Application interface
+msgid "Verify"
+msgstr "Verificar"
+
+#. Application interface
+msgid "Invalid character stats or inventory in JSON file."
+msgstr "Atributos ou inventário do personagem inválidos no arquivo JSON."
+
+#. Application interface
+msgid "Please wait a minute before requesting another code."
+msgstr "Aguarde um minuto antes de solicitar outro código."
+
+#. Application interface
+msgid "Disable email verification before changing your email address."
+msgstr "Desative a verificação por e-mail antes de alterar seu endereço."
+
+#. Application interface
+msgid "Your account has been successfully deleted."
+msgstr "Sua conta foi excluída com sucesso."
+
+#. Application interface
+msgid "Invalid password. Account deletion cancelled."
+msgstr "Senha incorreta. Exclusão da conta cancelada."
+
+#. Application interface
+msgid "Invalid password."
+msgstr "Senha incorreta."
+
+#. Application interface
+msgid "Code expired or too many attempts. Please start again."
+msgstr "Código expirado ou excesso de tentativas. Comece novamente."
+
+#. Application interface
+msgid "Email verification enabled."
+msgstr "Verificação por e-mail ativada."
+
+#. Application interface
+msgid "Email verification disabled."
+msgstr "Verificação por e-mail desativada."
+
+#. Application interface
+msgid "Invalid verification code."
+msgstr "Código de verificação inválido."
+
+#. Application interface
+msgid "A new verification code has been sent."
+msgstr "Um novo código de verificação foi enviado."
+
+#. Application interface
+msgid "This content changed in another tab. Reload before saving."
+msgstr "Este conteúdo mudou em outra aba. Recarregue antes de salvar."
+
+#. Application interface
+msgid "Published selected articles to the selected parties."
+msgstr "Os artigos selecionados foram publicados para os grupos selecionados."
+
+#. Application interface
+msgid ""
+"Published to the selected parties. Use View as party below to see the saved "
+"version."
+msgstr ""
+"Publicado para os grupos selecionados. Use «Ver como grupo» para ver a versão"
+" salva."
+
+#. Application interface
+msgid "Choose a ZIP or TAR archive."
+msgstr "Escolha um arquivo ZIP ou TAR."
+
+#. Application interface
+#, python-format
+msgid "Invalid party code: %(code)s"
+msgstr "Código de grupo inválido: %(code)s"
+
+#. Application interface
+msgid "Choose an image smaller than 2 MB."
+msgstr "Escolha uma imagem menor que 2 MB."
+
+#. Application interface
+msgid "The item does not fit in this container."
+msgstr "O item não cabe neste recipiente."
+
+#. Application interface
+msgid "Choose a JSON file to import."
+msgstr "Escolha um arquivo JSON para importar."
+
+#. Application interface
+msgid "Choose a JSON file smaller than 2 MB."
+msgstr "Escolha um arquivo JSON menor que 2 MB."
+
+#. Application interface
+msgid "Choose a valid JSON file."
+msgstr "Escolha um arquivo JSON válido."
+
+#. Application interface
+#, python-format
+msgid ""
+"The JSON file does not contain a valid %(kind)s export with valid stats, "
+"inventory and pets."
+msgstr ""
+"O arquivo JSON não contém uma exportação válida de %(kind)s com atributos, "
+"inventário e animais válidos."
+
+#. Application interface
+msgid "pet"
+msgstr "animal"
+
+#. Application interface
+msgid "hireling"
+msgstr "seguidor"
+
+#. Application interface
+msgid "Discord disconnected."
+msgstr "Discord desconectado."
+
+#. Application interface
+msgid "Discord connection was cancelled. Please try again."
+msgstr "A conexão com o Discord foi cancelada. Tente novamente."
+
+#. Application interface
+msgid "An account is already connected. Disconnect it before linking again."
+msgstr "Uma conta já está conectada. Desconecte-a antes de vincular novamente."
+
+#. Application interface
+msgid "Discord connected. Use /kw select in your party’s channel."
+msgstr "Discord conectado. Use /kw select no canal do seu grupo."
+
+#. Application interface
+msgid "Unable to connect Discord. Please try again."
+msgstr "Não foi possível conectar o Discord. Tente novamente."
+
+#. Application interface
+msgid "Item not found in the marketplace."
+msgstr "Item não encontrado no mercado."
+
+#. Application interface
+msgid "Not enough space in this container."
+msgstr "Não há espaço suficiente neste recipiente."
+
+#. Application interface
+#, python-format
+msgid "%(item)s added."
+msgstr "%(item)s adicionado."
+
+#. Application interface
+msgid "Warden"
+msgstr "Guardião"
+
+#. Application interface
+msgid "You need to select a PC first"
+msgstr "Primeiro selecione um personagem de jogador."
+
+#. Application interface
+msgid "The party changed. Review its current resources and try again."
+msgstr "O grupo mudou. Confira os recursos atuais e tente novamente."
+
+#. Application interface
+#, python-format
+msgid "Supply: d%(sides)s → %(amount)s Rations (3 uses each), added to party storage."
+msgstr ""
+"Abastecer: d%(sides)s → %(amount)s rações (3 usos cada), adicionadas ao "
+"estoque do grupo."
+
+#. Application interface
+msgid ""
+"Camp complete: one Ration use consumed per selected character or mount; "
+"Fatigue removed where recovery is possible."
+msgstr ""
+"Acampamento concluído: consumido um uso de ração por personagem ou montaria "
+"selecionados; fadiga removida quando a recuperação é possível."
+
+#. Application interface
+#, python-format
+msgid "%(count)s uses"
+msgstr "%(count)s usos"
+
+#. Application interface
+#, python-format
+msgid "%(current)s/%(maximum)s charges"
+msgstr "%(current)s/%(maximum)s cargas"
+
+#. Application interface
+msgid "See extra pages."
+msgstr "Veja as páginas adicionais."
+
+#. Application interface
+msgid "Portrait URL"
+msgstr "URL do retrato"
+
+#. Application interface
+msgid "current"
+msgstr "atual"
+
+#. Application interface
+msgid "max"
+msgstr "máx."
+
+#. Application interface
+msgid "Status"
+msgstr "Estado"
+
+#. Application interface
+msgid "Inventory details"
+msgstr "Detalhes do inventário"
+
+#. Application interface
+msgid "Occupied by bulky item above"
+msgstr "Ocupado pelo item volumoso acima"
+
+#. Application interface
+msgid "Additional inventory"
+msgstr "Inventário adicional"
+
+#. Application interface
+msgid "Petty Items"
+msgstr "Itens pequenos"
+
+#. Application interface
+msgid "Inventory capacity"
+msgstr "Capacidade do inventário"
+
+#. Application interface
+#, python-format
+msgid "%(count)s slots"
+msgstr "%(count)s espaços"
+
+#. Application interface
+msgid "Unassigned items"
+msgstr "Itens não atribuídos"
+
+#. Application interface
+#, python-format
+msgid "Background answer %(number)s"
+msgstr "Resposta de antecedente %(number)s"
+
+#. Application interface
+msgid "Additional notes"
+msgstr "Notas adicionais"
+
+#. Application interface
+msgid "Fill in all current and maximum stats before converting this hireling."
+msgstr "Preencha todos os atributos atuais e máximos antes de converter este seguidor."
+
+#. Application interface
+msgid ""
+"Character names and backgrounds must be 64 characters or fewer. Edit this "
+"hireling first."
+msgstr ""
+"Nomes e antecedentes não podem exceder 64 caracteres. Edite este seguidor "
+"primeiro."
+
+#. Application interface
+msgid "Daily cost"
+msgstr "Custo diário"
+
+#. Application interface
+msgid "gp/day"
+msgstr "po/dia"
+
+#. Application interface
+msgid ""
+"Character notes must be 2000 characters or fewer, including attack and daily "
+"cost. Export this hireling and shorten their notes first."
+msgstr ""
+"As notas não podem exceder 2000 caracteres, incluindo ataque e custo diário. "
+"Exporte este seguidor e encurte as notas primeiro."
+
+#. Application interface
+msgid "Natural armor"
+msgstr "Armadura natural"
+
+#. Application interface
+msgid "People"
+msgstr "Povo"
+
+#. Application interface
+msgid "Faction types"
+msgstr "Tipos de facção"
+
+#. Application interface
+msgid "Faction traits"
+msgstr "Traços de facção"
+
+#. Application interface
+msgid "Agendas"
+msgstr "Objetivos"
+
+#. Application interface
+msgid "Topography"
+msgstr "Topografia"
+
+#. Application interface
+msgid "Paths"
+msgstr "Caminhos"
+
+#. Application interface
+msgid "Dungeon room"
+msgstr "Sala de masmorra"
+
+#. Application interface
+msgid "Monster encounter"
+msgstr "Encontro com monstro"
+
+#. Application interface
+msgid "Overview"
+msgstr "Visão geral"
+
+#. Application interface
+msgid "Bestiary"
+msgstr "Bestiário"
+
+#. Application interface
+msgid "Geography"
+msgstr "Geografia"
+
+#. Application interface
+msgid "Creatures"
+msgstr "Criaturas"
+
+#. Application interface
+msgid "Armor inactive"
+msgstr "Armadura inativa"
+
+#. Application interface
+msgid "Kettlewright verification code"
+msgstr "Código de verificação do Kettlewright"
+
+#. Application interface
+msgid "Unable to send a verification code. Please try again."
+msgstr "Não foi possível enviar o código. Tente novamente."
+
+#. Application interface
+msgid "Image dimensions must not exceed 4096 × 4096 pixels."
+msgstr "As dimensões da imagem não podem exceder 4096 × 4096 pixels."
+
+#. Application interface
+msgid "Choose a valid PNG, JPEG, WebP or GIF image."
+msgstr "Escolha uma imagem PNG, JPEG, WebP ou GIF válida."
+
+#. Application interface
+msgid "Choose a valid portrait."
+msgstr "Escolha um retrato válido."
+
+#. Application interface
+msgid "Choose one of the predefined portraits."
+msgstr "Escolha um dos retratos predefinidos."
+
+#. Application interface
+msgid "Enter an http or https image URL."
+msgstr "Insira uma URL de imagem com http ou https."
+
+#. Application interface
+#, python-format
+msgid "Enter a value between 0 and %(maximum)s."
+msgstr "Insira um valor entre 0 e %(maximum)s."
+
+#. Application interface
+msgid "Die of Fate"
+msgstr "Dado do destino"
+
+#. Application interface
+msgid "Select at least one participant."
+msgstr "Selecione pelo menos um participante."
+
+#. Application interface
+msgid "Party storage needs a Main container."
+msgstr "O estoque do grupo precisa de um recipiente principal."
+
+#. Application interface
+msgid "Not enough Rations. Add provisions before making camp."
+msgstr "Não há rações suficientes. Adicione provisões antes de acampar."
+
+#. Application interface
+msgid "Preview"
+msgstr "Prévia"
+
+#. Application interface
+msgid "Move"
+msgstr "Mover"
+
+#. Application interface
+msgid "Pin"
+msgstr "Fixar"
+
+#. Application interface
+msgid "Unpin"
+msgstr "Desafixar"
+
+#. Application interface
+msgid "Close"
+msgstr "Fechar"
+
+#. Application interface
+msgid "Loading…"
+msgstr "Carregando…"
+
+#. Application interface
+msgid "Unable to load article."
+msgstr "Não foi possível carregar o artigo."
+
+#. Application interface
+msgid "Text formatting"
+msgstr "Formatação de texto"
+
+#. Application interface
+msgid "Markdown supported"
+msgstr "Markdown disponível"
+
+#. Application interface
+msgid "Write"
+msgstr "Escrever"
+
+#. Application interface
+msgid "Bold"
+msgstr "Negrito"
+
+#. Application interface
+msgid "Italic"
+msgstr "Itálico"
+
+#. Application interface
+msgid "Heading"
+msgstr "Título"
+
+#. Application interface
+msgid "Strikethrough"
+msgstr "Tachado"
+
+#. Application interface
+msgid "Bullet list"
+msgstr "Lista com marcadores"
+
+#. Application interface
+msgid "Numbered list"
+msgstr "Lista numerada"
+
+#. Application interface
+msgid "Quote"
+msgstr "Citação"
+
+#. Application interface
+msgid "Link"
+msgstr "Link"
+
+#. Application interface
+msgid "Code"
+msgstr "Código"
+
+#. Application interface
+msgid "Insert image"
+msgstr "Inserir imagem"
+
+#. Application interface
+msgid "Email verification (MFA)"
+msgstr "Verificação por e-mail (MFA)"
+
+#. Application interface
+msgid "Disable email verification"
+msgstr "Desativar verificação por e-mail"
+
+#. Application interface
+msgid ""
+"Email verification is currently enabled. After you disable it, you will sign "
+"in with your password only."
+msgstr ""
+"A verificação por e-mail está ativada. Ao desativá-la, você entrará apenas "
+"com sua senha."
+
+#. Application interface
+msgid "Enable email verification"
+msgstr "Ativar verificação por e-mail"
+
+#. Application interface
+msgid ""
+"Email verification is currently disabled. After you enable it, you will need "
+"a code from your email each time you sign in with your password."
+msgstr ""
+"A verificação por e-mail está desativada. Ao ativá-la, você precisará de um "
+"código recebido por e-mail sempre que entrar com sua senha."
+
+#. Application interface
+msgid ""
+"Enter your current password. We will email you a code to confirm this change "
+"on the next screen."
+msgstr ""
+"Insira sua senha atual. Enviaremos um código por e-mail para confirmar a "
+"alteração na próxima tela."
+
+#. Application interface
+msgid "Back"
+msgstr "Voltar"
+
+#. Application interface
+msgid "Send code"
+msgstr "Enviar código"
+
+#. Application interface
+msgid "Check your email"
+msgstr "Confira seu e-mail"
+
+#. Application interface
+msgid "Enter the six-digit code we sent to your email. It expires in 10 minutes."
+msgstr "Insira o código de seis dígitos enviado por e-mail. Ele expira em 10 minutos."
+
+#. Application interface
+msgid "Enable verification"
+msgstr "Ativar verificação"
+
+#. Application interface
+msgid "Disable verification"
+msgstr "Desativar verificação"
+
+#. Application interface
+msgid "Sign in"
+msgstr "Entrar"
+
+#. Application interface
+msgid "Did not receive a code?"
+msgstr "Não recebeu o código?"
+
+#. Application interface
+msgid "Resend code"
+msgstr "Reenviar código"
+
+#. Application interface
+msgid "Continue"
+msgstr "Continuar"
+
+#. Application interface
+msgid "Your Kettlewright verification code:"
+msgstr "Seu código de verificação do Kettlewright:"
+
+#. Application interface
+msgid "This code expires in 10 minutes and can only be used once."
+msgstr "Este código expira em 10 minutos e só pode ser usado uma vez."
+
+#. Application interface
+msgid "If you did not request this code, do not share it with anyone."
+msgstr "Se não solicitou este código, não o compartilhe com ninguém."
+
+#. Application interface
+msgid "Drawing legend"
+msgstr "Legenda do desenho"
+
+#. Application interface
+msgid "Center drawing"
+msgstr "Centralizar desenho"
+
+#. Application interface
+msgid "Reload drawing editor"
+msgstr "Recarregar editor de desenho"
+
+#. Application interface
+msgid "Select / resize"
+msgstr "Selecionar / redimensionar"
+
+#. Application interface
+msgid "Some map libraries could not load. Reload the editor to retry."
+msgstr "Algumas bibliotecas de mapas não carregaram. Recarregue o editor."
+
+#. Application interface
+msgid "Drawing editor"
+msgstr "Editor de desenho"
+
+#. Application interface
+msgid ""
+"Select terrain to move or resize it. Press Ctrl/Cmd+Enter to edit its border "
+"points. Manually edited terrain keeps its shape when landmarks move. Select a"
+" Water article below to draw its watercourse."
+msgstr ""
+"Selecione um terreno para mover ou redimensionar. Pressione Ctrl/Cmd+Enter "
+"para editar os pontos da borda. O terreno editado manualmente mantém sua "
+"forma quando os marcos se movem. Selecione abaixo um artigo de Água para "
+"desenhar seu curso."
+
+#. Application interface
+msgid ""
+"Click a marker or path to read its details below. Pan and zoom to explore the"
+" drawing."
+msgstr ""
+"Clique em um marcador ou caminho para ler os detalhes abaixo. Mova e amplie o"
+" desenho para explorá-lo."
+
+#. Application interface
+msgid "Solid: standard · Dashed: hidden · Dotted: conditional"
+msgstr "Contínuo: padrão · Tracejado: oculto · Pontilhado: condicional"
+
+#. Application interface
+msgid "Pan and zoom to explore the drawing."
+msgstr "Mova e amplie o desenho para explorá-lo."
+
+#. Application interface
+msgid "This drawing will be shown to the party when you save."
+msgstr "Este desenho será mostrado ao grupo quando você salvar."
+
+#. Application interface
+msgid "Drawing, text and images remain private until you publish the saved drawing."
+msgstr "Desenho, texto e imagens permanecem privados até publicar o desenho salvo."
+
+#. Application interface
+msgid "Use PNG, JPEG, WebP or GIF images; drawings may be up to 12 MB."
+msgstr "Use imagens PNG, JPEG, WebP ou GIF; desenhos podem ter até 12 MB."
+
+#. Application interface
+msgid "Articles"
+msgstr "Artigos"
+
+#. Application interface
+msgid "Points of Interest"
+msgstr "Pontos de interesse"
+
+#. Application interface
+msgid "Other articles"
+msgstr "Outros artigos"
+
+#. Application interface
+msgid "Existing article"
+msgstr "Artigo existente"
+
+#. Application interface
+msgid "Create a new article"
+msgstr "Criar novo artigo"
+
+#. Application interface
+msgid "Untitled private original"
+msgstr "Original privado sem título"
+
+#. Application interface
+msgid "Add article to drawing"
+msgstr "Adicionar artigo ao desenho"
+
+#. Application interface
+msgid "From"
+msgstr "De"
+
+#. Application interface
+msgid "Choose article"
+msgstr "Escolher artigo"
+
+#. Application interface
+msgid "To"
+msgstr "Para"
+
+#. Application interface
+msgid "Connect articles"
+msgstr "Conectar artigos"
+
+#. Application interface
+msgid "Title"
+msgstr "Título"
+
+#. Application interface
+msgid "Path type"
+msgstr "Tipo de caminho"
+
+#. Application interface
+msgid "Description and conditions"
+msgstr "Descrição e condições"
+
+#. Application interface
+msgid "Edit article"
+msgstr "Editar artigo"
+
+#. Application interface
+msgid "Reveal to party"
+msgstr "Revelar ao grupo"
+
+#. Application interface
+msgid "Remove path"
+msgstr "Remover caminho"
+
+#. Application interface
+msgid "Delete campaign?"
+msgstr "Excluir campanha?"
+
+#. Application interface
+msgid ""
+"Deleting this campaign permanently deletes all its articles, drawings and "
+"published party versions. This cannot be undone. Connected parties and their "
+"characters are kept."
+msgstr ""
+"Excluir esta campanha apaga permanentemente todos os artigos, desenhos e "
+"versões publicadas para grupos. Não pode ser desfeito. Grupos conectados e "
+"seus personagens são mantidos."
+
+#. Application interface
+msgid "Articles to delete:"
+msgstr "Artigos a excluir:"
+
+#. Application interface
+msgid "Permanently delete campaign and all articles"
+msgstr "Excluir permanentemente a campanha e todos os artigos"
+
+#. Application interface
+msgid "Delete articles"
+msgstr "Excluir artigos"
+
+#. Application interface
+msgid "Permanently delete"
+msgstr "Excluir permanentemente"
+
+#. Application interface
+msgid ""
+"These articles will be permanently deleted, including their published party "
+"versions. This cannot be undone."
+msgstr ""
+"Estes artigos e suas versões publicadas para grupos serão excluídos "
+"permanentemente. Não pode ser desfeito."
+
+#. Application interface
+msgid ""
+"The list includes child articles and connected paths. References to these "
+"articles will also be removed from other drawings."
+msgstr ""
+"A lista inclui artigos filhos e caminhos conectados. Referências a estes "
+"artigos também serão removidas de outros desenhos."
+
+#. Application interface
+msgid "Total:"
+msgstr "Total:"
+
+#. Application interface
+msgid "Create and show"
+msgstr "Criar e mostrar"
+
+#. Application interface
+msgid "New article"
+msgstr "Novo artigo"
+
+#. Application interface
+msgid "Add child article"
+msgstr "Adicionar artigo filho"
+
+#. Application interface
+msgid "Save Article"
+msgstr "Salvar artigo"
+
+#. Application interface
+#, python-format
+msgid "This will be visible to members of <strong>%(party)s</strong>."
+msgstr "Isto ficará visível para os membros de <strong>%(party)s</strong>."
+
+#. Application interface
+msgid ""
+"Articles are private by default until you reveal them to a party. Saving here"
+" does not change any party’s version."
+msgstr ""
+"Artigos são privados até você revelá-los a um grupo. Salvar aqui não altera a"
+" versão de nenhum grupo."
+
+#. Application interface
+msgid "Unable to generate an article. Please try again."
+msgstr "Não foi possível gerar o artigo. Tente novamente."
+
+#. Application interface
+msgid "Campaign"
+msgstr "Campanha"
+
+#. Application interface
+msgid "Unfiled"
+msgstr "Sem categoria"
+
+#. Application interface
+msgid "Parent article"
+msgstr "Artigo pai"
+
+#. Application interface
+msgid "None"
+msgstr "Nenhum"
+
+#. Application interface
+msgid "Child articles will be saved privately with this article."
+msgstr "Artigos filhos serão salvos de forma privada com este artigo."
+
+#. Application interface
+msgid "Discard child articles"
+msgstr "Descartar artigos filhos"
+
+#. Application interface
+msgid "Child articles"
+msgstr "Artigos filhos"
+
+#. Application interface
+msgid "Generate all child articles"
+msgstr "Gerar todos os artigos filhos"
+
+#. Application interface
+msgid "Forest POIs"
+msgstr "Pontos de interesse da floresta"
+
+#. Application interface
+msgid "Generator"
+msgstr "Gerador"
+
+#. Application interface
+msgid "Review a generated draft before using it."
+msgstr "Revise o rascunho gerado antes de usá-lo."
+
+#. Application interface
+msgid "Use this draft"
+msgstr "Usar este rascunho"
+
+#. Application interface
+msgid "Discard"
+msgstr "Descartar"
+
+#. Application interface
+msgid "Related articles"
+msgstr "Artigos relacionados"
+
+#. Application interface
+msgid "Points of interest and linked articles are included automatically."
+msgstr "Pontos de interesse e artigos vinculados são incluídos automaticamente."
+
+#. Application interface
+msgid "Add drawing"
+msgstr "Adicionar desenho"
+
+#. Application interface
+msgid "Delete article"
+msgstr "Excluir artigo"
+
+#. Application interface
+msgid ""
+"This also removes nested contents, connected paths and published versions. "
+"Review the complete list before deleting."
+msgstr ""
+"Isto também remove conteúdos aninhados, caminhos conectados e versões "
+"publicadas. Confira a lista completa antes de excluir."
+
+#. Application interface
+msgid "Delete article…"
+msgstr "Excluir artigo…"
+
+#. Application interface
+msgid ""
+"Markdown supported. Use the toolbar or type formatting directly. Type [[ to "
+"link an article."
+msgstr ""
+"Markdown disponível. Use a barra ou digite a formatação diretamente. Digite "
+"[[ para vincular um artigo."
+
+#. Application interface
+msgid "Description exceeds 5 MB or 50,000 text characters. Shorten it before saving."
+msgstr "A descrição excede 5 MB ou 50.000 caracteres. Encurte-a antes de salvar."
+
+#. Application interface
+msgid "Legacy"
+msgstr "Legado"
+
+#. Application interface
+msgid "Sub Category"
+msgstr "Subcategoria"
+
+#. Application interface
+msgid "Save or reveal a Tools result"
+msgstr "Salvar ou revelar um resultado das ferramentas"
+
+#. Application interface
+msgid "Destination"
+msgstr "Destino"
+
+#. Application interface
+msgid "Save privately"
+msgstr "Salvar de forma privada"
+
+#. Application interface
+msgid "Create and show to party"
+msgstr "Criar e mostrar ao grupo"
+
+#. Application interface
+msgid "Choose a party"
+msgstr "Escolher grupo"
+
+#. Application interface
+msgid "Import campaigns and articles"
+msgstr "Importar campanhas e artigos"
+
+#. Application interface
+msgid "Preview import"
+msgstr "Prévia da importação"
+
+#. Application interface
+msgid "Import all into my library"
+msgstr "Importar tudo para minha biblioteca"
+
+#. Application interface
+msgid ""
+"Upload a ZIP, TAR or TAR.GZ archive of Markdown articles and optional map "
+"JSON or .excalidraw files. Nothing enters your library until you confirm the "
+"preview."
+msgstr ""
+"Envie um arquivo ZIP, TAR ou TAR.GZ com artigos Markdown e mapas opcionais "
+"JSON ou .excalidraw. Nada entra na biblioteca até você confirmar a prévia."
+
+#. Application interface
+msgid "Markdown format and limits"
+msgstr "Formato Markdown e limites"
+
+#. Application interface
+msgid ""
+"Every file needs layout: default, title and type in YAML Front Matter. parent"
+" refers to an exact, unique title inside this archive. Folders do not "
+"determine hierarchy."
+msgstr ""
+"Cada arquivo precisa de layout: default, title e type no YAML Front Matter. "
+"parent indica um título exato e único dentro do arquivo. Pastas não "
+"determinam a hierarquia."
+
+#. Application interface
+msgid ""
+"Use id and parent_id when titles repeat. To attach a hand-drawn map, add map:"
+" maps/world.excalidraw to an article. Export Obsidian drawings to ordinary "
+".excalidraw JSON first. Drawing shapes remain editable; they do not "
+"automatically become interactive article points or paths."
+msgstr ""
+"Use id e parent_id quando os títulos se repetirem. Para anexar um mapa "
+"desenhado à mão, adicione map: maps/world.excalidraw ao artigo. Exporte "
+"primeiro os desenhos do Obsidian para JSON .excalidraw comum. As formas "
+"continuam editáveis; não se tornam automaticamente pontos ou caminhos "
+"interativos."
+
+#. Application interface
+msgid "Types:"
+msgstr "Tipos:"
+
+#. Application interface
+msgid ""
+"Campaigns become new campaigns; their descriptions become Overview articles. "
+"Articles without a parent go to Unfiled articles. Spatial article types "
+"include an editable drawing alongside their description. All imported content"
+" remains private. Existing library records are never replaced."
+msgstr ""
+"Campanhas tornam-se novas campanhas; suas descrições tornam-se artigos de "
+"visão geral. Artigos sem pai ficam sem categoria. Tipos espaciais incluem um "
+"desenho editável junto da descrição. Todo o conteúdo importado permanece "
+"privado. Registros existentes nunca são substituídos."
+
+#. Application interface
+msgid ""
+"Limits: 50 MB archive, 500 entries, 512 KB per Markdown/attachment, 16 MB per"
+" map file, 100 MB unpacked, 50,000 description characters and 20 hierarchy "
+"levels. Each map supports 200 points, 800 paths and a 12 MB drawing with 2000"
+" elements. Unreferenced map files and attachments are skipped. Markdown image"
+" URLs stay as references. Previews expire after one hour; a new preview "
+"replaces your previous one."
+msgstr ""
+"Limites: arquivo de 50 MB, 500 entradas, 512 KB por Markdown/anexo, 16 MB por"
+" mapa, 100 MB descompactados, 50.000 caracteres de descrição e 20 níveis de "
+"hierarquia. Cada mapa admite 200 pontos, 800 caminhos e um desenho de 12 MB "
+"com 2000 elementos. Mapas e anexos sem referência são ignorados. URLs de "
+"imagens Markdown permanecem como referências. Prévias expiram após uma hora; "
+"uma nova substitui a anterior."
+
+#. Application interface
+msgid "Import preview"
+msgstr "Prévia da importação"
+
+#. Application interface
+msgid "Markdown files"
+msgstr "Arquivos Markdown"
+
+#. Application interface
+msgid "Resolve these errors and upload the archive again. Nothing has been imported."
+msgstr "Corrija os erros e envie o arquivo novamente. Nada foi importado."
+
+#. Application interface
+msgid "Skipped files"
+msgstr "Arquivos ignorados"
+
+#. Application interface
+msgid "Destination:"
+msgstr "Destino:"
+
+#. Application interface
+msgid "Map:"
+msgstr "Mapa:"
+
+#. Application interface
+msgid "points"
+msgstr "pontos"
+
+#. Application interface
+msgid "paths"
+msgstr "caminhos"
+
+#. Application interface
+msgid "drawing elements"
+msgstr "elementos de desenho"
+
+#. Application interface
+msgid "Preview content"
+msgstr "Ver prévia do conteúdo"
+
+#. Application interface
+msgid "Import archive"
+msgstr "Importar arquivo"
+
+#. Application interface
+msgid ""
+"Your world at a glance. Expand a branch, open an article, or review what you "
+"have shared."
+msgstr ""
+"Seu mundo de relance. Expanda um ramo, abra um artigo ou revise o que "
+"compartilhou."
+
+#. Application interface
+msgid "articles"
+msgstr "artigos"
+
+#. Application interface
+msgid "No connected parties"
+msgstr "Nenhum grupo conectado"
+
+#. Application interface
+msgid "No articles yet."
+msgstr "Ainda não há artigos."
+
+#. Application interface
+msgid "No campaigns yet."
+msgstr "Ainda não há campanhas."
+
+#. Application interface
+msgid "Unfiled articles"
+msgstr "Artigos sem categoria"
+
+#. Application interface
+msgid "Create campaign"
+msgstr "Criar campanha"
+
+#. Application interface
+msgid "Campaign name"
+msgstr "Nome da campanha"
+
+#. Application interface
+msgid "Campaign details"
+msgstr "Detalhes da campanha"
+
+#. Application interface
+msgid "Number"
+msgstr "Número"
+
+#. Application interface
+msgid "Brush width"
+msgstr "Largura do pincel"
+
+#. Application interface
+msgid "Medium"
+msgstr "Médio"
+
+#. Application interface
+msgid "Wide"
+msgstr "Largo"
+
+#. Application interface
+msgid "Draw this watercourse"
+msgstr "Desenhar este curso de água"
+
+#. Application interface
+msgid "Reset shape"
+msgstr "Redefinir forma"
+
+#. Application interface
+msgid ""
+"Draw this watercourse replaces the selected Water article’s marker with your "
+"next brush stroke. Save the article to keep your changes."
+msgstr ""
+"Desenhar este curso de água substitui o marcador do artigo de Água "
+"selecionado pelo próximo traço do pincel. Salve o artigo para manter as "
+"alterações."
+
+#. Application interface
+msgid "Open linked article"
+msgstr "Abrir artigo vinculado"
+
+#. Application interface
+msgid "Generate article contents"
+msgstr "Gerar conteúdo do artigo"
+
+#. Application interface
+msgid "The generated contents and drawing will be saved privately in this article."
+msgstr "Conteúdo e desenho gerados serão salvos de forma privada neste artigo."
+
+#. Application interface
+msgid "Preview article contents"
+msgstr "Ver prévia do conteúdo do artigo"
+
+#. Application interface
+msgid "Discard generated contents"
+msgstr "Descartar conteúdo gerado"
+
+#. Application interface
+msgid "Remove from drawing"
+msgstr "Remover do desenho"
+
+#. Application interface
+msgid "Open article"
+msgstr "Abrir artigo"
+
+#. Application interface
+msgid "Unable to load the drawing editor. Check your connection and retry."
+msgstr ""
+"Não foi possível carregar o editor de desenho. Confira a conexão e tente "
+"novamente."
+
+#. Application interface
+msgid "Article"
+msgstr "Artigo"
+
+#. Application interface
+msgid "Drawing saved."
+msgstr "Desenho salvo."
+
+#. Application interface
+msgid "Unable to save. Check the connection, numbering and linked articles."
+msgstr ""
+"Não foi possível salvar. Confira a conexão, a numeração e os artigos "
+"vinculados."
+
+#. Application interface
+msgid "This drawing changed in another tab. Reload before saving."
+msgstr "Este desenho mudou em outra aba. Recarregue antes de salvar."
+
+#. Application interface
+msgid "This article or path already exists."
+msgstr "Este artigo ou caminho já existe."
+
+#. Application interface
+msgid "Drawing"
+msgstr "Desenho"
+
+#. Application interface
+msgid "Unsaved changes"
+msgstr "Alterações não salvas"
+
+#. Application interface
+msgid "Geometry is shared. New articles and paths remain private until revealed."
+msgstr ""
+"A geometria é compartilhada. Novos artigos e caminhos são privados até serem "
+"revelados."
+
+#. Application interface
+msgid ""
+"Place terrain, water and points of interest from this article. Existing "
+"positions and drawings are preserved."
+msgstr ""
+"Posicione terrenos, água e pontos de interesse deste artigo. Posições e "
+"desenhos existentes são preservados."
+
+#. Application interface
+msgid "Prepare realm geography"
+msgstr "Preparar geografia da região"
+
+#. Application interface
+msgid "Save article changes before preparing geography."
+msgstr "Salve as alterações do artigo antes de preparar a geografia."
+
+#. Application interface
+msgid "Geography preview"
+msgstr "Prévia da geografia"
+
+#. Application interface
+msgid ""
+"The article already has its geography sections. Any missing drawing objects "
+"will be placed from those articles."
+msgstr ""
+"O artigo já tem seções de geografia. Objetos ausentes no desenho serão "
+"posicionados a partir desses artigos."
+
+#. Application interface
+msgid ""
+"Existing articles will be placed without copying them. Missing sections shown"
+" above will be created privately."
+msgstr ""
+"Artigos existentes serão posicionados sem cópias. As seções ausentes "
+"mostradas acima serão criadas de forma privada."
+
+#. Application interface
+msgid "Apply geography"
+msgstr "Aplicar geografia"
+
+#. Application interface
+msgid "Select article"
+msgstr "Selecionar artigo"
+
+#. Application interface
+msgid "Direct children"
+msgstr "Filhos diretos"
+
+#. Application interface
+msgid "Shared"
+msgstr "Compartilhado"
+
+#. Application interface
+msgid "Find in tree"
+msgstr "Encontrar na árvore"
+
+#. Application interface
+msgid "Title, type or description"
+msgstr "Título, tipo ou descrição"
+
+#. Application interface
+msgid "Expand all"
+msgstr "Expandir tudo"
+
+#. Application interface
+msgid "Collapse all"
+msgstr "Recolher tudo"
+
+#. Application interface
+msgid "No matching articles."
+msgstr "Nenhum artigo encontrado."
+
+#. Application interface
+msgid "This path already exists."
+msgstr "Este caminho já existe."
+
+#. Application interface
+msgid "Save private article"
+msgstr "Salvar artigo privado"
+
+#. Application interface
+#, python-format
+msgid ""
+"The article and every child article and path in this draft will be shown to "
+"<strong>%(party)s</strong> when you save."
+msgstr ""
+"O artigo e todos os artigos filhos e caminhos deste rascunho serão mostrados "
+"a <strong>%(party)s</strong> ao salvar."
+
+#. Application interface
+msgid "Article type"
+msgstr "Tipo de artigo"
+
+#. Application interface
+msgid "Dice / points of interest"
+msgstr "Dados / pontos de interesse"
+
+#. Application interface
+msgid "Random count"
+msgstr "Quantidade aleatória"
+
+#. Application interface
+msgid "Includes the Heart: a settlement at point 1."
+msgstr "Inclui o Coração: um assentamento no ponto 1."
+
+#. Application interface
+msgid "Generating replaces this unsaved draft. Review and edit it before saving."
+msgstr "A geração substitui este rascunho não salvo. Revise e edite antes de salvar."
+
+#. Application interface
+msgid ""
+"With child generation enabled, dungeon points receive linked articles and "
+"forest terrain may receive forest contents. Child articles remain private "
+"until revealed separately."
+msgstr ""
+"Com a geração de filhos ativada, pontos de masmorra recebem artigos "
+"vinculados e terrenos florestais podem receber conteúdo de floresta. Artigos "
+"filhos são privados até serem revelados separadamente."
+
+#. Application interface
+msgid ""
+"Draw a city, settlement or any place with freehand lines, shapes, labels and "
+"images."
+msgstr ""
+"Desenhe uma cidade, assentamento ou qualquer lugar com linhas livres, formas,"
+" rótulos e imagens."
+
+#. Application interface
+msgid "Article hierarchy"
+msgstr "Hierarquia de artigos"
+
+#. Application interface
+msgid "Part of"
+msgstr "Parte de"
+
+#. Application interface
+msgid "Back to party"
+msgstr "Voltar ao grupo"
+
+#. Application interface
+msgid "View as party"
+msgstr "Ver como grupo"
+
+#. Application interface
+msgid "You are viewing only this party’s published knowledge."
+msgstr "Você vê apenas o conhecimento publicado para este grupo."
+
+#. Application interface
+msgid "Nothing has been revealed yet."
+msgstr "Nada foi revelado ainda."
+
+#. Application interface
+msgid "Update party version"
+msgstr "Atualizar versão do grupo"
+
+#. Application interface
+msgid "Private original"
+msgstr "Original privado"
+
+#. Application interface
+msgid "Publish selected versions"
+msgstr "Publicar versões selecionadas"
+
+#. Application interface
+msgid ""
+"Prepare what each party knows. Only selected parties are updated when you "
+"publish."
+msgstr ""
+"Prepare o que cada grupo sabe. Apenas os grupos selecionados são atualizados "
+"ao publicar."
+
+#. Application interface
+msgid ""
+"Checking a party selects it for publication. Finish with Publish selected "
+"versions, then use View as party to verify the saved result. Private "
+"descriptions are copied only when you choose Copy from private original."
+msgstr ""
+"Marcar um grupo o seleciona para publicação. Finalize com «Publicar versões "
+"selecionadas» e use «Ver como grupo» para conferir o resultado. Descrições "
+"privadas só são copiadas ao escolher «Copiar do original privado»."
+
+#. Application interface
+msgid "Also publish the entire saved drawing to selected parties"
+msgstr "Publicar também todo o desenho salvo para os grupos selecionados"
+
+#. Application interface
+msgid ""
+"Includes every freehand mark, text and image. Points of interest and paths "
+"are revealed separately. Leave unchecked to keep each party’s existing "
+"drawing."
+msgstr ""
+"Inclui todas as marcas livres, textos e imagens. Pontos de interesse e "
+"caminhos são revelados separadamente. Deixe desmarcado para manter o desenho "
+"atual de cada grupo."
+
+#. Application interface
+msgid "Review saved drawing"
+msgstr "Revisar desenho salvo"
+
+#. Application interface
+msgid "Publish to this party"
+msgstr "Publicar para este grupo"
+
+#. Application interface
+msgid "Already published. Changes remain private until you publish."
+msgstr "Já publicado. Alterações são privadas até publicar."
+
+#. Application interface
+msgid "Title known to this party"
+msgstr "Título conhecido pelo grupo"
+
+#. Application interface
+msgid "What this party knows"
+msgstr "O que este grupo sabe"
+
+#. Application interface
+msgid "Known path type"
+msgstr "Tipo de caminho conhecido"
+
+#. Application interface
+msgid "Copy from private original"
+msgstr "Copiar do original privado"
+
+#. Application interface
+msgid "Use this text for selected parties"
+msgstr "Usar este texto para os grupos selecionados"
+
+#. Application interface
+msgid "Revoke publication"
+msgstr "Revogar publicação"
+
+#. Application interface
+msgid "Connect a party in campaign settings, or create a party first."
+msgstr "Conecte um grupo nas configurações da campanha ou crie um primeiro."
+
+#. Application interface
+msgid "Reveal selected articles"
+msgstr "Revelar artigos selecionados"
+
+#. Application interface
+msgid "Publish selected articles"
+msgstr "Publicar artigos selecionados"
+
+#. Application interface
+msgid ""
+"Publishes the saved private titles and descriptions of the checked articles. "
+"Existing party text will be replaced. Child articles are included only if "
+"checked separately."
+msgstr ""
+"Publica títulos e descrições privados salvos dos artigos marcados. O texto "
+"atual do grupo será substituído. Artigos filhos só são incluídos se marcados "
+"separadamente."
+
+#. Application interface
+msgid ""
+"Includes every freehand mark, text and image. Leave unchecked to keep each "
+"party’s existing drawing."
+msgstr ""
+"Inclui todas as marcas livres, textos e imagens. Deixe desmarcado para manter"
+" o desenho atual de cada grupo."
+
+#. Application interface
+msgid "Prepare individual party versions"
+msgstr "Preparar versões individuais dos grupos"
+
+#. Application interface
+msgid "Export campaign"
+msgstr "Exportar campanha"
+
+#. Application interface
+msgid "Only you can see originals. Party versions are published separately."
+msgstr ""
+"Só você pode ver os originais. Versões dos grupos são publicadas "
+"separadamente."
+
+#. Application interface
+msgid ""
+"Export includes private articles, maps, drawings and article links. Markdown "
+"image URLs are kept as references. Party publications and connections are not"
+" exported."
+msgstr ""
+"A exportação inclui artigos privados, mapas, desenhos e links entre artigos. "
+"URLs de imagens Markdown permanecem como referências. Publicações e conexões "
+"de grupos não são exportadas."
+
+#. Application interface
+msgid "Selected:"
+msgstr "Selecionados:"
+
+#. Application interface
+msgid "Select all"
+msgstr "Selecionar tudo"
+
+#. Application interface
+msgid "Clear selection"
+msgstr "Limpar seleção"
+
+#. Application interface
+msgid "Reveal selected…"
+msgstr "Revelar selecionados…"
+
+#. Application interface
+msgid "Delete selected…"
+msgstr "Excluir selecionados…"
+
+#. Application interface
+msgid "Campaign settings and parties"
+msgstr "Configurações da campanha e grupos"
+
+#. Application interface
+msgid "Connected parties"
+msgstr "Grupos conectados"
+
+#. Application interface
+msgid "Create a party to share articles with its members."
+msgstr "Crie um grupo para compartilhar artigos com seus membros."
+
+#. Application interface
+msgid "Disconnecting a party hides this campaign’s published articles from it."
+msgstr "Desconectar um grupo oculta dele os artigos publicados desta campanha."
+
+#. Application interface
+msgid "Save settings"
+msgstr "Salvar configurações"
+
+#. Application interface
+msgid "Delete campaign and all articles…"
+msgstr "Excluir campanha e todos os artigos…"
+
+#. Application interface
+msgid "Changing the name does not change the character link."
+msgstr "Alterar o nome não muda o link do personagem."
+
+#. Application interface
+msgid "Background table answers"
+msgstr "Respostas das tabelas de antecedente"
+
+#. Application interface
+msgid "Click a field to edit."
+msgstr "Clique em um campo para editar."
+
+#. Application interface
+msgid "Export Attributes"
+msgstr "Exportar atributos"
+
+#. Application interface
+msgid "Print PDF (landscape)"
+msgstr "Imprimir PDF (paisagem)"
+
+#. Application interface
+msgid "Print PDF (portrait)"
+msgstr "Imprimir PDF (retrato)"
+
+#. Application interface
+msgid "Export JSON"
+msgstr "Exportar JSON"
+
+#. Application interface
+msgid "Convert to character"
+msgstr "Converter em personagem"
+
+#. Application interface
+msgid "Delete hireling"
+msgstr "Excluir seguidor"
+
+#. Application interface
+msgid "Delete pet"
+msgstr "Excluir animal"
+
+#. Application interface
+msgid "This also removes their inventory and any pets belonging to them."
+msgstr "Isto também remove o inventário e os animais que pertencem a ele."
+
+#. Application interface
+msgid "This also removes their inventory."
+msgstr "Isto também remove o inventário."
+
+#. Application interface
+msgid "Confirm deletion"
+msgstr "Confirmar exclusão"
+
+#. Application interface
+msgid "Add hireling"
+msgstr "Adicionar seguidor"
+
+#. Application interface
+msgid "Add pet"
+msgstr "Adicionar animal"
+
+#. Application interface
+msgid "Role"
+msgstr "Ofício"
+
+#. Application interface
+msgid ""
+"Rolls 3d6 for each attribute and d6 for HP. Starting equipment is a "
+"suggestion you can edit. Leave the name blank to roll one."
+msgstr ""
+"Rola 3d6 para cada atributo e d6 para PG. O equipamento inicial é uma "
+"sugestão editável. Deixe o nome vazio para sortear um."
+
+#. Application interface
+msgid "Custom pets require a name. Unknown stats can be filled in on the pet sheet."
+msgstr ""
+"Animais personalizados precisam de um nome. Atributos desconhecidos podem ser"
+" preenchidos na ficha."
+
+#. Application interface
+msgid "Create"
+msgstr "Criar"
+
+#. Application interface
+msgid ""
+"This replaces the hireling with a full player character in the same party. "
+"Their stats, portrait, gold, inventory, notes and pets are kept."
+msgstr ""
+"Substitui o seguidor por um personagem de jogador no mesmo grupo. Atributos, "
+"retrato, ouro, inventário, notas e animais são mantidos."
+
+#. Application interface
+msgid ""
+"Their role becomes their background. Attack and daily cost are kept in notes;"
+" natural armor becomes a petty inventory item."
+msgstr ""
+"O ofício vira o antecedente. Ataque e custo diário ficam nas notas; a "
+"armadura natural vira um item pequeno no inventário."
+
+#. Application interface
+msgid "Character owner"
+msgstr "Dono do personagem"
+
+#. Application interface
+msgid ""
+"The selected player will own and edit this character. Other party members "
+"will no longer be able to manage it as a shared hireling."
+msgstr ""
+"O jogador selecionado será dono do personagem e poderá editá-lo. Outros "
+"membros não poderão gerenciá-lo como seguidor compartilhado."
+
+#. Application interface
+msgid "Import JSON"
+msgstr "Importar JSON"
+
+#. Application interface
+msgid "Choose an exported character, pet or hireling."
+msgstr "Escolha um personagem, animal ou seguidor exportado."
+
+#. Application interface
+msgid "JSON file"
+msgstr "Arquivo JSON"
+
+#. Application interface
+msgid "Choose a valid character, pet or hireling JSON file."
+msgstr "Escolha um arquivo JSON válido de personagem, animal ou seguidor."
+
+#. Application interface
+msgid "Choose the file again to retry."
+msgstr "Escolha o arquivo novamente para tentar de novo."
+
+#. Application interface
+msgid "Import pet"
+msgstr "Importar animal"
+
+#. Application interface
+msgid "Import hireling"
+msgstr "Importar seguidor"
+
+#. Application interface
+msgid "Pet detected"
+msgstr "Animal detectado"
+
+#. Application interface
+msgid "Hireling detected"
+msgstr "Seguidor detectado"
+
+#. Application interface
+msgid "Belongs to"
+msgstr "Pertence a"
+
+#. Application interface
+msgid "Choose a character or hireling"
+msgstr "Escolher personagem ou seguidor"
+
+#. Application interface
+msgid "Character"
+msgstr "Personagem"
+
+#. Application interface
+msgid "Allow party members to manage this hireling"
+msgstr "Permitir que membros do grupo gerenciem este seguidor"
+
+#. Application interface
+msgid "Any pets in the file will belong to the imported hireling."
+msgstr "Animais do arquivo pertencerão ao seguidor importado."
+
+#. Application interface
+msgid ""
+"Importing creates a new creature with its stats, portrait, notes and "
+"inventory. Existing sheets stay unchanged."
+msgstr ""
+"A importação cria uma nova criatura com atributos, retrato, notas e "
+"inventário. Fichas existentes não mudam."
+
+#. Application interface
+msgid "You need a character or an editable hireling before importing a pet."
+msgstr "Você precisa de um personagem ou seguidor editável para importar um animal."
+
+#. Application interface
+msgid "You need to own a party before importing a hireling."
+msgstr "Você precisa ser dono de um grupo para importar um seguidor."
+
+#. Application interface
+msgid "Character detected. It will be added to your characters."
+msgstr "Personagem detectado. Será adicionado aos seus personagens."
+
+#. Application interface
+msgid "Remove from party"
+msgstr "Remover do grupo"
+
+#. Application interface
+msgid "Wilderness actions"
+msgstr "Ações na natureza"
+
+#. Application interface
+msgid "Edit party"
+msgstr "Editar grupo"
+
+#. Application interface
+msgid "Unable to save this stat. Please try again."
+msgstr "Não foi possível salvar este atributo. Tente novamente."
+
+#. Application interface
+msgid "Unable to refresh party members."
+msgstr "Não foi possível atualizar os membros do grupo."
+
+#. Application interface
+msgid "Saved"
+msgstr "Salvo"
+
+#. Application interface
+msgid "Member display"
+msgstr "Exibição de membros"
+
+#. Application interface
+msgid "Compact"
+msgstr "Compacto"
+
+#. Application interface
+msgid "Cards"
+msgstr "Cartões"
+
+#. Application interface
+msgid "Live"
+msgstr "Ao vivo"
+
+#. Application interface
+msgid "Saving…"
+msgstr "Salvando…"
+
+#. Application interface
+msgid "Unable to save. Your changes are still here; retrying…"
+msgstr "Não foi possível salvar. Suas alterações continuam aqui; tentando novamente…"
+
+#. Application interface
+msgid ""
+"Unable to save this drawing. Use up to 2000 elements and 12 MB of PNG, JPEG, "
+"WebP or GIF images."
+msgstr ""
+"Não foi possível salvar o desenho. Use até 2000 elementos e 12 MB de imagens "
+"PNG, JPEG, WebP ou GIF."
+
+#. Application interface
+msgid "Syncing changes…"
+msgstr "Sincronizando alterações…"
+
+#. Application interface
+msgid "Unable to load the map. Please reload this page."
+msgstr "Não foi possível carregar o mapa. Recarregue esta página."
+
+#. Application interface
+msgid "Unable to load the library. Please reload this page."
+msgstr "Não foi possível carregar a biblioteca. Recarregue esta página."
+
+#. Application interface
+msgid "Catastrophic"
+msgstr "Catastrófico"
+
+#. Application interface
+msgid "Second Bond"
+msgstr "Segundo vínculo"
+
+#. Application interface
+msgid "Custom Image URL"
+msgstr "URL de imagem personalizada"
+
+#. Application interface
+msgid "You can also choose one of the predefined portraits:"
+msgstr "Você também pode escolher um dos retratos predefinidos:"
+
+#. Application interface
+msgid "Done"
+msgstr "Concluído"
+
+#. Application interface
+msgid "Drop item"
+msgstr "Largar item"
+
+#. Application interface
+msgid "Drop container"
+msgstr "Largar recipiente"
+
+#. Application interface
+msgid "or"
+msgstr "ou"
+
+#. Application interface
+msgid "Upload a portrait"
+msgstr "Enviar retrato"
+
+#. Application interface
+msgid "DEAD"
+msgstr "MORTO"
+
+#. Application interface
+msgid "Edit"
+msgstr "Editar"
+
+#. Application interface
+msgid "Unable to save changes. Please try again."
+msgstr "Não foi possível salvar as alterações. Tente novamente."
+
+#. Application interface
+msgid "Roll omens"
+msgstr "Sortear presságios"
+
+#. Application interface
+msgid "Add scar"
+msgstr "Adicionar cicatriz"
+
+#. Application interface
+msgid "Add background table answers"
+msgstr "Adicionar respostas das tabelas de antecedente"
+
+#. Application interface
+msgid "Edit inventory"
+msgstr "Editar inventário"
+
+#. Application interface
+msgid "Roll dice (impaired)"
+msgstr "Rolar dados (prejudicado)"
+
+#. Application interface
+msgid "Roll dice"
+msgstr "Rolar dados"
+
+#. Application interface
+msgid "Decrease"
+msgstr "Diminuir"
+
+#. Application interface
+msgid "Increase"
+msgstr "Aumentar"
+
+#. Application interface
+msgid "Drag to move. Arrow keys then Enter also work."
+msgstr "Arraste para mover. As setas e depois Enter também funcionam."
+
+#. Application interface
+msgid "Delete item"
+msgstr "Excluir item"
+
+#. Application interface
+msgid "Unable to move this item. Please try again."
+msgstr "Não foi possível mover o item. Tente novamente."
+
+#. Application interface
+msgid "Choose a slot. Arrow keys to move, Enter to place, Escape to cancel."
+msgstr "Escolha um espaço. Setas para mover, Enter para colocar, Escape para cancelar."
+
+#. Application interface
+msgid "Slot"
+msgstr "Espaço"
+
+#. Application interface
+msgid "Edit container"
+msgstr "Editar recipiente"
+
+#. Application interface
+msgid "Currently held"
+msgstr "Carregado atualmente"
+
+#. Application interface
+msgid "Add item here"
+msgstr "Adicionar item aqui"
+
+#. Application interface
+msgid "Some items do not fit in the available slots."
+msgstr "Alguns itens não cabem nos espaços disponíveis."
+
+#. Application interface
+msgid "Petty"
+msgstr "Pequeno"
+
+#. Application interface
+msgid "no slot"
+msgstr "sem espaço"
+
+#. Application interface
+msgid "Petty item"
+msgstr "Item pequeno"
+
+#. Application interface
+msgid "Unable to refresh character stats."
+msgstr "Não foi possível atualizar os atributos do personagem."
+
+#. Application interface
+msgid "Current"
+msgstr "Atual"
+
+#. Application interface
+msgid "Available HP: 0"
+msgstr "PG disponíveis: 0"
+
+#. Application interface
+msgid "Your main inventory is full. Free a slot to use your HP."
+msgstr "Seu inventário principal está cheio. Libere um espaço para usar seus PG."
+
+#. Application interface
+msgid "Panic reduces your available HP to 0."
+msgstr "O pânico reduz seus PG disponíveis a 0."
+
+#. Application interface
+msgid "Conditions"
+msgstr "Condições"
+
+#. Application interface
+msgid "None yet."
+msgstr "Ainda nenhum."
+
+#. Application interface
+msgid "Hirelings"
+msgstr "Seguidores"
+
+#. Application interface
+msgid "Access"
+msgstr "Acesso"
+
+#. Application interface
+msgid "Party members can manage this hireling."
+msgstr "Membros do grupo podem gerenciar este seguidor."
+
+#. Application interface
+msgid "Only the party owner can manage this hireling."
+msgstr "Apenas o dono do grupo pode gerenciar este seguidor."
+
+#. Application interface
+msgid "No notes yet."
+msgstr "Ainda não há notas."
+
+#. Application interface
+msgid "No attack set."
+msgstr "Nenhum ataque definido."
+
+#. Application interface
+msgid "The container and everything inside it will be left on the ground."
+msgstr "O recipiente e tudo dentro dele serão deixados no chão."
+
+#. Application interface
+msgid "Where are you leaving it?"
+msgstr "Onde você vai deixar?"
+
+#. Application interface
+msgid "For example: beside the old bridge"
+msgstr "Por exemplo: ao lado da ponte velha"
+
+#. Application interface
+msgid "Drop"
+msgstr "Largar"
+
+#. Application interface
+msgid "Personal"
+msgstr "Pessoal"
+
+#. Application interface
+msgid "Armor bonus active"
+msgstr "Bônus de armadura ativo"
+
+#. Application interface
+msgid "Requires an Armor tag. Enable only while the item is in use."
+msgstr "Requer uma etiqueta de armadura. Ative apenas enquanto o item estiver em uso."
+
+#. Application interface
+msgid "Include an image with ![description](https://example.org/image.png)."
+msgstr "Inclua uma imagem com ![descrição](https://example.org/image.png)."
+
+#. Application interface
+msgid "Find equipment in the Marketplace"
+msgstr "Encontrar equipamento no mercado"
+
+#. Application interface
+msgid "Type an equipment name"
+msgstr "Digite um nome de equipamento"
+
+#. Application interface
+msgid ""
+"Select equipment to fill the fields below, or enter a custom item. Gold is "
+"unchanged."
+msgstr ""
+"Selecione equipamento para preencher os campos ou insira um item "
+"personalizado. O ouro não muda."
+
+#. Application interface
+msgid "Not enough space"
+msgstr "Sem espaço suficiente"
+
+#. Application interface
+msgid "Cannot buy more items, container would be overloaded"
+msgstr "Não é possível comprar mais itens: o recipiente ficaria sobrecarregado"
+
+#. Application interface
+msgid "Not enough gold"
+msgstr "Ouro insuficiente"
+
+#. Application interface
+#, python-format
+msgid "Cannot buy %(item)s"
+msgstr "Não é possível comprar %(item)s"
+
+#. Application interface
+#, python-format
+msgid "Gold: %(amount)s"
+msgstr "Ouro: %(amount)s"
+
+#. Application interface
+msgid ""
+"Add equipment to shared inventory. Prices are for reference; no character "
+"gold is deducted."
+msgstr ""
+"Adicione equipamento ao inventário compartilhado. Preços são referências; "
+"nenhum ouro de personagem é descontado."
+
+#. Application interface
+msgid "Search"
+msgstr "Buscar"
+
+#. Application interface
+msgid "Add"
+msgstr "Adicionar"
+
+#. Application interface
+msgid "No items found."
+msgstr "Nenhum item encontrado."
+
+#. Application interface
+msgid "Place"
+msgstr "Local"
+
+#. Application interface
+msgid "Dropped by"
+msgstr "Largado por"
+
+#. Application interface
+msgid "Contents"
+msgstr "Conteúdo"
+
+#. Application interface
+msgid "Pick up as"
+msgstr "Pegar como"
+
+#. Application interface
+msgid "Pick up"
+msgstr "Pegar"
+
+#. Application interface
+msgid "There is nothing on the ground."
+msgstr "Não há nada no chão."
+
+#. Application interface
+msgid "Manage inventory"
+msgstr "Gerenciar inventário"
+
+#. Application interface
+#, python-format
+msgid "Manage inventory: %(name)s"
+msgstr "Gerenciar inventário: %(name)s"
+
+#. Application interface
+msgid "Unable to refresh roll history."
+msgstr "Não foi possível atualizar o histórico de rolagens."
+
+#. Application interface
+msgid "Unable to clear roll history."
+msgstr "Não foi possível limpar o histórico de rolagens."
+
+#. Application interface
+msgid "Toggle roll history"
+msgstr "Alternar histórico de rolagens"
+
+#. Application interface
+msgid "Roll history"
+msgstr "Histórico de rolagens"
+
+#. Application interface
+msgid "Latest 20 rolls"
+msgstr "Últimas 20 rolagens"
+
+#. Application interface
+msgid "Clear all roll history for this party?"
+msgstr "Limpar todo o histórico de rolagens deste grupo?"
+
+#. Application interface
+msgid "Clear history"
+msgstr "Limpar histórico"
+
+#. Application interface
+msgid "Only you can see these rolls."
+msgstr "Só você pode ver estas rolagens."
+
+#. Application interface
+msgid "Everyone in the party can see these rolls."
+msgstr "Todos no grupo podem ver estas rolagens."
+
+#. Application interface
+msgid "No rolls yet."
+msgstr "Ainda não há rolagens."
+
+#. Application interface
+msgid "Unable to roll dice. Please try again."
+msgstr "Não foi possível rolar os dados. Tente novamente."
+
+#. Application interface
+msgid "No party"
+msgstr "Sem grupo"
+
+#. Application interface
+msgid "Public roll"
+msgstr "Rolagem pública"
+
+#. Application interface
+msgid "Cairn 2e rules"
+msgstr "Regras de Cairn 2e"
+
+#. Application interface
+msgid "Supply"
+msgstr "Abastecer"
+
+#. Application interface
+msgid ""
+"Choose participants: d4 for one, d6 for two, d8 for three, d10 for four, d12 "
+"for five or more. Each Rations item has 3 uses. Results go into party "
+"storage, which may become over capacity."
+msgstr ""
+"Escolha participantes: d4 para um, d6 para dois, d8 para três, d10 para "
+"quatro, d12 para cinco ou mais. Cada ração tem 3 usos. Os resultados vão para"
+" o estoque do grupo, que pode exceder a capacidade."
+
+#. Application interface
+msgid "Participants"
+msgstr "Participantes"
+
+#. Application interface
+msgid "Extra die steps from experience or equipment"
+msgstr "Passos extras de dado por experiência ou equipamento"
+
+#. Application interface
+msgid "Gather supplies"
+msgstr "Reunir suprimentos"
+
+#. Application interface
+msgid "Make Camp"
+msgstr "Acampar"
+
+#. Application interface
+msgid ""
+"Select characters who can rest and mounts to feed. Consume one Ration use "
+"each, from their inventory first, then party storage. Deprived characters "
+"keep Fatigue unless their needs are met."
+msgstr ""
+"Selecione personagens para descansar e montarias para alimentar. Consuma um "
+"uso de ração para cada um, primeiro do inventário e depois do estoque do "
+"grupo. Personagens privados mantêm a fadiga até suas necessidades serem "
+"atendidas."
+
+#. Application interface
+msgid "Resting characters"
+msgstr "Personagens em descanso"
+
+#. Application interface
+msgid "Mounts"
+msgstr "Montarias"
+
+#. Application interface
+msgid ""
+"Food, water, warmth and uninterrupted sleep resolve deprivation for all "
+"selected characters."
+msgstr ""
+"Comida, água, calor e sono sem interrupções resolvem a privação de todos os "
+"personagens selecionados."
+
+#. Application interface
+msgid ""
+"Use Kettlewright characters, party summaries and dice rolls in your Discord "
+"server."
+msgstr ""
+"Use personagens, resumos de grupo e rolagens do Kettlewright no seu servidor "
+"Discord."
+
+#. Application interface
+msgid "Join the Cairn Discord server"
+msgstr "Entrar no servidor Discord de Cairn"
+
+#. Application interface
+msgid "Connect your account"
+msgstr "Conectar conta"
+
+#. Application interface
+msgid "Connected as"
+msgstr "Conectado como"
+
+#. Application interface
+msgid "Disconnecting resets your Discord setup."
+msgstr "Desconectar redefine sua configuração do Discord."
+
+#. Application interface
+msgid ""
+"This removes your character selections and every channel binding you created,"
+" including other players’ selections in those channels. After reconnecting, "
+"you will need to bind the channels and players will need to select their "
+"characters again."
+msgstr ""
+"Remove suas seleções de personagens e todos os vínculos de canais que você "
+"criou, incluindo seleções de outros jogadores nesses canais. Após reconectar,"
+" será preciso vincular os canais e escolher os personagens novamente."
+
+#. Application interface
+msgid "Disconnect Discord"
+msgstr "Desconectar Discord"
+
+#. Application interface
+msgid ""
+"Connect the Discord account you will use for Kettlewright commands. Each "
+"Warden and player connects their own account."
+msgstr ""
+"Conecte a conta Discord que usará nos comandos do Kettlewright. Cada Guardião"
+" e jogador conecta sua própria conta."
+
+#. Application interface
+msgid "Connect Discord"
+msgstr "Conectar Discord"
+
+#. Application interface
+msgid "Discord integration is not configured on this server yet."
+msgstr "A integração com Discord ainda não está configurada neste servidor."
+
+#. Application interface
+msgid "Sign in to connect your Kettlewright and Discord accounts."
+msgstr "Entre para conectar suas contas Kettlewright e Discord."
+
+#. Application interface
+msgid "For the Warden"
+msgstr "Para o Guardião"
+
+#. Application interface
+msgid "Add the Kettlewright app to your Discord server"
+msgstr "Adicionar o aplicativo Kettlewright ao servidor Discord"
+
+#. Application interface
+msgid ""
+"Connect your Discord account to Kettlewright using the button above. You must"
+" own the party in Kettlewright and have Manage Channels or Administrator "
+"permission in Discord."
+msgstr ""
+"Conecte sua conta Discord ao Kettlewright pelo botão acima. Você deve ser "
+"dono do grupo no Kettlewright e ter permissão de Gerenciar Canais ou "
+"Administrador no Discord."
+
+#. Application interface
+msgid ""
+"In each channel you want to use, run <code>/kw bind</code> and select your "
+"party. Bind each channel separately."
+msgstr ""
+"Em cada canal desejado, execute <code>/kw bind</code> e selecione o grupo. "
+"Vincule cada canal separadamente."
+
+#. Application interface
+msgid "For players"
+msgstr "Para jogadores"
+
+#. Application interface
+msgid ""
+"Connect your Discord account to Kettlewright using the button above. Your "
+"character must belong to the party bound to the channel."
+msgstr ""
+"Conecte sua conta Discord ao Kettlewright pelo botão acima. Seu personagem "
+"deve pertencer ao grupo vinculado ao canal."
+
+#. Application interface
+msgid ""
+"In a bound channel, run <code>/kw select</code> and choose one of your "
+"characters from the list. Your choice is personal to you in that channel."
+msgstr ""
+"Em um canal vinculado, execute <code>/kw select</code> e escolha um "
+"personagem. A escolha vale apenas para você nesse canal."
+
+#. Application interface
+msgid "Discord commands"
+msgstr "Comandos do Discord"
+
+#. Application interface
+msgid "What it does"
+msgstr "Função"
+
+#. Application interface
+msgid "Shows a private link to connect your Discord account to Kettlewright."
+msgstr "Mostra um link privado para conectar sua conta Discord ao Kettlewright."
+
+#. Application interface
+msgid ""
+"Warden only: binds the current channel to one of your parties. Requires "
+"Manage Channels or Administrator permission. Binding again clears character "
+"selections in this channel."
+msgstr ""
+"Só Guardião: vincula o canal a um dos seus grupos. Requer Gerenciar Canais ou"
+" Administrador. Vincular novamente limpa as seleções de personagens no canal."
+
+#. Application interface
+msgid ""
+"Warden only: removes the current channel’s party binding and clears its "
+"character selections. Requires Manage Channels or Administrator permission."
+msgstr ""
+"Só Guardião: remove o vínculo do grupo e as seleções de personagens do canal."
+" Requer Gerenciar Canais ou Administrador."
+
+#. Application interface
+msgid ""
+"Selects one of your characters in this channel’s party. The selection applies"
+" only to you in this channel."
+msgstr ""
+"Seleciona um personagem seu no grupo do canal. A seleção vale apenas para "
+"você nesse canal."
+
+#. Application interface
+msgid ""
+"Shows your selected character’s current stats, HP, armor, conditions and "
+"sheet link in the channel."
+msgstr ""
+"Mostra no canal atributos, PG, armadura, condições e link da ficha do "
+"personagem selecionado."
+
+#. Application interface
+msgid ""
+"Shows the party roster and current stats in the channel. Use /kw party page:2"
+" for another page."
+msgstr ""
+"Mostra os membros e atributos atuais do grupo no canal. Use /kw party page:2 "
+"para outra página."
+
+#. Application interface
+msgid ""
+"Rolls for your selected character and posts the result in the channel and "
+"Kettlewright party history. Also accepts 2d6 or d6+d8; at most two dice of "
+"types d4, d6, d8, d10, d12, d20 or d100."
+msgstr ""
+"Rola para o personagem selecionado e publica o resultado no canal e histórico"
+" do grupo no Kettlewright. Aceita 2d6 ou d6+d8; no máximo dois dados d4, d6, "
+"d8, d10, d12, d20 ou d100."
+
+#. Application interface
+msgid ""
+"Opens private dice buttons for your selected character. Tap to roll on "
+"mobile; results appear in the channel and KW history."
+msgstr ""
+"Abre botões privados de dados para o personagem. Toque para rolar no celular;"
+" os resultados aparecem no canal e histórico do KW."
+
+#. Application interface
+msgid ""
+"Changes your current HP, STR, DEX or WIL. Use mode:set to set a value "
+"instead. Values must stay between zero and the maximum."
+msgstr ""
+"Altera PG, FOR, DES ou VON atuais. Use mode:set para definir um valor. "
+"Valores devem ficar entre zero e o máximo."
+
+#. Application interface
+msgid ""
+"Applies or clears Deprived or Panicked on your character. Use active:false to"
+" clear a condition."
+msgstr ""
+"Aplica ou remove privação ou pânico no personagem. Use active:false para "
+"remover uma condição."
+
+#. Application interface
+msgid ""
+"Adds Fatigue to your main inventory if it fits. Use /kw remove to clear "
+"Fatigue."
+msgstr ""
+"Adiciona fadiga ao inventário principal se houver espaço. Use /kw remove para"
+" remover."
+
+#. Application interface
+msgid ""
+"Privately lists your items, containers and remaining uses or charges. Use "
+"page:2 for more."
+msgstr ""
+"Lista de forma privada itens, recipientes e usos ou cargas restantes. Use "
+"page:2 para mais."
+
+#. Application interface
+msgid ""
+"Adds a catalog or custom item to your inventory. Supports container, tags, "
+"uses, charges and description. Does not spend gold."
+msgstr ""
+"Adiciona um item do catálogo ou personalizado ao inventário. Aceita "
+"recipiente, etiquetas, usos, cargas e descrição. Não gasta ouro."
+
+#. Application interface
+msgid ""
+"Spends one use. Supports amount and resource:charges. Add remove-empty:true "
+"to remove an exhausted item."
+msgstr ""
+"Consome um uso. Aceita amount e resource:charges. Adicione remove-empty:true "
+"para remover um item esgotado."
+
+#. Application interface
+msgid "Permanently removes one of your items. Choose it from autocomplete."
+msgstr "Remove permanentemente um dos seus itens. Escolha no preenchimento automático."
+
+#. Application interface
+msgid ""
+"Leaves an item in the party’s on the ground container. You must describe "
+"where you left it."
+msgstr "Deixa um item no recipiente «no chão» do grupo. Descreva onde o deixou."
+
+#. Application interface
+msgid ""
+"Leaves a container and its contents on the ground. The main inventory cannot "
+"be dropped."
+msgstr ""
+"Deixa um recipiente e seu conteúdo no chão. O inventário principal não pode "
+"ser largado."
+
+#. Application interface
+msgid "Lists the party’s dropped items and containers with their locations."
+msgstr "Lista os itens e recipientes largados pelo grupo e seus locais."
+
+#. Application interface
+msgid ""
+"Picks up an item or restores a container with its contents to your selected "
+"character. Checks space before picking up."
+msgstr ""
+"Pega um item ou restaura um recipiente com seu conteúdo para o personagem. "
+"Verifica o espaço antes."
+
+#. Application interface
+msgid "Moves an item between your personal containers."
+msgstr "Move um item entre seus recipientes."
+
+#. Application interface
+msgid ""
+"Gives one of your items to another character in this party if their main "
+"inventory has room."
+msgstr ""
+"Dá um item seu a outro personagem do grupo se houver espaço no inventário "
+"principal dele."
+
+#. Application interface
+msgid ""
+"Appends to your character notes without replacing existing text. The note is "
+"not posted to Discord."
+msgstr ""
+"Acrescenta às notas sem substituir o texto existente. A nota não é publicada "
+"no Discord."
+
+#. Application interface
+msgid ""
+"Character cards, party summaries and rolls are visible to everyone who can "
+"read the channel. Account connection, binding, selection and error messages "
+"are private to you."
+msgstr ""
+"Cartões de personagens, resumos e rolagens são visíveis para quem pode ler o "
+"canal. Conexão, vínculo, seleção e erros são privados."
+
+#. Application interface
+msgid ""
+"Sheet actions only affect your own selected character. Their confirmations, "
+"inventory lists and dice panels are private. Changes are saved in KW; reload "
+"an open character sheet to see them."
+msgstr ""
+"Ações da ficha afetam apenas seu personagem selecionado. Confirmações, "
+"inventários e painéis de dados são privados. Alterações são salvas no KW; "
+"recarregue a ficha aberta para vê-las."
+
+
+#. Application interface
+msgid "Course"
+msgstr "Curso"
+
+#. Application interface
+msgid "Site"
+msgstr "Local"
+
+#. Application interface
+msgid ""
+"Connect higher ground to lower ground; the water may end in a lake, sea, or "
+"beyond the map."
+msgstr ""
+"Conecte o terreno mais alto ao mais baixo; a água pode terminar em um lago, "
+"mar ou fora do mapa."
+
+#. Application interface
+msgid "Custom Image URL (1:1 aspect ratio)"
+msgstr "URL de imagem personalizada (proporção 1:1)"
+
+#. Application interface
+msgid "Item Name"
+msgstr "Nome do item"
+
+#. Application interface
+msgid "Item Description"
+msgstr "Descrição do item"
+
+
+#. Application interface
+msgid "River"
+msgstr "Rio"
+
+#. Application interface
+msgid "Lake"
+msgstr "Lago"
+
+#. Application interface
+msgid "Sea"
+msgstr "Mar"
+
+#. Application interface
+msgid "Clue"
+msgstr "Pista"
+
+
+#. Inventory capacity
+#, python-format
+msgid "%(num)s slot free"
+msgid_plural "%(num)s slots free"
+msgstr[0] "%(num)s espaço livre"
+msgstr[1] "%(num)s espaços livres"

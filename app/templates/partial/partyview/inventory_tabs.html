@@ -8,6 +8,6 @@
   {% if current_user.is_authenticated %}
   <button class="inventory-container-title inventory-ground-tab subtitle pointer{% if ground_active|default(false) %} inventory-container-title-selected{% endif %}"
     type="button" aria-pressed="{{ 'true' if ground_active|default(false) else 'false' }}"
-    hx-get="{{ url_for('ground.view', party_id=party.id) }}" hx-target="#inventory-container">on the ground</button>
+    hx-get="{{ url_for('ground.view', party_id=party.id) }}" hx-target="#inventory-container">{{ _('on the ground') }}</button>
   {% endif %}
 </div>

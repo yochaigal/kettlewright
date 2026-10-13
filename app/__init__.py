@@ -253,7 +253,8 @@ def create_app():
     
     @app.context_processor
     def inject_locale():
-        return dict(locale=get_locale())
+        from app.lib.generator_labels import generator_labels
+        return dict(locale=get_locale(), generator_labels=generator_labels)
 
     # ?lang= only covers its own request; the HTMX and fetch calls a page makes
     # afterwards read the kw_lang cookie, so keep the cookie in step with it.

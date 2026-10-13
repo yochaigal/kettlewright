@@ -1,3 +1,4 @@
+import {interfaceText} from './locale.js';
 import { createElement, styledAlert } from "./utils.js";
 import inventoryUI from "./inventoryUI.js";
 
@@ -186,7 +187,7 @@ const marketplace = {
     const newQuantity = Math.max(0, currentQuantity + change);
 
     if (change > 0 && this.gold < item.cost) {
-      styledAlert(itemName, "Not enough gold to purchase this item!", "#marketplace-modal");
+      styledAlert(itemName, interfaceText('Not enough gold to purchase this item!'), "#marketplace-modal");
       return;
     }
 

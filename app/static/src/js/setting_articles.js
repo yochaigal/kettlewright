@@ -1,5 +1,5 @@
 import {generateWorldbuilding} from './worldbuilding.js';
-import {settingName} from './naming.js';
+import {settingName, terrainSource} from './naming.js';
 
 export const settingTypes = new Set(['realm','people','culture','resources','faction','faction_type',
   'faction_trait','advantage','agenda','topography','terrain','landmark','water','weather','pois','settlement',
@@ -99,7 +99,7 @@ function rollSettingArticle(data, category, random=Math.random, options={}) {
     if(options.forestTerrain) fields.Terrain='Forests';
     const children=[];
     const weather=options.weatherFields || sub('weather').fields;
-    if(all && /forest|woodland|jungle|taiga|mangrove|thicket/i.test(fields.Terrain)
+    if(all && /forest|woodland|jungle|taiga|mangrove|thicket/i.test(terrainSource(data,fields.Terrain))
       && random()*100<Number(options.forestChance ?? 50)) children.push(sub('forest'));
     return article(category,`Terrain: ${fields.Terrain}`,{Difficulty:difficulty,...fields,Weather:weather},children);
   }

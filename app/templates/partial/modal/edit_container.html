@@ -62,7 +62,7 @@
           <button class="button is-success" type="button" {% if mode=="edit" %}
             hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/container-edit/{{container.id}}/save" {% else
             %} hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/container-edit/None/save" {% endif %}
-            hx-target="#inventory-container">Save</button>
+            hx-target="#inventory-container">{{ _('Save') }}</button>
         </div>
 
         {% if mode == "edit" and container.id != 0 %}

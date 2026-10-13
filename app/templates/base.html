@@ -31,12 +31,12 @@
 
   <!-- Basic Meta Tag -->
   <meta name="description"
-    content="A free, open-source application for managing characters and parties in the Cairn roleplaying game." />
+    content="{{ _('A free, open-source application for managing characters and parties in the Cairn roleplaying game.') }}" />
 
   <!-- Open Graph Meta Tags (for social media sharing) -->
   <meta property="og:title" content="Kettlewright" />
   <meta property="og:description"
-    content="A free, open-source application for managing characters and parties in the Cairn roleplaying game." />
+    content="{{ _('A free, open-source application for managing characters and parties in the Cairn roleplaying game.') }}" />
   <meta property="og:url" content="https://Kettlewright.com" />
   <meta property="og:type" content="website" />
 
@@ -44,7 +44,7 @@
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Kettlewright" />
   <meta name="twitter:description"
-    content="A free, open-source application for managing characters and parties in the Cairn roleplaying game." />
+    content="{{ _('A free, open-source application for managing characters and parties in the Cairn roleplaying game.') }}" />
 
   <!-- Favicons -->
   <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}" />
@@ -65,8 +65,27 @@
   'Bold': _('Bold'), 'Italic': _('Italic'), 'Heading': _('Heading'),
   'Strikethrough': _('Strikethrough'), 'Bullet list': _('Bullet list'),
   'Numbered list': _('Numbered list'), 'Quote': _('Quote'), 'Link': _('Link'), 'Code': _('Code'),
-  'Insert image': _('Insert image')
+  'Insert image': _('Insert image'),
+  'Edit': _('Edit'),
+  'Fatigue': _('Fatigue'),
+  'Add Item': _('Add Item'), 'Edit Item': _('Edit Item'),
+  'Add Container': _('Add Container'), 'Edit Container': _('Edit Container'),
+  'Not carried': _('Not carried'), 'Delete items': _('Delete items'),
+  'Roll Dice': _('Roll Dice'), 'View Item Description': _('View Item Description'),
+  'Delete Item': _('Delete Item'), 'Decrease Uses or Charges': _('Decrease Uses or Charges'),
+  'Increase Uses or Charges': _('Increase Uses or Charges'),
+  'Close': _('Close'), 'OK': _('OK'), 'Cancel': _('Cancel'),
+  'Not enough gold to purchase this item!': _('Not enough gold to purchase this item!'),
+  'Item name must be between 1 and %(maximum)s characters': _('Item name must be between 1 and %(maximum)s characters', maximum='%(maximum)s'),
+  'Item description must be less than %(maximum)s characters': _('Item description must be less than %(maximum)s characters', maximum='%(maximum)s'),
+  'Uses must be less than %(maximum)s': _('Uses must be less than %(maximum)s', maximum='%(maximum)s'),
+  'Charges must be less than %(maximum)s': _('Charges must be less than %(maximum)s', maximum='%(maximum)s'),
+  'Max charges must be less than %(maximum)s': _('Max charges must be less than %(maximum)s', maximum='%(maximum)s'),
+  'Container name must be unique and between 1 and %(maximum)s characters': _('Container name must be unique and between 1 and %(maximum)s characters', maximum='%(maximum)s'),
+  'Slots must be between 1 and %(maximum)s': _('Slots must be between 1 and %(maximum)s', maximum='%(maximum)s'),
+  'Load must be set if container is carried': _('Load must be set if container is carried')
 }|tojson }}</script>
+<script id="generator-labels" type="application/json">{{ generator_labels()|tojson }}</script>
 <script type="module" src="{{ url_for('static', filename='src/js/article-preview.js') }}"></script>
   <script type="module" src="{{ url_for('static', filename='src/js/markdown-fields.js') }}"></script>
   <!-- Server-rendered updates and local UI components -->

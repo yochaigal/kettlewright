@@ -1,3 +1,6 @@
+from app.lib.translation_contexts import (
+    _EVENTS_UNTRANSLATED_KEYS, _EVENTS_UNTRANSLATED_PATHS, _EVENTS_TRANSLATION_CONTEXTS,
+)
 from flask import Blueprint, render_template, redirect, url_for, jsonify, flash, request, make_response, send_file
 from flask_login import login_required, current_user
 from flask_wtf import FlaskForm
@@ -515,62 +518,21 @@ def delete_party(party_id):
     return redirect(url_for('main.parties', username=current_user.username))
 
 
-# The Tools generators read these values back as lookup keys or markers (and
-# saved maps parse them), so they stay English; tools.js translates them for display.
-_EVENTS_UNTRANSLATED_KEYS = {'DungeonDieDropTable', 'ForestDieDropTable', 'tags'}
-_EVENTS_UNTRANSLATED_PATHS = {
-    ('Weather', 'Types'),
-    ('Topography', 'Difficulty'),
-    ('PointsOfInterest', 'POI'),
-    ('Trails', 'Path'),
-}
-
-# Contexts follow the data's table paths, not the value's spelling. A word can
-# name a spell, an NPC, or a trait without sharing its translation.
-_EVENTS_TRANSLATION_CONTEXTS = {
-    ('Spellbooks', 'name'): 'spell name',
-    ('NPCNames', 'Names'): 'npc name',
-    ('NPCs', 'Names', 'd100'): 'npc name',
-    ('RulerTypes',): 'ruler type',
-    ('Special', 'Feature'): 'dungeon feature',
-    ('NPCTraits', 'Virtues'): 'npc trait',
-    ('NPCTraits', 'Vices'): 'npc trait',
-    ('NPCs', 'Traits', 'Virtues', 'd20'): 'npc trait',
-    ('NPCs', 'Traits', 'Vices', 'd20'): 'npc trait',
-    ('FactionTraits', 'Trait1'): 'faction trait',
-    ('FactionTraits', 'Trait2'): 'faction trait',
-    ('FactionTraits', 'Virtues'): 'faction trait',
-    ('FactionTraits', 'Vices'): 'faction trait',
-    ('SpiritTraits', 'Virtue'): 'forest spirit trait',
-    ('SpiritTraits', 'Vice'): 'forest spirit trait',
-    ('Factions', 'Traits', 'Virtue'): 'dungeon faction trait',
-    ('Factions', 'Traits', 'Vice'): 'dungeon faction trait',
-    ('ForestNames', 'Adjectives'): 'forest name adjective',
-    ('ForestNames', 'Nouns'): 'forest name noun',
-    ('Adjectives',): 'name adjective',
-    ('Nouns',): 'name noun',
-    ('NPCBackgrounds',): 'npc role',
-    ('NPCs', 'Background', 'd20'): 'npc role',
-    ('FactionTypes', 'Agent'): 'npc role',
-    ('NPCQuirks',): 'npc quirk',
-    ('NPCs', 'Quirks', 'Quirk1', 'd20'): 'npc quirk',
-    ('NPCs', 'Quirks', 'Quirk2', 'd20'): 'npc quirk',
-    ('Culture', 'Character'): 'culture character',
-    ('PointsOfInterest', 'Dungeons', 'Feature'): 'dungeon condition',
-    ('Traits', 'Description1'): 'forest description',
-    ('Traits', 'Description2'): 'forest description',
-    ('ForestAgenda', 'Goal'): 'forest goal',
-    ('Lore', 'RoomType'): 'dungeon room',
-}
-
-
 def translate_events_data(node, path=()):
     if path[-2:] in _EVENTS_UNTRANSLATED_PATHS:
         return node
     if isinstance(node, dict):
-        return {key: node[key] if key in _EVENTS_UNTRANSLATED_KEYS
-                else translate_events_data(node[key], path + (key,))
-                for key in node}
+        translated = {key: node[key] if key in _EVENTS_UNTRANSLATED_KEYS
+                      else translate_events_data(node[key], path + (key,))
+                      for key in node}
+        if path == ('Realm', 'Topography') and translated != node:
+            # Forest generation and terrain synonyms must use source identities.
+            translated['TerrainKeys'] = {
+                shown: source
+                for difficulty, table in node['Terrain'].items()
+                for source, shown in zip(table['Terrain'], translated['Terrain'][difficulty]['Terrain'])
+            }
+        return translated
     if isinstance(node, list):
         return [translate_events_data(item, path) for item in node]
     if isinstance(node, str) and node:

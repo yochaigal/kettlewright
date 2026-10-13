@@ -1,3 +1,4 @@
+import {localizeDraft, localizeGraph, localizeText} from '../../generator-locale.js';
 import {draftPreview, generateSettingArticle} from '../../setting_articles.js';
 import {generateResult, graphFromResult, nestedMapDraft, suggestedMapKind} from '../../content_generators.js';
 import {emptyDrawing} from '../../maps/scene.js';
@@ -202,6 +203,7 @@ export default function pointcrawl() {
             || this.graph.nodes.filter(node=>['settlement','waypoint','curiosity','lair','dungeon'].includes(node.category)).length || 3;
           this.geographyDraft.push(generateSettingArticle(this.geographyTables,'paths',Math.random,{poiCount}));
         }
+        this.geographyDraft.forEach(draft=>localizeDraft(draft));
       }catch(error){this.status=error.message || this.labels.error;}
       finally{this.generating=false;}
     },
@@ -233,14 +235,15 @@ export default function pointcrawl() {
       this.generating=true;
       try {
         await this.loadTables();
-        node.nested_draft=nestedMapDraft(node,kind,this.tables);
+        node.nested_draft=localizeGraph(nestedMapDraft(node,kind,this.tables));
         this.status='';
       } catch {this.status=this.labels.error;}
       finally {this.generating=false;}
     },
     async useResult(result) {
       this.graph=graphFromResult(result,Math.random,await this.loadTables(),{generateChildren:result.generateChildren ?? this.generateChildren,forestChance:result.forestChance ?? this.forestChance,dungeonChance:result.dungeonChance ?? this.dungeonChance});this.kind=result.mapKind;
-      this.$refs.title.value=result.title;this.draftBody=this.graph.body;
+      localizeGraph(this.graph);
+      this.$refs.title.value=localizeText(result.title);this.draftBody=this.graph.body;
       this.selected='';this.$nextTick(()=>this.fit());
     },
     async generate() {

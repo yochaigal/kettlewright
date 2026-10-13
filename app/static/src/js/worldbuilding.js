@@ -1,3 +1,5 @@
+import {generatorTerm} from './locale.js';
+
 // Shared structured generators. Table data is supplied by Tools or the map editor.
 import {settingName} from './naming.js';
 export function generateWorldbuilding(data, subcategory, random = Math.random, options = {}) {

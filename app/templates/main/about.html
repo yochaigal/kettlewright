@@ -20,41 +20,30 @@
   <section class="about-text-container about-list">
     <h2>{{_('Attribution')}}</h2>
     <ul>
-      <li><strong><a href="https://github.com/david-stearns">David Stearns</a></strong>: Software Development, QA,
-        Testing.</li>
-      <li><strong><a href="https://danilrodin.ru">Danil Rodin</a></strong>: Software Development, QA,
-        Testing.</li>
-      <li><strong><a href="https://newschoolrevolution.com">Yochai Gal</a></strong>: Project Design, DevOps,
-        Documentation.</li>
-      <li><strong><a href="https://tlomdev.itch.io/tlomdevs-tokens">tlomdev</a></strong>: Token Art licensed under CC-BY
-        4.0.</li>
-      <li><strong><a href="https://adamhensley.itch.io/">Adam Hensley</a></strong>: Logo/favicon Art.</li>
+      <li><strong><a href="https://github.com/david-stearns">David Stearns</a></strong>: {{ _('Software Development, QA, Testing.') }}</li>
+      <li><strong><a href="https://danilrodin.ru">Danil Rodin</a></strong>: {{ _('Software Development, QA, Testing.') }}</li>
+      <li><strong><a href="https://newschoolrevolution.com">Yochai Gal</a></strong>: {{ _('Project Design, DevOps, Documentation.') }}</li>
+      <li><strong><a href="https://tlomdev.itch.io/tlomdevs-tokens">tlomdev</a></strong>: {{ _('Token Art licensed under CC-BY 4.0.') }}</li>
+      <li><strong><a href="https://adamhensley.itch.io/">Adam Hensley</a></strong>: {{ _('Logo/favicon Art.') }}</li>
     </ul>
   </section>
 
   <section class="about-text-container about-list">
     <h2>{{_('Tools')}}</h2>
     <ul>
-      <li><strong><a href="https://flask.palletsprojects.com/en/3.0.x/">flask</a></strong>: A lightweight Python
-        framework for building web applications.</li>
-      <li><strong><a href="https://gunicorn.org/">gunicorn</a></strong>: A "green" python-based WSGI HTTP Server for
-        UNIX-like systems.</li>
-      <li><strong><a href="https://www.sqlite.org">sqlite</a></strong>: A fast, self-contained and full-featured SQL
-        database engine.</li>
-      <li><strong><a href="https://redis.io">redis</a></strong>: A real-time in-memory data structure store used as a
-        database, cache, and message broker.</li>
-      <li><strong><a href="https://www.docker.com">docker</a></strong>: A platform for building and managing
-        containerized applications.</li>
-      <li><strong><a href="https://css.winterveil.net">magick.css</a></strong>: A classless CSS framework designed by <a
-          href="https://github.com/wintermute-cell">winterveil</a>.</li>
-      <li><strong><a href="https://github.com/jgthms/bulma">bulma</a></strong>: A modern CSS framework based on Flexbox.
+      <li><strong><a href="https://flask.palletsprojects.com/en/3.0.x/">flask</a></strong>: {{ _('A lightweight Python framework for building web applications.') }}</li>
+      <li><strong><a href="https://gunicorn.org/">gunicorn</a></strong>: {{ _('A "green" python-based WSGI HTTP Server for UNIX-like systems.') }}</li>
+      <li><strong><a href="https://www.sqlite.org">sqlite</a></strong>: {{ _('A fast, self-contained and full-featured SQL database engine.') }}</li>
+      <li><strong><a href="https://redis.io">redis</a></strong>: {{ _('A real-time in-memory data structure store used as a database, cache, and message broker.') }}</li>
+      <li><strong><a href="https://www.docker.com">docker</a></strong>: {{ _('A platform for building and managing containerized applications.') }}</li>
+      <li><strong><a href="https://css.winterveil.net">magick.css</a></strong>: {{ _('A classless CSS framework designed by %(author)s.', author='<a href="https://github.com/wintermute-cell">winterveil</a>'|safe) }}</li>
+      <li><strong><a href="https://github.com/jgthms/bulma">bulma</a></strong>: {{ _('A modern CSS framework based on Flexbox.') }}
       </li>
-      <li><strong><a href="https://htmx.org/">htmx</a></strong>: Modern browser features directly from HTML.</li>
-      <li><strong><a href="https://excalidraw.com/">Excalidraw</a></strong>: A collaborative whiteboard for drawing
-        maps and diagrams.</li>
+      <li><strong><a href="https://htmx.org/">htmx</a></strong>: {{ _('Modern browser features directly from HTML.') }}</li>
+      <li><strong><a href="https://excalidraw.com/">Excalidraw</a></strong>: {{ _('A collaborative whiteboard for drawing maps and diagrams.') }}</li>
     </ul>
   </section>
 </section>
 <a class="github-fork-ribbon right-bottom fixed" href="https://github.com/yochaigal/kettlewright"
-  data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+  data-ribbon="{{ _('Fork me on GitHub') }}" title="{{ _('Fork me on GitHub') }}">{{ _('Fork me on GitHub') }}</a>
 {% endblock %}

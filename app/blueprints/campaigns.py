@@ -797,7 +797,8 @@ def map_tables():
     data['Equipment'] = json.loads((folder.parent / 'marketplace.json').read_text())
     if request.path == '/maps/tables':
         data = {key: data[key] for key in ('Dungeon', 'Forest', 'Realm', 'NPCGenerator', 'Names')}
-    return jsonify(data)
+    from app.main import translate_events_data
+    return jsonify(translate_events_data(data))
 
 
 @campaigns.get('/material-images/<int:owner_id>/<filename>')

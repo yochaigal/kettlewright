@@ -1,3 +1,4 @@
+import {interfaceText} from './locale.js';
 import {richContentHTML} from './rich-content.js';
 import inventory from "./inventoryData.js";
 import inventoryUI from "./inventoryUI.js";
@@ -134,18 +135,18 @@ const inventoryModalUI = {
 
       // check for errors
       if (this.itemNameField.value.trim() === "" || this.itemNameField.value.length >= this.maxItemNameLength) {
-        showErrorMessage(this.itemNameField, `Item name must be between 1 and ${this.maxItemNameLength} characters`);
+        showErrorMessage(this.itemNameField, interfaceText('Item name must be between 1 and %(maximum)s characters', {maximum: this.maxItemNameLength}));
       } else if (this.itemDescriptionField.value.length >= this.maxItemDescriptionLength) {
         showErrorMessage(
           this.itemDescriptionField,
-          `Item description must be less than ${this.maxItemDescriptionLength} characters`
+          interfaceText('Item description must be less than %(maximum)s characters', {maximum: this.maxItemDescriptionLength})
         );
       } else if (this.itemUsesField.value > this.maxUsesCharges) {
-        showErrorMessage(this.itemUsesField, `Uses must be less than ${this.maxUsesCharges + 1}`);
+        showErrorMessage(this.itemUsesField, interfaceText('Uses must be less than %(maximum)s', {maximum: this.maxUsesCharges + 1}));
       } else if (this.itemChargesField.value > this.maxUsesCharges) {
-        showErrorMessage(this.itemChargesField, `Charges must be less than ${this.maxUsesCharges + 1}`);
+        showErrorMessage(this.itemChargesField, interfaceText('Charges must be less than %(maximum)s', {maximum: this.maxUsesCharges + 1}));
       } else if (this.itemMaxChargesField.value > this.maxUsesCharges) {
-        showErrorMessage(this.itemMaxChargesField, `Max charges must be less than ${this.maxUsesCharges + 1}`);
+        showErrorMessage(this.itemMaxChargesField, interfaceText('Max charges must be less than %(maximum)s', {maximum: this.maxUsesCharges + 1}));
       }
       // save the item
       else if (this.itemModalMode === "add" || this.itemModalMode === "edit") {
@@ -296,7 +297,7 @@ const inventoryModalUI = {
     this.item = item;
     if (item === null) {
       this.itemModalMode = "add";
-      this.itemTitleText.textContent = "Add Item";
+      this.itemTitleText.textContent = interfaceText('Add Item');
       let item = {
         name: "",
         uses: "",
@@ -310,7 +311,7 @@ const inventoryModalUI = {
       this.itemTransferButton.classList.add("hidden");
       this.populateAddEditItemModal(item);
     } else {
-      this.itemTitleText.textContent = "Edit Item";
+      this.itemTitleText.textContent = interfaceText('Edit Item');
       this.itemModalMode = "edit";
       this.itemDeleteButton.classList.remove("hidden");
       this.itemTransferButton.classList.remove("hidden");
@@ -405,7 +406,7 @@ const inventoryModalUI = {
     const deleteCheckbox = document.getElementById("add-edit-container-modal-delete-checkbox");
     const removeButton = document.getElementById("add-edit-container-modal-remove");
 
-    this.populateContainerOptions(carriedBySelect, null, null, "Not carried");
+    this.populateContainerOptions(carriedBySelect, null, null, interfaceText('Not carried'));
 
     saveButton.addEventListener("click", () => {
       this.removeModalWarnings();
@@ -433,16 +434,16 @@ const inventoryModalUI = {
       ) {
         showErrorMessage(
           containerNameField,
-          `Container name must be unique and between 1 and ${this.maxContainerNameLength} characters`
+          interfaceText('Container name must be unique and between 1 and %(maximum)s characters', {maximum: this.maxContainerNameLength})
         );
       }
       // Slots must be between 1 and maxContainerSlots
       else if (containerSlots.length == 0 || containerSlots <= 0 || containerSlots > this.maxContainerSlots) {
-        showErrorMessage(containerSlotsField, `Slots must be between 1 and ${this.maxContainerSlots}`);
+        showErrorMessage(containerSlotsField, interfaceText('Slots must be between 1 and %(maximum)s', {maximum: this.maxContainerSlots}));
       }
       // Load must be between 1 and maxContainerLoad if container is carried
       else if (carriedBySelect.value !== "" && containerLoadField.value === "") {
-        showErrorMessage(containerLoadField, `Load must be set if container is carried`);
+        showErrorMessage(containerLoadField, interfaceText('Load must be set if container is carried'));
       }
       // else save the container
       else {
@@ -489,11 +490,11 @@ const inventoryModalUI = {
     modal.classList.add("is-active");
 
     if (container) {
-      title.textContent = "Edit Container";
+      title.textContent = interfaceText('Edit Container');
       removeSection.classList.remove("hidden");
       removeButton.classList.remove("hidden");
     } else {
-      title.textContent = "Add Container";
+      title.textContent = interfaceText('Add Container');
       removeSection.classList.add("hidden");
       removeButton.classList.add("hidden");
     }
@@ -515,7 +516,7 @@ const inventoryModalUI = {
       carriedBySelect,
       container ? container.carried_by : null,
       container ? container.id : null,
-      "Not carried"
+      interfaceText('Not carried')
     );
 
     if (container) {
@@ -549,7 +550,7 @@ const inventoryModalUI = {
   populateRemoveContainerDestination(container) {
     console.log("populating remove container destination");
     this.removeContainerItemDestination.innerHTML = "";
-    utils.addOptionToSelect(this.removeContainerItemDestination, "", "Delete items");
+    utils.addOptionToSelect(this.removeContainerItemDestination, "", interfaceText('Delete items'));
     let containers = inventory.getContainers().filter((c) => c.id !== container.id);
     containers.forEach((c) => {
       utils.addOptionToSelect(this.removeContainerItemDestination, c.id, c.name);

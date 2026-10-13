@@ -45,7 +45,7 @@
         const resultDisplay = document.getElementById("pcgen-result-display");
         const text = resultDisplay.innerText;
         navigator.clipboard.writeText(text);
-        KW_alert("Copy text", "Results copied to clipboard");
+        KW_alert({{_('Copy text')|tojson}}, {{_('Results copied to clipboard')|tojson}});
     });
 
     document.getElementById('pcgen-json-button').addEventListener('click', () => {

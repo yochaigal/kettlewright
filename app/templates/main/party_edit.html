@@ -6,7 +6,7 @@
   {% for message in messages %}
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      KW_alert("Error", '{{message|squote2js}}')
+      KW_alert({{_('Error')|tojson}}, '{{message|squote2js}}')
     });
   </script>
   {% endfor %}
@@ -95,8 +95,8 @@
             <button class="card-footer-item button is-danger is-light edit-mode character-remove-button" type="button"
               id="character-remove-button" hx-post="/party/remove-char/{{character.id}}/{{ownername}}/{{party_url}}"
               hx-target="#char-remove-anchor"
-              hx-confirm="Do you want to remove {{character.name}} from party?<br/>This action is permanent,<br/>independent on later editor action."
-              data-confirm-title="Remove character" data-confirm-button="Remove">{{_('Remove from party')}}
+              hx-confirm="{{ _('Do you want to remove %(name)s from the party? This action is permanent, regardless of later edits.', name=character.name) }}"
+              data-confirm-title="{{ _('Remove character') }}" data-confirm-button="{{ _('Remove') }}">{{_('Remove from party')}}
             </button>
             <div id="char-remove-anchor"></div>
           </footer>
@@ -127,8 +127,8 @@
     {% if is_owner %}
     <div>
       <button class="button is-danger edit-mode" type="button" id="delete-party-button" style="margin: 40px 0px"
-        hx-post="/party/delete/{{party.id}}" hx-confirm="Do you want to delete party {{party.name}}?"
-        data-confirm-title="Delete party" data-confirm-button="Delete">
+        hx-post="/party/delete/{{party.id}}" hx-confirm="{{ _('Do you want to delete party %(name)s?', name=party.name) }}"
+        data-confirm-title="{{ _('Delete party') }}" data-confirm-button="{{ _('Delete') }}">
         {{_('Delete Party')}}
       </button>
     </div>

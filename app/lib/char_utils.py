@@ -55,7 +55,7 @@ class TraitValue:
         
 # generate traits text, table contains: Physique, Skin, Hair, Face, Speech, Clothing, Virtue, Vice        
 def traits_text(age, traits):
-    txt = _('You have a')+' '+_(traits[0].value)+' '+_(traits[0].name)+', '+_(traits[1].value)+' '+_(traits[1].name)+', '+_('and')+' '+_(traits[2].value)+' '+_(traits[2].name)+'. '+_('Your')+' '+_(traits[3].name)+' '+_('is')+' '+_(traits[3].value)+', '+_('your')+' '+ _(traits[4].name)+' '+_(traits[4].value)+'. '+_('You have')+ ' '+_(traits[5].value)+' '+_(traits[5].name)+'. '+_('You are')+' '+    _(traits[6].value)+' ' +_('and')+' '+_(traits[7].value)+'. '
+    txt = _('You have a')+' '+translate_term(traits[0].value, 'character trait: ' + traits[0].name)+' '+_(traits[0].name)+', '+translate_term(traits[1].value, 'character trait: ' + traits[1].name)+' '+_(traits[1].name)+', '+_('and')+' '+translate_term(traits[2].value, 'character trait: ' + traits[2].name)+' '+_(traits[2].name)+'. '+_('Your')+' '+_(traits[3].name)+' '+_('is')+' '+translate_term(traits[3].value, 'character trait: ' + traits[3].name)+', '+_('your')+' '+ _(traits[4].name)+' '+translate_term(traits[4].value, 'character trait: ' + traits[4].name)+'. '+_('You have')+ ' '+translate_term(traits[5].value, 'character trait: ' + traits[5].name)+' '+_(traits[5].name)+'. '+_('You are')+' '+    translate_term(traits[6].value, 'character trait: ' + traits[6].name)+' ' +_('and')+' '+translate_term(traits[7].value, 'character trait: ' + traits[7].name)+'. '
     if age != "" and int(age) > 0:
         txt += _('You are %(num)s years old.', num=age)
     return txt
