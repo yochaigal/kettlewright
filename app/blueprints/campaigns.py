@@ -605,9 +605,11 @@ def import_archive():
         upload = request.files.get('archive')
         if not upload:
             message = _('Choose a ZIP or TAR archive.')
+        elif not upload.filename.lower().endswith(('.zip', '.tar', '.tar.gz', '.tgz')):
+            message = _('Unsupported file type. Put your Markdown articles in a ZIP, TAR or TAR.GZ archive, then upload that archive.')
         else:
             try:
-                preview = preview_archive(upload.stream.read(MAX_ARCHIVE + 1))
+                preview = preview_archive(upload.stream.read(MAX_ARCHIVE + 1), owner_id=current_user.id)
             except ImportError as exc:
                 message = str(exc)
             if preview and not preview['errors']:
@@ -618,6 +620,22 @@ def import_archive():
                 db.session.add(CampaignImport(id=preview_id, owner_id=current_user.id, payload=preview))
                 db.session.commit()
     return render_template('campaigns/import_archive.html', preview=preview, preview_id=preview_id, message=message)
+
+
+@campaigns.route('/materials/import-example.zip')
+def import_example():
+    import io
+    import zipfile
+    from pathlib import Path
+
+    stream = io.BytesIO()
+    examples = Path(current_app.static_folder) / 'examples' / 'campaign-import'
+    with zipfile.ZipFile(stream, 'w', zipfile.ZIP_DEFLATED) as archive:
+        for path in sorted(examples.glob('*.md')):
+            archive.writestr(path.name, path.read_bytes())
+    stream.seek(0)
+    return send_file(stream, mimetype='application/zip', as_attachment=True,
+                     download_name='campaign-example.zip')
 
 
 @campaigns.route('/materials/<int:entry_id>/revoke/<int:party_id>', methods=['POST'])

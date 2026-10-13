@@ -1,4 +1,5 @@
 import io
+import json
 import re
 import tarfile
 import zipfile
@@ -33,6 +34,137 @@ def archive(files, kind='zip'):
 
 def upload(client, data):
     return client.post('/materials/import-archive', data={'archive': (io.BytesIO(data), 'campaign.zip')})
+
+
+@pytest.mark.parametrize('filename', ['article.md', 'drawing.excalidraw', 'campaign.rar'])
+def test_unsupported_upload_shows_warning_without_staging(setup, filename):
+    app, client = setup
+    response = client.post('/materials/import-archive',
+        data={'archive': (io.BytesIO(b'---\nlayout: default'), filename)})
+    assert response.status_code == 200
+    html = response.get_data(as_text=True)
+    assert 'role="alert"' in html and 'Unsupported file type' in html
+    assert 'archive-confirm-form' not in html
+    with app.app_context():
+        assert CampaignImport.query.count() == 0
+        assert ContentEntry.query.count() == 0
+
+
+def test_downloadable_example_imports_complete_hierarchy(setup):
+    app, client = setup
+    response = client.get('/materials/import-example.zip')
+    assert response.status_code == 200
+    assert response.mimetype == 'application/zip'
+    assert 'attachment' in response.headers['Content-Disposition']
+    preview = upload(client, response.data)
+    html = preview.get_data(as_text=True)
+    assert 'Campaigns / My Campaign / My Dungeon' in html
+    token = re.search(r'name="preview_id" value="([a-f0-9]+)"', html).group(1)
+    assert client.post('/materials/import-archive', data={'preview_id': token}).status_code == 302
+    with app.app_context():
+        room = ContentEntry.query.filter_by(title='The Cellar').one()
+        assert room.parent.title == 'My Dungeon'
+        assert room.campaign.name == 'My Campaign'
+        assert room.parent.pointcrawl.kind == 'dungeon'
+
+
+@pytest.mark.parametrize('kind',['zip','tar'])
+def test_import_into_existing_owned_campaign_keeps_descendants_private(setup,kind):
+    app,client=setup
+    existing=create_entry(client,title='Existing article')
+    # Another owner's identical campaign name must not make ours ambiguous.
+    with app.app_context():
+        db.session.add(Campaign(owner_id=2,name='Secret campaign'));db.session.commit()
+    response=upload(client,archive({'dungeon.md':md('New Dungeon','Dungeon','Secret campaign'),
+        'room.md':md('New Room','Dungeon room','New Dungeon')},kind))
+    html=response.get_data(as_text=True)
+    assert 'Existing campaign:' in html and 'Campaigns / Secret campaign' in html
+    token=re.search(r'name="preview_id" value="([a-f0-9]+)"',html).group(1)
+    with app.app_context():
+        assert ContentEntry.query.count()==1
+    assert client.post('/materials/import-archive',data={'preview_id':token}).status_code==302
+    with app.app_context():
+        assert Campaign.query.filter_by(owner_id=1).count()==1
+        dungeon=ContentEntry.query.filter_by(title='New Dungeon').one()
+        room=ContentEntry.query.filter_by(title='New Room').one()
+        assert dungeon.campaign_id==1 and dungeon.parent_id is None
+        assert room.campaign_id==1 and room.parent_id==dungeon.id
+        assert dungeon.pointcrawl.kind=='dungeon'
+        assert not dungeon.presentations and not room.presentations
+        assert db.session.get(ContentEntry,existing).title=='Existing article'
+    assert client.post('/materials/import-archive',data={'preview_id':token}).status_code==409
+
+
+@pytest.mark.parametrize('mode',['duplicate','foreign','missing'])
+def test_existing_campaign_lookup_rejects_ambiguous_or_unowned_targets(setup,mode):
+    app,client=setup
+    name='Secret campaign' if mode=='duplicate' else 'Unavailable campaign'
+    with app.app_context():
+        if mode!='missing':
+            db.session.add(Campaign(owner_id=1 if mode=='duplicate' else 2,name=name));db.session.commit()
+    html=upload(client,archive({'dungeon.md':md('Dungeon','Dungeon',name)})).get_data(as_text=True)
+    assert 'ambiguous' in html
+    assert 'name="preview_id"' not in html
+    with app.app_context():
+        assert ContentEntry.query.count()==0 and CampaignImport.query.count()==0
+
+
+@pytest.mark.parametrize('mutation',['rename','delete','transfer','duplicate','replace'])
+def test_existing_campaign_is_rechecked_before_atomic_confirmation(setup,mutation):
+    app,client=setup
+    html=upload(client,archive({'dungeon.md':md('Dungeon','Dungeon','Secret campaign'),
+        'new.md':md('New campaign','Campaign')})).get_data(as_text=True)
+    token=re.search(r'name="preview_id" value="([a-f0-9]+)"',html).group(1)
+    with app.app_context():
+        campaign=db.session.get(Campaign,1)
+        if mutation in ('rename','replace'): campaign.name='Renamed'
+        elif mutation=='delete': db.session.delete(campaign)
+        elif mutation=='transfer': campaign.owner_id=2
+        if mutation in ('duplicate','replace'): db.session.add(Campaign(owner_id=1,name='Secret campaign'))
+        db.session.commit()
+        original_count=Campaign.query.count()
+    response=client.post('/materials/import-archive',data={'preview_id':token})
+    assert response.status_code==409
+    with app.app_context():
+        assert not db.session.get(CampaignImport,token).consumed
+        assert ContentEntry.query.count()==0 and Campaign.query.count()==original_count
+
+
+def test_archive_parents_take_priority_and_ids_never_resolve_existing_records(setup):
+    app,client=setup
+    html=upload(client,archive({'campaign.md':md('Secret campaign','Campaign'),
+        'dungeon.md':md('Dungeon','Dungeon','Secret campaign')})).get_data(as_text=True)
+    assert 'Existing campaign:' not in html
+    token=re.search(r'name="preview_id" value="([a-f0-9]+)"',html).group(1)
+    assert client.post('/materials/import-archive',data={'preview_id':token}).status_code==302
+    with app.app_context():
+        assert ContentEntry.query.filter_by(title='Dungeon').one().campaign_id!=1
+    data=md('Another dungeon','Dungeon').replace('type: Dungeon\n','type: Dungeon\nparent_id: 1\n')
+    html=upload(client,archive({'dungeon.md':data})).get_data(as_text=True)
+    assert 'parent_id' in html and 'is missing' in html and 'name="preview_id"' not in html
+
+
+@pytest.mark.parametrize('same_destination',[True,False])
+def test_links_and_references_respect_existing_campaign_destinations(setup,same_destination):
+    app,client=setup
+    with app.app_context():
+        db.session.add(Campaign(owner_id=1,name='Other campaign'));db.session.commit()
+    target_parent='Secret campaign' if same_destination else 'Other campaign'
+    files={'source.md':md('Source',parent='Secret campaign',body='See [[Target]].')
+            .replace('layout: default\n','layout: default\nid: source\n'),
+        'target.md':md('Target',parent=target_parent)
+            .replace('layout: default\n','layout: default\nid: target\n')}
+    with app.app_context():
+        preview=preview_archive(archive(files),owner_id=1)
+        assert not preview['errors']
+        source=next(row for row in preview['rows'] if row['title']=='Source')
+        assert bool(source['references'])==same_destination
+        files['manifest.json']=json.dumps({'format':'kettlewright-campaign','version':1,
+            'links':[{'source':'source','target':'target'}]})
+        preview=preview_archive(archive(files),owner_id=1)
+        assert bool(preview['errors'])!=same_destination
+        if not same_destination:
+            assert 'same campaign' in preview['errors'][0]
 
 
 @pytest.mark.parametrize('kind', ['zip', 'tar'])

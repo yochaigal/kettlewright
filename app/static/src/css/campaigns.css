@@ -153,3 +153,9 @@
   .campaign-page-header > h1,.campaign-page-header > h2 {flex-basis:100%;}
   .campaign-page-header .campaign-page-actions {justify-content:flex-start;margin-left:0;}
 }
+
+.import-instructions {margin:1.5rem 0;}
+.campaign-workspace .import-instructions h3 {margin:2rem 0 .75rem;}
+.import-instructions pre {margin:0 0 2rem;padding:1.25rem;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--form-bg);border:1px solid currentColor;}
+.import-instructions pre code {white-space:inherit;}
+.import-error {margin:1.5rem 0;padding:1rem;border:2px solid currentColor;font-weight:600;}

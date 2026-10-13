@@ -6,7 +6,7 @@ import zipfile
 from pathlib import PurePosixPath
 
 import yaml
-from werkzeug.exceptions import HTTPException
+from werkzeug.exceptions import HTTPException, Conflict
 
 from app.models import db, Campaign, ContentEntry, PointcrawlMap, MapNode, MapEdge, ContentLink
 from app.lib.campaigns import CATEGORIES, MAP_KINDS, PATH_TYPES
@@ -136,7 +136,7 @@ def parse_markdown(name, text):
             'body': body}
 
 
-def preview_archive(data):
+def preview_archive(data, owner_id=None):
     rows, errors, ignored, files = [], [], [], {}
     for name, text in archive_files(data):
         files[name] = text
@@ -158,6 +158,10 @@ def preview_archive(data):
             if row['id'] in ids:
                 errors.append(f'{row["file"]}: duplicate id "{row["id"]}".')
             ids[row['id']] = i
+    existing_by_name = {}
+    if owner_id is not None:
+        for campaign in Campaign.query.filter_by(owner_id=owner_id).all():
+            existing_by_name.setdefault(campaign.name, []).append(campaign)
     for row in rows:
         if row['parent_id']:
             if row['parent_id'] not in ids:
@@ -166,7 +170,13 @@ def preview_archive(data):
                 row['parent'] = ids[row['parent_id']]
         elif row['parent_title']:
             matches = titles.get(row['parent_title'], [])
-            if len(matches) != 1:
+            existing = existing_by_name.get(row['parent_title'], []) if not matches else []
+            if not matches and len(existing) == 1:
+                campaign = existing[0]
+                row['existing_campaign'] = {'id': campaign.id, 'name': campaign.name}
+            elif not matches and len(existing) > 1:
+                errors.append(f'{row["file"]}: existing campaign name "{row["parent_title"]}" is ambiguous.')
+            elif len(matches) != 1:
                 errors.append(f'{row["file"]}: parent "{row["parent_title"]}" is missing or ambiguous.')
             else:
                 row['parent'] = matches[0]
@@ -185,6 +195,9 @@ def preview_archive(data):
             visit(parent, depth + 1)
             row['destination'] = rows[parent]['destination'] + ' / ' + rows[parent]['title']
             row['depth'] = rows[parent]['depth'] + 1
+        elif row.get('existing_campaign'):
+            row['destination'] = 'Campaigns / ' + row['existing_campaign']['name']
+            row['depth'] = 0
         else:
             row['destination'] = 'Campaigns' if row['category'] == 'campaign' else 'Unfiled articles'
             row['depth'] = 0
@@ -226,6 +239,18 @@ def preview_archive(data):
 def import_preview(payload, owner_id):
     """Caller claims the preview and commits this entire operation atomically."""
     objects, campaigns = {}, {}
+    existing_campaigns = {}
+    # Never retarget a staged import when names, ownership or uniqueness change.
+    # Check every external destination before creating any library records.
+    for row in payload['rows']:
+        target = row.get('existing_campaign')
+        if not target or target['id'] in existing_campaigns:
+            continue
+        matches = [campaign for campaign in Campaign.query.filter_by(owner_id=owner_id).all()
+                   if campaign.name == target['name']]
+        if len(matches) != 1 or matches[0].id != target['id']:
+            raise Conflict('The destination campaign changed or its name is ambiguous. Upload the archive again.')
+        existing_campaigns[target['id']] = matches[0]
     for i in payload['order']:
         row = payload['rows'][i]
         if row['category'] == 'campaign':
@@ -238,6 +263,8 @@ def import_preview(payload, owner_id):
             continue
         parent = row['parent']
         campaign = campaigns.get(parent)
+        if row.get('existing_campaign'):
+            campaign = existing_campaigns[row['existing_campaign']['id']]
         parent_entry = objects.get(parent)
         if parent_entry:
             campaign = parent_entry.campaign
