@@ -4,6 +4,9 @@ body { --board-bg: #f8f6f1; --board-panel: #fff; --board-text: #30343b; --board-
 body.dark-mode { --board-bg: #202126; --board-panel: #292b32; --board-text: #efeff4; --board-border: #464852; --board-active: #494365; color-scheme: dark; }
 .map-header, .fog-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 16px; background: var(--board-bg); border-bottom: 1px solid var(--board-border); }
 .map-header a, #board-notices a { color: var(--board-text); }
+#back-to-party { display: inline-flex; align-items: center; justify-content: center; padding: 7px 10px;
+  border: 1px solid var(--board-border); border-radius: 6px; background: var(--board-panel); font-size: 13px; text-decoration: none; }
+#back-to-party:focus-visible { outline: 2px solid #8278c8; outline-offset: 2px; }
 .map-header strong { margin-right: 4px; }
 .map-header > span:not(#map-status) { font-size: 12px; opacity: .75; }
 .map-header button, .fog-toolbar button, dialog button { cursor: pointer; padding: 7px 10px; font: inherit; font-size: 13px;
@@ -55,28 +58,38 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 @media (max-width: 768px) { #mobile-party-tokens { display: inline-block; } }
 @media (max-width: 768px) { .excalidraw .party-tokens-button { display: none; } }
 
-#actor-sheet, #board-rolls { width: min(800px, calc(100vw - 32px)); padding: 12px; box-sizing: border-box;
-  border: 1px solid var(--board-border); border-radius: 10px; background: var(--board-bg); color: var(--board-text); }
-#actor-sheet { height: min(900px, calc(100dvh - 32px)); }
-#actor-sheet[open] { display: flex; flex-direction: column; gap: 10px; }
-#actor-frame { flex: 1; min-height: 0; width: 100%; border: none; background: var(--board-bg); }
-#actor-sheet::backdrop, #board-rolls::backdrop { background: #0008; }
-#board-rolls { max-height: calc(100dvh - 32px); overflow: auto; }
-#board-roll-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding-top: 16px; }
-#board-roll-form input[name="dice"] { width: 110px; padding: 8px; }
-#board-roll-form p { flex-basis: 100%; }
-#board-roll-history { font-size: 14px; overflow-wrap: anywhere; }
+#board-party { font-weight: 700; }
+#board-party[aria-expanded="true"] { background: var(--board-active); border-color: #8278c8; }
+.map-view-controls { display: flex; align-items: center; gap: 6px; }
+.map-lock-icon { position: relative; display: inline-block; width: 16px; }
+.map-unlocked .map-lock-icon::after { content: ''; position: absolute; width: 22px; height: 2px; background: currentColor;
+  top: 50%; left: -3px; transform: rotate(-45deg); box-shadow: 0 0 0 1px var(--board-panel); }
+#party-panel { position: fixed; inset: auto 8px 8px auto; width: min(640px, calc(100vw - 16px));
+  height: calc(100dvh - 180px); max-height: 850px; margin: 0; z-index: 10; box-shadow: 0 4px 32px #0004;
+  padding: 12px; box-sizing: border-box; border: 1px solid var(--board-border); border-radius: 10px;
+  background: var(--board-bg); color: var(--board-text); }
+#party-panel[open] { display: flex; flex-direction: column; gap: 10px; }
+#party-frame { flex: 1; min-height: 0; width: 100%; border: none; background: var(--board-bg); }
+@media (max-width: 600px) { #party-panel { height: calc(100dvh - 220px); } }
 
-#actor-sheet { position: fixed; inset: auto 8px 8px auto; width: min(560px, calc(100vw - 16px));
-  height: calc(100dvh - 180px); max-height: 850px; margin: 0; z-index: 10; box-shadow: 0 4px 32px #0004; }
-@media (max-width: 600px) { #actor-sheet { height: calc(100dvh - 220px); } }
-
-#board-monster-visibility { display: flex; flex-direction: column; flex-shrink: 0; gap: 8px; margin: 0; padding: 10px;
-  border: 1px solid var(--board-border); border-radius: 6px; background: var(--board-panel); font-size: 14px; }
-#board-monster-visibility[hidden] { display: none; }
-.board-visibility-toggle, .board-visibility-actions { display: flex; align-items: center; gap: 8px; }
-#board-monster-visibility details > label { display: block; margin-top: 8px; }
-#board-monster-visibility summary { cursor: pointer; }
-#board-monster-notes { box-sizing: border-box; width: 100%; resize: vertical; max-height: 150px; padding: 8px; margin: 6px 0;
-  border: 1px solid var(--board-border); border-radius: 4px; background: var(--board-bg); color: var(--board-text); font: inherit; }
-#board-visibility-status { font-size: 12px; }
+.token-stats-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+.token-stats { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 0;
+  width: max-content; max-width: 144px; padding: 2px 3px; border-radius: 3px; border: 1px solid var(--board-border);
+  background: var(--board-panel); color: var(--board-text); font: 9px/1.2 system-ui, sans-serif;
+  text-align: center; transform-origin: top center; overflow-wrap: anywhere; }
+.token-stat-values { display: grid; grid-template-columns: repeat(2, max-content); column-gap: 5px; text-align: left; }
+.token-stats small { font: inherit; }
+.token-stats button { position: absolute; left: calc(100% + 2px); top: 0; pointer-events: auto; cursor: pointer;
+  margin: 0; padding: 2px; min-width: 18px; min-height: 18px; font-size: 9px; border: 1px solid var(--board-border);
+  border-radius: 3px; background: var(--board-panel); color: var(--board-text); }
+#dice-modal { --bg: var(--board-bg); --fg: var(--board-text); --form-bg: var(--board-panel); }
+#dice-modal-card { box-sizing: border-box; }
+#dice-modal .modal-card-title { color: var(--board-text); }
+.notification { background: #a4423a; }
+#reveal-stats-confirm { width: min(440px, calc(100vw - 32px)); box-sizing: border-box;
+  padding: 24px; border: 1px solid var(--board-border); border-radius: 10px; background: var(--board-bg); color: var(--board-text); }
+#reveal-stats-confirm::backdrop { background: #0008; }
+#reveal-stats-confirm h2 { margin: 0 0 16px; font-size: 20px; }
+#reveal-stats-confirm p { margin: 12px 0; line-height: 1.5; }
+#reveal-monster-name { font-weight: 700; }
+#confirm-reveal-stats { background: var(--board-active); border-color: #8278c8; }

@@ -88,7 +88,7 @@ def shared_map(party_id):
     response = make_response(render_template('main/shared_map.html', party=target,
         editing=True, warden=current_user.id == target.owner,
         can_load_maps=current_user.id == target.owner and user_features_enabled() and party_features_enabled(party_id),
-        csrf_token=generate_csrf()))
+        csrf_token=generate_csrf(), roll_form=FlaskForm()))
     response.headers['Cache-Control'] = 'no-store'
     return response
 
@@ -124,13 +124,17 @@ def shared_map_scene(party_id):
 @login_required
 def shared_map_tokens(party_id):
     from urllib.parse import urlsplit
+    from app.lib.companions import can_manage
     target = _board_party(party_id)
+    warden = current_user.id == target.owner
     tokens = []
     def companion_token(companion, parent):
         return {'id': f'companion:{companion.id}', 'name': companion.name,
                 'portrait': companion.portrait_src if companion.image_url or companion.kind == 'monster' else None, 'kind': companion.kind, 'parent': parent}
 
     for character in party_characters(target):
+        if not warden and character.owner != current_user.id:
+            continue
         portrait = character.image_url if character.custom_image else url_for(
             'static', filename='images/portraits/' + (character.image_url or 'default-portrait.webp'))
         # No server-side fetching of user-controlled URLs.
@@ -143,11 +147,52 @@ def shared_map_tokens(party_id):
         tokens.append({'id': character.id, 'name': character.name, 'portrait': portrait})
         tokens.extend(companion_token(pet, character.name) for pet in character.pets)
     for hireling in target.hirelings:
+        if not warden and not can_manage(hireling):
+            continue
         tokens.append(companion_token(hireling, target.name))
         tokens.extend(companion_token(pet, hireling.name) for pet in hireling.pets)
-    tokens.extend(companion_token(monster, target.name) for monster in target.monsters
-                  if current_user.id == target.owner or monster.shared)
+    if warden:
+        tokens.extend(companion_token(monster, target.name) for monster in target.monsters)
     return _board_json({'tokens': tokens})
+
+
+@party.get('/party/<int:party_id>/shared-map/stats')
+@login_required
+def shared_map_stats(party_id):
+    """Viewer-specific live stats; never put private sheets into the shared scene."""
+    target = _board_party(party_id)
+    warden = current_user.id == target.owner
+    actors = []
+
+    def add(actor, kind='character'):
+        if kind == 'monster' and not warden and not actor.shared:
+            return
+        stats = {field: [getattr(actor, field), getattr(actor, field + '_max')]
+                 for field in ('hp', 'strength', 'dexterity', 'willpower')
+                 if getattr(actor, field) is not None}
+        if kind == 'character' and 'hp' in stats:
+            stats['hp'] = actor.hpValue()
+        if not stats:
+            return
+        data = {'id': str(actor.id) if kind == 'character' else f'companion:{actor.id}',
+                'name': actor.name, 'kind': kind, 'stats': stats, 'armor': actor.armorValue()}
+        if kind != 'character':
+            data['attack'] = actor.attack
+        if kind == 'monster':
+            data['shared'] = actor.shared
+        actors.append(data)
+
+    for character in party_characters(target):
+        add(character)
+        for pet in character.pets:
+            add(pet, pet.kind)
+    for hireling in target.hirelings:
+        add(hireling, hireling.kind)
+        for pet in hireling.pets:
+            add(pet, pet.kind)
+    for monster in target.monsters:
+        add(monster, monster.kind)
+    return _board_json({'actors': actors})
 
 
 @party.route('/party/<int:party_id>/shared-map/monsters/<int:companion_id>/visibility', methods=['GET', 'POST'])
@@ -160,7 +205,7 @@ def shared_map_monster_visibility(party_id, companion_id):
         abort(404)
     if request.method == 'POST':
         data = _board_data()
-        shared, notes = data.get('shared'), data.get('public_notes')
+        shared, notes = data.get('shared'), data.get('public_notes', c.public_notes)
         if type(shared) is not bool or not isinstance(notes, str) or len(notes) > 10000:
             abort(400)
         c.shared, c.public_notes = shared, notes

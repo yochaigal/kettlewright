@@ -224,15 +224,15 @@ def test_party_tokens_include_pets_hirelings_and_their_pets(shared):
         ])
         db.session.commit()
     path = BASE + '/tokens'
-    for user in (1, 2):
-        tokens = clients[user].get(path).json['tokens']
-        assert [token['name'] for token in tokens] == ['Player', 'Moss', 'Ada', 'Pip']
-        assert len({token['id'] for token in tokens}) == 4
-        assert tokens[1:] == [
-            {'id': 'companion:1', 'name': 'Moss', 'portrait': None, 'kind': 'pet', 'parent': 'Player'},
-            {'id': 'companion:2', 'name': 'Ada', 'portrait': None, 'kind': 'hireling', 'parent': 'Party'},
-            {'id': 'companion:3', 'name': 'Pip', 'portrait': None, 'kind': 'pet', 'parent': 'Ada'},
-        ]
+    tokens = clients[1].get(path).json['tokens']
+    assert [token['name'] for token in tokens] == ['Player', 'Moss', 'Ada', 'Pip']
+    assert len({token['id'] for token in tokens}) == 4
+    assert tokens[1:] == [
+        {'id': 'companion:1', 'name': 'Moss', 'portrait': None, 'kind': 'pet', 'parent': 'Player'},
+        {'id': 'companion:2', 'name': 'Ada', 'portrait': None, 'kind': 'hireling', 'parent': 'Party'},
+        {'id': 'companion:3', 'name': 'Pip', 'portrait': None, 'kind': 'pet', 'parent': 'Ada'},
+    ]
+    assert [t['name'] for t in clients[2].get(path).json['tokens']] == ['Player', 'Moss']
     with app.app_context():
         db.session.get(Companion, 1).image_url = 'default-portrait.webp'
         hireling = db.session.get(Companion, 2)
@@ -303,3 +303,35 @@ def test_socket_delta_omits_unchanged_images_and_preserves_order():
     assert delta['elements'][0]['x'] == 240 and delta['base_version'] == 1
     after['generation'] = 2
     assert board_update(before, after) == {'state': after}
+
+
+def test_player_token_picker_excludes_other_owners_and_all_monsters(shared):
+    from app.models import Character, Companion, Party
+    app, clients, _ = shared
+    with app.app_context():
+        db.session.get(Party, 1).members = '[1,2]'
+        db.session.add_all([
+            Character(id=2, owner=3, name='Other player', background='Test', party_id=1),
+            Companion(id=1, kind='pet', character_id=1, name='My pet'),
+            Companion(id=2, kind='pet', character_id=2, name='Their pet'),
+            Companion(id=3, kind='hireling', party_id=1, name='Shared hireling', shared=True),
+            Companion(id=4, kind='pet', hireling_id=3, name='Shared hireling pet'),
+            Companion(id=5, kind='hireling', party_id=1, name='Private hireling', shared=False),
+            Companion(id=6, kind='pet', hireling_id=5, name='Private hireling pet'),
+            Companion(id=7, kind='monster', party_id=1, name='Public monster', shared=True),
+            Companion(id=8, kind='monster', party_id=1, name='Private monster', shared=False),
+        ])
+        db.session.commit()
+    path = BASE + '/tokens'
+    assert [t['name'] for t in clients[2].get(path).json['tokens']] == [
+        'Player', 'My pet', 'Shared hireling', 'Shared hireling pet']
+    assert [t['name'] for t in clients[3].get(path).json['tokens']] == [
+        'Other player', 'Their pet', 'Shared hireling', 'Shared hireling pet']
+    assert {t['name'] for t in clients[1].get(path).json['tokens']} == {
+        'Player', 'Other player', 'My pet', 'Their pet', 'Shared hireling',
+        'Shared hireling pet', 'Private hireling', 'Private hireling pet', 'Public monster', 'Private monster'}
+    with app.app_context():
+        db.session.get(Companion, 3).shared = False
+        db.session.commit()
+    assert [t['name'] for t in clients[2].get(path).json['tokens']] == ['Player', 'My pet']
+    assert [t['name'] for t in clients[3].get(path).json['tokens']] == ['Other player', 'Their pet']

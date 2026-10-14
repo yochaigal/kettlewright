@@ -105,13 +105,13 @@ def test_visibility_is_warden_owned_and_cannot_be_changed_from_sheet(shared):
     assert clients[4].get(f'/party/2/shared-map/monsters/{cid}/visibility').status_code == 404
     for action in ('combat', 'visibility'):
         assert clients[1].post(f'/companions/{cid}/monster', data={'action': action, 'shared': 'on'}).status_code == 400
-    for data in ({'shared': 'true', 'public_notes': ''}, {'shared': True}, {'shared': True, 'public_notes': 'x' * 10001}):
+    for data in ({'shared': 'true', 'public_notes': ''}, {}, {'shared': True, 'public_notes': 'x' * 10001}):
         assert clients[1].post(path, json=data).status_code == 400
     assert clients[1].get(path).json['shared'] is False
     for socket in sockets.values():
         socket.get_received()
     assert clients[1].post(path, json=payload).status_code == 200
-    assert any(t.get('kind') == 'monster' for t in clients[2].get('/party/1/shared-map/tokens').json['tokens'])
+    assert not any(t.get('kind') == 'monster' for t in clients[2].get('/party/1/shared-map/tokens').json['tokens'])
     assert any(e['name'] == 'party_actors_changed' for e in sockets[2].get_received())
     assert sockets[3].get_received() == sockets[4].get_received() == []
     assert clients[1].post(path, json={'shared': False, 'public_notes': 'Known to players'}).status_code == 200
@@ -203,3 +203,73 @@ def test_party_tabs_embed_monsters_for_warden_only(shared):
         assert page.status_code == 200
         assert 'id="monsters-tab"' not in page.text
         assert 'id="monster-catalog"' not in page.text
+
+
+def test_board_stats_are_viewer_specific_live_and_never_in_scene(shared):
+    app, clients, _ = shared
+    cid = summon(clients)
+    path = '/party/1/shared-map/stats'
+    with app.app_context():
+        character = db.session.get(Character, 1)
+        character.hp, character.hp_max = 4, 7
+        character.strength, character.strength_max = 9, 12
+        character.notes = 'PRIVATE CHARACTER NOTES'
+        monster = db.session.get(Companion, cid)
+        monster.notes = 'PRIVATE MONSTER NOTES'
+        monster.public_notes = 'Existing public notes'
+        db.session.commit()
+    for user in (1, 2):
+        result = clients[user].get(path)
+        assert result.status_code == 200 and result.headers['Cache-Control'] == 'no-store'
+        actor = next(a for a in result.json['actors'] if a['id'] == '1')
+        assert actor['stats']['hp'] == [4, 7] and actor['stats']['strength'] == [9, 12]
+        assert 'NOTES' not in result.text and 'items' not in result.text
+    assert any(a['id'] == f'companion:{cid}' and a['shared'] is False for a in clients[1].get(path).json['actors'])
+    assert not any(a['kind'] == 'monster' for a in clients[2].get(path).json['actors'])
+    visibility = f'/party/1/shared-map/monsters/{cid}/visibility'
+    revealed = clients[1].post(visibility, json={'shared': True})
+    assert revealed.status_code == 200 and revealed.json['public_notes'] == 'Existing public notes'
+    assert any(a['id'] == f'companion:{cid}' for a in clients[2].get(path).json['actors'])
+    with app.app_context():
+        db.session.get(Companion, cid).hp = 2
+        db.session.commit()
+    assert next(a for a in clients[2].get(path).json['actors'] if a['id'] == f'companion:{cid}')['stats']['hp'][0] == 2
+    assert clients[1].post(visibility, json={'shared': False}).status_code == 200
+    assert not any(a['kind'] == 'monster' for a in clients[2].get(path).json['actors'])
+    assert 'stats' not in clients[2].get(URL).text
+    for user in (3, 4):
+        assert clients[user].get(path).status_code == 403
+    with app.app_context():
+        db.session.get(Party, 1).members = '[]'
+        db.session.commit()
+    assert clients[2].get(path).status_code == 403
+
+
+def test_board_stats_include_companions_and_omit_missing_stats(shared):
+    app, clients, _ = shared
+    with app.app_context():
+        hireling = Companion(kind='hireling', party_id=1, name='Ada', hp=3, hp_max=4, shared=False)
+        db.session.add_all([hireling,
+            Companion(kind='pet', character_id=1, name='Moss', strength=7, strength_max=8),
+            Companion(kind='pet', character_id=1, name='No stats')])
+        db.session.flush()
+        db.session.add(Companion(kind='pet', hireling_id=hireling.id, name='Pip', hp=1, hp_max=2))
+        db.session.commit()
+    for user in (1, 2):
+        actors = clients[user].get('/party/1/shared-map/stats').json['actors']
+        assert {a['name'] for a in actors} == {'Ada', 'Moss', 'Pip'}
+        assert not any('shared' in a for a in actors)
+
+
+def test_board_party_and_shared_dice_modal_for_both_roles(shared):
+    _, clients, _ = shared
+    for user in (1, 2):
+        html = clients[user].get('/party/1/shared-map').text
+        assert 'id="board-party"' in html and 'id="party-frame"' in html
+        assert '/users/map1/parties/party/' in html
+        assert 'fa-users' in html and 'fa-circle-half-stroke' in html
+        assert 'id="dice-modal-d20-button"' in html
+        assert 'Token stats' not in html and 'Everyone in the party can edit' not in html
+        assert 'board-roll-history' not in html and 'board-roll-form' not in html
+        assert ('id="lock-map"' in html) is (user == 1)
+        assert ('id="warden-public-roll"' in html) is (user == 1)
