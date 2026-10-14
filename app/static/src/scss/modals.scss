@@ -452,7 +452,8 @@ img.edit-portrait-modal-thumbnail.highlighted {
   border: none;
 }
 
-#warden-dice-form {
+#warden-dice-form,
+#monster-dice-form {
   display: flex;
   flex-direction: column;
   gap: 16px;

@@ -38,13 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (isOwner == "True") {
     const publicToggle = document.getElementById('monster-public-roll');
     if (publicToggle) {
-      const visibility = document.getElementById('monster-roll-visibility');
       publicToggle.checked = false;
-      const updateVisibility = () => {
-        visibility.textContent = publicToggle.checked ? visibility.dataset.public : visibility.dataset.private;
-      };
-      publicToggle.addEventListener('change', updateVisibility);
-      updateVisibility();
     }
     document.getElementById("character-dice-button").addEventListener("click", () => {
       diceModal.showDiceModal();
