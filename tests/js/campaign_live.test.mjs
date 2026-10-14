@@ -28,6 +28,11 @@ test('party article refresh updates its embedded drawing and clears revoked cont
   page.querySelector=()=>null;
   await refreshPartyContent(1);
   assert.equal(events.at(-1).type,'campaign-access-lost');
+  host.dataset.contentUrl='/party/1/materials/?preview=1';
+  let requested;
+  t.mock.method(globalThis,'fetch',async url=>{requested=url;return {ok:true,redirected:false,text:async()=>''};});
+  await refreshPartyContent(1);
+  assert.equal(requested,host.dataset.contentUrl);
   t.mock.method(globalThis,'fetch',async()=>({ok:false,status:403}));
   await refreshPartyContent(1);
   assert.deepEqual(children,[]);

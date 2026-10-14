@@ -9,10 +9,5 @@
 {% if editing %}<a class="button" href="{{ url_for('campaigns.new_entry', party_id=party.id) }}">{{ _('Create and show') }}</a>
 <a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}">{{ _('View as party') }}</a>{% endif %}{% endcall %}
 {% if preview %}<p>{{ _('You are viewing only this party’s published knowledge.') }}</p>{% endif %}
-<div id="party-content-results">
-<div x-data="materialTree">
-{% if entries %}{{ tree_toolbar() }}{{ party_children(hierarchy) }}
-{% else %}<p>{{ _('Nothing has been revealed yet.') }}</p>{% endif %}
-</div>
-</div>
+{% include 'campaigns/party_contents.html' %}
 {% endblock %}

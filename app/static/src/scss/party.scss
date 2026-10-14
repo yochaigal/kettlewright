@@ -588,3 +588,5 @@ body:has(.tools-page) {
 @media (max-width: 480px) {
   .companion-compact .companion-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+
+#party-form .party-campaign-panel { width: 100%; max-width: none; padding: 1.5rem 0 0; }

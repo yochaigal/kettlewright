@@ -389,10 +389,20 @@ def party_view(ownername, party_url):
     party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party = get_party_data(ownername, party_url)
     from app.lib.monsters import monster_catalog
     can_view_rolls = current_user.id in party_recipient_ids(party)
+    from app.lib.feature_access import party_features_enabled, user_features_enabled
+    from app.lib.campaigns import party_knowledge_tree, CATEGORIES
+    from app.lib.rich_content import content_excerpt
+    campaign_enabled = can_view_rolls and party_features_enabled(party.id)
+    campaign_entries, campaign_hierarchy = party_knowledge_tree(party.id) if campaign_enabled else ([], [])
+    campaign_preview = is_owner and request.args.get('preview') == '1'
     response = make_response(render_template('main/party_view.html', party_url=party_url, characters=characters, join_code=join_code, is_owner=is_owner,
                            is_subowner=is_subowner, party_id=party.id, ownername=ownername, inventory=inventory, party=party,
                            can_view_rolls=can_view_rolls, roll_form=FlaskForm(), stat_form=FlaskForm(),
                            templates=monster_catalog() if is_owner else {}, form=FlaskForm(),
+                           campaign_enabled=campaign_enabled, campaign_entries=campaign_entries,
+                           campaign_hierarchy=campaign_hierarchy, campaign_preview=campaign_preview,
+                           campaign_editing=is_owner and user_features_enabled() and not campaign_preview,
+                           content_categories=CATEGORIES, content_excerpt=content_excerpt,
                            rolls=PartyRoll.latest(party.id, current_user.id) if can_view_rolls else [],
                            wilderness_mounts=wilderness_mounts(party, characters)))
     response.headers['Cache-Control'] = 'no-store'

@@ -1227,3 +1227,53 @@ def test_party_tree_uses_published_fields_and_promotes_children_of_hidden_parent
     assert 'x-data="materialTree"' in html
     assert client.get(f'/party/1/materials/{child}/preview').status_code == 200
     assert client.get(f'/party/1/materials/{hidden}/preview').status_code == 404
+
+
+def test_party_campaign_tab_uses_published_knowledge_and_preview(setup):
+    app, client = setup
+    with app.app_context():
+        for character in Character.query.all():
+            character.owner_username = f'user{character.owner}'
+            character.url_name = f'player{character.id}'
+            character.items = '[]'
+            character.containers = '[{"id":0,"name":"Main","slots":10}]'
+        db.session.commit()
+    entry_id = create_entry(client)
+    assert reveal(client, entry_id).status_code == 302
+    url = '/users/user1/parties/party1/'
+    created = client.post('/materials/new?return_to=party', data={
+        'party_id': 1, 'category': 'lore', 'title': 'New party knowledge', 'body': 'Revealed in play'})
+    assert created.status_code == 302 and created.location == url + '#campaign-details'
+    page = client.get(url)
+    assert page.status_code == 200
+    assert 'id="campaign-details-tab"' in page.text
+    assert 'Known name' in page.text and 'Known facts' in page.text
+    assert 'SECRET NAME' not in page.text and 'SECRET BODY' not in page.text
+    assert 'Create and show' in page.text and 'View as party' in page.text
+    assert f'/materials/{entry_id}/edit' in page.text
+    assert 'data-content-url="/party/1/materials/?preview=0"' in page.text
+
+    preview = client.get(url + '?preview=1')
+    assert 'Known facts' in preview.text
+    assert 'Create and show' not in preview.text
+    assert f'/materials/{entry_id}/edit' not in preview.text
+    assert f'/materials/{entry_id}/reveal' not in preview.text
+    assert 'Back to Warden view' in preview.text
+    assert 'data-content-url="/party/1/materials/?preview=1"' in preview.text
+
+    login(client, 2)
+    player = client.get(url)
+    assert 'Known facts' in player.text
+    assert 'Create and show' not in player.text and 'View as party' not in player.text
+    assert f'/materials/{entry_id}/edit' not in player.text
+
+    login(client, 3)
+    outsider = client.get(url)
+    assert 'id="campaign-details-tab"' not in outsider.text
+    assert 'Known facts' not in outsider.text
+
+    login(client, 1)
+    app.config['FEATURE_TEST_PARTY_IDS'] = set()
+    disabled = client.get(url)
+    assert 'id="campaign-details-tab"' not in disabled.text
+    assert 'Known facts' not in disabled.text
