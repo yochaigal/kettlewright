@@ -105,8 +105,8 @@
       </div>
     </div>
 
-    {% if is_owner %}{% include "partial/partyview/wilderness.html" %}{% endif %}
     {% include "partial/companions/hirelings.html" %}
+    {% if is_owner %}{% include "partial/partyview/wilderness.html" %}{% endif %}
 
     <div class="party-section" x-data="collapseSection('inventory-container')">
       <span id="party-inventory-collapse-button" class="party-collapse-button" role="button" tabindex="0"

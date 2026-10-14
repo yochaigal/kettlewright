@@ -1,8 +1,15 @@
 {% from 'partial/companions/cards.html' import cards with context %}
 {% if is_party_member(party) %}
-<section id="party-hirelings" class="party-section companion-section">
-  <h3>{{_('Hirelings')}}</h3>
-  {{ cards(party.hirelings, compact=true) }}
-  {% if is_owner %}<a class="button" href="{{ url_for('companions.add_hireling', party_id=party.id) }}">{{_('Add hireling')}}</a>{% endif %}
+<section id="party-hirelings" class="party-section companion-section" x-data="collapseSection('party-hirelings-content')">
+  <span id="party-hirelings-collapse-button" class="party-collapse-button" role="button" tabindex="0"
+    @click="toggle()" @keydown.enter.prevent="toggle()" @keydown.space.prevent="toggle()"
+    :aria-expanded="!collapsed" aria-controls="party-hirelings-content">
+    <i class="fa-solid" :class="collapsed ? 'fa-chevron-right' : 'fa-chevron-down'" id="party-hirelings-collapse-icon"></i>
+  </span>
+  <span class="subtitle bold">{{_('Hirelings')}}</span>
+  <div id="party-hirelings-content" class="party-section-content" :class="{ hidden: collapsed }">
+    {{ cards(party.hirelings, compact=true) }}
+    {% if is_owner %}<a class="button" href="{{ url_for('companions.add_hireling', party_id=party.id) }}">{{_('Add hireling')}}</a>{% endif %}
+  </div>
 </section>
 {% endif %}

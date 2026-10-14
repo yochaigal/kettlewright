@@ -206,6 +206,10 @@ justify-content: space-around;
   padding: 2em 1em;
 }
 
+#party-hirelings-content {
+  padding: 0;
+}
+
 .wilderness-actions {
   .wilderness-rules { margin: .5rem 0 1rem; font-size: 1.4rem; }
   .wilderness-grid { display: grid; gap: 1.5rem; }
