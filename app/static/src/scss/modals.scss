@@ -579,6 +579,11 @@ body.board-embedded {
     ul { padding-left: 24px; }
   }
   .monster-import { margin: 20px 0; }
+  .monster-import-format {
+    margin-top: 12px;
+    p { margin: 12px 0; }
+    pre { padding: 14px; border: 1px solid color-mix(in lab, transparent 80%, var(--fg)); white-space: pre-wrap; overflow-wrap: anywhere; }
+  }
   .monster-roster { margin-top: 28px; }
   .monster-roster > h3 { margin: 0 0 16px; }
   .companion-stat-form { padding: 0; margin: 0; }

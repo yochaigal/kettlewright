@@ -2,6 +2,7 @@
 import json
 import re
 from pathlib import Path
+from functools import lru_cache
 
 from app.models import Companion, Character, db
 
@@ -40,12 +41,30 @@ def parse_monster(markdown):
 
 
 def monster_catalog():
-    return json.loads(CATALOG.read_text())
+    templates = json.loads(CATALOG.read_text())
+    for template in templates.values():
+        template['image_url'] = monster_portrait(template['name'])
+    return templates
+
+
+@lru_cache(maxsize=1)
+def _monster_portraits(version):
+    return json.loads(CATALOG.with_name('monster-portraits.json').read_text())
+
+
+def monster_portraits():
+    return _monster_portraits(CATALOG.with_name('monster-portraits.json').stat().st_mtime_ns)
+
+
+def monster_portrait(name):
+    from slugify import slugify
+    return monster_portraits().get(slugify(name or ''), 'monster/monster11.png')
 
 
 def new_monster(party, template):
     from app.lib.companions import import_pet
-    data = dict(template, role=template['name'], gold=0, items=[], containers=[dict(id=0, name='Main', slots=10)])
+    data = dict(template, role=template['name'], gold=0, items=[], containers=[dict(id=0, name='Main', slots=10)],
+                image_url=monster_portrait(template['name']))
     for stat in ('hp', 'strength', 'dexterity', 'willpower'):
         data[stat + '_max'] = data[stat]
     c = import_pet(data)
@@ -54,11 +73,12 @@ def new_monster(party, template):
 
 
 def give_monster(c, character):
-    if c.kind != 'monster' or character.party_id != c.party_id or character.id not in json.loads(c.party.members or '[]'):
+    if c.kind != 'monster' or c.party is None or character.party_id != c.party_id or character.id not in json.loads(c.party.members or '[]'):
         raise ValueError('Choose a current character in this monster’s party.')
     # Avoid delete-orphan cascades when moving between parent collections.
     moved = db.session.execute(db.update(Companion).where(Companion.id == c.id, Companion.kind == 'monster')
-                       .values(kind='pet', party_id=None, character_id=character.id, shared=True))
+                       .values(kind='pet', party_id=None, character_id=character.id, shared=True,
+                               image_url=c.image_url or monster_portrait(c.role or c.name)))
     if moved.rowcount != 1:
         raise ValueError('This monster has already been transferred.')
     db.session.expire_all()

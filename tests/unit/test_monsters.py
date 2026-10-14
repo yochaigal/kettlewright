@@ -153,3 +153,25 @@ def test_locked_map_and_unlocked_tokens(shared):
     added['elements'].append({'id': 'free-token', 'type': 'ellipse', 'x': 40, 'y': 40, 'width': 20, 'height': 20})
     assert clients[2].post(URL, json={'version': 1, 'drawing': added}).status_code == 200
     assert clients[1].post(URL, json={'version': 2, 'drawing': moved}).status_code == 200
+
+
+def test_monster_portraits_cover_catalog_and_preserve_custom_choice(shared):
+    from app.lib.monsters import CATALOG, monster_portrait, monster_portraits
+    app, clients, _ = shared
+    catalog = monster_catalog()
+    assert set(monster_portraits()) == set(catalog)
+    for template in catalog.values():
+        assert (CATALOG.parents[1] / 'images/portraits' / template['image_url']).is_file()
+    for key, template in catalog.items():
+        if 'dragon' in key or key == 'wyvern':
+            assert template['image_url'] == 'coldblooded/coldblooded3.png'
+    assert monster_portrait('Wolf') == 'beast/beast1.png'
+    assert monster_portrait('Vampire Bat') == 'beast/beast40.png'
+    assert monster_portrait('Unknown imported creature') == 'monster/monster11.png'
+    cid = summon(clients)
+    with app.app_context():
+        c = db.session.get(Companion, cid)
+        assert c.image_url == monster_portrait('Creeping Vines')
+        c.image_url = 'beast/beast1.png'
+        db.session.commit()
+    assert '/static/images/portraits/beast/beast1.png' in clients[1].get(f'/companions/{cid}').text

@@ -45,7 +45,11 @@ class Companion(db.Model):
     def portrait_src(self):
         if self.custom_image and self.image_url:
             return self.image_url
-        return url_for('static', filename='images/portraits/' + (self.image_url or 'default-portrait.webp'))
+        portrait = self.image_url
+        if not portrait and self.kind == 'monster':
+            from app.lib.monsters import monster_portrait
+            portrait = monster_portrait(self.role or self.name)
+        return url_for('static', filename='images/portraits/' + (portrait or 'default-portrait.webp'))
 
     def armorValue(self):
         return min(3, (self.armor or 0) + sum(item_armor_value(it) for it in json.loads(self.items or '[]')))

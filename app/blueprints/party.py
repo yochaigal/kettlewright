@@ -128,7 +128,7 @@ def shared_map_tokens(party_id):
     tokens = []
     def companion_token(companion, parent):
         return {'id': f'companion:{companion.id}', 'name': companion.name,
-                'portrait': companion.portrait_src if companion.image_url else None, 'kind': companion.kind, 'parent': parent}
+                'portrait': companion.portrait_src if companion.image_url or companion.kind == 'monster' else None, 'kind': companion.kind, 'parent': parent}
 
     for character in party_characters(target):
         portrait = character.image_url if character.custom_image else url_for(

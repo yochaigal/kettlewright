@@ -1,0 +1,36 @@
+  <p>{{_('Choose a monster or import a Cairn Markdown stat block. Each summon has its own stats and inventory.')}}</p>
+  {% if error %}<p role="alert">{{error}}</p>{% endif %}
+  <form class="monster-catalog-form" method="post" enctype="multipart/form-data" action="{{url_for('companions.monsters', party_id=party.id)}}">
+    {{form.hidden_tag()}}
+    <label for="monster-search">{{_('Search bestiary')}}</label>
+    <input id="monster-search" type="search">
+    <label for="monster-template">{{_('Monster')}}</label>
+    <select id="monster-template" name="template">{% for key, monster in templates|dictsort %}<option value="{{key}}">{{monster.name}} · {{monster.hp}} HP · {{monster.armor}} {{_('Armor')}}</option>{% endfor %}</select>
+    <div id="monster-preview" aria-live="polite"></div>
+    <button type="submit" id="summon-monster">{{_('Summon monster')}}</button>
+  </form>
+  <details class="monster-import"><summary>{{_('Import Markdown')}}</summary>
+    <div id="monster-import-format" class="monster-import-format">
+      <p>{{_('Upload one monster per UTF-8 Markdown file (.md), up to 64 KB.')}}</p>
+      <p>{{_('Start with a heading containing the monster’s name. Put its stats on one line below it, with numbers before the English labels HP, Armor, STR, DEX and WIL.')}}</p>
+      <pre><code># Vampire Bat
+
+3 HP, 0 Armor, 6 STR, 14 DEX, 3 WIL, bite (d8)
+
+- Feeds on blood and navigates by echolocation.
+- **Critical Damage:** The target is infected by disease.</code></pre>
+      <p>{{_('The name and HP are required. Omitted Armor defaults to 0; STR, DEX and WIL default to 10. Armor must be between 0 and 3.')}}</p>
+      <p>{{_('The rest of the stat line becomes the attack. Everything below it becomes the monster’s notes and supports Markdown.')}}</p>
+    </div>
+    <form method="post" enctype="multipart/form-data" action="{{url_for('companions.monsters', party_id=party.id)}}">{{form.hidden_tag()}}
+      <input type="file" name="monster_file" accept=".md,.markdown,text/markdown,text/plain" required aria-label="{{_('Monster file')}}" aria-describedby="monster-import-format">
+      <button type="submit">{{_('Import monster')}}</button>
+    </form>
+  </details>
+  <p><small><a href="https://cairnrpg.com/resources/monsters/" target="_blank" rel="noopener noreferrer">{{_('Cairn bestiary')}}</a> · Yochai Gal &amp; contributors · CC-BY-SA 4.0</small></p>
+  <section class="monster-roster"><h3>{{_('Party monsters')}}</h3>
+  {% from 'partial/companions/cards.html' import cards with context %}
+  {{cards(party.monsters)}}
+  </section>
+  <script id="monster-catalog" type="application/json">{{templates|tojson}}</script>
+  <script type="module" src="{{url_for('static', filename='src/js/monsters.js')}}"></script>
