@@ -1,0 +1,18 @@
+{% extends 'main/dice_modal.html' %}
+{% block dice_modal_body %}
+<div id="monster-roll" data-url="{{url_for('party.shared_map_roll', party_id=c.party_id)}}"
+     data-csrf="{{monster_csrf}}" data-id="{{c.id}}">
+  <form id="monster-dice-form">
+    <div>
+      <label class="warden-roll-toggle">
+        <input class="checkbox" id="monster-public-roll" type="checkbox" name="public_roll" value="on"
+               aria-describedby="monster-roll-visibility">
+        {{_('Public roll')}}
+      </label>
+      <p id="monster-roll-visibility" data-private="{{_('Only you can see these rolls.')}}"
+         data-public="{{_('Everyone in the party can see these rolls.')}}">{{_('Only you can see these rolls.')}}</p>
+    </div>
+    {{ super() }}
+  </form>
+</div>
+{% endblock %}

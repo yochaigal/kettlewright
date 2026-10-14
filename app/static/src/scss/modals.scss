@@ -350,7 +350,10 @@ img.edit-portrait-modal-thumbnail.highlighted {
 // Dice Modal
 
 #dice-modal-card {
-  max-width: 400px;
+  width: 400px;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
+  align-items: stretch;
 }
 
 .dice-modal-result-container {
@@ -393,7 +396,8 @@ img.edit-portrait-modal-thumbnail.highlighted {
   border: none;
 }
 
-#warden-dice-form {
+#warden-dice-form,
+#monster-dice-form {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -406,7 +410,8 @@ img.edit-portrait-modal-thumbnail.highlighted {
     margin: .5rem 0;
     input { margin: 0; flex: 0 0 auto; }
   }
-  #warden-roll-visibility { margin: .5rem 0; font-size: .9em; }
+  #warden-roll-visibility,
+  #monster-roll-visibility { margin: .5rem 0; font-size: .9em; }
   .dice-modal-buttons-container button { margin: 0; }
   #dice-modal-roll-result { font-size: 2em; overflow-wrap: anywhere; text-align: center; }
 }
@@ -470,3 +475,56 @@ img.edit-portrait-modal-thumbnail.highlighted {
   .portrait-choice { padding: 0; margin: 0; background: transparent; border: none; }
 }
 
+.monsters-page, .monster-controls {
+  form { box-sizing: border-box; min-width: 0; max-width: 100%; padding: 12px; margin: 8px 0; }
+  input:not([type="checkbox"]):not([type="hidden"]), select, textarea { box-sizing: border-box; min-width: 0; width: 100%; max-width: 100%; }
+}
+body.board-embedded {
+  nav[aria-label="main navigation"] { display: none; }
+  .body-container { margin: 0; padding: 8px; }
+}
+
+.monsters-sheet {
+  box-sizing: border-box;
+  width: calc(100% - 32px);
+  max-width: 940px;
+  min-width: 0;
+  padding: 32px;
+  text-align: left;
+
+  > h2 { margin: 12px 0 16px; }
+  > p { margin: 16px 0; }
+  .monster-catalog-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 0;
+    margin: 24px 0;
+    background: transparent;
+    box-shadow: none;
+    > * { grid-column: 1 / -1; min-width: 0; }
+    > label { margin: 0; }
+    > button { justify-self: start; margin: 0; }
+  }
+  #monster-preview {
+    padding: 20px;
+    margin: 8px 0;
+    border: 1px solid color-mix(in lab, transparent 80%, var(--fg));
+    border-radius: 4px;
+    h3 { margin-top: 0; }
+    ul { padding-left: 24px; }
+  }
+  .monster-import { margin: 20px 0; }
+  .monster-roster { margin-top: 28px; }
+  .monster-roster > h3 { margin: 0 0 16px; }
+  .companion-stat-form { padding: 0; margin: 0; }
+}
+@media (max-width: 600px) {
+  .monsters-sheet { width: calc(100% - 16px); padding: 16px; }
+  .monsters-sheet #monster-preview { padding: 14px; }
+}
+body.board-embedded .monsters-sheet {
+  width: 100%;
+  padding: 12px;
+  box-shadow: none;
+}

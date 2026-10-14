@@ -88,6 +88,14 @@
 
     {% if is_owner %}{% include "partial/partyview/wilderness.html" %}{% endif %}
     {% include "partial/companions/hirelings.html" %}
+    {% if is_owner %}
+    <section id="party-monsters" class="party-section companion-section">
+      <h3>{{_('Monsters')}}</h3>
+      {% from 'partial/companions/cards.html' import cards with context %}
+      {{ cards(party.monsters) }}
+      <a class="button" href="{{url_for('companions.monsters', party_id=party.id)}}">{{_('Add monster')}}</a>
+    </section>
+    {% endif %}
 
     <div class="party-section" x-data="collapseSection('inventory-container')">
       <span id="party-inventory-collapse-button" class="party-collapse-button" role="button" tabindex="0"

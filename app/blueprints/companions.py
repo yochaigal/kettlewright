@@ -15,8 +15,73 @@ companions = Blueprint('companions', __name__)
 
 @companions.app_context_processor
 def helpers():
-    return dict(can_manage_companion=can_manage, companion_form=FlaskForm, companion_stats=STATS,
+    from app.lib.monsters import monster_members
+    return dict(monster_members=monster_members, can_manage_companion=can_manage, companion_form=FlaskForm, companion_stats=STATS,
                 is_party_member=party_member, companion_destinations=companion_destinations)
+
+
+@companions.route('/parties/<int:party_id>/monsters', methods=['GET', 'POST'])
+@login_required
+def monsters(party_id):
+    from app.lib.monsters import monster_catalog, parse_monster, new_monster
+    party = db.get_or_404(Party, party_id)
+    if party.owner != current_user.id:
+        abort(403)
+    error = None
+    if request.method == 'POST':
+        request.max_content_length = 96 * 1024
+        csrf()
+        upload = request.files.get('monster_file')
+        try:
+            if upload and upload.filename:
+                raw = upload.stream.read(65537)
+                if len(raw) > 65536:
+                    raise ValueError('Choose a Markdown monster file smaller than 64 KB.')
+                template = parse_monster(raw.decode('utf-8-sig'))
+            else:
+                template = monster_catalog().get(request.form.get('template'))
+                if template is None:
+                    raise ValueError('Choose a monster from the bestiary.')
+            c = new_monster(party, template)
+            db.session.add(c)
+            db.session.commit()
+            return redirect(url_for('companions.sheet', companion_id=c.id))
+        except (ValueError, UnicodeError) as problem:
+            error = str(problem)
+    return render_template('main/monsters.html', party=party, templates=monster_catalog(),
+                           form=FlaskForm(), error=error), 400 if error else 200
+
+
+@companions.post('/companions/<int:companion_id>/monster')
+@login_required
+def monster_state(companion_id):
+    from app.lib.monsters import give_monster
+    c = editable(companion_id)
+    csrf()
+    if c.kind != 'monster':
+        abort(409)
+    party_id = c.party_id
+    action = request.form.get('action')
+    if action == 'give':
+        recipient = db.get_or_404(Character, number('character_id'))
+        try:
+            give_monster(c, recipient)
+        except ValueError as error:
+            abort(400, str(error))
+    elif action == 'visibility':
+        c.shared = request.form.get('shared') == 'on'
+        c.public_notes = text('public_notes', 10000)
+    elif action == 'combat':
+        c.in_combat = request.form.get('in_combat') == 'on'
+    else:
+        abort(400)
+    db.session.commit()
+    from app import socketio
+    from app.socket_events import party_recipient_ids
+    party = db.session.get(Party, party_id)
+    for user_id in party_recipient_ids(party):
+        socketio.emit('party_actors_changed', {'party_id': party_id}, room=f'user_{user_id}')
+    return redirect(url_for('companions.monsters', party_id=party_id))
 
 
 def csrf():
@@ -63,7 +128,7 @@ def inventories(c, incoming=False):
     """Only offer real party members; receiving requires control of the source."""
     result = {}
     character = c.character
-    hireling = c if c.kind == 'hireling' else c.hireling
+    hireling = c if c.kind in ('hireling', 'monster') else c.hireling
     party = hireling.party if hireling else db.session.get(Party, character.party_id) if character.party_id else None
     if character and (not incoming or character.owner == current_user.id):
         result['character:'+str(character.id)] = character
@@ -123,6 +188,8 @@ def add_hireling(party_id):
 @login_required
 def sheet(companion_id):
     c = db.get_or_404(Companion, companion_id)
+    if c.kind == 'monster' and not can_manage(c):
+        abort(403)
     # Pets have the same visibility as their character; party sheets require membership.
     if c.kind == 'hireling' and not party_member(c.party):
         abort(403)
@@ -258,10 +325,11 @@ def transfer(companion_id):
 
 
 def sheet_context(c, selected=0):
+    from flask_wtf.csrf import generate_csrf
     inventory = Inventory(c)
     inventory.select(selected)
     inventory.decorate()
-    return dict(c=c, character=c, form=FlaskForm(), editable=can_manage(c), is_owner=can_manage(c),
+    return dict(monster_csrf=generate_csrf(), c=c, character=c, form=FlaskForm(), editable=can_manage(c), is_owner=can_manage(c),
                 can_roll=can_roll(c), roll_party=companion_party(c), stat_form=FlaskForm(),
                 companion_sheet=True, inventory=inventory, outgoing=inventories(c) if can_manage(c) else {},
                 inventory_edit_base=f'/companions/{c.id}/inventory',
@@ -279,7 +347,7 @@ def inventory_response(c, selected=0):
 @login_required
 def select_container(companion_id, container_id):
     c = db.get_or_404(Companion, companion_id)
-    if (c.kind == 'hireling' and not party_member(c.party)) or (c.hireling and not party_member(c.hireling.party)):
+    if (c.kind == 'monster' and not can_manage(c)) or (c.kind == 'hireling' and not party_member(c.party)) or (c.hireling and not party_member(c.hireling.party)):
         abort(403)
     editing = request.args.get('mode') == 'edit'
     if editing and not can_manage(c):
@@ -467,7 +535,7 @@ def portrait(companion_id):
 
 def portrait_picker(c, error=None):
     from app.lib.data import load_images
-    return render_template('partial/charedit/portrait.html', images=load_images(),
+    return render_template('partial/charedit/portrait.html', images=load_images(include_categories=True),
                            portrait_form=FlaskForm(), error=error,
                            portrait_cancel_url=url_for('companions.portrait_cancel', companion_id=c.id),
                            portrait_save_url=url_for('companions.portrait_save', companion_id=c.id))
@@ -649,7 +717,7 @@ def section(companion_id, section):
 @login_required
 def stats(companion_id):
     c = db.get_or_404(Companion, companion_id)
-    if (c.kind == 'hireling' and not party_member(c.party)) or (c.hireling and not party_member(c.hireling.party)):
+    if (c.kind == 'monster' and not can_manage(c)) or (c.kind == 'hireling' and not party_member(c.party)) or (c.hireling and not party_member(c.hireling.party)):
         abort(403)
     response = make_response(render_template('partial/companions/stats.html', **sheet_context(c)))
     response.headers['Cache-Control'] = 'no-store'

@@ -23,6 +23,7 @@
       <div class="tools-tab-list" role="tablist" aria-label="{{_('Tools')}}">
         <button type="button" id="tables-tab" role="tab" aria-selected="true" aria-controls="tab-content1">{{_('Tables')}}</button>
         <button type="button" id="generator-tab" role="tab" aria-selected="false" aria-controls="tab-content2" tabindex="-1">{{_('Character Generator')}}</button>
+        {% if current_user.is_authenticated %}<button type="button" id="monsters-tab" role="tab" aria-selected="false" aria-controls="tab-monsters" tabindex="-1">{{_('Monsters')}}</button>{% endif %}
       </div>
       <div id="tab-content1" class="tools-tab-panel" role="tabpanel" aria-labelledby="tables-tab">
             <div class="tools-roll-container">
@@ -50,6 +51,12 @@
             <div class="text-border" style="margin-top: 1em" id="tools-result-display"></div>
 
       </div>
+      {% if current_user.is_authenticated %}<div id="tab-monsters" class="tools-tab-panel" role="tabpanel" aria-labelledby="monsters-tab" hidden>
+        <h3>{{_('Cairn bestiary')}}</h3>
+        <p>{{_('Choose a party to prepare monsters, import Markdown stat blocks and manage combat.')}}</p>
+        {% for target in warden_parties %}<p><a class="button" href="{{url_for('companions.monsters', party_id=target.id)}}">{{target.name}}</a></p>
+        {% else %}<p>{{_('Create a party first to manage monsters as its Warden.')}}</p>{% endfor %}
+      </div>{% endif %}
       <div id="tab-content2" class="tools-tab-panel" role="tabpanel" aria-labelledby="generator-tab" hidden>
         {% include "partial/tools/pcgen.html" %}
       </div>

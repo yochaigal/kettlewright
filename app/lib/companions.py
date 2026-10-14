@@ -28,6 +28,8 @@ def party_member(party):
 def can_manage(companion):
     if not current_user.is_authenticated:
         return False
+    if companion.kind == 'monster':
+        return companion.party.owner == current_user.id
     if companion.kind == 'hireling':
         return companion.party.owner == current_user.id or (companion.shared and party_member(companion.party))
     if companion.character:
@@ -44,7 +46,7 @@ def can_roll(companion):
 
 
 def companion_party(companion):
-    if companion.kind == 'hireling':
+    if companion.kind in ('hireling', 'monster'):
         return companion.party
     if companion.character:
         from app.lib.character_rolls import character_party

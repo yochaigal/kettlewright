@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/index.css">
   <title>{{ _('Whiteboard') }} · {{ party.name }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/shared_map.css') }}">
@@ -27,6 +28,13 @@
     <button type="button" id="board-theme">{{ _('Light / dark') }}</button>
     {% if warden %}<button type="button" id="load-map">{{ _('Load map') }}</button>{% endif %}
     <button type="button" id="mobile-party-tokens">{{ _('Party tokens') }}</button>
+    {% if warden %}
+    <button type="button" id="board-monsters">{{_('Monsters')}}</button>
+    <button type="button" id="lock-map">{{_('Lock map')}}</button>
+    <button type="button" id="unlock-map">{{_('Unlock map')}}</button>
+    {% endif %}
+    <button type="button" id="token-stats" disabled>{{_('Token stats')}}</button>
+    <button type="button" id="board-dice">{{_('Roll Dice')}}</button>
     <span id="map-status" role="status" aria-live="polite">{{ _('Loading…') }}</span>
   </header>
   {% if warden %}
@@ -68,8 +76,29 @@
     </div>
   </dialog>
   {% endif %}
+  <dialog id="actor-sheet" aria-labelledby="actor-title">
+    <div class="tokens-heading"><h2 id="actor-title">{{_('Creature sheet')}}</h2><button type="button" id="close-actor">{{_('Close')}}</button></div>
+    <iframe id="actor-frame" title="{{_('Creature sheet')}}"></iframe>
+  </dialog>
+  <dialog id="board-rolls" aria-labelledby="board-roll-title">
+    <div class="tokens-heading"><h2 id="board-roll-title">{{_('Roll Dice')}}</h2><button type="button" id="close-board-rolls">{{_('Close')}}</button></div>
+    <form id="board-roll-form">
+      <label for="board-roll-expression">{{_('Dice')}}</label><input id="board-roll-expression" name="dice" value="d20" maxlength="30" required>
+      <label><input type="checkbox" name="public_roll" {% if not warden %}checked{% endif %}> {{_('Public roll')}}</label>
+      <p>{{_('Public rolls are visible to everyone in the party.')}}</p>
+      <button type="submit">{{_('Roll Dice')}}</button>
+    </form>
+    <p id="board-roll-result" role="status"></p>
+    <h3>{{_('Roll history')}}</h3><div id="board-roll-history"></div>
+  </dialog>
   <script id="shared-map-config" type="application/json">{{ {
     'partyId': party.id, 'editing': editing, 'warden': warden, 'csrfToken': csrf_token,
+    'monstersUrl': url_for('companions.monsters', party_id=party.id),
+    'characterActorsUrl': url_for('party.shared_map_character', party_id=party.id, character_id=0),
+    'actorsUrl': url_for('party.shared_map_actor', party_id=party.id, companion_id=0),
+    'rollUrl': url_for('party.shared_map_roll', party_id=party.id),
+    'historyUrl': url_for('party.roll_history', party_id=party.id),
+    'monster': _('Monster'),
     'tokensUrl': url_for('party.shared_map_tokens', party_id=party.id),
     'sceneUrl': url_for('party.shared_map_scene', party_id=party.id),
     'fogUrl': url_for('party.shared_map_fog', party_id=party.id),
@@ -78,7 +107,8 @@
     'libraryUrl': url_for('static', filename='vendor/excalidraw-libraries/'),
     'messages': {
       'tokens': _('Party tokens'), 'tokensLoading': _('Loading…'),
-      'pet': _('Pet'), 'hireling': _('Hireling'),
+      'pet': _('Pet'), 'hireling': _('Hireling'), 'monster': _('Monster'),
+      'rollFailed': _('Unable to roll dice. Please try again.'),
       'tokensEmpty': _('No characters in this party yet.'),
       'tokensFailed': _('Unable to load party tokens. Close and try again.'),
       'tokenFallback': _('Portrait unavailable. Using initials.'),

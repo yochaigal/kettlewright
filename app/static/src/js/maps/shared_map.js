@@ -9,6 +9,7 @@ import {setupMapImport} from './whiteboard_import.js';
 import {setupPartyTokens} from './party_tokens.js';
 import {createLaserSync} from './whiteboard_laser.js';
 import {stateFromUpdate} from './whiteboard_updates.js';
+import {setupBoardControls} from './board_controls.js';
 import {editorLocale} from './locale.js';
 
 const config = JSON.parse(document.getElementById('shared-map-config').textContent);
@@ -41,6 +42,9 @@ window.addEventListener('blur', () => laser.stop());
 const tokens = setupPartyTokens({config, getApi: () => api, getGeneration: () => generation,
   canInsert: () => config.editing && initialized && !stopped && !importing && !playerPreview,
   beforeInsert: () => {layer.setTool(''); document.querySelectorAll('[data-fog-tool]').forEach(button => button.setAttribute('aria-pressed', 'false'));}});
+
+const boardControls = setupBoardControls({config, getApi: () => api, socket,
+  canEdit: () => config.editing && initialized && !stopped && !importing && !playerPreview});
 
 function showStatus() {
   if (stopped) {tell('denied'); return;}
@@ -77,7 +81,7 @@ function setTheme(value, persist = true) {
 function revoke() {
   stopped = true; pending = null; fogQueue = [];
   clearTimeout(timer); clearTimeout(fogTimer); clearInterval(poll);
-  tokens.close(); laser.destroy(); layer.destroy(); root.unmount(); api = null; tell('denied');
+  boardControls.destroy(); tokens.close(); laser.destroy(); layer.destroy(); root.unmount(); api = null; tell('denied');
 }
 function denied(response) {
   if (response.redirected || [401, 403, 404].includes(response.status)) {revoke(); return true;}
@@ -109,7 +113,7 @@ async function save() {
 }
 
 function onChange(elements, appState, files) {
-  layer.redraw();
+  layer.redraw(); boardControls.selection(appState);
   if (stopped || appState.isLoading) return;
   setTheme(appState.theme);
   if (appState.activeTool?.type !== 'laser') laser.stop();

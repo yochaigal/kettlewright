@@ -104,6 +104,9 @@ def shared_map_scene(party_id):
     if 'drawing' not in data:
         abort(400)
     drawing = drawing_value(data['drawing'])
+    if current_user.id != target.owner:
+        from app.lib.whiteboard import protect_locked_elements
+        protect_locked_elements(state['drawing'], drawing)
     if not _board_write(target, saved, {'version': version, 'generation': generation},
                         {'drawing': drawing, 'version': version + 1}):
         return _board_conflict()
@@ -135,7 +138,73 @@ def shared_map_tokens(party_id):
     for hireling in target.hirelings:
         tokens.append(companion_token(hireling, target.name))
         tokens.extend(companion_token(pet, hireling.name) for pet in hireling.pets)
+    tokens.extend(companion_token(monster, target.name) for monster in target.monsters
+                  if monster.in_combat and (current_user.id == target.owner or monster.shared))
     return _board_json({'tokens': tokens})
+
+
+@party.get('/party/<int:party_id>/shared-map/actors/<int:companion_id>')
+@login_required
+def shared_map_actor(party_id, companion_id):
+    from app.models import Companion
+    target = _board_party(party_id)
+    c = db.get_or_404(Companion, companion_id)
+    ids = {companion.id for parent in party_characters(target) for companion in parent.pets}
+    ids.update(companion.id for companion in target.party_companions)
+    ids.update(pet.id for hireling in target.hirelings for pet in hireling.pets)
+    if c.id not in ids:
+        abort(403)
+    if c.kind == 'monster' and current_user.id != target.owner:
+        if not c.shared:
+            response = make_response(render_template('main/monster_public.html', c=None), 403)
+            response.headers['Cache-Control'] = 'no-store'
+            return response
+        response = make_response(render_template('main/monster_public.html', c=c))
+        response.headers['Cache-Control'] = 'no-store'
+        return response
+    return redirect(url_for('companions.sheet', companion_id=c.id))
+
+
+@party.get('/party/<int:party_id>/shared-map/characters/<int:character_id>')
+@login_required
+def shared_map_character(party_id, character_id):
+    target = _board_party(party_id)
+    character = next((c for c in party_characters(target) if c.id == character_id), None)
+    if character is None:
+        abort(403)
+    return redirect(url_for('main.character', username=character.owner_username, url_name=character.url_name))
+
+
+@party.post('/party/<int:party_id>/shared-map/roll')
+@login_required
+def shared_map_roll(party_id):
+    from app.lib.character_rolls import parse_dice, publish_roll
+    from app.models import Companion
+    import secrets
+    target = db.get_or_404(Party, party_id)
+    if current_user.id not in party_recipient_ids(target):
+        abort(403)
+    if not FlaskForm().validate_on_submit():
+        abort(400)
+    c = None
+    if request.form.get('companion_id'):
+        c = db.get_or_404(Companion, request.form.get('companion_id', type=int))
+        if c.kind != 'monster' or c.party_id != target.id or target.owner != current_user.id:
+            abort(403)
+    public = request.form.get('public_roll') == 'on'
+    try:
+        sides = parse_dice(request.form.get('dice'))
+    except ValueError as error:
+        return _board_json({'error': str(error)}), 400
+    values = [secrets.randbelow(side) + 1 for side in sides]
+    result = f'{", ".join(map(str, values))} ({"+".join(f"d{side}" for side in sides)})'
+    name = c.name if c else _('Warden') if current_user.id == target.owner else current_user.username
+    db.session.add(PartyRoll(party_id=target.id, character_name=name, result=result,
+                             private_user_id=None if public else current_user.id))
+    db.session.commit()
+    if public:
+        publish_roll(target, name, result)
+    return _board_json({'result': result, 'values': values})
 
 
 @party.route('/party/<int:party_id>/shared-map/sources')

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="body-container monsters-page">
+<div class="sheet monsters-sheet">
+  <a href="{{url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url)}}">← {{party.name}}</a>
+  <h2>{{_('Monsters')}}</h2>
+  <p>{{_('Choose a monster or import a Cairn Markdown stat block. Each summon has its own stats and inventory.')}}</p>
+  {% if error %}<p role="alert">{{error}}</p>{% endif %}
+  <form class="monster-catalog-form" method="post" enctype="multipart/form-data">
+    {{form.hidden_tag()}}
+    <label for="monster-search">{{_('Search bestiary')}}</label>
+    <input id="monster-search" type="search">
+    <label for="monster-template">{{_('Monster')}}</label>
+    <select id="monster-template" name="template">{% for key, monster in templates|dictsort %}<option value="{{key}}">{{monster.name}} · {{monster.hp}} HP · {{monster.armor}} {{_('Armor')}}</option>{% endfor %}</select>
+    <div id="monster-preview" aria-live="polite"></div>
+    <button type="submit" id="summon-monster">{{_('Summon monster')}}</button>
+  </form>
+  <details class="monster-import"><summary>{{_('Import Markdown')}}</summary>
+    <form method="post" enctype="multipart/form-data">{{form.hidden_tag()}}
+      <input type="file" name="monster_file" accept=".md,.markdown,text/markdown,text/plain" required aria-label="{{_('Monster file')}}">
+      <button type="submit">{{_('Import monster')}}</button>
+    </form>
+  </details>
+  <p><small><a href="https://cairnrpg.com/resources/monsters/" target="_blank" rel="noopener noreferrer">{{_('Cairn bestiary')}}</a> · Yochai Gal &amp; contributors · CC-BY-SA 4.0</small></p>
+  <section class="monster-roster"><h3>{{_('In combat')}}</h3>
+  {% from 'partial/companions/cards.html' import cards with context %}
+  {{cards(party.monsters|selectattr('in_combat')|list)}}
+  </section>
+  <section class="monster-roster"><h3>{{_('At the ready')}}</h3>
+  {{cards(party.monsters|rejectattr('in_combat')|list)}}
+  </section>
+  <script id="monster-catalog" type="application/json">{{templates|tojson}}</script>
+  <script type="module" src="{{url_for('static', filename='src/js/monsters.js')}}"></script>
+</div>
+</section>
+{% endblock %}

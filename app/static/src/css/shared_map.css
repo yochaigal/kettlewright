@@ -54,3 +54,19 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 #mobile-party-tokens { display: none; }
 @media (max-width: 768px) { #mobile-party-tokens { display: inline-block; } }
 @media (max-width: 768px) { .excalidraw .party-tokens-button { display: none; } }
+
+#actor-sheet, #board-rolls { width: min(800px, calc(100vw - 32px)); padding: 12px; box-sizing: border-box;
+  border: 1px solid var(--board-border); border-radius: 10px; background: var(--board-bg); color: var(--board-text); }
+#actor-sheet { height: min(900px, calc(100dvh - 32px)); }
+#actor-sheet[open] { display: flex; flex-direction: column; gap: 10px; }
+#actor-frame { flex: 1; min-height: 0; width: 100%; border: none; background: var(--board-bg); }
+#actor-sheet::backdrop, #board-rolls::backdrop { background: #0008; }
+#board-rolls { max-height: calc(100dvh - 32px); overflow: auto; }
+#board-roll-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding-top: 16px; }
+#board-roll-form input[name="dice"] { width: 110px; padding: 8px; }
+#board-roll-form p { flex-basis: 100%; }
+#board-roll-history { font-size: 14px; overflow-wrap: anywhere; }
+
+#actor-sheet { position: fixed; inset: auto 8px 8px auto; width: min(560px, calc(100vw - 16px));
+  height: calc(100dvh - 180px); max-height: 850px; margin: 0; z-index: 10; box-shadow: 0 4px 32px #0004; }
+@media (max-width: 600px) { #actor-sheet { height: calc(100dvh - 220px); } }
