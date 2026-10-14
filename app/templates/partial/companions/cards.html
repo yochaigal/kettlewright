@@ -1,10 +1,13 @@
-{% macro cards(creatures, editable_stats=true) %}
-<div class="companion-cards">
+{% macro cards(creatures, editable_stats=true, compact=false) %}
+<div class="companion-cards{% if compact %} companion-compact{% endif %}">
   {% for c in creatures %}
   <article class="companion-card">
-    {% if c.image_url %}<img src="{{c.portrait_src}}" alt="{{c.name}}" class="companion-card-portrait">{% endif %}
+    {% if compact %}<div class="companion-identity">{% endif %}
+    {% if compact or c.image_url or c.kind == 'monster' %}<img src="{{c.portrait_src}}" alt="{{c.name}}" class="companion-card-portrait">{% endif %}
+    {% if compact %}<div>{% endif %}
     <h4><a href="{{ url_for('companions.sheet', companion_id=c.id) }}">{{ c.name|markdown_inline }}</a></h4>
     {% if c.role and c.role != c.name %}<p>{{ c.role | tr }}</p>{% endif %}
+    {% if compact %}</div></div>{% endif %}
     <div class="companion-stats">
       {% for field, label in [('hp','HP'),('strength','STR'),('dexterity','DEX'),('willpower','WIL')] %}
       {% if editable_stats and can_manage_companion(c) and c[field] is not none %}
@@ -15,11 +18,26 @@
         <div class="quick-stat-value"><input id="companion-{{c.id}}-{{field}}" aria-label="{{c.name}}: {{label}}" type="number" name="value" min="0" max="{{c[field+'_max']}}" value="{{c[field]}}" required><span>/{{c[field+'_max']}}</span></div>
         <span class="companion-save-status" role="status"></span>
       </form>
-      {% else %}<span>{{ label }} {{ c[field] if c[field] is not none else '—' }}{% if c[field+'_max'] is not none %}/{{ c[field+'_max'] }}{% endif %}</span>{% endif %}
+      {% else %}<span{% if compact %} class="companion-stat"{% endif %}>{% if compact %}<span class="party-stat-label">{{label}}</span><span>{% else %}{{label}} {% endif %}{{ c[field] if c[field] is not none else '—' }}{% if c[field+'_max'] is not none %}/{{ c[field+'_max'] }}{% endif %}{% if compact %}</span>{% endif %}</span>{% endif %}
       {% endfor %}
+      {% if compact %}
+      <span class="companion-stat"><span class="party-stat-label">{{_('Armor')}}</span><span>{{c.armorValue()}}</span></span>
+      <span class="companion-stat"><span class="party-stat-label">{{_('Gold')}}</span><span>{{c.gold or 0}}</span></span>
+      {% endif %}
     </div>
-    <p>{{_('Armor')}} {{ c.armorValue() }}{% if c.attack %} · {{ c.attack }}{% endif %}</p>
+    {% if not compact %}<p>{{_('Armor')}} {{ c.armorValue() }}{% if c.attack %} · {{ c.attack }}{% endif %}</p>
+    {% if c.kind == 'monster' %}<p>{{_('Public stats') if c.shared else _('Private stats')}}</p>{% endif %}
     {% if c.kind == 'hireling' %}<p>{{ c.daily_cost }} {{_('gp/day')}}</p>{% endif %}
+    {% elif c.kind == 'hireling' %}<p class="companion-hire-cost">{{ c.daily_cost }} {{_('gp/day')}}</p>
+    {% elif c.kind == 'monster' %}
+    <p class="companion-visibility">{{_('Public stats') if c.shared else _('Private stats')}}</p>
+    {% if c.attack or (c.notes and can_manage_companion(c)) %}
+    <div class="companion-monster-notes">
+      {% if c.attack %}<p>{{c.attack|markdown_inline}}</p>{% endif %}
+      {% if c.notes and can_manage_companion(c) %}<div class="companion-notes-body">{{c.notes|markdown}}</div>{% endif %}
+    </div>
+    {% endif %}
+    {% endif %}
   </article>
   {% else %}<p>{{_('None yet.')}}</p>{% endfor %}
 </div>

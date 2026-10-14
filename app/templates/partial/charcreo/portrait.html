@@ -44,12 +44,7 @@
             oninput="changeCustom()" />
         </div>
         <small>{{_('You can also choose one of the predefined portraits:')}}</small>
-        <div id="edit-portrait-modal-image-select-container">
-          {% for image in images %}
-          <img onClick="clickImage('{{image}}')" data_url="{{image}}" id="img-{{image}}"
-            class="edit-portrait-modal-thumbnail" src="{{url_for('static', filename='images/portraits/' + image)}}" />
-          {% endfor %}
-        </div>
+        {% include 'partial/portrait_catalog.html' %}
       </section>
       <footer class="modal-card-foot">
         <div class="footer-button-container">

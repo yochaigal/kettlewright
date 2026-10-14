@@ -79,7 +79,7 @@ def validate_portrait_reference(image_url, custom_image):
     if not image_url:
         return
     if not custom_image:
-        if image_url not in load_images():
+        if image_url not in load_images(include_categories=True):
             raise ValueError(N_('Choose one of the predefined portraits.'))
         return
     if re.fullmatch(r'/portraits/[0-9a-f]{64}\.webp', image_url):

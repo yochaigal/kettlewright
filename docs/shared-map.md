@@ -22,9 +22,15 @@ The native laser tool broadcasts transient scene coordinates through the authent
 
 ## Party tokens
 
-**Party tokens**, next to Library (in the header on small screens), lists current party characters in party order, their pets, party hirelings, and hirelings’ pets. Companion cards identify their type and parent and use initials because companion sheets have no portrait field. Click a portrait to add an 80-unit circular token in the center of your view. Tokens use an embedded 256px PNG, share the normal drawing queue, and remain editable by all members and covered by fog. Existing tokens remain independent copies when a portrait or party membership changes. The picker refreshes its roster whenever opened.
+**Party tokens**, next to Library (in the header on small screens), lists all current party characters, their pets, hirelings and monsters for the Warden. Players see only their own characters and pets, plus hirelings they can manage and those hirelings’ pets. Monsters never appear in a player’s picker, even when their stats are public. These restrictions are enforced by the token-list endpoint. Companion cards identify their type and parent and use initials because companion sheets have no portrait field. Click a portrait to add an 80-unit circular token in the center of your view. Tokens use an embedded 256px PNG, share the normal drawing queue, and remain editable by all members and covered by fog. Existing tokens remain independent copies when a portrait or party membership changes. The picker refreshes its roster whenever opened.
 
 Built-in and uploaded portraits work directly; external portraits require browser CORS permission. Unavailable images use initials with a notice. The server never fetches external portrait URLs. The member/feature-gated `/party/<id>/shared-map/tokens` endpoint returns only token IDs, names, portrait URLs and companion type/parent labels, with no-store caching. This custom picker does not change the upstream Excalidraw library format.
+
+Current stats appear below each placed party token with known stats: characters, pets, hirelings and monsters. Maximum values are omitted. The compact block uses a two-column stat grid, a shield icon for armor, and minimal spacing. The entire block scales proportionally with the token’s scene size and camera zoom, including at small sizes. The viewer-specific `/party/<id>/shared-map/stats` endpoint omits private monsters for players, and never includes sheet notes or inventory. Overlays follow token movement, resizing, rotation, pan and zoom, sit beneath fog, and are not stored in the shared drawing or its exports. Stats refresh on roster/visibility events, reconnect, returning to the tab, and every five seconds; a failed read clears stale stats. Warden player-preview hides private stats and visibility controls.
+
+The Warden can toggle monster stats with the eye beside them. Revealing requires a confirmation dialog; cancellation makes no request. Visibility belongs to the creature, so all copies of its token update together. This toggle preserves existing public notes. The single lock icon toggles background locking without locking party tokens.
+
+**Party**, after the back-to-party arrow, opens the main party page beside the map for both roles, with the normal server-enforced permissions. Its highlight is active only while the panel is open. Theme, Fit map and Load map follow as a group of icons with tooltips. **Roll Dice** uses the shared player/Warden modal; Warden special rolls and the default-private public-roll opt-in are preserved. History remains on the party page.
 
 ## Load map
 
@@ -50,7 +56,7 @@ This is visual hiding, not server-side secrecy: the player's browser still recei
 docker compose -f .devcontainer/docker-compose.yml exec -T \
   -e SQLALCHEMY_DATABASE_URI=sqlite:///:memory: -e USE_REDIS=False -e FLASK_DEBUG=0 \
   app python -m pytest -p no:flask tests/unit/test_shared_map.py tests/unit/test_whiteboard.py tests/unit/test_whiteboard_migration.py tests/unit/test_feature_access.py tests/unit/test_socket_events.py -q
-node --test tests/js/shared_map*.test.mjs tests/js/whiteboard*.test.mjs tests/js/party_tokens.test.mjs
+node --test tests/js/shared_map*.test.mjs tests/js/whiteboard*.test.mjs tests/js/party_tokens.test.mjs tests/js/token_stats.test.mjs
 ```
 
 Library validation covers both Excalidraw v1 and v2 formats, including legacy freehand points with pressure values. Browser checks require independent Warden/player sessions and should cover imports, both themes, fog editing/undo, pan/zoom, player editing, replacement and reconnect.

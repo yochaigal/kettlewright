@@ -25,6 +25,10 @@ def compile_static_assets(app):
                   depends=('**/*.scss'))
 
     assets.register('scss_all', scss)
+    # Share the site's modal layout without applying its global typography/reset
+    # to the standalone Excalidraw editor.
+    assets.register('board_modals', Bundle('src/scss/board-modals.scss', filters='libsass',
+                    debug=False, output='dist/css/board-modals.css', depends=('**/*.scss')))
 
     if app.config['DEBUG']:
         print('Compiling static assets in debug mode', file=sys.stderr)

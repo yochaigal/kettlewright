@@ -1,0 +1,14 @@
+{% if c.kind == 'monster' and editable %}
+<section class="companion-section monster-controls">
+  <form method="post" action="{{url_for('companions.monster_state', companion_id=c.id)}}">{{form.hidden_tag()}}
+    <input type="hidden" name="action" value="give">
+    <label for="monster-recipient">{{_('Give as pet to')}}</label>
+    <select id="monster-recipient" name="character_id" required>
+      <option value="">{{_('Choose a character')}}</option>
+      {% for member in monster_members(c.party) %}<option value="{{member.id}}">{{member.name}}</option>{% endfor %}
+    </select>
+    <p><small>{{_('Moves this creature with its current stats, portrait and inventory.')}}</small></p>
+    <button type="submit">{{_('Give as pet')}}</button>
+  </form>
+</section>
+{% endif %}

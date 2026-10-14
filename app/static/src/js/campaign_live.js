@@ -10,7 +10,7 @@ export async function refreshPartyContent(partyId = null) {
   try {
     while (pending) {
       pending=false;
-      const response=await fetch(host.dataset.mapUrl || location.href,{cache:'no-store'});
+      const response=await fetch(host.dataset.mapUrl || host.dataset.contentUrl || location.href,{cache:'no-store'});
       if (!response.ok || response.redirected) {
         if ([403,404].includes(response.status) || response.redirected) {
           document.getElementById('party-content-results')?.replaceChildren();

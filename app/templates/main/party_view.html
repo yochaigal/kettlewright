@@ -12,6 +12,7 @@
 </script>
 {% endif %}
 <script src="{{ url_for('static', filename='src/js/party_view.js') }}" defer type="module"></script>
+{% if campaign_enabled %}<link rel="stylesheet" href="{{url_for('static', filename='src/css/campaigns.css')}}">{% endif %}
 <section class="body-container">
   {% with messages = get_flashed_messages(with_categories=true) %} {% if messages is not none and messages|length > 0 %}
   {% for category, message in messages %}
@@ -22,7 +23,7 @@
   </script>
   {% endfor %}
   {% endif %} {% endwith %}
-  <div id="party-form" class="sheet box form">
+  <div id="party-form" class="sheet box form party-view-sheet">
     <div class="party-header">
       <div class="party-heading">
         <h1 class="title level-item">{{ party.name|markdown_inline }}</h1>
@@ -56,11 +57,29 @@
 
     <div>{{ party.description|markdown }}</div>
     {% if is_owner %}{% include 'partial/partyview/warden_dice.html' %}{% endif %}
-    {% if can_view_rolls and party_features_enabled(party.id) %}<div class="party-section party-material-actions">
-      <a class="button" href="{{ url_for('campaigns.party_materials', party_id=party.id) }}">{{ _('Campaign details') }}</a>
-      {% if is_owner and user_features_enabled() %}<a class="button" href="{{ url_for('campaigns.new_entry', party_id=party.id) }}">{{ _('Create and show') }}</a>{% endif %}
-    </div>{% endif %}
-
+    <div id="party-tabs" class="party-tab-list" role="tablist" aria-label="{{_('Party sections')}}">
+      <button type="button" id="characters-tab" role="tab" aria-selected="true" aria-controls="characters" tabindex="0">{{_('Characters')}}</button>
+      {% if campaign_enabled %}<button type="button" id="campaign-details-tab" role="tab" aria-selected="false" aria-controls="campaign-details" tabindex="-1">{{_('Campaign')}}</button>{% endif %}
+      {% if is_owner %}<button type="button" id="monsters-tab" role="tab" aria-selected="false" aria-controls="monsters" tabindex="-1">{{_('Monsters')}}</button>{% endif %}
+      {% if can_view_rolls %}<button type="button" id="roll-history-tab" role="tab" aria-selected="false" aria-controls="roll-history" tabindex="-1">{{_('Roll history')}}</button>{% endif %}
+    </div>
+    {% if campaign_enabled %}
+    <div id="campaign-details" class="party-tab-panel party-campaign-panel campaign-workspace" role="tabpanel" aria-labelledby="campaign-details-tab" hidden>
+      <div data-party-content="{{party.id}}" data-content-url="{{url_for('campaigns.party_materials', party_id=party.id, preview=1 if campaign_preview else 0)}}"></div>
+      <div class="campaign-actions">
+        {% if campaign_editing %}<a class="button" href="{{url_for('campaigns.new_entry', party_id=party.id, return_to='party')}}">{{_('Create and show')}}</a>{% endif %}
+        {% if is_owner %}
+          {% if campaign_preview %}<a class="button" href="{{url_for('party.party_view', ownername=ownername, party_url=party_url)}}#campaign-details">{{_('Back to Warden view')}}</a>
+          {% else %}<a class="button" href="{{url_for('party.party_view', ownername=ownername, party_url=party_url, preview=1)}}#campaign-details">{{_('View as party')}}</a>{% endif %}
+        {% endif %}
+      </div>
+      {% if campaign_preview %}<p>{{_('You are viewing only this party’s published knowledge.')}}</p>{% endif %}
+      {% with entries=campaign_entries, hierarchy=campaign_hierarchy, editing=campaign_editing %}
+        {% include 'campaigns/party_contents.html' %}
+      {% endwith %}
+    </div>
+    {% endif %}
+    <div id="characters" class="party-tab-panel" role="tabpanel" aria-labelledby="characters-tab">
     <div class="party-section" x-data="collapseSection('party-members-content')">
       <span id="party-members-collapse-button" class="party-collapse-button" role="button" tabindex="0"
         @click="toggle()" @keydown.enter.prevent="toggle()" @keydown.space.prevent="toggle()"
@@ -86,8 +105,8 @@
       </div>
     </div>
 
-    {% if is_owner %}{% include "partial/partyview/wilderness.html" %}{% endif %}
     {% include "partial/companions/hirelings.html" %}
+    {% if is_owner %}{% include "partial/partyview/wilderness.html" %}{% endif %}
 
     <div class="party-section" x-data="collapseSection('inventory-container')">
       <span id="party-inventory-collapse-button" class="party-collapse-button" role="button" tabindex="0"
@@ -101,10 +120,17 @@
       </div>
     </div>
 
-    {% if can_view_rolls %}
-      {% include "partial/partyview/roll_history.html" %}
+    </div>
+    {% if is_owner %}
+    <div id="monsters" class="party-tab-panel monsters-page monsters-sheet party-monster-panel" role="tabpanel" aria-labelledby="monsters-tab" hidden>
+      <div id="party-monsters">{% include 'partial/companions/monster_catalog.html' %}</div>
+    </div>
     {% endif %}
-
+    {% if can_view_rolls %}
+    <div id="roll-history" class="party-tab-panel" role="tabpanel" aria-labelledby="roll-history-tab" hidden>
+      {% include "partial/partyview/roll_history.html" %}
+    </div>
+    {% endif %}
 
   </div>
 </section>

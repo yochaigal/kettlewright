@@ -37,6 +37,8 @@ def roll_character(user_id, character, expression, expected_party=None):
 
 def roll_companion(companion, expression, expected_party=None):
     from app.lib.companions import can_roll, companion_party
+    if companion is not None and companion.kind == 'monster':
+        raise PermissionError('Use the monster sheet roller to choose roll visibility.')
     if not can_roll(companion):
         raise PermissionError('You cannot roll for this companion.')
     party = companion_party(companion)

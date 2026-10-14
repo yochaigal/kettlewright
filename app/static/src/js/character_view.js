@@ -4,6 +4,14 @@ import diceModal from "./dice_modal.js";
 import notification from "./notification.js";
 
 const requestRoll = async (dice) => {
+  const monster = document.getElementById('monster-roll');
+  if (monster) {
+    const body = new URLSearchParams({dice, companion_id: monster.dataset.id, csrf_token: monster.dataset.csrf});
+    if (document.getElementById('monster-public-roll').checked) body.set('public_roll', 'on');
+    const response = await fetch(monster.dataset.url, {method: 'POST', body});
+    if (!response.ok || response.redirected) throw new Error('Unable to roll dice.');
+    return await response.json();
+  }
   const manager = window.socketNotificationManager;
   if (!manager) throw new Error("Unable to roll dice. Please check your connection.");
   const result = typeof companion_id !== "undefined"
@@ -28,6 +36,10 @@ window.KW_alert = utils.styledAlert;
 document.addEventListener("DOMContentLoaded", function () {
   // Setup Dice Rolling
   if (isOwner == "True") {
+    const publicToggle = document.getElementById('monster-public-roll');
+    if (publicToggle) {
+      publicToggle.checked = false;
+    }
     document.getElementById("character-dice-button").addEventListener("click", () => {
       diceModal.showDiceModal();
     });

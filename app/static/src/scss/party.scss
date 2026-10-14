@@ -93,6 +93,18 @@ justify-content: space-around;
 
 // Cards follow the character cards: attributes left, resources right.
 #party-members:not(.party-compact) {
+  #party-members-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(unquote("min(100%, 280px)"), 1fr));
+    gap: 1.5rem;
+    padding: 2rem 0;
+  }
+  #party-members-content .party-member {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    margin: 0;
+  }
   .party-member-stats {
     grid-template-columns: repeat(2, max-content);
     grid-template-areas: "str armor" "dex hp" "wil gold";
@@ -125,7 +137,7 @@ justify-content: space-around;
   }
 }
 
-#party-form:has(.party-compact) { max-width: 1100px; padding: 2rem; }
+#party-form.party-view-sheet { max-width: 1100px; padding: 2rem; }
 .party-section:has(.party-compact) { margin: 1em 0; }
 
 .party-compact {
@@ -165,7 +177,7 @@ justify-content: space-around;
     margin: 2em 0;
 
 }
-#party-form > .party-section { padding: 0; }
+#party-form > .party-section, .party-tab-panel > .party-section { padding: 0; }
 .party-material-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
 #party-form a.button {
   display: inline-flex;
@@ -192,6 +204,10 @@ justify-content: space-around;
 }
 .party-section-content {
   padding: 2em 1em;
+}
+
+#party-hirelings-content {
+  padding: 0;
 }
 
 .wilderness-actions {
@@ -495,3 +511,86 @@ body:has(.tools-page) {
     time { font-size: .85em; opacity: .7; }
   }
 }
+
+.party-tab-list {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 1.5rem 0 0;
+  border-bottom: 1px solid color-mix(in lab, transparent 75%, var(--fg));
+  button {
+    flex-shrink: 0;
+    margin: 0 0 -1px;
+    padding: .8rem 1.2rem;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+    background: transparent;
+    color: var(--fg);
+    font-weight: normal;
+    text-decoration: none;
+    &:hover { background: color-mix(in lab, transparent 94%, var(--fg)); }
+    &:focus-visible { outline: 2px solid var(--fg); outline-offset: -4px; }
+    &[aria-selected="true"] {
+      font-weight: bold;
+      border-color: color-mix(in lab, transparent 75%, var(--fg));
+      border-bottom-color: var(--form-bg);
+      background: var(--form-bg);
+    }
+  }
+}
+.party-tab-panel { min-width: 0; text-align: left; }
+.party-tab-panel[hidden] { display: none; }
+#party-form .party-monster-panel { width: 100%; max-width: none; padding: 0; }
+.monster-preview-portrait { width: 80px; height: 80px; object-fit: contain; float: right; margin: 0 0 1rem 1rem; }
+#monster-preview { display: flow-root; }
+
+// Companions use the same compact rhythm as party members.
+.companion-compact {
+  grid-template-columns: minmax(0, 1fr);
+  gap: .5rem;
+  margin: .75rem 0 1rem;
+  .companion-card {
+    display: grid;
+    grid-template-columns: minmax(130px, 1fr) minmax(360px, 2.5fr) 65px;
+    gap: .75rem;
+    align-items: center;
+    padding: .65rem;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    min-width: 0;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, .1);
+    background: var(--form-bg);
+  }
+  .companion-identity { display: flex; align-items: center; gap: .5rem; min-width: 0; overflow-wrap: anywhere; }
+  .companion-card-portrait { float: none; width: 40px; height: 40px; margin: 0; flex-shrink: 0; }
+  .companion-identity h4 { margin: 0; font-size: 1.6rem; font-style: normal; }
+  .companion-identity p { margin: .25rem 0; font-size: 1.3rem; }
+  .companion-stats { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .35rem; }
+  .companion-stat-form, .companion-stat { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+  .companion-stat-form label { font-size: 1.3rem; }
+  .companion-monster-notes {
+    grid-column: 1 / -1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    border-top: 1px dotted color-mix(in lab, transparent 75%, var(--fg));
+    padding-top: .5rem;
+    p { margin: .5rem 0; }
+    ul, ol { margin: .5rem 0; padding-left: 2rem; }
+  }
+  .companion-hire-cost, .companion-visibility { font-size: 1.2rem; text-align: center; margin: 0; }
+}
+@media (max-width: 800px) {
+  .companion-compact .companion-card { grid-template-columns: 1fr auto; }
+  .companion-compact .companion-stats { grid-row: 2; grid-column: 1 / -1; }
+  .companion-compact .companion-hire-cost, .companion-compact .companion-visibility { grid-row: 1; grid-column: 2; }
+}
+@media (max-width: 480px) {
+  .companion-compact .companion-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+#party-form .party-campaign-panel { width: 100%; max-width: none; padding: 1.5rem 0 0; }

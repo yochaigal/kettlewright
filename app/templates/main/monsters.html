@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="body-container monsters-page">
+<div class="sheet monsters-sheet">
+  <a href="{{url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url)}}">← {{party.name}}</a>
+  <h2>{{_('Monsters')}}</h2>
+  {% include 'partial/companions/monster_catalog.html' %}
+</div>
+</section>
+{% endblock %}

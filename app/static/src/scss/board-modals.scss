@@ -1,0 +1,12 @@
+@import 'modals';
+
+#dice-modal {
+  font-size: 18px;
+  line-height: 1.4;
+  button { cursor: pointer; border-radius: 2px; border-width: 1.5px; font-weight: 600; }
+  .is-blue { background-color: $blue; }
+  .is-yellow { background-color: $yellow; }
+  .warden-special-rolls button { background: var(--board-bg); color: var(--board-text); border: 1px solid var(--board-border); font: inherit; }
+  .warden-roll-toggle input { width: 16px; height: 16px; }
+}
+body.dark-mode #dice-modal .is-blue { background-color: $dark-blue; }

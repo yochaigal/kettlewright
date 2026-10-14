@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<meta http-equiv="refresh" content="5">
+<section class="body-container" id="public-monster">
+{% if c %}
+  <h2>{{c.name}}</h2>
+  {% if c.image_url %}<img src="{{c.portrait_src}}" alt="" width="128" height="128">{% endif %}
+  <p>{% for field, label in [('hp','HP'), ('strength','STR'), ('dexterity','DEX'), ('willpower','WIL')] %}{{label}} {{c[field]}}/{{c[field+'_max']}}{% if not loop.last %} · {% endif %}{% endfor %}</p>
+  <p>{{_('Armor')}} {{c.armorValue()}} · {{c.attack}}</p>
+  {{c.public_notes|markdown}}
+{% else %}<p>{{_('These monster stats are private to the Warden.')}}</p>{% endif %}
+</section>
+{% endblock %}

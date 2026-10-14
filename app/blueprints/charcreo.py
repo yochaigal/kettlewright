@@ -214,7 +214,7 @@ def update_gold(custom_fields, field, gold):
 @character_create.route('/charcreo/portrait', methods=['GET'])
 def charedit_inplace_portrait():
     portrait_src = request.args.get('src')
-    images = load_images()
+    images = load_images(include_categories=True)
     custom_image = request.args.get("custom_image")
     custom_fields = {}
     custom_fields['portrait_src'] = portrait_src
@@ -252,6 +252,7 @@ def charcreo_portrait_save():
     custom_url = data['custom-url']
     selected_portrait = data['selected-portrait']
     portrait_src = "default-portrait.webp"
+    custom_image = "false"
     if custom_url != None and custom_url != "":
         if not is_url_image(custom_url):
             print("Bad image url!!!", custom_url)
@@ -259,9 +260,16 @@ def charcreo_portrait_save():
             portrait_src = custom_url
             custom_image = "true"
     elif selected_portrait != "" and selected_portrait != None:
+            from app.lib.portraits import validate_portrait_reference
+            try:
+                validate_portrait_reference(selected_portrait, False)
+            except ValueError:
+                from flask import abort
+                abort(400)
             portrait_src = selected_portrait
             custom_image = "false"
-    portrait_src = urllib.parse.quote_plus(portrait_src)
+    if custom_image == "true":
+        portrait_src = urllib.parse.quote_plus(portrait_src)
     custom_fields = {}
     custom_fields['portrait_src'] = portrait_src
     custom_fields['custom_image'] = custom_image

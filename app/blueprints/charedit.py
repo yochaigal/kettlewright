@@ -273,7 +273,7 @@ def charedit_inplace_portrait(username, url_name):
     user, character = get_char_data(username, url_name)
     if character.owner != current_user.id:
         abort(403)
-    images = load_images()
+    images = load_images(include_categories=True)
     return render_template('partial/charedit/portrait.html', user=user, character=character, username=username, url_name=url_name, images=images, portrait_form=FlaskForm())
 
 # Route: edit character portrait - cancel
@@ -299,7 +299,7 @@ def charedit_inplace_portrait_save(username, url_name):
         abort(403)
     if request.content_length and request.content_length > 3 * 1024 * 1024:
         return render_template('partial/charedit/portrait.html', user=user, character=character,
-                               username=username, url_name=url_name, images=load_images(),
+                               username=username, url_name=url_name, images=load_images(include_categories=True),
                                portrait_form=FlaskForm(formdata=None),
                                error=_('Choose an image smaller than 2 MB.'))
     form = FlaskForm()
@@ -313,7 +313,7 @@ def charedit_inplace_portrait_save(username, url_name):
             portrait_url = save_portrait(upload)
         except ValueError as error:
             return render_template('partial/charedit/portrait.html', user=user, character=character,
-                                   username=username, url_name=url_name, images=load_images(),
+                                   username=username, url_name=url_name, images=load_images(include_categories=True),
                                    portrait_form=form, error=_(str(error)))
         character.image_url = portrait_url
         character.custom_image = True

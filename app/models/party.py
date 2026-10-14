@@ -29,6 +29,14 @@ class Party(db.Model):
     events = db.Column(db.String)
     version = db.Column(db.Integer, nullable=False, default=0)
 
+    @property
+    def hirelings(self):
+        return [c for c in self.party_companions if c.kind == 'hireling']
+
+    @property
+    def monsters(self):
+        return [c for c in self.party_companions if c.kind == 'monster']
+
     def to_dict(self):
         return {
             'id': self.id,

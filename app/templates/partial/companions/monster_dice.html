@@ -1,0 +1,13 @@
+{% extends 'main/dice_modal.html' %}
+{% block dice_modal_body %}
+<div id="monster-roll" data-url="{{url_for('party.shared_map_roll', party_id=c.party_id)}}"
+     data-csrf="{{monster_csrf}}" data-id="{{c.id}}">
+  <form id="monster-dice-form">
+    <label class="warden-roll-toggle">
+      <input class="checkbox" id="monster-public-roll" type="checkbox" name="public_roll" value="on">
+      {{_('Public roll')}}
+    </label>
+    {{ super() }}
+  </form>
+</div>
+{% endblock %}

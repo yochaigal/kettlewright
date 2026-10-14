@@ -217,18 +217,10 @@ def library():
 def party_materials(party_id):
     party = party_access(party_id)
     preview = request.args.get('preview') == '1'
-    entries = {entry_id: entry for entry_id, entry in known_entries(party.id).items()
-               if entry['category'] != 'path' or not db.session.get(ContentEntry, entry_id).map_edges}
-    hierarchy = material_hierarchy(ContentEntry.query.filter(ContentEntry.id.in_(entries)).all())
-
-    def published_items(items):
-        for item in items:
-            item['entry'] = entries[item['entry'].id]
-            published_items(item['children'])
-
-    published_items(hierarchy)
+    from app.lib.campaigns import party_knowledge_tree
+    entries, hierarchy = party_knowledge_tree(party.id)
     return render_template('campaigns/party.html', party=party,
-        entries=list(entries.values()), hierarchy=hierarchy,
+        entries=entries, hierarchy=hierarchy,
         editing=party.owner == current_user.id and user_features_enabled() and not preview, preview=preview)
 
 
@@ -307,6 +299,9 @@ def new_entry():
         db.session.commit()
         if party:
             notify_parties([party.id])
+            if request.values.get('return_to') == 'party':
+                return redirect(url_for('party.party_view', ownername=party.owner_username or party.party_owner.username,
+                                        party_url=party.party_url) + '#campaign-details')
             return redirect(url_for('campaigns.party_materials', party_id=party.id))
         return entry_redirect(entry)
     return render_template('campaigns/entry.html', entry=None, campaign=campaign, party=party,

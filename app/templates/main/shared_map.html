@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/index.css">
-  <title>{{ _('Whiteboard') }} · {{ party.name }}</title>
+  <title>{{ party.name }}</title>
+  {% assets "board_modals" %}<link rel="stylesheet" href="{{ ASSET_URL }}">{% endassets %}
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/shared_map.css') }}">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
   <script>window.EXCALIDRAW_ASSET_PATH = 'https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/';</script>
@@ -20,13 +22,18 @@
 </head>
 <body>
   <header class="map-header">
-    <a href="{{ url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) }}">← {{ party.name }}</a>
-    <strong>{{ _('Whiteboard') }}</strong>
-    <span>{{ _('Everyone in the party can edit') }}</span>
-    <button type="button" id="fit-map">{{ _('Fit map') }}</button>
-    <button type="button" id="board-theme">{{ _('Light / dark') }}</button>
-    {% if can_load_maps %}<button type="button" id="load-map">{{ _('Load map') }}</button>{% endif %}
+    <a id="back-to-party" href="{{ url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) }}" title="{{ _('Back to party') }}" aria-label="{{ _('Back to party') }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>
+    <button type="button" id="board-party" title="{{ party.name }}" aria-controls="party-panel" aria-expanded="false"><i class="fa-solid fa-users" aria-hidden="true"></i> {{ _('Party') }}</button>
+    <div class="map-view-controls">
+      <button type="button" id="board-theme" title="{{ _('Light / dark') }}" aria-label="{{ _('Light / dark') }}"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i></button>
+      <button type="button" id="fit-map" title="{{ _('Fit map') }}" aria-label="{{ _('Fit map') }}"><i class="fa-solid fa-expand" aria-hidden="true"></i></button>
+      {% if can_load_maps %}<button type="button" id="load-map" title="{{ _('Load map') }}" aria-label="{{ _('Load map') }}"><i class="fa-solid fa-map" aria-hidden="true"></i></button>{% endif %}
+    </div>
     <button type="button" id="mobile-party-tokens">{{ _('Party tokens') }}</button>
+    {% if warden %}
+    <button type="button" id="lock-map" title="{{ _('Lock map') }}" aria-label="{{ _('Lock map') }}" aria-pressed="false"><span class="map-lock-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span></button>
+    {% endif %}
+    <button type="button" id="{{ 'warden-dice-button' if warden else 'board-dice' }}"><i class="fa-solid fa-dice" aria-hidden="true"></i></button>
     <span id="map-status" role="status" aria-live="polite">{{ _('Loading…') }}</span>
   </header>
   {% if warden %}
@@ -68,8 +75,30 @@
     </div>
   </dialog>
   {% endif %}
+  <dialog id="party-panel" aria-labelledby="party-panel-title">
+    <div class="tokens-heading"><h2 id="party-panel-title">{{ _('Party') }} · {{ party.name }}</h2><button type="button" id="close-party">{{ _('Close') }}</button></div>
+    <iframe id="party-frame" title="{{ _('Party') }}"></iframe>
+  </dialog>
+  {% if warden %}
+  <dialog id="reveal-stats-confirm" aria-labelledby="reveal-stats-title">
+    <h2 id="reveal-stats-title">{{ _('Show stats to players') }}</h2>
+    <p id="reveal-monster-name"></p>
+    <p>{{ _('Reveal this monster’s stats to everyone in the party?') }}</p>
+    <div class="dialog-actions">
+      <button type="button" id="cancel-reveal-stats" autofocus>{{ _('Cancel') }}</button>
+      <button type="button" id="confirm-reveal-stats">{{ _('Show stats to players') }}</button>
+    </div>
+  </dialog>
+  {% endif %}
+  {% if warden %}{% include 'partial/partyview/warden_dice.html' %}
+  {% else %}{% include 'main/dice_modal.html' %}{% endif %}
   <script id="shared-map-config" type="application/json">{{ {
     'partyId': party.id, 'editing': editing, 'warden': warden, 'canLoadMaps': can_load_maps, 'csrfToken': csrf_token,
+    'partyUrl': url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url),
+    'statsUrl': url_for('party.shared_map_stats', party_id=party.id),
+    'visibilityUrl': url_for('party.shared_map_monster_visibility', party_id=party.id, companion_id=0) if warden else none,
+    'rollUrl': url_for('party.shared_map_roll', party_id=party.id),
+    'monster': _('Monster'),
     'tokensUrl': url_for('party.shared_map_tokens', party_id=party.id),
     'sceneUrl': url_for('party.shared_map_scene', party_id=party.id),
     'fogUrl': url_for('party.shared_map_fog', party_id=party.id),
@@ -78,7 +107,11 @@
     'libraryUrl': url_for('static', filename='vendor/excalidraw-libraries/'),
     'messages': {
       'tokens': _('Party tokens'), 'tokensLoading': _('Loading…'),
-      'pet': _('Pet'), 'hireling': _('Hireling'),
+      'pet': _('Pet'), 'hireling': _('Hireling'), 'monster': _('Monster'),
+      'rollFailed': _('Unable to roll dice. Please try again.'),
+      'showStats': _('Show stats to players'), 'hideStats': _('Hide stats from players'),
+      'lockMap': _('Lock map'), 'unlockMap': _('Unlock map'), 'armor': _('Armor'),
+      'visibilityFailed': _('Unable to save visibility. Please try again.'),
       'tokensEmpty': _('No characters in this party yet.'),
       'tokensFailed': _('Unable to load party tokens. Close and try again.'),
       'tokenFallback': _('Portrait unavailable. Using initials.'),

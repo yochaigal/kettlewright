@@ -32,6 +32,8 @@ async function setup(editing = true, failedLibrary = null, language = 'en') {
     localStorage: {getItem: key => stored.get(key) || 'false', setItem: (key, value) => stored.set(key, value)},
     createFogLayer: () => ({redraw() {}, destroy() {}, setState() {}, setTool() {}}),
     applyFogOperation: (fog) => fog, setupMapImport() {}, setupPartyTokens: () => ({open() {}, close() {}}),
+    setupBoardControls: () => ({selection() {}, destroy() {}}),
+    createTokenStats: () => ({redraw() {}, reset() {}, destroy() {}}),
     Blob, structuredClone, editorLocale, createLaserSync: () => ({pointerUpdate() {}, stop() {}, clear() {}, destroy() {}}),
     io: () => ({on: (name, handler) => {handlers[name] = handler;}}),
     setTimeout: fn => {timers.set(++nextTimer, fn); return nextTimer;}, clearTimeout: id => timers.delete(id), setInterval(fn, delay) {intervals.push({fn, delay}); return intervals.length;}, clearInterval() {},

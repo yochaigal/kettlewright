@@ -88,7 +88,7 @@ def shared_map(party_id):
     response = make_response(render_template('main/shared_map.html', party=target,
         editing=True, warden=current_user.id == target.owner,
         can_load_maps=current_user.id == target.owner and user_features_enabled() and party_features_enabled(party_id),
-        csrf_token=generate_csrf()))
+        csrf_token=generate_csrf(), roll_form=FlaskForm()))
     response.headers['Cache-Control'] = 'no-store'
     return response
 
@@ -111,6 +111,9 @@ def shared_map_scene(party_id):
     if 'drawing' not in data:
         abort(400)
     drawing = drawing_value(data['drawing'])
+    if current_user.id != target.owner:
+        from app.lib.whiteboard import protect_locked_elements
+        protect_locked_elements(state['drawing'], drawing)
     if not _board_write(target, saved, {'version': version, 'generation': generation},
                         {'drawing': drawing, 'version': version + 1}):
         return _board_conflict()
@@ -121,13 +124,17 @@ def shared_map_scene(party_id):
 @login_required
 def shared_map_tokens(party_id):
     from urllib.parse import urlsplit
+    from app.lib.companions import can_manage
     target = _board_party(party_id)
+    warden = current_user.id == target.owner
     tokens = []
     def companion_token(companion, parent):
         return {'id': f'companion:{companion.id}', 'name': companion.name,
-                'portrait': companion.portrait_src if companion.image_url else None, 'kind': companion.kind, 'parent': parent}
+                'portrait': companion.portrait_src if companion.image_url or companion.kind == 'monster' else None, 'kind': companion.kind, 'parent': parent}
 
     for character in party_characters(target):
+        if not warden and character.owner != current_user.id:
+            continue
         portrait = character.image_url if character.custom_image else url_for(
             'static', filename='images/portraits/' + (character.image_url or 'default-portrait.webp'))
         # No server-side fetching of user-controlled URLs.
@@ -140,9 +147,141 @@ def shared_map_tokens(party_id):
         tokens.append({'id': character.id, 'name': character.name, 'portrait': portrait})
         tokens.extend(companion_token(pet, character.name) for pet in character.pets)
     for hireling in target.hirelings:
+        if not warden and not can_manage(hireling):
+            continue
         tokens.append(companion_token(hireling, target.name))
         tokens.extend(companion_token(pet, hireling.name) for pet in hireling.pets)
+    if warden:
+        tokens.extend(companion_token(monster, target.name) for monster in target.monsters)
     return _board_json({'tokens': tokens})
+
+
+@party.get('/party/<int:party_id>/shared-map/stats')
+@login_required
+def shared_map_stats(party_id):
+    """Viewer-specific live stats; never put private sheets into the shared scene."""
+    target = _board_party(party_id)
+    warden = current_user.id == target.owner
+    actors = []
+
+    def add(actor, kind='character'):
+        if kind == 'monster' and not warden and not actor.shared:
+            return
+        stats = {field: [getattr(actor, field), getattr(actor, field + '_max')]
+                 for field in ('hp', 'strength', 'dexterity', 'willpower')
+                 if getattr(actor, field) is not None}
+        if kind == 'character' and 'hp' in stats:
+            stats['hp'] = actor.hpValue()
+        if not stats:
+            return
+        data = {'id': str(actor.id) if kind == 'character' else f'companion:{actor.id}',
+                'name': actor.name, 'kind': kind, 'stats': stats, 'armor': actor.armorValue()}
+        if kind != 'character':
+            data['attack'] = actor.attack
+        if kind == 'monster':
+            data['shared'] = actor.shared
+        actors.append(data)
+
+    for character in party_characters(target):
+        add(character)
+        for pet in character.pets:
+            add(pet, pet.kind)
+    for hireling in target.hirelings:
+        add(hireling, hireling.kind)
+        for pet in hireling.pets:
+            add(pet, pet.kind)
+    for monster in target.monsters:
+        add(monster, monster.kind)
+    return _board_json({'actors': actors})
+
+
+@party.route('/party/<int:party_id>/shared-map/monsters/<int:companion_id>/visibility', methods=['GET', 'POST'])
+@login_required
+def shared_map_monster_visibility(party_id, companion_id):
+    from app.models import Companion
+    target = _board_party(party_id, owner=True)
+    c = db.get_or_404(Companion, companion_id)
+    if c.kind != 'monster' or c.party_id != target.id:
+        abort(404)
+    if request.method == 'POST':
+        data = _board_data()
+        shared, notes = data.get('shared'), data.get('public_notes', c.public_notes)
+        if type(shared) is not bool or not isinstance(notes, str) or len(notes) > 10000:
+            abort(400)
+        c.shared, c.public_notes = shared, notes
+        db.session.commit()
+        from app import socketio
+        from flask import current_app
+        for user_id in party_recipient_ids(target):
+            try:
+                socketio.emit('party_actors_changed', {'party_id': target.id}, room=f'user_{user_id}')
+            except Exception:
+                current_app.logger.exception('Unable to publish monster visibility change')
+    return _board_json({'id': c.id, 'name': c.name, 'shared': c.shared, 'public_notes': c.public_notes})
+
+
+@party.get('/party/<int:party_id>/shared-map/actors/<int:companion_id>')
+@login_required
+def shared_map_actor(party_id, companion_id):
+    from app.models import Companion
+    target = _board_party(party_id)
+    c = db.get_or_404(Companion, companion_id)
+    ids = {companion.id for parent in party_characters(target) for companion in parent.pets}
+    ids.update(companion.id for companion in target.party_companions)
+    ids.update(pet.id for hireling in target.hirelings for pet in hireling.pets)
+    if c.id not in ids:
+        abort(403)
+    if c.kind == 'monster' and current_user.id != target.owner:
+        if not c.shared:
+            response = make_response(render_template('main/monster_public.html', c=None), 403)
+            response.headers['Cache-Control'] = 'no-store'
+            return response
+        response = make_response(render_template('main/monster_public.html', c=c))
+        response.headers['Cache-Control'] = 'no-store'
+        return response
+    return redirect(url_for('companions.sheet', companion_id=c.id))
+
+
+@party.get('/party/<int:party_id>/shared-map/characters/<int:character_id>')
+@login_required
+def shared_map_character(party_id, character_id):
+    target = _board_party(party_id)
+    character = next((c for c in party_characters(target) if c.id == character_id), None)
+    if character is None:
+        abort(403)
+    return redirect(url_for('main.character', username=character.owner_username, url_name=character.url_name))
+
+
+@party.post('/party/<int:party_id>/shared-map/roll')
+@login_required
+def shared_map_roll(party_id):
+    from app.lib.character_rolls import parse_dice, publish_roll
+    from app.models import Companion
+    import secrets
+    target = db.get_or_404(Party, party_id)
+    if current_user.id not in party_recipient_ids(target):
+        abort(403)
+    if not FlaskForm().validate_on_submit():
+        abort(400)
+    c = None
+    if request.form.get('companion_id'):
+        c = db.get_or_404(Companion, request.form.get('companion_id', type=int))
+        if c.kind != 'monster' or c.party_id != target.id or target.owner != current_user.id:
+            abort(403)
+    public = request.form.get('public_roll') == 'on'
+    try:
+        sides = parse_dice(request.form.get('dice'))
+    except ValueError as error:
+        return _board_json({'error': str(error)}), 400
+    values = [secrets.randbelow(side) + 1 for side in sides]
+    result = f'{", ".join(map(str, values))} ({"+".join(f"d{side}" for side in sides)})'
+    name = c.name if c else _('Warden') if current_user.id == target.owner else current_user.username
+    db.session.add(PartyRoll(party_id=target.id, character_name=name, result=result,
+                             private_user_id=None if public else current_user.id))
+    db.session.commit()
+    if public:
+        publish_roll(target, name, result)
+    return _board_json({'result': result, 'values': values})
 
 
 @party.route('/party/<int:party_id>/shared-map/sources')
@@ -293,10 +432,22 @@ def party_view(ownername, party_url):
     if not current_user.is_authenticated:
         return redirect(url_for('main.index'))
     party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party = get_party_data(ownername, party_url)
+    from app.lib.monsters import monster_catalog
     can_view_rolls = current_user.id in party_recipient_ids(party)
+    from app.lib.feature_access import party_features_enabled, user_features_enabled
+    from app.lib.campaigns import party_knowledge_tree, CATEGORIES
+    from app.lib.rich_content import content_excerpt
+    campaign_enabled = can_view_rolls and party_features_enabled(party.id)
+    campaign_entries, campaign_hierarchy = party_knowledge_tree(party.id) if campaign_enabled else ([], [])
+    campaign_preview = is_owner and request.args.get('preview') == '1'
     response = make_response(render_template('main/party_view.html', party_url=party_url, characters=characters, join_code=join_code, is_owner=is_owner,
                            is_subowner=is_subowner, party_id=party.id, ownername=ownername, inventory=inventory, party=party,
                            can_view_rolls=can_view_rolls, roll_form=FlaskForm(), stat_form=FlaskForm(),
+                           templates=monster_catalog() if is_owner else {}, form=FlaskForm(),
+                           campaign_enabled=campaign_enabled, campaign_entries=campaign_entries,
+                           campaign_hierarchy=campaign_hierarchy, campaign_preview=campaign_preview,
+                           campaign_editing=is_owner and user_features_enabled() and not campaign_preview,
+                           content_categories=CATEGORIES, content_excerpt=content_excerpt,
                            rolls=PartyRoll.latest(party.id, current_user.id) if can_view_rolls else [],
                            wilderness_mounts=wilderness_mounts(party, characters)))
     response.headers['Cache-Control'] = 'no-store'

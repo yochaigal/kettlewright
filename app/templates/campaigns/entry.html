@@ -4,6 +4,7 @@
 {% if entry %}{% include 'campaigns/parents.html' %}{% endif %}
 <form id="article-form" class="campaign-page-form" method="post" x-data="contentDraft" data-category="{{ entry.category if entry else 'custom' }}" data-import="{{ 'true' if not entry else 'false' }}" data-generate-error="{{ _('Unable to generate an article. Please try again.') }}"
  data-parent-candidates="{{ parent_candidates|tojson|forceescape }}" data-parent-types="{{ article_parent_types|tojson|forceescape }}" data-existing-parent-label="{{ _('Existing parent') }}">
+{% if party and request.values.get('return_to') == 'party' %}<input type="hidden" name="return_to" value="party">{% endif %}
 {% set is_campaign = entry and entry.category == 'realm' %}
 {% set new_heading = "category==='realm' ? " ~ (_('New Campaign')|tojson|forceescape) ~ " : " ~ (_('New article')|tojson|forceescape) %}
 {% call page_header(_('Create and show') if party else ((_('Edit Campaign') if is_campaign else _('Edit article')) if entry else _('New article')), title_model=new_heading if not entry and not party else none) %}

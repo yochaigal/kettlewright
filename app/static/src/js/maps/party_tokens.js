@@ -67,7 +67,7 @@ export function setupPartyTokens({config, getApi, getGeneration, canInsert, befo
         const avatar = document.createElement('span'); avatar.className = 'token-avatar'; avatar.textContent = initials(character.name);
         const name = document.createElement('span'); name.textContent = character.name;
         button.append(avatar, name); grid.append(button);
-        if (character.kind === 'pet' || character.kind === 'hireling') {
+        if (character.kind === 'pet' || ['hireling', 'monster'].includes(character.kind)) {
           const caption = document.createElement('small');
           caption.textContent = `${config.messages[character.kind]} · ${character.parent}`;
           button.append(caption);
@@ -88,7 +88,7 @@ export function setupPartyTokens({config, getApi, getGeneration, canInsert, befo
           try {
             const {file, fallback} = await portrait;
             if (run !== epoch || generation !== getGeneration() || !canInsert()) return;
-            const api = getApi(), element = tokenElement(file.id, api.getAppState());
+            const api = getApi(), element = tokenElement(file.id, api.getAppState(), `actor-${String(character.id).replace(':', '-')}-${crypto.randomUUID()}`);
             beforeInsert(); api.addFiles([file]);
             api.updateScene({elements: [...api.getSceneElements(), ...restoreElements([element], null)],
               appState: {selectedElementIds: {[element.id]: true}}, captureUpdate: CaptureUpdateAction.IMMEDIATELY});

@@ -231,6 +231,21 @@ def known_entries(party_id):
     return known
 
 
+
+def party_knowledge_tree(party_id):
+    entries = {entry_id: entry for entry_id, entry in known_entries(party_id).items()
+               if entry['category'] != 'path' or not db.session.get(ContentEntry, entry_id).map_edges}
+    hierarchy = material_hierarchy(ContentEntry.query.filter(ContentEntry.id.in_(entries)).all())
+
+    def published_items(items):
+        for item in items:
+            item['entry'] = entries[item['entry'].id]
+            published_items(item['children'])
+
+    published_items(hierarchy)
+    return list(entries.values()), hierarchy
+
+
 def map_projection(pointcrawl, party_id=None):
     known = known_entries(party_id) if party_id is not None else None
     if known is not None and pointcrawl.entry_id not in known:

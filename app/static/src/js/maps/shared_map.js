@@ -9,6 +9,8 @@ import {setupMapImport} from './whiteboard_import.js';
 import {setupPartyTokens} from './party_tokens.js';
 import {createLaserSync} from './whiteboard_laser.js';
 import {stateFromUpdate} from './whiteboard_updates.js';
+import {setupBoardControls} from './board_controls.js';
+import {createTokenStats} from './token_stats.js';
 import {editorLocale} from './locale.js';
 
 const config = JSON.parse(document.getElementById('shared-map-config').textContent);
@@ -41,6 +43,13 @@ window.addEventListener('blur', () => laser.stop());
 const tokens = setupPartyTokens({config, getApi: () => api, getGeneration: () => generation,
   canInsert: () => config.editing && initialized && !stopped && !importing && !playerPreview,
   beforeInsert: () => {layer.setTool(''); document.querySelectorAll('[data-fog-tool]').forEach(button => button.setAttribute('aria-pressed', 'false'));}});
+
+const boardControls = setupBoardControls({config, getApi: () => api, socket,
+  canEdit: () => config.editing && initialized && !stopped && !importing && !playerPreview});
+const tokenStats = createTokenStats({editor, config, getApi: () => api, socket,
+  confirmReveal: boardControls.confirmReveal,
+  canReveal: () => config.warden && initialized && !stopped && !importing && !playerPreview,
+  isPlayerPreview: () => playerPreview});
 
 function showStatus() {
   if (stopped) {tell('denied'); return;}
@@ -77,7 +86,7 @@ function setTheme(value, persist = true) {
 function revoke() {
   stopped = true; pending = null; fogQueue = [];
   clearTimeout(timer); clearTimeout(fogTimer); clearInterval(poll);
-  tokens.close(); laser.destroy(); layer.destroy(); root.unmount(); api = null; tell('denied');
+  boardControls.destroy(); tokenStats.destroy(); tokens.close(); laser.destroy(); layer.destroy(); root.unmount(); api = null; tell('denied');
 }
 function denied(response) {
   if (response.redirected || [401, 403, 404].includes(response.status)) {revoke(); return true;}
@@ -109,7 +118,7 @@ async function save() {
 }
 
 function onChange(elements, appState, files) {
-  layer.redraw();
+  layer.redraw(); tokenStats.redraw(); boardControls.selection(appState);
   if (stopped || appState.isLoading) return;
   setTheme(appState.theme);
   if (appState.activeTool?.type !== 'laser') laser.stop();
@@ -135,7 +144,7 @@ function onChange(elements, appState, files) {
 function mount(data) {
   version = data.version; generation = data.generation || 1;
   props = {
-    excalidrawAPI: instance => {api = instance; layer.redraw();},
+    excalidrawAPI: instance => {api = instance; layer.redraw(); tokenStats.redraw();},
     initialData: {elements: restoreElements(data.drawing.elements, null), files: data.drawing.files,
       libraryItems: library.then(result => result.items),
       appState: {...data.drawing.appState, theme, gridModeEnabled: true}},
@@ -283,7 +292,7 @@ if (config.warden) {
   }));
   document.getElementById('player-preview').addEventListener('click', event => {
     playerPreview = !playerPreview; event.currentTarget.setAttribute('aria-pressed', String(playerPreview));
-    layer.setPreview(playerPreview); displayFog();
+    layer.setPreview(playerPreview); tokenStats.reset(); displayFog();
   });
   document.getElementById('discard-fog').addEventListener('click', () => {
     if (confirm(config.messages.discardFog)) {fogQueue = []; fogBlocked = fogFailed = false; displayFog(); refresh();}

@@ -30,6 +30,22 @@ def drawing_value(value):
     return drawing
 
 
+def protect_locked_elements(before, after):
+    """Players cannot move, delete or unlock objects locked by the Warden."""
+    elements = {e['id']: e for e in after['elements']}
+    ignored = {'version', 'versionNonce', 'updated'}
+    clean = lambda e: {key: value for key, value in e.items() if key not in ignored}
+    for element in before['elements']:
+        if element.get('locked') and (element['id'] not in elements or clean(element) != clean(elements[element['id']])):
+            abort(400, 'Only the Warden can change locked map objects.')
+        if element.get('locked') and element.get('fileId') and before['files'].get(element['fileId']) != after['files'].get(element['fileId']):
+            abort(400, 'Only the Warden can change locked map images.')
+    previous = {e['id']: e for e in before['elements']}
+    for element in after['elements']:
+        if element.get('locked') and not previous.get(element['id'], {}).get('locked'):
+            abort(400, 'Only the Warden can lock map objects.')
+
+
 def integer(data, key, default=None):
     value = data.get(key, default)
     if type(value) is not int or value < 0:
