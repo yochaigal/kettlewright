@@ -14,7 +14,7 @@ DRAWING = {'elements': [{'id': 'token', 'type': 'ellipse', 'x': 20, 'y': 40,
 @pytest.fixture
 def shared(app_with_babel):
     app = app_with_babel
-    app.config.update(FEATURE_TEST_USER_IDS={1, 2, 3, 4}, FEATURE_TEST_PARTY_IDS={1, 2})
+    app.config.update(LOCAL_FEATURE_ACCESS=False, FEATURE_TEST_USER_IDS=set(), FEATURE_TEST_PARTY_IDS=set())
     with app.app_context():
         db.session.add_all(User(id=i, username=f'map{i}') for i in range(1, 5))
         db.session.add_all([
@@ -47,7 +47,12 @@ def test_empty_map_and_access(shared):
         assert 'Whiteboard' in html
         config = json.loads(re.search(r'id="shared-map-config" type="application/json">(.*?)</script>', html, re.S)[1])
         assert config['editing'] is True
+        assert config['canLoadMaps'] is False
+        assert config['sourcesUrl'] is None and config['importUrl'] is None
+        assert 'id="load-map"' not in html and 'id="map-import"' not in html
         assert 'data-library=' not in html
+        assert clients[i].get('/campaigns/').status_code == 404
+        assert clients[i].get('/party/1/materials/').status_code == 404
     for i in (3, 4):
         assert clients[i].get(URL).status_code == 403
         assert clients[i].get('/party/1/shared-map').status_code == 403
@@ -76,6 +81,27 @@ def test_save_persists_and_notifies_only_current_party(shared):
         assert sockets[i].get_received() == []
     assert clients[1].post(URL, json={'version': 1, 'drawing': {'elements': [], 'files': {}}}).json == {'version': 2}
     assert clients[2].get(URL).json['drawing']['elements'] == []
+
+
+def test_party_page_shows_whiteboard_without_campaign_links(shared):
+    app, clients, _ = shared
+    with app.app_context():
+        for model in (Party, Character):
+            entity = db.session.get(model, 1)
+            entity.containers = '[{"id":0,"name":"Main","slots":10}]'
+            entity.items = '[]'
+        character = db.session.get(Character, 1)
+        character.owner_username = 'map2'
+        character.url_name = 'player'
+        db.session.commit()
+    for user_id in (1, 2):
+        response = clients[user_id].get('/users/map1/parties/party/')
+        assert response.status_code == 200
+        html = response.get_data(as_text=True)
+        assert 'href="/party/1/shared-map"' in html
+        assert 'href="/party/1/materials/"' not in html
+        assert 'Campaign details' not in html
+        assert 'Create and show' not in html
 
 
 @pytest.mark.parametrize('version', [0, 1, 99])

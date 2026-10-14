@@ -45,7 +45,7 @@ const diceModal = {
 
   updateD100Visibility() {
     const d100Button = document.getElementById("dice-modal-d100-button");
-    d100Button.style.display = this.mode === "party" ? "inline-flex" : "none";
+    d100Button.hidden = this.mode !== "party";
   },
 
   showDiceModal() {

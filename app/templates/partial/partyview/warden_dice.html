@@ -5,25 +5,22 @@
   <form id="warden-dice-form">
     {{ roll_form.hidden_tag() }}
     {% if warden_parties is defined %}
-    <label for="warden-roll-party">{{ _('Party') }}</label>
-    <select id="warden-roll-party" name="party_id">
-      <option value="">{{ _('No party') }}</option>
-      {% for target in warden_parties %}<option value="{{ target.id }}">{{ target.name }}</option>{% endfor %}
-    </select>
+    <div class="warden-roll-party-field">
+      <label for="warden-roll-party">{{ _('Party') }}</label>
+      <select id="warden-roll-party" name="party_id">
+        <option value="">{{ _('No party') }}</option>
+        {% for target in warden_parties %}<option value="{{ target.id }}">{{ target.name }}</option>{% endfor %}
+      </select>
+    </div>
     {% else %}
     <input type="hidden" name="party_id" value="{{ party.id }}">
     {% endif %}
-    <div>
-      <label class="warden-roll-toggle">
-        <input class="checkbox" type="checkbox" id="warden-public-roll" name="public_roll" value="on"
-               aria-describedby="warden-roll-visibility">
-        {{ _('Public roll') }}
-      </label>
-      <p id="warden-roll-visibility" data-private="{{ _('Only you can see these rolls.') }}"
-         data-public="{{ _('Everyone in the party can see these rolls.') }}">{{ _('Only you can see these rolls.') }}</p>
-    </div>
+    <label class="warden-roll-toggle">
+      <input class="checkbox" type="checkbox" id="warden-public-roll" name="public_roll" value="on">
+      {{ _('Public roll') }}
+    </label>
     {{ super() }}
-    <div class="dice-modal-buttons-container">
+    <div class="dice-modal-buttons-container warden-special-rolls">
       <button type="button" class="button" data-warden-roll="reaction">{{ _('Reaction Roll') }}</button>
       <button type="button" class="button" data-warden-roll="fate">{{ _('Die of Fate') }}</button>
     </div>

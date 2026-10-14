@@ -10,6 +10,7 @@ BASE = '/party/1/shared-map'
 @pytest.fixture
 def sources(shared):
     app, clients, sockets = shared
+    app.config.update(FEATURE_TEST_USER_IDS={1}, FEATURE_TEST_PARTY_IDS={1})
     with app.app_context():
         campaign = Campaign(owner_id=1, name='Campaign')
         root = ContentEntry(owner_id=1, campaign=campaign, category='geography', title='Region', body='ROOT SECRET')
@@ -48,6 +49,8 @@ def fog(clients, operation, **overrides):
 
 def test_owned_sources_and_visual_snapshot(sources):
     _, clients, _ = sources
+    html = clients[1].get(BASE).get_data(as_text=True)
+    assert 'id="load-map"' in html and 'id="map-import"' in html
     maps = clients[1].get(f'{BASE}/sources').json['maps']
     assert {m['id'] for m in maps} == {101, 102}
     assert {m['campaign'] for m in maps} == {'Campaign', None}
@@ -132,7 +135,7 @@ def test_invalid_fog_does_not_mutate(shared, operation):
         assert PartyMap.query.count() == 0
 
 
-def test_feature_gate_and_csrf_cover_new_routes(sources):
+def test_campaign_gate_and_csrf_cover_import_routes(sources):
     app, clients, _ = sources
     app.config['WTF_CSRF_ENABLED'] = True
     assert clients[1].post(f'{BASE}/import', json={}).status_code == 400
@@ -140,8 +143,15 @@ def test_feature_gate_and_csrf_cover_new_routes(sources):
     app.config['FEATURE_TEST_PARTY_IDS'] = set()
     for path in ('sources', 'sources/101'):
         assert clients[1].get(f'{BASE}/{path}').status_code == 404
-    for path in ('import', 'fog'):
-        assert clients[1].post(f'{BASE}/{path}', json={}).status_code == 404
+    assert clients[1].post(f'{BASE}/import', json={}).status_code == 404
+    assert clients[1].post(f'{BASE}/fog', json={}).status_code == 400
+    app.config['WTF_CSRF_ENABLED'] = False
+    assert fog(clients, {'id': 'public-board', 'type': 'hide_all'}).status_code == 200
+    app.config['FEATURE_TEST_PARTY_IDS'] = {1}
+    app.config['FEATURE_TEST_USER_IDS'] = set()
+    for path in ('sources', 'sources/101'):
+        assert clients[1].get(f'{BASE}/{path}').status_code == 404
+    assert clients[1].post(f'{BASE}/import', json={}).status_code == 404
 
 
 def test_import_keeps_images_groups_and_bindings(sources):
@@ -196,7 +206,7 @@ def test_party_tokens_use_current_roster_and_membership(shared):
     assert clients[1].get(path).json == {'tokens': []}
     assert clients[2].get(path).status_code == 403
     app.config['FEATURE_TEST_PARTY_IDS'] = set()
-    assert clients[1].get(path).status_code == 404
+    assert clients[1].get(path).status_code == 200
 
 
 def test_party_tokens_include_pets_hirelings_and_their_pets(shared):
@@ -267,9 +277,6 @@ def test_laser_only_reaches_current_party_and_does_not_save(shared):
     assert sockets[1].get_received() == []
     sockets[1].emit('whiteboard_laser', packet)
     assert sockets[2].get_received() == []
-    app.config['FEATURE_TEST_PARTY_IDS'] = set()
-    sockets[1].emit('whiteboard_laser', packet)
-    assert all(sock.get_received() == [] for sock in sockets.values())
 
 
 def test_laser_has_its_own_bounded_rate(shared):

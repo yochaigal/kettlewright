@@ -105,12 +105,11 @@ def register_socket_events(socketio):
         from flask import request
         from flask_wtf.csrf import validate_csrf
         from wtforms.validators import ValidationError
-        from app.lib.feature_access import party_features_enabled
         from app.models import PartyMap
         if not current_user.is_authenticated or not isinstance(data, dict):
             return
         party_id, generation = data.get('party_id'), data.get('generation')
-        if type(party_id) is not int or type(generation) is not int or not party_features_enabled(party_id):
+        if type(party_id) is not int or type(generation) is not int:
             return
         if current_app.config.get('WTF_CSRF_ENABLED', True):
             try:
