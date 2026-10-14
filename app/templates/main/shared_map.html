@@ -33,7 +33,7 @@
     {% if warden %}
     <button type="button" id="lock-map" title="{{ _('Lock map') }}" aria-label="{{ _('Lock map') }}" aria-pressed="false"><span class="map-lock-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span></button>
     {% endif %}
-    <button type="button" id="{{ 'warden-dice-button' if warden else 'board-dice' }}"><i class="fa-solid fa-dice" aria-hidden="true"></i> {{ _('Roll Dice') }}</button>
+    <button type="button" id="{{ 'warden-dice-button' if warden else 'board-dice' }}"><i class="fa-solid fa-dice" aria-hidden="true"></i></button>
     <span id="map-status" role="status" aria-live="polite">{{ _('Loading…') }}</span>
   </header>
   {% if warden %}
