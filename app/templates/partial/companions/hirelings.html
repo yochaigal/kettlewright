@@ -2,7 +2,7 @@
 {% if is_party_member(party) %}
 <section id="party-hirelings" class="party-section companion-section">
   <h3>{{_('Hirelings')}}</h3>
-  {{ cards(party.hirelings) }}
+  {{ cards(party.hirelings, compact=true) }}
   {% if is_owner %}<a class="button" href="{{ url_for('companions.add_hireling', party_id=party.id) }}">{{_('Add hireling')}}</a>{% endif %}
 </section>
 {% endif %}

@@ -76,7 +76,7 @@ def monster_state(companion_id):
     party = db.session.get(Party, party_id)
     for user_id in party_recipient_ids(party):
         socketio.emit('party_actors_changed', {'party_id': party_id}, room=f'user_{user_id}')
-    return redirect(url_for('companions.monsters', party_id=party_id))
+    return redirect(url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) + '#monsters')
 
 
 def csrf():
@@ -116,7 +116,7 @@ def parent_url(c):
         return url_for('main.character', username=c.character.owner_username, url_name=c.character.url_name)
     if c.hireling:
         return url_for('companions.sheet', companion_id=c.hireling_id)
-    return url_for('party.party_view', ownername=c.party.owner_username, party_url=c.party.party_url)
+    return url_for('party.party_view', ownername=c.party.owner_username, party_url=c.party.party_url) + ('#monsters' if c.kind == 'monster' else '')
 
 
 def inventories(c, incoming=False):

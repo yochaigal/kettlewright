@@ -22,7 +22,7 @@
   </script>
   {% endfor %}
   {% endif %} {% endwith %}
-  <div id="party-form" class="sheet box form">
+  <div id="party-form" class="sheet box form party-view-sheet">
     <div class="party-header">
       <div class="party-heading">
         <h1 class="title level-item">{{ party.name|markdown_inline }}</h1>
@@ -61,6 +61,12 @@
       {% if is_owner and user_features_enabled() %}<a class="button" href="{{ url_for('campaigns.new_entry', party_id=party.id) }}">{{ _('Create and show') }}</a>{% endif %}
     </div>{% endif %}
 
+    <div id="party-tabs" class="party-tab-list" role="tablist" aria-label="{{_('Party sections')}}">
+      <button type="button" id="characters-tab" role="tab" aria-selected="true" aria-controls="characters" tabindex="0">{{_('Characters')}}</button>
+      {% if is_owner %}<button type="button" id="monsters-tab" role="tab" aria-selected="false" aria-controls="monsters" tabindex="-1">{{_('Monsters')}}</button>{% endif %}
+      {% if can_view_rolls %}<button type="button" id="roll-history-tab" role="tab" aria-selected="false" aria-controls="roll-history" tabindex="-1">{{_('Roll history')}}</button>{% endif %}
+    </div>
+    <div id="characters" class="party-tab-panel" role="tabpanel" aria-labelledby="characters-tab">
     <div class="party-section" x-data="collapseSection('party-members-content')">
       <span id="party-members-collapse-button" class="party-collapse-button" role="button" tabindex="0"
         @click="toggle()" @keydown.enter.prevent="toggle()" @keydown.space.prevent="toggle()"
@@ -88,14 +94,6 @@
 
     {% if is_owner %}{% include "partial/partyview/wilderness.html" %}{% endif %}
     {% include "partial/companions/hirelings.html" %}
-    {% if is_owner %}
-    <section id="party-monsters" class="party-section companion-section">
-      <h3>{{_('Monsters')}}</h3>
-      {% from 'partial/companions/cards.html' import cards with context %}
-      {{ cards(party.monsters) }}
-      <a class="button" href="{{url_for('companions.monsters', party_id=party.id)}}">{{_('Add monster')}}</a>
-    </section>
-    {% endif %}
 
     <div class="party-section" x-data="collapseSection('inventory-container')">
       <span id="party-inventory-collapse-button" class="party-collapse-button" role="button" tabindex="0"
@@ -109,10 +107,17 @@
       </div>
     </div>
 
-    {% if can_view_rolls %}
-      {% include "partial/partyview/roll_history.html" %}
+    </div>
+    {% if is_owner %}
+    <div id="monsters" class="party-tab-panel monsters-page monsters-sheet party-monster-panel" role="tabpanel" aria-labelledby="monsters-tab" hidden>
+      <div id="party-monsters">{% include 'partial/companions/monster_catalog.html' %}</div>
+    </div>
     {% endif %}
-
+    {% if can_view_rolls %}
+    <div id="roll-history" class="party-tab-panel" role="tabpanel" aria-labelledby="roll-history-tab" hidden>
+      {% include "partial/partyview/roll_history.html" %}
+    </div>
+    {% endif %}
 
   </div>
 </section>

@@ -175,3 +175,31 @@ def test_monster_portraits_cover_catalog_and_preserve_custom_choice(shared):
         c.image_url = 'beast/beast1.png'
         db.session.commit()
     assert '/static/images/portraits/beast/beast1.png' in clients[1].get(f'/companions/{cid}').text
+
+
+def test_party_tabs_embed_monsters_for_warden_only(shared):
+    app, clients, _ = shared
+    with app.app_context():
+        db.session.get(Party, 1).containers = '[{"id":0,"name":"Main","slots":10}]'
+        character = db.session.get(Character, 1)
+        character.owner_username, character.url_name = 'map2', 'player'
+        character.items, character.containers = '[]', '[{"id":0,"name":"Main","slots":10}]'
+        db.session.commit()
+    url = '/users/map1/parties/party/'
+    page = clients[1].get(url)
+    assert page.status_code == 200
+    assert 'id="characters-tab"' in page.text
+    assert 'id="monsters-tab"' in page.text
+    assert 'id="roll-history-tab"' in page.text
+    assert 'id="monster-catalog"' in page.text
+    assert 'action="/parties/1/monsters"' in page.text
+    assert 'id="monster-import-format"' in page.text
+    assert 'aria-describedby="monster-import-format"' in page.text
+    assert '3 HP, 0 Armor, 6 STR, 14 DEX, 3 WIL, bite (d8)' in page.text
+    cid = summon(clients)
+    assert '/users/map1/parties/party/#monsters' in clients[1].get(f'/companions/{cid}').text
+    for user in (2, 3, 4):
+        page = clients[user].get(url)
+        assert page.status_code == 200
+        assert 'id="monsters-tab"' not in page.text
+        assert 'id="monster-catalog"' not in page.text
