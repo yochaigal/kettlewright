@@ -46,19 +46,21 @@ def test_categorized_portraits_work_for_creation_and_companions(shared):
     assert 'Portrait categories' in picker.text and 'Beasts' in picker.text
 
 
-def test_summon_private_sheet_and_combat_visibility(shared):
+def test_summon_private_sheet_and_board_visibility(shared):
     app, clients, _ = shared
     for user in (2, 3, 4):
         assert clients[user].get('/parties/1/monsters').status_code == 403
         assert clients[user].post('/parties/1/monsters', data={'template': 'creeping-vines'}).status_code == 403
     cid = summon(clients)
-    assert clients[1].get(f'/companions/{cid}').status_code == 200
+    sheet = clients[1].get(f'/companions/{cid}')
+    assert sheet.status_code == 200
+    assert 'Show stats to players' not in sheet.text and 'In combat' not in sheet.text
     assert clients[2].get(f'/companions/{cid}').status_code == 403
-    assert not any(t['kind'] == 'monster' for t in clients[1].get('/party/1/shared-map/tokens').json['tokens'] if 'kind' in t)
-    clients[1].post(f'/companions/{cid}/monster', data={'action': 'combat', 'in_combat': 'on'})
     assert any(t.get('kind') == 'monster' for t in clients[1].get('/party/1/shared-map/tokens').json['tokens'])
     assert not any(t.get('kind') == 'monster' for t in clients[2].get('/party/1/shared-map/tokens').json['tokens'])
-    clients[1].post(f'/companions/{cid}/monster', data={'action': 'visibility', 'shared': 'on', 'public_notes': 'Visible note'})
+    visibility_url = f'/party/1/shared-map/monsters/{cid}/visibility'
+    assert clients[1].get(visibility_url).json['shared'] is False
+    assert clients[1].post(visibility_url, json={'shared': True, 'public_notes': 'Visible note'}).status_code == 200
     page = clients[2].get(f'/party/1/shared-map/actors/{cid}')
     assert page.status_code == 200 and 'Visible note' in page.text
     assert 'asphyxiate' not in page.text and 'fertilizer' not in page.text
@@ -90,6 +92,33 @@ def test_transfer_preserves_record_and_inventory(shared):
         assert 'Spellbook' in c.items and 'asphyxiate' in c.notes
     assert clients[2].get(f'/companions/{cid}').status_code == 200
     assert clients[1].post(f'/companions/{cid}/monster', data={'action': 'give', 'character_id': 1}).status_code == 403
+
+
+def test_visibility_is_warden_owned_and_cannot_be_changed_from_sheet(shared):
+    app, clients, sockets = shared
+    cid = summon(clients)
+    path = f'/party/1/shared-map/monsters/{cid}/visibility'
+    payload = {'shared': True, 'public_notes': 'Known to players'}
+    for user in (2, 3, 4):
+        assert clients[user].get(path).status_code == 403
+        assert clients[user].post(path, json=payload).status_code == 403
+    assert clients[4].get(f'/party/2/shared-map/monsters/{cid}/visibility').status_code == 404
+    for action in ('combat', 'visibility'):
+        assert clients[1].post(f'/companions/{cid}/monster', data={'action': action, 'shared': 'on'}).status_code == 400
+    for data in ({'shared': 'true', 'public_notes': ''}, {'shared': True}, {'shared': True, 'public_notes': 'x' * 10001}):
+        assert clients[1].post(path, json=data).status_code == 400
+    assert clients[1].get(path).json['shared'] is False
+    for socket in sockets.values():
+        socket.get_received()
+    assert clients[1].post(path, json=payload).status_code == 200
+    assert any(t.get('kind') == 'monster' for t in clients[2].get('/party/1/shared-map/tokens').json['tokens'])
+    assert any(e['name'] == 'party_actors_changed' for e in sockets[2].get_received())
+    assert sockets[3].get_received() == sockets[4].get_received() == []
+    assert clients[1].post(path, json={'shared': False, 'public_notes': 'Known to players'}).status_code == 200
+    assert clients[2].get(f'/party/1/shared-map/actors/{cid}').status_code == 403
+    assert not any(t.get('kind') == 'monster' for t in clients[2].get('/party/1/shared-map/tokens').json['tokens'])
+    app.config['WTF_CSRF_ENABLED'] = True
+    assert clients[1].post(path, json=payload).status_code == 400
 
 
 def test_import_atomic_and_private_rolls(shared):

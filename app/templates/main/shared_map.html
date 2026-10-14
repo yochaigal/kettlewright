@@ -78,6 +78,17 @@
   {% endif %}
   <dialog id="actor-sheet" aria-labelledby="actor-title">
     <div class="tokens-heading"><h2 id="actor-title">{{_('Creature sheet')}}</h2><button type="button" id="close-actor">{{_('Close')}}</button></div>
+    {% if warden %}
+    <form id="board-monster-visibility" hidden>
+      <label class="board-visibility-toggle"><input id="board-monster-shared" type="checkbox"> {{_('Show stats to players')}}</label>
+      <details><summary>{{_('Public notes')}}</summary>
+        <label for="board-monster-notes">{{_('Public notes')}}</label>
+        <textarea id="board-monster-notes" maxlength="10000" rows="3"></textarea>
+        <small>{{_('The sheet notes and inventory remain private to the Warden.')}}</small>
+      </details>
+      <div class="board-visibility-actions"><button type="submit">{{_('Save')}}</button><span id="board-visibility-status" role="status"></span></div>
+    </form>
+    {% endif %}
     <iframe id="actor-frame" title="{{_('Creature sheet')}}"></iframe>
   </dialog>
   <dialog id="board-rolls" aria-labelledby="board-roll-title">
@@ -96,6 +107,7 @@
     'monstersUrl': url_for('companions.monsters', party_id=party.id),
     'characterActorsUrl': url_for('party.shared_map_character', party_id=party.id, character_id=0),
     'actorsUrl': url_for('party.shared_map_actor', party_id=party.id, companion_id=0),
+    'visibilityUrl': url_for('party.shared_map_monster_visibility', party_id=party.id, companion_id=0) if warden else none,
     'rollUrl': url_for('party.shared_map_roll', party_id=party.id),
     'historyUrl': url_for('party.roll_history', party_id=party.id),
     'monster': _('Monster'),
@@ -109,6 +121,7 @@
       'tokens': _('Party tokens'), 'tokensLoading': _('Loading…'),
       'pet': _('Pet'), 'hireling': _('Hireling'), 'monster': _('Monster'),
       'rollFailed': _('Unable to roll dice. Please try again.'),
+      'visibilityFailed': _('Unable to save visibility. Please try again.'),
       'tokensEmpty': _('No characters in this party yet.'),
       'tokensFailed': _('Unable to load party tokens. Close and try again.'),
       'tokenFallback': _('Portrait unavailable. Using initials.'),

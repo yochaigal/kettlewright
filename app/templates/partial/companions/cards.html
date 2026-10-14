@@ -19,7 +19,7 @@
       {% endfor %}
     </div>
     <p>{{_('Armor')}} {{ c.armorValue() }}{% if c.attack %} · {{ c.attack }}{% endif %}</p>
-    {% if c.kind == 'monster' %}<p>{{_('In combat') if c.in_combat else _('At the ready')}} · {{_('Public stats') if c.shared else _('Private stats')}}</p>{% endif %}
+    {% if c.kind == 'monster' %}<p>{{_('Public stats') if c.shared else _('Private stats')}}</p>{% endif %}
     {% if c.kind == 'hireling' %}<p>{{ c.daily_cost }} {{_('gp/day')}}</p>{% endif %}
   </article>
   {% else %}<p>{{_('None yet.')}}</p>{% endfor %}

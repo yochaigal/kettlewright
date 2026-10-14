@@ -146,8 +146,33 @@ def shared_map_tokens(party_id):
         tokens.append(companion_token(hireling, target.name))
         tokens.extend(companion_token(pet, hireling.name) for pet in hireling.pets)
     tokens.extend(companion_token(monster, target.name) for monster in target.monsters
-                  if monster.in_combat and (current_user.id == target.owner or monster.shared))
+                  if current_user.id == target.owner or monster.shared)
     return _board_json({'tokens': tokens})
+
+
+@party.route('/party/<int:party_id>/shared-map/monsters/<int:companion_id>/visibility', methods=['GET', 'POST'])
+@login_required
+def shared_map_monster_visibility(party_id, companion_id):
+    from app.models import Companion
+    target = _board_party(party_id, owner=True)
+    c = db.get_or_404(Companion, companion_id)
+    if c.kind != 'monster' or c.party_id != target.id:
+        abort(404)
+    if request.method == 'POST':
+        data = _board_data()
+        shared, notes = data.get('shared'), data.get('public_notes')
+        if type(shared) is not bool or not isinstance(notes, str) or len(notes) > 10000:
+            abort(400)
+        c.shared, c.public_notes = shared, notes
+        db.session.commit()
+        from app import socketio
+        from flask import current_app
+        for user_id in party_recipient_ids(target):
+            try:
+                socketio.emit('party_actors_changed', {'party_id': target.id}, room=f'user_{user_id}')
+            except Exception:
+                current_app.logger.exception('Unable to publish monster visibility change')
+    return _board_json({'id': c.id, 'name': c.name, 'shared': c.shared, 'public_notes': c.public_notes})
 
 
 @party.get('/party/<int:party_id>/shared-map/actors/<int:companion_id>')

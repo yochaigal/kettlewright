@@ -58,7 +58,7 @@ def give_monster(c, character):
         raise ValueError('Choose a current character in this monster’s party.')
     # Avoid delete-orphan cascades when moving between parent collections.
     moved = db.session.execute(db.update(Companion).where(Companion.id == c.id, Companion.kind == 'monster')
-                       .values(kind='pet', party_id=None, character_id=character.id, in_combat=False, shared=True))
+                       .values(kind='pet', party_id=None, character_id=character.id, shared=True))
     if moved.rowcount != 1:
         raise ValueError('This monster has already been transferred.')
     db.session.expire_all()

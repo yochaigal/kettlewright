@@ -32,7 +32,6 @@ class Companion(db.Model):
     items = db.Column(db.Text, nullable=False, default='[]')
     containers = db.Column(db.Text, nullable=False, default='[{"id": 0, "name": "Main", "slots": 10}]')
     public_notes = db.Column(db.Text, nullable=False, default='', server_default='')
-    in_combat = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
     shared = db.Column(db.Boolean, nullable=False, default=True)
     character = db.relationship('Character', backref=db.backref('pets', cascade='all, delete-orphan', order_by='Companion.id'))
     party = db.relationship('Party', backref=db.backref('party_companions', cascade='all, delete-orphan', order_by='Companion.id'))

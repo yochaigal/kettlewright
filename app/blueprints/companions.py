@@ -68,11 +68,6 @@ def monster_state(companion_id):
             give_monster(c, recipient)
         except ValueError as error:
             abort(400, str(error))
-    elif action == 'visibility':
-        c.shared = request.form.get('shared') == 'on'
-        c.public_notes = text('public_notes', 10000)
-    elif action == 'combat':
-        c.in_combat = request.form.get('in_combat') == 'on'
     else:
         abort(400)
     db.session.commit()

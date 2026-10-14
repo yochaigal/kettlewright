@@ -22,12 +22,9 @@
     </form>
   </details>
   <p><small><a href="https://cairnrpg.com/resources/monsters/" target="_blank" rel="noopener noreferrer">{{_('Cairn bestiary')}}</a> · Yochai Gal &amp; contributors · CC-BY-SA 4.0</small></p>
-  <section class="monster-roster"><h3>{{_('In combat')}}</h3>
+  <section class="monster-roster"><h3>{{_('Party monsters')}}</h3>
   {% from 'partial/companions/cards.html' import cards with context %}
-  {{cards(party.monsters|selectattr('in_combat')|list)}}
-  </section>
-  <section class="monster-roster"><h3>{{_('At the ready')}}</h3>
-  {{cards(party.monsters|rejectattr('in_combat')|list)}}
+  {{cards(party.monsters)}}
   </section>
   <script id="monster-catalog" type="application/json">{{templates|tojson}}</script>
   <script type="module" src="{{url_for('static', filename='src/js/monsters.js')}}"></script>

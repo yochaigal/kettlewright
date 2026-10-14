@@ -1,19 +1,5 @@
 {% if c.kind == 'monster' and editable %}
 <section class="companion-section monster-controls">
-  <h3>{{_('Combat')}}</h3>
-  <form method="post" action="{{url_for('companions.monster_state', companion_id=c.id)}}">{{form.hidden_tag()}}
-    <input type="hidden" name="action" value="combat">
-    <label><input type="checkbox" name="in_combat" {% if c.in_combat %}checked{% endif %}> {{_('In combat')}}</label>
-    <button type="submit">{{_('Save')}}</button>
-  </form>
-  <form method="post" action="{{url_for('companions.monster_state', companion_id=c.id)}}">{{form.hidden_tag()}}
-    <input type="hidden" name="action" value="visibility">
-    <label><input type="checkbox" name="shared" {% if c.shared %}checked{% endif %}> {{_('Show stats to players')}}</label>
-    <label for="monster-public-notes">{{_('Public notes')}}</label>
-    <textarea id="monster-public-notes" name="public_notes" maxlength="10000">{{c.public_notes}}</textarea>
-    <p><small>{{_('The sheet notes and inventory remain private to the Warden.')}}</small></p>
-    <button type="submit">{{_('Save')}}</button>
-  </form>
   <form method="post" action="{{url_for('companions.monster_state', companion_id=c.id)}}">{{form.hidden_tag()}}
     <input type="hidden" name="action" value="give">
     <label for="monster-recipient">{{_('Give as pet to')}}</label>

@@ -3,19 +3,72 @@ import {restoreElements, CaptureUpdateAction} from 'excalidraw';
 export function setupBoardControls({config, getApi, canEdit, socket}) {
   const sheet = document.getElementById('actor-sheet'), frame = document.getElementById('actor-frame');
   const selectedButton = document.getElementById('token-stats');
-  let actor = null;
+  let actor = null, displayedActorId = null;
+  const visibilityForm = document.getElementById('board-monster-visibility');
+  const sharedToggle = document.getElementById('board-monster-shared');
+  const publicNotes = document.getElementById('board-monster-notes');
+  const visibilityStatus = document.getElementById('board-visibility-status');
+  let visibilityEpoch = 0, visibilityId = null, visibilitySaving = false;
+  const visibilityUrl = id => config.visibilityUrl.replace('/0/visibility', `/${id}/visibility`);
+  function resetVisibility() {
+    ++visibilityEpoch; visibilityId = null; visibilitySaving = false;
+    if (visibilityForm) {visibilityForm.hidden = true; visibilityForm.querySelector('details').open = false;}
+  }
+  async function loadVisibility(selected) {
+    if (!visibilityForm || selected?.kind !== 'companion') return;
+    const run = visibilityEpoch;
+    visibilityForm.hidden = false;
+    visibilityStatus.textContent = config.messages.tokensLoading;
+    visibilityForm.querySelectorAll('input, textarea, button').forEach(input => {input.disabled = true;});
+    try {
+      const response = await fetch(visibilityUrl(selected.id), {cache: 'no-store', signal: AbortSignal.timeout(10000)});
+      if (run !== visibilityEpoch) return;
+      if (response.status === 404) {visibilityForm.hidden = true; return;}
+      if (!response.ok || response.redirected) throw new Error();
+      const data = await response.json();
+      if (run !== visibilityEpoch) return;
+      visibilityId = data.id; sharedToggle.checked = data.shared; publicNotes.value = data.public_notes;
+      visibilityStatus.textContent = '';
+      visibilityForm.querySelectorAll('input, textarea, button').forEach(input => {input.disabled = false;});
+    } catch (_) {if (run === visibilityEpoch) visibilityStatus.textContent = config.messages.visibilityFailed;}
+  }
+  visibilityForm?.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (visibilityId === null || visibilitySaving) return;
+    const run = visibilityEpoch, id = visibilityId;
+    const body = {shared: sharedToggle.checked, public_notes: publicNotes.value, csrf_token: config.csrfToken};
+    visibilitySaving = true; visibilityStatus.textContent = config.messages.saving;
+    visibilityForm.querySelectorAll('input, textarea, button').forEach(input => {input.disabled = true;});
+    try {
+      const response = await fetch(visibilityUrl(id), {method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(body), signal: AbortSignal.timeout(10000)});
+      if (!response.ok || response.redirected) throw new Error();
+      if (run === visibilityEpoch) visibilityStatus.textContent = config.messages.saved;
+    } catch (_) {if (run === visibilityEpoch) visibilityStatus.textContent = config.messages.visibilityFailed;}
+    finally {
+      if (run === visibilityEpoch) {
+        visibilitySaving = false;
+        visibilityForm.querySelectorAll('input, textarea, button').forEach(input => {input.disabled = false;});
+      }
+    }
+  });
   frame.addEventListener('load', () => {
     if (frame.contentDocument) frame.contentDocument.body.classList.add('board-embedded');
+    if (frame.contentDocument && displayedActorId !== null
+        && frame.contentWindow.location.pathname !== `/companions/${displayedActorId}`) resetVisibility();
   });
-  function openSheet(url) {
+  function openSheet(url, selected = null) {
+    displayedActorId = selected?.kind === 'companion' ? selected.id : null;
+    resetVisibility(); loadVisibility(selected);
     frame.src = url;
     if (!sheet.open) sheet.show();
   }
-  document.getElementById('close-actor').addEventListener('click', () => {sheet.close(); frame.src = 'about:blank';});
+  document.getElementById('close-actor').addEventListener('click', () => {resetVisibility(); sheet.close(); frame.src = 'about:blank';});
+  sheet.addEventListener('close', resetVisibility);
   selectedButton.addEventListener('click', () => {
     if (!actor) return;
     const url = actor.kind === 'companion' ? config.actorsUrl : config.characterActorsUrl;
-    openSheet(url.replace(/\/0$/, `/${actor.id}`));
+    openSheet(url.replace(/\/0$/, `/${actor.id}`), {...actor});
   });
   function selection(state) {
     const selected = Object.keys(state.selectedElementIds || {}).filter(id => state.selectedElementIds[id]);
@@ -72,5 +125,5 @@ export function setupBoardControls({config, getApi, canEdit, socket}) {
   });
   socket.on('roll_history_changed', data => {if (data.party_id === config.partyId) refreshHistory();});
   const timer = setInterval(refreshHistory, 5000);
-  return {selection, destroy() {clearInterval(timer); sheet.close(); rolls.close(); frame.src = 'about:blank';}};
+  return {selection, destroy() {resetVisibility(); clearInterval(timer); sheet.close(); rolls.close(); frame.src = 'about:blank';}};
 }

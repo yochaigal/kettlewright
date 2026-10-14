@@ -28,3 +28,20 @@ def test_monster_migration_retains_existing_rows_and_guards_downgrade():
         with Operations.context(MigrationContext.configure(connection)):
             migration.downgrade()
         assert connection.execute(text('SELECT * FROM companions')).one() == (1, 'hireling', 1, None, None, 'Ada')
+
+
+def test_remove_combat_state_preserves_monsters_and_visibility():
+    path = Path('migrations/versions/296a02_remove_monster_combat_state.py')
+    spec = importlib.util.spec_from_file_location('remove_combat_migration', path)
+    migration = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(migration)
+    engine = create_engine('sqlite:///:memory:')
+    with engine.begin() as connection:
+        connection.execute(text('CREATE TABLE companions (id INTEGER PRIMARY KEY, name TEXT, hp INTEGER, shared BOOLEAN, public_notes TEXT, in_combat BOOLEAN)'))
+        connection.execute(text("INSERT INTO companions VALUES (1,'Wolf',3,1,'Public note',1)"))
+        with Operations.context(MigrationContext.configure(connection)):
+            migration.upgrade()
+        assert connection.execute(text('SELECT * FROM companions')).one() == (1, 'Wolf', 3, 1, 'Public note')
+        with Operations.context(MigrationContext.configure(connection)):
+            migration.downgrade()
+        assert connection.execute(text('SELECT * FROM companions')).one() == (1, 'Wolf', 3, 1, 'Public note', 0)

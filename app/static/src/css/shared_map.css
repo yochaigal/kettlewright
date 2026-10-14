@@ -70,3 +70,13 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 #actor-sheet { position: fixed; inset: auto 8px 8px auto; width: min(560px, calc(100vw - 16px));
   height: calc(100dvh - 180px); max-height: 850px; margin: 0; z-index: 10; box-shadow: 0 4px 32px #0004; }
 @media (max-width: 600px) { #actor-sheet { height: calc(100dvh - 220px); } }
+
+#board-monster-visibility { display: flex; flex-direction: column; flex-shrink: 0; gap: 8px; margin: 0; padding: 10px;
+  border: 1px solid var(--board-border); border-radius: 6px; background: var(--board-panel); font-size: 14px; }
+#board-monster-visibility[hidden] { display: none; }
+.board-visibility-toggle, .board-visibility-actions { display: flex; align-items: center; gap: 8px; }
+#board-monster-visibility details > label { display: block; margin-top: 8px; }
+#board-monster-visibility summary { cursor: pointer; }
+#board-monster-notes { box-sizing: border-box; width: 100%; resize: vertical; max-height: 150px; padding: 8px; margin: 6px 0;
+  border: 1px solid var(--board-border); border-radius: 4px; background: var(--board-bg); color: var(--board-text); font: inherit; }
+#board-visibility-status { font-size: 12px; }
