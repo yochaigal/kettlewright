@@ -1,0 +1,27 @@
+{% set catalog = namespace(groups={}) %}
+{% for image in images %}
+  {% set category = image.split('/')[0] if '/' in image else 'characters' %}
+  {% if category not in catalog.groups %}{% set _unused = catalog.groups.update({category: []}) %}{% endif %}
+  {% set _unused = catalog.groups[category].append(image) %}
+{% endfor %}
+{% set labels = {'characters': _('Characters'), 'aqua': _('Aquatic'), 'beast': _('Beasts'),
+  'brute': _('Brutes'), 'coldblooded': _('Cold-blooded'), 'demonic': _('Demonic'),
+  'fairy': _('Fairies'), 'green': _('Plants'), 'human-npcs-for-itmod': _('Human NPCs'),
+  'humanoid': _('Humanoids'), 'insect': _('Insects'), 'large': _('Large creatures'),
+  'monster': _('Monsters'), 'other': _('Other'), 'statues': _('Statues'), 'undead': _('Undead')} %}
+<div class="portrait-categories" role="group" aria-label="{{_('Portrait categories')}}">
+  {% for category in catalog.groups %}
+  <button type="button" aria-pressed="{{'true' if category == 'characters' else 'false'}}"
+    onclick="this.parentElement.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === this))); this.closest('.modal-card-body').querySelectorAll('[data-portrait-category]').forEach(p => p.hidden = p.dataset.portraitCategory !== '{{category}}')">{{labels.get(category, category)}}</button>
+  {% endfor %}
+</div>
+{% for category, portraits in catalog.groups.items() %}
+<div class="portrait-category-grid" data-portrait-category="{{category}}" {% if category != 'characters' %}hidden{% endif %}>
+  {% for image in portraits %}
+  <button type="button" class="portrait-choice" aria-label="{{labels.get(category, category)}} {{loop.index}}" onclick="clickImage('{{image}}')">
+    <img data_url="{{image}}" id="img-{{image}}" class="edit-portrait-modal-thumbnail" loading="lazy" alt=""
+      src="{{url_for('static', filename='images/portraits/' + image)}}">
+  </button>
+  {% endfor %}
+</div>
+{% endfor %}

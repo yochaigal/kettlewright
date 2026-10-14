@@ -19,10 +19,14 @@ def load_scars():
         result[name] = desc
     return result
 
-def load_images():
+def load_images(include_categories=False):
     image_folder = os.path.join(app_static_path(), 'images', 'portraits')
     image_files = [f for f in os.listdir(image_folder) if f.endswith('.webp')]
-    return image_files
+    if include_categories:
+        from pathlib import Path
+        image_files.extend(path.relative_to(image_folder).as_posix()
+                           for path in Path(image_folder).glob('*/*.png'))
+    return sorted(image_files, key=lambda image: ('/' in image, image))
 
 def load_omens():
     result = []
