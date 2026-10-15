@@ -14,7 +14,8 @@
       <form class="companion-stat-form quick-stat-form" data-error="{{_('Unable to save this stat. Please try again.')}}" data-saved="{{_('Saved')}}" method="post" action="{{ url_for('companions.stat', companion_id=c.id) }}">
         {{ companion_form().hidden_tag() }}
         <input type="hidden" name="stat" value="{{ field }}">
-        <label for="companion-{{c.id}}-{{field}}">{{label}}</label>
+        {% if c.kind == 'monster' and field != 'hp' %}<button type="button" class="party-stat-label" data-monster-roll="{{c.id}}" data-save="{{field}}" data-roll-url="{{url_for('party.shared_map_roll',party_id=c.party_id)}}" title="{{_('Roll dice')}}: {{label}}">{{label}}</button>
+        {% else %}<label for="companion-{{c.id}}-{{field}}">{{label}}</label>{% endif %}
         <div class="quick-stat-value"><input id="companion-{{c.id}}-{{field}}" aria-label="{{c.name}}: {{label}}" type="number" name="value" min="0" max="{{c[field+'_max']}}" value="{{c[field]}}" required><span>/{{c[field+'_max']}}</span></div>
         <span class="companion-save-status" role="status"></span>
       </form>
@@ -38,6 +39,12 @@
       {% if c.notes and can_manage_companion(c) %}<div class="companion-notes-body">{{c.notes|markdown}}</div>{% endif %}
     </div>
     {% endif %}
+    {% endif %}
+    {% if c.kind == 'monster' and can_manage_companion(c) %}
+    <div class="monster-attack-rolls">
+      {% for dice in c.attack_dice %}<button type="button" data-monster-roll="{{c.id}}" data-dice="{{dice}}" data-roll-url="{{url_for('party.shared_map_roll',party_id=c.party_id)}}" title="{{_('Roll dice')}}: {{c.attack}}"><i class="fa-solid fa-dice" aria-hidden="true"></i> {{dice}}</button>{% endfor %}
+      <button type="button" data-monster-roll="{{c.id}}" data-roll-url="{{url_for('party.shared_map_roll',party_id=c.party_id)}}" aria-label="{{_('Roll Dice')}}"><i class="fa-solid fa-dice" aria-hidden="true"></i></button>
+    </div>
     {% endif %}
   </article>
   {% else %}<p>{{_('None yet.')}}</p>{% endfor %}

@@ -51,6 +51,11 @@ class Companion(db.Model):
             portrait = monster_portrait(self.role or self.name)
         return url_for('static', filename='images/portraits/' + (portrait or 'default-portrait.webp'))
 
+    @property
+    def attack_dice(self):
+        from app.lib.monsters import attack_dice
+        return attack_dice(self.attack)
+
     def armorValue(self):
         return min(3, (self.armor or 0) + sum(item_armor_value(it) for it in json.loads(self.items or '[]')))
 

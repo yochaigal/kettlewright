@@ -25,6 +25,13 @@ def party_member(party):
         Character.id.in_(json.loads(party.members or '[]'))).first() is not None
 
 
+def can_manage_pets(character):
+    if not current_user.is_authenticated:
+        return False
+    party = source_party(character)
+    return character.owner == current_user.id or (party is not None and party.owner == current_user.id)
+
+
 def can_manage(companion):
     if not current_user.is_authenticated:
         return False

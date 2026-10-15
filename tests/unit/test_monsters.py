@@ -273,3 +273,58 @@ def test_board_party_and_shared_dice_modal_for_both_roles(shared):
         assert 'board-roll-history' not in html and 'board-roll-form' not in html
         assert ('id="lock-map"' in html) is (user == 1)
         assert ('id="warden-public-roll"' in html) is (user == 1)
+
+
+@pytest.mark.parametrize('attack,expected', [
+    ('claws (d6+d6), bite (d8)', ['d6+d6', 'd8']),
+    ('claws (2d6), bite (d6 + d6)', ['d6+d6']),
+    ('touch (d4, blast)', ['d4']),
+    ('no attack', []), ('blast (3d6)', []), ('bite (d60)', []),
+])
+def test_attack_damage_expressions(attack, expected):
+    from app.lib.monsters import attack_dice
+    assert attack_dice(attack) == expected
+
+
+def test_monster_saves_use_current_stat_and_private_history(shared, monkeypatch):
+    app, clients, sockets = shared
+    cid = summon(clients)
+    monkeypatch.setattr('secrets.randbelow', lambda side: 9)
+    with app.app_context():
+        db.session.get(Companion, cid).strength = 10
+        db.session.commit()
+    body = dict(companion_id=cid, dice='d20', save='strength')
+    result = clients[1].post('/party/1/shared-map/roll', data=body)
+    assert result.status_code == 200 and 'STR 10' in result.json['result'] and 'Success' in result.json['result']
+    assert 'STR 10' not in clients[2].get('/party/1/roll-history').text
+    with app.app_context():
+        db.session.get(Companion, cid).strength = 9
+        db.session.commit()
+    result = clients[1].post('/party/1/shared-map/roll', data=body)
+    assert 'Failure' in result.json['result']
+    for data in (dict(body, dice='d6'), dict(body, save='hp'), dict(dice='d20', save='strength')):
+        assert clients[1].post('/party/1/shared-map/roll', data=data).status_code == 400
+    assert clients[2].post('/party/1/shared-map/roll', data=body).status_code == 403
+
+
+def test_warden_creates_and_deletes_pets_only_for_current_members(shared):
+    app, clients, _ = shared
+    with app.app_context():
+        character = db.session.get(Character, 1)
+        character.owner_username, character.url_name = 'map2', 'player'
+        db.session.commit()
+    assert clients[1].get('/characters/1/pets/add').status_code == 200
+    result = clients[1].post('/characters/1/pets/add', data=dict(template='Custom', name='Test pet'))
+    assert result.status_code == 302
+    path = result.location
+    assert 'Delete pet' in clients[1].get(path).text
+    assert clients[3].post(path + '/delete').status_code == 403
+    with app.app_context():
+        db.session.get(Party, 1).members = '[]'
+        db.session.commit()
+    assert clients[1].get('/characters/1/pets/add').status_code == 403
+    assert clients[1].post(path + '/delete').status_code == 403
+    with app.app_context():
+        db.session.get(Party, 1).members = '[1]'
+        db.session.commit()
+    assert clients[1].post(path + '/delete').status_code == 302

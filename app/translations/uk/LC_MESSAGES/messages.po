@@ -26306,3 +26306,7 @@ msgstr "Зберегти як NPC"
 #: app/templates/partial/tools/pcgen.html
 msgid "Create a campaign first to save an NPC."
 msgstr "Спочатку створіть кампанію, щоб зберегти NPC."
+
+#: app/templates/main/shared_map.html
+msgid "Tokens"
+msgstr "Жетони"

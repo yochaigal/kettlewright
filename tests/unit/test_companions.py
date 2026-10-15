@@ -480,7 +480,7 @@ def test_companion_roll_permissions_and_attribution(world, companion_sockets, mo
     if user_id != 4 or companion_id == 2:
         html = clients[user_id].get(f'/companions/{companion_id}').get_data(as_text=True)
         assert ('id="character-dice-button"' in html) == allowed
-        assert ('KW_rollDiceCallback(' in html) == (allowed and companion_id == 1)
+        assert ('KW_rollDiceCallback(' in html) == allowed
         if allowed:
             assert f'const companion_id = "{companion_id}"' in html
             assert 'let party_id = "1"' in html

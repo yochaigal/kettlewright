@@ -22532,3 +22532,7 @@ msgid_plural "%(num)s slots free"
 msgstr[0] "%(num)s wolne miejsce"
 msgstr[1] "%(num)s wolne miejsca"
 msgstr[2] "%(num)s wolnych miejsc"
+
+#: app/templates/main/shared_map.html
+msgid "Tokens"
+msgstr "Żetony"

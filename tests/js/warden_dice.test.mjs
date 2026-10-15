@@ -20,7 +20,7 @@ function roller(active = '1') {
   const stored = new Map([['warden-roll-party', active]]);
   const requests = [];
   const context = vm.createContext({
-    document: {getElementById(id) { return {
+    document: {listeners: {}, addEventListener(event, fn) {this.listeners[event] = fn;}, getElementById(id) { return {
       'warden-dice': panel, 'warden-dice-form': form, 'warden-roll-result': result,
       'warden-roll-party': select, 'warden-dice-button': buttons[0],
       'warden-public-roll': publicToggle,
@@ -113,4 +113,24 @@ test('login redirect cannot be treated as a successful roll', async () => {
   context.fetch = async () => ({redirected: true});
   await assert.rejects(context.requestWardenRoll('dice', 'd20'), /Roll failed/);
   assert.ok(buttons.every(button => !button.disabled));
+});
+
+
+test('monster shortcuts keep actor, save and visibility separate from Warden rolls', async () => {
+  const {context, requests, buttons, publicToggle} = roller();
+  const monster = {dataset: {monsterRoll: '7', save: 'strength', rollUrl: '/party/1/shared-map/roll'}};
+  await context.document.listeners.click({target: {closest: () => monster}});
+  assert.equal(requests[0].url, '/party/1/shared-map/roll');
+  assert.equal(requests[0].body.get('companion_id'), '7');
+  assert.equal(requests[0].body.get('save'), 'strength');
+  assert.equal(requests[0].body.get('dice'), 'd20');
+  assert.equal(requests[0].body.has('public_roll'), false);
+  publicToggle.checked = true;
+  await context.requestWardenRoll('dice', 'd8');
+  assert.equal(requests[1].body.has('save'), false);
+  assert.equal(requests[1].body.get('public_roll'), 'on');
+  buttons[0].listeners.click();
+  await context.requestWardenRoll('dice', 'd6');
+  assert.equal(requests[2].body.has('companion_id'), false);
+  assert.equal(requests[2].body.has('public_roll'), false);
 });

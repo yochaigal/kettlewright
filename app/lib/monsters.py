@@ -87,3 +87,17 @@ def give_monster(c, character):
 def monster_members(party):
     return Character.query.filter(Character.party_id == party.id,
                                   Character.id.in_(json.loads(party.members or '[]'))).order_by(Character.name).all()
+
+
+def attack_dice(attack):
+    """Extract distinct supported damage expressions without inventing attacks."""
+    from app.lib.character_rolls import parse_dice
+    expressions = []
+    for match in re.finditer(r'(?<![\w+])(?:\d*)d\d+(?:\s*\+\s*(?:\d*)d\d+)*(?!\w)', attack or '', re.I):
+        try:
+            dice = '+'.join(f'd{side}' for side in parse_dice(match[0]))
+        except ValueError:
+            continue
+        if dice not in expressions:
+            expressions.append(dice)
+    return expressions

@@ -273,8 +273,14 @@ def shared_map_roll(party_id):
         sides = parse_dice(request.form.get('dice'))
     except ValueError as error:
         return _board_json({'error': str(error)}), 400
+    save = request.form.get('save')
+    if save and (c is None or save not in ('strength', 'dexterity', 'willpower') or sides != [20] or getattr(c, save) is None):
+        abort(400)
     values = [secrets.randbelow(side) + 1 for side in sides]
     result = f'{", ".join(map(str, values))} ({"+".join(f"d{side}" for side in sides)})'
+    if save:
+        label = {'strength': 'STR', 'dexterity': 'DEX', 'willpower': 'WIL'}[save]
+        result += f' · {label} {getattr(c, save)} · ' + (_('Success') if values[0] <= getattr(c, save) else _('Failure'))
     name = c.name if c else _('Warden') if current_user.id == target.owner else current_user.username
     db.session.add(PartyRoll(party_id=target.id, character_name=name, result=result,
                              private_user_id=None if public else current_user.id))

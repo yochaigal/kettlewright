@@ -29,7 +29,7 @@
       <button type="button" id="fit-map" title="{{ _('Fit map') }}" aria-label="{{ _('Fit map') }}"><i class="fa-solid fa-expand" aria-hidden="true"></i></button>
       {% if can_load_maps %}<button type="button" id="load-map" title="{{ _('Load map') }}" aria-label="{{ _('Load map') }}"><i class="fa-solid fa-map" aria-hidden="true"></i></button>{% endif %}
     </div>
-    <button type="button" id="mobile-party-tokens">{{ _('Party tokens') }}</button>
+    <button type="button" id="mobile-party-tokens">{{ _('Tokens') }}</button>
     {% if warden %}
     <button type="button" id="lock-map" title="{{ _('Lock map') }}" aria-label="{{ _('Lock map') }}" aria-pressed="false"><span class="map-lock-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span></button>
     {% endif %}
@@ -54,7 +54,7 @@
   <div id="board-notices" aria-live="polite"></div>
   <div id="editor"></div>
   <dialog id="party-tokens" aria-labelledby="tokens-title">
-    <div class="tokens-heading"><h2 id="tokens-title">{{ _('Party tokens') }}</h2>
+    <div class="tokens-heading"><h2 id="tokens-title">{{ _('Tokens') }}</h2>
       <button type="button" id="close-tokens">{{ _('Close') }}</button></div>
     <p>{{ _('Choose a portrait to add a token to the center of your view.') }}</p>
     <div id="tokens-grid"></div>
@@ -106,7 +106,7 @@
     'importUrl': url_for('party.shared_map_import', party_id=party.id) if can_load_maps else none,
     'libraryUrl': url_for('static', filename='vendor/excalidraw-libraries/'),
     'messages': {
-      'tokens': _('Party tokens'), 'tokensLoading': _('Loading…'),
+      'tokens': _('Tokens'), 'tokensLoading': _('Loading…'),
       'pet': _('Pet'), 'hireling': _('Hireling'), 'monster': _('Monster'),
       'rollFailed': _('Unable to roll dice. Please try again.'),
       'showStats': _('Show stats to players'), 'hideStats': _('Hide stats from players'),
