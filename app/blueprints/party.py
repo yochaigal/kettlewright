@@ -300,6 +300,20 @@ def shared_map_character(party_id, character_id):
     return redirect(url_for('main.character', username=character.owner_username, url_name=character.url_name))
 
 
+@party.get('/party/<int:party_id>/shared-map/roll-actors')
+@login_required
+def shared_map_roll_actors(party_id):
+    target = _board_party(party_id)
+    if target.owner == current_user.id:
+        actors = [dict(id=f'companion:{c.id}', name=c.name, kind='monster',
+                       stats={field: getattr(c, field) for field in ('strength', 'dexterity', 'willpower')},
+                       damage=c.attack_dice) for c in target.monsters]
+    else:
+        actors = [dict(id=str(c.id), name=c.name, kind='character')
+                  for c in party_characters(target) if c.owner == current_user.id]
+    return _board_json({'actors': actors})
+
+
 @party.post('/party/<int:party_id>/shared-map/roll')
 @login_required
 def shared_map_roll(party_id):
@@ -312,11 +326,18 @@ def shared_map_roll(party_id):
     if not FlaskForm().validate_on_submit():
         abort(400)
     c = None
+    character_id = request.form.get('character_id')
+    if character_id and request.form.get('companion_id'):
+        abort(400)
+    if character_id:
+        c = db.get_or_404(Character, request.form.get('character_id', type=int))
+        if c.owner != current_user.id or c.party_id != target.id or c.id not in json.loads(target.members or '[]'):
+            abort(403)
     if request.form.get('companion_id'):
         c = db.get_or_404(Companion, request.form.get('companion_id', type=int))
         if c.kind != 'monster' or c.party_id != target.id or target.owner != current_user.id:
             abort(403)
-    public = request.form.get('public_roll') == 'on'
+    public = bool(character_id) or request.form.get('public_roll') == 'on'
     try:
         sides = parse_dice(request.form.get('dice'))
     except ValueError as error:

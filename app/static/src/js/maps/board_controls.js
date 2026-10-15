@@ -1,5 +1,4 @@
 import {restoreElements, CaptureUpdateAction} from 'excalidraw';
-import diceModal from '../dice_modal.js';
 
 export function setupBoardControls({config, getApi, canEdit}) {
   const panel = document.getElementById('party-panel'), frame = document.getElementById('party-frame');
@@ -58,16 +57,6 @@ export function setupBoardControls({config, getApi, canEdit}) {
     api.updateScene({elements: restoreElements(elements, null), captureUpdate: CaptureUpdateAction.IMMEDIATELY});
     selection();
   });
-  if (!config.warden) {
-    diceModal.initialize(async dice => {
-      const body = new FormData();
-      body.set('dice', dice); body.set('csrf_token', config.csrfToken); body.set('public_roll', 'on');
-      const response = await fetch(config.rollUrl, {method: 'POST', body, signal: AbortSignal.timeout(15000)});
-      if (!response.ok || response.redirected) throw new Error(config.messages.rollFailed);
-      return response.json();
-    });
-    document.getElementById('board-dice').addEventListener('click', () => diceModal.showDiceModal());
-  }
   return {selection, confirmReveal, destroy() {
     finishReveal();
     panel.close(); frame.src = 'about:blank';

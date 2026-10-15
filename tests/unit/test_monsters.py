@@ -371,3 +371,50 @@ def test_board_live_portraits_follow_sheets_without_exposing_unplaced_monsters(s
         db.session.commit()
     assert clients[2].get(path).status_code == 403
     assert not any(a['id'] == '1' for a in clients[1].get(path).json['portraits'])
+
+
+def test_board_roll_actors_are_owned_and_monster_actions_follow_stats(shared):
+    app, clients, _ = shared
+    cid = summon(clients)
+    with app.app_context():
+        c = db.session.get(Companion, cid)
+        c.attack = 'claws (d6+d6), bite (d8)'
+        c.strength = 7
+        db.session.commit()
+    path = '/party/1/shared-map/roll-actors'
+    actors = clients[1].get(path).json['actors']
+    assert len(actors) == 1 and actors[0]['id'] == f'companion:{cid}'
+    assert actors[0]['damage'] == ['d6+d6', 'd8'] and actors[0]['stats']['strength'] == 7
+    assert clients[2].get(path).json['actors'] == [{'id': '1', 'name': 'Player', 'kind': 'character'}]
+    for user in (3, 4):
+        assert clients[user].get(path).status_code == 403
+    for user in (1, 2):
+        page = clients[user].get('/party/1/shared-map').text
+        assert 'id="board-rolls"' in page and 'id="board-roll-actions"' in page
+        assert 'src/js/warden_dice.js' not in page
+        assert 'id="warden-dice-button"' not in page and 'id="board-dice"' not in page
+    with app.app_context():
+        db.session.get(Party, 1).members = '[]'
+        db.session.commit()
+    assert clients[2].get(path).status_code == 403
+
+
+def test_board_player_rolls_are_attributed_and_public_with_server_side_ownership(shared, monkeypatch):
+    app, clients, sockets = shared
+    monkeypatch.setattr('secrets.randbelow', lambda side: 3)
+    path = '/party/1/shared-map/roll'
+    data = {'character_id': 1, 'dice': 'd8'}
+    result = clients[2].post(path, data=data)
+    assert result.status_code == 200 and result.json['values'] == [4]
+    with app.app_context():
+        saved = PartyRoll.query.one()
+        assert saved.character_name == 'Player' and saved.private_user_id is None
+    assert clients[1].post(path, data=data).status_code == 403
+    assert clients[4].post(path, data=data).status_code == 403
+    cid = summon(clients)
+    assert clients[1].post(path, data=dict(data, companion_id=cid)).status_code == 400
+    assert clients[2].post(path, data=dict(companion_id=cid, dice='d8')).status_code == 403
+    with app.app_context():
+        db.session.get(Party, 1).members = '[]'
+        db.session.commit()
+    assert clients[2].post(path, data=data).status_code == 403

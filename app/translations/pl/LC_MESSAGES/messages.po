@@ -22536,3 +22536,7 @@ msgstr[2] "%(num)s wolnych miejsc"
 #: app/templates/main/shared_map.html
 msgid "Tokens"
 msgstr "Żetony"
+
+#: app/templates/main/shared_map.html
+msgid "Damage"
+msgstr "Obrażenia"

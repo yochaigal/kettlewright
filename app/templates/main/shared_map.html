@@ -33,7 +33,6 @@
     {% if warden %}
     <button type="button" id="lock-map" title="{{ _('Lock map') }}" aria-label="{{ _('Lock map') }}" aria-pressed="false"><span class="map-lock-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span></button>
     {% endif %}
-    <button type="button" id="{{ 'warden-dice-button' if warden else 'board-dice' }}"><i class="fa-solid fa-dice" aria-hidden="true"></i></button>
     <span id="map-status" role="status" aria-live="polite">{{ _('Loading…') }}</span>
   </header>
   {% if warden %}
@@ -53,6 +52,15 @@
   {% endif %}
   <div id="board-notices" aria-live="polite"></div>
   <div id="editor"></div>
+  <section id="board-rolls" class="board-rolls" aria-label="{{_('Roll Dice')}}">
+    <div class="board-roll-heading">
+      <strong id="board-roll-name">{{_('Warden') if warden else _('Roll Dice')}}</strong>
+      <select id="board-roll-actor" aria-label="{{_('Character')}}" hidden></select>
+      {% if warden %}<label class="board-roll-public"><input id="board-roll-public" type="checkbox"> {{_('Public roll')}}</label>{% endif %}
+      <output id="board-roll-result" role="status" aria-live="polite"></output>
+    </div>
+    <div id="board-roll-actions" class="board-roll-actions"></div>
+  </section>
   <dialog id="party-tokens" aria-labelledby="tokens-title">
     <div class="tokens-heading"><h2 id="tokens-title">{{ _('Tokens') }}</h2>
       <button type="button" id="close-tokens">{{ _('Close') }}</button></div>
@@ -90,7 +98,7 @@
     </div>
   </dialog>
   {% endif %}
-  {% if warden %}{% include 'partial/partyview/warden_dice.html' %}
+  {% if warden %}{% with board_roller=true %}{% include 'partial/partyview/warden_dice.html' %}{% endwith %}
   {% else %}{% include 'main/dice_modal.html' %}{% endif %}
   <script id="shared-map-config" type="application/json">{{ {
     'partyId': party.id, 'editing': editing, 'warden': warden, 'canLoadMaps': can_load_maps, 'csrfToken': csrf_token,
@@ -98,6 +106,8 @@
     'portraitsUrl': url_for('party.shared_map_portraits', party_id=party.id),
     'statsUrl': url_for('party.shared_map_stats', party_id=party.id),
     'visibilityUrl': url_for('party.shared_map_monster_visibility', party_id=party.id, companion_id=0) if warden else none,
+    'rollActorsUrl': url_for('party.shared_map_roll_actors', party_id=party.id),
+    'wardenRollUrl': url_for('party.warden_roll') if warden else none,
     'rollUrl': url_for('party.shared_map_roll', party_id=party.id),
     'monster': _('Monster'),
     'tokensUrl': url_for('party.shared_map_tokens', party_id=party.id),
@@ -109,6 +119,8 @@
     'messages': {
       'tokens': _('Tokens'), 'tokensLoading': _('Loading…'),
       'pet': _('Pet'), 'hireling': _('Hireling'), 'monster': _('Monster'),
+      'warden': _('Warden'), 'rollDice': _('Roll Dice'), 'damage': _('Damage'),
+      'reaction': _('Reaction Roll'), 'fate': _('Die of Fate'),
       'rollFailed': _('Unable to roll dice. Please try again.'),
       'showStats': _('Show stats to players'), 'hideStats': _('Hide stats from players'),
       'lockMap': _('Lock map'), 'unlockMap': _('Unlock map'), 'armor': _('Armor'),

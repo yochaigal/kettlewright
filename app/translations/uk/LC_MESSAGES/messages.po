@@ -26310,3 +26310,7 @@ msgstr "Спочатку створіть кампанію, щоб зберег�
 #: app/templates/main/shared_map.html
 msgid "Tokens"
 msgstr "Жетони"
+
+#: app/templates/main/shared_map.html
+msgid "Damage"
+msgstr "Шкода"

@@ -11,6 +11,7 @@ import {createLaserSync} from './whiteboard_laser.js';
 import {stateFromUpdate} from './whiteboard_updates.js';
 import {setupBoardControls} from './board_controls.js';
 import {createTokenStats} from './token_stats.js';
+import {createBoardRolls} from './board_rolls.js';
 import {createTokenPortraits} from './token_portraits.js';
 import {editorLocale} from './locale.js';
 
@@ -47,6 +48,9 @@ const tokens = setupPartyTokens({editor, config, getApi: () => api, getGeneratio
 
 const boardControls = setupBoardControls({config, getApi: () => api, socket,
   canEdit: () => config.editing && initialized && !stopped && !importing && !playerPreview});
+const boardRolls = createBoardRolls({config, getApi: () => api, socket,
+  canRoll: () => initialized && !stopped && !importing && !playerPreview,
+  isPlayerPreview: () => playerPreview});
 const tokenStats = createTokenStats({editor, config, getApi: () => api, socket,
   confirmReveal: boardControls.confirmReveal,
   canReveal: () => config.warden && initialized && !stopped && !importing && !playerPreview,
@@ -93,7 +97,7 @@ function setTheme(value, persist = true) {
 function revoke() {
   stopped = true; pending = null; fogQueue = [];
   clearTimeout(timer); clearTimeout(fogTimer); clearInterval(poll);
-  boardControls.destroy(); tokenStats.destroy(); portraits.destroy(); tokens.close(); laser.destroy(); layer.destroy(); root.unmount(); api = null; tell('denied');
+  boardControls.destroy(); boardRolls.destroy(); tokenStats.destroy(); portraits.destroy(); tokens.close(); laser.destroy(); layer.destroy(); root.unmount(); api = null; tell('denied');
 }
 function denied(response) {
   if (response.redirected || [401, 403, 404].includes(response.status)) {revoke(); return true;}
@@ -125,7 +129,7 @@ async function save() {
 }
 
 function onChange(elements, appState, files) {
-  layer.redraw(); tokenStats.redraw(); portraits.redraw(); boardControls.selection(appState);
+  layer.redraw(); tokenStats.redraw(); portraits.redraw(); boardRolls.redraw(); boardControls.selection(appState);
   if (stopped || appState.isLoading) return;
   setTheme(appState.theme);
   if (appState.activeTool?.type !== 'laser') laser.stop();
@@ -299,7 +303,7 @@ if (config.warden) {
   }));
   document.getElementById('player-preview').addEventListener('click', event => {
     playerPreview = !playerPreview; event.currentTarget.setAttribute('aria-pressed', String(playerPreview));
-    layer.setPreview(playerPreview); tokenStats.reset(); displayFog();
+    layer.setPreview(playerPreview); tokenStats.reset(); boardRolls.redraw(); displayFog();
   });
   document.getElementById('discard-fog').addEventListener('click', () => {
     if (confirm(config.messages.discardFog)) {fogQueue = []; fogBlocked = fogFailed = false; displayFog(); refresh();}

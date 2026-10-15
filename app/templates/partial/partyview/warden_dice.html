@@ -29,5 +29,5 @@
 {% endblock %}
 {% block dice_modal_scripts %}
 {{ super() }}
-<script src="{{ url_for('static', filename='src/js/warden_dice.js') }}" type="module"></script>
+{% if not board_roller %}<script src="{{ url_for('static', filename='src/js/warden_dice.js') }}" type="module"></script>{% endif %}
 {% endblock %}

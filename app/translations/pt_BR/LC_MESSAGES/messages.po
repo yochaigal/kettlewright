@@ -23230,3 +23230,7 @@ msgstr[1] "%(num)s espaços livres"
 #: app/templates/main/shared_map.html
 msgid "Tokens"
 msgstr "Fichas"
+
+#: app/templates/main/shared_map.html
+msgid "Damage"
+msgstr "Dano"

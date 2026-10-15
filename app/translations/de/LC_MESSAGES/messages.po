@@ -22227,3 +22227,7 @@ msgstr[1] "%(num)s Plätze frei"
 #: app/templates/main/shared_map.html
 msgid "Tokens"
 msgstr "Spielmarker"
+
+#: app/templates/main/shared_map.html
+msgid "Damage"
+msgstr "Schaden"

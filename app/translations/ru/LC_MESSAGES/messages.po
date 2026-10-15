@@ -34807,3 +34807,7 @@ msgstr "Сначала создайте кампанию, чтобы сохра�
 #: app/templates/main/shared_map.html
 msgid "Tokens"
 msgstr "Жетоны"
+
+#: app/templates/main/shared_map.html
+msgid "Damage"
+msgstr "Урон"
