@@ -156,6 +156,54 @@ def shared_map_tokens(party_id):
     return _board_json({'tokens': tokens})
 
 
+@party.get('/party/<int:party_id>/shared-map/portraits')
+@login_required
+def shared_map_portraits(party_id):
+    """Current artwork for linked tokens, without exposing private monster sheets."""
+    import re
+    from urllib.parse import urlsplit
+    from app.lib.whiteboard import board_state
+    target = _board_party(party_id)
+    warden = target.owner == current_user.id
+    placed = set()
+    for element in board_state(db.session.get(PartyMap, party_id))['drawing']['elements']:
+        match = re.match(r'^actor-(companion-)?(\d+)-', element['id'])
+        if match:
+            placed.add(('companion:' if match[1] else '') + match[2])
+    portraits = []
+
+    def add(actor, kind='character'):
+        key = str(actor.id) if kind == 'character' else f'companion:{actor.id}'
+        if key not in placed:
+            return
+        if kind == 'character':
+            portrait = actor.image_url if actor.custom_image else url_for(
+                'static', filename='images/portraits/' + (actor.image_url or 'default-portrait.webp'))
+        else:
+            portrait = actor.portrait_src if actor.image_url or kind == 'monster' else None
+        try:
+            parsed = urlsplit(portrait or '')
+            if parsed.scheme not in ('', 'http', 'https') or parsed.username or parsed.password:
+                portrait = None
+        except ValueError:
+            portrait = None
+        # A placed monster's artwork is already shared, but its private name/stats are not.
+        name = '' if kind == 'monster' and not warden and not actor.shared else actor.name
+        portraits.append(dict(id=key, name=name, kind=kind, portrait=portrait))
+
+    for character in party_characters(target):
+        add(character)
+        for pet in character.pets:
+            add(pet, pet.kind)
+    for hireling in target.hirelings:
+        add(hireling, hireling.kind)
+        for pet in hireling.pets:
+            add(pet, pet.kind)
+    for monster in target.monsters:
+        add(monster, monster.kind)
+    return _board_json({'portraits': portraits})
+
+
 @party.get('/party/<int:party_id>/shared-map/stats')
 @login_required
 def shared_map_stats(party_id):
@@ -252,6 +300,20 @@ def shared_map_character(party_id, character_id):
     return redirect(url_for('main.character', username=character.owner_username, url_name=character.url_name))
 
 
+@party.get('/party/<int:party_id>/shared-map/roll-actors')
+@login_required
+def shared_map_roll_actors(party_id):
+    target = _board_party(party_id)
+    if target.owner == current_user.id:
+        actors = [dict(id=f'companion:{c.id}', name=c.name, kind='monster',
+                       stats={field: getattr(c, field) for field in ('strength', 'dexterity', 'willpower')},
+                       damage=c.attack_dice) for c in target.monsters]
+    else:
+        actors = [dict(id=str(c.id), name=c.name, kind='character')
+                  for c in party_characters(target) if c.owner == current_user.id]
+    return _board_json({'actors': actors})
+
+
 @party.post('/party/<int:party_id>/shared-map/roll')
 @login_required
 def shared_map_roll(party_id):
@@ -264,17 +326,30 @@ def shared_map_roll(party_id):
     if not FlaskForm().validate_on_submit():
         abort(400)
     c = None
+    character_id = request.form.get('character_id')
+    if character_id and request.form.get('companion_id'):
+        abort(400)
+    if character_id:
+        c = db.get_or_404(Character, request.form.get('character_id', type=int))
+        if c.owner != current_user.id or c.party_id != target.id or c.id not in json.loads(target.members or '[]'):
+            abort(403)
     if request.form.get('companion_id'):
         c = db.get_or_404(Companion, request.form.get('companion_id', type=int))
         if c.kind != 'monster' or c.party_id != target.id or target.owner != current_user.id:
             abort(403)
-    public = request.form.get('public_roll') == 'on'
+    public = bool(character_id) or request.form.get('public_roll') == 'on'
     try:
         sides = parse_dice(request.form.get('dice'))
     except ValueError as error:
         return _board_json({'error': str(error)}), 400
+    save = request.form.get('save')
+    if save and (c is None or save not in ('strength', 'dexterity', 'willpower') or sides != [20] or getattr(c, save) is None):
+        abort(400)
     values = [secrets.randbelow(side) + 1 for side in sides]
     result = f'{", ".join(map(str, values))} ({"+".join(f"d{side}" for side in sides)})'
+    if save:
+        label = {'strength': 'STR', 'dexterity': 'DEX', 'willpower': 'WIL'}[save]
+        result += f' · {label} {getattr(c, save)} · ' + (_('Success') if values[0] <= getattr(c, save) else _('Failure'))
     name = c.name if c else _('Warden') if current_user.id == target.owner else current_user.username
     db.session.add(PartyRoll(party_id=target.id, character_name=name, result=result,
                              private_user_id=None if public else current_user.id))

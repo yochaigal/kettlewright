@@ -34,7 +34,7 @@ export async function tokenPortrait(character) {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(dataURL));
   const id = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
   return {file: {id, dataURL, mimeType: 'image/png', created: Date.now()},
-    fallback: !image && !['pet', 'hireling'].includes(character.kind)};
+    imageLoaded: Boolean(image), fallback: !image && !['pet', 'hireling'].includes(character.kind)};
 }
 
 export function tokenElement(fileId, state, id = crypto.randomUUID()) {
@@ -44,7 +44,7 @@ export function tokenElement(fileId, state, id = crypto.randomUUID()) {
     width: 80, height: 80, angle: 0, opacity: 100, locked: false};
 }
 
-export function setupPartyTokens({config, getApi, getGeneration, canInsert, beforeInsert}) {
+export function setupPartyTokens({editor, config, getApi, getGeneration, canInsert, beforeInsert}) {
   const dialog = document.getElementById('party-tokens');
   const grid = document.getElementById('tokens-grid'), status = document.getElementById('tokens-status');
   let epoch = 0, busy = false;
@@ -52,6 +52,42 @@ export function setupPartyTokens({config, getApi, getGeneration, canInsert, befo
   document.getElementById('mobile-party-tokens').addEventListener('click', open);
   document.getElementById('close-tokens').addEventListener('click', close);
   dialog.addEventListener('cancel', close);
+  async function insert(character, portrait, generation, valid = () => true, point = null) {
+    const {file, fallback} = await portrait;
+    if (!valid() || generation !== getGeneration() || !canInsert()) return;
+    const api = getApi(), state = api.getAppState();
+    const element = tokenElement(file.id, state, `actor-${String(character.id).replace(':', '-')}-${crypto.randomUUID()}`);
+    if (point) {
+      element.x = (point.x - (state.offsetLeft || 0)) / state.zoom.value - state.scrollX - 40;
+      element.y = (point.y - (state.offsetTop || 0)) / state.zoom.value - state.scrollY - 40;
+    }
+    beforeInsert(); api.addFiles([file]);
+    api.updateScene({elements: [...api.getSceneElements(), ...restoreElements([element], null)],
+      appState: {selectedElementIds: {[element.id]: true}}, captureUpdate: CaptureUpdateAction.IMMEDIATELY});
+    api.setActiveTool({type: 'selection'});
+    if (fallback) api.setToast({message: config.messages.tokenFallback});
+  }
+  const isActor = event => [...event.dataTransfer.types].includes('application/x-kettlewright-actor');
+  editor.addEventListener('dragover', event => {
+    if (!isActor(event)) return;
+    event.preventDefault(); event.stopPropagation(); event.dataTransfer.dropEffect = canInsert() ? 'copy' : 'none';
+  }, true);
+  editor.addEventListener('drop', async event => {
+    if (!isActor(event)) return;
+    event.preventDefault(); event.stopPropagation();
+    if (busy || !canInsert()) return;
+    const id = event.dataTransfer.getData('application/x-kettlewright-actor');
+    const generation = getGeneration(), point = {x: event.clientX, y: event.clientY};
+    busy = true;
+    try {
+      const response = await fetch(config.tokensUrl, {cache: 'no-store', signal: AbortSignal.timeout(15000)});
+      if (!response.ok || response.redirected) throw new Error();
+      const {tokens} = await response.json(), character = tokens.find(token => String(token.id) === id);
+      if (!character) throw new Error();
+      await insert(character, tokenPortrait(character), generation, () => true, point);
+    } catch (_) {getApi()?.setToast({message: config.messages.tokensFailed});}
+    finally {busy = false;}
+  }, true);
   async function open() {
     if (!canInsert() || dialog.open) return;
     const run = ++epoch, generation = getGeneration();
@@ -86,14 +122,8 @@ export function setupPartyTokens({config, getApi, getGeneration, canInsert, befo
           if (busy || !canInsert()) return;
           busy = true; grid.setAttribute('aria-busy', 'true'); status.textContent = config.messages.tokensLoading;
           try {
-            const {file, fallback} = await portrait;
-            if (run !== epoch || generation !== getGeneration() || !canInsert()) return;
-            const api = getApi(), element = tokenElement(file.id, api.getAppState(), `actor-${String(character.id).replace(':', '-')}-${crypto.randomUUID()}`);
-            beforeInsert(); api.addFiles([file]);
-            api.updateScene({elements: [...api.getSceneElements(), ...restoreElements([element], null)],
-              appState: {selectedElementIds: {[element.id]: true}}, captureUpdate: CaptureUpdateAction.IMMEDIATELY});
-            api.setActiveTool({type: 'selection'}); close();
-            if (fallback) api.setToast({message: config.messages.tokenFallback});
+            await insert(character, portrait, generation, () => run === epoch);
+            if (run === epoch) close();
           } catch (_) {if (run === epoch) status.textContent = config.messages.tokensFailed;}
           finally {if (run === epoch) busy = false; grid.removeAttribute('aria-busy');}
         });

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import {editorLocale} from '../../app/static/src/js/maps/locale.js';
+import {drawingFromScene} from '../../app/static/src/js/maps/scene.js';
 
 const source = readFileSync(new URL('../../app/static/src/js/maps/shared_map.js', import.meta.url), 'utf8').replace(/^import .*;\n/gm, '');
 const librarySource = readFileSync(new URL('../../app/static/src/js/maps/libraries.js', import.meta.url), 'utf8')
@@ -15,7 +16,7 @@ const response = (body, status = 200) => ({ok: status === 200, status, json: asy
 
 async function setup(editing = true, failedLibrary = null, language = 'en') {
   const requests = [], libraryRequests = [], handlers = {}, windowHandlers = {}, intervals = [], drafts = [], timers = new Map();
-  let nextTimer = 0, props, elements = [], files = {}, appState = {viewBackgroundColor: '#ffffff', theme: 'light'};
+  let projection, nextTimer = 0, props, elements = [], files = {}, appState = {viewBackgroundColor: '#ffffff', theme: 'light'};
   const config = {editing, partyId: 1, sceneUrl: '/scene', libraryUrl: '/libraries/', messages: Object.fromEntries(
     ['saved', 'live', 'saving', 'conflict', 'denied', 'invalid', 'failed', 'offline', 'loadFailed', 'draft'].map(key => [key, key]))};
   const stored = new Map(), uiHandlers = {};
@@ -33,12 +34,14 @@ async function setup(editing = true, failedLibrary = null, language = 'en') {
     createFogLayer: () => ({redraw() {}, destroy() {}, setState() {}, setTool() {}}),
     applyFogOperation: (fog) => fog, setupMapImport() {}, setupPartyTokens: () => ({open() {}, close() {}}),
     setupBoardControls: () => ({selection() {}, destroy() {}}),
+    createTokenPortraits: options => {projection = options.onProjection; return {elements: elements => elements.map(element => element.fileId === 'live-image' ? {...element, fileId: 'original-image'} : element), redraw() {}, destroy() {}};},
+    createBoardRolls: () => ({redraw() {}, destroy() {}}),
     createTokenStats: () => ({redraw() {}, reset() {}, destroy() {}}),
     Blob, structuredClone, editorLocale, createLaserSync: () => ({pointerUpdate() {}, stop() {}, clear() {}, destroy() {}}),
     io: () => ({on: (name, handler) => {handlers[name] = handler;}}),
     setTimeout: fn => {timers.set(++nextTimer, fn); return nextTimer;}, clearTimeout: id => timers.delete(id), setInterval(fn, delay) {intervals.push({fn, delay}); return intervals.length;}, clearInterval() {},
     AbortSignal, URL, location: {href: 'https://example.test/map/'}, Excalidraw: {}, CaptureUpdateAction: {NEVER: 'never'},
-    restoreElements: elements => elements, drawingFromScene: (elements, files) => ({elements, files}),
+    restoreElements: elements => elements, drawingFromScene,
     h: (_, value) => value,
     createRoot: () => ({unmount() {}, render(value) {if (!value) return; const first = !props; props = value; if (!first) return; elements = value.initialData.elements;
       files = value.initialData.files; value.excalidrawAPI(api); value.onChange(elements, appState, files);}}),
@@ -57,6 +60,7 @@ async function setup(editing = true, failedLibrary = null, language = 'en') {
   requests.shift().resolve(response({version: 0, drawing: empty}));
   await tick();
   return {requests, libraryRequests, handlers, windowHandlers, intervals, drafts, status, stored, uiHandlers, get props() {return props;},
+    project() {projection(() => {files['live-image'] = {id: 'live-image', dataURL: 'fresh portrait'}; elements[0] = {...elements[0], fileId: 'live-image'}; props.onChange(elements, appState, files);});},
     change(id) {elements = [{id, type: 'rectangle'}]; props.onChange(elements, appState, files);},
     moveInPlace(x) {elements[0].x = x; elements[0].version = (elements[0].version || 1) + 1; props.onChange(elements, appState, files);},
     async timers() {const queued = [...timers.values()]; timers.clear(); queued.forEach(fn => fn()); await tick();},
@@ -338,4 +342,21 @@ test('socket updates preserve pending local edits and save against the new revis
   assert.equal(s.requests.length, 1);
   const data = JSON.parse(s.requests[0].options.body); assert.equal(data.version, 1);
   assert.equal(data.drawing.elements.length, 2);
+});
+
+
+test('live portrait projection never saves by itself and token moves save canonical artwork', async () => {
+  const state = await setup();
+  state.handlers.shared_map_changed({party_id: 1, generation: 1, version: 1, fog_version: 0,
+    update: {drawing: {base_version: 0, elements: [{id: 'actor-1-copy', type: 'image', fileId: 'original-image', x: 20}],
+      order: ['actor-1-copy'], files: {'original-image': {id: 'original-image', dataURL: 'stored portrait'}}, appState: {}}}});
+  state.project(); await state.timers();
+  assert.equal(state.requests.length, 0);
+  assert.equal(state.elements()[0].fileId, 'live-image');
+  state.moveInPlace(60); await state.timers();
+  const saved = JSON.parse(state.requests[0].options.body).drawing;
+  assert.equal(saved.elements[0].x, 60);
+  assert.equal(saved.elements[0].fileId, 'original-image');
+  assert.deepEqual(Object.keys(saved.files), ['original-image']);
+  assert.equal(saved.files['original-image'].dataURL, 'stored portrait');
 });

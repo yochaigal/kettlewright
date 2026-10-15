@@ -16,6 +16,8 @@ export function tokenStatsPosition(element, state) {
     scale};
 }
 
+const statKeys = ['hp', 'strength', 'dexterity', 'willpower'];
+
 export function createTokenStats({editor, config, getApi, canReveal, confirmReveal, isPlayerPreview, socket}) {
   const layer = document.createElement('div'); layer.className = 'token-stats-layer';
   let actors = new Map(), nodes = new Map(), host = null, frame = null, epoch = 0, stopped = false;
@@ -47,10 +49,11 @@ export function createTokenStats({editor, config, getApi, canReveal, confirmReve
         if (button) button.disabled = !canReveal() || saving.has(actor.id);
         continue;
       }
+      if (node.actor && patchStats(node, actor)) {node.actor = actor; continue;}
       node.actor = actor; node.replaceChildren();
       node.setAttribute('aria-label', actor.name);
       const stats = document.createElement('span'); stats.className = 'token-stat-values';
-      for (const key of ['hp', 'strength', 'dexterity', 'willpower']) {
+      for (const key of statKeys) {
         if (!actor.stats[key]) continue;
         const value = document.createElement('span');
         value.textContent = `${{hp: 'HP', strength: 'STR', dexterity: 'DEX', willpower: 'WIL'}[key]} ${actor.stats[key][0]}`;
@@ -73,10 +76,34 @@ export function createTokenStats({editor, config, getApi, canReveal, confirmReve
         const icon = document.createElement('i'); icon.className = `fa-solid ${actor.shared ? 'fa-eye' : 'fa-eye-slash'}`;
         icon.setAttribute('aria-hidden', 'true'); button.append(icon); node.append(button);
         button.addEventListener('pointerdown', event => event.stopPropagation());
-        button.addEventListener('click', event => {event.stopPropagation(); toggleVisibility(actor);});
+        button.addEventListener('click', event => {event.stopPropagation(); toggleVisibility(node.actor);});
       }
     }
     for (const [id, node] of nodes) if (!visible.has(id)) {node.remove(); nodes.delete(id);}
+  }
+  function patchStats(node, actor) {
+    const previous = node.actor;
+    // Shape/visibility changes may add or remove controls. Value changes stay in place.
+    if (previous.kind !== actor.kind || previous.shared !== actor.shared
+        || Boolean(previous.attack) !== Boolean(actor.attack)
+        || statKeys.some(key => Boolean(previous.stats[key]) !== Boolean(actor.stats[key]))) return false;
+    if (previous.name !== actor.name) node.setAttribute('aria-label', actor.name);
+    const values = node.children[0].children;
+    statKeys.filter(key => actor.stats[key]).forEach((key, index) => {
+      if (previous.stats[key][0] !== actor.stats[key][0]) {
+        values[index].textContent = `${{hp: 'HP', strength: 'STR', dexterity: 'DEX', willpower: 'WIL'}[key]} ${actor.stats[key][0]}`;
+      }
+    });
+    const combat = node.children[1], armor = combat.children[0];
+    if (previous.armor !== actor.armor) {
+      armor.title = `${config.messages.armor} ${actor.armor}`;
+      armor.setAttribute('aria-label', armor.title);
+      armor.lastChild.textContent = ` ${actor.armor}`;
+    }
+    if (previous.attack !== actor.attack) combat.lastChild.textContent = ` · ${actor.attack}`;
+    const button = node.querySelector('button');
+    if (button) button.disabled = !canReveal() || saving.has(actor.id);
+    return true;
   }
   async function refresh() {
     if (stopped) return;
@@ -86,7 +113,7 @@ export function createTokenStats({editor, config, getApi, canReveal, confirmReve
       if (!response.ok || response.redirected) throw new Error();
       const data = await response.json();
       if (run !== epoch || stopped) return;
-      actors = new Map(data.actors.map(actor => [actor.id, actor]));
+      actors = new Map(data.actors.map(actor => [actor.id, JSON.stringify(actors.get(actor.id)) === JSON.stringify(actor) ? actors.get(actor.id) : actor]));
     } catch (_) {
       // Clear stale stats, including permissions revoked while the connection was lost.
       if (run !== epoch || stopped) return;
@@ -112,7 +139,7 @@ export function createTokenStats({editor, config, getApi, canReveal, confirmReve
   }
   function changed(data) {
     if (data.party_id !== config.partyId) return;
-    actors.clear(); redraw(); refresh();
+    refresh();
   }
   const connected = () => refresh();
   const visible = () => {if (!document.hidden) refresh();};

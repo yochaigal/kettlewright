@@ -5,7 +5,7 @@ from flask import Blueprint, abort, redirect, render_template, request, url_for,
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from app.models import db, Character, Party, Companion
-from app.lib.companions import STATS, can_manage, can_roll, companion_party, catalog, import_pet, new_hireling, party_member, pet_data, companion_destinations, record_transfer, finish_companion_transfers
+from app.lib.companions import STATS, can_manage_pets, can_manage, can_roll, companion_party, catalog, import_pet, new_hireling, party_member, pet_data, companion_destinations, record_transfer, finish_companion_transfers
 from app.lib.inventory import Inventory
 from app.lib.data import sanitize_json_content
 from app.lib.quick_stats import save_current_stat
@@ -16,7 +16,7 @@ companions = Blueprint('companions', __name__)
 @companions.app_context_processor
 def helpers():
     from app.lib.monsters import monster_members
-    return dict(monster_members=monster_members, can_manage_companion=can_manage, companion_form=FlaskForm, companion_stats=STATS,
+    return dict(can_manage_pets=can_manage_pets, monster_members=monster_members, can_manage_companion=can_manage, companion_form=FlaskForm, companion_stats=STATS,
                 is_party_member=party_member, companion_destinations=companion_destinations)
 
 
@@ -142,7 +142,7 @@ def inventories(c, incoming=False):
 @login_required
 def add_pet(character_id):
     parent = db.get_or_404(Character, character_id)
-    if parent.owner != current_user.id:
+    if not can_manage_pets(parent):
         abort(403)
     if request.method == 'POST':
         csrf()
@@ -228,7 +228,9 @@ def stat(companion_id):
 @companions.route('/companions/<int:companion_id>/delete', methods=['POST'])
 @login_required
 def delete(companion_id):
-    c = editable(companion_id)
+    c = db.get_or_404(Companion, companion_id)
+    if not can_manage(c) and not (c.kind == 'pet' and c.character and can_manage_pets(c.character)):
+        abort(403)
     csrf()
     back = parent_url(c)
     db.session.delete(c)
@@ -325,7 +327,7 @@ def sheet_context(c, selected=0):
     inventory.select(selected)
     inventory.decorate()
     return dict(monster_csrf=generate_csrf(), c=c, character=c, form=FlaskForm(), editable=can_manage(c), is_owner=can_manage(c),
-                can_roll=can_roll(c), roll_party=companion_party(c), stat_form=FlaskForm(),
+                can_delete=can_manage(c) or (c.kind == 'pet' and c.character and can_manage_pets(c.character)), can_roll=can_roll(c), roll_party=companion_party(c), stat_form=FlaskForm(),
                 companion_sheet=True, inventory=inventory, outgoing=inventories(c) if can_manage(c) else {},
                 inventory_edit_base=f'/companions/{c.id}/inventory',
                 inventory_select_base=f'/companions/{c.id}/containers', decode=json.loads,

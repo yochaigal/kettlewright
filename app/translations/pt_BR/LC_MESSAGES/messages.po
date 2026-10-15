@@ -23226,3 +23226,11 @@ msgid "%(num)s slot free"
 msgid_plural "%(num)s slots free"
 msgstr[0] "%(num)s espaço livre"
 msgstr[1] "%(num)s espaços livres"
+
+#: app/templates/main/shared_map.html
+msgid "Tokens"
+msgstr "Fichas"
+
+#: app/templates/main/shared_map.html
+msgid "Damage"
+msgstr "Dano"

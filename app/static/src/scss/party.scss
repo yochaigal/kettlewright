@@ -679,7 +679,14 @@ body:has(.tools-page) {
   .companion-identity p { margin: .25rem 0; font-size: 1.3rem; }
   .companion-stats { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .35rem; }
   .companion-stat-form, .companion-stat { display: flex; flex-direction: column; align-items: center; min-width: 0; }
-  .companion-stat-form label { font-size: 1.3rem; }
+  .companion-stat-form label, .companion-stat-form button.party-stat-label { font-size: 1.3rem; }
+  .companion-stat-form button.party-stat-label {
+    padding: 0; margin: 0; border: 0; background: transparent; color: inherit;
+    font-family: inherit; line-height: inherit; text-decoration: underline dotted;
+    text-underline-offset: .2em; cursor: pointer;
+  }
+  .monster-attack-rolls { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .5rem; }
+  .monster-attack-rolls button { margin: 0; }
   .companion-monster-notes {
     grid-column: 1 / -1;
     min-width: 0;

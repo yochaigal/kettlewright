@@ -5,6 +5,7 @@
   <a href="{{url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url)}}">← {{party.name}}</a>
   <h2>{{_('Monsters')}}</h2>
   {% include 'partial/companions/monster_catalog.html' %}
+{% with roll_form=form %}{% include 'partial/partyview/warden_dice.html' %}{% endwith %}
 </div>
 </section>
 {% endblock %}

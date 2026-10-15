@@ -11,6 +11,8 @@ import {createLaserSync} from './whiteboard_laser.js';
 import {stateFromUpdate} from './whiteboard_updates.js';
 import {setupBoardControls} from './board_controls.js';
 import {createTokenStats} from './token_stats.js';
+import {createBoardRolls} from './board_rolls.js';
+import {createTokenPortraits} from './token_portraits.js';
 import {editorLocale} from './locale.js';
 
 const config = JSON.parse(document.getElementById('shared-map-config').textContent);
@@ -19,7 +21,7 @@ const status = document.getElementById('map-status');
 const tell = key => {status.textContent = config.messages[key];};
 // Excalidraw mutates existing elements in place while dragging/resizing.
 // Keep acknowledgements and queued saves detached from those live objects.
-const snapshot = (elements, files, appState) => structuredClone({...drawingFromScene(elements, files),
+const snapshot = (elements, files, appState) => structuredClone({...drawingFromScene(portraits.elements(elements), files),
   appState: {viewBackgroundColor: appState.viewBackgroundColor || '#ffffff'}});
 let api, props, version = -1, generation = 1, initialized = false, applying = false, stopped = false;
 let pending = null, saving = false, loading = false, importing = false, refreshAgain = false, timer, poll;
@@ -40,16 +42,25 @@ const laser = createLaserSync({socket, getApi: () => api, getGeneration: () => g
 editor.addEventListener('pointerleave', () => laser.stop());
 window.addEventListener('blur', () => laser.stop());
 
-const tokens = setupPartyTokens({config, getApi: () => api, getGeneration: () => generation,
+const tokens = setupPartyTokens({editor, config, getApi: () => api, getGeneration: () => generation,
   canInsert: () => config.editing && initialized && !stopped && !importing && !playerPreview,
   beforeInsert: () => {layer.setTool(''); document.querySelectorAll('[data-fog-tool]').forEach(button => button.setAttribute('aria-pressed', 'false'));}});
 
 const boardControls = setupBoardControls({config, getApi: () => api, socket,
   canEdit: () => config.editing && initialized && !stopped && !importing && !playerPreview});
+const boardRolls = createBoardRolls({config, getApi: () => api, socket,
+  canRoll: () => initialized && !stopped && !importing && !playerPreview,
+  isPlayerPreview: () => playerPreview});
 const tokenStats = createTokenStats({editor, config, getApi: () => api, socket,
   confirmReveal: boardControls.confirmReveal,
   canReveal: () => config.warden && initialized && !stopped && !importing && !playerPreview,
   isPlayerPreview: () => playerPreview});
+
+const portraits = createTokenPortraits({config, getApi: () => api, socket,
+  onProjection: update => {
+    applying = true;
+    try {update();} finally {applying = false;}
+  }});
 
 function showStatus() {
   if (stopped) {tell('denied'); return;}
@@ -86,7 +97,7 @@ function setTheme(value, persist = true) {
 function revoke() {
   stopped = true; pending = null; fogQueue = [];
   clearTimeout(timer); clearTimeout(fogTimer); clearInterval(poll);
-  boardControls.destroy(); tokenStats.destroy(); tokens.close(); laser.destroy(); layer.destroy(); root.unmount(); api = null; tell('denied');
+  boardControls.destroy(); boardRolls.destroy(); tokenStats.destroy(); portraits.destroy(); tokens.close(); laser.destroy(); layer.destroy(); root.unmount(); api = null; tell('denied');
 }
 function denied(response) {
   if (response.redirected || [401, 403, 404].includes(response.status)) {revoke(); return true;}
@@ -118,7 +129,7 @@ async function save() {
 }
 
 function onChange(elements, appState, files) {
-  layer.redraw(); tokenStats.redraw(); boardControls.selection(appState);
+  layer.redraw(); tokenStats.redraw(); portraits.redraw(); boardRolls.redraw(); boardControls.selection(appState);
   if (stopped || appState.isLoading) return;
   setTheme(appState.theme);
   if (appState.activeTool?.type !== 'laser') laser.stop();
@@ -292,7 +303,7 @@ if (config.warden) {
   }));
   document.getElementById('player-preview').addEventListener('click', event => {
     playerPreview = !playerPreview; event.currentTarget.setAttribute('aria-pressed', String(playerPreview));
-    layer.setPreview(playerPreview); tokenStats.reset(); displayFog();
+    layer.setPreview(playerPreview); tokenStats.reset(); boardRolls.redraw(); displayFog();
   });
   document.getElementById('discard-fog').addEventListener('click', () => {
     if (confirm(config.messages.discardFog)) {fogQueue = []; fogBlocked = fogFailed = false; displayFog(); refresh();}

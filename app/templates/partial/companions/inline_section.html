@@ -36,4 +36,7 @@
   {% elif section == 'notes' %}<div class="rich-content character-text-field">{{c.notes|markdown if c.notes else _('No notes yet.')}}</div>
   {% else %}<p>{{c.attack|markdown_inline if c.attack else _('No attack set.')}}</p>{% endif %}
 </div>
+{% if section == 'attack' and can_roll %}
+<div class="monster-attack-rolls">{% for dice in c.attack_dice %}<button type="button" onclick="KW_rollDiceCallback({{dice.replace('d','').split('+')|map('int')|list|tojson}})"><i class="fa-solid fa-dice" aria-hidden="true"></i> {{dice}}</button>{% endfor %}</div>
+{% endif %}
 {% endif %}

@@ -4,7 +4,7 @@ from copy import deepcopy
 import pytest
 
 from app.lib.monsters import parse_monster, monster_catalog
-from app.models import Companion, Character, Party, PartyRoll, db
+from app.models import Companion, Character, Party, PartyRoll, PartyMap, db
 from test_shared_map import shared, DRAWING, URL
 
 
@@ -273,3 +273,148 @@ def test_board_party_and_shared_dice_modal_for_both_roles(shared):
         assert 'board-roll-history' not in html and 'board-roll-form' not in html
         assert ('id="lock-map"' in html) is (user == 1)
         assert ('id="warden-public-roll"' in html) is (user == 1)
+
+
+@pytest.mark.parametrize('attack,expected', [
+    ('claws (d6+d6), bite (d8)', ['d6+d6', 'd8']),
+    ('claws (2d6), bite (d6 + d6)', ['d6+d6']),
+    ('touch (d4, blast)', ['d4']),
+    ('no attack', []), ('blast (3d6)', []), ('bite (d60)', []),
+])
+def test_attack_damage_expressions(attack, expected):
+    from app.lib.monsters import attack_dice
+    assert attack_dice(attack) == expected
+
+
+def test_monster_saves_use_current_stat_and_private_history(shared, monkeypatch):
+    app, clients, sockets = shared
+    cid = summon(clients)
+    monkeypatch.setattr('secrets.randbelow', lambda side: 9)
+    with app.app_context():
+        db.session.get(Companion, cid).strength = 10
+        db.session.commit()
+    body = dict(companion_id=cid, dice='d20', save='strength')
+    result = clients[1].post('/party/1/shared-map/roll', data=body)
+    assert result.status_code == 200 and 'STR 10' in result.json['result'] and 'Success' in result.json['result']
+    assert 'STR 10' not in clients[2].get('/party/1/roll-history').text
+    with app.app_context():
+        db.session.get(Companion, cid).strength = 9
+        db.session.commit()
+    result = clients[1].post('/party/1/shared-map/roll', data=body)
+    assert 'Failure' in result.json['result']
+    for data in (dict(body, dice='d6'), dict(body, save='hp'), dict(dice='d20', save='strength')):
+        assert clients[1].post('/party/1/shared-map/roll', data=data).status_code == 400
+    assert clients[2].post('/party/1/shared-map/roll', data=body).status_code == 403
+
+
+def test_warden_creates_and_deletes_pets_only_for_current_members(shared):
+    app, clients, _ = shared
+    with app.app_context():
+        character = db.session.get(Character, 1)
+        character.owner_username, character.url_name = 'map2', 'player'
+        db.session.commit()
+    assert clients[1].get('/characters/1/pets/add').status_code == 200
+    result = clients[1].post('/characters/1/pets/add', data=dict(template='Custom', name='Test pet'))
+    assert result.status_code == 302
+    path = result.location
+    assert 'Delete pet' in clients[1].get(path).text
+    assert clients[3].post(path + '/delete').status_code == 403
+    with app.app_context():
+        db.session.get(Party, 1).members = '[]'
+        db.session.commit()
+    assert clients[1].get('/characters/1/pets/add').status_code == 403
+    assert clients[1].post(path + '/delete').status_code == 403
+    with app.app_context():
+        db.session.get(Party, 1).members = '[1]'
+        db.session.commit()
+    assert clients[1].post(path + '/delete').status_code == 302
+
+
+def test_board_live_portraits_follow_sheets_without_exposing_unplaced_monsters(shared):
+    app, clients, _ = shared
+    cid = summon(clients)
+    hidden = summon(clients)
+    with app.app_context():
+        db.session.get(Character, 1).image_url = 'beast/beast1.png'
+        pet = Companion(kind='pet', character_id=1, name='No stats', image_url='beast/beast2.png')
+        db.session.add(pet)
+        db.session.flush()
+        pet_id = pet.id
+        # Legacy linked tokens may be locked and share the same old image.
+        db.session.add(PartyMap(party_id=1, drawing={'elements': [
+            {'id': 'actor-1-copy', 'type': 'image', 'fileId': 'old', 'locked': True},
+            {'id': f'actor-companion-{cid}-copy', 'type': 'image', 'fileId': 'old'},
+            {'id': f'actor-companion-{pet_id}-copy', 'type': 'image', 'fileId': 'old'},
+            {'id': 'map-image', 'type': 'image', 'fileId': 'old'}], 'files': {}}))
+        db.session.commit()
+    path = '/party/1/shared-map/portraits'
+    before = clients[1].get(URL).json
+    assert clients[1].post(f'/companions/{cid}/portrait', data={'selected-portrait': 'beast/beast3.png'}).status_code == 200
+    with app.app_context():
+        db.session.get(Character, 1).image_url = 'beast/beast4.png'
+        db.session.commit()
+    for user in (1, 2):
+        response = clients[user].get(path)
+        assert response.status_code == 200 and response.headers['Cache-Control'] == 'no-store'
+        portraits = {actor['id']: actor for actor in response.json['portraits']}
+        assert set(portraits) == {'1', f'companion:{cid}', f'companion:{pet_id}'}
+        assert portraits['1']['portrait'].endswith('beast/beast4.png')
+        assert portraits[f'companion:{cid}']['portrait'].endswith('beast/beast3.png')
+        assert portraits[f'companion:{pet_id}']['portrait'].endswith('beast/beast2.png')
+        assert portraits[f'companion:{cid}']['name'] == ('Creeping Vines' if user == 1 else '')
+        assert all('stats' not in actor for actor in portraits.values()) and f'companion:{hidden}' not in portraits
+    assert clients[1].get(URL).json == before
+    for user in (3, 4):
+        assert clients[user].get(path).status_code == 403
+    with app.app_context():
+        db.session.get(Party, 1).members = '[]'
+        db.session.commit()
+    assert clients[2].get(path).status_code == 403
+    assert not any(a['id'] == '1' for a in clients[1].get(path).json['portraits'])
+
+
+def test_board_roll_actors_are_owned_and_monster_actions_follow_stats(shared):
+    app, clients, _ = shared
+    cid = summon(clients)
+    with app.app_context():
+        c = db.session.get(Companion, cid)
+        c.attack = 'claws (d6+d6), bite (d8)'
+        c.strength = 7
+        db.session.commit()
+    path = '/party/1/shared-map/roll-actors'
+    actors = clients[1].get(path).json['actors']
+    assert len(actors) == 1 and actors[0]['id'] == f'companion:{cid}'
+    assert actors[0]['damage'] == ['d6+d6', 'd8'] and actors[0]['stats']['strength'] == 7
+    assert clients[2].get(path).json['actors'] == [{'id': '1', 'name': 'Player', 'kind': 'character'}]
+    for user in (3, 4):
+        assert clients[user].get(path).status_code == 403
+    for user in (1, 2):
+        page = clients[user].get('/party/1/shared-map').text
+        assert 'id="board-rolls"' in page and 'id="board-roll-actions"' in page
+        assert 'src/js/warden_dice.js' not in page
+        assert 'id="warden-dice-button"' not in page and 'id="board-dice"' not in page
+    with app.app_context():
+        db.session.get(Party, 1).members = '[]'
+        db.session.commit()
+    assert clients[2].get(path).status_code == 403
+
+
+def test_board_player_rolls_are_attributed_and_public_with_server_side_ownership(shared, monkeypatch):
+    app, clients, sockets = shared
+    monkeypatch.setattr('secrets.randbelow', lambda side: 3)
+    path = '/party/1/shared-map/roll'
+    data = {'character_id': 1, 'dice': 'd8'}
+    result = clients[2].post(path, data=data)
+    assert result.status_code == 200 and result.json['values'] == [4]
+    with app.app_context():
+        saved = PartyRoll.query.one()
+        assert saved.character_name == 'Player' and saved.private_user_id is None
+    assert clients[1].post(path, data=data).status_code == 403
+    assert clients[4].post(path, data=data).status_code == 403
+    cid = summon(clients)
+    assert clients[1].post(path, data=dict(data, companion_id=cid)).status_code == 400
+    assert clients[2].post(path, data=dict(companion_id=cid, dice='d8')).status_code == 403
+    with app.app_context():
+        db.session.get(Party, 1).members = '[]'
+        db.session.commit()
+    assert clients[2].post(path, data=data).status_code == 403
