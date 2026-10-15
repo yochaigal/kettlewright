@@ -4,6 +4,7 @@ import {actorKey, tokenStatsPosition, createTokenStats} from '../../app/static/s
 
 class Node {
   constructor() {this.children = []; this.style = {}; this.attrs = {}; this.events = {};}
+  get lastChild() {return this.children.at(-1);}
   append(...children) {for (const child of children) {child.parent = this; this.children.push(child);}}
   replaceChildren(...children) {this.children = []; this.append(...children);}
   remove() {if (this.parent) this.parent.children = this.parent.children.filter(child => child !== this);}
@@ -63,6 +64,29 @@ test('inline visibility requires confirmation, preserves notes, and clears on re
     const layer = host.children[0], stats = layer.children[0];
     assert.deepEqual(stats.children[0].children.map(value => value.textContent), ['HP 3', 'STR 12']);
     const button = stats.querySelector('button');
+    const hpNode = stats.children[0].children[0], strNode = stats.children[0].children[1];
+    const combatNode = stats.children[1];
+    current.stats.hp[0] = 2;
+    events.party_actors_changed({party_id: 1});
+    // Draw while the fetch is pending: existing stats must remain visible.
+    draw();
+    assert.equal(layer.children[0], stats);
+    assert.equal(hpNode.textContent, 'HP 3');
+    await tick(); draw();
+    assert.equal(layer.children[0], stats);
+    assert.equal(stats.children[0].children[0], hpNode);
+    assert.equal(stats.children[0].children[1], strNode);
+    assert.equal(stats.children[1], combatNode);
+    assert.equal(stats.querySelector('button'), button);
+    assert.equal(hpNode.textContent, 'HP 2');
+    assert.equal(strNode.textContent, 'STR 12');
+    current.armor = 2; current.attack = 'claws (d8)';
+    events.party_actors_changed({party_id: 1}); await tick(); draw();
+    assert.equal(stats.children[1], combatNode);
+    assert.equal(combatNode.children[0].lastChild.textContent, ' 2');
+    assert.equal(combatNode.lastChild.textContent, ' · claws (d8)');
+    events.party_members_changed({party_id: 1}); draw(); await tick(); draw();
+    assert.equal(stats.children[0].children[0], hpNode);
     button.events.click({stopPropagation() {}}); await tick();
     assert.equal(requests.filter(r => r.options.method === 'POST').length, 0);
     confirmResult = true; button.events.click({stopPropagation() {}}); await tick(); draw();
