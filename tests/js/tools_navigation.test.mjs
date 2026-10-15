@@ -35,3 +35,21 @@ test('reorganization retains every original table with its original generator', 
   assert.equal(toolSections(data).monsters.length, 1);
   assert.deepEqual(toolSections(data).monsters[0].choices.map(choice => choice.label), ['Random Monster','Custom Monster','Monster picker']);
 });
+
+
+test('Realm POIs roll the dungeon site tables without generating a full dungeon', () => {
+  const choice = toolSections(data).realm.find(section => section.label === 'POIs').choices.find(choice => choice.table === 'dungeon');
+  assert.ok(choice);
+  const result = generateToolResult(data, choice.category, choice.table, () => 0);
+  assert.deepEqual(result.fields, {Type:'Burial Ground', Feature:'Abandoned'});
+  assert.equal(result.category, 'dungeon');
+  assert.ok(!result.mapKind);
+});
+
+test('event text preserves the event description without a redundant field label', () => {
+  for (const table of ['Dungeon Events', 'Wilderness Events']) {
+    const result = generateToolResult(data, 'Events', table, () => 0);
+    assert.equal(resultText(result, key => key), data[table][0].description);
+    assert.ok(!resultText(result).includes('**Description:**'));
+  }
+});

@@ -762,3 +762,21 @@ body:has(.tools-page) {
 .tools-print-frame { position: fixed; width: 1px; height: 1px; border: 0; opacity: 0; pointer-events: none; }
 
 .tools-copy-source { position: fixed; left: -10000px; top: 0; width: 60em; }
+
+.tools-character-generation {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  .tools-background-choice {
+    flex: 0 1 22em;
+    min-width: 0;
+    select { margin: 0; }
+  }
+  #pcgen-button { margin: 0; }
+}
+.tools-character-markdown {
+  padding: 1.25em;
+  overflow-wrap: anywhere;
+  [hidden], &[hidden] { display: none; }
+}

@@ -1,18 +1,24 @@
 <form id="pcgen-form" class="no-space" data-copy-label="{{_('Copy text')}}" data-copied="{{_('Results copied to clipboard')}}" data-error="{{_('Unable to generate a character. Please try again.')}}">
   {{roll_form.hidden_tag() if roll_form is defined else ''}}
   <div class="tools-character-controls">
-    <div class="tools-background-choice">
-      <label for="background-select">{{_('Background')}}</label>
-      <select id="background-select" name="background">
-        <option value="">{{_('Random')}}</option>
-        {% for bkg in backgrounds %}<option value="{{bkg}}">{{bkg | tr}}</option>{% endfor %}
-      </select>
-    </div>
-    <div id="pcgen-button-container" class="tools-toolbar">
+    <div class="tools-character-generation">
+      <div class="tools-background-choice">
+        <label for="background-select">{{_('Background')}}</label>
+        <select id="background-select" name="background">
+          <option value="">{{_('Random')}}</option>
+          {% for bkg in backgrounds %}<option value="{{bkg}}">{{bkg | tr}}</option>{% endfor %}
+        </select>
+      </div>
       <button class="button tools-generate-button" type="button" id="pcgen-button" hx-get="{{url_for('generator.character', view='sheet')}}"
         hx-include="#background-select" hx-target="#pcgen-result-display" hx-disabled-elt="this" hx-sync="this:drop">
         <i class="fa-solid fa-dice" aria-hidden="true"></i> {{_('Generate')}}
       </button>
+    </div>
+    <div id="pcgen-button-container" class="tools-toolbar">
+      <div class="tools-tab-list" role="tablist" aria-label="{{_('Character preview')}}" id="pcgen-view-tabs">
+        <button type="button" id="pcgen-sheet-tab" role="tab" aria-selected="true" aria-controls="pcgen-sheet-panel" data-character-view="sheet">{{_('Sheet')}}</button>
+        <button type="button" id="pcgen-markdown-tab" role="tab" aria-selected="false" aria-controls="pcgen-markdown-panel" data-character-view="markdown" tabindex="-1">Markdown</button>
+      </div>
       <div class="tools-history-actions">
         {% if current_user.is_authenticated %}<button id="pcgen-save-monster-button" type="button" data-save-kind="monster" data-url="{{url_for('generator.save_character', kind='monster')}}" disabled>{{_('Save as Monster')}}</button>{% endif %}
         {% if user_features_enabled() %}<button id="pcgen-save-npc-button" type="button" data-save-kind="npc" data-url="{{url_for('generator.save_character', kind='npc')}}" disabled>{{_('Save as NPC')}}</button>{% endif %}

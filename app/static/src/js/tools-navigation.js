@@ -8,7 +8,7 @@ export function toolSections(data) {
     realm: [
       {label:'Realm', choices:[choice('Realm', 'Worldbuilding')]},
       {label:'Factions', choices:[choice('Faction', 'Worldbuilding')]},
-      {label:'POIs', choices:['Settlement','Waypoint','Curiosity','Lair'].map(label => choice(label, 'Setting', label.toLowerCase()))},
+      {label:'POIs', choices:['Settlement','Waypoint','Curiosity','Lair','Dungeon'].map(label => choice(label, 'Setting', label.toLowerCase()))},
       {label:'People', choices:[choice('People', 'Setting', 'people'), choice('NPC', 'Worldbuilding')]},
     ],
     dungeons: [{label:'Dungeon', choices:[choice('Dungeon', 'Worldbuilding')]}],
@@ -28,7 +28,7 @@ export function toolSections(data) {
 
 export function generateToolResult(data, category, table, random = Math.random) {
   return category === 'Setting'
-    ? generateSettingArticle(data, table, random, {generateChildren:false})
+    ? generateSettingArticle(data, table, random, {generateChildren:false, siteOnly:table === 'dungeon'})
     : generateResult(data, category, table, random);
 }
 
