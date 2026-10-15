@@ -34811,3 +34811,7 @@ msgstr "Жетоны"
 #: app/templates/main/shared_map.html
 msgid "Damage"
 msgstr "Урон"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Sheet"
+msgstr "Лист персонажа"

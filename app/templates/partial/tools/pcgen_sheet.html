@@ -1,6 +1,9 @@
+<div id="pcgen-sheet-panel" role="tabpanel" aria-labelledby="pcgen-sheet-tab">
 <article class="view-character-sheet tools-character-preview" aria-label="{{_('Character preview')}}">
   {% include "partial/charview/sheet_content.html" %}
 </article>
+</div>
+<div id="pcgen-markdown-panel" class="tools-character-markdown rich-content" role="tabpanel" aria-labelledby="pcgen-markdown-tab" hidden></div>
 <input type="hidden" name="json_data" id="json_data" value="{{json_data}}">
 <input type="hidden" id="pcgen-snapshot" value="{{generated_snapshot}}">
 <input type="hidden" id="character_name" value="{{character.name}}">
