@@ -34755,3 +34755,51 @@ msgstr "Тайм"
 #. Naming table fallback
 msgid "Tiberius"
 msgstr "Тиберий"
+
+#: app/templates/main/tools.html
+msgid "Generate"
+msgstr "Сгенерировать"
+
+#: app/templates/main/tools.html
+msgid "Copy all"
+msgstr "Копировать всё"
+
+#: app/templates/main/tools.html
+msgid "Choose a generator and click “Generate”."
+msgstr "Выберите генератор и нажмите «Сгенерировать»."
+
+#: app/templates/main/tools.html
+msgid "Could not copy text. Please try again."
+msgstr "Не удалось скопировать текст. Попробуйте ещё раз."
+
+#: app/templates/main/tools.html
+msgid "Monster picker"
+msgstr "Выбор монстра"
+
+#: app/templates/main/tools.html
+msgid "Attach to party"
+msgstr "Добавить в партию"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Character preview"
+msgstr "Предпросмотр персонажа"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Choose a background and click “Generate”."
+msgstr "Выберите предысторию и нажмите «Сгенерировать»."
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Unable to generate a character. Please try again."
+msgstr "Не удалось сгенерировать персонажа. Попробуйте ещё раз."
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Save as Monster"
+msgstr "Сохранить как монстра"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Save as NPC"
+msgstr "Сохранить как NPC"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Create a campaign first to save an NPC."
+msgstr "Сначала создайте кампанию, чтобы сохранить NPC."

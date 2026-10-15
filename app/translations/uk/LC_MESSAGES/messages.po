@@ -26258,3 +26258,51 @@ msgid ""
 msgstr ""
 "Вибухова сфера: залізна куля завбільшки з голову, наповнена вибуховим "
 "порошком, який детонує від удару. "
+
+#: app/templates/main/tools.html
+msgid "Generate"
+msgstr "Згенерувати"
+
+#: app/templates/main/tools.html
+msgid "Copy all"
+msgstr "Копіювати все"
+
+#: app/templates/main/tools.html
+msgid "Choose a generator and click “Generate”."
+msgstr "Виберіть генератор і натисніть «Згенерувати»."
+
+#: app/templates/main/tools.html
+msgid "Could not copy text. Please try again."
+msgstr "Не вдалося скопіювати текст. Спробуйте ще раз."
+
+#: app/templates/main/tools.html
+msgid "Monster picker"
+msgstr "Вибір монстра"
+
+#: app/templates/main/tools.html
+msgid "Attach to party"
+msgstr "Додати до партії"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Character preview"
+msgstr "Попередній перегляд персонажа"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Choose a background and click “Generate”."
+msgstr "Виберіть передісторію і натисніть «Згенерувати»."
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Unable to generate a character. Please try again."
+msgstr "Не вдалося згенерувати персонажа. Спробуйте ще раз."
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Save as Monster"
+msgstr "Зберегти як монстра"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Save as NPC"
+msgstr "Зберегти як NPC"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Create a campaign first to save an NPC."
+msgstr "Спочатку створіть кампанію, щоб зберегти NPC."
