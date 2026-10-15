@@ -17,7 +17,7 @@ function updateButtons(panel) {
 
 export async function refreshCharacterStats(partyId = null) {
   const panel = document.getElementById('character-quick-stats');
-  if (!panel || (partyId !== null && String(partyId) !== panel.dataset.partyId)) return;
+  if (!panel || panel.dataset.generatedPreview === 'true' || (partyId !== null && String(partyId) !== panel.dataset.partyId)) return;
   const state = stateFor(panel);
   state.dirty = true;
   if (state.loading || state.saving) return;
@@ -71,7 +71,7 @@ export async function refreshCharacterStats(partyId = null) {
 
 export function initializeCharacterStats() {
   const panel = document.getElementById('character-quick-stats');
-  if (!panel || panel.dataset.initialized) return;
+  if (!panel || panel.dataset.generatedPreview === 'true' || panel.dataset.initialized) return;
   panel.dataset.initialized = 'true';
   const state = stateFor(panel);
   const status = panel.querySelector('.quick-stats-status');

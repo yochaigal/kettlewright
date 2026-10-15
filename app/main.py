@@ -553,7 +553,10 @@ def tools():
     backgrounds = load_backgrounds()
     warden_parties = Party.query.filter_by(owner=current_user.id).order_by(Party.name, Party.id).all() if current_user.is_authenticated else []
     from app.lib.monsters import monster_catalog
-    return render_template('main/tools.html', events_data=json.dumps(events_data),pcgen_value="", backgrounds=backgrounds, warden_parties=warden_parties, monster_templates=monster_catalog(), roll_form=FlaskForm())
+    from app.models import Campaign
+    from app.lib.feature_access import user_features_enabled
+    generator_campaigns = Campaign.query.filter_by(owner_id=current_user.id).order_by(Campaign.name, Campaign.id).all() if user_features_enabled() else []
+    return render_template('main/tools.html', events_data=json.dumps(events_data),pcgen_value="", backgrounds=backgrounds, warden_parties=warden_parties, monster_templates=monster_catalog(), generator_campaigns=generator_campaigns, roll_form=FlaskForm())
 
 @main.route('/reload-page')
 def reload_page():

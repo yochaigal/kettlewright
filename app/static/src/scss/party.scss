@@ -736,3 +736,29 @@ body:has(.tools-page) {
   #tools-empty-state { display: none; }
   #tools-button-container:has(#tools-copy-text-button:disabled) { display: none; }
 }
+
+.tools-page #pcgen-form { display: block; flex: none; }
+.tools-character-controls { display: grid; gap: 1rem; }
+.tools-background-choice {
+  label { display: block; font-weight: bold; margin-bottom: .5em; }
+  select { width: 100%; max-width: 22em; }
+}
+.tools-page #pcgen-result-display {
+  flex: none;
+  min-height: 0;
+  overflow: visible;
+  margin-top: 1rem;
+}
+.tools-character-preview.view-character-sheet {
+  padding: 1.25em;
+  max-width: none;
+  border: 1px solid color-mix(in srgb, var(--fg) 18%, transparent);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--fg) 3%, var(--bg));
+  .character-sheet-header { display: grid; grid-template-columns: 100px minmax(0, 1fr); align-items: start; }
+  #character-portrait-container { width: 100px; min-width: 100px; overflow: visible; }
+  .portrait-image { display: block; width: 100%; height: 100px; object-fit: contain; }
+}
+.tools-print-frame { position: fixed; width: 1px; height: 1px; border: 0; opacity: 0; pointer-events: none; }
+
+.tools-copy-source { position: fixed; left: -10000px; top: 0; width: 60em; }

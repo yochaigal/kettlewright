@@ -1,5 +1,5 @@
-<div id="character-quick-stats" data-party-id="{{ character.party_id }}"
-     data-stats-url="{{ url_for('character_edit.character_stats', username=username, url_name=url_name) }}"
+<div id="character-quick-stats" data-party-id="{{ character.party_id }}"{% if generated_preview %} data-generated-preview="true"{% endif %}
+     {% if not generated_preview %}data-stats-url="{{ url_for('character_edit.character_stats', username=username, url_name=url_name) }}"{% endif %}
      data-save-error="{{_('Unable to save this stat. Please try again.')}}"
      data-load-error="{{_('Unable to refresh character stats.')}}">
 <h3>{{_('Stats')}}</h3>
@@ -56,6 +56,6 @@
     </div>
   </div>
 </div>
-<div hx-trigger="refresh-stats from:body" hx-get="{{ url_for('character_edit.character_stats', username=username, url_name=url_name) }}" hx-target="#character-stats-container"></div>
+{% if not generated_preview %}<div hx-trigger="refresh-stats from:body" hx-get="{{ url_for('character_edit.character_stats', username=username, url_name=url_name) }}" hx-target="#character-stats-container"></div>{% endif %}
 <p class="quick-stats-status" role="status" aria-live="polite"></p>
 </div>

@@ -1,0 +1,8 @@
+<div id="pcgen-active-inventory">
+  {% include "partial/charview/inventory_slots.html" %}
+</div>
+{% for container_id, preview_inventory in preview_inventories %}
+<template data-pcgen-inventory="{{container_id}}">
+  {% with inventory=preview_inventory %}{% include "partial/charview/inventory_slots.html" %}{% endwith %}
+</template>
+{% endfor %}

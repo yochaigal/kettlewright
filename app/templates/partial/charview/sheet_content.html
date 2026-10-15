@@ -1,0 +1,68 @@
+    <div class="character-sheet-header">
+      <div class="no-space" id="character-portrait-container" hx-vals='{"sheet_context": "inline"}'>
+        {% include "partial/charview/portrait.html" %}
+      </div>
+      <div class="full-width row16spaced-top">
+        <div>
+          <div id="character-name-container">
+            {% with section='name' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+          </div>
+          <h2 class="">{{character.background | tr}}</h2>
+        </div>
+        {% if is_owner %}
+        <div class="charview-action-pad">
+          <button class="dice-button" type="button" id="character-dice-button">
+            <i class="fa-solid fa-dice dice"></i>
+          </button>
+          {% include "main/dice_modal.html" %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% if is_owner %}<p class="inline-edit-hint"><small>{{_('Click a field to edit.')}}</small></p>{% endif %}
+    <div id="character-stats-container">
+      {% include "partial/charview/stats.html" %}
+    </div>
+
+    <div class="inventory-container character-sheet-inventory" id="inventory-container" hx-vals='{"inventory_context": "sheet"}'>
+      {% if generated_preview %}
+        {% include "partial/tools/pcgen_inventory.html" %}
+      {% else %}
+        {% with inventory_sheet=true %}{% include "partial/charview/inventory.html" %}{% endwith %}
+      {% endif %}
+    </div>
+
+    {% with companion_cards_editable=false if generated_preview else true %}{% include "partial/companions/pets.html" %}{% endwith %}
+
+    <div class="character-priority-grid">
+      <div id="character-omens-container">
+        {% with section='omens' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+      </div>
+      <div id="character-bonds-container">
+        {% with section='bonds' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+      </div>
+      <div id="character-scars-container">
+        {% with section='scars' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+      </div>
+    </div>
+
+    <div class="character-sheet-notes" id="character-notes-container">
+      {% with section='notes' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+    </div>
+
+    <div class="character-details-grid">
+      <div id="character-traits-container">
+        {% with section='traits' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+      </div>
+      <div id="character-description-container">
+        {% with section='description' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+      </div>
+    </div>
+
+    <div id="character-background-container">
+      {% with section='background' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+    </div>
+
+    {% if not generated_preview %}<div id="character-party-container">
+      {% with section='party' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+    </div>{% endif %}
