@@ -3,10 +3,14 @@
 <script id="tools-content-labels" type="application/json">{{ {
 'authenticated': user_features_enabled(), 'save': _('Save or reveal'),
 'copy': _('Copy text'), 'copied': _('Results copied to clipboard'),
+'copyFailed': _('Could not copy text. Please try again.'),
+'attach': _('Attach to party'), 'randomMonster': _('Random Monster'),
+'navigation': {'Realm': _('Realm'), 'Factions': _('Factions'), 'POIs': _('POIs'), 'People': _('People'), 'Monster picker': _('Monster picker'), 'Weather': _('Weather')},
 'terms': generator_labels()
 }|tojson }}</script>
 
 <script src="{{ url_for('static', filename='src/js/tools.js' if user_features_enabled() else 'src/js/tools_legacy.js') }}" type="module"></script>
+<script id="tools-monster-catalog" type="application/json">{{monster_templates|tojson}}</script>
 <div class="body-container tools-page">
   <div class="sheet party-tools-sheet">
     <div class="party-header">
@@ -18,45 +22,60 @@
       </button>
       {% endif %}
     </div>
+    {% if current_user.is_authenticated %}
+    <dialog id="tools-attach-dialog" class="tools-attach-dialog" aria-labelledby="tools-attach-title">
+      <h3 id="tools-attach-title">{{_('Attach to party')}}</h3>
+      <p id="tools-attach-monster-name"></p>
+      {% if warden_parties %}
+      <form id="tools-attach-form" method="post">
+        {{roll_form.hidden_tag()}}
+        <input type="hidden" name="template" id="tools-attach-template">
+        <label for="tools-attach-party">{{_('Party')}}</label>
+        <select id="tools-attach-party" required>{% for target in warden_parties %}<option value="{{url_for('companions.monsters', party_id=target.id)}}">{{target.name}}</option>{% endfor %}</select>
+        <div class="tools-attach-actions"><button type="button" data-close-attach>{{_('Cancel')}}</button><button type="submit">{{_('Attach to party')}}</button></div>
+      </form>
+      {% else %}<p>{{_('Create a party first to manage monsters as its Warden.')}}</p><button type="button" data-close-attach>{{_('Close')}}</button>{% endif %}
+    </dialog>
+    {% endif %}
     {% if current_user.is_authenticated %}{% include 'partial/partyview/warden_dice.html' %}{% endif %}
     <div class="tools-tabs">
       <div class="tools-tab-list" role="tablist" aria-label="{{_('Tools')}}">
-        <button type="button" id="tables-tab" role="tab" aria-selected="true" aria-controls="tab-content1">{{_('Tables')}}</button>
+        {% for key, label in [('realm', _('Realm')), ('dungeons', _('Dungeons')), ('forests', _('Forests')), ('events', _('Events')), ('monsters', _('Monsters')), ('items', _('Items'))] %}
+        <button type="button" id="{{key}}-tab" data-tool="{{key}}" role="tab" aria-selected="{{ 'true' if loop.first else 'false' }}" aria-controls="tab-content1"{% if not loop.first %} tabindex="-1"{% endif %}>{{label}}</button>
+        {% endfor %}
         <button type="button" id="generator-tab" role="tab" aria-selected="false" aria-controls="tab-content2" tabindex="-1">{{_('Character Generator')}}</button>
-        {% if current_user.is_authenticated %}<button type="button" id="monsters-tab" role="tab" aria-selected="false" aria-controls="tab-monsters" tabindex="-1">{{_('Monsters')}}</button>{% endif %}
       </div>
-      <div id="tab-content1" class="tools-tab-panel" role="tabpanel" aria-labelledby="tables-tab">
+      <div id="tab-content1" class="tools-tab-panel" role="tabpanel" aria-labelledby="realm-tab">
+        <div id="tools-section-tabs" class="tools-tab-list" role="tablist" aria-label="{{_('Tables')}}"></div>
+        <div id="tools-table-panel" role="tabpanel">
             <div class="tools-roll-container">
-              <div class="tools-choice-group">
-                <div id="category-label" class="tools-choice-label">{{_('Category')}}</div>
-                <div id="category-buttons" class="tools-choice-row" role="group" aria-labelledby="category-label"></div>
-              </div>
-              <div class="tools-choice-group">
-                <div id="table-label" class="tools-choice-label">{{_('Table')}}<span id="selected-category-label"></span></div>
-                <p id="table-choice-hint">{{_('Choose a category to see its tables.')}}</p>
+              <div class="tools-choice-group" id="tools-table-choices">
+                <div id="table-label" class="tools-choice-label">{{_('Table')}}</div>
                 <div id="subcategory-buttons" class="tools-choice-row" role="group" aria-labelledby="table-label"></div>
               </div>
-              <div id="tools-button-container">
-                <button class="roll button dice-button" type="button" id="roll-button" disabled aria-label="{{_('Roll')}}">
-                  <i class="fa-solid fa-dice dice"></i>
+              <section id="tools-monster-picker" hidden>
+                <label for="tools-monster-search">{{_('Search bestiary')}}</label>
+                <input id="tools-monster-search" type="search">
+                <label for="tools-monster-template">{{_('Monster')}}</label>
+                <select id="tools-monster-template">{% for key, monster in monster_templates|dictsort %}<option value="{{key}}">{{monster.name}} · {{monster.hp}} HP · {{monster.armor}} {{_('Armor')}}</option>{% endfor %}</select>
+                <div id="tools-monster-preview" aria-live="polite"></div>
+              </section>
+              <div id="tools-button-container" class="tools-toolbar">
+                <button class="button tools-generate-button" type="button" id="roll-button" disabled>
+                  <i class="fa-solid fa-dice" aria-hidden="true"></i> {{_('Generate')}}
                 </button>
-                <button class="button dice-button" id="tools-copy-text-button" type="button">
-                  <i class="fa-solid fa-copy"></i>
-                </button>
-                <button class="button dice-button" id="clear-button" style="font-size: 16pt">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
+                <div class="tools-history-actions">
+                  <button id="tools-copy-text-button" type="button" disabled>{{_('Copy all')}}</button>
+                  <button id="clear-button" type="button" disabled>{{_('Clear')}}</button>
+                </div>
               </div>
             </div>
-            <div class="text-border" style="margin-top: 1em" id="tools-result-display"></div>
+            <p id="tools-empty-state" class="tools-empty-state">{{_('Choose a generator and click “Generate”.')}}</p>
+            <div id="tools-result-display" class="tools-result-feed" aria-live="polite" aria-relevant="additions"></div>
+
+        </div>
 
       </div>
-      {% if current_user.is_authenticated %}<div id="tab-monsters" class="tools-tab-panel" role="tabpanel" aria-labelledby="monsters-tab" hidden>
-        <h3>{{_('Cairn bestiary')}}</h3>
-        <p>{{_('Choose a party to prepare monsters, import Markdown stat blocks and manage combat.')}}</p>
-        {% for target in warden_parties %}<p><a class="button" href="{{url_for('companions.monsters', party_id=target.id)}}">{{target.name}}</a></p>
-        {% else %}<p>{{_('Create a party first to manage monsters as its Warden.')}}</p>{% endfor %}
-      </div>{% endif %}
       <div id="tab-content2" class="tools-tab-panel" role="tabpanel" aria-labelledby="generator-tab" hidden>
         {% include "partial/tools/pcgen.html" %}
       </div>

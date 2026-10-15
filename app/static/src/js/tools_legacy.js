@@ -1,8 +1,11 @@
+import {initToolsMonsters} from './tools-monsters.js';
+import {initToolsResults} from './tools-results.js';
+import {generateToolResult, initToolsNavigation, appendRealmNavigation} from './tools-navigation.js';
 import {generateWorldbuilding} from './worldbuilding.js';
 import {localizeText, resultText} from './content_generators.js';
 import {richContentHTML} from './rich-content.js';
 // Pre-campaign Tools retained while the experimental generator is allowlisted.
-import utils, { handleClick, styledAlert } from "./utils.js";
+import utils, { styledAlert } from "./utils.js";
 
 window.KW_alert = utils.styledAlert;
 
@@ -10,35 +13,9 @@ const labels = JSON.parse(document.getElementById("tools-content-labels").textCo
 // Choice values stay English: they are lookup keys into the table data.
 const t = (key) => Object.hasOwn(labels.terms, key) ? labels.terms[key] : key;
 
-const toolTabs = [...document.querySelectorAll(".tools-tab-list [role=tab]")];
-const selectToolTab = (selected) => {
-  toolTabs.forEach((tab) => {
-    const active = tab === selected;
-    tab.setAttribute("aria-selected", String(active));
-    tab.tabIndex = active ? 0 : -1;
-    document.getElementById(tab.getAttribute("aria-controls")).hidden = !active;
-  });
-};
-toolTabs.forEach((tab, index) => {
-  tab.addEventListener("click", () => selectToolTab(tab));
-  tab.addEventListener("keydown", (event) => {
-    let next;
-    if (event.key === "ArrowRight") next = (index + 1) % toolTabs.length;
-    if (event.key === "ArrowLeft") next = (index + toolTabs.length - 1) % toolTabs.length;
-    if (event.key === "Home") next = 0;
-    if (event.key === "End") next = toolTabs.length - 1;
-    if (next === undefined) return;
-    event.preventDefault();
-    selectToolTab(toolTabs[next]);
-    toolTabs[next].focus();
-  });
-});
-
-const categoryButtons = document.getElementById("category-buttons");
-const subcategoryButtons = document.getElementById("subcategory-buttons");
-let selectedCategory = "";
-let selectedSubcategory = "";
-const rollButton = document.getElementById("roll-button");
+let selectedCategory = '';
+let selectedSubcategory = '';
+const rollButton = document.getElementById('roll-button');
 
 const categories = {
   Monsters: {
@@ -66,41 +43,20 @@ const categories = {
   },
 };
 
-// Keep every choice visible and expose the current selection to keyboard and screen-reader users.
-const addChoiceButtons = (choices, element, onSelect) => {
-  element.replaceChildren();
-  Object.keys(choices).forEach((key) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "button tools-choice";
-    button.textContent = t(key);
-    button.setAttribute("aria-pressed", "false");
-    button.addEventListener("click", () => {
-      element.querySelectorAll("button").forEach((choice) => {
-        choice.setAttribute("aria-pressed", String(choice === button));
-      });
-      onSelect(key);
-    });
-    element.appendChild(button);
-  });
-};
-
-addChoiceButtons(categories, categoryButtons, (category) => {
+const results = initToolsResults(labels, styledAlert);
+const monsters = initToolsMonsters(labels, results);
+const navigation = initToolsNavigation(data, key => labels.navigation?.[key] ?? t(key), (category, subcategory) => {
   selectedCategory = category;
-  document.getElementById("selected-category-label").textContent = ` · ${t(category)}`;
-  document.getElementById("table-choice-hint").hidden = true;
-  selectedSubcategory = "";
-  rollButton.disabled = true;
-  addChoiceButtons(categories[category], subcategoryButtons, (subcategory) => {
-    selectedSubcategory = subcategory;
-    rollButton.disabled = false;
-  });
+  selectedSubcategory = subcategory;
+  rollButton.disabled = !subcategory;
+  monsters.select(subcategory);
 });
-
 rollButton.addEventListener("click", async () => {
   const category = selectedCategory;
   const subcategory = selectedSubcategory;
   if (!category || !subcategory) return;
+  if (subcategory === 'Random Monster') {monsters.random(); return;}
+  if (subcategory === 'Monster picker') return;
 
   if (subcategory === 'Reaction Roll' && document.getElementById('warden-dice')) {
     rollButton.disabled = true;
@@ -115,6 +71,12 @@ rollButton.addEventListener("click", async () => {
     } finally {
       rollButton.disabled = !selectedSubcategory;
     }
+    return;
+  }
+
+  if (category === 'Setting') {
+    const result = generateToolResult(data, category, subcategory);
+    displayResult(richContentHTML(`## ${localizeText(result.title, t)}\n\n${resultText(result, t)}`));
     return;
   }
 
@@ -138,23 +100,6 @@ rollButton.addEventListener("click", async () => {
       rollRelics(categories.Items, subcategory);
       break;
   }
-});
-
-const clearResults = () => {
-  const resultDisplay = document.getElementById("tools-result-display");
-  resultDisplay.innerHTML = "";
-};
-
-const clearButton = document.getElementById("clear-button");
-clearButton.addEventListener("click", clearResults);
-
-const copyButton = document.getElementById("tools-copy-text-button");
-
-handleClick("#tools-copy-text-button", (event, element) => {
-  const resultDisplay = document.getElementById("tools-result-display");
-  const text = resultDisplay.innerText;
-  navigator.clipboard.writeText(text);
-  styledAlert(labels.copy, labels.copied);
 });
 
 const roll = (sides) => {
@@ -192,16 +137,18 @@ const convertName = (nameFormula, replacements) => {
   return name.trim().replace(/\s+/g, " ");
 };
 
-const displayResult = (result) => {
-  const resultDisplay = document.getElementById("tools-result-display");
-  const line = "------------------------------------<br>";
-  if (resultDisplay.innerHTML === "no events yet...") {
-    resultDisplay.innerHTML = result + "<br><br>" + line;
-  } else {
-    resultDisplay.innerHTML =
-      `<p>${result}</p>` + line + resultDisplay.innerHTML;
+const displayResult = (html) => {
+  const content = document.createElement('div');
+  content.innerHTML = html;
+  const heading = content.querySelector('h2, h3, b > u');
+  const title = heading?.textContent || t(selectedSubcategory);
+  if (heading) {
+    const wrapper = heading.parentElement;
+    heading.remove();
+    if (wrapper?.tagName === 'B' && !wrapper.textContent) wrapper.remove();
   }
-  resultDisplay.scrollTop = 0;
+  while (content.firstChild?.nodeName === 'BR') content.firstChild.remove();
+  return results.add({title, type:t(selectedSubcategory.charAt(0).toUpperCase() + selectedSubcategory.slice(1)), html:content.innerHTML});
 };
 
 // Roll functions
@@ -347,5 +294,6 @@ const rollRelics = (data, subcategory) => {
 
 const rollWorldbuilding = (data, subcategory) => {
   const result=generateWorldbuilding(data,subcategory);
-  displayResult(richContentHTML(`## ${localizeText(result.title, t)}\n\n${resultText(result, t)}`));
+  const entry = displayResult(richContentHTML(`## ${localizeText(result.title, t)}\n\n${resultText(result, t)}`));
+  appendRealmNavigation(entry.actions, result, navigation, t, data);
 };

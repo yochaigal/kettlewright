@@ -1,0 +1,10 @@
+<article class="view-character-sheet tools-character-preview" aria-label="{{_('Character preview')}}">
+  {% include "partial/charview/sheet_content.html" %}
+</article>
+<input type="hidden" name="json_data" id="json_data" value="{{json_data}}">
+<input type="hidden" id="pcgen-snapshot" value="{{generated_snapshot}}">
+<input type="hidden" id="character_name" value="{{character.name}}">
+
+<template id="pcgen-copy-source">
+  {% with character=generated_character %}{% include "partial/tools/pcgen_text.html" %}{% endwith %}
+</template>

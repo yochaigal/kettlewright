@@ -218,10 +218,20 @@ def test_tools_only_lists_owned_parties(overview):
     assert 'id="warden-roll-party"' in owner_html
     assert '<option value="1">Party</option>' in owner_html
     assert 'Secret other party' not in owner_html
+    assert 'id="tools-attach-dialog"' in owner_html
+    assert 'value="/parties/1/monsters"' in owner_html
+    assert 'id="tools-monster-search"' in owner_html
+    assert 'id="tools-bestiary-panel"' not in owner_html
     player_html = clients[2].get('/tools/').get_data(as_text=True)
     assert '<option value="1">' not in player_html
     anonymous_html = app.test_client().get('/tools/').get_data(as_text=True)
     assert 'id="warden-dice"' not in anonymous_html
+    assert 'id="tools-attach-dialog"' not in anonymous_html
+    assert 'id="tools-monster-search"' in anonymous_html
+    for key in ('realm', 'dungeons', 'forests', 'events', 'monsters', 'items'):
+        assert f'id="{key}-tab"' in owner_html
+        assert f'id="{key}-tab"' in anonymous_html
+    assert 'id="category-buttons"' not in anonymous_html
 
 
 def test_warden_roll_accepts_csrf_from_rendered_form(overview):
@@ -233,3 +243,22 @@ def test_warden_roll_accepts_csrf_from_rendered_form(overview):
     result = clients[1].post('/warden/roll', data={'party_id': 1, 'kind': 'fate', 'csrf_token': token})
     assert result.status_code == 200
     assert 1 <= result.json['values'][0] <= 6
+
+
+def test_tools_attach_uses_catalog_template_and_rendered_csrf(overview):
+    from app.lib.monsters import monster_catalog
+    from app.models import Companion
+    app, clients, _ = overview
+    app.config['WTF_CSRF_ENABLED'] = True
+    page = clients[1].get('/tools/').text
+    templates = json.loads(re.search(r'<script id="tools-monster-catalog"[^>]*>(.*?)</script>', page, re.S)[1])
+    assert templates == monster_catalog()
+    token = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', page)[1]
+    response = clients[1].post('/parties/1/monsters', data={'template':'creeping-vines', 'csrf_token':token})
+    assert response.status_code == 302
+    companion_id = int(response.location.rsplit('/', 1)[1])
+    with app.app_context():
+        monster = db.session.get(Companion, companion_id)
+        assert monster.party_id == 1 and monster.kind == 'monster'
+        assert monster.role == templates['creeping-vines']['name']
+        assert monster.hp == templates['creeping-vines']['hp']

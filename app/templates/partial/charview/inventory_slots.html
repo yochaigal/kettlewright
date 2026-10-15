@@ -1,4 +1,4 @@
-{% set editable = can_manage_companion(character) if companion_sheet else can_edit_inventory(character) %}
+{% set editable = false if generated_preview else (can_manage_companion(character) if companion_sheet else can_edit_inventory(character)) %}
 {% set layout = inventory.slot_layout() %}
 {% set container = inventory.selected_container %}
 {% set edit_base = inventory_edit_base|default('/charedit/inplace-inventory/' ~ username ~ '/' ~ url_name) %}
@@ -82,7 +82,7 @@
     {% for cnt in inventory.containers %}
       <button type="button" class="inventory-container-title {% if cnt.is_selected %}inventory-container-title-selected{% endif %}"
         aria-pressed="{{'true' if cnt.is_selected else 'false'}}"
-        hx-get="{{inventory_select_base|default("/charedit/inventory-select-container/" ~ username ~ "/" ~ url_name)}}/{{cnt.id}}" hx-target="#inventory-container">{{ cnt.title|markdown_inline }}</button>
+        {% if generated_preview %}data-preview-container="{{cnt.id}}"{% else %}hx-get="{{inventory_select_base|default("/charedit/inventory-select-container/" ~ username ~ "/" ~ url_name)}}/{{cnt.id}}" hx-target="#inventory-container"{% endif %}>{{ cnt.title|markdown_inline }}</button>
     {% endfor %}
     {% if editable %}<button type="button" class="slot-icon" title="{{_('Edit container')}}" aria-label="{{_('Edit container')}}"
       hx-get="{{edit_base}}/container-edit/{{container.id}}" hx-target="#modal-anchor"><i class="fa-solid fa-gear" aria-hidden="true"></i></button>{% endif %}
