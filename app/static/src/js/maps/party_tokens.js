@@ -34,7 +34,7 @@ export async function tokenPortrait(character) {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(dataURL));
   const id = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
   return {file: {id, dataURL, mimeType: 'image/png', created: Date.now()},
-    fallback: !image && !['pet', 'hireling'].includes(character.kind)};
+    imageLoaded: Boolean(image), fallback: !image && !['pet', 'hireling'].includes(character.kind)};
 }
 
 export function tokenElement(fileId, state, id = crypto.randomUUID()) {

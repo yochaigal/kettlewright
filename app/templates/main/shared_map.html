@@ -95,6 +95,7 @@
   <script id="shared-map-config" type="application/json">{{ {
     'partyId': party.id, 'editing': editing, 'warden': warden, 'canLoadMaps': can_load_maps, 'csrfToken': csrf_token,
     'partyUrl': url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url),
+    'portraitsUrl': url_for('party.shared_map_portraits', party_id=party.id),
     'statsUrl': url_for('party.shared_map_stats', party_id=party.id),
     'visibilityUrl': url_for('party.shared_map_monster_visibility', party_id=party.id, companion_id=0) if warden else none,
     'rollUrl': url_for('party.shared_map_roll', party_id=party.id),

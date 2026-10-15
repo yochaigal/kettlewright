@@ -4,7 +4,7 @@ from copy import deepcopy
 import pytest
 
 from app.lib.monsters import parse_monster, monster_catalog
-from app.models import Companion, Character, Party, PartyRoll, db
+from app.models import Companion, Character, Party, PartyRoll, PartyMap, db
 from test_shared_map import shared, DRAWING, URL
 
 
@@ -328,3 +328,46 @@ def test_warden_creates_and_deletes_pets_only_for_current_members(shared):
         db.session.get(Party, 1).members = '[1]'
         db.session.commit()
     assert clients[1].post(path + '/delete').status_code == 302
+
+
+def test_board_live_portraits_follow_sheets_without_exposing_unplaced_monsters(shared):
+    app, clients, _ = shared
+    cid = summon(clients)
+    hidden = summon(clients)
+    with app.app_context():
+        db.session.get(Character, 1).image_url = 'beast/beast1.png'
+        pet = Companion(kind='pet', character_id=1, name='No stats', image_url='beast/beast2.png')
+        db.session.add(pet)
+        db.session.flush()
+        pet_id = pet.id
+        # Legacy linked tokens may be locked and share the same old image.
+        db.session.add(PartyMap(party_id=1, drawing={'elements': [
+            {'id': 'actor-1-copy', 'type': 'image', 'fileId': 'old', 'locked': True},
+            {'id': f'actor-companion-{cid}-copy', 'type': 'image', 'fileId': 'old'},
+            {'id': f'actor-companion-{pet_id}-copy', 'type': 'image', 'fileId': 'old'},
+            {'id': 'map-image', 'type': 'image', 'fileId': 'old'}], 'files': {}}))
+        db.session.commit()
+    path = '/party/1/shared-map/portraits'
+    before = clients[1].get(URL).json
+    assert clients[1].post(f'/companions/{cid}/portrait', data={'selected-portrait': 'beast/beast3.png'}).status_code == 200
+    with app.app_context():
+        db.session.get(Character, 1).image_url = 'beast/beast4.png'
+        db.session.commit()
+    for user in (1, 2):
+        response = clients[user].get(path)
+        assert response.status_code == 200 and response.headers['Cache-Control'] == 'no-store'
+        portraits = {actor['id']: actor for actor in response.json['portraits']}
+        assert set(portraits) == {'1', f'companion:{cid}', f'companion:{pet_id}'}
+        assert portraits['1']['portrait'].endswith('beast/beast4.png')
+        assert portraits[f'companion:{cid}']['portrait'].endswith('beast/beast3.png')
+        assert portraits[f'companion:{pet_id}']['portrait'].endswith('beast/beast2.png')
+        assert portraits[f'companion:{cid}']['name'] == ('Creeping Vines' if user == 1 else '')
+        assert all('stats' not in actor for actor in portraits.values()) and f'companion:{hidden}' not in portraits
+    assert clients[1].get(URL).json == before
+    for user in (3, 4):
+        assert clients[user].get(path).status_code == 403
+    with app.app_context():
+        db.session.get(Party, 1).members = '[]'
+        db.session.commit()
+    assert clients[2].get(path).status_code == 403
+    assert not any(a['id'] == '1' for a in clients[1].get(path).json['portraits'])
