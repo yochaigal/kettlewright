@@ -21,6 +21,13 @@ export function setupBoardControls({config, getApi, canEdit}) {
   document.getElementById('confirm-reveal-stats')?.addEventListener('click', () => finishReveal(true));
   frame.addEventListener('load', () => {
     frame.contentDocument?.body.classList.add('board-embedded');
+    frame.contentDocument?.addEventListener('dragstart', event => {
+      const portrait = event.target.closest('[data-party-actor]');
+      if (!portrait || !canEdit()) return;
+      event.dataTransfer.clearData();
+      event.dataTransfer.setData('application/x-kettlewright-actor', portrait.dataset.partyActor);
+      event.dataTransfer.effectAllowed = 'copy';
+    });
   });
   partyButton.addEventListener('click', () => {
     if (panel.open) {panel.close(); return;}

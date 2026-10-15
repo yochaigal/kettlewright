@@ -40,7 +40,7 @@ const laser = createLaserSync({socket, getApi: () => api, getGeneration: () => g
 editor.addEventListener('pointerleave', () => laser.stop());
 window.addEventListener('blur', () => laser.stop());
 
-const tokens = setupPartyTokens({config, getApi: () => api, getGeneration: () => generation,
+const tokens = setupPartyTokens({editor, config, getApi: () => api, getGeneration: () => generation,
   canInsert: () => config.editing && initialized && !stopped && !importing && !playerPreview,
   beforeInsert: () => {layer.setTool(''); document.querySelectorAll('[data-fog-tool]').forEach(button => button.setAttribute('aria-pressed', 'false'));}});
 

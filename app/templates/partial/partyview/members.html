@@ -3,7 +3,7 @@
   <div class="party-member-identity">
     <a href="/users/{{ character.owner_username }}/characters/{{ character.url_name }}/">
       <img src="{{ character.image_url if character.custom_image else url_for('static', filename='images/portraits/' + (character.image_url or 'default-portrait.webp')) }}"
-           alt="" class="party-member-portrait" />
+           alt="" class="party-member-portrait" draggable="true" data-party-actor="{{character.id}}" />
     </a>
     <div>
       <a class="party-member-name" href="/users/{{ character.owner_username }}/characters/{{ character.url_name }}/">{{ character.name|markdown_inline }}</a>

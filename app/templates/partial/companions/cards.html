@@ -3,7 +3,7 @@
   {% for c in creatures %}
   <article class="companion-card">
     {% if compact %}<div class="companion-identity">{% endif %}
-    {% if compact or c.image_url or c.kind == 'monster' %}<img src="{{c.portrait_src}}" alt="{{c.name}}" class="companion-card-portrait">{% endif %}
+    {% if compact or c.image_url or c.kind == 'monster' %}<img src="{{c.portrait_src}}" alt="{{c.name}}" class="companion-card-portrait" draggable="true" data-party-actor="companion:{{c.id}}">{% endif %}
     {% if compact %}<div>{% endif %}
     <h4>{% if generated_preview %}{{ c.name|markdown_inline }}{% else %}<a href="{{ url_for('companions.sheet', companion_id=c.id) }}">{{ c.name|markdown_inline }}</a>{% endif %}</h4>
     {% if c.role and c.role != c.name %}<p>{{ c.role | tr }}</p>{% endif %}
