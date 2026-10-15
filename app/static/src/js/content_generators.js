@@ -44,6 +44,7 @@ export function generateResult(data, category, subcategory, random = Math.random
 export function resultText(result, t = generatorTerm) {
   const label = key => t ? t(key) : key;
   const text = value => t ? localizeText(value, t) : value;
+  if (['Dungeon Events', 'Wilderness Events'].includes(result.title)) return text(result.fields.description);
   if (result.category === 'spellbook') {
     return [result.fields.description, result.fields.personality ? `_${result.fields.personality}_` : ''].filter(Boolean).join(' ');
   }

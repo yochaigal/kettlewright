@@ -131,6 +131,10 @@ function rollSettingArticle(data, category, random=Math.random, options={}) {
     const fields=fieldsFrom(realm.PointsOfInterest[poiTables[category]]);
     return {...article(category,`${category[0].toUpperCase()+category.slice(1)}: ${fields[category[0].toUpperCase()+category.slice(1)]}, ${fields.Feature}`,fields),is_heart:category==='settlement' && !!options.isHeart};
   }
+  if(category==='dungeon' && options.siteOnly) {
+    const fields = fieldsFrom(realm.PointsOfInterest.Dungeons);
+    return article(category, `Dungeon: ${fields.Type}, ${fields.Feature}`, fields);
+  }
   if(category==='dungeon' || category==='forest') {
     const result=generateWorldbuilding({Dungeon:data.Dungeon,Forest:data.Forest},category==='dungeon'?'Dungeon':'Forest',random,options);
     const {POIs,trails,...fields}=result.fields;

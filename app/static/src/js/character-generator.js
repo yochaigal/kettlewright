@@ -6,10 +6,39 @@ const empty = document.getElementById('pcgen-empty-state');
 const error = document.getElementById('pcgen-error');
 const actions = [...form.querySelectorAll('.tools-history-actions button')];
 
+const viewTabs = [...document.querySelectorAll('[data-character-view]')];
+let selectedView = 'sheet';
+function showView(view) {
+  selectedView = view;
+  viewTabs.forEach(tab => {
+    const active = tab.dataset.characterView === view;
+    tab.setAttribute('aria-selected', String(active));
+    tab.tabIndex = active ? 0 : -1;
+    const panel = display.querySelector(`#${tab.getAttribute('aria-controls')}`);
+    if (panel) panel.hidden = !active;
+  });
+}
+viewTabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => showView(tab.dataset.characterView));
+  tab.addEventListener('keydown', event => {
+    const next = {ArrowRight:(index + 1) % viewTabs.length, ArrowLeft:(index + viewTabs.length - 1) % viewTabs.length, Home:0, End:viewTabs.length - 1}[event.key];
+    if (next === undefined) return;
+    event.preventDefault();
+    showView(viewTabs[next].dataset.characterView);
+    viewTabs[next].focus();
+  });
+});
+
 form.addEventListener('submit', event => event.preventDefault());
 document.addEventListener('htmx:afterSwap', event => {
   if (event.detail.target !== display) return;
   const ready = !!display.querySelector('#json_data');
+  const markdown = display.querySelector('#pcgen-markdown-panel');
+  if (ready && markdown) {
+    markdown.append(display.querySelector('#pcgen-copy-source').content.cloneNode(true));
+    markdown.querySelectorAll('input').forEach(input => input.remove());
+  }
+  showView(selectedView);
   empty.hidden = ready;
   actions.forEach(button => {button.disabled = !ready;});
   error.hidden = true;
