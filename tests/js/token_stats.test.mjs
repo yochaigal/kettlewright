@@ -54,12 +54,15 @@ test('inline visibility requires confirmation, preserves notes, and clears on re
   };
   const tick = () => new Promise(resolve => setImmediate(resolve));
   const draw = () => {frames.splice(0).forEach(fn => fn());};
-  let overlay;
+  let overlay, update;
   try {
     overlay = createTokenStats({editor: {querySelector: () => host},
       config: {warden: true, partyId: 1, statsUrl: '/stats', visibilityUrl: '/monsters/0/visibility', csrfToken: 'csrf', messages: {}},
       getApi: () => ({getSceneElements: () => elements, getAppState: () => ({zoom: {value: 1}, scrollX: 0, scrollY: 0, width: 800, height: 600})}),
-      canReveal: () => true, confirmReveal: async () => confirmResult, isPlayerPreview: () => preview, socket: {on(name, callback) {events[name] = callback;}, off() {}}});
+      canReveal: () => true, confirmReveal: async () => confirmResult, isPlayerPreview: () => preview, updates: {
+        async refresh() {const response = await fetch('/actors', {}); update((await response.json()).actors);},
+        subscribe(key, callback) {update = callback; events.party_actors_changed = () => this.refresh(); events.party_members_changed = () => this.refresh(); this.refresh(); return () => {};},
+      }});
     await tick(); draw();
     const layer = host.children[0], stats = layer.children[0];
     assert.deepEqual(stats.children[0].children.map(value => value.textContent), ['HP 3', 'STR 12']);

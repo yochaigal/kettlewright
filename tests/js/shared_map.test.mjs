@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import {editorLocale} from '../../app/static/src/js/maps/locale.js';
-import {drawingFromScene} from '../../app/static/src/js/maps/scene.js';
+import {drawingFromScene, drawingImagesReady, drawingForSave} from '../../app/static/src/js/maps/scene.js';
 
 const source = readFileSync(new URL('../../app/static/src/js/maps/shared_map.js', import.meta.url), 'utf8').replace(/^import .*;\n/gm, '');
 const librarySource = readFileSync(new URL('../../app/static/src/js/maps/libraries.js', import.meta.url), 'utf8')
@@ -31,6 +31,7 @@ async function setup(editing = true, failedLibrary = null, language = 'en') {
       addEventListener() {}, querySelectorAll: () => []},
     window: {addEventListener(name, fn) {windowHandlers[name] = fn;}},
     localStorage: {getItem: key => stored.get(key) || 'false', setItem: (key, value) => stored.set(key, value)},
+    createActorUpdates: () => ({placed() {}, destroy() {}}),
     createFogLayer: () => ({redraw() {}, destroy() {}, setState() {}, setTool() {}}),
     applyFogOperation: (fog) => fog, setupMapImport() {}, setupPartyTokens: () => ({open() {}, close() {}}),
     setupBoardControls: () => ({selection() {}, destroy() {}}),
@@ -41,7 +42,7 @@ async function setup(editing = true, failedLibrary = null, language = 'en') {
     io: () => ({on: (name, handler) => {handlers[name] = handler;}}),
     setTimeout: fn => {timers.set(++nextTimer, fn); return nextTimer;}, clearTimeout: id => timers.delete(id), setInterval(fn, delay) {intervals.push({fn, delay}); return intervals.length;}, clearInterval() {},
     AbortSignal, URL, location: {href: 'https://example.test/map/'}, Excalidraw: {}, CaptureUpdateAction: {NEVER: 'never'},
-    restoreElements: elements => elements, drawingFromScene,
+    restoreElements: elements => elements, drawingFromScene, drawingImagesReady, drawingForSave,
     h: (_, value) => value,
     createRoot: () => ({unmount() {}, render(value) {if (!value) return; const first = !props; props = value; if (!first) return; elements = value.initialData.elements;
       files = value.initialData.files; value.excalidrawAPI(api); value.onChange(elements, appState, files);}}),
@@ -62,6 +63,7 @@ async function setup(editing = true, failedLibrary = null, language = 'en') {
   return {requests, libraryRequests, handlers, windowHandlers, intervals, drafts, status, stored, uiHandlers, get props() {return props;},
     project() {projection(() => {files['live-image'] = {id: 'live-image', dataURL: 'fresh portrait'}; elements[0] = {...elements[0], fileId: 'live-image'}; props.onChange(elements, appState, files);});},
     change(id) {elements = [{id, type: 'rectangle'}]; props.onChange(elements, appState, files);},
+    image(fileId, available = false) {elements = [{id: 'pasted', type: 'image', fileId}]; if (available) files[fileId] = {id: fileId, mimeType: 'image/png', dataURL: 'data:image/png;base64,example'}; props.onChange(elements, appState, files);},
     moveInPlace(x) {elements[0].x = x; elements[0].version = (elements[0].version || 1) + 1; props.onChange(elements, appState, files);},
     async timers() {const queued = [...timers.values()]; timers.clear(); queued.forEach(fn => fn()); await tick();},
     elements: () => elements};
@@ -237,7 +239,7 @@ test('one unavailable library does not prevent the other libraries or canvas loa
 test('socket outage uses fast HTTP fallback without a false connection warning', async () => {
   const state = await setup();
   state.handlers.disconnect();
-  assert.equal(state.intervals.at(-1).delay, 3000);
+  assert.equal(state.intervals.at(-1).delay, 15000);
   assert.equal(state.status.textContent, 'saved');
   state.requests.shift().resolve(response({version: 0, drawing: empty})); await tick();
   assert.equal(state.status.textContent, 'saved');
@@ -296,11 +298,11 @@ test('in-place Excalidraw movement is saved after an acknowledged drawing', asyn
 test('in-place movement of a received element survives a concurrent remote update', async () => {
   const state = await setup();
   state.handlers.shared_map_changed({party_id: 1, version: 1});
-  state.requests.shift().resolve(response({version: 1, drawing: {elements: [{id: 'token', type: 'image', x: 0, version: 1}], files: {}}}));
+  state.requests.shift().resolve(response({version: 1, drawing: {elements: [{id: 'token', type: 'rectangle', x: 0, version: 1}], files: {}}}));
   await tick();
   state.moveInPlace(240);
   state.handlers.shared_map_changed({party_id: 1, version: 2});
-  state.requests.shift().resolve(response({version: 2, drawing: {elements: [{id: 'token', type: 'image', x: 0, version: 1}, {id: 'remote', type: 'rectangle'}], files: {}}}));
+  state.requests.shift().resolve(response({version: 2, drawing: {elements: [{id: 'token', type: 'rectangle', x: 0, version: 1}, {id: 'remote', type: 'rectangle'}], files: {}}}));
   await tick(); await state.timers();
   assert.equal(state.elements().find(e => e.id === 'token').x, 240);
   assert.ok(state.elements().some(e => e.id === 'remote'));
@@ -354,9 +356,65 @@ test('live portrait projection never saves by itself and token moves save canoni
   assert.equal(state.requests.length, 0);
   assert.equal(state.elements()[0].fileId, 'live-image');
   state.moveInPlace(60); await state.timers();
-  const saved = JSON.parse(state.requests[0].options.body).drawing;
+  const payload = JSON.parse(state.requests[0].options.body), saved = payload.drawing;
   assert.equal(saved.elements[0].x, 60);
   assert.equal(saved.elements[0].fileId, 'original-image');
-  assert.deepEqual(Object.keys(saved.files), ['original-image']);
-  assert.equal(saved.files['original-image'].dataURL, 'stored portrait');
+  assert.deepEqual(saved.files, {});
+  assert.deepEqual(payload.reuse_files, ['original-image']);
+});
+
+
+test('pasted and dropped images wait for both file IDs and binary data before autosaving', async () => {
+  const state = await setup();
+  state.image(null); await state.timers();
+  assert.equal(state.requests.length, 0);
+  assert.equal(state.status.textContent, 'saving');
+  state.image('image'); await state.timers();
+  assert.equal(state.requests.length, 0);
+  state.image('image', true); await state.timers();
+  const upload = state.requests.shift();
+  const payload = JSON.parse(upload.options.body);
+  assert.equal(payload.drawing.elements[0].fileId, 'image');
+  assert.ok(payload.drawing.files.image.dataURL);
+  upload.resolve(response({version: 1})); await tick();
+  state.moveInPlace(120); await state.timers();
+  const move = JSON.parse(state.requests.shift().options.body);
+  assert.deepEqual(move.drawing.files, {});
+  assert.deepEqual(move.reuse_files, ['image']);
+  assert.equal(move.drawing.elements[0].x, 120);
+});
+
+test('remote changes wait until image insertion is complete and keep both drawings', async () => {
+  const state = await setup();
+  state.image(null);
+  state.handlers.shared_map_changed(deltaEvent(1, [{id: 'remote', type: 'rectangle'}]));
+  await state.timers();
+  assert.equal(state.requests.length, 0);
+  assert.equal(state.elements()[0].id, 'pasted');
+  state.image('image', true); await state.timers();
+  state.requests.shift().resolve(response({}, 409)); await tick();
+  state.requests.shift().resolve(response({version: 1, drawing: {elements: [{id: 'remote', type: 'rectangle'}], files: {}}}));
+  await tick(); await state.timers();
+  const payload = JSON.parse(state.requests.shift().options.body);
+  assert.deepEqual(payload.drawing.elements.map(e => e.id), ['remote', 'pasted']);
+  assert.ok(payload.drawing.files.image);
+});
+
+test('cancelled image insertion resumes previously queued edits', async () => {
+  const state = await setup();
+  state.change('local'); state.image(null); await state.timers();
+  assert.equal(state.requests.length, 0);
+  state.change('local'); await state.timers();
+  assert.equal(JSON.parse(state.requests.shift().options.body).drawing.elements[0].id, 'local');
+});
+
+test('unchanged scene polls send revisions and accept 204 without reading JSON', async () => {
+  const state = await setup();
+  state.handlers.connect();
+  const read = state.requests.shift();
+  assert.equal(read.options.method, undefined);
+  read.resolve({ok: true, status: 204, json() {assert.fail('204 has no JSON body');}});
+  await tick(); await state.timers();
+  assert.equal(state.status.textContent, 'saved');
+  assert.equal(state.requests.length, 0);
 });

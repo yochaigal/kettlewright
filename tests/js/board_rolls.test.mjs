@@ -41,7 +41,10 @@ async function setup(warden = true) {
   const controller = context.create({config: {warden, partyId: 1, rollActorsUrl: '/actors', rollUrl: '/roll', wardenRollUrl: '/warden',
     csrfToken: 'csrf', messages: {warden: 'Warden', rollDice: 'Roll Dice', damage: 'DMG', reaction: 'Reaction', fate: 'Fate', rollFailed: 'Failed'}},
     getApi: () => ({getAppState: () => ({selectedElementIds: selected}),
-      getSceneElements: () => Object.keys(selected).map(id => ({id}))}), socket: {on(name, fn) {events[name] = fn;}, off() {}},
+      getSceneElements: () => Object.keys(selected).map(id => ({id}))}), updates: {subscribe(key, callback) {
+        const update = () => callback(structuredClone(roster));
+        events.party_actors_changed = update; events.party_members_changed = update; update(); return () => {};
+      }},
     canRoll: () => allowed, isPlayerPreview: () => preview});
   const draw = () => frames.splice(0).forEach(fn => fn());
   await tick(); draw();

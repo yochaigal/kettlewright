@@ -25,7 +25,10 @@ async function setup() {
     fetch: async () => ({ok: true, json: async () => ({portraits: structuredClone(actors)})})});
   vm.runInContext(source + '\nthis.create = createTokenPortraits;', context);
   const overlay = context.create({config: {partyId: 1, portraitsUrl: '/portraits'}, getApi: () => api,
-    socket: {on(name, fn) {events[name] = fn;}, off() {}}, onProjection: fn => fn(),
+    updates: {subscribe(key, callback) {
+      const update = () => callback(structuredClone(actors));
+      events.party_actors_changed = update; events.party_members_changed = update; update(); return () => {};
+    }}, onProjection: fn => fn(),
     renderPortrait: async actor => {renders.push(actor); return {imageLoaded: !fail, file: {id: actor.portrait, dataURL: actor.portrait}};}});
   const draw = () => frames.splice(0).forEach(fn => fn());
   await tick(); draw();

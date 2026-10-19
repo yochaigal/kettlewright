@@ -98,6 +98,12 @@ def shared_map(party_id):
 def shared_map_scene(party_id):
     from app.lib.whiteboard import board_state, drawing_value, integer
     target = _board_party(party_id)
+    if request.method == 'GET' and request.args:
+        # Check small revision columns before loading the embedded image JSON.
+        revision = db.session.query(PartyMap.version, PartyMap.generation, PartyMap.fog_version).filter_by(party_id=party_id).first()
+        values = revision if revision else (0, 1, 0)
+        if all(request.args.get(key, type=int) == value for key, value in zip(('version', 'generation', 'fog_version'), values)):
+            return _board_json(('', 204))
     saved = db.session.get(PartyMap, party_id)
     state = board_state(saved)
     if request.method == 'GET':
@@ -110,7 +116,7 @@ def shared_map_scene(party_id):
         return _board_conflict()
     if 'drawing' not in data:
         abort(400)
-    drawing = drawing_value(data['drawing'])
+    drawing = drawing_value(data['drawing'], stored_files=state['drawing']['files'], reuse_files=data.get('reuse_files'))
     if current_user.id != target.owner:
         from app.lib.whiteboard import protect_locked_elements
         protect_locked_elements(state['drawing'], drawing)
@@ -160,13 +166,16 @@ def shared_map_tokens(party_id):
 @login_required
 def shared_map_portraits(party_id):
     """Current artwork for linked tokens, without exposing private monster sheets."""
+    return _board_json({'portraits': _board_portraits(_board_party(party_id))})
+
+
+def _board_portraits(target):
     import re
     from urllib.parse import urlsplit
     from app.lib.whiteboard import board_state
-    target = _board_party(party_id)
     warden = target.owner == current_user.id
     placed = set()
-    for element in board_state(db.session.get(PartyMap, party_id))['drawing']['elements']:
+    for element in board_state(db.session.get(PartyMap, target.id))['drawing']['elements']:
         match = re.match(r'^actor-(companion-)?(\d+)-', element['id'])
         if match:
             placed.add(('companion:' if match[1] else '') + match[2])
@@ -201,14 +210,17 @@ def shared_map_portraits(party_id):
             add(pet, pet.kind)
     for monster in target.monsters:
         add(monster, monster.kind)
-    return _board_json({'portraits': portraits})
+    return portraits
 
 
 @party.get('/party/<int:party_id>/shared-map/stats')
 @login_required
 def shared_map_stats(party_id):
     """Viewer-specific live stats; never put private sheets into the shared scene."""
-    target = _board_party(party_id)
+    return _board_json({'actors': _board_stats(_board_party(party_id))})
+
+
+def _board_stats(target):
     warden = current_user.id == target.owner
     actors = []
 
@@ -240,7 +252,7 @@ def shared_map_stats(party_id):
             add(pet, pet.kind)
     for monster in target.monsters:
         add(monster, monster.kind)
-    return _board_json({'actors': actors})
+    return actors
 
 
 @party.route('/party/<int:party_id>/shared-map/monsters/<int:companion_id>/visibility', methods=['GET', 'POST'])
@@ -303,7 +315,10 @@ def shared_map_character(party_id, character_id):
 @party.get('/party/<int:party_id>/shared-map/roll-actors')
 @login_required
 def shared_map_roll_actors(party_id):
-    target = _board_party(party_id)
+    return _board_json({'actors': _board_roll_actors(_board_party(party_id))})
+
+
+def _board_roll_actors(target):
     if target.owner == current_user.id:
         actors = [dict(id=f'companion:{c.id}', name=c.name, kind='monster',
                        stats={field: getattr(c, field) for field in ('strength', 'dexterity', 'willpower')},
@@ -311,7 +326,15 @@ def shared_map_roll_actors(party_id):
     else:
         actors = [dict(id=str(c.id), name=c.name, kind='character')
                   for c in party_characters(target) if c.owner == current_user.id]
-    return _board_json({'actors': actors})
+    return actors
+
+
+@party.get('/party/<int:party_id>/shared-map/actors')
+@login_required
+def shared_map_actors(party_id):
+    target = _board_party(party_id)
+    return _board_json({'stats': _board_stats(target), 'portraits': _board_portraits(target),
+                        'rollActors': _board_roll_actors(target)})
 
 
 @party.post('/party/<int:party_id>/shared-map/roll')

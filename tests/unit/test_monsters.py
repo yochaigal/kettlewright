@@ -418,3 +418,32 @@ def test_board_player_rolls_are_attributed_and_public_with_server_side_ownership
         db.session.get(Party, 1).members = '[]'
         db.session.commit()
     assert clients[2].post(path, data=data).status_code == 403
+
+
+def test_combined_actor_state_keeps_viewer_permissions_and_private_fields(shared):
+    app, clients, _ = shared
+    cid = summon(clients)
+    with app.app_context():
+        db.session.get(Companion, cid).notes = 'PRIVATE MONSTER NOTES'
+        db.session.get(Character, 1).notes = 'PRIVATE CHARACTER NOTES'
+        db.session.commit()
+    base = '/party/1/shared-map'
+    for user in (1, 2):
+        response = clients[user].get(base + '/actors')
+        assert response.status_code == 200 and response.headers['Cache-Control'] == 'no-store'
+        assert response.json == {
+            'stats': clients[user].get(base + '/stats').json['actors'],
+            'portraits': clients[user].get(base + '/portraits').json['portraits'],
+            'rollActors': clients[user].get(base + '/roll-actors').json['actors'],
+        }
+        assert 'PRIVATE' not in response.text
+    player = clients[2].get(base + '/actors').json
+    assert not any(actor['kind'] == 'monster' for actor in player['stats'])
+    assert all(actor['kind'] == 'character' for actor in player['rollActors'])
+    assert player['portraits'] == []
+    for user in (3, 4):
+        assert clients[user].get(base + '/actors').status_code == 403
+    with app.app_context():
+        db.session.get(Party, 1).members = '[]'
+        db.session.commit()
+    assert clients[2].get(base + '/actors').status_code == 403

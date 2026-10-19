@@ -33,7 +33,7 @@ def validate_node_geometry(value, category):
     return {key: clean[key] for key in fields if key in clean}
 
 
-def validate_drawing(value, *, allow_frames=False):
+def validate_drawing(value, *, allow_frames=False, trusted_files=None):
     if value is None:
         return copy.deepcopy(EMPTY_DRAWING)
     if not isinstance(value, dict):
@@ -115,6 +115,10 @@ def validate_drawing(value, *, allow_frames=False):
     clean_files = {}
     for file_id in used_files:
         file = files[file_id]
+        # Only server-supplied, already validated files can take this path.
+        if trusted_files is not None and file_id in trusted_files and file is trusted_files[file_id]:
+            clean_files[file_id] = file
+            continue
         if not isinstance(file, dict):
             abort(400, 'Invalid drawing image.')
         mime = file.get('mimeType')

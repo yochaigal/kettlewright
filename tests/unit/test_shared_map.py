@@ -1,5 +1,6 @@
 import json
 import re
+from copy import deepcopy
 
 import pytest
 
@@ -9,6 +10,91 @@ from app.models import Character, Party, PartyMap, User, db
 URL = '/party/1/shared-map/scene'
 DRAWING = {'elements': [{'id': 'token', 'type': 'ellipse', 'x': 20, 'y': 40,
                          'width': 40, 'height': 40}], 'files': {}}
+
+
+@pytest.fixture
+def image_drawing():
+    import base64
+    import io
+    from PIL import Image
+    image = io.BytesIO()
+    Image.new('RGB', (2, 2), 'red').save(image, format='PNG')
+    return {'elements': [{'id': 'photo', 'type': 'image', 'fileId': 'photo-file', 'x': 0, 'y': 0}],
+            'files': {'photo-file': {'id': 'photo-file', 'mimeType': 'image/png',
+                      'dataURL': 'data:image/png;base64,' + base64.b64encode(image.getvalue()).decode()}}}
+
+
+def test_scene_revision_check_returns_no_body_and_revalidates_access(shared):
+    app, clients, _ = shared
+    revisions = {'version': 0, 'generation': 1, 'fog_version': 0}
+    response = clients[2].get(URL, query_string=revisions)
+    assert response.status_code == 204 and response.data == b''
+    assert response.headers['Cache-Control'] == 'no-store'
+    assert clients[1].post(URL, json={'version': 0, 'drawing': DRAWING}).status_code == 200
+    assert clients[2].get(URL, query_string=revisions).json['version'] == 1
+    revisions['version'] = 1
+    assert clients[2].get(URL, query_string=revisions).status_code == 204
+    assert clients[2].get(URL, query_string={**revisions, 'fog_version': 1}).status_code == 200
+    assert clients[2].get(URL, query_string={**revisions, 'generation': 2}).status_code == 200
+    assert clients[2].get(URL, query_string={'version': 1}).status_code == 200
+    with app.app_context():
+        db.session.get(Character, 1).party_id = None
+        db.session.commit()
+    assert clients[2].get(URL, query_string=revisions).status_code == 403
+
+
+def test_move_reuses_saved_image_without_upload_or_redecoding(shared, image_drawing, monkeypatch):
+    _, clients, sockets = shared
+    assert clients[1].post(URL, json={'version': 0, 'drawing': image_drawing}).status_code == 200
+    for socket in sockets.values():
+        socket.get_received()
+    moved = deepcopy(image_drawing)
+    moved['files'] = {}
+    moved['elements'][0]['x'] = 200
+    def unexpected_decode(*args, **kwargs):
+        pytest.fail('An unchanged server-owned image must not be decoded again')
+    monkeypatch.setattr('app.lib.map_drawing.Image.open', unexpected_decode)
+    assert clients[2].post(URL, json={'version': 1, 'drawing': moved, 'reuse_files': ['photo-file']}).status_code == 200
+    saved = clients[2].get(URL).json
+    assert saved['drawing']['elements'][0]['x'] == 200
+    assert saved['drawing']['files']['photo-file']['dataURL'] == image_drawing['files']['photo-file']['dataURL']
+    events = [event for event in sockets[1].get_received() if event['name'] == 'shared_map_changed']
+    assert events[0]['args'][0]['update']['drawing']['files'] == {}
+    # An old revision cannot resolve references against a newer scene.
+    assert clients[2].post(URL, json={'version': 1, 'drawing': moved, 'reuse_files': ['photo-file']}).status_code == 409
+
+
+@pytest.mark.parametrize('references', [['unknown'], ['photo-file', 'photo-file'], 'photo-file', [1], [{}]])
+def test_invalid_image_references_do_not_modify_scene(shared, image_drawing, references):
+    _, clients, _ = shared
+    assert clients[1].post(URL, json={'version': 0, 'drawing': image_drawing}).status_code == 200
+    before = clients[1].get(URL).json
+    drawing = {**image_drawing, 'files': {}}
+    assert clients[2].post(URL, json={'version': 1, 'drawing': drawing, 'reuse_files': references}).status_code == 400
+    assert clients[1].get(URL).json == before
+
+
+def test_references_cannot_read_other_boards_or_bypass_new_image_validation(shared, image_drawing):
+    app, clients, _ = shared
+    with app.app_context():
+        db.session.add(PartyMap(party_id=2, drawing=image_drawing))
+        db.session.commit()
+    assert clients[1].post(URL, json={'version': 0, 'drawing': {**image_drawing, 'files': {}},
+                                   'reuse_files': ['photo-file']}).status_code == 400
+    broken = deepcopy(image_drawing)
+    broken['files']['photo-file']['dataURL'] = 'data:image/png;base64,AAAA'
+    assert clients[1].post(URL, json={'version': 0, 'drawing': broken}).status_code == 400
+
+
+def test_references_preserve_warden_image_locks(shared, image_drawing):
+    _, clients, _ = shared
+    image_drawing['elements'][0]['locked'] = True
+    assert clients[1].post(URL, json={'version': 0, 'drawing': image_drawing}).status_code == 200
+    drawing = clients[1].get(URL).json['drawing']
+    drawing['files'] = {}
+    assert clients[2].post(URL, json={'version': 1, 'drawing': drawing, 'reuse_files': ['photo-file']}).status_code == 200
+    drawing['elements'][0]['x'] = 200
+    assert clients[2].post(URL, json={'version': 2, 'drawing': drawing, 'reuse_files': ['photo-file']}).status_code == 400
 
 
 @pytest.fixture

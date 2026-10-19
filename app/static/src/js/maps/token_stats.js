@@ -18,9 +18,9 @@ export function tokenStatsPosition(element, state) {
 
 const statKeys = ['hp', 'strength', 'dexterity', 'willpower'];
 
-export function createTokenStats({editor, config, getApi, canReveal, confirmReveal, isPlayerPreview, socket}) {
+export function createTokenStats({editor, config, getApi, canReveal, confirmReveal, isPlayerPreview, updates}) {
   const layer = document.createElement('div'); layer.className = 'token-stats-layer';
-  let actors = new Map(), nodes = new Map(), host = null, frame = null, epoch = 0, stopped = false;
+  let actors = new Map(), nodes = new Map(), host = null, frame = null, stopped = false;
   const saving = new Set();
   function redraw() {if (!stopped && frame === null) frame = requestAnimationFrame(draw);}
   function draw() {
@@ -105,22 +105,14 @@ export function createTokenStats({editor, config, getApi, canReveal, confirmReve
     if (button) button.disabled = !canReveal() || saving.has(actor.id);
     return true;
   }
-  async function refresh() {
+  const refresh = () => updates.refresh();
+  const unsubscribe = updates.subscribe('stats', data => {
     if (stopped) return;
-    const run = ++epoch;
-    try {
-      const response = await fetch(config.statsUrl, {cache: 'no-store', signal: AbortSignal.timeout(10000)});
-      if (!response.ok || response.redirected) throw new Error();
-      const data = await response.json();
-      if (run !== epoch || stopped) return;
-      actors = new Map(data.actors.map(actor => [actor.id, JSON.stringify(actors.get(actor.id)) === JSON.stringify(actor) ? actors.get(actor.id) : actor]));
-    } catch (_) {
-      // Clear stale stats, including permissions revoked while the connection was lost.
-      if (run !== epoch || stopped) return;
-      actors.clear();
-    }
+    // A failed permission refresh clears stale private stats.
+    actors = new Map((data || []).map(actor => [actor.id,
+      JSON.stringify(actors.get(actor.id)) === JSON.stringify(actor) ? actors.get(actor.id) : actor]));
     redraw();
-  }
+  });
   async function toggleVisibility(actor) {
     if (!canReveal() || saving.has(actor.id)) return;
     saving.add(actor.id); redraw();
@@ -137,20 +129,9 @@ export function createTokenStats({editor, config, getApi, canReveal, confirmReve
     } catch (_) {getApi()?.setToast({message: config.messages.visibilityFailed});}
     finally {saving.delete(actor.id); redraw();}
   }
-  function changed(data) {
-    if (data.party_id !== config.partyId) return;
-    refresh();
-  }
-  const connected = () => refresh();
-  const visible = () => {if (!document.hidden) refresh();};
-  socket.on('party_actors_changed', changed); socket.on('party_members_changed', changed); socket.on('connect', connected);
-  document.addEventListener('visibilitychange', visible);
-  const timer = setInterval(refresh, 5000), resize = new ResizeObserver(redraw); resize.observe(editor);
-  refresh();
+  const resize = new ResizeObserver(redraw); resize.observe(editor);
   return {redraw, refresh, reset() {nodes.forEach(node => node.remove()); nodes.clear(); redraw();}, destroy() {
-    stopped = true; ++epoch; clearInterval(timer); resize.disconnect();
-    socket.off('party_actors_changed', changed); socket.off('party_members_changed', changed); socket.off('connect', connected);
-    document.removeEventListener('visibilitychange', visible);
+    stopped = true; unsubscribe(); resize.disconnect();
     if (frame !== null) cancelAnimationFrame(frame); layer.remove(); actors.clear(); nodes.clear();
   }};
 }

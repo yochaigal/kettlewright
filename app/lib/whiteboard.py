@@ -20,8 +20,16 @@ def board_state(row):
             'fog': row.fog if row else empty_fog(), 'fog_version': row.fog_version if row else 0}
 
 
-def drawing_value(value):
-    drawing = validate_drawing(value, allow_frames=True)
+def drawing_value(value, *, stored_files=None, reuse_files=None):
+    if reuse_files is not None:
+        if (not isinstance(reuse_files, list) or len(reuse_files) > 2000
+                or any(not isinstance(key, str) or key not in (stored_files or {}) for key in reuse_files)
+                or len(set(reuse_files)) != len(reuse_files)
+                or not isinstance(value, dict) or not isinstance(value.get('files'), dict)
+                or any(key in value['files'] for key in reuse_files)):
+            abort(400, 'Invalid drawing image references.')
+        value = {**value, 'files': {**{key: stored_files[key] for key in reuse_files}, **value['files']}}
+    drawing = validate_drawing(value, allow_frames=True, trusted_files=stored_files)
     state = value.get('appState', {}) if isinstance(value, dict) else {}
     color = state.get('viewBackgroundColor', '#ffffff') if isinstance(state, dict) else None
     if not isinstance(color, str) or not re.fullmatch(r'#[0-9a-fA-F]{6}', color):

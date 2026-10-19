@@ -1,7 +1,8 @@
 import {createElement as h} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Excalidraw, restoreElements, CaptureUpdateAction} from 'excalidraw';
-import {drawingFromScene} from './scene.js';
+import {drawingFromScene, drawingImagesReady, drawingForSave} from './scene.js';
+import {createActorUpdates} from './actor_updates.js';
 import {mergeDrawings, sameDrawing} from './shared_map_merge.js';
 import {loadLibraries, MAP_LIBRARIES} from './libraries.js';
 import {createFogLayer, applyFogOperation} from './whiteboard_fog.js';
@@ -30,12 +31,14 @@ let fog = {enabled: false, base: 'covered', strokes: [], applied: []}, fogVersio
 let fogQueue = [], fogSaving = false, fogBlocked = false, fogTimer, fogFailed = false;
 let playerPreview = false, theme = 'light', connected = false;
 let socketUpdates = [];
+let waitingForImages = false;
 try {theme = localStorage.getItem('darkMode') === 'true' ? 'dark' : 'light';} catch (_) {}
 document.body.classList.toggle('dark-mode', theme === 'dark');
 const layer = createFogLayer({editor, getApi: () => api, warden: config.warden, onOperation: queueFog});
 const library = loadLibraries([...MAP_LIBRARIES, 'clocks'], new URL(config.libraryUrl, location.href));
 // Match the app's existing Socket.IO transport. HTTP polling below is the fallback.
 const socket = io({transports: ['websocket'], reconnectionDelay: 1000, reconnectionDelayMax: 10000});
+const actorUpdates = createActorUpdates({config, socket, denied});
 
 const laser = createLaserSync({socket, getApi: () => api, getGeneration: () => generation, config,
   canSend: () => initialized && !stopped && !importing});
@@ -48,15 +51,15 @@ const tokens = setupPartyTokens({editor, config, getApi: () => api, getGeneratio
 
 const boardControls = setupBoardControls({config, getApi: () => api, socket,
   canEdit: () => config.editing && initialized && !stopped && !importing && !playerPreview});
-const boardRolls = createBoardRolls({config, getApi: () => api, socket,
+const boardRolls = createBoardRolls({config, getApi: () => api, updates: actorUpdates,
   canRoll: () => initialized && !stopped && !importing && !playerPreview,
   isPlayerPreview: () => playerPreview});
-const tokenStats = createTokenStats({editor, config, getApi: () => api, socket,
+const tokenStats = createTokenStats({editor, config, getApi: () => api, updates: actorUpdates,
   confirmReveal: boardControls.confirmReveal,
   canReveal: () => config.warden && initialized && !stopped && !importing && !playerPreview,
   isPlayerPreview: () => playerPreview});
 
-const portraits = createTokenPortraits({config, getApi: () => api, socket,
+const portraits = createTokenPortraits({getApi: () => api, updates: actorUpdates,
   onProjection: update => {
     applying = true;
     try {update();} finally {applying = false;}
@@ -65,7 +68,7 @@ const portraits = createTokenPortraits({config, getApi: () => api, socket,
 function showStatus() {
   if (stopped) {tell('denied'); return;}
   tell(saveBlocked ? 'invalid' : saveFailed ? 'failed' : readFailed ? 'offline'
-    : pending || saving || importing ? 'saving' : 'saved');
+    : pending || saving || importing || waitingForImages ? 'saving' : 'saved');
   const fogStatus = document.getElementById('fog-status');
   if (fogStatus) fogStatus.textContent = config.messages[fogBlocked ? 'fogInvalid' : fogFailed ? 'fogFailed'
     : fogQueue.length || fogSaving ? 'saving' : ''] || '';
@@ -97,34 +100,38 @@ function setTheme(value, persist = true) {
 function revoke() {
   stopped = true; pending = null; fogQueue = [];
   clearTimeout(timer); clearTimeout(fogTimer); clearInterval(poll);
+  actorUpdates.destroy();
   boardControls.destroy(); boardRolls.destroy(); tokenStats.destroy(); portraits.destroy(); tokens.close(); laser.destroy(); layer.destroy(); root.unmount(); api = null; tell('denied');
 }
 function denied(response) {
   if (response.redirected || [401, 403, 404].includes(response.status)) {revoke(); return true;}
   return false;
 }
-function post(url, body) {
+function post(url, body, timeout = 15000) {
   return fetch(url, {method: 'POST', headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({...body, csrf_token: config.csrfToken}), signal: AbortSignal.timeout(15000)});
+    body: JSON.stringify({...body, csrf_token: config.csrfToken}), signal: AbortSignal.timeout(timeout)});
 }
-function scheduleSave(delay = 180) {
-  if (!timer && !stopped && !saveBlocked) timer = setTimeout(() => {timer = null; save();}, delay);
+function scheduleSave(delay = 400) {
+  if (stopped || saveBlocked || waitingForImages) return;
+  clearTimeout(timer);
+  timer = setTimeout(() => {timer = null; save();}, delay);
 }
 async function save() {
-  if (!pending || saving || loading || importing || stopped || saveBlocked) return;
+  if (!pending || saving || loading || importing || stopped || saveBlocked || waitingForImages) return;
   const drawing = pending, sentGeneration = generation;
   pending = null; saving = true; showStatus();
   try {
-    const response = await post(config.sceneUrl, {drawing, version, generation: sentGeneration});
+    const response = await post(config.sceneUrl, {...drawingForSave(drawing, baseDrawing), version, generation: sentGeneration}, 60000);
     if (denied(response)) return;
     if (response.status === 409) {pending ||= drawing; refreshAgain = true; return;}
     if ([400, 413].includes(response.status)) {pending ||= drawing; saveBlocked = true; return;}
     if (!response.ok) throw new Error();
     version = (await response.json()).version; baseDrawing = drawing; saveFailed = false;
+    actorUpdates.placed(drawing.elements);
   } catch (_) {pending ||= drawing; saveFailed = true; scheduleSave(2500);}
   finally {
     saving = false; drainUpdates(); showStatus();
-    if (refreshAgain) {refreshAgain = false; refresh();} else if (pending) scheduleSave();
+    if (refreshAgain) {refreshAgain = false; refresh();} else if (pending) scheduleSave(saveFailed ? 2500 : 400);
   }
 }
 
@@ -138,6 +145,9 @@ function onChange(elements, appState, files) {
   });
   if (!api || applying) return;
   const drawing = snapshot(elements, files, appState);
+  const imagesWerePending = waitingForImages;
+  waitingForImages = !drawingImagesReady(drawing);
+  if (waitingForImages) {showStatus(); return;}
   if (!initialized) {
     initialized = true; lastDrawing = baseDrawing = drawing;
     setTimeout(() => {
@@ -147,7 +157,14 @@ function onChange(elements, appState, files) {
     }, 0);
     return;
   }
-  if (!config.editing || playerPreview || importing || sameDrawing(drawing, lastDrawing)) return;
+  if (!config.editing || playerPreview || importing) return;
+  if (sameDrawing(drawing, lastDrawing)) {
+    if (imagesWerePending) {
+      showStatus(); if (pending) scheduleSave(); drainUpdates();
+      if (refreshAgain && !saving && !loading) {refreshAgain = false; refresh();}
+    }
+    return;
+  }
   lastDrawing = drawing; pending = drawing; saveBlocked = false;
   showStatus(); scheduleSave();
 }
@@ -212,15 +229,18 @@ function acceptState(data) {
     fogQueue = fogQueue.filter(operation => !fog.applied.includes(operation.id));
     displayFog();
   }
+  actorUpdates.placed(data.drawing.elements);
 }
 async function refresh() {
-  if (stopped) return;
-  if (saving || loading || importing) {refreshAgain = true; return;}
+  if (stopped || document.hidden) return;
+  if (saving || loading || importing || waitingForImages) {refreshAgain = true; return;}
   loading = true;
   try {
-    const response = await fetch(config.sceneUrl, {cache: 'no-store', signal: AbortSignal.timeout(15000)});
+    const query = version < 0 ? '' : `?version=${version}&generation=${generation}&fog_version=${fogVersion}`;
+    const response = await fetch(config.sceneUrl + query, {cache: 'no-store', signal: AbortSignal.timeout(60000)});
     if (denied(response)) return;
     if (!response.ok) throw new Error();
+    if (response.status === 204) {readFailed = false; return;}
     const data = await response.json();
     if (!stopped) {acceptState(data); readFailed = false;}
   } catch (_) {readFailed = true; if (version < 0 && !stopped) tell('loadFailed');}
@@ -256,7 +276,7 @@ async function saveFog() {
 }
 
 function drainUpdates() {
-  if (saving || loading || importing || !api || !initialized || stopped) return;
+  if (saving || loading || importing || waitingForImages || !api || !initialized || stopped) return;
   const queued = socketUpdates; socketUpdates = [];
   for (const event of queued) {
     const state = stateFromUpdate(event, {drawing: baseDrawing, version, generation, fog, fog_version: fogVersion});
@@ -274,7 +294,7 @@ function receiveUpdate(data) {
   drainUpdates();
   if (refreshAgain && !saving && !loading && !importing) {refreshAgain = false; refresh();}
 }
-function polling() {clearInterval(poll); poll = setInterval(refresh, connected ? 60000 : 3000);}
+function polling() {clearInterval(poll); poll = setInterval(() => {if (!document.hidden) refresh();}, connected ? 60000 : 15000);}
 socket.on('connect', () => {connected = true; polling(); refresh();});
 socket.on('disconnect', () => {connected = false; polling(); refresh();});
 socket.on('shared_map_changed', receiveUpdate);
@@ -283,7 +303,7 @@ document.addEventListener('visibilitychange', () => {if (!document.hidden) refre
 window.addEventListener('online', () => {refresh(); if (pending) scheduleSave(); scheduleFog();});
 window.addEventListener('storage', event => {if (event.key === 'darkMode') setTheme(event.newValue === 'true' ? 'dark' : 'light', false);});
 window.addEventListener('beforeunload', event => {
-  if (pending || saving || fogQueue.length || fogSaving || importing) {event.preventDefault(); event.returnValue = '';}
+  if (pending || saving || waitingForImages || fogQueue.length || fogSaving || importing) {event.preventDefault(); event.returnValue = '';}
 });
 document.getElementById('fit-map').addEventListener('click', () => api?.scrollToContent(undefined, {fitToContent: true}));
 document.getElementById('board-theme').addEventListener('click', () => setTheme(theme === 'dark' ? 'light' : 'dark'));
@@ -309,7 +329,7 @@ if (config.warden) {
     if (confirm(config.messages.discardFog)) {fogQueue = []; fogBlocked = fogFailed = false; displayFog(); refresh();}
   });
   if (config.canLoadMaps) setupMapImport({config, tell, replace: async (source, cover) => {
-    if (pending || saving || loading || fogQueue.length || fogSaving || version < 0) throw new Error(config.messages.waitForSave);
+    if (pending || saving || waitingForImages || loading || fogQueue.length || fogSaving || version < 0) throw new Error(config.messages.waitForSave);
     importing = true; renderEditor(); showStatus();
     try {
       const response = await post(config.importUrl, {source_id: source.source_id, digest: source.digest,
