@@ -3,6 +3,8 @@ display: flex;
 width: 100%;
 flex-wrap: wrap;
 justify-content: space-around;
+gap: 1.5rem;
+padding: .75rem 0;
 }
 
 .party-view-controls {
@@ -96,8 +98,6 @@ justify-content: space-around;
   #party-members-content {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(unquote("min(100%, 280px)"), 1fr));
-    gap: 1.5rem;
-    padding: 2rem 0;
   }
   #party-members-content .party-member {
     width: 100%;
@@ -138,14 +138,11 @@ justify-content: space-around;
 }
 
 #party-form.party-view-sheet { max-width: 1100px; padding: 2rem; }
-.party-section:has(.party-compact) { margin: 1em 0; }
 
 .party-compact {
   #party-members-content {
     display: flex;
     flex-direction: column;
-    gap: .5rem;
-    padding: .75rem 0;
   }
   #party-members-content .party-member {
     display: grid;
