@@ -1,7 +1,7 @@
 import diceModal from '../dice_modal.js';
 import {actorKey} from './token_stats.js';
 
-export function createBoardRolls({config, getApi, socket, canRoll, isPlayerPreview}) {
+export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPreview}) {
   const panel = document.getElementById('board-rolls');
   const name = document.getElementById('board-roll-name'), choices = document.getElementById('board-roll-actor');
   const actions = document.getElementById('board-roll-actions'), result = document.getElementById('board-roll-result');
@@ -9,7 +9,7 @@ export function createBoardRolls({config, getApi, socket, canRoll, isPlayerPrevi
   const modalPublic = document.getElementById('warden-public-roll');
   const modalTitle = document.querySelector('#dice-modal .modal-card-title');
   let actors = new Map(), active = null, preferred = '', modalActor = null;
-  let stopped = false, rolling = false, epoch = 0, frame = null, rendered = '', lastSelection = '';
+  let stopped = false, rolling = false, frame = null, rendered = '', lastSelection = '';
   if (publicToggle) publicToggle.checked = false;
   if (modalPublic) modalPublic.checked = false;
 
@@ -124,29 +124,15 @@ export function createBoardRolls({config, getApi, socket, canRoll, isPlayerPrevi
     button.addEventListener('click', listener); special.push([button, listener]);
   });
   choices.addEventListener('change', () => {preferred = choices.value; redraw();});
-  async function refresh() {
+  const unsubscribe = updates.subscribe('rollActors', data => {
     if (stopped) return;
-    const run = ++epoch;
-    try {
-      const response = await fetch(config.rollActorsUrl, {cache: 'no-store', signal: AbortSignal.timeout(10000)});
-      if (!response.ok || response.redirected) throw new Error();
-      const data = await response.json();
-      if (stopped || run !== epoch) return;
-      actors = new Map(data.actors.map(actor => [actor.id, actor]));
-    } catch (_) {if (stopped || run !== epoch) return; actors.clear();}
+    actors = new Map((data || []).map(actor => [actor.id, actor]));
     redraw();
-  }
-  const changed = data => {if (data.party_id === config.partyId) refresh();};
-  const visible = () => {if (!document.hidden) refresh();};
-  socket.on('party_actors_changed', changed); socket.on('party_members_changed', changed); socket.on('connect', refresh);
-  document.addEventListener('visibilitychange', visible);
-  const timer = setInterval(refresh, 5000);
-  refresh(); redraw();
+  });
+  redraw();
   return {redraw, destroy() {
-    stopped = true; ++epoch; panel.hidden = true; clearInterval(timer);
+    stopped = true; unsubscribe(); panel.hidden = true;
     if (frame !== null) cancelAnimationFrame(frame);
     for (const [button, listener] of special) button.removeEventListener('click', listener);
-    socket.off('party_actors_changed', changed); socket.off('party_members_changed', changed); socket.off('connect', refresh);
-    document.removeEventListener('visibilitychange', visible);
   }};
 }

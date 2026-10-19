@@ -20,6 +20,21 @@ export function drawingFromScene(elements, files) {
   return {elements: drawing, files: Object.fromEntries(Object.entries(files).filter(([id]) => fileIds.has(id)))};
 }
 
+// Pasting/dropping creates an image element before its asynchronous file read
+// finishes. Never persist that intermediate state or omit the image silently.
+export const drawingImagesReady = drawing => drawing.elements.every(element =>
+  element.type !== 'image' || Boolean(element.fileId && drawing.files[element.fileId]?.dataURL));
+
+export function drawingForSave(drawing, base) {
+  const files = {}, reuse_files = [];
+  for (const [id, file] of Object.entries(drawing.files)) {
+    const previous = base?.files[id];
+    if (previous && previous.mimeType === file.mimeType && previous.dataURL === file.dataURL) reuse_files.push(id);
+    else files[id] = file;
+  }
+  return {drawing: {...drawing, files}, reuse_files};
+}
+
 // Shape, colour and text all identify a type; colour is never the only cue.
 export function nodeAppearance(node, kind) {
   const types = {
