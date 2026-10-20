@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {toolSections, generateToolResult} from '../../app/static/src/js/tools-navigation.js';
+import {toolSections, generateToolResult, appendAreaNavigation} from '../../app/static/src/js/tools-navigation.js';
 import {resultText} from '../../app/static/src/js/content_generators.js';
 
 const data = {};
@@ -51,5 +51,34 @@ test('event text preserves the event description without a redundant field label
     const result = generateToolResult(data, 'Events', table, () => 0);
     assert.equal(resultText(result, key => key), data[table][0].description);
     assert.ok(!resultText(result).includes('**Description:**'));
+  }
+});
+
+test('area shortcuts open full generators without changing or rerolling the source result', () => {
+  const originalDocument = globalThis.document;
+  globalThis.document = {getElementById() {return null;}, createElement() {
+    return {
+      children:[], listeners:{},
+      append(child) {this.children.push(child);},
+      get childElementCount() {return this.children.length;},
+      addEventListener(event, callback) {this.listeners[event] = callback;},
+    };
+  }};
+  try {
+    for (const [result, expected] of [
+      [generateToolResult(data, 'Setting', 'dungeon', () => 0), ['dungeons']],
+      [{mapKind:'realm', poiKinds:['dungeon'], fields:{Terrain:['Forest. Difficulty: Easy']}}, ['dungeons','forests']],
+      [generateToolResult(data, 'Worldbuilding', 'Dungeon', () => 0), []],
+      [generateToolResult(data, 'Setting', 'settlement', () => 0), []],
+    ]) {
+      const before = JSON.stringify(result), actions = [];
+      const opened = [];
+      appendAreaNavigation({prepend(child) {actions.push(child);}}, result, {open(key) {opened.push(key);}}, key => key, data);
+      for (const button of actions[0]?.children || []) button.listeners.click();
+      assert.deepEqual(opened, expected);
+      assert.equal(JSON.stringify(result), before);
+    }
+  } finally {
+    globalThis.document = originalDocument;
   }
 });

@@ -115,11 +115,15 @@ export function initToolsNavigation(data, t, onSelect) {
   }};
 }
 
-// Keep the realm result intact; shortcuts only select a generator, never reroll it.
-export function appendRealmNavigation(container, result, navigation, t, data = {}) {
-  if (result.mapKind !== 'realm') return;
-  const kinds = new Set(result.poiKinds || []);
-  if ((result.fields.Terrain || []).some(terrain => /forest|woodland|jungle|taiga|mangrove|thicket/i.test(terrainSource(data, terrain.split('. Difficulty:')[0])))) kinds.add('forest');
+// Keep the result intact; shortcuts only select a generator, never reroll it.
+export function appendAreaNavigation(container, result, navigation, t, data = {}) {
+  const kinds = new Set();
+  if (result.mapKind === 'realm') {
+    for (const kind of result.poiKinds || []) kinds.add(kind);
+    if ((result.fields.Terrain || []).some(terrain => /forest|woodland|jungle|taiga|mangrove|thicket/i.test(terrainSource(data, terrain.split('. Difficulty:')[0])))) kinds.add('forest');
+  } else if (result.category === 'dungeon' && !result.mapKind) {
+    kinds.add('dungeon');
+  }
   const actions = document.createElement('div');
   actions.className = 'campaign-actions';
   for (const [kind, key, label] of [['dungeon','dungeons','Dungeon'], ['forest','forests','Forest']]) {

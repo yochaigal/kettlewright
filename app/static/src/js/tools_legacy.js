@@ -1,6 +1,6 @@
 import {initToolsMonsters} from './tools-monsters.js';
 import {initToolsResults} from './tools-results.js';
-import {generateToolResult, initToolsNavigation, appendRealmNavigation} from './tools-navigation.js';
+import {generateToolResult, initToolsNavigation, appendAreaNavigation} from './tools-navigation.js';
 import {generateWorldbuilding} from './worldbuilding.js';
 import {localizeText, resultText} from './content_generators.js';
 import {richContentHTML} from './rich-content.js';
@@ -76,7 +76,8 @@ rollButton.addEventListener("click", async () => {
 
   if (category === 'Setting') {
     const result = generateToolResult(data, category, subcategory);
-    displayResult(richContentHTML(`## ${localizeText(result.title, t)}\n\n${resultText(result, t)}`));
+    const entry = displayResult(richContentHTML(`## ${localizeText(result.title, t)}\n\n${resultText(result, t)}`));
+    appendAreaNavigation(entry.actions, result, navigation, t, data);
     return;
   }
 
@@ -295,5 +296,5 @@ const rollRelics = (data, subcategory) => {
 const rollWorldbuilding = (data, subcategory) => {
   const result=generateWorldbuilding(data,subcategory);
   const entry = displayResult(richContentHTML(`## ${localizeText(result.title, t)}\n\n${resultText(result, t)}`));
-  appendRealmNavigation(entry.actions, result, navigation, t, data);
+  appendAreaNavigation(entry.actions, result, navigation, t, data);
 };
