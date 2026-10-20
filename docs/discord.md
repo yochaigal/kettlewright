@@ -12,6 +12,15 @@ Open the Discord page from the icon beside the language selector in Kettlewright
 2. Connect your Discord account on the Kettlewright Discord page. You must own the party in Kettlewright and have **Manage Channels** (or Administrator) in Discord.
 3. Run `/kw bind party:…` in each channel you want to use, choosing one of your parties.
 
+Use `/kw warden-roll` in a bound channel to open your private dice panel, without selecting a character.
+`/kw warden-roll dice:d20` rolls directly; `kind:reaction` rolls 2d6 with the reaction result,
+and `kind:fate` rolls the Die of Fate. Ordinary dice support the same expressions as `/kw roll`.
+Results are **private by default**, both in Discord and KW's party history. Add `public:true`
+to share a result with the channel and party, or to open a panel whose buttons make public rolls.
+The panel states its visibility; each button keeps it. Only the current Warden of the bound party
+can use this command or its buttons. Old panels stop working after a channel is bound to another
+party, ownership changes, or the Warden disconnects. Character selection is unaffected.
+
 ### Player
 
 1. Connect your Discord account on the Kettlewright Discord page. Your character must be in the channel's bound party.
@@ -53,13 +62,13 @@ The same ground storage is available in the web interface. On your character she
 
 Stat edits record the player's chosen changes; there is no automatic damage overflow into STR or save resolution. Values outside zero to the stat's maximum are rejected. HP edits change stored HP; panic or a full main inventory can still make effective HP zero. Maxima are unchanged. Already-open party views receive the existing KW refresh event; reload an individual sheet to see external edits.
 
-Selection belongs to the **KW user + Discord server + channel** and survives app restarts. Selecting a character never changes another user's selection or another channel's context. There is no character override on `/kw roll`. The Warden can only select and roll their own characters, just like every other player. Ownership and party membership are checked on every command. A removed, deleted or transferred character cannot be rolled using an old selection.
+Selection belongs to the **KW user + Discord server + channel** and survives app restarts. Selecting a character never changes another user's selection or another channel's context. There is no character override on `/kw roll`. The Warden can only select and roll their own characters, just like every other player; `/kw warden-roll` rolls as Warden independently. Ownership and party membership are checked on every command. A removed, deleted or transferred character cannot be rolled using an old selection.
 
 Several channels can be bound to the same party. A channel has at most one party. Threads are independent channels in this version: bind and select inside each thread. There is no implicit inheritance from categories or parent channels.
 
 Rebinding also clears selections. Both binding and unbinding require the current party's Warden and Manage Channels. Disconnecting in KW clears that user's selections and any bindings they created. A party ownership change invalidates its binding until the new Warden binds it.
 
-Cards, party summaries and rolls are public to **everyone who can read that Discord channel**. Only linked party members (or its Warden) can request them. Private notes and party join codes are never included. Login, selection, binding responses, dice panels, inventory lists, sheet-action confirmations and errors are visible only to the invoking user. Mentions are disabled.
+Cards, party summaries, player rolls and explicitly public Warden rolls are public to **everyone who can read that Discord channel**. Only linked party members (or its Warden) can request them. Private notes and party join codes are never included. Login, selection, binding responses, dice panels, private Warden rolls, inventory lists, sheet-action confirmations and errors are visible only to the invoking user. Mentions are disabled.
 
 ## Administrator setup
 
@@ -97,9 +106,14 @@ flask discord register --guild YOUR_TEST_SERVER_ID
 
 Inside the Dev Container, prefix Flask commands with `docker compose -f .devcontainer/docker-compose.yml exec app`. `flask discord register --dry-run` prints the definition without contacting Discord. Registration creates/updates only `/kw`; it does not bulk-delete other commands. After acceptance, register globally with `flask discord register`.
 
-After deploying these player commands, **register `/kw` again** to update Discord's command picker and make the `dice` argument optional. This expansion adds no database migration or dependency. The existing PyNaCl dependency is still required for signed interactions.
+After deploying command changes, **register `/kw` again** to update Discord's command picker, including `/kw warden-roll`. This expansion adds no database migration or dependency. The existing PyNaCl dependency is still required for signed interactions.
 
 Test with two players and a Warden: connect all three accounts, bind, select, switch characters, roll, verify KW history, and verify that the Warden cannot select another player's character. Test removal from a party and disconnection. Do not treat local mocked tests as proof of a working Discord installation.
+
+For Warden rolls, test ordinary dice, Reaction Roll and Die of Fate without a character selection.
+Check that default rolls and their history updates reach only the Warden, then use `public:true`
+and verify the channel result and party history. Try another user's panel and a panel from a
+different binding; both must fail. Repeated delivery of an interaction must keep the original result.
 
 For player-action acceptance, test on mobile: open `/kw roll`, click several dice, update HP, add/clear both conditions, add Fatigue and a Torch, spend uses, drop/pick up, transfer between two players, and append a note. Verify both sheets in KW, full-inventory rejection, old buttons after changing selection, and loss of access after leaving the party.
 

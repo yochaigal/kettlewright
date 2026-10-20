@@ -557,7 +557,6 @@ def party_view(ownername, party_url):
 def warden_roll():
     from app.lib.warden_rolls import roll_warden
     from app.lib.character_rolls import publish_roll
-    from app import socketio
     if not FlaskForm().validate_on_submit():
         abort(400)
     raw_party = request.form.get('party_id')
@@ -576,15 +575,7 @@ def warden_roll():
     except ValueError as error:
         return _board_json({'error': str(error)}), 400
     db.session.commit()
-    if public:
-        publish_roll(target, _('Warden'), result['result'])
-    elif target is not None:
-        # Even a history-change signal would reveal that the Warden rolled.
-        try:
-            socketio.emit('roll_history_changed', {'party_id': target.id}, room=f'user_{current_user.id}')
-        except Exception:
-            from flask import current_app
-            current_app.logger.exception('Unable to publish private roll update')
+    publish_roll(target, _('Warden'), result['result'], None if public else current_user.id)
     return _board_json(result)
 
 
