@@ -42,7 +42,7 @@
   <h1 {{ edit_attrs(section, labels[section]) }}>{{ character.name|markdown_inline }}</h1>
   <span id="character-dead-badge">{% include "partial/dead_badge.html" %}</span>
 {% elif section == 'background' %}
-  {% if is_owner %}
+  {% if can_edit_sheet %}
     <section class="background-table-answers">
       <h3 {{ edit_attrs(section, labels[section]) }}>{{labels[section]}}</h3>
       <div {{ edit_attrs(section, labels[section]) }}>
@@ -67,7 +67,7 @@
   <h3 id="character-party-heading" {{ edit_attrs(section, labels[section]) }}>{{labels[section]}}</h3>
   {% if party %}
     <div id="character-party-name-description">
-      {% if is_owner %}<a class="bold subtitle" id="character-party-link" href="/{{party_url}}">{{ party.name|markdown_inline }}</a>
+      {% if can_edit_sheet %}<a class="bold subtitle" id="character-party-link" href="/{{party_url}}">{{ party.name|markdown_inline }}</a>
       {% else %}<div class="bold subtitle">{{ party.name|markdown_inline }}</div>{% endif %}
       <div class="character-text-field with-whitespace rich-content" id="character-party-description">{{ party.description|markdown }}</div>
     </div>

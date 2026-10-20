@@ -146,14 +146,15 @@ def test_rollback_does_not_broadcast_or_leak_into_next_commit(overview):
 
 
 @pytest.mark.parametrize('stat', ['hp', 'strength', 'dexterity', 'willpower'])
-def test_character_sheet_quick_edit_is_owner_only_and_broadcasts(overview, stat):
+@pytest.mark.parametrize('editor', [1, 2])
+def test_character_sheet_quick_edit_allows_owner_and_warden_and_broadcasts(overview, stat, editor):
     app, clients, sockets = overview
     path = '/charedit/user2/hero1/stat'
     data = {'stat': stat, 'value': 0}
     assert app.test_client().post(path, data=data).status_code == 302
-    for user_id in (1, 3, 4):
+    for user_id in (3, 4):
         assert clients[user_id].post(path, data=data).status_code == 403
-    assert clients[2].post(path, data=data).status_code == 204
+    assert clients[editor].post(path, data=data).status_code == 204
     with app.app_context():
         assert getattr(db.session.get(Character, 1), stat) == 0
     assert sockets[1].get_received()[0]['name'] == 'party_members_changed'
@@ -184,7 +185,8 @@ def test_character_snapshot_preserves_effective_hp_and_rest_editor(overview):
     assert snapshot.headers['Cache-Control'] == 'no-store'
     assert b'Available HP: 0' in snapshot.data
     assert b'value="6"' in snapshot.data
-    assert clients[1].get('/charedit/rest/user2/hero1').status_code == 403
+    assert clients[3].get('/charedit/rest/user2/hero1').status_code == 403
+    assert clients[1].get('/charedit/rest/user2/hero1').status_code == 200
     rest = clients[2].get('/charedit/rest/user2/hero1')
     assert rest.data.count(b'class="sheet-stat-form"') == 12
     assert b'/charedit/user2/hero1/stats' in rest.data

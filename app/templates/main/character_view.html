@@ -6,11 +6,11 @@
   const url_name = `{{url_name}}`;
   const selected_container = `{{inventory["selected_container"]["id"]}}`;
   const isOwner = "{{ is_owner }}";
+  let party_id = "{{ character.party_id }}";
 </script>
 
 {% if is_owner %}
 <script>
-  let party_id = "{{ character.party_id }}";
   const character_id = "{{ character.id }}";
 </script>
 {% endif %}

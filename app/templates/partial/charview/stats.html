@@ -10,7 +10,7 @@
     <div class="stat-card-heading">
       <h4>{{ label }}</h4>
     </div>
-    {% if is_owner %}
+    {% if can_edit_sheet %}
     <div class="stat-card-values">
       {% with control=field, caption=_('Current'), limit=character[field ~ '_max'] or 0 %}{% include 'partial/charview/stat_control.html' %}{% endwith %}
       <span class="stat-value-divider" aria-hidden="true">/</span>
@@ -19,7 +19,7 @@
     {% else %}
       <p class="stat-readonly" id="{{ field }}-view-text">{{ character.hpValue().0 if field == 'hp' else character[field] }} <span>/ {{ character[field ~ '_max'] }}</span></p>
     {% endif %}
-    <div class="stat-warning">{% if field == 'hp' and is_owner and (character.overburdened() or character.panicked) %}
+    <div class="stat-warning">{% if field == 'hp' and can_edit_sheet and (character.overburdened() or character.panicked) %}
       <small>{{_('Available HP: 0')}}</small>
       <small>{% if character.overburdened() %}{{_('Your main inventory is full. Free a slot to use your HP.')}}{% else %}{{_('Panic reduces your available HP to 0.')}}{% endif %}</small>
     {% endif %}</div>
@@ -27,7 +27,7 @@
   {% endfor %}
   <div class="character-stat-toolbar">
     <div class="character-stat-resource" id="character-gold-container">
-      {% if is_owner %}
+      {% if can_edit_sheet %}
         {% with control='gold', caption=_('Gold'), label=_('Gold'), limit=9999 %}{% include 'partial/charview/stat_control.html' %}{% endwith %}
       {% else %}<h4>{{_('Gold')}}</h4><p id="gold-view-text">{{character.gold}}</p>{% endif %}
     </div>
@@ -36,7 +36,7 @@
       <h4>{{_('Conditions')}}</h4>
       <div class="character-condition-options">
       {% for field, label in [('deprived', _('Deprived')), ('panicked', _('Panicked')), ('dead', _('Dead'))] %}
-        {% if is_owner %}
+        {% if can_edit_sheet %}
         <form class="sheet-stat-form" action="{{ url_for('character_edit.character_stat_save', username=username, url_name=url_name) }}" method="post">
           {{ stat_form.csrf_token(id='sheet-' ~ field ~ '-csrf') if stat_form.csrf_token is defined else '' }}
           <input type="hidden" name="stat" value="{{field}}">
@@ -44,11 +44,11 @@
         </form>
         {% elif character[field] %}<span class="character-condition is-selected">{{label}}</span>{% endif %}
       {% endfor %}
-      {% if not is_owner and not character.deprived and not character.panicked and not character.dead %}<span>{{_('None')}}</span>{% endif %}
+      {% if not can_edit_sheet and not character.deprived and not character.panicked and not character.dead %}<span>{{_('None')}}</span>{% endif %}
       </div>
     </div>
     <div id="character-rest-container" class="character-stat-rest">
-      {% if is_owner %}
+      {% if can_edit_sheet %}
       <button class="button smaller-font" hx-get="/charedit/rest/{{username}}/{{url_name}}" hx-swap="innerHTML"
         hx-target="#character-stats-container" hx-confirm="{{_('Do you want to restore all HP?')}}"
         data-confirm-title="{{_('Rest')}}" data-confirm-button="{{_('Yes')}}" data-cancel-button="{{_('No')}}" {% if character.deprived %}disabled{% endif %}>{{_('Rest')}}</button>

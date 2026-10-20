@@ -25,7 +25,7 @@ def save_current_stat(character):
 
 
 def save_character_stat(character):
-    """Owner sheet controls; party/companion editors keep current-stat permissions."""
+    """Sheet controls; the caller checks owner/Warden edit permission."""
     field = request.form.get('stat')
     if field in ('hp', 'strength', 'dexterity', 'willpower'):
         return save_current_stat(character)

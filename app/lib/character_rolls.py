@@ -56,13 +56,17 @@ def roll_for_party(name, expression, party):
     return {'result': result, 'values': values}
 
 
-def publish_roll(party, name, result):
+def publish_roll(party, name, result, private_user_id=None):
     if party is None:
         return
     from flask import current_app
     from app import socketio
     from app.socket_events import party_recipient_ids, notify_roll_history_changed
     try:
+        if private_user_id is not None:
+            # A private roll must not even announce a history change to players.
+            socketio.emit('roll_history_changed', {'party_id': party.id}, room=f'user_{private_user_id}')
+            return
         for user_id in party_recipient_ids(party):
             socketio.emit('dice_rolled', f'{name} rolled a {result}', room=f'user_{user_id}')
         notify_roll_history_changed(party)

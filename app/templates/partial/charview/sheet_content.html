@@ -19,7 +19,7 @@
         {% endif %}
       </div>
     </div>
-    {% if is_owner %}<p class="inline-edit-hint"><small>{{_('Click a field to edit.')}}</small></p>{% endif %}
+    {% if can_edit_sheet %}<p class="inline-edit-hint"><small>{{_('Click a field to edit.')}}</small></p>{% endif %}
     <div id="character-stats-container">
       {% include "partial/charview/stats.html" %}
     </div>

@@ -38,9 +38,9 @@ def game(app_with_babel):
 ids = itertools.count(1000)
 
 
-def command(game, subcommand, user=101, channel='20', guild='10', kind=2, permissions='0', interaction_id=None, focused=None, **options):
+def command(game, subcommand, user=101, channel='20', guild='10', interaction_type=2, permissions='0', interaction_id=None, focused=None, **options):
     app, key = game
-    payload = dict(id=str(interaction_id or next(ids)), application_id='900', type=kind, guild_id=guild,
+    payload = dict(id=str(interaction_id or next(ids)), application_id='900', type=interaction_type, guild_id=guild,
                    channel_id=channel, member=dict(user=dict(id=str(user)), permissions=permissions),
                    data=dict(name='kw', options=[dict(name=subcommand, type=1, options=[
                        dict(name=k, value=v, type=3, focused=k == focused) for k, v in options.items()])]))
@@ -164,11 +164,112 @@ def test_duplicate_interaction_reuses_result_and_does_not_broadcast_twice(game):
     socket.disconnect()
 
 
+@pytest.mark.parametrize('public', [False, True])
+@pytest.mark.parametrize('kind,options,result', [
+    ('dice', {'dice': 'd6+d8'}, '6, 8 (d6+d8)'),
+    ('reaction', {}, '12 — Helpful'), ('fate', {}, '6 (d6)'),
+])
+def test_warden_rolls_without_selection_and_respects_privacy(game, monkeypatch, public, kind, options, result):
+    app, _ = game
+    monkeypatch.setattr('app.lib.warden_rolls.secrets.randbelow', lambda sides: sides - 1)
+    warden = socketio.test_client(app, flask_test_client=logged_in(app, 3))
+    player = socketio.test_client(app, flask_test_client=logged_in(app, 1))
+    # Omit public entirely to verify the default, not just public:false.
+    options = {**options, **({'public': True} if public else {})}
+    first = command(game, 'warden-roll', user=103, interaction_type=2, interaction_id='123457', **{'kind': kind, **options})
+    assert '**Warden** rolled' in content(first)
+    assert result in content(first)
+    assert first.json['data'].get('flags') == (None if public else 64)
+    assert first.json['data']['allowed_mentions'] == {'parse': []}
+    assert [event['name'] for event in warden.get_received()] == (
+        ['dice_rolled', 'roll_history_changed'] if public else ['roll_history_changed'])
+    assert [event['name'] for event in player.get_received()] == (
+        ['dice_rolled', 'roll_history_changed'] if public else [])
+    repeated = command(game, 'warden-roll', user=103, interaction_type=2, interaction_id='123457', **{'kind': kind, **options})
+    assert repeated.json == first.json
+    assert warden.get_received() == player.get_received() == []
+    with app.app_context():
+        roll = PartyRoll.query.one()
+        assert (roll.character_name, roll.private_user_id) == ('Warden', None if public else 3)
+        assert len(PartyRoll.latest(1, 1)) == (1 if public else 0)
+        assert len(PartyRoll.latest(1, 3)) == 1
+        assert DiscordSelection.query.count() == 0
+    warden.disconnect()
+    player.disconnect()
+
+
+def warden_button(game, custom_id, user=103, interaction_id=None):
+    app, key = game
+    return signed(app, key, dict(id=str(interaction_id or next(ids)), application_id='900', type=3,
+        guild_id='10', channel_id='20', member=dict(user=dict(id=str(user)), permissions='0'),
+        data=dict(component_type=2, custom_id=custom_id)))
+
+
+@pytest.mark.parametrize('public', [False, True])
+def test_warden_dice_panel_and_buttons(game, public):
+    response = command(game, 'warden-roll', user=103, public=public)
+    assert response.json['data']['flags'] == 64
+    buttons = [b for row in response.json['data']['components'] for b in row['components']]
+    assert len(buttons) == 10
+    assert 'Public:' in content(response) if public else 'Private:' in content(response)
+    for button in buttons:
+        first = warden_button(game, button['custom_id'])
+        assert '**Warden** rolled' in content(first)
+        assert first.json['data'].get('flags') == (None if public else 64)
+    with game[0].app_context():
+        assert PartyRoll.query.count() == 10
+        assert all(r.private_user_id == (None if public else 3) for r in PartyRoll.query.all())
+
+
+@pytest.mark.parametrize('user', [101, 102, 999])
+def test_warden_roll_rejects_players_and_unlinked_users(game, user):
+    response = command(game, 'warden-roll', user=user, dice='d20', public=True)
+    assert response.json['data']['flags'] == 64
+    assert '**Warden** rolled' not in content(response)
+    with game[0].app_context():
+        assert PartyRoll.query.count() == 0
+
+
+@pytest.mark.parametrize('change', ['party_owner', 'rebind', 'unbind', 'unlink', 'button_user'])
+def test_warden_buttons_recheck_ownership_and_binding(game, change):
+    app, _ = game
+    panel = command(game, 'warden-roll', user=103)
+    button = panel.json['data']['components'][0]['components'][0]['custom_id']
+    with app.app_context():
+        if change == 'party_owner':
+            db.session.get(Party, 1).owner = 2
+        elif change == 'rebind':
+            db.session.get(Party, 2).owner = 3
+            db.session.get(DiscordChannel, ('10', '20')).party_id = 2
+        elif change == 'unbind':
+            db.session.delete(db.session.get(DiscordChannel, ('10', '20')))
+        elif change == 'unlink':
+            db.session.delete(db.session.get(DiscordAccount, 3))
+        else:
+            button = button.replace(':3:1:', ':2:1:')
+        db.session.commit()
+    assert warden_button(game, button).json['data']['flags'] == 64
+    with app.app_context():
+        assert PartyRoll.query.count() == 0
+
+
+@pytest.mark.parametrize('options', [
+    {'dice': '3d6'}, {'dice': None}, {'dice': 'd7'}, {'kind': 'unknown'},
+    {'kind': 'reaction', 'dice': 'd20'}, {'dice': 'd20', 'public': 'true'},
+    {'dice': 'd20', 'public': 1},
+])
+def test_invalid_warden_rolls_do_not_write_history(game, options):
+    response = command(game, 'warden-roll', user=103, **options)
+    assert response.json['data']['flags'] == 64
+    with game[0].app_context():
+        assert PartyRoll.query.count() == 0
+
+
 def test_autocomplete_returns_only_own_party_characters(game):
-    choices = command(game, 'select', kind=4, character='').json['data']['choices']
+    choices = command(game, 'select', interaction_type=4, character='').json['data']['choices']
     assert [c['value'] for c in choices] == ['1', '2']
-    assert command(game, 'select', user=103, kind=4, character='').json['data']['choices'] == []
-    assert command(game, 'select', user=999, kind=4, character='').json['data']['choices'] == []
+    assert command(game, 'select', user=103, interaction_type=4, character='').json['data']['choices'] == []
+    assert command(game, 'select', user=999, interaction_type=4, character='').json['data']['choices'] == []
 
 
 def test_bind_needs_both_kw_ownership_and_discord_permission(game):
@@ -318,12 +419,12 @@ def test_rate_limit_does_not_roll_or_break_autocomplete(game, monkeypatch):
     limiter = app.extensions['discord_limiter']
     monkeypatch.setattr(limiter, 'allow', lambda *args: False)
     assert 'Too many' in content(command(game, 'roll', dice='d20'))
-    assert command(game, 'select', kind=4, character='').json == {'type': 8, 'data': {'choices': []}}
+    assert command(game, 'select', interaction_type=4, character='').json == {'type': 8, 'data': {'choices': []}}
     with app.app_context():
         assert PartyRoll.query.count() == 0
     monkeypatch.setattr(limiter, 'allow', Mock(side_effect=ConnectionError))
     assert 'temporarily unavailable' in content(command(game, 'roll', dice='d20'))
-    assert command(game, 'select', kind=4, character='').json == {'type': 8, 'data': {'choices': []}}
+    assert command(game, 'select', interaction_type=4, character='').json == {'type': 8, 'data': {'choices': []}}
 
 
 def button(game, custom_id, user=101, interaction_id=None, channel='20'):
@@ -529,24 +630,24 @@ def test_inventory_autocomplete_is_private_scoped_and_unambiguous(game):
     command(game, 'select', character='1')
     command(game, 'add', name='Torch')
     command(game, 'add', name='Torch')
-    response = command(game, 'use', kind=4, item='torch', focused='item')
+    response = command(game, 'use', interaction_type=4, item='torch', focused='item')
     choices = response.json['data']['choices']
     assert len(choices) == 2 and choices[0]['value'] != choices[1]['value']
     assert 'names may not be unique' in content(command(game, 'remove', item='Torch'))
-    assert command(game, 'use', user=102, kind=4, item='', focused='item').json['data']['choices'] == []
-    targets = command(game, 'transfer', kind=4, character='', focused='character').json['data']['choices']
+    assert command(game, 'use', user=102, interaction_type=4, item='', focused='item').json['data']['choices'] == []
+    targets = command(game, 'transfer', interaction_type=4, character='', focused='character').json['data']['choices']
     assert [t['value'] for t in targets] == ['2', '3']
-    catalog = command(game, 'add', kind=4, name='torch', focused='name').json['data']['choices']
+    catalog = command(game, 'add', interaction_type=4, name='torch', focused='name').json['data']['choices']
     assert {'name': 'Torch', 'value': 'Torch'} in catalog
     command(game, 'drop', item=choices[0]['value'], place='Old bridge')
-    containers = command(game, 'move', kind=4, container='', focused='container').json['data']['choices']
+    containers = command(game, 'move', interaction_type=4, container='', focused='container').json['data']['choices']
     assert len(containers) == 1
-    choices = command(game, 'pickup', kind=4, item='', focused='item').json['data']['choices']
+    choices = command(game, 'pickup', interaction_type=4, item='', focused='item').json['data']['choices']
     assert len(choices) == 1 and 'Old bridge' in choices[0]['name']
     with game[0].app_context():
         db.session.get(Party, 1).members = '[2, 3]'
         db.session.commit()
-    assert command(game, 'use', kind=4, item='', focused='item').json['data']['choices'] == []
+    assert command(game, 'use', interaction_type=4, item='', focused='item').json['data']['choices'] == []
     before = stored_character(game)
     assert '/kw select' in content(command(game, 'fatigue'))
     assert stored_character(game) == before
@@ -559,7 +660,7 @@ def test_discord_drop_container_and_pickup_restore_contents(game):
         c.containers = '[{"id":0,"name":"Main","slots":10},{"id":2,"name":"Chest","slots":4}]'
         c.items = '[{"id":"torch","name":"Torch","location":2,"tags":["uses"],"uses":3}]'
         db.session.commit()
-    choices = command(game, 'drop-container', kind=4, container='', focused='container').json['data']['choices']
+    choices = command(game, 'drop-container', interaction_type=4, container='', focused='container').json['data']['choices']
     assert [c['value'] for c in choices] == ['2']
     assert 'main inventory' in content(command(game, 'drop-container', container='0', place='Bridge'))
     first = command(game, 'drop-container', container='2', place='Bridge cellar', interaction_id='88011')
