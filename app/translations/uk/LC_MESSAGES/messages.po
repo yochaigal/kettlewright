@@ -26318,3 +26318,15 @@ msgstr "Шкода"
 #: app/templates/partial/tools/pcgen.html
 msgid "Sheet"
 msgstr "Аркуш персонажа"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Plain Text"
+msgstr "Звичайний текст"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Save to Party"
+msgstr "Зберегти до загону"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Create a party first to save a hireling or monster as its Warden."
+msgstr "Спочатку створіть загін, щоб зберігати в ньому найманців або монстрів як ведучий."

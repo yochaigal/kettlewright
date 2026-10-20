@@ -116,10 +116,10 @@ def save_character(kind):
     from flask_wtf import FlaskForm
     from itsdangerous import BadSignature
     from app.models import Campaign, ContentEntry
-    from app.lib.generated_character import read_snapshot, as_party_monster, character_markdown
+    from app.lib.generated_character import read_snapshot, as_party_companion, character_markdown
     from app.lib.feature_access import user_features_enabled
     request.max_content_length = 256 * 1024
-    if kind not in ('monster', 'npc'):
+    if kind not in ('party', 'monster', 'npc'):
         abort(404)
     if kind == 'npc' and not user_features_enabled():
         abort(404)
@@ -130,12 +130,15 @@ def save_character(kind):
         target_id = int(request.form.get('target_id', ''))
     except (BadSignature, ValueError, KeyError, TypeError):
         abort(400, 'Invalid or expired character preview. Generate a new character.')
-    if kind == 'monster':
+    if kind in ('party', 'monster'):
+        companion_kind = request.form.get('companion_kind', 'hireling') if kind == 'party' else 'monster'
+        if companion_kind not in ('hireling', 'monster'):
+            abort(400, 'Invalid companion type.')
         target = db.get_or_404(Party, target_id)
         if target.owner != current_user.id:
             abort(403)
         try:
-            result = as_party_monster(target, snapshot)
+            result = as_party_companion(target, snapshot, companion_kind)
         except ValueError as error:
             db.session.rollback()
             abort(400, str(error))

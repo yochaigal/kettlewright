@@ -1,6 +1,6 @@
 import {initToolsMonsters} from './tools-monsters.js';
 import {initToolsResults} from './tools-results.js';
-import {generateToolResult, initToolsNavigation, appendRealmNavigation} from './tools-navigation.js';
+import {generateToolResult, initToolsNavigation, appendAreaNavigation} from './tools-navigation.js';
 import utils, { styledAlert } from "./utils.js";
 import {localizeText, resultText} from "./content_generators.js";
 import {richContentHTML} from "./rich-content.js";
@@ -58,5 +58,5 @@ rollButton.addEventListener('click', async () => {
       window.location.href = result.mapKind ? '/materials/generate?from_tools=1' : '/materials/import';
     } : null,
   });
-  appendRealmNavigation(entry.actions, result, navigation, t, data);
+  appendAreaNavigation(entry.actions, result, navigation, t, data);
 });

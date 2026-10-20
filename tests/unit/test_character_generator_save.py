@@ -31,14 +31,17 @@ def generated(app_with_babel):
     return app, clients, {'snapshot':snapshot, 'csrf_token':csrf, 'target_id':1}, data
 
 
-def test_save_character_as_monster_preserves_stats_portrait_inventory_and_pet(generated):
+@pytest.mark.parametrize('kind', ['hireling', 'monster'])
+def test_save_character_to_party_preserves_stats_portrait_inventory_and_pet(generated, kind):
     app, clients, form, data = generated
-    response = clients[1].post('/gen/character/save/monster', data=form)
+    form['companion_kind'] = kind
+    response = clients[1].post('/gen/character/save/party', data=form)
     assert response.status_code == 302
     assert clients[1].get(response.location).status_code == 200
     with app.app_context():
         monster = db.session.get(Companion, int(response.location.rsplit('/',1)[1]))
-        assert monster.kind == 'monster' and monster.party_id == 1 and not monster.shared
+        assert monster.kind == kind and monster.party_id == 1
+        assert monster.shared == (kind == 'hireling')
         assert monster.name == data['name'] and monster.role == data['background']
         for field in ('hp','hp_max','strength','strength_max','dexterity','dexterity_max','willpower','willpower_max','gold','image_url'):
             assert getattr(monster, field) == data[field]
@@ -69,7 +72,7 @@ def test_save_character_as_npc_creates_private_campaign_article(generated):
         assert Character.query.count() == Companion.query.count() == 0
 
 
-@pytest.mark.parametrize('kind', ['monster','npc'])
+@pytest.mark.parametrize('kind', ['party','monster','npc'])
 @pytest.mark.parametrize('problem', ['target','tampered','csrf','other-user'])
 def test_generated_character_saves_reject_unauthorized_or_invalid_requests(generated, kind, problem):
     app, clients, form, _ = generated
@@ -102,7 +105,7 @@ def test_npc_save_retains_campaign_feature_gate(generated):
         assert ContentEntry.query.count() == 0
 
 
-@pytest.mark.parametrize('kind', ['monster', 'npc'])
+@pytest.mark.parametrize('kind', ['party', 'monster', 'npc'])
 def test_all_backgrounds_can_be_saved(generated, kind):
     from app.lib.char_utils import load_backgrounds
     app, clients, form, _ = generated
@@ -116,4 +119,36 @@ def test_all_backgrounds_can_be_saved(generated, kind):
         if kind == 'npc':
             assert ContentEntry.query.count() == len(load_backgrounds())
         else:
-            assert Companion.query.filter_by(kind='monster').count() == len(load_backgrounds())
+            assert Companion.query.filter_by(kind='hireling' if kind == 'party' else 'monster').count() == len(load_backgrounds())
+
+
+@pytest.mark.parametrize('kind', ['pet', 'npc', '', 'invalid'])
+def test_party_save_rejects_invalid_companion_kind(generated, kind):
+    app, clients, form, _ = generated
+    form['companion_kind'] = kind
+    assert clients[1].post('/gen/character/save/party', data=form).status_code == 400
+    with app.app_context():
+        assert Companion.query.count() == 0
+
+
+def test_party_save_available_without_campaign_features_and_defaults_to_hireling(generated):
+    app, clients, form, _ = generated
+    app.config['FEATURE_TEST_USER_IDS'] = set()
+    page = clients[1].get('/tools/').text
+    assert 'Save to Party' in page and 'Plain Text' in page
+    assert 'id="pcgen-save-npc-button"' not in page
+    response = clients[1].post('/gen/character/save/party', data=form)
+    assert response.status_code == 302
+    with app.app_context():
+        assert db.session.get(Companion, int(response.location.rsplit('/', 1)[1])).kind == 'hireling'
+
+
+def test_tools_offers_npc_save_to_campaign_audience_only(generated):
+    _, clients, _, _ = generated
+    assert 'id="pcgen-save-npc-button"' in clients[1].get('/tools/').text
+
+
+@pytest.mark.parametrize('kind', ['party', 'monster', 'npc'])
+def test_anonymous_cannot_save_generated_characters(generated, kind):
+    app, _, form, _ = generated
+    assert app.test_client().post(f'/gen/character/save/{kind}', data=form).status_code == 302
