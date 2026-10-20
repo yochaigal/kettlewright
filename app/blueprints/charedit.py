@@ -9,6 +9,7 @@ from app.main import sanitize_data
 from app.lib import *
 from app.models.character import BACKGROUND_FIELDS
 from app.lib.quick_stats import save_character_stat
+from app.lib.character_permissions import can_edit_character
 from app.lib.companions import save_item_to_companion, finish_companion_transfers, can_transfer_from
 from unidecode import unidecode
 from flask_babel import _
@@ -28,7 +29,10 @@ def inventory_permissions():
 def character_editor_context():
     # HTMX fragments need the same ownership and edit context as the full page.
     username = (request.view_args or {}).get('username')
+    url_name = (request.view_args or {}).get('url_name')
+    character = get_char_data(username, url_name)[1] if username and url_name else None
     return dict(is_owner=current_user.is_authenticated and current_user.username == username,
+                can_edit_sheet=can_edit_character(character) if character is not None else False,
                 inventory_full_edit=request.values.get('inventory_context') == 'character')
 
 
@@ -80,7 +84,7 @@ INLINE_SECTIONS = {
 @login_required
 def character_section(username, url_name, section):
     user, character = get_char_data(username, url_name)
-    if character.owner != current_user.id:
+    if not can_edit_character(character) or (section == 'party' and character.owner != current_user.id):
         abort(403)
     if section not in INLINE_SECTIONS:
         abort(404)
@@ -119,7 +123,7 @@ def character_section(username, url_name, section):
     response = make_response(render_template(
         'partial/charview/inline_section.html', section=section, editing=editing,
         fields=fields, form=form, errors=errors, character=character, username=username,
-        url_name=url_name, is_owner=True, stat_form=FlaskForm(), party=party,
+        url_name=url_name, is_owner=character.owner == current_user.id, stat_form=FlaskForm(), party=party,
         party_url=party_url, scarlist=load_scars()))
     response.headers['Cache-Control'] = 'no-store'
     if request.method == 'POST' and not errors:
@@ -271,7 +275,7 @@ def charedit_inplace_scars_add(username, url_name):
 @login_required
 def charedit_inplace_portrait(username, url_name):
     user, character = get_char_data(username, url_name)
-    if character.owner != current_user.id:
+    if not can_edit_character(character):
         abort(403)
     images = load_images(include_categories=True)
     return render_template('partial/charedit/portrait.html', user=user, character=character, username=username, url_name=url_name, images=images, portrait_form=FlaskForm())
@@ -295,7 +299,7 @@ def charedit_inplace_portrait_cancel(username, url_name):
 @login_required
 def charedit_inplace_portrait_save(username, url_name):
     user, character = get_char_data(username, url_name)
-    if character.owner != current_user.id:
+    if not can_edit_character(character):
         abort(403)
     if request.content_length and request.content_length > 3 * 1024 * 1024:
         return render_template('partial/charedit/portrait.html', user=user, character=character,
@@ -367,7 +371,7 @@ def charedit_export(username, url_name):
 @login_required
 def charedit_rest(username, url_name):
     user, character = get_char_data(username, url_name)
-    if character.owner != current_user.id:
+    if not can_edit_character(character):
         abort(403)
     setattr(character,"hp",character.hp_max)
     db.session.commit()
@@ -390,7 +394,7 @@ def character_stats(username, url_name):
 def character_stat_save(username, url_name):
     user = User.query.filter_by(username=username).first_or_404()
     character = Character.query.filter_by(owner=user.id, url_name=url_name).first_or_404()
-    if character.owner != current_user.id:
+    if not can_edit_character(character):
         abort(403)
     return save_character_stat(character)
 

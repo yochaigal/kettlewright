@@ -18,6 +18,7 @@ import bleach
 from flask_htmx import HTMX
 from flask_babel import _
 from app.lib.translations import translate_term
+from app.lib.character_permissions import can_edit_character
 import datetime
 import urllib.parse
 
@@ -339,7 +340,7 @@ def character(username, url_name):
     inventory = Inventory(character)
     inventory.select(0)
     inventory.decorate()
-    return render_template('main/character_view.html', character=character, items_json=items_json, containers_json=json.dumps(character.containers), username=username, url_name=url_name, party=party, party_url=party_url, party_name=party_name, party_description=party_description, base_url=base_url, is_owner=is_owner, scarlist=scarlist, portrait_src=portrait_src, inventory=inventory, stat_form=FlaskForm())
+    return render_template('main/character_view.html', character=character, items_json=items_json, containers_json=json.dumps(character.containers), username=username, url_name=url_name, party=party, party_url=party_url, party_name=party_name, party_description=party_description, base_url=base_url, is_owner=is_owner, can_edit_sheet=can_edit_character(character), scarlist=scarlist, portrait_src=portrait_src, inventory=inventory, stat_form=FlaskForm())
 
 
 @main.route('/users/<username>/characters/<url_name>/print/')
