@@ -20,7 +20,7 @@
         <button type="button" id="pcgen-markdown-tab" role="tab" aria-selected="false" aria-controls="pcgen-markdown-panel" data-character-view="markdown" tabindex="-1">{{_('Plain Text')}}</button>
       </div>
       <div class="tools-history-actions">
-        {% if current_user.is_authenticated %}<button id="pcgen-save-monster-button" type="button" data-save-kind="monster" data-url="{{url_for('generator.save_character', kind='monster')}}" disabled>{{_('Save as Monster')}}</button>{% endif %}
+        {% if current_user.is_authenticated %}<button id="pcgen-save-party-button" type="button" data-save-kind="party" data-url="{{url_for('generator.save_character', kind='party')}}" disabled>{{_('Save to Party')}}</button>{% endif %}
         {% if user_features_enabled() %}<button id="pcgen-save-npc-button" type="button" data-save-kind="npc" data-url="{{url_for('generator.save_character', kind='npc')}}" disabled>{{_('Save as NPC')}}</button>{% endif %}
         <button id="pcgen-copy-text-button" type="button" disabled>{{_('Copy text')}}</button>
         <button id="pcgen-json-button" type="button" disabled>{{_('Export')}} JSON</button>
@@ -36,7 +36,7 @@
 
 {% if current_user.is_authenticated %}
 <script id="pcgen-save-options" type="application/json">{{ {
-'monster': {'label': _('Save as Monster'), 'target': _('Party'), 'empty': _('Create a party first to manage monsters as its Warden.'), 'targets': warden_parties|map(attribute='id')|list, 'names': warden_parties|map(attribute='name')|list},
+'party': {'label': _('Save to Party'), 'target': _('Party'), 'empty': _('Create a party first to save a hireling or monster as its Warden.'), 'targets': warden_parties|map(attribute='id')|list, 'names': warden_parties|map(attribute='name')|list},
 'npc': {'label': _('Save as NPC'), 'target': _('Campaign'), 'empty': _('Create a campaign first to save an NPC.'), 'targets': generator_campaigns|map(attribute='id')|list, 'names': generator_campaigns|map(attribute='name')|list}
 }|tojson }}</script>
 <dialog id="pcgen-save-dialog" class="tools-attach-dialog" aria-labelledby="pcgen-save-title">
@@ -45,6 +45,13 @@
   <form id="pcgen-save-form" method="post">
     {{roll_form.csrf_token(id='pcgen-save-csrf') if roll_form is defined and roll_form.csrf_token is defined else ''}}
     <input type="hidden" name="snapshot" id="pcgen-save-snapshot">
+    <div id="pcgen-save-kind-field" hidden>
+      <label for="pcgen-save-kind">{{_('Type')}}</label>
+      <select name="companion_kind" id="pcgen-save-kind" disabled>
+        <option value="hireling">{{_('Hireling')}}</option>
+        <option value="monster">{{_('Monster')}}</option>
+      </select>
+    </div>
     <label for="pcgen-save-target" id="pcgen-save-target-label"></label>
     <select name="target_id" id="pcgen-save-target" required></select>
     <p id="pcgen-save-empty" hidden></p>

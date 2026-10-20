@@ -59,7 +59,7 @@ def character_pet_markdown(pet):
     return '\n\n'.join(part for part in [stats, pet.get('attack'), pet.get('notes'), equipment] if part)
 
 
-def as_party_monster(party, data):
+def as_party_companion(party, data, kind):
     from app.lib.companions import import_pet
     attacks = []
     for item in data['items']:
@@ -67,8 +67,8 @@ def as_party_monster(party, data):
         if damage:
             attacks.append(f"{item['name']} ({', '.join(damage)})")
     # Armor on equipment is already counted by Companion.armorValue().
-    monster = import_pet(dict(data, role=data['background'], armor=0,
+    companion = import_pet(dict(data, role=data['background'], armor=0,
         attack='; '.join(attacks)[:200], notes=character_markdown(data), custom_image=False))
-    monster.kind, monster.party, monster.shared = 'monster', party, False
-    monster.pets.extend(import_pet(pet) for pet in data.get('pets', []))
-    return monster
+    companion.kind, companion.party, companion.shared = kind, party, kind == 'hireling'
+    companion.pets.extend(import_pet(pet) for pet in data.get('pets', []))
+    return companion

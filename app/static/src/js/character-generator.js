@@ -131,6 +131,11 @@ if (saveDialog) {
     const snapshot = display.querySelector('#pcgen-snapshot')?.value;
     if (!snapshot) return;
     const choice = options[button.dataset.saveKind];
+    const partySave = button.dataset.saveKind === 'party';
+    document.getElementById('pcgen-save-kind-field').hidden = !partySave;
+    const kind = document.getElementById('pcgen-save-kind');
+    kind.disabled = !partySave;
+    kind.value = 'hireling';
     document.getElementById('pcgen-save-title').textContent = choice.label;
     document.getElementById('pcgen-save-name').textContent = display.querySelector('#character_name').value;
     document.getElementById('pcgen-save-snapshot').value = snapshot;

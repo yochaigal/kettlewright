@@ -34819,3 +34819,11 @@ msgstr "Лист персонажа"
 #: app/templates/partial/tools/pcgen.html
 msgid "Plain Text"
 msgstr "Обычный текст"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Save to Party"
+msgstr "Сохранить в отряд"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Create a party first to save a hireling or monster as its Warden."
+msgstr "Сначала создайте отряд, чтобы сохранять в него наёмников или монстров в роли ведущего."
