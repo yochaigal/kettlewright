@@ -34815,3 +34815,7 @@ msgstr "Урон"
 #: app/templates/partial/tools/pcgen.html
 msgid "Sheet"
 msgstr "Лист персонажа"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Plain Text"
+msgstr "Обычный текст"

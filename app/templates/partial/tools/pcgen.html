@@ -17,7 +17,7 @@
     <div id="pcgen-button-container" class="tools-toolbar">
       <div class="tools-tab-list" role="tablist" aria-label="{{_('Character preview')}}" id="pcgen-view-tabs">
         <button type="button" id="pcgen-sheet-tab" role="tab" aria-selected="true" aria-controls="pcgen-sheet-panel" data-character-view="sheet">{{_('Sheet')}}</button>
-        <button type="button" id="pcgen-markdown-tab" role="tab" aria-selected="false" aria-controls="pcgen-markdown-panel" data-character-view="markdown" tabindex="-1">Markdown</button>
+        <button type="button" id="pcgen-markdown-tab" role="tab" aria-selected="false" aria-controls="pcgen-markdown-panel" data-character-view="markdown" tabindex="-1">{{_('Plain Text')}}</button>
       </div>
       <div class="tools-history-actions">
         {% if current_user.is_authenticated %}<button id="pcgen-save-monster-button" type="button" data-save-kind="monster" data-url="{{url_for('generator.save_character', kind='monster')}}" disabled>{{_('Save as Monster')}}</button>{% endif %}

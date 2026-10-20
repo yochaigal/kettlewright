@@ -26318,3 +26318,7 @@ msgstr "Шкода"
 #: app/templates/partial/tools/pcgen.html
 msgid "Sheet"
 msgstr "Аркуш персонажа"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Plain Text"
+msgstr "Звичайний текст"
