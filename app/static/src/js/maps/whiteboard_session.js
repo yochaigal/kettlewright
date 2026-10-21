@@ -188,8 +188,14 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
     document.body?.classList.toggle('board-token-selected', Boolean(token));
     tokenPanel.hidden = !token || isPreview();
     if (!token || isPreview()) return;
+    const participating = state.encounter.participants.some(actor => actor.id === token.actor_id);
+    const encounterAction = tokenPanel.querySelector('#token-encounter-action');
+    if (encounterAction) {
+      encounterAction.textContent = messages[participating ? 'alreadyEncounter' : 'addEncounter'];
+      encounterAction.disabled = participating || encounterBusy;
+    }
     if (document.activeElement?.matches?.('input[type=number]') && tokenPanel.contains?.(document.activeElement)) return;
-    const signature = JSON.stringify([token.id, token.name, token.visible, token.numbered, token.can_edit, actor]);
+    const signature = JSON.stringify([token.id, token.name, token.visible, token.numbered, token.can_edit, actor, participating, encounterBusy]);
     if (signature === panelSignature) return;
     panelSignature = signature; tokenPanel.replaceChildren();
     const heading = document.createElement('strong'); heading.textContent = token.name; tokenPanel.append(heading);
@@ -213,10 +219,11 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
     if (config.warden) {
       tokenPanel.append(button(messages[token.visible ? 'hideToken' : 'showToken'], () => tokenAction({visible: !token.visible})));
       if (token.kind === 'monster') tokenPanel.append(button(messages.numberTokens, () => tokenAction({numbered: !token.numbered})));
-      tokenPanel.append(button(messages.addEncounter, async () => {
+      const add = button(messages[participating ? 'alreadyEncounter' : 'addEncounter'], async () => {
         await changeEncounter('add', {actor_id: token.actor_id});
         setOpenPanel('encounter');
-      }));
+      }, participating || encounterBusy);
+      add.id = 'token-encounter-action'; tokenPanel.append(add);
     }
   }
   function queueStat(token, stat, value, immediate = false) {
@@ -296,11 +303,12 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
   function setOpenPanel(name) {openPanel = name; syncPanels(); onPanelChange(name);}
   async function changeEncounter(action, values = {}) {
     if (!state || encounterBusy) return;
-    const run = epoch; encounterBusy = true; renderEncounter();
+    if (action === 'add' && state.encounter.participants.some(actor => actor.id === values.actor_id)) return;
+    const run = epoch; encounterBusy = true; renderEncounter(); drawPanel();
     try {
       const data = await request('encounter', {encounter_version: state.encounter_version, action, ...values});
       if (run === epoch) accept(data);
-    } finally {if (run === epoch) {encounterBusy = false; renderEncounter();}}
+    } finally {if (run === epoch) {encounterBusy = false; renderEncounter(); drawPanel();}}
   }
   for (const {name, button} of panels) button.addEventListener('click', () => setOpenPanel(openPanel === name ? null : name));
   document.getElementById('encounter-close')?.addEventListener('click', () => setOpenPanel(null));

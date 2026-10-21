@@ -130,6 +130,20 @@ def test_encounter_per_scene_permissions_and_duplicate(shared, image_drawing):
     assert post(clients[2], '/encounter', state, encounter_version=1, action='acted', actor_id='1', acted=False).status_code == 409
 
 
+def test_readding_an_encounter_actor_preserves_their_turn_and_round(shared):
+    _, clients, _ = shared
+    state = snapshot(clients[1])
+    for action, values in [('add', {'actor_id': '1'}), ('next_round', {}), ('acted', {'actor_id': '1', 'acted': True})]:
+        response = post(clients[1], '/encounter', state, encounter_version=state['encounter_version'], action=action, **values)
+        assert response.status_code == 200
+        state = response.json
+    before = deepcopy(state['encounter'])
+    assert before['round'] == 2 and before['participants'][0]['acted'] is True
+    response = post(clients[1], '/encounter', state, encounter_version=state['encounter_version'], action='add', actor_id='1')
+    assert response.status_code == 200
+    assert response.json['encounter'] == before
+
+
 def test_material_projections_and_import_do_not_bake_private_titles(shared):
     app, clients, _ = shared
     with app.app_context():

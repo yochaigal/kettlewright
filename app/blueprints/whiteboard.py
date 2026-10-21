@@ -273,8 +273,9 @@ def encounter(party_id):
     if action in ('add', 'remove'):
         if key not in actors:
             abort(400)
-        value['participants'] = [item for item in value['participants'] if item['actor_id'] != key]
-        if action == 'add':
+        if action == 'remove':
+            value['participants'] = [item for item in value['participants'] if item['actor_id'] != key]
+        elif not any(item['actor_id'] == key for item in value['participants']):
             value['participants'].append({'actor_id': key, 'acted': False})
     elif action == 'acted':
         actor = actors.get(key)

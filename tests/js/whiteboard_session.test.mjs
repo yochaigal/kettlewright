@@ -16,7 +16,10 @@ class Node {
   setAttribute(name, value) {this.attributes[name] = value;}
   getAttribute(name) {return this.attributes[name];}
   remove() {}
-  querySelector() {return new Node('button');}
+  querySelector(selector) {
+    if (selector.startsWith('#')) return this.children.find(child => child.id === selector.slice(1)) || null;
+    return new Node('button');
+  }
 }
 const token = (id = 'actor-1-one', canControl = true) => ({id, actor_id: '1', name: 'Moss', kind: 'character', can_control: canControl,
   visible: true, element: {id, type: 'image', fileId: 'f', x: 10, y: 20, width: 80, height: 80, angle: 0}, files: {f: {id:'f', dataURL:'image'}}});
@@ -33,6 +36,7 @@ function setup({warden = false} = {}) {
     messages:{showScene:'Show to party',showingScene:'Showing…',activeScene:'Shown to party',
       shownSceneHelp:'Players stay here until you show another scene.',privateSceneHelp:'Showing this scene moves all players here.',
       chooseEncounterToken:'Choose a token',noEncounterTokens:'No tokens to add',acted:'Acted',round:'Round',removeEncounter:'Remove from encounter'}};
+  Object.assign(config.messages,{addEncounter:'Add to encounter',alreadyEncounter:'Already in encounter'});
   const context = vm.createContext({document:doc,window:{addEventListener() {},removeEventListener() {},matchMedia: () => ({matches:false})},
     setTimeout(fn) {timers.set(++id,fn); return id;},clearTimeout: key => timers.delete(key),setInterval(fn) {intervals.push(fn);return 1;},clearInterval() {},
     requestAnimationFrame: () => 1,cancelAnimationFrame() {},queueMicrotask,structuredClone,AbortSignal,
@@ -195,4 +199,34 @@ test('players open the encounter and mark only controlled actors without Warden 
   assert.equal(JSON.parse(s.requests[0].options.body).action,'acted');
   await s.respond({...data,encounter_version:1,encounter:{round:1,participants:[{...participants[0],acted:true},participants[1]]}});await marking;
   assert.equal(s.nodes.get('encounter-list').children[0].children[1].children[0].checked,true);s.finish();
+});
+
+test('selected token actions follow encounter membership, including another placement of the same actor', async () => {
+  const s=setup({warden:true}),placements=[token(),token('actor-1-two')];
+  const data=snapshot(placements);s.session.accept(data);
+  await s.respond({active_scene_id:1,scenes:[{id:1,name:'Whiteboard'}]});
+  let selected=placements[0].id;const view=s.api.getAppState;
+  s.api.getAppState=()=>({...view(),selectedElementIds:{[selected]:true}});s.session.capture(s.elements());
+  const action=()=>s.nodes.get('token-actions').querySelector('#token-encounter-action');
+  assert.equal(action().textContent,'Add to encounter');assert.equal(action().disabled,false);
+  s.session.accept({...data,encounter_version:1,encounter:{round:1,participants:[{id:'1',name:'Moss',can_control:true,acted:true}]}});
+  assert.equal(action().textContent,'Already in encounter');assert.equal(action().disabled,true);
+  await action().events.click();assert.equal(s.requests.length,0);
+  selected=placements[1].id;s.session.capture(s.elements());
+  assert.equal(action().textContent,'Already in encounter');assert.equal(action().disabled,true);
+  s.session.accept({...data,encounter_version:2});
+  assert.equal(action().textContent,'Add to encounter');assert.equal(action().disabled,false);s.finish();
+});
+
+test('adding a selected actor disables the action in flight and restores it after an error', async () => {
+  const s=setup({warden:true}),data=snapshot([token()]);s.session.accept(data);
+  await s.respond({active_scene_id:1,scenes:[{id:1,name:'Whiteboard'}]});
+  const view=s.api.getAppState;s.api.getAppState=()=>({...view(),selectedElementIds:{'actor-1-one':true}});s.session.capture(s.elements());
+  const action=()=>s.nodes.get('token-actions').querySelector('#token-encounter-action');
+  const failed=action().events.click();await tick();assert.equal(action().disabled,true);
+  await action().events.click();assert.equal(s.requests.length,1);
+  s.requests.shift().resolve({ok:false,status:503});await failed;assert.equal(action().disabled,false);
+  const added=action().events.click();await tick();
+  await s.respond({...data,encounter_version:1,encounter:{round:1,participants:[{id:'1',name:'Moss',can_control:true,acted:false}]}});await added;
+  assert.equal(action().textContent,'Already in encounter');assert.equal(action().disabled,true);s.finish();
 });
