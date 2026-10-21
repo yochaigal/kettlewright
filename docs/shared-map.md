@@ -4,7 +4,7 @@ Whiteboard (formerly Shared Map) is an independent, collaborative Excalidraw can
 
 ## Access and deployment
 
-`FEATURE_TEST_PARTY_IDS` continues to gate Whiteboard, including its scene, sources, import and fog APIs. `FEATURE_TEST_USER_IDS` alone does not enable a party's board. The local development feature override also remains supported. See [rollout configuration](campaigns.md#deployment-and-maintenance).
+Whiteboard is available to all current party members without tester lists. Its scene, tokens and laser require current membership; map sources, previews, imports and fog changes require the party Warden. Map sources also require ownership of the source map. See [access and deployment](campaigns.md#deployment-and-maintenance).
 
 Apply `flask db upgrade` before starting the updated workers (revision `319a01`). The migration preserves existing drawings and initializes their fog as disabled. No frontend build is needed: Excalidraw 0.18.0 and React 18.3.1 load from esm.sh. The existing Socket.IO/Redis deployment serves board notifications.
 
@@ -18,7 +18,7 @@ The five bundled libraries preload without adding items to the canvas: Architect
 
 ## Laser pointer
 
-The native laser tool broadcasts transient scene coordinates through the authenticated Socket.IO connection, at most 25 updates/second per tab. Current party membership, experimental access, CSRF and board generation are checked on the server; a separate 40-event/second per-user limit bounds traffic. Other tabs render Excalidraw's fading laser above the fog, without adding drawing elements or save requests. Stale pointers expire after 1.5 seconds; disconnects and replacements clear them. Live laser sharing requires a working WebSocket; HTTP scene polling does not replay old laser trails.
+The native laser tool broadcasts transient scene coordinates through the authenticated Socket.IO connection, at most 25 updates/second per tab. Current party membership, CSRF and board generation are checked on the server; a separate 40-event/second per-user limit bounds traffic. Other tabs render Excalidraw's fading laser above the fog, without adding drawing elements or save requests. Stale pointers expire after 1.5 seconds; disconnects and replacements clear them. Live laser sharing requires a working WebSocket; HTTP scene polling does not replay old laser trails.
 
 ## Party tokens
 
