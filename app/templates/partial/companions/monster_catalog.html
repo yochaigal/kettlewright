@@ -1,30 +1,73 @@
-  <p>{{_('Choose a monster or import a Cairn Markdown stat block. Each summon has its own stats and inventory.')}}</p>
+  <p>{{_('Set a quantity for each monster, or import Cairn Markdown stat blocks. Each instance has its own stats and inventory.')}}</p>
   {% if error %}<p role="alert">{{error}}</p>{% endif %}
   <form class="monster-catalog-form" method="post" enctype="multipart/form-data" action="{{url_for('companions.monsters', party_id=party.id)}}">
     {{form.hidden_tag()}}
     <label for="monster-search">{{_('Search bestiary')}}</label>
     <input id="monster-search" type="search">
-    <label for="monster-template">{{_('Monster')}}</label>
-    <select id="monster-template" name="template">{% for key, monster in templates|dictsort %}<option value="{{key}}">{{monster.name}} · {{monster.hp}} HP · {{monster.armor}} {{_('Armor')}}</option>{% endfor %}</select>
-    <div id="monster-preview" aria-live="polite"></div>
-    <button type="submit" id="summon-monster">{{_('Summon monster')}}</button>
+    <label class="monster-selected-filter"><input id="monster-selected-only" type="checkbox"> {{_('Show selected only')}}</label>
+    <p id="monster-catalog-label" class="monster-catalog-label">{{_('Monsters')}}</p>
+    <div class="monster-choices" role="group" aria-labelledby="monster-catalog-label">
+      <div class="monster-card-grid">
+      {% for key, monster in templates|dictsort %}
+      <div class="monster-choice" data-name="{{monster.name|lower}}" data-key="{{key}}">
+        <input type="checkbox" name="template" value="{{key}}" hidden {% if key in request.form.getlist('template') %}checked{% endif %}>
+        <div class="monster-card-heading">
+          <img src="{{url_for('static', filename='images/portraits/' + monster.image_url)}}" alt="" width="44" height="44" loading="lazy">
+          <h4>{{monster.name}}</h4>
+          <button class="monster-preview-button" type="button" data-preview="{{key}}" aria-label="{{_('Preview %(name)s', name=monster.name)}}" aria-controls="monster-preview" aria-expanded="false"><i class="fa-solid fa-eye" aria-hidden="true"></i></button>
+        </div>
+        <dl class="monster-card-stats">
+          {% for label, value in [('HP', monster.hp), (_('Armor'), monster.armor), ('STR', monster.strength), ('DEX', monster.dexterity), ('WIL', monster.willpower)] %}
+          <div><dt>{{label}}</dt><dd>{{value}}</dd></div>
+          {% endfor %}
+        </dl>
+        <div class="monster-card-footer">
+          <label for="monster-quantity-{{key}}">{{_('Quantity')}}</label>
+          <div class="monster-quantity">
+            <button type="button" data-quantity-step="-1" aria-label="{{_('Decrease quantity for %(name)s', name=monster.name)}}">−</button>
+            <input id="monster-quantity-{{key}}" type="number" name="quantity_{{key}}" value="{{request.form.get('quantity_' + key, '1') if key in request.form.getlist('template') else '0'}}" min="0" max="100" step="1" required aria-label="{{_('Quantity for %(name)s', name=monster.name)}}">
+            <button type="button" data-quantity-step="1" aria-label="{{_('Increase quantity for %(name)s', name=monster.name)}}">+</button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      </div>
+    </div>
+    <p id="monster-no-results" hidden>{{_('No monsters found.')}}</p>
+    <div class="monster-selection-actions">
+      <p aria-live="polite">{{_('Selected instances:')}} <output id="monster-total">0</output> / 100</p>
+      <button type="submit" id="summon-monster">{{_('Summon monsters')}}</button>
+    </div>
+    <section id="monster-preview" class="monster-hover-preview" role="region" aria-label="{{_('Monster preview')}}" hidden>
+      <button type="button" id="monster-close-preview" aria-label="{{_('Close preview')}}" title="{{_('Close preview')}}">×</button>
+      <div id="monster-preview-content"></div>
+    </section>
   </form>
-  <details class="monster-import"><summary>{{_('Import Markdown')}}</summary>
+  <details class="monster-import" {% if error and not request.form.getlist('template') %}open{% endif %}><summary>{{_('Import Markdown')}}</summary>
     <div id="monster-import-format" class="monster-import-format">
-      <p>{{_('Upload one monster per UTF-8 Markdown file (.md), up to 64 KB.')}}</p>
+      <p>{{_('Paste Markdown or upload a UTF-8 file (.md), up to 64 KB. Separate monsters with --- on its own line. Add at most 100 instances at a time.')}}</p>
       <p>{{_('Start with a heading containing the monster’s name. Put its stats on one line below it, with numbers before the English labels HP, Armor, STR, DEX and WIL.')}}</p>
       <pre><code># Vampire Bat
 
 3 HP, 0 Armor, 6 STR, 14 DEX, 3 WIL, bite (d8)
 
 - Feeds on blood and navigates by echolocation.
-- **Critical Damage:** The target is infected by disease.</code></pre>
+- **Critical Damage:** The target is infected by disease.
+
+---
+
+# Wolf
+
+4 HP, 12 STR, bite (d6)</code></pre>
       <p>{{_('The name and HP are required. Omitted Armor defaults to 0; STR, DEX and WIL default to 10. Armor must be between 0 and 3.')}}</p>
       <p>{{_('The rest of the stat line becomes the attack. Everything below it becomes the monster’s notes and supports Markdown.')}}</p>
     </div>
     <form method="post" enctype="multipart/form-data" action="{{url_for('companions.monsters', party_id=party.id)}}">{{form.hidden_tag()}}
-      <input type="file" name="monster_file" accept=".md,.markdown,text/markdown,text/plain" required aria-label="{{_('Monster file')}}" aria-describedby="monster-import-format">
-      <button type="submit">{{_('Import monster')}}</button>
+      <label for="monster-markdown">{{_('Markdown')}}</label>
+      <textarea id="monster-markdown" name="monster_markdown" rows="8" aria-describedby="monster-import-format">{{request.form.get('monster_markdown', '')}}</textarea>
+      <label for="monster-file">{{_('Or upload a Markdown file (used instead of pasted text)')}}</label>
+      <input id="monster-file" type="file" name="monster_file" accept=".md,.markdown,text/markdown,text/plain" aria-label="{{_('Monster file')}}" aria-describedby="monster-import-format">
+      <button type="submit">{{_('Import monsters')}}</button>
     </form>
   </details>
   <p><small><a href="https://cairnrpg.com/resources/monsters/" target="_blank" rel="noopener noreferrer">{{_('Cairn bestiary')}}</a> · Yochai Gal &amp; contributors · CC-BY-SA 4.0</small></p>
