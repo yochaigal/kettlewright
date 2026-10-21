@@ -5,8 +5,11 @@ body.dark-mode { --board-bg: #202126; --board-panel: #292b32; --board-text: #efe
 .map-header, .fog-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 16px; background: var(--board-bg); border-bottom: 1px solid var(--board-border); }
 .map-header { flex-shrink:0; }
 .board-panel-toggles { display:flex; align-items:center; gap:6px; }
-.board-panel-toggle::after { content:' ▾'; font-size:10px; }
-.board-panel-toggle[aria-expanded="true"]::after { content:' ▴'; }
+.board-panel-toggle { white-space:nowrap; }
+.board-panel-toggle::after { content:''; display:inline-block; width:8px; height:8px; margin-left:10px;
+  border-right:2px solid currentColor; border-bottom:2px solid currentColor; vertical-align:middle;
+  transform:translateY(-2px) rotate(45deg); }
+.board-panel-toggle[aria-expanded="true"]::after { transform:translateY(2px) rotate(225deg); }
 .board-panel-toggle[aria-expanded="true"] { background:var(--board-active); border-color:#8278c8; }
 .board-control-panel { flex-shrink:0; max-height:32dvh; overflow:auto; }
 .board-control-panel[hidden] { display:none; }
