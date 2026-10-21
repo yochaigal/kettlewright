@@ -24,22 +24,24 @@
   <header class="map-header">
     <a id="back-to-party" href="{{ url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) }}" title="{{ _('Back to party') }}" aria-label="{{ _('Back to party') }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>
     <button type="button" id="board-party" title="{{ party.name }}" aria-controls="party-panel" aria-expanded="false"><i class="fa-solid fa-users" aria-hidden="true"></i> {{ _('Party') }}</button>
+    <div class="board-panel-toggles" role="group" aria-label="{{ _('Whiteboard controls') }}">
+      {% if warden %}
+      <button type="button" id="board-scene-toggle" class="board-panel-toggle" aria-controls="scene-panel" aria-expanded="false" disabled>{{ _('Scene') }}</button>
+      <button type="button" id="board-fog-toggle" class="board-panel-toggle" aria-controls="fog-panel" aria-expanded="false" disabled>{{ _('Fog of War') }}</button>
+      {% endif %}
+      <button type="button" id="board-encounter" class="board-panel-toggle" aria-controls="encounter-panel" aria-expanded="false" disabled>{{ _('Encounter') }}<span id="encounter-count"></span></button>
+    </div>
     <div class="map-view-controls">
       <button type="button" id="board-theme" title="{{ _('Light / dark') }}" aria-label="{{ _('Light / dark') }}"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i></button>
       <button type="button" id="fit-map" title="{{ _('Fit map') }}" aria-label="{{ _('Fit map') }}"><i class="fa-solid fa-expand" aria-hidden="true"></i></button>
-      {% if can_load_maps %}<button type="button" id="load-map" title="{{ _('Load map') }}" aria-label="{{ _('Load map') }}"><i class="fa-solid fa-map" aria-hidden="true"></i></button>{% endif %}
     </div>
     <button type="button" id="mobile-party-tokens">{{ _('Tokens') }}</button>
-    {% if warden %}
-    <button type="button" id="lock-map" title="{{ _('Lock map') }}" aria-label="{{ _('Lock map') }}" aria-pressed="false"><span class="map-lock-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span></button>
-    {% endif %}
-    {% if warden %}<button type="button" id="board-prep-toggle" aria-controls="warden-controls" aria-expanded="false">{{ _('Scenes & fog') }}</button>{% endif %}
     <span id="scene-name"></span><span id="scene-draft" hidden>{{ _('Preparing privately') }}</span>
     <div id="board-presence" role="group" aria-label="{{ _('Viewing this scene') }}"></div>
     <span id="map-status" role="status" aria-live="polite">{{ _('Loading…') }}</span>
   </header>
   {% if warden %}
-  <div id="warden-controls">
+  <section id="scene-panel" class="board-control-panel" aria-label="{{ _('Scene controls') }}" hidden>
   <nav id="scene-controls" class="scene-controls" aria-label="{{ _('Scenes') }}">
     <label for="board-scene">{{ _('Scene') }}</label><select id="board-scene"></select>
     <button type="button" id="scene-create">{{ _('New scene') }}</button>
@@ -47,11 +49,14 @@
     <button type="button" id="scene-duplicate">{{ _('Duplicate') }}</button>
     <button type="button" id="scene-delete">{{ _('Delete') }}</button>
     <button type="button" id="scene-activate" aria-describedby="scene-visibility-help" disabled>{{ _('Show to party') }}</button>
+    {% if can_load_maps %}<button type="button" id="load-map"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Load map') }}</button>{% endif %}
+    <button type="button" id="lock-map" title="{{ _('Lock map') }}" aria-label="{{ _('Lock map') }}" aria-pressed="false"><span class="map-lock-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span> <span id="map-lock-label">{{ _('Lock map') }}</span></button>
     <button type="button" id="marker-create">{{ _('Add material marker') }}</button>
   </nav>
   <p id="scene-visibility-help" class="scene-visibility-help" role="status"></p>
-  <section class="fog-toolbar" aria-label="{{ _('Fog of War') }}">
-    <button type="button" id="fog-enabled" aria-pressed="false">{{ _('Fog of War') }}</button>
+  </section>
+  <section id="fog-panel" class="fog-toolbar board-control-panel" aria-label="{{ _('Fog of War controls') }}" hidden>
+    <button type="button" id="fog-enabled" aria-pressed="false">{{ _('Enable fog') }}</button>
     <button type="button" data-fog-tool="reveal" aria-pressed="false" disabled>{{ _('Reveal') }}</button>
     <button type="button" data-fog-tool="cover" aria-pressed="false" disabled>{{ _('Cover') }}</button>
     <label for="fog-radius">{{ _('Brush size') }}</label>
@@ -63,20 +68,26 @@
     <span id="fog-status" role="status" aria-live="polite"></span>
     <button type="button" id="discard-fog" hidden>{{ _('Discard unsaved fog') }}</button>
   </section>
-  </div>
   {% endif %}
+  <section id="encounter-panel" class="encounter-panel" aria-labelledby="encounter-title" hidden>
+    <div class="encounter-heading">
+      <h2 id="encounter-title">{{ _('Encounter') }} · <span id="encounter-round"></span></h2>
+      <button type="button" id="encounter-close">{{ _('Close') }}</button>
+    </div>
+    <p class="encounter-help">{% if warden %}{{ _('Track who has acted each round, in any order. Add participants, mark Acted after their turn, then use Next round to clear the marks. HP and rolls use the token actions.') }}{% else %}{{ _('Mark Acted after your character or companion takes a turn. The Warden starts the next round and clears the marks. Turn order is up to the group.') }}{% endif %}</p>
+    <p id="encounter-empty" class="encounter-help">{% if warden %}{{ _('No participants yet. Place tokens on the board, then add participants below or select a token and choose Add to encounter.') }}{% else %}{{ _('No participants yet. The Warden adds them to this scene’s encounter.') }}{% endif %}</p>
+    <div id="encounter-list" class="encounter-list"></div>
+    {% if warden %}<div class="encounter-controls">
+      <label for="encounter-actor">{{ _('Add from board') }}</label><select id="encounter-actor"></select>
+      <button type="button" id="encounter-add" disabled>{{ _('Add participant') }}</button>
+      <button type="button" id="encounter-next_round" disabled>{{ _('Next round') }}</button>
+      <button type="button" id="encounter-reset" disabled>{{ _('Restart at round 1') }}</button>
+    </div>{% endif %}
+  </section>
   <div id="board-notices" aria-live="polite"></div>
   <div id="editor"></div>
   <div class="board-dock">
   <section id="token-actions" class="token-actions" aria-label="{{ _('Token actions') }}" hidden></section>
-  <details id="encounter-panel" class="encounter-panel">
-    <summary>{{ _('Encounter') }} · <span id="encounter-round"></span></summary>
-    <div id="encounter-list"></div>
-    {% if warden %}<div class="encounter-controls">
-      <button type="button" id="encounter-next_round">{{ _('Next round') }}</button>
-      <button type="button" id="encounter-reset">{{ _('Reset round') }}</button>
-    </div>{% endif %}
-  </details>
   {% if warden %}<dialog id="scene-dialog" class="board-dialog" aria-labelledby="scene-dialog-title">
     <form id="scene-form">
       <h2 id="scene-dialog-title">{{ _('Scene name') }}</h2>
@@ -160,6 +171,8 @@
       'shownSceneHelp': _('Players are viewing this scene until you show another one. To hide it, show a different scene, such as an empty scene. Selecting a scene changes only your view.'),
       'privateSceneHelp': _('This scene is private. Show to party moves all players here. It stays visible until you show another scene.'),
       'round': _('Round'), 'acted': _('Acted'),
+      'chooseEncounterToken': _('Choose a token'), 'noEncounterTokens': _('No tokens to add'),
+      'removeEncounter': _('Remove from encounter'),
       'openSheet': _('Open sheet'), 'addEncounter': _('Add to encounter'),
       'deleteToken': _('Remove token'), 'hideToken': _('Hide token'), 'showToken': _('Show token'), 'numberTokens': _('Toggle numbering'),
       'deprived': _('Deprived'), 'panicked': _('Panicked'), 'dead': _('Dead'),

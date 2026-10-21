@@ -3,6 +3,13 @@ body { --board-bg: #f8f6f1; --board-panel: #fff; --board-text: #30343b; --board-
   display: flex; flex-direction: column; font-family: system-ui, sans-serif; color: var(--board-text); background: var(--board-bg); }
 body.dark-mode { --board-bg: #202126; --board-panel: #292b32; --board-text: #efeff4; --board-border: #464852; --board-active: #494365; color-scheme: dark; }
 .map-header, .fog-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 16px; background: var(--board-bg); border-bottom: 1px solid var(--board-border); }
+.map-header { flex-shrink:0; }
+.board-panel-toggles { display:flex; align-items:center; gap:6px; }
+.board-panel-toggle::after { content:' ▾'; font-size:10px; }
+.board-panel-toggle[aria-expanded="true"]::after { content:' ▴'; }
+.board-panel-toggle[aria-expanded="true"] { background:var(--board-active); border-color:#8278c8; }
+.board-control-panel { flex-shrink:0; max-height:32dvh; overflow:auto; }
+.board-control-panel[hidden] { display:none; }
 .map-header a, #board-notices a { color: var(--board-text); }
 #back-to-party { display: inline-flex; align-items: center; justify-content: center; padding: 7px 10px;
   border: 1px solid var(--board-border); border-radius: 6px; background: var(--board-panel); font-size: 13px; text-decoration: none; }
@@ -143,10 +150,18 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
   background:var(--board-panel); color:var(--board-text); font:12px/1.4 system-ui,sans-serif; box-shadow:0 4px 20px #0002; }
 .token-actions[hidden] { display:none; } .token-actions strong { flex-basis:100%; } .token-actions label { display:inline-flex; align-items:center; gap:4px; }
 .token-actions input[type=number] { width:48px; padding:4px; background:var(--board-bg); color:var(--board-text); border:1px solid var(--board-border); border-radius:4px; }
-.encounter-panel { position:fixed; z-index:5; right:12px; top:200px; max-height:45vh; overflow:auto; width:min(260px, calc(100vw - 24px));
-  background:var(--board-panel); border:1px solid var(--board-border); border-radius:10px; padding:10px; font:12px/1.4 system-ui,sans-serif; box-shadow:0 4px 20px #0002; }
-.encounter-panel summary { cursor:pointer; font-weight:700; }.encounter-row { display:flex; gap:5px; align-items:center; margin-top:6px; }
-.encounter-row button:first-of-type { flex:1; text-align:left; }.encounter-controls { display:flex; gap:6px; margin-top:10px; }
+.encounter-panel { flex-shrink:0; box-sizing:border-box; max-height:32dvh; overflow:auto; padding:10px 16px;
+  border-bottom:1px solid var(--board-border); background:var(--board-panel); color:var(--board-text); font:12px/1.5 system-ui,sans-serif; }
+.encounter-panel[hidden] { display:none; }
+.encounter-heading { display:flex; align-items:center; gap:12px; justify-content:space-between; }
+.encounter-heading h2 { margin:0; font-size:14px; }
+.encounter-help { margin:6px 0; }
+.encounter-list { display:flex; flex-wrap:wrap; gap:6px; }
+.encounter-row { display:flex; gap:8px; align-items:center; padding:4px; border:1px solid var(--board-border); border-radius:6px; }
+.encounter-row label { display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
+.encounter-row button:first-of-type { min-width:80px; text-align:left; }
+.encounter-controls { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin-top:10px; }
+.encounter-controls select { max-width:200px; background:var(--board-bg); color:var(--board-text); padding:6px; border:1px solid var(--board-border); border-radius:6px; }
 .board-markers { position:absolute; inset:0; z-index:2; pointer-events:none; overflow:hidden; }
 .board-marker { position:absolute; transform:translate(-50%,-50%); pointer-events:auto; border:2px solid #8278c8; border-radius:50%;
   width:30px; height:30px; background:var(--board-panel); color:var(--board-text); cursor:pointer; font:700 12px system-ui,sans-serif; }
@@ -156,7 +171,7 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 @media (max-width:600px) {
   .scene-controls { padding:6px 8px; } #board-scene { max-width:160px; }
   .presence-avatar { width:26px; height:26px; } #board-presence { margin-left:auto; } #map-status { max-width:none; }
-  .encounter-panel { top:auto; bottom:8px; right:8px; max-height:35vh; width:calc(100vw - 40px); }
+  .encounter-panel { padding:8px; }
   .token-actions { left:8px; bottom:225px; max-width:calc(100vw - 38px); }
 }
 .token-name { position:absolute; transform:translateX(-50%); padding:1px 4px; border-radius:3px; background:var(--board-panel); color:var(--board-text); font:11px/1.4 system-ui,sans-serif; white-space:nowrap; }
@@ -164,14 +179,12 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 /* Actor actions use the board panel; native image crop/link/opacity actions do not apply to managed placements. */
 .board-token-selected .excalidraw .App-menu__left:has([id$="selectedShapeActions-title"]) { display:none; }
 .board-token-selected .excalidraw .selected-shape-actions { display:none; }
-.board-dock { display:contents; } #board-prep-toggle { display:none; }
+.board-dock { display:contents; }
 @media (max-width:600px) {
-  #board-prep-toggle { display:inline-block; }
-  #warden-controls:not(.expanded) { display:none; }
   .map-header > #scene-name { display:block; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .map-header > #scene-draft:not([hidden]) { display:block; }
   .board-dock { display:flex; flex-direction:column; gap:6px; position:relative; flex:0 1 auto; min-height:0; max-height:38dvh; overflow:auto; margin:6px 8px 50px; overscroll-behavior:contain; }
-  .board-dock > .token-actions, .board-dock > .encounter-panel, .board-dock > .board-rolls {
+  .board-dock > .token-actions, .board-dock > .board-rolls {
     position:static; transform:none; width:auto; max-width:none; max-height:none; margin:0; flex-shrink:0; box-shadow:none; }
 }
 @media (max-width:600px) { .map-header > span#scene-name { display:block; } .map-header > span#scene-draft:not([hidden]) { display:block; } }

@@ -10,6 +10,8 @@ There is no frontend build: Excalidraw 0.18.0 and React 18.3.1 load from esm.sh.
 
 ## Scenes
 
+The header groups controls under **Scene**, **Fog of War** (Warden only) and **Encounter**. Each button opens its controls directly below the header; only one section is open at a time, and clicking the same button collapses it. Sections reserve their own space above the canvas, keeping Excalidraw's Tokens and Library accessible on desktop and mobile. Scene includes the scene selector, scene actions, map import, background locking and material markers. Closing Fog controls also clears the active fog brush.
+
 The Warden can create, name, rename, duplicate and delete scenes. The scene selector changes only that Warden tab's view. **Show to party** activates the scene for all players. **Preparing privately** identifies a scene that is not active. Players cannot list or read private scenes, including by guessing their IDs. The active and last remaining scene cannot be deleted.
 
 There is always one active scene. Its action reads **Shown to party** and is disabled; activation is an action, not a visibility toggle. Players stay there until the Warden shows another scene. To hide the current map, show a different scene, such as an empty scene. A visible explanation beside the scene controls describes this behavior before and after activation. Repeating activation of the current scene leaves the activation revision and player views unchanged.
@@ -48,7 +50,9 @@ Use Party's bulk monster creation to create independent creatures. Placing the s
 
 ## Encounter
 
-Each scene has an independent, collapsible tracker with a round and an acted checkbox per actor. The Warden adds/removes participants, corrects marks, resets the encounter round or starts the next round. Players mark only actors they can control. There is no enforced initiative order or combat automation. Multiple placements of an actor still use one encounter row. Selecting a participant focuses an available token or opens the permitted sheet.
+Each scene has an independent tracker with a round and an **Acted** checkbox per actor. Open **Encounter** in the header to see its instructions and participants. The Warden can choose a placed actor under **Add from board** and press **Add participant**, or select a token and use **Add to encounter**. Multiple placements of one actor still use one encounter row, and actors already participating are excluded from the picker.
+
+Mark **Acted** after a participant takes a turn; players can mark only actors they control. **Next round** clears the marks and advances the round. **Restart at round 1** clears them and resets the round while keeping the participants. The Warden can correct marks and remove participants. There is no enforced initiative order or combat automation; HP and rolls use the token actions. Selecting a participant focuses an available token or opens the permitted sheet.
 
 Hidden creatures are excluded from the player tracker. Visible monsters with private stats use neutral labels. Returning to a scene restores its round and marks.
 

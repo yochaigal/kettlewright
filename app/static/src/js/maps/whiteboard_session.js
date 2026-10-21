@@ -8,7 +8,7 @@ export function presenceUsers(members) {
 }
 
 // Managed objects never enter Excalidraw's free-drawing save queue.
-export function createWhiteboardSession({config, socket, getApi, project, refresh, switchScene, flushDrawing, preserveDraft, isPreview, onStatus = () => {}}) {
+export function createWhiteboardSession({config, socket, getApi, project, refresh, switchScene, flushDrawing, preserveDraft, isPreview, onStatus = () => {}, onPanelChange = () => {}}) {
   const base = config.boardUrl, messages = config.messages;
   const pending = new Map(), statTimers = new Map(), statSaves = new Map();
   let state = null, tokens = new Map(), saving = null, timer, stopped = false, active = null, panelSignature = '', epoch = 0;
@@ -16,7 +16,11 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
   let activating = false;
   const toolbar = document.getElementById('scene-controls'), select = document.getElementById('board-scene');
   const activateButton = document.getElementById('scene-activate');
-  const tokenPanel = document.getElementById('token-actions'), encounterPanel = document.getElementById('encounter-panel');
+  const tokenPanel = document.getElementById('token-actions');
+  const panels = ['scene', 'fog', 'encounter'].map(name => ({name,
+    button: document.getElementById(name === 'encounter' ? 'board-encounter' : `board-${name}-toggle`),
+    panel: document.getElementById(`${name}-panel`)})).filter(item => item.button && item.panel);
+  let openPanel = null, encounterBusy = false;
   const markerLayer = document.createElement('div'); markerLayer.className = 'board-markers';
   let markerHost;
   const context = () => state ? {protocol: 2, scene_id: state.scene_id, activation_version: state.activation_version, generation: state.generation} : {};
@@ -73,7 +77,7 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
       api.addFiles(Object.values(drawing.files));
       api.updateScene({elements: restoreElements(drawing.elements, null), captureUpdate: CaptureUpdateAction.NEVER});
     });
-    if (encounterPanel) encounterPanel.hidden = isPreview();
+    syncPanels();
     drawPanel(); redrawMarkers();
   }
   function capture(elements) {
@@ -210,8 +214,8 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
       tokenPanel.append(button(messages[token.visible ? 'hideToken' : 'showToken'], () => tokenAction({visible: !token.visible})));
       if (token.kind === 'monster') tokenPanel.append(button(messages.numberTokens, () => tokenAction({numbered: !token.numbered})));
       tokenPanel.append(button(messages.addEncounter, async () => {
-        accept(await request('encounter', {encounter_version: state.encounter_version, action: 'add', actor_id: token.actor_id}));
-        encounterPanel.open = true;
+        await changeEncounter('add', {actor_id: token.actor_id});
+        setOpenPanel('encounter');
       }));
     }
   }
@@ -244,27 +248,62 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
   }
   function renderEncounter() {
     const list = document.getElementById('encounter-list'); if (!state || !list) return;
+    syncPanels();
+    document.getElementById('encounter-count').textContent = state.encounter.participants.length ? ` (${state.encounter.participants.length})` : '';
     document.getElementById('encounter-round').textContent = `${messages.round} ${state.encounter.round}`;
+    document.getElementById('encounter-empty').hidden = state.encounter.participants.length > 0;
     list.replaceChildren();
     for (const actor of state.encounter.participants) {
       const row = document.createElement('div'), acted = document.createElement('input'); row.className = 'encounter-row';
-      acted.type = 'checkbox'; acted.checked = actor.acted; acted.disabled = !actor.can_control;
+      acted.type = 'checkbox'; acted.checked = actor.acted; acted.disabled = !actor.can_control || encounterBusy;
       acted.setAttribute('aria-label', `${actor.name}: ${messages.acted}`);
       acted.addEventListener('change', async () => {
-        acted.disabled = true;
-        try {accept(await request('encounter', {encounter_version: state.encounter_version, action: 'acted', actor_id: actor.id, acted: acted.checked}));}
+        try {await changeEncounter('acted', {actor_id: actor.id, acted: acted.checked});}
         catch (error) {busyMessage(error); renderEncounter();}
       });
-      row.append(acted, button(actor.name, () => {
+      const label = document.createElement('label'); label.append(acted, document.createTextNode(messages.acted));
+      row.append(button(actor.name, () => {
         const token = [...tokens.values()].find(token => token.actor_id === actor.id && (!isPreview() || token.visible));
         if (token) {active = token.id; getApi()?.scrollToContent(token.element, {animate: true}); drawPanel();}
         else if (actor.sheet_url) openSheet(actor.sheet_url);
-      }));
-      if (config.warden) row.append(button('×', async () => accept(await request('encounter', {
-        encounter_version: state.encounter_version, action: 'remove', actor_id: actor.id}))));
+      }), label);
+      if (config.warden) {
+        const remove = button('×', () => changeEncounter('remove', {actor_id: actor.id}), encounterBusy);
+        remove.title = messages.removeEncounter; remove.setAttribute('aria-label', messages.removeEncounter); row.append(remove);
+      }
       list.append(row);
     }
+    if (config.warden) {
+      const choices = document.getElementById('encounter-actor'), selected = choices.value;
+      const participating = new Set(state.encounter.participants.map(actor => actor.id));
+      const available = new Map([...tokens.values()].filter(token => !participating.has(token.actor_id)).map(token => [token.actor_id, token]));
+      const placeholder = document.createElement('option'); placeholder.value = '';
+      placeholder.textContent = messages[available.size ? 'chooseEncounterToken' : 'noEncounterTokens'];
+      choices.replaceChildren(placeholder);
+      for (const [id, token] of available) {const option = document.createElement('option'); option.value = id; option.textContent = token.name; choices.append(option);}
+      choices.value = available.has(selected) ? selected : ''; choices.disabled = !available.size || encounterBusy;
+      document.getElementById('encounter-add').disabled = !choices.value || encounterBusy;
+      for (const action of ['next_round', 'reset']) document.getElementById(`encounter-${action}`).disabled = !participating.size || encounterBusy;
+    }
   }
+  function syncPanels() {
+    for (const {name, button, panel} of panels) {
+      const available = Boolean(state) && (!isPreview() || name === 'fog');
+      panel.hidden = openPanel !== name || !available;
+      button.disabled = !available; button.setAttribute('aria-expanded', String(!panel.hidden));
+    }
+  }
+  function setOpenPanel(name) {openPanel = name; syncPanels(); onPanelChange(name);}
+  async function changeEncounter(action, values = {}) {
+    if (!state || encounterBusy) return;
+    const run = epoch; encounterBusy = true; renderEncounter();
+    try {
+      const data = await request('encounter', {encounter_version: state.encounter_version, action, ...values});
+      if (run === epoch) accept(data);
+    } finally {if (run === epoch) {encounterBusy = false; renderEncounter();}}
+  }
+  for (const {name, button} of panels) button.addEventListener('click', () => setOpenPanel(openPanel === name ? null : name));
+  document.getElementById('encounter-close')?.addEventListener('click', () => setOpenPanel(null));
   function redrawMarkers() {
     if (markersFrame === null && !stopped) markersFrame = requestAnimationFrame(drawMarkers);
   }
@@ -386,7 +425,14 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
     document.getElementById('scene-delete').addEventListener('click', () => {if (confirm(messages.deleteScene)) sceneAction('delete').catch(busyMessage);});
     activateButton.addEventListener('click', activateScene);
     for (const action of ['next_round', 'reset']) document.getElementById(`encounter-${action}`).addEventListener('click', async () => {
-      try {accept(await request('encounter', {encounter_version: state.encounter_version, action}));} catch (error) {busyMessage(error);}
+      try {await changeEncounter(action);} catch (error) {busyMessage(error);}
+    });
+    document.getElementById('encounter-actor').addEventListener('change', event => {
+      document.getElementById('encounter-add').disabled = !event.target.value || encounterBusy;
+    });
+    document.getElementById('encounter-add').addEventListener('click', async () => {
+      const actor_id = document.getElementById('encounter-actor').value;
+      if (actor_id) try {await changeEncounter('add', {actor_id});} catch (error) {busyMessage(error);}
     });
     document.getElementById('marker-create').addEventListener('click', async () => {
       try {
@@ -457,7 +503,7 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
     get busy() {return Boolean(pending.size || saving || statTimers.size || statSaves.size);},
     draft() {return [...tokens.values()].filter(token => pending.get(token.id)?.action !== 'delete').map(token => ({...token.element, ...pending.get(token.id)?.geometry}));},
     files() {return Object.assign({}, ...[...tokens.values()].map(token => token.files));},
-    reset() {for (const task of statTimers.values()) clearTimeout(task.timer); statTimers.clear(); ++epoch; presenceScene = null; state = null; saving = null; pending.clear(); tokens.clear(); active = null; document.body?.classList.remove('board-token-selected'); panelSignature = ''; config.boardContext = {}; markerLayer.replaceChildren();},
+    reset() {for (const task of statTimers.values()) clearTimeout(task.timer); statTimers.clear(); ++epoch; presenceScene = null; state = null; saving = null; pending.clear(); tokens.clear(); active = null; encounterBusy = false; syncPanels(); document.body?.classList.remove('board-token-selected'); panelSignature = ''; config.boardContext = {}; markerLayer.replaceChildren();},
     destroy() {for (const task of statTimers.values()) clearTimeout(task.timer); statTimers.clear(); stopped = true; ++epoch; leave(); clearTimeout(timer); clearInterval(poll); if (markersFrame !== null) cancelAnimationFrame(markersFrame);
       markerLayer.remove(); tokenPanel.hidden = true; document.body?.classList.remove('board-token-selected');
       document.getElementById('editor').removeEventListener('keydown', deleteKey, true); disconnected();

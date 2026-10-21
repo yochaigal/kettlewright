@@ -43,7 +43,9 @@ const library = loadLibraries([...MAP_LIBRARIES, 'clocks'], new URL(config.libra
 const socket = io({transports: ['websocket'], reconnectionDelay: 1000, reconnectionDelayMax: 10000});
 const actorUpdates = createActorUpdates({config, socket, denied});
 const session = createWhiteboardSession({config, socket, getApi: () => api, refresh, switchScene, flushDrawing, preserveDraft,
-  isPreview: () => playerPreview, onStatus: showStatus, project: update => {applying = true; try {update();} finally {applying = false;}}});
+  isPreview: () => playerPreview, onStatus: showStatus,
+  onPanelChange: name => {if (name !== 'fog') {layer.setTool(''); document.querySelectorAll('[data-fog-tool]').forEach(button => button.setAttribute('aria-pressed', 'false'));}},
+  project: update => {applying = true; try {update();} finally {applying = false;}}});
 actorUpdates.subscribe('stats', data => session.actorSnapshot(data));
 
 const laser = createLaserSync({socket, getApi: () => api, getGeneration: () => generation, config,
