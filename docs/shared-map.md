@@ -12,6 +12,8 @@ There is no frontend build: Excalidraw 0.18.0 and React 18.3.1 load from esm.sh.
 
 The Warden can create, name, rename, duplicate and delete scenes. The scene selector changes only that Warden tab's view. **Show to party** activates the scene for all players. **Preparing privately** identifies a scene that is not active. Players cannot list or read private scenes, including by guessing their IDs. The active and last remaining scene cannot be deleted.
 
+There is always one active scene. Its action reads **Shown to party** and is disabled; activation is an action, not a visibility toggle. Players stay there until the Warden shows another scene. To hide the current map, show a different scene, such as an empty scene. A visible explanation beside the scene controls describes this behavior before and after activation. Repeating activation of the current scene leaves the activation revision and player views unchanged.
+
 Each scene retains drawing, token placements, fog, markers and encounter state. Actor HP and conditions remain in the ordinary Character/Companion records and are shared across scenes. Duplication copies placements, fog and links, preserving actor identities; encounter participants are copied with round 1 and all action marks cleared.
 
 Local scene changes wait for drawing, fog and token queues to save. A forced player transition retains unsaved visual work in a downloadable `.excalidraw` draft and invalidates old queues. Both scene ID and the activation revision protect writes, including an A → B → A transition. Replacement of a scene also increments its generation.

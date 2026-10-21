@@ -130,6 +130,11 @@ def scenes(party_id):
         return jsonify(deleted=True)
     elif action == 'activate':
         expected = integer(payload, 'activation_version')
+        db.session.refresh(board)
+        if expected != board.activation_version:
+            conflict('active_changed')
+        if board.active_scene_id == scene.id:
+            return jsonify(projection(party, board, scene))
         if not PartyMap.query.filter_by(party_id=party.id, activation_version=expected).update(
                 {'active_scene_id': scene.id, 'activation_version': expected + 1}, synchronize_session=False):
             conflict('active_changed')

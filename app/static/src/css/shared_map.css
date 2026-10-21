@@ -129,7 +129,9 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 .scene-controls { display:flex; align-items:center; flex-wrap:wrap; gap:6px; padding:7px 16px; border-bottom:1px solid var(--board-border); font-size:12px; }
 .scene-controls button, .scene-controls select, .encounter-panel button, .token-actions button, .board-dialog button, .board-dialog select {
   padding:6px 9px; font:inherit; border:1px solid var(--board-border); border-radius:6px; background:var(--board-panel); color:var(--board-text); cursor:pointer; }
-#board-scene { max-width:240px; } #scene-activate { background:var(--board-active); } #scene-draft { color:#b75b10; }
+#board-scene { max-width:240px; } #scene-draft { color:#b75b10; }
+.scene-visibility-help { margin:0; padding:7px 16px; border-bottom:1px solid var(--board-border);
+  background:var(--board-panel); color:var(--board-text); font:12px/1.5 system-ui,sans-serif; }
 #board-presence { display:flex; align-items:center; gap:4px; margin-left:auto; min-width:0; }
 #map-status { margin-left:4px; max-width:25em; }
 .presence-avatar { width:30px; height:30px; display:inline-grid; place-items:center; position:relative; flex-shrink:0;

@@ -46,9 +46,10 @@
     <button type="button" id="scene-rename">{{ _('Rename') }}</button>
     <button type="button" id="scene-duplicate">{{ _('Duplicate') }}</button>
     <button type="button" id="scene-delete">{{ _('Delete') }}</button>
-    <button type="button" id="scene-activate">{{ _('Show to party') }}</button>
+    <button type="button" id="scene-activate" aria-describedby="scene-visibility-help" disabled>{{ _('Show to party') }}</button>
     <button type="button" id="marker-create">{{ _('Add material marker') }}</button>
   </nav>
+  <p id="scene-visibility-help" class="scene-visibility-help" role="status"></p>
   <section class="fog-toolbar" aria-label="{{ _('Fog of War') }}">
     <button type="button" id="fog-enabled" aria-pressed="false">{{ _('Fog of War') }}</button>
     <button type="button" data-fog-tool="reveal" aria-pressed="false" disabled>{{ _('Reveal') }}</button>
@@ -155,7 +156,10 @@
       'actionFailed': _('Unable to save this action. Please try again.'),
       'reloadRequired': _('Whiteboard was updated. Reload this page to continue.'),
       'sceneName': _('Scene name'), 'deleteScene': _('Delete this scene? This cannot be undone.'),
-      'activeScene': _('Shown to party'), 'round': _('Round'), 'acted': _('Acted'),
+      'showScene': _('Show to party'), 'showingScene': _('Showing…'), 'activeScene': _('Shown to party'),
+      'shownSceneHelp': _('Players are viewing this scene until you show another one. To hide it, show a different scene, such as an empty scene. Selecting a scene changes only your view.'),
+      'privateSceneHelp': _('This scene is private. Show to party moves all players here. It stays visible until you show another scene.'),
+      'round': _('Round'), 'acted': _('Acted'),
       'openSheet': _('Open sheet'), 'addEncounter': _('Add to encounter'),
       'deleteToken': _('Remove token'), 'hideToken': _('Hide token'), 'showToken': _('Show token'), 'numberTokens': _('Toggle numbering'),
       'deprived': _('Deprived'), 'panicked': _('Panicked'), 'dead': _('Dead'),

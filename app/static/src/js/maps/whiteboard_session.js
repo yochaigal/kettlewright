@@ -13,7 +13,9 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
   const pending = new Map(), statTimers = new Map(), statSaves = new Map();
   let state = null, tokens = new Map(), saving = null, timer, stopped = false, active = null, panelSignature = '', epoch = 0;
   let markersFrame = null, presenceEpoch = 0, sceneRequest = 0, presenceScene = null, sceneListSignature = '';
+  let activating = false;
   const toolbar = document.getElementById('scene-controls'), select = document.getElementById('board-scene');
+  const activateButton = document.getElementById('scene-activate');
   const tokenPanel = document.getElementById('token-actions'), encounterPanel = document.getElementById('encounter-panel');
   const markerLayer = document.createElement('div'); markerLayer.className = 'board-markers';
   let markerHost;
@@ -118,7 +120,9 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
       for (const [field, value] of [['tokens_version', 'tokens'], ['encounter_version', 'encounter'], ['markers_version', 'markers']]) {
         if (data[field] < state[field]) {data[field] = state[field]; data[value] = state[value];}
       }
-      data.activation_version = Math.max(data.activation_version, state.activation_version);
+      if (data.activation_version < state.activation_version) {
+        data.activation_version = state.activation_version; data.active_scene_id = state.active_scene_id;
+      }
     }
     state = data; config.boardContext = context();
     tokens = new Map(data.tokens.map(token => [token.id, token]));
@@ -136,6 +140,7 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
     if (select) select.value = String(data.scene_id);
     document.getElementById('scene-name').textContent = data.name;
     document.getElementById('scene-draft').hidden = !config.warden || data.scene_id === data.active_scene_id;
+    updateActivation();
     render(); renderEncounter();
     if (presenceScene !== state.scene_id) {presenceScene = state.scene_id; announcePresence();}
     const signature = JSON.stringify([state.scene_id, state.name, state.active_scene_id]);
@@ -327,6 +332,21 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
     else if (action === 'delete') await switchScene(null);
     else await switchScene(data.scene_id);
   }
+  function updateActivation() {
+    if (!activateButton) return;
+    const shown = state?.scene_id === state?.active_scene_id;
+    activateButton.disabled = !state || shown || activating;
+    activateButton.textContent = activating ? messages.showingScene : shown ? messages.activeScene : messages.showScene;
+    const help = document.getElementById('scene-visibility-help');
+    if (help) help.textContent = state ? messages[shown ? 'shownSceneHelp' : 'privateSceneHelp'] : '';
+  }
+  async function activateScene() {
+    if (!state || activating || state.scene_id === state.active_scene_id) return;
+    activating = true; updateActivation();
+    try {await sceneAction('activate');}
+    catch (error) {busyMessage(error);}
+    finally {activating = false; updateActivation();}
+  }
   async function loadScenes() {
     if (!config.warden || !state) return;
     const run = ++sceneRequest;
@@ -364,7 +384,7 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
       finally {submit.disabled = false;}
     });
     document.getElementById('scene-delete').addEventListener('click', () => {if (confirm(messages.deleteScene)) sceneAction('delete').catch(busyMessage);});
-    document.getElementById('scene-activate').addEventListener('click', () => sceneAction('activate').catch(busyMessage));
+    activateButton.addEventListener('click', activateScene);
     for (const action of ['next_round', 'reset']) document.getElementById(`encounter-${action}`).addEventListener('click', async () => {
       try {accept(await request('encounter', {encounter_version: state.encounter_version, action}));} catch (error) {busyMessage(error);}
     });

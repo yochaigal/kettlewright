@@ -62,6 +62,20 @@ def test_protocol_revisions_and_fog_are_independent(shared):
     assert post(client, '/scene', state, version=0, drawing=DRAWING).status_code == 409
 
 
+def test_showing_current_scene_does_not_switch_players_again(shared):
+    _, clients, sockets = shared
+    state = snapshot(clients[1])
+    for client in sockets.values():
+        client.get_received()
+    response = post(clients[1], '/scenes', state, action='activate')
+    assert response.status_code == 200
+    assert response.json['activation_version'] == state['activation_version']
+    assert snapshot(clients[2])['scene_id'] == state['scene_id']
+    assert all(client.get_received() == [] for client in sockets.values())
+    assert post(clients[2], '/scene', state, version=0, drawing=DRAWING).status_code == 200
+    assert post(clients[1], '/scenes', {**state, 'activation_version': 999}, action='activate').json == {'reason': 'active_changed'}
+
+
 def create_token(client, state, image, actor, suffix='one'):
     drawing = deepcopy(image)
     token_id = f'actor-{actor.replace(":", "-")}-{suffix}'
