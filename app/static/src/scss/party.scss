@@ -648,6 +648,131 @@ body:has(.tools-page) {
 #party-form .party-monster-panel { width: 100%; max-width: none; padding: 0; }
 .monster-preview-portrait { width: 80px; height: 80px; object-fit: contain; float: right; margin: 0 0 1rem 1rem; }
 #monster-preview { display: flow-root; }
+.monster-catalog-form {
+  button { min-width: 0; max-width: none; }
+  .monster-catalog-label { margin: 0; }
+  .monster-choices {
+    box-sizing: border-box;
+    max-height: 440px;
+    overflow-y: auto;
+    padding: 12px;
+    margin: 0;
+    min-width: 0;
+    border: 1px solid color-mix(in lab, transparent 80%, var(--fg));
+    border-radius: 4px;
+    background: var(--form-bg);
+    scrollbar-gutter: stable;
+  }
+  .monster-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+  .monster-choice {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    min-width: 0;
+    border: 1px solid color-mix(in lab, transparent 82%, var(--fg));
+    border-radius: 4px;
+    > * { grid-column: auto; }
+    &[hidden], > [hidden] { display: none; }
+    &[data-selected="true"] { background: color-mix(in lab, transparent 95%, var(--fg)); border-color: color-mix(in lab, transparent 45%, var(--fg)); }
+    .monster-card-heading { display: grid; grid-template-columns: 44px minmax(0, 1fr) 32px; align-items: center; gap: .75rem; }
+    .monster-card-heading img { width: 44px; height: 44px; object-fit: contain; }
+    h4 { margin: 0; font-size: 1.7rem; font-style: normal; text-transform: none; overflow-wrap: anywhere; }
+    .monster-card-stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: .5rem;
+      margin: 0;
+      text-align: center;
+      dt { font-size: 1.2rem; opacity: .7; }
+      dd { margin: .25rem 0 0; font-size: 1.7rem; font-weight: bold; }
+    }
+    .monster-card-footer { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+    label { margin: 0; font-size: 1.3rem; }
+    button { margin: 0; padding: .4rem; font-size: .85em; }
+    .monster-preview-button { width: 32px; height: 32px; border: 0; background: transparent; color: var(--fg); }
+    .monster-quantity {
+      display: inline-flex;
+      align-items: center;
+      width: 100px;
+      min-width: 100px;
+      box-sizing: border-box;
+      border: 1px solid color-mix(in lab, transparent 65%, var(--fg));
+      border-radius: 4px;
+      background: var(--form-bg);
+      button { flex: 0 0 32px; width: 32px; height: 36px; padding: 0; border: 0; background: transparent; color: var(--fg); font-size: 1.8rem; }
+      input[type=number] {
+        flex: 0 0 34px;
+        width: 34px;
+        min-width: 0;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: var(--fg);
+        text-align: center;
+        font-variant-numeric: tabular-nums;
+      }
+    }
+  }
+  button:disabled { text-decoration: none; border-style: solid; }
+  .monster-selected-filter { display: block; margin: .5rem 0; }
+  .monster-selection-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    p, button { margin: 0; }
+    button { width: auto; }
+  }
+  @media (max-width: 600px) {
+    .monster-selection-actions button { width: 100%; }
+  }
+  @media (max-width: 520px) {
+    .monster-card-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+}
+#monster-preview.monster-hover-preview {
+  position: fixed;
+  z-index: 1200;
+  box-sizing: border-box;
+  width: 360px;
+  max-width: calc(100vw - 16px);
+  max-height: calc(100vh - 16px);
+  overflow: auto;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid color-mix(in lab, transparent 60%, var(--fg));
+  border-radius: 5px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .2);
+  background: var(--form-bg);
+  color: var(--fg);
+  text-align: left;
+  &[hidden] { display: none; }
+  h3 { margin: 0 24px .75rem 0; font-size: 1.8rem; }
+  p, ul { font-size: 1.4rem; }
+  ul { padding-left: 20px; }
+  .monster-preview-portrait { width: 56px; height: 56px; margin: 20px 0 .75rem 1rem; }
+  #monster-close-preview {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    width: 28px;
+    min-width: 0;
+    max-width: none;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--fg);
+    font-size: 2.4rem;
+  }
+}
+.monster-import textarea { width: 100%; box-sizing: border-box; }
 
 // Companions use the same compact rhythm as party members.
 .companion-compact {
