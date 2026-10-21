@@ -48,6 +48,8 @@ Token visibility belongs to the placement. New monster tokens start hidden; the 
 
 Use Party's bulk monster creation to create independent creatures. Placing the same creature twice uses the same HP; separate Party monster records retain independent HP. Scene duplication never creates duplicate actor sheets.
 
+The **Tokens** picker groups companions with matching kind, name, portrait and parent into card stacks. A stack shows at most three visual cards, with the full creature count in a circle at its bottom-right corner. Open a stack to choose a numbered individual, or use **All tokens** to return. These numbers only distinguish the choices in the picker; placement still links to the selected creature's own sheet and HP. Characters and companions belonging to different parents remain separate.
+
 ## Encounter
 
 Each scene has an independent tracker with a round and an **Acted** checkbox per actor. Open **Encounter** in the header to see its instructions and participants. The Warden can choose a placed actor under **Add from board** and press **Add participant**, or select a token and use **Add to encounter**. Multiple placements of one actor still use one encounter row, and actors already participating are excluded from the picker.

@@ -231,9 +231,9 @@ def test_party_tokens_include_pets_hirelings_and_their_pets(shared):
     assert [token['name'] for token in tokens] == ['Player', 'Moss', 'Ada', 'Pip']
     assert len({token['id'] for token in tokens}) == 4
     assert tokens[1:] == [
-        {'id': 'companion:1', 'name': 'Moss', 'portrait': None, 'kind': 'pet', 'parent': 'Player'},
-        {'id': 'companion:2', 'name': 'Ada', 'portrait': None, 'kind': 'hireling', 'parent': 'Party'},
-        {'id': 'companion:3', 'name': 'Pip', 'portrait': None, 'kind': 'pet', 'parent': 'Ada'},
+        {'id': 'companion:1', 'name': 'Moss', 'portrait': None, 'kind': 'pet', 'parent': 'Player', 'parent_key': 'character:1'},
+        {'id': 'companion:2', 'name': 'Ada', 'portrait': None, 'kind': 'hireling', 'parent': 'Party', 'parent_key': 'party:1'},
+        {'id': 'companion:3', 'name': 'Pip', 'portrait': None, 'kind': 'pet', 'parent': 'Ada', 'parent_key': 'companion:2'},
     ]
     assert [t['name'] for t in clients[2].get(path).json['tokens']] == ['Player', 'Moss']
     with app.app_context():

@@ -110,7 +110,8 @@
   <dialog id="party-tokens" aria-labelledby="tokens-title">
     <div class="tokens-heading"><h2 id="tokens-title">{{ _('Tokens') }}</h2>
       <button type="button" id="close-tokens">{{ _('Close') }}</button></div>
-    <p>{{ _('Choose a portrait to add a token to the center of your view.') }}</p>
+    <button type="button" id="tokens-back" hidden><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {{ _('All tokens') }}</button>
+    <p id="tokens-help">{{ _('Choose a portrait to add a token to the center of your view.') }}</p>
     <div id="tokens-grid"></div>
     <p id="tokens-status" role="status" aria-live="polite"></p>
   </dialog>
@@ -181,6 +182,8 @@
       'addMarker': _('Add marker'), 'delete': _('Delete'), 'close': _('Close'),
       'viewing': _('Viewing this scene'), 'away': _('In another tab'),
       'tokens': _('Tokens'), 'tokensLoading': _('Loading…'),
+      'tokensChooseGroup': _('Open the stack to choose a creature.'),
+      'tokensChooseMember': _('Choose the creature to add to the board.'),
       'pet': _('Pet'), 'hireling': _('Hireling'), 'monster': _('Monster'),
       'warden': _('Warden'), 'rollDice': _('Roll Dice'), 'damage': _('Damage'),
       'reaction': _('Reaction Roll'), 'fate': _('Die of Fate'),

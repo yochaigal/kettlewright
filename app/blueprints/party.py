@@ -80,8 +80,11 @@ def shared_map_tokens(party_id):
     warden = current_user.id == target.owner
     tokens = []
     def companion_token(companion, parent):
+        parent_key = (f'character:{companion.character_id}' if companion.character_id else
+                      f'companion:{companion.hireling_id}' if companion.hireling_id else f'party:{companion.party_id}')
         return {'id': f'companion:{companion.id}', 'name': companion.name,
-                'portrait': companion.portrait_src if companion.image_url or companion.kind == 'monster' else None, 'kind': companion.kind, 'parent': parent}
+                'portrait': companion.portrait_src if companion.image_url or companion.kind == 'monster' else None,
+                'kind': companion.kind, 'parent': parent, 'parent_key': parent_key}
 
     for character in party_characters(target):
         if not warden and character.owner != current_user.id:

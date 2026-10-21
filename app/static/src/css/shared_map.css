@@ -61,6 +61,20 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 #tokens-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
 #tokens-grid .party-token { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 8px; overflow-wrap: anywhere; }
 #tokens-grid .party-token:hover { background: var(--board-active); }
+#tokens-grid .party-token { position:relative; min-width:0; }
+#tokens-grid .party-token.has-count { padding-bottom:30px; }
+.token-stack { position:relative; display:grid; isolation:isolate; padding:4px 4px 0 0; }
+.token-stack::before, .token-stack::after { content:''; position:absolute; border:1px solid var(--board-border);
+  border-radius:6px; background:var(--board-panel); pointer-events:none; }
+.token-stack::before { inset:0 0 4px 4px; z-index:-1; }
+.token-stack::after { display:none; }
+.token-stack[data-cards="3"] { padding:8px 8px 0 0; }
+.token-stack[data-cards="3"]::before { inset:4px; }
+.token-stack[data-cards="3"]::after { display:block; inset:0 0 8px 8px; z-index:-2; }
+.token-count { position:absolute; right:5px; bottom:5px; display:grid; place-items:center; min-width:22px; height:22px;
+  box-sizing:border-box; padding:0 4px; border:2px solid var(--board-panel); border-radius:999px;
+  background:#8278c8; color:#fff; font-size:11px; font-weight:700; line-height:1; }
+#tokens-back { margin-top:12px; }
 .token-avatar { display: grid; place-items: center; width: 64px; height: 64px; flex-shrink: 0; border-radius: 50%; background: #e1defa; color: #393253; font-weight: bold; font-size: 22px; }
 .token-avatar img { width: 64px; height: 64px; }
 
