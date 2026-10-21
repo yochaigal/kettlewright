@@ -99,7 +99,9 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 .token-stats-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
 .token-stats { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 0;
   width: max-content; max-width: 144px; padding: 2px 3px; border-radius: 3px; border: 1px solid var(--board-border);
-  background: var(--board-panel); color: var(--board-text); font: 9px/1.2 system-ui, sans-serif;
+  background: var(--board-panel); background: color-mix(in srgb, var(--board-panel) 70%, transparent);
+  border-color: color-mix(in srgb, var(--board-border) 60%, transparent);
+  color: var(--board-text); font: 9px/1.2 system-ui, sans-serif;
   text-align: center; transform-origin: top center; overflow-wrap: anywhere; }
 .token-stat-values { display: grid; grid-template-columns: repeat(2, max-content); column-gap: 5px; text-align: left; }
 .token-stats small { font: inherit; }
