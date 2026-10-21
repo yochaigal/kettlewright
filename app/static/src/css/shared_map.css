@@ -8,8 +8,8 @@ body.dark-mode { --board-bg: #202126; --board-panel: #292b32; --board-text: #efe
 .board-panel-toggle { white-space:nowrap; }
 .board-panel-toggle::after { content:''; display:inline-block; width:8px; height:8px; margin-left:10px;
   border-right:2px solid currentColor; border-bottom:2px solid currentColor; vertical-align:middle;
-  transform:translateY(-2px) rotate(45deg); }
-.board-panel-toggle[aria-expanded="true"]::after { transform:translateY(2px) rotate(225deg); }
+  transform:translateY(-4px) rotate(45deg); }
+.board-panel-toggle[aria-expanded="true"]::after { transform:translateY(0) rotate(225deg); }
 .board-panel-toggle[aria-expanded="true"] { background:var(--board-active); border-color:#8278c8; }
 .board-control-panel { flex-shrink:0; max-height:32dvh; overflow:auto; }
 .board-control-panel[hidden] { display:none; }
