@@ -44,7 +44,7 @@ export function tokenElement(fileId, state, id = crypto.randomUUID()) {
     width: 80, height: 80, angle: 0, opacity: 100, locked: false};
 }
 
-export function setupPartyTokens({editor, config, getApi, getGeneration, canInsert, beforeInsert}) {
+export function setupPartyTokens({editor, config, getApi, getGeneration, canInsert, beforeInsert, managedInsert}) {
   const dialog = document.getElementById('party-tokens');
   const grid = document.getElementById('tokens-grid'), status = document.getElementById('tokens-status');
   let epoch = 0, busy = false;
@@ -61,7 +61,9 @@ export function setupPartyTokens({editor, config, getApi, getGeneration, canInse
       element.x = (point.x - (state.offsetLeft || 0)) / state.zoom.value - state.scrollX - 40;
       element.y = (point.y - (state.offsetTop || 0)) / state.zoom.value - state.scrollY - 40;
     }
-    beforeInsert(); api.addFiles([file]);
+    beforeInsert();
+    if (managedInsert) {await managedInsert(character, element, file); api.setActiveTool({type: 'selection'}); return;}
+    api.addFiles([file]);
     api.updateScene({elements: [...api.getSceneElements(), ...restoreElements([element], null)],
       appState: {selectedElementIds: {[element.id]: true}}, captureUpdate: CaptureUpdateAction.IMMEDIATELY});
     api.setActiveTool({type: 'selection'});

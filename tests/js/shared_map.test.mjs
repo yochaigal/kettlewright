@@ -31,7 +31,9 @@ async function setup(editing = true, failedLibrary = null, language = 'en') {
       addEventListener() {}, querySelectorAll: () => []},
     window: {addEventListener(name, fn) {windowHandlers[name] = fn;}},
     localStorage: {getItem: key => stored.get(key) || 'false', setItem: (key, value) => stored.set(key, value)},
-    createActorUpdates: () => ({placed() {}, destroy() {}}),
+    createActorUpdates: () => ({placed() {}, destroy() {}, subscribe() {}, refresh() {}}),
+    createWhiteboardSession: () => ({initialDrawing: drawing => drawing, accept() {}, context: () => ({}), capture() {}, render() {}, destroy() {}, reset() {}, actorSnapshot() {}, flush: async () => {}, draft: () => [], files: () => ({}), busy: false}),
+    URLSearchParams, history: {replaceState() {}},
     createFogLayer: () => ({redraw() {}, destroy() {}, setState() {}, setTool() {}}),
     applyFogOperation: (fog) => fog, setupMapImport() {}, setupPartyTokens: () => ({open() {}, close() {}}),
     setupBoardControls: () => ({selection() {}, destroy() {}}),
@@ -44,7 +46,7 @@ async function setup(editing = true, failedLibrary = null, language = 'en') {
     AbortSignal, URL, location: {href: 'https://example.test/map/'}, Excalidraw: {}, CaptureUpdateAction: {NEVER: 'never'},
     restoreElements: elements => elements, drawingFromScene, drawingImagesReady, drawingForSave,
     h: (_, value) => value,
-    createRoot: () => ({unmount() {}, render(value) {if (!value) return; const first = !props; props = value; if (!first) return; elements = value.initialData.elements;
+    createRoot: () => ({unmount() {}, render(value) {if (!value) {props = null; elements = []; files = {}; return;} const first = !props; props = value; if (!first) return; elements = value.initialData.elements;
       files = value.initialData.files; value.excalidrawAPI(api); value.onChange(elements, appState, files);}}),
     fetch: (url, options) => {
       if (url instanceof URL) url = url.pathname;

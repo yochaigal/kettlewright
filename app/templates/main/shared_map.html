@@ -33,9 +33,22 @@
     {% if warden %}
     <button type="button" id="lock-map" title="{{ _('Lock map') }}" aria-label="{{ _('Lock map') }}" aria-pressed="false"><span class="map-lock-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span></button>
     {% endif %}
+    {% if warden %}<button type="button" id="board-prep-toggle" aria-controls="warden-controls" aria-expanded="false">{{ _('Scenes & fog') }}</button>{% endif %}
+    <span id="scene-name"></span><span id="scene-draft" hidden>{{ _('Preparing privately') }}</span>
+    <div id="board-presence" role="group" aria-label="{{ _('Viewing this scene') }}"></div>
     <span id="map-status" role="status" aria-live="polite">{{ _('Loading…') }}</span>
   </header>
   {% if warden %}
+  <div id="warden-controls">
+  <nav id="scene-controls" class="scene-controls" aria-label="{{ _('Scenes') }}">
+    <label for="board-scene">{{ _('Scene') }}</label><select id="board-scene"></select>
+    <button type="button" id="scene-create">{{ _('New scene') }}</button>
+    <button type="button" id="scene-rename">{{ _('Rename') }}</button>
+    <button type="button" id="scene-duplicate">{{ _('Duplicate') }}</button>
+    <button type="button" id="scene-delete">{{ _('Delete') }}</button>
+    <button type="button" id="scene-activate">{{ _('Show to party') }}</button>
+    <button type="button" id="marker-create">{{ _('Add material marker') }}</button>
+  </nav>
   <section class="fog-toolbar" aria-label="{{ _('Fog of War') }}">
     <button type="button" id="fog-enabled" aria-pressed="false">{{ _('Fog of War') }}</button>
     <button type="button" data-fog-tool="reveal" aria-pressed="false" disabled>{{ _('Reveal') }}</button>
@@ -49,9 +62,29 @@
     <span id="fog-status" role="status" aria-live="polite"></span>
     <button type="button" id="discard-fog" hidden>{{ _('Discard unsaved fog') }}</button>
   </section>
+  </div>
   {% endif %}
   <div id="board-notices" aria-live="polite"></div>
   <div id="editor"></div>
+  <div class="board-dock">
+  <section id="token-actions" class="token-actions" aria-label="{{ _('Token actions') }}" hidden></section>
+  <details id="encounter-panel" class="encounter-panel">
+    <summary>{{ _('Encounter') }} · <span id="encounter-round"></span></summary>
+    <div id="encounter-list"></div>
+    {% if warden %}<div class="encounter-controls">
+      <button type="button" id="encounter-next_round">{{ _('Next round') }}</button>
+      <button type="button" id="encounter-reset">{{ _('Reset round') }}</button>
+    </div>{% endif %}
+  </details>
+  {% if warden %}<dialog id="scene-dialog" class="board-dialog" aria-labelledby="scene-dialog-title">
+    <form id="scene-form">
+      <h2 id="scene-dialog-title">{{ _('Scene name') }}</h2>
+      <label for="scene-dialog-name">{{ _('Name') }}</label><input id="scene-dialog-name" required maxlength="100">
+      <p id="scene-dialog-error" role="alert"></p>
+      <div class="dialog-actions"><button type="button" id="scene-dialog-cancel">{{ _('Cancel') }}</button><button type="submit">{{ _('Save') }}</button></div>
+    </form>
+  </dialog>{% endif %}
+  <dialog id="marker-detail" class="board-dialog"></dialog>
   <section id="board-rolls" class="board-rolls" aria-label="{{_('Roll Dice')}}">
     <div class="board-roll-heading">
       <strong id="board-roll-name">{{_('Warden') if warden else _('Roll Dice')}}</strong>
@@ -61,6 +94,7 @@
     </div>
     <div id="board-roll-actions" class="board-roll-actions"></div>
   </section>
+  </div>
   <dialog id="party-tokens" aria-labelledby="tokens-title">
     <div class="tokens-heading"><h2 id="tokens-title">{{ _('Tokens') }}</h2>
       <button type="button" id="close-tokens">{{ _('Close') }}</button></div>
@@ -75,11 +109,13 @@
     <select id="map-source"></select>
     <div id="map-preview"></div>
     <label class="import-cover"><input id="import-cover" type="checkbox" checked> {{ _('Cover with fog') }}</label>
-    <p>{{ _('This replaces the current whiteboard and its fog for everyone. The original map stays unchanged.') }}</p>
+    <label for="import-mode">{{ _('Import into') }}</label>
+    <select id="import-mode"><option value="new">{{ _('New scene') }}</option><option value="replace">{{ _('Replace current scene') }}</option></select>
+    <p>{{ _('The original map stays unchanged. Replacing a scene removes its tokens, encounter and fog.') }}</p>
     <p id="import-error" role="alert"></p>
     <div class="dialog-actions">
       <button type="button" id="cancel-import">{{ _('Cancel') }}</button>
-      <button type="button" id="confirm-import" disabled>{{ _('Replace whiteboard') }}</button>
+      <button type="button" id="confirm-import" disabled>{{ _('Import map') }}</button>
     </div>
   </dialog>
   {% endif %}
@@ -101,6 +137,7 @@
   {% if warden %}{% with board_roller=true %}{% include 'partial/partyview/warden_dice.html' %}{% endwith %}
   {% else %}{% include 'main/dice_modal.html' %}{% endif %}
   <script id="shared-map-config" type="application/json">{{ {
+    'boardUrl': url_for('party.shared_map', party_id=party.id),
     'partyId': party.id, 'editing': editing, 'warden': warden, 'canLoadMaps': can_load_maps, 'csrfToken': csrf_token,
     'partyUrl': url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url),
     'actorsUrl': url_for('party.shared_map_actors', party_id=party.id),
@@ -115,6 +152,16 @@
     'importUrl': url_for('party.shared_map_import', party_id=party.id) if can_load_maps else none,
     'libraryUrl': url_for('static', filename='vendor/excalidraw-libraries/'),
     'messages': {
+      'actionFailed': _('Unable to save this action. Please try again.'),
+      'reloadRequired': _('Whiteboard was updated. Reload this page to continue.'),
+      'sceneName': _('Scene name'), 'deleteScene': _('Delete this scene? This cannot be undone.'),
+      'activeScene': _('Shown to party'), 'round': _('Round'), 'acted': _('Acted'),
+      'openSheet': _('Open sheet'), 'addEncounter': _('Add to encounter'),
+      'deleteToken': _('Remove token'), 'hideToken': _('Hide token'), 'showToken': _('Show token'), 'numberTokens': _('Toggle numbering'),
+      'deprived': _('Deprived'), 'panicked': _('Panicked'), 'dead': _('Dead'),
+      'openMaterial': _('Open material'), 'revealMaterial': _('Review and reveal'),
+      'addMarker': _('Add marker'), 'delete': _('Delete'), 'close': _('Close'),
+      'viewing': _('Viewing this scene'), 'away': _('In another tab'),
       'tokens': _('Tokens'), 'tokensLoading': _('Loading…'),
       'pet': _('Pet'), 'hireling': _('Hireling'), 'monster': _('Monster'),
       'warden': _('Warden'), 'rollDice': _('Roll Dice'), 'damage': _('Damage'),

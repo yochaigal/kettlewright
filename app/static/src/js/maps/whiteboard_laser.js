@@ -11,7 +11,7 @@ export function createLaserSync({socket, getApi, getGeneration, config, canSend,
     trailing = null;
     if (!pending || !socket.connected || !canSend()) {pending = null; return;}
     socket.volatile.emit('whiteboard_laser', {...pending, party_id: config.partyId,
-      generation: getGeneration(), csrf_token: config.csrfToken});
+      ...config.boardContext, generation: getGeneration(), csrf_token: config.csrfToken});
     lastSent = now(); pending = null;
   }
   function pointerUpdate({pointer, button}) {
@@ -28,7 +28,7 @@ export function createLaserSync({socket, getApi, getGeneration, config, canSend,
     if (peers.size) {peers.clear(); publish();}
   }
   socket.on('whiteboard_laser', data => {
-    if (data.party_id !== config.partyId || data.generation !== getGeneration() || !getApi()) return;
+    if (data.party_id !== config.partyId || config.boardContext?.scene_id && data.scene_id !== config.boardContext.scene_id || data.generation !== getGeneration() || !getApi()) return;
     if (data.pointer) peers.set(data.sender, {time: now(), value: {
       pointer: data.pointer, button: data.button, username: data.username, color: {background: '#e8590c', stroke: '#e8590c'},
     }});

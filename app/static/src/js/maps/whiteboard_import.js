@@ -48,7 +48,7 @@ export function setupMapImport({config, replace, tell}) {
     if (!selected) return;
     submit.disabled = true; select.disabled = true; error.textContent = '';
     try {
-      await replace(selected, document.getElementById('import-cover').checked);
+      await replace(selected, document.getElementById('import-cover').checked, document.getElementById('import-mode').value);
       dialog.close(); tell('saved');
     } catch (reason) {error.textContent = reason.message || config.messages.importFailed;}
     finally {submit.disabled = false; select.disabled = false;}

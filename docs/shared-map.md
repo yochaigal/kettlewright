@@ -1,62 +1,80 @@
 # Whiteboard
 
-Whiteboard (formerly Shared Map) is an independent, collaborative Excalidraw canvas per party. The existing `/party/<id>/shared-map` URLs and drawings remain valid. All current party members can draw and edit; only the Warden can load a campaign map or change Fog of War. Leaving the party revokes read/write access.
+Whiteboard is a collaborative Excalidraw canvas for a party, with saved scenes, controlled actor tokens, presence, encounters and campaign material markers. The existing `/party/<id>/shared-map` page remains the entry point. All current party members can draw; only the Warden manages scenes, imports, fog, token visibility, encounters and material markers. Leaving the party revokes access, including already-open tabs.
 
-## Access and deployment
+## Deployment and compatibility
 
-Whiteboard is available to all current party members without tester lists. Its scene, tokens and laser require current membership; map sources, previews, imports and fog changes require the party Warden. Map sources also require ownership of the source map. See [access and deployment](campaigns.md#deployment-and-maintenance).
+Stop the old workers, apply `flask db upgrade`, then start all updated workers together; mixed v1/v2 workers are unsupported. The new migration is revision `375a01`, following `296a02`. Existing boards become the first active scene, preserving their drawing, images, token geometry, versions and fog. Recognized actor images become managed token placements; orphan images remain ordinary drawings. Existing monster placements keep their previous visible state. Migration tests exercise upgrade and downgrade. Downgrade restores only the active scene to the old board format; retain a database backup to recover the other scenes and v2 features.
 
-Apply `flask db upgrade` before starting the updated workers (revision `319a01`). The migration preserves existing drawings and initializes their fog as disabled. No frontend build is needed: Excalidraw 0.18.0 and React 18.3.1 load from esm.sh. The existing Socket.IO/Redis deployment serves board notifications.
+There is no frontend build: Excalidraw 0.18.0 and React 18.3.1 load from esm.sh. Reload existing Whiteboard tabs after deployment. Writes without the v2 scene context return `409 reload_required` instead of guessing which scene to overwrite. The existing Socket.IO/Redis deployment serves notifications and shared presence leases; development without Redis uses local presence and requires one worker.
 
-## Editing and connection status
+## Scenes
 
-Drawings autosave after approximately 180 ms, with one drawing request at a time. Socket.IO uses the same WebSocket transport as the rest of the application. Confirmed drawing deltas and fog updates are pushed over Socket.IO and applied directly, without a GET per edit. Drawing deltas omit unchanged image data. Replacements send a complete new generation. Clients fetch the authoritative scene on first load, reconnect, missing base revisions, and tab visibility changes. Periodic HTTP refresh runs every 60 seconds with a connected socket and every 3 seconds without one. Updates arriving during a save or load are queued before applying them to the acknowledged base; pending local edits are rebased as usual. A socket outage alone does not report a save failure; HTTP errors and unsaved drawings retain their own state and retries.
+The Warden can create, name, rename, duplicate and delete scenes. The scene selector changes only that Warden tab's view. **Show to party** activates the scene for all players. **Preparing privately** identifies a scene that is not active. Players cannot list or read private scenes, including by guessing their IDs. The active and last remaining scene cannot be deleted.
 
-Concurrent drawing saves use optimistic versions and reapply local changes to the latest acknowledged scene. Different-object changes are combined; the last saved local change wins for the same object. Remote drawings clear local undo history. Camera, selection and theme remain local. Whiteboard reads and updates the site's `localStorage.darkMode` preference, including cross-tab changes.
+Each scene retains drawing, token placements, fog, markers and encounter state. Actor HP and conditions remain in the ordinary Character/Companion records and are shared across scenes. Duplication copies placements, fog and links, preserving actor identities; encounter participants are copied with round 1 and all action marks cleared.
 
-The five bundled libraries preload without adding items to the canvas: Architecture, Maps, Creatures (99 grouped Maffen tokens), Planning and Clocks. Attribution and MIT licensing remain in `app/static/vendor/excalidraw-libraries/`. Scenes support 2000 elements and 12 MB of validated PNG, JPEG, WebP or GIF data. Frames and background colors are saved; external embeds and links are disabled.
+Local scene changes wait for drawing, fog and token queues to save. A forced player transition retains unsaved visual work in a downloadable `.excalidraw` draft and invalidates old queues. Both scene ID and the activation revision protect writes, including an A → B → A transition. Replacement of a scene also increments its generation.
 
-## Laser pointer
+## Editing and synchronization
 
-The native laser tool broadcasts transient scene coordinates through the authenticated Socket.IO connection, at most 25 updates/second per tab. Current party membership, CSRF and board generation are checked on the server; a separate 40-event/second per-user limit bounds traffic. Other tabs render Excalidraw's fading laser above the fog, without adding drawing elements or save requests. Stale pointers expire after 1.5 seconds; disconnects and replacements clear them. Live laser sharing requires a working WebSocket; HTTP scene polling does not replay old laser trails.
+Drawings autosave after approximately 400 ms, with one drawing request at a time. Socket.IO pushes confirmed drawing deltas without resending unchanged embedded images. Missing revisions, reconnects and visibility changes trigger authoritative HTTP refreshes. Repair polling runs every 60 seconds with a connected socket and every 15 seconds without one; background tabs skip HTTP refreshes. Drawing, fog, tokens, encounter and markers have independent revisions. Conditional reads also check viewer permissions and material publication revisions, so a revoked publication cannot survive an unchanged-drawing `204` response.
 
-## Party tokens
+Concurrent free drawings rebase local changes onto the latest acknowledged state. Different objects are combined; same-object conflicts favor the local save. Camera, selection and theme stay local. The site's `localStorage.darkMode` preference remains shared across tabs. Warden-locked background objects remain protected on the server; free drawing stays collaborative.
 
-**Party tokens**, next to Library (in the header on small screens), lists all current party characters, their pets, hirelings and monsters for the Warden. Players see only their own characters and pets, plus hirelings they can manage and those hirelings’ pets. Monsters never appear in a player’s picker, even when their stats are public. These restrictions are enforced by the token-list endpoint. Companion cards identify their type and parent and use initials because companion sheets have no portrait field. Click a portrait to add an 80-unit circular token in the center of your view. Tokens use an embedded 256px PNG, share the normal drawing queue, and remain editable by all members and covered by fog. Existing tokens remain independent copies when a portrait or party membership changes. The picker refreshes its roster whenever opened.
+Managed tokens never enter free-drawing saves. Each token operation verifies actor membership, current permissions, scene generation and token revision. Foreign token movement/deletion and forged actor elements in a free-drawing request are rejected or restored locally. A scene supports up to 2000 drawing elements and tokens, with up to 12 MB of validated PNG, JPEG, WebP or GIF image data. Frames and background colors are saved; executable links and embeds are disabled.
 
-Built-in and uploaded portraits work directly; external portraits require browser CORS permission. Unavailable images use initials with a notice. The server never fetches external portrait URLs. The member/feature-gated `/party/<id>/shared-map/tokens` endpoint returns only token IDs, names, portrait URLs and companion type/parent labels, with no-store caching. This custom picker does not change the upstream Excalidraw library format.
+The bundled Architecture, Maps, Creatures, Planning and Clocks libraries preload without adding items to the canvas. Attribution and MIT licensing remain in `app/static/vendor/excalidraw-libraries/`.
 
-Current stats appear below each placed party token with known stats: characters, pets, hirelings and monsters. Maximum values are omitted. The compact block uses a two-column stat grid, a shield icon for armor, and minimal spacing. The entire block scales proportionally with the token’s scene size and camera zoom, including at small sizes. The viewer-specific `/party/<id>/shared-map/stats` endpoint omits private monsters for players, and never includes sheet notes or inventory. Overlays follow token movement, resizing, rotation, pan and zoom, sit beneath fog, and are not stored in the shared drawing or its exports. Stats refresh on roster/visibility events, reconnect, returning to the tab, and every five seconds; a failed read clears stale stats. Warden player-preview hides private stats and visibility controls.
+## Presence and laser
 
-The Warden can toggle monster stats with the eye beside them. Revealing requires a confirmation dialog; cancellation makes no request. Visibility belongs to the creature, so all copies of its token update together. This toggle preserves existing public notes. The single lock icon toggles background locking without locking party tokens.
+The upper-right strip shows one icon per user viewing the same scene, including oneself. The first character in Party order supplies the portrait, with initials as a fallback; the Warden uses **W**. Tooltips identify the user, their characters and whether the tab is visible. Multiple tabs are combined: any visible tab in the scene makes the user active. A background tab is dimmed. Closing/disconnecting removes its connection; crashed worker leases expire within 60 seconds. A Warden preparing another scene is absent from the players' scene strip. Small screens show three icons followed by `+N`.
 
-**Party**, after the back-to-party arrow, opens the main party page beside the map for both roles, with the normal server-enforced permissions. Its highlight is active only while the panel is open. Theme, Fit map and Load map follow as a group of icons with tooltips. **Roll Dice** uses the shared player/Warden modal; Warden special rolls and the default-private public-roll opt-in are preserved. History remains on the party page.
+Presence is authenticated and CSRF-protected. Server workers renew their live socket leases every 15 seconds, so browser timer throttling does not remove an otherwise connected background tab. Redis makes leases visible across workers; Redis errors do not silently fall back to inaccurate worker-local state.
 
-## Load map
+The native laser broadcasts transient scene coordinates, scoped to the authorized scene and generation. It does not create drawing elements or save requests. Membership, CSRF and rate limits are checked on the server. Private-scene lasers reach only Warden connections. Trails expire after 1.5 seconds and clear on disconnect or scene replacement.
 
-The Warden chooses a map from their campaigns or Unfiled and previews its visual snapshot. The snapshot contains the drawing, images, nodes with numbers/titles, and paths with their visual styles. It excludes material descriptions, links, and nested-map contents. Fresh IDs and remapped file/group/binding references turn graph glyphs into independent editable elements. The source is never modified or automatically synchronized.
+## Tokens and actor actions
 
-**Replace whiteboard** confirms replacement of the current drawing and fog for the whole party. **Cover with fog** is selected by default. The server verifies source ownership, the preview digest, and current board revisions before replacing both atomically. A changed source or board requires a fresh preview.
+**Tokens** lists current party actors with the existing picker permissions: players see their own characters/pets and companions they can manage; the Warden also sees monsters. Placement uses an 80-unit circular image in the center of the view, or the drop location when dragged from **Party**. External portraits are loaded by the browser with CORS; the server never fetches user-controlled portrait URLs.
 
-Every replacement increments the board generation. Open clients must discard their old save queue rather than merging it into the replacement. Unsaved old drawings/fog are retained in a downloadable local `.excalidraw` draft until that tab is closed. Legacy clients without a generation can save only to generation 1; they must reload after a replacement.
+Players control their own characters and companions allowed by existing rules. The Warden can move every token. Stat editing and rolls retain sheet permissions. Selecting a token opens HP, sheet access and, for characters, the existing Deprived, Panicked and Dead controls. Dice use the shared modal; Warden rolls remain private by default. Live stats and portraits continue to refresh from the ordinary sheets.
 
-## Fog of War v1
+Token visibility belongs to the placement. New monster tokens start hidden; the Warden sees them dimmed until **Show token**. Monster stat publication remains the existing creature-wide setting, independent of placement visibility and preserving public notes. Hidden placements, coordinates and artwork are omitted from player snapshots; private sheet notes never enter the shared drawing. Visible monsters with private stats use a neutral **Monster** label and cannot open a private sheet. Numbering is optional and changes displayed labels without renaming sheets.
 
-Fog is a separate canvas mask above the drawing and below Excalidraw controls. It covers the infinite canvas, including tokens and annotations. The Warden sees it at 45% opacity; players see an opaque mask. **Player view** gives the Warden an opaque, read-only preview.
+Use Party's bulk monster creation to create independent creatures. Placing the same creature twice uses the same HP; separate Party monster records retain independent HP. Scene duplication never creates duplicate actor sheets.
 
-The Warden can enable/disable fog, reveal or cover with a round brush, adjust its scene-space radius, undo the last fog stroke, hide all, or reveal all. Mass changes require confirmation. The same revealed areas apply to every player. Stroke coordinates follow pan, zoom, Fit and viewport resizing. In brush mode, space-drag or middle-drag pans the canvas.
+## Encounter
 
-Completed strokes enter an independent save queue with operation IDs and a fog revision. Retries are idempotent within the last 1000 acknowledged operations. The server accepts fog writes only from the current Warden and checks the board generation. Fog updates never overwrite drawings; drawing updates never overwrite fog. Invalid changes stay visible locally with a discard action. Fog payloads are limited to 2 MB, 5000 points per stroke, and finite bounded coordinates; reset an excessively complex mask before adding more strokes.
+Each scene has an independent, collapsible tracker with a round and an acted checkbox per actor. The Warden adds/removes participants, corrects marks, resets the encounter round or starts the next round. Players mark only actors they can control. There is no enforced initiative order or combat automation. Multiple placements of an actor still use one encounter row. Selecting a participant focuses an available token or opens the permitted sheet.
 
-This is visual hiding, not server-side secrecy: the player's browser still receives the complete drawing. The ordinary player export menu is disabled while fog is active because it would omit the mask. Fog is independent of selection, erasing and drawing undo. There are no walls, lighting, automatic token vision or individual player visibility in v1.
+Hidden creatures are excluded from the player tracker. Visible monsters with private stats use neutral labels. Returning to a scene restores its round and marks.
+
+## Maps and campaign materials
+
+**Load map** previews a visual snapshot from the Warden's campaigns or Unfiled. Import defaults to a new, privately prepared scene. **Replace current scene** explicitly replaces drawing, tokens, encounter, markers and fog; the source remains unchanged. **Cover with fog** defaults on. Replacement checks all revisions, and both modes verify the source preview digest.
+
+New imports preserve location links as separate markers. Original location titles and material bodies are not baked into the shared drawing. Players see only markers whose materials have published Party presentations, using the published titles and text. Warden-only markers retain the original title. Old independent imports have no link metadata and can be linked manually using **Add material marker**. Drag markers to reposition them.
+
+Selecting a marker opens its material or, for the Warden, **Review and reveal**. The existing publication form preselects the current Party, allowing review/editing before publication. Creating a marker or importing a map never publishes an original automatically. Revocation or deletion removes the player-facing marker and closes access to the material.
+
+## Fog of War
+
+Fog remains a separate visual mask above drawings, tokens, annotations and markers. Warden controls include reveal/cover brushes, brush size, undo, hide all, reveal all and an opaque read-only player preview. The mask follows pan, zoom and viewport resizing. Fog saves are independent and operation IDs make retries idempotent.
+
+Fog is visual hiding: player browsers receive the common background drawing. Server-side secrecy applies to private scenes, explicitly hidden tokens, private actor data and unpublished material markers. There are no walls, lighting, automatic token vision or individual player visibility. Player export remains disabled while fog is active.
 
 ## Focused checks
 
 ```sh
 docker compose -f .devcontainer/docker-compose.yml exec -T \
   -e SQLALCHEMY_DATABASE_URI=sqlite:///:memory: -e USE_REDIS=False -e FLASK_DEBUG=0 \
-  app python -m pytest -p no:flask tests/unit/test_shared_map.py tests/unit/test_whiteboard.py tests/unit/test_whiteboard_migration.py tests/unit/test_feature_access.py tests/unit/test_socket_events.py -q
-node --test tests/js/shared_map*.test.mjs tests/js/whiteboard*.test.mjs tests/js/party_tokens.test.mjs tests/js/token_stats.test.mjs
+  app python -m pytest -p no:flask tests/unit/test_shared_map.py \
+  tests/unit/test_whiteboard*.py tests/unit/test_monsters.py tests/unit/test_socket_events.py -q
+node --experimental-default-type=module --test tests/js/shared_map*.test.mjs \
+  tests/js/whiteboard*.test.mjs tests/js/party_tokens.test.mjs \
+  tests/js/token_stats.test.mjs tests/js/token_portraits.test.mjs \
+  tests/js/actor_updates.test.mjs tests/js/board_rolls.test.mjs
 ```
 
-Library validation covers both Excalidraw v1 and v2 formats, including legacy freehand points with pressure values. Browser checks require independent Warden/player sessions and should cover imports, both themes, fog editing/undo, pan/zoom, player editing, replacement and reconnect.
+Use Node 22. Redis integration additionally runs `test_whiteboard_presence.py` with `WHITEBOARD_TEST_REDIS_URL` set to an isolated Redis instance. Browser acceptance uses separate Warden/two-player sessions and covers private preparation, activation, token reload/persistence, ownership, HP, encounters, marker publication/revocation, both themes and mobile layout.

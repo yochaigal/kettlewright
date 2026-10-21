@@ -12,7 +12,7 @@ export function createActorUpdates({config, socket, denied = () => false}) {
     if (running) {again = true; return running;}
     running = (async () => {
       try {
-        const response = await fetch(config.actorsUrl, {cache: 'no-store', signal: AbortSignal.timeout(10000)});
+        const response = await fetch(config.actorsUrl + (config.boardContext?.scene_id ? '?scene_id=' + config.boardContext.scene_id : ''), {cache: 'no-store', signal: AbortSignal.timeout(10000)});
         if (stopped || denied(response)) return;
         if (!response.ok || response.redirected) throw new Error();
         const data = await response.json();

@@ -125,3 +125,51 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
   #board-roll-result { flex-basis: 100%; text-align: left; }
   #board-roll-result:empty { display: none; }
 }
+
+.scene-controls { display:flex; align-items:center; flex-wrap:wrap; gap:6px; padding:7px 16px; border-bottom:1px solid var(--board-border); font-size:12px; }
+.scene-controls button, .scene-controls select, .encounter-panel button, .token-actions button, .board-dialog button, .board-dialog select {
+  padding:6px 9px; font:inherit; border:1px solid var(--board-border); border-radius:6px; background:var(--board-panel); color:var(--board-text); cursor:pointer; }
+#board-scene { max-width:240px; } #scene-activate { background:var(--board-active); } #scene-draft { color:#b75b10; }
+#board-presence { display:flex; align-items:center; gap:4px; margin-left:auto; min-width:0; }
+#map-status { margin-left:4px; max-width:25em; }
+.presence-avatar { width:30px; height:30px; display:inline-grid; place-items:center; position:relative; flex-shrink:0;
+  border:2px solid #8278c8; border-radius:50%; background:var(--board-active); font-size:11px; font-weight:700; overflow:hidden; }
+.presence-avatar img { position:absolute; width:100%; height:100%; object-fit:cover; }
+.presence-away { opacity:.4; filter:grayscale(1); border-style:dashed; }
+.token-actions { position:fixed; z-index:5; left:12px; bottom:16px; max-width:min(360px, calc(100vw - 24px));
+  display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px; border:1px solid var(--board-border); border-radius:10px;
+  background:var(--board-panel); color:var(--board-text); font:12px/1.4 system-ui,sans-serif; box-shadow:0 4px 20px #0002; }
+.token-actions[hidden] { display:none; } .token-actions strong { flex-basis:100%; } .token-actions label { display:inline-flex; align-items:center; gap:4px; }
+.token-actions input[type=number] { width:48px; padding:4px; background:var(--board-bg); color:var(--board-text); border:1px solid var(--board-border); border-radius:4px; }
+.encounter-panel { position:fixed; z-index:5; right:12px; top:200px; max-height:45vh; overflow:auto; width:min(260px, calc(100vw - 24px));
+  background:var(--board-panel); border:1px solid var(--board-border); border-radius:10px; padding:10px; font:12px/1.4 system-ui,sans-serif; box-shadow:0 4px 20px #0002; }
+.encounter-panel summary { cursor:pointer; font-weight:700; }.encounter-row { display:flex; gap:5px; align-items:center; margin-top:6px; }
+.encounter-row button:first-of-type { flex:1; text-align:left; }.encounter-controls { display:flex; gap:6px; margin-top:10px; }
+.board-markers { position:absolute; inset:0; z-index:2; pointer-events:none; overflow:hidden; }
+.board-marker { position:absolute; transform:translate(-50%,-50%); pointer-events:auto; border:2px solid #8278c8; border-radius:50%;
+  width:30px; height:30px; background:var(--board-panel); color:var(--board-text); cursor:pointer; font:700 12px system-ui,sans-serif; }
+.board-dialog { width:min(440px, calc(100vw - 32px)); box-sizing:border-box; padding:20px; border:1px solid var(--board-border); border-radius:10px;
+  background:var(--board-bg); color:var(--board-text); }.board-dialog button { margin:4px; }.board-dialog select { width:100%; }.board-dialog::backdrop { background:#0008; }
+@media (max-width:1100px) { .token-actions { bottom:150px; max-width:260px; } }
+@media (max-width:600px) {
+  .scene-controls { padding:6px 8px; } #board-scene { max-width:160px; }
+  .presence-avatar { width:26px; height:26px; } #board-presence { margin-left:auto; } #map-status { max-width:none; }
+  .encounter-panel { top:auto; bottom:8px; right:8px; max-height:35vh; width:calc(100vw - 40px); }
+  .token-actions { left:8px; bottom:225px; max-width:calc(100vw - 38px); }
+}
+.token-name { position:absolute; transform:translateX(-50%); padding:1px 4px; border-radius:3px; background:var(--board-panel); color:var(--board-text); font:11px/1.4 system-ui,sans-serif; white-space:nowrap; }
+#scene-dialog-name { display:block; width:100%; box-sizing:border-box; margin:8px 0 14px; padding:8px; font:inherit; border:1px solid var(--board-border); border-radius:6px; background:var(--board-panel); color:var(--board-text); }
+/* Actor actions use the board panel; native image crop/link/opacity actions do not apply to managed placements. */
+.board-token-selected .excalidraw .App-menu__left:has([id$="selectedShapeActions-title"]) { display:none; }
+.board-token-selected .excalidraw .selected-shape-actions { display:none; }
+.board-dock { display:contents; } #board-prep-toggle { display:none; }
+@media (max-width:600px) {
+  #board-prep-toggle { display:inline-block; }
+  #warden-controls:not(.expanded) { display:none; }
+  .map-header > #scene-name { display:block; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .map-header > #scene-draft:not([hidden]) { display:block; }
+  .board-dock { display:flex; flex-direction:column; gap:6px; position:relative; flex:0 1 auto; min-height:0; max-height:38dvh; overflow:auto; margin:6px 8px 50px; overscroll-behavior:contain; }
+  .board-dock > .token-actions, .board-dock > .encounter-panel, .board-dock > .board-rolls {
+    position:static; transform:none; width:auto; max-width:none; max-height:none; margin:0; flex-shrink:0; box-shadow:none; }
+}
+@media (max-width:600px) { .map-header > span#scene-name { display:block; } .map-header > span#scene-draft:not([hidden]) { display:block; } }

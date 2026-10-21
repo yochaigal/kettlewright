@@ -18,7 +18,7 @@ export function stateFromUpdate(event, current) {
     drawing = {elements: ordered, files: Object.fromEntries(Object.entries(files).filter(([id]) => used.has(id))), appState: delta.appState};
   }
   if (event.fog_version > current.fog_version && !event.update.fog) return null;
-  return {generation: current.generation, version: Math.max(event.version, current.version), drawing,
+  return {...current, generation: current.generation, version: Math.max(event.version, current.version), drawing,
     fog: event.fog_version > current.fog_version ? event.update.fog : current.fog,
     fog_version: Math.max(event.fog_version, current.fog_version)};
 }

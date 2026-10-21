@@ -14,6 +14,7 @@ import {setupBoardControls} from './board_controls.js';
 import {createTokenStats} from './token_stats.js';
 import {createBoardRolls} from './board_rolls.js';
 import {createTokenPortraits} from './token_portraits.js';
+import {createWhiteboardSession} from './whiteboard_session.js';
 import {editorLocale} from './locale.js';
 
 const config = JSON.parse(document.getElementById('shared-map-config').textContent);
@@ -31,6 +32,8 @@ let fog = {enabled: false, base: 'covered', strokes: [], applied: []}, fogVersio
 let fogQueue = [], fogSaving = false, fogBlocked = false, fogTimer, fogFailed = false;
 let playerPreview = false, theme = 'light', connected = false;
 let socketUpdates = [];
+let latestState = null, sceneEpoch = 0;
+let currentScene = config.warden ? new URL(location.href).searchParams.get('scene_id') : null;
 let waitingForImages = false;
 try {theme = localStorage.getItem('darkMode') === 'true' ? 'dark' : 'light';} catch (_) {}
 document.body.classList.toggle('dark-mode', theme === 'dark');
@@ -39,6 +42,9 @@ const library = loadLibraries([...MAP_LIBRARIES, 'clocks'], new URL(config.libra
 // Match the app's existing Socket.IO transport. HTTP polling below is the fallback.
 const socket = io({transports: ['websocket'], reconnectionDelay: 1000, reconnectionDelayMax: 10000});
 const actorUpdates = createActorUpdates({config, socket, denied});
+const session = createWhiteboardSession({config, socket, getApi: () => api, refresh, switchScene, flushDrawing, preserveDraft,
+  isPreview: () => playerPreview, onStatus: showStatus, project: update => {applying = true; try {update();} finally {applying = false;}}});
+actorUpdates.subscribe('stats', data => session.actorSnapshot(data));
 
 const laser = createLaserSync({socket, getApi: () => api, getGeneration: () => generation, config,
   canSend: () => initialized && !stopped && !importing});
@@ -47,6 +53,7 @@ window.addEventListener('blur', () => laser.stop());
 
 const tokens = setupPartyTokens({editor, config, getApi: () => api, getGeneration: () => generation,
   canInsert: () => config.editing && initialized && !stopped && !importing && !playerPreview,
+  managedInsert: (actor, element, file) => session.insert(actor, element, file),
   beforeInsert: () => {layer.setTool(''); document.querySelectorAll('[data-fog-tool]').forEach(button => button.setAttribute('aria-pressed', 'false'));}});
 
 const boardControls = setupBoardControls({config, getApi: () => api, socket,
@@ -68,7 +75,7 @@ const portraits = createTokenPortraits({getApi: () => api, updates: actorUpdates
 function showStatus() {
   if (stopped) {tell('denied'); return;}
   tell(saveBlocked ? 'invalid' : saveFailed ? 'failed' : readFailed ? 'offline'
-    : pending || saving || importing || waitingForImages ? 'saving' : 'saved');
+    : pending || saving || importing || waitingForImages || session.busy ? 'saving' : 'saved');
   const fogStatus = document.getElementById('fog-status');
   if (fogStatus) fogStatus.textContent = config.messages[fogBlocked ? 'fogInvalid' : fogFailed ? 'fogFailed'
     : fogQueue.length || fogSaving ? 'saving' : ''] || '';
@@ -78,7 +85,7 @@ function showStatus() {
 
 function renderEditor() {
   if (!props || stopped) return;
-  root.render(h(Excalidraw, {...props, langCode: editorLocale(document.documentElement.lang),
+  root.render(h(Excalidraw, {...props, key: `${latestState?.scene_id || 0}:${generation}`, langCode: editorLocale(document.documentElement.lang),
     renderTopRightUI: () => h('button', {type: 'button', className: 'party-tokens-button',
       disabled: !config.editing || playerPreview || importing, onClick: tokens.open}, config.messages.tokens),
     viewModeEnabled: !config.editing || playerPreview || importing,
@@ -100,7 +107,7 @@ function setTheme(value, persist = true) {
 function revoke() {
   stopped = true; pending = null; fogQueue = [];
   clearTimeout(timer); clearTimeout(fogTimer); clearInterval(poll);
-  actorUpdates.destroy();
+  session.destroy(); actorUpdates.destroy();
   boardControls.destroy(); boardRolls.destroy(); tokenStats.destroy(); portraits.destroy(); tokens.close(); laser.destroy(); layer.destroy(); root.unmount(); api = null; tell('denied');
 }
 function denied(response) {
@@ -109,7 +116,7 @@ function denied(response) {
 }
 function post(url, body, timeout = 15000) {
   return fetch(url, {method: 'POST', headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({...body, csrf_token: config.csrfToken}), signal: AbortSignal.timeout(timeout)});
+    body: JSON.stringify({...session.context(), ...body, csrf_token: config.csrfToken}), signal: AbortSignal.timeout(timeout)});
 }
 function scheduleSave(delay = 400) {
   if (stopped || saveBlocked || waitingForImages) return;
@@ -118,18 +125,26 @@ function scheduleSave(delay = 400) {
 }
 async function save() {
   if (!pending || saving || loading || importing || stopped || saveBlocked || waitingForImages) return;
-  const drawing = pending, sentGeneration = generation;
+  const drawing = pending, sentGeneration = generation, sentEpoch = sceneEpoch;
   pending = null; saving = true; showStatus();
   try {
     const response = await post(config.sceneUrl, {...drawingForSave(drawing, baseDrawing), version, generation: sentGeneration}, 60000);
+    if (sentEpoch !== sceneEpoch) return;
     if (denied(response)) return;
-    if (response.status === 409) {pending ||= drawing; refreshAgain = true; return;}
+    if (response.status === 409) {
+      pending ||= drawing; const error = await response.json();
+      if (error.reason === 'reload_required') {saveBlocked = true; api?.setToast({message: config.messages.reloadRequired});}
+      else if (error.reason === 'active_changed') await switchScene(null, true);
+      else refreshAgain = true;
+      return;
+    }
     if ([400, 413].includes(response.status)) {pending ||= drawing; saveBlocked = true; return;}
     if (!response.ok) throw new Error();
-    version = (await response.json()).version; baseDrawing = drawing; saveFailed = false;
+    version = (await response.json()).version; if (latestState) latestState.version = version; baseDrawing = drawing; saveFailed = false;
     actorUpdates.placed(drawing.elements);
-  } catch (_) {pending ||= drawing; saveFailed = true; scheduleSave(2500);}
+  } catch (_) {if (sentEpoch === sceneEpoch) {pending ||= drawing; saveFailed = true; scheduleSave(2500);}}
   finally {
+    if (sentEpoch !== sceneEpoch) return;
     saving = false; drainUpdates(); showStatus();
     if (refreshAgain) {refreshAgain = false; refresh();} else if (pending) scheduleSave(saveFailed ? 2500 : 400);
   }
@@ -158,6 +173,7 @@ function onChange(elements, appState, files) {
     return;
   }
   if (!config.editing || playerPreview || importing) return;
+  session.capture(elements);
   if (sameDrawing(drawing, lastDrawing)) {
     if (imagesWerePending) {
       showStatus(); if (pending) scheduleSave(); drainUpdates();
@@ -170,10 +186,11 @@ function onChange(elements, appState, files) {
 }
 
 function mount(data) {
+  const initial = session.initialDrawing(data.drawing);
   version = data.version; generation = data.generation || 1;
   props = {
-    excalidrawAPI: instance => {api = instance; layer.redraw(); tokenStats.redraw();},
-    initialData: {elements: restoreElements(data.drawing.elements, null), files: data.drawing.files,
+    excalidrawAPI: instance => {api = instance; layer.redraw(); tokenStats.redraw(); session.render();},
+    initialData: {elements: restoreElements(initial.elements, null), files: initial.files,
       libraryItems: library.then(result => result.items),
       appState: {...data.drawing.appState, theme, gridModeEnabled: true}},
     isCollaborating: true, onChange, onPointerUpdate: laser.pointerUpdate, validateEmbeddable: () => false,
@@ -189,12 +206,14 @@ function applyDrawing(drawing) {
     api.addFiles(structuredClone(Object.values(drawing.files)));
     api.updateScene({elements, appState: drawing.appState, captureUpdate: CaptureUpdateAction.NEVER});
     api.history.clear();
-  } finally {applying = false; layer.redraw();}
+  } finally {applying = false; layer.redraw(); session.render();}
 }
 function preserveDraft() {
-  if (!pending && !fogQueue.length) return;
+  if (!pending && !saving && !fogQueue.length && !session.busy) return;
   const data = {type: 'excalidraw', version: 2, source: location.origin,
-    ...(pending || lastDrawing), whiteboardFog: fogQueue.reduce(applyFogOperation, fog)};
+    ...(pending || lastDrawing),
+    elements: [...(pending || lastDrawing).elements, ...session.draft()],
+    files: {...(pending || lastDrawing).files, ...session.files()}, whiteboardFog: fogQueue.reduce(applyFogOperation, fog)};
   const link = document.createElement('a');
   link.href = URL.createObjectURL(new Blob([JSON.stringify(data)], {type: 'application/json'}));
   link.download = `whiteboard-draft-${generation}.excalidraw`; link.textContent = config.messages.draft;
@@ -209,12 +228,17 @@ function displayFog() {
 function acceptState(data) {
   const nextGeneration = data.generation || 1;
   if (nextGeneration < generation) return;
+  if (version >= 0 && nextGeneration !== generation) {preserveDraft(); session.reset();}
+  latestState = {...latestState, ...data};
+  data = latestState;
+  session.accept(data);
   if (version >= 0 && nextGeneration !== generation) {
-    tokens.close(); laser.clear(); preserveDraft(); pending = null; fogQueue = []; saveBlocked = fogBlocked = saveFailed = fogFailed = false;
+    tokens.close(); laser.clear(); pending = null; fogQueue = []; saveBlocked = fogBlocked = saveFailed = fogFailed = false;
     clearTimeout(timer); timer = null; clearTimeout(fogTimer); fogTimer = null;
     layer.setTool(''); document.querySelectorAll('[data-fog-tool]').forEach(button => button.setAttribute('aria-pressed', 'false'));
     generation = nextGeneration; version = data.version; fogVersion = -1;
-    applyDrawing(data.drawing); baseDrawing = lastDrawing;
+    initialized = false; api = null; props = null; root.render(null);
+    mount(data); baseDrawing = data.drawing;
     api?.setToast({message: config.messages.replaced});
   } else if (version < 0) mount(data);
   else if (data.version > version && api && initialized) {
@@ -229,22 +253,28 @@ function acceptState(data) {
     fogQueue = fogQueue.filter(operation => !fog.applied.includes(operation.id));
     displayFog();
   }
-  actorUpdates.placed(data.drawing.elements);
+  actorUpdates.placed([...data.drawing.elements, ...(data.tokens || []).map(token => token.element)]);
+  session.render();
 }
-async function refresh() {
+async function refresh(force = false) {
   if (stopped || document.hidden) return;
   if (saving || loading || importing || waitingForImages) {refreshAgain = true; return;}
-  loading = true;
+  loading = true; const sentEpoch = sceneEpoch;
   try {
-    const query = version < 0 ? '' : `?version=${version}&generation=${generation}&fog_version=${fogVersion}`;
-    const response = await fetch(config.sceneUrl + query, {cache: 'no-store', signal: AbortSignal.timeout(60000)});
+    const params = new URLSearchParams();
+    if (currentScene) params.set('scene_id', currentScene);
+    if (version >= 0 && latestState && force !== true) for (const key of ['version', 'generation', 'fog_version', 'tokens_version', 'encounter_version', 'markers_version', 'activation_version', 'view_revision']) params.set(key, latestState[key]);
+    const response = await fetch(config.sceneUrl + '?' + params, {cache: 'no-store', signal: AbortSignal.timeout(60000)});
+    if (sentEpoch !== sceneEpoch) return;
+    if (response.status === 409 || response.status === 404 && config.warden && currentScene) {await switchScene(null, true); return;}
     if (denied(response)) return;
     if (!response.ok) throw new Error();
     if (response.status === 204) {readFailed = false; return;}
     const data = await response.json();
-    if (!stopped) {acceptState(data); readFailed = false;}
-  } catch (_) {readFailed = true; if (version < 0 && !stopped) tell('loadFailed');}
+    if (!stopped && sentEpoch === sceneEpoch) {acceptState(data); readFailed = false;}
+  } catch (_) {if (sentEpoch === sceneEpoch) {readFailed = true; if (version < 0 && !stopped) tell('loadFailed');}}
   finally {
+    if (sentEpoch !== sceneEpoch) return;
     loading = false; drainUpdates(); if (version >= 0) showStatus();
     if (refreshAgain) {refreshAgain = false; refresh();}
     else {if (pending) scheduleSave(readFailed ? 2500 : 180); scheduleFog();}
@@ -259,7 +289,7 @@ function queueFog(operation) {
 }
 async function saveFog() {
   if (!fogQueue.length || fogSaving || loading || importing || fogBlocked || stopped) return;
-  fogSaving = true; const operation = fogQueue[0], sentGeneration = generation;
+  fogSaving = true; const operation = fogQueue[0], sentGeneration = generation, sentEpoch = sceneEpoch;
   try {
     const response = await post(config.fogUrl, {operation, generation: sentGeneration, fog_version: fogVersion});
     if (denied(response)) return;
@@ -267,19 +297,19 @@ async function saveFog() {
     if ([400, 413].includes(response.status)) {fogBlocked = true; return;}
     if (!response.ok) throw new Error();
     const data = await response.json();
-    if (generation !== sentGeneration) return;
+    if (generation !== sentGeneration || sentEpoch !== sceneEpoch) return;
     fogQueue = fogQueue.filter(item => item.id !== operation.id);
     if (data.fog_version >= fogVersion) {fog = data.fog; fogVersion = data.fog_version;}
     fogFailed = false; displayFog();
-  } catch (_) {fogFailed = true; scheduleFog(2500);}
-  finally {fogSaving = false; showStatus(); scheduleFog();}
+  } catch (_) {if (sentEpoch === sceneEpoch) {fogFailed = true; scheduleFog(2500);}}
+  finally {if (sentEpoch === sceneEpoch) {fogSaving = false; showStatus(); scheduleFog();}}
 }
 
 function drainUpdates() {
   if (saving || loading || importing || waitingForImages || !api || !initialized || stopped) return;
   const queued = socketUpdates; socketUpdates = [];
   for (const event of queued) {
-    const state = stateFromUpdate(event, {drawing: baseDrawing, version, generation, fog, fog_version: fogVersion});
+    const state = stateFromUpdate(event, {...latestState, drawing: baseDrawing, version, generation, fog, fog_version: fogVersion});
     if (!state) {refreshAgain = true; break;}
     acceptState(state);
   }
@@ -287,6 +317,8 @@ function drainUpdates() {
 }
 function receiveUpdate(data) {
   if (data.party_id !== config.partyId || stopped) return;
+  if (data.scene_id && data.scene_id !== latestState?.scene_id) return;
+  if (latestState && ['tokens_version', 'encounter_version', 'markers_version', 'activation_version'].some(key => data[key] > latestState[key])) {refresh(); return;}
   if (!(data.version > version || data.generation > generation || data.fog_version > fogVersion)) return;
   if (!data.update) {refresh(); return;} // Rolling upgrade from an older server.
   if (socketUpdates.length >= 100) {socketUpdates = []; refreshAgain = true;}
@@ -298,12 +330,14 @@ function polling() {clearInterval(poll); poll = setInterval(() => {if (!document
 socket.on('connect', () => {connected = true; polling(); refresh();});
 socket.on('disconnect', () => {connected = false; polling(); refresh();});
 socket.on('shared_map_changed', receiveUpdate);
-socket.on('party_members_changed', data => {if (data.party_id === config.partyId) refresh();});
+socket.on('whiteboard_active_changed', data => {if (data.party_id === config.partyId) {if (config.warden) refresh(); else switchScene(null, true);}});
+socket.on('party_members_changed', data => {if (data.party_id === config.partyId) refresh(true);});
+socket.on('party_actors_changed', data => {if (data.party_id === config.partyId) refresh(true);});
 document.addEventListener('visibilitychange', () => {if (!document.hidden) refresh();});
 window.addEventListener('online', () => {refresh(); if (pending) scheduleSave(); scheduleFog();});
 window.addEventListener('storage', event => {if (event.key === 'darkMode') setTheme(event.newValue === 'true' ? 'dark' : 'light', false);});
 window.addEventListener('beforeunload', event => {
-  if (pending || saving || waitingForImages || fogQueue.length || fogSaving || importing) {event.preventDefault(); event.returnValue = '';}
+  if (pending || saving || waitingForImages || fogQueue.length || fogSaving || importing || session.busy) {event.preventDefault(); event.returnValue = '';}
 });
 document.getElementById('fit-map').addEventListener('click', () => api?.scrollToContent(undefined, {fitToContent: true}));
 document.getElementById('board-theme').addEventListener('click', () => setTheme(theme === 'dark' ? 'light' : 'dark'));
@@ -323,23 +357,53 @@ if (config.warden) {
   }));
   document.getElementById('player-preview').addEventListener('click', event => {
     playerPreview = !playerPreview; event.currentTarget.setAttribute('aria-pressed', String(playerPreview));
-    layer.setPreview(playerPreview); tokenStats.reset(); boardRolls.redraw(); displayFog();
+    layer.setPreview(playerPreview); session.render(); tokenStats.reset(); boardRolls.redraw(); displayFog();
   });
   document.getElementById('discard-fog').addEventListener('click', () => {
     if (confirm(config.messages.discardFog)) {fogQueue = []; fogBlocked = fogFailed = false; displayFog(); refresh();}
   });
-  if (config.canLoadMaps) setupMapImport({config, tell, replace: async (source, cover) => {
+  if (config.canLoadMaps) setupMapImport({config, tell, replace: async (source, cover, mode) => {
     if (pending || saving || waitingForImages || loading || fogQueue.length || fogSaving || version < 0) throw new Error(config.messages.waitForSave);
+    await session.flush();
     importing = true; renderEditor(); showStatus();
     try {
       const response = await post(config.importUrl, {source_id: source.source_id, digest: source.digest,
-        generation, version, fog_version: fogVersion, cover});
+        generation, version, fog_version: fogVersion, tokens_version: latestState.tokens_version,
+        markers_version: latestState.markers_version, encounter_version: latestState.encounter_version, cover, mode});
       if (denied(response)) throw new Error(config.messages.denied);
       if (response.status === 409) {refreshAgain = true; throw new Error(config.messages.importChanged);}
       if (!response.ok) throw new Error(config.messages.importFailed);
-      acceptState(await response.json());
+      const data = await response.json();
+      if (data.scene_id !== latestState.scene_id) await switchScene(data.scene_id, true);
+      else acceptState(data);
       api?.scrollToContent(undefined, {fitToContent: true});
     } finally {importing = false; drainUpdates(); renderEditor(); showStatus(); if (refreshAgain) {refreshAgain = false; refresh();}}
   }});
 }
 polling(); refresh();
+
+async function flushDrawing() {
+  for (let attempt = 0; attempt < 150; attempt++) {
+    if (!pending && !saving && !loading && !waitingForImages && !fogQueue.length && !fogSaving) return;
+    if (saveBlocked || fogBlocked || saveFailed || fogFailed) break;
+    await save(); await saveFog();
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  throw new Error(config.messages.waitForSave);
+}
+async function switchScene(id, forced = false) {
+  if (stopped) return;
+  if (!forced) {await flushDrawing(); await session.flush();}
+  preserveDraft(); ++sceneEpoch;
+  currentScene = id; session.reset(); latestState = null;
+  pending = null; fogQueue = []; socketUpdates = []; waitingForImages = false;
+  clearTimeout(timer); clearTimeout(fogTimer);
+  saving = loading = fogSaving = importing = initialized = applying = false;
+  saveBlocked = fogBlocked = saveFailed = fogFailed = readFailed = false;
+  version = -1; fogVersion = -1; generation = 1; api = null; props = null;
+  tokens.close(); laser.clear(); tokenStats.reset(); root.render(null);
+  const address = new URL(location.href);
+  if (config.warden && id) address.searchParams.set('scene_id', id); else address.searchParams.delete('scene_id');
+  history.replaceState(null, '', address);
+  await refresh(); actorUpdates.refresh();
+}

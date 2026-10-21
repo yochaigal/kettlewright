@@ -1,6 +1,12 @@
 import {restoreElements, CaptureUpdateAction} from 'excalidraw';
 
 export function setupBoardControls({config, getApi, canEdit}) {
+  const prepToggle = document.getElementById('board-prep-toggle');
+  prepToggle?.addEventListener('click', () => {
+    const open = prepToggle.getAttribute('aria-expanded') !== 'true';
+    prepToggle.setAttribute('aria-expanded', String(open));
+    document.getElementById('warden-controls')?.classList.toggle('expanded', open);
+  });
   const panel = document.getElementById('party-panel'), frame = document.getElementById('party-frame');
   const partyButton = document.getElementById('board-party');
   const warning = document.getElementById('reveal-stats-confirm');
