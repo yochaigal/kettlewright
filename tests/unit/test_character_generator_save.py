@@ -10,7 +10,8 @@ from app.models import db, User, Party, Campaign, Character, Companion, ContentE
 @pytest.fixture
 def generated(app_with_babel):
     app = app_with_babel
-    app.config.update(WTF_CSRF_ENABLED=True, LOCAL_FEATURE_ACCESS=False, FEATURE_TEST_USER_IDS={1, 2})
+    app.config.update(WTF_CSRF_ENABLED=True, LOCAL_FEATURE_ACCESS=False,
+                      FEATURE_TEST_USER_IDS=set(), FEATURE_TEST_PARTY_IDS=set())
     with app.app_context():
         db.session.add_all([User(id=i, username=f'generator{i}') for i in (1,2)])
         db.session.add_all([Party(id=i, owner=i, owner_username=f'generator{i}', name=f'Party{i}', party_url=f'party{i}') for i in (1,2)])
@@ -97,12 +98,12 @@ def test_generated_character_saves_reject_unauthorized_or_invalid_requests(gener
         assert Character.query.count() == Companion.query.count() == ContentEntry.query.count() == 0
 
 
-def test_npc_save_retains_campaign_feature_gate(generated):
+def test_npc_save_is_available_without_tester_ids(generated):
     app, clients, form, _ = generated
     app.config['FEATURE_TEST_USER_IDS'] = set()
-    assert clients[1].post('/gen/character/save/npc', data=form).status_code == 404
+    assert clients[1].post('/gen/character/save/npc', data=form).status_code == 302
     with app.app_context():
-        assert ContentEntry.query.count() == 0
+        assert ContentEntry.query.one().owner_id == 1
 
 
 @pytest.mark.parametrize('kind', ['party', 'monster', 'npc'])
@@ -131,19 +132,19 @@ def test_party_save_rejects_invalid_companion_kind(generated, kind):
         assert Companion.query.count() == 0
 
 
-def test_party_save_available_without_campaign_features_and_defaults_to_hireling(generated):
+def test_party_save_available_without_tester_ids_and_defaults_to_hireling(generated):
     app, clients, form, _ = generated
     app.config['FEATURE_TEST_USER_IDS'] = set()
     page = clients[1].get('/tools/').text
     assert 'Save to Party' in page and 'Plain Text' in page
-    assert 'id="pcgen-save-npc-button"' not in page
+    assert 'id="pcgen-save-npc-button"' in page
     response = clients[1].post('/gen/character/save/party', data=form)
     assert response.status_code == 302
     with app.app_context():
         assert db.session.get(Companion, int(response.location.rsplit('/', 1)[1])).kind == 'hireling'
 
 
-def test_tools_offers_npc_save_to_campaign_audience_only(generated):
+def test_tools_offers_npc_save_to_all_authenticated_users(generated):
     _, clients, _, _ = generated
     assert 'id="pcgen-save-npc-button"' in clients[1].get('/tools/').text
 

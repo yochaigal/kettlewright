@@ -94,7 +94,7 @@ def test_drawing_image_roundtrip_and_content_validation(setup):
 @pytest.fixture
 def setup(app_with_babel, tmp_path):
     app = app_with_babel
-    app.config.update(FEATURE_TEST_USER_IDS={1, 2, 3, 4}, FEATURE_TEST_PARTY_IDS={1, 2, 3})
+    app.config.update(LOCAL_FEATURE_ACCESS=False, FEATURE_TEST_USER_IDS=set(), FEATURE_TEST_PARTY_IDS=set())
     app.config['MATERIAL_IMAGE_UPLOAD_FOLDER'] = str(tmp_path / 'material-images')
     with app.app_context():
         db.session.add_all([User(id=i, username=f'user{i}') for i in range(1, 5)])
@@ -1274,6 +1274,6 @@ def test_party_campaign_tab_uses_published_knowledge_and_preview(setup):
 
     login(client, 1)
     app.config['FEATURE_TEST_PARTY_IDS'] = set()
-    disabled = client.get(url)
-    assert 'id="campaign-details-tab"' not in disabled.text
-    assert 'Known facts' not in disabled.text
+    released = client.get(url)
+    assert 'id="campaign-details-tab"' in released.text
+    assert 'Known facts' in released.text

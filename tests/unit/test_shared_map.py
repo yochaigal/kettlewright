@@ -133,12 +133,17 @@ def test_empty_map_and_access(shared):
         assert 'Whiteboard' in html
         config = json.loads(re.search(r'id="shared-map-config" type="application/json">(.*?)</script>', html, re.S)[1])
         assert config['editing'] is True
-        assert config['canLoadMaps'] is False
-        assert config['sourcesUrl'] is None and config['importUrl'] is None
-        assert 'id="load-map"' not in html and 'id="map-import"' not in html
+        assert config['canLoadMaps'] is (i == 1)
+        if i == 1:
+            assert config['sourcesUrl'] == '/party/1/shared-map/sources'
+            assert config['importUrl'] == '/party/1/shared-map/import'
+            assert 'id="load-map"' in html and 'id="map-import"' in html
+        else:
+            assert config['sourcesUrl'] is None and config['importUrl'] is None
+            assert 'id="load-map"' not in html and 'id="map-import"' not in html
         assert 'data-library=' not in html
-        assert clients[i].get('/campaigns/').status_code == 404
-        assert clients[i].get('/party/1/materials/').status_code == 404
+        assert clients[i].get('/campaigns/').status_code == 200
+        assert clients[i].get('/party/1/materials/').status_code == 200
     for i in (3, 4):
         assert clients[i].get(URL).status_code == 403
         assert clients[i].get('/party/1/shared-map').status_code == 403
@@ -169,7 +174,7 @@ def test_save_persists_and_notifies_only_current_party(shared):
     assert clients[2].get(URL).json['drawing']['elements'] == []
 
 
-def test_party_page_shows_whiteboard_without_campaign_links(shared):
+def test_party_page_shows_whiteboard_and_campaign_for_all_members(shared):
     app, clients, _ = shared
     with app.app_context():
         for model in (Party, Character):
@@ -185,9 +190,9 @@ def test_party_page_shows_whiteboard_without_campaign_links(shared):
         assert response.status_code == 200
         html = response.get_data(as_text=True)
         assert 'href="/party/1/shared-map"' in html
-        assert 'href="/party/1/materials/"' not in html
-        assert 'Campaign details' not in html
-        assert 'Create and show' not in html
+        assert 'href="/campaigns/"' in html
+        assert 'id="campaign-details-tab"' in html
+        assert ('Create and show' in html) is (user_id == 1)
 
 
 @pytest.mark.parametrize('version', [0, 1, 99])

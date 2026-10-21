@@ -3,7 +3,7 @@
 {% from 'campaigns/material_tree.html' import material_children, tree_toolbar with context %}
 {% block workspace %}
 {% call page_header(_('Campaigns')) %}
-{% if user_features_enabled() %}<a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a><a href="{{ url_for('campaigns.new_entry') }}">{{ _('New article') }}</a>{% endif %}
+<a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a><a href="{{ url_for('campaigns.new_entry') }}">{{ _('New article') }}</a>
 {% endcall %}
 <p>{{ _('Your world at a glance. Expand a branch, open an article, or review what you have shared.') }}</p>
 

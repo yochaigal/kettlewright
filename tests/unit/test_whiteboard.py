@@ -10,7 +10,6 @@ BASE = '/party/1/shared-map'
 @pytest.fixture
 def sources(shared):
     app, clients, sockets = shared
-    app.config.update(FEATURE_TEST_USER_IDS={1}, FEATURE_TEST_PARTY_IDS={1})
     with app.app_context():
         campaign = Campaign(owner_id=1, name='Campaign')
         root = ContentEntry(owner_id=1, campaign=campaign, category='geography', title='Region', body='ROOT SECRET')
@@ -135,23 +134,23 @@ def test_invalid_fog_does_not_mutate(shared, operation):
         assert PartyMap.query.count() == 0
 
 
-def test_campaign_gate_and_csrf_cover_import_routes(sources):
+def test_map_import_is_released_and_still_requires_csrf(sources):
     app, clients, _ = sources
     app.config['WTF_CSRF_ENABLED'] = True
     assert clients[1].post(f'{BASE}/import', json={}).status_code == 400
     assert clients[1].post(f'{BASE}/fog', json={}).status_code == 400
     app.config['FEATURE_TEST_PARTY_IDS'] = set()
     for path in ('sources', 'sources/101'):
-        assert clients[1].get(f'{BASE}/{path}').status_code == 404
-    assert clients[1].post(f'{BASE}/import', json={}).status_code == 404
+        assert clients[1].get(f'{BASE}/{path}').status_code == 200
+    assert clients[1].post(f'{BASE}/import', json={}).status_code == 400
     assert clients[1].post(f'{BASE}/fog', json={}).status_code == 400
     app.config['WTF_CSRF_ENABLED'] = False
     assert fog(clients, {'id': 'public-board', 'type': 'hide_all'}).status_code == 200
     app.config['FEATURE_TEST_PARTY_IDS'] = {1}
     app.config['FEATURE_TEST_USER_IDS'] = set()
     for path in ('sources', 'sources/101'):
-        assert clients[1].get(f'{BASE}/{path}').status_code == 404
-    assert clients[1].post(f'{BASE}/import', json={}).status_code == 404
+        assert clients[1].get(f'{BASE}/{path}').status_code == 200
+    assert load(clients).status_code == 200
 
 
 def test_import_keeps_images_groups_and_bindings(sources):
