@@ -1,5 +1,6 @@
 """Pets and hirelings have distinct entry points and shared small-sheet controls."""
 import json
+import re
 import uuid
 from flask import Blueprint, abort, redirect, render_template, request, url_for, make_response
 from flask_login import current_user, login_required
@@ -23,7 +24,7 @@ def helpers():
 @companions.route('/parties/<int:party_id>/monsters', methods=['GET', 'POST'])
 @login_required
 def monsters(party_id):
-    from app.lib.monsters import monster_catalog, parse_monster, new_monster
+    from app.lib.monsters import MAX_MONSTER_BATCH, monster_catalog, parse_monsters, new_monster
     party = db.get_or_404(Party, party_id)
     if party.owner != current_user.id:
         abort(403)
@@ -37,16 +38,30 @@ def monsters(party_id):
                 raw = upload.stream.read(65537)
                 if len(raw) > 65536:
                     raise ValueError('Choose a Markdown monster file smaller than 64 KB.')
-                template = parse_monster(raw.decode('utf-8-sig'))
+                templates = parse_monsters(raw.decode('utf-8-sig'))
+            elif request.form.get('monster_markdown', '').strip():
+                templates = parse_monsters(request.form['monster_markdown'])
             else:
-                template = monster_catalog().get(request.form.get('template'))
-                if template is None:
+                catalog = monster_catalog()
+                keys = request.form.getlist('template')
+                if not keys or len(keys) != len(set(keys)) or any(key not in catalog for key in keys):
                     raise ValueError('Choose a monster from the bestiary.')
-            c = new_monster(party, template)
-            db.session.add(c)
+                templates = []
+                for key in keys:
+                    quantity = request.form.get('quantity_' + key, '1')
+                    if not re.fullmatch(r'[0-9]{1,3}', quantity) or not 1 <= int(quantity) <= MAX_MONSTER_BATCH:
+                        raise ValueError('Enter a whole number from 1 to 100 for each selected monster.')
+                    if len(templates) + int(quantity) > MAX_MONSTER_BATCH:
+                        raise ValueError('Add at most 100 monster instances at a time.')
+                    templates.extend([catalog[key]] * int(quantity))
+            instances = [new_monster(party, template) for template in templates]
+            db.session.add_all(instances)
             db.session.commit()
-            return redirect(url_for('companions.sheet', companion_id=c.id))
+            if len(instances) == 1:
+                return redirect(url_for('companions.sheet', companion_id=instances[0].id))
+            return redirect(url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) + '#monsters')
         except (ValueError, UnicodeError) as problem:
+            db.session.rollback()
             error = str(problem)
     return render_template('main/monsters.html', party=party, templates=monster_catalog(),
                            form=FlaskForm(), error=error), 400 if error else 200

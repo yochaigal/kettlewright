@@ -3,7 +3,7 @@ from copy import deepcopy
 
 import pytest
 
-from app.lib.monsters import parse_monster, monster_catalog
+from app.lib.monsters import parse_monster, parse_monsters, monster_catalog
 from app.models import Companion, Character, Party, PartyRoll, PartyMap, db
 from test_shared_map import shared, DRAWING, URL
 
@@ -25,6 +25,88 @@ def test_cairn_markdown_and_catalog():
     for source in ('bad', '# Bad\nno HP', '# Bad\n8 HP, 4 Armor', '# Bad\n8 HP, 9 HP'):
         with pytest.raises(ValueError):
             parse_monster(source)
+
+
+def test_multiple_markdown_blocks_and_front_matter():
+    source = '\ufeff---\r\nlayout: default\r\n---\r\n# Wolf\r\n4 HP, bite (d6)\r\n- Pack hunter\r\n---\r\n# Bat\r\n3 HP, 14 DEX\r\n---\r\n'
+    wolf, bat = parse_monsters(source)
+    assert wolf['name'] == 'Wolf' and wolf['notes'] == '- Pack hunter'
+    assert bat['name'] == 'Bat' and bat['dexterity'] == 14 and bat['notes'] == ''
+    assert len(parse_monsters('---\n# Wolf\n4 HP\n---\n\n---')) == 1
+    assert parse_monster(source)['name'] == 'Wolf'
+    assert parse_monsters('---\n# Site metadata\n\nlayout: default\n---\n# Wolf\n4 HP')[0]['name'] == 'Wolf'
+    assert len(parse_monsters('# Wolf\n4 HP\n```md\n---\n```\n---\n# Bat\n3 HP')) == 2
+    with pytest.raises(ValueError, match='Monster 2:'):
+        parse_monsters('# Wolf\n4 HP\n---\n# Bat\nno stats')
+    for invalid in ('', '---\n---', 'x' * 65537, '\n---\n'.join(['# Wolf\n4 HP'] * 101)):
+        with pytest.raises(ValueError):
+            parse_monsters(invalid)
+
+
+def test_batch_summon_creates_independent_instances(shared):
+    app, clients, _ = shared
+    response = clients[1].post('/parties/1/monsters', data={
+        'template': ['creeping-vines', 'wolf'], 'quantity_creeping-vines': '2', 'quantity_wolf': '3',
+    })
+    assert response.status_code == 302 and response.location.endswith('/users/map1/parties/party/#monsters')
+    with app.app_context():
+        monsters = db.session.get(Party, 1).monsters
+        assert len(monsters) == 5 and len({m.id for m in monsters}) == 5
+        assert [m.name for m in monsters].count('Wolf') == 3
+        assert all(m.kind == 'monster' and not m.shared and m.hp == m.hp_max for m in monsters)
+        vines = [m for m in monsters if m.name == 'Creeping Vines']
+        vines[0].hp = 1
+        vines[0].items = '[{"id":"bone","name":"Bone","tags":[],"location":0}]'
+        db.session.commit()
+        db.session.expire_all()
+        assert vines[1].hp == 8 and vines[1].items == '[]'
+    assert not any(t.get('kind') == 'monster' for t in clients[2].get('/party/1/shared-map/tokens').json['tokens'])
+
+
+@pytest.mark.parametrize('data', [
+    {}, {'template': ['wolf', 'unknown']}, {'template': ['wolf', 'wolf']},
+    *({'template': 'wolf', 'quantity_wolf': quantity} for quantity in ('0', '-1', '1.5', 'abc', '', '101', '1000')),
+    {'template': ['wolf', 'creeping-vines'], 'quantity_wolf': '100', 'quantity_creeping-vines': '1'},
+])
+def test_invalid_batch_never_creates_partial_roster(shared, data):
+    app, clients, _ = shared
+    assert clients[1].post('/parties/1/monsters', data=data).status_code == 400
+    with app.app_context():
+        assert Companion.query.count() == 0
+
+
+@pytest.mark.parametrize('upload', [False, True])
+def test_batch_markdown_import_is_atomic_and_preserves_input(shared, upload):
+    app, clients, _ = shared
+    source = '# Wolf\n4 HP, bite (d6)\n- Secret\n---\n# Bat\n3 HP, 14 DEX'
+    def payload(markdown):
+        return {'monster_file': (BytesIO(markdown.encode()), 'monsters.md')} if upload else {'monster_markdown': markdown}
+    invalid = source + '\n---\n# Broken\nno stats'
+    response = clients[1].post('/parties/1/monsters', data=payload(invalid))
+    assert response.status_code == 400 and 'Monster 3:' in response.text
+    if not upload:
+        assert invalid in response.text
+    with app.app_context():
+        assert Companion.query.count() == 0
+    response = clients[1].post('/parties/1/monsters', data=payload(source))
+    assert response.status_code == 302 and response.location.endswith('#monsters')
+    with app.app_context():
+        monsters = db.session.get(Party, 1).monsters
+        assert [(m.name, m.hp, m.shared) for m in monsters] == [('Wolf', 4, False), ('Bat', 3, False)]
+        assert monsters[0].notes == '- Secret' and monsters[1].notes == ''
+
+
+def test_batch_limits_and_access(shared):
+    app, clients, _ = shared
+    for user in (2, 3, 4):
+        assert clients[user].post('/parties/1/monsters', data={'template': ['wolf', 'creeping-vines']}).status_code == 403
+        assert clients[user].post('/parties/1/monsters', data={'monster_markdown': '# Wolf\n4 HP\n---\n# Bat\n3 HP'}).status_code == 403
+    response = clients[1].post('/parties/1/monsters', data={'template': 'wolf', 'quantity_wolf': '100'})
+    assert response.status_code == 302
+    with app.app_context():
+        assert Companion.query.count() == 100
+    app.config['WTF_CSRF_ENABLED'] = True
+    assert clients[1].post('/parties/1/monsters', data={'template': ['wolf', 'creeping-vines']}).status_code == 400
 
 
 def test_categorized_portraits_work_for_creation_and_companions(shared):

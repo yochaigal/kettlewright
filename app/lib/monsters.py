@@ -7,12 +7,59 @@ from functools import lru_cache
 from app.models import Companion, Character, db
 
 CATALOG = Path(__file__).resolve().parents[1] / 'static/json/monsters.json'
+MAX_MONSTER_BATCH = 100
+
+
+def _monster_body(markdown):
+    body = markdown.lstrip('\ufeff').replace('\r\n', '\n').replace('\r', '\n').strip()
+    # A leading separator before a monster is not YAML front matter.
+    front_matter = re.match(r'\A---[ \t]*\n(.*?)\n---[ \t]*(?:\n|$)', body, re.S)
+    if front_matter:
+        first = next((line.strip() for line in front_matter[1].splitlines()
+                      if line.strip() and not line.lstrip().startswith('#')), '')
+        if re.match(r'[\w-]+[ \t]*:', first):
+            return body[front_matter.end():].strip()
+    return body
+
+
+def parse_monsters(markdown):
+    """Validate the entire import before any instances are created."""
+    if not isinstance(markdown, str) or len(markdown.encode('utf-8')) > 65536:
+        raise ValueError('Choose a Markdown monster file smaller than 64 KB.')
+    blocks, lines, fence = [], [], None
+    for line in _monster_body(markdown).splitlines():
+        marker = re.match(r'^ {0,3}(`{3,}|~{3,})', line)
+        if marker:
+            token = marker[1]
+            if fence is None:
+                fence = token
+            elif token[0] == fence[0] and len(token) >= len(fence) and not line[marker.end():].strip():
+                fence = None
+        if fence is None and re.fullmatch(r'[ \t]*---[ \t]*', line):
+            if '\n'.join(lines).strip():
+                blocks.append('\n'.join(lines))
+            lines = []
+        else:
+            lines.append(line)
+    if '\n'.join(lines).strip():
+        blocks.append('\n'.join(lines))
+    if not blocks:
+        raise ValueError('Include a Markdown heading with the monster name.')
+    if len(blocks) > MAX_MONSTER_BATCH:
+        raise ValueError('Add at most 100 monster instances at a time.')
+    templates = []
+    for index, block in enumerate(blocks, 1):
+        try:
+            templates.append(parse_monster(block))
+        except ValueError as problem:
+            raise ValueError(f'Monster {index}: {problem}') from problem
+    return templates
 
 
 def parse_monster(markdown):
     if not isinstance(markdown, str) or len(markdown.encode('utf-8')) > 65536:
         raise ValueError('Choose a Markdown monster file smaller than 64 KB.')
-    body = re.sub(r'\A\ufeff?---\s*\n.*?\n---\s*\n', '', markdown, count=1, flags=re.S).strip()
+    body = _monster_body(markdown)
     lines = body.splitlines()
     heading = next((i for i, line in enumerate(lines) if re.match(r'^#{1,6}\s+\S', line)), None)
     if heading is None:
