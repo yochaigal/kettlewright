@@ -1,3 +1,4 @@
+from whiteboard_helpers import post_scene
 import re
 
 import pytest
@@ -173,12 +174,12 @@ def test_navigation_and_tools_are_released(setup):
 
 def test_shared_map_still_requires_current_membership(shared):
     app, clients, sockets = shared
-    assert clients[1].post(URL, json={'version': 0, 'drawing': DRAWING}).status_code == 200
+    assert post_scene(clients[1], json={'version': 0, 'drawing': DRAWING}).status_code == 200
     with app.app_context():
         assert PartyMap.query.count() == 1
     assert sockets[2].get_received()[0]['name'] == 'shared_map_changed'
     assert clients[2].get(URL).status_code == 200
-    assert clients[2].post(URL, json={'version': 1, 'drawing': DRAWING}).status_code == 200
+    assert post_scene(clients[2], json={'version': 1, 'drawing': DRAWING}).status_code == 200
     assert clients[3].get(URL).status_code == 403
     assert clients[3].post(URL, json={'version': 2, 'drawing': DRAWING}).status_code == 403
 

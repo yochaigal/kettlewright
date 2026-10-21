@@ -73,6 +73,8 @@ def discard_party_changes(session):
 def register_socket_events(socketio):
     from app import redis_url
     limiter = SocketRateLimiter(redis_url)
+    from app.lib.whiteboard_presence import register_presence
+    register_presence(socketio, limiter, redis_url)
 
     def allow_event(event):
         try:
@@ -105,7 +107,7 @@ def register_socket_events(socketio):
         from flask import request
         from flask_wtf.csrf import validate_csrf
         from wtforms.validators import ValidationError
-        from app.models import PartyMap
+        from app.models import WhiteboardScene, PartyMap
         if not current_user.is_authenticated or not isinstance(data, dict):
             return
         party_id, generation = data.get('party_id'), data.get('generation')
@@ -135,10 +137,19 @@ def register_socket_events(socketio):
         recipients = party_recipient_ids(target)
         if current_user.id not in recipients:
             return
-        board = db.session.get(PartyMap, party_id)
-        if generation != (board.generation if board else 1):
+        from app.lib.whiteboard_scenes import context
+        from werkzeug.exceptions import HTTPException
+        if data.get('protocol') != 2 or 'scene_id' not in data:
             return
-        payload = {'party_id': party_id, 'generation': generation, 'sender': request.sid,
+        try:
+            _, registry, board = context(party_id, data)
+        except HTTPException:
+            return
+        if generation != board.generation:
+            return
+        if registry.active_scene_id != board.id:
+            recipients = {target.owner}
+        payload = {'party_id': party_id, 'scene_id': board.id, 'generation': generation, 'sender': request.sid,
                    'pointer': {key: pointer[key] for key in ('x', 'y', 'tool')} if pointer else None,
                    'button': button, 'username': current_user.username}
         for user_id in recipients:

@@ -559,7 +559,7 @@ def reveal(entry_id):
         flash(_('Published to the selected parties. Use View as party below to see the saved version.'))
         return redirect(url_for('campaigns.reveal', entry_id=entry.id))
     return render_template('campaigns/reveal.html', entry=entry, parties=available_parties(entry),
-        presentations=presentations, initial=[{'id': p.id, 'name': p.name, 'selected': False,
+        presentations=presentations, initial=[{'id': p.id, 'name': p.name, 'selected': request.args.get('party_id', type=int) == p.id,
             'version': presentations[p.id].version if p.id in presentations else 0,
             'published': presentations[p.id].published if p.id in presentations else False,
             'title': presentations[p.id].title if p.id in presentations else entry.title,

@@ -1,3 +1,4 @@
+from whiteboard_helpers import post_scene, post_import, post_fog, scene_payload
 from io import BytesIO
 from copy import deepcopy
 
@@ -226,15 +227,15 @@ def test_locked_map_and_unlocked_tokens(shared):
     _, clients, _ = shared
     locked = deepcopy(DRAWING)
     locked['elements'][0]['locked'] = True
-    assert clients[1].post(URL, json={'version': 0, 'drawing': locked}).status_code == 200
+    assert post_scene(clients[1], json={'version': 0, 'drawing': locked}).status_code == 200
     moved = deepcopy(locked)
     moved['elements'][0]['x'] += 10
-    assert clients[2].post(URL, json={'version': 1, 'drawing': moved}).status_code == 400
-    assert clients[2].post(URL, json={'version': 1, 'drawing': {'elements': [], 'files': {}}}).status_code == 400
+    assert post_scene(clients[2], json={'version': 1, 'drawing': moved}).status_code == 400
+    assert post_scene(clients[2], json={'version': 1, 'drawing': {'elements': [], 'files': {}}}).status_code == 400
     added = deepcopy(locked)
     added['elements'].append({'id': 'free-token', 'type': 'ellipse', 'x': 40, 'y': 40, 'width': 20, 'height': 20})
-    assert clients[2].post(URL, json={'version': 1, 'drawing': added}).status_code == 200
-    assert clients[1].post(URL, json={'version': 2, 'drawing': moved}).status_code == 200
+    assert post_scene(clients[2], json={'version': 1, 'drawing': added}).status_code == 200
+    assert post_scene(clients[1], json={'version': 2, 'drawing': moved}).status_code == 200
 
 
 def test_monster_portraits_cover_catalog_and_preserve_custom_choice(shared):

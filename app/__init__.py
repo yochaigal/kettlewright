@@ -175,11 +175,15 @@ def create_app():
     from app.blueprints.ground import ground
     app.register_blueprint(ground)
 
+    from app.blueprints.whiteboard import whiteboard
+    app.register_blueprint(whiteboard)
+
     from app.blueprints.campaigns import campaigns
     app.register_blueprint(campaigns)
 
     from .socket_events import register_socket_events
-    register_socket_events(socketio)
+    with app.app_context():
+        register_socket_events(socketio)
     
     from app.lib.item_description import render_item_description
     app.add_template_filter(render_item_description, 'item_description')

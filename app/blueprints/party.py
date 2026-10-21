@@ -13,6 +13,19 @@ from flask_babel import _
 party = Blueprint('party', __name__)
 
 
+@party.after_request
+def board_no_cache(response):
+    if '/shared-map' in request.path:
+        response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@party.errorhandler(409)
+def board_changed(error):
+    db.session.rollback()
+    return _board_json(({'reason': error.description}, 409))
+
+
 def _board_party(party_id, owner=False):
     target = db.get_or_404(Party, party_id)
     if current_user.id not in party_recipient_ids(target) or owner and current_user.id != target.owner:
@@ -37,41 +50,6 @@ def _board_json(data):
     return response
 
 
-def _board_conflict(reason='changed'):
-    response = _board_json({'reason': reason})
-    response.status_code = 409
-    return response
-
-
-def _board_write(target, row, conditions, values):
-    from sqlalchemy.exc import IntegrityError
-    from app.lib.whiteboard import board_state, board_update
-    previous = board_state(row)
-    try:
-        if row is None:
-            db.session.add(PartyMap(party_id=target.id, **{**board_state(None), **values}))
-        elif not PartyMap.query.filter_by(party_id=target.id, **conditions).update(values, synchronize_session=False):
-            db.session.rollback()
-            return False
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        return False
-    # Expire the earlier read before publishing versions after the atomic update.
-    db.session.expire_all()
-    saved = db.session.get(PartyMap, target.id)
-    from app import socketio
-    from flask import current_app
-    state = board_state(saved)
-    event = {'party_id': target.id, 'version': saved.version, 'generation': saved.generation,
-             'fog_version': saved.fog_version, 'update': board_update(previous, state)}
-    for user_id in party_recipient_ids(target):
-        try:
-            socketio.emit('shared_map_changed', event, room=f'user_{user_id}')
-        except Exception:
-            current_app.logger.exception('Unable to publish whiteboard update')
-    return True
-
 
 @party.route('/party/<int:party_id>/shared-map')
 @login_required
@@ -89,34 +67,8 @@ def shared_map(party_id):
 @party.route('/party/<int:party_id>/shared-map/scene', methods=['GET', 'POST'])
 @login_required
 def shared_map_scene(party_id):
-    from app.lib.whiteboard import board_state, drawing_value, integer
-    target = _board_party(party_id)
-    if request.method == 'GET' and request.args:
-        # Check small revision columns before loading the embedded image JSON.
-        revision = db.session.query(PartyMap.version, PartyMap.generation, PartyMap.fog_version).filter_by(party_id=party_id).first()
-        values = revision if revision else (0, 1, 0)
-        if all(request.args.get(key, type=int) == value for key, value in zip(('version', 'generation', 'fog_version'), values)):
-            return _board_json(('', 204))
-    saved = db.session.get(PartyMap, party_id)
-    state = board_state(saved)
-    if request.method == 'GET':
-        return _board_json(state)
-    data = _board_data()
-    version, generation = integer(data, 'version'), integer(data, 'generation', 1)
-    if generation != state['generation']:
-        return _board_conflict('replaced')
-    if version != state['version']:
-        return _board_conflict()
-    if 'drawing' not in data:
-        abort(400)
-    drawing = drawing_value(data['drawing'], stored_files=state['drawing']['files'], reuse_files=data.get('reuse_files'))
-    if current_user.id != target.owner:
-        from app.lib.whiteboard import protect_locked_elements
-        protect_locked_elements(state['drawing'], drawing)
-    if not _board_write(target, saved, {'version': version, 'generation': generation},
-                        {'drawing': drawing, 'version': version + 1}):
-        return _board_conflict()
-    return _board_json({'version': version + 1})
+    from app.blueprints.whiteboard import state
+    return state(party_id)
 
 
 @party.route('/party/<int:party_id>/shared-map/tokens')
@@ -167,11 +119,7 @@ def _board_portraits(target):
     from urllib.parse import urlsplit
     from app.lib.whiteboard import board_state
     warden = target.owner == current_user.id
-    placed = set()
-    for element in board_state(db.session.get(PartyMap, target.id))['drawing']['elements']:
-        match = re.match(r'^actor-(companion-)?(\d+)-', element['id'])
-        if match:
-            placed.add(('companion:' if match[1] else '') + match[2])
+    placed = _board_visible_actor_keys(target)
     portraits = []
 
     def add(actor, kind='character'):
@@ -213,11 +161,29 @@ def shared_map_stats(party_id):
     return _board_json({'actors': _board_stats(_board_party(party_id))})
 
 
+def _board_visible_actor_keys(target):
+    from app.lib.whiteboard_scenes import context, visible_tokens
+    _, _, scene = context(target.id)
+    return {token.actor_key for token in visible_tokens(scene, target)}
+
+
+def _board_hidden_actor_keys(target):
+    from app.lib.whiteboard_scenes import context
+    _, _, scene = context(target.id)
+    if current_user.id == target.owner:
+        return set()
+    return {token.actor_key for token in scene.tokens} - {token.actor_key for token in scene.tokens if token.visible}
+
+
 def _board_stats(target):
+    hidden = _board_hidden_actor_keys(target)
     warden = current_user.id == target.owner
     actors = []
 
     def add(actor, kind='character'):
+        key = str(actor.id) if kind == 'character' else f'companion:{actor.id}'
+        if key in hidden:
+            return
         if kind == 'monster' and not warden and not actor.shared:
             return
         stats = {field: [getattr(actor, field), getattr(actor, field + '_max')]
@@ -229,6 +195,8 @@ def _board_stats(target):
             return
         data = {'id': str(actor.id) if kind == 'character' else f'companion:{actor.id}',
                 'name': actor.name, 'kind': kind, 'stats': stats, 'armor': actor.armorValue()}
+        if kind == 'character':
+            data['conditions'] = {field: bool(getattr(actor, field)) for field in ('deprived', 'panicked', 'dead')}
         if kind != 'character':
             data['attack'] = actor.attack
         if kind == 'monster':
@@ -285,6 +253,8 @@ def shared_map_actor(party_id, companion_id):
     if c.id not in ids:
         abort(403)
     if c.kind == 'monster' and current_user.id != target.owner:
+        if f'companion:{c.id}' in _board_hidden_actor_keys(target):
+            abort(404)
         if not c.shared:
             response = make_response(render_template('main/monster_public.html', c=None), 403)
             response.headers['Cache-Control'] = 'no-store'
@@ -407,51 +377,15 @@ def shared_map_preview(party_id, source_id):
 @party.route('/party/<int:party_id>/shared-map/import', methods=['POST'])
 @login_required
 def shared_map_import(party_id):
-    from app.lib.whiteboard import board_state, source_snapshot, empty_fog, integer
-    target = _board_party(party_id, owner=True)
-    data = _board_data()
-    saved = db.session.get(PartyMap, party_id)
-    state = board_state(saved)
-    conditions = {key: integer(data, key) for key in ('generation', 'version', 'fog_version')}
-    if any(state[key] != value for key, value in conditions.items()):
-        return _board_conflict('changed')
-    source = _board_source(integer(data, 'source_id'))
-    drawing, digest = source_snapshot(source)
-    if data.get('digest') != digest:
-        return _board_conflict('source_changed')
-    if type(data.get('cover')) is not bool:
-        abort(400)
-    fog = empty_fog()
-    fog['enabled'] = data['cover']
-    values = {'drawing': drawing, 'version': state['version'] + 1,
-              'generation': state['generation'] + 1, 'fog': fog, 'fog_version': state['fog_version'] + 1}
-    if not _board_write(target, saved, conditions, values):
-        return _board_conflict()
-    return _board_json(board_state(db.session.get(PartyMap, party_id)))
+    from app.blueprints.whiteboard import import_map
+    return import_map(party_id)
 
 
 @party.route('/party/<int:party_id>/shared-map/fog', methods=['POST'])
 @login_required
 def shared_map_fog(party_id):
-    from app.lib.whiteboard import board_state, fog_operation, integer
-    target = _board_party(party_id, owner=True)
-    data = _board_data()
-    saved = db.session.get(PartyMap, party_id)
-    state = board_state(saved)
-    generation, version = integer(data, 'generation'), integer(data, 'fog_version')
-    if generation != state['generation']:
-        return _board_conflict('replaced')
-    operation = data.get('operation')
-    # Retries of an acknowledged operation are harmless even with an old version.
-    if isinstance(operation, dict) and operation.get('id') in state['fog']['applied']:
-        return _board_json({'fog': state['fog'], 'fog_version': state['fog_version'], 'generation': generation})
-    if version != state['fog_version']:
-        return _board_conflict()
-    fog, _ = fog_operation(state['fog'], operation)
-    if not _board_write(target, saved, {'generation': generation, 'fog_version': version},
-                        {'fog': fog, 'fog_version': version + 1}):
-        return _board_conflict()
-    return _board_json({'fog': fog, 'fog_version': version + 1, 'generation': generation})
+    from app.blueprints.whiteboard import fog
+    return fog(party_id)
 
 
 def party_characters(target_party):

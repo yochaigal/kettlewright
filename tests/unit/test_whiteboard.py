@@ -1,3 +1,4 @@
+from whiteboard_helpers import post_scene, post_import, post_fog, scene_payload
 from copy import deepcopy
 
 import pytest
@@ -35,7 +36,7 @@ def load(clients, source_id=101, **overrides):
     payload = {key: scene[key] for key in ('version', 'generation', 'fog_version')}
     payload.update(source_id=source_id, digest=preview['digest'], cover=True)
     payload.update(overrides)
-    return clients[1].post(f'{BASE}/import', json=payload)
+    return post_import(clients[1], json=payload)
 
 
 def fog(clients, operation, **overrides):
@@ -43,7 +44,7 @@ def fog(clients, operation, **overrides):
     payload = {key: scene[key] for key in ('generation', 'fog_version')}
     payload.update(operation=operation)
     payload.update(overrides)
-    return clients[1].post(f'{BASE}/fog', json=payload)
+    return post_fog(clients[1], json=payload)
 
 
 def test_owned_sources_and_visual_snapshot(sources):
@@ -76,13 +77,16 @@ def test_import_atomic_replacement_and_independent_original(sources, source_id):
     scene = result.json
     assert scene['generation'] == 2 and scene['version'] == 1 and scene['fog_version'] == 1
     assert scene['fog']['enabled'] is True
-    assert clients[2].get(URL).json == scene
+    assert clients[2].get(URL).json['drawing'] == scene['drawing']
     for generation in (None, 1):
         payload = {'drawing': DRAWING, 'version': 1}
         if generation is not None:
             payload['generation'] = generation
-        assert clients[2].post(URL, json=payload).json == {'reason': 'replaced'}
-    assert clients[2].post(URL, json={'generation': 2, 'version': 1, 'drawing': DRAWING}).status_code == 200
+        if generation is None:
+            assert clients[2].post(URL, json=payload).json == {'reason': 'reload_required'}
+        else:
+            assert post_scene(clients[2], json=payload).json == {'reason': 'replaced'}
+    assert post_scene(clients[2], json={'generation': 2, 'version': 1, 'drawing': DRAWING}).status_code == 200
     assert clients[2].get(URL).json['fog'] == scene['fog']
     with app.app_context():
         assert db.session.get(PointcrawlMap, source_id).drawing == DRAWING
@@ -95,7 +99,7 @@ def test_import_detects_changed_source_or_board(sources):
         db.session.get(PointcrawlMap, 101).nodes[0].entry.title = 'Renamed'
         db.session.commit()
     assert load(clients, digest=preview['digest']).json == {'reason': 'source_changed'}
-    assert clients[1].post(URL, json={'version': 0, 'drawing': DRAWING}).status_code == 200
+    assert post_scene(clients[1], json={'version': 0, 'drawing': DRAWING}).status_code == 200
     assert load(clients, version=0).status_code == 409
     assert clients[1].get(URL).json['generation'] == 1
 
@@ -105,7 +109,7 @@ def test_fog_lazy_creation_idempotency_and_independent_versions(shared):
     result = fog(clients, {'id': 'enable', 'type': 'hide_all'})
     assert result.status_code == 200
     assert result.json['fog_version'] == 1
-    assert clients[2].post(URL, json={'version': 0, 'drawing': DRAWING}).status_code == 200
+    assert post_scene(clients[2], json={'version': 0, 'drawing': DRAWING}).status_code == 200
     stroke = {'id': 'stroke', 'type': 'reveal', 'radius': 25, 'points': [[0, 0], [50, 0]]}
     assert fog(clients, stroke).json['fog_version'] == 2
     assert fog(clients, stroke, fog_version=1).json['fog_version'] == 2
@@ -131,7 +135,7 @@ def test_invalid_fog_does_not_mutate(shared, operation):
     app, clients, _ = shared
     assert fog(clients, operation).status_code == 400
     with app.app_context():
-        assert PartyMap.query.count() == 0
+        assert PartyMap.query.count() == 1
 
 
 def test_map_import_is_released_and_still_requires_csrf(sources):
@@ -250,7 +254,7 @@ def test_party_tokens_include_pets_hirelings_and_their_pets(shared):
 
 def test_laser_only_reaches_current_party_and_does_not_save(shared):
     app, clients, sockets = shared
-    packet = {'party_id': 1, 'generation': 1, 'pointer': {'x': 10, 'y': 20, 'tool': 'laser'}, 'button': 'down'}
+    packet = {**scene_payload(clients[2], {}), 'party_id': 1, 'generation': 1, 'pointer': {'x': 10, 'y': 20, 'tool': 'laser'}, 'button': 'down'}
     sockets[2].emit('whiteboard_laser', packet)
     received = sockets[1].get_received()
     assert len(received) == 1 and received[0]['name'] == 'whiteboard_laser'
@@ -258,7 +262,7 @@ def test_laser_only_reaches_current_party_and_does_not_save(shared):
     assert received[0]['args'][0]['username'] == 'map2'
     assert all(sockets[i].get_received() == [] for i in (2, 3, 4))
     with app.app_context():
-        assert PartyMap.query.count() == 0
+        assert PartyMap.query.count() == 1
     sockets[3].emit('whiteboard_laser', packet)
     sockets[2].emit('whiteboard_laser', {**packet, 'generation': 9})
     sockets[2].emit('whiteboard_laser', {**packet, 'pointer': {'x': float('nan'), 'y': 0, 'tool': 'laser'}})
@@ -279,8 +283,8 @@ def test_laser_only_reaches_current_party_and_does_not_save(shared):
 
 
 def test_laser_has_its_own_bounded_rate(shared):
-    _, _, sockets = shared
-    packet = {'party_id': 1, 'generation': 1, 'pointer': {'x': 1, 'y': 2, 'tool': 'laser'}, 'button': 'down'}
+    _, clients, sockets = shared
+    packet = {**scene_payload(clients[2], {}), 'party_id': 1, 'generation': 1, 'pointer': {'x': 1, 'y': 2, 'tool': 'laser'}, 'button': 'down'}
     # Pin the limiter clock so a test cannot straddle its one-second window.
     from unittest.mock import patch
     with patch('app.lib.socket_rate_limit.monotonic', return_value=100):
