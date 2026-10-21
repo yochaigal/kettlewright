@@ -10,7 +10,6 @@ from app.socket_events import party_recipient_ids
 from app.lib.map_drawing import EMPTY_DRAWING, validate_drawing, validate_node_geometry
 from app.lib.rich_content import normalize_content, render_content, RICH_PREFIX
 from app.lib.article_references import private_reference_urls, reference_urls
-from app.lib.feature_access import require_party_features, party_features_enabled
 
 from app.lib.content_types import CATEGORIES, POINT_TYPES, ARTICLE_MAP_KINDS, legacy_point_type, accepts_article_parent
 PATH_TYPES = ('standard', 'hidden', 'conditional')
@@ -26,7 +25,6 @@ def owned(model, object_id):
 
 
 def party_access(party_id, editing=False):
-    require_party_features(party_id)
     party = db.get_or_404(Party, party_id)
     if (party.owner != current_user.id if editing else current_user.id not in party_recipient_ids(party)):
         abort(403)
@@ -311,8 +309,6 @@ def map_projection(pointcrawl, party_id=None):
 def notify_parties(party_ids):
     from app import socketio
     for party_id in set(party_ids):
-        if not party_features_enabled(party_id):
-            continue
         party = db.session.get(Party, party_id)
         if party is None:
             continue

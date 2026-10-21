@@ -21,7 +21,7 @@
       </div>
       <div class="tools-history-actions">
         {% if current_user.is_authenticated %}<button id="pcgen-save-party-button" type="button" data-save-kind="party" data-url="{{url_for('generator.save_character', kind='party')}}" disabled>{{_('Save to Party')}}</button>{% endif %}
-        {% if user_features_enabled() %}<button id="pcgen-save-npc-button" type="button" data-save-kind="npc" data-url="{{url_for('generator.save_character', kind='npc')}}" disabled>{{_('Save as NPC')}}</button>{% endif %}
+        {% if current_user.is_authenticated %}<button id="pcgen-save-npc-button" type="button" data-save-kind="npc" data-url="{{url_for('generator.save_character', kind='npc')}}" disabled>{{_('Save as NPC')}}</button>{% endif %}
         <button id="pcgen-copy-text-button" type="button" disabled>{{_('Copy text')}}</button>
         <button id="pcgen-json-button" type="button" disabled>{{_('Export')}} JSON</button>
         <button id="gen-print-button" type="button" data-url="{{url_for('generator.character_print')}}" disabled>{{_('Print')}}</button>

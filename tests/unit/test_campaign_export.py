@@ -54,7 +54,7 @@ def test_export_roundtrip_duplicate_titles_and_private_scope(setup):
     assert client.get('/campaigns/1/export').status_code == 403
     login(client, 1)
     app.config['FEATURE_TEST_USER_IDS'] = set()
-    assert client.get('/campaigns/1/export').status_code == 404
+    assert client.get('/campaigns/1/export').status_code == 200
 
 
 def test_export_map_sidecar_roundtrip(setup):

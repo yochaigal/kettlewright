@@ -249,11 +249,11 @@ def test_preview_expiry_and_csrf(setup):
     assert upload(client, archive({'a.md': md('A')})).status_code == 400
 
 
-def test_import_requires_feature_access(setup):
+def test_import_is_available_without_tester_ids(setup):
     app, client = setup
     app.config['FEATURE_TEST_USER_IDS'] = set()
-    assert client.get('/materials/import-archive').status_code == 404
-    assert upload(client, archive({'a.md': md('A')})).status_code == 404
+    assert client.get('/materials/import-archive').status_code == 200
+    assert upload(client, archive({'a.md': md('A')})).status_code == 200
 
 
 def test_archive_symlinks_and_member_limit():

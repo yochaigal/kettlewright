@@ -25,7 +25,6 @@ from app.lib.article_references import (private_reference_urls, bind_references,
 from app.lib.content_types import CATEGORY_GROUPS, CATEGORY_ROOTS, ARTICLE_MAP_KINDS, ARTICLE_PARENT_TYPES
 from app.lib.campaigns import ensure_article_map, ensure_article_tree_maps, populate_realm_map, article_parent_choices, place_new_realm_poi
 from app.lib.material_images import LOCAL_IMAGE, image_directory, cleanup_images, image_references
-from app.lib.feature_access import user_features_enabled, party_features_enabled
 
 campaigns = Blueprint('campaigns', __name__)
 
@@ -33,14 +32,6 @@ campaigns = Blueprint('campaigns', __name__)
 @campaigns.before_request
 @login_required
 def authorize():
-    # Party readers and images have their own audience checks below. All private
-    # authoring routes require the user allowlist, including direct POST requests.
-    if request.endpoint not in {
-        'campaigns.party_materials', 'campaigns.party_materials_data',
-        'campaigns.party_entry', 'campaigns.party_map', 'campaigns.party_map_data',
-        'campaigns.material_image', 'campaigns.party_entry_preview',
-    } and not user_features_enabled():
-        abort(404)
     # Validate the whole operation before flushing partial edits or advancing versions.
     db.session.autoflush = False
     if request.endpoint in ('campaigns.new_map', 'campaigns.map_data', 'campaigns.new_entry', 'campaigns.edit_entry', 'campaigns.reveal'):
@@ -106,10 +97,7 @@ def reference_preview():
 
 
 def my_parties():
-    query = Party.query.filter_by(owner=current_user.id)
-    if not current_app.config.get('LOCAL_FEATURE_ACCESS', False):
-        query = query.filter(Party.id.in_(current_app.config.get('FEATURE_TEST_PARTY_IDS', ())))
-    return query.order_by(Party.name).all()
+    return Party.query.filter_by(owner=current_user.id).order_by(Party.name).all()
 
 
 def my_campaigns():
@@ -159,9 +147,6 @@ def workspace(campaign_id):
         for party_id in selected:
             party_access(party_id, editing=True)
         old = {link.party_id: link for link in campaign.parties}
-        # Hidden rollout audiences are not unchecked form fields. Preserve their
-        # links/publications so disabling and later re-enabling loses no data.
-        selected.update(party_id for party_id in old if not party_features_enabled(party_id))
         # Unlinking a party revokes this campaign's publications, never deletes originals.
         removed = set(old) - selected
         entry_ids = [entry.id for entry in campaign.entries]
@@ -221,7 +206,7 @@ def party_materials(party_id):
     entries, hierarchy = party_knowledge_tree(party.id)
     return render_template('campaigns/party.html', party=party,
         entries=entries, hierarchy=hierarchy,
-        editing=party.owner == current_user.id and user_features_enabled() and not preview, preview=preview)
+        editing=party.owner == current_user.id and not preview, preview=preview)
 
 
 @campaigns.route('/party/<int:party_id>/materials/data')
@@ -829,11 +814,11 @@ def material_image(owner_id, filename):
     originals = ContentEntry.query.filter_by(owner_id=owner_id).filter(ContentEntry.body.contains(url)).all()
     versions = PartyPresentation.query.join(ContentEntry).filter(
         ContentEntry.owner_id == owner_id, PartyPresentation.body.contains(url)).all()
-    allowed = user_features_enabled() and current_user.id == owner_id and bool(originals or versions)
+    allowed = current_user.id == owner_id and bool(originals or versions)
     if not allowed:
         from app.socket_events import party_recipient_ids
         for row in versions:
-            if (party_features_enabled(row.party_id) and row.published and current_user.id in party_recipient_ids(row.party)
+            if (row.published and current_user.id in party_recipient_ids(row.party)
                     and url in image_references(known_entries(row.party_id).get(row.entry_id, {}).get('body', ''))):
                 allowed = True
                 break

@@ -126,7 +126,7 @@ Roll on the **Development Environment Setup** table (d6):
 
 ## Local feature access
 
-The dev-container Compose service sets `LOCAL_FEATURE_ACCESS=True`. Local development ignores `FEATURE_TEST_USER_IDS` and `FEATURE_TEST_PARTY_IDS`, so campaigns, Articles, generators and shared maps are available without configuring tester IDs. Ownership and party membership checks remain active. For a host-run local Flask process, add `LOCAL_FEATURE_ACCESS=True` to the local `.env`. Leave this flag unset or false in production. Tests for rollout restrictions should run with `-e LOCAL_FEATURE_ACCESS=False`.
+Campaigns, Articles, generators and Whiteboard are released and do not require tester IDs or a local override. Ownership and party membership checks remain active. The dev-container Compose service still sets `LOCAL_FEATURE_ACCESS=True` to bypass `FEATURE_TEST_USER_IDS` and `FEATURE_TEST_PARTY_IDS` for future experimental features. A host-run local Flask process can opt into the same behavior through its local `.env`. Leave this flag unset or false in production. Tests for experimental audiences and released access should run with `-e LOCAL_FEATURE_ACCESS=False`.
 
 Markdown needs `mistune==3.2.0` from `requirements.txt`. To update a currently running dev container without a full rebuild, run `docker compose -f .devcontainer/docker-compose.yml exec -T app pip install 'mistune==3.2.0'`. Future image builds install it normally.
 

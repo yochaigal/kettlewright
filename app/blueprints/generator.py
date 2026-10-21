@@ -117,11 +117,8 @@ def save_character(kind):
     from itsdangerous import BadSignature
     from app.models import Campaign, ContentEntry
     from app.lib.generated_character import read_snapshot, as_party_companion, character_markdown
-    from app.lib.feature_access import user_features_enabled
     request.max_content_length = 256 * 1024
     if kind not in ('party', 'monster', 'npc'):
-        abort(404)
-    if kind == 'npc' and not user_features_enabled():
         abort(404)
     if not FlaskForm().validate_on_submit():
         abort(400, 'Invalid CSRF token.')
