@@ -72,6 +72,7 @@ const portraits = createTokenPortraits({getApi: () => api, updates: actorUpdates
   onProjection: update => {
     applying = true;
     try {update();} finally {applying = false;}
+    session.refreshEncounterPortraits();
   }});
 
 function showStatus() {

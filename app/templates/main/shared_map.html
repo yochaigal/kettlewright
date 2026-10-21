@@ -74,7 +74,7 @@
       <h2 id="encounter-title">{{ _('Encounter') }} · <span id="encounter-round"></span></h2>
       <button type="button" id="encounter-close">{{ _('Close') }}</button>
     </div>
-    <p class="encounter-help">{% if warden %}{{ _('Track who has acted each round, in any order. Add participants, mark Acted after their turn, then use Next round to clear the marks. HP and rolls use the token actions.') }}{% else %}{{ _('Mark Acted after your character or companion takes a turn. The Warden starts the next round and clears the marks. Turn order is up to the group.') }}{% endif %}</p>
+    <p class="encounter-help">{% if warden %}{{ _('Track who has acted each round, in any order. Add participants, mark Acted after their turn, then use Next round to clear the marks.') }}{% else %}{{ _('Mark Acted after your character or companion takes a turn. The Warden starts the next round and clears the marks. Turn order is up to the group.') }}{% endif %}</p>
     <p id="encounter-empty" class="encounter-help">{% if warden %}{{ _('No participants yet. Place tokens on the board, then add participants below or select a token and choose Add to encounter.') }}{% else %}{{ _('No participants yet. The Warden adds them to this scene’s encounter.') }}{% endif %}</p>
     <div id="encounter-list" class="encounter-list"></div>
     {% if warden %}<div class="encounter-controls">

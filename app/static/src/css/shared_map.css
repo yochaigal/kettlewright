@@ -160,6 +160,10 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 .encounter-row { display:flex; gap:8px; align-items:center; padding:4px; border:1px solid var(--board-border); border-radius:6px; }
 .encounter-row label { display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
 .encounter-row button:first-of-type { min-width:80px; text-align:left; }
+.encounter-actor { display:inline-flex; align-items:center; gap:6px; }
+.encounter-avatar { display:inline-grid; place-items:center; position:relative; width:28px; height:28px; flex-shrink:0;
+  border-radius:50%; overflow:hidden; background:var(--board-active); color:var(--board-text); font-size:11px; font-weight:700; }
+.encounter-avatar img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
 .encounter-controls { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin-top:10px; }
 .encounter-controls select { max-width:200px; background:var(--board-bg); color:var(--board-text); padding:6px; border:1px solid var(--board-border); border-radius:6px; }
 .board-markers { position:absolute; inset:0; z-index:2; pointer-events:none; overflow:hidden; }

@@ -32,7 +32,7 @@ async function setup(editing = true, failedLibrary = null, language = 'en') {
     window: {addEventListener(name, fn) {windowHandlers[name] = fn;}},
     localStorage: {getItem: key => stored.get(key) || 'false', setItem: (key, value) => stored.set(key, value)},
     createActorUpdates: () => ({placed() {}, destroy() {}, subscribe() {}, refresh() {}}),
-    createWhiteboardSession: () => ({initialDrawing: drawing => drawing, accept() {}, context: () => ({}), capture() {}, render() {}, destroy() {}, reset() {}, actorSnapshot() {}, flush: async () => {}, draft: () => [], files: () => ({}), busy: false}),
+    createWhiteboardSession: () => ({initialDrawing: drawing => drawing, accept() {}, context: () => ({}), capture() {}, render() {}, refreshEncounterPortraits() {}, destroy() {}, reset() {}, actorSnapshot() {}, flush: async () => {}, draft: () => [], files: () => ({}), busy: false}),
     URLSearchParams, history: {replaceState() {}},
     createFogLayer: () => ({redraw() {}, destroy() {}, setState() {}, setTool() {}}),
     applyFogOperation: (fog) => fog, setupMapImport() {}, setupPartyTokens: () => ({open() {}, close() {}}),

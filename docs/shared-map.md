@@ -52,7 +52,7 @@ Use Party's bulk monster creation to create independent creatures. Placing the s
 
 Each scene has an independent tracker with a round and an **Acted** checkbox per actor. Open **Encounter** in the header to see its instructions and participants. The Warden can choose a placed actor under **Add from board** and press **Add participant**, or select a token and use **Add to encounter**. Multiple placements of one actor still use one encounter row, and actors already participating are excluded from the picker.
 
-Mark **Acted** after a participant takes a turn; players can mark only actors they control. **Next round** clears the marks and advances the round. **Restart at round 1** clears them and resets the round while keeping the participants. The Warden can correct marks and remove participants. There is no enforced initiative order or combat automation; HP and rolls use the token actions. Selecting a participant focuses an available token or opens the permitted sheet.
+Mark **Acted** after a participant takes a turn; players can mark only actors they control. **Next round** clears the marks and advances the round. **Restart at round 1** clears them and resets the round while keeping the participants. The Warden can correct marks and remove participants. There is no enforced initiative order or combat automation. Each participant shows the same portrait as their available token, updating when the token artwork changes. Unplaced actors or unavailable images use initials. Selecting a participant focuses an available token or opens the permitted sheet.
 
 Hidden creatures are excluded from the player tracker. Visible monsters with private stats use neutral labels. Returning to a scene restores its round and marks.
 

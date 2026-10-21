@@ -21,6 +21,7 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
     button: document.getElementById(name === 'encounter' ? 'board-encounter' : `board-${name}-toggle`),
     panel: document.getElementById(`${name}-panel`)})).filter(item => item.button && item.panel);
   let openPanel = null, encounterBusy = false;
+  const encounterPortraits = new Map();
   const markerLayer = document.createElement('div'); markerLayer.className = 'board-markers';
   let markerHost;
   const context = () => state ? {protocol: 2, scene_id: state.scene_id, activation_version: state.activation_version, generation: state.generation} : {};
@@ -259,7 +260,7 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
     document.getElementById('encounter-count').textContent = state.encounter.participants.length ? ` (${state.encounter.participants.length})` : '';
     document.getElementById('encounter-round').textContent = `${messages.round} ${state.encounter.round}`;
     document.getElementById('encounter-empty').hidden = state.encounter.participants.length > 0;
-    list.replaceChildren();
+    list.replaceChildren(); encounterPortraits.clear();
     for (const actor of state.encounter.participants) {
       const row = document.createElement('div'), acted = document.createElement('input'); row.className = 'encounter-row';
       acted.type = 'checkbox'; acted.checked = actor.acted; acted.disabled = !actor.can_control || encounterBusy;
@@ -269,17 +270,24 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
         catch (error) {busyMessage(error); renderEncounter();}
       });
       const label = document.createElement('label'); label.append(acted, document.createTextNode(messages.acted));
-      row.append(button(actor.name, () => {
+      const actorButton = button(actor.name, () => {
         const token = [...tokens.values()].find(token => token.actor_id === actor.id && (!isPreview() || token.visible));
         if (token) {active = token.id; getApi()?.scrollToContent(token.element, {animate: true}); drawPanel();}
         else if (actor.sheet_url) openSheet(actor.sheet_url);
-      }), label);
+      });
+      actorButton.className = 'encounter-actor'; actorButton.title = actor.name;
+      const avatar = document.createElement('span'); avatar.className = 'encounter-avatar';
+      avatar.textContent = initials(actor.name); avatar.setAttribute('aria-hidden', 'true');
+      actorButton.replaceChildren(avatar, document.createTextNode(actor.name));
+      encounterPortraits.set(actor.id, {node: avatar});
+      row.append(actorButton, label);
       if (config.warden) {
         const remove = button('×', () => changeEncounter('remove', {actor_id: actor.id}), encounterBusy);
         remove.title = messages.removeEncounter; remove.setAttribute('aria-label', messages.removeEncounter); row.append(remove);
       }
       list.append(row);
     }
+    refreshEncounterPortraits();
     if (config.warden) {
       const choices = document.getElementById('encounter-actor'), selected = choices.value;
       const participating = new Set(state.encounter.participants.map(actor => actor.id));
@@ -291,6 +299,22 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
       choices.value = available.has(selected) ? selected : ''; choices.disabled = !available.size || encounterBusy;
       document.getElementById('encounter-add').disabled = !choices.value || encounterBusy;
       for (const action of ['next_round', 'reset']) document.getElementById(`encounter-${action}`).disabled = !participating.size || encounterBusy;
+    }
+  }
+  function refreshEncounterPortraits() {
+    if (!state || stopped) return;
+    const api = getApi(), elements = new Map((api?.getSceneElements() || []).map(element => [element.id, element]));
+    const files = api?.getFiles?.() || {};
+    for (const [actorId, portrait] of encounterPortraits) {
+      const token = [...tokens.values()].find(token => token.actor_id === actorId && (!isPreview() || token.visible));
+      const element = token && elements.get(token.id);
+      const source = token && (files[element?.fileId] || token.files[token.element.fileId])?.dataURL;
+      if (portrait.source === source) continue;
+      portrait.source = source; portrait.image?.remove(); portrait.image = null;
+      if (source) {
+        const image = document.createElement('img'); image.alt = ''; image.referrerPolicy = 'no-referrer'; image.src = source;
+        image.addEventListener('error', () => image.remove()); portrait.node.append(image); portrait.image = image;
+      }
     }
   }
   function syncPanels() {
@@ -507,13 +531,13 @@ export function createWhiteboardSession({config, socket, getApi, project, refres
     });
     active = hit?.id || null; drawPanel();
   });
-  return {context, accept, capture, insert, render, flush, actorSnapshot, initialDrawing,
+  return {context, accept, capture, insert, render, flush, actorSnapshot, initialDrawing, refreshEncounterPortraits,
     get busy() {return Boolean(pending.size || saving || statTimers.size || statSaves.size);},
     draft() {return [...tokens.values()].filter(token => pending.get(token.id)?.action !== 'delete').map(token => ({...token.element, ...pending.get(token.id)?.geometry}));},
     files() {return Object.assign({}, ...[...tokens.values()].map(token => token.files));},
-    reset() {for (const task of statTimers.values()) clearTimeout(task.timer); statTimers.clear(); ++epoch; presenceScene = null; state = null; saving = null; pending.clear(); tokens.clear(); active = null; encounterBusy = false; syncPanels(); document.body?.classList.remove('board-token-selected'); panelSignature = ''; config.boardContext = {}; markerLayer.replaceChildren();},
+    reset() {for (const task of statTimers.values()) clearTimeout(task.timer); statTimers.clear(); ++epoch; presenceScene = null; state = null; saving = null; pending.clear(); tokens.clear(); encounterPortraits.clear(); active = null; encounterBusy = false; syncPanels(); document.body?.classList.remove('board-token-selected'); panelSignature = ''; config.boardContext = {}; markerLayer.replaceChildren();},
     destroy() {for (const task of statTimers.values()) clearTimeout(task.timer); statTimers.clear(); stopped = true; ++epoch; leave(); clearTimeout(timer); clearInterval(poll); if (markersFrame !== null) cancelAnimationFrame(markersFrame);
-      markerLayer.remove(); tokenPanel.hidden = true; document.body?.classList.remove('board-token-selected');
+      markerLayer.remove(); encounterPortraits.clear(); tokenPanel.hidden = true; document.body?.classList.remove('board-token-selected');
       document.getElementById('editor').removeEventListener('keydown', deleteKey, true); disconnected();
       document.removeEventListener('visibilitychange', visible); window.removeEventListener('pagehide', leave);
       socket.off('connect', announcePresence); socket.off('disconnect', disconnected); socket.off('whiteboard_presence_changed', presenceChanged);

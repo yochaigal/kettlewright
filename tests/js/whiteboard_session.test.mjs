@@ -15,7 +15,7 @@ class Node {
   removeEventListener() {}
   setAttribute(name, value) {this.attributes[name] = value;}
   getAttribute(name) {return this.attributes[name];}
-  remove() {}
+  remove() {this.removed = true;}
   querySelector(selector) {
     if (selector.startsWith('#')) return this.children.find(child => child.id === selector.slice(1)) || null;
     return new Node('button');
@@ -28,10 +28,12 @@ const snapshot = (tokens = [], revisions = {}) => ({protocol:2, scene_id:1, gene
 function setup({warden = false} = {}) {
   const nodes = new Map(), requests = [], handlers = {}, intervals = [], timers = new Map(), panelChanges = [];
   let id = 0, elements = [], stopped = false;
+  const files = {}, focused = [];
   const doc = {hidden:false, getElementById(name) {if (!warden && ['scene-controls', 'scene-activate', 'board-scene-toggle', 'board-fog-toggle', 'scene-panel', 'fog-panel'].includes(name)) return null; if (!nodes.has(name)) nodes.set(name,new Node('div')); return nodes.get(name);},
     createElement: tag => new Node(tag), createTextNode: text => ({textContent:text}), addEventListener() {}, removeEventListener() {}, querySelector: () => new Node('div')};
   const api = {getSceneElements: () => elements, getAppState: () => ({selectedElementIds:{},zoom:{value:1},scrollX:0,scrollY:0,width:800,height:600}),
-    addFiles() {}, updateScene(data) {if (data.elements) elements = data.elements;}, setToast() {}};
+    getFiles: () => files, addFiles(added) {for (const file of added) files[file.id] = file;},
+    scrollToContent(element) {focused.push(element.id);}, updateScene(data) {if (data.elements) elements = data.elements;}, setToast() {}};
   const config = {boardUrl:'/party/1/shared-map',partyId:1,csrfToken:'csrf',warden,
     messages:{showScene:'Show to party',showingScene:'Showing…',activeScene:'Shown to party',
       shownSceneHelp:'Players stay here until you show another scene.',privateSceneHelp:'Showing this scene moves all players here.',
@@ -47,7 +49,7 @@ function setup({warden = false} = {}) {
   const session = context.create({config,socket:{connected:false,on(name,fn) {handlers[name] = fn;},off() {}},getApi: () => api,
     project: fn => fn(),refresh:async () => {},switchScene:async () => {},flushDrawing:async () => {},preserveDraft() {},isPreview: () => false,
     onPanelChange: name => panelChanges.push(name)});
-  return {session,requests,nodes,config,handlers,api,timers,panelChanges,
+  return {session,requests,nodes,config,handlers,api,timers,panelChanges,focused,
     elements: () => elements,
     async timersRun() {const queued=[...timers.values()];timers.clear();queued.forEach(fn=>fn());await tick();},
     async respond(data) {requests.shift().resolve({ok:true,status:200,json:async () => data});await tick();},
@@ -229,4 +231,27 @@ test('adding a selected actor disables the action in flight and restores it afte
   const added=action().events.click();await tick();
   await s.respond({...data,encounter_version:1,encounter:{round:1,participants:[{id:'1',name:'Moss',can_control:true,acted:false}]}});await added;
   assert.equal(action().textContent,'Already in encounter');assert.equal(action().disabled,true);s.finish();
+});
+
+test('encounter names show the matching token artwork and still focus that token', async () => {
+  const s=setup(),moss={id:'1',name:'Moss',can_control:true,acted:false},ada={id:'2',name:'Ada',can_control:false,acted:false};
+  s.session.accept(snapshot([token()],{encounter:{round:1,participants:[moss,ada]}}));
+  const rows=s.nodes.get('encounter-list').children,portrait=rows[0].children[0].children[0];
+  assert.equal(portrait.getAttribute('aria-hidden'),'true');assert.equal(portrait.children[0].src,token().files.f.dataURL);
+  assert.equal(portrait.children[0].alt,'');assert.equal(rows[0].children[0].children[1].textContent,'Moss');
+  const fallback=rows[1].children[0].children[0];assert.equal(fallback.textContent,'A');assert.equal(fallback.children.length,0);
+  await rows[0].children[0].events.click();assert.deepEqual(s.focused,['actor-1-one']);s.finish();
+});
+
+test('encounter portraits follow live artwork and drop cached images when no token is available', () => {
+  const s=setup(),participants=[{id:'1',name:'Moss',can_control:true,acted:false}];
+  s.session.accept(snapshot([token()],{encounter:{round:1,participants}}));
+  const avatar=()=>s.nodes.get('encounter-list').children[0].children[0].children[0];
+  s.api.addFiles([{id:'live-portrait',dataURL:'updated portrait'}]);
+  s.api.updateScene({elements:s.elements().map(element=>({...element,fileId:'live-portrait'}))});
+  s.session.refreshEncounterPortraits();
+  const image=avatar().children.at(-1);assert.equal(image.src,'updated portrait');
+  image.events.error();assert.equal(image.removed,true);assert.equal(avatar().textContent,'M');
+  s.session.accept(snapshot([],{encounter:{round:1,participants},tokens_version:1}));
+  assert.equal(avatar().children.length,0);assert.equal(avatar().textContent,'M');assert.equal(s.requests.length,0);s.finish();
 });
