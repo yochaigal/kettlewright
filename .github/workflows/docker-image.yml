@@ -2,10 +2,14 @@ name: Build and Deploy Docker Image
 
 on:
   push:
+    branches:
+      - main
     paths-ignore:
       - '.gitignore'
       - '.env.template'
   pull_request:
+    branches:
+      - main
     paths-ignore:
       - '.gitignore'
       - '.env.template'
