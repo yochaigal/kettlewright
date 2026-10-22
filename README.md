@@ -85,18 +85,6 @@ To copy the database from the container volume:
 
        docker run -d --name kettlewright --env-file ~/docker/kettlewright/.env -v kettlewright_db:/app/instance -p 8000:8000 --restart always yochaigal/kettlewright
 
-## Automated Updates
-
-1. To update the Docker image automatically, install Watchtower:
-
-       docker pull containrrr/watchtower
-
-2. Then, run the following command:
-
-       docker run -d --name watchtower --restart always -v /var/run/docker.sock:/var/run/docker.sock -e TZ=America/New_York containrrr/watchtower --cleanup --schedule "*/5 * * * *"
-       
-This will run Watchtower every 5 minutes and automatically at boot. It will update all available Docker images unless explicitly stated, as well as clean up old images.
-
 ## Using a redis server
 
 If you plan to launch Kettlewright with multiple workers, you _must_ use a redis server as a message queue.
