@@ -26354,7 +26354,7 @@ msgstr "Звірі"
 
 #: app/templates/partial/portrait_catalog.html
 msgid "Brutes"
-msgstr "Громили"
+msgstr "Велетні"
 
 #: app/templates/partial/portrait_catalog.html
 msgid "Cold-blooded"
