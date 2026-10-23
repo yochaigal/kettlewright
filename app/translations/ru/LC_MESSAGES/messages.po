@@ -34832,3 +34832,64 @@ msgstr "Сначала создайте отряд, чтобы сохранят�
 msgctxt "portrait category"
 msgid "Green"
 msgstr "Гоблиноиды"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Portrait categories"
+msgstr "Категории портретов"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Characters"
+msgstr "Персонажи"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Aquatic"
+msgstr "Водные"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Beasts"
+msgstr "Звери"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Brutes"
+msgstr "Громилы"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Cold-blooded"
+msgstr "Хладнокровные"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Demonic"
+msgstr "Демоны"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Fairies"
+msgstr "Феи"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Human NPCs"
+msgstr "Люди (NPC)"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Humanoids"
+msgstr "Гуманоиды"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Insects"
+msgstr "Насекомые"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Large creatures"
+msgstr "Крупные существа"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Other"
+msgstr "Другое"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Statues"
+msgstr "Статуи"
+
+#: app/templates/partial/portrait_catalog.html:11
+msgctxt "portrait category"
+msgid "Undead"
+msgstr "Нежить"

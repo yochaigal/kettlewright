@@ -39880,3 +39880,64 @@ msgstr ""
 msgctxt "portrait category"
 msgid "Green"
 msgstr ""
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Portrait categories"
+msgstr ""
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Characters"
+msgstr ""
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Aquatic"
+msgstr ""
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Beasts"
+msgstr ""
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Brutes"
+msgstr ""
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Cold-blooded"
+msgstr ""
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Demonic"
+msgstr ""
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Fairies"
+msgstr ""
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Human NPCs"
+msgstr ""
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Humanoids"
+msgstr ""
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Insects"
+msgstr ""
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Large creatures"
+msgstr ""
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Other"
+msgstr ""
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Statues"
+msgstr ""
+
+#: app/templates/partial/portrait_catalog.html:11
+msgctxt "portrait category"
+msgid "Undead"
+msgstr ""

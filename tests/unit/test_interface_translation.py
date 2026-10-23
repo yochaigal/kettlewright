@@ -54,3 +54,23 @@ def test_green_portrait_category_does_not_use_generator_term(app_with_babel, loc
     # #then
     assert label in html
     assert generator_term not in html
+
+
+@pytest.mark.parametrize('locale', ['ru', 'uk', 'de', 'es', 'pl', 'pt_BR'])
+def test_portrait_category_labels_are_translated(app_with_babel, locale):
+    import re
+    from flask import render_template_string
+    # #given: one portrait in every catalog category.
+    categories = ['aqua', 'beast', 'brute', 'coldblooded', 'demonic', 'fairy', 'green',
+        'human-npcs-for-itmod', 'humanoid', 'insect', 'large', 'monster', 'other', 'statues', 'undead']
+    images = ['character.png'] + [f'{category}/portrait.png' for category in categories]
+    with app_with_babel.test_request_context():
+        with force_locale('en'):
+            english = render_template_string("{% include 'partial/portrait_catalog.html' %}", images=images)
+        with force_locale(locale):
+            # #when
+            html = render_template_string("{% include 'partial/portrait_catalog.html' %}", images=images)
+    # #then
+    labels = lambda page: re.findall(r'>([^<>\n]+)</button>', page)
+    assert len(labels(html)) == len(categories) + 1
+    assert set(labels(html)).isdisjoint(labels(english))

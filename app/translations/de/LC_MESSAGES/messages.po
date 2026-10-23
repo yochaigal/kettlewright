@@ -22235,4 +22235,65 @@ msgstr "Schaden"
 #: app/templates/partial/portrait_catalog.html:9
 msgctxt "portrait category"
 msgid "Green"
-msgstr ""
+msgstr "Goblinartige"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Portrait categories"
+msgstr "Porträtkategorien"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Characters"
+msgstr "Charaktere"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Aquatic"
+msgstr "Wasserwesen"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Beasts"
+msgstr "Tiere"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Brutes"
+msgstr "Rohlinge"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Cold-blooded"
+msgstr "Kaltblüter"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Demonic"
+msgstr "Dämonen"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Fairies"
+msgstr "Feenwesen"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Human NPCs"
+msgstr "Menschliche NSC"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Humanoids"
+msgstr "Humanoide"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Insects"
+msgstr "Insekten"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Large creatures"
+msgstr "Große Kreaturen"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Other"
+msgstr "Sonstige"
+
+#: app/templates/partial/portrait_catalog.html
+msgid "Statues"
+msgstr "Statuen"
+
+#: app/templates/partial/portrait_catalog.html:11
+msgctxt "portrait category"
+msgid "Undead"
+msgstr "Untote"

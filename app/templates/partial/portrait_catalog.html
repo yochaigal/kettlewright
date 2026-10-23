@@ -8,7 +8,7 @@
   'brute': _('Brutes'), 'coldblooded': _('Cold-blooded'), 'demonic': _('Demonic'),
   'fairy': _('Fairies'), 'green': pgettext('portrait category', 'Green'), 'human-npcs-for-itmod': _('Human NPCs'),
   'humanoid': _('Humanoids'), 'insect': _('Insects'), 'large': _('Large creatures'),
-  'monster': _('Monsters'), 'other': _('Other'), 'statues': _('Statues'), 'undead': _('Undead')} %}
+  'monster': _('Monsters'), 'other': _('Other'), 'statues': _('Statues'), 'undead': pgettext('portrait category', 'Undead')} %}
 <div class="portrait-categories" role="group" aria-label="{{_('Portrait categories')}}">
   {% for category in catalog.groups %}
   <button type="button" aria-pressed="{{'true' if category == 'characters' else 'false'}}"
