@@ -23234,3 +23234,8 @@ msgstr "Fichas"
 #: app/templates/main/shared_map.html
 msgid "Damage"
 msgstr "Dano"
+
+#: app/templates/partial/portrait_catalog.html:9
+msgctxt "portrait category"
+msgid "Green"
+msgstr ""

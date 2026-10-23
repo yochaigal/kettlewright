@@ -22231,3 +22231,8 @@ msgstr "Spielmarker"
 #: app/templates/main/shared_map.html
 msgid "Damage"
 msgstr "Schaden"
+
+#: app/templates/partial/portrait_catalog.html:9
+msgctxt "portrait category"
+msgid "Green"
+msgstr ""

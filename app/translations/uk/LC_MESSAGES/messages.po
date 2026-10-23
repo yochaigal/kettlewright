@@ -26330,3 +26330,8 @@ msgstr "Зберегти до загону"
 #: app/templates/partial/tools/pcgen.html
 msgid "Create a party first to save a hireling or monster as its Warden."
 msgstr "Спочатку створіть загін, щоб зберігати в ньому найманців або монстрів як ведучий."
+
+#: app/templates/partial/portrait_catalog.html:9
+msgctxt "portrait category"
+msgid "Green"
+msgstr "Гобліноїди"
