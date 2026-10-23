@@ -97,3 +97,22 @@ def test_unchanged_translated_item_text_keeps_english_source(app_with_babel):
         renamed = inventory.update_item(item['id'], 'Мой свисток', 'charges', '', '1', '1', 0, 'Свой текст\r\n')
         # #then
         assert (renamed['name'], renamed['description']) == ('Мой свисток', 'Свой текст\n')
+
+
+def test_library_item_created_with_translated_name_keeps_english_source(app_with_babel):
+    from app.lib import Inventory
+    from app.lib.market import Market
+    from app.lib.translations import translate_term
+    with app_with_babel.test_request_context(), force_locale('ru'):
+        # #given: the editor filled the Russian name of a Marketplace item.
+        label = translate_term('Bandages', 'equipment')
+        character = Character(name='Test', background='Test', items='[]',
+                              containers='[{"id": 0, "name": "Main", "slots": 10}]')
+        db.session.add(character)
+        inventory = Inventory(character)
+        # #when
+        item = inventory.create_item(label, 'uses', '3', '', '', 0, '',
+                                     source=Market().find_item_by_label(label))
+        # #then
+        assert label != 'Bandages'
+        assert item['name'] == 'Bandages'

@@ -1,6 +1,7 @@
 import json
 from app.models import db, Character
 from app.lib import load_market
+from app.lib.translations import translate_term
 
 class Market:
     def __init__(self):
@@ -30,6 +31,13 @@ class Market:
                 return it
         return None
     
+    def find_item_by_label(self, label):
+        """Find the item whose English or translated name the item editor submitted."""
+        for it in self.market:
+            if label in (it["name"], translate_term(it["name"], 'equipment')):
+                return it
+        return None
+
     def buy(self, items):
         result = []
         for name in items:

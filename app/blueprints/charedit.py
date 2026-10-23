@@ -609,7 +609,8 @@ def charedit_inplace_inventory_item_edit_save(username, url_name, item_id):
     else:
         item = inventory.create_item(data["edit_item_name"],data["edit_item_tags"],data["edit_item_uses"],
                                      data["edit_item_charges"], data["edit_item_max_charges"], data["edit_item_container"],
-                                     data["edit_item_description"], armor_active=data.get("edit_item_armor_active") == "on", commit=False)
+                                     data["edit_item_description"], armor_active=data.get("edit_item_armor_active") == "on", commit=False,
+                                     source=Market().find_item_by_label(data["edit_item_name"]))
         if item is None:
             response = make_response(render_template('partial/inventory_error.html',
                 message=_('The item does not fit in this container.')))
