@@ -840,9 +840,8 @@ def charcreo_save():
         # fallback, Main container always exists
         containers = json.dumps([{"name": "Main", "slots": 10, "id": 0}])
     
-    description = ''
-    if background:
-        description=_(sdv(background,'background_description',''))
+    description = sdv(background,'background_description','') if background else ''
+    description = _(description) if description else ''
     background_answers = {}
     for index in (1, 2):
         answer = custom_fields.get(f'background_table{index}_select') or ''
@@ -863,7 +862,7 @@ def charcreo_save():
                 hp_max=form.hp_max.data, strength=form.strength_max.data, dexterity=form.dexterity_max.data, armor=form.armor.data, scars="",
                 willpower=form.willpower_max.data, hp=form.hp_max.data, deprived=False, 
                 description=description, traits=traits, notes="", **background_answers,
-                gold=form.gold.data, bonds=_(form.bonds.data), omens=_(form.omens.data), 
+                gold=form.gold.data, bonds=_(form.bonds.data) if form.bonds.data else '', omens=_(form.omens.data) if form.omens.data else '', 
                 custom_image=custom_image, image_url=custom_fields['portrait_src'])
     from app.lib.companions import starting_pets
     options = [find_background_table_option(background, f'table{index}',
