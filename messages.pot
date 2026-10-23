@@ -39941,3 +39941,256 @@ msgstr ""
 msgctxt "portrait category"
 msgid "Undead"
 msgstr ""
+
+#: app/blueprints/campaigns.py:593
+msgid "Unsupported file type. Put your Markdown articles in a ZIP, TAR or TAR.GZ archive, then upload that archive."
+msgstr ""
+
+#: app/blueprints/generator.py:150
+msgid "Portrait"
+msgstr ""
+
+#: app/templates/auth/account.html:20
+#: app/templates/base.html:63
+msgid "Hover previews: on"
+msgstr ""
+
+#: app/templates/base.html:63
+msgid "Hover previews: off"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:6
+msgid "Existing parent"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:9
+#: app/templates/campaigns/new_map.html:7
+msgid "New Campaign"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:10
+msgid "Edit Campaign"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:15
+#: app/templates/campaigns/new_map.html:7
+msgid "Save Campaign"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:71
+msgid "Delete Campaign"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:77
+msgid "Delete Campaign…"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:34
+msgid "Entire dungeon"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:34
+msgid "Entire forest"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:9
+msgid "Download an example archive"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:9
+msgid "Import it as-is, or unzip it and edit the Markdown files before creating a new ZIP archive."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:11
+msgid "Every file needs layout: default, title and type in YAML Front Matter. parent first refers to an exact, unique title inside this archive. If that title is absent, it can name one of your existing campaigns. Duplicate campaign names are an error. Folders do not determine hierarchy."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:12
+msgid "Use id and parent_id when titles repeat; these IDs refer only to files inside this archive. To attach a hand-drawn map, add map: maps/world.excalidraw to an article. Export Obsidian drawings to ordinary .excalidraw JSON first. Drawing shapes remain editable; they do not automatically become interactive article points or paths."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:28
+msgid "Copy each complete block, including both --- lines, into its own .md file. Place those files together in one archive."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:46
+msgid "Existing campaign:"
+msgstr ""
+
+#: app/templates/main/about.html:28
+msgid "Russian and Ukrainian translations."
+msgstr ""
+
+#: app/templates/main/companion.html:49
+msgid "Delete monster"
+msgstr ""
+
+#: app/templates/main/monster_public.html:11
+msgid "These monster stats are private to the Warden."
+msgstr ""
+
+#: app/templates/main/party_view.html:60
+msgid "Party sections"
+msgstr ""
+
+#: app/templates/main/party_view.html:72
+msgid "Back to Warden view"
+msgstr ""
+
+#: app/templates/main/shared_map.html:34
+#: app/templates/main/shared_map.html:124
+msgid "Lock map"
+msgstr ""
+
+#: app/templates/main/shared_map.html:92
+#: app/templates/main/shared_map.html:97
+#: app/templates/main/shared_map.html:123
+msgid "Show stats to players"
+msgstr ""
+
+#: app/templates/main/shared_map.html:94
+msgid "Reveal this monster’s stats to everyone in the party?"
+msgstr ""
+
+#: app/templates/main/shared_map.html:123
+msgid "Hide stats from players"
+msgstr ""
+
+#: app/templates/main/shared_map.html:124
+msgid "Unlock map"
+msgstr ""
+
+#: app/templates/main/shared_map.html:125
+msgid "Unable to save visibility. Please try again."
+msgstr ""
+
+#: app/templates/main/tools.html:37
+msgid "Create a party first to manage monsters as its Warden."
+msgstr ""
+
+#: app/templates/main/tools.html:43
+msgid "Dungeons"
+msgstr ""
+
+#: app/templates/main/tools.html:57
+#: app/templates/partial/companions/monster_catalog.html:5
+msgid "Search bestiary"
+msgstr ""
+
+#: app/templates/partial/companions/cards.html:31
+#: app/templates/partial/companions/cards.html:35
+msgid "Public stats"
+msgstr ""
+
+#: app/templates/partial/companions/cards.html:31
+#: app/templates/partial/companions/cards.html:35
+msgid "Private stats"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:1
+msgid "Set a quantity for each monster, or import Cairn Markdown stat blocks. Each instance has its own stats and inventory."
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:7
+msgid "Show selected only"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:17
+#, python-format
+msgid "Preview %(name)s"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:25
+msgid "Quantity"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:27
+#, python-format
+msgid "Decrease quantity for %(name)s"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:28
+#, python-format
+msgid "Quantity for %(name)s"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:29
+#, python-format
+msgid "Increase quantity for %(name)s"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:36
+msgid "No monsters found."
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:38
+msgid "Selected instances:"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:39
+msgid "Summon monsters"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:41
+msgid "Monster preview"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:42
+msgid "Close preview"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:46
+msgid "Import Markdown"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:48
+msgid "Paste Markdown or upload a UTF-8 file (.md), up to 64 KB. Separate monsters with --- on its own line. Add at most 100 instances at a time."
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:49
+msgid "Start with a heading containing the monster’s name. Put its stats on one line below it, with numbers before the English labels HP, Armor, STR, DEX and WIL."
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:62
+msgid "The name and HP are required. Omitted Armor defaults to 0; STR, DEX and WIL default to 10. Armor must be between 0 and 3."
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:63
+msgid "The rest of the stat line becomes the attack. Everything below it becomes the monster’s notes and supports Markdown."
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:66
+msgid "Markdown"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:68
+msgid "Or upload a Markdown file (used instead of pasted text)"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:69
+msgid "Monster file"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:70
+msgid "Import monsters"
+msgstr ""
+
+#: app/templates/partial/companions/monster_catalog.html:73
+msgid "Cairn bestiary"
+msgstr ""
+
+#: app/templates/partial/companions/monster_controls.html:5
+msgid "Give as pet to"
+msgstr ""
+
+#: app/templates/partial/companions/monster_controls.html:7
+msgid "Choose a character"
+msgstr ""
+
+#: app/templates/partial/companions/monster_controls.html:10
+msgid "Moves this creature with its current stats, portrait and inventory."
+msgstr ""
+
+#: app/templates/partial/companions/monster_controls.html:11
+msgid "Give as pet"
+msgstr ""
