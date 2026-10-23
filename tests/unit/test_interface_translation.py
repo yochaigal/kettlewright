@@ -74,3 +74,26 @@ def test_portrait_category_labels_are_translated(app_with_babel, locale):
     labels = lambda page: re.findall(r'>([^<>\n]+)</button>', page)
     assert len(labels(html)) == len(categories) + 1
     assert set(labels(html)).isdisjoint(labels(english))
+
+
+def test_unchanged_translated_item_text_keeps_english_source(app_with_babel):
+    from app.lib import Inventory
+    description = ('Its scream frightens away all who hear it (save WIL or flee). '
+                   'Recharge: Capture the final breath of a dying warrior.')
+    # #given: a stored item whose editor shows the Russian name and description.
+    with app_with_babel.test_request_context(), force_locale('ru'):
+        character = Character(name='Test', background='Test', items='[]',
+                              containers='[{"id": 0, "name": "Main", "slots": 10}]')
+        db.session.add(character)
+        inventory = Inventory(character)
+        item = inventory.create_item('Death-Whistle', 'charges', '', '1', '1', 0, description)
+        # #when: the form comes back unchanged, with browser line endings.
+        saved = inventory.update_item(item['id'], 'Смерть-свисток', 'charges', '', '1', '1', 0,
+            'Его звук пугает всех, кто его слышит (спасбросок ВОЛ или бегство). '
+            'Перезарядка: уловите последний вздох умирающего воина.')
+        # #then
+        assert (saved['name'], saved['description']) == ('Death-Whistle', description)
+        # #when: the player renames the item.
+        renamed = inventory.update_item(item['id'], 'Мой свисток', 'charges', '', '1', '1', 0, 'Свой текст\r\n')
+        # #then
+        assert (renamed['name'], renamed['description']) == ('Мой свисток', 'Свой текст\n')

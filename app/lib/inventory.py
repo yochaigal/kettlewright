@@ -484,6 +484,13 @@ class Inventory:
         if item['location'] != int(container):
             self.pin_slots(container)
         item = self.get_item(item_id)
+        # The editor shows translated text; keep the English source when it comes back unchanged.
+        if name != item["name"] and name == translate_term(item["name"], 'equipment'):
+            name = item["name"]
+        description = description.replace('\r\n', '\n')
+        stored = item.get("description") or ""
+        if description != stored and stored and description == translate_term(stored):
+            description = stored
         item["name"] = name
         if tags != "":
             item["tags"] = tags.split(",")
