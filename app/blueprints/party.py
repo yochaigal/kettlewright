@@ -842,7 +842,8 @@ def party_inventory_item_edit_save(party_id, item_id):
     else:
         item = inventory.create_item(data["edit_item_name"],data["edit_item_tags"],data["edit_item_uses"],
                                      data["edit_item_charges"], data["edit_item_max_charges"], data["edit_item_container"],
-                                     data["edit_item_description"], armor_active=data.get("edit_item_armor_active") == "on")
+                                     data["edit_item_description"], armor_active=data.get("edit_item_armor_active") == "on",
+                                     source=Market().find_item_by_label(data["edit_item_name"]))
         inventory.select(int(item["location"]))
     inventory.decorate()
     render = render_template('partial/partyedit/inventory.html', party=party,inventory=inventory)    

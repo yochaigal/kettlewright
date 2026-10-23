@@ -455,7 +455,7 @@ class Inventory:
         return None
     
     # create item
-    def create_item(self, name, tags, uses, charges, max_charges, container, description, armor_active=None, commit=True):
+    def create_item(self, name, tags, uses, charges, max_charges, container, description, armor_active=None, commit=True, source=None):
         cnt = self.get_container(container)
         if cnt == None:
             return None
@@ -468,7 +468,9 @@ class Inventory:
         self.pin_slots(container)
         new_id = self.generate_item_id()
         items = json.loads(self.character.items)
-        items.append({"id":new_id,"name":"","tags":[],"location":0,"description":""})
+        # A library item starts from its English source, so unchanged translated text keeps it.
+        source = source or {}
+        items.append({"id":new_id,"name":source.get("name", ""),"tags":[],"location":0,"description":source.get("description", "")})
         self.character.items = json.dumps(items)
         return self.update_item(new_id,name, tags, uses, charges, max_charges, container, description, armor_active=armor_active, commit=commit)
         
@@ -484,6 +486,13 @@ class Inventory:
         if item['location'] != int(container):
             self.pin_slots(container)
         item = self.get_item(item_id)
+        # The editor shows translated text; keep the English source when it comes back unchanged.
+        if name != item["name"] and name == translate_term(item["name"], 'equipment'):
+            name = item["name"]
+        description = description.replace('\r\n', '\n')
+        stored = item.get("description") or ""
+        if description != stored and stored and description == translate_term(stored):
+            description = stored
         item["name"] = name
         if tags != "":
             item["tags"] = tags.split(",")

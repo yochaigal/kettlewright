@@ -421,7 +421,9 @@ def item_save(companion_id, item_id):
             if not str(location).isdigit() or not inventory.get_container(location):
                 abort(400)
             if creating:
-                item = inventory.create_item(*values, armor_active=data.get('edit_item_armor_active') == 'on', commit=False)
+                from app.lib.market import Market
+                item = inventory.create_item(*values, armor_active=data.get('edit_item_armor_active') == 'on', commit=False,
+                                             source=Market().find_item_by_label(data['edit_item_name']))
                 if item is None:
                     abort(400, description='The item does not fit in this container.')
                 requested_slot = data.get('edit_item_slot', '')

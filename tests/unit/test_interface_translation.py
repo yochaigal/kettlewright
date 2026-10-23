@@ -40,3 +40,79 @@ def test_client_labels_preserve_parameters_and_tools_page_renders(app_with_babel
     assert labels[key] != key
     assert '%(maximum)s' in labels[key]
     assert labels['Add Container'] != 'Add Container'
+
+
+@pytest.mark.parametrize('locale, label, generator_term', [
+    ('ru', 'Гоблиноиды', 'Лужайка'), ('uk', 'Гобліноїди', 'Мурава')])
+def test_green_portrait_category_does_not_use_generator_term(app_with_babel, locale, label, generator_term):
+    from flask import render_template_string
+    # #given: "Green" is also a generator name term with a different meaning.
+    with app_with_babel.test_request_context(), force_locale(locale):
+        # #when
+        html = render_template_string("{% include 'partial/portrait_catalog.html' %}",
+            images=['green/green1.png'])
+    # #then
+    assert label in html
+    assert generator_term not in html
+
+
+@pytest.mark.parametrize('locale', ['ru', 'uk', 'de', 'es', 'pl', 'pt_BR'])
+def test_portrait_category_labels_are_translated(app_with_babel, locale):
+    import re
+    from flask import render_template_string
+    # #given: one portrait in every catalog category.
+    categories = ['aqua', 'beast', 'brute', 'coldblooded', 'demonic', 'fairy', 'green',
+        'human-npcs-for-itmod', 'humanoid', 'insect', 'large', 'monster', 'other', 'statues', 'undead']
+    images = ['character.png'] + [f'{category}/portrait.png' for category in categories]
+    with app_with_babel.test_request_context():
+        with force_locale('en'):
+            english = render_template_string("{% include 'partial/portrait_catalog.html' %}", images=images)
+        with force_locale(locale):
+            # #when
+            html = render_template_string("{% include 'partial/portrait_catalog.html' %}", images=images)
+    # #then
+    labels = lambda page: re.findall(r'>([^<>\n]+)</button>', page)
+    assert len(labels(html)) == len(categories) + 1
+    assert set(labels(html)).isdisjoint(labels(english))
+
+
+def test_unchanged_translated_item_text_keeps_english_source(app_with_babel):
+    from app.lib import Inventory
+    description = ('Its scream frightens away all who hear it (save WIL or flee). '
+                   'Recharge: Capture the final breath of a dying warrior.')
+    # #given: a stored item whose editor shows the Russian name and description.
+    with app_with_babel.test_request_context(), force_locale('ru'):
+        character = Character(name='Test', background='Test', items='[]',
+                              containers='[{"id": 0, "name": "Main", "slots": 10}]')
+        db.session.add(character)
+        inventory = Inventory(character)
+        item = inventory.create_item('Death-Whistle', 'charges', '', '1', '1', 0, description)
+        # #when: the form comes back unchanged, with browser line endings.
+        saved = inventory.update_item(item['id'], 'Смерть-свисток', 'charges', '', '1', '1', 0,
+            'Его звук пугает всех, кто его слышит (спасбросок ВОЛ или бегство). '
+            'Перезарядка: уловите последний вздох умирающего воина.')
+        # #then
+        assert (saved['name'], saved['description']) == ('Death-Whistle', description)
+        # #when: the player renames the item.
+        renamed = inventory.update_item(item['id'], 'Мой свисток', 'charges', '', '1', '1', 0, 'Свой текст\r\n')
+        # #then
+        assert (renamed['name'], renamed['description']) == ('Мой свисток', 'Свой текст\n')
+
+
+def test_library_item_created_with_translated_name_keeps_english_source(app_with_babel):
+    from app.lib import Inventory
+    from app.lib.market import Market
+    from app.lib.translations import translate_term
+    with app_with_babel.test_request_context(), force_locale('ru'):
+        # #given: the editor filled the Russian name of a Marketplace item.
+        label = translate_term('Bandages', 'equipment')
+        character = Character(name='Test', background='Test', items='[]',
+                              containers='[{"id": 0, "name": "Main", "slots": 10}]')
+        db.session.add(character)
+        inventory = Inventory(character)
+        # #when
+        item = inventory.create_item(label, 'uses', '3', '', '', 0, '',
+                                     source=Market().find_item_by_label(label))
+        # #then
+        assert label != 'Bandages'
+        assert item['name'] == 'Bandages'

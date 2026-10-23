@@ -10,7 +10,7 @@
       <header class="modal-card-head">
         <h3 class="modal-card-title">
           {% if mode == "edit" %}
-          {{_('Edit Item')}}: {{item.name}}
+          {{_('Edit Item')}}: {{item.name|tr('equipment')}}
           {% else %}
           {{_('Create Item')}}
           {% endif %}
@@ -22,7 +22,7 @@
         <div class="field">
           <label>{{_('Name')}}</label>
           <input class="input" type="text" placeholder="{{_('Item Name')}}" name="edit_item_name" x-model="name" {% if mode=='edit' %}
-            value="{{item.name}}" {% endif %} />
+            value="{{item.name|tr('equipment')}}" {% endif %} />
         </div>
 
         <div class="tags-container field" style="margin: 20px 0px">
@@ -137,7 +137,7 @@
           <small style="display:block">{{_('Include an image with ![description](https://example.org/image.png).')}}</small>
           <textarea class="textarea" placeholder="{{_('Item Description')}}" id="edit_item_description"
             name="edit_item_description" x-model="description"
-            @input="resizeTextarea($el)" x-effect="description; $nextTick(() => resizeTextarea($el))">{% if mode == "edit" %}{{item.description}}{% endif %}</textarea>
+            @input="resizeTextarea($el)" x-effect="description; $nextTick(() => resizeTextarea($el))">{% if mode == "edit" %}{{item.description|tr}}{% endif %}</textarea>
         </div>
       </section>
 
