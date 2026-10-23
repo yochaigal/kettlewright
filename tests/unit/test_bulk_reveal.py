@@ -16,7 +16,7 @@ def confirmation(response):
 
 def test_bulk_reveal_publishes_exact_selection_to_selected_audience(setup):
     app, client = setup
-    parent = create_entry(client, title='Parent', body='Parent facts')
+    parent = create_entry(client, category='faction', title='Parent', body='Parent facts')
     child = create_entry(client, title='Child', parent_id=parent)
     other = create_entry(client, title='Other', body='Other facts')
     assert reveal(client, parent, title='Old text', body='Old facts').status_code == 302

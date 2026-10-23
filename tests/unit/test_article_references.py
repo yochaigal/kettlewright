@@ -146,7 +146,7 @@ def test_reference_migration_single_head_and_downgrade(tmp_path, monkeypatch):
     monkeypatch.setenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///' + str(tmp_path / 'references.sqlite'))
     from app import create_app
     from alembic.script import ScriptDirectory
-    assert ScriptDirectory('migrations').get_heads() == ['336a01']
+    assert len(ScriptDirectory('migrations').get_heads()) == 1
     app = create_app()
     with app.app_context():
         upgrade(revision='335a01')
