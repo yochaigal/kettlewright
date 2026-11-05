@@ -22550,3 +22550,14 @@ msgstr ""
 #: app/templates/partial/companions/monster_controls.html:11
 msgid "Give as pet"
 msgstr ""
+
+#. Whole trait sentence. Order the placeholders as your language needs;
+#. values arrive in lowercase. Leave it empty to keep the word-by-word
+#. sentence.
+#: app/lib/char_utils.py:59
+#, python-format
+msgid ""
+"You have a %(physique)s physique, %(skin)s skin, and %(hair)s hair. Your "
+"face is %(face)s, your speech %(speech)s. You have %(clothing)s clothing. "
+"You are %(virtue)s and %(vice)s."
+msgstr ""

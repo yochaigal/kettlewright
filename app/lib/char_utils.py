@@ -5,8 +5,8 @@ import random
 import json
 import re
 from flask import render_template
-from flask_babel import _
-from app.lib.translations import translate_term
+from flask_babel import _, gettext
+from app.lib.translations import N_, translate_term
 NO_ARMOR = 'No upper body protection, no helmet nor shield'
 
 # Retrieve character data
@@ -53,14 +53,36 @@ class TraitValue:
         self.value = value
         
         
-# generate traits text, table contains: Physique, Skin, Hair, Face, Speech, Clothing, Virtue, Vice        
+# The whole trait sentence as one message, so each language can order the
+# words its own way. Values are passed in lowercase, as they sit mid-sentence.
+TRAITS_SENTENCE = N_('You have a %(physique)s physique, %(skin)s skin, and '
+                     '%(hair)s hair. Your face is %(face)s, your speech '
+                     '%(speech)s. You have %(clothing)s clothing. You are '
+                     '%(virtue)s and %(vice)s.')
+TRAIT_KEYS = ('physique', 'skin', 'hair', 'face', 'speech', 'clothing', 'virtue', 'vice')
+
+
+# Traits in table order: Physique, Skin, Hair, Face, Speech, Clothing, Virtue, Vice
+def traits_sentence(traits):
+    values = [translate_term(t.value, 'character trait: ' + t.name) for t in traits]
+    sentence = gettext(TRAITS_SENTENCE)
+    if sentence != TRAITS_SENTENCE:
+        return sentence % {key: value.lower() for key, value in zip(TRAIT_KEYS, values)}
+    # Languages without the full sentence keep the word-by-word form.
+    names = [_(t.name) for t in traits]
+    return (_('You have a')+' '+values[0]+' '+names[0]+', '+values[1]+' '+names[1]+', '+_('and')+' '
+            +values[2]+' '+names[2]+'. '+_('Your')+' '+names[3]+' '+_('is')+' '+values[3]+', '
+            +_('your')+' '+names[4]+' '+values[4]+'. '+_('You have')+' '+values[5]+' '+names[5]+'. '
+            +_('You are')+' '+values[6]+' '+_('and')+' '+values[7]+'.')
+
+
 def traits_text(age, traits):
-    txt = _('You have a')+' '+translate_term(traits[0].value, 'character trait: ' + traits[0].name)+' '+_(traits[0].name)+', '+translate_term(traits[1].value, 'character trait: ' + traits[1].name)+' '+_(traits[1].name)+', '+_('and')+' '+translate_term(traits[2].value, 'character trait: ' + traits[2].name)+' '+_(traits[2].name)+'. '+_('Your')+' '+_(traits[3].name)+' '+_('is')+' '+translate_term(traits[3].value, 'character trait: ' + traits[3].name)+', '+_('your')+' '+ _(traits[4].name)+' '+translate_term(traits[4].value, 'character trait: ' + traits[4].name)+'. '+_('You have')+ ' '+translate_term(traits[5].value, 'character trait: ' + traits[5].name)+' '+_(traits[5].name)+'. '+_('You are')+' '+    translate_term(traits[6].value, 'character trait: ' + traits[6].name)+' ' +_('and')+' '+translate_term(traits[7].value, 'character trait: ' + traits[7].name)+'. '
+    txt = traits_sentence(traits)+' '
     if age != "" and int(age) > 0:
         txt += _('You are %(num)s years old.', num=age)
     return txt
-    
-        
+
+
 class TableValue:
     def __init__(self, question, option):
         self.question = question

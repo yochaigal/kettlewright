@@ -2649,7 +2649,7 @@ msgstr "Con marca de nacimiento"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:16
 msgid "Webbed"
-msgstr "Dedos palmeados"
+msgstr "Con dedos palmeados"
 
 #: app/static/json/generators/names.json:1
 #: app/static/json/party_events/names.json:173 app/static/json/traits.json:1
@@ -27701,7 +27701,7 @@ msgstr "Con marca de nacimiento"
 #: app/static/json/traits.json:1
 msgctxt "character trait: Skin"
 msgid "Webbed"
-msgstr "Dedos palmeados"
+msgstr "Con dedos palmeados"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Skin"
@@ -42763,6 +42763,19 @@ msgstr ""
 #: app/templates/partial/companions/monster_controls.html:11
 msgid "Give as pet"
 msgstr ""
+
+#. Whole trait sentence. Order the placeholders as your language needs; values
+#. arrive in lowercase. Leave it empty to keep the word-by-word sentence.
+#: app/lib/char_utils.py:59
+#, python-format
+msgid ""
+"You have a %(physique)s physique, %(skin)s skin, and %(hair)s hair. Your "
+"face is %(face)s, your speech %(speech)s. You have %(clothing)s clothing."
+" You are %(virtue)s and %(vice)s."
+msgstr ""
+"Tu físico es %(physique)s, tu piel %(skin)s y tu cabello %(hair)s. Tu "
+"rostro es %(face)s y tu voz %(speech)s. Tu vestimenta es %(clothing)s. "
+"Eres %(virtue)s y %(vice)s."
 
 #~ msgid "Tokens"
 #~ msgstr "Fichas"

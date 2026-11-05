@@ -10,15 +10,7 @@
     {{character.description | tr}}
 </p>
 <div>
-    {{_('You have a')}} {{character.traits[0].value | tr('character trait: ' ~ character.traits[0].name)}} {{character.traits[0].name | tr}},
-    {{character.traits[1].value | tr('character trait: ' ~ character.traits[1].name)}} {{character.traits[1].name | tr}},
-    {{_('and')}} {{character.traits[2].value | tr('character trait: ' ~ character.traits[2].name)}}
-    {{character.traits[2].name | tr}}. {{_('Your')}} {{character.traits[3].name | tr}} {{_('is')}}
-    {{character.traits[3].value | tr('character trait: ' ~ character.traits[3].name)}}, {{_('your')}}
-    {{character.traits[4].name | tr}} {{character.traits[4].value | tr('character trait: ' ~ character.traits[4].name)}}. {{_('You have')}}
-    {{character.traits[5].value | tr('character trait: ' ~ character.traits[5].name)}} {{character.traits[5].name | tr}}. {{_('You are')}}
-    {{character.traits[6].value | tr('character trait: ' ~ character.traits[6].name)}} {{_('and')}}
-    {{character.traits[7].value | tr('character trait: ' ~ character.traits[7].name)}}.
+    {{ traits_sentence(character.traits) }}
     {{_('Your age')}}: {{character.age}}.
 </div>
 </p>
@@ -114,4 +106,4 @@
 {% for pet in character.pets %}<div class="rich-content"><strong>{{ pet.name|tr|markdown_inline }}</strong>: {{ pet.notes|markdown }}</div>{% endfor %}
 {% endif %}
 <input type="hidden" name="json_data" id="json_data" value="{{json_data}}" />
-<input type="hidden" name="character_name" id="character_name" value="{{character.name}}" />
+<input type="hidden" name="character_name" id="character_name" value="{{character.name}}" />
