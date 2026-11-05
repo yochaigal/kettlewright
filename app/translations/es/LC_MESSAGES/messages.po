@@ -523,7 +523,7 @@ msgstr "Guardar grupo"
 #: app/templates/partial/modal/edit_item_party.html:30
 #: app/templates/partial/modal/edit_item_party.html:36
 msgid "petty"
-msgstr "pequeño"
+msgstr "insignificante"
 
 #: app/static/json/backgrounds/barber-surgeon.json:1
 #: app/static/json/backgrounds/barber-surgeon.json:87
@@ -1230,13 +1230,13 @@ msgstr "Rostro"
 #: app/templates/partial/charcreo/traits.html:42
 #: app/templates/partial/charcreo/traits.html:45
 msgid "Speech"
-msgstr "Habla"
+msgstr "Voz"
 
 #: app/static/json/traits.json:1 app/templates/main/character_create.html:252
 #: app/templates/partial/charcreo/traits.html:52
 #: app/templates/partial/charcreo/traits.html:55
 msgid "Clothing"
-msgstr "Ropa"
+msgstr "Vestimenta"
 
 #: app/lib/generator_labels.py:74 app/static/json/traits.json:1
 #: app/templates/main/character_create.html:257
@@ -1250,7 +1250,7 @@ msgstr "Virtud"
 #: app/templates/partial/charcreo/traits.html:72
 #: app/templates/partial/charcreo/traits.html:75
 msgid "Vice"
-msgstr "Vicio"
+msgstr "Defecto"
 
 #: app/templates/main/character_create.html:274
 #: app/templates/main/character_create.html:279
@@ -1855,20 +1855,25 @@ msgid ""
 "relative. It arrived with a warning: squander your newfound riches, and a"
 " debt long thought forgotten would be called."
 msgstr ""
+"Heredaste una gema única (500 mo, fría y quebradiza) de un pariente "
+"fallecido hace tiempo. Te la entregaron con una advertencia: si derrochas"
+" tus nuevas riquezas, te cobrarán una deuda olvidada hace mucho tiempo."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:7
 msgid "Single Gem"
-msgstr ""
+msgstr "Gema única"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:18
 msgid "Ornate Compass"
-msgstr ""
+msgstr "Brújula ornamentada"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:19
 msgid ""
 "A distant cousin left you a small inheritance. Take 20gp, and a strange "
 "Compass that always points towards something deep in the Wood."
 msgstr ""
+"Un primo lejano te dejó una pequeña herencia. Tienes 20 mo y una extraña "
+"brújula que apunta siempre hacia algo en lo profundo del Bosque."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:24
 #: app/static/json/bonds.json:32
@@ -1876,10 +1881,13 @@ msgid ""
 "You carry a Portrait in a locket (petty) of a past love who disappeared "
 "into the Wood long ago. Somehow, you know that they are still alive."
 msgstr ""
+"Llevas en un relicario (Insignificante) el retrato de un amor pasado que "
+"desapareció en el Bosque hace mucho tiempo. De algún modo, sabes que "
+"sigue con vida."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:28
 msgid "Locket"
-msgstr ""
+msgstr "Relicario"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:37
 #: app/static/json/bonds.json:45
@@ -1888,10 +1896,14 @@ msgid ""
 "to the light, it shows visions of an unknown location deep within the "
 "Wood. Sometimes, you feel a presence looking back at you."
 msgstr ""
+"Encontraste un pequeño prisma de cristal (Insignificante) enterrado en la"
+" tierra. Al mirarlo a trasluz, muestra imágenes de un lugar desconocido "
+"en lo profundo del Bosque. A veces sientes una presencia devolviéndote la"
+" mirada."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:41
 msgid "Tiny Crystal Prism"
-msgstr ""
+msgstr "Pequeño prisma de cristal"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:50
 #: app/static/json/bonds.json:58
@@ -1900,10 +1912,13 @@ msgid ""
 "Silver Moss (petty). Swallow it near water and the creature will come, "
 "once, to repay its debt."
 msgstr ""
+"Ayudaste a una náyade en dificultades a salir de un río angosto. A "
+"cambio, te entregó un poco de musgo plateado (Insignificante). Trágalo "
+"cerca del agua y la criatura vendrá, una sola vez, a pagar su deuda."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:54
 msgid "Silver Moss"
-msgstr ""
+msgstr "Musgo plateado"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:63
 #: app/static/json/bonds.json:68
@@ -1912,10 +1927,14 @@ msgid ""
 "filled with the events of the day, crassly from the journal’s "
 "perspective. The writing is crude, but accurate."
 msgstr ""
+"Has heredado un diario antiguo, encuadernado en corteza de árbol. Cada "
+"noche, sus páginas se llenan con los acontecimientos del día, escritos "
+"con crudeza desde la perspectiva del diario. La escritura es tosca, pero "
+"precisa."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:67
 msgid "Journal"
-msgstr ""
+msgstr "Diario"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:73
 msgid ""
@@ -1923,10 +1942,13 @@ msgid ""
 " (petty). They say that if joined with its twin, it opens a Gate through "
 "any door."
 msgstr ""
+"Guardas un secreto familiar que lleva mucho tiempo oculto. Tienes la "
+"mitad de una llave antigua (Insignificante). Dicen que si se une con su "
+"otra mitad, abre un Portal en cualquier puerta."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:77
 msgid "Ancient Key Half"
-msgstr ""
+msgstr "Mitad de llave antigua"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:81
 msgid ""
@@ -1934,6 +1956,9 @@ msgid ""
 "Key. They say that if joined with its twin, it opens a Gate through any "
 "door."
 msgstr ""
+"Guardas un secreto familiar que lleva mucho tiempo oculto. Tienes la "
+"mitad de una llave antigua. Dicen que si se une con su otra mitad, abre "
+"un Portal en cualquier puerta."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:86
 #: app/static/json/bonds.json:94
@@ -1942,11 +1967,15 @@ msgid ""
 "true parentage is that of Fae nobility. The note also indicates a date "
 "and location where you are to meet them, deep in the the Wood."
 msgstr ""
+"Recibiste una carta (Insignificante) que presenta pruebas irrefutables de"
+" tu verdadera ascendencia, noble entre las hadas. El texto también "
+"especifica una fecha y un lugar donde te encontrarás con quien la "
+"escribió, en lo profundo del Bosque."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:90
 #: app/static/json/bonds.json:139
 msgid "Letter"
-msgstr ""
+msgstr "Carta"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:99
 #: app/static/json/bonds.json:107
@@ -1955,10 +1984,13 @@ msgid ""
 "Ring (petty), which serves as proof of their protection as well as your "
 "obligation."
 msgstr ""
+"Tienes una gran deuda con un miembro de la nobleza y llevas un anillo con"
+" su emblema (Insignificante), que sirve como prueba de su protección, así"
+" como de tu obligación."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:103
 msgid "Signet Ring"
-msgstr ""
+msgstr "Anillo con emblema"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:112
 #: app/static/json/bonds.json:117
@@ -1967,10 +1999,14 @@ msgid ""
 "demanding to be taken home, deep in the Wood. It occupies one slot but "
 "absorbs one Fatigue each day. It wants you alive (for now)."
 msgstr ""
+"Has consumido un espíritu travieso que causa estragos en tus entrañas y "
+"te exige que lo devuelvas a su hogar, en las profundidades del Bosque. "
+"Ocupa un espacio en tu Inventario, pero absorbe una Fatiga por día. El "
+"espíritu te mantiene con vida (por ahora)."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:116
 msgid "Mischievous Spirit"
-msgstr ""
+msgstr "Espíritu travieso"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:122
 #: app/static/json/bonds.json:130
@@ -1979,10 +2015,14 @@ msgid ""
 "in the Wood. You thought it naught but fancy, till they gave you A "
 "Rolled-Up Map (petty) marked with an X."
 msgstr ""
+"Una vez, un cuentacuentos itinerante te contó historias de un gran tesoro"
+" escondido en las profundidades del Bosque. Creíste que no eran más que "
+"cuentos para niños, hasta que te dio un mapa enrollado (Insignificante) "
+"marcado con una X."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:126
 msgid "Rolled-Up Map"
-msgstr ""
+msgstr "Mapa enrollado"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:135
 #: app/static/json/bonds.json:143
@@ -1991,6 +2031,10 @@ msgid ""
 "message to their loved ones. Take a Letter (petty), sealed with tree sap."
 " It is addressed only to the Lord Of Winter."
 msgstr ""
+"En uno de tus viajes, conociste a un cazador moribundo que te pidió que "
+"entregaras un mensaje a sus seres queridos. Tienes una carta "
+"(Insignificante), sellada con savia de árbol. Está dirigida únicamente al"
+" Señor del Invierno."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:148
 msgid ""
@@ -1998,6 +2042,10 @@ msgid ""
 "it everywhere now, but only when you’re alone. It looks sad, but not "
 "angry. You cannot become panicked when acting alone."
 msgstr ""
+"Encontraste una bestia herida en el Bosque, pero decidiste no ayudarla. "
+"Ahora se te aparece en todas partes, pero solo cuando estás a solas. La "
+"bestia se muestra triste, pero no enojada. No caes en Pánico al actuar en"
+" solitario."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:153
 #: app/static/json/bonds.json:161
@@ -2006,10 +2054,13 @@ msgid ""
 "something unique in all the world. Take a Bracelet (petty) woven from "
 "twine and wildflowers."
 msgstr ""
+"Le prometiste a una amistad de tu infancia que le traerías un regalo "
+"especial, algo único en el mundo. Tienes una pulsera (Insignificante) "
+"tejida con hilo y flores silvestres."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:157
 msgid "Bracelet"
-msgstr ""
+msgstr "Pulsera"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:166
 #: app/static/json/bonds.json:174
@@ -2018,10 +2069,14 @@ msgid ""
 "(1 Armor). With each passing month, the stone grows heavier by one slot. "
 "Until your debt is lifted, you cannot truly die."
 msgstr ""
+"Te enfrentaste con una criatura del Bosque y te echó la maldición del "
+"corazón de piedra (1 Armadura). Cada mes que pasa, la piedra se vuelve "
+"más pesada, ocupando un espacio más en tu Inventario. Hasta que tu deuda "
+"sea saldada, no podrás morir definitivamente."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:170
 msgid "Stone Heart"
-msgstr ""
+msgstr "Corazón de piedra"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:179
 #: app/static/json/bonds.json:187
@@ -2029,11 +2084,14 @@ msgid ""
 "You carved a Whistle (petty) from an Oak Lord’s branch. Your act did not "
 "go unnoticed. You cannot seem to rid yourself of the whistle either."
 msgstr ""
+"Tallaste un silbato (Insignificante) de una rama perteneciente al Señor "
+"del Roble. Lo que hiciste no pasó desapercibido. Tampoco puedes "
+"deshacerte del silbato."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:183
 #: app/static/json/marketplace.json:1
 msgid "Whistle"
-msgstr ""
+msgstr "Silbato"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:192
 #: app/static/json/bonds.json:200
@@ -2042,10 +2100,13 @@ msgid ""
 "Flower (petty) as proof. When the flower turns white, it means the favor "
 "is owed."
 msgstr ""
+"La Brigada del Amanecer hizo un servicio a tu familia y te entregó como "
+"prueba una flor seca de color rojo sangre (Insignificante). Cuando la "
+"flor se torne blanca, se deberá devolver el favor."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:196
 msgid "Blood-Red Flower"
-msgstr ""
+msgstr "Flor rojo sangre"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:205
 #: app/static/json/bonds.json:210
@@ -2054,10 +2115,13 @@ msgid ""
 " left one day without a word, leaving behind only A Miniature Lute. "
 "Something rattles inside."
 msgstr ""
+"Un día, un juglar visitó tu casa y la llenó de historias y canciones. Se "
+"fue un día sin dar más explicación, dejando atrás solo un laúd en "
+"miniatura. Algo resuena en su interior."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:209
 msgid "Miniature Lute"
-msgstr ""
+msgstr "Laúd en miniatura"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:215
 #: app/static/json/bonds.json:223
@@ -2066,10 +2130,13 @@ msgid ""
 " awoke the next morning with The Twig (petty) in your hand. You believe "
 "it brings you luck. It smells faintly of sulfur."
 msgstr ""
+"Se te apareció en sueños un cuervo blanco con una ramita en la boca. Te "
+"despertaste con la ramita (Insignificante) en la mano. Crees que te trae "
+"suerte. Huele ligeramente a azufre."
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:219
 msgid "Twig"
-msgstr ""
+msgstr "Ramita"
 
 #: app/static/json/bonds.json:1 app/static/json/bonds.json:228
 msgid ""
@@ -2077,6 +2144,9 @@ msgid ""
 "Your visage causes mirrors to shatter. You’ve noticed that the shards can"
 " sometimes reveal illusions."
 msgstr ""
+"Uno de tus antepasados hizo daño a una bruja del musgo, la cual maldijo "
+"su linaje. Tu rostro hace que los espejos se rompan en pedazos. Has "
+"notado que los fragmentos a veces pueden revelar ilusiones."
 
 # ============================================= OMENS
 # =============================================
@@ -2087,6 +2157,10 @@ msgid ""
 " points to some recent desecration as the cause, but most do not heed "
 "their words."
 msgstr ""
+"Las aguas, otrora ricas y vivificantes, de un río se han vuelto negras y "
+"pútridas, contaminando la tierra y enfermando a quienes beben de ellas. "
+"Un anciano de la aldea señala una profanación reciente como la causa, "
+"pero la mayoría no hace caso de sus palabras."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:7
 msgid ""
@@ -2095,6 +2169,10 @@ msgid ""
 "pattern to the frost found in windows, ponds, and cracks in the ground. "
 "It almost looks like a map."
 msgstr ""
+"Parece que este año el invierno ha llegado demasiado rápido, las heladas "
+"y la nieve han hecho su aparición mucho antes de lo esperado. Se habla de"
+" un patrón en la escarcha que se forma en las ventanas, los estanques y "
+"las grietas del suelo. Casi parece un mapa."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:10
 msgid ""
@@ -2102,6 +2180,9 @@ msgid ""
 "grove. It is said to be the work of a great forest spirit, angered by "
 "nearby deforestation."
 msgstr ""
+"Una niebla espesa y antinatural ha comenzado a invadir una antigua "
+"floresta sagrada. Se dice que es obra de un gran espíritu residente, "
+"enfadado por la deforestación cercana."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:13
 msgid ""
@@ -2110,6 +2191,11 @@ msgid ""
 "into the Roots are spreading like wildfire. Village elders believe the "
 "two are connected."
 msgstr ""
+"El cielo nocturno se vuelve más oscuro cada noche, como si las estrellas "
+"desaparecieran una tras otra. Los rumores sobre criaturas infernales que "
+"capturan a los granjeros y los arrastran hacia las Raíces corren como la "
+"pólvora. Los ancianos del pueblo creen que ambas cosas están "
+"relacionadas."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:16
 msgid ""
@@ -2117,6 +2203,10 @@ msgid ""
 "claim that a spectral figure has been spotted wandering the forest, "
 "gazing longingly at anyone it encounters."
 msgstr ""
+"Los pájaros cantores del Bosque han caído en un extraño silencio "
+"últimamente. Los cazadores afirman que se ha visto una figura espectral "
+"vagando por el Bosque, mirando con nostalgia a todo aquel que se "
+"encuentra."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:19
 msgid ""
@@ -2125,6 +2215,10 @@ msgid ""
 "locals believe they are the tears of the earth itself, weeping for a "
 "great tragedy yet to come."
 msgstr ""
+"Han aparecido extrañas piedras con forma de lágrima en toda la región, lo"
+" que ha provocado una especie de “fiebre del oro” entre joyeros y "
+"ladrones. Los lugareños creen que son las lágrimas de la propia tierra, "
+"que lloran por una gran tragedia que está por venir."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:22
 msgid ""
@@ -2132,6 +2226,9 @@ msgid ""
 "loud buzzing sound emanating from deep within the Wood. They also say "
 "that the sound is getting closer."
 msgstr ""
+"Diferentes plagas se agrupan mordisqueando los bordes de los sueños y los"
+" granjeros hablan de un fuerte zumbido que emana de las profundidades del"
+" Bosque. Dicen que el sonido se está acercando."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:25
 msgid ""
@@ -2139,6 +2236,9 @@ msgid ""
 "said to shelter the town’s secrets in its boughs. Recently, it has begun "
 "bleeding red sap, worrying the elders."
 msgstr ""
+"Hay un pueblo conocido por su imponente “Árbol Madre”, del que se dice "
+"que guarda los secretos del lugar en sus ramas. Recientemente, ha "
+"comenzado a sangrar savia roja, lo que preocupa a los ancianos."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:28
 msgid ""
@@ -2146,6 +2246,10 @@ msgid ""
 "light. Some say it heralds a time of chaos and strife, as the boundaries "
 "between the Wood and the mortal realm grow thin."
 msgstr ""
+"La luna se torna de un profundo color carmesí, bañando la noche con una "
+"inquietante luz roja como la sangre. Algunos dicen que anuncia una época "
+"de caos y conflictos, a medida que se diluyen los límites entre el Bosque"
+" y el reino de los mortales."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:31
 msgid ""
@@ -2153,12 +2257,19 @@ msgid ""
 "vortex of light and color. Some say that the divide between realms is at "
 "its weakest in centuries, and fear what may emerge from the other side."
 msgstr ""
+"Han aparecido grietas extrañas en el cielo nocturno, revelando un "
+"torbellino de luz y color. Algunos dicen que la división entre los reinos"
+" está en su punto más débil en siglos y temen lo que pueda surgir del "
+"otro lado."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:34
 msgid ""
 "A night-blooming flower once thought extinct is sprouting up throughout "
 "the Wood. Its scent is intoxicating, but also causes vivid nightmares."
 msgstr ""
+"Una flor que florece de noche y se creía extinta está brotando por todo "
+"el Bosque. Su aroma es embriagador, pero también provoca pesadillas muy "
+"vívidas."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:37
 msgid ""
@@ -2166,6 +2277,9 @@ msgid ""
 "late. An old shephard says it is due to an unsettling howl that emanates "
 "from the Wood each full moon."
 msgstr ""
+"El ganado local se ha vuelto cada vez más inquieto y difícil de "
+"controlar. Un viejo pastor dice que se debe a un aullido inquietante que "
+"emana del Bosque cada luna llena."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:40
 msgid ""
@@ -2173,6 +2287,10 @@ msgid ""
 "wooden structures they come across. The sound of their wings hum a "
 "familiar tune as they pass overhead, like a forgotten nursery rhyme."
 msgstr ""
+"Enjambres de insectos huyen del Bosque en masa, destruyendo las "
+"estructuras de madera a su paso. El sonido de sus alas tararea una "
+"melodía familiar mientras pasan por encima, como si fuera una canción "
+"infantil olvidada."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:43
 msgid ""
@@ -2180,12 +2298,18 @@ msgid ""
 "of white fur: soon after, they are found dead in their homes. Each day, "
 "there are fewer and fewer creatures to hunt."
 msgstr ""
+"Los cazadores hablan de una maldición que recae sobre quien mate a "
+"cualquier animal que tenga un mechón de pelaje blanco: poco después de "
+"hacerlo, son encontrados muertos en sus casas. Cada día hay menos "
+"criaturas para cazar."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:46
 msgid ""
 "Folks say that a faint laughter can be heard echoing out of wells all "
 "over the city. At night, they say the echoes change to sobs."
 msgstr ""
+"La gente dice que se oye una risa débil resonando en los pozos de toda la"
+" ciudad, y que por la noche esos ecos se transforman en sollozos."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:49
 msgid ""
@@ -2193,6 +2317,9 @@ msgid ""
 " unfamiliar patterns that have stargazers and sages perplexed. Even the "
 "animals seem disturbed."
 msgstr ""
+"Las constelaciones han comenzado a cambiar lentamente en el cielo "
+"nocturno, formando patrones desconocidos que han desconcertado a los "
+"astrónomos y a los eruditos. Incluso los animales parecen perturbados."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:52
 msgid ""
@@ -2200,6 +2327,9 @@ msgid ""
 "and died, despite showing no signs of disease. After its trunk was cut, a"
 " bloody hand was found in its core."
 msgstr ""
+"Un árbol antiguo, en el corazón de un pueblo soñoliento, se secó y murió "
+"de repente, a pesar de no mostrar signos de enfermedad. Después de cortar"
+" su tronco, se encontró una mano ensangrentada en su interior."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:55
 msgid ""
@@ -2207,6 +2337,9 @@ msgid ""
 "village have lain barren since they began to fall. A single child has "
 "been the only exception, taken by elders overcome with fear and dread."
 msgstr ""
+"Las estatuas llevan meses llorando sangre y los vientres de la aldea "
+"permanecen estériles desde entonces. La única excepción ha sido el "
+"nacimiento de un niño, al que se llevaron unos ancianos muertos de miedo."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:58
 msgid ""
@@ -2214,6 +2347,9 @@ msgid ""
 "fleeing the area entirely. Hunters talk of a shadowy figure that roams "
 "the Wood, calling to the animals."
 msgstr ""
+"La fauna local se comporta de forma extraña, mostrando una agresividad "
+"exacerbada o huyendo del área por completo. Los cazadores hablan de una "
+"figura sombría que deambula por el Bosque, atrayendo a los animales."
 
 #: app/static/json/omens.json:1 app/static/json/omens.json:61
 msgid ""
@@ -2221,6 +2357,10 @@ msgid ""
 "of a red-robed figure appearing in their children's dreams, uttering the "
 "same warning: A fire is coming, and it will consume them all."
 msgstr ""
+"Las ciudades fronterizas se han vuelto tumultuosas en las últimas "
+"semanas, después de varios relatos sobre una figura vestida de rojo que "
+"aparece en los sueños de los niños, pronunciando la misma advertencia: se"
+" acerca un fuego, y lo consumirá todo."
 
 # ============================================= SCARS
 # =============================================
@@ -2387,15 +2527,15 @@ msgstr ""
 # =============================================
 #: app/static/json/traits.json:1 app/static/json/traits.json:3
 msgid "Athletic"
-msgstr ""
+msgstr "Atlético"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:4
 msgid "Brawny"
-msgstr ""
+msgstr "Musculoso"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:5
 msgid "Flabby"
-msgstr ""
+msgstr "Flácido"
 
 #: app/static/json/generators/names.json:1
 #: app/static/json/party_events/names.json:174 app/static/json/traits.json:1
@@ -2413,19 +2553,19 @@ msgstr ""
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:8
 msgid "Scrawny"
-msgstr ""
+msgstr "Escuálido"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:9
 msgid "Short"
-msgstr ""
+msgstr "Bajo"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:10
 msgid "Statuesque"
-msgstr ""
+msgstr "Escultural"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:11
 msgid "Stout"
-msgstr ""
+msgstr "Gordo"
 
 #: app/static/json/generators/forests.json:1
 #: app/static/json/generators/names.json:1
@@ -2437,11 +2577,11 @@ msgstr ""
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:15
 msgid "Birthmarked"
-msgstr ""
+msgstr "Con marca de nacimiento"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:16
 msgid "Webbed"
-msgstr ""
+msgstr "Dedos palmeados"
 
 #: app/static/json/generators/names.json:1
 #: app/static/json/party_events/names.json:173 app/static/json/traits.json:1
@@ -2451,28 +2591,28 @@ msgstr ""
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:18
 msgid "Marked"
-msgstr ""
+msgstr "Con alguna mancha"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:19
 msgid "Rosy"
-msgstr ""
+msgstr "Rosácea"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:20
 msgid "Soft"
-msgstr ""
+msgstr "Tersa"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:21
 msgid "Tanned"
-msgstr ""
+msgstr "Bronceada"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:22
 msgid "Tattooed"
-msgstr ""
+msgstr "Tatuada"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:23
 #: app/static/json/traits.json:34
 msgid "Oily"
-msgstr ""
+msgstr "Grasosa"
 
 #: app/static/json/generators/forests.json:1
 #: app/static/json/generators/names.json:1
@@ -2492,64 +2632,64 @@ msgstr ""
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:28
 msgid "Braided"
-msgstr ""
+msgstr "Trenzado"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:29
 msgid "Curly"
-msgstr ""
+msgstr "Rizado"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:30
 #: app/static/json/traits.json:66
 msgid "Filthy"
-msgstr ""
+msgstr "Sucio"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:31
 msgid "Frizzy"
-msgstr ""
+msgstr "Encrespado"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:32
 msgid "Long"
-msgstr ""
+msgstr "Largo"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:33
 msgid "Luxurious"
-msgstr ""
+msgstr "Suntuoso"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:35
 msgid "Wavy"
-msgstr ""
+msgstr "Ondulado"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:36
 msgid "Wispy"
-msgstr ""
+msgstr "Escaso"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:39
 msgid "Bony"
-msgstr ""
+msgstr "Huesudo"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:40
 msgid "Broken"
-msgstr ""
+msgstr "Desfigurado"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:41
 msgid "Chiseled"
-msgstr ""
+msgstr "Cincelado"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:42
 msgid "Elongated"
-msgstr ""
+msgstr "Alargado"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:43
 msgid "Pale"
-msgstr ""
+msgstr "Pálido"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:44
 msgid "Perfect"
-msgstr ""
+msgstr "Perfecto"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:45
 msgid "Rakish"
-msgstr ""
+msgstr "Ratonil"
 
 #: app/static/json/generators/forests.json:1
 #: app/static/json/party_events/forests.json:69 app/static/json/traits.json:1
@@ -2559,7 +2699,7 @@ msgstr ""
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:47
 msgid "Square"
-msgstr ""
+msgstr "Cuadrado"
 
 #: app/static/json/generators/factions.json:1
 #: app/static/json/generators/names.json:1
@@ -2574,59 +2714,59 @@ msgstr ""
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:51
 msgid "Blunt"
-msgstr ""
+msgstr "Directa"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:52
 msgid "Booming"
-msgstr ""
+msgstr "Resonante"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:53
 msgid "Cryptic"
-msgstr ""
+msgstr "Enigmática"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:54
 msgid "Droning"
-msgstr ""
+msgstr "Monótona"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:55
 msgid "Formal"
-msgstr ""
+msgstr "Formal"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:56
 msgid "Gravelly"
-msgstr ""
+msgstr "Cavernosa"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:57
 msgid "Precise"
-msgstr ""
+msgstr "Clara"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:58
 msgid "Squeaky"
-msgstr ""
+msgstr "Estridente"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:59
 msgid "Stuttering"
-msgstr ""
+msgstr "Tartamuda"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:60
 msgid "Whispery"
-msgstr ""
+msgstr "Susurrante"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:63
 msgid "Antique"
-msgstr ""
+msgstr "Anticuada"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:64
 msgid "Bloody"
-msgstr ""
+msgstr "Ensangrentada"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:65
 msgid "Elegant"
-msgstr ""
+msgstr "Elegante"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:67
 msgid "Foreign"
-msgstr ""
+msgstr "De otro lugar"
 
 #: app/static/json/generators/names.json:1
 #: app/static/json/generators/realm.json:1
@@ -2639,23 +2779,23 @@ msgstr ""
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:69
 msgid "Frumpy"
-msgstr ""
+msgstr "Desaliñada"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:70
 msgid "Livery"
-msgstr ""
+msgstr "De uniforme"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:71
 msgid "Rancid"
-msgstr ""
+msgstr "Maloliente"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:72
 msgid "Soiled"
-msgstr ""
+msgstr "Manchada"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:75
 msgid "Ambitious"
-msgstr ""
+msgstr "Ambicioso"
 
 #: app/static/json/generators/factions.json:1
 #: app/static/json/generators/names.json:1
@@ -2693,19 +2833,19 @@ msgstr ""
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:79
 msgid "Gregarious"
-msgstr ""
+msgstr "Sociable"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:80
 msgid "Honorable"
-msgstr ""
+msgstr "Honorable"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:81
 msgid "Humble"
-msgstr ""
+msgstr "Humilde"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:82
 msgid "Merciful"
-msgstr ""
+msgstr "Misericordioso"
 
 #: app/static/json/generators/forests.json:1
 #: app/static/json/generators/names.json:1
@@ -2717,7 +2857,7 @@ msgstr ""
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:84
 msgid "Tolerant"
-msgstr ""
+msgstr "Tolerante"
 
 #: app/static/json/generators/forests.json:1
 #: app/static/json/party_events/forests.json:74 app/static/json/traits.json:1
@@ -2750,7 +2890,7 @@ msgstr ""
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:90
 msgid "Deceitful"
-msgstr ""
+msgstr "Mentiroso"
 
 #: app/static/json/generators/dungeons.json:1
 #: app/static/json/generators/factions.json:1
@@ -2766,15 +2906,15 @@ msgstr ""
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:92
 msgid "Lazy"
-msgstr ""
+msgstr "Perezoso"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:93
 msgid "Nervous"
-msgstr ""
+msgstr "Nervioso"
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:94
 msgid "Rude"
-msgstr ""
+msgstr "Rudo"
 
 #: app/static/json/generators/dungeons.json:1
 #: app/static/json/generators/factions.json:1
@@ -2790,7 +2930,7 @@ msgstr ""
 
 #: app/static/json/traits.json:1 app/static/json/traits.json:96
 msgid "Vengeful"
-msgstr ""
+msgstr "Vengativo"
 
 # ============================================= BACKGROUNDS
 # =============================================
@@ -26159,6 +26299,10 @@ msgid ""
 " With each passing month, the stone grows heavier by one slot. Until your"
 " debt is lifted, you cannot truly die."
 msgstr ""
+"Te enfrentaste con una criatura del Bosque y te echó la maldición del "
+"corazón de piedra. Cada mes que pasa, la piedra se vuelve más pesada, "
+"ocupando un espacio más en tu Inventario. Hasta que tu deuda sea saldada,"
+" no podrás morir definitivamente."
 
 #: app/static/json/hirelings.json:1
 msgid "Alchemist"
@@ -26467,402 +26611,402 @@ msgstr "Puños de esquirlas (d8+d8)"
 #: app/static/json/traits.json:1
 msgctxt "character trait: Physique"
 msgid "Athletic"
-msgstr ""
+msgstr "Atlético"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Physique"
 msgid "Brawny"
-msgstr ""
+msgstr "Musculoso"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Physique"
 msgid "Flabby"
-msgstr ""
+msgstr "Flácido"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Physique"
 msgid "Lanky"
-msgstr ""
+msgstr "Larguirucho"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Physique"
 msgid "Rugged"
-msgstr ""
+msgstr "Robusto"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Physique"
 msgid "Scrawny"
-msgstr ""
+msgstr "Escuálido"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Physique"
 msgid "Short"
-msgstr ""
+msgstr "Bajo"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Physique"
 msgid "Statuesque"
-msgstr ""
+msgstr "Escultural"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Physique"
 msgid "Stout"
-msgstr ""
+msgstr "Gordo"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Physique"
 msgid "Towering"
-msgstr ""
+msgstr "Enorme"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Skin"
 msgid "Birthmarked"
-msgstr ""
+msgstr "Con marca de nacimiento"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Skin"
 msgid "Webbed"
-msgstr ""
+msgstr "Dedos palmeados"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Skin"
 msgid "Scarred"
-msgstr ""
+msgstr "Con cicatrices"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Skin"
 msgid "Marked"
-msgstr ""
+msgstr "Con alguna mancha"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Skin"
 msgid "Rosy"
-msgstr ""
+msgstr "Rosácea"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Skin"
 msgid "Soft"
-msgstr ""
+msgstr "Tersa"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Skin"
 msgid "Tanned"
-msgstr ""
+msgstr "Bronceada"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Skin"
 msgid "Tattooed"
-msgstr ""
+msgstr "Tatuada"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Skin"
 msgid "Oily"
-msgstr ""
+msgstr "Grasosa"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Skin"
 msgid "Weathered"
-msgstr ""
+msgstr "Envejecida"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Hair"
 msgid "Bald"
-msgstr ""
+msgstr "Calvo"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Hair"
 msgid "Braided"
-msgstr ""
+msgstr "Trenzado"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Hair"
 msgid "Curly"
-msgstr ""
+msgstr "Rizado"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Hair"
 msgid "Filthy"
-msgstr ""
+msgstr "Sucio"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Hair"
 msgid "Frizzy"
-msgstr ""
+msgstr "Encrespado"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Hair"
 msgid "Long"
-msgstr ""
+msgstr "Largo"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Hair"
 msgid "Luxurious"
-msgstr ""
+msgstr "Suntuoso"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Hair"
 msgid "Oily"
-msgstr ""
+msgstr "Graso"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Hair"
 msgid "Wavy"
-msgstr ""
+msgstr "Ondulado"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Hair"
 msgid "Wispy"
-msgstr ""
+msgstr "Escaso"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Face"
 msgid "Bony"
-msgstr ""
+msgstr "Huesudo"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Face"
 msgid "Broken"
-msgstr ""
+msgstr "Desfigurado"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Face"
 msgid "Chiseled"
-msgstr ""
+msgstr "Cincelado"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Face"
 msgid "Elongated"
-msgstr ""
+msgstr "Alargado"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Face"
 msgid "Pale"
-msgstr ""
+msgstr "Pálido"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Face"
 msgid "Perfect"
-msgstr ""
+msgstr "Perfecto"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Face"
 msgid "Rakish"
-msgstr ""
+msgstr "Ratonil"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Face"
 msgid "Sharp"
-msgstr ""
+msgstr "Afilado"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Face"
 msgid "Square"
-msgstr ""
+msgstr "Cuadrado"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Face"
 msgid "Sunken"
-msgstr ""
+msgstr "De mejillas hundidas"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Speech"
 msgid "Blunt"
-msgstr ""
+msgstr "Directa"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Speech"
 msgid "Booming"
-msgstr ""
+msgstr "Resonante"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Speech"
 msgid "Cryptic"
-msgstr ""
+msgstr "Enigmática"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Speech"
 msgid "Droning"
-msgstr ""
+msgstr "Monótona"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Speech"
 msgid "Formal"
-msgstr ""
+msgstr "Formal"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Speech"
 msgid "Gravelly"
-msgstr ""
+msgstr "Cavernosa"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Speech"
 msgid "Precise"
-msgstr ""
+msgstr "Clara"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Speech"
 msgid "Squeaky"
-msgstr ""
+msgstr "Estridente"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Speech"
 msgid "Stuttering"
-msgstr ""
+msgstr "Tartamuda"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Speech"
 msgid "Whispery"
-msgstr ""
+msgstr "Susurrante"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Clothing"
 msgid "Antique"
-msgstr ""
+msgstr "Anticuada"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Clothing"
 msgid "Bloody"
-msgstr ""
+msgstr "Ensangrentada"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Clothing"
 msgid "Elegant"
-msgstr ""
+msgstr "Elegante"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Clothing"
 msgid "Filthy"
-msgstr ""
+msgstr "Asquerosa"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Clothing"
 msgid "Foreign"
-msgstr ""
+msgstr "De otro lugar"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Clothing"
 msgid "Frayed"
-msgstr ""
+msgstr "Deshilachada"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Clothing"
 msgid "Frumpy"
-msgstr ""
+msgstr "Desaliñada"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Clothing"
 msgid "Livery"
-msgstr ""
+msgstr "De uniforme"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Clothing"
 msgid "Rancid"
-msgstr ""
+msgstr "Maloliente"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Clothing"
 msgid "Soiled"
-msgstr ""
+msgstr "Manchada"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Virtue"
 msgid "Ambitious"
-msgstr ""
+msgstr "Ambicioso"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Virtue"
 msgid "Cautious"
-msgstr ""
+msgstr "Precavido"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Virtue"
 msgid "Courageous"
-msgstr ""
+msgstr "Valiente"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Virtue"
 msgid "Disciplined"
-msgstr ""
+msgstr "Disciplinado"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Virtue"
 msgid "Gregarious"
-msgstr ""
+msgstr "Sociable"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Virtue"
 msgid "Honorable"
-msgstr ""
+msgstr "Honorable"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Virtue"
 msgid "Humble"
-msgstr ""
+msgstr "Humilde"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Virtue"
 msgid "Merciful"
-msgstr ""
+msgstr "Misericordioso"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Virtue"
 msgid "Serene"
-msgstr ""
+msgstr "Sereno"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Virtue"
 msgid "Tolerant"
-msgstr ""
+msgstr "Tolerante"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Vice"
 msgid "Aggressive"
-msgstr ""
+msgstr "Agresivo"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Vice"
 msgid "Bitter"
-msgstr ""
+msgstr "Amargado"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Vice"
 msgid "Craven"
-msgstr ""
+msgstr "Cobarde"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Vice"
 msgid "Deceitful"
-msgstr ""
+msgstr "Mentiroso"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Vice"
 msgid "Greedy"
-msgstr ""
+msgstr "Avaricioso"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Vice"
 msgid "Lazy"
-msgstr ""
+msgstr "Perezoso"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Vice"
 msgid "Nervous"
-msgstr ""
+msgstr "Nervioso"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Vice"
 msgid "Rude"
-msgstr ""
+msgstr "Rudo"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Vice"
 msgid "Vain"
-msgstr ""
+msgstr "Engreído"
 
 #: app/static/json/traits.json:1
 msgctxt "character trait: Vice"
 msgid "Vengeful"
-msgstr ""
+msgstr "Vengativo"
 
 #: app/static/json/backgrounds/aurifex.json:1
 msgid ""
