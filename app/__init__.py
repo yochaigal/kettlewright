@@ -203,6 +203,10 @@ def create_app():
     def tr_filter(text: str, context=None) -> str:
         return translate_term(text, context)
     
+    # Trait description sentence, shared with the character sheet
+    from app.lib.char_utils import traits_sentence
+    app.add_template_global(traits_sentence)
+
     # URL decode
     @app.template_filter("urldec")
     def urldec_filter(text: str) -> str:
