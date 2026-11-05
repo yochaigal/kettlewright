@@ -631,7 +631,7 @@ msgstr "voluminoso"
 
 #: app/static/json/marketplace.json:1 app/static/json/marketplace.json:194
 msgid "d6 STR"
-msgstr ""
+msgstr "d6 FUE"
 
 #: app/static/json/backgrounds/foundling.json:1
 #: app/static/json/backgrounds/foundling.json:93
@@ -796,7 +796,7 @@ msgstr "Raciones"
 #: app/static/json/backgrounds/scrivener.json:1
 #: app/static/json/marketplace.json:1 backgrounds
 msgid "Torch"
-msgstr ""
+msgstr "Antorcha"
 
 #: app/static/json/backgrounds/barber-surgeon.json:55
 #: app/static/json/bonds.json:150 app/static/json/bonds.json:230
@@ -3042,7 +3042,7 @@ msgstr ""
 #: app/static/json/backgrounds/marchguard.json:25
 #: app/static/json/hirelings.json:1 app/static/json/marketplace.json:1
 msgid "Lantern"
-msgstr ""
+msgstr "Linterna"
 
 #: app/static/json/backgrounds/aurifex.json:1
 #: app/static/json/backgrounds/aurifex.json:29
@@ -3058,7 +3058,7 @@ msgstr ""
 #: app/static/json/backgrounds/prowler.json:60
 #: app/static/json/marketplace.json:1
 msgid "Oil Can"
-msgstr ""
+msgstr "Lata de aceite"
 
 #: app/static/json/backgrounds/aurifex.json:1
 #: app/static/json/backgrounds/aurifex.json:34
@@ -3101,6 +3101,10 @@ msgid ""
 "you are able to share its senses. (Add a Fatigue each time.) It follows "
 "basic commands."
 msgstr ""
+"Has desmaterializado a una querida mascota. Ahora te sigue a todas "
+"partes, invisible pero siempre presente. Aunque no puede interactuar con "
+"el reino físico, puedes percibir a través de sus sentidos (añade una "
+"Fatiga cada vez). La mascota sigue órdenes básicas."
 
 #: app/static/json/backgrounds/aurifex.json:1
 #: app/static/json/backgrounds/aurifex.json:60
@@ -3234,11 +3238,15 @@ msgid ""
 " possible. Any damage done to the homunculus is also done to you. 3 HP, 4"
 " STR, 13 DEX, 5 WIL."
 msgstr ""
+"Homúnculo: una réplica de arcilla en miniatura de ti mismo que sigue "
+"todas tus órdenes. Odia estar vinculado a ti y se queja amargamente "
+"siempre que puede. Cualquier daño infligido al homúnculo te afecta "
+"también a ti. PG 3, FUE 4, DES 13, VOL 5."
 
 #: app/static/json/backgrounds/aurifex.json:1
 #: app/static/json/backgrounds/aurifex.json:153 app/static/json/pets.json:1
 msgid "Homunculus"
-msgstr ""
+msgstr "Homúnculo"
 
 #: app/static/json/backgrounds/aurifex.json:1
 #: app/static/json/backgrounds/aurifex.json:155
@@ -3268,7 +3276,7 @@ msgstr ""
 #: app/static/json/backgrounds/mountebank.json:58
 #: app/static/json/marketplace.json:1
 msgid "Bandages"
-msgstr ""
+msgstr "Vendajes"
 
 #: app/static/json/backgrounds/barber-surgeon.json:1
 #: app/static/json/backgrounds/barber-surgeon.json:40
@@ -3509,7 +3517,7 @@ msgstr ""
 #: app/static/json/backgrounds/fungal-forager.json:23
 #: app/static/json/marketplace.json:1
 msgid "Rope (25ft)"
-msgstr ""
+msgstr "Soga (7,5 metros)"
 
 #: app/static/json/backgrounds/beast-handler.json:1
 #: app/static/json/backgrounds/beast-handler.json:50
@@ -3635,7 +3643,7 @@ msgstr ""
 #: app/static/json/backgrounds/greenwise.json:78
 #: app/static/json/marketplace.json:1
 msgid "Antitoxin"
-msgstr ""
+msgstr "Antitoxina"
 
 #: app/static/json/backgrounds/beast-handler.json:1
 #: app/static/json/backgrounds/beast-handler.json:132
@@ -3750,6 +3758,12 @@ msgid ""
 "time. If destroyed, you permanently lose 1d4 STR. Recharge: Fill with the"
 " blood of a dying warrior."
 msgstr ""
+"Un balde con sangre (Voluminoso) de un culto local a la muerte. Vacíalo "
+"para alzar a un sirviente hecho de lo que sea que esté enterrado bajo el "
+"suelo, con PG 6, Armadura 1, FUE 13, DES 11, VOL 4 y puños de esquirlas "
+"(d8+d8). Solo se puede alzar un sirviente a la vez. Si es destruido, "
+"pierdes 1d4 de FUE permanentemente. Recarga: llénalo con la sangre de un "
+"guerrero moribundo."
 
 #: app/static/json/backgrounds/bonekeeper.json:1
 #: app/static/json/backgrounds/bonekeeper.json:67
@@ -3762,6 +3776,9 @@ msgid ""
 "A burial wagon (+6 slots, slow) from your last job. It came with a "
 "stubborn old donkey (+4 slots, only +2 slots if pulling wagon)."
 msgstr ""
+"Un carromato funerario (+6 espacios, lento) de tu último trabajo. Venía "
+"con un burro viejo y testarudo (+4 espacios, solo +2 espacios si tira del"
+" carromato)."
 
 #: app/static/json/backgrounds/bonekeeper.json:1
 #: app/static/json/backgrounds/bonekeeper.json:78
@@ -3775,7 +3792,7 @@ msgstr ""
 #: app/static/json/backgrounds/kettlewright.json:109
 #: app/static/json/pets.json:1
 msgid "Donkey"
-msgstr ""
+msgstr "Burro"
 
 #: app/static/json/backgrounds/bonekeeper.json:1
 #: app/static/json/backgrounds/bonekeeper.json:87
@@ -4208,7 +4225,7 @@ msgstr ""
 #: app/static/json/backgrounds/rill-runner.json:24
 #: app/static/json/marketplace.json:1
 msgid "Brigandine"
-msgstr ""
+msgstr "Brigantina"
 
 #: app/static/json/backgrounds/fieldwarden.json:1
 #: app/static/json/backgrounds/fieldwarden.json:35
@@ -4218,7 +4235,7 @@ msgstr ""
 #: app/static/json/backgrounds/jongleur.json:43
 #: app/static/json/marketplace.json:1
 msgid "Sling"
-msgstr ""
+msgstr "Honda"
 
 #: app/static/json/backgrounds/fieldwarden.json:1
 #: app/static/json/backgrounds/fieldwarden.json:39
@@ -4677,7 +4694,7 @@ msgstr ""
 #: app/static/json/backgrounds/rill-runner.json:32
 #: app/static/json/hirelings.json:1 app/static/json/marketplace.json:1
 msgid "Dagger"
-msgstr ""
+msgstr "Daga"
 
 #: app/static/json/backgrounds/foundling.json:1
 #: app/static/json/backgrounds/foundling.json:49
@@ -5532,11 +5549,15 @@ msgid ""
 "(d8+d8). It disappears on Critical Damage (take 1d4 WIL damage), re-"
 "appearing again on the next full moon."
 msgstr ""
+"Una Pesadilla viviente que habita en ti y se manifiesta cuando estás en "
+"peligro. Tiene tus mismos Atributos y PG, y ataca con garras (d8+d8). "
+"Desaparece al recibir Daño Crítico (recibes 1d4 de daño a VOL) y "
+"reaparece en la siguiente luna llena."
 
 #: app/static/json/backgrounds/half-witch.json:1
 #: app/static/json/backgrounds/half-witch.json:77 app/static/json/pets.json:1
 msgid "Living Nightmare"
-msgstr ""
+msgstr "Pesadilla viviente"
 
 #: app/static/json/backgrounds/half-witch.json:1
 #: app/static/json/backgrounds/half-witch.json:79
@@ -5552,11 +5573,13 @@ msgid ""
 "A Raven Familiar [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as "
 "an intelligent being and is entirely devoted to you."
 msgstr ""
+"Un cuervo familiar [PG 8, FUE 3, DES 11, VOL 13, pico (d6)]. Habla como "
+"un ser inteligente y está completamente entregado a ti."
 
 #: app/static/json/backgrounds/half-witch.json:1
 #: app/static/json/backgrounds/half-witch.json:87 app/static/json/pets.json:1
 msgid "Raven Familiar"
-msgstr ""
+msgstr "Cuervo familiar"
 
 #: app/static/json/backgrounds/half-witch.json:1
 #: app/static/json/backgrounds/half-witch.json:89
@@ -5739,7 +5762,7 @@ msgstr ""
 #: app/static/json/backgrounds/outrider.json:39
 #: app/static/json/marketplace.json:1
 msgid "Crossbow"
-msgstr ""
+msgstr "Ballesta"
 
 #: app/static/json/backgrounds/hexenbane.json:1
 #: app/static/json/backgrounds/hexenbane.json:48
@@ -5802,7 +5825,7 @@ msgstr ""
 #: app/static/json/backgrounds/hexenbane.json:78
 #: app/static/json/hirelings.json:1 app/static/json/marketplace.json:1
 msgid "Chainmail"
-msgstr ""
+msgstr "Cota de malla"
 
 #: app/static/json/backgrounds/hexenbane.json:1
 #: app/static/json/backgrounds/hexenbane.json:84
@@ -6204,13 +6227,13 @@ msgstr ""
 #: app/static/json/backgrounds/kettlewright.json:28
 #: app/static/json/marketplace.json:1
 msgid "Gloves"
-msgstr ""
+msgstr "Guantes"
 
 #: app/static/json/backgrounds/kettlewright.json:1
 #: app/static/json/backgrounds/kettlewright.json:32
 #: app/static/json/hirelings.json:1
 msgid "Hammer"
-msgstr ""
+msgstr "Martillo"
 
 #: app/static/json/backgrounds/kettlewright.json:1
 #: app/static/json/backgrounds/kettlewright.json:37
@@ -6275,7 +6298,7 @@ msgstr ""
 #: app/static/json/backgrounds/outrider.json:43
 #: app/static/json/marketplace.json:1
 msgid "Spyglass"
-msgstr ""
+msgstr "Catalejo"
 
 #: app/static/json/backgrounds/kettlewright.json:1
 #: app/static/json/backgrounds/kettlewright.json:71
@@ -6313,13 +6336,13 @@ msgstr ""
 #: app/static/json/backgrounds/marchguard.json:34
 #: app/static/json/marketplace.json:1
 msgid "Long Sword"
-msgstr ""
+msgstr "Espada larga"
 
 #: app/static/json/backgrounds/kettlewright.json:1
 #: app/static/json/backgrounds/kettlewright.json:90
 #: app/static/json/hirelings.json:1 app/static/json/marketplace.json:1
 msgid "Gambeson"
-msgstr ""
+msgstr "Gambesón"
 
 #: app/static/json/backgrounds/kettlewright.json:1
 #: app/static/json/backgrounds/kettlewright.json:96
@@ -6434,12 +6457,16 @@ msgid ""
 "enough to scare off smaller predators. Requires one Ration a day, and it "
 "must be meat."
 msgstr ""
+"Una mascota astuta, lo bastante pequeña como para esconderse en tu "
+"mochila (Voluminosa), pero lo suficientemente fuerte como para ahuyentar "
+"a depredadores más pequeños. Consume una Ración al día, y tiene que ser "
+"de carne."
 
 #: app/static/json/backgrounds/kettlewright.json:1
 #: app/static/json/backgrounds/kettlewright.json:176
 #: app/static/json/pets.json:1
 msgid "Carrion Cat"
-msgstr ""
+msgstr "Gato carroñero"
 
 #: app/static/json/backgrounds/kettlewright.json:1
 #: app/static/json/backgrounds/kettlewright.json:178
@@ -6905,11 +6932,14 @@ msgid ""
 "demand. It follows your commands to the best of its abilities and can "
 "pass its injuries (as STR loss) back onto you. Petty."
 msgstr ""
+"Tatuaje alquímico: un perro, gato o pájaro que puede abandonar tu cuerpo "
+"cuando se lo pidas. Sigue tus órdenes lo mejor que puede y puede "
+"transmitirte sus heridas (como pérdida de FUE). Insignificante."
 
 #: app/static/json/backgrounds/mountebank.json:1
 #: app/static/json/backgrounds/mountebank.json:173 app/static/json/pets.json:1
 msgid "Alchemical Tattoo"
-msgstr ""
+msgstr "Tatuaje alquímico"
 
 #: app/static/json/backgrounds/outrider.json:1
 #: app/static/json/backgrounds/outrider.json:4
@@ -7049,11 +7079,13 @@ msgid ""
 "Heavy Destrier: A beast built for war, an imposing creature. 8 HP, 1 "
 "Armor, hooves (d10+d10), +2 slots."
 msgstr ""
+"Destrero pesado: una bestia hecha para la guerra, una criatura imponente."
+" PG 8, Armadura 1, pezuñas (d10+d10), +2 espacios."
 
 #: app/static/json/backgrounds/outrider.json:1
 #: app/static/json/backgrounds/outrider.json:115 app/static/json/pets.json:1
 msgid "Heavy Destrier"
-msgstr ""
+msgstr "Destrero pesado"
 
 #: app/static/json/backgrounds/outrider.json:1
 #: app/static/json/backgrounds/outrider.json:121 app/static/json/pets.json:1
@@ -7061,11 +7093,13 @@ msgid ""
 "Blacklegged Dandy: Hardy and adaptable. Tough or Perilous terrain are one"
 " step easier. 6 HP. +4 slots."
 msgstr ""
+"Dandi patinegro: resistente y adaptable. Los terrenos Duros o Peligrosos "
+"se vuelven un paso más fáciles. PG 6. +4 espacios."
 
 #: app/static/json/backgrounds/outrider.json:1
 #: app/static/json/backgrounds/outrider.json:124 app/static/json/pets.json:1
 msgid "Blacklegged Dandy"
-msgstr ""
+msgstr "Dandi patinegro"
 
 #: app/static/json/backgrounds/outrider.json:1
 #: app/static/json/backgrounds/outrider.json:130 app/static/json/pets.json:1
@@ -7073,11 +7107,14 @@ msgid ""
 "Rivertooth: Impressively strong, capable of carrying heavy loads. 4 HP. "
 "+6 slots (only +2 slots if carrying two people)."
 msgstr ""
+"Colmillo firme: impresionantemente fuerte, capaz de transportar cargas "
+"pesadas. PG 4. +6 espacios (solo +2 espacios si transporta a dos "
+"personas)."
 
 #: app/static/json/backgrounds/outrider.json:1
 #: app/static/json/backgrounds/outrider.json:133 app/static/json/pets.json:1
 msgid "Rivertooth"
-msgstr ""
+msgstr "Colmillo firme"
 
 #: app/static/json/backgrounds/outrider.json:1
 #: app/static/json/backgrounds/outrider.json:139 app/static/json/pets.json:1
@@ -7085,11 +7122,13 @@ msgid ""
 "Piebald Cob: Intelligent, it can understand simple commands, and even has"
 " an instinct for danger. 6 HP. +4 slots."
 msgstr ""
+"Cob pío: inteligente, puede entender órdenes sencillas e incluso tiene "
+"instinto para el peligro. PG 6. +4 espacios."
 
 #: app/static/json/backgrounds/outrider.json:1
 #: app/static/json/backgrounds/outrider.json:142 app/static/json/pets.json:1
 msgid "Piebald Cob"
-msgstr ""
+msgstr "Cob pío"
 
 #: app/static/json/backgrounds/outrider.json:1
 #: app/static/json/backgrounds/outrider.json:148 app/static/json/pets.json:1
@@ -7097,11 +7136,14 @@ msgid ""
 "Linden White: Highly trained and agile, it can perform intricate "
 "maneuvers in a time of need (no DEX save to flee). 4 HP. +3 slots."
 msgstr ""
+"Pálido de Linden: altamente entrenado y ágil, puede realizar maniobras "
+"complejas en momentos de necesidad (no requiere salvación de DES para "
+"huir). PG 4. +3 espacios."
 
 #: app/static/json/backgrounds/outrider.json:1
 #: app/static/json/backgrounds/outrider.json:151 app/static/json/pets.json:1
 msgid "Linden White"
-msgstr ""
+msgstr "Pálido de Linden"
 
 #: app/static/json/backgrounds/outrider.json:1
 #: app/static/json/backgrounds/outrider.json:157 app/static/json/pets.json:1
@@ -7109,11 +7151,13 @@ msgid ""
 "Stray Fogger: Wild but very fast (even in Tough terrain). Rides light. 4 "
 "HP. +2 slots."
 msgstr ""
+"Niebla errante: salvaje pero muy rápido (incluso en terreno Duro). "
+"Montura ligera. PG 4. +2 espacios."
 
 #: app/static/json/backgrounds/outrider.json:1
 #: app/static/json/backgrounds/outrider.json:160 app/static/json/pets.json:1
 msgid "Stray Fogger"
-msgstr ""
+msgstr "Niebla errante"
 
 #: app/static/json/backgrounds/prowler.json:1
 #: app/static/json/backgrounds/prowler.json:4
@@ -7237,6 +7281,10 @@ msgid ""
 "you unto death. It is also a great tunneler. 5 HP, 11 STR, 13 DEX, 8 WIL,"
 " teeth (d6)."
 msgstr ""
+"Un lobo hueco que había estado asustando a los viajeros. Te apiadaste de "
+"la criatura famélica y la cuidaste hasta que se recuperó. Ahora te es "
+"leal hasta la muerte. También es un gran excavador. PG 5, FUE 11, DES 13,"
+" VOL 8, dientes (d6)."
 
 #: app/static/json/backgrounds/prowler.json:1
 #: app/static/json/backgrounds/prowler.json:106
@@ -7429,7 +7477,7 @@ msgstr ""
 #: app/static/json/backgrounds/rill-runner.json:28
 #: app/static/json/hirelings.json:1 app/static/json/marketplace.json:1
 msgid "Compass"
-msgstr ""
+msgstr "Brújula"
 
 #: app/static/json/backgrounds/rill-runner.json:1
 #: app/static/json/backgrounds/rill-runner.json:37
@@ -12806,7 +12854,7 @@ msgstr ""
 #: app/static/json/marketplace.json:1
 #: app/static/json/party_events/dungeons.json:346
 msgid "Mirror"
-msgstr ""
+msgstr "Espejo"
 
 #: app/static/json/generators/dungeons.json:1
 #: app/static/json/party_events/dungeons.json:347
@@ -21556,7 +21604,7 @@ msgstr "Asesino"
 #: app/static/json/party_events/npcs.json:70
 #: app/static/json/party_events/setting.json:125
 msgid "Blacksmith"
-msgstr ""
+msgstr "Herrero"
 
 #: app/static/json/generators/names.json:1
 #: app/static/json/generators/npcs.json:1
@@ -23751,7 +23799,7 @@ msgstr ""
 #: app/static/json/hirelings.json:1 app/static/json/marketplace.json:1
 #: app/static/json/party_events/spellbooks.json:430
 msgid "Shield"
-msgstr ""
+msgstr "Escudo"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:432
@@ -26306,267 +26354,267 @@ msgstr ""
 
 #: app/static/json/hirelings.json:1
 msgid "Alchemist"
-msgstr ""
+msgstr "Alquimista"
 
 #: app/static/json/hirelings.json:1
 msgid "Alchemical Tools"
-msgstr ""
+msgstr "Herramientas de alquimia"
 
 #: app/static/json/hirelings.json:1
 msgid "Animal Handler"
-msgstr ""
+msgstr "Domador de bestias"
 
 #: app/static/json/hirelings.json:1
 msgid "Rope"
-msgstr ""
+msgstr "Soga"
 
 #: app/static/json/hirelings.json:1
 msgid "Animal Feed"
-msgstr ""
+msgstr "Alimento para animales"
 
 #: app/static/json/hirelings.json:1
 msgid "Smithing Tools"
-msgstr ""
+msgstr "Herramientas de herrero"
 
 #: app/static/json/hirelings.json:1
 msgid "Bodyguard"
-msgstr ""
+msgstr "Escolta"
 
 #: app/static/json/hirelings.json:1 app/static/json/marketplace.json:1
 msgid "Sword"
-msgstr ""
+msgstr "Espada"
 
 #: app/static/json/hirelings.json:1
 msgid "Local Guide"
-msgstr ""
+msgstr "Guía local"
 
 #: app/static/json/hirelings.json:1 app/static/json/marketplace.json:1
 msgid "Staff"
-msgstr ""
+msgstr "Báculo"
 
 #: app/static/json/hirelings.json:1
 msgid "Lockpick"
-msgstr ""
+msgstr "Cerrajero"
 
 #: app/static/json/hirelings.json:1
 msgid "Thieving Tools"
-msgstr ""
+msgstr "Herramientas de ladrón"
 
 #: app/static/json/hirelings.json:1
 msgid "Navigator"
-msgstr ""
+msgstr "Navegante"
 
 #: app/static/json/hirelings.json:1
 msgid "Sailor"
-msgstr ""
+msgstr "Marinero"
 
 #: app/static/json/hirelings.json:1 app/static/json/marketplace.json:1
 msgid "Book"
-msgstr ""
+msgstr "Libro"
 
 #: app/static/json/hirelings.json:1
 msgid "Writing Tools"
-msgstr ""
+msgstr "Útiles de escritura"
 
 #: app/static/json/hirelings.json:1
 msgid "Tracker"
-msgstr ""
+msgstr "Rastreador"
 
 #: app/static/json/hirelings.json:1 app/static/json/marketplace.json:1
 msgid "Bow"
-msgstr ""
+msgstr "Arco"
 
 #: app/static/json/hirelings.json:1
 msgid "Trapper"
-msgstr ""
+msgstr "Trampero"
 
 #: app/static/json/hirelings.json:1
 msgid "Veteran Bodyguard"
-msgstr ""
+msgstr "Escolta veterano"
 
 #: app/static/json/marketplace.json:1
 msgid "Air bladder"
-msgstr ""
+msgstr "Odre para bucear"
 
 #: app/static/json/marketplace.json:1
 msgid "Animal feed"
-msgstr ""
+msgstr "Alimento para animales"
 
 #: app/static/json/marketplace.json:1
 msgid "Bathing Goods (Soap, Perfume, etc.)"
-msgstr ""
+msgstr "Artículos de baño (jabón, perfume, etc.)"
 
 #: app/static/json/marketplace.json:1
 msgid "Caltrops"
-msgstr ""
+msgstr "Abrojos"
 
 #: app/static/json/marketplace.json:1
 msgid "Card deck"
-msgstr ""
+msgstr "Baraja de cartas"
 
 #: app/static/json/marketplace.json:1
 msgid "Chain (10ft)"
-msgstr ""
+msgstr "Cadena (3 metros)"
 
 #: app/static/json/marketplace.json:1
 msgid "Chalk"
-msgstr ""
+msgstr "Tiza"
 
 #: app/static/json/marketplace.json:1
 msgid "Chest"
-msgstr ""
+msgstr "Cofre"
 
 #: app/static/json/marketplace.json:1
 msgid "Chisel"
-msgstr ""
+msgstr "Cincel"
 
 #: app/static/json/marketplace.json:1
 msgid "Common Agents (Glue, Grease, etc.)"
-msgstr ""
+msgstr "Sustancias comunes (pegamento, grasa, etc.)"
 
 #: app/static/json/marketplace.json:1
 msgid "Common Tools (Hammer, Shovel, etc.)"
-msgstr ""
+msgstr "Herramientas comunes (martillo, pala, etc.)"
 
 #: app/static/json/marketplace.json:1
 msgid "Complex Instruments (Bagpipes, Fiddle, etc.)"
-msgstr ""
+msgstr "Instrumentos complejos (gaita, violín, etc.)"
 
 #: app/static/json/marketplace.json:1
 msgid "Containers (Sack, Waterskin, etc.)"
-msgstr ""
+msgstr "Contenedores (saco, odre, etc.)"
 
 #: app/static/json/marketplace.json:1
 msgid "Cooking Gear (Pots, Utensils, etc.)"
-msgstr ""
+msgstr "Utensilios para cocinar (ollas, cucharones, etc.)"
 
 #: app/static/json/marketplace.json:1
 msgid "Costume Gear (Face Paint, Disguise)"
-msgstr ""
+msgstr "Disfraces (pintura facial, disfraz)"
 
 #: app/static/json/marketplace.json:1
 msgid "Dowsing rod"
-msgstr ""
+msgstr "Varita de zahorí"
 
 #: app/static/json/marketplace.json:1
 msgid "Expeditionary Gear (Climbing Spikes, Pulley), etc."
-msgstr ""
+msgstr "Equipo de expedición (picas de escalada, polea, etc.)"
 
 #: app/static/json/marketplace.json:1
 msgid "Fire oil"
-msgstr ""
+msgstr "Aceite de fuego"
 
 #: app/static/json/marketplace.json:1
 msgid "Fishing rod"
-msgstr ""
+msgstr "Caña de pescar"
 
 #: app/static/json/marketplace.json:1
 msgid "Games (Cards, Dice, etc.)"
-msgstr ""
+msgstr "Juegos (cartas, dados, etc.)"
 
 #: app/static/json/marketplace.json:1
 msgid "Grappling hook"
-msgstr ""
+msgstr "Gancho de agarre"
 
 #: app/static/json/marketplace.json:1
 msgid "Net"
-msgstr ""
+msgstr "Red"
 
 #: app/static/json/marketplace.json:1
 msgid "Outdoor Comfort (Blanket, Hammock, etc.)"
-msgstr ""
+msgstr "Comodidades para exteriores (manta, hamaca, etc.)"
 
 #: app/static/json/marketplace.json:1
 msgid "Parchment"
-msgstr ""
+msgstr "Pergamino"
 
 #: app/static/json/marketplace.json:1
 msgid "Pole (10ft)"
-msgstr ""
+msgstr "Vara (3 metros)"
 
 #: app/static/json/marketplace.json:1
 msgid "Repellent (Wolfsbane, Mugwort, etc.)"
-msgstr ""
+msgstr "Repelente (acónito, artemisa, etc.)"
 
 #: app/static/json/marketplace.json:1
 msgid "Sedative"
-msgstr ""
+msgstr "Sedante"
 
 #: app/static/json/marketplace.json:1
 msgid "Sewing kit"
-msgstr ""
+msgstr "Costurero"
 
 #: app/static/json/marketplace.json:1
 msgid "Simple Instruments (Pipes, Lute, etc.)"
-msgstr ""
+msgstr "Instrumentos sencillos (flauta, laúd, etc.)"
 
 #: app/static/json/marketplace.json:1
 msgid "Smoking pipe"
-msgstr ""
+msgstr "Pipa para fumar"
 
 #: app/static/json/marketplace.json:1
 msgid "Specialized Tools (Ink, etc.)"
-msgstr ""
+msgstr "Herramientas especializadas (tinta, etc.)"
 
 #: app/static/json/marketplace.json:1
 msgid "Spiked boots"
-msgstr ""
+msgstr "Botas de escalada"
 
 #: app/static/json/marketplace.json:1
 msgid "Tent (fits 2, bulky)"
-msgstr ""
+msgstr "Tienda de acampada (para 2, voluminosa)"
 
 #: app/static/json/marketplace.json:1
 msgid "Thieving Tools (Lockpick, Metal File, etc.)"
-msgstr ""
+msgstr "Herramientas de ladrón (ganzúas, lima de metal, etc.)"
 
 #: app/static/json/marketplace.json:1
 msgid "Wilderness Clothes (Poncho, Cloak, etc.)"
-msgstr ""
+msgstr "Ropa para entornos salvajes (poncho, abrigo, etc.)"
 
 #: app/static/json/marketplace.json:1
 msgid "Helmet"
-msgstr ""
+msgstr "Yelmo"
 
 #: app/static/json/marketplace.json:1
 msgid "Plate"
-msgstr ""
+msgstr "Armadura completa"
 
 #: app/static/json/marketplace.json:1
 msgid "Axe"
-msgstr ""
+msgstr "Hacha"
 
 #: app/static/json/marketplace.json:1
 msgid "Cudgel"
-msgstr ""
+msgstr "Garrote"
 
 #: app/static/json/marketplace.json:1
 msgid "Flail"
-msgstr ""
+msgstr "Mangual"
 
 #: app/static/json/marketplace.json:1
 msgid "Halberd"
-msgstr ""
+msgstr "Alabarda"
 
 #: app/static/json/marketplace.json:1
 msgid "Mace"
-msgstr ""
+msgstr "Maza"
 
 #: app/static/json/marketplace.json:1
 msgid "Sickle"
-msgstr ""
+msgstr "Hoz"
 
 #: app/static/json/marketplace.json:1
 msgid "Spear"
-msgstr ""
+msgstr "Lanza"
 
 #: app/static/json/marketplace.json:1
 msgid "War Hammer"
-msgstr ""
+msgstr "Martillo de guerra"
 
 #: app/static/json/backgrounds/aurifex.json:1 app/static/json/pets.json:1
 msgid "Dematerialized Pet"
-msgstr ""
+msgstr "Mascota desmaterializada"
 
 #: app/static/json/pets.json:1
 msgid "Claws (d8+d8)"
@@ -26582,7 +26630,7 @@ msgstr "Pezuñas (d10+d10)"
 
 #: app/static/json/backgrounds/prowler.json:1 app/static/json/pets.json:1
 msgid "Hollow Wolf"
-msgstr ""
+msgstr "Lobo hueco"
 
 #: app/static/json/pets.json:1
 msgid "Teeth (d6)"
@@ -26590,19 +26638,19 @@ msgstr "Dientes (d6)"
 
 #: app/static/json/pets.json:1
 msgid "Horse"
-msgstr ""
+msgstr "Caballo"
 
 #: app/static/json/pets.json:1
 msgid "Mule"
-msgstr ""
+msgstr "Mula"
 
 #: app/static/json/pets.json:1
 msgid "Slow."
-msgstr ""
+msgstr "Lento."
 
 #: app/static/json/pets.json:1
 msgid "Raised Servant"
-msgstr ""
+msgstr "Sirviente alzado"
 
 #: app/static/json/pets.json:1
 msgid "Shard fists (d8+d8)"
