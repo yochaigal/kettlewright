@@ -417,11 +417,11 @@ msgstr "vínculos"
 #: app/templates/partial/tools/pcgen_text.html:80
 #: app/templates/partial/tools/pcgen_text.html:95
 msgid "Omens"
-msgstr "Augurios"
+msgstr "Presagios"
 
 #: app/forms.py:194 app/forms.py:203 app/forms.py:224 app/forms.py:233
 msgid "omens"
-msgstr "augurios"
+msgstr "presagios"
 
 #: app/forms.py:195 app/forms.py:204 app/forms.py:230 app/forms.py:239
 #: app/forms.py:273 app/forms.py:290 app/lib/character_pdf.py:253
@@ -1183,7 +1183,7 @@ msgstr "Tabla de equipo 2"
 #: app/templates/partial/charcreo/body.html:20
 #: app/templates/partial/tools/pcgen_text.html:26
 msgid "Attributes"
-msgstr "Atributos"
+msgstr "Características"
 
 #: app/templates/main/character_create.html:149
 #: app/templates/main/character_create.html:160
@@ -1296,7 +1296,7 @@ msgstr "Errores"
 #: app/templates/partial/charview/stats.html:5
 #: app/templates/partial/companions/stats.html:5
 msgid "Stats"
-msgstr "Atributos"
+msgstr "Características"
 
 #: app/templates/main/character_print.html:35
 #: app/templates/main/character_print.html:44
@@ -1352,7 +1352,7 @@ msgstr "Este personaje no tiene vínculos…"
 #: app/templates/main/character_view.html:90
 #: app/templates/partial/charview/inline_section.html:3
 msgid "This character has no omens..."
-msgstr "Este personaje no tiene augurios…"
+msgstr "Este personaje no tiene presagios…"
 
 #: app/templates/main/character_view.html:97
 #: app/templates/partial/charview/inline_section.html:3
@@ -2366,7 +2366,7 @@ msgstr ""
 # =============================================
 #: app/static/json/scars.json:1 app/static/json/scars.json:4
 msgid "1 HP - Lasting Scar"
-msgstr ""
+msgstr "1 PG - Cicatriz permanente"
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:5
 msgid ""
@@ -2376,10 +2376,15 @@ msgid ""
 "\n"
 "If the total is higher than your max HP, take the new result."
 msgstr ""
+"Tira 1d6. 1: Cuello, 2: Manos, 3: Ojo, 4: Pecho, 5: Piernas, 6: Oídos.\n"
+"\n"
+"Tira 1d6.\n"
+"\n"
+"Si el resultado es mayor que tu PG máxima, quédate con esta nueva cifra."
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:8
 msgid "2 HP - Rattling Blow"
-msgstr ""
+msgstr "2 PG - Oír pajaritos"
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:9
 msgid ""
@@ -2389,10 +2394,16 @@ msgid ""
 "\n"
 "If the total is higher than your max HP, take the new result."
 msgstr ""
+"Estás desorientado y conmocionado. Describe cómo recuperas la "
+"concentración.\n"
+"\n"
+"Tira 1d6.\n"
+"\n"
+"Si el resultado es mayor que tu PG máxima, quédate con esta nueva cifra."
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:12
 msgid "3 HP - Walloped"
-msgstr ""
+msgstr "3 PG - Golpetazo"
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:13
 msgid ""
@@ -2403,10 +2414,16 @@ msgid ""
 "\n"
 "Add that amount to your max HP."
 msgstr ""
+"Te lanzaron por los aires y caíste de bruces, sin aliento. Estarás "
+"Exhausto hasta que descanses unas horas.\n"
+"\n"
+"Luego, tira 1d6.\n"
+"\n"
+"Suma el resultado a tu PG máxima."
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:16
 msgid "4 HP - Broken Limb"
-msgstr ""
+msgstr "4 PG - Fractura"
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:17
 msgid ""
@@ -2416,10 +2433,15 @@ msgid ""
 "\n"
 "If the total is higher than your max HP, take the new result."
 msgstr ""
+"Tira 1d6. 1-2: Pierna, 3-4: Brazo, 5: Costilla, 6: Cráneo.\n"
+"\n"
+"Una vez recuperado, tira 2d6.\n"
+"\n"
+"Si el resultado es mayor que tu PG máxima, quédate con esta nueva cifra."
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:20
 msgid "5 HP - Diseased"
-msgstr ""
+msgstr "5 PG - Enfermedad"
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:21
 msgid ""
@@ -2429,10 +2451,15 @@ msgid ""
 "\n"
 "If the total is higher than your max HP, take the new result."
 msgstr ""
+"Estás afectado por una infección asquerosa e incómoda.\n"
+"\n"
+"Cuando la superes, tira 2d6.\n"
+"\n"
+"Si el resultado es mayor que tu PG máxima, quédate con esta nueva cifra."
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:24
 msgid "6 HP - Reorienting Head Wound"
-msgstr ""
+msgstr "6 PG - Herida en la cabeza que cambiará tu vida"
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:25
 msgid ""
@@ -2442,10 +2469,16 @@ msgid ""
 "\n"
 "If the total is higher than your current Attribute, take the new result."
 msgstr ""
+"Tira 1d6. 1-2: FUE, 3-4: DES, 5-6: VOL.\n"
+"\n"
+"Tira 3d6.\n"
+"\n"
+"Si el resultado es mayor que la puntuación actual de esa Característica, "
+"usa este valor."
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:28
 msgid "7 HP - Hamstrung"
-msgstr ""
+msgstr "7 PG - Parálisis"
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:29
 msgid ""
@@ -2455,10 +2488,16 @@ msgid ""
 "\n"
 "If the total is higher than your max DEX, take the new result."
 msgstr ""
+"Apenas puedes moverte hasta que descanses y recibas cuidados "
+"profesionales.\n"
+"\n"
+"Tras recuperarte, tira 3d6.\n"
+"\n"
+"Si el resultado es mayor que tu DES máxima, quédate con esa nueva cifra."
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:32
 msgid "8 HP - Deafened"
-msgstr ""
+msgstr "8 PG - Sordera"
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:33
 msgid ""
@@ -2468,10 +2507,15 @@ msgid ""
 "\n"
 "If you pass, increase your max WIL by 1d4."
 msgstr ""
+"No podrás oír nada hasta que encuentres un remedio extraordinario.\n"
+"\n"
+"En todo caso, realiza una Salvación de VOL.\n"
+"\n"
+"Si tienes éxito, aumenta tu VOL máxima en 1d4."
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:36
 msgid "9 HP - Re-brained"
-msgstr ""
+msgstr "9 PG - Cerebro reestructurado"
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:37
 msgid ""
@@ -2481,10 +2525,15 @@ msgid ""
 "\n"
 "If the total is higher than your max WIL, take the new result."
 msgstr ""
+"El daño ha arrancado una parte oculta de tu psique.\n"
+"\n"
+"Tira 3d6.\n"
+"\n"
+"Si el resultado es mayor que tu VOL máxima, quédate con esa nueva cifra."
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:40
 msgid "10 HP - Sundered"
-msgstr ""
+msgstr "10 PG - Desgarro"
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:41
 msgid ""
@@ -2495,10 +2544,16 @@ msgid ""
 "\n"
 "If you pass, increase your max WIL by 1d6."
 msgstr ""
+"El daño arranca o deja inútil una extremidad (la Guardiana te dirá cuál)."
+"\n"
+"\n"
+"Después, haz una tirada de Salvación de VOL.\n"
+"\n"
+"Si la superas, aumenta tu VOL máxima en 1d6."
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:44
 msgid "11 HP - Mortal Wound"
-msgstr ""
+msgstr "11 PG - Herida mortal"
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:45
 msgid ""
@@ -2508,10 +2563,16 @@ msgid ""
 "\n"
 "Take the new result as your max HP."
 msgstr ""
+"Estás Exhausto y fuera de combate. Morirás en una hora a menos que te "
+"curen.\n"
+"\n"
+"Tras recuperarte, tira 2d6.\n"
+"\n"
+"El resultado será tu nueva PG máxima."
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:48
 msgid "12 HP - Doomed"
-msgstr ""
+msgstr "12 PG - Condenado"
 
 #: app/static/json/scars.json:1 app/static/json/scars.json:49
 msgid ""
@@ -2522,6 +2583,13 @@ msgid ""
 "\n"
 "If the total is higher than your max HP, take the new result."
 msgstr ""
+"La muerte parecía estar muy cerca, pero de alguna manera has sobrevivido."
+" Si fallas la próxima tirada de Salvación contra Daño Crítico, morirás "
+"horriblemente.\n"
+"\n"
+"Si tienes éxito, tira 3d6.\n"
+"\n"
+"Si el resultado es mayor que tu PG máxima, quédate con esta nueva cifra."
 
 # ============================================= TRAITS
 # =============================================
@@ -3390,7 +3458,7 @@ msgstr ""
 "Mejoraste quirúrgicamente ambos oídos, triplicando tu capacidad auditiva."
 " Puedes concentrarte en un sonido específico, como una conversación, a "
 "gran distancia. Llevas un protector auditivo contra los ruidos fuertes "
-"repentinos (salvación de VOL para evitar quedar paralizado "
+"repentinos (Salvación de VOL para evitar quedar paralizado "
 "temporalmente)."
 
 #: app/static/json/backgrounds/barber-surgeon.json:1
@@ -3497,8 +3565,8 @@ msgid ""
 "hours without it. 4 uses."
 msgstr ""
 "Mercurio: un estimulante. Actúas primero en combate y superas "
-"automáticamente cualquier salvación de VOL durante una hora. Adictivo: "
-"salvación de FUE o quedas Exhausto tras 24 horas sin consumirlo. 4 usos."
+"automáticamente cualquier Salvación de VOL durante una hora. Adictivo: "
+"Salvación de FUE o quedas Exhausto tras 24 horas sin consumirlo. 4 usos."
 
 #: app/static/json/backgrounds/barber-surgeon.json:1
 #: app/static/json/backgrounds/barber-surgeon.json:138
@@ -3513,7 +3581,7 @@ msgid ""
 "it."
 msgstr ""
 "Estimulante. Actúas primero en combate y superas automáticamente "
-"cualquier salvación de VOL durante una hora. Adictivo: salvación de FUE o"
+"cualquier Salvación de VOL durante una hora. Adictivo: Salvación de FUE o"
 " quedas Exhausto tras 24 horas sin consumirlo."
 
 #: app/static/json/backgrounds/barber-surgeon.json:1
@@ -4501,7 +4569,7 @@ msgid ""
 "from contact with blood."
 msgstr ""
 "Un demonio cornudo y dentudo que casi acaba contigo. Tienes un cuchillo "
-"de hueso manchado de sangre (d6). Al causar Daño crítico, su siguiente "
+"de hueso manchado de sangre (d6). Al causar Daño Crítico, su siguiente "
 "ataque tiene Ventaja por el contacto con la sangre."
 
 #: app/static/json/backgrounds/fieldwarden.json:1
@@ -4515,7 +4583,7 @@ msgid ""
 "On Critical Damage, its next attack becomes enhanced from contact with "
 "blood."
 msgstr ""
-"Al causar Daño crítico, su siguiente ataque tiene Ventaja por el contacto"
+"Al causar Daño Crítico, su siguiente ataque tiene Ventaja por el contacto"
 " con la sangre."
 
 #: app/static/json/backgrounds/fieldwarden.json:1
@@ -4549,8 +4617,8 @@ msgstr ""
 "Unos lobos, o eso creías. Ahora eres un hombre lobo [PG 8, FUE 15, DES "
 "14, garras (d6+d6), mordedura (d8)]. Tu VOL sigue siendo la misma. Puedes"
 " transformarte a voluntad (una vez al día), pero debes superar una "
-"salvación de VOL para volver a tu forma normal. Quien sobreviva a tus "
-"ataques debe superar una salvación de VOL para no contagiarse."
+"Salvación de VOL para volver a tu forma normal. Quien sobreviva a tus "
+"ataques debe superar una Salvación de VOL para no contagiarse."
 
 #: app/static/json/backgrounds/fieldwarden.json:1
 #: app/static/json/backgrounds/fieldwarden.json:99
@@ -4577,7 +4645,7 @@ msgid ""
 "Bloodvine Whip: d8 damage. On Critical Damage it drains the target's "
 "blood, granting the weapon's next attack the blast quality."
 msgstr ""
-"Látigo de vid sangrienta: d8 de daño. Al causar Daño crítico, desangra al"
+"Látigo de vid sangrienta: d8 de daño. Al causar Daño Crítico, desangra al"
 " objetivo y el siguiente ataque del arma obtiene la cualidad Estallido."
 
 #: app/static/json/backgrounds/fieldwarden.json:1
@@ -4591,7 +4659,7 @@ msgid ""
 "On Critical Damage, it drains the target's blood, granting the weapon's "
 "next attack the blast quality."
 msgstr ""
-"Al causar Daño crítico, desangra al objetivo y el siguiente ataque del "
+"Al causar Daño Crítico, desangra al objetivo y el siguiente ataque del "
 "arma obtiene la cualidad Estallido."
 
 #: app/static/json/backgrounds/fieldwarden.json:1
@@ -4694,8 +4762,8 @@ msgid ""
 "save succeeded (STR loss still occurs)."
 msgstr ""
 "Banda siempre floreciente: una diadema adornada con flores que nunca se "
-"marchitan. Al recibir Daño crítico, las flores se deshacen en polvo, pero"
-" actúas como si hubieras superado la salvación (sigues perdiendo FUE)."
+"marchitan. Al recibir Daño Crítico, las flores se deshacen en polvo, pero"
+" actúas como si hubieras superado la Salvación (sigues perdiendo FUE)."
 
 #: app/static/json/backgrounds/fieldwarden.json:1
 #: app/static/json/backgrounds/fieldwarden.json:167
@@ -4710,8 +4778,8 @@ msgid ""
 "loss still occurs)."
 msgstr ""
 "Una diadema adornada con flores que nunca se marchitan. Al recibir Daño "
-"crítico, las flores se deshacen en polvo, pero actúas como si hubieras "
-"superado la salvación (sigues perdiendo FUE)."
+"Crítico, las flores se deshacen en polvo, pero actúas como si hubieras "
+"superado la Salvación (sigues perdiendo FUE)."
 
 #: app/static/json/backgrounds/fletchwind.json:1
 #: app/static/json/backgrounds/fletchwind.json:4
@@ -4849,7 +4917,7 @@ msgid ""
 " is torn off."
 msgstr ""
 "Roble albar (d8, Voluminoso). Golpea con fuerza a sus objetivos. Al "
-"causar Daño crítico, arranca algo."
+"causar Daño Crítico, arranca algo."
 
 #: app/static/json/backgrounds/fletchwind.json:1
 #: app/static/json/backgrounds/fletchwind.json:85
@@ -4859,7 +4927,7 @@ msgstr "Roble albar"
 #: app/static/json/backgrounds/fletchwind.json:1
 #: app/static/json/backgrounds/fletchwind.json:87
 msgid "Slams into targets. On Critical Damage something is torn off."
-msgstr "Golpea con fuerza a sus objetivos. Al causar Daño crítico, arranca algo."
+msgstr "Golpea con fuerza a sus objetivos. Al causar Daño Crítico, arranca algo."
 
 #: app/static/json/backgrounds/fletchwind.json:1
 #: app/static/json/backgrounds/fletchwind.json:92
@@ -5146,7 +5214,7 @@ msgid ""
 "make a STR save or immediately vomit. 1 use."
 msgstr ""
 "Jarra apestosa: al romperla se libera un olor tan repugnante que todos "
-"los que estén cerca deben superar una salvación de FUE o vomitar en el "
+"los que estén cerca deben superar una Salvación de FUE o vomitar en el "
 "acto. 1 uso."
 
 #: app/static/json/backgrounds/foundling.json:1
@@ -5161,7 +5229,7 @@ msgid ""
 "save or immediately vomit."
 msgstr ""
 "Al romperla se libera un olor tan repugnante que todos los que estén "
-"cerca deben superar una salvación de FUE o vomitar en el acto."
+"cerca deben superar una Salvación de FUE o vomitar en el acto."
 
 #: app/static/json/backgrounds/foundling.json:1
 #: app/static/json/backgrounds/foundling.json:153
@@ -5992,7 +6060,7 @@ msgid ""
 msgstr ""
 "Pesadilla viviente que habita en ti y se manifiesta cuando estás en "
 "peligro. Tiene tus mismas Características y PG, y ataca con garras "
-"(d8+d8). Desaparece al recibir Daño crítico (recibes 1d4 de daño a VOL) y"
+"(d8+d8). Desaparece al recibir Daño Crítico (recibes 1d4 de daño a VOL) y"
 " reaparece en la siguiente luna llena."
 
 #: app/static/json/backgrounds/half-witch.json:1
@@ -6008,7 +6076,7 @@ msgid ""
 "1d4 WIL damage), re-appearing again on the next full moon."
 msgstr ""
 "Se manifiesta cuando estás en peligro. Tiene tus mismas Características y"
-" PG, y ataca con garras (d8+d8). Desaparece al recibir Daño crítico "
+" PG, y ataca con garras (d8+d8). Desaparece al recibir Daño Crítico "
 "(recibes 1d4 de daño a VOL) y reaparece en la siguiente luna llena."
 
 #: app/static/json/backgrounds/half-witch.json:1
@@ -6469,7 +6537,7 @@ msgid ""
 "returning to the previous limit at the end of combat. If your vow is "
 "broken, you die."
 msgstr ""
-"Valentía. La primera vez que infliges Daño crítico, ganas +d4 PG y "
+"Valentía. La primera vez que infliges Daño Crítico, ganas +d4 PG y "
 "vuelves a tu cantidad previa de PG al final del combate. Si rompes tu "
 "voto, mueres."
 
@@ -7520,7 +7588,7 @@ msgid ""
 "you are the target of magic, the same applies to its wielder."
 msgstr ""
 "Fuiste maldecido por una bruja del seto por engañar a algunos aldeanos "
-"inocentes. La magia actúa de manera impredecible en tus manos (salvación "
+"inocentes. La magia actúa de manera impredecible en tus manos (Salvación "
 "de VOL para evitar el caos). Si eres el objetivo de la magia, lo mismo se"
 " aplica a quien la maneje."
 
@@ -7743,7 +7811,7 @@ msgid ""
 msgstr ""
 "Hasta la muerte, siempre: nunca retrocedes en una pelea, sin importar tus"
 " probabilidades. Tienes un silbato de la muerte, 1 carga. Su sonido "
-"asusta a todos los que lo oyen (salvación de VOL o huyen). Recarga: "
+"asusta a todos los que lo oyen (Salvación de VOL o huyen). Recarga: "
 "captura el último aliento de un guerrero moribundo."
 
 #: app/static/json/backgrounds/outrider.json:1
@@ -7757,7 +7825,7 @@ msgid ""
 "Its scream frightens away all who hear it (save WIL or flee). Recharge: "
 "Capture the final breath of a dying warrior."
 msgstr ""
-"Su sonido asusta a todos los que lo oyen (salvación de VOL o huyen). "
+"Su sonido asusta a todos los que lo oyen (Salvación de VOL o huyen). "
 "Recarga: captura el último aliento de un guerrero moribundo."
 
 #: app/static/json/backgrounds/outrider.json:1
@@ -8302,7 +8370,7 @@ msgid ""
 msgstr ""
 "El paso doble del remendador. Narra las graciosas peripecias de un "
 "viajero que debe entregar unos regalos. Tienes un silbato de caña. "
-"Cualquiera que esté al alcance de su silbido debe superar una salvación "
+"Cualquiera que esté al alcance de su silbido debe superar una Salvación "
 "de VOL si pretende realizar una acción violenta."
 
 #: app/static/json/backgrounds/rill-runner.json:1
@@ -8314,7 +8382,7 @@ msgstr "Silbato de caña"
 #: app/static/json/backgrounds/rill-runner.json:45
 msgid "Anyone in earshot must pass a WIL save to perform an act of violence."
 msgstr ""
-"Cualquiera que esté al alcance de su silbido debe superar una salvación "
+"Cualquiera que esté al alcance de su silbido debe superar una Salvación "
 "de VOL si pretende realizar una acción violenta."
 
 #: app/static/json/backgrounds/rill-runner.json:1
@@ -25420,7 +25488,7 @@ msgstr "Espera a que se guarden los cambios y vuelve a intentarlo."
 
 #: app/templates/main/shared_map.html app/templates/main/shared_map.html:97
 msgid "The Warden loaded a new whiteboard."
-msgstr "El Guardián ha cargado una nueva pizarra."
+msgstr "La Guardiana ha cargado una nueva pizarra."
 
 #: app/templates/main/shared_map.html app/templates/main/shared_map.html:98
 msgid "Download unsaved drawing from the previous whiteboard"
@@ -25477,7 +25545,7 @@ msgstr "Mascota"
 #: app/templates/partial/companions/container_options.html:3
 #: app/templates/partial/companions/inline_section.html:30
 msgid "Hireling"
-msgstr "Mercenario"
+msgstr "Seguidor"
 
 #: app/static/json/backgrounds:1 app/static/json/backgrounds/marchguard.json:1
 msgid "Aasim"
@@ -26372,7 +26440,7 @@ msgstr "Peculiaridades"
 
 #: app/lib/generator_labels.py:49 app/templates/main/tools.html
 msgid "Critical Damage"
-msgstr "Daño crítico"
+msgstr "Daño Crítico"
 
 #: app/lib/generator_labels.py:50 app/templates/main/tools.html
 msgid "Ability"
@@ -26710,7 +26778,7 @@ msgstr "Verificar"
 
 #: app/main.py:136
 msgid "Invalid character stats or inventory in JSON file."
-msgstr "Atributos o inventario del personaje no válidos en el archivo JSON."
+msgstr "Características o inventario del personaje no válidos en el archivo JSON."
 
 #: app/blueprints/auth.py:46 app/blueprints/auth.py:379
 #: app/blueprints/auth.py:427
@@ -26805,7 +26873,7 @@ msgid ""
 "inventory and pets."
 msgstr ""
 "El archivo JSON no contiene una exportación válida de %(kind)s con "
-"atributos, inventario y mascotas válidos."
+"características, inventario y mascotas válidos."
 
 #: app/blueprints/companions.py:602
 msgid "pet"
@@ -26852,7 +26920,7 @@ msgstr "Se añadió %(item)s."
 #: app/templates/main/party_view.html:29
 #: app/templates/partial/partyview/roll_history_entries.html:10
 msgid "Warden"
-msgstr "Guardián"
+msgstr "Guardiana"
 
 #: app/blueprints/party.py:694
 #: app/templates/partial/partyview/wilderness.html:16
@@ -26872,8 +26940,8 @@ msgid ""
 "Supply: d%(sides)s → %(amount)s Rations (3 uses each), added to party "
 "storage."
 msgstr ""
-"Abastecerse: d%(sides)s → %(amount)s raciones (3 usos cada una), añadidas"
-" al almacén del grupo."
+"Forrajear: d%(sides)s → %(amount)s raciones (3 usos cada una), añadidas "
+"al almacén del grupo."
 
 #: app/blueprints/party.py:729
 msgid ""
@@ -26928,7 +26996,7 @@ msgstr "Inventario adicional"
 
 #: app/lib/character_pdf.py:232
 msgid "Petty Items"
-msgstr "Objetos pequeños"
+msgstr "Objetos insignificantes"
 
 #: app/lib/character_pdf.py:239
 msgid "Inventory capacity"
@@ -26957,8 +27025,8 @@ msgstr "Notas adicionales"
 #: app/lib/companions.py:241
 msgid "Fill in all current and maximum stats before converting this hireling."
 msgstr ""
-"Completa todos los atributos actuales y máximos antes de convertir a este"
-" seguidor."
+"Completa todas las características actuales y máximas antes de convertir "
+"a este seguidor."
 
 #: app/lib/companions.py:244
 msgid ""
@@ -39698,7 +39766,7 @@ msgid ""
 "Warden and player connects their own account."
 msgstr ""
 "Conecta la cuenta Discord que usarás para los comandos de Kettlewright. "
-"Cada Guardián y jugador conecta su propia cuenta."
+"Cada Guardiana y jugador conecta su propia cuenta."
 
 #: app/templates/auth/discord.html:28
 msgid "Connect Discord"
@@ -39714,7 +39782,7 @@ msgstr "Inicia sesión para conectar tus cuentas Kettlewright y Discord."
 
 #: app/templates/auth/discord.html:41
 msgid "For the Warden"
-msgstr "Para el Guardián"
+msgstr "Para la Guardiana"
 
 #: app/templates/auth/discord.html:43
 msgid "Add the Kettlewright app to your Discord server"
@@ -39776,7 +39844,7 @@ msgid ""
 "Manage Channels or Administrator permission. Binding again clears "
 "character selections in this channel."
 msgstr ""
-"Solo Guardián: vincula el canal a uno de tus grupos. Requiere gestionar "
+"Solo Guardiana: vincula el canal a uno de tus grupos. Requiere gestionar "
 "canales o administrador. Vincular de nuevo borra las selecciones de "
 "personaje del canal."
 
@@ -39786,7 +39854,7 @@ msgid ""
 "character selections. Requires Manage Channels or Administrator "
 "permission."
 msgstr ""
-"Solo Guardián: desvincula el grupo del canal y borra sus selecciones de "
+"Solo Guardiana: desvincula el grupo del canal y borra sus selecciones de "
 "personaje. Requiere gestionar canales o administrador."
 
 #: app/templates/auth/discord.html:65
@@ -39802,16 +39870,16 @@ msgid ""
 "Shows your selected character’s current stats, HP, armor, conditions and "
 "sheet link in the channel."
 msgstr ""
-"Muestra los atributos, PG, armadura, condiciones y enlace a la hoja del "
-"personaje seleccionado en el canal."
+"Muestra las características, PG, armadura, condiciones y enlace a la hoja"
+" del personaje seleccionado en el canal."
 
 #: app/templates/auth/discord.html:67
 msgid ""
 "Shows the party roster and current stats in the channel. Use /kw party "
 "page:2 for another page."
 msgstr ""
-"Muestra los miembros y atributos actuales del grupo en el canal. Usa /kw "
-"party page:2 para otra página."
+"Muestra los miembros y las características actuales del grupo en el "
+"canal. Usa /kw party page:2 para otra página."
 
 #: app/templates/auth/discord.html:68
 msgid ""
@@ -41123,7 +41191,7 @@ msgstr "Haz clic en un campo para editarlo."
 
 #: app/templates/main/character_view.html:104
 msgid "Export Attributes"
-msgstr "Exportar atributos"
+msgstr "Exportar características"
 
 #: app/templates/main/character_view.html:107
 msgid "Print PDF (landscape)"
@@ -41192,16 +41260,16 @@ msgid ""
 "Rolls 3d6 for each attribute and d6 for HP. Starting equipment is a "
 "suggestion you can edit. Leave the name blank to roll one."
 msgstr ""
-"Tira 3d6 para cada atributo y d6 para los PG. El equipo inicial es una "
-"sugerencia editable. Deja el nombre vacío para generar uno."
+"Tira 3d6 para cada característica y d6 para los PG. El equipo inicial es "
+"una sugerencia editable. Deja el nombre vacío para generar uno."
 
 #: app/templates/main/companion_add.html:17
 msgid ""
 "Custom pets require a name. Unknown stats can be filled in on the pet "
 "sheet."
 msgstr ""
-"Las mascotas personalizadas necesitan un nombre. Los atributos "
-"desconocidos se pueden completar en su hoja."
+"Las mascotas personalizadas necesitan un nombre. Las características "
+"desconocidas se pueden completar en su hoja."
 
 #: app/templates/main/companion_add.html:18
 msgid "Create"
@@ -41213,7 +41281,8 @@ msgid ""
 "party. Their stats, portrait, gold, inventory, notes and pets are kept."
 msgstr ""
 "Sustituye al seguidor por un personaje jugador del mismo grupo. Se "
-"conservan sus atributos, retrato, oro, inventario, notas y mascotas."
+"conservan sus características, retrato, oro, inventario, notas y "
+"mascotas."
 
 #: app/templates/main/companion_convert.html:8
 msgid ""
@@ -41221,7 +41290,7 @@ msgid ""
 "notes; natural armor becomes a petty inventory item."
 msgstr ""
 "Su oficio pasa a ser su trasfondo. El ataque y coste diario se guardan en"
-" las notas; la armadura natural pasa a ser un objeto pequeño del "
+" las notas; la armadura natural pasa a ser un objeto insignificante del "
 "inventario."
 
 #: app/templates/main/companion_convert.html:12
@@ -41310,8 +41379,8 @@ msgid ""
 "Importing creates a new creature with its stats, portrait, notes and "
 "inventory. Existing sheets stay unchanged."
 msgstr ""
-"Importar crea una criatura nueva con sus atributos, retrato, notas e "
-"inventario. Las hojas existentes no cambian."
+"Importar crea una criatura nueva con sus características, retrato, notas "
+"e inventario. Las hojas existentes no cambian."
 
 #: app/templates/main/new_from_json.html:31
 msgid "You need a character or an editable hireling before importing a pet."
@@ -41365,7 +41434,7 @@ msgstr "Editar grupo"
 #: app/templates/partial/companions/cards.html:11
 #: app/templates/partial/companions/stats.html:4
 msgid "Unable to save this stat. Please try again."
-msgstr "No se pudo guardar este atributo. Inténtalo de nuevo."
+msgstr "No se pudo guardar esta característica. Inténtalo de nuevo."
 
 #: app/templates/main/party_view.html:74
 msgid "Unable to refresh party members."
@@ -41472,7 +41541,7 @@ msgstr "No se pudieron guardar los cambios. Inténtalo de nuevo."
 
 #: app/templates/partial/charview/inline_section.html:23
 msgid "Roll omens"
-msgstr "Generar augurios"
+msgstr "Generar presagios"
 
 #: app/templates/partial/charview/inline_section.html:30
 msgid "Add scar"
@@ -41549,7 +41618,7 @@ msgstr "Algunos objetos no caben en los espacios disponibles."
 
 #: app/templates/partial/charview/inventory_slots.html:110
 msgid "Petty"
-msgstr "Pequeño"
+msgstr "Insignificante"
 
 #: app/templates/partial/charview/inventory_slots.html:110
 msgid "no slot"
@@ -41557,12 +41626,12 @@ msgstr "no ocupa espacio"
 
 #: app/templates/partial/charview/inventory_slots.html:121
 msgid "Petty item"
-msgstr "Objeto pequeño"
+msgstr "Objeto insignificante"
 
 #: app/templates/partial/charview/stats.html:4
 #: app/templates/partial/companions/stats.html:4
 msgid "Unable to refresh character stats."
-msgstr "No se pudieron actualizar los atributos del personaje."
+msgstr "No se pudieron actualizar las características del personaje."
 
 #: app/templates/partial/charview/stats.html:23
 msgid "Available HP: 0"
@@ -41810,7 +41879,7 @@ msgstr "Reglas de Cairn 2e"
 
 #: app/templates/partial/partyview/wilderness.html:8
 msgid "Supply"
-msgstr "Abastecerse"
+msgstr "Forrajear"
 
 #: app/templates/partial/partyview/wilderness.html:9
 msgid ""
@@ -42518,7 +42587,7 @@ msgstr ""
 
 #: app/templates/main/monster_public.html:11
 msgid "These monster stats are private to the Warden."
-msgstr ""
+msgstr "Estas características de monstruo solo las ve la Guardiana."
 
 #: app/templates/main/party_view.html:60
 msgid "Party sections"
@@ -42526,7 +42595,7 @@ msgstr ""
 
 #: app/templates/main/party_view.html:72
 msgid "Back to Warden view"
-msgstr ""
+msgstr "Volver a la vista de la Guardiana"
 
 #: app/templates/main/shared_map.html:34 app/templates/main/shared_map.html:124
 msgid "Lock map"
@@ -42555,7 +42624,7 @@ msgstr ""
 
 #: app/templates/main/tools.html:37
 msgid "Create a party first to manage monsters as its Warden."
-msgstr ""
+msgstr "Crea primero un grupo para gestionar monstruos como su Guardiana."
 
 #: app/templates/main/tools.html:43
 msgid "Dungeons"
