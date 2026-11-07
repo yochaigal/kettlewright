@@ -83,6 +83,17 @@ def traits_text(age, traits):
     return txt
 
 
+def translate_paragraphs(text):
+    """Translate each blank-line-separated block on its own.
+
+    Fieldwarden and Outrider characters get two bonds joined by a blank line;
+    the joined text is not a catalog entry, so it must be translated per bond.
+    """
+    if not text:
+        return ''
+    return '\n\n'.join(_(part) if part.strip() else part for part in text.split('\n\n'))
+
+
 class TableValue:
     def __init__(self, question, option):
         self.question = question

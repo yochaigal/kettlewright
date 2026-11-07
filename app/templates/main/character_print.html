@@ -16,7 +16,7 @@
       <div>
         <h1 class="view-mode">{{ character.name|markdown_inline }}</h1>
             {% include "partial/dead_badge.html" %}
-        <h2 class=""> {{character.background}} </h2>
+        <h2 class=""> {{character.background | tr}} </h2>
       </div>
     </div>
     <div class="character-print-grid print-container">
@@ -129,4 +129,4 @@
   window.addEventListener('load', () => document.fonts.ready.then(() => window.print()), {once: true});
   {% endif %}
 </script>
-{% endblock %}
+{% endblock %}
