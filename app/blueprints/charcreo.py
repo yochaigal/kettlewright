@@ -862,7 +862,7 @@ def charcreo_save():
                 hp_max=form.hp_max.data, strength=form.strength_max.data, dexterity=form.dexterity_max.data, armor=form.armor.data, scars="",
                 willpower=form.willpower_max.data, hp=form.hp_max.data, deprived=False, 
                 description=description, traits=traits, notes="", **background_answers,
-                gold=form.gold.data, bonds=_(form.bonds.data) if form.bonds.data else '', omens=_(form.omens.data) if form.omens.data else '', 
+                gold=form.gold.data, bonds=translate_paragraphs(form.bonds.data), omens=translate_paragraphs(form.omens.data), 
                 custom_image=custom_image, image_url=custom_fields['portrait_src'])
     from app.lib.companions import starting_pets
     options = [find_background_table_option(background, f'table{index}',
