@@ -6,7 +6,10 @@ services:
     volumes:
       - ..:/workspace:cached
     working_dir: /workspace
-    env_file: ../.env
+    env_file:
+      - path: ../.env
+        required: false
+    
     command:
       - /bin/sh
       - -ec
