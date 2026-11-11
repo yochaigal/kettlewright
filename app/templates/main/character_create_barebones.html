@@ -1,5 +1,6 @@
 {% extends "base.html" %} {% block content %}
-<div class="body-container" id="create-body-container">
+<div class="body-container barebones-create" id="create-body-container">
+    {% with edition='barebones' %}{% include "partial/charcreo/edition_tabs.html" %}{% endwith %}
     <div class="create-header">
         <div>
             <button class="button is-link purple" id="roll-all" type="button" style="margin-right: 8px"

@@ -9,7 +9,6 @@ import urllib.parse
 
 import bleach
 from flask import Blueprint, render_template, request, make_response, url_for, abort
-from flask_babel import _
 from flask_login import current_user, login_required
 
 from app.lib.barebones import (GEAR_BACKGROUND, armor_items, background_items, background_name, barebones_data,
@@ -135,7 +134,7 @@ def traits_sentence(state):
     return traits_text(state['age'] or '', [TraitValue(name, state[name]) for name in TRAIT_NAMES])
 
 
-def render_form(state, errors=None):
+def render_form(state):
     items, containers = build_inventory(selected_groups(state))
     character = DummyCharacter()
     character.items = json.dumps(items)
@@ -149,8 +148,7 @@ def render_form(state, errors=None):
     return render_template('partial/barebones/form.html', state=state, data=barebones_data(),
                            traits=load_traits(), trait_names=TRAIT_NAMES, packages=gear_packages(),
                            groups=GROUPS, armor=armor, slots=slots_used(items), traits_text=traits_sentence(state),
-                           background_label=background_label(state), custom_fields=custom_fields,
-                           errors=errors or [])
+                           custom_fields=custom_fields)
 
 
 def new_state():
@@ -193,14 +191,15 @@ def swap():
 
 
 def validation_errors(state):
+    """Same checks and messages as the Second Edition creator."""
     errors = []
-    if not state['name']:
-        errors.append(_('Required character name'))
     if not background_label(state):
-        errors.append(_('Required background selection'))
-    for key, label in (('strength', _('STR')), ('dexterity', _('DEX')), ('willpower', _('WIL')), ('hp', _('HP'))):
+        errors.append('Required background selection')
+    if not state['name']:
+        errors.append('Required character name')
+    for key, label in (('strength', 'STR'), ('dexterity', 'DEX'), ('willpower', 'WIL'), ('hp', 'HP')):
         if not state[key] or state[key] < 1:
-            errors.append(_('Required %(attribute)s attribute', attribute=label))
+            errors.append(f'Required {label} attribute')
     return errors
 
 
@@ -212,7 +211,9 @@ def save():
     state['name'] = bleach.clean(state['name'])[:64]
     errors = validation_errors(state)
     if errors:
-        return render_form(state, errors)
+        # The Second Edition error popup, shown in #dialog-anchor.
+        return render_template('partial/modal/save_char_error.html',
+                               error='<ul>' + ''.join(f'<li>{error}</li>' for error in errors) + '</ul>')
     items, containers = build_inventory(selected_groups(state))
     image_url = state['portrait_src']
     if state['custom_image'] == 'false' and image_url not in load_images(include_categories=True):

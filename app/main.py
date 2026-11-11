@@ -374,13 +374,15 @@ def print_character_portrait(username, url_name):
 
 
 def _print_character_pdf(username, url_name, orientation):
-    from app.lib.character_pdf import CharacterSheet
+    from app.lib.character_pdf import character_sheet
     user = User.query.filter_by(username=username).first_or_404()
     character = Character.query.filter_by(owner=user.id, url_name=url_name).first_or_404()
     party = db.session.get(Party, character.party_id) if character.party_id else None
     export_attributes = request.args.get('export_attributes', '1') != '0'
-    response = send_file(CharacterSheet(character, party, orientation, export_attributes=export_attributes).draw(), mimetype='application/pdf',
-                         download_name=f'{character.url_name}-{orientation}-a4.pdf', as_attachment=False)
+    # Barebones characters always get the Barebones sheet, whichever orientation link was used.
+    paper = 'barebones-a4' if character.is_barebones else f'{orientation}-a4'
+    response = send_file(character_sheet(character, party, orientation, export_attributes=export_attributes).draw(), mimetype='application/pdf',
+                         download_name=f'{character.url_name}-{paper}.pdf', as_attachment=False)
     response.headers['Cache-Control'] = 'private, no-store'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response

@@ -130,6 +130,32 @@ def _item_title(item):
     return name + (' (' + ', '.join(details) + ')' if details else '')
 
 
+def _flatten_prefilled_fields(page):
+    """Stamp form fields that already hold a value onto the page, as they look.
+
+    The Barebones sheet prints its trait labels ("Physique: ") as pre-filled
+    field values; reusing each field's own appearance keeps their exact style.
+    """
+    from pypdf.generic import ContentStream, DictionaryObject, NameObject
+    stamps = []
+    for index, annotation in enumerate(page.get('/Annots') or []):
+        annotation = annotation.get_object()
+        value = annotation.get('/V') or annotation.get('/Parent', {}).get('/V')
+        appearance = annotation.get('/AP', {}).get('/N')
+        if annotation.get('/Subtype') != '/Widget' or not value or appearance is None:
+            continue
+        name = f'/KwField{index}'
+        resources = page.setdefault(NameObject('/Resources'), DictionaryObject())
+        xobjects = resources.setdefault(NameObject('/XObject'), DictionaryObject())
+        xobjects[NameObject(name)] = annotation['/AP'].raw_get('/N')
+        x0, y0 = (min(float(a), float(b)) for a, b in zip(annotation['/Rect'][:2], annotation['/Rect'][2:]))
+        stamps.append(f'q 1 0 0 1 {x0:.3f} {y0:.3f} cm {name} Do Q')
+    if stamps:
+        content = ContentStream(page.get_contents(), page.pdf)
+        content.set_data(b'q\n' + content.get_data() + b'\nQ\n' + '\n'.join(stamps).encode())
+        page.replace_contents(content)
+
+
 class CharacterSheet:
     def __init__(self, character, party=None, orientation='landscape', export_attributes=True):
         _register_fonts()
@@ -230,7 +256,25 @@ class CharacterSheet:
                 self.section(_('Additional inventory'), title)
             slot += slots
         self.ruled(_('Petty Items'), '\n'.join(_item_title(it) for it in petty), layout['petty'])
+        self.container_sections(items)
 
+        self.ruled(_('Traits'), c.traits, layout['traits'])
+        self.ruled(_('Bonds'), c.bonds, layout['bonds'])
+        self.ruled(_('Omens'), c.omens, layout['omens'])
+        for index in (1, 2):
+            question = getattr(c, f'background_table{index}_question', None)
+            answer = getattr(c, f'background_table{index}_answer', None)
+            if question or answer:
+                self.section(question or _('Background answer %(number)s', number=index), answer or '')
+        self.ruled(_('Notes'), c.notes, layout['notes'])
+        self.section(_('Description'), c.description)
+        self.section(_('Scars'), c.scars)
+        self.companion_sections()
+        return self.finish(ASSETS / f'cairn-2e-{self.orientation}-a4.pdf', f'{c.name} - Cairn {self.orientation} A4')
+
+    def container_sections(self, items):
+        """Other containers, odd capacities and orphaned items go to the appendix."""
+        c = self.character
         for container in json.loads(c.containers or '[]'):
             contents = [_item_title(it) for it in items if it.get('location') == container['id']]
             if container['id'] != 0 and contents:
@@ -240,19 +284,8 @@ class CharacterSheet:
         known_ids = {container['id'] for container in json.loads(c.containers or '[]')} | {0}
         self.section(_('Unassigned items'), '\n'.join(_item_title(it) for it in items if it.get('location') not in known_ids))
 
-        self.ruled(_('Traits'), c.traits, layout['traits'])
-        # Barebones has no bonds or omens; leave those printed lines blank.
-        barebones = getattr(c, 'edition', None) == 'barebones'
-        self.ruled(_('Bonds'), '' if barebones else c.bonds, layout['bonds'])
-        self.ruled(_('Omens'), '' if barebones else c.omens, layout['omens'])
-        for index in (1, 2):
-            question = getattr(c, f'background_table{index}_question', None)
-            answer = getattr(c, f'background_table{index}_answer', None)
-            if question or answer:
-                self.section(question or _('Background answer %(number)s', number=index), answer or '')
-        self.ruled(_('Notes'), c.notes, layout['notes'])
-        self.section(_('Description'), c.description)
-        self.section(_('Scars'), c.scars)
+    def companion_sections(self):
+        c = self.character
         for pet in c.pets:
             stats = ' · '.join(label + ' ' + (str(getattr(pet, stat)) + '/' + str(getattr(pet, stat+'_max')) if getattr(pet, stat) is not None else '—')
                                for stat, label in [('hp','HP'),('strength','STR'),('dexterity','DEX'),('willpower','WIL')])
@@ -263,16 +296,20 @@ class CharacterSheet:
             self.section(_('Pet') + ': ' + pet.name, '\n'.join(lines))
         if self.party:
             self.section(_('Party'), self.party.name + '\n' + (self.party.description or ''))
-        self.canvas.save()
 
-        writer = PdfWriter()
-        template = PdfReader(ASSETS / f'cairn-2e-{self.orientation}-a4.pdf')
-        writer.add_page(template.pages[0])
+    def finish(self, template_path, title):
+        """Stamp the drawn page onto the sheet template and append overflow pages."""
+        self.canvas.save()
+        writer = PdfWriter(clone_from=PdfReader(template_path))
+        _flatten_prefilled_fields(writer.pages[0])
+        # Drop form widgets: the values are drawn onto the page itself.
+        writer.remove_annotations(subtypes='/Widget')
+        writer._root_object.pop('/AcroForm', None)
         writer.pages[0].merge_page(PdfReader(self.buffer).pages[0])
         if self.sections:
             for page in PdfReader(self.appendix()).pages:
                 writer.add_page(page)
-        writer.add_metadata({'/Title': f'{c.name} - Cairn {self.orientation} A4', '/Author': 'Kettlewright'})
+        writer.add_metadata({'/Title': title, '/Author': 'Kettlewright'})
         output = BytesIO()
         writer.write(output)
         output.seek(0)
@@ -317,3 +354,168 @@ def landscape_character_pdf(character, party=None):
 
 def portrait_character_pdf(character, party=None):
     return CharacterSheet(character, party, orientation='portrait').draw()
+
+
+BAREBONES_TEMPLATE = ASSETS / 'cairn-barebones-a4.pdf'
+TRAIT_FIELDS = ('Physique', 'Skin', 'Hair', 'Face', 'Speech', 'Clothing', 'Virtue', 'Vice')
+# On the A4 sheet the trait labels ("Physique: ") are pre-filled values of the trait
+# fields; values begin where each stamped label ends (x in points, measured from the template).
+TRAIT_LABEL_ENDS = {'Physique': 68.1, 'Skin': 49.1, 'Hair': 49.3, 'Face': 151.2, 'Speech': 161.9,
+                    'Clothing': 168.5, 'Virtue': 249.4, 'Vice': 240.8, 'Age': 238.7}
+# The template draws those labels 5.749pt above each field's bottom edge.
+TRAIT_LABEL_BASELINE = 5.749
+
+
+@lru_cache(maxsize=1)
+def _barebones_template():
+    """Page size and field name -> (x0, y0, x1, y1) in PDF points, read from the fillable sheet."""
+    page = PdfReader(BAREBONES_TEMPLATE).pages[0]
+    fields = {}
+    for annotation in page.get('/Annots') or []:
+        annotation = annotation.get_object()
+        name = annotation.get('/T') or annotation.get('/Parent', {}).get('/T')
+        if name and '/Rect' in annotation:
+            x0, y0, x1, y1 = (float(value) for value in annotation['/Rect'])
+            fields[str(name)] = (min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1))
+    return (float(page.mediabox.width), float(page.mediabox.height)), fields
+
+
+def split_traits(text):
+    """Recover the eight trait words and the age from a stored trait sentence.
+
+    Characters keep traits as one sentence, but this sheet has a line per trait.
+    Traits are matched in table order so words shared by two tables (Oily hair
+    and skin) land in the right place. Returns (None, age) when they can't all
+    be found, for instance after the player rewrote the sentence.
+    """
+    from app.lib.data import load_traits
+    from app.lib.translations import translate_term
+    text = plain_text(text)
+    lowered = text.casefold()
+    ages = re.findall(r'\d+', text)
+    age = ages[-1] if ages else ''
+    position, found = 0, {}
+    for name, values in load_traits().items():
+        best = None
+        for value in values:
+            label = translate_term(value, 'character trait: ' + name)
+            for candidate in {value, label}:
+                match = re.compile(r'(?<!\w)' + re.escape(candidate.casefold()) + r'(?!\w)').search(lowered, position)
+                if match and (best is None or match.start() < best[0]):
+                    best = (match.start(), match.end(), label)
+        if best is None:
+            return None, age
+        found[name] = best[2][:1].upper() + best[2][1:]
+        position = best[1]
+    return found, age
+
+
+class BarebonesSheet(CharacterSheet):
+    """Cairn Barebones Edition sheet (A4), filled at its form field positions."""
+
+    def __init__(self, character, party=None, export_attributes=True):
+        super().__init__(character, party, export_attributes=export_attributes)
+        self.orientation = 'barebones'
+        self.page_size, self.fields = _barebones_template()
+        self.canvas = canvas.Canvas(self.buffer, pagesize=self.page_size)
+
+    def _baseline_top(self, rect, size):
+        """Top-left 'top' coordinate placing text vertically centred in a field."""
+        x0, y0, x1, y1 = rect
+        baseline = y0 + (y1 - y0 - size * 0.7) / 2
+        return self.page_size[1] - baseline
+
+    def field_text(self, name, value, size=11, font=FONT, title=None):
+        rect = self.fields[name]
+        left = max(rect[0], TRAIT_LABEL_ENDS.get(name, 0)) + 2
+        if name in TRAIT_LABEL_ENDS:
+            top = self.page_size[1] - rect[1] - TRAIT_LABEL_BASELINE
+        else:
+            top = self._baseline_top(rect, size)
+        self.single_line(value, left, top, rect[2] - left - 2, size, font, title)
+
+    def field_number(self, name, value, size=22):
+        if value is None or value == '':
+            return
+        x0, y0, x1, y1 = self.fields[name]
+        size = min(size, (y1 - y0) * 0.8)
+        self.text(value, (x0 + x1) / 2, self._baseline_top((x0, y0, x1, y1), size), size, BOLD, centered=True)
+
+    def field_lines(self, name, value, title, leading=13):
+        """Wrap text into a multi-line field; the rest goes to the appendix."""
+        x0, y0, x1, y1 = self.fields[name]
+        count = int((y1 - y0 - 4) // leading)
+        top = self.page_size[1] - y1 + leading
+        self.ruled(title, value, [(x0 + 3, top + i * leading, x1 - x0 - 6) for i in range(count)])
+
+    def draw(self):
+        c = self.character
+        portrait = _portrait(c)
+        if portrait:
+            x0, y0, x1, y1 = self.fields['Portrait_af_image']
+            self.canvas.drawImage(portrait, x0 + 4, y0 + 4, width=x1 - x0 - 8, height=y1 - y0 - 8,
+                                  preserveAspectRatio=True, anchor='c', mask='auto')
+        elif c.custom_image and c.image_url:
+            self.section(_('Portrait URL'), c.image_url)
+        self.field_text('Name', c.name, 13, BOLD, _('Name'))
+        self.field_text('Background', _(c.background), 12, title=_('Background'))
+
+        for field, attribute in (('Strength', 'strength'), ('Dexterity', 'dexterity'),
+                                 ('Willpower', 'willpower'), ('HitProtection', 'hp')):
+            self.field_number(field + '_Maximum', getattr(c, attribute + '_max'))
+            if self.export_attributes:
+                value = c.hpValue()[0] if attribute == 'hp' else getattr(c, attribute)
+                self.field_number(field + '_Current', value)
+        if self.export_attributes:
+            self.field_number('Armor', c.armorValue(), 26)
+            self.field_number('Gold', c.gold, 18)
+        if c.deprived:
+            self.field_number('Deprived', 'X', 20)
+        states = [label for condition, label in ((c.dead, _('Dead')), (c.panicked, _('PANICKED'))) if condition]
+        if states:
+            self.section(_('Status'), ' / '.join(states))
+
+        traits, age = split_traits(c.traits)
+        if traits:
+            for name in TRAIT_FIELDS:
+                self.field_text(name, traits[name], 9)
+        else:
+            self.section(_('Traits'), c.traits)
+        self.field_text('Age', age, 9)
+        self.field_lines('Notes', c.notes, _('Notes'))
+
+        items = json.loads(c.items or '[]')
+        main = [it for it in items if it.get('location') == 0]
+        petty = [it for it in main if 'petty' in it.get('tags', []) and 'bulky' not in it.get('tags', [])]
+        slot = 0
+        for item in main:
+            if item in petty:
+                continue
+            slots = 2 if 'bulky' in item.get('tags', []) else 1
+            title = _item_title(item)
+            if slot + slots <= 10:
+                self.field_text(f'Inventory{slot + 1}', title, title=_('Inventory details'))
+                if slots == 2:
+                    self.field_text(f'Inventory{slot + 2}', _('Occupied by bulky item above'), 9)
+            else:
+                self.section(_('Additional inventory'), title)
+            slot += slots
+        petty_lines = [_item_title(it) for it in petty]
+        petty_slots = sum(1 for name in self.fields if re.fullmatch(r'Petty\d+', name))
+        for index, title in enumerate(petty_lines[:petty_slots], 1):
+            self.field_text(f'Petty{index}', title, 10, title=_('Petty Items'))
+        if len(petty_lines) > petty_slots:
+            self.section(_('Petty Items'), '\n'.join(petty_lines[petty_slots:]))
+        self.container_sections(items)
+
+        self.section(_('Description'), c.description)
+        self.section(_('Scars'), c.scars)
+        self.companion_sections()
+        return self.finish(BAREBONES_TEMPLATE, f'{c.name} - Cairn Barebones A4')
+
+
+def character_sheet(character, party=None, orientation='landscape', export_attributes=True):
+    """The printable sheet for a character's edition."""
+    if getattr(character, 'edition', None) == 'barebones':
+        return BarebonesSheet(character, party, export_attributes=export_attributes)
+    return CharacterSheet(character, party, orientation, export_attributes=export_attributes)

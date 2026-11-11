@@ -1,6 +1,7 @@
 {% extends "base.html" %} {% block content %}
 <script src="{{ url_for('static', filename='src/js/character_create.js') }}" type="module"></script>
 <div class="body-container" id="create-body-container">
+    {% with edition='2e' %}{% include "partial/charcreo/edition_tabs.html" %}{% endwith %}
     <div class="create-header">
         <div>
             <button class="button is-link purple" id="roll-all" type="button" style="margin-right: 8px"

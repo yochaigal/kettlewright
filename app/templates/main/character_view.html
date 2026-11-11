@@ -39,12 +39,19 @@
         </a>
 
         <label class="character-pdf-attributes"><input type="checkbox" x-model="exportAttributes" checked> {{_('Export Attributes')}}</label>
+        {% if character.is_barebones %}
+        {# One Barebones sheet (A4); the portrait route serves it. #}
+        <a class="button is-light character-pdf-action" id="character-pdf-barebones" href="{{ url_for('main.print_character_portrait', username=username, url_name=url_name) }}"
+           :href='{{ url_for("main.print_character_portrait", username=username, url_name=url_name) | tojson }} + "?export_attributes=" + (exportAttributes ? "1" : "0")'
+           target="_blank" rel="noopener">{{_('Print PDF')}} <i class="fa-solid fa-file-pdf icon-in-button" aria-hidden="true"></i></a>
+        {% else %}
         <a class="button is-light character-pdf-action" href="{{ url_for('main.print_character_landscape', username=username, url_name=url_name) }}"
            :href='{{ url_for("main.print_character_landscape", username=username, url_name=url_name) | tojson }} + "?export_attributes=" + (exportAttributes ? "1" : "0")'
            target="_blank" rel="noopener">{{_('Print PDF (landscape)')}} <i class="fa-solid fa-file-pdf icon-in-button" aria-hidden="true"></i></a>
         <a class="button is-light character-pdf-action" href="{{ url_for('main.print_character_portrait', username=username, url_name=url_name) }}"
            :href='{{ url_for("main.print_character_portrait", username=username, url_name=url_name) | tojson }} + "?export_attributes=" + (exportAttributes ? "1" : "0")'
            target="_blank" rel="noopener">{{_('Print PDF (portrait)')}} <i class="fa-solid fa-file-pdf icon-in-button" aria-hidden="true"></i></a>
+        {% endif %}
 
         {% if is_owner %}
         <a href="/charedit/export/{{username}}/{{url_name}}">

@@ -1,5 +1,6 @@
 """Cairn Barebones Edition characters (#292)."""
 import html
+import io
 import json
 import re
 
@@ -124,7 +125,11 @@ def test_swap_attributes(client):
 
 def test_save_requires_name_background_and_attributes(app_with_babel, client):
     response = client.post('/charcreo/barebones/save', data={})
-    assert 'barebones-errors' in response.get_data(True)
+    page = response.get_data(True)
+    assert 'id="error-modal"' in page
+    for message in ('Required background selection', 'Required character name', 'Required STR attribute',
+                    'Required DEX attribute', 'Required WIL attribute', 'Required HP attribute'):
+        assert message in page
     assert 'HX-Redirect' not in response.headers
     with app_with_babel.app_context():
         assert Character.query.count() == 0
@@ -237,3 +242,68 @@ def test_barebones_generator_saves_to_party_as_hireling(app_with_babel):
         hireling = Companion.query.one()
         assert (hireling.name, hireling.role) == (data['name'], 'Fighter')
         assert hireling.armorValue() == 2 and 'Sword (d8)' in hireling.attack
+
+
+
+def test_one_new_character_button_and_edition_tabs_on_both_creators(client):
+    page = client.get('/users/bare/characters/').get_data(True)
+    assert 'href="/new_character/ "' in page and '/new_character/barebones/' not in page
+    second = client.get('/new_character/').get_data(True)
+    bare = client.get('/new_character/barebones/').get_data(True)
+    for html_page in (second, bare):
+        assert 'class="edition-tabs"' in html_page
+        assert 'href="/new_character/"' in html_page and 'href="/new_character/barebones/"' in html_page
+    assert re.search(r'href="/new_character/"\s+aria-current="page"', second)
+    assert re.search(r'href="/new_character/barebones/"\s+aria-current="page"', bare)
+
+
+# PDF sheet
+
+def test_split_traits_reads_both_sentence_forms():
+    from app.lib.character_pdf import split_traits
+    word_by_word = ('You have a Lanky Physique, Oily Skin, and Oily Hair. Your Face is Rakish, your Speech Blunt. '
+                    'You have Filthy Clothing. You are Cautious and Deceitful. You are 31 years old.')
+    sentence = ('You have a lanky physique, oily skin, and oily hair. Your face is rakish, your speech blunt. '
+                'You have filthy clothing. You are cautious and deceitful. You are 31 years old.')
+    for text in (word_by_word, sentence):
+        traits, age = split_traits(text)
+        assert traits == {'Physique': 'Lanky', 'Skin': 'Oily', 'Hair': 'Oily', 'Face': 'Rakish', 'Speech': 'Blunt',
+                          'Clothing': 'Filthy', 'Virtue': 'Cautious', 'Vice': 'Deceitful'}
+        assert age == '31'
+    assert split_traits('A rewritten description.') == (None, '')
+
+
+def test_barebones_pdf_uses_the_a4_barebones_sheet(app_with_babel, client):
+    from pypdf import PdfReader
+    client.post('/charcreo/barebones/save', data=rolled(client))
+    with app_with_babel.app_context():
+        character = Character.query.one()
+        url_name, name, background = character.url_name, character.name, character.background
+    for route in ('portrait', 'landscape'):
+        response = client.get(f'/users/bare/characters/{url_name}/print/{route}.pdf')
+        assert response.status_code == 200 and response.mimetype == 'application/pdf'
+        assert f'{url_name}-barebones-a4.pdf' in response.headers['Content-Disposition']
+        pdf = PdfReader(io.BytesIO(response.data))
+        page = pdf.pages[0]
+        assert (round(float(page.mediabox.width)), round(float(page.mediabox.height))) == (595, 842)
+        widgets = [a for a in page.get('/Annots') or [] if a.get_object().get('/Subtype') == '/Widget']
+        assert widgets == [] and '/AcroForm' not in pdf.trailer['/Root']  # values are drawn, not left in form fields
+        text = page.extract_text()
+        assert 'Physique' in text  # trait labels stored as pre-filled fields survive flattening
+        assert name in text and background in text and 'Rations' in text
+    view = client.get(f'/users/bare/characters/{url_name}/').get_data(True)
+    assert 'character-pdf-barebones' in view and 'Print PDF (landscape)' not in view
+
+
+def test_second_edition_pdf_keeps_a4_sheets(app_with_babel, client):
+    from pypdf import PdfReader
+    with app_with_babel.app_context():
+        db.session.add(Character(name='Old Hand', background='Outrider', owner=1, owner_username='bare',
+                                 url_name='old-hand', items='[]', containers='[{"id": 0, "name": "Main", "slots": 10}]',
+                                 hp=3, hp_max=3, strength=10, strength_max=10, dexterity=10, dexterity_max=10,
+                                 willpower=10, willpower_max=10, gold=0, traits='', notes=''))
+        db.session.commit()
+    response = client.get('/users/bare/characters/old-hand/print/landscape.pdf')
+    assert 'old-hand-landscape-a4.pdf' in response.headers['Content-Disposition']
+    page = PdfReader(io.BytesIO(response.data)).pages[0]
+    assert round(float(page.mediabox.width)) == 842

@@ -28,21 +28,8 @@
         <div class="no-space" id="character-portrait-container">
             {% include "partial/charcreo/portrait_img.html" %}
         </div>
-        <div>
-            <h1>{{_('New Character')}}</h1>
-            <p class="subtitle">
-                <a href="https://cairnrpg.com/barebones/rules/" target="_blank" rel="noopener">{{_('Cairn Barebones Edition')}}</a>
-            </p>
-        </div>
+        <h1>{{_('New Character')}}</h1>
     </div>
-
-    {% if errors %}
-    <div class="message is-danger" id="barebones-errors">
-        <ul class="message-header rounded">
-            {% for error in errors %}<li>{{ error }}</li>{% endfor %}
-        </ul>
-    </div>
-    {% endif %}
 
     <!-- NAME & AGE -->
     <div class="create-background-name-container">
@@ -134,13 +121,13 @@
     <div class="divider"></div>
 
     <!-- BACKGROUND & GEAR -->
-    <h2 class="title script-font">{{_('Background & Gear')}}</h2>
+    <h2 class="title script-font">{{_('Items')}}</h2>
     <div class="create-field-dice-container">
         <label for="barebones-gear_source" class="subtitle attribute-font">{{_('Starting gear')}}</label>
         <div class="select">
             <select class="create-select-field" name="gear_source" id="barebones-gear_source"
                 hx-post="/charcreo/barebones/change/gear_source" hx-trigger="change">
-                <option value="background" {% if state.gear_source == 'background' %}selected{% endif %}>{{_('Roll background & gear')}}</option>
+                <option value="background" {% if state.gear_source == 'background' %}selected{% endif %}>{{_('Background')}}</option>
                 {% for package in packages %}
                 <option value="{{ package }}" {% if state.gear_source == package %}selected{% endif %}>{{_('Gear package')}}: {{ package | tr }}</option>
                 {% endfor %}
@@ -150,25 +137,33 @@
 
     {% if state.gear_source == 'background' %}
     <div class="barebones-gear-tables">
-        <div class="create-field-dice-container">
-            <span class="subtitle attribute-font">{{_('Background')}} ({{_('d100')}})</span>
-            {{ table_select('background', data.backgrounds, _('Background'), _('Background')) }}
-            {{ dice('background', _('Roll background')) }}
+        <div class="barebones-gear-table">
+            <label class="subtitle attribute-font" for="barebones-background">{{_('Background')}} ({{_('d100')}})</label>
+            <div class="create-field-dice-container">
+                {{ table_select('background', data.backgrounds, _('Background'), _('Background')) }}
+                {{ dice('background', _('Roll background')) }}
+            </div>
         </div>
-        <div class="create-field-dice-container">
-            <span class="subtitle attribute-font">{{_('Armor')}} ({{_('d6')}})</span>
-            {{ table_select('armor', data.armor, _('Armor'), _('Armor')) }}
-            {{ dice('armor', _('Roll armor')) }}
+        <div class="barebones-gear-table">
+            <label class="subtitle attribute-font" for="barebones-armor">{{_('Armor')}} ({{_('d6')}})</label>
+            <div class="create-field-dice-container">
+                {{ table_select('armor', data.armor, _('Armor'), _('Armor')) }}
+                {{ dice('armor', _('Roll armor')) }}
+            </div>
         </div>
-        <div class="create-field-dice-container">
-            <span class="subtitle attribute-font">{{_('Weapon')}} ({{_('d6')}})</span>
-            {{ table_select('weapon', data.weapons, _('Weapon'), _('Weapon')) }}
-            {{ dice('weapon', _('Roll weapon')) }}
+        <div class="barebones-gear-table">
+            <label class="subtitle attribute-font" for="barebones-weapon">{{_('Weapon')}} ({{_('d6')}})</label>
+            <div class="create-field-dice-container">
+                {{ table_select('weapon', data.weapons, _('Weapon'), _('Weapon')) }}
+                {{ dice('weapon', _('Roll weapon')) }}
+            </div>
         </div>
-        <div class="create-field-dice-container">
-            <span class="subtitle attribute-font">{{_('Additional Gear')}} ({{_('d100')}})</span>
-            {{ table_select('gear', data.gear, _('Additional Gear'), _('Additional Gear')) }}
-            {{ dice('gear', _('Roll additional gear')) }}
+        <div class="barebones-gear-table">
+            <label class="subtitle attribute-font" for="barebones-gear">{{_('Additional Gear')}} ({{_('d100')}})</label>
+            <div class="create-field-dice-container">
+                {{ table_select('gear', data.gear, _('Additional Gear'), _('Additional Gear')) }}
+                {{ dice('gear', _('Roll additional gear')) }}
+            </div>
         </div>
     </div>
     {% else %}
@@ -177,11 +172,8 @@
     {% endfor %}
     {% endif %}
 
-    <!-- ITEMS -->
-    <div class="divider"></div>
-    <div class="items-container" style="margin-bottom: 24px" id="items-container">
-        <h2 class="title script-font">{{_('Items')}}</h2>
-        <p id="barebones-background-label"><b>{{_('Background')}}:</b> {{ background_label | tr }}</p>
+    <!-- ARMOR, GOLD & INVENTORY -->
+    <div class="items-container" style="margin: 24px 0" id="items-container">
         <div class="create-armor-gold-container">
             <div class="justify-left">
                 <p class="subtitle attribute-font">{{_('Armor')}}</p>
@@ -204,5 +196,5 @@
     </div>
 
     <input class="button" id="submit-button" name="submit" type="button" value="{{_('Save Character')}}"
-        hx-post="/charcreo/barebones/save" />
+        hx-post="/charcreo/barebones/save" hx-target="#dialog-anchor" hx-swap="innerHTML" />
 </form>
