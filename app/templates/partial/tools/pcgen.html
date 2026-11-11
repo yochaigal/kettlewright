@@ -6,7 +6,13 @@
         <label for="background-select">{{_('Background')}}</label>
         <select id="background-select" name="background">
           <option value="">{{_('Random')}}</option>
+          <optgroup label="{{_('Second Edition')}}">
           {% for bkg in backgrounds %}<option value="{{bkg}}">{{bkg | tr}}</option>{% endfor %}
+          </optgroup>
+          <optgroup label="{{_('Barebones Edition')}}">
+            <option value="barebones">{{_('Random')}} ({{_('Barebones')}})</option>
+            {% for package in barebones_packages %}<option value="barebones:{{package}}">{{_('Gear package')}}: {{package | tr}}</option>{% endfor %}
+          </optgroup>
         </select>
       </div>
       <button class="button tools-generate-button" type="button" id="pcgen-button" hx-get="{{url_for('generator.character', view='sheet')}}"

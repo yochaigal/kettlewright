@@ -272,3 +272,81 @@ padding: 0px;
     max-width: fit-content;
     margin-top: 4em;
 }
+
+// Cairn Barebones Edition creation (#292).
+// htmx inserts the re-rendered form before removing the old one; with scroll
+// anchoring on, the browser follows the old form and jumps to the page bottom.
+#create-body-container.barebones-create,
+html:has(#barebones-form) {
+  overflow-anchor: none;
+}
+
+.barebones-gear-tables {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px 24px;
+  margin-top: 12px;
+
+  @media (max-width: 400px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.barebones-gear-table {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+
+  .create-field-dice-container {
+    flex-wrap: nowrap;
+  }
+
+  .select {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .create-select-field {
+    width: 100%;
+    max-width: 100%;
+    text-overflow: ellipsis;
+  }
+
+  .dice-button {
+    flex-shrink: 0;
+  }
+}
+
+// Edition tabs above both character creators (#292).
+.edition-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-bottom: 1em;
+  border-bottom: 1px solid var(--fg);
+
+  a {
+    margin-bottom: -1px;
+    padding: 0.6em 1.2em;
+    border: 1px solid color-mix(in lab, transparent 75%, var(--fg));
+    border-bottom-color: var(--fg);
+    border-radius: 4px 4px 0 0;
+    color: var(--fg);
+    text-decoration: none;
+
+    &:hover { background: color-mix(in lab, transparent 88%, var(--fg)); }
+
+    &[aria-current="page"] {
+      font-weight: bold;
+      background: var(--fg);
+      color: var(--bg);
+      border-color: var(--fg);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--fg);
+      outline-offset: 2px;
+    }
+  }
+}

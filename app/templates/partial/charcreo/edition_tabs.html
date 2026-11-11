@@ -1,0 +1,5 @@
+{# Switch between the Second Edition and Barebones creators (#292). #}
+<nav class="edition-tabs" aria-label="{{_('Rules edition')}}">
+    <a href="{{ url_for('main.new_character') }}" {% if edition != 'barebones' %}aria-current="page"{% endif %}>{{_('Second Edition')}}</a>
+    <a href="{{ url_for('main.new_barebones_character') }}" {% if edition == 'barebones' %}aria-current="page"{% endif %} title="{{_('Cairn Barebones Edition')}}">{{_('Barebones')}}</a>
+</nav>

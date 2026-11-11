@@ -281,6 +281,7 @@ class CharacterJSONForm(FlaskForm):
     deprived = HiddenField(_l('Deprived'), validators=[Length(max=5)])
     panicked = HiddenField(_l('Panicked'), validators=[Length(max=5)])
     dead = HiddenField(_l('Dead'), validators=[Length(max=5)])
+    edition = HiddenField(_l('Edition'), validators=[Length(max=16)])
 
     notes = HiddenField(_l('Notes'), validators=[Length(max=2000)])
     description = HiddenField(_l('Description'), validators=[Length(max=2000)])

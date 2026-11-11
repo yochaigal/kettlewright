@@ -18,6 +18,12 @@ def item_armor_value(item):
 
 BACKGROUND_FIELDS = ('background_table1_question', 'background_table1_answer', 'background_table2_question', 'background_table2_answer')
 
+# Rules edition a character was made with. Barebones characters have no bonds,
+# omens or background tables, so their sheets leave those sections out.
+EDITION_SECOND = '2e'
+EDITION_BAREBONES = 'barebones'
+EDITIONS = (EDITION_SECOND, EDITION_BAREBONES)
+
 
 class Character(db.Model):
     __tablename__ = 'characters'
@@ -63,6 +69,7 @@ class Character(db.Model):
     armor = db.Column(db.String(16))
     party_code = db.Column(db.String(64))
     party_id = db.Column(db.Integer)
+    edition = db.Column(db.String(16), nullable=False, default=EDITION_SECOND, server_default=EDITION_SECOND)
 
     def to_dict(self):  # convert to python dictionary
         return {
@@ -76,6 +83,10 @@ class Character(db.Model):
             'strength': self.strength,
             'strength_max': self.strength_max
         }
+
+    @property
+    def is_barebones(self):
+        return self.edition == EDITION_BAREBONES
 
     def __repr__(self):
         return f'<Character {self.name}>'

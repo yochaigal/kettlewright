@@ -1,0 +1,200 @@
+{% macro dice(field, title='') -%}
+<button class="roll button dice-button" type="button" title="{{ title }}"
+    hx-post="/charcreo/barebones/roll/{{ field }}" hx-target="#barebones-form" hx-swap="outerHTML">
+    <i class="fa-solid fa-dice dice"></i>
+</button>
+{%- endmacro %}
+{% macro table_select(field, rows, placeholder, label) -%}
+<div class="select">
+    <select class="create-select-field" name="{{ field }}" id="barebones-{{ field }}" aria-label="{{ label }}"
+        hx-post="/charcreo/barebones/change/{{ field }}" hx-trigger="change" hx-target="#barebones-form"
+        hx-swap="outerHTML">
+        <option value="" {% if not state[field] %}selected{% endif %}>{{ placeholder }}...</option>
+        {% for row in rows %}
+        <option value="{{ loop.index }}" {% if state[field] == loop.index %}selected{% endif %}>
+            {{ loop.index }}. {{ (row.name or row.spell or ('Random spellbook' if row.random == 'spellbook' else 'Random scroll')) | tr('equipment') }}
+        </option>
+        {% endfor %}
+    </select>
+</div>
+{%- endmacro %}
+<form class="sheet" method="POST" id="barebones-form" hx-target="#barebones-form" hx-swap="outerHTML">
+    {% for group in groups %}
+    <input type="hidden" name="{{ group }}" value="{{ state[group] | tojson | forceescape }}" />
+    {% endfor %}
+
+    <!-- PORTRAIT -->
+    <div style="display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em; align-items: center">
+        <div class="no-space" id="character-portrait-container">
+            {% include "partial/charcreo/portrait_img.html" %}
+        </div>
+        <h1>{{_('New Character')}}</h1>
+    </div>
+
+    <!-- NAME & AGE -->
+    <div class="create-background-name-container">
+        <div class="create-field-dice-container">
+            <input class="input bold" type="text" name="name" id="barebones-name" maxlength="64"
+                placeholder="{{_('Name (d100)')}}" aria-label="{{_('Name')}}" value="{{ state.name }}" />
+            {{ dice('name', _('Roll name')) }}
+        </div>
+        <div class="create-attribute-container">
+            <span class="subtitle attribute-font">{{_('Age')}}</span>
+            <span class="attribute-roll-font">({{_('2d20+10')}})</span>
+            <span class="number-field">
+                <input class="input number-input create-attribute-field center-input" type="number" name="age"
+                    id="barebones-age" min="0" value="{{ state.age if state.age is not none else '' }}" />
+            </span>
+            {{ dice('age', _('Roll age')) }}
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ATTRIBUTES -->
+    <div class="create-attributes-container">
+        <h2 class="title script-font">{{_('Attributes')}}</h2>
+        <div class="create-str-dex-wil-container">
+            {% for key, field, label in (('str', 'strength', _('STR')), ('dex', 'dexterity', _('DEX')), ('wil', 'willpower', _('WIL'))) %}
+            <div class="create-attribute-container">
+                <span class="subtitle attribute-font">{{ label }}</span>
+                <span class="attribute-roll-font">{{_('(3d6)')}}</span>
+                <span class="number-field">
+                    <input class="input number-input create-attribute-field center-input" type="number" min="0"
+                        name="{{ field }}" id="barebones-{{ field }}" value="{{ state[field] if state[field] is not none else '' }}" />
+                </span>
+                {{ dice(key) }}
+            </div>
+            {% endfor %}
+        </div>
+        <div id="swap-container">
+            {% for n in (1, 2) %}
+            <select name="swap_attribute_{{ n }}" aria-label="{{_('Swap once...')}}">
+                <option value="">{{_('Swap once...')}}</option>
+                <option value="str">{{_('Strength')}}</option>
+                <option value="dex">{{_('Dexterity')}}</option>
+                <option value="wil">{{_('Willpower')}}</option>
+            </select>
+            {% if n == 1 %}
+            <button class="button" type="button" id="swap-button" hx-post="/charcreo/barebones/swap">
+                <i class="fa-solid fa-right-left icon-in-button"></i>
+            </button>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="create-attribute-container" id="create-hp-container">
+            <span class="subtitle hp-font">{{_('HP')}}</span>
+            <span class="attribute-roll-font">{{_('(d6)')}}</span>
+            <span class="column number-field">
+                <input class="input number-input create-attribute-field center-input" type="number" min="0" name="hp"
+                    id="barebones-hp" value="{{ state.hp if state.hp is not none else '' }}" />
+            </span>
+            {{ dice('hp') }}
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- TRAITS -->
+    <div class="create-traits-outer-container">
+        <div class="justify-left">
+            <h2 class="title script-font">{{_('Traits')}}</h2>
+            {{ dice('traits', _('Roll traits')) }}
+        </div>
+        <div class="create-traits-container">
+            {% for name in trait_names %}
+            <div class="create-trait-container">
+                <label for="barebones-trait-{{ name | lower }}">{{ _(name) }}</label>
+                <select class="trait-select" id="barebones-trait-{{ name | lower }}" name="{{ name }}"
+                    hx-post="/charcreo/barebones/change/traits" hx-trigger="change">
+                    <option value="">{{ _(name) }} ({{_('d10')}})...</option>
+                    {% for t in traits[name] %}
+                    <option value="{{ t }}" {% if state[name] == t %}selected{% endif %}>{{ t | tr('character trait: ' ~ name) }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endfor %}
+            <p class="text-border" id="traits-description" style="min-height: 60px; grid-column: 1/-1">{{ traits_text }}</p>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- BACKGROUND & GEAR -->
+    <h2 class="title script-font">{{_('Items')}}</h2>
+    <div class="create-field-dice-container">
+        <label for="barebones-gear_source" class="subtitle attribute-font">{{_('Starting gear')}}</label>
+        <div class="select">
+            <select class="create-select-field" name="gear_source" id="barebones-gear_source"
+                hx-post="/charcreo/barebones/change/gear_source" hx-trigger="change">
+                <option value="background" {% if state.gear_source == 'background' %}selected{% endif %}>{{_('Background')}}</option>
+                {% for package in packages %}
+                <option value="{{ package }}" {% if state.gear_source == package %}selected{% endif %}>{{_('Gear package')}}: {{ package | tr }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    {% if state.gear_source == 'background' %}
+    <div class="barebones-gear-tables">
+        <div class="barebones-gear-table">
+            <label class="subtitle attribute-font" for="barebones-background">{{_('Background')}} ({{_('d100')}})</label>
+            <div class="create-field-dice-container">
+                {{ table_select('background', data.backgrounds, _('Background'), _('Background')) }}
+                {{ dice('background', _('Roll background')) }}
+            </div>
+        </div>
+        <div class="barebones-gear-table">
+            <label class="subtitle attribute-font" for="barebones-armor">{{_('Armor')}} ({{_('d6')}})</label>
+            <div class="create-field-dice-container">
+                {{ table_select('armor', data.armor, _('Armor'), _('Armor')) }}
+                {{ dice('armor', _('Roll armor')) }}
+            </div>
+        </div>
+        <div class="barebones-gear-table">
+            <label class="subtitle attribute-font" for="barebones-weapon">{{_('Weapon')}} ({{_('d6')}})</label>
+            <div class="create-field-dice-container">
+                {{ table_select('weapon', data.weapons, _('Weapon'), _('Weapon')) }}
+                {{ dice('weapon', _('Roll weapon')) }}
+            </div>
+        </div>
+        <div class="barebones-gear-table">
+            <label class="subtitle attribute-font" for="barebones-gear">{{_('Additional Gear')}} ({{_('d100')}})</label>
+            <div class="create-field-dice-container">
+                {{ table_select('gear', data.gear, _('Additional Gear'), _('Additional Gear')) }}
+                {{ dice('gear', _('Roll additional gear')) }}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    {% for field in ('background', 'armor', 'weapon', 'gear') %}
+    <input type="hidden" name="{{ field }}" value="{{ state[field] if state[field] else '' }}" />
+    {% endfor %}
+    {% endif %}
+
+    <!-- ARMOR, GOLD & INVENTORY -->
+    <div class="items-container" style="margin: 24px 0" id="items-container">
+        <div class="create-armor-gold-container">
+            <div class="justify-left">
+                <p class="subtitle attribute-font">{{_('Armor')}}</p>
+                <p class="title script-font" id="armor-counter">{{ armor }}</p>
+            </div>
+            <div class="create-attribute-container">
+                <span class="subtitle attribute-font">{{_('Gold')}}</span>
+                <span class="attribute-roll-font">({{_('3d6')}})</span>
+                <span class="number-field">
+                    <input class="input number-input create-attribute-field center-input" type="number" min="0"
+                        name="gold" id="barebones-gold" value="{{ state.gold if state.gold is not none else '' }}" />
+                </span>
+                {{ dice('gold') }}
+            </div>
+        </div>
+        <p class="{% if slots > 10 %}red-text{% endif %}" id="barebones-slots">{{_('Slots')}}: {{ slots }}/10</p>
+        <div class="create-inventory-container">
+            {% include "partial/charcreo/inventory.html" %}
+        </div>
+    </div>
+
+    <input class="button" id="submit-button" name="submit" type="button" value="{{_('Save Character')}}"
+        hx-post="/charcreo/barebones/save" hx-target="#dialog-anchor" hx-swap="innerHTML" />
+</form>

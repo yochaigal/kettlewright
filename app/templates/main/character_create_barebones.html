@@ -1,0 +1,29 @@
+{% extends "base.html" %} {% block content %}
+<div class="body-container barebones-create" id="create-body-container">
+    {% with edition='barebones' %}{% include "partial/charcreo/edition_tabs.html" %}{% endwith %}
+    <div class="create-header">
+        <div>
+            <button class="button is-link purple" id="roll-all" type="button" style="margin-right: 8px"
+                hx-post="/charcreo/barebones/roll/all" hx-include="#barebones-form" hx-target="#barebones-form"
+                hx-swap="outerHTML">
+                {{_('Roll All')}}
+                <i class="fa-solid fa-dice icon-in-button"></i>
+            </button>
+            <button class="button is-link blue" id="roll-remaining" type="button" style="margin-right: 8px"
+                hx-post="/charcreo/barebones/roll/remaining" hx-include="#barebones-form" hx-target="#barebones-form"
+                hx-swap="outerHTML">
+                {{_('Roll Remaining')}}
+                <i class="fa-solid fa-dice icon-in-button"></i>
+            </button>
+        </div>
+        <button class="button" id="reset-button" type="button" hx-get="/reload-page?link=/new_character/barebones/"
+            hx-confirm="{{_('Do you want to reset character?')}}" data-confirm-title="{{_('Reset character')}}"
+            data-confirm-button="{{_('Reset')}}" data-cancel-button="{{_('Cancel')}}">
+            {{_('Reset')}}
+            <i class="fa-solid fa-rotate-right icon-in-button"></i>
+        </button>
+    </div>
+    {{ form_html | safe }}
+</div>
+<div class="no-space" id="dialog-anchor"></div>
+{% endblock %}

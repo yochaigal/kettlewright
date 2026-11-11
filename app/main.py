@@ -5,6 +5,7 @@ from flask import Blueprint, render_template, redirect, url_for, jsonify, flash,
 from flask_login import login_required, current_user
 from flask_wtf import FlaskForm
 from .models import User, Character, Party
+from .models.character import EDITIONS, EDITION_SECOND
 from . import db
 from .forms import CharacterForm, CharacterEditForm, CharacterJSONForm, PartyForm, PartyEditForm
 from app.lib import load_scars, character_portrait_link, Inventory, sanitize_data, sanitize_json_content, load_version, load_backgrounds, load_traits, load_bonds, load_omens, DummyCharacter
@@ -176,7 +177,8 @@ def new_from_json():
                 panicked=string_to_bool(form.panicked.data or False),
                 dead=string_to_bool(form.dead.data or False),
                 traits=sanitize_data(form.traits.data or ''),  # New field
-                armor=sanitize_data(form.armor.data or '')  # New field
+                armor=sanitize_data(form.armor.data or ''),  # New field
+                edition=form.edition.data if form.edition.data in EDITIONS else EDITION_SECOND
             )
 
             from app.models.character import BACKGROUND_FIELDS
@@ -309,6 +311,13 @@ def new_character():
                            form=form, custom_fields=custom_fields)
 
 
+@main.route('/new_character/barebones/', methods=['GET'])
+@login_required
+def new_barebones_character():
+    from app.blueprints.charcreo_barebones import creation_page
+    return creation_page()
+
+
 @main.route('/users/<username>/characters/<url_name>/')
 def character(username, url_name):
     user = User.query.filter_by(username=username).first_or_404()
@@ -365,13 +374,15 @@ def print_character_portrait(username, url_name):
 
 
 def _print_character_pdf(username, url_name, orientation):
-    from app.lib.character_pdf import CharacterSheet
+    from app.lib.character_pdf import character_sheet
     user = User.query.filter_by(username=username).first_or_404()
     character = Character.query.filter_by(owner=user.id, url_name=url_name).first_or_404()
     party = db.session.get(Party, character.party_id) if character.party_id else None
     export_attributes = request.args.get('export_attributes', '1') != '0'
-    response = send_file(CharacterSheet(character, party, orientation, export_attributes=export_attributes).draw(), mimetype='application/pdf',
-                         download_name=f'{character.url_name}-{orientation}-a4.pdf', as_attachment=False)
+    # Barebones characters always get the Barebones sheet, whichever orientation link was used.
+    paper = 'barebones-a4' if character.is_barebones else f'{orientation}-a4'
+    response = send_file(character_sheet(character, party, orientation, export_attributes=export_attributes).draw(), mimetype='application/pdf',
+                         download_name=f'{character.url_name}-{paper}.pdf', as_attachment=False)
     response.headers['Cache-Control'] = 'private, no-store'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
@@ -552,11 +563,12 @@ def tools():
         events_data = json.load(file)
     events_data = translate_events_data(events_data)
     backgrounds = load_backgrounds()
+    from app.lib.barebones import gear_packages
     warden_parties = Party.query.filter_by(owner=current_user.id).order_by(Party.name, Party.id).all() if current_user.is_authenticated else []
     from app.lib.monsters import monster_catalog
     from app.models import Campaign
     generator_campaigns = Campaign.query.filter_by(owner_id=current_user.id).order_by(Campaign.name, Campaign.id).all() if current_user.is_authenticated else []
-    return render_template('main/tools.html', events_data=json.dumps(events_data),pcgen_value="", backgrounds=backgrounds, warden_parties=warden_parties, monster_templates=monster_catalog(), generator_campaigns=generator_campaigns, roll_form=FlaskForm())
+    return render_template('main/tools.html', events_data=json.dumps(events_data),pcgen_value="", backgrounds=backgrounds, barebones_packages=gear_packages(), warden_parties=warden_parties, monster_templates=monster_catalog(), generator_campaigns=generator_campaigns, roll_form=FlaskForm())
 
 @main.route('/reload-page')
 def reload_page():

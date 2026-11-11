@@ -1,0 +1,3105 @@
+{
+  "names": [
+    {
+      "name": "Adair",
+      "surname": "Abbot"
+    },
+    {
+      "name": "Alaric",
+      "surname": "Addyman"
+    },
+    {
+      "name": "Alder",
+      "surname": "Ashwell"
+    },
+    {
+      "name": "Amaris",
+      "surname": "Balfe"
+    },
+    {
+      "name": "Anwen",
+      "surname": "Baxter"
+    },
+    {
+      "name": "Arlo",
+      "surname": "Bevan"
+    },
+    {
+      "name": "Ash",
+      "surname": "Beran"
+    },
+    {
+      "name": "Aster",
+      "surname": "Blackwood"
+    },
+    {
+      "name": "Ballad",
+      "surname": "Bowen"
+    },
+    {
+      "name": "Barley",
+      "surname": "Brewer"
+    },
+    {
+      "name": "Basil",
+      "surname": "Broder"
+    },
+    {
+      "name": "Beatrix",
+      "surname": "Bukharin"
+    },
+    {
+      "name": "Birch",
+      "surname": "Cadwallan"
+    },
+    {
+      "name": "Bram",
+      "surname": "Carter"
+    },
+    {
+      "name": "Briar",
+      "surname": "Cobb"
+    },
+    {
+      "name": "Brook",
+      "surname": "Collier"
+    },
+    {
+      "name": "Bryn",
+      "surname": "Cooper"
+    },
+    {
+      "name": "Cai",
+      "surname": "Crowther"
+    },
+    {
+      "name": "Callan",
+      "surname": "Dempsey"
+    },
+    {
+      "name": "Carver",
+      "surname": "Dermody"
+    },
+    {
+      "name": "Cedric",
+      "surname": "Domański"
+    },
+    {
+      "name": "Cinder",
+      "surname": "Dymov"
+    },
+    {
+      "name": "Cliff",
+      "surname": "Fairweather"
+    },
+    {
+      "name": "Corin",
+      "surname": "Fedorov"
+    },
+    {
+      "name": "Crow",
+      "surname": "Fletcher"
+    },
+    {
+      "name": "Dain",
+      "surname": "Fuller"
+    },
+    {
+      "name": "Darnel",
+      "surname": "Galen"
+    },
+    {
+      "name": "Dax",
+      "surname": "Glinka"
+    },
+    {
+      "name": "Dorian",
+      "surname": "Glover"
+    },
+    {
+      "name": "Eira",
+      "surname": "Golubov"
+    },
+    {
+      "name": "Elowen",
+      "surname": "Gradnik"
+    },
+    {
+      "name": "Ember",
+      "surname": "Granger"
+    },
+    {
+      "name": "Eon",
+      "surname": "Grobar"
+    },
+    {
+      "name": "Evander",
+      "surname": "Halberg"
+    },
+    {
+      "name": "Falcon",
+      "surname": "Harkin"
+    },
+    {
+      "name": "Faris",
+      "surname": "Hlebar"
+    },
+    {
+      "name": "Fern",
+      "surname": "Hromada"
+    },
+    {
+      "name": "Finch",
+      "surname": "Horgan"
+    },
+    {
+      "name": "Flint",
+      "surname": "Iliev"
+    },
+    {
+      "name": "Freya",
+      "surname": "Ivanec"
+    },
+    {
+      "name": "Gale",
+      "surname": "Joryn"
+    },
+    {
+      "name": "Garen",
+      "surname": "Kamensk"
+    },
+    {
+      "name": "Hazel",
+      "surname": "Kavanagh"
+    },
+    {
+      "name": "Hemlock",
+      "surname": "Kovac"
+    },
+    {
+      "name": "Idris",
+      "surname": "Kovalenko"
+    },
+    {
+      "name": "Ivy",
+      "surname": "Kravec"
+    },
+    {
+      "name": "Juniper",
+      "surname": "Krznar"
+    },
+    {
+      "name": "Kael",
+      "surname": "Kuchar"
+    },
+    {
+      "name": "Kavi",
+      "surname": "Kvasnikov"
+    },
+    {
+      "name": "Keir",
+      "surname": "Lethbridge"
+    },
+    {
+      "name": "Leif",
+      "surname": "Llewellyn"
+    },
+    {
+      "name": "Liora",
+      "surname": "Locke"
+    },
+    {
+      "name": "Lucan",
+      "surname": "Lovett"
+    },
+    {
+      "name": "Lyra",
+      "surname": "Lukanov"
+    },
+    {
+      "name": "Lysander",
+      "surname": "Maddox"
+    },
+    {
+      "name": "Marius",
+      "surname": "Malinov"
+    },
+    {
+      "name": "Marlowe",
+      "surname": "Marinov"
+    },
+    {
+      "name": "Milo",
+      "surname": "Markov"
+    },
+    {
+      "name": "Moss",
+      "surname": "Mason"
+    },
+    {
+      "name": "Nazira",
+      "surname": "Melnik"
+    },
+    {
+      "name": "Neria",
+      "surname": "Mercer"
+    },
+    {
+      "name": "Noa",
+      "surname": "Milner"
+    },
+    {
+      "name": "Nyx",
+      "surname": "Morozov"
+    },
+    {
+      "name": "Onyx",
+      "surname": "Novak"
+    },
+    {
+      "name": "Orla",
+      "surname": "Obradov"
+    },
+    {
+      "name": "Pan",
+      "surname": "O’Callaghan"
+    },
+    {
+      "name": "Patch",
+      "surname": "O’Farrell"
+    },
+    {
+      "name": "Perran",
+      "surname": "O’Leary"
+    },
+    {
+      "name": "Quill",
+      "surname": "Osipov"
+    },
+    {
+      "name": "Rain",
+      "surname": "Pavlenko"
+    },
+    {
+      "name": "Reed",
+      "surname": "Pekar"
+    },
+    {
+      "name": "River",
+      "surname": "Petrov"
+    },
+    {
+      "name": "Robin",
+      "surname": "Pisarev"
+    },
+    {
+      "name": "Rowan",
+      "surname": "Powell"
+    },
+    {
+      "name": "Rune",
+      "surname": "Price"
+    },
+    {
+      "name": "Rush",
+      "surname": "Radoslav"
+    },
+    {
+      "name": "Rye",
+      "surname": "Reeve"
+    },
+    {
+      "name": "Sable",
+      "surname": "Rogov"
+    },
+    {
+      "name": "Sage",
+      "surname": "Romanov"
+    },
+    {
+      "name": "Selene",
+      "surname": "Rowanfield"
+    },
+    {
+      "name": "Shade",
+      "surname": "Rybak"
+    },
+    {
+      "name": "Silas",
+      "surname": "Sawyer"
+    },
+    {
+      "name": "Sky",
+      "surname": "Shepherd"
+    },
+    {
+      "name": "Soren",
+      "surname": "Shevchenko"
+    },
+    {
+      "name": "Sparrow",
+      "surname": "Slater"
+    },
+    {
+      "name": "Stellan",
+      "surname": "Smirnov"
+    },
+    {
+      "name": "Stone",
+      "surname": "Sokolov"
+    },
+    {
+      "name": "Storm",
+      "surname": "Tanner"
+    },
+    {
+      "name": "Talon",
+      "surname": "Thatcher"
+    },
+    {
+      "name": "Thistle",
+      "surname": "Tallow"
+    },
+    {
+      "name": "Thorn",
+      "surname": "Vukovic"
+    },
+    {
+      "name": "Thresh",
+      "surname": "Webb"
+    },
+    {
+      "name": "Valen",
+      "surname": "Whitlock"
+    },
+    {
+      "name": "Vesper",
+      "surname": "Wicklowe"
+    },
+    {
+      "name": "Vex",
+      "surname": "Wightman"
+    },
+    {
+      "name": "Willow",
+      "surname": "Wilkin"
+    },
+    {
+      "name": "Winslow",
+      "surname": "Wright"
+    },
+    {
+      "name": "Wisp",
+      "surname": "Wynne"
+    },
+    {
+      "name": "Wren",
+      "surname": "Yarrow"
+    },
+    {
+      "name": "Yarrow",
+      "surname": "Zidar"
+    }
+  ],
+  "backgrounds": [
+    {
+      "name": "Acolyte",
+      "items": [
+        {
+          "name": "Incense",
+          "tags": []
+        },
+        {
+          "name": "Parchment & Ink",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "random": "spellbook"
+        }
+      ]
+    },
+    {
+      "name": "Acrobat",
+      "items": [
+        {
+          "name": "Pole (10ft)",
+          "tags": []
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        },
+        {
+          "name": "Smokebomb",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Alchemist",
+      "items": [
+        {
+          "name": "Acid",
+          "tags": []
+        },
+        {
+          "name": "Lens",
+          "tags": []
+        },
+        {
+          "name": "Oilskin Bag",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Apothecary",
+      "items": [
+        {
+          "name": "Antitoxin",
+          "tags": []
+        },
+        {
+          "name": "Bandages",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Sealable Bottle",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Assassin",
+      "items": [
+        {
+          "name": "Garrotte",
+          "tags": []
+        },
+        {
+          "name": "Mask",
+          "tags": []
+        },
+        {
+          "name": "Poison",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Astrologer",
+      "items": [
+        {
+          "name": "Candle",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ],
+          "description": "Dim"
+        },
+        {
+          "name": "Marbles",
+          "tags": []
+        },
+        {
+          "name": "Spyglass",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Baker",
+      "items": [
+        {
+          "name": "Flour",
+          "tags": []
+        },
+        {
+          "name": "Honey",
+          "tags": []
+        },
+        {
+          "name": "Sealable Bottle",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Barber-Surgeon",
+      "items": [
+        {
+          "name": "Bandages",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Scissors",
+          "tags": []
+        },
+        {
+          "name": "Sedative",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Barkeep",
+      "items": [
+        {
+          "name": "Alcohol",
+          "tags": []
+        },
+        {
+          "name": "Sealable Bottle",
+          "tags": []
+        },
+        {
+          "name": "Sedative",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Beadle",
+      "items": [
+        {
+          "name": "Bell",
+          "tags": []
+        },
+        {
+          "name": "Gloves",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Whistle",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Beekeeper",
+      "items": [
+        {
+          "name": "Fire Oil",
+          "tags": []
+        },
+        {
+          "name": "Gloves",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Honey",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Bell Ringer",
+      "items": [
+        {
+          "name": "Gloves",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        },
+        {
+          "name": "Whistle",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Bird Keeper",
+      "items": [
+        {
+          "name": "Cage",
+          "tags": []
+        },
+        {
+          "name": "Net",
+          "tags": []
+        },
+        {
+          "name": "Whistle",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Blacksmith",
+      "items": [
+        {
+          "name": "Bellows",
+          "tags": []
+        },
+        {
+          "name": "Hammer",
+          "tags": []
+        },
+        {
+          "name": "Iron Tongs",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Bookbinder",
+      "items": [
+        {
+          "name": "Glue",
+          "tags": []
+        },
+        {
+          "name": "Parchment & Ink",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Sewing Kit",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Bounty Hunter",
+      "items": [
+        {
+          "name": "Flash Powder",
+          "tags": []
+        },
+        {
+          "name": "Manacles",
+          "tags": []
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Butcher",
+      "items": [
+        {
+          "name": "Pail",
+          "tags": []
+        },
+        {
+          "name": "Saw",
+          "tags": []
+        },
+        {
+          "name": "Whetstone",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Carpenter",
+      "items": [
+        {
+          "name": "Hammer",
+          "tags": []
+        },
+        {
+          "name": "Metal File",
+          "tags": []
+        },
+        {
+          "name": "Saw",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Cartographer",
+      "items": [
+        {
+          "name": "Compass",
+          "tags": []
+        },
+        {
+          "name": "Parchment & Ink",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Sextant",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Cartwright",
+      "items": [
+        {
+          "name": "Hand Drill",
+          "tags": []
+        },
+        {
+          "name": "Pulley",
+          "tags": []
+        },
+        {
+          "name": "Saw",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Chandler",
+      "items": [
+        {
+          "name": "Candle",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ],
+          "description": "Dim"
+        },
+        {
+          "name": "Honey",
+          "tags": []
+        },
+        {
+          "name": "Perfume",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Charlatan",
+      "items": [
+        {
+          "name": "Cards",
+          "tags": []
+        },
+        {
+          "name": "Paint",
+          "tags": []
+        },
+        {
+          "name": "Perfume",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Chimney Sweep",
+      "items": [
+        {
+          "name": "Bellows",
+          "tags": []
+        },
+        {
+          "name": "Climbing Spikes",
+          "tags": []
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Clockmaker",
+      "items": [
+        {
+          "name": "Magnifying Glass",
+          "tags": []
+        },
+        {
+          "name": "Metal File",
+          "tags": []
+        },
+        {
+          "name": "Pliers",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Cobbler",
+      "items": [
+        {
+          "name": "Pliers",
+          "tags": []
+        },
+        {
+          "name": "Sack",
+          "tags": []
+        },
+        {
+          "name": "Sewing Kit",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Cook",
+      "items": [
+        {
+          "name": "Flour",
+          "tags": []
+        },
+        {
+          "name": "Pail",
+          "tags": []
+        },
+        {
+          "name": "Smoking Herbs",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cooper",
+      "items": [
+        {
+          "name": "Hammer",
+          "tags": []
+        },
+        {
+          "name": "Hand Drill",
+          "tags": []
+        },
+        {
+          "name": "Saw",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Courier",
+      "items": [
+        {
+          "name": "Bell",
+          "tags": []
+        },
+        {
+          "name": "Compass",
+          "tags": []
+        },
+        {
+          "name": "Parchment & Ink",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Crypt Custodian",
+      "items": [
+        {
+          "name": "Incense",
+          "tags": []
+        },
+        {
+          "name": "Lantern",
+          "tags": []
+        },
+        {
+          "name": "Oil Can",
+          "uses": 6,
+          "tags": [
+            "uses"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cultist",
+      "items": [
+        {
+          "name": "Incense",
+          "tags": []
+        },
+        {
+          "name": "Mask",
+          "tags": []
+        },
+        {
+          "random": "scroll",
+          "petty": true
+        }
+      ]
+    },
+    {
+      "name": "Demolitionist",
+      "items": [
+        {
+          "name": "Explosive",
+          "tags": []
+        },
+        {
+          "name": "Goggles",
+          "tags": []
+        },
+        {
+          "name": "Grease",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Dowser",
+      "items": [
+        {
+          "name": "Dowsing Rod",
+          "tags": []
+        },
+        {
+          "name": "Sealable Bottle",
+          "tags": []
+        },
+        {
+          "name": "Shovel",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Duelist",
+      "items": [
+        {
+          "name": "Cloak",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Gloves",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Whetstone",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Entertainer",
+      "items": [
+        {
+          "name": "Dice",
+          "tags": []
+        },
+        {
+          "name": "Songbook",
+          "tags": []
+        },
+        {
+          "name": "Wig",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Executioner",
+      "items": [
+        {
+          "name": "Mask",
+          "tags": []
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        },
+        {
+          "name": "Whetstone",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Falconer",
+      "items": [
+        {
+          "name": "Cage",
+          "tags": []
+        },
+        {
+          "name": "Gloves",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Whistle",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Farmer",
+      "items": [
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        },
+        {
+          "name": "Sack",
+          "tags": []
+        },
+        {
+          "name": "Shovel",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Fence",
+      "items": [
+        {
+          "name": "Bolt Cutters",
+          "tags": []
+        },
+        {
+          "random": "gear"
+        },
+        {
+          "name": "Sack",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Fisher",
+      "items": [
+        {
+          "name": "Air Bladder",
+          "tags": []
+        },
+        {
+          "name": "Fishing Rod",
+          "tags": []
+        },
+        {
+          "name": "Net",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Fletcher",
+      "items": [
+        {
+          "name": "Sack",
+          "tags": []
+        },
+        {
+          "name": "Trap",
+          "tags": []
+        },
+        {
+          "name": "Whetstone",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Gambler",
+      "items": [
+        {
+          "name": "Alcohol",
+          "tags": []
+        },
+        {
+          "name": "Cards",
+          "tags": []
+        },
+        {
+          "name": "Dice",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Gardener",
+      "items": [
+        {
+          "name": "Gloves",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Sack",
+          "tags": []
+        },
+        {
+          "name": "Shovel",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Glassblower",
+      "items": [
+        {
+          "name": "Goggles",
+          "tags": []
+        },
+        {
+          "name": "Lens",
+          "tags": []
+        },
+        {
+          "name": "Pliers",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Gong Farmer",
+      "items": [
+        {
+          "name": "Gloves",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Sack",
+          "tags": []
+        },
+        {
+          "name": "Shovel",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Gravedigger",
+      "items": [
+        {
+          "name": "Alcohol",
+          "tags": []
+        },
+        {
+          "name": "Ladder",
+          "tags": []
+        },
+        {
+          "name": "Shovel",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Guard",
+      "items": [
+        {
+          "name": "Lantern",
+          "tags": []
+        },
+        {
+          "name": "Manacles",
+          "tags": []
+        },
+        {
+          "name": "Whistle",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Herald",
+      "items": [
+        {
+          "name": "Mask",
+          "tags": []
+        },
+        {
+          "name": "Signal Flag",
+          "tags": []
+        },
+        {
+          "name": "Whistle",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Herbalist",
+      "items": [
+        {
+          "name": "Antitoxin",
+          "tags": []
+        },
+        {
+          "name": "Mugwort",
+          "tags": []
+        },
+        {
+          "name": "Sack",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Hermit",
+      "items": [
+        {
+          "name": "Blanket",
+          "tags": []
+        },
+        {
+          "name": "Pole (10ft)",
+          "tags": []
+        },
+        {
+          "name": "Smoking Herbs",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Highway Robber",
+      "items": [
+        {
+          "name": "Grappling Hook",
+          "tags": []
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        },
+        {
+          "name": "Signal Flag",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Hunter",
+      "items": [
+        {
+          "name": "Trap",
+          "tags": []
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        },
+        {
+          "name": "Smoking Herbs",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Illusionist",
+      "items": [
+        {
+          "name": "Candle",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ],
+          "description": "Dim"
+        },
+        {
+          "name": "Flash Powder",
+          "tags": []
+        },
+        {
+          "name": "Mirror",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Innkeeper",
+      "items": [
+        {
+          "name": "Alcohol",
+          "tags": []
+        },
+        {
+          "name": "Bandages",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Parchment & Ink",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Jailer",
+      "items": [
+        {
+          "name": "Chain (10ft)",
+          "tags": []
+        },
+        {
+          "name": "Manacles",
+          "tags": []
+        },
+        {
+          "name": "Whistle",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Jester",
+      "items": [
+        {
+          "name": "Cards",
+          "tags": []
+        },
+        {
+          "name": "Lute",
+          "tags": []
+        },
+        {
+          "name": "Perfume",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Jeweler",
+      "items": [
+        {
+          "name": "Magnifying Glass",
+          "tags": []
+        },
+        {
+          "name": "Pliers",
+          "tags": []
+        },
+        {
+          "name": "Tongs",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Knight",
+      "items": [
+        {
+          "name": "Gloves",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Signal Flag",
+          "tags": []
+        },
+        {
+          "name": "Whetstone",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Lamplighter",
+      "items": [
+        {
+          "name": "Ladder (10ft)",
+          "tags": [
+            "bulky"
+          ]
+        },
+        {
+          "name": "Oil Can",
+          "uses": 6,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Whistle",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Leech Collector",
+      "items": [
+        {
+          "name": "Gloves",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Leech",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ],
+          "description": "Restores 1 STR"
+        },
+        {
+          "name": "Net",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Librarian",
+      "items": [
+        {
+          "name": "Candle",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ],
+          "description": "Dim"
+        },
+        {
+          "name": "Parchment & Ink",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "random": "scroll",
+          "petty": true
+        }
+      ]
+    },
+    {
+      "name": "Locksmith",
+      "items": [
+        {
+          "name": "Lock & Key",
+          "tags": []
+        },
+        {
+          "name": "Metal File",
+          "tags": []
+        },
+        {
+          "name": "Pliers",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Lumberjack",
+      "items": [
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        },
+        {
+          "name": "Saw",
+          "tags": []
+        },
+        {
+          "name": "Whetstone",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Mason",
+      "items": [
+        {
+          "name": "Chisel",
+          "tags": []
+        },
+        {
+          "name": "Fan",
+          "tags": []
+        },
+        {
+          "name": "Hammer",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Merchant",
+      "items": [
+        {
+          "random": "gear"
+        },
+        {
+          "name": "Stylus",
+          "tags": []
+        },
+        {
+          "name": "Wagon",
+          "containers": [
+            {
+              "name": "Wagon",
+              "slots": 8
+            }
+          ],
+          "tags": [],
+          "description": "+8 slots, slow"
+        }
+      ]
+    },
+    {
+      "name": "Miller",
+      "items": [
+        {
+          "name": "Bowl",
+          "tags": []
+        },
+        {
+          "name": "Flour",
+          "tags": []
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Miner",
+      "items": [
+        {
+          "name": "Lantern",
+          "tags": []
+        },
+        {
+          "name": "Lodestone",
+          "tags": []
+        },
+        {
+          "name": "Pickaxe",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Monk",
+      "items": [
+        {
+          "name": "Candle",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ],
+          "description": "Dim"
+        },
+        {
+          "name": "Cloak",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Songbook",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Musician",
+      "items": [
+        {
+          "name": "Bowl",
+          "tags": []
+        },
+        {
+          "name": "Fiddle",
+          "tags": []
+        },
+        {
+          "name": "Songbook",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Naturalist",
+      "items": [
+        {
+          "name": "Hammock",
+          "tags": []
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        },
+        {
+          "name": "Spyglass",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Navigator",
+      "items": [
+        {
+          "name": "Compass",
+          "tags": []
+        },
+        {
+          "name": "Poncho",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Spyglass",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Oil Collector",
+      "items": [
+        {
+          "name": "Lantern",
+          "tags": []
+        },
+        {
+          "name": "Oil Can",
+          "uses": 6,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Sealable Bottle",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Painter",
+      "items": [
+        {
+          "name": "Paint",
+          "tags": []
+        },
+        {
+          "name": "Parchment & Ink",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Stylus",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Peddler",
+      "items": [
+        {
+          "name": "Cart",
+          "containers": [
+            {
+              "name": "Cart",
+              "slots": 4
+            }
+          ],
+          "tags": [
+            "bulky"
+          ],
+          "description": "+4 slots"
+        },
+        {
+          "random": "gear"
+        },
+        {
+          "name": "Sack",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Philosopher",
+      "items": [
+        {
+          "name": "Chalk",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Parchment & Ink",
+          "tags": []
+        },
+        {
+          "name": "Pipe",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Physician",
+      "items": [
+        {
+          "name": "Antitoxin",
+          "tags": []
+        },
+        {
+          "name": "Bandages",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Crowbar",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Pilgrim",
+      "items": [
+        {
+          "name": "Blanket",
+          "tags": []
+        },
+        {
+          "name": "Pole (10ft)",
+          "tags": []
+        },
+        {
+          "name": "Poncho",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Potter",
+      "items": [
+        {
+          "name": "Chisel",
+          "tags": []
+        },
+        {
+          "name": "Pail",
+          "tags": []
+        },
+        {
+          "name": "Tongs",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Priest",
+      "items": [
+        {
+          "name": "Bandages",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Candle",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ],
+          "description": "Dim"
+        },
+        {
+          "name": "Incense",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Prospector",
+      "items": [
+        {
+          "name": "Lantern",
+          "tags": []
+        },
+        {
+          "name": "Lodestone",
+          "tags": []
+        },
+        {
+          "name": "Pickaxe",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Rat Catcher",
+      "items": [
+        {
+          "name": "Sack",
+          "tags": []
+        },
+        {
+          "name": "Trap",
+          "tags": []
+        },
+        {
+          "name": "Whistle",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Sailor",
+      "items": [
+        {
+          "name": "Hammock",
+          "tags": []
+        },
+        {
+          "name": "Rope (50ft)",
+          "tags": []
+        },
+        {
+          "name": "Spyglass",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Scribe",
+      "items": [
+        {
+          "name": "Candle",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ],
+          "description": "Dim"
+        },
+        {
+          "name": "Parchment & Ink",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Stylus",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Shepherd",
+      "items": [
+        {
+          "name": "Cloak",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        },
+        {
+          "name": "Whistle",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Smuggler",
+      "items": [
+        {
+          "name": "Lock & Key",
+          "tags": []
+        },
+        {
+          "name": "Oilskin Bag",
+          "tags": []
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Soldier",
+      "items": [
+        {
+          "name": "Spiked Boots",
+          "tags": []
+        },
+        {
+          "name": "Tent",
+          "tags": [
+            "bulky"
+          ],
+          "description": "Fits 2"
+        },
+        {
+          "name": "Whetstone",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Spy",
+      "items": [
+        {
+          "name": "Disguise Kit",
+          "tags": []
+        },
+        {
+          "name": "Garrotte",
+          "tags": []
+        },
+        {
+          "name": "Mirror",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Stablehand",
+      "items": [
+        {
+          "name": "Blanket",
+          "tags": []
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        },
+        {
+          "name": "Shovel",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Street Preacher",
+      "items": [
+        {
+          "name": "Bell",
+          "tags": []
+        },
+        {
+          "name": "Parchment & Ink",
+          "tags": []
+        },
+        {
+          "random": "scroll",
+          "petty": true
+        }
+      ]
+    },
+    {
+      "name": "Tailor",
+      "items": [
+        {
+          "name": "Cloak",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Scissors",
+          "tags": []
+        },
+        {
+          "name": "Sewing Kit",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Tanner",
+      "items": [
+        {
+          "name": "Gloves",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Pliers",
+          "tags": []
+        },
+        {
+          "name": "Tar",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Tax Collector",
+      "items": [
+        {
+          "name": "Parchment & Ink",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Sealable Bottle",
+          "tags": []
+        },
+        {
+          "name": "Whistle",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Thief",
+      "items": [
+        {
+          "name": "Caltrops",
+          "tags": []
+        },
+        {
+          "name": "Grappling Hook",
+          "tags": []
+        },
+        {
+          "name": "Lockpick",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Tinker",
+      "items": [
+        {
+          "name": "Grease",
+          "tags": []
+        },
+        {
+          "name": "Hammer",
+          "tags": []
+        },
+        {
+          "name": "Pliers",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Toll Keeper",
+      "items": [
+        {
+          "name": "Bell",
+          "tags": []
+        },
+        {
+          "name": "Lock & Key",
+          "tags": []
+        },
+        {
+          "name": "Waterproof Bag",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Toymaker",
+      "items": [
+        {
+          "name": "Glue",
+          "tags": []
+        },
+        {
+          "name": "Pliers",
+          "tags": []
+        },
+        {
+          "name": "Scissors",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Vagabond",
+      "items": [
+        {
+          "name": "Blanket",
+          "tags": []
+        },
+        {
+          "name": "Poncho",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Vintner",
+      "items": [
+        {
+          "name": "Alcohol",
+          "tags": []
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        },
+        {
+          "name": "Sealable Bottle",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Weaver",
+      "items": [
+        {
+          "name": "Perfume",
+          "tags": []
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        },
+        {
+          "name": "Scissors",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Witch",
+      "items": [
+        {
+          "name": "Candle",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ],
+          "description": "Dim"
+        },
+        {
+          "random": "spellbook"
+        },
+        {
+          "name": "Wolfsbane",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "name": "Witchfinder",
+      "items": [
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        },
+        {
+          "random": "scroll",
+          "petty": true
+        },
+        {
+          "name": "Spyglass",
+          "tags": []
+        }
+      ]
+    }
+  ],
+  "armor": [
+    {
+      "name": "None",
+      "items": [],
+      "extra_gear": true
+    },
+    {
+      "name": "Shield",
+      "items": [
+        {
+          "name": "Shield",
+          "tags": [
+            "1 Armor"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Helmet",
+      "items": [
+        {
+          "name": "Helmet",
+          "tags": [
+            "1 Armor"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Gambeson",
+      "items": [
+        {
+          "name": "Gambeson",
+          "tags": [
+            "1 Armor"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chainmail",
+      "items": [
+        {
+          "name": "Chainmail",
+          "tags": [
+            "2 Armor",
+            "bulky"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Plate",
+      "items": [
+        {
+          "name": "Plate",
+          "tags": [
+            "3 Armor",
+            "bulky"
+          ]
+        }
+      ]
+    }
+  ],
+  "weapons": [
+    {
+      "name": "Dagger, Cudgel, Sickle, Staff, etc. (d6 damage)",
+      "options": [
+        "Dagger",
+        "Cudgel",
+        "Sickle",
+        "Staff"
+      ],
+      "item": {
+        "tags": [
+          "d6"
+        ]
+      }
+    },
+    {
+      "name": "Spear, Sword, Mace, Axe, Flail, etc. (d8 damage)",
+      "options": [
+        "Spear",
+        "Sword",
+        "Mace",
+        "Axe",
+        "Flail"
+      ],
+      "item": {
+        "tags": [
+          "d8"
+        ]
+      }
+    },
+    {
+      "name": "Halberd, War Hammer, Long Sword, etc. (d10 damage, bulky)",
+      "options": [
+        "Halberd",
+        "War Hammer",
+        "Long Sword"
+      ],
+      "item": {
+        "tags": [
+          "d10",
+          "bulky"
+        ]
+      }
+    },
+    {
+      "name": "Sling (d6 damage)",
+      "options": [
+        "Sling"
+      ],
+      "item": {
+        "tags": [
+          "d6"
+        ]
+      }
+    },
+    {
+      "name": "Bow (d6 damage, bulky)",
+      "options": [
+        "Bow"
+      ],
+      "item": {
+        "tags": [
+          "d6",
+          "bulky"
+        ]
+      }
+    },
+    {
+      "name": "Crossbow (d8 damage, bulky)",
+      "options": [
+        "Crossbow"
+      ],
+      "item": {
+        "tags": [
+          "d8",
+          "bulky"
+        ]
+      }
+    }
+  ],
+  "gear": [
+    {
+      "name": "Acid",
+      "tags": []
+    },
+    {
+      "name": "Air Bladder",
+      "tags": []
+    },
+    {
+      "name": "Alcohol",
+      "tags": []
+    },
+    {
+      "name": "Antitoxin",
+      "tags": []
+    },
+    {
+      "name": "Bandages",
+      "uses": 3,
+      "tags": [
+        "uses"
+      ]
+    },
+    {
+      "name": "Bell",
+      "tags": []
+    },
+    {
+      "name": "Bellows",
+      "tags": []
+    },
+    {
+      "name": "Blanket",
+      "tags": []
+    },
+    {
+      "name": "Boltcutters",
+      "tags": []
+    },
+    {
+      "name": "Bowl",
+      "tags": []
+    },
+    {
+      "name": "Cage",
+      "tags": []
+    },
+    {
+      "name": "Caltrops",
+      "tags": []
+    },
+    {
+      "name": "Candle",
+      "uses": 3,
+      "tags": [
+        "uses"
+      ],
+      "description": "Dim"
+    },
+    {
+      "name": "Cards",
+      "tags": []
+    },
+    {
+      "name": "Cart",
+      "containers": [
+        {
+          "name": "Cart",
+          "slots": 4
+        }
+      ],
+      "tags": [
+        "bulky"
+      ],
+      "description": "+4 slots"
+    },
+    {
+      "name": "Chain (10ft)",
+      "tags": []
+    },
+    {
+      "name": "Chalk",
+      "tags": [
+        "petty"
+      ]
+    },
+    {
+      "name": "Chisel",
+      "tags": []
+    },
+    {
+      "name": "Climbing Spikes",
+      "tags": []
+    },
+    {
+      "name": "Cloak",
+      "tags": [
+        "petty"
+      ]
+    },
+    {
+      "name": "Compass",
+      "tags": []
+    },
+    {
+      "name": "Crowbar",
+      "tags": []
+    },
+    {
+      "name": "Dice",
+      "tags": []
+    },
+    {
+      "name": "Dowsing Rod",
+      "tags": []
+    },
+    {
+      "name": "Explosive",
+      "tags": []
+    },
+    {
+      "name": "Fan",
+      "tags": []
+    },
+    {
+      "name": "Fiddle",
+      "tags": []
+    },
+    {
+      "name": "Fire Oil",
+      "tags": []
+    },
+    {
+      "name": "Fishing Rod",
+      "tags": []
+    },
+    {
+      "name": "Flash Powder",
+      "tags": []
+    },
+    {
+      "name": "Flour",
+      "tags": []
+    },
+    {
+      "name": "Garrotte",
+      "tags": []
+    },
+    {
+      "name": "Gloves",
+      "tags": [
+        "petty"
+      ]
+    },
+    {
+      "name": "Glue",
+      "tags": []
+    },
+    {
+      "name": "Goggles",
+      "tags": []
+    },
+    {
+      "name": "Grappling Hook",
+      "tags": []
+    },
+    {
+      "name": "Grease",
+      "tags": []
+    },
+    {
+      "name": "Hammer",
+      "tags": []
+    },
+    {
+      "name": "Hammock",
+      "tags": []
+    },
+    {
+      "name": "Hand Drill",
+      "tags": []
+    },
+    {
+      "name": "Honey",
+      "tags": []
+    },
+    {
+      "name": "Hourglass",
+      "tags": []
+    },
+    {
+      "name": "Incense",
+      "tags": []
+    },
+    {
+      "name": "Ladder (10ft)",
+      "tags": [
+        "bulky"
+      ]
+    },
+    {
+      "name": "Lantern",
+      "tags": []
+    },
+    {
+      "name": "Leech",
+      "uses": 3,
+      "tags": [
+        "uses"
+      ],
+      "description": "Restores 1 STR"
+    },
+    {
+      "name": "Lens",
+      "tags": []
+    },
+    {
+      "name": "Lock & Key",
+      "tags": []
+    },
+    {
+      "name": "Lockpick",
+      "tags": []
+    },
+    {
+      "name": "Lodestone",
+      "tags": []
+    },
+    {
+      "name": "Lute",
+      "tags": []
+    },
+    {
+      "name": "Magnifying Glass",
+      "tags": []
+    },
+    {
+      "name": "Manacles",
+      "tags": []
+    },
+    {
+      "name": "Marbles",
+      "tags": []
+    },
+    {
+      "name": "Mask",
+      "tags": []
+    },
+    {
+      "name": "Metal File",
+      "tags": []
+    },
+    {
+      "name": "Mirror",
+      "tags": []
+    },
+    {
+      "name": "Mugwort",
+      "tags": []
+    },
+    {
+      "name": "Net",
+      "tags": []
+    },
+    {
+      "name": "Oil Can",
+      "uses": 6,
+      "tags": [
+        "uses"
+      ]
+    },
+    {
+      "name": "Oilskin Bag",
+      "tags": []
+    },
+    {
+      "name": "Pail",
+      "tags": []
+    },
+    {
+      "name": "Paint",
+      "tags": []
+    },
+    {
+      "name": "Parchment & Ink",
+      "uses": 3,
+      "tags": [
+        "uses"
+      ]
+    },
+    {
+      "name": "Perfume",
+      "tags": []
+    },
+    {
+      "name": "Pickaxe",
+      "tags": []
+    },
+    {
+      "name": "Pipe",
+      "tags": []
+    },
+    {
+      "name": "Pliers",
+      "tags": []
+    },
+    {
+      "name": "Poison",
+      "tags": []
+    },
+    {
+      "name": "Pole (10ft)",
+      "tags": []
+    },
+    {
+      "name": "Poncho",
+      "tags": [
+        "petty"
+      ]
+    },
+    {
+      "name": "Pulley",
+      "tags": []
+    },
+    {
+      "random": "spellbook"
+    },
+    {
+      "name": "Rope (25ft)",
+      "tags": []
+    },
+    {
+      "name": "Sack",
+      "tags": []
+    },
+    {
+      "name": "Saw",
+      "tags": []
+    },
+    {
+      "name": "Scissors",
+      "tags": []
+    },
+    {
+      "random": "scroll",
+      "petty": true
+    },
+    {
+      "name": "Sealable Bottle",
+      "tags": []
+    },
+    {
+      "name": "Sedative",
+      "tags": []
+    },
+    {
+      "name": "Sewing Kit",
+      "tags": []
+    },
+    {
+      "name": "Sextant",
+      "tags": []
+    },
+    {
+      "name": "Shovel",
+      "tags": []
+    },
+    {
+      "name": "Signal Flag",
+      "tags": []
+    },
+    {
+      "name": "Smokebomb",
+      "tags": []
+    },
+    {
+      "name": "Smoking Herbs",
+      "uses": 3,
+      "tags": [
+        "uses"
+      ]
+    },
+    {
+      "name": "Songbook",
+      "tags": []
+    },
+    {
+      "name": "Spiked Boots",
+      "tags": []
+    },
+    {
+      "name": "Spyglass",
+      "tags": []
+    },
+    {
+      "name": "Stylus",
+      "tags": []
+    },
+    {
+      "name": "Tar",
+      "tags": []
+    },
+    {
+      "name": "Tent",
+      "tags": [
+        "bulky"
+      ],
+      "description": "Fits 2"
+    },
+    {
+      "name": "Tongs",
+      "tags": []
+    },
+    {
+      "name": "Trap",
+      "tags": [],
+      "description": "d6 STR damage"
+    },
+    {
+      "name": "Wagon",
+      "containers": [
+        {
+          "name": "Wagon",
+          "slots": 8
+        }
+      ],
+      "tags": [],
+      "description": "+8 slots, slow"
+    },
+    {
+      "name": "Waterproof Bag",
+      "tags": []
+    },
+    {
+      "name": "Whetstone",
+      "tags": []
+    },
+    {
+      "name": "Whistle",
+      "tags": [
+        "petty"
+      ]
+    },
+    {
+      "name": "Wig",
+      "tags": []
+    },
+    {
+      "name": "Wolfsbane",
+      "tags": []
+    }
+  ],
+  "starting_gear": [
+    {
+      "name": "Rations",
+      "tags": [
+        "uses"
+      ],
+      "uses": 3
+    },
+    {
+      "name": "Torch",
+      "tags": [
+        "uses"
+      ],
+      "uses": 3
+    }
+  ],
+  "gear_packages": {
+    "Fighter": {
+      "items": [
+        {
+          "name": "Jerky",
+          "uses": 3,
+          "tags": [
+            "uses",
+            "petty"
+          ]
+        },
+        {
+          "name": "Torches",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Bandages",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Rope (25ft)",
+          "tags": []
+        },
+        {
+          "name": "Shield",
+          "tags": [
+            "1 Armor"
+          ]
+        },
+        {
+          "name": "Gambeson",
+          "tags": [
+            "1 Armor"
+          ]
+        },
+        {
+          "name": "Sword",
+          "tags": [
+            "d8"
+          ]
+        },
+        {
+          "name": "Throwing Dagger",
+          "tags": [
+            "d6"
+          ]
+        },
+        {
+          "name": "Dog Tags",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    "Thief": {
+      "items": [
+        {
+          "name": "Rations",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Twin Folding Daggers",
+          "tags": [
+            "d6+d6",
+            "bulky"
+          ]
+        },
+        {
+          "name": "Bullseye Lantern",
+          "tags": []
+        },
+        {
+          "name": "Oil Can",
+          "uses": 6,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Caltrops",
+          "tags": []
+        },
+        {
+          "name": "Small Mirror",
+          "tags": []
+        },
+        {
+          "name": "Lockpick",
+          "tags": []
+        },
+        {
+          "name": "Grappling Hook",
+          "tags": []
+        },
+        {
+          "name": "Dark Hood",
+          "tags": [
+            "petty"
+          ]
+        },
+        {
+          "name": "Chalk",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    "Magic-User": {
+      "items": [
+        {
+          "name": "Rations",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Staff",
+          "tags": [
+            "d6"
+          ]
+        },
+        {
+          "name": "Knife",
+          "tags": [
+            "d6"
+          ]
+        },
+        {
+          "spell": "Illuminate",
+          "kind": "spellbook"
+        },
+        {
+          "spell": "Sleep",
+          "kind": "spellbook"
+        },
+        {
+          "spell": "Detect Magic",
+          "kind": "scroll"
+        },
+        {
+          "name": "Parchment & Ink",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Robes",
+          "tags": [
+            "petty"
+          ]
+        }
+      ]
+    },
+    "Cleric": {
+      "items": [
+        {
+          "name": "Rations",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Torches",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "War Hammer",
+          "tags": [
+            "d10",
+            "bulky"
+          ]
+        },
+        {
+          "name": "Helmet",
+          "tags": [
+            "1 Armor"
+          ]
+        },
+        {
+          "spell": "Cure Wounds",
+          "kind": "spellbook"
+        },
+        {
+          "name": "Bandages",
+          "uses": 3,
+          "tags": [
+            "uses"
+          ]
+        },
+        {
+          "name": "Bone Charm",
+          "tags": [
+            "petty"
+          ],
+          "description": "Casts Ward once per day"
+        }
+      ]
+    }
+  }
+}

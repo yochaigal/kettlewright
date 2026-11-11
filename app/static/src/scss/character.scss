@@ -665,3 +665,15 @@
 #character-quick-stats .companion-stat-toolbar { display: flex; flex-wrap: wrap; gap: 1.5rem; }
 
 .character-sheet-header { display: flex; flex-direction: row; gap: 1em; margin-bottom: 1em; }
+
+// Marks Cairn Barebones Edition characters (#292).
+.edition-badge {
+  font-size: 0.55em;
+  font-weight: normal;
+  vertical-align: middle;
+  padding: 0.1em 0.5em;
+  border: 1px solid currentColor;
+  border-radius: 1em;
+  opacity: 0.75;
+  white-space: nowrap;
+}

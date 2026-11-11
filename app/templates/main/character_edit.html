@@ -65,6 +65,7 @@
         </div>
       </div>
 
+      {% if not character.is_barebones %}
       <section class="background-table-answers">
         <h3>{{_('Background table answers')}}</h3>
         <div class="background-answers-grid">
@@ -78,12 +79,14 @@
           {% endfor %}
         </div>
       </section>
+      {% endif %}
       <div class="character-descriptions-grid">
         <div class="character-description-container" id="character-description-container">
           <h3 class="no-space">{{_('Description')}}</h3>
           {{ form.description(class='textarea inplace', id='description-field',
           oninput='resizeTextarea(this)') }}
         </div>
+        {% if not character.is_barebones %}
         <div class="character-description-container" id="character-bonds-container">
           <h3 class="no-space">{{_('Bonds')}}</h3>
           {{ form.bonds(class='textarea inplace', id='bonds-field',
@@ -92,6 +95,7 @@
         <div class="character-description-container" id="character-omens-container">
           {% include "partial/charedit/omens.html" %}
         </div>
+        {% endif %}
         <div class="character-description-container" id="character-scars-container">
           {% include "partial/charedit/scars.html" %}
         </div>

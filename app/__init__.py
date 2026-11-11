@@ -167,6 +167,9 @@ def create_app():
     from app.blueprints import character_create as character_create_blueprint
     app.register_blueprint(character_create_blueprint)
 
+    from app.blueprints.charcreo_barebones import charcreo_barebones
+    app.register_blueprint(charcreo_barebones)
+
     from app.blueprints.companions import companions
     app.register_blueprint(companions)
 
