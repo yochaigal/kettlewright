@@ -5,6 +5,7 @@ from flask import Blueprint, render_template, redirect, url_for, jsonify, flash,
 from flask_login import login_required, current_user
 from flask_wtf import FlaskForm
 from .models import User, Character, Party
+from .models.character import EDITIONS, EDITION_SECOND
 from . import db
 from .forms import CharacterForm, CharacterEditForm, CharacterJSONForm, PartyForm, PartyEditForm
 from app.lib import load_scars, character_portrait_link, Inventory, sanitize_data, sanitize_json_content, load_version, load_backgrounds, load_traits, load_bonds, load_omens, DummyCharacter
@@ -176,7 +177,8 @@ def new_from_json():
                 panicked=string_to_bool(form.panicked.data or False),
                 dead=string_to_bool(form.dead.data or False),
                 traits=sanitize_data(form.traits.data or ''),  # New field
-                armor=sanitize_data(form.armor.data or '')  # New field
+                armor=sanitize_data(form.armor.data or ''),  # New field
+                edition=form.edition.data if form.edition.data in EDITIONS else EDITION_SECOND
             )
 
             from app.models.character import BACKGROUND_FIELDS
@@ -307,6 +309,13 @@ def new_character():
     
     return render_template('main/character_create.html', portrait_src = portrait_src, custom_image=custom_image, 
                            form=form, custom_fields=custom_fields)
+
+
+@main.route('/new_character/barebones/', methods=['GET'])
+@login_required
+def new_barebones_character():
+    from app.blueprints.charcreo_barebones import creation_page
+    return creation_page()
 
 
 @main.route('/users/<username>/characters/<url_name>/')

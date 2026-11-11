@@ -7,7 +7,7 @@
           <div id="character-name-container">
             {% with section='name' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
           </div>
-          <h2 class="">{{character.background | tr}}</h2>
+          <h2 class="">{{character.background | tr}}{% if character.is_barebones %} <small class="edition-badge" title="{{_('Cairn Barebones Edition')}}">{{_('Barebones')}}</small>{% endif %}</h2>
         </div>
         {% if is_owner %}
         <div class="charview-action-pad">
@@ -35,12 +35,14 @@
     {% with companion_cards_editable=false if generated_preview else true %}{% include "partial/companions/pets.html" %}{% endwith %}
 
     <div class="character-priority-grid">
+      {% if not character.is_barebones %}
       <div id="character-omens-container">
         {% with section='omens' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
       </div>
       <div id="character-bonds-container">
         {% with section='bonds' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
       </div>
+      {% endif %}
       <div id="character-scars-container">
         {% with section='scars' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
       </div>
@@ -59,9 +61,11 @@
       </div>
     </div>
 
+    {% if not character.is_barebones %}
     <div id="character-background-container">
       {% with section='background' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
     </div>
+    {% endif %}
 
     {% if not generated_preview %}<div id="character-party-container">
       {% with section='party' %}{% include "partial/charview/inline_section.html" %}{% endwith %}

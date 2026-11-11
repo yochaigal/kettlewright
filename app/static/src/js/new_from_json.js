@@ -74,6 +74,7 @@ form.addEventListener("submit", (event) => {
   for (const field of ["custom_image", "deprived", "panicked", "dead"]) {
     form.elements[field].value = [true, 1, "true", "True", "1"].includes(data[field]) ? "true" : "false";
   }
+  form.elements.edition.value = data.edition === "barebones" ? "barebones" : "2e";
   form.elements.pets.value = JSON.stringify(data.pets ?? []);
   form.elements.items.value = JSON.stringify(data.items ?? []);
   form.elements.containers.value = JSON.stringify(data.containers ?? []);

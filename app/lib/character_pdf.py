@@ -241,8 +241,10 @@ class CharacterSheet:
         self.section(_('Unassigned items'), '\n'.join(_item_title(it) for it in items if it.get('location') not in known_ids))
 
         self.ruled(_('Traits'), c.traits, layout['traits'])
-        self.ruled(_('Bonds'), c.bonds, layout['bonds'])
-        self.ruled(_('Omens'), c.omens, layout['omens'])
+        # Barebones has no bonds or omens; leave those printed lines blank.
+        barebones = getattr(c, 'edition', None) == 'barebones'
+        self.ruled(_('Bonds'), '' if barebones else c.bonds, layout['bonds'])
+        self.ruled(_('Omens'), '' if barebones else c.omens, layout['omens'])
         for index in (1, 2):
             question = getattr(c, f'background_table{index}_question', None)
             answer = getattr(c, f'background_table{index}_answer', None)

@@ -7,6 +7,10 @@
       <button type="button" class="is-new">
         {{_('New Character')}}
       </button></a>
+    <a href="{{ url_for('main.new_barebones_character') }}" title="{{_('Cairn Barebones Edition')}}">
+      <button type="button" class="is-new" id="new-barebones-character">
+        {{_('New Barebones Character')}}
+      </button></a>
     <a href="{{ url_for('main.new_from_json') }} "><button type="button">
         {{_('Import')}}
         <i class="fa-solid fa-upload"></i></button></a>
