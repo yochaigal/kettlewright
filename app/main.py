@@ -561,11 +561,12 @@ def tools():
         events_data = json.load(file)
     events_data = translate_events_data(events_data)
     backgrounds = load_backgrounds()
+    from app.lib.barebones import gear_packages
     warden_parties = Party.query.filter_by(owner=current_user.id).order_by(Party.name, Party.id).all() if current_user.is_authenticated else []
     from app.lib.monsters import monster_catalog
     from app.models import Campaign
     generator_campaigns = Campaign.query.filter_by(owner_id=current_user.id).order_by(Campaign.name, Campaign.id).all() if current_user.is_authenticated else []
-    return render_template('main/tools.html', events_data=json.dumps(events_data),pcgen_value="", backgrounds=backgrounds, warden_parties=warden_parties, monster_templates=monster_catalog(), generator_campaigns=generator_campaigns, roll_form=FlaskForm())
+    return render_template('main/tools.html', events_data=json.dumps(events_data),pcgen_value="", backgrounds=backgrounds, barebones_packages=gear_packages(), warden_parties=warden_parties, monster_templates=monster_catalog(), generator_campaigns=generator_campaigns, roll_form=FlaskForm())
 
 @main.route('/reload-page')
 def reload_page():

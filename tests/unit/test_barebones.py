@@ -172,3 +172,68 @@ def test_json_export_import_keeps_edition(app_with_babel, client):
     with app_with_babel.app_context():
         editions = [c.edition for c in Character.query.order_by(Character.id)]
     assert editions == ['barebones', 'barebones', '2e']
+
+
+# Tools generator
+
+def generator_snapshot(page):
+    return json.loads(html.unescape(re.search(r'id="json_data" value="([^"]*)"', page)[1]))
+
+
+@pytest.mark.parametrize('choice', ['barebones', 'barebones:Fighter', 'barebones:Thief',
+                                    'barebones:Magic-User', 'barebones:Cleric'])
+def test_tools_generator_previews_barebones_characters(app_with_babel, choice):
+    client = app_with_babel.test_client()
+    for _ in range(10):
+        page = client.get('/gen/character', query_string={'background': choice, 'view': 'sheet'}).text
+        data = generator_snapshot(page)
+        assert data['edition'] == 'barebones'
+        assert (data['bonds'], data['omens'], data['background_table1_question']) == ('', '', '')
+        assert 3 <= data['strength'] <= 18 and 1 <= data['hp'] <= 6 and 3 <= data['gold'] <= 18
+        if choice != 'barebones':
+            assert data['background'] == choice.partition(':')[2]
+        assert 'edition-badge' in page
+        for container in ('character-bonds-container', 'character-omens-container', 'background-table-answers'):
+            assert container not in page
+    with app_with_babel.app_context():
+        assert Character.query.count() == 0
+
+
+def test_tools_generator_text_json_and_print_outputs(app_with_babel):
+    client = app_with_babel.test_client()
+    data = client.get('/gen/character?output=json&background=barebones:Cleric').json
+    assert data['edition'] == 'barebones' and data['armor'] == 1
+    text = client.get('/gen/character?background=barebones').text
+    assert 'json_data' in text and 'Bonds' not in text and 'Omens' not in text
+    printed = client.post('/gen/character/print', data={'json_data': json.dumps(data)})
+    assert printed.status_code == 200
+    assert client.get('/gen/character?background=barebones:Bard').status_code == 400
+
+
+def test_tools_page_offers_barebones_options(app_with_babel):
+    page = app_with_babel.test_client().get('/tools/').text
+    assert 'value="barebones"' in page and 'value="barebones:Magic-User"' in page
+
+
+def test_barebones_generator_saves_to_party_as_hireling(app_with_babel):
+    from app.models import Companion, Party
+    app = app_with_babel
+    app.config.update(LOCAL_FEATURE_ACCESS=False, FEATURE_TEST_USER_IDS=set(), FEATURE_TEST_PARTY_IDS=set())
+    with app.app_context():
+        db.session.add(User(id=1, username='warden'))
+        db.session.add(Party(id=1, owner=1, owner_username='warden', name='Party', party_url='party'))
+        db.session.commit()
+    client = app.test_client()
+    with client.session_transaction() as session:
+        session['_user_id'] = '1'
+        session['_fresh'] = True
+    page = client.get('/gen/character?view=sheet&background=barebones:Fighter').text
+    snapshot = html.unescape(re.search(r'id="pcgen-snapshot" value="([^"]+)"', page)[1])
+    data = generator_snapshot(page)
+    response = client.post('/gen/character/save/party', data={'snapshot': snapshot, 'target_id': 1,
+                                                               'companion_kind': 'hireling'})
+    assert response.status_code == 302
+    with app.app_context():
+        hireling = Companion.query.one()
+        assert (hireling.name, hireling.role) == (data['name'], 'Fighter')
+        assert hireling.armorValue() == 2 and 'Sword (d8)' in hireling.attack

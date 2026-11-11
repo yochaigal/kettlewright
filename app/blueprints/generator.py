@@ -11,6 +11,7 @@ from flask_babel import lazy_gettext as _l, _
 
 
 generator = Blueprint('generator', __name__)
+BAREBONES = 'barebones'
 
 def parse_character(data):
     c = Character()
@@ -43,6 +44,8 @@ def parse_character(data):
     c.traits = data['traits']
     c.willpower = data['willpower']
     c.willpower_max = data['willpower_max']
+    from app.models.character import EDITIONS, EDITION_SECOND
+    c.edition = data.get('edition') if data.get('edition') in EDITIONS else EDITION_SECOND
     from app.lib.companions import import_pet
     c.pets.extend(import_pet(pet) for pet in data.get('pets', []))
     return c
@@ -53,7 +56,15 @@ def parse_character(data):
 @generator.route('/gen/character', methods=['GET'])
 def character():
     background = request.args.get('background')
-    genchar, json_data  = generate_character(background)
+    if background and (background == BAREBONES or background.startswith(BAREBONES + ':')):
+        # "barebones" rolls a random Barebones PC; "barebones:Fighter" uses a gear package.
+        from app.lib.barebones import generate_character as generate_barebones
+        try:
+            genchar, json_data = generate_barebones(background.partition(':')[2] or None)
+        except ValueError:
+            abort(400)
+    else:
+        genchar, json_data = generate_character(background)
     darkmode = False
     dmode = request.args.get('darkmode')
     if dmode != None and dmode.upper() == 'TRUE':

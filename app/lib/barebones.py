@@ -161,3 +161,59 @@ def slots_used(items):
             continue
         used += 2 if 'bulky' in tags else 1
     return used
+
+
+def generate_character(package=None):
+    """Roll a complete Barebones PC for the Tools generator.
+
+    Returns the same pair as the 2e generator: an object for the plain-text
+    template and the JSON snapshot used by the preview, print, export and save
+    actions. Bonds, omens and background tables stay empty, as Barebones has none.
+    """
+    from app.lib.char_utils import AttrsValue, GeneratedCharacter, TraitValue, item_text, traits_text
+    from app.lib.data import load_traits
+
+    if package is not None and package not in _data()['gear_packages']:
+        raise ValueError(f'Unknown gear package: {package}')
+    if package:
+        background = package
+        groups = [package_items(package)]
+    else:
+        index = roll_index('backgrounds')
+        background = background_name(index)
+        groups = [starting_items(), background_items(index), armor_items(roll_index('armor')),
+                  weapon_items(roll_index('weapons')), gear_items(roll_index('gear'))]
+    items, containers = build_inventory(groups)
+    for item in items:
+        item['title'] = item_text(item)
+
+    genchar = GeneratedCharacter()
+    genchar.name = roll_name()
+    genchar.background_name = background
+    genchar.items = items
+    genchar.containers = containers
+    genchar.attributes = AttrsValue()
+    genchar.attributes.str, genchar.attributes.dex, genchar.attributes.wil = (
+        sum(random.randint(1, 6) for _ in range(3)) for _ in range(3))
+    genchar.attributes.hp = random.randint(1, 6)
+    genchar.attributes.armor = genchar.armor()
+    genchar.traits = [TraitValue(name, random.choice(values)) for name, values in load_traits().items()]
+    genchar.age = random.randint(1, 20) + random.randint(1, 20) + 10
+    genchar.gold = sum(random.randint(1, 6) for _ in range(3))
+    genchar.slots = slots_used(items)
+    genchar.pets = []
+
+    attrs = genchar.attributes
+    snapshot = {
+        'edition': 'barebones', 'name': genchar.name, 'background': background,
+        'armor': attrs.armor, 'gold': genchar.gold, 'deprived': False,
+        'strength': attrs.str, 'strength_max': attrs.str, 'dexterity': attrs.dex, 'dexterity_max': attrs.dex,
+        'willpower': attrs.wil, 'willpower_max': attrs.wil, 'hp': attrs.hp, 'hp_max': attrs.hp,
+        'traits': traits_text(genchar.age, genchar.traits),
+        'description': '', 'bonds': '', 'omens': '', 'scars': '', 'notes': '',
+        'background_table1_question': '', 'background_table1_answer': '',
+        'background_table2_question': '', 'background_table2_answer': '',
+        'items': [{key: value for key, value in item.items() if key != 'title'} for item in items],
+        'containers': containers, 'image_url': 'default-portrait.webp', 'pets': [],
+    }
+    return genchar, json.dumps(snapshot)

@@ -5,10 +5,12 @@
 <h2>{{ character.name|markdown_inline }}</h2>
 <h4>{{character.background_name | tr}}</h4>
 <p>
+{% if character.description %}
 <div class="subtitle left-symbol">{{_('Description')}}</div>
 <p>
     {{character.description | tr}}
 </p>
+{% endif %}
 <div>
     {{ traits_sentence(character.traits) }}
     {{_('Your age')}}: {{character.age}}.
@@ -51,6 +53,7 @@
 </div>
 </p>
 {% endif %}
+{% if character.bond %}
 <p>
 <div class="subtitle left-symbol">{{_('Bonds')}}</div>
 {% if not 'items' in character.bond or character.bond['items']|length == 0 %}
@@ -82,14 +85,18 @@
 {% endif %}
 {% endif %}
 </p>
+{% endif %}
 
+{% if character.omen %}
 <p>
 <div class="subtitle left-symbol">{{_('Omens')}}</div>
 <div>
     {{character.omen | tr}}
 </div>
 </p>
+{% endif %}
 
+{% if character.table1 %}
 <p>
 <div class="subtitle left-symbol">{{_('Your Past')}}</div>
 <p>
@@ -101,9 +108,10 @@
     {{character.table2['option']['description']|tr}}
 </p>
 </p>
+{% endif %}
 {% if character.pets %}
 <div class="subtitle left-symbol">{{_('Pets')}}</div>
 {% for pet in character.pets %}<div class="rich-content"><strong>{{ pet.name|tr|markdown_inline }}</strong>: {{ pet.notes|markdown }}</div>{% endfor %}
 {% endif %}
 <input type="hidden" name="json_data" id="json_data" value="{{json_data}}" />
-<input type="hidden" name="character_name" id="character_name" value="{{character.name}}" />
+<input type="hidden" name="character_name" id="character_name" value="{{character.name}}" />
