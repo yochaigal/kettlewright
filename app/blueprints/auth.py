@@ -5,6 +5,7 @@ from markupsafe import Markup
 from flask_login import login_user, login_required, fresh_login_required, confirm_login, logout_user, current_user
 from flask_wtf import FlaskForm
 from app.forms import MFASettingsForm, MFACodeForm
+from app.lib.starter_adventures import seed_starter_adventures
 from app.lib.mfa import issue_challenge, pending_challenge, consume_challenge
 from app.models import db, User
 from app.forms import LoginForm, RegistrationForm, PasswordResetRequestForm, PasswordResetForm, ResendConfirmationForm, PasswordUpdateForm, EmailUpdateForm, DeleteAccountForm
@@ -126,6 +127,8 @@ def signup():
                         password=form.password.data)
 
         db.session.add(new_user)
+        db.session.flush()
+        seed_starter_adventures(new_user.id)
         db.session.commit()
 
         # send email to new user
