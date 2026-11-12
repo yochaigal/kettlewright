@@ -8913,7 +8913,7 @@ msgstr ""
 #: app/static/json/party_events/bestiary.json:4
 #: app/static/json/party_events/dungeons.json:254
 msgid "Acolyte"
-msgstr ""
+msgstr "Acólito"
 
 #: app/static/json/generators/bestiary.json:1
 #: app/static/json/party_events/bestiary.json:10
@@ -11616,7 +11616,7 @@ msgstr ""
 #: app/static/json/generators/custom-monster.json:1
 #: app/static/json/party_events/custom-monster.json:73
 msgid "Alcohol"
-msgstr ""
+msgstr "Alcohol"
 
 #: app/static/json/generators/custom-monster.json:1
 #: app/static/json/generators/factions.json:1
@@ -22600,7 +22600,7 @@ msgstr "Herrero"
 #: app/static/json/party_events/npcs.json:71
 #: app/static/json/party_events/setting.json:126
 msgid "Farmer"
-msgstr ""
+msgstr "Granjero"
 
 #: app/static/json/generators/names.json:1
 #: app/static/json/generators/npcs.json:1
@@ -22618,7 +22618,7 @@ msgstr ""
 #: app/static/json/party_events/npcs.json:73
 #: app/static/json/party_events/setting.json:128
 msgid "Gravedigger"
-msgstr ""
+msgstr "Sepulturero"
 
 #: app/static/json/generators/names.json:1
 #: app/static/json/generators/npcs.json:1
@@ -22627,7 +22627,7 @@ msgstr ""
 #: app/static/json/party_events/npcs.json:74
 #: app/static/json/party_events/setting.json:129
 msgid "Guard"
-msgstr ""
+msgstr "Guardia"
 
 #: app/static/json/generators/names.json:1
 #: app/static/json/generators/npcs.json:1
@@ -22645,7 +22645,7 @@ msgstr ""
 #: app/static/json/party_events/npcs.json:76
 #: app/static/json/party_events/setting.json:131
 msgid "Jailer"
-msgstr ""
+msgstr "Carcelero"
 
 #: app/static/json/generators/names.json:1
 #: app/static/json/generators/npcs.json:1
@@ -22672,7 +22672,7 @@ msgstr ""
 #: app/static/json/party_events/npcs.json:79
 #: app/static/json/party_events/setting.json:134
 msgid "Merchant"
-msgstr ""
+msgstr "Mercader"
 
 #: app/static/json/generators/names.json:1
 #: app/static/json/generators/npcs.json:1
@@ -22681,7 +22681,7 @@ msgstr ""
 #: app/static/json/party_events/npcs.json:80
 #: app/static/json/party_events/setting.json:135
 msgid "Monk"
-msgstr ""
+msgstr "Monje"
 
 #: app/static/json/generators/names.json:1
 #: app/static/json/generators/npcs.json:1
@@ -22699,7 +22699,7 @@ msgstr ""
 #: app/static/json/party_events/npcs.json:83
 #: app/static/json/party_events/setting.json:138
 msgid "Peddler"
-msgstr ""
+msgstr "Buhonero"
 
 #: app/static/json/generators/names.json:1
 #: app/static/json/generators/npcs.json:1
@@ -22726,7 +22726,7 @@ msgstr "Espía"
 #: app/static/json/party_events/npcs.json:86
 #: app/static/json/party_events/setting.json:141
 msgid "Thief"
-msgstr ""
+msgstr "Ladrón"
 
 #: app/static/json/generators/names.json:1
 #: app/static/json/generators/npcs.json:1
@@ -23049,7 +23049,7 @@ msgstr ""
 #: app/static/json/generators/npcs.json:1
 #: app/static/json/party_events/npcs.json:43
 msgid "Tanner"
-msgstr ""
+msgstr "Curtidor"
 
 # ============================================= RELIQUARY
 # =============================================
@@ -42497,7 +42497,7 @@ msgstr ""
 
 #: app/blueprints/generator.py:150
 msgid "Portrait"
-msgstr ""
+msgstr "Retrato"
 
 #: app/templates/auth/account.html:20 app/templates/base.html:63
 msgid "Hover previews: on"
@@ -42764,8 +42764,9 @@ msgstr ""
 msgid "Give as pet"
 msgstr ""
 
-#. Whole trait sentence. Order the placeholders as your language needs; values
-#. arrive in lowercase. Leave it empty to keep the word-by-word sentence.
+#. Whole trait sentence. Order the placeholders as your language needs;
+#. values arrive in lowercase. Leave it empty to keep the word-by-word
+#. sentence.
 #: app/lib/char_utils.py:59
 #, python-format
 msgid ""
@@ -42776,6 +42777,1907 @@ msgstr ""
 "Tu físico es %(physique)s, tu piel %(skin)s y tu cabello %(hair)s. Tu "
 "rostro es %(face)s y tu voz %(speech)s. Tu vestimenta es %(clothing)s. "
 "Eres %(virtue)s y %(vice)s."
+
+#: app/static/json/barebones.json:1
+msgid "Abbot"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Addyman"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Ashwell"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Amaris"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Balfe"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Anwen"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Baxter"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Bevan"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Beran"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Blackwood"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Ballad"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Bowen"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Barley"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Brewer"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Broder"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Bukharin"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Cadwallan"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Carter"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Collier"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Cooper"
+msgstr "Tonelero"
+
+#: app/static/json/barebones.json:1
+msgid "Crowther"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Dempsey"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Dermody"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Domański"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Dymov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Fairweather"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Corin"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Fedorov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Fletcher"
+msgstr "Flechero"
+
+#: app/static/json/barebones.json:1
+msgid "Fuller"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Glinka"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Glover"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Golubov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Elowen"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Gradnik"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Granger"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Grobar"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Halberg"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Hlebar"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Hromada"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Horgan"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Iliev"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Ivanec"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Joryn"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Garen"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Kamensk"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Kavanagh"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Kovac"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Kovalenko"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Kravec"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Krznar"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Kuchar"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Kvasnikov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Lethbridge"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Llewellyn"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Locke"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Lucan"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Lovett"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Lukanov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Maddox"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Malinov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Marlowe"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Marinov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Markov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Mason"
+msgstr "Cantero"
+
+#: app/static/json/barebones.json:1
+msgid "Melnik"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Mercer"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Milner"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Morozov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Novak"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Orla"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Obradov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "O’Callaghan"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "O’Farrell"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Perran"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "O’Leary"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Osipov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Pavlenko"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Pekar"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Petrov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Pisarev"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Powell"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Price"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Radoslav"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Reeve"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Rogov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Romanov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Rowanfield"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Rybak"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Sawyer"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Shepherd"
+msgstr "Pastor"
+
+#: app/static/json/barebones.json:1
+msgid "Shevchenko"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Slater"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Smirnov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Sokolov"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Thatcher"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Tallow"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Vukovic"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Webb"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Whitlock"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Wicklowe"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Wightman"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Wilkin"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Winslow"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Wright"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Wynne"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Zidar"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Incense"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Parchment & Ink"
+msgstr "Pergamino y tinta"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Parchment & Ink"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "spellbook"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Acrobat"
+msgstr "Acróbata"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Pole (10ft)"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Rope (25ft)"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Smokebomb"
+msgstr "Bomba de humo"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Smokebomb"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Acid"
+msgstr "Ácido"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Acid"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Lens"
+msgstr "Lente"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Lens"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Oilskin Bag"
+msgstr "Bolsa de tela encerada"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Oilskin Bag"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Apothecary"
+msgstr "Boticario"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Antitoxin"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Bandages"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Sealable Bottle"
+msgstr "Botella sellable"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Sealable Bottle"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Garrotte"
+msgstr "Garrote de estrangular"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Garrotte"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Mask"
+msgstr "Máscara"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Mask"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Poison"
+msgstr "Veneno"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Poison"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Astrologer"
+msgstr "Astrólogo"
+
+#: app/static/json/barebones.json:1
+msgid "Candle"
+msgstr "Vela"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Candle"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Dim"
+msgstr "Tenue"
+
+#: app/static/json/barebones.json:1
+msgid "Marbles"
+msgstr "Canicas"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Marbles"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Spyglass"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Baker"
+msgstr "Panadero"
+
+#: app/static/json/barebones.json:1
+msgid "Flour"
+msgstr "Harina"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Flour"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Honey"
+msgstr "Miel"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Honey"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Scissors"
+msgstr "Tijeras"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Scissors"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Sedative"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Barkeep"
+msgstr "Tabernero"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Alcohol"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Beadle"
+msgstr "Alguacil de parroquia"
+
+#: app/static/json/barebones.json:1
+msgid "Bell"
+msgstr "Campana"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Bell"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Gloves"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Whistle"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Beekeeper"
+msgstr "Apicultor"
+
+#: app/static/json/barebones.json:1
+msgid "Fire Oil"
+msgstr "Aceite de fuego"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Fire Oil"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Bell Ringer"
+msgstr "Campanero"
+
+#: app/static/json/barebones.json:1
+msgid "Bird Keeper"
+msgstr "Pajarero"
+
+#: app/static/json/barebones.json:1
+msgid "Cage"
+msgstr "Jaula"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Cage"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Net"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Bellows"
+msgstr "Fuelle"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Bellows"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Hammer"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Iron Tongs"
+msgstr "Tenazas de hierro"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Iron Tongs"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Bookbinder"
+msgstr "Encuadernador"
+
+#: app/static/json/barebones.json:1
+msgid "Glue"
+msgstr "Pegamento"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Glue"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Sewing Kit"
+msgstr "Costurero"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Sewing Kit"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Bounty Hunter"
+msgstr "Cazarrecompensas"
+
+#: app/static/json/barebones.json:1
+msgid "Flash Powder"
+msgstr "Polvo de destello"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Flash Powder"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Manacles"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Butcher"
+msgstr "Carnicero"
+
+#: app/static/json/barebones.json:1
+msgid "Pail"
+msgstr "Cubo"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Pail"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Saw"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Whetstone"
+msgstr "Piedra de afilar"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Whetstone"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Carpenter"
+msgstr "Carpintero"
+
+#: app/static/json/barebones.json:1
+msgid "Metal File"
+msgstr "Lima de metal"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Metal File"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Cartographer"
+msgstr "Cartógrafo"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Compass"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Sextant"
+msgstr "Sextante"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Sextant"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Cartwright"
+msgstr "Carretero"
+
+#: app/static/json/barebones.json:1
+msgid "Hand Drill"
+msgstr "Taladro de mano"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Hand Drill"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Pulley"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Chandler"
+msgstr "Velero"
+
+#: app/static/json/barebones.json:1
+msgid "Perfume"
+msgstr "Perfume"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Perfume"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Charlatan"
+msgstr "Embaucador"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Cards"
+msgstr "Baraja de cartas"
+
+#: app/static/json/barebones.json:1
+msgid "Paint"
+msgstr "Pintura"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Paint"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Chimney Sweep"
+msgstr "Deshollinador"
+
+#: app/static/json/barebones.json:1
+msgid "Climbing Spikes"
+msgstr "Picas de escalada"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Climbing Spikes"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Clockmaker"
+msgstr "Relojero"
+
+#: app/static/json/barebones.json:1
+msgid "Magnifying Glass"
+msgstr "Lupa"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Magnifying Glass"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Pliers"
+msgstr "Alicates"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Pliers"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Cobbler"
+msgstr "Zapatero"
+
+#: app/static/json/barebones.json:1
+msgid "Sack"
+msgstr "Saco"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Sack"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Cook"
+msgstr "Cocinero"
+
+#: app/static/json/barebones.json:1
+msgid "Smoking Herbs"
+msgstr "Hierbas para pipa"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Smoking Herbs"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Courier"
+msgstr "Mensajero"
+
+#: app/static/json/barebones.json:1
+msgid "Crypt Custodian"
+msgstr "Custodio de criptas"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Lantern"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Oil Can"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Cultist"
+msgstr "Sectario"
+
+#: app/static/json/barebones.json:1
+msgid "scroll"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Demolitionist"
+msgstr "Dinamitero"
+
+#: app/static/json/barebones.json:1
+msgid "Explosive"
+msgstr "Explosivo"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Explosive"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Goggles"
+msgstr "Gafas protectoras"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Goggles"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Grease"
+msgstr "Grasa"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Grease"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Dowser"
+msgstr "Zahorí"
+
+#: app/static/json/barebones.json:1
+msgid "Dowsing Rod"
+msgstr "Varita de zahorí"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Dowsing Rod"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Shovel"
+msgstr "Pala"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Shovel"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Duelist"
+msgstr "Duelista"
+
+#: app/static/json/barebones.json:1
+msgid "Cloak"
+msgstr "Capa"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Cloak"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Entertainer"
+msgstr "Artista"
+
+#: app/static/json/barebones.json:1
+msgid "Dice"
+msgstr "Dados"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Dice"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Songbook"
+msgstr "Cancionero"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Songbook"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Wig"
+msgstr "Peluca"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Wig"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Executioner"
+msgstr "Verdugo"
+
+#: app/static/json/barebones.json:1
+msgid "Falconer"
+msgstr "Cetrero"
+
+#: app/static/json/barebones.json:1
+msgid "Fence"
+msgstr "Perista"
+
+#: app/static/json/barebones.json:1
+msgid "Bolt Cutters"
+msgstr "Cortacadenas"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Bolt Cutters"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "gear"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Fisher"
+msgstr "Pescador"
+
+#: app/static/json/barebones.json:1
+msgid "Air Bladder"
+msgstr "Odre para bucear"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Air Bladder"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Fishing Rod"
+msgstr "Caña de pescar"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Fishing Rod"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Trap"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Gambler"
+msgstr "Jugador"
+
+#: app/static/json/barebones.json:1
+msgid "Gardener"
+msgstr "Jardinero"
+
+#: app/static/json/barebones.json:1
+msgid "Glassblower"
+msgstr "Soplador de vidrio"
+
+#: app/static/json/barebones.json:1
+msgid "Gong Farmer"
+msgstr "Paleador de excrementos"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Ladder"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Signal Flag"
+msgstr "Bandera de señales"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Signal Flag"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Herbalist"
+msgstr "Herbolario"
+
+#: app/static/json/barebones.json:1
+msgid "Mugwort"
+msgstr "Artemisa"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Mugwort"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Hermit"
+msgstr "Ermitaño"
+
+#: app/static/json/barebones.json:1
+msgid "Blanket"
+msgstr "Manta"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Blanket"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Highway Robber"
+msgstr "Salteador de caminos"
+
+#: app/static/json/barebones.json:1
+msgid "Grappling Hook"
+msgstr "Gancho de agarre"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Grappling Hook"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Hunter"
+msgstr "Cazador"
+
+#: app/static/json/barebones.json:1
+msgid "Illusionist"
+msgstr "Ilusionista"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Mirror"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Innkeeper"
+msgstr "Posadero"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Chain (10ft)"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Jester"
+msgstr "Bufón"
+
+#: app/static/json/barebones.json:1
+msgid "Lute"
+msgstr "Laúd"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Lute"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Jeweler"
+msgstr "Joyero"
+
+#: app/static/json/barebones.json:1
+msgid "Tongs"
+msgstr "Pinzas"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Tongs"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Knight"
+msgstr "Caballero"
+
+#: app/static/json/barebones.json:1
+msgid "Lamplighter"
+msgstr "Farolero"
+
+#: app/static/json/barebones.json:1
+msgid "Ladder (10ft)"
+msgstr "Escalera (3 metros)"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Ladder (10ft)"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Leech Collector"
+msgstr "Sanguijuelero"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Leech"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Librarian"
+msgstr "Bibliotecario"
+
+#: app/static/json/barebones.json:1
+msgid "Locksmith"
+msgstr "Cerrajero"
+
+#: app/static/json/barebones.json:1
+msgid "Lock & Key"
+msgstr "Candado y llave"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Lock & Key"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Lumberjack"
+msgstr "Leñador"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Chisel"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Fan"
+msgstr "Abanico"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Fan"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Stylus"
+msgstr "Punzón de escritura"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Stylus"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Wagon"
+msgstr "Carromato"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Wagon"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "+8 slots, slow"
+msgstr "+8 espacios, lento"
+
+#: app/static/json/barebones.json:1
+msgid "Miller"
+msgstr "Molinero"
+
+#: app/static/json/barebones.json:1
+msgid "Bowl"
+msgstr "Cuenco"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Bowl"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Miner"
+msgstr "Minero"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Lodestone"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Pickaxe"
+msgstr "Pico"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Pickaxe"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Musician"
+msgstr "Músico"
+
+#: app/static/json/barebones.json:1
+msgid "Fiddle"
+msgstr "Violín"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Fiddle"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Naturalist"
+msgstr "Naturalista"
+
+#: app/static/json/barebones.json:1
+msgid "Hammock"
+msgstr "Hamaca"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Hammock"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Poncho"
+msgstr "Poncho"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Poncho"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Oil Collector"
+msgstr "Recolector de aceite"
+
+#: app/static/json/barebones.json:1
+msgid "Painter"
+msgstr "Pintor"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Cart"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "+4 slots"
+msgstr "+4 espacios"
+
+#: app/static/json/barebones.json:1
+msgid "Philosopher"
+msgstr "Filósofo"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Chalk"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Pipe"
+msgstr "Pipa para fumar"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Pipe"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Physician"
+msgstr "Médico"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Crowbar"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Pilgrim"
+msgstr "Peregrino"
+
+#: app/static/json/barebones.json:1
+msgid "Potter"
+msgstr "Alfarero"
+
+#: app/static/json/barebones.json:1
+msgid "Prospector"
+msgstr "Buscador de oro"
+
+#: app/static/json/barebones.json:1
+msgid "Rat Catcher"
+msgstr "Cazarratas"
+
+#: app/static/json/barebones.json:1
+msgid "Rope (50ft)"
+msgstr "Soga (15 metros)"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Rope (50ft)"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Scribe"
+msgstr "Escriba"
+
+#: app/static/json/barebones.json:1
+msgid "Smuggler"
+msgstr "Contrabandista"
+
+#: app/static/json/barebones.json:1
+msgid "Soldier"
+msgstr "Soldado"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Spiked Boots"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Tent"
+msgstr "Tienda de acampada"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Tent"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Fits 2"
+msgstr "Para dos personas"
+
+#: app/static/json/barebones.json:1
+msgid "Disguise Kit"
+msgstr "Útiles de disfraz"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Disguise Kit"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Stablehand"
+msgstr "Mozo de cuadra"
+
+#: app/static/json/barebones.json:1
+msgid "Street Preacher"
+msgstr "Predicador callejero"
+
+#: app/static/json/barebones.json:1
+msgid "Tailor"
+msgstr "Sastre"
+
+#: app/static/json/barebones.json:1
+msgid "Tar"
+msgstr "Alquitrán"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Tar"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Tax Collector"
+msgstr "Recaudador"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Caltrops"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Lockpick"
+msgstr "Ganzúa"
+
+#: app/static/json/barebones.json:1
+msgid "Tinker"
+msgstr "Hojalatero"
+
+#: app/static/json/barebones.json:1
+msgid "Toll Keeper"
+msgstr "Portazguero"
+
+#: app/static/json/barebones.json:1
+msgid "Waterproof Bag"
+msgstr "Bolsa impermeable"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Waterproof Bag"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Toymaker"
+msgstr "Juguetero"
+
+#: app/static/json/barebones.json:1
+msgid "Vagabond"
+msgstr "Vagabundo"
+
+#: app/static/json/barebones.json:1
+msgid "Vintner"
+msgstr "Vinatero"
+
+#: app/static/json/barebones.json:1
+msgid "Weaver"
+msgstr "Tejedor"
+
+#: app/static/json/barebones.json:1
+msgid "Witch"
+msgstr "Bruja"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Wolfsbane"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Witchfinder"
+msgstr "Cazador de brujas"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "None"
+msgstr "Ninguna"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Shield"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Helmet"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Gambeson"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Chainmail"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Plate"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Dagger, Cudgel, Sickle, Staff, etc. (d6 damage)"
+msgstr "Daga, garrote, hoz, báculo, etc. (d6 de daño)"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Dagger"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Cudgel"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Sickle"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Staff"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Spear, Sword, Mace, Axe, Flail, etc. (d8 damage)"
+msgstr "Lanza, espada, maza, hacha, mangual, etc. (d8 de daño)"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Spear"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Sword"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Mace"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Axe"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Flail"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Halberd, War Hammer, Long Sword, etc. (d10 damage, bulky)"
+msgstr "Alabarda, martillo de guerra, espada larga, etc. (d10 de daño, Voluminoso)"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Halberd"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "War Hammer"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Long Sword"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Sling (d6 damage)"
+msgstr "Honda (d6 de daño)"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Sling"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Bow (d6 damage, bulky)"
+msgstr "Arco (d6 de daño, Voluminoso)"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Bow"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Crossbow (d8 damage, bulky)"
+msgstr "Ballesta (d8 de daño, Voluminosa)"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Crossbow"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Boltcutters"
+msgstr "Cortacadenas"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Boltcutters"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "Hourglass"
+msgstr "Reloj de arena"
+
+#: app/static/json/barebones.json:1
+msgctxt "equipment"
+msgid "Hourglass"
+msgstr ""
+
+#: app/static/json/barebones.json:1
+msgid "d6 STR damage"
+msgstr "d6 de daño a FUE"
+
+#: app/static/json/barebones.json:1
+msgid "Fighter"
+msgstr "Guerrero"
+
+#: app/static/json/barebones.json:1
+msgid "Jerky"
+msgstr "Cecina"
+
+#: app/static/json/barebones.json:1
+msgid "Torches"
+msgstr "Antorchas"
+
+#: app/static/json/barebones.json:1
+msgid "Throwing Dagger"
+msgstr "Daga arrojadiza"
+
+#: app/static/json/barebones.json:1
+msgid "Dog Tags"
+msgstr "Placas de identificación"
+
+#: app/static/json/barebones.json:1
+msgid "Twin Folding Daggers"
+msgstr "Dagas plegables gemelas"
+
+#: app/static/json/barebones.json:1
+msgid "Bullseye Lantern"
+msgstr "Linterna sorda"
+
+#: app/static/json/barebones.json:1
+msgid "Small Mirror"
+msgstr "Espejo pequeño"
+
+#: app/static/json/barebones.json:1
+msgid "Dark Hood"
+msgstr "Capucha oscura"
+
+#: app/static/json/barebones.json:1
+msgid "Magic-User"
+msgstr "Mago"
+
+#: app/static/json/barebones.json:1
+msgid "Robes"
+msgstr "Hábito"
+
+#: app/static/json/barebones.json:1
+msgid "Cleric"
+msgstr "Clérigo"
+
+#: app/static/json/barebones.json:1
+msgid "Bone Charm"
+msgstr "Amuleto de hueso"
+
+#: app/static/json/barebones.json:1
+msgid "Casts Ward once per day"
+msgstr "Lanza Proteger una vez al día"
+
+#: app/templates/main/character_view.html:46
+msgid "Print PDF"
+msgstr "Imprimir PDF"
+
+#: app/templates/main/tools.html:6
+msgid "Could not copy text. Please try again."
+msgstr ""
+
+#: app/templates/main/tools.html:7 app/templates/main/tools.html:27
+#: app/templates/main/tools.html:35
+msgid "Attach to party"
+msgstr ""
+
+#: app/templates/main/tools.html:8
+msgid "Monster picker"
+msgstr ""
+
+#: app/templates/main/tools.html:65 app/templates/partial/tools/pcgen.html:20
+msgid "Generate"
+msgstr "Generar"
+
+#: app/templates/main/tools.html:68
+msgid "Copy all"
+msgstr ""
+
+#: app/templates/main/tools.html:73
+msgid "Choose a generator and click “Generate”."
+msgstr ""
+
+#: app/templates/partial/barebones/form.html:15
+msgid "Random spellbook"
+msgstr "Libro de Hechizos aleatorio"
+
+#: app/templates/partial/barebones/form.html:15
+msgid "Random scroll"
+msgstr "Pergamino aleatorio"
+
+#: app/templates/partial/barebones/form.html:38
+msgid "Name (d100)"
+msgstr "Nombre (d100)"
+
+#: app/templates/partial/barebones/form.html:39
+msgid "Roll name"
+msgstr "Tirar nombre"
+
+#: app/templates/partial/barebones/form.html:48
+msgid "Roll age"
+msgstr "Tirar edad"
+
+#: app/templates/partial/barebones/form.html:102
+msgid "Roll traits"
+msgstr "Tirar rasgos"
+
+#: app/templates/partial/barebones/form.html:126
+msgid "Starting gear"
+msgstr "Equipo inicial"
+
+#: app/templates/partial/barebones/form.html:132
+#: app/templates/partial/tools/pcgen.html:14
+msgid "Gear package"
+msgstr "Lote de equipo"
+
+#: app/templates/partial/barebones/form.html:144
+msgid "Roll background"
+msgstr "Tirar trasfondo"
+
+#: app/templates/partial/barebones/form.html:151
+msgid "Roll armor"
+msgstr "Tirar armadura"
+
+#: app/templates/partial/barebones/form.html:155
+#: app/templates/partial/barebones/form.html:157
+msgid "Weapon"
+msgstr "Arma"
+
+#: app/templates/partial/barebones/form.html:158
+msgid "Roll weapon"
+msgstr "Tirar arma"
+
+#: app/templates/partial/barebones/form.html:162
+#: app/templates/partial/barebones/form.html:164
+msgid "Additional Gear"
+msgstr "Equipo adicional"
+
+#: app/templates/partial/barebones/form.html:165
+msgid "Roll additional gear"
+msgstr "Tirar equipo adicional"
+
+#: app/templates/partial/charcreo/edition_tabs.html:2
+msgid "Rules edition"
+msgstr "Edición de las reglas"
+
+#: app/templates/partial/charcreo/edition_tabs.html:3
+#: app/templates/partial/tools/pcgen.html:9
+msgid "Second Edition"
+msgstr "Segunda edición"
+
+#: app/templates/partial/charcreo/edition_tabs.html:4
+#: app/templates/partial/charview/sheet_content.html:10
+msgid "Cairn Barebones Edition"
+msgstr "Cairn, edición Barebones"
+
+#: app/templates/partial/charcreo/edition_tabs.html:4
+#: app/templates/partial/charview/sheet_content.html:10
+#: app/templates/partial/tools/pcgen.html:13
+msgid "Barebones"
+msgstr "Barebones"
+
+#: app/templates/partial/tools/pcgen.html:1
+msgid "Unable to generate a character. Please try again."
+msgstr "No se pudo generar un personaje. Inténtalo de nuevo."
+
+#: app/templates/partial/tools/pcgen.html:12
+msgid "Barebones Edition"
+msgstr "Edición Barebones"
+
+#: app/templates/partial/tools/pcgen.html:24
+#: app/templates/partial/tools/pcgen_sheet.html:2
+msgid "Character preview"
+msgstr "Vista previa del personaje"
+
+#: app/templates/partial/tools/pcgen.html:25
+msgid "Sheet"
+msgstr "Ficha"
+
+#: app/templates/partial/tools/pcgen.html:26
+msgid "Plain Text"
+msgstr "Texto plano"
+
+#: app/templates/partial/tools/pcgen.html:29
+#: app/templates/partial/tools/pcgen.html:45
+msgid "Save to Party"
+msgstr "Guardar en el grupo"
+
+#: app/templates/partial/tools/pcgen.html:30
+#: app/templates/partial/tools/pcgen.html:46
+msgid "Save as NPC"
+msgstr "Guardar como PNJ"
+
+#: app/templates/partial/tools/pcgen.html:37
+msgid "Choose a background and click “Generate”."
+msgstr "Elige un trasfondo y pulsa «Generar»."
+
+#: app/templates/partial/tools/pcgen.html:45
+msgid "Create a party first to save a hireling or monster as its Warden."
+msgstr ""
+"Crea primero un grupo para guardar un seguidor o un monstruo como su "
+"Guardiana."
+
+#: app/templates/partial/tools/pcgen.html:46
+msgid "Create a campaign first to save an NPC."
+msgstr "Crea primero una campaña para guardar un PNJ."
 
 #~ msgid "Tokens"
 #~ msgstr "Fichas"
