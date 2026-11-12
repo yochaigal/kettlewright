@@ -2,6 +2,7 @@
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
+import click
 from flask import Blueprint, abort, current_app, flash, jsonify, redirect, render_template, request, url_for, send_from_directory, send_file
 from itsdangerous import BadSignature, URLSafeTimedSerializer
 from flask_babel import _
@@ -12,9 +13,10 @@ from sqlalchemy.orm.exc import StaleDataError
 from sqlalchemy.orm import selectinload
 
 from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
-                        Party, PartyPresentation, PointcrawlMap, CampaignImport)
+                        Party, PartyPresentation, PointcrawlMap, CampaignImport, User)
 from app.lib.campaign_import import preview_archive, import_preview, ImportError, MAX_ARCHIVE
 from app.lib.campaign_export import export_campaign
+from app.lib.starter_adventures import seed_starter_adventures
 from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, check_version,
     entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
     party_access, publishable_party, render_content, save_geometry, text_value, content_value,
@@ -832,7 +834,6 @@ def material_image(owner_id, filename):
 @campaigns.cli.command('migrate-images')
 def migrate_images():
     """Move existing embedded description images to instance storage."""
-    import click
     from sqlalchemy.orm.attributes import flag_modified
     count = 0
     try:
@@ -847,3 +848,15 @@ def migrate_images():
     finally:
         cleanup_images()
     click.echo(f'Migrated {count} descriptions.')
+
+
+@campaigns.cli.command('seed-starter')
+@click.option('--dry-run', is_flag=True, help='Report what would be added without saving.')
+def seed_starter(dry_run):
+    """Add the bundled Cairn starter adventures to every user missing them."""
+    added = 0
+    for (user_id,) in db.session.query(User.id).order_by(User.id):
+        added += seed_starter_adventures(user_id, dry_run)
+        if not dry_run:
+            db.session.commit()
+    click.echo(f'{"Would add" if dry_run else "Added"} {added} campaigns.')

@@ -103,6 +103,29 @@ Map geometry and content originals use separate optimistic version checks. Confl
 
 Originals, campaign membership, party presentations and graph geometry are separate tables so future campaign copying can omit party knowledge. Campaign sharing, co-Wardens, player editing, general file attachments and inventory transfers are outside this version.
 
+## Starter adventures
+
+Every new account is given the free Cairn first-party adventures CAS-1 to CAS-4 as
+private campaigns, imported through the same archive importer as **Import archive**.
+They are created during signup, before the confirmation email, so unconfirmed
+accounts receive them too. A failing bundle is logged and skipped; it never blocks signup.
+
+The bundles live in `app/starter_adventures/cas-N/` (a `campaign.md` plus
+`articles/*.md`) and are generated from the open Cairn text by
+`python scripts/build_starter_adventures.py` (add `--source DIR` to use local
+`cas-N.md` files). Commit the regenerated output. Images link to cairnrpg.com.
+
+Give the adventures to existing accounts with:
+
+```bash
+flask campaigns seed-starter --dry-run   # report only
+flask campaigns seed-starter
+```
+
+A user's campaign is matched by name, so running it again re-adds any starter
+campaign that user deleted or renamed. The text is CC-BY-SA 4.0; see
+`THIRD-PARTY-NOTICES.md`.
+
 ## Validation
 
 ```sh
