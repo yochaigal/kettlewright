@@ -23657,22 +23657,22 @@ msgstr ""
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:4
 msgid "Adhere"
-msgstr ""
+msgstr "Adherir"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:6
 msgid "An object is covered in extremely sticky slime."
-msgstr ""
+msgstr "Cubre un objeto de una baba extremadamente pegajosa."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:7
 msgid "Adjacent objects stick to the book with great force."
-msgstr ""
+msgstr "Los objetos cercanos se pegan al libro con gran fuerza."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:10
 msgid "Anchor"
-msgstr ""
+msgstr "Ancla"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:12
@@ -23680,6 +23680,8 @@ msgid ""
 "A strong wire sprouts from your arms, affixing itself to two points "
 "within 50ft on each side."
 msgstr ""
+"Un resistente cable brota de tus brazos, fijándote en dos puntos a 15 "
+"metros a cada lado."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:13
@@ -23687,51 +23689,55 @@ msgid ""
 "If a rope is pulled through the iron loop on its spine, it becomes as "
 "heavy as an elephant."
 msgstr ""
+"Si se pasa una cuerda por la anilla de hierro de su lomo, se vuelve tan "
+"pesado como un elefante."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:16
 msgid "Animate Object"
-msgstr ""
+msgstr "Objeto animado"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:18
 msgid "An object obeys your commands as best it can."
-msgstr ""
+msgstr "Un objeto obedece tus órdenes lo mejor que puede."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:19
 msgid "Moldable like clay. Childish laughter sprouts from its pages."
-msgstr ""
+msgstr "Moldeable como la arcilla. De sus páginas brotan risas infantiles."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:22
 msgid "Anthropomorphize"
-msgstr ""
+msgstr "Antropomorfizar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:24
 msgid "An animal either gains human intelligence or human appearance for one day."
 msgstr ""
+"Un animal adquiere inteligencia humana, o bien apariencia humana, durante"
+" un día."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:25
 msgid "Whimpers, purrs and growls depending on its treatment."
-msgstr ""
+msgstr "Gimotea, ronronea o gruñe según cómo lo traten."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:28
 msgid "Arcane Eye"
-msgstr ""
+msgstr "Ojo arcano"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:31
 msgid "Needs a spritz of water to open."
-msgstr ""
+msgstr "Hay que rociarlo con agua para abrirlo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:34
 msgid "Astral Prison"
-msgstr ""
+msgstr "Prisión astral"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:36
@@ -23739,16 +23745,18 @@ msgid ""
 "An object is frozen in time and space within an invulnerable crystal "
 "shell."
 msgstr ""
+"Atrapa un objeto dentro de un caparazón de cristal impenetrable. El "
+"objeto queda fijo en el tiempo y en el espacio."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:37
 msgid "Silent, abstract, faces scream in anguish within."
-msgstr ""
+msgstr "En su interior gritan de angustia rostros silenciosos y abstractos."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:40
 msgid "Attract"
-msgstr ""
+msgstr "Atraer"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:42
@@ -23756,16 +23764,18 @@ msgid ""
 "Two objects are strongly magnetically attracted to each other if they "
 "come within 10 feet."
 msgstr ""
+"Dos objetos se atraen fuertemente de manera magnética entre sí, si se "
+"acercan a 3 metros."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:43
 msgid "Nearby compasses spin uselessly."
-msgstr ""
+msgstr "Las brújulas cercanas giran sin sentido."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:46
 msgid "Auditory Illusion"
-msgstr ""
+msgstr "Ilusión auditiva"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:48
@@ -23773,16 +23783,20 @@ msgid ""
 "You create illusory sounds that seem to come from a direction of your "
 "choice."
 msgstr ""
+"Creas sonidos ilusorios que parecen provenir de una dirección a tu "
+"elección."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:49
 msgid "Produces random and occasionally inopportune sounds throughout the day."
 msgstr ""
+"Produce sonidos aleatorios y ocasionalmente inoportunos a lo largo del "
+"día."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:52
 msgid "Babble"
-msgstr ""
+msgstr "Balbucear"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:54
@@ -23790,46 +23804,50 @@ msgid ""
 "A creature must loudly and clearly repeat everything you think. It is "
 "otherwise mute."
 msgstr ""
+"Una criatura debe repetir en voz alta y clara todo lo que piensas. De lo "
+"contrario, se queda muda."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:55
 msgid "When the text is read aloud, the words of others become unintelligible."
 msgstr ""
+"Cuando se lee el texto en voz alta, las palabras de los demás se vuelven "
+"ininteligibles."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:58
 msgid "Bait Flower"
-msgstr ""
+msgstr "Flor carnada"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:60
 msgid "A plant sprouts from the ground that emanates the smell of decaying flesh."
-msgstr ""
+msgstr "Una planta brota del suelo, emanando olor a carne en descomposición."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:61
 msgid "Attracts flies."
-msgstr ""
+msgstr "Atrae a las moscas."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:64
 msgid "Beast Form"
-msgstr ""
+msgstr "Forma bestial"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:66
 msgid "You and your possessions transform into a mundane animal."
-msgstr ""
+msgstr "Tú y tus posesiones se transforman en un animal mundano."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:67
 msgid "Covered in thick fur, its edges lined with small teeth."
-msgstr ""
+msgstr "Cubierto de un pelaje espeso, con los bordes llenos de pequeños dientes."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:70
 msgid "Befuddle"
-msgstr ""
+msgstr "Confundir"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:72
@@ -23837,16 +23855,18 @@ msgid ""
 "A creature of your choice is unable to form new short-term memories for "
 "the duration of the spell."
 msgstr ""
+"Una criatura a tu elección no puede formar recuerdos a corto plazo "
+"mientras dure el hechizo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:73
 msgid "Its contents shift and change each time it is opened."
-msgstr ""
+msgstr "Su contenido se desplaza y cambia cada vez que se abre."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:76
 msgid "Body Swap"
-msgstr ""
+msgstr "Intercambiar cuerpo"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:78
@@ -23854,26 +23874,28 @@ msgid ""
 "You switch bodies with a creature you touch. If one body dies, the other "
 "dies as well."
 msgstr ""
+"Intercambias tu cuerpo con la criatura a la que toques. Si un cuerpo "
+"muere, el otro también."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:79
 msgid "The front cover shows an image of the last creature to read it."
-msgstr ""
+msgstr "La portada muestra una imagen de la última criatura que lo leyó."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:82
 msgid "Charm"
-msgstr ""
+msgstr "Encantar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:84
 msgid "A creature you can see treats you as a friend."
-msgstr ""
+msgstr "Una criatura a la que puedas ver te trata como a un amigo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:85
 msgid "Warm to the touch, and smells of roses."
-msgstr ""
+msgstr "Cálido al tacto, huele a rosas."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:88
@@ -23885,46 +23907,50 @@ msgstr "Comando"
 #: app/static/json/party_events/spellbooks.json:90
 msgid "A target obeys a single three-word command that does not cause it harm."
 msgstr ""
+"El objetivo obedece una orden de tres palabras, siempre y cuando no le "
+"cause daño."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:91
 msgid "Grows thinner over time, until finally disappearing forever."
 msgstr ""
+"Se vuelve más delgado con el tiempo, hasta que al final desaparece para "
+"siempre."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:94
 msgid "Comprehend"
-msgstr ""
+msgstr "Comprender"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:96
 msgid "You become fluent in all languages for a short while."
-msgstr ""
+msgstr "Dominas todos los idiomas durante un periodo corto de tiempo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:97
 msgid "Drips letters, staining whatever it touches."
-msgstr ""
+msgstr "Gotea letras que manchan todo lo que toca."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:100
 msgid "Cone of Foam"
-msgstr ""
+msgstr "Cono de espuma"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:102
 msgid "Dense foam sprays from your hand, coating the target."
-msgstr ""
+msgstr "Una densa espuma emerge de tu mano, cubriendo al objetivo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:103
 msgid "Spongy and moist with a soapy residue."
-msgstr ""
+msgstr "Esponjoso y húmedo, con restos de jabón."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:106
 msgid "Control Plants"
-msgstr ""
+msgstr "Controlar plantas"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:108
@@ -23932,78 +23958,82 @@ msgid ""
 "Nearby plants and trees obey you and gain the ability to move at a slow "
 "pace."
 msgstr ""
+"Los árboles y plantas cercanas te obedecen y obtienen la habilidad de "
+"moverse lentamente."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:109
 msgid "Leaves grow along the spine, and it smells faintly of decay."
-msgstr ""
+msgstr "Le crecen hojas a lo largo del lomo y huele ligeramente a podredumbre."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:112
 msgid "Control Weather"
-msgstr ""
+msgstr "Controlar el clima"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:114
 msgid ""
 "You may alter the type of weather at will, but you do not otherwise "
 "control it."
-msgstr ""
+msgstr "Puedes alterar el tipo de clima a voluntad, pero no controlarlo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:115
 msgid "Highly resistant to fire and water damage."
-msgstr ""
+msgstr "Muy resistente al fuego y al agua."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:118
 msgid "Cure Wounds"
-msgstr ""
+msgstr "Curar heridas"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:120
 msgid "Restore 1d4 STR per day to a creature you can touch."
 msgstr ""
+"Una criatura a la que estés tocando recupera 1d4 puntos de FUE. Solo una "
+"vez al día, por criatura."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:121
 msgid "Smells of vinegar and thyme. Turns red after use."
-msgstr ""
+msgstr "Huele a vinagre y tomillo. Se vuelve rojo tras usarlo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:124
 msgid "Deafen"
-msgstr ""
+msgstr "Ensordecer"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:126
 msgid "All nearby creatures are deafened."
-msgstr ""
+msgstr "Todas las criaturas cercanas pierden la capacidad de oír."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:127
 msgid "Nearby instruments occasionally sound off, as if in protest."
-msgstr ""
+msgstr "Los instrumentos cercanos suenan de vez en cuando, como si protestaran."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:130
 msgid "Detect Magic"
-msgstr ""
+msgstr "Detectar magia"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:132
 msgid "You can see or hear nearby magical auras."
-msgstr ""
+msgstr "Puedes ver u oír las auras mágicas cercanas."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:133
 msgid "Becomes warm to the touch if magic is used nearby."
-msgstr ""
+msgstr "Se calienta al tacto si se usa magia cerca."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:136
 msgid "Disassemble"
-msgstr ""
+msgstr "Desmontar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:138
@@ -24011,16 +24041,19 @@ msgid ""
 "Any of your body parts may be detached and reattached at will, without "
 "causing pain or damage. You can still control them."
 msgstr ""
+"Puedes separar y volver a unir cualquier parte de tu cuerpo a voluntad, "
+"sin causar daño ni dolor. Mantienes el control sobre las partes "
+"separadas."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:139
 msgid "Regenerates any torn or defaced pages."
-msgstr ""
+msgstr "Regenera cualquier página rasgada o dañada."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:142
 msgid "Disguise"
-msgstr ""
+msgstr "Disfraz"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:144
@@ -24029,31 +24062,34 @@ msgid ""
 "remain humanoid. Attempts to duplicate other characters will seem "
 "uncanny."
 msgstr ""
+"Puedes alterar la apariencia de un personaje a voluntad, siempre y cuando"
+" mantenga la forma humanoide. Hacer duplicados de otros personajes "
+"resultará inquietante."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:145
 msgid "The surface makes a perfect mirror."
-msgstr ""
+msgstr "Su superficie es un espejo perfecto."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:148
 msgid "Displace"
-msgstr ""
+msgstr "Sustituir"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:150
 msgid "An object appears to be up to 15ft from its actual position."
-msgstr ""
+msgstr "Un objeto parece estar a 5 metros, o menos, de su posición real."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:151
 msgid "Bits of string, clothing, and leaves are sometimes stuffed inside."
-msgstr ""
+msgstr "A veces aparecen en su interior trozos de cuerda, ropa y hojas."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:154
 msgid "Earthquake"
-msgstr ""
+msgstr "Terremoto"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:156
@@ -24061,31 +24097,33 @@ msgid ""
 "The ground begins shaking violently. Structures may be damaged or "
 "collapse."
 msgstr ""
+"La tierra se sacude violentamente. Las edificaciones pueden derrumbarse o"
+" sufrir daños."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:157
 msgid "Sand dribbles from the corners, seemingly without stop."
-msgstr ""
+msgstr "De sus esquinas cae arena, al parecer sin parar."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:160
 msgid "Elasticity"
-msgstr ""
+msgstr "Elasticidad"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:162
 msgid "Your body can stretch up to 10ft."
-msgstr ""
+msgstr "Tu cuerpo puede estirarse hasta 3 metros."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:163
 msgid "Smells of taffy, and is very flexible."
-msgstr ""
+msgstr "Huele a caramelo y es muy flexible."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:166
 msgid "Elemental Wall"
-msgstr ""
+msgstr "Muro elemental"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:168
@@ -24093,48 +24131,52 @@ msgid ""
 "A straight wall of ice or fire 50ft long and 10ft high rises from the "
 "ground."
 msgstr ""
+"Haces que surja del suelo un muro recto de 15 m de largo y 3 m de alto, "
+"hecho de fuego o hielo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:169
 msgid "Skin and warmer substances stick to it after use."
-msgstr ""
+msgstr "Tras usarlo, se le pegan la piel y las sustancias calientes."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:172
 msgid "Filch"
-msgstr ""
+msgstr "Arrebatar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:174
 msgid "A visible item teleports to your hands."
-msgstr ""
+msgstr "Un objeto que puedas ver se teletransporta a tu mano."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:175
 msgid ""
 "An ally's prized possession may occasionally be found tucked between its "
 "covers."
-msgstr ""
+msgstr "A veces aparece entre sus tapas una posesión preciada de algún aliado."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:178
 msgid "Fish Lung"
-msgstr ""
+msgstr "Pulmón de pez"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:180
 msgid "A target can breathe underwater until they surface again."
 msgstr ""
+"Un objetivo puede respirar bajo el agua hasta que vuelva a salir a la "
+"superficie."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:181
 msgid "Smells strongly of the sea. Attracts wild animals."
-msgstr ""
+msgstr "Huele mucho a mar. Atrae a los animales salvajes."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:184
 msgid "Flare"
-msgstr ""
+msgstr "Bengala"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:186
@@ -24142,21 +24184,23 @@ msgid ""
 "A bright ball of energy fires a trail of light into the sky, revealing "
 "your location to friend or foe."
 msgstr ""
+"Una brillante esfera de energía lanza hacia el cielo una columna de luz, "
+"revelando tu ubicación a cualquier aliado o enemigo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:187
 msgid "Faintly glows in complete darkness."
-msgstr ""
+msgstr "Brilla tenuemente en la oscuridad total."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:190
 msgid "Fog Cloud"
-msgstr ""
+msgstr "Nube de niebla"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:192
 msgid "A dense fog spreads out from you."
-msgstr ""
+msgstr "Una espesa nube de niebla se extiende desde donde estás."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:193
@@ -24164,31 +24208,35 @@ msgid ""
 "When submersed in water, the book eventually turns all the liquid to "
 "vapor."
 msgstr ""
+"Si se sumerge en agua, el libro acaba convirtiendo todo el líquido en "
+"vapor."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:196
 msgid "Frenzy"
-msgstr ""
+msgstr "Frenesí"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:198
 msgid "A nearby creature erupts in a frenzy of violence."
-msgstr ""
+msgstr "Una criatura cercana estalla en un frenesí de violencia."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:199
 msgid "Rough, sandpaper cover that destroys any book it touches."
 msgstr ""
+"Tapas ásperas como papel de lija, que destrozan cualquier libro que "
+"toquen."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:202
 msgid "Gate"
-msgstr ""
+msgstr "Portal"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:204
 msgid "A portal to a random plane opens."
-msgstr ""
+msgstr "Abres un portal a un plano aleatorio."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:205
@@ -24196,21 +24244,23 @@ msgid ""
 "A large hole is carved into the center, ending in a void. Items dropped "
 "within are never seen again."
 msgstr ""
+"Tiene un gran agujero tallado en el centro que acaba en el vacío. Lo que "
+"cae dentro no vuelve a verse jamás."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:208
 msgid "Gravity Shift"
-msgstr ""
+msgstr "Alterar gravedad"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:210
 msgid "You can change the direction of gravity, but only for yourself."
-msgstr ""
+msgstr "Cambias la dirección de la gravedad. Solo tú te ves afectado."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:211
 msgid "Attaches itself to the largest object nearby."
-msgstr ""
+msgstr "Se pega al objeto más grande que tenga cerca."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:216
@@ -24218,33 +24268,37 @@ msgid ""
 "A creature develops the overwhelming urge to possess a visible item of "
 "your choice."
 msgstr ""
+"Una criatura desarrolla el impulso irrefrenable de poseer un objeto "
+"visible, a tu elección."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:217
 msgid ""
 "The cover changes depending on the owner, subtly hinting at their deepest"
 " desires."
-msgstr ""
+msgstr "La portada cambia según su dueño y deja entrever sus deseos más profundos."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:220
 msgid "Haste"
-msgstr ""
+msgstr "Acelerar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:222
 msgid "Your movement speed is tripled."
-msgstr ""
+msgstr "Triplicas tu velocidad de movimiento."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:223
 msgid "Pages flip wildly while open. Can cause paper cuts."
 msgstr ""
+"Sus páginas pasan sin control mientras está abierto. Pueden provocar "
+"cortes."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:226
 msgid "Hatred"
-msgstr ""
+msgstr "Odio"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:228
@@ -24252,6 +24306,8 @@ msgid ""
 "A creature develops a deep hatred of another creature or group and wishes"
 " to destroy them."
 msgstr ""
+"Una criatura desarrolla un profundo odio hacia otra criatura o grupo de "
+"ellas, y deseará destruirlas."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:229
@@ -24259,26 +24315,28 @@ msgid ""
 "Long term exposure to the book can cause suspicion, paranoia and distrust"
 " of others."
 msgstr ""
+"Estar expuesto al libro durante mucho tiempo puede provocar sospecha, "
+"paranoia y desconfianza hacia los demás."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:232
 msgid "Hear Whispers"
-msgstr ""
+msgstr "Oír susurros"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:234
 msgid "You can hear faint sounds clearly."
-msgstr ""
+msgstr "Puedes escuchar sonidos débiles con claridad."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:235
 msgid "The reader's voice is amplified for a short period of time afterwards."
-msgstr ""
+msgstr "Después de usarlo, la voz del lector se amplifica durante un rato."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:238
 msgid "Hover"
-msgstr ""
+msgstr "Levitar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:240
@@ -24286,16 +24344,18 @@ msgid ""
 "An object hovers, frictionless, 2ft above the ground. It can hold up to "
 "one humanoid."
 msgstr ""
+"Un objeto levita sin fricción a 60 cm del suelo. Llega a soportar el peso"
+" de un humanoide."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:241
 msgid "Floats if dropped."
-msgstr ""
+msgstr "Flota si se suelta."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:244
 msgid "Hypnotize"
-msgstr ""
+msgstr "Hipnotizar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:246
@@ -24303,31 +24363,35 @@ msgid ""
 "A creature enters a trance and will truthfully answer one yes or no "
 "question you ask it."
 msgstr ""
+"Una criatura entra en trance y responderá con sinceridad a una pregunta "
+"que le hagas con «sí» o «no»."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:247
 msgid "Eye-catching, swirling spirals don its covers."
-msgstr ""
+msgstr "Sus tapas lucen espirales llamativas y arremolinadas."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:250
 msgid "Icy Touch"
-msgstr ""
+msgstr "Toque helado"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:252
 msgid "A thick ice layer spreads across a touched surface, up to 10ft in radius."
 msgstr ""
+"Una gruesa capa de hielo se extiende en la superficie tocada, cubriendo "
+"hasta un radio de 3 m."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:253
 msgid "Gloves required. Nonflammable."
-msgstr ""
+msgstr "Hay que usar guantes. No arde."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:256
 msgid "Identify Owner"
-msgstr ""
+msgstr "Identificar dueño"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:258
@@ -24335,31 +24399,35 @@ msgid ""
 "Letters appear over the object you touch, spelling out the name of the "
 "object's owners, if there are any."
 msgstr ""
+"Aparecen letras sobre el objeto que toques, indicando el nombre de su "
+"dueño, siempre y cuando lo tenga."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:259
 msgid "The book's interior lists the name of its previous owner."
-msgstr ""
+msgstr "En su interior figura el nombre de su anterior dueño."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:262
 msgid "Illuminate"
-msgstr ""
+msgstr "Iluminar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:264
 msgid "A floating light moves as you command."
-msgstr ""
+msgstr "Una luz flotante se mueve a tu voluntad."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:265
 msgid "When held in light, the pages become a prism of vibrant rainbows."
 msgstr ""
+"Al ponerlo a la luz, sus páginas se convierten en un prisma de arcoíris "
+"vibrantes."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:268
 msgid "Invisible Tether"
-msgstr ""
+msgstr "Atadura invisible"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:270
@@ -24367,78 +24435,82 @@ msgid ""
 "Two objects within 10ft of each other cannot be moved more than 10ft "
 "apart."
 msgstr ""
+"Dos objetos a menos de 3 m uno del otro no pueden separarse a más de 3 m "
+"de distancia."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:271
 msgid ""
 "Its pages are not attached by glue or thread, yet stay together "
 "nonetheless."
-msgstr ""
+msgstr "Sus páginas no están unidas con cola ni hilo, pero aun así no se separan."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:274
 msgid "Knock"
-msgstr ""
+msgstr "Toc-toc"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:276
 msgid "A nearby mundane or magical lock unlocks loudly."
-msgstr ""
+msgstr "Una cerradura próxima, mundana o mágica, se abre ruidosamente."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:277
 msgid "Locked. A new owner 'produces' the key after their next meal."
 msgstr ""
+"Está cerrado con llave. Su nuevo dueño «produce» la llave después de su "
+"siguiente comida."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:280
 msgid "Leap"
-msgstr ""
+msgstr "Salto"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:282
 msgid "You jump up to 10ft high, once."
-msgstr ""
+msgstr "Das un único salto de hasta 3 metros de alto."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:283
 msgid "When thrown, it just keeps going."
-msgstr ""
+msgstr "Si se lanza, no deja de avanzar."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:286
 msgid "Liquid Air"
-msgstr ""
+msgstr "Aire líquido"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:288
 msgid "The air around you becomes swimmable."
-msgstr ""
+msgstr "El aire a tu alrededor se vuelve apto para nadar."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:289
 msgid "Floats of its own volition, bouncing off of whatever it touches."
-msgstr ""
+msgstr "Flota por sí solo y rebota contra todo lo que toca."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:292
 msgid "Magic Dampener"
-msgstr ""
+msgstr "Amortiguador mágico"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:294
 msgid "All nearby magical effects have their effectiveness halved."
-msgstr ""
+msgstr "Todos los efectos mágicos cercanos reducen su efectividad a la mitad."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:295
 msgid "Relics within 100ft of the spellbook cannot be recharged."
-msgstr ""
+msgstr "Las reliquias a menos de 30 metros del libro no pueden recargarse."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:298
 msgid "Manse"
-msgstr ""
+msgstr "Hogar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:300
@@ -24446,31 +24518,33 @@ msgid ""
 "A sturdy, furnished cottage appears for hours. You can permit and forbid "
 "entry to it at will."
 msgstr ""
+"Haces aparecer una cabaña robusta y amueblada durante 12 horas. Puedes "
+"decidir quién puede entrar y quién no."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:301
 msgid "If left inside, both the book and the cottage vanish forever."
-msgstr ""
+msgstr "Si se deja dentro, tanto el libro como la cabaña desaparecen para siempre."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:304
 msgid "Marble Craze"
-msgstr ""
+msgstr "Canicas"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:306
 msgid "Your pockets are full of marbles and will refill every 30 seconds."
-msgstr ""
+msgstr "Tus bolsillos se llenan de canicas, y vuelven a llenarse cada 30 segundos."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:307
 msgid "When jostled, makes a playful rattling sound."
-msgstr ""
+msgstr "Al zarandearlo, hace un traqueteo juguetón."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:310
 msgid "Masquerade"
-msgstr ""
+msgstr "Mascarada"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:312
@@ -24478,36 +24552,42 @@ msgid ""
 "A character's appearance and voice becomes identical to those of a "
 "character you touch."
 msgstr ""
+"La voz y apariencia de un personaje se vuelven idénticas a las de un "
+"personaje que toques."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:313
 msgid "Extended use causes the owner to develop unconscious yet noticeable tics."
 msgstr ""
+"Su uso prolongado hace que el dueño desarrolle tics inconscientes pero "
+"evidentes."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:316
 msgid "Miniaturize"
-msgstr ""
+msgstr "Miniaturizar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:318
 msgid "A creature you touch is shrunk down to the size of a mouse."
-msgstr ""
+msgstr "Una criatura que toques es reducida al tamaño de un ratón."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:319
 msgid "The text is ludicrously, comically large."
-msgstr ""
+msgstr "El texto es ridícula y cómicamente grande."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:322
 msgid "Mirror Image"
-msgstr ""
+msgstr "Imagen especular"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:324
 msgid "An illusory duplicate of yourself appears and is under your control."
 msgstr ""
+"Haces aparecer un duplicado ilusorio de ti mismo, que se mantiene bajo tu"
+" control."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:325
@@ -24515,36 +24595,40 @@ msgid ""
 "Over time, the owner begins to question who is the original, and who is "
 "the duplicate."
 msgstr ""
+"Con el tiempo, el dueño empieza a dudar de quién es el original y quién "
+"el duplicado."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:328
 msgid "Mirrorwalk"
-msgstr ""
+msgstr "Puerta espejo"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:331
 msgid "Will not open unless the owner politely knocks on the cover."
-msgstr ""
+msgstr "No se abre a menos que su dueño llame educadamente a la tapa."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:334
 msgid "Multiarm"
-msgstr ""
+msgstr "Brazo múltiple"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:336
 msgid "You temporarily gain an extra arm."
-msgstr ""
+msgstr "Temporalmente obtienes un brazo extra."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:337
 msgid "After use, the caster is wracked with phantom limb syndrome for a day."
 msgstr ""
+"Tras usarlo, el lanzador sufre el síndrome del miembro fantasma durante "
+"un día."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:340
 msgid "Night Sphere"
-msgstr ""
+msgstr "Esfera nocturna"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:342
@@ -24552,16 +24636,18 @@ msgid ""
 "A 50ft-wide sphere of darkness displaying the night sky appears before "
 "you."
 msgstr ""
+"Una esfera de oscuridad de 15 m de diámetro, mostrando el cielo nocturno,"
+" aparece frente a ti."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:343
 msgid "Displays a prominent constellation on its cover."
-msgstr ""
+msgstr "Muestra una constelación destacada en la portada."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:346
 msgid "Objectify"
-msgstr ""
+msgstr "Cosificar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:348
@@ -24569,91 +24655,95 @@ msgid ""
 "You become any inanimate object between the size of a grand piano and an "
 "apple."
 msgstr ""
+"Te conviertes en un objeto inanimado. Puede ser tan grande como un piano "
+"o tan pequeño como una manzana."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:349
 msgid "The owner experiences intense pareidolia for days after use."
-msgstr ""
+msgstr "Tras usarlo, el dueño sufre una intensa pareidolia durante días."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:352
 msgid "Ooze Form"
-msgstr ""
+msgstr "Forma de limo"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:354
 msgid "You become a living jelly."
-msgstr ""
+msgstr "Te conviertes en una gelatina viviente."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:355
 msgid "Slowly drips an acid that eventually eats away anything it touches."
-msgstr ""
+msgstr "Gotea lentamente un ácido que acaba corroyendo todo lo que toca."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:358
 msgid "Pacify"
-msgstr ""
+msgstr "Pacificar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:360
 msgid "A creature near you has an aversion to violence."
-msgstr ""
+msgstr "Una criatura cercana desarrolla aversión a la violencia."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:361
 msgid "Smells of jasmine and incense. Attracts children."
-msgstr ""
+msgstr "Huele a jazmín e incienso. Atrae a los niños."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:364
 msgid "Phobia"
-msgstr ""
+msgstr "Fobia"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:366
 msgid "A nearby creature becomes terrified of an object of your choice."
-msgstr ""
+msgstr "Una criatura cercana se aterroriza ante un objeto a tu elección."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:367
 msgid "Over time, haunting, abstract art begins to fill its pages."
-msgstr ""
+msgstr "Con el tiempo, sus páginas se llenan de un arte abstracto y perturbador."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:370
 msgid "Pit"
-msgstr ""
+msgstr "Foso"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:372
 msgid "A pit 10ft wide and 10ft deep opens in the ground."
-msgstr ""
+msgstr "Un agujero de 3 m de ancho y 3 m de profundidad se abre en el suelo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:373
 msgid "A standard piton can be safely stored in its spine."
-msgstr ""
+msgstr "En su lomo se puede guardar con seguridad una pica de escalada normal."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:376
 msgid "Primal Surge"
-msgstr ""
+msgstr "Acelerón primordial"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:378
 msgid "A creature rapidly evolves into a future version of its species."
 msgstr ""
+"Una criatura evoluciona rápidamente hasta llegar a ser una versión futura"
+" de su especie."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:379
 msgid "The owner is haunted by strange visions of their own ancestors."
-msgstr ""
+msgstr "Al dueño lo atormentan extrañas visiones de sus propios antepasados."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:382
 msgid "Push/Pull"
-msgstr ""
+msgstr "Empujar/tirar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:384
@@ -24661,16 +24751,20 @@ msgid ""
 "An object of any size is pulled directly towards you or pushed directly "
 "away from you with the strength of one man."
 msgstr ""
+"Un objeto de cualquier tamaño es empujado hacia ti o desde ti, con la "
+"fuerza de un hombre."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:385
 msgid "Any force against the book is comically amplified."
 msgstr ""
+"Cualquier fuerza que se ejerza sobre el libro se amplifica de forma "
+"cómica."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:388
 msgid "Raise Dead"
-msgstr ""
+msgstr "Levantar osamenta"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:390
@@ -24678,36 +24772,40 @@ msgid ""
 "A skeleton rises from the ground to serve you. They are incredibly stupid"
 " and can only obey simple orders."
 msgstr ""
+"Un esqueleto emerge del suelo para servirte. Es increíblemente estúpido y"
+" solo puede seguir órdenes sencillas."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:391
 msgid "The owner becomes more and more fascinated with bones after each use."
-msgstr ""
+msgstr "El dueño se fascina cada vez más con los huesos tras cada uso."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:394
 msgid "Raise Spirit"
-msgstr ""
+msgstr "Invocar espíritu"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:396
 msgid "The spirit of a nearby corpse manifests and will answer 1 question."
-msgstr ""
+msgstr "El espíritu de un cadáver cercano se manifiesta y responde a una pregunta."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:397
 msgid "The answers (but not their questions) are forever inscribed in its pages."
 msgstr ""
+"Las respuestas (pero no las preguntas) quedan grabadas para siempre en "
+"sus páginas."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:400
 msgid "Read Mind"
-msgstr ""
+msgstr "Leer mentes"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:402
 msgid "You can hear the surface thoughts of nearby creatures."
-msgstr ""
+msgstr "Puedes oír los pensamientos superficiales de las criaturas cercanas."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:403
@@ -24715,11 +24813,13 @@ msgid ""
 "Long-term possession can cause the reader to mistake the thoughts of "
 "others as their own."
 msgstr ""
+"Poseerlo durante mucho tiempo puede hacer que el lector confunda los "
+"pensamientos de los demás con los suyos propios."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:406
 msgid "Repel"
-msgstr ""
+msgstr "Repeler"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:408
@@ -24727,36 +24827,44 @@ msgid ""
 "Two objects are strongly magnetically repelled from each other within 10 "
 "feet."
 msgstr ""
+"Dos objetos se repelen fuertemente de manera magnética entre sí, si se "
+"acercan a 3 metros."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:409
 msgid "Closed by two powerful straps that spring open at inopportune times."
 msgstr ""
+"Lo cierran dos correas resistentes que se abren de golpe en los momentos "
+"más inoportunos."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:412
 msgid "Scry"
-msgstr ""
+msgstr "Espiar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:414
 msgid "You can see through the eyes of a creature you touched earlier today."
 msgstr ""
+"Puedes ver a través de los ojos de una criatura a la que hayas tocado "
+"durante el día."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:415
 msgid "The owner's eyes turn milky-white for an hour after use."
 msgstr ""
+"Los ojos del dueño se vuelven blancos como la leche durante una hora tras"
+" usarlo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:418
 msgid "Sculpt Elements"
-msgstr ""
+msgstr "Esculpir materia"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:420
 msgid "Inanimate material behaves like clay in your hands."
-msgstr ""
+msgstr "Los materiales inanimados se comportan como arcilla entre tus manos."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:421
@@ -24764,11 +24872,13 @@ msgid ""
 "Slowly decays on contact with wood or cloth. Bury in dirt or submerge in "
 "water to refresh."
 msgstr ""
+"Se deteriora lentamente al contacto con la madera o la tela. Entiérralo o"
+" sumérgelo en agua para renovarlo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:424
 msgid "Sense"
-msgstr ""
+msgstr "Sentir"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:426
@@ -24776,11 +24886,13 @@ msgid ""
 "Choose one kind of object (key, gold, arrow, jug, etc). You can sense the"
 " nearest example."
 msgstr ""
+"Elige un tipo de objeto (llave, oro, flecha, jarra, etc.). Puedes "
+"percibir el que se encuentre más cerca."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:427
 msgid "The book's previous owner is always aware of the book's current location."
-msgstr ""
+msgstr "El anterior dueño del libro siempre sabe dónde se encuentra."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/hirelings.json:1 app/static/json/marketplace.json:1
@@ -24792,78 +24904,84 @@ msgstr "Escudo"
 #: app/static/json/party_events/spellbooks.json:432
 msgid "A creature you touch is protected from mundane attacks for one minute."
 msgstr ""
+"Una criatura a la que toques queda protegida de los ataques mundanos por "
+"un minuto."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:433
 msgid "Bound in rusty ring-mail and is quite heavy. If held, provides +1 Armor."
 msgstr ""
+"Encuadernado en una cota de anillas oxidada y bastante pesado. Si se "
+"sostiene, proporciona +1 Armadura."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:438
 msgid "A creature you touch is invisible until they move."
-msgstr ""
+msgstr "Una criatura que toques se vuelve invisible hasta que se mueva."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:439
 msgid "Invisible to any but the book's current owner."
-msgstr ""
+msgstr "Invisible para todos salvo para su dueño actual."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:442
 msgid "Shuffle"
-msgstr ""
+msgstr "Intercambiar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:444
 msgid "Two creatures you can see instantly switch places."
-msgstr ""
+msgstr "Dos criaturas a las que puedas ver intercambian sus posiciones."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:445
 msgid "If stolen but not yet read, it reappears wherever its owner last left it."
 msgstr ""
+"Si lo roban antes de leerlo, reaparece donde su dueño lo dejó por última "
+"vez."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:448
 msgid "Sleep"
-msgstr ""
+msgstr "Dormir"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:450
 msgid "A creature you can see falls into a light sleep."
-msgstr ""
+msgstr "Una criatura a la que puedas ver cae en un ligero sueño."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:451
 msgid "Soft as a pillow, but yields only fitful sleep."
-msgstr ""
+msgstr "Blando como una almohada, pero solo proporciona un sueño inquieto."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:454
 msgid "Slick"
-msgstr ""
+msgstr "Resbalar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:456
 msgid "Every surface in a 30ft radius becomes extremely slippery."
-msgstr ""
+msgstr "Toda superficie en un radio de 10 m se vuelve extremadamente resbaladiza."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:457
 msgid ""
 "Gloves are required for handling, lest the book is dropped in a most "
 "comical fashion."
-msgstr ""
+msgstr "Hay que manejarlo con guantes, o se caerá de la forma más cómica."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:460
 msgid "Smoke Form"
-msgstr ""
+msgstr "Forma de humo"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:462
 msgid "Your body becomes a living smoke that you can control."
-msgstr ""
+msgstr "Tu cuerpo se convierte en una nube de humo viviente que puedes controlar."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:463
@@ -24871,31 +24989,33 @@ msgid ""
 "Smells of campfire. The pages cannot be burnt, but are very sensitive to "
 "moisture."
 msgstr ""
+"Huele a hoguera. Sus páginas no arden, pero son muy sensibles a la "
+"humedad."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:466
 msgid "Sniff"
-msgstr ""
+msgstr "Oler"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:468
 msgid "You can smell even the faintest traces of scents."
-msgstr ""
+msgstr "Puedes percibir incluso los más leves rastros de olor."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:469
 msgid "Expresses a strong odor detectable only by its owner."
-msgstr ""
+msgstr "Desprende un fuerte olor que solo su dueño puede percibir."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:472
 msgid "Snuff"
-msgstr ""
+msgstr "Apagar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:474
 msgid "The source of any mundane light you can see is instantly snuffed out."
-msgstr ""
+msgstr "Las fuentes de luz mundanas que puedas ver se apagan instantáneamente."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:475
@@ -24903,41 +25023,45 @@ msgid ""
 "If left in one place for long periods, nearby light sources eventually "
 "dim, then finally go out."
 msgstr ""
+"Si se deja mucho tiempo en un mismo sitio, las luces cercanas se atenúan "
+"y acaban apagándose."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:478
 msgid "Sort"
-msgstr ""
+msgstr "Clasificar"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:480
 msgid "Inanimate items sort themselves according to categories you set."
 msgstr ""
+"Los objetos inanimados se organizan a sí mismos según las categorías que "
+"determines."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:481
 msgid "Rights itself when dropped or thrown."
-msgstr ""
+msgstr "Se endereza solo al dejarlo caer o lanzarlo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:484
 msgid "Skillful Repair"
-msgstr ""
+msgstr "Reparación hábil"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:486
 msgid "You make minor repairs to a nonliving object."
-msgstr ""
+msgstr "Haces pequeñas reparaciones en un objeto inanimado."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:487
 msgid "Sewn from the vellum of one hundred books, no two pages are alike."
-msgstr ""
+msgstr "Cosido con la vitela de cien libros, no hay dos páginas iguales."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:490
 msgid "Spellsaw"
-msgstr ""
+msgstr "Machete"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:492
@@ -24945,33 +25069,36 @@ msgid ""
 "A whirling blade flies from your chest, clearing any plant material in "
 "its way. It is otherwise harmless."
 msgstr ""
+"Una cuchilla giratoria sale volando de tu pecho, cortando cualquier "
+"material vegetal en su camino. Es inofensiva contra cualquier otro "
+"material."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:493
 msgid "Wrapped in stained leather, it should be oiled at least once a month."
-msgstr ""
+msgstr "Envuelto en cuero manchado, hay que engrasarlo al menos una vez al mes."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:496
 msgid "Spider Climb"
-msgstr ""
+msgstr "Trepar como araña"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:498
 msgid "You can climb surfaces like a spider."
-msgstr ""
+msgstr "Puedes moverte por las superficies como una araña."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:499
 msgid ""
 "New cobwebs must be pushed aside prior to each use. They are hard to "
 "remove."
-msgstr ""
+msgstr "Antes de cada uso hay que apartar telarañas nuevas. Cuesta quitarlas."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:502
 msgid "Swarm"
-msgstr ""
+msgstr "Grupo de animales"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:504
@@ -24979,6 +25106,8 @@ msgid ""
 "You become a swarm of crows, rats, or piranhas. You can only be harmed by"
 " blast attacks."
 msgstr ""
+"Te conviertes en una bandada de cuervos, una colonia de ratas o un banco "
+"de pirañas. Solo puedes ser afectado por ataques de estallido."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:505
@@ -24986,16 +25115,18 @@ msgid ""
 "Easily broken into a dozen distinct parts that slowly move towards one "
 "another over time."
 msgstr ""
+"Se rompe con facilidad en una docena de partes que, con el tiempo, se "
+"acercan lentamente unas a otras."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:508
 msgid "Telekinesis"
-msgstr ""
+msgstr "Telequinesis"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:510
 msgid "You may mentally 1 move item under 60lbs."
-msgstr ""
+msgstr "Puedes mover un objeto de hasta 30 kilogramos con la mente."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:511
@@ -25003,16 +25134,20 @@ msgid ""
 "The owner can summon the book through mental command alone (WIL save or "
 "become deprived afterwards)."
 msgstr ""
+"El dueño puede llamar al libro solo con la mente (después, Salvación de "
+"VOL o queda Exhausto)."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:514
 msgid "Telepathy"
-msgstr ""
+msgstr "Telepatía"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:516
 msgid "Two creatures can hear each other's thoughts, no matter how far apart."
 msgstr ""
+"Dos criaturas pueden escuchar sus pensamientos, sin importar a qué "
+"distancia se encuentren."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:517
@@ -25020,6 +25155,8 @@ msgid ""
 "The holder can hear (but not respond) to the thoughts of whoever last "
 "possessed it, and vice versa."
 msgstr ""
+"Quien lo sostiene puede oír (pero no responder) los pensamientos de su "
+"anterior poseedor, y viceversa."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:522
@@ -25027,46 +25164,54 @@ msgid ""
 "An object or person you can see is transported from one place to another "
 "in a 50ft radius."
 msgstr ""
+"Teletransportas un objeto o una persona que puedas ver hasta a 15 m de "
+"donde se encuentre."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:523
 msgid "Can be destroyed to create a portal to another dimension."
-msgstr ""
+msgstr "Puede destruirse para crear un portal a otra dimensión."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:526
 msgid "Target Lure"
-msgstr ""
+msgstr "Señalar objetivo"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:528
 msgid "An object you touch becomes the target of any nearby spell."
 msgstr ""
+"El objeto que toques se convierte en el objetivo de cualquier hechizo "
+"cercano."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:529
 msgid "Attracts all manner of magical creatures, spell leaks, and scrying."
 msgstr ""
+"Atrae a toda clase de criaturas mágicas, fugas de hechizos y miradas "
+"adivinatorias."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:534
 msgid "A thicket of trees and dense brush up to 50ft wide suddenly sprouts up."
 msgstr ""
+"Surge repentinamente una espesura de árboles y densos matorrales, de "
+"hasta 15 m de ancho."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:535
 msgid "Wrapped in vines that must be destroyed again with each use."
-msgstr ""
+msgstr "Está cubierto de enredaderas que deben destruirse para volver a usarlo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:538
 msgid "Passage"
-msgstr ""
+msgstr "Pasadizo"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:540
 msgid "Creates a temporary path through wood, stone or brick."
-msgstr ""
+msgstr "Crea un paso temporal a través de madera, piedra o ladrillo."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:541
@@ -25074,11 +25219,13 @@ msgid ""
 "An object dropped on top of the book inevitably falls through the other "
 "side."
 msgstr ""
+"Un objeto que caiga sobre el libro acaba atravesándolo y saliendo por el "
+"otro lado."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:544
 msgid "Time Control"
-msgstr ""
+msgstr "Controlar el tiempo"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:546
@@ -25086,61 +25233,65 @@ msgid ""
 "Time in a 50ft bubble slows down or increases by 10 percent for 30 "
 "seconds."
 msgstr ""
+"El tiempo dentro de una burbuja de 15 m se ralentiza o acelera en un 10 %"
+" durante 30 segundos."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:547
 msgid "Alternates its appearance as either impossibly old or freshly written."
-msgstr ""
+msgstr "Su aspecto alterna entre imposiblemente antiguo y recién escrito."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:550
 msgid "True Sight"
-msgstr ""
+msgstr "Visión verdadera"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:552
 msgid "You see through all nearby illusions."
-msgstr ""
+msgstr "Ves a través de todas las ilusiones cercanas."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:553
 msgid "Cannot be concealed by magic, and sticks out like a sore thumb."
-msgstr ""
+msgstr "La magia no puede ocultarlo, y llama muchísimo la atención."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:556
 msgid "Upwell"
-msgstr ""
+msgstr "Surgencia"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:558
 msgid "A spring of seawater appears."
-msgstr ""
+msgstr "Haces aparecer un manantial de agua de mar."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:559
 msgid "Hardened leather bindings caked in salt and living barnacles."
-msgstr ""
+msgstr "Tapas de cuero endurecido cubiertas de sal y percebes vivos."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:564
 msgid "You completely control what a creature sees."
-msgstr ""
+msgstr "Controlas completamente lo que ve una criatura."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:565
 msgid "An unnerving, lidless eye graces the front cover."
-msgstr ""
+msgstr "En la portada luce un inquietante ojo sin párpado."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:568
 msgid "Visual Illusion"
-msgstr ""
+msgstr "Ilusión visual"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:570
 msgid "A silent, immobile, room-sized illusion of your choice appears."
 msgstr ""
+"Haces aparecer una ilusión, estática y silenciosa, del tamaño de una "
+"habitación."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:571
@@ -25148,11 +25299,13 @@ msgid ""
 "Filled with rich, colorful pages very much like a children's bedtime "
 "story."
 msgstr ""
+"Lleno de páginas ricas y coloridas, muy parecidas a un cuento infantil "
+"para dormir."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:574
 msgid "Ward"
-msgstr ""
+msgstr "Proteger"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:576
@@ -25160,6 +25313,8 @@ msgid ""
 "A silver circle 50ft across appears on the ground. Choose one species "
 "that cannot cross it."
 msgstr ""
+"En el suelo aparece un círculo plateado de 15 m de diámetro. El círculo "
+"no podrá ser atravesado por una especie a tu elección."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:577
@@ -25167,16 +25322,18 @@ msgid ""
 "The covers are decorated with bizarre, otherworldly creatures with "
 "thousands of eyes."
 msgstr ""
+"Sus tapas están decoradas con criaturas extrañas de otro mundo, con miles"
+" de ojos."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:580
 msgid "Web"
-msgstr ""
+msgstr "Red"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:582
 msgid "Your wrists shoot thick webbing."
-msgstr ""
+msgstr "Lanzas una gruesa red desde tus muñecas."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:583
@@ -25184,11 +25341,13 @@ msgid ""
 "The text is alien, yet somehow intelligible, for it is the language of "
 "dreams."
 msgstr ""
+"El texto es ajeno, pero de algún modo inteligible, pues está escrito en "
+"el idioma de los sueños."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:586
 msgid "Widget"
-msgstr ""
+msgstr "Artilugio"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:588
@@ -25196,6 +25355,8 @@ msgid ""
 "A primitive version of a drawn tool or item appears before you and "
 "disappears after a short time."
 msgstr ""
+"La versión primitiva de una herramienta u objeto que hayas dibujado "
+"aparece frente a ti y desaparece al poco rato."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:589
@@ -25203,11 +25364,13 @@ msgid ""
 "Smells of iron and rust, sweat and effort. Faint sounds of harsh labor "
 "emanate from deep within its pages."
 msgstr ""
+"Huele a hierro y óxido, a sudor y esfuerzo. Desde lo más hondo de sus "
+"páginas llegan débiles sonidos de trabajo duro."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:592
 msgid "Wizard Mark"
-msgstr ""
+msgstr "Marca de mago"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:594
@@ -25216,6 +25379,9 @@ msgid ""
 "only visible to you and can be seen at any distance, even through solid "
 "objects."
 msgstr ""
+"Lanzas un chorro de pintura de un color desconocido, desde la punta de tu"
+" dedo. Solo tú puedes ver esta pintura, a cualquier distancia e incluso a"
+" través de objetos sólidos."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:595
@@ -25223,21 +25389,26 @@ msgid ""
 "Inside the front cover is a small pocket containing a thin pad of paper, "
 "listing the name and date of death of all previous owners."
 msgstr ""
+"En el interior de la tapa hay un pequeño bolsillo con un fino cuadernillo"
+" que recoge el nombre y la fecha de muerte de todos sus dueños "
+"anteriores."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:598
 msgid "X-Ray Vision"
-msgstr ""
+msgstr "Visión de rayos X"
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:600
 msgid "You can see through walls, dirt, clothing, etc."
-msgstr ""
+msgstr "Puedes ver a través de paredes, tierra, tela, etc."
 
 #: app/static/json/generators/spellbooks.json:1
 #: app/static/json/party_events/spellbooks.json:601
 msgid "Long-term exposure can cause hair loss, blurry vision, and fatigue."
 msgstr ""
+"Exponerse a él durante mucho tiempo puede causar caída del cabello, "
+"visión borrosa y fatiga."
 
 # ============================================= WEATHER
 # =============================================
@@ -39047,502 +39218,502 @@ msgstr ""
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Adhere"
-msgstr ""
+msgstr "Adherir"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Anchor"
-msgstr ""
+msgstr "Ancla"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Animate Object"
-msgstr ""
+msgstr "Objeto animado"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Anthropomorphize"
-msgstr ""
+msgstr "Antropomorfizar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Arcane Eye"
-msgstr ""
+msgstr "Ojo arcano"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Astral Prison"
-msgstr ""
+msgstr "Prisión astral"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Attract"
-msgstr ""
+msgstr "Atraer"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Auditory Illusion"
-msgstr ""
+msgstr "Ilusión auditiva"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Babble"
-msgstr ""
+msgstr "Balbucear"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Bait Flower"
-msgstr ""
+msgstr "Flor carnada"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Beast Form"
-msgstr ""
+msgstr "Forma bestial"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Befuddle"
-msgstr ""
+msgstr "Confundir"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Body Swap"
-msgstr ""
+msgstr "Intercambiar cuerpo"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Charm"
-msgstr ""
+msgstr "Encantar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Command"
-msgstr ""
+msgstr "Ordenar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Comprehend"
-msgstr ""
+msgstr "Comprender"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Cone of Foam"
-msgstr ""
+msgstr "Cono de espuma"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Control Plants"
-msgstr ""
+msgstr "Controlar plantas"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Control Weather"
-msgstr ""
+msgstr "Controlar el clima"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Cure Wounds"
-msgstr ""
+msgstr "Curar heridas"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Deafen"
-msgstr ""
+msgstr "Ensordecer"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Detect Magic"
-msgstr ""
+msgstr "Detectar magia"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Disassemble"
-msgstr ""
+msgstr "Desmontar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Disguise"
-msgstr ""
+msgstr "Disfraz"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Displace"
-msgstr ""
+msgstr "Sustituir"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Earthquake"
-msgstr ""
+msgstr "Terremoto"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Elasticity"
-msgstr ""
+msgstr "Elasticidad"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Elemental Wall"
-msgstr ""
+msgstr "Muro elemental"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Filch"
-msgstr ""
+msgstr "Arrebatar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Fish Lung"
-msgstr ""
+msgstr "Pulmón de pez"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Flare"
-msgstr ""
+msgstr "Bengala"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Fog Cloud"
-msgstr ""
+msgstr "Nube de niebla"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Frenzy"
-msgstr ""
+msgstr "Frenesí"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Gate"
-msgstr ""
+msgstr "Portal"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Gravity Shift"
-msgstr ""
+msgstr "Alterar gravedad"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Greed"
-msgstr ""
+msgstr "Codicia"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Haste"
-msgstr ""
+msgstr "Acelerar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Hatred"
-msgstr ""
+msgstr "Odio"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Hear Whispers"
-msgstr ""
+msgstr "Oír susurros"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Hover"
-msgstr ""
+msgstr "Levitar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Hypnotize"
-msgstr ""
+msgstr "Hipnotizar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Icy Touch"
-msgstr ""
+msgstr "Toque helado"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Identify Owner"
-msgstr ""
+msgstr "Identificar dueño"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Illuminate"
-msgstr ""
+msgstr "Iluminar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Invisible Tether"
-msgstr ""
+msgstr "Atadura invisible"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Knock"
-msgstr ""
+msgstr "Toc-toc"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Leap"
-msgstr ""
+msgstr "Salto"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Liquid Air"
-msgstr ""
+msgstr "Aire líquido"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Magic Dampener"
-msgstr ""
+msgstr "Amortiguador mágico"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Manse"
-msgstr ""
+msgstr "Hogar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Marble Craze"
-msgstr ""
+msgstr "Canicas"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Masquerade"
-msgstr ""
+msgstr "Mascarada"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Miniaturize"
-msgstr ""
+msgstr "Miniaturizar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Mirror Image"
-msgstr ""
+msgstr "Imagen especular"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Mirrorwalk"
-msgstr ""
+msgstr "Puerta espejo"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Multiarm"
-msgstr ""
+msgstr "Brazo múltiple"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Night Sphere"
-msgstr ""
+msgstr "Esfera nocturna"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Objectify"
-msgstr ""
+msgstr "Cosificar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Ooze Form"
-msgstr ""
+msgstr "Forma de limo"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Pacify"
-msgstr ""
+msgstr "Pacificar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Phobia"
-msgstr ""
+msgstr "Fobia"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Pit"
-msgstr ""
+msgstr "Foso"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Primal Surge"
-msgstr ""
+msgstr "Acelerón primordial"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Push/Pull"
-msgstr ""
+msgstr "Empujar/tirar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Raise Dead"
-msgstr ""
+msgstr "Levantar osamenta"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Raise Spirit"
-msgstr ""
+msgstr "Invocar espíritu"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Read Mind"
-msgstr ""
+msgstr "Leer mentes"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Repel"
-msgstr ""
+msgstr "Repeler"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Scry"
-msgstr ""
+msgstr "Espiar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Sculpt Elements"
-msgstr ""
+msgstr "Esculpir materia"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Sense"
-msgstr ""
+msgstr "Sentir"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Shield"
-msgstr ""
+msgstr "Escudo"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Shroud"
-msgstr ""
+msgstr "Velo"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Shuffle"
-msgstr ""
+msgstr "Intercambiar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Sleep"
-msgstr ""
+msgstr "Dormir"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Slick"
-msgstr ""
+msgstr "Resbalar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Smoke Form"
-msgstr ""
+msgstr "Forma de humo"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Sniff"
-msgstr ""
+msgstr "Oler"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Snuff"
-msgstr ""
+msgstr "Apagar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Sort"
-msgstr ""
+msgstr "Clasificar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Skillful Repair"
-msgstr ""
+msgstr "Reparación hábil"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Spellsaw"
-msgstr ""
+msgstr "Machete"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Spider Climb"
-msgstr ""
+msgstr "Trepar como araña"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Swarm"
-msgstr ""
+msgstr "Grupo de animales"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Telekinesis"
-msgstr ""
+msgstr "Telequinesis"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Telepathy"
-msgstr ""
+msgstr "Telepatía"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Teleport"
-msgstr ""
+msgstr "Teletransportar"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Target Lure"
-msgstr ""
+msgstr "Señalar objetivo"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Thicket"
-msgstr ""
+msgstr "Espesura"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Passage"
-msgstr ""
+msgstr "Pasadizo"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Time Control"
-msgstr ""
+msgstr "Controlar el tiempo"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "True Sight"
-msgstr ""
+msgstr "Visión verdadera"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Upwell"
-msgstr ""
+msgstr "Surgencia"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Vision"
-msgstr ""
+msgstr "Visión"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Visual Illusion"
-msgstr ""
+msgstr "Ilusión visual"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Ward"
-msgstr ""
+msgstr "Proteger"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Web"
-msgstr ""
+msgstr "Red"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Widget"
-msgstr ""
+msgstr "Artilugio"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "Wizard Mark"
-msgstr ""
+msgstr "Marca de mago"
 
 #: app/static/json/generators/spellbooks.json:1
 msgctxt "spell name"
 msgid "X-Ray Vision"
-msgstr ""
+msgstr "Visión de rayos X"
 
 #: app/templates/base.html:34 app/templates/base.html:39
 #: app/templates/base.html:47
