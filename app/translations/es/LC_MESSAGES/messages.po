@@ -43617,7 +43617,7 @@ msgstr "Embaucador"
 #: app/static/json/barebones.json:1
 msgctxt "equipment"
 msgid "Cards"
-msgstr "Cartas"
+msgstr "Baraja de cartas"
 
 #: app/static/json/barebones.json:1
 msgid "Paint"
