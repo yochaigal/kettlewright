@@ -121,3 +121,13 @@ _EVENTS_TRANSLATION_CONTEXTS.update({
     ('Custom Monster', 'MonsterAbilities', 'Ability'): 'cairn table: Custom Monster.MonsterAbilities.Ability',
     ('Custom Monster', 'MonsterAbilities', 'Target'): 'cairn table: Custom Monster.MonsterAbilities.Target',
 })
+
+# Barebones item tables share the equipment context with the item sheet, so a
+# word such as "Lockpick" can name an item there and a hireling elsewhere.
+_EVENTS_TRANSLATION_CONTEXTS.update({
+    ('backgrounds', 'items', 'name'): 'equipment',
+    ('armor', 'name'): 'equipment',
+    ('armor', 'items', 'name'): 'equipment',
+    ('weapons', 'options'): 'equipment',
+    ('gear', 'name'): 'equipment',
+})

@@ -12,7 +12,7 @@
         <option value="" {% if not state[field] %}selected{% endif %}>{{ placeholder }}...</option>
         {% for row in rows %}
         <option value="{{ loop.index }}" {% if state[field] == loop.index %}selected{% endif %}>
-            {{ loop.index }}. {{ (row.name or row.spell or ('Random spellbook' if row.random == 'spellbook' else 'Random scroll')) | tr('equipment') }}
+            {{ loop.index }}. {{ (row.name or row.spell) | tr('equipment') if (row.name or row.spell) else (_('Random spellbook') if row.random == 'spellbook' else _('Random scroll')) }}
         </option>
         {% endfor %}
     </select>

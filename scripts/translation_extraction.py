@@ -23,7 +23,8 @@ def extract_json(fileobj, keywords, comment_tags, options):
                 # These dictionary keys, unlike schema fields, are visible names.
                 if (filename.name in {'marketplace.json', 'traits.json'} and len(path) <= 1
                         or not path and filename.parent.name == 'backgrounds'
-                        or path[-1:] == ('Group',)):
+                        or path[-1:] == ('Group',)
+                        or filename.name == 'barebones.json' and path == ('gear_packages',)):
                     yield 1, '_', key, []
                 yield from walk(value, path + (key,))
         elif isinstance(node, list):
