@@ -1,24 +1,31 @@
-"""Give a user the bundled Cairn starter adventures through the archive importer."""
+"""Offer the bundled Cairn starter adventures, imported on request through the archive importer."""
 import io
-import re
 import zipfile
 from pathlib import Path
 
-from flask import current_app
+from flask_babel import lazy_gettext as _l
 
 from app.lib.campaign_import import import_preview, preview_archive
 from app.models import db, Campaign
 
 BUNDLES = Path(__file__).resolve().parent.parent / 'starter_adventures'
+SOURCE = 'https://cairnrpg.com/adventures/first-party/{}/'
 
-
-def bundle_dirs():
-    return sorted(path for path in BUNDLES.glob('cas-*') if (path / 'campaign.md').is_file())
-
-
-def bundle_title(path):
-    text = (path / 'campaign.md').read_text(encoding='utf-8')
-    return re.search(r'^title:\s*"(.*)"\s*$', text, re.M).group(1)
+# Each title must equal the `title:` in the bundle's campaign.md (a test checks this).
+STARTERS = {
+    'cas-1': {'title': 'CAS-1: Trouble in Twin Lakes',
+              'description': _l('Two central mysteries for the party to solve, with NPCs, antagonists and '
+                                'locations to explore. Suits new and veteran players.')},
+    'cas-2': {'title': 'CAS-2: Rise of the Blood Olms',
+              'description': _l('A deadly starting adventure for new and experienced Wardens. Critical thinking '
+                                'and careful exploration keep characters alive.')},
+    'cas-3': {'title': 'CAS-3: The Feast of Tegny Wood',
+              'description': _l('Disease, duty and decay in a haunted corner of Vald, where an alchemist\'s '
+                                'failed experiment is festering in Tegny Wood.')},
+    'cas-4': {'title': 'CAS-4: The Forgetting of Lockwood Manor',
+              'description': _l('A wealthy family\'s estate fell silent decades ago, and a waterborne illness '
+                                'now fills victims\' lungs with moss.')},
+}
 
 
 def bundle_archive(path):
@@ -29,25 +36,22 @@ def bundle_archive(path):
     return stream.getvalue()
 
 
-def seed_starter_adventures(user_id, dry_run=False):
-    """Import every starter campaign the user does not already have.
+def starter_cards(owned):
+    """One card per bundle; campaign is the user's Campaign of that name, if they have one."""
+    return [{'slug': slug, 'url': SOURCE.format(slug), 'campaign': owned.get(info['title']), **info}
+            for slug, info in STARTERS.items()]
 
-    The importer merges into a same-named campaign, so owned ones are skipped.
-    A failing bundle is rolled back and logged; the caller owns the commit.
+
+def add_starter_adventure(user_id, slug):
+    """Import one bundle unless the user already has a campaign of that name; KeyError for an unknown slug.
+
+    The importer merges into a same-named campaign, so owned ones are skipped. The caller commits,
+    or rolls back if this raises.
     """
-    owned = {name for (name,) in db.session.query(Campaign.name).filter_by(owner_id=user_id)}
-    missing = [path for path in bundle_dirs() if bundle_title(path) not in owned]
-    if dry_run:
-        return len(missing)
-    added = 0
-    for path in missing:
-        try:
-            with db.session.begin_nested():
-                payload = preview_archive(bundle_archive(path), user_id)
-                if payload['errors']:
-                    raise ValueError('; '.join(payload['errors'][:3]))
-                import_preview(payload, user_id)
-            added += 1
-        except Exception:
-            current_app.logger.exception('Starter adventure %s failed for user %s', path.name, user_id)
-    return added
+    title = STARTERS[slug]['title']
+    if db.session.query(Campaign.id).filter_by(owner_id=user_id, name=title).first():
+        return
+    payload = preview_archive(bundle_archive(BUNDLES / slug), user_id)
+    if payload['errors']:
+        raise ValueError('; '.join(payload['errors'][:3]))
+    import_preview(payload, user_id)

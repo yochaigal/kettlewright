@@ -16,7 +16,8 @@
 .campaign-workspace .campaign-actions {display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin:1rem 0;padding:0;}
 .campaign-workspace > nav.campaign-actions {margin:0 0 1.5rem;}
 .campaign-workspace .campaign-actions > a,
-.campaign-workspace .campaign-actions > button {
+.campaign-workspace .campaign-actions > button,
+.campaign-workspace .campaign-actions > form > button {
   display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
   min-width:0;max-width:100%;min-height:44px;margin:0;padding:.6rem 1rem;
   border:1.5px solid currentColor;border-radius:2px;background:transparent;color:var(--fg);
@@ -24,12 +25,15 @@
   overflow-wrap:anywhere;cursor:pointer;
 }
 .campaign-workspace .campaign-actions > a:hover,
-.campaign-workspace .campaign-actions > button:not(:disabled):hover {background:var(--fg);color:var(--bg);border-color:var(--fg);}
+.campaign-workspace .campaign-actions > button:not(:disabled):hover,
+.campaign-workspace .campaign-actions > form > button:not(:disabled):hover {background:var(--fg);color:var(--bg);border-color:var(--fg);}
 .campaign-workspace .campaign-actions > a:focus-visible,
-.campaign-workspace .campaign-actions > button:focus-visible {outline:2px solid currentColor;outline-offset:3px;}
+.campaign-workspace .campaign-actions > button:focus-visible,
+.campaign-workspace .campaign-actions > form > button:focus-visible {outline:2px solid currentColor;outline-offset:3px;}
 .campaign-cards {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1rem;}
 .campaign-card {display:flex;flex-direction:column;gap:.75rem;box-sizing:border-box;width:auto;max-width:none;margin:0;border:1px solid currentColor;border-radius:.4rem;padding:1rem;min-width:0;}
 .campaign-card h3 {margin:0;}
+.campaign-card p {margin:0;}
 .campaign-workspace .material-children {list-style:none;margin:.6rem 0 0;padding-left:1rem;border-left:1px solid currentColor;}
 .campaign-workspace .material-children > li {margin:.65rem 0;overflow-wrap:anywhere;}
 .campaign-workspace .material-children > li > a + a {margin-left:.6rem;font-size:.85em;}

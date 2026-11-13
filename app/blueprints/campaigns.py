@@ -2,7 +2,6 @@
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
-import click
 from flask import Blueprint, abort, current_app, flash, jsonify, redirect, render_template, request, url_for, send_from_directory, send_file
 from itsdangerous import BadSignature, URLSafeTimedSerializer
 from flask_babel import _
@@ -13,10 +12,10 @@ from sqlalchemy.orm.exc import StaleDataError
 from sqlalchemy.orm import selectinload
 
 from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
-                        Party, PartyPresentation, PointcrawlMap, CampaignImport, User)
+                        Party, PartyPresentation, PointcrawlMap, CampaignImport)
 from app.lib.campaign_import import preview_archive, import_preview, ImportError, MAX_ARCHIVE
 from app.lib.campaign_export import export_campaign
-from app.lib.starter_adventures import seed_starter_adventures
+from app.lib.starter_adventures import STARTERS, add_starter_adventure, starter_cards
 from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, check_version,
     entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
     party_access, publishable_party, render_content, save_geometry, text_value, content_value,
@@ -135,8 +134,26 @@ def index():
     campaigns_list = my_campaigns()
     entries = library_entries().order_by(ContentEntry.title).all()
     return render_template('campaigns/index.html', campaigns=campaigns_list,
+        starter=starter_cards({c.name: c for c in campaigns_list}),
         trees={campaign.id: material_hierarchy([e for e in entries if e.campaign_id == campaign.id]) for campaign in campaigns_list},
         unfiled=material_hierarchy([e for e in entries if e.campaign_id is None]))
+
+
+@campaigns.route('/campaigns/starter/<slug>', methods=['POST'])
+def add_starter(slug):
+    if slug not in STARTERS:
+        abort(404)
+    title = STARTERS[slug]['title']
+    try:
+        add_starter_adventure(current_user.id, slug)
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        current_app.logger.exception('Starter adventure %s failed for user %s', slug, current_user.id)
+        flash(_('Could not add %(title)s. Please try again.', title=title), 'error')
+        return redirect(url_for('campaigns.index'))
+    flash(_('%(title)s was added to your campaigns.', title=title), 'success')
+    return redirect(url_for('campaigns.index', _anchor=f'starter-{slug}'))
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/', methods=['GET', 'POST'])
@@ -834,6 +851,7 @@ def material_image(owner_id, filename):
 @campaigns.cli.command('migrate-images')
 def migrate_images():
     """Move existing embedded description images to instance storage."""
+    import click
     from sqlalchemy.orm.attributes import flag_modified
     count = 0
     try:
@@ -848,15 +866,3 @@ def migrate_images():
     finally:
         cleanup_images()
     click.echo(f'Migrated {count} descriptions.')
-
-
-@campaigns.cli.command('seed-starter')
-@click.option('--dry-run', is_flag=True, help='Report what would be added without saving.')
-def seed_starter(dry_run):
-    """Add the bundled Cairn starter adventures to every user missing them."""
-    added = 0
-    for (user_id,) in db.session.query(User.id).order_by(User.id):
-        added += seed_starter_adventures(user_id, dry_run)
-        if not dry_run:
-            db.session.commit()
-    click.echo(f'{"Would add" if dry_run else "Added"} {added} campaigns.')

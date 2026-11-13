@@ -6,6 +6,25 @@
 <a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a><a href="{{ url_for('campaigns.new_entry') }}">{{ _('New article') }}</a>
 {% endcall %}
 <p>{{ _('Your world at a glance. Expand a branch, open an article, or review what you have shared.') }}</p>
+{% for category, message in get_flashed_messages(with_categories=true) %}{% if category == 'error' %}<p class="import-error" role="alert" tabindex="-1" autofocus>{{ message }}</p>{% else %}<p role="status">{{ message }}</p>{% endif %}{% endfor %}
+
+<section aria-labelledby="starter-heading">
+<h2 id="starter-heading">{{ _('Starter adventures') }}</h2>
+<p>{{ _('Free Cairn adventures by Yochai Gal. Read one on cairnrpg.com first, then add a copy to your campaigns to edit and run.') }}</p>
+<div class="campaign-cards">
+{% for card in starter %}
+<article class="campaign-card">
+<h3 id="starter-{{ card.slug }}" tabindex="-1">{{ card.title }}</h3>
+<p>{{ card.description }}</p>
+<p><a href="{{ card.url }}" target="_blank" rel="noopener" aria-describedby="starter-{{ card.slug }}">{{ _('Read on Cairn (opens in a new tab)') }}</a></p>
+<div class="campaign-actions">
+{% if card.campaign %}<form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=card.campaign.id) }}">{{ token(card.campaign.version) }}<button type="submit" aria-describedby="starter-{{ card.slug }}">{{ _('Remove') }}</button></form><a href="{{ url_for('campaigns.workspace', campaign_id=card.campaign.id) }}" aria-describedby="starter-{{ card.slug }}">{{ _('Open campaign') }}</a>
+{% else %}<form method="post" action="{{ url_for('campaigns.add_starter', slug=card.slug) }}">{{ token() }}<button type="submit" aria-describedby="starter-{{ card.slug }}">{{ _('Add to Campaigns') }}</button></form>{% endif %}
+</div>
+</article>
+{% endfor %}
+</div>
+</section>
 
 <div x-data="materialTree">
 {{ tree_toolbar() }}
