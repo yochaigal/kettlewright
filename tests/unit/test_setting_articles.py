@@ -259,7 +259,8 @@ def test_map_draft_children_remain_private_and_form_has_types(setup):
     assert set(grouped) == set(CATEGORIES) - {'map', 'overview'}
     assert 'value="location"' not in html
     html=client.get('/campaigns/').get_data(as_text=True)
-    navigation=html.split('class="campaign-actions campaign-page-actions"')[1].split('</div>')[0]
+    # The header ends where the page intro paragraph starts; modals nest their own divs.
+    navigation=html.split('class="campaign-actions campaign-page-actions"')[1].split('<p>')[0]
     assert 'Unfiled articles' not in navigation
     assert 'Import archive' in navigation and 'New article' in navigation
 
@@ -637,6 +638,62 @@ def test_legacy_direct_publish_does_not_publish_new_geography_sections(setup):
         root = PointcrawlMap.query.filter_by(kind='realm').one()
         assert len(root.nodes) == 5
         assert all(not node.entry.presentations for node in root.nodes)
+
+
+def test_empty_campaign_opens_its_workspace_without_a_realm(setup):
+    app, client = setup
+    response = client.post('/campaigns/', data={'name': 'Blank world', 'start': 'empty',
+        'generate_children': '1', 'forest_chance': '90'})
+    assert response.status_code == 302
+    with app.app_context():
+        campaign = Campaign.query.filter_by(name='Blank world').one()
+        assert response.location.endswith(f'/campaigns/{campaign.id}/')
+        assert not campaign.entries
+
+
+def test_random_campaign_passes_bounded_generator_options(setup):
+    app, client = setup
+    response = client.post('/campaigns/', data={'name': 'Random world', 'start': 'random',
+        'forest_chance': '70', 'dungeon_chance': '500', 'poi_count': '12'})
+    assert response.status_code == 302
+    location = response.location
+    assert '/materials/generate?' in location and 'kind=realm' in location and 'random=1' in location
+    # Unchecked children, an out-of-range percentage falls back, and only known POI counts pass.
+    assert 'children=0' in location and 'forest=70' in location and 'forest_pois=25' in location and '&pois=12' in location
+    response = client.post('/campaigns/', data={'name': 'Odd world', 'start': 'random', 'poi_count': '7'})
+    assert '&pois=' not in response.location and '?pois=' not in response.location
+    # Random starts may be a dungeon or forest; anything else falls back to a realm.
+    assert 'kind=dungeon' in client.post('/campaigns/', data={'name': 'Deep', 'start': 'random', 'kind': 'dungeon'}).location
+    assert 'kind=forest' in client.post('/campaigns/', data={'name': 'Wood', 'start': 'random', 'kind': 'forest'}).location
+    assert 'kind=realm' in client.post('/campaigns/', data={'name': 'Odd', 'start': 'random', 'kind': 'freeform'}).location
+
+
+def test_random_campaign_with_generated_draft_saves_everything_at_once(setup):
+    app, client = setup
+    draft = {'nodes': [{'id': 'new-1', 'title': 'Village', 'category': 'settlement', 'is_heart': True,
+                        'number': 1, 'x': 10, 'y': 10}], 'edges': [],
+             'children': [{'category': 'pois', 'title': 'POIs'}, {'category': 'paths', 'title': 'Paths'}]}
+    response = client.post('/campaigns/', data={'name': 'Rolled world', 'start': 'random', 'kind': 'realm',
+        'title': 'The Ashen Reach', 'body': 'Windswept hills.', 'draft': json.dumps(draft)})
+    assert response.status_code == 302
+    with app.app_context():
+        campaign = Campaign.query.filter_by(name='Rolled world').one()
+        assert response.location.endswith(f'/campaigns/{campaign.id}/')
+        realm = ContentEntry.query.filter_by(campaign_id=campaign.id, category='realm').one()
+        assert realm.title == 'The Ashen Reach' and realm.pointcrawl.kind == 'realm'
+        village = realm.pointcrawl.nodes[0].entry
+        assert village.title == 'Village' and village.campaign_id == campaign.id
+        assert not village.presentations
+
+
+def test_rejected_random_draft_creates_no_campaign(setup):
+    app, client = setup
+    response = client.post('/campaigns/', data={'name': 'Broken world', 'start': 'random',
+        'title': 'Bad', 'draft': '{not json'})
+    assert response.status_code == 400
+    with app.app_context():
+        assert Campaign.query.filter_by(name='Broken world').count() == 0
+        assert ContentEntry.query.filter_by(title='Bad').count() == 0
 
 
 def test_campaign_creation_opens_distinct_realm_generator(setup):

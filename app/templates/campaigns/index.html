@@ -1,26 +1,57 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token, page_header with context %}
+{% from 'campaigns/forms.html' import token, page_header, modal, modal_footer with context %}
 {% from 'campaigns/material_tree.html' import material_children, tree_toolbar with context %}
 {% block workspace %}
 {% call page_header(_('Campaigns')) %}
-<a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a><a href="{{ url_for('campaigns.new_entry') }}">{{ _('New article') }}</a>
+{% call modal('new-campaign-modal', _('New campaign'), _('New campaign'), open=request.args.get('new') == '1') %}
+<form method="post" x-data="newCampaign" @submit="submit($event)">{{ token() }}
+<section class="modal-card-body">
+<label>{{ _('Campaign name') }}<input type="text" name="name" required maxlength="200" autocomplete="off"></label>
+<fieldset class="campaign-start-options"><legend>{{ _('How do you want to start?') }}</legend>
+<label class="campaign-start-option"><input type="radio" name="start" value="empty" x-model="start">
+<span><strong>{{ _('Empty campaign') }}</strong><small>{{ _('Start blank and add articles, maps or imports yourself.') }}</small></span></label>
+<label class="campaign-start-option"><input type="radio" name="start" value="random" x-model="start">
+<span><strong>{{ _('Random campaign') }}</strong><small>{{ _('Generate and save a realm, dungeon or forest with points of interest. You can edit everything afterwards.') }}</small></span></label>
+</fieldset>
+<div class="campaign-random-options" x-show="start === 'random'" x-cloak>
+<label>{{ _('Article type') }}<select name="kind" x-model="kind"><option value="realm">{{ _('Realm') }}</option><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option></select></label>
+<label class="campaign-check"><input type="checkbox" name="generate_children" value="1" x-model="children">{{ _('Generate all child articles') }}</label>
+<div class="campaign-random-chances" x-show="children && kind !== 'dungeon'">
+<label x-show="kind === 'realm'">{{ _('Forest') }} (%)<input type="number" name="forest_chance" min="0" max="100" value="50"></label>
+<label>{{ _('Forest POIs') }} (%)<input type="number" name="dungeon_chance" min="0" max="100" value="25"></label>
+</div>
+<label>{{ _('Dice / points of interest') }}<select name="poi_count">
+{% for value, label in [('', _('Random count')), ('3', '3'), ('6', '6'), ('8', '8'), ('12', '12'), ('20', '20')] %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+</select></label>
+<small x-show="kind === 'realm'">{{ _('Includes the Heart: a settlement at point 1.') }}</small>
+</div>
+</section>
+<footer class="modal-card-foot campaign-actions campaign-modal-actions">
+<button type="submit" :disabled="generating" x-text="generating ? {{ _('Generating…')|tojson|forceescape }} : (start === 'random' ? {{ _('Create and generate')|tojson|forceescape }} : {{ _('Create campaign')|tojson|forceescape }})">{{ _('Create campaign') }}</button>
+<button type="button" @click="hide()">{{ _('Cancel') }}</button>
+</footer>
+</form>
 {% endcall %}
-<p>{{ _('Your world at a glance. Expand a branch, open an article, or review what you have shared.') }}</p>
+<a href="{{ url_for('campaigns.new_entry') }}">{{ _('New article') }}</a>
+<a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a>
+{% endcall %}
+<p>{{ _('Campaigns group your private articles and maps. Open a campaign to manage its articles and choose which parties it is shared with.') }}</p>
 
+{% if campaigns or unfiled %}
 <div x-data="materialTree">
 {{ tree_toolbar() }}
 {% for campaign in campaigns %}
-<details open class="campaign-tree-root" data-tree-key="campaign-{{ campaign.id }}" data-tree-row data-search="{{ campaign.name|lower }}">
-<summary><span class="tree-row"><a class="tree-title" href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}">{{ campaign.name }}</a><span class="tree-meta">{{ _('Campaign') }}</span><span>{{ campaign.entries|length }} {{ _('articles') }}</span><span class="tree-excerpt">{% for link in campaign.parties %}{{ link.party.name }}{% if not loop.last %}, {% endif %}{% else %}{{ _('No connected parties') }}{% endfor %}</span></span></summary>
+<details class="campaign-tree-root" data-tree-key="campaign-{{ campaign.id }}" data-tree-row data-search="{{ campaign.name|lower }}">
+<summary class="campaign-tree-head"><span class="tree-row"><a class="tree-title" href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}">{{ campaign.name }}</a><span class="tree-count" title="{{ _('Articles') }}">{{ campaign.entries|length }} {{ _('articles') }}</span><span class="tree-excerpt">{% for link in campaign.parties %}{% if loop.first %}{{ _('Shared with') }} {% endif %}{{ link.party.name }}{% if not loop.last %}, {% endif %}{% else %}{{ _('Not shared with any party') }}{% endfor %}</span></span></summary>
 {{ material_children(trees[campaign.id], False) }}
-{% if not trees[campaign.id] %}<p>{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id) }}">{{ _('New article') }}</a></p>{% endif %}
+{% if not trees[campaign.id] %}<p class="tree-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id) }}">{{ _('New article') }}</a></p>{% endif %}
 </details>
-{% else %}<p>{{ _('No campaigns yet.') }}</p>{% endfor %}
-<details open class="campaign-tree-root" data-tree-key="unfiled" data-tree-row data-search="unfiled articles"><summary><a href="{{ url_for('campaigns.library') }}">{{ _('Unfiled articles') }}</a></summary>{{ material_children(unfiled, False) }}</details>
+{% endfor %}
+{% if unfiled %}
+<details class="campaign-tree-root" data-tree-key="unfiled" data-tree-row data-search="unfiled articles"><summary class="campaign-tree-head"><span class="tree-row"><a class="tree-title" href="{{ url_for('campaigns.library') }}">{{ _('Unfiled articles') }}</a><span class="tree-count">{{ unfiled|length }}</span><span class="tree-excerpt">{{ _('Articles not in any campaign') }}</span></span></summary>{{ material_children(unfiled, False) }}</details>
+{% endif %}
 </div>
-<details class="new-campaign"><summary>{{ _('Create campaign') }}</summary>
-<form method="post">{{ token() }}
-<label>{{ _('Campaign name') }}<input type="text" name="name" required maxlength="200"></label>
-<button type="submit">{{ _('Create campaign') }}</button>
-</form></details>
+{% else %}
+<p class="tree-empty">{{ _('No campaigns yet.') }} <a href="{{ url_for('campaigns.index', new=1) }}">{{ _('Create your first campaign') }}</a> {{ _('or') }} <a href="{{ url_for('campaigns.import_archive') }}">{{ _('import a Markdown file or archive') }}</a>.</p>
+{% endif %}
 {% endblock %}

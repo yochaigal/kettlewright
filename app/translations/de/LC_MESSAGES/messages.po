@@ -22317,21 +22317,21 @@ msgstr ""
 
 #: app/templates/campaigns/entry.html:6
 msgid "Existing parent"
-msgstr ""
+msgstr "Vorhandener übergeordneter Artikel"
 
 #: app/templates/campaigns/entry.html:9
 #: app/templates/campaigns/new_map.html:7
 msgid "New Campaign"
-msgstr ""
+msgstr "Neue Kampagne"
 
 #: app/templates/campaigns/entry.html:10
 msgid "Edit Campaign"
-msgstr ""
+msgstr "Kampagne bearbeiten"
 
 #: app/templates/campaigns/entry.html:15
 #: app/templates/campaigns/new_map.html:7
 msgid "Save Campaign"
-msgstr ""
+msgstr "Kampagne speichern"
 
 #: app/templates/campaigns/entry.html:71
 msgid "Delete Campaign"
@@ -22339,19 +22339,19 @@ msgstr ""
 
 #: app/templates/campaigns/entry.html:77
 msgid "Delete Campaign…"
-msgstr ""
+msgstr "Kampagne löschen…"
 
 #: app/templates/campaigns/forms.html:34
 msgid "Entire dungeon"
-msgstr ""
+msgstr "Ganzer Dungeon"
 
 #: app/templates/campaigns/forms.html:34
 msgid "Entire forest"
-msgstr ""
+msgstr "Ganzer Wald"
 
 #: app/templates/campaigns/import_archive.html:9
 msgid "Download an example archive"
-msgstr ""
+msgstr "Beispielarchiv herunterladen"
 
 #: app/templates/campaigns/import_archive.html:9
 msgid "Import it as-is, or unzip it and edit the Markdown files before creating a new ZIP archive."
@@ -22364,6 +22364,12 @@ msgstr ""
 #: app/templates/campaigns/import_archive.html:12
 msgid "Use id and parent_id when titles repeat; these IDs refer only to files inside this archive. To attach a hand-drawn map, add map: maps/world.excalidraw to an article. Export Obsidian drawings to ordinary .excalidraw JSON first. Drawing shapes remain editable; they do not automatically become interactive article points or paths."
 msgstr ""
+"Verwende id und parent_id, wenn sich Titel wiederholen; diese IDs "
+"beziehen sich nur auf Dateien in diesem Archiv. Um eine handgezeichnete "
+"Karte anzuhängen, füge einem Artikel map: maps/world.excalidraw hinzu. "
+"Exportiere Obsidian-Zeichnungen zuerst als normales .excalidraw-JSON. "
+"Zeichnungsformen bleiben bearbeitbar; sie werden nicht automatisch zu "
+"interaktiven Artikelpunkten oder Pfaden."
 
 #: app/templates/campaigns/import_archive.html:28
 msgid "Copy each complete block, including both --- lines, into its own .md file. Place those files together in one archive."
@@ -22371,7 +22377,7 @@ msgstr ""
 
 #: app/templates/campaigns/import_archive.html:46
 msgid "Existing campaign:"
-msgstr ""
+msgstr "Bestehende Kampagne:"
 
 #: app/templates/main/about.html:28
 msgid "Russian and Ukrainian translations."
@@ -22561,3 +22567,293 @@ msgid ""
 "face is %(face)s, your speech %(speech)s. You have %(clothing)s clothing. "
 "You are %(virtue)s and %(vice)s."
 msgstr ""
+
+#: app/blueprints/campaigns.py:560
+msgid ""
+"Published to the selected parties. Use View as party to see the saved "
+"version."
+msgstr ""
+"In den ausgewählten Gruppen veröffentlicht. Öffne die Gruppenansicht, um "
+"die gespeicherte Version zu sehen."
+
+#: app/blueprints/campaigns.py:596
+msgid "Choose a Markdown file or a ZIP/TAR archive."
+msgstr "Wähle eine Markdown-Datei oder ein ZIP/TAR-Archiv."
+
+#: app/blueprints/campaigns.py:603
+msgid ""
+"Unsupported file type. Upload a .md file or put your Markdown articles in"
+" a ZIP, TAR or TAR.GZ archive."
+msgstr ""
+"Nicht unterstützter Dateityp. Lade eine .md-Datei hoch oder packe deine "
+"Markdown-Artikel in ein ZIP-, TAR- oder TAR.GZ-Archiv."
+
+#: app/templates/campaigns/entry.html:34 app/templates/campaigns/new_map.html:18
+msgid "Article settings"
+msgstr "Artikeleinstellungen"
+
+#: app/templates/campaigns/entry.html:35 app/templates/campaigns/new_map.html:19
+msgid "Organize"
+msgstr "Einordnen"
+
+#: app/templates/campaigns/entry.html:70
+msgid "No related articles yet."
+msgstr "Noch keine verwandten Artikel."
+
+#: app/templates/campaigns/entry.html:72
+msgid "Choose related articles…"
+msgstr "Verwandte Artikel auswählen…"
+
+#: app/templates/campaigns/entry.html:76
+msgid "There are no other articles to relate yet."
+msgstr "Es gibt noch keine anderen Artikel zum Verknüpfen."
+
+#: app/templates/campaigns/entry.html:78
+msgid "Changes are kept when you save the article."
+msgstr "Änderungen werden beim Speichern des Artikels übernommen."
+
+#: app/templates/campaigns/entry.html:91
+msgid "Delete Campaign?"
+msgstr "Kampagne löschen?"
+
+#: app/templates/campaigns/entry.html:91
+msgid "Delete article?"
+msgstr "Artikel löschen?"
+
+#: app/templates/campaigns/entry.html:100
+msgid "Review what will be deleted"
+msgstr "Prüfen, was gelöscht wird"
+
+#: app/templates/campaigns/import_archive.html:5
+msgid ""
+"Bring in a single Markdown file or a whole archive of articles. Nothing "
+"enters your library until you review the preview and confirm."
+msgstr ""
+"Importiere eine einzelne Markdown-Datei oder ein ganzes Archiv mit "
+"Artikeln. Erst wenn du die Vorschau geprüft und bestätigt hast, landet "
+"etwas in deiner Bibliothek."
+
+#: app/templates/campaigns/import_archive.html:8
+msgid "1. Choose a file"
+msgstr "1. Datei auswählen"
+
+#: app/templates/campaigns/import_archive.html:11
+msgid "Markdown file or archive"
+msgstr "Markdown-Datei oder Archiv"
+
+#: app/templates/campaigns/import_archive.html:14
+msgid ""
+"Accepted: .md, .zip, .tar, .tar.gz. Files without metadata are imported "
+"as Notes, and you can rename or retype them in the preview."
+msgstr ""
+"Erlaubt: .md, .zip, .tar, .tar.gz. Dateien ohne Metadaten werden als "
+"Notizen importiert; Titel und Typ kannst du in der Vorschau ändern."
+
+#: app/templates/campaigns/import_archive.html:17
+msgid ""
+"For full control, start each file with YAML Front Matter containing "
+"layout: default, title and type. Without it, the title comes from the "
+"first # heading (or the file name) and the type defaults to Note."
+msgstr ""
+"Für volle Kontrolle beginne jede Datei mit YAML Front Matter mit layout: "
+"default, title und type. Ohne sie stammt der Titel aus der ersten "
+"#-Überschrift (oder dem Dateinamen) und der Typ ist standardmäßig Notiz."
+
+#: app/templates/campaigns/import_archive.html:18
+msgid ""
+"parent first refers to an exact, unique title inside this archive. If "
+"that title is absent, it can name one of your existing campaigns. "
+"Duplicate campaign names are an error. Folders do not determine "
+"hierarchy."
+msgstr ""
+"parent verweist zuerst auf einen exakten, eindeutigen Titel in diesem "
+"Archiv. Fehlt dieser Titel, kann er eine deiner bestehenden Kampagnen "
+"benennen. Doppelte Kampagnennamen sind ein Fehler. Ordner bestimmen keine"
+" Hierarchie."
+
+#: app/templates/campaigns/import_archive.html:35
+msgid ""
+"Copy each complete block, including both --- lines, into its own .md "
+"file. Upload one file directly, or place several together in one archive."
+msgstr ""
+"Kopiere jeden vollständigen Block, einschließlich beider Zeilen mit ---, "
+"in eine eigene .md-Datei. Lade eine Datei direkt hoch oder fasse mehrere "
+"in einem Archiv zusammen."
+
+#: app/templates/campaigns/import_archive.html:46
+msgid "2. Review and confirm"
+msgstr "2. Prüfen und bestätigen"
+
+#: app/templates/campaigns/import_archive.html:48
+msgid "campaigns"
+msgstr "Kampagnen"
+
+#: app/templates/campaigns/import_archive.html:50
+msgid "without metadata"
+msgstr "ohne Metadaten"
+
+#: app/templates/campaigns/import_archive.html:51
+msgid "Resolve these errors and upload the file again. Nothing has been imported."
+msgstr ""
+"Behebe diese Fehler und lade die Datei erneut hoch. Es wurde nichts "
+"importiert."
+
+#: app/templates/campaigns/import_archive.html:52
+msgid "Check these before importing:"
+msgstr "Prüfe dies vor dem Import:"
+
+#: app/templates/campaigns/import_archive.html:66
+msgid "no metadata, defaults applied"
+msgstr "keine Metadaten, Standardwerte verwendet"
+
+#: app/templates/campaigns/index.html:6
+msgid "New campaign"
+msgstr "Neue Kampagne"
+
+#: app/templates/campaigns/index.html:18
+msgid ""
+"Campaigns group your private articles and maps. Open a campaign to manage"
+" its articles and choose which parties it is shared with."
+msgstr ""
+"Kampagnen bündeln deine privaten Artikel und Karten. Öffne eine Kampagne,"
+" um ihre Artikel zu verwalten und festzulegen, mit welchen Gruppen sie "
+"geteilt wird."
+
+#: app/templates/campaigns/index.html:25 app/templates/campaigns/workspace.html:29
+msgid "Shared with"
+msgstr "Geteilt mit"
+
+#: app/templates/campaigns/index.html:25
+msgid "Not shared with any party"
+msgstr "Mit keiner Gruppe geteilt"
+
+#: app/templates/campaigns/index.html:31
+msgid "Articles not in any campaign"
+msgstr "Artikel ohne Kampagne"
+
+#: app/templates/campaigns/index.html:35
+msgid "Create your first campaign"
+msgstr "Erstelle deine erste Kampagne"
+
+#: app/templates/campaigns/index.html:35
+msgid "import a Markdown file or archive"
+msgstr "importiere eine Markdown-Datei oder ein Archiv"
+
+#: app/templates/campaigns/known_entry.html:7 app/templates/campaigns/workspace.html:5
+msgid "Breadcrumb"
+msgstr "Brotkrümelnavigation"
+
+#: app/templates/campaigns/material_tree.html:30
+msgid "Search by title, type or text"
+msgstr "Nach Titel, Typ oder Text suchen"
+
+#: app/templates/campaigns/material_tree.html:31
+msgid "Clear search"
+msgstr "Suche zurücksetzen"
+
+#: app/templates/campaigns/reveal.html:12
+msgid ""
+"Check a party to select it, edit its version, then choose Publish "
+"selected versions. Private descriptions are copied only when you choose "
+"Copy from private original."
+msgstr ""
+"Hake eine Gruppe an, um sie auszuwählen, bearbeite ihre Version und wähle"
+" dann Ausgewählte Versionen veröffentlichen. Private Beschreibungen "
+"werden nur kopiert, wenn du Vom privaten Original kopieren wählst."
+
+#: app/templates/campaigns/reveal.html:15
+msgid "Currently published to"
+msgstr "Derzeit veröffentlicht für"
+
+#: app/templates/campaigns/reveal.html:48
+msgid "No parties can see this article yet."
+msgstr "Noch keine Gruppe kann diesen Artikel sehen."
+
+#: app/templates/campaigns/reveal.html:48
+msgid "Connect a party in campaign Settings"
+msgstr "Verbinde eine Gruppe in den Kampagneneinstellungen"
+
+#: app/templates/campaigns/reveal.html:48
+msgid "Move it into a campaign and connect a party in Settings"
+msgstr ""
+"Verschiebe ihn in eine Kampagne und verbinde eine Gruppe in den "
+"Einstellungen"
+
+#: app/templates/campaigns/reveal.html:48
+msgid "create a party first"
+msgstr "erstelle zuerst eine Gruppe"
+
+#: app/templates/campaigns/reveal_materials.html:20
+msgid ""
+"No parties are connected yet. Connect a party in campaign Settings, or "
+"create a party first."
+msgstr ""
+"Noch keine Gruppen verbunden. Verbinde eine Gruppe in den "
+"Kampagneneinstellungen oder erstelle zuerst eine Gruppe."
+
+#: app/templates/campaigns/reveal_materials.html:21
+msgid "Articles to publish"
+msgstr "Zu veröffentlichende Artikel"
+
+#: app/templates/campaigns/workspace.html:5
+msgid "All campaigns"
+msgstr "Alle Kampagnen"
+
+#: app/templates/campaigns/workspace.html:9
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: app/templates/campaigns/workspace.html:29
+msgid "Not shared with any party yet. Connect one in Settings."
+msgstr "Noch mit keiner Gruppe geteilt. Verbinde eine in den Einstellungen."
+
+#: app/templates/campaigns/workspace.html:38
+msgid "Tick articles to reveal or delete several at once."
+msgstr "Hake Artikel an, um mehrere gleichzeitig zu zeigen oder zu löschen."
+
+#: app/templates/campaigns/workspace.html:50
+msgid "Delete campaign…"
+msgstr "Kampagne löschen…"
+
+#: app/templates/campaigns/index.html:10
+msgid "How do you want to start?"
+msgstr "Wie möchtest du beginnen?"
+
+#: app/templates/campaigns/index.html:12
+msgid "Empty campaign"
+msgstr "Leere Kampagne"
+
+#: app/templates/campaigns/index.html:12
+msgid "Start blank and add articles, maps or imports yourself."
+msgstr "Beginne leer und füge Artikel, Karten oder Importe selbst hinzu."
+
+#: app/templates/campaigns/index.html:14
+msgid "Random campaign"
+msgstr "Zufällige Kampagne"
+
+#: app/templates/campaigns/index.html:29
+msgid "Create and generate"
+msgstr "Erstellen und generieren"
+
+#: app/templates/campaigns/import_archive.html:14
+msgctxt "import action"
+msgid "Load"
+msgstr "Laden"
+
+#: app/templates/campaigns/import_archive.html:74
+msgctxt "import action"
+msgid "Import"
+msgstr "Importieren"
+
+#: app/templates/campaigns/index.html:14
+msgid ""
+"Generate and save a realm, dungeon or forest with points of interest. You"
+" can edit everything afterwards."
+msgstr ""
+"Erzeuge und speichere ein Reich, einen Dungeon oder einen Wald mit Orten "
+"von Interesse. Danach kannst du alles bearbeiten."
+
+#: app/templates/campaigns/index.html:30
+msgid "Generating…"
+msgstr "Wird generiert…"
+

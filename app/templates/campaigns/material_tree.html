@@ -18,19 +18,17 @@
 {% macro material_children(items, selectable=True, root=True) %}
 <ul class="article-tree">
 {% for item in items %}
-<li data-tree-row data-search="{{ (item.entry.title ~ ' ' ~ item.entry.category ~ ' ' ~ content_excerpt(item.entry.body))|lower }}" {{ 'data-root-entry-id' if root else 'data-child-entry-id' }}="{{ item.entry.id }}">
-{% if item.children %}<details open data-tree-key="entry-{{ item.entry.id }}"><summary>{{ material_row(item, selectable) }}</summary>
-{{ material_children(item.children, selectable, False) }}
-</details>{% else %}<div class="tree-leaf">{{ material_row(item, selectable) }}</div>{% endif %}
+<li data-tree-row data-search="{{ (item.entry.title ~ ' ' ~ _(content_categories.get(item.entry.category, item.entry.category)) ~ ' ' ~ content_excerpt(item.entry.body))|lower }}" {{ 'data-root-entry-id' if root else 'data-child-entry-id' }}="{{ item.entry.id }}">
+<div class="tree-node" data-tree-key="entry-{{ item.entry.id }}">{{ material_row(item, selectable) }}</div>
+{% if item.children %}{{ material_children(item.children, selectable, False) }}{% endif %}
 </li>
 {% endfor %}
 </ul>
 {% endmacro %}
 {% macro tree_toolbar() %}
-<div class="campaign-actions tree-toolbar">
-<label>{{ _('Find in tree') }}<input type="search" x-model="query" @input="filter()" placeholder="{{ _('Title, type or description') }}"></label>
-<button type="button" @click="expand(true)">{{ _('Expand all') }}</button>
-<button type="button" @click="expand(false)">{{ _('Collapse all') }}</button>
+<div class="campaign-actions tree-toolbar" role="search">
+<label>{{ _('Search') }}<input type="search" x-model="query" @input="filter()" placeholder="{{ _('Search by title, type or text') }}"></label>
+<button type="button" @click="clearFilters()" x-show="filtering" x-cloak>{{ _('Clear search') }}</button>
 </div>
-<p x-show="query && !matches" x-cloak>{{ _('No matching articles.') }}</p>
+<p x-show="filtering && !matches" x-cloak>{{ _('No matching articles.') }}</p>
 {% endmacro %}
