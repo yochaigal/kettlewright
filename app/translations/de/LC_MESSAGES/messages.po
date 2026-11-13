@@ -22903,3 +22903,11 @@ msgstr "Möchtest du %(name)s löschen?"
 #, python-format
 msgid "Do you want to delete container %(name)s?"
 msgstr "Möchtest du den Behälter %(name)s löschen?"
+
+#: app/templates/main/tools.html
+msgid "Results"
+msgstr "Ergebnisse"
+
+#: app/templates/main/tools.html
+msgid "Pick a table to roll on it. Results appear here."
+msgstr "Wähle eine Tabelle, um darauf zu würfeln. Die Ergebnisse erscheinen hier."

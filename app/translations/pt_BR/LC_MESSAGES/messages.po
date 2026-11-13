@@ -23901,3 +23901,11 @@ msgstr "Deseja excluir %(name)s?"
 #, python-format
 msgid "Do you want to delete container %(name)s?"
 msgstr "Deseja excluir o recipiente %(name)s?"
+
+#: app/templates/main/tools.html
+msgid "Results"
+msgstr "Resultados"
+
+#: app/templates/main/tools.html
+msgid "Pick a table to roll on it. Results appear here."
+msgstr "Escolha uma tabela para rolar nela. Os resultados aparecem aqui."

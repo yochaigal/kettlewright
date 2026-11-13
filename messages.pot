@@ -42406,4 +42406,11 @@ msgstr ""
 #: app/templates/partial/partyview/storage_notes.html
 #, python-format
 msgid "Do you want to delete container %(name)s?"
+
+#: app/templates/main/tools.html
+msgid "Results"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Pick a table to roll on it. Results appear here."
 msgstr ""

@@ -23206,3 +23206,11 @@ msgstr "Czy chcesz usunąć %(name)s?"
 #, python-format
 msgid "Do you want to delete container %(name)s?"
 msgstr "Czy chcesz usunąć pojemnik %(name)s?"
+
+#: app/templates/main/tools.html
+msgid "Results"
+msgstr "Wyniki"
+
+#: app/templates/main/tools.html
+msgid "Pick a table to roll on it. Results appear here."
+msgstr "Wybierz tabelę, aby na niej rzucić. Wyniki pojawią się tutaj."
