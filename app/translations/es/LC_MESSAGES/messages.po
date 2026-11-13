@@ -45151,3 +45151,10 @@ msgstr "Generando…"
 #~ msgid "Damage"
 #~ msgstr "Daño"
 
+#: app/templates/main/tools.html
+msgid "Results"
+msgstr "Resultados"
+
+#: app/templates/main/tools.html
+msgid "Pick a table to roll on it. Results appear here."
+msgstr "Elige una tabla para tirar en ella. Los resultados aparecen aquí."

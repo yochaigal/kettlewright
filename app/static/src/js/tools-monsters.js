@@ -6,7 +6,6 @@ export function initToolsMonsters(labels, results) {
   const preview = document.getElementById('tools-monster-preview');
   const dialog = document.getElementById('tools-attach-dialog');
   const form = document.getElementById('tools-attach-form');
-  const generate = document.getElementById('roll-button');
   dialog?.querySelectorAll('[data-close-attach]').forEach(button => button.addEventListener('click', () => dialog.close()));
   form?.addEventListener('submit', () => {
     form.action = document.getElementById('tools-attach-party').value;
@@ -26,7 +25,7 @@ export function initToolsMonsters(labels, results) {
       if (!monster) return;
       preview.append(monsterPreview(monster));
       const actions = document.createElement('div');
-      actions.className = 'tools-result-actions';
+      actions.className = 'tools-result-actions tools-actions';
       const copy = document.createElement('button');
       copy.type = 'button';
       copy.textContent = labels.copy;
@@ -43,12 +42,7 @@ export function initToolsMonsters(labels, results) {
     },
   });
   return {
-    select(table) {
-      const active = table === 'Monster picker';
-      picker.hidden = !active;
-      document.getElementById('tools-table-panel').classList.toggle('tools-picker-active', active);
-      generate.hidden = active;
-    },
+    picker,
     random() {
       const keys = Object.keys(catalog), key = keys[Math.floor(Math.random() * keys.length)];
       const monster = catalog[key];

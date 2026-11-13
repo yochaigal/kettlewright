@@ -42361,3 +42361,10 @@ msgstr ""
 msgid "Generating…"
 msgstr ""
 
+#: app/templates/main/tools.html
+msgid "Results"
+msgstr ""
+
+#: app/templates/main/tools.html
+msgid "Pick a table to roll on it. Results appear here."
+msgstr ""

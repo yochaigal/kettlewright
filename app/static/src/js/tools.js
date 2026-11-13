@@ -11,52 +11,41 @@ const labels = JSON.parse(document.getElementById('tools-content-labels').textCo
 // Choice values stay English: they are lookup keys into the table data.
 const t = (key) => Object.hasOwn(labels.terms, key) ? labels.terms[key] : key;
 
-let selectedTool = '';
-let selectedCategory = '';
-let selectedSubcategory = '';
-const rollButton = document.getElementById('roll-button');
-
 const results = initToolsResults(labels, styledAlert);
 const monsters = initToolsMonsters(labels, results);
-const navigation = initToolsNavigation(data, key => labels.navigation?.[key] ?? t(key), (category, subcategory, tool) => {
-  selectedTool = tool;
-  selectedCategory = category;
-  selectedSubcategory = subcategory;
-  rollButton.disabled = !subcategory;
-  monsters.select(subcategory);
-});
-rollButton.addEventListener('click', async () => {
-  if (!selectedCategory || !selectedSubcategory) return;
-  if (selectedSubcategory === 'Random Monster') {monsters.random(); return;}
-  if (selectedSubcategory === 'Monster picker') return;
-  const canSave = labels.authenticated && !['events', 'items'].includes(selectedTool);
-  let result;
-  if (selectedSubcategory === 'Reaction Roll' && document.getElementById('warden-dice')) {
-    rollButton.disabled = true;
-    try {
-      const { requestWardenRoll } = await import('./warden_dice.js');
-      const rolled = await requestWardenRoll('reaction');
-      result = { title: 'Reaction Roll', category: 'note', fields: { Reaction: rolled.result } };
-    } catch (error) {
-      styledAlert(t('Reaction Roll'), error.message);
-      return;
-    } finally {
-      rollButton.disabled = !selectedSubcategory;
+const navigation = initToolsNavigation(data, key => labels.navigation?.[key] ?? t(key), {
+  panels: {'Monster picker': monsters.picker},
+  async onRoll({category, table}, tool, button) {
+    if (table === 'Random Monster') {monsters.random(); return;}
+    const canSave = labels.authenticated && !['events', 'items'].includes(tool);
+    let result;
+    if (table === 'Reaction Roll' && document.getElementById('warden-dice')) {
+      button.disabled = true;
+      try {
+        const { requestWardenRoll } = await import('./warden_dice.js');
+        const rolled = await requestWardenRoll('reaction');
+        result = { title: 'Reaction Roll', category: 'note', fields: { Reaction: rolled.result } };
+      } catch (error) {
+        styledAlert(t('Reaction Roll'), error.message);
+        return;
+      } finally {
+        button.disabled = false;
+      }
+    } else {
+      result = generateToolResult(data, category, table);
     }
-  } else {
-    result = generateToolResult(data, selectedCategory, selectedSubcategory);
-  }
-  const shownTitle = localizeText(result.title, t);
-  const markdown = resultText(result, t);
-  const entry = results.add({
-    title: shownTitle,
-    type: t(selectedSubcategory.charAt(0).toUpperCase() + selectedSubcategory.slice(1)),
-    html: richContentHTML(markdown),
-    copyText: `${shownTitle}\n\n${markdown}`,
-    onSave: canSave ? () => {
-      sessionStorage.setItem('kw-content-result', JSON.stringify({...result, title:shownTitle, body:markdown}));
-      window.location.href = result.mapKind ? '/materials/generate?from_tools=1' : '/materials/import';
-    } : null,
-  });
-  appendAreaNavigation(entry.actions, result, navigation, t, data);
+    const shownTitle = localizeText(result.title, t);
+    const markdown = resultText(result, t);
+    const entry = results.add({
+      title: shownTitle,
+      type: t(table.charAt(0).toUpperCase() + table.slice(1)),
+      html: richContentHTML(markdown),
+      copyText: `${shownTitle}\n\n${markdown}`,
+      onSave: canSave ? () => {
+        sessionStorage.setItem('kw-content-result', JSON.stringify({...result, title:shownTitle, body:markdown}));
+        window.location.href = result.mapKind ? '/materials/generate?from_tools=1' : '/materials/import';
+      } : null,
+    });
+    appendAreaNavigation(entry.actions, result, navigation, t, data);
+  },
 });

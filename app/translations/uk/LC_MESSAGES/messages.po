@@ -26944,3 +26944,10 @@ msgstr ""
 msgid "Generating…"
 msgstr "Генерування…"
 
+#: app/templates/main/tools.html
+msgid "Results"
+msgstr "Результати"
+
+#: app/templates/main/tools.html
+msgid "Pick a table to roll on it. Results appear here."
+msgstr "Виберіть таблицю, щоб зробити кидок. Результати з’являться тут."
