@@ -1,0 +1,9 @@
+{# The ground is a shared pile of dropped items, not a container, so it sits apart from the container tabs. #}
+{% set ground = inventory.containers|selectattr('on_the_ground')|first %}
+{% set ground_count = ground['items']|length if ground else 0 %}
+<button class="inventory-container-title inventory-ground-tab subtitle pointer{% if ground_active|default(false) %} inventory-container-title-selected{% endif %}"
+  type="button" aria-pressed="{{ 'true' if ground_active|default(false) else 'false' }}"
+  title="{{ _('Items dropped by the party, with where they were left') }}"
+  hx-get="{{ url_for('ground.view', party_id=party.id) }}" hx-target="#inventory-container">
+  <i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ _('on the ground') }}{% if ground_count %} <span class="storage-ground-count">{{ ground_count }}</span>{% endif %}
+</button>

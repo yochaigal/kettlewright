@@ -36,7 +36,7 @@
     {% if c.attack or (c.notes and can_manage_companion(c)) %}
     <div class="companion-monster-notes">
       {% if c.attack %}<p>{{c.attack|markdown_inline}}</p>{% endif %}
-      {% if c.notes and can_manage_companion(c) %}<div class="companion-notes-body">{{c.notes|markdown}}</div>{% endif %}
+      {% if c.notes and can_manage_companion(c) %}<details class="companion-notes-toggle"><summary>{{_('Notes')}}</summary><div class="companion-notes-body">{{c.notes|markdown}}</div></details>{% endif %}
     </div>
     {% endif %}
     {% endif %}

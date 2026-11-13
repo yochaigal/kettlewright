@@ -26944,3 +26944,49 @@ msgstr ""
 msgid "Generating…"
 msgstr "Генерування…"
 
+#: app/templates/partial/companions/monster_catalog.html
+msgid "Add monsters"
+msgstr "Додати монстрів"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Hunt, fish or forage for Rations."
+msgstr "Полюйте, ловіть рибу чи збирайте припаси, щоб здобути Раціони."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Eat, rest and shake off Fatigue."
+msgstr "Поїжте, відпочиньте й позбудьтеся Втоми."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Supply die"
+msgstr "Кість припасів"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Ration uses needed"
+msgstr "Потрібно використань Раціонів"
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Over capacity: %(used)s of %(slots)s slots used. Move or drop items to make room."
+msgstr "Перевищено місткість: зайнято %(used)s з %(slots)s комірок. Перемістіть або викиньте предмети, щоб звільнити місце."
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Nothing stored here yet."
+msgstr "Тут поки нічого не зберігається."
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Storage holds gear the whole party shares. Items arrive from a character sheet, from the Marketplace, or as Rations from Supply."
+msgstr "Сховище містить спорядження, спільне для всієї групи. Предмети потрапляють сюди з аркуша персонажа, з Ринку або як Раціони від Припасів."
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Items dropped by the party, with where they were left"
+msgstr "Предмети, залишені групою, і де вони лежать"
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Do you want to delete %(name)s?"
+msgstr "Видалити %(name)s?"
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Do you want to delete container %(name)s?"
+msgstr "Видалити контейнер %(name)s?"

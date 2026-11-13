@@ -2,8 +2,26 @@ import utils from "./utils.js";
 
 window.KW_alert = utils.styledAlert;
 
+// Storage dialogs open in the page flow; bring them fully into view, as on Edit party.
+for (const name of ['item-edit', 'container-edit']) {
+  document.body.addEventListener(name, () => {
+    const card = document.getElementById('modal-card');
+    if (card?.scrollIntoViewIfNeeded) card.scrollIntoViewIfNeeded();
+    else card?.scrollIntoView({block: 'nearest'});
+  });
+}
+
 function updateWildernessAction(form) {
   const hasPC = Boolean(form.querySelector('input[name="participants"]:checked'));
+  // Show the outcome of the current choices before anything is rolled or spent.
+  const count = (name) => form.querySelectorAll(`input[name="${name}"]:checked`).length;
+  const die = form.querySelector('[data-supply-die]');
+  if (die) {
+    const bonus = Math.min(4, Math.max(0, parseInt(form.elements.bonus.value, 10) || 0));
+    die.textContent = hasPC ? 'd' + [4, 6, 8, 10, 12][Math.min(count('participants') - 1 + bonus, 4)] : '—';
+  }
+  const rations = form.querySelector('[data-camp-rations]');
+  if (rations) rations.textContent = String(count('participants') + count('mounts'));
   const wrapper = form.querySelector('.wilderness-submit');
   wrapper.querySelector('button').disabled = !hasPC;
   if (hasPC) {
@@ -63,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll('.wilderness-form').forEach((form) => {
     updateWildernessAction(form);
     form.addEventListener('change', () => updateWildernessAction(form));
+    form.addEventListener('input', () => updateWildernessAction(form));
     form.addEventListener('submit', (event) => {
       if (!updateWildernessAction(form)) event.preventDefault();
     });

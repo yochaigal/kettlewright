@@ -604,8 +604,11 @@ def party_show_user(username, url_name):
 
 # Route: edit party
 @party.route('/party/edit/<ownername>/<party_url>', methods=['GET'])
+@login_required
 def party_edit(ownername, party_url):
     party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party = get_party_data(ownername, party_url)
+    if not can_edit_storage(party):
+        abort(403)
     form = PartyEditForm(obj=party) 
     render =  render_template('main/party_edit.html', party_url=party_url, characters = characters, join_code = join_code, is_owner=is_owner, is_subowner=is_subowner,ownername=ownername, inventory=inventory, party=party, form=form)
     response = make_response(render)
@@ -642,9 +645,14 @@ def party_edit_cancel(ownername, party_url):
 
 # Route: edit party save
 @party.route('/party/edit/<ownername>/<party_url>/save', methods=['POST'])
+@login_required
 def party_edit_save(ownername, party_url):
     fields_to_update = ['name','description']
     party = get_party_by_owner(ownername, party_url)
+    if party is None:
+        abort(404)
+    if not can_edit_storage(party):
+        abort(403)
     form = PartyEditForm(obj=party) 
     for field in fields_to_update:
         setattr(party, field, sanitize_data(getattr(form, field).data))
@@ -706,12 +714,33 @@ def party_delete(party_id):
     return response
 
 
+def can_edit_storage(party):
+    """The Warden and co-owners manage shared storage, matching who can open Edit party."""
+    if party is None or not current_user.is_authenticated:
+        return False
+    try:
+        subowners = json.loads(party.subowners or '[]')
+    except ValueError:
+        subowners = []
+    return party.owner == current_user.id or current_user.id in subowners
+
+
+def storage_party(party_id, write=True):
+    party = get_party_by_id(party_id)
+    if party is None:
+        abort(404)
+    if write and not can_edit_storage(party):
+        abort(403)
+    return party
+
+
 # --- PARTY INVENTORY ---
 
 # Route: edit inventory
 @party.route('/party/inventory/<party_id>/<container_id>', methods=['GET'])
+@login_required
 def party_inventory_edit(party_id, container_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     if container_id != "None":
         inventory.select(int(container_id))
@@ -721,8 +750,9 @@ def party_inventory_edit(party_id, container_id):
 
 # Route: edit container dialog
 @party.route('/party/inventory/<party_id>/container-edit/<container_id>', methods=['GET'])
+@login_required
 def party_inventory_container_edit(party_id, container_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     inventory.setItemsWithRolls(False)
     inventory.decorate()
@@ -740,8 +770,9 @@ def party_inventory_container_edit(party_id, container_id):
 
 # Route: edit container dialog save
 @party.route('/party/inventory/<party_id>/container-edit/<container_id>/save', methods=['POST'])
+@login_required
 def party_inventory_container_edit_save(party_id, container_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     data = request.form
     slots = 1
@@ -761,24 +792,24 @@ def party_inventory_container_edit_save(party_id, container_id):
 
 # Route: select inventory container
 @party.route('/party/inventory-select-container/<party_id>/<container_id>', methods=['GET'])
+@login_required
 def party_inventory_select_container(party_id, container_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id, write=False)
     inventory = Inventory(party)
     inventory.select(int(container_id))
     if inventory.selected_container.get('on_the_ground'):
         return redirect(url_for('ground.view', party_id=party.id))
     inventory.setItemsWithRolls(False)
     inventory.decorate()
-    tpl = 'partial/partyview/inventory.html'
-    mode = request.args.get('mode')
-    if mode != None and mode == "edit":
-        tpl = 'partial/partyedit/inventory.html'
+    # Editors get the editable fragment on both the party page and Edit party.
+    tpl = 'partial/partyedit/inventory.html' if can_edit_storage(party) else 'partial/partyview/inventory.html'
     return render_template(tpl, party=party, inventory=inventory)
 
 # Route: delete container
 @party.route('/party/inventory/<party_id>/container-edit/<container_id>/delete', methods=['POST'])
+@login_required
 def party_inventory_container_delete(party_id, container_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     data = request.form
     inventory.delete_container(container_id, data["delete-items"])
@@ -789,8 +820,9 @@ def party_inventory_container_delete(party_id, container_id):
 
 # Route: edit item dialog
 @party.route('/party/inventory/<party_id>/item-edit/<item_id>', methods=['GET'])
+@login_required
 def party_inventory_item_edit(party_id, item_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     inventory.setItemsWithRolls(False)
     inventory.decorate()
@@ -815,8 +847,9 @@ def party_inventory_item_edit(party_id, item_id):
 
 # Route: edit item save
 @party.route('/party/inventory/<party_id>/item-edit/<item_id>/save', methods=['POST'])
+@login_required
 def party_inventory_item_edit_save(party_id, item_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     inventory.setItemsWithRolls(False)
     data = request.form
@@ -854,8 +887,9 @@ def party_inventory_item_edit_save(party_id, item_id):
 
 # Route: remove inventory item
 @party.route('/party/inventory/<party_id>/<container_id>/item-delete/<item_id>', methods=['GET'])
+@login_required
 def party_inventory_delete_item(party_id, container_id, item_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     inventory.delete_item(container_id, item_id)
     inventory.select(int(container_id))
@@ -867,8 +901,9 @@ def party_inventory_delete_item(party_id, container_id, item_id):
 
 # Route: change some amount property in item
 @party.route('/party/inventory/<party_id>/item-edit/<item_id>/amount', methods=['GET'])
+@login_required
 def party_inventory_item_edit_amount(party_id, item_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     prop = request.args.get('property')
     action = request.args.get('action')
@@ -881,8 +916,9 @@ def party_inventory_item_edit_amount(party_id, item_id):
 
 # Route: transfer item dialog
 @party.route('/party/inventory/<party_id>/item-transfer/<container_id>/<item_id>', methods=['GET'])
+@login_required
 def party_inventory_item_transfer(party_id, container_id, item_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     inventory.setItemsWithRolls(False)
     inventory.decorate()
@@ -898,8 +934,9 @@ def party_inventory_item_transfer(party_id, container_id, item_id):
 
 # Route: transfer item dialog accept
 @party.route('/party/inventory/<party_id>/item-transfer/<container_id>/<item_id>/transfer', methods=['POST'])
+@login_required
 def party_inventory_item_transfer_accept(party_id, container_id, item_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     data = request.form
     inventory = Inventory(party)
     if data['member'] and data['member'] != "":

@@ -7,9 +7,39 @@
     <i class="fa-solid" :class="collapsed ? 'fa-chevron-right' : 'fa-chevron-down'" id="party-hirelings-collapse-icon"></i>
   </span>
   <span class="subtitle bold">{{_('Hirelings')}}</span>
+  {% if is_owner %}
+  <span class="party-modal-host" x-data="campaignModal(false)" @keydown.escape.window="hide()">
+    <button type="button" class="button party-section-action" x-ref="trigger" @click="show()" aria-haspopup="dialog" aria-controls="hireling-add-modal"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{_('Add hireling')}}</button>
+    <div class="modal party-modal" id="hireling-add-modal" :class="{'is-active': open}">
+      <div class="modal-background" @click="hide()"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="hireling-add-title" x-ref="dialog">
+      <form class="party-modal-form" method="post" action="{{ url_for('companions.add_hireling', party_id=party.id) }}">
+        {{ companion_form().hidden_tag() }}
+        <div class="party-modal-head">
+          <h3 id="hireling-add-title">{{_('Add hireling')}}</h3>
+        </div>
+        <div class="party-modal-body">
+          <label for="hireling-template">{{_('Role')}}</label>
+          <select id="hireling-template" name="template">
+            {% for entry in hireling_roles() %}<option value="{{ entry.name }}">{{ entry.name | tr|markdown_inline|striptags }} · {{ entry.daily_cost }} {{_('gp/day')}}</option>{% endfor %}
+            <option value="Custom">{{_('Custom')}}</option>
+          </select>
+          <label for="hireling-name">{{_('Name')}}</label>
+          <input type="text" id="hireling-name" name="name" maxlength="100" autocomplete="off">
+          <p class="party-modal-hint">{{_('Rolls 3d6 for each attribute and d6 for HP. Starting equipment is a suggestion you can edit. Leave the name blank to roll one.')}}</p>
+        </div>
+        <div class="party-modal-foot">
+          <button type="button" @click="hide()">{{_('Cancel')}}</button>
+          <button type="submit" class="party-modal-submit">{{_('Create')}}</button>
+        </div>
+        <button type="button" class="party-modal-close" @click="hide()" aria-label="{{_('Close')}}" title="{{_('Close')}}">×</button>
+      </form>
+      </div>
+    </div>
+  </span>
+  {% endif %}
   <div id="party-hirelings-content" class="party-section-content" :class="{ hidden: collapsed }">
     {{ cards(party.hirelings, compact=true) }}
-    {% if is_owner %}<a class="button" href="{{ url_for('companions.add_hireling', party_id=party.id) }}">{{_('Add hireling')}}</a>{% endif %}
   </div>
 </section>
 {% endif %}

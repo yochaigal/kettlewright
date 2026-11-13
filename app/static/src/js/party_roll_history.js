@@ -48,19 +48,6 @@ export function initializeRollHistory() {
   if (!panel || panel.dataset.initialized) return;
   panel.dataset.initialized = 'true';
   localizeTimes(panel);
-  const toggle = panel.querySelector('.roll-history-toggle');
-  const content = panel.querySelector('#party-roll-history-content');
-  const storageKey = `party-roll-history-${panel.dataset.partyId}`;
-  function setCollapsed(collapsed) {
-    content.hidden = collapsed;
-    toggle.setAttribute('aria-expanded', String(!collapsed));
-    toggle.querySelector('i').className = `fa-solid fa-chevron-${collapsed ? 'right' : 'down'}`;
-  }
-  try { setCollapsed(localStorage.getItem(storageKey) === 'hidden'); } catch (_) { /* Storage may be disabled. */ }
-  toggle.addEventListener('click', () => {
-    setCollapsed(!content.hidden);
-    try { localStorage.setItem(storageKey, content.hidden ? 'hidden' : 'visible'); } catch (_) { /* Optional preference. */ }
-  });
   const form = panel.querySelector('#clear-roll-history');
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();

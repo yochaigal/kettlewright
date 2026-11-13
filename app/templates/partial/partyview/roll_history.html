@@ -2,11 +2,6 @@
      data-history-url="{{ url_for('party.roll_history', party_id=party.id) }}"
      data-load-error="{{_('Unable to refresh roll history.')}}"
      data-clear-error="{{_('Unable to clear roll history.')}}">
-  <button type="button" class="party-collapse-button roll-history-toggle" aria-expanded="true"
-          aria-controls="party-roll-history-content" aria-label="{{_('Toggle roll history')}}">
-    <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
-  </button>
-  <span class="subtitle bold">{{_('Roll history')}}</span>
   <div id="party-roll-history-content" class="party-section-content">
     <div class="party-roll-controls">
       <p>{{_('Latest 20 rolls')}}</p>

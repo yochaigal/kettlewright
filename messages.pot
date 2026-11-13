@@ -42361,3 +42361,49 @@ msgstr ""
 msgid "Generating…"
 msgstr ""
 
+#: app/templates/partial/companions/monster_catalog.html
+msgid "Add monsters"
+msgstr ""
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Hunt, fish or forage for Rations."
+msgstr ""
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Eat, rest and shake off Fatigue."
+msgstr ""
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Supply die"
+msgstr ""
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Ration uses needed"
+msgstr ""
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Over capacity: %(used)s of %(slots)s slots used. Move or drop items to make room."
+msgstr ""
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Nothing stored here yet."
+msgstr ""
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Storage holds gear the whole party shares. Items arrive from a character sheet, from the Marketplace, or as Rations from Supply."
+msgstr ""
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Items dropped by the party, with where they were left"
+msgstr ""
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Do you want to delete %(name)s?"
+msgstr ""
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Do you want to delete container %(name)s?"
+msgstr ""

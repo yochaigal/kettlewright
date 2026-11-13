@@ -23160,3 +23160,49 @@ msgstr ""
 msgid "Generating…"
 msgstr "Generowanie…"
 
+#: app/templates/partial/companions/monster_catalog.html
+msgid "Add monsters"
+msgstr "Dodaj potwory"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Hunt, fish or forage for Rations."
+msgstr "Polujcie, łówcie ryby lub zbierajcie, by zdobyć Racje."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Eat, rest and shake off Fatigue."
+msgstr "Zjedzcie, odpocznijcie i pozbądźcie się Zmęczenia."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Supply die"
+msgstr "Kość zaopatrzenia"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Ration uses needed"
+msgstr "Potrzebne użycia Racji"
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Over capacity: %(used)s of %(slots)s slots used. Move or drop items to make room."
+msgstr "Ponad pojemność: zajęte %(used)s z %(slots)s miejsc. Przenieś lub upuść przedmioty, aby zrobić miejsce."
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Nothing stored here yet."
+msgstr "Nic tu jeszcze nie ma."
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Storage holds gear the whole party shares. Items arrive from a character sheet, from the Marketplace, or as Rations from Supply."
+msgstr "Magazyn przechowuje ekwipunek wspólny dla całej drużyny. Przedmioty trafiają tu z karty postaci, z Targowiska lub jako Racje z Zaopatrzenia."
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Items dropped by the party, with where they were left"
+msgstr "Przedmioty upuszczone przez drużynę wraz z miejscem, gdzie zostały"
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Do you want to delete %(name)s?"
+msgstr "Czy chcesz usunąć %(name)s?"
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Do you want to delete container %(name)s?"
+msgstr "Czy chcesz usunąć pojemnik %(name)s?"
