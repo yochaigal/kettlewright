@@ -1,4 +1,4 @@
-<div class="inventory-header flex-row" style="gap: 1.5rem">
+<div class="inventory-header flex-row storage-tabs">
     {% for cnt in inventory.containers if not cnt.get('on_the_ground') %}
     <div class="row8">
         <div class="inventory-container-title subtitle pointer {% if cnt.is_selected %} inventory-container-title-selected {% endif %} {% if cnt.encumbered %} red-text {% endif %} "
@@ -7,7 +7,7 @@
             {{ cnt.title|markdown_inline }}
         </div>
         {% if cnt.is_selected %}
-        <div class="pointer" title="Edit {{cnt.name}}"
+        <div class="pointer" title="{{ _('Edit') }}: {{cnt.name}}" aria-label="{{ _('Edit') }}: {{cnt.name}}" role="button" tabindex="0" hx-trigger="click, keydown[key=='Enter']"
             hx-get="/party/inventory/{{party.id}}/container-edit/{{inventory.selected_container['id']}}"
             hx-target="#inventory-container">
             <i class="item-edit-button fa-solid fa-pen-to-square pen-to-square"></i>
@@ -15,9 +15,10 @@
         {% endif %}
     </div>
     {% endfor %}
-    <a class="inventory-container-title inventory-ground-tab subtitle pointer" href="{{ url_for('ground.view', party_id=party.id) }}">{{ _('on the ground') }}</a>
+    {% include 'partial/partyview/ground_tab.html' %}
 </div>
-<div style="margin-top: 0px; width: 100%">
+{% include 'partial/partyview/storage_notes.html' %}
+<div class="storage-slots{% if not (inventory.selected_container['items']|rejectattr('is_empty')|list) %} hidden{% endif %}">
     {% for it in inventory.selected_container["items"] %}
     <div class="inventory-item-container {% if it.blocker %} item-blocker-text {% endif %}">
         {% if it["is_empty"] %}
@@ -29,12 +30,12 @@
         <div class="inventory-item-button-container">
             {% if "uses" in it.tags %}
             <div class="row8">
-                <div class="pointer item-edit-button-frame" title="Decrease"
+                <div class="pointer item-edit-button-frame" title="{{ _('Decrease') }}" aria-label="{{ _('Decrease') }}" role="button" tabindex="0" hx-trigger="click, keydown[key=='Enter']"
                     hx-get="/party/inventory/{{party.id}}/item-edit/{{it.id}}/amount?action=minus&property=uses"
                     hx-target="#inventory-container">
                     <i class="item-edit-button fa-solid fa-minus minus"></i>
                 </div>
-                <div class="pointer item-edit-button-frame" title="Increase"
+                <div class="pointer item-edit-button-frame" title="{{ _('Increase') }}" aria-label="{{ _('Increase') }}" role="button" tabindex="0" hx-trigger="click, keydown[key=='Enter']"
                     hx-get="/party/inventory/{{party.id}}/item-edit/{{it.id}}/amount?action=plus&property=uses"
                     hx-target="#inventory-container">
                     <i class="item-edit-button fa-solid fa-plus plus"></i>
@@ -43,12 +44,12 @@
             {% endif %}
             {% if "charges" in it.tags %}
             <div class="row8">
-                <div class="pointer item-edit-button-frame" title="Decrease"
+                <div class="pointer item-edit-button-frame" title="{{ _('Decrease') }}" aria-label="{{ _('Decrease') }}" role="button" tabindex="0" hx-trigger="click, keydown[key=='Enter']"
                     hx-get="/party/inventory/{{party.id}}/item-edit/{{it.id}}/amount?action=minus&property=charges"
                     hx-target="#inventory-container">
                     <i class="item-edit-button fa-solid fa-minus minus"></i>
                 </div>
-                <div class="pointer item-edit-button-frame" title="Increase"
+                <div class="pointer item-edit-button-frame" title="{{ _('Increase') }}" aria-label="{{ _('Increase') }}" role="button" tabindex="0" hx-trigger="click, keydown[key=='Enter']"
                     hx-get="/party/inventory/{{party.id}}/item-edit/{{it.id}}/amount?action=plus&property=charges"
                     hx-target="#inventory-container">
                     <i class="item-edit-button fa-solid fa-plus plus"></i>
@@ -56,16 +57,16 @@
             </div>
             {% endif %}
             {% if it.editable %}
-            <div class="pointer" title="Edit" hx-get="/party/inventory/{{party.id}}/item-edit/{{it.id}}"
+            <div class="pointer" title="{{ _('Edit') }}" aria-label="{{ _('Edit') }}" role="button" tabindex="0" hx-trigger="click, keydown[key=='Enter']" hx-get="/party/inventory/{{party.id}}/item-edit/{{it.id}}"
                 hx-target="#inventory-container">
                 <i class="item-edit-button fa-solid fa-pen-to-square pen-to-square"></i>
             </div>
             {% endif %}
             {% if it.removable %}
-            <div class="pointer" title="Delete"
+            <div class="pointer" title="{{ _('Delete') }}" aria-label="{{ _('Delete') }}" role="button" tabindex="0" hx-trigger="click, keydown[key=='Enter']"
                 hx-get="/party/inventory/{{party.id}}/{{inventory.selected_container['id']}}/item-delete/{{it.id}}"
-                hx-target="#inventory-container" hx-confirm="Do you want to delete {{it.name}}?"
-                data-confirm-title="Delete item" data-confirm-button="Delete">
+                hx-target="#inventory-container" hx-confirm="{{ _('Do you want to delete %(name)s?', name=it.name) }}"
+                data-confirm-title="{{ _('Delete item') }}" data-confirm-button="{{ _('Delete') }}">
                 <i class="item-edit-button fa-solid fa-xmark xmark"></i>
             </div>
             {% endif %}
@@ -79,11 +80,11 @@
     <div class="inventory-footer-buttons">
         <button class="button smaller-font" type="button"
             hx-get="/marketplace/party/{{party.id}}/{{inventory.selected_container.id}}"
-            hx-target="#inventory-container">{{_('Marketplace')}}</button>
+            hx-target="#inventory-container"><i class="fa-solid fa-store" aria-hidden="true"></i> {{_('Marketplace')}}</button>
         <button class="button smaller-font" type="button"
             hx-get="/party/inventory/{{party.id}}/item-edit/None?mode=create" hx-target="#modal-anchor" {% if
             inventory.selected_container['encumbered'] %} disabled {% endif %}>
-            + {{_('Item')}}
+            <i class="fa-solid fa-plus" aria-hidden="true"></i> {{_('Item')}}
         </button>
         {# <button class="button smaller-font" type="button"
             hx-get="/party/inventory/{{party.id}}/{{inventory.selected_container['id']}}/fatigue"
@@ -93,7 +94,7 @@
         <button class="button smaller-font" type="button"
             hx-get="/party/inventory/{{party.id}}/container-edit/{{inventory.selected_container['id']}}?mode=create"
             hx-target="#modal-anchor">
-            + {{_('Container')}}
+            <i class="fa-solid fa-plus" aria-hidden="true"></i> {{_('Container')}}
         </button>
         <div id="modal-anchor"></div>
     </div>

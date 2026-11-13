@@ -45151,6 +45151,53 @@ msgstr "Generando…"
 #~ msgid "Damage"
 #~ msgstr "Daño"
 
+#: app/templates/partial/companions/monster_catalog.html
+msgid "Add monsters"
+msgstr "Añadir monstruos"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Hunt, fish or forage for Rations."
+msgstr "Caza, pesca o recolecta para conseguir Raciones."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Eat, rest and shake off Fatigue."
+msgstr "Comed, descansad y recuperaos de la Fatiga."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Supply die"
+msgstr "Dado de forrajeo"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Ration uses needed"
+msgstr "Usos de Raciones necesarios"
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Over capacity: %(used)s of %(slots)s slots used. Move or drop items to make room."
+msgstr "Por encima de la capacidad: %(used)s de %(slots)s espacios usados. Mueve o suelta objetos para hacer sitio."
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Nothing stored here yet."
+msgstr "Aún no hay nada guardado aquí."
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Storage holds gear the whole party shares. Items arrive from a character sheet, from the Marketplace, or as Rations from Supply."
+msgstr "El almacén guarda el equipo que comparte todo el grupo. Los objetos llegan desde una hoja de personaje, desde el Mercado o como Raciones al Forrajear."
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Items dropped by the party, with where they were left"
+msgstr "Objetos que el grupo ha dejado, con el lugar donde quedaron"
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Do you want to delete %(name)s?"
+msgstr "¿Quieres eliminar %(name)s?"
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Do you want to delete container %(name)s?"
+msgstr "¿Quieres eliminar el contenedor %(name)s?"
+
 #: app/templates/main/tools.html
 msgid "Results"
 msgstr "Resultados"
@@ -45158,3 +45205,221 @@ msgstr "Resultados"
 #: app/templates/main/tools.html
 msgid "Pick a table to roll on it. Results appear here."
 msgstr "Elige una tabla para tirar en ella. Los resultados aparecen aquí."
+
+
+#: app/blueprints/party.py
+msgid "Each character takes one action per watch: morning, afternoon and night. Results are added to the roll history for the whole party."
+msgstr "Cada personaje realiza una acción por guardia: mañana, tarde y noche. Los resultados se añaden al historial de tiradas de todo el grupo."
+
+#: app/blueprints/party.py
+msgid "Travel"
+msgstr "Viajar"
+
+#: app/blueprints/party.py
+msgid "Move along your route; the party may get lost."
+msgstr "Avanzad por vuestra ruta; el grupo puede perderse."
+
+#: app/blueprints/party.py
+msgid "The party usually travels together. On a Road you cannot get lost; on a Trail you get lost on 1–2 in d6, and in the Wilderness on 1–3."
+msgstr "El grupo suele viajar junto. En un Camino no os perdéis; en una Senda os perdéis con 1–2 en d6, y en tierras salvajes con 1–3."
+
+#: app/blueprints/party.py
+msgid "Travelling"
+msgstr "Viajan"
+
+#: app/blueprints/party.py
+msgid "Road"
+msgstr "Camino"
+
+#: app/blueprints/party.py
+msgid "Trail"
+msgstr "Senda"
+
+#: app/blueprints/party.py
+msgid "Wilderness"
+msgstr "Tierras salvajes"
+
+#: app/blueprints/party.py
+msgid "Explore"
+msgstr "Explorar"
+
+#: app/blueprints/party.py
+msgid "Search the area for hidden places and features."
+msgstr "Buscad lugares y rasgos ocultos en la zona."
+
+#: app/blueprints/party.py
+msgid "One or more characters search the area, scout ahead or move carefully. This can reveal a location or feature. Leaving the area still takes a Travel action."
+msgstr "Uno o más personajes registran la zona, se adelantan a explorar o avanzan con cautela. Puede revelar un lugar o un rasgo. Salir de la zona sigue requiriendo una acción de Viajar."
+
+#: app/blueprints/party.py
+msgid "Exploring"
+msgstr "Exploran"
+
+#: app/blueprints/party.py
+#, python-format
+msgid "%(names)s and %(count)s more"
+msgstr "%(names)s y %(count)s más"
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Supply by %(who)s (+%(bonus)s die steps): d%(sides)s → %(amount)s Rations (3 uses each), added to party storage."
+msgstr "Forrajean %(who)s (+%(bonus)s pasos de dado): d%(sides)s → %(amount)s Raciones (3 usos cada una), añadidas al almacén del grupo."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Supply by %(who)s: d%(sides)s → %(amount)s Rations (3 uses each), added to party storage."
+msgstr "Forrajean %(who)s: d%(sides)s → %(amount)s Raciones (3 usos cada una), añadidas al almacén del grupo."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Make Camp: %(who)s rested."
+msgstr "Acampar: %(who)s descansaron."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Mounts fed: %(names)s."
+msgstr "Monturas alimentadas: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Ration uses: %(packs)s from their own packs, %(storage)s from party storage."
+msgstr "Usos de Raciones: %(packs)s de sus propias mochilas, %(storage)s del almacén del grupo."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Fatigue removed: %(names)s."
+msgstr "Fatiga eliminada: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Still deprived, Fatigue kept: %(names)s."
+msgstr "Siguen exhaustos y conservan la Fatiga: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): no risk of getting lost."
+msgstr "Viaje por %(path)s (%(who)s): sin riesgo de perderse."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): rolled %(roll)s on d6 and got lost. Recovering may take another action."
+msgstr "Viaje por %(path)s (%(who)s): sacaron %(roll)s en d6 y se perdieron. Recuperar el rumbo puede requerir otra acción."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): rolled %(roll)s on d6 and stayed on course."
+msgstr "Viaje por %(path)s (%(who)s): sacaron %(roll)s en d6 y mantuvieron el rumbo."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Explore by %(who)s: searched the area for hidden features."
+msgstr "Exploran %(who)s: registraron la zona en busca de rasgos ocultos."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Wilderness event (d6: %(roll)s): %(event)s"
+msgstr "Evento en tierras salvajes (d6: %(roll)s): %(event)s"
+
+#: app/blueprints/party.py
+msgid "Choose a path."
+msgstr "Elige un camino."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Path difficulty"
+msgstr "Dificultad del camino"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "After everyone has acted this watch, roll once on the Wilderness Events table."
+msgstr "Cuando todos hayan actuado en esta guardia, tirad una vez en la tabla de Eventos en tierras salvajes."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Night (roll twice)"
+msgstr "Noche (tirar dos veces)"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Roll event"
+msgstr "Tirar evento"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Night watch, rolled twice:"
+msgstr "Guardia nocturna, dos tiradas:"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Dungeon actions"
+msgstr "Acciones en mazmorra"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Each turn, a character moves about 40ft and takes one action. Results are added to the roll history for the whole party."
+msgstr "Cada turno, un personaje se mueve unos 12 m y realiza una acción. Los resultados se añaden al historial de tiradas de todo el grupo."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Search one object or place for treasure, traps or secret doors."
+msgstr "Registrad un objeto o lugar en busca de tesoros, trampas o puertas secretas."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "A thorough search of one object or location takes a turn and reveals relevant hidden treasure, traps or secret doors. Larger or complex areas may take several turns."
+msgstr "Registrar a fondo un objeto o lugar lleva un turno y revela tesoros ocultos, trampas o puertas secretas relevantes. Las zonas grandes o complejas pueden llevar varios turnos."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Searching"
+msgstr "Registran"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "What do they search?"
+msgstr "¿Qué registran?"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "e.g. the altar"
+msgstr "p. ej., el altar"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Catch your breath and recover all HP."
+msgstr "Recuperad el aliento y todos los PG."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Resting takes a turn and restores all HP. It needs a light source and a safe location; present or oncoming danger makes it impossible. Fatigue stays until the party can Make Camp, and deprived characters recover nothing."
+msgstr "Descansar lleva un turno y restaura todos los PG. Requiere una fuente de luz y un lugar seguro; un peligro presente o inminente lo impide. La Fatiga se mantiene hasta que el grupo pueda Acampar, y los personajes exhaustos no recuperan nada."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Roll when the party lingers in a room, moves quickly or loudly, or enters a new area or level."
+msgstr "Tirad cuando el grupo se entretenga en una sala, se mueva deprisa o con ruido, o entre en una zona o nivel nuevo."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Dungeon event (d6: %(roll)s): %(event)s"
+msgstr "Evento de mazmorra (d6: %(roll)s): %(event)s"
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Search by %(who)s: %(target)s."
+msgstr "Registran %(who)s: %(target)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Search by %(who)s."
+msgstr "Registran %(who)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Rest by %(who)s."
+msgstr "Descansan %(who)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "HP restored: %(names)s."
+msgstr "PG restaurados: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Already at full HP: %(names)s."
+msgstr "Ya tenían todos sus PG: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Deprived, no HP recovered: %(names)s."
+msgstr "Exhaustos, no recuperan PG: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+msgctxt "dungeon action"
+msgid "Rest"
+msgstr "Descansar"

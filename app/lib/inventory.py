@@ -135,6 +135,8 @@ class Inventory:
                     self.decorate_item(item)
                 continue
             c["title"] = c["name"] + " ("+str(curr_slots)+"/"+str(c["slots"])+")"
+            c["used_slots"] = curr_slots
+            c["over_capacity"] = curr_slots > int(c["slots"])
             if curr_slots >= int(c["slots"]):
                 c["encumbered"] = True
             else:

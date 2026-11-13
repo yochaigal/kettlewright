@@ -604,8 +604,11 @@ def party_show_user(username, url_name):
 
 # Route: edit party
 @party.route('/party/edit/<ownername>/<party_url>', methods=['GET'])
+@login_required
 def party_edit(ownername, party_url):
     party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party = get_party_data(ownername, party_url)
+    if not can_edit_storage(party):
+        abort(403)
     form = PartyEditForm(obj=party) 
     render =  render_template('main/party_edit.html', party_url=party_url, characters = characters, join_code = join_code, is_owner=is_owner, is_subowner=is_subowner,ownername=ownername, inventory=inventory, party=party, form=form)
     response = make_response(render)
@@ -642,9 +645,14 @@ def party_edit_cancel(ownername, party_url):
 
 # Route: edit party save
 @party.route('/party/edit/<ownername>/<party_url>/save', methods=['POST'])
+@login_required
 def party_edit_save(ownername, party_url):
     fields_to_update = ['name','description']
     party = get_party_by_owner(ownername, party_url)
+    if party is None:
+        abort(404)
+    if not can_edit_storage(party):
+        abort(403)
     form = PartyEditForm(obj=party) 
     for field in fields_to_update:
         setattr(party, field, sanitize_data(getattr(form, field).data))
@@ -706,12 +714,33 @@ def party_delete(party_id):
     return response
 
 
+def can_edit_storage(party):
+    """The Warden and co-owners manage shared storage, matching who can open Edit party."""
+    if party is None or not current_user.is_authenticated:
+        return False
+    try:
+        subowners = json.loads(party.subowners or '[]')
+    except ValueError:
+        subowners = []
+    return party.owner == current_user.id or current_user.id in subowners
+
+
+def storage_party(party_id, write=True):
+    party = get_party_by_id(party_id)
+    if party is None:
+        abort(404)
+    if write and not can_edit_storage(party):
+        abort(403)
+    return party
+
+
 # --- PARTY INVENTORY ---
 
 # Route: edit inventory
 @party.route('/party/inventory/<party_id>/<container_id>', methods=['GET'])
+@login_required
 def party_inventory_edit(party_id, container_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     if container_id != "None":
         inventory.select(int(container_id))
@@ -721,8 +750,9 @@ def party_inventory_edit(party_id, container_id):
 
 # Route: edit container dialog
 @party.route('/party/inventory/<party_id>/container-edit/<container_id>', methods=['GET'])
+@login_required
 def party_inventory_container_edit(party_id, container_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     inventory.setItemsWithRolls(False)
     inventory.decorate()
@@ -740,8 +770,9 @@ def party_inventory_container_edit(party_id, container_id):
 
 # Route: edit container dialog save
 @party.route('/party/inventory/<party_id>/container-edit/<container_id>/save', methods=['POST'])
+@login_required
 def party_inventory_container_edit_save(party_id, container_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     data = request.form
     slots = 1
@@ -761,24 +792,24 @@ def party_inventory_container_edit_save(party_id, container_id):
 
 # Route: select inventory container
 @party.route('/party/inventory-select-container/<party_id>/<container_id>', methods=['GET'])
+@login_required
 def party_inventory_select_container(party_id, container_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id, write=False)
     inventory = Inventory(party)
     inventory.select(int(container_id))
     if inventory.selected_container.get('on_the_ground'):
         return redirect(url_for('ground.view', party_id=party.id))
     inventory.setItemsWithRolls(False)
     inventory.decorate()
-    tpl = 'partial/partyview/inventory.html'
-    mode = request.args.get('mode')
-    if mode != None and mode == "edit":
-        tpl = 'partial/partyedit/inventory.html'
+    # Editors get the editable fragment on both the party page and Edit party.
+    tpl = 'partial/partyedit/inventory.html' if can_edit_storage(party) else 'partial/partyview/inventory.html'
     return render_template(tpl, party=party, inventory=inventory)
 
 # Route: delete container
 @party.route('/party/inventory/<party_id>/container-edit/<container_id>/delete', methods=['POST'])
+@login_required
 def party_inventory_container_delete(party_id, container_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     data = request.form
     inventory.delete_container(container_id, data["delete-items"])
@@ -789,8 +820,9 @@ def party_inventory_container_delete(party_id, container_id):
 
 # Route: edit item dialog
 @party.route('/party/inventory/<party_id>/item-edit/<item_id>', methods=['GET'])
+@login_required
 def party_inventory_item_edit(party_id, item_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     inventory.setItemsWithRolls(False)
     inventory.decorate()
@@ -815,8 +847,9 @@ def party_inventory_item_edit(party_id, item_id):
 
 # Route: edit item save
 @party.route('/party/inventory/<party_id>/item-edit/<item_id>/save', methods=['POST'])
+@login_required
 def party_inventory_item_edit_save(party_id, item_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     inventory.setItemsWithRolls(False)
     data = request.form
@@ -854,8 +887,9 @@ def party_inventory_item_edit_save(party_id, item_id):
 
 # Route: remove inventory item
 @party.route('/party/inventory/<party_id>/<container_id>/item-delete/<item_id>', methods=['GET'])
+@login_required
 def party_inventory_delete_item(party_id, container_id, item_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     inventory.delete_item(container_id, item_id)
     inventory.select(int(container_id))
@@ -867,8 +901,9 @@ def party_inventory_delete_item(party_id, container_id, item_id):
 
 # Route: change some amount property in item
 @party.route('/party/inventory/<party_id>/item-edit/<item_id>/amount', methods=['GET'])
+@login_required
 def party_inventory_item_edit_amount(party_id, item_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     prop = request.args.get('property')
     action = request.args.get('action')
@@ -881,8 +916,9 @@ def party_inventory_item_edit_amount(party_id, item_id):
 
 # Route: transfer item dialog
 @party.route('/party/inventory/<party_id>/item-transfer/<container_id>/<item_id>', methods=['GET'])
+@login_required
 def party_inventory_item_transfer(party_id, container_id, item_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     inventory = Inventory(party)
     inventory.setItemsWithRolls(False)
     inventory.decorate()
@@ -898,8 +934,9 @@ def party_inventory_item_transfer(party_id, container_id, item_id):
 
 # Route: transfer item dialog accept
 @party.route('/party/inventory/<party_id>/item-transfer/<container_id>/<item_id>/transfer', methods=['POST'])
+@login_required
 def party_inventory_item_transfer_accept(party_id, container_id, item_id):
-    party = get_party_by_id(party_id)
+    party = storage_party(party_id)
     data = request.form
     inventory = Inventory(party)
     if data['member'] and data['member'] != "":
@@ -918,10 +955,132 @@ def wilderness_mounts(target_party, characters):
             if any(int(c.get('slots', 0)) > 0 for c in json.loads(pet.containers or '[]'))]
 
 
-@party.post('/party/<int:party_id>/wilderness')
+ROLL_RESULT_LIMIT = 500  # PartyRoll.result column size
+
+
+def fit_roll(result):
+    return result if len(result) <= ROLL_RESULT_LIMIT else result[:ROLL_RESULT_LIMIT - 1] + '…'
+
+
+def name_list(names, shown=4):
+    """Readable list of names that stays short in roll history."""
+    if len(names) <= shown:
+        return ', '.join(names)
+    return _('%(names)s and %(count)s more', names=', '.join(names[:shown]), count=len(names) - shown)
+
+
+def wilderness_summary(action, participants, form, target, characters):
+    """Apply one wilderness action and describe it for everyone in roll history (#305, #306)."""
+    from app.lib.wilderness import supply, make_camp, travel
+    who = name_list([c.name for c in participants])
+    if action == 'supply':
+        try:
+            bonus = int(form.get('bonus', '0'))
+        except ValueError:
+            abort(400)
+        if not 0 <= bonus <= 4:
+            abort(400)
+        sides, amount = supply(target, participants, bonus)
+        if bonus:
+            return _('Supply by %(who)s (+%(bonus)s die steps): d%(sides)s → %(amount)s Rations (3 uses each), added to party storage.',
+                     who=who, bonus=bonus, sides=sides, amount=amount)
+        return _('Supply by %(who)s: d%(sides)s → %(amount)s Rations (3 uses each), added to party storage.',
+                 who=who, sides=sides, amount=amount)
+    if action == 'camp':
+        allowed_mounts = {str(c.id): c for c in wilderness_mounts(target, characters)}
+        mount_ids = form.getlist('mounts')
+        if len(set(mount_ids)) != len(mount_ids) or any(i not in allowed_mounts for i in mount_ids):
+            abort(400)
+        report = make_camp(target, participants, [allowed_mounts[i] for i in mount_ids],
+                           resolve_deprivation=form.get('resolve_deprivation') == 'on')
+        parts = [_('Make Camp: %(who)s rested.', who=who)]
+        if report['mounts']:
+            parts.append(_('Mounts fed: %(names)s.', names=name_list(report['mounts'])))
+        parts.append(_('Ration uses: %(packs)s from their own packs, %(storage)s from party storage.',
+                       packs=report['from_packs'], storage=report['from_storage']))
+        if report['fatigue_removed']:
+            parts.append(_('Fatigue removed: %(names)s.', names=name_list(report['fatigue_removed'])))
+        if report['still_deprived']:
+            parts.append(_('Still deprived, Fatigue kept: %(names)s.', names=name_list(report['still_deprived'])))
+        return ' '.join(parts)
+    if action == 'travel':
+        path = form.get('path', '')
+        labels = {'road': _('Road'), 'trail': _('Trail'), 'wilderness': _('Wilderness')}
+        if path not in labels:
+            abort(400)
+        roll, lost = travel(path)
+        if roll is None:
+            return _('Travel by %(path)s (%(who)s): no risk of getting lost.', path=labels[path], who=who)
+        if lost:
+            return _('Travel by %(path)s (%(who)s): rolled %(roll)s on d6 and got lost. Recovering may take another action.',
+                     path=labels[path], who=who, roll=roll)
+        return _('Travel by %(path)s (%(who)s): rolled %(roll)s on d6 and stayed on course.',
+                 path=labels[path], who=who, roll=roll)
+    if action == 'explore':
+        return _('Explore by %(who)s: searched the area for hidden features.', who=who)
+    abort(400)
+
+
+def roll_events(party_id, category, roll_event, label, night=False):
+    """The Warden rolls once on an events table; the result goes to the shared roll history."""
+    target = db.get_or_404(Party, party_id)
+    if target.owner != current_user.id:
+        abort(403)
+    if not FlaskForm().validate_on_submit():
+        abort(400)
+    rolls = [label(roll, event) for roll, event in (roll_event() for _i in range(2 if night else 1))]
+    result = fit_roll(' '.join([_('Night watch, rolled twice:')] + rolls if night else rolls))
+    db.session.add(PartyRoll(party_id=target.id, character_name=current_user.username, result=result))
+    db.session.commit()
+    notify_roll_history_changed(target)
+    flash(result, category)
+    return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))
+
+
+@party.post('/party/<int:party_id>/wilderness/event')
 @login_required
-def wilderness_action(party_id):
-    from app.lib.wilderness import supply, make_camp
+def wilderness_event_roll(party_id):
+    """Cairn 2e: after everyone acts, the Warden rolls once on Wilderness Events (twice at night)."""
+    from app.lib.wilderness import wilderness_event
+    return roll_events(party_id, 'wilderness', wilderness_event,
+                       lambda roll, event: _('Wilderness event (d6: %(roll)s): %(event)s', roll=roll, event=event),
+                       night=request.form.get('night') == 'on')
+
+
+@party.post('/party/<int:party_id>/dungeon/event')
+@login_required
+def dungeon_event_roll(party_id):
+    """Cairn 2e: rolled when the party lingers, moves fast or loudly, or enters a new area."""
+    from app.lib.wilderness import dungeon_event
+    return roll_events(party_id, 'dungeon', dungeon_event,
+                       lambda roll, event: _('Dungeon event (d6: %(roll)s): %(event)s', roll=roll, event=event))
+
+
+def dungeon_summary(action, participants, form, target, characters):
+    """Apply one dungeon action and describe it for everyone in roll history."""
+    from app.lib.wilderness import rest
+    who = name_list([c.name for c in participants])
+    if action == 'search':
+        searched = ' '.join(form.get('target', '').split())[:100]
+        if searched:
+            return _('Search by %(who)s: %(target)s.', who=who, target=searched)
+        return _('Search by %(who)s.', who=who)
+    if action == 'rest':
+        report = rest(participants)
+        parts = [_('Rest by %(who)s.', who=who)]
+        if report['restored']:
+            parts.append(_('HP restored: %(names)s.', names=name_list(
+                ['%s (%s → %s)' % (name, before, after) for name, before, after in report['restored']])))
+        if report['already_full']:
+            parts.append(_('Already at full HP: %(names)s.', names=name_list(report['already_full'])))
+        if report['deprived']:
+            parts.append(_('Deprived, no HP recovered: %(names)s.', names=name_list(report['deprived'])))
+        return ' '.join(parts)
+    abort(400)
+
+
+def party_action(party_id, category, actions, summarize):
+    """Shared checks for wilderness and dungeon actions: Warden only, living members, one submission."""
     target = db.get_or_404(Party, party_id)
     if target.owner != current_user.id:
         abort(403)
@@ -931,12 +1090,14 @@ def wilderness_action(party_id):
     selected = request.form.getlist('participants')
     by_id = {str(c.id): c for c in characters if not c.dead}
     if not selected:
-        flash(_('You need to select a PC first'), 'wilderness')
+        flash(_('You need to select a PC first'), category)
         return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))
     if len(set(selected)) != len(selected) or any(i not in by_id for i in selected):
         abort(400)
     participants = [by_id[i] for i in selected]
     action = request.form.get('action')
+    if action not in actions:
+        abort(400)
     try:
         # Compare-and-swap prevents a second submission from spending or awarding twice.
         version = int(request.form.get('version', ''))
@@ -946,34 +1107,27 @@ def wilderness_action(party_id):
         {Party.version: Party.version + 1}, synchronize_session=False)
     if not changed:
         db.session.rollback()
-        flash(_('The party changed. Review its current resources and try again.'), 'wilderness')
+        flash(_('The party changed. Review its current resources and try again.'), category)
         return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))
     try:
-        if action == 'supply':
-            try:
-                bonus = int(request.form.get('bonus', '0'))
-            except ValueError:
-                abort(400)
-            if not 0 <= bonus <= 4:
-                abort(400)
-            sides, amount = supply(target, participants, bonus)
-            result = _('Supply: d%(sides)s → %(amount)s Rations (3 uses each), added to party storage.', sides=sides, amount=amount)
-            db.session.add(PartyRoll(party_id=target.id, character_name=current_user.username, result=result))
-        elif action == 'camp':
-            allowed_mounts = {str(c.id): c for c in wilderness_mounts(target, characters)}
-            mount_ids = request.form.getlist('mounts')
-            if len(set(mount_ids)) != len(mount_ids) or any(i not in allowed_mounts for i in mount_ids):
-                abort(400)
-            make_camp(target, participants, [allowed_mounts[i] for i in mount_ids],
-                      resolve_deprivation=request.form.get('resolve_deprivation') == 'on')
-            result = _('Camp complete: one Ration use consumed per selected character or mount; Fatigue removed where recovery is possible.')
-        else:
-            abort(400)
+        result = summarize(action, participants, request.form, target, characters)
+        db.session.add(PartyRoll(party_id=target.id, character_name=current_user.username, result=fit_roll(result)))
         db.session.commit()
-        if action == 'supply':
-            notify_roll_history_changed(target)
-        flash(result, 'wilderness')
+        notify_roll_history_changed(target)  # HP changes reach member lists through the commit hook.
+        flash(result, category)
     except ValueError as error:
         db.session.rollback()
-        flash(_(str(error)), 'wilderness')
+        flash(_(str(error)), category)
     return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))
+
+
+@party.post('/party/<int:party_id>/dungeon')
+@login_required
+def dungeon_action(party_id):
+    return party_action(party_id, 'dungeon', ('search', 'rest'), dungeon_summary)
+
+
+@party.post('/party/<int:party_id>/wilderness')
+@login_required
+def wilderness_action(party_id):
+    return party_action(party_id, 'wilderness', ('supply', 'camp', 'travel', 'explore'), wilderness_summary)

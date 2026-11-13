@@ -1,0 +1,49 @@
+{# Shared by the Dungeon and Wilderness sections: each action is a tile whose options open in a dialog.
+   The dialogs reuse the wilderness-* classes and the participant check in party_view.js. #}
+{% macro action_dialog(section, key, title, icon, summary, button, url, rules_url) %}
+  <div class="wilderness-tile" x-data="campaignModal(false)" @keydown.escape.window="hide()">
+    <i class="fa-solid {{icon}} wilderness-tile-icon" aria-hidden="true"></i>
+    <div class="wilderness-tile-text">
+      <h4>{{title}}</h4>
+      <p>{{summary}}</p>
+    </div>
+    <button type="button" class="button" x-ref="trigger" @click="show()" aria-haspopup="dialog" aria-controls="{{section}}-{{key}}-modal">{{button}}</button>
+    <div class="modal party-modal" id="{{section}}-{{key}}-modal" :class="{'is-active': open}">
+      <div class="modal-background" @click="hide()"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="{{section}}-{{key}}-title" x-ref="dialog">
+      <form class="wilderness-form party-modal-form" method="post" action="{{url}}">
+        {{roll_form.hidden_tag()}}<input type="hidden" name="version" value="{{party.version}}">
+        <input type="hidden" name="action" value="{{key}}">
+        <div class="party-modal-head">
+          <h3 id="{{section}}-{{key}}-title">{{title}}</h3>
+        </div>
+        <div class="party-modal-body">
+          {{ caller() }}
+        </div>
+        <div class="party-modal-foot">
+          <a class="wilderness-rules" href="{{rules_url}}" target="_blank" rel="noopener">{{_('Cairn 2e rules')}}</a>
+          <button type="button" @click="hide()">{{_('Cancel')}}</button>
+          <span class="wilderness-submit" data-selection-hint="{{_('You need to select a PC first')}}"
+                title="{{_('You need to select a PC first')}}" aria-label="{{_('You need to select a PC first')}}" tabindex="0">
+            <button class="party-modal-submit" type="submit" disabled>{{button}}</button>
+          </span>
+        </div>
+        <button type="button" class="party-modal-close" @click="hide()" aria-label="{{_('Close')}}" title="{{_('Close')}}">×</button>
+      </form>
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+{# One roll on an events table; the Warden decides when (see each section). #}
+{% macro event_bar(title, text, url, night=false) %}
+  <form class="wilderness-event-bar" method="post" action="{{url}}" data-submit-once>
+    {{roll_form.hidden_tag()}}
+    <i class="fa-solid fa-dice-d6 wilderness-tile-icon" aria-hidden="true"></i>
+    <div class="wilderness-tile-text">
+      <h4>{{title}}</h4>
+      <p>{{text}}</p>
+    </div>
+    {% if night %}<label class="wilderness-choice"><input type="checkbox" name="night"> {{_('Night (roll twice)')}}</label>{% endif %}
+    <button type="submit" class="button">{{_('Roll event')}}</button>
+  </form>
+{% endmacro %}

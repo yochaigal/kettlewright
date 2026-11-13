@@ -41,20 +41,82 @@ def consume_ration(items):
 
 
 def make_camp(party, participants, mounts=(), resolve_deprivation=False):
+    """Feed everyone, then rest. Returns who ate from where, and who shed or kept Fatigue."""
     if not participants:
         raise ValueError(N_('Select at least one participant.'))
     storage = json.loads(party.items or '[]')
     inventories = []
+    report = dict(rested=[c.name for c in participants], mounts=[m.name for m in mounts],
+                  from_packs=0, from_storage=0, fatigue_removed=[], still_deprived=[])
     for member in [*participants, *mounts]:
         items = json.loads(member.items or '[]')
-        if not consume_ration(items) and not consume_ration(storage):
+        if consume_ration(items):
+            report['from_packs'] += 1
+        elif consume_ration(storage):
+            report['from_storage'] += 1
+        else:
             raise ValueError(N_('Not enough Rations. Add provisions before making camp.'))
         inventories.append((member, items))
     # Apply only after everyone can eat. Existing deprivation can have other causes.
     for member, items in inventories:
         if resolve_deprivation and hasattr(member, 'deprived'):
             member.deprived = False
-        if not getattr(member, 'deprived', False):
-            items = [item for item in items if item.get('name') != 'Fatigue']
+        if getattr(member, 'deprived', False):
+            report['still_deprived'].append(member.name)
+        else:
+            rested = [item for item in items if item.get('name') != 'Fatigue']
+            if len(rested) != len(items) and member in participants:
+                report['fatigue_removed'].append(member.name)
+            items = rested
         member.items = json.dumps(items)
     party.items = json.dumps(storage)
+    return report
+
+
+# Chance in six of getting lost, by path difficulty (Cairn 2e, Travel).
+LOST_ON = {'road': 0, 'trail': 2, 'wilderness': 3}
+
+
+def travel(path):
+    """Roll to stay on course. Roads cannot be lost, so nothing is rolled."""
+    if path not in LOST_ON:
+        raise ValueError(N_('Choose a path.'))
+    if not LOST_ON[path]:
+        return None, False
+    roll = secrets.randbelow(6) + 1
+    return roll, roll <= LOST_ON[path]
+
+
+def table_event(filename, key):
+    """Roll d6 on an events table, in the viewer's language (same tables as the Tools page)."""
+    from pathlib import Path
+    from app.main import translate_events_data
+    table = json.loads((Path(__file__).resolve().parents[1] / 'static/json/generators' / filename).read_text())
+    roll = secrets.randbelow(len(table[key]))
+    event = translate_events_data({key: [table[key][roll]]})[key][0]
+    return roll + 1, event['description']
+
+
+def wilderness_event():
+    return table_event('wilderness-events.json', 'Wilderness Events')
+
+
+def dungeon_event():
+    return table_event('dungeon-events.json', 'Dungeon Events')
+
+
+def rest(participants):
+    """Dungeon rest: one turn restores all HP. Deprived characters recover nothing (Cairn 2e).
+    Fatigue stays; only Make Camp removes it."""
+    if not participants:
+        raise ValueError(N_('Select at least one participant.'))
+    report = dict(restored=[], already_full=[], deprived=[])
+    for character in participants:
+        if getattr(character, 'deprived', False):
+            report['deprived'].append(character.name)
+        elif character.hp_max is not None and (character.hp or 0) < character.hp_max:
+            report['restored'].append((character.name, character.hp or 0, character.hp_max))
+            character.hp = character.hp_max
+        else:
+            report['already_full'].append(character.name)
+    return report
