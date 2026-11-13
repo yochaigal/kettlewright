@@ -45343,3 +45343,83 @@ msgstr "Tirar evento"
 #: app/templates/partial/partyview/wilderness.html
 msgid "Night watch, rolled twice:"
 msgstr "Guardia nocturna, dos tiradas:"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Dungeon actions"
+msgstr "Acciones en mazmorra"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Each turn, a character moves about 40ft and takes one action. Results are added to the roll history for the whole party."
+msgstr "Cada turno, un personaje se mueve unos 12 m y realiza una acción. Los resultados se añaden al historial de tiradas de todo el grupo."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Search one object or place for treasure, traps or secret doors."
+msgstr "Registrad un objeto o lugar en busca de tesoros, trampas o puertas secretas."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "A thorough search of one object or location takes a turn and reveals relevant hidden treasure, traps or secret doors. Larger or complex areas may take several turns."
+msgstr "Registrar a fondo un objeto o lugar lleva un turno y revela tesoros ocultos, trampas o puertas secretas relevantes. Las zonas grandes o complejas pueden llevar varios turnos."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Searching"
+msgstr "Registran"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "What do they search?"
+msgstr "¿Qué registran?"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "e.g. the altar"
+msgstr "p. ej., el altar"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Catch your breath and recover all HP."
+msgstr "Recuperad el aliento y todos los PG."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Resting takes a turn and restores all HP. It needs a light source and a safe location; present or oncoming danger makes it impossible. Fatigue stays until the party can Make Camp, and deprived characters recover nothing."
+msgstr "Descansar lleva un turno y restaura todos los PG. Requiere una fuente de luz y un lugar seguro; un peligro presente o inminente lo impide. La Fatiga se mantiene hasta que el grupo pueda Acampar, y los personajes exhaustos no recuperan nada."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Roll when the party lingers in a room, moves quickly or loudly, or enters a new area or level."
+msgstr "Tirad cuando el grupo se entretenga en una sala, se mueva deprisa o con ruido, o entre en una zona o nivel nuevo."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Dungeon event (d6: %(roll)s): %(event)s"
+msgstr "Evento de mazmorra (d6: %(roll)s): %(event)s"
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Search by %(who)s: %(target)s."
+msgstr "Registran %(who)s: %(target)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Search by %(who)s."
+msgstr "Registran %(who)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Rest by %(who)s."
+msgstr "Descansan %(who)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "HP restored: %(names)s."
+msgstr "PG restaurados: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Already at full HP: %(names)s."
+msgstr "Ya tenían todos sus PG: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Deprived, no HP recovered: %(names)s."
+msgstr "Exhaustos, no recuperan PG: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+msgctxt "dungeon action"
+msgid "Rest"
+msgstr "Descansar"

@@ -1021,31 +1021,66 @@ def wilderness_summary(action, participants, form, target, characters):
     abort(400)
 
 
-@party.post('/party/<int:party_id>/wilderness/event')
-@login_required
-def wilderness_event_roll(party_id):
-    """Cairn 2e: after everyone acts, the Warden rolls once on Wilderness Events (twice at night)."""
-    from app.lib.wilderness import wilderness_event
+def roll_events(party_id, category, roll_event, label, night=False):
+    """The Warden rolls once on an events table; the result goes to the shared roll history."""
     target = db.get_or_404(Party, party_id)
     if target.owner != current_user.id:
         abort(403)
     if not FlaskForm().validate_on_submit():
         abort(400)
-    night = request.form.get('night') == 'on'
-    rolls = [_('Wilderness event (d6: %(roll)s): %(event)s', roll=roll, event=event)
-             for roll, event in (wilderness_event() for _i in range(2 if night else 1))]
-    result = ' '.join([_('Night watch, rolled twice:')] + rolls if night else rolls)
-    result = fit_roll(result)
+    rolls = [label(roll, event) for roll, event in (roll_event() for _i in range(2 if night else 1))]
+    result = fit_roll(' '.join([_('Night watch, rolled twice:')] + rolls if night else rolls))
     db.session.add(PartyRoll(party_id=target.id, character_name=current_user.username, result=result))
     db.session.commit()
     notify_roll_history_changed(target)
-    flash(result, 'wilderness')
+    flash(result, category)
     return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))
 
 
-@party.post('/party/<int:party_id>/wilderness')
+@party.post('/party/<int:party_id>/wilderness/event')
 @login_required
-def wilderness_action(party_id):
+def wilderness_event_roll(party_id):
+    """Cairn 2e: after everyone acts, the Warden rolls once on Wilderness Events (twice at night)."""
+    from app.lib.wilderness import wilderness_event
+    return roll_events(party_id, 'wilderness', wilderness_event,
+                       lambda roll, event: _('Wilderness event (d6: %(roll)s): %(event)s', roll=roll, event=event),
+                       night=request.form.get('night') == 'on')
+
+
+@party.post('/party/<int:party_id>/dungeon/event')
+@login_required
+def dungeon_event_roll(party_id):
+    """Cairn 2e: rolled when the party lingers, moves fast or loudly, or enters a new area."""
+    from app.lib.wilderness import dungeon_event
+    return roll_events(party_id, 'dungeon', dungeon_event,
+                       lambda roll, event: _('Dungeon event (d6: %(roll)s): %(event)s', roll=roll, event=event))
+
+
+def dungeon_summary(action, participants, form, target, characters):
+    """Apply one dungeon action and describe it for everyone in roll history."""
+    from app.lib.wilderness import rest
+    who = name_list([c.name for c in participants])
+    if action == 'search':
+        searched = ' '.join(form.get('target', '').split())[:100]
+        if searched:
+            return _('Search by %(who)s: %(target)s.', who=who, target=searched)
+        return _('Search by %(who)s.', who=who)
+    if action == 'rest':
+        report = rest(participants)
+        parts = [_('Rest by %(who)s.', who=who)]
+        if report['restored']:
+            parts.append(_('HP restored: %(names)s.', names=name_list(
+                ['%s (%s → %s)' % (name, before, after) for name, before, after in report['restored']])))
+        if report['already_full']:
+            parts.append(_('Already at full HP: %(names)s.', names=name_list(report['already_full'])))
+        if report['deprived']:
+            parts.append(_('Deprived, no HP recovered: %(names)s.', names=name_list(report['deprived'])))
+        return ' '.join(parts)
+    abort(400)
+
+
+def party_action(party_id, category, actions, summarize):
+    """Shared checks for wilderness and dungeon actions: Warden only, living members, one submission."""
     target = db.get_or_404(Party, party_id)
     if target.owner != current_user.id:
         abort(403)
@@ -1055,13 +1090,13 @@ def wilderness_action(party_id):
     selected = request.form.getlist('participants')
     by_id = {str(c.id): c for c in characters if not c.dead}
     if not selected:
-        flash(_('You need to select a PC first'), 'wilderness')
+        flash(_('You need to select a PC first'), category)
         return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))
     if len(set(selected)) != len(selected) or any(i not in by_id for i in selected):
         abort(400)
     participants = [by_id[i] for i in selected]
     action = request.form.get('action')
-    if action not in ('supply', 'camp', 'travel', 'explore'):
+    if action not in actions:
         abort(400)
     try:
         # Compare-and-swap prevents a second submission from spending or awarding twice.
@@ -1072,15 +1107,27 @@ def wilderness_action(party_id):
         {Party.version: Party.version + 1}, synchronize_session=False)
     if not changed:
         db.session.rollback()
-        flash(_('The party changed. Review its current resources and try again.'), 'wilderness')
+        flash(_('The party changed. Review its current resources and try again.'), category)
         return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))
     try:
-        result = wilderness_summary(action, participants, request.form, target, characters)
+        result = summarize(action, participants, request.form, target, characters)
         db.session.add(PartyRoll(party_id=target.id, character_name=current_user.username, result=fit_roll(result)))
         db.session.commit()
-        notify_roll_history_changed(target)
-        flash(result, 'wilderness')
+        notify_roll_history_changed(target)  # HP changes reach member lists through the commit hook.
+        flash(result, category)
     except ValueError as error:
         db.session.rollback()
-        flash(_(str(error)), 'wilderness')
+        flash(_(str(error)), category)
     return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))
+
+
+@party.post('/party/<int:party_id>/dungeon')
+@login_required
+def dungeon_action(party_id):
+    return party_action(party_id, 'dungeon', ('search', 'rest'), dungeon_summary)
+
+
+@party.post('/party/<int:party_id>/wilderness')
+@login_required
+def wilderness_action(party_id):
+    return party_action(party_id, 'wilderness', ('supply', 'camp', 'travel', 'explore'), wilderness_summary)

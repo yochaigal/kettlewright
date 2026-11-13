@@ -23352,3 +23352,83 @@ msgstr "Rzuć na wydarzenie"
 #: app/templates/partial/partyview/wilderness.html
 msgid "Night watch, rolled twice:"
 msgstr "Nocna warta, dwa rzuty:"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Dungeon actions"
+msgstr "Działania w lochu"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Each turn, a character moves about 40ft and takes one action. Results are added to the roll history for the whole party."
+msgstr "W każdej turze postać przemieszcza się o około 12 m i wykonuje jedno działanie. Wyniki trafiają do historii rzutów całej drużyny."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Search one object or place for treasure, traps or secret doors."
+msgstr "Przeszukajcie jeden przedmiot lub miejsce w poszukiwaniu skarbów, pułapek lub tajnych drzwi."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "A thorough search of one object or location takes a turn and reveals relevant hidden treasure, traps or secret doors. Larger or complex areas may take several turns."
+msgstr "Dokładne przeszukanie jednego przedmiotu lub miejsca zajmuje turę i ujawnia ukryte skarby, pułapki lub tajne drzwi. Duże lub złożone obszary mogą zająć kilka tur."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Searching"
+msgstr "Przeszukują"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "What do they search?"
+msgstr "Co przeszukują?"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "e.g. the altar"
+msgstr "np. ołtarz"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Catch your breath and recover all HP."
+msgstr "Złapcie oddech i odzyskajcie całe OCHR."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Resting takes a turn and restores all HP. It needs a light source and a safe location; present or oncoming danger makes it impossible. Fatigue stays until the party can Make Camp, and deprived characters recover nothing."
+msgstr "Odpoczynek zajmuje turę i przywraca całe OCHR. Wymaga źródła światła i bezpiecznego miejsca; obecne lub nadciągające zagrożenie go uniemożliwia. Zmęczenie zostaje, dopóki drużyna nie rozbije obozu, a postacie w dyskomforcie niczego nie odzyskują."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Roll when the party lingers in a room, moves quickly or loudly, or enters a new area or level."
+msgstr "Rzuć, gdy drużyna zwleka w komnacie, porusza się szybko lub głośno albo wchodzi do nowego obszaru lub na nowy poziom."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Dungeon event (d6: %(roll)s): %(event)s"
+msgstr "Wydarzenie w lochu (k6: %(roll)s): %(event)s"
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Search by %(who)s: %(target)s."
+msgstr "Przeszukują %(who)s: %(target)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Search by %(who)s."
+msgstr "Przeszukują %(who)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Rest by %(who)s."
+msgstr "Odpoczywają %(who)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "HP restored: %(names)s."
+msgstr "Przywrócono OCHR: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Already at full HP: %(names)s."
+msgstr "Już mają pełne OCHR: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Deprived, no HP recovered: %(names)s."
+msgstr "W dyskomforcie, bez odzyskania OCHR: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+msgctxt "dungeon action"
+msgid "Rest"
+msgstr "Odpoczynek"

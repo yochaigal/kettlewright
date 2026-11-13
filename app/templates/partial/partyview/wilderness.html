@@ -1,43 +1,11 @@
-{# Each action is a short tile; its options and rules open in a dialog. #}
-{% macro action_dialog(key, title, icon, summary, button) %}
-  <div class="wilderness-tile" x-data="campaignModal(false)" @keydown.escape.window="hide()">
-    <i class="fa-solid {{icon}} wilderness-tile-icon" aria-hidden="true"></i>
-    <div class="wilderness-tile-text">
-      <h4>{{title}}</h4>
-      <p>{{summary}}</p>
-    </div>
-    <button type="button" class="button" x-ref="trigger" @click="show()" aria-haspopup="dialog" aria-controls="wilderness-{{key}}-modal">{{button}}</button>
-    <div class="modal party-modal" id="wilderness-{{key}}-modal" :class="{'is-active': open}">
-      <div class="modal-background" @click="hide()"></div>
-      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="wilderness-{{key}}-title" x-ref="dialog">
-      <form class="wilderness-form party-modal-form" method="post" action="{{url_for('party.wilderness_action',party_id=party.id)}}">
-        {{roll_form.hidden_tag()}}<input type="hidden" name="version" value="{{party.version}}">
-        <input type="hidden" name="action" value="{{key}}">
-        <div class="party-modal-head">
-          <h3 id="wilderness-{{key}}-title">{{title}}</h3>
-        </div>
-        <div class="party-modal-body">
-          {{ caller() }}
-        </div>
-        <div class="party-modal-foot">
-          <a class="wilderness-rules" href="https://cairnrpg.com/second-edition/players-guide/procedures/#wilderness-actions" target="_blank" rel="noopener">{{_('Cairn 2e rules')}}</a>
-          <button type="button" @click="hide()">{{_('Cancel')}}</button>
-          <span class="wilderness-submit" data-selection-hint="{{_('You need to select a PC first')}}"
-                title="{{_('You need to select a PC first')}}" aria-label="{{_('You need to select a PC first')}}" tabindex="0">
-            <button class="party-modal-submit" type="submit" disabled>{{button}}</button>
-          </span>
-        </div>
-        <button type="button" class="party-modal-close" @click="hide()" aria-label="{{_('Close')}}" title="{{_('Close')}}">×</button>
-      </form>
-      </div>
-    </div>
-  </div>
-{% endmacro %}
+{% from 'partial/partyview/party_actions.html' import action_dialog, event_bar with context %}
+{% set wurl = url_for('party.wilderness_action', party_id=party.id) %}
+{% set wrules = 'https://cairnrpg.com/second-edition/players-guide/procedures/#wilderness-actions' %}
 <details class="party-section wilderness-actions" open>
   <summary class="subtitle bold">{{_('Wilderness actions')}}</summary>
   <p class="wilderness-intro">{{_('Each character takes one action per watch: morning, afternoon and night. Results are added to the roll history for the whole party.')}}</p>
   <div class="wilderness-tiles">
-  {% call action_dialog('travel', _('Travel'), 'fa-route', _('Move along your route; the party may get lost.'), _('Travel')) %}
+  {% call action_dialog('wilderness', 'travel', _('Travel'), 'fa-route', _('Move along your route; the party may get lost.'), _('Travel'), wurl, wrules) %}
     <p class="party-modal-hint">{{_('The party usually travels together. On a Road you cannot get lost; on a Trail you get lost on 1–2 in d6, and in the Wilderness on 1–3.')}}</p>
     <fieldset><legend>{{_('Travelling')}}</legend><div class="wilderness-choices">
     {% for c in characters if not c.dead %}<label class="wilderness-choice"><input type="checkbox" name="participants" value="{{c.id}}" checked> {{ c.name|markdown_inline }}</label> {% endfor %}
@@ -48,13 +16,13 @@
       <label class="wilderness-choice"><input type="radio" name="path" value="wilderness"> {{_('Wilderness')}}</label>
     </div></fieldset>
   {% endcall %}
-  {% call action_dialog('explore', _('Explore'), 'fa-binoculars', _('Search the area for hidden places and features.'), _('Explore')) %}
+  {% call action_dialog('wilderness', 'explore', _('Explore'), 'fa-binoculars', _('Search the area for hidden places and features.'), _('Explore'), wurl, wrules) %}
     <p class="party-modal-hint">{{_('One or more characters search the area, scout ahead or move carefully. This can reveal a location or feature. Leaving the area still takes a Travel action.')}}</p>
     <fieldset><legend>{{_('Exploring')}}</legend><div class="wilderness-choices">
     {% for c in characters if not c.dead %}<label class="wilderness-choice"><input type="checkbox" name="participants" value="{{c.id}}"> {{ c.name|markdown_inline }}</label> {% endfor %}
     </div></fieldset>
   {% endcall %}
-  {% call action_dialog('supply', _('Supply'), 'fa-wheat-awn', _('Hunt, fish or forage for Rations.'), _('Gather supplies')) %}
+  {% call action_dialog('wilderness', 'supply', _('Supply'), 'fa-wheat-awn', _('Hunt, fish or forage for Rations.'), _('Gather supplies'), wurl, wrules) %}
     <p class="party-modal-hint">{{_('Choose participants: d4 for one, d6 for two, d8 for three, d10 for four, d12 for five or more. Each Rations item has 3 uses. Results go into party storage, which may become over capacity.')}}</p>
     <fieldset><legend>{{_('Participants')}}</legend><div class="wilderness-choices">
     {% for c in characters if not c.dead %}<label class="wilderness-choice"><input type="checkbox" name="participants" value="{{c.id}}"> {{ c.name|markdown_inline }}</label> {% endfor %}
@@ -64,7 +32,7 @@
     </label>
     <p class="wilderness-preview">{{_('Supply die')}}: <output data-supply-die>—</output></p>
   {% endcall %}
-  {% call action_dialog('camp', _('Make Camp'), 'fa-campground', _('Eat, rest and shake off Fatigue.'), _('Make Camp')) %}
+  {% call action_dialog('wilderness', 'camp', _('Make Camp'), 'fa-campground', _('Eat, rest and shake off Fatigue.'), _('Make Camp'), wurl, wrules) %}
     <p class="party-modal-hint">{{_('Select characters who can rest and mounts to feed. Consume one Ration use each, from their inventory first, then party storage. Deprived characters keep Fatigue unless their needs are met.')}}</p>
     <fieldset><legend>{{_('Resting characters')}}</legend><div class="wilderness-choices">
     {% for c in characters if not c.dead %}<label class="wilderness-choice"><input type="checkbox" name="participants" value="{{c.id}}"> {{ c.name|markdown_inline }}</label> {% endfor %}
@@ -76,15 +44,7 @@
     <p class="wilderness-preview">{{_('Ration uses needed')}}: <output data-camp-rations>0</output></p>
   {% endcall %}
   </div>
-  {# One roll per exploration cycle, after everyone has acted (Cairn 2e). #}
-  <form class="wilderness-event-bar" method="post" action="{{url_for('party.wilderness_event_roll', party_id=party.id)}}" data-submit-once>
-    {{roll_form.hidden_tag()}}
-    <i class="fa-solid fa-dice-d6 wilderness-tile-icon" aria-hidden="true"></i>
-    <div class="wilderness-tile-text">
-      <h4>{{_('Wilderness Events')}}</h4>
-      <p>{{_('After everyone has acted this watch, roll once on the Wilderness Events table.')}}</p>
-    </div>
-    <label class="wilderness-choice"><input type="checkbox" name="night"> {{_('Night (roll twice)')}}</label>
-    <button type="submit" class="button">{{_('Roll event')}}</button>
-  </form>
+  {# Cairn 2e: one roll per exploration cycle, after everyone has acted; twice at night. #}
+  {{ event_bar(_('Wilderness Events'), _('After everyone has acted this watch, roll once on the Wilderness Events table.'),
+               url_for('party.wilderness_event_roll', party_id=party.id), night=true) }}
 </details>

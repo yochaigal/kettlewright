@@ -87,11 +87,36 @@ def travel(path):
     return roll, roll <= LOST_ON[path]
 
 
-def wilderness_event():
-    """Roll d6 on the Wilderness Events table, in the viewer's language."""
+def table_event(filename, key):
+    """Roll d6 on an events table, in the viewer's language (same tables as the Tools page)."""
     from pathlib import Path
     from app.main import translate_events_data
-    table = json.loads((Path(__file__).resolve().parents[1] / 'static/json/generators/wilderness-events.json').read_text())
-    roll = secrets.randbelow(len(table['Wilderness Events']))
-    event = translate_events_data({'Wilderness Events': [table['Wilderness Events'][roll]]})['Wilderness Events'][0]
+    table = json.loads((Path(__file__).resolve().parents[1] / 'static/json/generators' / filename).read_text())
+    roll = secrets.randbelow(len(table[key]))
+    event = translate_events_data({key: [table[key][roll]]})[key][0]
     return roll + 1, event['description']
+
+
+def wilderness_event():
+    return table_event('wilderness-events.json', 'Wilderness Events')
+
+
+def dungeon_event():
+    return table_event('dungeon-events.json', 'Dungeon Events')
+
+
+def rest(participants):
+    """Dungeon rest: one turn restores all HP. Deprived characters recover nothing (Cairn 2e).
+    Fatigue stays; only Make Camp removes it."""
+    if not participants:
+        raise ValueError(N_('Select at least one participant.'))
+    report = dict(restored=[], already_full=[], deprived=[])
+    for character in participants:
+        if getattr(character, 'deprived', False):
+            report['deprived'].append(character.name)
+        elif character.hp_max is not None and (character.hp or 0) < character.hp_max:
+            report['restored'].append((character.name, character.hp or 0, character.hp_max))
+            character.hp = character.hp_max
+        else:
+            report['already_full'].append(character.name)
+    return report

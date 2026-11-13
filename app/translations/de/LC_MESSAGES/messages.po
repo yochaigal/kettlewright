@@ -23049,3 +23049,83 @@ msgstr "Ereignis würfeln"
 #: app/templates/partial/partyview/wilderness.html
 msgid "Night watch, rolled twice:"
 msgstr "Nachtwache, zweimal gewürfelt:"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Dungeon actions"
+msgstr "Dungeon-Aktionen"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Each turn, a character moves about 40ft and takes one action. Results are added to the roll history for the whole party."
+msgstr "In jedem Zug bewegt sich ein Charakter etwa 12 m und führt eine Aktion aus. Die Ergebnisse erscheinen im Würfelverlauf der ganzen Gruppe."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Search one object or place for treasure, traps or secret doors."
+msgstr "Durchsucht einen Gegenstand oder Ort nach Schätzen, Fallen oder Geheimtüren."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "A thorough search of one object or location takes a turn and reveals relevant hidden treasure, traps or secret doors. Larger or complex areas may take several turns."
+msgstr "Einen Gegenstand oder Ort gründlich zu durchsuchen dauert einen Zug und enthüllt verborgene Schätze, Fallen oder Geheimtüren. Große oder verwinkelte Bereiche können mehrere Züge dauern."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Searching"
+msgstr "Suchende"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "What do they search?"
+msgstr "Was wird durchsucht?"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "e.g. the altar"
+msgstr "z. B. der Altar"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Catch your breath and recover all HP."
+msgstr "Kommt zu Atem und erhaltet alle SP zurück."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Resting takes a turn and restores all HP. It needs a light source and a safe location; present or oncoming danger makes it impossible. Fatigue stays until the party can Make Camp, and deprived characters recover nothing."
+msgstr "Ausruhen dauert einen Zug und stellt alle SP wieder her. Es braucht eine Lichtquelle und einen sicheren Ort; akute oder nahende Gefahr macht es unmöglich. Erschöpfung bleibt, bis die Gruppe ein Lager aufschlagen kann, und entbehrende Charaktere erholen sich nicht."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Roll when the party lingers in a room, moves quickly or loudly, or enters a new area or level."
+msgstr "Würfle, wenn die Gruppe in einem Raum verweilt, sich schnell oder laut bewegt oder einen neuen Bereich oder eine neue Ebene betritt."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Dungeon event (d6: %(roll)s): %(event)s"
+msgstr "Dungeon-Ereignis (W6: %(roll)s): %(event)s"
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Search by %(who)s: %(target)s."
+msgstr "Suche: %(who)s: %(target)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Search by %(who)s."
+msgstr "Suche: %(who)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Rest by %(who)s."
+msgstr "Ausruhen: %(who)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "HP restored: %(names)s."
+msgstr "SP wiederhergestellt: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Already at full HP: %(names)s."
+msgstr "Bereits volle SP: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Deprived, no HP recovered: %(names)s."
+msgstr "Entbehrend, keine SP erholt: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+msgctxt "dungeon action"
+msgid "Rest"
+msgstr "Ausruhen"

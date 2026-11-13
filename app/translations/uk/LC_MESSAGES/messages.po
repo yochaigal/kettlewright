@@ -27136,3 +27136,83 @@ msgstr "Кинути подію"
 #: app/templates/partial/partyview/wilderness.html
 msgid "Night watch, rolled twice:"
 msgstr "Нічна варта, два кидки:"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Dungeon actions"
+msgstr "Дії в підземеллі"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Each turn, a character moves about 40ft and takes one action. Results are added to the roll history for the whole party."
+msgstr "Кожен хід персонаж переміщується приблизно на 40 футів і виконує одну дію. Результати потрапляють до історії кидків усієї групи."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Search one object or place for treasure, traps or secret doors."
+msgstr "Обшукайте один предмет або місце в пошуках скарбів, пасток чи таємних дверей."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "A thorough search of one object or location takes a turn and reveals relevant hidden treasure, traps or secret doors. Larger or complex areas may take several turns."
+msgstr "Ретельний обшук одного предмета або місця займає хід і відкриває приховані скарби, пастки чи таємні двері. Великі або складні місця можуть забрати кілька ходів."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Searching"
+msgstr "Обшукують"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "What do they search?"
+msgstr "Що обшукують?"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "e.g. the altar"
+msgstr "наприклад, вівтар"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Catch your breath and recover all HP."
+msgstr "Перепочиньте й відновіть усі ПЗ."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Resting takes a turn and restores all HP. It needs a light source and a safe location; present or oncoming danger makes it impossible. Fatigue stays until the party can Make Camp, and deprived characters recover nothing."
+msgstr "Відпочинок займає хід і відновлює всі ПЗ. Потрібні джерело світла й безпечне місце; поточна або неминуча небезпека робить відпочинок неможливим. Втома лишається, доки група не зможе облаштувати табір, а персонажі в позбавленні нічого не відновлюють."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Roll when the party lingers in a room, moves quickly or loudly, or enters a new area or level."
+msgstr "Кидайте, коли група затримується в кімнаті, рухається швидко чи гучно або входить у нову зону чи на новий рівень."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Dungeon event (d6: %(roll)s): %(event)s"
+msgstr "Подія в підземеллі (d6: %(roll)s): %(event)s"
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Search by %(who)s: %(target)s."
+msgstr "Обшук (%(who)s): %(target)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Search by %(who)s."
+msgstr "Обшук (%(who)s)."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Rest by %(who)s."
+msgstr "Відпочинок (%(who)s)."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "HP restored: %(names)s."
+msgstr "ПЗ відновлено: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Already at full HP: %(names)s."
+msgstr "Вже з повними ПЗ: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Deprived, no HP recovered: %(names)s."
+msgstr "У позбавленні, ПЗ не відновлено: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+msgctxt "dungeon action"
+msgid "Rest"
+msgstr "Відпочинок"
