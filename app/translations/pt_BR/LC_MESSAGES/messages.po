@@ -23869,7 +23869,7 @@ msgstr "Comam, descansem e livrem-se da Fadiga."
 
 #: app/templates/partial/partyview/wilderness.html
 msgid "Supply die"
-msgstr "Dado de suprimentos"
+msgstr "Dado de abastecimento"
 
 #: app/templates/partial/partyview/wilderness.html
 msgid "Ration uses needed"
@@ -23886,7 +23886,7 @@ msgstr "Nada guardado aqui ainda."
 
 #: app/templates/partial/partyview/storage_notes.html
 msgid "Storage holds gear the whole party shares. Items arrive from a character sheet, from the Marketplace, or as Rations from Supply."
-msgstr "O depósito guarda o equipamento compartilhado pelo grupo. Os itens chegam de uma ficha de personagem, do Mercado ou como Rações do Suprimento."
+msgstr "O depósito guarda o equipamento compartilhado pelo grupo. Os itens chegam de uma ficha de personagem, do Mercado ou como Rações ao Abastecer."
 
 #: app/templates/partial/partyview/storage_notes.html
 msgid "Items dropped by the party, with where they were left"
@@ -23909,3 +23909,128 @@ msgstr "Resultados"
 #: app/templates/main/tools.html
 msgid "Pick a table to roll on it. Results appear here."
 msgstr "Escolha uma tabela para rolar nela. Os resultados aparecem aqui."
+
+#: app/blueprints/party.py
+msgid "Roll on the Wilderness Events table afterwards"
+msgstr "Rolar na tabela de Eventos dos Ermos depois"
+
+#: app/blueprints/party.py
+msgid "Each character takes one action per watch: morning, afternoon and night. Results are added to the roll history for the whole party."
+msgstr "Cada personagem realiza uma ação por vigília: manhã, tarde e noite. Os resultados entram no histórico de rolagens de todo o grupo."
+
+#: app/blueprints/party.py
+msgid "Travel"
+msgstr "Viajar"
+
+#: app/blueprints/party.py
+msgid "Move along your route; the party may get lost."
+msgstr "Sigam sua rota; o grupo pode se perder."
+
+#: app/blueprints/party.py
+msgid "The party usually travels together. On a Road you cannot get lost; on a Trail you get lost on 1–2 in d6, and in the Wilderness on 1–3."
+msgstr "O grupo costuma viajar junto. Numa Estrada não há como se perder; numa Trilha vocês se perdem com 1–2 no d6, e nos Ermos com 1–3."
+
+#: app/blueprints/party.py
+msgid "Travelling"
+msgstr "Viajando"
+
+#: app/blueprints/party.py
+msgid "Road"
+msgstr "Estrada"
+
+#: app/blueprints/party.py
+msgid "Trail"
+msgstr "Trilha"
+
+#: app/blueprints/party.py
+msgid "Wilderness"
+msgstr "Ermos"
+
+#: app/blueprints/party.py
+msgid "Explore"
+msgstr "Explorar"
+
+#: app/blueprints/party.py
+msgid "Search the area for hidden places and features."
+msgstr "Procurem lugares e características ocultas na área."
+
+#: app/blueprints/party.py
+msgid "One or more characters search the area, scout ahead or move carefully. This can reveal a location or feature. Leaving the area still takes a Travel action."
+msgstr "Um ou mais personagens vasculham a área, batem o terreno à frente ou avançam com cautela. Isso pode revelar um local ou característica. Sair da área ainda exige uma ação de Viajar."
+
+#: app/blueprints/party.py
+msgid "Exploring"
+msgstr "Explorando"
+
+#: app/blueprints/party.py
+#, python-format
+msgid "%(names)s and %(count)s more"
+msgstr "%(names)s e mais %(count)s"
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Supply by %(who)s (+%(bonus)s die steps): d%(sides)s → %(amount)s Rations (3 uses each), added to party storage."
+msgstr "Abastecer por %(who)s (+%(bonus)s passos de dado): d%(sides)s → %(amount)s Rações (3 usos cada), adicionadas ao depósito do grupo."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Supply by %(who)s: d%(sides)s → %(amount)s Rations (3 uses each), added to party storage."
+msgstr "Abastecer por %(who)s: d%(sides)s → %(amount)s Rações (3 usos cada), adicionadas ao depósito do grupo."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Make Camp: %(who)s rested."
+msgstr "Acampar: %(who)s descansaram."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Mounts fed: %(names)s."
+msgstr "Montarias alimentadas: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Ration uses: %(packs)s from their own packs, %(storage)s from party storage."
+msgstr "Usos de Rações: %(packs)s das próprias mochilas, %(storage)s do depósito do grupo."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Fatigue removed: %(names)s."
+msgstr "Fadiga removida: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Still deprived, Fatigue kept: %(names)s."
+msgstr "Ainda em exaustão, mantêm a Fadiga: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): no risk of getting lost."
+msgstr "Viagem por %(path)s (%(who)s): sem risco de se perder."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): rolled %(roll)s on d6 and got lost. Recovering may take another action."
+msgstr "Viagem por %(path)s (%(who)s): tiraram %(roll)s no d6 e se perderam. Retomar o rumo pode exigir outra ação."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): rolled %(roll)s on d6 and stayed on course."
+msgstr "Viagem por %(path)s (%(who)s): tiraram %(roll)s no d6 e mantiveram o rumo."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Explore by %(who)s: searched the area for hidden features."
+msgstr "Explorar por %(who)s: vasculharam a área em busca de características ocultas."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Wilderness event (d6: %(roll)s): %(event)s"
+msgstr "Evento dos Ermos (d6: %(roll)s): %(event)s"
+
+#: app/blueprints/party.py
+msgid "Choose a path."
+msgstr "Escolha um caminho."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Path difficulty"
+msgstr "Dificuldade do caminho"

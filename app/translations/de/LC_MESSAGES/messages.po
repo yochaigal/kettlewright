@@ -22888,7 +22888,7 @@ msgstr "Hier ist noch nichts eingelagert."
 
 #: app/templates/partial/partyview/storage_notes.html
 msgid "Storage holds gear the whole party shares. Items arrive from a character sheet, from the Marketplace, or as Rations from Supply."
-msgstr "Das Lager enthält Ausrüstung, die die ganze Gruppe teilt. Gegenstände kommen von einem Charakterbogen, vom Marktplatz oder als Rationen durch Vorräte."
+msgstr "Das Lager enthält Ausrüstung, die die ganze Gruppe teilt. Gegenstände kommen von einem Charakterbogen, vom Marktplatz oder als Rationen durch Vorräte sammeln."
 
 #: app/templates/partial/partyview/storage_notes.html
 msgid "Items dropped by the party, with where they were left"
@@ -22911,3 +22911,128 @@ msgstr "Ergebnisse"
 #: app/templates/main/tools.html
 msgid "Pick a table to roll on it. Results appear here."
 msgstr "Wähle eine Tabelle, um darauf zu würfeln. Die Ergebnisse erscheinen hier."
+
+#: app/blueprints/party.py
+msgid "Roll on the Wilderness Events table afterwards"
+msgstr "Danach auf der Tabelle der Wildnis-Ereignisse würfeln"
+
+#: app/blueprints/party.py
+msgid "Each character takes one action per watch: morning, afternoon and night. Results are added to the roll history for the whole party."
+msgstr "Jeder Charakter führt pro Wache eine Aktion aus: morgens, nachmittags und nachts. Die Ergebnisse erscheinen im Würfelverlauf der ganzen Gruppe."
+
+#: app/blueprints/party.py
+msgid "Travel"
+msgstr "Reisen"
+
+#: app/blueprints/party.py
+msgid "Move along your route; the party may get lost."
+msgstr "Folgt eurer Route; die Gruppe kann sich verirren."
+
+#: app/blueprints/party.py
+msgid "The party usually travels together. On a Road you cannot get lost; on a Trail you get lost on 1–2 in d6, and in the Wilderness on 1–3."
+msgstr "Die Gruppe reist meist gemeinsam. Auf einer Straße verirrt ihr euch nicht; auf einem Pfad bei 1–2 auf W6, in der Wildnis bei 1–3."
+
+#: app/blueprints/party.py
+msgid "Travelling"
+msgstr "Reisende"
+
+#: app/blueprints/party.py
+msgid "Road"
+msgstr "Straße"
+
+#: app/blueprints/party.py
+msgid "Trail"
+msgstr "Pfad"
+
+#: app/blueprints/party.py
+msgid "Wilderness"
+msgstr "Wildnis"
+
+#: app/blueprints/party.py
+msgid "Explore"
+msgstr "Erkunden"
+
+#: app/blueprints/party.py
+msgid "Search the area for hidden places and features."
+msgstr "Durchsucht die Gegend nach verborgenen Orten und Merkmalen."
+
+#: app/blueprints/party.py
+msgid "One or more characters search the area, scout ahead or move carefully. This can reveal a location or feature. Leaving the area still takes a Travel action."
+msgstr "Ein oder mehrere Charaktere durchsuchen die Gegend, kundschaften voraus oder bewegen sich vorsichtig. Das kann einen Ort oder ein Merkmal enthüllen. Um die Gegend zu verlassen, ist trotzdem eine Reisen-Aktion nötig."
+
+#: app/blueprints/party.py
+msgid "Exploring"
+msgstr "Erkundende"
+
+#: app/blueprints/party.py
+#, python-format
+msgid "%(names)s and %(count)s more"
+msgstr "%(names)s und %(count)s weitere"
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Supply by %(who)s (+%(bonus)s die steps): d%(sides)s → %(amount)s Rations (3 uses each), added to party storage."
+msgstr "Vorräte sammeln: %(who)s (+%(bonus)s Würfelstufen): W%(sides)s → %(amount)s Rationen (je 3 Anwendungen), ins Gruppenlager gelegt."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Supply by %(who)s: d%(sides)s → %(amount)s Rations (3 uses each), added to party storage."
+msgstr "Vorräte sammeln: %(who)s: W%(sides)s → %(amount)s Rationen (je 3 Anwendungen), ins Gruppenlager gelegt."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Make Camp: %(who)s rested."
+msgstr "Lager aufschlagen: %(who)s haben sich ausgeruht."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Mounts fed: %(names)s."
+msgstr "Gefütterte Reittiere: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Ration uses: %(packs)s from their own packs, %(storage)s from party storage."
+msgstr "Rationsanwendungen: %(packs)s aus dem eigenen Gepäck, %(storage)s aus dem Gruppenlager."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Fatigue removed: %(names)s."
+msgstr "Erschöpfung entfernt: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Still deprived, Fatigue kept: %(names)s."
+msgstr "Weiterhin entbehrend, Erschöpfung bleibt: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): no risk of getting lost."
+msgstr "Reise über %(path)s (%(who)s): kein Risiko, sich zu verirren."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): rolled %(roll)s on d6 and got lost. Recovering may take another action."
+msgstr "Reise über %(path)s (%(who)s): %(roll)s auf W6 gewürfelt und verirrt. Zurückzufinden kann eine weitere Aktion kosten."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): rolled %(roll)s on d6 and stayed on course."
+msgstr "Reise über %(path)s (%(who)s): %(roll)s auf W6 gewürfelt und auf Kurs geblieben."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Explore by %(who)s: searched the area for hidden features."
+msgstr "Erkunden: %(who)s haben die Gegend nach verborgenen Merkmalen durchsucht."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Wilderness event (d6: %(roll)s): %(event)s"
+msgstr "Wildnis-Ereignis (W6: %(roll)s): %(event)s"
+
+#: app/blueprints/party.py
+msgid "Choose a path."
+msgstr "Wähle einen Weg."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Path difficulty"
+msgstr "Schwierigkeit des Weges"

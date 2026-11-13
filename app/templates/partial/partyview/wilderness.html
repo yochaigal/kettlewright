@@ -18,6 +18,8 @@
         </div>
         <div class="party-modal-body">
           {{ caller() }}
+          {# Cairn 2e: every wilderness action is followed by a Wilderness Events roll. #}
+          <label class="wilderness-choice wilderness-event-choice"><input type="checkbox" name="wilderness_event" checked> {{_('Roll on the Wilderness Events table afterwards')}}</label>
         </div>
         <div class="party-modal-foot">
           <a class="wilderness-rules" href="https://cairnrpg.com/second-edition/players-guide/procedures/#wilderness-actions" target="_blank" rel="noopener">{{_('Cairn 2e rules')}}</a>
@@ -35,7 +37,25 @@
 {% endmacro %}
 <details class="party-section wilderness-actions" open>
   <summary class="subtitle bold">{{_('Wilderness actions')}}</summary>
+  <p class="wilderness-intro">{{_('Each character takes one action per watch: morning, afternoon and night. Results are added to the roll history for the whole party.')}}</p>
   <div class="wilderness-tiles">
+  {% call action_dialog('travel', _('Travel'), 'fa-route', _('Move along your route; the party may get lost.'), _('Travel')) %}
+    <p class="party-modal-hint">{{_('The party usually travels together. On a Road you cannot get lost; on a Trail you get lost on 1–2 in d6, and in the Wilderness on 1–3.')}}</p>
+    <fieldset><legend>{{_('Travelling')}}</legend><div class="wilderness-choices">
+    {% for c in characters if not c.dead %}<label class="wilderness-choice"><input type="checkbox" name="participants" value="{{c.id}}" checked> {{ c.name|markdown_inline }}</label> {% endfor %}
+    </div></fieldset>
+    <fieldset><legend>{{_('Path difficulty')}}</legend><div class="wilderness-choices">
+      <label class="wilderness-choice"><input type="radio" name="path" value="road"> {{_('Road')}}</label>
+      <label class="wilderness-choice"><input type="radio" name="path" value="trail" checked> {{_('Trail')}}</label>
+      <label class="wilderness-choice"><input type="radio" name="path" value="wilderness"> {{_('Wilderness')}}</label>
+    </div></fieldset>
+  {% endcall %}
+  {% call action_dialog('explore', _('Explore'), 'fa-binoculars', _('Search the area for hidden places and features.'), _('Explore')) %}
+    <p class="party-modal-hint">{{_('One or more characters search the area, scout ahead or move carefully. This can reveal a location or feature. Leaving the area still takes a Travel action.')}}</p>
+    <fieldset><legend>{{_('Exploring')}}</legend><div class="wilderness-choices">
+    {% for c in characters if not c.dead %}<label class="wilderness-choice"><input type="checkbox" name="participants" value="{{c.id}}"> {{ c.name|markdown_inline }}</label> {% endfor %}
+    </div></fieldset>
+  {% endcall %}
   {% call action_dialog('supply', _('Supply'), 'fa-wheat-awn', _('Hunt, fish or forage for Rations.'), _('Gather supplies')) %}
     <p class="party-modal-hint">{{_('Choose participants: d4 for one, d6 for two, d8 for three, d10 for four, d12 for five or more. Each Rations item has 3 uses. Results go into party storage, which may become over capacity.')}}</p>
     <fieldset><legend>{{_('Participants')}}</legend><div class="wilderness-choices">

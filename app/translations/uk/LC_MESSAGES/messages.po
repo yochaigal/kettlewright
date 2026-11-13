@@ -26950,7 +26950,7 @@ msgstr "Додати монстрів"
 
 #: app/templates/partial/partyview/wilderness.html
 msgid "Hunt, fish or forage for Rations."
-msgstr "Полюйте, ловіть рибу чи збирайте припаси, щоб здобути Раціони."
+msgstr "Полюйте, ловіть рибу чи збирайте припаси, щоб здобути Пайки."
 
 #: app/templates/partial/partyview/wilderness.html
 msgid "Eat, rest and shake off Fatigue."
@@ -26958,11 +26958,11 @@ msgstr "Поїжте, відпочиньте й позбудьтеся Втом�
 
 #: app/templates/partial/partyview/wilderness.html
 msgid "Supply die"
-msgstr "Кість припасів"
+msgstr "Кість постачання"
 
 #: app/templates/partial/partyview/wilderness.html
 msgid "Ration uses needed"
-msgstr "Потрібно використань Раціонів"
+msgstr "Потрібно використань Пайків"
 
 #: app/templates/partial/partyview/storage_notes.html
 #, python-format
@@ -26975,7 +26975,7 @@ msgstr "Тут поки нічого не зберігається."
 
 #: app/templates/partial/partyview/storage_notes.html
 msgid "Storage holds gear the whole party shares. Items arrive from a character sheet, from the Marketplace, or as Rations from Supply."
-msgstr "Сховище містить спорядження, спільне для всієї групи. Предмети потрапляють сюди з аркуша персонажа, з Ринку або як Раціони від Припасів."
+msgstr "Сховище містить спорядження, спільне для всієї групи. Предмети потрапляють сюди з аркуша персонажа, з Ринку або як Пайки через Постачання."
 
 #: app/templates/partial/partyview/storage_notes.html
 msgid "Items dropped by the party, with where they were left"
@@ -26998,3 +26998,128 @@ msgstr "Результати"
 #: app/templates/main/tools.html
 msgid "Pick a table to roll on it. Results appear here."
 msgstr "Виберіть таблицю, щоб зробити кидок. Результати з’являться тут."
+
+#: app/blueprints/party.py
+msgid "Roll on the Wilderness Events table afterwards"
+msgstr "Потім кинути за таблицею подій у дикій місцевості"
+
+#: app/blueprints/party.py
+msgid "Each character takes one action per watch: morning, afternoon and night. Results are added to the roll history for the whole party."
+msgstr "Кожен персонаж виконує одну дію за варту: вранці, вдень і вночі. Результати потрапляють до історії кидків усієї групи."
+
+#: app/blueprints/party.py
+msgid "Travel"
+msgstr "Подорож"
+
+#: app/blueprints/party.py
+msgid "Move along your route; the party may get lost."
+msgstr "Рухайтеся маршрутом; група може заблукати."
+
+#: app/blueprints/party.py
+msgid "The party usually travels together. On a Road you cannot get lost; on a Trail you get lost on 1–2 in d6, and in the Wilderness on 1–3."
+msgstr "Зазвичай група подорожує разом. Дорогою заблукати не можна; стежкою група губиться на 1–2 на d6, дикою місцевістю — на 1–3."
+
+#: app/blueprints/party.py
+msgid "Travelling"
+msgstr "У дорозі"
+
+#: app/blueprints/party.py
+msgid "Road"
+msgstr "Дорога"
+
+#: app/blueprints/party.py
+msgid "Trail"
+msgstr "Стежка"
+
+#: app/blueprints/party.py
+msgid "Wilderness"
+msgstr "Дика місцевість"
+
+#: app/blueprints/party.py
+msgid "Explore"
+msgstr "Дослідження"
+
+#: app/blueprints/party.py
+msgid "Search the area for hidden places and features."
+msgstr "Обшукайте місцевість у пошуках прихованих місць і особливостей."
+
+#: app/blueprints/party.py
+msgid "One or more characters search the area, scout ahead or move carefully. This can reveal a location or feature. Leaving the area still takes a Travel action."
+msgstr "Один або кілька персонажів обшукують місцевість, розвідують шлях або рухаються обережно. Це може відкрити місце чи особливість. Щоб покинути місцевість, усе одно потрібна дія «Подорож»."
+
+#: app/blueprints/party.py
+msgid "Exploring"
+msgstr "Досліджують"
+
+#: app/blueprints/party.py
+#, python-format
+msgid "%(names)s and %(count)s more"
+msgstr "%(names)s і ще %(count)s"
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Supply by %(who)s (+%(bonus)s die steps): d%(sides)s → %(amount)s Rations (3 uses each), added to party storage."
+msgstr "Постачання (%(who)s, +%(bonus)s ступ. кості): d%(sides)s → %(amount)s Пайків (по 3 використання), додано до сховища групи."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Supply by %(who)s: d%(sides)s → %(amount)s Rations (3 uses each), added to party storage."
+msgstr "Постачання (%(who)s): d%(sides)s → %(amount)s Пайків (по 3 використання), додано до сховища групи."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Make Camp: %(who)s rested."
+msgstr "Облаштувати табір: відпочили %(who)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Mounts fed: %(names)s."
+msgstr "Нагодовані верхові тварини: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Ration uses: %(packs)s from their own packs, %(storage)s from party storage."
+msgstr "Використання Пайків: %(packs)s з власних торб, %(storage)s зі сховища групи."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Fatigue removed: %(names)s."
+msgstr "Втому знято: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Still deprived, Fatigue kept: %(names)s."
+msgstr "Досі в позбавленні, Втома лишається: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): no risk of getting lost."
+msgstr "Подорож: %(path)s (%(who)s): ризику заблукати немає."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): rolled %(roll)s on d6 and got lost. Recovering may take another action."
+msgstr "Подорож: %(path)s (%(who)s): випало %(roll)s на d6, група заблукала. Щоб знайти шлях, може знадобитися ще одна дія."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): rolled %(roll)s on d6 and stayed on course."
+msgstr "Подорож: %(path)s (%(who)s): випало %(roll)s на d6, група тримає курс."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Explore by %(who)s: searched the area for hidden features."
+msgstr "Дослідження (%(who)s): місцевість обшукано в пошуках прихованих особливостей."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Wilderness event (d6: %(roll)s): %(event)s"
+msgstr "Подія в дикій місцевості (d6: %(roll)s): %(event)s"
+
+#: app/blueprints/party.py
+msgid "Choose a path."
+msgstr "Виберіть шлях."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Path difficulty"
+msgstr "Складність шляху"

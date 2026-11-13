@@ -955,10 +955,72 @@ def wilderness_mounts(target_party, characters):
             if any(int(c.get('slots', 0)) > 0 for c in json.loads(pet.containers or '[]'))]
 
 
+ROLL_RESULT_LIMIT = 500  # PartyRoll.result column size
+
+
+def name_list(names, shown=4):
+    """Readable list of names that stays short in roll history."""
+    if len(names) <= shown:
+        return ', '.join(names)
+    return _('%(names)s and %(count)s more', names=', '.join(names[:shown]), count=len(names) - shown)
+
+
+def wilderness_summary(action, participants, form, target, characters):
+    """Apply one wilderness action and describe it for everyone in roll history (#305, #306)."""
+    from app.lib.wilderness import supply, make_camp, travel
+    who = name_list([c.name for c in participants])
+    if action == 'supply':
+        try:
+            bonus = int(form.get('bonus', '0'))
+        except ValueError:
+            abort(400)
+        if not 0 <= bonus <= 4:
+            abort(400)
+        sides, amount = supply(target, participants, bonus)
+        if bonus:
+            return _('Supply by %(who)s (+%(bonus)s die steps): d%(sides)s → %(amount)s Rations (3 uses each), added to party storage.',
+                     who=who, bonus=bonus, sides=sides, amount=amount)
+        return _('Supply by %(who)s: d%(sides)s → %(amount)s Rations (3 uses each), added to party storage.',
+                 who=who, sides=sides, amount=amount)
+    if action == 'camp':
+        allowed_mounts = {str(c.id): c for c in wilderness_mounts(target, characters)}
+        mount_ids = form.getlist('mounts')
+        if len(set(mount_ids)) != len(mount_ids) or any(i not in allowed_mounts for i in mount_ids):
+            abort(400)
+        report = make_camp(target, participants, [allowed_mounts[i] for i in mount_ids],
+                           resolve_deprivation=form.get('resolve_deprivation') == 'on')
+        parts = [_('Make Camp: %(who)s rested.', who=who)]
+        if report['mounts']:
+            parts.append(_('Mounts fed: %(names)s.', names=name_list(report['mounts'])))
+        parts.append(_('Ration uses: %(packs)s from their own packs, %(storage)s from party storage.',
+                       packs=report['from_packs'], storage=report['from_storage']))
+        if report['fatigue_removed']:
+            parts.append(_('Fatigue removed: %(names)s.', names=name_list(report['fatigue_removed'])))
+        if report['still_deprived']:
+            parts.append(_('Still deprived, Fatigue kept: %(names)s.', names=name_list(report['still_deprived'])))
+        return ' '.join(parts)
+    if action == 'travel':
+        path = form.get('path', '')
+        labels = {'road': _('Road'), 'trail': _('Trail'), 'wilderness': _('Wilderness')}
+        if path not in labels:
+            abort(400)
+        roll, lost = travel(path)
+        if roll is None:
+            return _('Travel by %(path)s (%(who)s): no risk of getting lost.', path=labels[path], who=who)
+        if lost:
+            return _('Travel by %(path)s (%(who)s): rolled %(roll)s on d6 and got lost. Recovering may take another action.',
+                     path=labels[path], who=who, roll=roll)
+        return _('Travel by %(path)s (%(who)s): rolled %(roll)s on d6 and stayed on course.',
+                 path=labels[path], who=who, roll=roll)
+    if action == 'explore':
+        return _('Explore by %(who)s: searched the area for hidden features.', who=who)
+    abort(400)
+
+
 @party.post('/party/<int:party_id>/wilderness')
 @login_required
 def wilderness_action(party_id):
-    from app.lib.wilderness import supply, make_camp
+    from app.lib.wilderness import wilderness_event
     target = db.get_or_404(Party, party_id)
     if target.owner != current_user.id:
         abort(403)
@@ -974,6 +1036,8 @@ def wilderness_action(party_id):
         abort(400)
     participants = [by_id[i] for i in selected]
     action = request.form.get('action')
+    if action not in ('supply', 'camp', 'travel', 'explore'):
+        abort(400)
     try:
         # Compare-and-swap prevents a second submission from spending or awarding twice.
         version = int(request.form.get('version', ''))
@@ -986,29 +1050,16 @@ def wilderness_action(party_id):
         flash(_('The party changed. Review its current resources and try again.'), 'wilderness')
         return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))
     try:
-        if action == 'supply':
-            try:
-                bonus = int(request.form.get('bonus', '0'))
-            except ValueError:
-                abort(400)
-            if not 0 <= bonus <= 4:
-                abort(400)
-            sides, amount = supply(target, participants, bonus)
-            result = _('Supply: d%(sides)s → %(amount)s Rations (3 uses each), added to party storage.', sides=sides, amount=amount)
-            db.session.add(PartyRoll(party_id=target.id, character_name=current_user.username, result=result))
-        elif action == 'camp':
-            allowed_mounts = {str(c.id): c for c in wilderness_mounts(target, characters)}
-            mount_ids = request.form.getlist('mounts')
-            if len(set(mount_ids)) != len(mount_ids) or any(i not in allowed_mounts for i in mount_ids):
-                abort(400)
-            make_camp(target, participants, [allowed_mounts[i] for i in mount_ids],
-                      resolve_deprivation=request.form.get('resolve_deprivation') == 'on')
-            result = _('Camp complete: one Ration use consumed per selected character or mount; Fatigue removed where recovery is possible.')
-        else:
-            abort(400)
+        result = wilderness_summary(action, participants, request.form, target, characters)
+        # Every wilderness action is followed by a Wilderness Events roll (Cairn 2e); the Warden may skip it.
+        if request.form.get('wilderness_event') == 'on':
+            roll, event = wilderness_event()
+            result += ' ' + _('Wilderness event (d6: %(roll)s): %(event)s', roll=roll, event=event)
+        if len(result) > ROLL_RESULT_LIMIT:
+            result = result[:ROLL_RESULT_LIMIT - 1] + '…'
+        db.session.add(PartyRoll(party_id=target.id, character_name=current_user.username, result=result))
         db.session.commit()
-        if action == 'supply':
-            notify_roll_history_changed(target)
+        notify_roll_history_changed(target)
         flash(result, 'wilderness')
     except ValueError as error:
         db.session.rollback()
