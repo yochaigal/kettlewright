@@ -18,8 +18,6 @@
         </div>
         <div class="party-modal-body">
           {{ caller() }}
-          {# Cairn 2e: every wilderness action is followed by a Wilderness Events roll. #}
-          <label class="wilderness-choice wilderness-event-choice"><input type="checkbox" name="wilderness_event" checked> {{_('Roll on the Wilderness Events table afterwards')}}</label>
         </div>
         <div class="party-modal-foot">
           <a class="wilderness-rules" href="https://cairnrpg.com/second-edition/players-guide/procedures/#wilderness-actions" target="_blank" rel="noopener">{{_('Cairn 2e rules')}}</a>
@@ -78,4 +76,15 @@
     <p class="wilderness-preview">{{_('Ration uses needed')}}: <output data-camp-rations>0</output></p>
   {% endcall %}
   </div>
+  {# One roll per exploration cycle, after everyone has acted (Cairn 2e). #}
+  <form class="wilderness-event-bar" method="post" action="{{url_for('party.wilderness_event_roll', party_id=party.id)}}" data-submit-once>
+    {{roll_form.hidden_tag()}}
+    <i class="fa-solid fa-dice-d6 wilderness-tile-icon" aria-hidden="true"></i>
+    <div class="wilderness-tile-text">
+      <h4>{{_('Wilderness Events')}}</h4>
+      <p>{{_('After everyone has acted this watch, roll once on the Wilderness Events table.')}}</p>
+    </div>
+    <label class="wilderness-choice"><input type="checkbox" name="night"> {{_('Night (roll twice)')}}</label>
+    <button type="submit" class="button">{{_('Roll event')}}</button>
+  </form>
 </details>

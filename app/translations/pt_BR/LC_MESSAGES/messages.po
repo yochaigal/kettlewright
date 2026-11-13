@@ -23910,9 +23910,6 @@ msgstr "Resultados"
 msgid "Pick a table to roll on it. Results appear here."
 msgstr "Escolha uma tabela para rolar nela. Os resultados aparecem aqui."
 
-#: app/blueprints/party.py
-msgid "Roll on the Wilderness Events table afterwards"
-msgstr "Rolar na tabela de Eventos dos Ermos depois"
 
 #: app/blueprints/party.py
 msgid "Each character takes one action per watch: morning, afternoon and night. Results are added to the roll history for the whole party."
@@ -24034,3 +24031,19 @@ msgstr "Escolha um caminho."
 #: app/templates/partial/partyview/wilderness.html
 msgid "Path difficulty"
 msgstr "Dificuldade do caminho"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "After everyone has acted this watch, roll once on the Wilderness Events table."
+msgstr "Depois que todos agirem nesta vigília, role uma vez na tabela de Eventos dos Ermos."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Night (roll twice)"
+msgstr "Noite (rolar duas vezes)"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Roll event"
+msgstr "Rolar evento"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Night watch, rolled twice:"
+msgstr "Vigília noturna, duas rolagens:"

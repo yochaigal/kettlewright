@@ -26999,9 +26999,6 @@ msgstr "Результати"
 msgid "Pick a table to roll on it. Results appear here."
 msgstr "Виберіть таблицю, щоб зробити кидок. Результати з’являться тут."
 
-#: app/blueprints/party.py
-msgid "Roll on the Wilderness Events table afterwards"
-msgstr "Потім кинути за таблицею подій у дикій місцевості"
 
 #: app/blueprints/party.py
 msgid "Each character takes one action per watch: morning, afternoon and night. Results are added to the roll history for the whole party."
@@ -27123,3 +27120,19 @@ msgstr "Виберіть шлях."
 #: app/templates/partial/partyview/wilderness.html
 msgid "Path difficulty"
 msgstr "Складність шляху"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "After everyone has acted this watch, roll once on the Wilderness Events table."
+msgstr "Коли всі виконали дії в цю варту, киньте один раз за таблицею подій у дикій місцевості."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Night (roll twice)"
+msgstr "Ніч (кинути двічі)"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Roll event"
+msgstr "Кинути подію"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Night watch, rolled twice:"
+msgstr "Нічна варта, два кидки:"

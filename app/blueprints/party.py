@@ -958,6 +958,10 @@ def wilderness_mounts(target_party, characters):
 ROLL_RESULT_LIMIT = 500  # PartyRoll.result column size
 
 
+def fit_roll(result):
+    return result if len(result) <= ROLL_RESULT_LIMIT else result[:ROLL_RESULT_LIMIT - 1] + '…'
+
+
 def name_list(names, shown=4):
     """Readable list of names that stays short in roll history."""
     if len(names) <= shown:
@@ -1017,10 +1021,31 @@ def wilderness_summary(action, participants, form, target, characters):
     abort(400)
 
 
+@party.post('/party/<int:party_id>/wilderness/event')
+@login_required
+def wilderness_event_roll(party_id):
+    """Cairn 2e: after everyone acts, the Warden rolls once on Wilderness Events (twice at night)."""
+    from app.lib.wilderness import wilderness_event
+    target = db.get_or_404(Party, party_id)
+    if target.owner != current_user.id:
+        abort(403)
+    if not FlaskForm().validate_on_submit():
+        abort(400)
+    night = request.form.get('night') == 'on'
+    rolls = [_('Wilderness event (d6: %(roll)s): %(event)s', roll=roll, event=event)
+             for roll, event in (wilderness_event() for _i in range(2 if night else 1))]
+    result = ' '.join([_('Night watch, rolled twice:')] + rolls if night else rolls)
+    result = fit_roll(result)
+    db.session.add(PartyRoll(party_id=target.id, character_name=current_user.username, result=result))
+    db.session.commit()
+    notify_roll_history_changed(target)
+    flash(result, 'wilderness')
+    return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))
+
+
 @party.post('/party/<int:party_id>/wilderness')
 @login_required
 def wilderness_action(party_id):
-    from app.lib.wilderness import wilderness_event
     target = db.get_or_404(Party, party_id)
     if target.owner != current_user.id:
         abort(403)
@@ -1051,13 +1076,7 @@ def wilderness_action(party_id):
         return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))
     try:
         result = wilderness_summary(action, participants, request.form, target, characters)
-        # Every wilderness action is followed by a Wilderness Events roll (Cairn 2e); the Warden may skip it.
-        if request.form.get('wilderness_event') == 'on':
-            roll, event = wilderness_event()
-            result += ' ' + _('Wilderness event (d6: %(roll)s): %(event)s', roll=roll, event=event)
-        if len(result) > ROLL_RESULT_LIMIT:
-            result = result[:ROLL_RESULT_LIMIT - 1] + '…'
-        db.session.add(PartyRoll(party_id=target.id, character_name=current_user.username, result=result))
+        db.session.add(PartyRoll(party_id=target.id, character_name=current_user.username, result=fit_roll(result)))
         db.session.commit()
         notify_roll_history_changed(target)
         flash(result, 'wilderness')

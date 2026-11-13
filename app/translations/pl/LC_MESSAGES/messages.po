@@ -23215,9 +23215,6 @@ msgstr "Wyniki"
 msgid "Pick a table to roll on it. Results appear here."
 msgstr "Wybierz tabelę, aby na niej rzucić. Wyniki pojawią się tutaj."
 
-#: app/blueprints/party.py
-msgid "Roll on the Wilderness Events table afterwards"
-msgstr "Potem rzuć na tabelę Wydarzeń w dziczy"
 
 #: app/blueprints/party.py
 msgid "Each character takes one action per watch: morning, afternoon and night. Results are added to the roll history for the whole party."
@@ -23339,3 +23336,19 @@ msgstr "Wybierz drogę."
 #: app/templates/partial/partyview/wilderness.html
 msgid "Path difficulty"
 msgstr "Trudność drogi"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "After everyone has acted this watch, roll once on the Wilderness Events table."
+msgstr "Gdy wszyscy wykonają działania w tej warcie, rzuć raz na tabelę Wydarzeń w dziczy."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Night (roll twice)"
+msgstr "Noc (rzuć dwa razy)"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Roll event"
+msgstr "Rzuć na wydarzenie"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Night watch, rolled twice:"
+msgstr "Nocna warta, dwa rzuty:"

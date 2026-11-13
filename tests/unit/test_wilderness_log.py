@@ -93,14 +93,41 @@ def test_explore_is_recorded(party):
     assert last_entry(app) == 'Explore by Aldous, Wren: searched the area for hidden features.'
 
 
-def test_wilderness_event_follows_the_action_only_when_asked(party):
+def test_actions_never_roll_a_wilderness_event(party):
+    app, clients = party
+    act(clients, 'explore', wilderness_event='on')
+    assert 'Wilderness event' not in last_entry(app)
+
+
+EVENT = '/party/1/wilderness/event'
+
+
+def test_warden_rolls_one_wilderness_event_per_cycle(party):
     app, clients = party
     with patch('app.lib.wilderness.secrets.randbelow', return_value=2):
-        act(clients, 'explore', version=0, wilderness_event='on')
-    assert last_entry(app) == ('Explore by Aldous, Wren: searched the area for hidden features. '
-                               'Wilderness event (d6: 3): Environment: A shift in weather or terrain.')
-    act(clients, 'explore', version=1)
-    assert 'Wilderness event' not in last_entry(app)
+        assert clients[1].post(EVENT).status_code == 302
+    assert last_entry(app) == 'Wilderness event (d6: 3): Environment: A shift in weather or terrain.'
+    with app.app_context():
+        assert db.session.get(Party, 1).items == '[]'  # Nothing else changes.
+    assert 'Environment: A shift in weather' in clients[3].get('/party/1/roll-history').get_data(as_text=True)
+
+
+def test_night_rolls_twice(party):
+    app, clients = party
+    with patch('app.lib.wilderness.secrets.randbelow', side_effect=[0, 4]):
+        assert clients[1].post(EVENT, data={'night': 'on'}).status_code == 302
+    entry = last_entry(app)
+    assert entry.startswith('Night watch, rolled twice: Wilderness event (d6: 1): Encounter:')
+    assert 'Wilderness event (d6: 5): Exhaustion:' in entry
+    assert len(entry) <= 500
+
+
+@pytest.mark.parametrize('user_id', [2, 3])
+def test_only_the_warden_rolls_wilderness_events(party, user_id):
+    app, clients = party
+    assert clients[user_id].post(EVENT).status_code == 403
+    with app.app_context():
+        assert PartyRoll.query.count() == 0
 
 
 def test_long_name_lists_stay_within_the_history_limit(party):
@@ -113,7 +140,7 @@ def test_long_name_lists_stay_within_the_history_limit(party):
             ids.append(i)
         db.session.get(Party, 1).members = json.dumps([1, 2, *ids])
         db.session.commit()
-    data = {'action': 'explore', 'participants': [str(i) for i in (1, 2, *ids)], 'version': '0', 'wilderness_event': 'on'}
+    data = {'action': 'explore', 'participants': [str(i) for i in (1, 2, *ids)], 'version': '0'}
     assert clients[1].post(ACTION, data=data).status_code == 302
     entry = last_entry(app)
     assert len(entry) <= 500

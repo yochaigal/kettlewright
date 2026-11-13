@@ -2,6 +2,15 @@ import utils from "./utils.js";
 
 window.KW_alert = utils.styledAlert;
 
+// A double click must not roll twice.
+document.addEventListener('submit', event => {
+  const form = event.target.closest('form[data-submit-once]');
+  if (!form) return;
+  if (form.dataset.submitted) { event.preventDefault(); return; }
+  form.dataset.submitted = 'true';
+  form.querySelectorAll('[type=submit]').forEach(button => { button.disabled = true; });
+});
+
 // Storage dialogs open in the page flow; bring them fully into view, as on Edit party.
 for (const name of ['item-edit', 'container-edit']) {
   document.body.addEventListener(name, () => {

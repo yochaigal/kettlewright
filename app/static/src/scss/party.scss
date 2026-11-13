@@ -227,11 +227,26 @@ button.party-section-action { display: inline-flex; align-items: center; gap: .6
 
 // Wilderness actions: one tile per action, options in a dialog.
 .wilderness-intro { margin: .6rem 0 0; font-size: 1.5rem; opacity: .8; }
-.wilderness-form .wilderness-event-choice {
+.wilderness-event-bar {
   display: flex;
-  margin-top: 1.6rem;
-  padding-top: 1.2rem;
-  border-top: 1px dotted color-mix(in lab, transparent 60%, var(--fg));
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .8rem 1.2rem;
+  max-width: none;
+  margin: 1rem 0 0;
+  padding: 1.2rem 1.4rem;
+  border: 1px dashed color-mix(in lab, transparent 55%, var(--fg));
+  background: transparent;
+  .wilderness-tile-icon { flex-shrink: 0; width: 2.4rem; font-size: 2.2rem; text-align: center; opacity: .8; }
+  .wilderness-tile-text { flex: 1 1 18rem; min-width: 0; }
+  h4 { margin: 0; font-size: 1.8rem; font-style: normal; }
+  p { margin: .2rem 0 0; font-size: 1.5rem; opacity: .8; }
+  .wilderness-choice { display: inline-flex; align-items: baseline; gap: .5rem; margin: 0; font-size: 1.6rem; white-space: nowrap; cursor: pointer; }
+  .wilderness-choice input { margin: 0; }
+  > .button { flex-shrink: 0; margin: 0; min-width: 0; max-width: none; }
+}
+@media (max-width: 480px) {
+  .wilderness-event-bar > .button { width: 100%; justify-content: center; }
 }
 .wilderness-tiles {
   display: grid;

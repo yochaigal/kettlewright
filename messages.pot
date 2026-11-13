@@ -42415,9 +42415,6 @@ msgstr ""
 msgid "Pick a table to roll on it. Results appear here."
 msgstr ""
 
-#: app/blueprints/party.py
-msgid "Roll on the Wilderness Events table afterwards"
-msgstr ""
 
 #: app/blueprints/party.py
 msgid "Each character takes one action per watch: morning, afternoon and night. Results are added to the roll history for the whole party."
@@ -42538,4 +42535,20 @@ msgstr ""
 
 #: app/templates/partial/partyview/wilderness.html
 msgid "Path difficulty"
+msgstr ""
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "After everyone has acted this watch, roll once on the Wilderness Events table."
+msgstr ""
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Night (roll twice)"
+msgstr ""
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Roll event"
+msgstr ""
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Night watch, rolled twice:"
 msgstr ""
