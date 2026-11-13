@@ -42104,3 +42104,260 @@ msgstr ""
 #: app/templates/partial/tools/pcgen.html:46
 msgid "Create a campaign first to save an NPC."
 msgstr ""
+
+#: app/blueprints/campaigns.py:560
+msgid ""
+"Published to the selected parties. Use View as party to see the saved "
+"version."
+msgstr ""
+
+#: app/blueprints/campaigns.py:596
+msgid "Choose a Markdown file or a ZIP/TAR archive."
+msgstr ""
+
+#: app/blueprints/campaigns.py:603
+msgid ""
+"Unsupported file type. Upload a .md file or put your Markdown articles in"
+" a ZIP, TAR or TAR.GZ archive."
+msgstr ""
+
+#: app/templates/campaigns/entry.html:34 app/templates/campaigns/new_map.html:18
+msgid "Article settings"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:35 app/templates/campaigns/new_map.html:19
+msgid "Organize"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:70
+msgid "No related articles yet."
+msgstr ""
+
+#: app/templates/campaigns/entry.html:72
+msgid "Choose related articles…"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:76
+msgid "There are no other articles to relate yet."
+msgstr ""
+
+#: app/templates/campaigns/entry.html:78
+msgid "Changes are kept when you save the article."
+msgstr ""
+
+#: app/templates/campaigns/entry.html:91
+msgid "Delete Campaign?"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:91
+msgid "Delete article?"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:100
+msgid "Review what will be deleted"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:5
+msgid ""
+"Bring in a single Markdown file or a whole archive of articles. Nothing "
+"enters your library until you review the preview and confirm."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:8
+msgid "1. Choose a file"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:11
+msgid "Markdown file or archive"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:14
+msgid ""
+"Accepted: .md, .zip, .tar, .tar.gz. Files without metadata are imported "
+"as Notes, and you can rename or retype them in the preview."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:17
+msgid ""
+"For full control, start each file with YAML Front Matter containing "
+"layout: default, title and type. Without it, the title comes from the "
+"first # heading (or the file name) and the type defaults to Note."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:18
+msgid ""
+"parent first refers to an exact, unique title inside this archive. If "
+"that title is absent, it can name one of your existing campaigns. "
+"Duplicate campaign names are an error. Folders do not determine "
+"hierarchy."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:35
+msgid ""
+"Copy each complete block, including both --- lines, into its own .md "
+"file. Upload one file directly, or place several together in one archive."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:46
+msgid "2. Review and confirm"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:48
+msgid "campaigns"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:50
+msgid "without metadata"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:51
+msgid "Resolve these errors and upload the file again. Nothing has been imported."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:52
+msgid "Check these before importing:"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:66
+msgid "no metadata, defaults applied"
+msgstr ""
+
+#: app/templates/campaigns/index.html:6
+msgid "New campaign"
+msgstr ""
+
+#: app/templates/campaigns/index.html:18
+msgid ""
+"Campaigns group your private articles and maps. Open a campaign to manage"
+" its articles and choose which parties it is shared with."
+msgstr ""
+
+#: app/templates/campaigns/index.html:25 app/templates/campaigns/workspace.html:29
+msgid "Shared with"
+msgstr ""
+
+#: app/templates/campaigns/index.html:25
+msgid "Not shared with any party"
+msgstr ""
+
+#: app/templates/campaigns/index.html:31
+msgid "Articles not in any campaign"
+msgstr ""
+
+#: app/templates/campaigns/index.html:35
+msgid "Create your first campaign"
+msgstr ""
+
+#: app/templates/campaigns/index.html:35
+msgid "import a Markdown file or archive"
+msgstr ""
+
+#: app/templates/campaigns/known_entry.html:7 app/templates/campaigns/workspace.html:5
+msgid "Breadcrumb"
+msgstr ""
+
+#: app/templates/campaigns/material_tree.html:30
+msgid "Search by title, type or text"
+msgstr ""
+
+#: app/templates/campaigns/material_tree.html:31
+msgid "Clear search"
+msgstr ""
+
+#: app/templates/campaigns/reveal.html:12
+msgid ""
+"Check a party to select it, edit its version, then choose Publish "
+"selected versions. Private descriptions are copied only when you choose "
+"Copy from private original."
+msgstr ""
+
+#: app/templates/campaigns/reveal.html:15
+msgid "Currently published to"
+msgstr ""
+
+#: app/templates/campaigns/reveal.html:48
+msgid "No parties can see this article yet."
+msgstr ""
+
+#: app/templates/campaigns/reveal.html:48
+msgid "Connect a party in campaign Settings"
+msgstr ""
+
+#: app/templates/campaigns/reveal.html:48
+msgid "Move it into a campaign and connect a party in Settings"
+msgstr ""
+
+#: app/templates/campaigns/reveal.html:48
+msgid "create a party first"
+msgstr ""
+
+#: app/templates/campaigns/reveal_materials.html:20
+msgid ""
+"No parties are connected yet. Connect a party in campaign Settings, or "
+"create a party first."
+msgstr ""
+
+#: app/templates/campaigns/reveal_materials.html:21
+msgid "Articles to publish"
+msgstr ""
+
+#: app/templates/campaigns/workspace.html:5
+msgid "All campaigns"
+msgstr ""
+
+#: app/templates/campaigns/workspace.html:9
+msgid "Settings"
+msgstr ""
+
+#: app/templates/campaigns/workspace.html:29
+msgid "Not shared with any party yet. Connect one in Settings."
+msgstr ""
+
+#: app/templates/campaigns/workspace.html:38
+msgid "Tick articles to reveal or delete several at once."
+msgstr ""
+
+#: app/templates/campaigns/workspace.html:50
+msgid "Delete campaign…"
+msgstr ""
+
+#: app/templates/campaigns/index.html:10
+msgid "How do you want to start?"
+msgstr ""
+
+#: app/templates/campaigns/index.html:12
+msgid "Empty campaign"
+msgstr ""
+
+#: app/templates/campaigns/index.html:12
+msgid "Start blank and add articles, maps or imports yourself."
+msgstr ""
+
+#: app/templates/campaigns/index.html:14
+msgid "Random campaign"
+msgstr ""
+
+#: app/templates/campaigns/index.html:29
+msgid "Create and generate"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:14
+msgctxt "import action"
+msgid "Load"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:74
+msgctxt "import action"
+msgid "Import"
+msgstr ""
+
+#: app/templates/campaigns/index.html:14
+msgid ""
+"Generate and save a realm, dungeon or forest with points of interest. You"
+" can edit everything afterwards."
+msgstr ""
+
+#: app/templates/campaigns/index.html:30
+msgid "Generating…"
+msgstr ""
+

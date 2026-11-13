@@ -13,7 +13,8 @@ from sqlalchemy.orm import selectinload
 
 from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
                         Party, PartyPresentation, PointcrawlMap, CampaignImport)
-from app.lib.campaign_import import preview_archive, import_preview, ImportError, MAX_ARCHIVE
+from app.lib.campaign_import import (preview_archive, single_file_preview, import_preview, apply_overrides,
+    ImportError, MAX_ARCHIVE, MAX_FILE)
 from app.lib.campaign_export import export_campaign
 from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, check_version,
     entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
@@ -128,8 +129,34 @@ def index():
     if request.method == 'POST':
         campaign = Campaign(owner_id=current_user.id, name=text_value(request.form.get('name'), 200, True))
         db.session.add(campaign)
+        start = request.form.get('start')
+        kind = request.form.get('kind') if request.form.get('kind') in ('realm', 'dungeon', 'forest') else 'realm'
+        if start == 'random' and request.form.get('draft'):
+            # The New campaign dialog generated the draft in the browser: save the campaign
+            # and its map together, so a rejected draft leaves no half-created campaign.
+            db.session.flush()
+            create_map_entry(campaign, None, kind, request.form.get('title') or campaign.name,
+                             request.form.get('body', ''), request.form.get('draft'))
+            db.session.commit()
+            return redirect(url_for('campaigns.workspace', campaign_id=campaign.id))
         db.session.commit()
-        return redirect(url_for('campaigns.new_map', campaign_id=campaign.id, kind='realm'))
+        if start == 'empty':
+            return redirect(url_for('campaigns.workspace', campaign_id=campaign.id))
+        options = {}
+        if start != 'random':
+            kind = 'realm'
+        else:
+            # Fallback when the browser could not generate: open the generator with
+            # only bounded, known options.
+            def percent(name, default):
+                value = request.form.get(name, '')
+                return int(value) if value.isdigit() and int(value) <= 100 else default
+            pois = request.form.get('poi_count', '')
+            options = {'random': 1, 'children': '1' if request.form.get('generate_children') else '0',
+                       'forest': percent('forest_chance', 50), 'forest_pois': percent('dungeon_chance', 25)}
+            if pois in ('3', '6', '8', '12', '20'):
+                options['pois'] = pois
+        return redirect(url_for('campaigns.new_map', campaign_id=campaign.id, kind=kind, **options))
     campaigns_list = my_campaigns()
     entries = library_entries().order_by(ContentEntry.title).all()
     return render_template('campaigns/index.html', campaigns=campaigns_list,
@@ -556,7 +583,7 @@ def reveal(entry_id):
                 row.drawing = deepcopy(entry.pointcrawl.drawing)
         db.session.commit()
         notify_parties(selected)
-        flash(_('Published to the selected parties. Use View as party below to see the saved version.'))
+        flash(_('Published to the selected parties. Use View as party to see the saved version.'))
         return redirect(url_for('campaigns.reveal', entry_id=entry.id))
     return render_template('campaigns/reveal.html', entry=entry, parties=available_parties(entry),
         presentations=presentations, initial=[{'id': p.id, 'name': p.name, 'selected': False,
@@ -578,31 +605,40 @@ def import_archive():
             batch = CampaignImport.query.filter_by(id=preview_id, owner_id=current_user.id).first_or_404()
             if batch.consumed or batch.created_at < cutoff:
                 abort(409, 'This preview was already imported or expired. Upload the archive again.')
+            try:
+                payload = apply_overrides(deepcopy(batch.payload), request.form)
+            except ImportError as exc:
+                abort(400, str(exc))
             claimed = CampaignImport.query.filter_by(id=batch.id, owner_id=current_user.id, consumed=False).filter(
                 CampaignImport.created_at >= cutoff).update({'consumed': True}, synchronize_session=False)
             if not claimed:
                 abort(409, 'This preview was already imported.')
-            import_preview(batch.payload, current_user.id)
+            import_preview(payload, current_user.id)
             batch.payload = {}
             db.session.commit()
             return redirect(url_for('campaigns.index'))
         upload = request.files.get('archive')
         if not upload:
-            message = _('Choose a ZIP or TAR archive.')
+            message = _('Choose a Markdown file or a ZIP/TAR archive.')
+        elif upload.filename.lower().endswith('.md'):
+            try:
+                preview = single_file_preview(upload.stream.read(MAX_FILE + 1), upload.filename, owner_id=current_user.id)
+            except ImportError as exc:
+                message = str(exc)
         elif not upload.filename.lower().endswith(('.zip', '.tar', '.tar.gz', '.tgz')):
-            message = _('Unsupported file type. Put your Markdown articles in a ZIP, TAR or TAR.GZ archive, then upload that archive.')
+            message = _('Unsupported file type. Upload a .md file or put your Markdown articles in a ZIP, TAR or TAR.GZ archive.')
         else:
             try:
                 preview = preview_archive(upload.stream.read(MAX_ARCHIVE + 1), owner_id=current_user.id)
             except ImportError as exc:
                 message = str(exc)
-            if preview and not preview['errors']:
-                preview_id = uuid4().hex
-                # Keep staging bounded; expired previews never contain library records.
-                CampaignImport.query.filter(CampaignImport.created_at < cutoff).delete(synchronize_session=False)
-                CampaignImport.query.filter_by(owner_id=current_user.id, consumed=False).delete(synchronize_session=False)
-                db.session.add(CampaignImport(id=preview_id, owner_id=current_user.id, payload=preview))
-                db.session.commit()
+        if preview and not preview['errors']:
+            preview_id = uuid4().hex
+            # Keep staging bounded; expired previews never contain library records.
+            CampaignImport.query.filter(CampaignImport.created_at < cutoff).delete(synchronize_session=False)
+            CampaignImport.query.filter_by(owner_id=current_user.id, consumed=False).delete(synchronize_session=False)
+            db.session.add(CampaignImport(id=preview_id, owner_id=current_user.id, payload=preview))
+            db.session.commit()
     return render_template('campaigns/import_archive.html', preview=preview, preview_id=preview_id, message=message)
 
 
@@ -645,6 +681,56 @@ def article_map(entry_id):
     return entry_redirect(entry)
 
 
+def create_map_entry(campaign, party, kind, title, body, draft):
+    """Create a spatial article and its canvas, optionally from a generated draft.
+
+    The caller validates kind and commits. When party is given, the new contents
+    are published to it.
+    """
+    entry = ContentEntry(owner_id=current_user.id, campaign=campaign, category=kind if kind != 'freeform' else 'topography',
+                         title=text_value(title, 200, True), body=content_value(body or ''))
+    pointcrawl = PointcrawlMap(entry=entry, kind=kind)
+    db.session.add(pointcrawl)
+    db.session.flush()
+    public_node_bodies = {}
+    public_entries = {entry}
+    if draft:
+        import json
+        try:
+            data = json.loads(draft)
+        except (ValueError, TypeError):
+            abort(400)
+        if not isinstance(data, dict):
+            abort(400)
+        data['version'] = pointcrawl.version
+        with db.session.no_autoflush:
+            save_geometry(pointcrawl, data)
+        public_node_bodies = {integer(row['number']): content_value(row.get('body', ''))
+                             for row in data['nodes'] if row.get('nested_draft')}
+        public_entries.update(node.entry for node in pointcrawl.nodes)
+        public_entries.update(edge.entry for edge in pointcrawl.edges)
+        save_article_children(entry, data.get('children', []))
+        groups = {child.category: child for child in entry.children if child.category in ('pois', 'paths')}
+        for node in pointcrawl.nodes:
+            if 'pois' in groups:
+                node.entry.parent = groups['pois']
+        for edge in pointcrawl.edges:
+            if 'paths' in groups:
+                edge.entry.parent = groups['paths']
+        if kind == 'realm':
+            db.session.flush()
+            ensure_article_tree_maps(entry)
+            populate_realm_map(pointcrawl)
+    if party:
+        for shown in public_entries:
+            public_body = next((public_node_bodies[node.number] for node in pointcrawl.nodes
+                                if node.entry is shown and node.number in public_node_bodies), shown.body)
+            shown.presentations.append(PartyPresentation(party_id=party.id,
+                title=shown.title, body=public_body, path_type=shown.path_type,
+                drawing=deepcopy(pointcrawl.drawing) if shown == pointcrawl.entry else None))
+    return pointcrawl
+
+
 @campaigns.route('/maps/new', methods=['GET', 'POST'])
 @campaigns.route('/materials/generate', methods=['GET', 'POST'])
 def new_map():
@@ -659,49 +745,8 @@ def new_map():
         kind = request.form.get('kind')
         if kind not in MAP_KINDS:
             abort(400)
-        entry = ContentEntry(owner_id=current_user.id, campaign=campaign, category=kind if kind != 'freeform' else 'topography',
-                             title=text_value(request.form.get('title'), 200, True),
-                             body=content_value(request.form.get('body', '')))
-        pointcrawl = PointcrawlMap(entry=entry, kind=kind)
-        db.session.add(pointcrawl)
-        db.session.flush()
-        draft = request.form.get('draft')
-        public_node_bodies = {}
-        public_entries = {entry}
-        if draft:
-            import json
-            try:
-                data = json.loads(draft)
-            except (ValueError, TypeError):
-                abort(400)
-            if not isinstance(data, dict):
-                abort(400)
-            data['version'] = pointcrawl.version
-            with db.session.no_autoflush:
-                save_geometry(pointcrawl, data)
-            public_node_bodies = {integer(row['number']): content_value(row.get('body', ''))
-                                 for row in data['nodes'] if row.get('nested_draft')}
-            public_entries.update(node.entry for node in pointcrawl.nodes)
-            public_entries.update(edge.entry for edge in pointcrawl.edges)
-            save_article_children(entry, data.get('children', []))
-            groups = {child.category: child for child in entry.children if child.category in ('pois', 'paths')}
-            for node in pointcrawl.nodes:
-                if 'pois' in groups:
-                    node.entry.parent = groups['pois']
-            for edge in pointcrawl.edges:
-                if 'paths' in groups:
-                    edge.entry.parent = groups['paths']
-            if kind == 'realm':
-                db.session.flush()
-                ensure_article_tree_maps(entry)
-                populate_realm_map(pointcrawl)
-        if party:
-            for entry in public_entries:
-                public_body = next((public_node_bodies[node.number] for node in pointcrawl.nodes
-                                    if node.entry is entry and node.number in public_node_bodies), entry.body)
-                entry.presentations.append(PartyPresentation(party_id=party.id,
-                    title=entry.title, body=public_body, path_type=entry.path_type,
-                    drawing=deepcopy(pointcrawl.drawing) if entry == pointcrawl.entry else None))
+        pointcrawl = create_map_entry(campaign, party, kind, request.form.get('title'),
+                                      request.form.get('body', ''), request.form.get('draft'))
         db.session.commit()
         if party:
             notify_parties([party.id])

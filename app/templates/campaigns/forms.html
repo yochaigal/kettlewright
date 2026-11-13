@@ -44,3 +44,23 @@
 </select></label>
 </div>
 {% endmacro %}
+{% macro modal(id, label, title, open=False) %}
+{# A trigger button and its Bulma modal. The caller supplies the body and footer;
+   buttons inside it can call hide() to close the dialog. #}
+<span class="campaign-modal-host" x-data="campaignModal({{ 'true' if open else 'false' }})" @keydown.escape.window="hide()">
+<button type="button" class="campaign-modal-trigger" x-ref="trigger" @click="show()" aria-haspopup="dialog" aria-controls="{{ id }}">{{ label }}</button>
+<div class="modal campaign-modal" id="{{ id }}" :class="{'is-active': open}">
+<div class="modal-background" @click="hide()"></div>
+<div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="{{ id }}-title" x-ref="dialog">
+<header class="modal-card-head"><h2 class="modal-card-title" id="{{ id }}-title">{{ title }}</h2></header>
+{{ caller() }}
+</div>
+</div>
+</span>
+{% endmacro %}
+{% macro modal_footer(submit_label, submit_name=None, submit_value=None) %}
+<footer class="modal-card-foot campaign-actions campaign-modal-actions">
+<button type="submit"{% if submit_name %} name="{{ submit_name }}" value="{{ submit_value }}"{% endif %}>{{ submit_label }}</button>
+<button type="button" @click="hide()">{{ _('Cancel') }}</button>
+</footer>
+{% endmacro %}

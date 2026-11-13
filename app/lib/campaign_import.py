@@ -20,6 +20,16 @@ MAX_FILE = 512 * 1024
 MAX_MAP_FILE = 16 * 1024 * 1024
 MAX_MEMBERS = 500
 
+# Errors from parse_markdown that indicate missing/incomplete frontmatter.
+# These trigger automatic metadata inference rather than a hard error.
+_INFERABLE_ERRORS = frozenset({
+    'Missing YAML Front Matter.',
+    'Unclosed Front Matter.',
+    'Missing layout.',
+    'Missing title.',
+    'Missing type.',
+})
+
 
 class ImportError(ValueError):
     pass
@@ -136,9 +146,64 @@ def parse_markdown(name, text):
             'body': body}
 
 
+def infer_metadata(name, text):
+    """Infer article metadata from a Markdown file without valid frontmatter.
+
+    Extracts the title from the first level-1 heading, falling back to the
+    filename stem. The article type defaults to 'Note'.
+    """
+    lines = text.splitlines()
+    # Skip any partial frontmatter block so we don't treat YAML keys as headings.
+    start = 0
+    if lines and lines[0].strip() == '---':
+        end = next((i for i in range(1, len(lines)) if lines[i].strip() == '---'), None)
+        start = (end + 1) if end is not None else len(lines)
+    body_lines = lines[start:]
+    title = None
+    first = next((i for i, line in enumerate(body_lines) if line.strip()), None)
+    for i, line in enumerate(body_lines):
+        stripped = line.strip()
+        if stripped.startswith('# '):
+            title = stripped[2:].strip()[:200] or None
+            # A leading heading is the title; drop it so it isn't repeated in the body.
+            if title and i == first:
+                body_lines = body_lines[i + 1:]
+            break
+    if not title:
+        stem = PurePosixPath(name).stem
+        title = (stem.replace('-', ' ').replace('_', ' ').title())[:200] or 'Untitled'
+    body_text = '\n'.join(body_lines).strip()
+    try:
+        body = normalize_content(body_text)
+    except HTTPException as exc:
+        raise ImportError(exc.description) from exc
+    return {
+        'file': name, 'title': title, 'type': 'Note', 'category': 'note', 'kind': 'freeform',
+        'parent_title': '', 'parent': None, 'id': '', 'parent_id': '',
+        'is_heart': False, 'path_type': 'standard', 'map_file': '',
+        'source_path': name, 'body': body,
+    }
+
+
+def single_file_preview(data, filename, owner_id=None):
+    """Preview one Markdown file using the same rules as an archive member."""
+    if len(data) > MAX_FILE:
+        raise ImportError('File exceeds 512 KB.')
+    try:
+        text = data.decode('utf-8-sig')
+    except UnicodeDecodeError as exc:
+        raise ImportError('File must be UTF-8 encoded.') from exc
+    return preview_files([(PurePosixPath(filename).name, text)], owner_id)
+
+
 def preview_archive(data, owner_id=None):
-    rows, errors, ignored, files = [], [], [], {}
-    for name, text in archive_files(data):
+    return preview_files(archive_files(data), owner_id)
+
+
+def preview_files(entries, owner_id=None):
+    """Stage (name, text) pairs; text is None for files that are skipped."""
+    rows, errors, warnings, ignored, files = [], [], [], [], {}
+    for name, text in entries:
         files[name] = text
         if text is None:
             ignored.append(name)
@@ -148,7 +213,18 @@ def preview_archive(data, owner_id=None):
         try:
             rows.append(parse_markdown(name, text))
         except ImportError as exc:
-            errors.append(f'{name}: {exc}')
+            if str(exc) not in _INFERABLE_ERRORS:
+                errors.append(f'{name}: {exc}')
+                continue
+            try:
+                row = infer_metadata(name, text)
+            except ImportError as inner:
+                errors.append(f'{name}: {inner}')
+                continue
+            row['inferred'] = True
+            rows.append(row)
+            warnings.append(f'{name}: No metadata found. Defaults applied: '
+                            f'title "{row["title"]}", type "{row["type"]}". You can change them below.')
     if not rows and not errors:
         errors.append('No Markdown files found.')
     titles, ids = {}, {}
@@ -226,13 +302,35 @@ def preview_archive(data, owner_id=None):
         for i, row in enumerate(rows):
             if row['parent'] is None:
                 show(i)
-    payload = {'rows': rows, 'order': order, 'display': display, 'errors': errors, 'ignored': ignored}
+    payload = {'rows': rows, 'order': order, 'display': display, 'errors': errors, 'warnings': warnings, 'ignored': ignored}
     if not errors:
         try:
             prepare_maps(payload, files)
             prepare_archive_references(payload)
         except ValueError as exc:
             errors.append(str(exc))
+    return payload
+
+
+# Inferred rows have no parent or map, so any plain article type is safe to choose.
+EDITABLE_CATEGORIES = frozenset(CATEGORIES) - {'map', 'overview'}
+
+
+def apply_overrides(payload, form):
+    """Apply title/type corrections the user made to rows with inferred metadata."""
+    for i, row in enumerate(payload['rows']):
+        if not row.get('inferred'):
+            continue
+        title = (form.get(f'title_{i}') or '').strip()
+        if title:
+            if len(title) > 200:
+                raise ImportError('Title exceeds 200 characters.')
+            row['title'] = title
+        category = form.get(f'category_{i}')
+        if category:
+            if category not in EDITABLE_CATEGORIES:
+                raise ImportError(f'Unknown type: {category}')
+            row['category'], row['type'] = category, CATEGORIES[category]
     return payload
 
 

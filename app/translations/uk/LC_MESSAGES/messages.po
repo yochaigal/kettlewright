@@ -26660,3 +26660,287 @@ msgid ""
 "face is %(face)s, your speech %(speech)s. You have %(clothing)s clothing. "
 "You are %(virtue)s and %(vice)s."
 msgstr ""
+
+#: app/blueprints/campaigns.py:560
+msgid ""
+"Published to the selected parties. Use View as party to see the saved "
+"version."
+msgstr ""
+"Опубліковано для вибраних груп. Натисніть «Переглянути від імені групи», "
+"щоб побачити збережену версію."
+
+#: app/blueprints/campaigns.py:596
+msgid "Choose a Markdown file or a ZIP/TAR archive."
+msgstr "Виберіть файл Markdown або архів ZIP/TAR."
+
+#: app/blueprints/campaigns.py:603
+msgid ""
+"Unsupported file type. Upload a .md file or put your Markdown articles in"
+" a ZIP, TAR or TAR.GZ archive."
+msgstr ""
+"Непідтримуваний тип файлу. Завантажте файл .md або помістіть матеріали "
+"Markdown в архів ZIP, TAR чи TAR.GZ."
+
+#: app/templates/campaigns/entry.html:34 app/templates/campaigns/new_map.html:18
+msgid "Article settings"
+msgstr "Налаштування матеріалу"
+
+#: app/templates/campaigns/entry.html:35 app/templates/campaigns/new_map.html:19
+msgid "Organize"
+msgstr "Розміщення"
+
+#: app/templates/campaigns/entry.html:70
+msgid "No related articles yet."
+msgstr "Пов’язаних матеріалів поки немає."
+
+#: app/templates/campaigns/entry.html:72
+msgid "Choose related articles…"
+msgstr "Вибрати пов’язані матеріали…"
+
+#: app/templates/campaigns/entry.html:76
+msgid "There are no other articles to relate yet."
+msgstr "Інших матеріалів для зв’язку поки немає."
+
+#: app/templates/campaigns/entry.html:78
+msgid "Changes are kept when you save the article."
+msgstr "Зміни буде застосовано під час збереження матеріалу."
+
+#: app/templates/campaigns/entry.html:91
+msgid "Delete Campaign?"
+msgstr "Видалити кампанію?"
+
+#: app/templates/campaigns/entry.html:91
+msgid "Delete article?"
+msgstr "Видалити матеріал?"
+
+#: app/templates/campaigns/entry.html:100
+msgid "Review what will be deleted"
+msgstr "Перевірити, що буде видалено"
+
+#: app/templates/campaigns/import_archive.html:5
+msgid ""
+"Bring in a single Markdown file or a whole archive of articles. Nothing "
+"enters your library until you review the preview and confirm."
+msgstr ""
+"Завантажте окремий файл Markdown або цілий архів матеріалів. До "
+"бібліотеки нічого не потрапить, доки ви не переглянете попередній "
+"перегляд і не підтвердите імпорт."
+
+#: app/templates/campaigns/import_archive.html:8
+msgid "1. Choose a file"
+msgstr "1. Виберіть файл"
+
+#: app/templates/campaigns/import_archive.html:11
+msgid "Markdown file or archive"
+msgstr "Файл Markdown або архів"
+
+#: app/templates/campaigns/import_archive.html:14
+msgid ""
+"Accepted: .md, .zip, .tar, .tar.gz. Files without metadata are imported "
+"as Notes, and you can rename or retype them in the preview."
+msgstr ""
+"Підтримуються: .md, .zip, .tar, .tar.gz. Файли без метаданих імпортуються"
+" як нотатки; назву й тип можна змінити в попередньому перегляді."
+
+#: app/templates/campaigns/import_archive.html:17
+msgid ""
+"For full control, start each file with YAML Front Matter containing "
+"layout: default, title and type. Without it, the title comes from the "
+"first # heading (or the file name) and the type defaults to Note."
+msgstr ""
+"Для повного контролю починайте кожен файл з YAML Front Matter, що містить"
+" layout: default, title і type. Без нього назва береться з першого "
+"заголовка # (або з імені файлу), а тип за замовчуванням — «Нотатка»."
+
+#: app/templates/campaigns/import_archive.html:18
+msgid ""
+"parent first refers to an exact, unique title inside this archive. If "
+"that title is absent, it can name one of your existing campaigns. "
+"Duplicate campaign names are an error. Folders do not determine "
+"hierarchy."
+msgstr ""
+"parent спершу вказує на точну унікальну назву всередині цього архіву. "
+"Якщо такої назви немає, він може вказувати на одну з ваших наявних "
+"кампаній. Повторювані назви кампаній вважаються помилкою. Теки не "
+"визначають ієрархію."
+
+#: app/templates/campaigns/import_archive.html:35
+msgid ""
+"Copy each complete block, including both --- lines, into its own .md "
+"file. Upload one file directly, or place several together in one archive."
+msgstr ""
+"Скопіюйте кожен блок повністю, разом з обома рядками ---, в окремий файл "
+".md. Завантажте один файл напряму або зберіть кілька в один архів."
+
+#: app/templates/campaigns/import_archive.html:46
+msgid "2. Review and confirm"
+msgstr "2. Перевірте й підтвердьте"
+
+#: app/templates/campaigns/import_archive.html:48
+msgid "campaigns"
+msgstr "кампанії"
+
+#: app/templates/campaigns/import_archive.html:50
+msgid "without metadata"
+msgstr "без метаданих"
+
+#: app/templates/campaigns/import_archive.html:51
+msgid "Resolve these errors and upload the file again. Nothing has been imported."
+msgstr "Виправте ці помилки й завантажте файл знову. Нічого не імпортовано."
+
+#: app/templates/campaigns/import_archive.html:52
+msgid "Check these before importing:"
+msgstr "Перевірте перед імпортом:"
+
+#: app/templates/campaigns/import_archive.html:66
+msgid "no metadata, defaults applied"
+msgstr "немає метаданих, застосовано значення за замовчуванням"
+
+#: app/templates/campaigns/index.html:6
+msgid "New campaign"
+msgstr "Нова кампанія"
+
+#: app/templates/campaigns/index.html:18
+msgid ""
+"Campaigns group your private articles and maps. Open a campaign to manage"
+" its articles and choose which parties it is shared with."
+msgstr ""
+"Кампанії об’єднують ваші приховані матеріали й мапи. Відкрийте кампанію, "
+"щоб керувати її матеріалами та вибрати, яким групам вона доступна."
+
+#: app/templates/campaigns/index.html:25 app/templates/campaigns/workspace.html:29
+msgid "Shared with"
+msgstr "Доступна групам:"
+
+#: app/templates/campaigns/index.html:25
+msgid "Not shared with any party"
+msgstr "Не доступна жодній групі"
+
+#: app/templates/campaigns/index.html:31
+msgid "Articles not in any campaign"
+msgstr "Матеріали поза кампаніями"
+
+#: app/templates/campaigns/index.html:35
+msgid "Create your first campaign"
+msgstr "Створіть першу кампанію"
+
+#: app/templates/campaigns/index.html:35
+msgid "import a Markdown file or archive"
+msgstr "імпортуйте файл Markdown або архів"
+
+#: app/templates/campaigns/known_entry.html:7 app/templates/campaigns/workspace.html:5
+msgid "Breadcrumb"
+msgstr "Навігаційний ланцюжок"
+
+#: app/templates/campaigns/material_tree.html:30
+msgid "Search by title, type or text"
+msgstr "Пошук за назвою, типом або текстом"
+
+#: app/templates/campaigns/material_tree.html:31
+msgid "Clear search"
+msgstr "Скинути пошук"
+
+#: app/templates/campaigns/reveal.html:12
+msgid ""
+"Check a party to select it, edit its version, then choose Publish "
+"selected versions. Private descriptions are copied only when you choose "
+"Copy from private original."
+msgstr ""
+"Позначте групу, щоб вибрати її, відредагуйте її версію та натисніть "
+"«Опублікувати вибрані версії». Приховані описи копіюються, лише якщо ви "
+"натиснете «Копіювати з прихованого оригіналу»."
+
+#: app/templates/campaigns/reveal.html:15
+msgid "Currently published to"
+msgstr "Зараз опубліковано для"
+
+#: app/templates/campaigns/reveal.html:48
+msgid "No parties can see this article yet."
+msgstr "Цей матеріал поки не бачить жодна група."
+
+#: app/templates/campaigns/reveal.html:48
+msgid "Connect a party in campaign Settings"
+msgstr "Під’єднайте групу в налаштуваннях кампанії"
+
+#: app/templates/campaigns/reveal.html:48
+msgid "Move it into a campaign and connect a party in Settings"
+msgstr "Перемістіть його до кампанії та під’єднайте групу в налаштуваннях"
+
+#: app/templates/campaigns/reveal.html:48
+msgid "create a party first"
+msgstr "спершу створіть групу"
+
+#: app/templates/campaigns/reveal_materials.html:20
+msgid ""
+"No parties are connected yet. Connect a party in campaign Settings, or "
+"create a party first."
+msgstr ""
+"Під’єднаних груп поки немає. Під’єднайте групу в налаштуваннях кампанії "
+"або спершу створіть групу."
+
+#: app/templates/campaigns/reveal_materials.html:21
+msgid "Articles to publish"
+msgstr "Матеріали до публікації"
+
+#: app/templates/campaigns/workspace.html:5
+msgid "All campaigns"
+msgstr "Усі кампанії"
+
+#: app/templates/campaigns/workspace.html:9
+msgid "Settings"
+msgstr "Налаштування"
+
+#: app/templates/campaigns/workspace.html:29
+msgid "Not shared with any party yet. Connect one in Settings."
+msgstr "Поки не доступна жодній групі. Під’єднайте групу в налаштуваннях."
+
+#: app/templates/campaigns/workspace.html:38
+msgid "Tick articles to reveal or delete several at once."
+msgstr "Позначте матеріали, щоб показати або видалити кілька одразу."
+
+#: app/templates/campaigns/workspace.html:50
+msgid "Delete campaign…"
+msgstr "Видалити кампанію…"
+
+#: app/templates/campaigns/index.html:10
+msgid "How do you want to start?"
+msgstr "З чого почати?"
+
+#: app/templates/campaigns/index.html:12
+msgid "Empty campaign"
+msgstr "Порожня кампанія"
+
+#: app/templates/campaigns/index.html:12
+msgid "Start blank and add articles, maps or imports yourself."
+msgstr "Почніть з нуля й додавайте матеріали, мапи чи імпорт самостійно."
+
+#: app/templates/campaigns/index.html:14
+msgid "Random campaign"
+msgstr "Випадкова кампанія"
+
+#: app/templates/campaigns/index.html:29
+msgid "Create and generate"
+msgstr "Створити й згенерувати"
+
+#: app/templates/campaigns/import_archive.html:14
+msgctxt "import action"
+msgid "Load"
+msgstr "Завантажити"
+
+#: app/templates/campaigns/import_archive.html:74
+msgctxt "import action"
+msgid "Import"
+msgstr "Імпортувати"
+
+#: app/templates/campaigns/index.html:14
+msgid ""
+"Generate and save a realm, dungeon or forest with points of interest. You"
+" can edit everything afterwards."
+msgstr ""
+"Створіть і збережіть володіння, підземелля або ліс із точками інтересу. "
+"Потім усе можна відредагувати."
+
+#: app/templates/campaigns/index.html:30
+msgid "Generating…"
+msgstr "Генерування…"
+

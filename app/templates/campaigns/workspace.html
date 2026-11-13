@@ -1,34 +1,14 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token, page_header with context %}
+{% from 'campaigns/forms.html' import token, page_header, modal, modal_footer with context %}
 {% from 'campaigns/material_tree.html' import material_children, tree_toolbar with context %}
 {% block workspace %}
+<nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ url_for('campaigns.index') }}">← {{ _('All campaigns') }}</a></nav>
 {% call page_header(campaign.name if campaign else _('Unfiled articles')) %}
 <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id if campaign else '') }}">{{ _('New article') }}</a>
-<a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a>
-{% if campaign %}<a href="{{ url_for('campaigns.campaign_export', campaign_id=campaign.id) }}">{{ _('Export campaign') }}</a>{% endif %}
-<a href="{{ url_for('main.tools') }}">{{ _('Tools') }}</a>
-{% endcall %}
-<p>{{ _('Only you can see originals. Party versions are published separately.') }}</p>
-{% if campaign %}<p>{{ _('Export includes private articles, maps, drawings and article links. Markdown image URLs are kept as references. Party publications and connections are not exported.') }}</p>{% endif %}
-<form method="post" action="{{ url_for('campaigns.bulk_delete') }}" x-data="materialTree">
-{{ token() }}
-<input type="hidden" name="campaign_id" value="{{ campaign.id if campaign else '' }}">
-{% if hierarchy %}
-<div class="campaign-actions material-bulk-actions">
-<span class="material-selection-count" role="status">{{ _('Selected:') }} <span x-text="selected.length">0</span></span>
-<button type="button" @click="selected = [...new Set(Array.from($root.querySelectorAll('input[name=entry_ids]'), input => input.value))]">{{ _('Select all') }}</button>
-<button type="button" @click="selected = []" :disabled="selected.length === 0">{{ _('Clear selection') }}</button>
-<button type="submit" formaction="{{ url_for('campaigns.bulk_reveal') }}" :disabled="selected.length === 0">{{ _('Reveal selected…') }}</button>
-<button type="submit" :disabled="selected.length === 0">{{ _('Delete selected…') }}</button>
-</div>
-{% endif %}
-{{ tree_toolbar() }}
-{{ material_children(hierarchy) }}
-{% if not hierarchy %}<p>{{ _('No articles yet.') }}</p>{% endif %}
-</form>
-{% if campaign %}
-<details open><summary>{{ _('Campaign settings and parties') }}</summary>
+{% if campaign %}<a href="{{ url_for('campaigns.campaign_export', campaign_id=campaign.id) }}">{{ _('Export campaign') }}</a>
+{% call modal('campaign-settings-modal', _('Settings'), _('Campaign settings and parties')) %}
 <form method="post">{{ token(campaign.version) }}
+<section class="modal-card-body">
 <label>{{ _('Campaign name') }}<input type="text" name="name" required maxlength="200" value="{{ campaign.name }}"></label>
 <fieldset><legend>{{ _('Connected parties') }}</legend>
 {% for party in parties %}
@@ -36,12 +16,46 @@
 {% if party.id in linked %}<a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}">{{ _('View as party') }}</a>{% endif %}
 {% else %}<p>{{ _('Create a party to share articles with its members.') }}</p>{% endfor %}
 </fieldset>
-<p>{{ _('Disconnecting a party hides this campaign’s published articles from it.') }}</p>
-<button>{{ _('Save settings') }}</button>
+<p class="import-hint">{{ _('Disconnecting a party hides this campaign’s published articles from it.') }}</p>
+</section>
+{{ modal_footer(_('Save settings')) }}
 </form>
+{% endcall %}
+{% endif %}
+<a href="{{ url_for('main.tools') }}">{{ _('Tools') }}</a>
+<a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a>
+{% endcall %}
+{% if campaign %}{% set connected = parties|selectattr('id', 'in', linked)|list %}
+<p class="campaign-shared-with">{% if connected %}{{ _('Shared with') }} {% for party in connected %}<a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}" title="{{ _('View as party') }}">{{ party.name|markdown_inline }}</a>{% if not loop.last %}, {% endif %}{% endfor %}{% else %}{{ _('Not shared with any party yet. Connect one in Settings.') }}{% endif %}</p>{% endif %}
+<p>{{ _('Only you can see originals. Party versions are published separately.') }}</p>
+{% if campaign %}<p class="import-hint">{{ _('Export includes private articles, maps, drawings and article links. Markdown image URLs are kept as references. Party publications and connections are not exported.') }}</p>{% endif %}
+<form method="post" action="{{ url_for('campaigns.bulk_delete') }}" x-data="materialTree">
+{{ token() }}
+<input type="hidden" name="campaign_id" value="{{ campaign.id if campaign else '' }}">
+{% if hierarchy %}
+{{ tree_toolbar() }}
+<div class="campaign-actions material-bulk-actions">
+<span class="material-selection-count" role="status"><span x-show="!selected.length">{{ _('Tick articles to reveal or delete several at once.') }}</span><span x-show="selected.length" x-cloak>{{ _('Selected:') }} <span x-text="selected.length">0</span></span></span>
+<button type="button" @click="selected = [...new Set(Array.from($root.querySelectorAll('input[name=entry_ids]'), input => input.value))]">{{ _('Select all') }}</button>
+<button type="button" @click="selected = []" x-show="selected.length" x-cloak>{{ _('Clear selection') }}</button>
+<button type="submit" formaction="{{ url_for('campaigns.bulk_reveal') }}" x-show="selected.length" x-cloak>{{ _('Reveal selected…') }}</button>
+<button type="submit" x-show="selected.length" x-cloak>{{ _('Delete selected…') }}</button>
+</div>
+{% endif %}
+{{ material_children(hierarchy) }}
+{% if not hierarchy %}<p class="tree-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id if campaign else '') }}">{{ _('New article') }}</a> · <a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a></p>{% endif %}
+</form>
+{% if campaign %}
+<div class="campaign-actions campaign-footer-actions">
+{% call modal('delete-campaign-modal', _('Delete campaign…'), _('Delete campaign?')) %}
 <form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}">{{ token(campaign.version) }}
+<section class="modal-card-body">
+<p><strong>{{ campaign.name }}</strong> · {{ campaign.entries|length }} {{ _('articles') }}</p>
 <p>{{ _('Deleting this campaign permanently deletes all its articles, drawings and published party versions. This cannot be undone. Connected parties and their characters are kept.') }}</p>
-<button>{{ _('Delete campaign and all articles…') }}</button></form>
-</details>
+</section>
+{{ modal_footer(_('Permanently delete campaign and all articles'), 'confirm', 'delete') }}
+</form>
+{% endcall %}
+</div>
 {% endif %}
 {% endblock %}
