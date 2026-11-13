@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from app.lib.campaign_import import preview_archive, ImportError
+from app.lib.campaign_import import preview_archive, single_file_preview, ImportError
 from app.models import db, Campaign, ContentEntry, CampaignImport, PointcrawlMap
 from test_campaigns import setup, login, create_map, create_entry
 
@@ -36,7 +36,7 @@ def upload(client, data):
     return client.post('/materials/import-archive', data={'archive': (io.BytesIO(data), 'campaign.zip')})
 
 
-@pytest.mark.parametrize('filename', ['article.md', 'drawing.excalidraw', 'campaign.rar'])
+@pytest.mark.parametrize('filename', ['drawing.excalidraw', 'campaign.rar'])
 def test_unsupported_upload_shows_warning_without_staging(setup, filename):
     app, client = setup
     response = client.post('/materials/import-archive',
@@ -48,6 +48,78 @@ def test_unsupported_upload_shows_warning_without_staging(setup, filename):
     with app.app_context():
         assert CampaignImport.query.count() == 0
         assert ContentEntry.query.count() == 0
+
+
+def test_single_md_with_metadata_imports_as_unfiled_article(setup):
+    app, client = setup
+    content = md('My Note', 'Note')
+    response = client.post('/materials/import-archive',
+        data={'archive': (io.BytesIO(content.encode()), 'my-note.md')})
+    assert response.status_code == 200
+    html = response.get_data(as_text=True)
+    assert 'My Note' in html and 'Unfiled articles' in html
+    assert 'archive-confirm-form' in html
+    token = re.search(r'name="preview_id" value="([a-f0-9]+)"', html).group(1)
+    assert client.post('/materials/import-archive', data={'preview_id': token}).status_code == 302
+    with app.app_context():
+        entry = ContentEntry.query.filter_by(title='My Note').one()
+        assert entry.category == 'note'
+        assert entry.campaign_id is None
+
+
+def test_single_md_without_metadata_infers_defaults_and_imports(setup):
+    app, client = setup
+    # Plain markdown with no frontmatter — title comes from first heading.
+    content = b'# Adventure Log\n\nSome notes from the session.'
+    response = client.post('/materials/import-archive',
+        data={'archive': (io.BytesIO(content), 'adventure-log.md')})
+    assert response.status_code == 200
+    html = response.get_data(as_text=True)
+    assert 'Adventure Log' in html and 'Unfiled articles' in html
+    assert 'Defaults applied' in html  # warning shown
+    assert 'archive-confirm-form' in html
+    token = re.search(r'name="preview_id" value="([a-f0-9]+)"', html).group(1)
+    assert client.post('/materials/import-archive', data={'preview_id': token}).status_code == 302
+    with app.app_context():
+        entry = ContentEntry.query.filter_by(title='Adventure Log').one()
+        assert entry.category == 'note'
+
+
+def test_single_md_without_metadata_falls_back_to_filename_stem(setup):
+    app, client = setup
+    content = b'Just some plain text, no heading.'
+    response = client.post('/materials/import-archive',
+        data={'archive': (io.BytesIO(content), 'session-recap.md')})
+    assert response.status_code == 200
+    html = response.get_data(as_text=True)
+    assert 'Session Recap' in html  # title inferred from filename
+    assert 'archive-confirm-form' in html
+
+
+def test_zip_with_missing_metadata_uses_defaults_and_shows_warning(setup):
+    app, client = setup
+    # Mix: one valid file, one file with no frontmatter.
+    files = {
+        'campaign.md': md('My Campaign', 'Campaign'),
+        'notes.md': '# Field Notes\n\nInteresting observations.',
+    }
+    response = upload(client, archive(files))
+    assert response.status_code == 200
+    html = response.get_data(as_text=True)
+    assert 'Field Notes' in html  # inferred from heading
+    assert 'Defaults applied' in html  # warning present
+    assert 'archive-confirm-form' in html  # no blocking errors
+
+
+def test_single_file_preview_raises_for_non_meta_errors(setup):
+    app, client = setup
+    # Frontmatter present but structurally invalid YAML should still be an error.
+    content = b'---\nlayout: default\ntitle: {bad: yaml}\ntype: Note\n---\nBody.'
+    response = client.post('/materials/import-archive',
+        data={'archive': (io.BytesIO(content), 'bad.md')})
+    assert response.status_code == 200
+    html = response.get_data(as_text=True)
+    assert 'archive-confirm-form' not in html
 
 
 def test_downloadable_example_imports_complete_hierarchy(setup):
@@ -208,7 +280,6 @@ def test_preview_confirm_hierarchy_private_and_replay(setup, kind):
     ({'a.md': md('A', parent='Missing')}, 'missing or ambiguous'),
     ({'a.md': md('A', parent='B'), 'b.md': md('B', parent='A')}, 'cycle'),
     ({'a.md': md('A'), 'b.md': md('A'), 'c.md': md('C', parent='A')}, 'ambiguous'),
-    ({'a.md': 'No header'}, 'Missing YAML'),
     ({'a.md': md('A', 'Surprise')}, 'Unknown type'),
     ({'a.md': md('A', 'Campaign', 'B')}, 'cannot have a parent'),
     ({'a.md': '---\nlayout: default\ntitle: A\ntitle: B\ntype: Note\n---'}, 'Duplicate'),
@@ -311,3 +382,58 @@ def test_subtree_move_preserves_map_workspace_boundaries(setup):
     assert client.post(f'/materials/{folder_id}/edit', data=data).status_code == 302
     with app.app_context():
         assert all(entry.campaign_id == 2 for entry in ContentEntry.query.all())
+
+
+def preview_token(html):
+    return re.search(r'name="preview_id" value="([a-f0-9]+)"', html).group(1)
+
+
+def test_single_md_follows_parent_and_campaign_rules(setup):
+    app, client = setup
+    html = client.post('/materials/import-archive',
+        data={'archive': (io.BytesIO(md('Solo', 'Campaign').encode()), 'solo.md')}).get_data(as_text=True)
+    assert 'Destination: Campaigns' in html
+    assert client.post('/materials/import-archive', data={'preview_id': preview_token(html)}).status_code == 302
+    html = client.post('/materials/import-archive',
+        data={'archive': (io.BytesIO(md('Cave', 'Dungeon', parent='Solo').encode()), 'cave.md')}).get_data(as_text=True)
+    assert 'Campaigns / Solo' in html and 'Existing campaign:' in html
+    assert client.post('/materials/import-archive', data={'preview_id': preview_token(html)}).status_code == 302
+    with app.app_context():
+        cave = ContentEntry.query.filter_by(title='Cave').one()
+        assert cave.campaign.name == 'Solo' and cave.category == 'dungeon'
+
+
+def test_inferred_rows_can_be_renamed_and_retyped_before_import(setup):
+    app, client = setup
+    files = {'kept.md': md('Kept', 'Note'), 'loose.md': '\n\n# Loose Notes\n\nBody text.'}
+    html = upload(client, archive(files)).get_data(as_text=True)
+    index = re.search(r'name="title_(\d+)" value="Loose Notes"', html).group(1)
+    assert 'name="title_' + index + '"' in html and html.count('name="title_') == 1
+    kept = str(1 - int(index))
+    # Overrides for rows that had valid metadata are ignored.
+    response = client.post('/materials/import-archive', data={'preview_id': preview_token(html),
+        f'title_{index}': 'Renamed', f'category_{index}': 'npc', f'title_{kept}': 'Ignored'})
+    assert response.status_code == 302
+    with app.app_context():
+        entry = ContentEntry.query.filter_by(title='Renamed').one()
+        assert entry.category == 'npc'
+        assert 'Loose Notes' not in entry.body
+        assert ContentEntry.query.filter_by(title='Kept').count() == 1
+
+
+def test_invalid_override_rejects_without_importing(setup):
+    app, client = setup
+    html = client.post('/materials/import-archive',
+        data={'archive': (io.BytesIO(b'plain'), 'plain.md')}).get_data(as_text=True)
+    response = client.post('/materials/import-archive', data={'preview_id': preview_token(html), 'category_0': 'map'})
+    assert response.status_code == 400
+    with app.app_context():
+        assert ContentEntry.query.count() == 0
+        assert CampaignImport.query.filter_by(consumed=False).count() == 1
+
+
+def test_inferred_body_errors_are_reported_not_dropped(setup):
+    app, client = setup
+    html = client.post('/materials/import-archive',
+        data={'archive': (io.BytesIO(('x' * 60000).encode()), 'long.md')}).get_data(as_text=True)
+    assert 'role="alert"' in html and 'name="preview_id"' not in html

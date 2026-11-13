@@ -13,7 +13,8 @@ from sqlalchemy.orm import selectinload
 
 from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
                         Party, PartyPresentation, PointcrawlMap, CampaignImport)
-from app.lib.campaign_import import preview_archive, import_preview, ImportError, MAX_ARCHIVE
+from app.lib.campaign_import import (preview_archive, single_file_preview, import_preview, apply_overrides,
+    ImportError, MAX_ARCHIVE, MAX_FILE)
 from app.lib.campaign_export import export_campaign
 from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, check_version,
     entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
@@ -578,31 +579,40 @@ def import_archive():
             batch = CampaignImport.query.filter_by(id=preview_id, owner_id=current_user.id).first_or_404()
             if batch.consumed or batch.created_at < cutoff:
                 abort(409, 'This preview was already imported or expired. Upload the archive again.')
+            try:
+                payload = apply_overrides(deepcopy(batch.payload), request.form)
+            except ImportError as exc:
+                abort(400, str(exc))
             claimed = CampaignImport.query.filter_by(id=batch.id, owner_id=current_user.id, consumed=False).filter(
                 CampaignImport.created_at >= cutoff).update({'consumed': True}, synchronize_session=False)
             if not claimed:
                 abort(409, 'This preview was already imported.')
-            import_preview(batch.payload, current_user.id)
+            import_preview(payload, current_user.id)
             batch.payload = {}
             db.session.commit()
             return redirect(url_for('campaigns.index'))
         upload = request.files.get('archive')
         if not upload:
-            message = _('Choose a ZIP or TAR archive.')
+            message = _('Choose a Markdown file or a ZIP/TAR archive.')
+        elif upload.filename.lower().endswith('.md'):
+            try:
+                preview = single_file_preview(upload.stream.read(MAX_FILE + 1), upload.filename, owner_id=current_user.id)
+            except ImportError as exc:
+                message = str(exc)
         elif not upload.filename.lower().endswith(('.zip', '.tar', '.tar.gz', '.tgz')):
-            message = _('Unsupported file type. Put your Markdown articles in a ZIP, TAR or TAR.GZ archive, then upload that archive.')
+            message = _('Unsupported file type. Upload a .md file or put your Markdown articles in a ZIP, TAR or TAR.GZ archive.')
         else:
             try:
                 preview = preview_archive(upload.stream.read(MAX_ARCHIVE + 1), owner_id=current_user.id)
             except ImportError as exc:
                 message = str(exc)
-            if preview and not preview['errors']:
-                preview_id = uuid4().hex
-                # Keep staging bounded; expired previews never contain library records.
-                CampaignImport.query.filter(CampaignImport.created_at < cutoff).delete(synchronize_session=False)
-                CampaignImport.query.filter_by(owner_id=current_user.id, consumed=False).delete(synchronize_session=False)
-                db.session.add(CampaignImport(id=preview_id, owner_id=current_user.id, payload=preview))
-                db.session.commit()
+        if preview and not preview['errors']:
+            preview_id = uuid4().hex
+            # Keep staging bounded; expired previews never contain library records.
+            CampaignImport.query.filter(CampaignImport.created_at < cutoff).delete(synchronize_session=False)
+            CampaignImport.query.filter_by(owner_id=current_user.id, consumed=False).delete(synchronize_session=False)
+            db.session.add(CampaignImport(id=preview_id, owner_id=current_user.id, payload=preview))
+            db.session.commit()
     return render_template('campaigns/import_archive.html', preview=preview, preview_id=preview_id, message=message)
 
 
