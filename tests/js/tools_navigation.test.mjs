@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {toolSections, generateToolResult, appendAreaNavigation} from '../../app/static/src/js/tools-navigation.js';
+import {toolSections, launcherGroups, generateToolResult, appendAreaNavigation} from '../../app/static/src/js/tools-navigation.js';
 import {resultText} from '../../app/static/src/js/content_generators.js';
 
 const data = {};
@@ -81,4 +81,20 @@ test('area shortcuts open full generators without changing or rerolling the sour
   } finally {
     globalThis.document = originalDocument;
   }
+});
+
+test('the launcher shows every table once and only labels groups that need a heading', () => {
+  const sections = toolSections(data);
+  for (const [key, list] of Object.entries(sections)) {
+    assert.deepEqual(launcherGroups(list).flatMap(group => group.choices), list.flatMap(section => section.choices), key);
+  }
+  const shape = key => launcherGroups(sections[key]).map(group => [group.label, group.choices.map(choice => choice.label)]);
+  assert.deepEqual(shape('realm'), [
+    ['', ['Realm','Faction']],
+    ['POIs', ['Settlement','Waypoint','Curiosity','Lair','Dungeon']],
+    ['People', ['People','NPC']],
+  ]);
+  assert.deepEqual(shape('events').map(([label]) => label), ['Events','Weather','']);
+  assert.deepEqual(shape('events').at(-1)[1], ['Reaction Roll','Faction Actions']);
+  for (const key of ['dungeons','forests','monsters','items']) assert.deepEqual(shape(key).map(([label]) => label), ['']);
 });
