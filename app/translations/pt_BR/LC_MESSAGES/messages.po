@@ -19932,7 +19932,7 @@ msgstr ""
 
 #: app/static/json/party_events/wilderness-events.json:19
 msgid ""
-"Quiet: The party finds food, treasure, or other useful resources. The Warden can "
+"Discovery: The party finds food, treasure, or other useful resources. The Warden can "
 "instead choose to reveal the primary feature of the area."
 msgstr ""
 "Silêncio: O grupo encontra comida, tesouro ou outros recursos úteis. O Warden pode, em "

@@ -18879,7 +18879,7 @@ msgstr "Измождение: Группа встречает преграду, 
 
 #: app/static/json/party_events/wilderness-events.json:19
 msgid ""
-"Quiet: The party finds food, treasure, or other useful resources. The Warden "
+"Discovery: The party finds food, treasure, or other useful resources. The Warden "
 "can instead choose to reveal the primary feature of the area."
 msgstr "Открытие: Группа находит пищу, сокровища или другие полезные ресурсы. Вместо этого Смотритель может открыть одну из особенностей местности."
 
