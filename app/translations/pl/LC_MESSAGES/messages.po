@@ -22626,21 +22626,21 @@ msgstr ""
 
 #: app/templates/campaigns/entry.html:6
 msgid "Existing parent"
-msgstr ""
+msgstr "Istniejący artykuł nadrzędny"
 
 #: app/templates/campaigns/entry.html:9
 #: app/templates/campaigns/new_map.html:7
 msgid "New Campaign"
-msgstr ""
+msgstr "Nowa kampania"
 
 #: app/templates/campaigns/entry.html:10
 msgid "Edit Campaign"
-msgstr ""
+msgstr "Edytuj kampanię"
 
 #: app/templates/campaigns/entry.html:15
 #: app/templates/campaigns/new_map.html:7
 msgid "Save Campaign"
-msgstr ""
+msgstr "Zapisz kampanię"
 
 #: app/templates/campaigns/entry.html:71
 msgid "Delete Campaign"
@@ -22648,19 +22648,19 @@ msgstr ""
 
 #: app/templates/campaigns/entry.html:77
 msgid "Delete Campaign…"
-msgstr ""
+msgstr "Usuń kampanię…"
 
 #: app/templates/campaigns/forms.html:34
 msgid "Entire dungeon"
-msgstr ""
+msgstr "Cały loch"
 
 #: app/templates/campaigns/forms.html:34
 msgid "Entire forest"
-msgstr ""
+msgstr "Cały las"
 
 #: app/templates/campaigns/import_archive.html:9
 msgid "Download an example archive"
-msgstr ""
+msgstr "Pobierz przykładowe archiwum"
 
 #: app/templates/campaigns/import_archive.html:9
 msgid "Import it as-is, or unzip it and edit the Markdown files before creating a new ZIP archive."
@@ -22673,6 +22673,12 @@ msgstr ""
 #: app/templates/campaigns/import_archive.html:12
 msgid "Use id and parent_id when titles repeat; these IDs refer only to files inside this archive. To attach a hand-drawn map, add map: maps/world.excalidraw to an article. Export Obsidian drawings to ordinary .excalidraw JSON first. Drawing shapes remain editable; they do not automatically become interactive article points or paths."
 msgstr ""
+"Używaj id i parent_id, gdy tytuły się powtarzają; te identyfikatory "
+"odnoszą się tylko do plików w tym archiwum. Aby dołączyć ręcznie rysowaną"
+" mapę, dodaj do artykułu map: maps/world.excalidraw. Rysunki z Obsidiana "
+"najpierw wyeksportuj do zwykłego pliku JSON .excalidraw. Kształty rysunku"
+" pozostają edytowalne; nie stają się automatycznie interaktywnymi "
+"punktami ani ścieżkami artykułów."
 
 #: app/templates/campaigns/import_archive.html:28
 msgid "Copy each complete block, including both --- lines, into its own .md file. Place those files together in one archive."
@@ -22680,7 +22686,7 @@ msgstr ""
 
 #: app/templates/campaigns/import_archive.html:46
 msgid "Existing campaign:"
-msgstr ""
+msgstr "Istniejąca kampania:"
 
 #: app/templates/main/about.html:28
 msgid "Russian and Ukrainian translations."
@@ -22870,3 +22876,599 @@ msgid ""
 "face is %(face)s, your speech %(speech)s. You have %(clothing)s clothing. "
 "You are %(virtue)s and %(vice)s."
 msgstr ""
+
+#: app/blueprints/campaigns.py:560
+msgid ""
+"Published to the selected parties. Use View as party to see the saved "
+"version."
+msgstr ""
+"Opublikowano dla wybranych drużyn. Użyj widoku drużyny, aby zobaczyć "
+"zapisaną wersję."
+
+#: app/blueprints/campaigns.py:596
+msgid "Choose a Markdown file or a ZIP/TAR archive."
+msgstr "Wybierz plik Markdown lub archiwum ZIP/TAR."
+
+#: app/blueprints/campaigns.py:603
+msgid ""
+"Unsupported file type. Upload a .md file or put your Markdown articles in"
+" a ZIP, TAR or TAR.GZ archive."
+msgstr ""
+"Nieobsługiwany typ pliku. Prześlij plik .md albo umieść artykuły Markdown"
+" w archiwum ZIP, TAR lub TAR.GZ."
+
+#: app/templates/campaigns/entry.html:34 app/templates/campaigns/new_map.html:18
+msgid "Article settings"
+msgstr "Ustawienia artykułu"
+
+#: app/templates/campaigns/entry.html:35 app/templates/campaigns/new_map.html:19
+msgid "Organize"
+msgstr "Porządkowanie"
+
+#: app/templates/campaigns/entry.html:70
+msgid "No related articles yet."
+msgstr "Brak powiązanych artykułów."
+
+#: app/templates/campaigns/entry.html:72
+msgid "Choose related articles…"
+msgstr "Wybierz powiązane artykuły…"
+
+#: app/templates/campaigns/entry.html:76
+msgid "There are no other articles to relate yet."
+msgstr "Nie ma jeszcze innych artykułów do powiązania."
+
+#: app/templates/campaigns/entry.html:78
+msgid "Changes are kept when you save the article."
+msgstr "Zmiany zostaną zachowane po zapisaniu artykułu."
+
+#: app/templates/campaigns/entry.html:91
+msgid "Delete Campaign?"
+msgstr "Usunąć kampanię?"
+
+#: app/templates/campaigns/entry.html:91
+msgid "Delete article?"
+msgstr "Usunąć artykuł?"
+
+#: app/templates/campaigns/entry.html:100
+msgid "Review what will be deleted"
+msgstr "Sprawdź, co zostanie usunięte"
+
+#: app/templates/campaigns/import_archive.html:5
+msgid ""
+"Bring in a single Markdown file or a whole archive of articles. Nothing "
+"enters your library until you review the preview and confirm."
+msgstr ""
+"Wczytaj pojedynczy plik Markdown lub całe archiwum artykułów. Nic nie "
+"trafi do biblioteki, dopóki nie przejrzysz podglądu i go nie "
+"zatwierdzisz."
+
+#: app/templates/campaigns/import_archive.html:8
+msgid "1. Choose a file"
+msgstr "1. Wybierz plik"
+
+#: app/templates/campaigns/import_archive.html:11
+msgid "Markdown file or archive"
+msgstr "Plik Markdown lub archiwum"
+
+#: app/templates/campaigns/import_archive.html:14
+msgid ""
+"Accepted: .md, .zip, .tar, .tar.gz. Files without metadata are imported "
+"as Notes, and you can rename or retype them in the preview."
+msgstr ""
+"Akceptowane: .md, .zip, .tar, .tar.gz. Pliki bez metadanych są "
+"importowane jako Notatki, a ich tytuł i typ możesz zmienić w podglądzie."
+
+#: app/templates/campaigns/import_archive.html:17
+msgid ""
+"For full control, start each file with YAML Front Matter containing "
+"layout: default, title and type. Without it, the title comes from the "
+"first # heading (or the file name) and the type defaults to Note."
+msgstr ""
+"Dla pełnej kontroli zacznij każdy plik od YAML Front Matter z polami "
+"layout: default, title i type. Bez niego tytuł pochodzi z pierwszego "
+"nagłówka # (lub nazwy pliku), a domyślnym typem jest Notatka."
+
+#: app/templates/campaigns/import_archive.html:18
+msgid ""
+"parent first refers to an exact, unique title inside this archive. If "
+"that title is absent, it can name one of your existing campaigns. "
+"Duplicate campaign names are an error. Folders do not determine "
+"hierarchy."
+msgstr ""
+"parent najpierw wskazuje dokładny, unikalny tytuł w tym archiwum. Jeśli "
+"takiego tytułu brak, może wskazywać jedną z twoich istniejących kampanii."
+" Zduplikowane nazwy kampanii są błędem. Foldery nie określają hierarchii."
+
+#: app/templates/campaigns/import_archive.html:35
+msgid ""
+"Copy each complete block, including both --- lines, into its own .md "
+"file. Upload one file directly, or place several together in one archive."
+msgstr ""
+"Skopiuj każdy pełny blok, łącznie z obiema liniami ---, do osobnego pliku"
+" .md. Prześlij jeden plik bezpośrednio albo umieść kilka w jednym "
+"archiwum."
+
+#: app/templates/campaigns/import_archive.html:46
+msgid "2. Review and confirm"
+msgstr "2. Sprawdź i zatwierdź"
+
+#: app/templates/campaigns/import_archive.html:48
+msgid "campaigns"
+msgstr "kampanii"
+
+#: app/templates/campaigns/import_archive.html:50
+msgid "without metadata"
+msgstr "bez metadanych"
+
+#: app/templates/campaigns/import_archive.html:51
+msgid "Resolve these errors and upload the file again. Nothing has been imported."
+msgstr "Popraw te błędy i prześlij plik ponownie. Nic nie zostało zaimportowane."
+
+#: app/templates/campaigns/import_archive.html:52
+msgid "Check these before importing:"
+msgstr "Sprawdź przed importem:"
+
+#: app/templates/campaigns/import_archive.html:66
+msgid "no metadata, defaults applied"
+msgstr "brak metadanych, użyto wartości domyślnych"
+
+#: app/templates/campaigns/index.html:6
+msgid "New campaign"
+msgstr "Nowa kampania"
+
+#: app/templates/campaigns/index.html:18
+msgid ""
+"Campaigns group your private articles and maps. Open a campaign to manage"
+" its articles and choose which parties it is shared with."
+msgstr ""
+"Kampanie grupują twoje prywatne artykuły i mapy. Otwórz kampanię, aby "
+"zarządzać jej artykułami i wybrać, którym drużynom jest udostępniona."
+
+#: app/templates/campaigns/index.html:25 app/templates/campaigns/workspace.html:29
+msgid "Shared with"
+msgstr "Udostępniono:"
+
+#: app/templates/campaigns/index.html:25
+msgid "Not shared with any party"
+msgstr "Nieudostępniona żadnej drużynie"
+
+#: app/templates/campaigns/index.html:31
+msgid "Articles not in any campaign"
+msgstr "Artykuły poza kampaniami"
+
+#: app/templates/campaigns/index.html:35
+msgid "Create your first campaign"
+msgstr "Utwórz pierwszą kampanię"
+
+#: app/templates/campaigns/index.html:35
+msgid "import a Markdown file or archive"
+msgstr "zaimportuj plik Markdown lub archiwum"
+
+#: app/templates/campaigns/known_entry.html:7 app/templates/campaigns/workspace.html:5
+msgid "Breadcrumb"
+msgstr "Ścieżka nawigacji"
+
+#: app/templates/campaigns/material_tree.html:30
+msgid "Search by title, type or text"
+msgstr "Szukaj po tytule, typie lub treści"
+
+#: app/templates/campaigns/material_tree.html:31
+msgid "Clear search"
+msgstr "Wyczyść wyszukiwanie"
+
+#: app/templates/campaigns/reveal.html:12
+msgid ""
+"Check a party to select it, edit its version, then choose Publish "
+"selected versions. Private descriptions are copied only when you choose "
+"Copy from private original."
+msgstr ""
+"Zaznacz drużynę, aby ją wybrać, edytuj jej wersję, a potem wybierz "
+"Opublikuj wybrane wersje. Prywatne opisy są kopiowane tylko po wybraniu "
+"Kopiuj z prywatnego oryginału."
+
+#: app/templates/campaigns/reveal.html:15
+msgid "Currently published to"
+msgstr "Obecnie opublikowano dla"
+
+#: app/templates/campaigns/reveal.html:48
+msgid "No parties can see this article yet."
+msgstr "Żadna drużyna nie widzi jeszcze tego artykułu."
+
+#: app/templates/campaigns/reveal.html:48
+msgid "Connect a party in campaign Settings"
+msgstr "Połącz drużynę w Ustawieniach kampanii"
+
+#: app/templates/campaigns/reveal.html:48
+msgid "Move it into a campaign and connect a party in Settings"
+msgstr "Przenieś go do kampanii i połącz drużynę w Ustawieniach"
+
+#: app/templates/campaigns/reveal.html:48
+msgid "create a party first"
+msgstr "najpierw utwórz drużynę"
+
+#: app/templates/campaigns/reveal_materials.html:20
+msgid ""
+"No parties are connected yet. Connect a party in campaign Settings, or "
+"create a party first."
+msgstr ""
+"Nie połączono jeszcze żadnej drużyny. Połącz drużynę w Ustawieniach "
+"kampanii lub najpierw utwórz drużynę."
+
+#: app/templates/campaigns/reveal_materials.html:21
+msgid "Articles to publish"
+msgstr "Artykuły do opublikowania"
+
+#: app/templates/campaigns/workspace.html:5
+msgid "All campaigns"
+msgstr "Wszystkie kampanie"
+
+#: app/templates/campaigns/workspace.html:9
+msgid "Settings"
+msgstr "Ustawienia"
+
+#: app/templates/campaigns/workspace.html:29
+msgid "Not shared with any party yet. Connect one in Settings."
+msgstr "Jeszcze nieudostępniona żadnej drużynie. Połącz drużynę w Ustawieniach."
+
+#: app/templates/campaigns/workspace.html:38
+msgid "Tick articles to reveal or delete several at once."
+msgstr "Zaznacz artykuły, aby ujawnić lub usunąć kilka naraz."
+
+#: app/templates/campaigns/workspace.html:50
+msgid "Delete campaign…"
+msgstr "Usuń kampanię…"
+
+#: app/templates/campaigns/index.html:10
+msgid "How do you want to start?"
+msgstr "Jak chcesz zacząć?"
+
+#: app/templates/campaigns/index.html:12
+msgid "Empty campaign"
+msgstr "Pusta kampania"
+
+#: app/templates/campaigns/index.html:12
+msgid "Start blank and add articles, maps or imports yourself."
+msgstr "Zacznij od zera i samodzielnie dodawaj artykuły, mapy lub importy."
+
+#: app/templates/campaigns/index.html:14
+msgid "Random campaign"
+msgstr "Losowa kampania"
+
+#: app/templates/campaigns/index.html:29
+msgid "Create and generate"
+msgstr "Utwórz i wygeneruj"
+
+#: app/templates/campaigns/import_archive.html:14
+msgctxt "import action"
+msgid "Load"
+msgstr "Wczytaj"
+
+#: app/templates/campaigns/import_archive.html:74
+msgctxt "import action"
+msgid "Import"
+msgstr "Importuj"
+
+#: app/templates/campaigns/index.html:14
+msgid ""
+"Generate and save a realm, dungeon or forest with points of interest. You"
+" can edit everything afterwards."
+msgstr ""
+"Wygeneruj i zapisz region, loch lub las z punktami zainteresowania. Potem"
+" możesz wszystko edytować."
+
+#: app/templates/campaigns/index.html:30
+msgid "Generating…"
+msgstr "Generowanie…"
+
+#: app/templates/partial/companions/monster_catalog.html
+msgid "Add monsters"
+msgstr "Dodaj potwory"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Hunt, fish or forage for Rations."
+msgstr "Polujcie, łówcie ryby lub zbierajcie, by zdobyć Racje."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Eat, rest and shake off Fatigue."
+msgstr "Zjedzcie, odpocznijcie i pozbądźcie się Zmęczenia."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Supply die"
+msgstr "Kość zaopatrzenia"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Ration uses needed"
+msgstr "Potrzebne użycia Racji"
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Over capacity: %(used)s of %(slots)s slots used. Move or drop items to make room."
+msgstr "Ponad pojemność: zajęte %(used)s z %(slots)s miejsc. Przenieś lub upuść przedmioty, aby zrobić miejsce."
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Nothing stored here yet."
+msgstr "Nic tu jeszcze nie ma."
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Storage holds gear the whole party shares. Items arrive from a character sheet, from the Marketplace, or as Rations from Supply."
+msgstr "Magazyn przechowuje ekwipunek wspólny dla całej drużyny. Przedmioty trafiają tu z karty postaci, z Targowiska lub jako Racje z Zaopatrzenia."
+
+#: app/templates/partial/partyview/storage_notes.html
+msgid "Items dropped by the party, with where they were left"
+msgstr "Przedmioty upuszczone przez drużynę wraz z miejscem, gdzie zostały"
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Do you want to delete %(name)s?"
+msgstr "Czy chcesz usunąć %(name)s?"
+
+#: app/templates/partial/partyview/storage_notes.html
+#, python-format
+msgid "Do you want to delete container %(name)s?"
+msgstr "Czy chcesz usunąć pojemnik %(name)s?"
+
+#: app/templates/main/tools.html
+msgid "Results"
+msgstr "Wyniki"
+
+#: app/templates/main/tools.html
+msgid "Pick a table to roll on it. Results appear here."
+msgstr "Wybierz tabelę, aby na niej rzucić. Wyniki pojawią się tutaj."
+
+
+#: app/blueprints/party.py
+msgid "Each character takes one action per watch: morning, afternoon and night. Results are added to the roll history for the whole party."
+msgstr "Każda postać wykonuje jedno działanie na wartę: rano, po południu i w nocy. Wyniki trafiają do historii rzutów całej drużyny."
+
+#: app/blueprints/party.py
+msgid "Travel"
+msgstr "Podróż"
+
+#: app/blueprints/party.py
+msgid "Move along your route; the party may get lost."
+msgstr "Ruszajcie swoją trasą; drużyna może się zgubić."
+
+#: app/blueprints/party.py
+msgid "The party usually travels together. On a Road you cannot get lost; on a Trail you get lost on 1–2 in d6, and in the Wilderness on 1–3."
+msgstr "Drużyna zwykle podróżuje razem. Na drodze nie można się zgubić; na szlaku gubicie się przy 1–2 na k6, a w dziczy przy 1–3."
+
+#: app/blueprints/party.py
+msgid "Travelling"
+msgstr "Podróżują"
+
+#: app/blueprints/party.py
+msgid "Road"
+msgstr "Droga"
+
+#: app/blueprints/party.py
+msgid "Trail"
+msgstr "Szlak"
+
+#: app/blueprints/party.py
+msgid "Wilderness"
+msgstr "Dzicz"
+
+#: app/blueprints/party.py
+msgid "Explore"
+msgstr "Eksploracja"
+
+#: app/blueprints/party.py
+msgid "Search the area for hidden places and features."
+msgstr "Przeszukajcie okolicę w poszukiwaniu ukrytych miejsc i cech."
+
+#: app/blueprints/party.py
+msgid "One or more characters search the area, scout ahead or move carefully. This can reveal a location or feature. Leaving the area still takes a Travel action."
+msgstr "Jedna lub więcej postaci przeszukuje okolicę, zwiaduje lub porusza się ostrożnie. Może to odkryć miejsce lub cechę terenu. Opuszczenie okolicy nadal wymaga działania Podróż."
+
+#: app/blueprints/party.py
+msgid "Exploring"
+msgstr "Eksplorują"
+
+#: app/blueprints/party.py
+#, python-format
+msgid "%(names)s and %(count)s more"
+msgstr "%(names)s i %(count)s innych"
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Supply by %(who)s (+%(bonus)s die steps): d%(sides)s → %(amount)s Rations (3 uses each), added to party storage."
+msgstr "Zaopatrzenie: %(who)s (+%(bonus)s stopni kości): k%(sides)s → %(amount)s Racji żywnościowych (po 3 użycia), dodane do magazynu drużyny."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Supply by %(who)s: d%(sides)s → %(amount)s Rations (3 uses each), added to party storage."
+msgstr "Zaopatrzenie: %(who)s: k%(sides)s → %(amount)s Racji żywnościowych (po 3 użycia), dodane do magazynu drużyny."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Make Camp: %(who)s rested."
+msgstr "Rozbij obóz: odpoczęli %(who)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Mounts fed: %(names)s."
+msgstr "Nakarmione wierzchowce: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Ration uses: %(packs)s from their own packs, %(storage)s from party storage."
+msgstr "Użycia Racji: %(packs)s z własnych plecaków, %(storage)s z magazynu drużyny."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Fatigue removed: %(names)s."
+msgstr "Usunięto Zmęczenie: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Still deprived, Fatigue kept: %(names)s."
+msgstr "Nadal w dyskomforcie, Zmęczenie pozostaje: %(names)s."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): no risk of getting lost."
+msgstr "Podróż przez %(path)s (%(who)s): brak ryzyka zgubienia się."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): rolled %(roll)s on d6 and got lost. Recovering may take another action."
+msgstr "Podróż przez %(path)s (%(who)s): wyrzucono %(roll)s na k6 i drużyna się zgubiła. Odnalezienie drogi może wymagać kolejnego działania."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Travel by %(path)s (%(who)s): rolled %(roll)s on d6 and stayed on course."
+msgstr "Podróż przez %(path)s (%(who)s): wyrzucono %(roll)s na k6 i drużyna trzyma kurs."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Explore by %(who)s: searched the area for hidden features."
+msgstr "Eksploracja: %(who)s przeszukali okolicę w poszukiwaniu ukrytych cech."
+
+#: app/blueprints/party.py
+#, python-format
+msgid "Wilderness event (d6: %(roll)s): %(event)s"
+msgstr "Wydarzenie w dziczy (k6: %(roll)s): %(event)s"
+
+#: app/blueprints/party.py
+msgid "Choose a path."
+msgstr "Wybierz drogę."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Path difficulty"
+msgstr "Trudność drogi"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "After everyone has acted this watch, roll once on the Wilderness Events table."
+msgstr "Gdy wszyscy wykonają działania w tej warcie, rzuć raz na tabelę Wydarzeń w dziczy."
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Night (roll twice)"
+msgstr "Noc (rzuć dwa razy)"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Roll event"
+msgstr "Rzuć na wydarzenie"
+
+#: app/templates/partial/partyview/wilderness.html
+msgid "Night watch, rolled twice:"
+msgstr "Nocna warta, dwa rzuty:"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Dungeon actions"
+msgstr "Działania w lochu"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Each turn, a character moves about 40ft and takes one action. Results are added to the roll history for the whole party."
+msgstr "W każdej turze postać przemieszcza się o około 12 m i wykonuje jedno działanie. Wyniki trafiają do historii rzutów całej drużyny."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Search one object or place for treasure, traps or secret doors."
+msgstr "Przeszukajcie jeden przedmiot lub miejsce w poszukiwaniu skarbów, pułapek lub tajnych drzwi."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "A thorough search of one object or location takes a turn and reveals relevant hidden treasure, traps or secret doors. Larger or complex areas may take several turns."
+msgstr "Dokładne przeszukanie jednego przedmiotu lub miejsca zajmuje turę i ujawnia ukryte skarby, pułapki lub tajne drzwi. Duże lub złożone obszary mogą zająć kilka tur."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Searching"
+msgstr "Przeszukują"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "What do they search?"
+msgstr "Co przeszukują?"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "e.g. the altar"
+msgstr "np. ołtarz"
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Catch your breath and recover all HP."
+msgstr "Złapcie oddech i odzyskajcie całe OCHR."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Resting takes a turn and restores all HP. It needs a light source and a safe location; present or oncoming danger makes it impossible. Fatigue stays until the party can Make Camp, and deprived characters recover nothing."
+msgstr "Odpoczynek zajmuje turę i przywraca całe OCHR. Wymaga źródła światła i bezpiecznego miejsca; obecne lub nadciągające zagrożenie go uniemożliwia. Zmęczenie zostaje, dopóki drużyna nie rozbije obozu, a postacie w dyskomforcie niczego nie odzyskują."
+
+#: app/templates/partial/partyview/dungeon.html
+msgid "Roll when the party lingers in a room, moves quickly or loudly, or enters a new area or level."
+msgstr "Rzuć, gdy drużyna zwleka w komnacie, porusza się szybko lub głośno albo wchodzi do nowego obszaru lub na nowy poziom."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Dungeon event (d6: %(roll)s): %(event)s"
+msgstr "Wydarzenie w lochu (k6: %(roll)s): %(event)s"
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Search by %(who)s: %(target)s."
+msgstr "Przeszukują %(who)s: %(target)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Search by %(who)s."
+msgstr "Przeszukują %(who)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Rest by %(who)s."
+msgstr "Odpoczywają %(who)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "HP restored: %(names)s."
+msgstr "Przywrócono OCHR: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Already at full HP: %(names)s."
+msgstr "Już mają pełne OCHR: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+#, python-format
+msgid "Deprived, no HP recovered: %(names)s."
+msgstr "W dyskomforcie, bez odzyskania OCHR: %(names)s."
+
+#: app/templates/partial/partyview/dungeon.html
+msgctxt "dungeon action"
+msgid "Rest"
+msgstr "Odpoczynek"
+
+#: app/templates/main/dice_modal.html
+msgid "3D dice"
+msgstr "Kości 3D"
+
+#: app/templates/main/dice_modal.html
+msgid "Esc to close"
+msgstr "Esc, aby zamknąć"
+
+#: app/templates/main/dice_modal.html
+msgid "Choose a die to roll."
+msgstr "Wybierz kość do rzutu."
+
+#: app/templates/main/dice_modal.html
+msgid "One die"
+msgstr "Jedna kość"
+
+#: app/templates/main/dice_modal.html
+msgid "Two dice"
+msgstr "Dwie kości"
+
+#: app/templates/main/dice_modal.html
+msgid "Recent rolls"
+msgstr "Ostatnie rzuty"
+
+#: app/templates/main/dice_modal.html
+msgid "Rolling…"
+msgstr "Rzucanie…"
+
+#: app/templates/main/dice_modal.html
+msgid "Highest"
+msgstr "Najwyższy"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "Warden rolls"
+msgstr "Rzuty Strażnika"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "2d6"
+msgstr "2k6"

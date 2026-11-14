@@ -30,4 +30,4 @@ def roll_warden(user, party, kind, expression=None, *, public=False):
     if party is not None:
         db.session.add(PartyRoll(party_id=party.id, character_name='Warden',
                                  result=result, private_user_id=None if public else user.id))
-    return {'result': result, 'values': values}
+    return {'result': result, 'values': values, 'sides': sides}

@@ -12,13 +12,15 @@
 </script>
 {% endif %}
 <script src="{{ url_for('static', filename='src/js/party_view.js') }}" defer type="module"></script>
+{% if can_view_rolls %}<div id="party-item-roll" hidden data-url="{{ url_for('party.shared_map_roll', party_id=party.id) }}"
+  data-csrf="{{ roll_form.csrf_token.current_token if roll_form.csrf_token is defined else '' }}" data-error="{{ _('Unable to roll dice. Please try again.') }}"></div>{% endif %}
 {% if campaign_enabled %}<link rel="stylesheet" href="{{url_for('static', filename='src/css/campaigns.css')}}">{% endif %}
 <section class="body-container">
   {% with messages = get_flashed_messages(with_categories=true) %} {% if messages is not none and messages|length > 0 %}
   {% for category, message in messages %}
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      KW_alert({{ (_("Wilderness actions") if category == "wilderness" else _("Error"))|tojson }}, '{{message|squote2js}}')
+      KW_alert({{ {'wilderness': _("Wilderness actions"), 'dungeon': _("Dungeon actions")}.get(category, _("Error"))|tojson }}, '{{message|squote2js}}')
     });
   </script>
   {% endfor %}
@@ -91,12 +93,9 @@
            data-party-id="{{ party.id }}" data-members-url="{{ url_for('party.members', party_id=party.id) }}"
            data-save-error="{{_('Unable to save this stat. Please try again.')}}"
            data-load-error="{{_('Unable to refresh party members.')}}" data-saved="{{_('Saved')}}">
-        <div class="party-view-controls">
-          <div role="group" aria-label="{{_('Member display')}}">
-            <button type="button" data-party-layout="compact" aria-pressed="{{ 'true' if is_owner else 'false' }}">{{_('Compact')}}</button>
-            <button type="button" data-party-layout="cards" aria-pressed="{{ 'false' if is_owner else 'true' }}">{{_('Cards')}}</button>
-          </div>
-
+        <div class="party-view-controls" :class="{ hidden: collapsed }" role="group" aria-label="{{_('Member display')}}">
+          <button type="button" data-party-layout="compact" aria-pressed="{{ 'true' if is_owner else 'false' }}">{{_('Compact')}}</button>
+          <button type="button" data-party-layout="cards" aria-pressed="{{ 'false' if is_owner else 'true' }}">{{_('Cards')}}</button>
         </div>
         <p class="party-members-status quick-stats-status" role="status" aria-live="polite"></p>
         <div id="party-members-content" class="party-section-content" :class="{ hidden: collapsed }">
@@ -106,7 +105,6 @@
     </div>
 
     {% include "partial/companions/hirelings.html" %}
-    {% if is_owner %}{% include "partial/partyview/wilderness.html" %}{% endif %}
 
     <div class="party-section" x-data="collapseSection('inventory-container')">
       <span id="party-inventory-collapse-button" class="party-collapse-button" role="button" tabindex="0"
@@ -116,9 +114,12 @@
       </span>
       <span class="subtitle bold">{{_('Storage')}}</span>
       <div id="inventory-container" class="party-section-content" :class="{ hidden: collapsed }">
-        <div> {% include "partial/partyview/inventory.html" %}</div>
+        {# Editors manage storage right here; everyone else sees it read-only. #}
+        <div>{% if is_owner or is_subowner %}{% include "partial/partyedit/inventory.html" %}{% else %}{% include "partial/partyview/inventory.html" %}{% endif %}</div>
       </div>
     </div>
+    {% if is_owner %}{% include "partial/partyview/dungeon.html" %}{% include "partial/partyview/wilderness.html" %}{% endif %}
+
 
     </div>
     {% if is_owner %}

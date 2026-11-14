@@ -4,10 +4,13 @@ export function initToolsResults(labels, notify) {
   const empty = document.getElementById('tools-empty-state');
   const copyAll = document.getElementById('tools-copy-text-button');
   const clear = document.getElementById('clear-button');
+  const bar = document.getElementById('tools-results-bar');
+  const count = document.getElementById('tools-result-count');
   function update() {
     const hasResults = !!display.childElementCount;
     empty.hidden = hasResults;
-    copyAll.disabled = clear.disabled = !hasResults;
+    bar.hidden = !hasResults;
+    count.textContent = hasResults ? String(display.childElementCount) : '';
   }
   async function copy(text) {
     try {
@@ -44,7 +47,7 @@ export function initToolsResults(labels, notify) {
       body.className = 'rich-content';
       body.innerHTML = html;
       const actions = document.createElement('div');
-      actions.className = 'tools-result-actions';
+      actions.className = 'tools-result-actions tools-actions';
       const copyButton = document.createElement('button');
       copyButton.type = 'button';
       copyButton.textContent = labels.copy;

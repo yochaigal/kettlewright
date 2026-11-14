@@ -14,6 +14,7 @@ function updatePublicToggle() {
 let rolling = false;
 let monster = null, save = null;
 
+// Callers show the result (diceModal.showResult animates it), so this only rolls and records.
 export async function requestWardenRoll(kind, dice = '') {
   if (rolling) throw new Error(panel.dataset.error);
   rolling = true;
@@ -29,7 +30,6 @@ export async function requestWardenRoll(kind, dice = '') {
     if (response.redirected) throw new Error(panel.dataset.error);
     const result = await response.json();
     if (!response.ok) throw new Error(result.error || panel.dataset.error);
-    diceModal.resultText.textContent = result.result;
     if (body.get('party_id')) refreshRollHistory(body.get('party_id'));
     return result;
   } finally {
@@ -49,16 +49,22 @@ document.addEventListener('click', async event => {
   monster = button; save = button.dataset.save || null; publicToggle.checked = false;
   diceModal.showDiceModal();
   if (button.dataset.dice || save) {
-    try {await requestWardenRoll('dice', save ? 'd20' : button.dataset.dice);}
-    catch (error) {notification.showNotification(error.message);}
+    const dice = save ? 'd20' : button.dataset.dice;
+    const label = button.textContent?.trim() || dice;
+    diceModal.showRolling(label, dice);
+    try {await diceModal.showResult(await requestWardenRoll('dice', dice), {label});}
+    catch (error) {diceModal.showError(error.message); notification.showNotification(error.message);}
   }
 });
 panel.querySelectorAll('[data-warden-roll]').forEach(button => {
   button.addEventListener('click', async () => {
+    const label = (button.querySelector?.('span') || button).textContent?.trim() || '';
     try {
       monster = null; save = null;
-      await requestWardenRoll(button.dataset.wardenRoll);
+      diceModal.showRolling(label, button.dataset.wardenRoll === 'reaction' ? 'd6+d6' : 'd6');
+      await diceModal.showResult(await requestWardenRoll(button.dataset.wardenRoll), {label});
     } catch (error) {
+      diceModal.showError(error.message);
       notification.showNotification(error.message);
     }
   });

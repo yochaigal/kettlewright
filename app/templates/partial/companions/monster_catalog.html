@@ -1,12 +1,44 @@
-  <p>{{_('Set a quantity for each monster, or import Cairn Markdown stat blocks. Each instance has its own stats and inventory.')}}</p>
-  {% if error %}<p role="alert">{{error}}</p>{% endif %}
-  <form class="monster-catalog-form" method="post" enctype="multipart/form-data" action="{{url_for('companions.monsters', party_id=party.id)}}">
-    {{form.hidden_tag()}}
-    <label for="monster-search">{{_('Search bestiary')}}</label>
-    <input id="monster-search" type="search">
-    <label class="monster-selected-filter"><input id="monster-selected-only" type="checkbox"> {{_('Show selected only')}}</label>
-    <p id="monster-catalog-label" class="monster-catalog-label">{{_('Monsters')}}</p>
-    <div class="monster-choices" role="group" aria-labelledby="monster-catalog-label">
+  {# The roster comes first; the bestiary and the Markdown import live in one dialog. #}
+  {% set import_failed = error and not request.form.getlist('template') %}
+  <section class="monster-roster" x-data="{...campaignModal({{ 'true' if error else 'false' }}), mode: '{{ 'import' if import_failed else 'bestiary' }}'}"
+           @keydown.escape.window.capture="if (!document.querySelector('#monster-preview:not([hidden])')) hide()">
+    <header class="party-section-bar">
+      <h3>{{_('Monsters')}} <span class="party-section-count">{{party.monsters|length}}</span></h3>
+      <button type="button" class="button" x-ref="trigger" @click="show(); $nextTick(() => $refs.search.focus())"
+              aria-haspopup="dialog" aria-controls="monster-add-modal"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{_('Add monsters')}}</button>
+    </header>
+    {% from 'partial/companions/cards.html' import cards with context %}
+    {{cards(party.monsters, compact=true)}}
+
+    <div class="modal monster-add-modal" id="monster-add-modal" :class="{'is-active': open}">
+      <div class="modal-background" @click="hide()"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="monster-add-title" x-ref="dialog">
+        <header class="modal-card-head">
+          <h3 class="modal-card-title" id="monster-add-title">{{_('Add monsters')}}</h3>
+          <button type="button" class="monster-add-close" @click="hide()" aria-label="{{_('Close')}}" title="{{_('Close')}}">×</button>
+        </header>
+        <div class="monster-add-modes" role="tablist" aria-label="{{_('Add monsters')}}">
+          <button type="button" role="tab" id="monster-mode-bestiary" aria-controls="monster-bestiary-panel"
+                  :aria-selected="mode === 'bestiary'" @click="mode = 'bestiary'"><i class="fa-solid fa-book" aria-hidden="true"></i> {{_('Bestiary')}}</button>
+          <button type="button" role="tab" id="monster-mode-import" aria-controls="monster-import-panel"
+                  :aria-selected="mode === 'import'" @click="mode = 'import'"><i class="fa-solid fa-file-import" aria-hidden="true"></i> {{_('Import Markdown')}}</button>
+        </div>
+        <p class="monster-add-intro">{{_('Set a quantity for each monster, or import Cairn Markdown stat blocks. Each instance has its own stats and inventory.')}}</p>
+        {% if error %}<p class="monster-add-error" role="alert">{{error}}</p>{% endif %}
+
+        <form class="monster-catalog-form" id="monster-bestiary-panel" role="tabpanel" aria-labelledby="monster-mode-bestiary"
+              :hidden="mode !== 'bestiary'" {% if import_failed %}hidden{% endif %}
+              method="post" enctype="multipart/form-data" action="{{url_for('companions.monsters', party_id=party.id)}}">
+          {{form.hidden_tag()}}
+          <div class="monster-add-filters">
+            <div class="monster-add-search">
+              <label for="monster-search">{{_('Search bestiary')}}</label>
+              <input id="monster-search" type="search" autocomplete="off" x-ref="search">
+            </div>
+            <label class="monster-selected-filter"><input id="monster-selected-only" type="checkbox"> {{_('Show selected only')}}</label>
+          </div>
+          <p id="monster-catalog-label" class="monster-catalog-label" hidden>{{_('Monsters')}}</p>
+          <div class="monster-choices" role="group" aria-labelledby="monster-catalog-label">
       <div class="monster-card-grid">
       {% for key, monster in templates|dictsort %}
       <div class="monster-choice" data-name="{{monster.name|lower}}" data-key="{{key}}">
@@ -33,17 +65,25 @@
       {% endfor %}
       </div>
     </div>
-    <p id="monster-no-results" hidden>{{_('No monsters found.')}}</p>
-    <div class="monster-selection-actions">
-      <p aria-live="polite">{{_('Selected instances:')}} <output id="monster-total">0</output> / 100</p>
-      <button type="submit" id="summon-monster">{{_('Summon monsters')}}</button>
-    </div>
-    <section id="monster-preview" class="monster-hover-preview" role="region" aria-label="{{_('Monster preview')}}" hidden>
-      <button type="button" id="monster-close-preview" aria-label="{{_('Close preview')}}" title="{{_('Close preview')}}">×</button>
-      <div id="monster-preview-content"></div>
-    </section>
-  </form>
-  <details class="monster-import" {% if error and not request.form.getlist('template') %}open{% endif %}><summary>{{_('Import Markdown')}}</summary>
+          <p id="monster-no-results" hidden>{{_('No monsters found.')}}</p>
+          <p class="monster-add-hint"><small><a href="https://cairnrpg.com/resources/monsters/" target="_blank" rel="noopener noreferrer">{{_('Cairn bestiary')}}</a> · Yochai Gal &amp; contributors · CC-BY-SA 4.0</small></p>
+          <div class="modal-card-foot monster-selection-actions">
+            <p aria-live="polite">{{_('Selected instances:')}} <output id="monster-total">0</output> / 100</p>
+            <div class="monster-add-buttons">
+              <button type="button" @click="hide()">{{_('Cancel')}}</button>
+              <button type="submit" id="summon-monster" class="monster-add-submit">{{_('Summon monsters')}}</button>
+            </div>
+          </div>
+        </form>
+
+        <form class="monster-import" id="monster-import-panel" role="tabpanel" aria-labelledby="monster-mode-import"
+              :hidden="mode !== 'import'" {% if not import_failed %}hidden{% endif %}
+              method="post" enctype="multipart/form-data" action="{{url_for('companions.monsters', party_id=party.id)}}">{{form.hidden_tag()}}
+          <div class="monster-import-body">
+            <label for="monster-markdown">{{_('Markdown')}}</label>
+            <textarea id="monster-markdown" name="monster_markdown" rows="8" aria-describedby="monster-import-format">{{request.form.get('monster_markdown', '')}}</textarea>
+            <label for="monster-file">{{_('Or upload a Markdown file (used instead of pasted text)')}}</label>
+            <input id="monster-file" type="file" name="monster_file" accept=".md,.markdown,text/markdown,text/plain" aria-label="{{_('Monster file')}}" aria-describedby="monster-import-format">
     <div id="monster-import-format" class="monster-import-format">
       <p>{{_('Paste Markdown or upload a UTF-8 file (.md), up to 64 KB. Separate monsters with --- on its own line. Add at most 100 instances at a time.')}}</p>
       <p>{{_('Start with a heading containing the monster’s name. Put its stats on one line below it, with numbers before the English labels HP, Armor, STR, DEX and WIL.')}}</p>
@@ -62,18 +102,21 @@
       <p>{{_('The name and HP are required. Omitted Armor defaults to 0; STR, DEX and WIL default to 10. Armor must be between 0 and 3.')}}</p>
       <p>{{_('The rest of the stat line becomes the attack. Everything below it becomes the monster’s notes and supports Markdown.')}}</p>
     </div>
-    <form method="post" enctype="multipart/form-data" action="{{url_for('companions.monsters', party_id=party.id)}}">{{form.hidden_tag()}}
-      <label for="monster-markdown">{{_('Markdown')}}</label>
-      <textarea id="monster-markdown" name="monster_markdown" rows="8" aria-describedby="monster-import-format">{{request.form.get('monster_markdown', '')}}</textarea>
-      <label for="monster-file">{{_('Or upload a Markdown file (used instead of pasted text)')}}</label>
-      <input id="monster-file" type="file" name="monster_file" accept=".md,.markdown,text/markdown,text/plain" aria-label="{{_('Monster file')}}" aria-describedby="monster-import-format">
-      <button type="submit">{{_('Import monsters')}}</button>
-    </form>
-  </details>
-  <p><small><a href="https://cairnrpg.com/resources/monsters/" target="_blank" rel="noopener noreferrer">{{_('Cairn bestiary')}}</a> · Yochai Gal &amp; contributors · CC-BY-SA 4.0</small></p>
-  <section class="monster-roster"><h3>{{_('Monsters')}}</h3>
-  {% from 'partial/companions/cards.html' import cards with context %}
-  {{cards(party.monsters, compact=true)}}
+          </div>
+          <div class="modal-card-foot monster-selection-actions">
+            <span></span>
+            <div class="monster-add-buttons">
+              <button type="button" @click="hide()">{{_('Cancel')}}</button>
+              <button type="submit" class="monster-add-submit">{{_('Import monsters')}}</button>
+            </div>
+          </div>
+        </form>
+        <section id="monster-preview" class="monster-hover-preview" role="region" aria-label="{{_('Monster preview')}}" hidden>
+          <button type="button" id="monster-close-preview" aria-label="{{_('Close preview')}}" title="{{_('Close preview')}}">×</button>
+          <div id="monster-preview-content"></div>
+        </section>
+      </div>
+    </div>
   </section>
   <script id="monster-catalog" type="application/json">{{templates|tojson}}</script>
   <script type="module" src="{{url_for('static', filename='src/js/monsters.js')}}"></script>

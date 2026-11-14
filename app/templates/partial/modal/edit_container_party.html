@@ -70,8 +70,8 @@
           <div style="margin-top: 2em; align-items: center; justify-content: center" class="row32">
             <button class="button is-danger" type="button" style="margin-left: auto; margin-top: 0px"
               hx-post="/party/inventory/{{party.id}}/container-edit/{{container.id}}/delete"
-              hx-target="#inventory-container" hx-confirm="Do you want to delete container {{container.name}}?"
-              data-confirm-title="Delete container" data-confirm-button="Delete">
+              hx-target="#inventory-container" hx-confirm="{{ _('Do you want to delete container %(name)s?', name=container.name) }}"
+              data-confirm-title="{{ _('Delete container') }}" data-confirm-button="{{ _('Delete') }}">
               {{_('Delete container')}}
             </button>
             <select name="delete-items" style="margin-bottom: 0px">

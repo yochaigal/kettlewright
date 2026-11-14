@@ -1,9 +1,61 @@
 import utils from "./utils.js";
+import dice3d from "./dice3d.js";
+import notification from "./notification.js";
+import { refreshRollHistory } from "./party_roll_history.js";
 
 window.KW_alert = utils.styledAlert;
 
+// Dice on party storage items: a public roll in the party's history under the viewer's name, shown in 3D.
+let itemRolling = false;
+window.KW_rollDiceCallback = async (sides) => {
+  const config = document.getElementById('party-item-roll');
+  if (!config || itemRolling) return;
+  itemRolling = true;
+  try {
+    const body = new URLSearchParams({
+      dice: sides.map((side) => `d${side}`).join('+'), csrf_token: config.dataset.csrf, public_roll: 'on',
+    });
+    const response = await fetch(config.dataset.url, {method: 'POST', body, cache: 'no-store'});
+    if (!response.ok || response.redirected) throw new Error(config.dataset.error);
+    const result = await response.json();
+    refreshRollHistory(party_id);
+    if (!await dice3d.show(result)) notification.showNotification(result.result);
+  } catch (error) {
+    notification.showNotification(error.message || config.dataset.error);
+  } finally {
+    itemRolling = false;
+  }
+};
+
+// A double click must not roll twice.
+document.addEventListener('submit', event => {
+  const form = event.target.closest('form[data-submit-once]');
+  if (!form) return;
+  if (form.dataset.submitted) { event.preventDefault(); return; }
+  form.dataset.submitted = 'true';
+  form.querySelectorAll('[type=submit]').forEach(button => { button.disabled = true; });
+});
+
+// Storage dialogs open in the page flow; bring them fully into view, as on Edit party.
+for (const name of ['item-edit', 'container-edit']) {
+  document.body.addEventListener(name, () => {
+    const card = document.getElementById('modal-card');
+    if (card?.scrollIntoViewIfNeeded) card.scrollIntoViewIfNeeded();
+    else card?.scrollIntoView({block: 'nearest'});
+  });
+}
+
 function updateWildernessAction(form) {
   const hasPC = Boolean(form.querySelector('input[name="participants"]:checked'));
+  // Show the outcome of the current choices before anything is rolled or spent.
+  const count = (name) => form.querySelectorAll(`input[name="${name}"]:checked`).length;
+  const die = form.querySelector('[data-supply-die]');
+  if (die) {
+    const bonus = Math.min(4, Math.max(0, parseInt(form.elements.bonus.value, 10) || 0));
+    die.textContent = hasPC ? 'd' + [4, 6, 8, 10, 12][Math.min(count('participants') - 1 + bonus, 4)] : '—';
+  }
+  const rations = form.querySelector('[data-camp-rations]');
+  if (rations) rations.textContent = String(count('participants') + count('mounts'));
   const wrapper = form.querySelector('.wilderness-submit');
   wrapper.querySelector('button').disabled = !hasPC;
   if (hasPC) {
@@ -63,6 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll('.wilderness-form').forEach((form) => {
     updateWildernessAction(form);
     form.addEventListener('change', () => updateWildernessAction(form));
+    form.addEventListener('input', () => updateWildernessAction(form));
     form.addEventListener('submit', (event) => {
       if (!updateWildernessAction(form)) event.preventDefault();
     });

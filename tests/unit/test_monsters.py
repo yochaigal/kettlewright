@@ -276,6 +276,9 @@ def test_party_tabs_embed_monsters_for_warden_only(shared):
     assert 'id="monster-catalog"' in page.text
     assert 'action="/parties/1/monsters"' in page.text
     assert 'id="monster-import-format"' in page.text
+    # The bestiary and the Markdown import share one dialog, closed until asked for.
+    assert 'id="monster-add-modal"' in page.text
+    assert 'campaignModal(false)' in page.text
     assert 'aria-describedby="monster-import-format"' in page.text
     assert '3 HP, 0 Armor, 6 STR, 14 DEX, 3 WIL, bite (d8)' in page.text
     cid = summon(clients)

@@ -11,10 +11,10 @@
 {% macro party_children(items) %}
 <ul class="article-tree">
 {% for item in items %}
-<li data-tree-row data-search="{{ (item.entry.title ~ ' ' ~ item.entry.category ~ ' ' ~ content_excerpt(item.entry.body))|lower }}">
-{% if item.children %}<details open data-tree-key="entry-{{ item.entry.id }}"><summary>{{ party_row(item) }}</summary>
-{{ party_children(item.children) }}
-</details>{% else %}<div class="tree-leaf">{{ party_row(item) }}</div>{% endif %}
+{% set label = _(content_categories.get(item.entry.category, item.entry.category)) %}
+<li data-tree-row data-search="{{ (item.entry.title ~ ' ' ~ label ~ ' ' ~ content_excerpt(item.entry.body))|lower }}">
+<div class="tree-node" data-tree-key="entry-{{ item.entry.id }}">{{ party_row(item) }}</div>
+{% if item.children %}{{ party_children(item.children) }}{% endif %}
 </li>
 {% endfor %}
 </ul>

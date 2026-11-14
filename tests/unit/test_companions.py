@@ -460,7 +460,7 @@ def test_companion_roll_permissions_and_attribution(world, companion_sockets, mo
     }, callback=True)
     with app.app_context():
         if allowed:
-            assert result == {'result': '6, 8 (d6+d8)', 'values': [6, 8]}
+            assert result == {'result': '6, 8 (d6+d8)', 'values': [6, 8], 'sides': [6, 8]}
             saved = PartyRoll.query.one()
             name = db.session.get(Companion, companion_id).name
             assert saved.character_name == name

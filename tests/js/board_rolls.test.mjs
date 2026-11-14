@@ -30,7 +30,7 @@ async function setup(warden = true) {
   const document = {hidden: false, getElementById: node, querySelector: () => node('modal-title'),
     querySelectorAll: () => warden ? specials : [], createElement: tag => new Node(tag),
     addEventListener() {}, removeEventListener() {}};
-  const context = vm.createContext({document, actorKey, diceModal: modal, FormData: Map, AbortSignal,
+  const context = vm.createContext({document, actorKey, diceModal: modal, dice3d: {show: async () => false}, FormData: Map, AbortSignal,
     requestAnimationFrame: fn => {frames.push(fn); return frames.length;}, cancelAnimationFrame() {},
     setInterval(fn) {intervals.push(fn);}, clearInterval() {},
     fetch: async (url, options) => {

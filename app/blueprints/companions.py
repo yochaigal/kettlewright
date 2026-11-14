@@ -18,7 +18,8 @@ companions = Blueprint('companions', __name__)
 def helpers():
     from app.lib.monsters import monster_members
     return dict(can_manage_pets=can_manage_pets, monster_members=monster_members, can_manage_companion=can_manage, companion_form=FlaskForm, companion_stats=STATS,
-                is_party_member=party_member, companion_destinations=companion_destinations)
+                is_party_member=party_member, companion_destinations=companion_destinations,
+                hireling_roles=lambda: catalog('hireling'))
 
 
 @companions.route('/parties/<int:party_id>/monsters', methods=['GET', 'POST'])

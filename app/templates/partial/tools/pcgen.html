@@ -1,40 +1,39 @@
 <form id="pcgen-form" class="no-space" data-copy-label="{{_('Copy text')}}" data-copied="{{_('Results copied to clipboard')}}" data-error="{{_('Unable to generate a character. Please try again.')}}">
   {{roll_form.hidden_tag() if roll_form is defined else ''}}
-  <div class="tools-character-controls">
-    <div class="tools-character-generation">
-      <div class="tools-background-choice">
-        <label for="background-select">{{_('Background')}}</label>
-        <select id="background-select" name="background">
-          <option value="">{{_('Random')}}</option>
-          <optgroup label="{{_('Second Edition')}}">
-          {% for bkg in backgrounds %}<option value="{{bkg}}">{{bkg | tr}}</option>{% endfor %}
-          </optgroup>
-          <optgroup label="{{_('Barebones Edition')}}">
-            <option value="barebones">{{_('Random')}} ({{_('Barebones')}})</option>
-            {% for package in barebones_packages %}<option value="barebones:{{package}}">{{_('Gear package')}}: {{package | tr}}</option>{% endfor %}
-          </optgroup>
-        </select>
-      </div>
-      <button class="button tools-generate-button" type="button" id="pcgen-button" hx-get="{{url_for('generator.character', view='sheet')}}"
-        hx-include="#background-select" hx-target="#pcgen-result-display" hx-disabled-elt="this" hx-sync="this:drop">
-        <i class="fa-solid fa-dice" aria-hidden="true"></i> {{_('Generate')}}
-      </button>
+  <div class="tools-character-generation">
+    <div class="tools-field">
+      <label for="background-select">{{_('Background')}}</label>
+      <select id="background-select" name="background">
+        <option value="">{{_('Random')}}</option>
+        <optgroup label="{{_('Second Edition')}}">
+        {% for bkg in backgrounds %}<option value="{{bkg}}">{{bkg | tr}}</option>{% endfor %}
+        </optgroup>
+        <optgroup label="{{_('Barebones Edition')}}">
+          <option value="barebones">{{_('Random')}} ({{_('Barebones')}})</option>
+          {% for package in barebones_packages %}<option value="barebones:{{package}}">{{_('Gear package')}}: {{package | tr}}</option>{% endfor %}
+        </optgroup>
+      </select>
     </div>
-    <div id="pcgen-button-container" class="tools-toolbar">
-      <div class="tools-tab-list" role="tablist" aria-label="{{_('Character preview')}}" id="pcgen-view-tabs">
-        <button type="button" id="pcgen-sheet-tab" role="tab" aria-selected="true" aria-controls="pcgen-sheet-panel" data-character-view="sheet">{{_('Sheet')}}</button>
-        <button type="button" id="pcgen-markdown-tab" role="tab" aria-selected="false" aria-controls="pcgen-markdown-panel" data-character-view="markdown" tabindex="-1">{{_('Plain Text')}}</button>
-      </div>
-      <div class="tools-history-actions">
-        {% if current_user.is_authenticated %}<button id="pcgen-save-party-button" type="button" data-save-kind="party" data-url="{{url_for('generator.save_character', kind='party')}}" disabled>{{_('Save to Party')}}</button>{% endif %}
-        {% if current_user.is_authenticated %}<button id="pcgen-save-npc-button" type="button" data-save-kind="npc" data-url="{{url_for('generator.save_character', kind='npc')}}" disabled>{{_('Save as NPC')}}</button>{% endif %}
-        <button id="pcgen-copy-text-button" type="button" disabled>{{_('Copy text')}}</button>
-        <button id="pcgen-json-button" type="button" disabled>{{_('Export')}} JSON</button>
-        <button id="gen-print-button" type="button" data-url="{{url_for('generator.character_print')}}" disabled>{{_('Print')}}</button>
-      </div>
+    <button class="button tools-generate-button" type="button" id="pcgen-button" hx-get="{{url_for('generator.character', view='sheet')}}"
+      hx-include="#background-select" hx-target="#pcgen-result-display" hx-disabled-elt="this" hx-sync="this:drop">
+      <i class="fa-solid fa-dice" aria-hidden="true"></i> {{_('Generate')}}
+    </button>
+  </div>
+  {# The view switch and the actions only make sense once a character exists. #}
+  <div id="pcgen-button-container" class="tools-results-bar" hidden>
+    <div class="tools-segmented" role="tablist" aria-label="{{_('Character preview')}}" id="pcgen-view-tabs">
+      <button type="button" id="pcgen-sheet-tab" role="tab" aria-selected="true" aria-controls="pcgen-sheet-panel" data-character-view="sheet">{{_('Sheet')}}</button>
+      <button type="button" id="pcgen-markdown-tab" role="tab" aria-selected="false" aria-controls="pcgen-markdown-panel" data-character-view="markdown" tabindex="-1">{{_('Plain Text')}}</button>
+    </div>
+    <div class="tools-actions">
+      {% if current_user.is_authenticated %}<button id="pcgen-save-party-button" type="button" data-save-kind="party" data-url="{{url_for('generator.save_character', kind='party')}}" disabled><i class="fa-solid fa-users" aria-hidden="true"></i> {{_('Save to Party')}}</button>{% endif %}
+      {% if current_user.is_authenticated %}<button id="pcgen-save-npc-button" type="button" data-save-kind="npc" data-url="{{url_for('generator.save_character', kind='npc')}}" disabled><i class="fa-solid fa-bookmark" aria-hidden="true"></i> {{_('Save as NPC')}}</button>{% endif %}
+      <button id="pcgen-copy-text-button" type="button" disabled><i class="fa-regular fa-copy" aria-hidden="true"></i> {{_('Copy text')}}</button>
+      <button id="pcgen-json-button" type="button" disabled><i class="fa-solid fa-file-export" aria-hidden="true"></i> {{_('Export')}} JSON</button>
+      <button id="gen-print-button" type="button" data-url="{{url_for('generator.character_print')}}" disabled><i class="fa-solid fa-print" aria-hidden="true"></i> {{_('Print')}}</button>
     </div>
   </div>
-  <p id="pcgen-empty-state" class="tools-empty-state">{{_('Choose a background and click “Generate”.')}}</p>
+  <p id="pcgen-empty-state" class="tools-empty-state"><i class="fa-solid fa-user" aria-hidden="true"></i> {{_('Choose a background and click “Generate”.')}}</p>
   <p id="pcgen-error" class="red-text" role="alert" hidden></p>
   <div id="pcgen-result-display" aria-live="polite" aria-relevant="additions"></div>
 </form>

@@ -1,0 +1,26 @@
+{% from 'partial/partyview/party_actions.html' import action_dialog, event_bar with context %}
+{% set durl = url_for('party.dungeon_action', party_id=party.id) %}
+{% set drules = 'https://cairnrpg.com/second-edition/players-guide/procedures/' %}
+<details class="party-section wilderness-actions dungeon-actions" open>
+  <summary class="subtitle bold">{{_('Dungeon actions')}}</summary>
+  <p class="wilderness-intro">{{_('Each turn, a character moves about 40ft and takes one action. Results are added to the roll history for the whole party.')}}</p>
+  <div class="wilderness-tiles">
+  {% call action_dialog('dungeon', 'search', _('Search'), 'fa-magnifying-glass', _('Search one object or place for treasure, traps or secret doors.'), _('Search'), durl, drules) %}
+    <p class="party-modal-hint">{{_('A thorough search of one object or location takes a turn and reveals relevant hidden treasure, traps or secret doors. Larger or complex areas may take several turns.')}}</p>
+    <fieldset><legend>{{_('Searching')}}</legend><div class="wilderness-choices">
+    {% for c in characters if not c.dead %}<label class="wilderness-choice"><input type="checkbox" name="participants" value="{{c.id}}"> {{ c.name|markdown_inline }}</label> {% endfor %}
+    </div></fieldset>
+    <label for="dungeon-search-target">{{_('What do they search?')}}</label>
+    <input type="text" id="dungeon-search-target" name="target" maxlength="100" autocomplete="off" placeholder="{{_('e.g. the altar')}}">
+  {% endcall %}
+  {% call action_dialog('dungeon', 'rest', pgettext('dungeon action', 'Rest'), 'fa-bed', _('Catch your breath and recover all HP.'), pgettext('dungeon action', 'Rest'), durl, drules) %}
+    <p class="party-modal-hint">{{_('Resting takes a turn and restores all HP. It needs a light source and a safe location; present or oncoming danger makes it impossible. Fatigue stays until the party can Make Camp, and deprived characters recover nothing.')}}</p>
+    <fieldset><legend>{{_('Resting characters')}}</legend><div class="wilderness-choices">
+    {% for c in characters if not c.dead %}<label class="wilderness-choice"><input type="checkbox" name="participants" value="{{c.id}}"> {{ c.name|markdown_inline }} <small>({{c.hp or 0}}/{{c.hp_max or 0}} {{_('HP')}}{% if c.deprived %}, {{_('Deprived')}}{% endif %})</small></label> {% endfor %}
+    </div></fieldset>
+  {% endcall %}
+  </div>
+  {# Cairn 2e: roll when the party lingers, moves quickly or loudly, or enters a new area. #}
+  {{ event_bar(_('Dungeon Events'), _('Roll when the party lingers in a room, moves quickly or loudly, or enters a new area or level.'),
+               url_for('party.dungeon_event_roll', party_id=party.id)) }}
+</details>

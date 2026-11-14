@@ -1,5 +1,6 @@
 {% include 'partial/partyview/inventory_tabs.html' %}
-<div style="margin-top: 0px; width: 100%">
+{% include 'partial/partyview/storage_notes.html' %}
+<div class="storage-slots{% if not (inventory.selected_container['items']|rejectattr('is_empty')|list) %} hidden{% endif %}">
   {% for it in inventory.selected_container['items'] %}
   <div class="inventory-item-container {% if it.blocker %} item-blocker-text {% endif %}">
     {% if it.is_empty %}
@@ -10,12 +11,12 @@
     </div>
     <div class="inventory-item-button-container">
       {% if "description" in it and it.description != "" %}
-      <div class="pointer" title="Description"
+      <div class="pointer" title="{{ _('Description') }}"
         onclick="KW_alert({{it.name|tr('equipment')|forceescape|tojson|forceescape}}, {{it.description|tr|item_description|tojson|forceescape}})">
         <i class="item-edit-button fa-solid fa-circle-info circle-info"></i>
       </div>
       {% endif %} {% if it.dice|length > 0 %}
-      <div class="pointer" title="Roll dice" onclick="KW_rollDiceCallback({{it.dice}})">
+      <div class="pointer" title="{{ _('Roll dice') }}" onclick="KW_rollDiceCallback({{it.dice}})">
         <i class="fa-solid fa-dice dice"></i>
       </div>
       {% endif %}

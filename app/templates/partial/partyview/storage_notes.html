@@ -1,0 +1,12 @@
+{# Empty state and capacity warning, shared by the read-only and editable storage views. #}
+{% set selected = inventory.selected_container %}
+{% if selected.get('over_capacity') %}
+<p class="storage-warning" role="status"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+  {{ _('Over capacity: %(used)s of %(slots)s slots used. Move or drop items to make room.', used=selected.used_slots, slots=selected.slots) }}</p>
+{% endif %}
+{% if not (selected['items']|rejectattr('is_empty')|list) %}
+<div class="storage-empty">
+  <p class="storage-empty-title">{{ _('Nothing stored here yet.') }}</p>
+  <p>{{ _('Storage holds gear the whole party shares. Items arrive from a character sheet, from the Marketplace, or as Rations from Supply.') }}</p>
+</div>
+{% endif %}

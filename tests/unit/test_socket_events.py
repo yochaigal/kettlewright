@@ -187,7 +187,7 @@ def test_socket_roll_uses_server_values_and_acknowledges(app, socket_party, monk
     result = socket_party[12].emit('roll_dice', {
         'character_id': 1, 'party_id': 1, 'dice': 'd6+d8', 'roll': '999',
     }, callback=True)
-    assert result == {'result': '6, 8 (d6+d8)', 'values': [6, 8]}
+    assert result == {'result': '6, 8 (d6+d8)', 'values': [6, 8], 'sides': [6, 8]}
     with app.app_context():
         assert PartyRoll.query.one().result == '6, 8 (d6+d8)'
 

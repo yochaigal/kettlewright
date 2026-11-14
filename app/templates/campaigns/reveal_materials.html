@@ -17,9 +17,12 @@
 <p>{{ _('Includes every freehand mark, text and image. Leave unchecked to keep each party’s existing drawing.') }}</p>
 {% endif %}
 </form>
-{% else %}<p>{{ _('Connect a party in campaign settings, or create a party first.') }}</p>{% endif %}
-{% for entry in entries %}<details><summary>{{ entry.title or _('Untitled private original') }} · {{ _(content_categories.get(entry.category, entry.category)) }}</summary>
-<div class="rich-content">{{ render_content(entry.body) }}</div>
-<a href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Prepare individual party versions') }}</a>
-</details>{% endfor %}
+{% else %}<p>{{ _('No parties are connected yet. Connect a party in campaign Settings, or create a party first.') }}</p>{% endif %}
+<h2>{{ _('Articles to publish') }} ({{ entries|length }})</h2>
+<ul class="article-tree reveal-article-list">{% for entry in entries %}
+<li><div class="tree-node"><span class="tree-row"><a class="tree-title" href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ entry.title or _('Untitled private original') }}</a>
+<span class="tree-meta">{{ _(content_categories.get(entry.category, entry.category)) }}</span>
+<span class="tree-excerpt">{{ content_excerpt(entry.body) }}</span>
+<a class="tree-visibility" href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Prepare individual party versions') }}</a></span></div></li>
+{% endfor %}</ul>
 {% endblock %}

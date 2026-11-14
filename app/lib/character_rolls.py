@@ -53,7 +53,7 @@ def roll_for_party(name, expression, party):
     result = f'{", ".join(map(str, values))} ({"+".join(f"d{sides}" for sides in dice)})'
     if party:
         db.session.add(PartyRoll(party_id=party.id, character_name=name, result=result))
-    return {'result': result, 'values': values}
+    return {'result': result, 'values': values, 'sides': dice}
 
 
 def publish_roll(party, name, result, private_user_id=None):

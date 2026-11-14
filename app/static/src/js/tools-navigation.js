@@ -32,82 +32,93 @@ export function generateToolResult(data, category, table, random = Math.random) 
     : generateResult(data, category, table, random);
 }
 
-// Both Tools renderers share navigation while keeping their existing output/save behavior.
-export function initToolsNavigation(data, t, onSelect) {
-  const mainTabs = [...document.querySelectorAll('.tools-tabs > .tools-tab-list [role=tab]')];
+// Sections with a single table need no heading of their own: neighbours share one row.
+export function launcherGroups(sections) {
+  const groups = [];
+  for (const section of sections) {
+    const single = section.choices.length === 1 && sections.length > 1;
+    const last = groups.at(-1);
+    if (single && last && !last.label) last.choices.push(...section.choices);
+    else groups.push({label:single || sections.length === 1 ? '' : section.label, choices:[...section.choices]});
+  }
+  return groups;
+}
+
+// One row of area tabs; every table below it rolls with a single click.
+// `panels` maps a table name to an element that the table shows instead of rolling.
+export function initToolsNavigation(data, t, {onRoll, panels = {}}) {
+  const mainTabs = [...document.querySelectorAll('.tools-nav [role=tab]')];
   const panel = document.getElementById('tab-content1');
   const pcPanel = document.getElementById('tab-content2');
-  const sectionTabs = document.getElementById('tools-section-tabs');
-  const tablePanel = document.getElementById('tools-table-panel');
-  const choices = document.getElementById('subcategory-buttons');
+  const launcher = document.getElementById('tools-launcher');
   const sections = toolSections(data);
-  const remembered = new Map();
+  const open = new Set();
 
-  function bindTabs(tabs, select) {
-    tabs.forEach((tab, index) => {
-      tab.addEventListener('click', () => select(tab));
-      tab.addEventListener('keydown', event => {
-        const next = {ArrowRight:(index+1)%tabs.length, ArrowLeft:(index+tabs.length-1)%tabs.length, Home:0, End:tabs.length-1}[event.key];
-        if (next === undefined) return;
-        event.preventDefault();
-        select(tabs[next]);
-        tabs[next].focus();
-      });
-    });
-  }
-  function mark(tabs, selected) {
-    tabs.forEach(tab => {
-      tab.setAttribute('aria-selected', String(tab === selected));
-      tab.tabIndex = tab === selected ? 0 : -1;
-    });
-  }
   function selectMain(tab) {
-    mark(mainTabs, tab);
+    mainTabs.forEach(other => {
+      other.setAttribute('aria-selected', String(other === tab));
+      other.tabIndex = other === tab ? 0 : -1;
+    });
     const key = tab.dataset.tool;
     panel.hidden = !key;
     pcPanel.hidden = !!key;
     if (!key) return;
     panel.setAttribute('aria-labelledby', tab.id);
-    sectionTabs.replaceChildren();
-    sectionTabs.hidden = sections[key].length < 2;
-    const tabs = sections[key].map((section, index) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.id = `tools-${key}-section-${index}`;
-      button.textContent = t(section.label);
-      button.setAttribute('role', 'tab');
-      button.setAttribute('aria-controls', 'tools-table-panel');
-      sectionTabs.append(button);
-      return button;
-    });
-    function selectSection(button) {
-      mark(tabs, button);
-      const index = tabs.indexOf(button), section = sections[key][index];
-      remembered.set(key, index);
-      tablePanel.hidden = false;
-      tablePanel.setAttribute('aria-labelledby', sectionTabs.hidden ? tab.id : button.id);
-      choices.replaceChildren();
-      document.getElementById('tools-table-choices').hidden = section.choices.length < 2;
-      onSelect('', '', key);
-      const buttons = section.choices.map(item => {
+    launcher.replaceChildren();
+    const shown = new Set();
+    for (const group of launcherGroups(sections[key])) {
+      const block = document.createElement('div');
+      block.className = 'tools-group';
+      block.setAttribute('role', 'group');
+      if (group.label) {
+        const label = document.createElement('div');
+        label.className = 'tools-group-label';
+        label.id = `tools-${key}-group-${launcher.childElementCount}`;
+        label.textContent = t(group.label);
+        block.setAttribute('aria-labelledby', label.id);
+        block.append(label);
+      } else {
+        block.setAttribute('aria-label', tab.textContent.trim());
+      }
+      const row = document.createElement('div');
+      row.className = 'tools-group-choices';
+      for (const item of group.choices) {
         const control = document.createElement('button');
         control.type = 'button';
         control.className = 'button tools-choice';
         control.textContent = t(item.label);
-        control.setAttribute('aria-pressed', 'false');
-        control.addEventListener('click', () => {
-          buttons.forEach(other => other.setAttribute('aria-pressed', String(other === control)));
-          onSelect(item.category, item.table, key);
-        });
-        choices.append(control);
-        return control;
-      });
-      if (buttons.length === 1) buttons[0].click();
+        const target = panels[item.table];
+        if (target) {
+          shown.add(item.table);
+          control.classList.add('tools-choice-toggle');
+          control.setAttribute('aria-controls', target.id);
+          control.setAttribute('aria-expanded', String(open.has(item.table)));
+          control.addEventListener('click', () => {
+            if (!open.delete(item.table)) open.add(item.table);
+            target.hidden = !open.has(item.table);
+            control.setAttribute('aria-expanded', String(!target.hidden));
+            if (!target.hidden) target.querySelector('input, select')?.focus();
+          });
+        } else {
+          control.addEventListener('click', () => onRoll(item, key, control));
+        }
+        row.append(control);
+      }
+      block.append(row);
+      launcher.append(block);
     }
-    bindTabs(tabs, selectSection);
-    selectSection(tabs[remembered.get(key) ?? 0]);
+    for (const [table, target] of Object.entries(panels)) target.hidden = !(shown.has(table) && open.has(table));
   }
-  bindTabs(mainTabs, selectMain);
+  mainTabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => selectMain(tab));
+    tab.addEventListener('keydown', event => {
+      const next = {ArrowRight:(index+1)%mainTabs.length, ArrowLeft:(index+mainTabs.length-1)%mainTabs.length, Home:0, End:mainTabs.length-1}[event.key];
+      if (next === undefined) return;
+      event.preventDefault();
+      selectMain(mainTabs[next]);
+      mainTabs[next].focus();
+    });
+  });
   selectMain(mainTabs[0]);
   return {open(key) {
     const tab = mainTabs.find(tab => tab.dataset.tool === key);

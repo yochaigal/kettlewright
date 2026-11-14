@@ -12,8 +12,8 @@
 <script src="{{ url_for('static', filename='src/js/tools.js') }}" type="module"></script>
 <script id="tools-monster-catalog" type="application/json">{{monster_templates|tojson}}</script>
 <div class="body-container tools-page">
-  <div class="sheet party-tools-sheet">
-    <div class="party-header">
+  <div class="sheet tools-sheet">
+    <header class="tools-header">
       <h2>{{_('Tools')}}</h2>
       {% if current_user.is_authenticated %}
       <button class="button dice-button" type="button" id="warden-dice-button"
@@ -21,7 +21,7 @@
         <i class="fa-solid fa-dice dice" aria-hidden="true"></i>
       </button>
       {% endif %}
-    </div>
+    </header>
     {% if current_user.is_authenticated %}
     <dialog id="tools-attach-dialog" class="tools-attach-dialog" aria-labelledby="tools-attach-title">
       <h3 id="tools-attach-title">{{_('Attach to party')}}</h3>
@@ -39,44 +39,39 @@
     {% endif %}
     {% if current_user.is_authenticated %}{% include 'partial/partyview/warden_dice.html' %}{% endif %}
     <div class="tools-tabs">
-      <div class="tools-tab-list" role="tablist" aria-label="{{_('Tools')}}">
+      <div class="tools-nav" role="tablist" aria-label="{{_('Tools')}}">
         {% for key, label in [('realm', _('Realm')), ('dungeons', _('Dungeons')), ('forests', _('Forests')), ('events', _('Events')), ('monsters', _('Monsters')), ('items', _('Items'))] %}
         <button type="button" id="{{key}}-tab" data-tool="{{key}}" role="tab" aria-selected="{{ 'true' if loop.first else 'false' }}" aria-controls="tab-content1"{% if not loop.first %} tabindex="-1"{% endif %}>{{label}}</button>
         {% endfor %}
-        <button type="button" id="generator-tab" role="tab" aria-selected="false" aria-controls="tab-content2" tabindex="-1">{{_('Character Generator')}}</button>
+        <button type="button" id="generator-tab" class="tools-nav-character" role="tab" aria-selected="false" aria-controls="tab-content2" tabindex="-1"><i class="fa-solid fa-user" aria-hidden="true"></i> {{_('Character Generator')}}</button>
       </div>
-      <div id="tab-content1" class="tools-tab-panel" role="tabpanel" aria-labelledby="realm-tab">
-        <div id="tools-section-tabs" class="tools-tab-list" role="tablist" aria-label="{{_('Tables')}}"></div>
-        <div id="tools-table-panel" role="tabpanel">
-            <div class="tools-roll-container">
-              <div class="tools-choice-group" id="tools-table-choices">
-                <div id="table-label" class="tools-choice-label">{{_('Table')}}</div>
-                <div id="subcategory-buttons" class="tools-choice-row" role="group" aria-labelledby="table-label"></div>
-              </div>
-              <section id="tools-monster-picker" hidden>
-                <label for="tools-monster-search">{{_('Search bestiary')}}</label>
-                <input id="tools-monster-search" type="search">
-                <label for="tools-monster-template">{{_('Monster')}}</label>
-                <select id="tools-monster-template">{% for key, monster in monster_templates|dictsort %}<option value="{{key}}">{{monster.name}} · {{monster.hp}} HP · {{monster.armor}} {{_('Armor')}}</option>{% endfor %}</select>
-                <div id="tools-monster-preview" aria-live="polite"></div>
-              </section>
-              <div id="tools-button-container" class="tools-toolbar">
-                <button class="button tools-generate-button" type="button" id="roll-button" disabled>
-                  <i class="fa-solid fa-dice" aria-hidden="true"></i> {{_('Generate')}}
-                </button>
-                <div class="tools-history-actions">
-                  <button id="tools-copy-text-button" type="button" disabled>{{_('Copy all')}}</button>
-                  <button id="clear-button" type="button" disabled>{{_('Clear')}}</button>
-                </div>
-              </div>
+      <div id="tab-content1" class="tools-panel" role="tabpanel" aria-labelledby="realm-tab">
+        {# One click on a table rolls it; the groups are rendered by tools-navigation.js. #}
+        <div id="tools-launcher" class="tools-launcher"></div>
+        <section id="tools-monster-picker" class="tools-picker" aria-label="{{_('Monster picker')}}" hidden>
+          <div class="tools-picker-fields">
+            <div class="tools-field">
+              <label for="tools-monster-search">{{_('Search bestiary')}}</label>
+              <input id="tools-monster-search" type="search" autocomplete="off">
             </div>
-            <p id="tools-empty-state" class="tools-empty-state">{{_('Choose a generator and click “Generate”.')}}</p>
-            <div id="tools-result-display" class="tools-result-feed" aria-live="polite" aria-relevant="additions"></div>
-
+            <div class="tools-field">
+              <label for="tools-monster-template">{{_('Monster')}}</label>
+              <select id="tools-monster-template">{% for key, monster in monster_templates|dictsort %}<option value="{{key}}">{{monster.name}} · {{monster.hp}} HP · {{monster.armor}} {{_('Armor')}}</option>{% endfor %}</select>
+            </div>
+          </div>
+          <div id="tools-monster-preview" class="tools-picker-preview" aria-live="polite"></div>
+        </section>
+        <div id="tools-results-bar" class="tools-results-bar" hidden>
+          <h3>{{_('Results')}} <span id="tools-result-count" class="tools-result-count"></span></h3>
+          <div class="tools-actions">
+            <button id="tools-copy-text-button" type="button"><i class="fa-regular fa-copy" aria-hidden="true"></i> {{_('Copy all')}}</button>
+            <button id="clear-button" type="button"><i class="fa-solid fa-xmark" aria-hidden="true"></i> {{_('Clear')}}</button>
+          </div>
         </div>
-
+        <p id="tools-empty-state" class="tools-empty-state"><i class="fa-solid fa-dice" aria-hidden="true"></i> {{_('Pick a table to roll on it. Results appear here.')}}</p>
+        <div id="tools-result-display" class="tools-result-feed" aria-live="polite" aria-relevant="additions"></div>
       </div>
-      <div id="tab-content2" class="tools-tab-panel" role="tabpanel" aria-labelledby="generator-tab" hidden>
+      <div id="tab-content2" class="tools-panel" role="tabpanel" aria-labelledby="generator-tab" hidden>
         {% include "partial/tools/pcgen.html" %}
       </div>
     </div>

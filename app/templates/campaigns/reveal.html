@@ -9,20 +9,29 @@
 <button type="submit" :disabled="!rows.some(row => row.selected)">{{ _('Publish selected versions') }}</button>
 {% endcall %}
 <p>{{ _('Prepare what each party knows. Only selected parties are updated when you publish.') }}</p>
-<p>{{ _('Checking a party selects it for publication. Finish with Publish selected versions, then use View as party to verify the saved result. Private descriptions are copied only when you choose Copy from private original.') }}</p>
+<p class="import-hint">{{ _('Check a party to select it, edit its version, then choose Publish selected versions. Private descriptions are copied only when you choose Copy from private original.') }}</p>
+{% set published_parties = [] %}{% for party in parties if presentations.get(party.id) and presentations[party.id].published %}{% set unused = published_parties.append(party) %}{% endfor %}
+{% if published_parties %}<section class="reveal-published" aria-labelledby="reveal-published-title">
+<h2 id="reveal-published-title">{{ _('Currently published to') }}</h2>
+<ul class="campaign-list">{% for party in published_parties %}<li>{{ party.name|markdown_inline }}
+<span class="campaign-actions reveal-published-actions"><a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}">{{ _('View as party') }}</a>
+<button type="submit" form="revoke-{{ party.id }}">{{ _('Revoke publication') }}</button></span></li>{% endfor %}</ul>
+</section>{% endif %}
 {{ token() }}
 {% if entry.pointcrawl %}
+<fieldset><legend>{{ _('Drawing') }}</legend>
 <input type="hidden" name="map_version" value="{{ entry.pointcrawl.version }}">
 <label class="campaign-check"><input type="checkbox" name="publish_drawing" value="1">{{ _('Also publish the entire saved drawing to selected parties') }}</label>
-<p>{{ _('Includes every freehand mark, text and image. Points of interest and paths are revealed separately. Leave unchecked to keep each party’s existing drawing.') }}</p>
-<a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}" target="_blank" rel="noopener">{{ _('Review saved drawing') }}</a>
+<p class="import-hint">{{ _('Includes every freehand mark, text and image. Points of interest and paths are revealed separately. Leave unchecked to keep each party’s existing drawing.') }}
+<a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}" target="_blank" rel="noopener">{{ _('Review saved drawing') }}</a></p>
+</fieldset>
 {% endif %}
 <template x-for="row in rows" :key="row.id">
 <fieldset>
 <legend x-text="row.name"></legend>
 <label class="campaign-check"><input type="checkbox" name="party_ids" :value="row.id" x-model="row.selected">{{ _('Publish to this party') }}</label>
 <input type="hidden" :name="'version_' + row.id" :value="row.version">
-<p x-show="row.published">{{ _('Already published. Changes remain private until you publish.') }}</p>
+<p class="import-hint" x-show="row.published">{{ _('Already published. Changes remain private until you publish.') }}</p>
 <label>{{ _('Title known to this party') }}<input type="text" :name="'title_' + row.id" x-model="row.title" maxlength="200" :required="row.selected"></label>
 {{ rich_editor(_('What this party knows'), name=None, model='row.body', name_expression="'body_' + row.id") }}
 {% if entry.category == 'path' %}<label>{{ _('Known path type') }}<select :name="'path_type_' + row.id" x-model="row.path_type">{% for kind in path_types %}<option value="{{ kind }}">{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>{% endif %}
@@ -33,10 +42,8 @@
 
 </form>
 {% for party in parties %}{% set row = presentations.get(party.id) %}{% if row and row.published %}
-<div class="campaign-actions"><form method="post" action="{{ url_for('campaigns.revoke', entry_id=entry.id, party_id=party.id) }}">{{ token(row.version) }}
-<button>{{ _('Revoke publication') }} · {{ party.name }}</button></form>
-<a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}">{{ _('View as party') }}</a></div>
+<form id="revoke-{{ party.id }}" method="post" action="{{ url_for('campaigns.revoke', entry_id=entry.id, party_id=party.id) }}" hidden>{{ token(row.version) }}</form>
 {% endif %}{% endfor %}
 {% else %}{% call page_header(_('Reveal to party')) %}<a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ _('Private original') }}</a>{% endcall %}
-<p>{{ _('Connect a party in campaign settings, or create a party first.') }}</p>{% endif %}
+<p>{{ _('No parties can see this article yet.') }} {% if entry.campaign_id %}<a href="{{ url_for('campaigns.workspace', campaign_id=entry.campaign_id) }}">{{ _('Connect a party in campaign Settings') }}</a>{% else %}{{ _('Move it into a campaign and connect a party in Settings') }}{% endif %}, {{ _('or') }} <a href="{{ url_for('main.parties', username=current_user.username) }}">{{ _('create a party first') }}</a>.</p>{% endif %}
 {% endblock %}

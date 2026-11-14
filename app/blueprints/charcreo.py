@@ -11,6 +11,7 @@ from app.lib import *
 from unidecode import unidecode
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
+from app.lib.dice_feedback import queue_dice
 import urllib.parse
 import json
 from flask_login import login_required, current_user
@@ -402,26 +403,33 @@ def charcreo_bkg_table_roll(nr):
     response.headers['HX-Trigger-After-Settle'] = "background-changed"
     return response
 
+def queued_roll(faces, count):
+    """Roll count dice and show them as 3D dice after the htmx swap (app/lib/dice_feedback.py)."""
+    values, total = roll_multi_dice(faces, count)
+    queue_dice(values, faces)
+    return total
+
+
 # route: roll attribute
 @character_create.route('/charcreo/attr-roll/<atype>', methods=['POST'])
 def charcreo_attr_roll(atype):
     form, custom_fields, _ = process_form_data(request.form)
     match atype:
         case "str":
-            _, total = roll_multi_dice(6,3)
+            total = queued_roll(6, 3)
             # hack, because flask cannot change numeric field
             form.strength_max.data = total
             form.strength_max.raw_data = None
         case "dex":
-            _, total = roll_multi_dice(6,3)
+            total = queued_roll(6, 3)
             form.dexterity_max.data = total
             form.dexterity_max.raw_data = None
         case "wil":
-            _, total = roll_multi_dice(6,3)
+            total = queued_roll(6, 3)
             form.willpower_max.data = total
             form.willpower_max.raw_data = None            
         case "hp":
-            _, total = roll_multi_dice(6,1)
+            total = queued_roll(6, 1)
             form.hp_max.data = total
             form.hp_max.raw_data = None                    
     return render_template('partial/charcreo/attrs.html', form=form,custom_fields=custom_fields )
@@ -593,7 +601,7 @@ def charcreo_omen_roll():
 @character_create.route('/charcreo/gold-roll', methods=['POST'])
 def charcreo_gold_roll():
     form, custom_fields, _ = process_form_data(request.form)
-    _, total = roll_multi_dice(6,3)
+    total = queued_roll(6, 3)
     custom_fields['gold'] = total
     return render_template('partial/charcreo/items.html', form=form,custom_fields=custom_fields )
 

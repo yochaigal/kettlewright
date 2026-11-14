@@ -27,7 +27,19 @@ export default function pointcrawl() {
         this.syncCanvas();
       });
       this.$nextTick(() => {this.startCanvas();this.dirty=false;});
-      if (this.creating && new URLSearchParams(location.search).has('from_tools')) {
+      const params=new URLSearchParams(location.search);
+      if (this.creating && params.has('random')) {
+        // "Random campaign" from the New campaign dialog: apply its options and generate once.
+        const percent=(name,fallback)=>{const value=Number(params.get(name));return params.has(name)&&Number.isInteger(value)&&value>=0&&value<=100?value:fallback;};
+        this.generateChildren=params.get('children')!=='0';
+        this.forestChance=percent('forest',this.forestChance);
+        this.dungeonChance=percent('forest_pois',this.dungeonChance);
+        if (['3','6','8','12','20'].includes(params.get('pois'))) this.poiCount=params.get('pois');
+        params.delete('random');
+        history.replaceState(null,'',`${location.pathname}?${params}`);
+        this.$nextTick(()=>this.generate());
+      }
+      if (this.creating && params.has('from_tools')) {
         try {
           const result=JSON.parse(sessionStorage.getItem('kw-content-result'));
           if (result?.mapKind) {

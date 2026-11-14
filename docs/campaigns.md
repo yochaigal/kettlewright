@@ -111,14 +111,10 @@ cairnrpg.com, and **Add** imports a private copy through the same archive import
 **Import archive**. Nothing is added automatically.
 
 Once the user has a campaign with that exact name, its row disappears and the campaign
-appears in the tree with a **Remove** button. Adding one shows a toast; failures stay inline. **Remove** goes to the usual delete-campaign
-confirmation, which warns that the campaign and all its articles are permanently deleted;
-after deleting, the row returns. Renaming the copy also brings the row back, and a campaign
+appears in the tree with a **Remove** button. Adding one shows a toast; failures stay inline. **Remove** opens a confirmation dialog that warns the campaign and all
+its articles are permanently deleted; after deleting, the row returns. Renaming the copy also brings the row back, and a campaign
 the user made with the same name counts as added. A failed import is rolled back and
 reported on the page.
-
-The campaign tree always loads collapsed. One button above it switches between
-**Expand all** and **Collapse all**.
 
 The bundles live in `app/starter_adventures/cas-N/` (a `campaign.md` plus
 `articles/*.md`) and are generated from the open Cairn text by
@@ -141,7 +137,3 @@ Map editors preload the ready-made Excalidraw libraries **Architecture floor pla
 Terrain borders can be moved, resized, rotated and edited point by point. A manual shape overrides the initial landmark-based polygon until **Reset shape**; moving a landmark does not overwrite it. The article list separates Topography (including Terrain, Landmark and Water) from POIs. **Draw this watercourse** is available only for a selected Water article and replaces its marker with the next stroke, with selectable width, preserving its article link and publication visibility. Linked shapes use live geometry like marker positions; independent strokes use the existing drawing publication snapshot. Both are saved with the article.
 
 Generated Realm, Faction, POI, Terrain, Landmark, Water and Path names use the formulas in [Cairn Naming Procedures](https://cairnrpg.com/second-edition/wardens-guide/naming-procedures/); forests use its dedicated adjective/noun tables. The copied tables in `names.json` retain source order and are licensed CC-BY-SA 4.0 by Cairn / Yochai Gal. Terrain names use matching terrain synonyms; POI names use their rolled site type. Applying the place formula to water, landmarks and paths is the application’s interpretation of the naming guidance. Culture, resources, traits, advantages and agendas keep descriptive headings; they are not named locations. Names are rolled once with the draft, retain the descriptive fields, and are preserved on save. Existing saved articles are not randomly renamed.
-
-## Creating new items
-
-**Create New** on the Campaigns page opens a dialog with a Campaign / Note switch and a name field. **Campaign** creates the campaign and continues to its creation page; **Note** opens the New article form with the name as the title and the type set to Notes. The Unfiled articles row is shown muted, without a chevron, until there is at least one unfiled article.

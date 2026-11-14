@@ -261,7 +261,14 @@ def create_app():
     @app.context_processor
     def inject_locale():
         from app.lib.generator_labels import generator_labels
-        return dict(locale=get_locale(), generator_labels=generator_labels)
+        from app.lib.dice_feedback import pending_dice
+        return dict(locale=get_locale(), generator_labels=generator_labels, pending_dice=pending_dice)
+
+    # Dice rolled while building an htmx partial or before a redirect (app/lib/dice_feedback.py).
+    @app.after_request
+    def send_queued_dice(response):
+        from app.lib.dice_feedback import send_queued_dice as send
+        return send(response, request)
 
     # ?lang= only covers its own request; the HTMX and fetch calls a page makes
     # afterwards read the kw_lang cookie, so keep the cookie in step with it.

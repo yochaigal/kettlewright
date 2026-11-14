@@ -4,7 +4,8 @@ const form = document.getElementById('pcgen-form');
 const display = document.getElementById('pcgen-result-display');
 const empty = document.getElementById('pcgen-empty-state');
 const error = document.getElementById('pcgen-error');
-const actions = [...form.querySelectorAll('.tools-history-actions button')];
+const toolbar = document.getElementById('pcgen-button-container');
+const actions = [...toolbar.querySelectorAll('.tools-actions button')];
 
 const viewTabs = [...document.querySelectorAll('[data-character-view]')];
 let selectedView = 'sheet';
@@ -40,6 +41,7 @@ document.addEventListener('htmx:afterSwap', event => {
   }
   showView(selectedView);
   empty.hidden = ready;
+  toolbar.hidden = !ready;
   actions.forEach(button => {button.disabled = !ready;});
   error.hidden = true;
 });
@@ -92,7 +94,7 @@ document.getElementById('gen-print-button').addEventListener('click', event => {
   const frame = document.createElement('iframe');
   frame.name = `pcgen-print-${Date.now()}`;
   frame.className = 'tools-print-frame';
-  frame.title = event.currentTarget.textContent;
+  frame.title = event.currentTarget.textContent.trim();
   const post = document.createElement('form');
   post.method = 'post';
   post.action = event.currentTarget.dataset.url;

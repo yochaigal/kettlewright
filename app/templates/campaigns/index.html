@@ -1,24 +1,42 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token, page_header, delete_dialog with context %}
+{% from 'campaigns/forms.html' import token, page_header, modal, modal_footer with context %}
 {% from 'campaigns/material_tree.html' import material_children, tree_toolbar with context %}
 {% block workspace %}
-<div x-data="{}">
 {% call page_header(_('Campaigns')) %}
-<a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a><button type="button" class="primary" aria-haspopup="dialog" @click="$refs.createDialog.showModal()">{{ _('Create New') }}</button>
-{% endcall %}
-<dialog class="create-dialog" x-ref="createDialog" @close="$refs.createDialog.querySelector('form').reset()" aria-labelledby="create-title">
-<h2 id="create-title">{{ _('Create new') }}</h2>
-<form method="post" action="{{ url_for('campaigns.create_new') }}">{{ token() }}
-<fieldset class="segmented"><legend class="sr-only">{{ _('Type') }}</legend>
-<label><input type="radio" name="kind" value="campaign" checked><span>{{ _('Campaign') }}</span></label>
-<label><input type="radio" name="kind" value="note"><span>{{ _('Note') }}</span></label>
+{% call modal('new-campaign-modal', _('New campaign'), _('New campaign'), open=request.args.get('new') == '1') %}
+<form method="post" x-data="newCampaign" @submit="submit($event)">{{ token() }}
+<section class="modal-card-body">
+<label>{{ _('Campaign name') }}<input type="text" name="name" required maxlength="200" autocomplete="off"></label>
+<fieldset class="campaign-start-options"><legend>{{ _('How do you want to start?') }}</legend>
+<label class="campaign-start-option"><input type="radio" name="start" value="empty" x-model="start">
+<span><strong>{{ _('Empty campaign') }}</strong><small>{{ _('Start blank and add articles, maps or imports yourself.') }}</small></span></label>
+<label class="campaign-start-option"><input type="radio" name="start" value="random" x-model="start">
+<span><strong>{{ _('Random campaign') }}</strong><small>{{ _('Generate and save a realm, dungeon or forest with points of interest. You can edit everything afterwards.') }}</small></span></label>
 </fieldset>
-<label>{{ _('Name') }}<input type="text" name="name" required maxlength="200" autofocus></label>
-<div class="create-dialog-actions"><button type="button" @click="$refs.createDialog.close()">{{ _('Cancel') }}</button><button type="submit" class="primary">{{ _('Create') }}</button></div>
-</form>
-</dialog>
+<div class="campaign-random-options" x-show="start === 'random'" x-cloak>
+<label>{{ _('Article type') }}<select name="kind" x-model="kind"><option value="realm">{{ _('Realm') }}</option><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option></select></label>
+<label class="campaign-check"><input type="checkbox" name="generate_children" value="1" x-model="children">{{ _('Generate all child articles') }}</label>
+<div class="campaign-random-chances" x-show="children && kind !== 'dungeon'">
+<label x-show="kind === 'realm'">{{ _('Forest') }} (%)<input type="number" name="forest_chance" min="0" max="100" value="50"></label>
+<label>{{ _('Forest POIs') }} (%)<input type="number" name="dungeon_chance" min="0" max="100" value="25"></label>
 </div>
-<p>{{ _('Your world at a glance. Expand a branch, open an article, or review what you have shared.') }}</p>
+<label>{{ _('Dice / points of interest') }}<select name="poi_count">
+{% for value, label in [('', _('Random count')), ('3', '3'), ('6', '6'), ('8', '8'), ('12', '12'), ('20', '20')] %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+</select></label>
+<small x-show="kind === 'realm'">{{ _('Includes the Heart: a settlement at point 1.') }}</small>
+</div>
+</section>
+<footer class="modal-card-foot campaign-actions campaign-modal-actions">
+<button type="button" @click="hide()">{{ _('Cancel') }}</button>
+<button type="submit" :disabled="generating" x-text="generating ? {{ _('Generating…')|tojson|forceescape }} : (start === 'random' ? {{ _('Create and generate')|tojson|forceescape }} : {{ _('Create campaign')|tojson|forceescape }})">{{ _('Create campaign') }}</button>
+</footer>
+</form>
+{% endcall %}
+<a href="{{ url_for('campaigns.new_entry') }}">{{ _('New article') }}</a>
+<a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a>
+{% endcall %}
+<p>{{ _('Campaigns group your private articles and maps. Open a campaign to manage its articles and choose which parties it is shared with.') }}</p>
+
 {% set flashed = get_flashed_messages(with_categories=true) %}
 {% for category, message in flashed if category == 'error' %}<p class="import-error" role="alert" tabindex="-1" autofocus>{{ message }}</p>{% endfor %}
 {% set notices = flashed|rejectattr(0, 'equalto', 'error')|list %}
@@ -28,18 +46,25 @@
 
 {% set starter_titles = starter|map(attribute='title')|list %}
 {% set available = starter|rejectattr('campaign')|list %}
-<div x-data="materialTree({collapsed:true})">
-{{ tree_toolbar(true) }}
-<div class="campaign-tree-root tree-empty tree-heading"><h3{% if not campaigns %} class="tree-empty-title"{% endif %}>{{ _('My campaigns') }}</h3><button type="button" class="link-button heading-toggle" @click="toggle()" x-text='expanded ? {{ _('Collapse all')|tojson }} : {{ _('Expand all')|tojson }}'>{{ _('Expand all') }}</button></div>
+{% if campaigns or unfiled or available %}
+<div x-data="materialTree">
+{{ tree_toolbar() }}
 {% for campaign in campaigns %}
-<details class="campaign-tree-root{% if available and loop.last %} before-starters{% endif %}" data-tree-key="campaign-{{ campaign.id }}" data-tree-row data-search="{{ campaign.name|lower }}">
-<summary><span class="tree-row"><a class="tree-title" href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}">{{ campaign.name }}</a><span class="tree-meta">{{ _('Campaign') }}</span><span>{{ campaign.entries|length }} {{ _('articles') }}</span><span class="tree-excerpt">{% for link in campaign.parties %}{{ link.party.name }}{% if not loop.last %}, {% endif %}{% else %}{{ _('No connected parties') }}{% endfor %}</span></span>{% if campaign.name in starter_titles %}<form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}" @submit.prevent="document.getElementById('delete-{{ campaign.id }}').showModal()">{{ token(campaign.version) }}<button type="submit" class="link-button" aria-label="{{ _('Remove %(title)s', title=campaign.name) }}">{{ _('Remove') }}</button></form>{% endif %}</summary>
+<details class="campaign-tree-root" data-tree-key="campaign-{{ campaign.id }}" data-tree-row data-search="{{ campaign.name|lower }}">
+<summary class="campaign-tree-head"><span class="tree-row"><a class="tree-title" href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}">{{ campaign.name }}</a><span class="tree-count" title="{{ _('Articles') }}">{{ campaign.entries|length }} {{ _('articles') }}</span><span class="tree-excerpt">{% for link in campaign.parties %}{% if loop.first %}{{ _('Shared with') }} {% endif %}{{ link.party.name }}{% if not loop.last %}, {% endif %}{% else %}{{ _('Not shared with any party') }}{% endfor %}</span></span>{% if campaign.name in starter_titles %}<span @click.stop="$event.target.closest('button, a, input, select, textarea') || $event.preventDefault()">{% call modal('remove-campaign-%d'|format(campaign.id), _('Remove'), _('Delete campaign?'), label_aria=_('Remove %(title)s', title=campaign.name)) %}
+<form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}">{{ token(campaign.version) }}
+<section class="modal-card-body">
+<p><strong>{{ campaign.name }}</strong> · {{ campaign.entries|length }} {{ _('articles') }}</p>
+<p>{{ _('Deleting this campaign permanently deletes all its articles, drawings and published party versions. This cannot be undone. Connected parties and their characters are kept.') }}</p>
+</section>
+{{ modal_footer(_('Permanently delete campaign and all articles'), 'confirm', 'delete') }}
+</form>
+{% endcall %}</span>{% endif %}</summary>
 {{ material_children(trees[campaign.id], False) }}
-{% if not trees[campaign.id] %}<p>{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id) }}">{{ _('New article') }}</a></p>{% endif %}
+{% if not trees[campaign.id] %}<p class="tree-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id) }}">{{ _('New article') }}</a></p>{% endif %}
 </details>
-{% if campaign.name in starter_titles %}{{ delete_dialog(campaign) }}{% endif %}
 {% endfor %}
-{% if available %}<section aria-labelledby="starter-heading">
+{% if available %}<section class="starter-adventures" aria-labelledby="starter-heading">
 <h3 id="starter-heading">{{ _('Free Starter Adventures') }}</h3>
 {% for card in available %}
 <div class="starter-row">
@@ -48,6 +73,11 @@
 </div>
 {% endfor %}
 </section>{% endif %}
-{% if unfiled %}<details class="campaign-tree-root" data-tree-key="unfiled" data-tree-row data-search="unfiled articles"><summary><a href="{{ url_for('campaigns.library') }}">{{ _('Unfiled articles') }}</a></summary>{{ material_children(unfiled, False) }}</details>{% else %}<div class="campaign-tree-root tree-empty" data-tree-row data-search="unfiled articles"><span class="tree-empty-title">{{ _('Unfiled articles') }}</span></div>{% endif %}
+{% if unfiled %}
+<details class="campaign-tree-root" data-tree-key="unfiled" data-tree-row data-search="unfiled articles"><summary class="campaign-tree-head"><span class="tree-row"><a class="tree-title" href="{{ url_for('campaigns.library') }}">{{ _('Unfiled articles') }}</a><span class="tree-count">{{ unfiled|length }}</span><span class="tree-excerpt">{{ _('Articles not in any campaign') }}</span></span></summary>{{ material_children(unfiled, False) }}</details>
+{% endif %}
 </div>
+{% else %}
+<p class="tree-empty">{{ _('No campaigns yet.') }} <a href="{{ url_for('campaigns.index', new=1) }}">{{ _('Create your first campaign') }}</a> {{ _('or') }} <a href="{{ url_for('campaigns.import_archive') }}">{{ _('import a Markdown file or archive') }}</a>.</p>
+{% endif %}
 {% endblock %}

@@ -69,7 +69,7 @@ def test_campaigns_page_offers_every_adventure_without_adding_any(user):
     assert page.count('>Add<') == COUNT
     assert page.count('class="starter-icon"') == COUNT and page.count('target="_blank" rel="noopener"') == COUNT
     assert 'Read on Cairn' not in page
-    assert '<h3 id="starter-heading">Free Starter Adventures</h3>' in page and 'materialTree({collapsed:true})' in page
+    assert '<h3 id="starter-heading">Free Starter Adventures</h3>' in page
     assert 'Remove' not in page
     with app.app_context():
         assert Campaign.query.count() == 0
@@ -78,7 +78,7 @@ def test_campaigns_page_offers_every_adventure_without_adding_any(user):
 def test_add_creates_only_that_campaign_and_card_shows_added(user):
     app, client = user
     response = client.post(f'/campaigns/starter/{SECOND.name}')
-    assert response.status_code == 302 and response.location.endswith(f'#starter-{SECOND.name}')
+    assert response.status_code == 302 and response.location.endswith('/campaigns/')
     with app.app_context():
         assert names() == {title_of(SECOND)}
         campaign = Campaign.query.filter_by(owner_id=1).one()
@@ -92,7 +92,7 @@ def test_add_creates_only_that_campaign_and_card_shows_added(user):
 
 
 def test_heading_stays_until_every_adventure_is_added(user):
-    app, client = user
+    _, client = user
     for path in DIRS[:-1]:
         client.post(f'/campaigns/starter/{path.name}')
     assert 'starter-heading' in campaigns_page(client)

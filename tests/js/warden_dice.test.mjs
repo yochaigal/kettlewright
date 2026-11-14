@@ -8,9 +8,11 @@ function roller(active = '1') {
   const buttons = [element(), element(), element()];
   buttons[1].dataset = {wardenRoll: 'reaction'};
   buttons[2].dataset = {wardenRoll: 'fate'};
-  const modal = {resultText: null, initialize(callback) { this.roll = callback; },
-    setMode(mode) { this.mode = mode; }, showDiceModal() { this.open = true; }};
   const result = {textContent: ''};
+  // Callers show results through the modal (which animates them); requestWardenRoll only rolls.
+  const modal = {resultText: null, initialize(callback) { this.roll = async dice => this.showResult(await callback(dice)); },
+    setMode(mode) { this.mode = mode; }, showDiceModal() { this.open = true; },
+    showRolling() {}, showError() {}, async showResult(rolled) { result.textContent = rolled.result; }};
   modal.resultText = result;
   const select = {...element(), value: '', options: [{value: ''}, {value: '1'}]};
   const publicToggle = {...element(), checked: true};
@@ -59,14 +61,15 @@ test('header opens the shared modal and every roll uses its result display', asy
 test('Tools restores owned active party and sends server request with CSRF', async () => {
   const {context, select, requests, result, stored} = roller();
   assert.equal(select.value, '1');
-  await context.requestWardenRoll('reaction');
+  const rolled = await context.requestWardenRoll('reaction');
   assert.equal(requests[0].url, '/warden/roll');
   assert.equal(requests[0].method, 'POST');
   assert.equal(requests[0].body.get('party_id'), '1');
   assert.equal(requests[0].body.get('csrf_token'), 'csrf');
   assert.equal(requests[0].body.get('kind'), 'reaction');
   assert.equal(requests[0].body.has('public_roll'), false);
-  assert.equal(result.textContent, '<private result>');
+  assert.equal(rolled.result, '<private result>');
+  assert.equal(result.textContent, '');
   select.value = '';
   select.listeners.change();
   assert.equal(stored.get('warden-roll-party'), '');

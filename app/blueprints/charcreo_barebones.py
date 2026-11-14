@@ -20,6 +20,7 @@ from app.lib.inventory import Inventory
 from app.lib.roll import roll_list, roll_multi_dice
 from app.models import Character, db
 from app.models.character import EDITION_BAREBONES
+from app.lib.dice_feedback import queue_dice
 
 charcreo_barebones = Blueprint('charcreo_barebones', __name__)
 
@@ -76,18 +77,24 @@ def set_package(state, source):
     state['package_items'] = package_items(source) if source != GEAR_BACKGROUND else []
 
 
-def roll_field(state, field):
+def roll_field(state, field, animate=False):
+    """Roll one field; with animate, the dice also roll in 3D (single rolls only, not Roll All)."""
+    def dice(faces, count):
+        values, total = roll_multi_dice(faces, count)
+        if animate:
+            queue_dice(values, faces)
+        return total
     if field in TABLES:
         set_table(state, field, roll_index(TABLES[field][0]))
     elif field in ATTRIBUTES:
         key, faces, count = ATTRIBUTES[field]
-        state[key] = roll_multi_dice(faces, count)[1]
+        state[key] = dice(faces, count)
     elif field == 'name':
         state['name'] = roll_name()
     elif field == 'age':
-        state['age'] = roll_multi_dice(20, 2)[1] + 10
+        state['age'] = dice(20, 2) + 10
     elif field == 'gold':
-        state['gold'] = roll_multi_dice(6, 3)[1]
+        state['gold'] = dice(6, 3)
     elif field == 'traits':
         for name in TRAIT_NAMES:
             state[name] = roll_list(load_traits()[name])
@@ -177,7 +184,7 @@ def roll(field):
     if field in ('all', 'remaining'):
         roll_missing(state, everything=field == 'all')
     else:
-        roll_field(state, field)
+        roll_field(state, field, animate=True)
     return render_form(state)
 
 

@@ -31,7 +31,8 @@ def read_json(text, name):
 def prepare_maps(payload, files):
     rows = payload['rows']
     ids = {row['id']: i for i, row in enumerate(rows) if row['id']}
-    used, warnings = set(), []
+    used = set()
+    warnings = payload.setdefault('warnings', [])
     payload['warnings'] = warnings
     payload['links'] = []
     payload['reference_bindings'] = []
