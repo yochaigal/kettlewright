@@ -175,5 +175,5 @@ def test_character_view_keeps_html_print_and_adds_pdf_option(pdf_character, orie
     assert b'/users/printer/characters/hero/print/"' in response.data
     assert PATH.format(orientation=orientation).encode() in response.data
     assert b'x-model="exportAttributes" checked' in response.data
-    assert b'Export Attributes' in response.data
+    assert b'Export Current Attributes' in response.data
     assert b'?export_attributes=' in response.data
