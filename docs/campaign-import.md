@@ -132,3 +132,6 @@ to use ordinary Markdown HTTP(S) URLs.
 
 Deployment requires installing the updated requirements and running `flask db upgrade`
 through migration `336a01`.
+
+Child articles whose `parent` names a Campaign that is not in the archive but that you
+already own are imported into that existing campaign, matched by exact name.

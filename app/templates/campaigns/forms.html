@@ -60,7 +60,21 @@
 {% endmacro %}
 {% macro modal_footer(submit_label, submit_name=None, submit_value=None) %}
 <footer class="modal-card-foot campaign-actions campaign-modal-actions">
-<button type="submit"{% if submit_name %} name="{{ submit_name }}" value="{{ submit_value }}"{% endif %}>{{ submit_label }}</button>
 <button type="button" @click="hide()">{{ _('Cancel') }}</button>
+<button type="submit"{% if submit_name %} name="{{ submit_name }}" value="{{ submit_value }}"{% endif %}>{{ submit_label }}</button>
 </footer>
+{% endmacro %}
+{% macro delete_dialog(campaign) %}
+<dialog class="create-dialog confirm-dialog" role="alertdialog" id="delete-{{ campaign.id }}" aria-labelledby="delete-title-{{ campaign.id }}" aria-describedby="delete-desc-{{ campaign.id }}">
+<h2 id="delete-title-{{ campaign.id }}">{{ _('Delete campaign?') }}</h2>
+<p><strong>{{ campaign.name }}</strong></p>
+<p id="delete-desc-{{ campaign.id }}">{{ _('Deleting this campaign permanently deletes all its articles, drawings and published party versions. This cannot be undone. Connected parties and their characters are kept.') }}</p>
+<p>{{ _('Articles to delete:') }} {{ campaign.entries|length }}</p>
+<form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}">{{ token(campaign.version) }}
+<div class="create-dialog-actions">
+<button type="button" autofocus onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
+<button type="submit" name="confirm" value="delete" class="danger">{{ _('Delete campaign') }}</button>
+</div>
+</form>
+</dialog>
 {% endmacro %}

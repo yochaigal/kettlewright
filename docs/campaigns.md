@@ -103,6 +103,30 @@ Map geometry and content originals use separate optimistic version checks. Confl
 
 Originals, campaign membership, party presentations and graph geometry are separate tables so future campaign copying can omit party knowledge. Campaign sharing, co-Wardens, player editing, general file attachments and inventory transfers are outside this version.
 
+## Starter adventures
+
+The Campaigns page lists the free Cairn first-party adventures CAS-1 to CAS-4 as rows
+under the user's campaigns, below a "Free Starter Adventures" heading that disappears once all four are added. Each row has an outbound icon after the title linking to the original on
+cairnrpg.com, and **Add** imports a private copy through the same archive importer as
+**Import archive**. Nothing is added automatically.
+
+Once the user has a campaign with that exact name, its row disappears and the campaign
+appears in the tree with a **Remove** button. Adding one shows a toast; failures stay inline. **Remove** goes to the usual delete-campaign
+confirmation, which warns that the campaign and all its articles are permanently deleted;
+after deleting, the row returns. Renaming the copy also brings the row back, and a campaign
+the user made with the same name counts as added. A failed import is rolled back and
+reported on the page.
+
+The campaign tree always loads collapsed. One button above it switches between
+**Expand all** and **Collapse all**.
+
+The bundles live in `app/starter_adventures/cas-N/` (a `campaign.md` plus
+`articles/*.md`) and are generated from the open Cairn text by
+`python scripts/build_starter_adventures.py` (add `--source DIR` to use local
+`cas-N.md` files). Commit the regenerated output. Images link to cairnrpg.com.
+Card descriptions are in `app/lib/starter_adventures.py`. The text is CC-BY-SA 4.0;
+see `THIRD-PARTY-NOTICES.md`.
+
 ## Validation
 
 ```sh
@@ -117,3 +141,7 @@ Map editors preload the ready-made Excalidraw libraries **Architecture floor pla
 Terrain borders can be moved, resized, rotated and edited point by point. A manual shape overrides the initial landmark-based polygon until **Reset shape**; moving a landmark does not overwrite it. The article list separates Topography (including Terrain, Landmark and Water) from POIs. **Draw this watercourse** is available only for a selected Water article and replaces its marker with the next stroke, with selectable width, preserving its article link and publication visibility. Linked shapes use live geometry like marker positions; independent strokes use the existing drawing publication snapshot. Both are saved with the article.
 
 Generated Realm, Faction, POI, Terrain, Landmark, Water and Path names use the formulas in [Cairn Naming Procedures](https://cairnrpg.com/second-edition/wardens-guide/naming-procedures/); forests use its dedicated adjective/noun tables. The copied tables in `names.json` retain source order and are licensed CC-BY-SA 4.0 by Cairn / Yochai Gal. Terrain names use matching terrain synonyms; POI names use their rolled site type. Applying the place formula to water, landmarks and paths is the application’s interpretation of the naming guidance. Culture, resources, traits, advantages and agendas keep descriptive headings; they are not named locations. Names are rolled once with the draft, retain the descriptive fields, and are preserved on save. Existing saved articles are not randomly renamed.
+
+## Creating new items
+
+**Create New** on the Campaigns page opens a dialog with a Campaign / Note switch and a name field. **Campaign** creates the campaign and continues to its creation page; **Note** opens the New article form with the name as the title and the type set to Notes. The Unfiled articles row is shown muted, without a chevron, until there is at least one unfiled article.

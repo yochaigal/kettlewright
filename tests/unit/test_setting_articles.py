@@ -262,7 +262,7 @@ def test_map_draft_children_remain_private_and_form_has_types(setup):
     # The header ends where the page intro paragraph starts; modals nest their own divs.
     navigation=html.split('class="campaign-actions campaign-page-actions"')[1].split('<p>')[0]
     assert 'Unfiled articles' not in navigation
-    assert 'Import archive' in navigation and 'New article' in navigation
+    assert 'Import archive' in navigation and 'Create New' in navigation
 
 
 def test_parent_form_advances_version_once_and_map_groups_roundtrip(setup):

@@ -16,6 +16,7 @@ from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
 from app.lib.campaign_import import (preview_archive, single_file_preview, import_preview, apply_overrides,
     ImportError, MAX_ARCHIVE, MAX_FILE)
 from app.lib.campaign_export import export_campaign
+from app.lib.starter_adventures import STARTERS, add_starter_adventure, starter_cards
 from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, check_version,
     entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
     party_access, publishable_party, render_content, save_geometry, text_value, content_value,
@@ -124,6 +125,13 @@ def entry_redirect(entry):
     return redirect(url_for('campaigns.edit_entry', entry_id=entry.id))
 
 
+def create_campaign(name):
+    campaign = Campaign(owner_id=current_user.id, name=name)
+    db.session.add(campaign)
+    db.session.commit()
+    return redirect(url_for('campaigns.new_map', campaign_id=campaign.id, kind='realm'))
+
+
 @campaigns.route('/campaigns/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -160,8 +168,37 @@ def index():
     campaigns_list = my_campaigns()
     entries = library_entries().order_by(ContentEntry.title).all()
     return render_template('campaigns/index.html', campaigns=campaigns_list,
+        starter=starter_cards({c.name: c for c in campaigns_list}),
         trees={campaign.id: material_hierarchy([e for e in entries if e.campaign_id == campaign.id]) for campaign in campaigns_list},
         unfiled=material_hierarchy([e for e in entries if e.campaign_id is None]))
+
+
+@campaigns.route('/campaigns/create', methods=['POST'])
+def create_new():
+    kind = request.form.get('kind')
+    if kind not in ('campaign', 'note'):
+        abort(400)
+    name = text_value(request.form.get('name'), 200, True)
+    if kind == 'campaign':
+        return create_campaign(name)
+    return redirect(url_for('campaigns.new_entry', title=name, category='note'))
+
+
+@campaigns.route('/campaigns/starter/<slug>', methods=['POST'])
+def add_starter(slug):
+    if slug not in STARTERS:
+        abort(404)
+    title = STARTERS[slug]['title']
+    try:
+        add_starter_adventure(current_user.id, slug)
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        current_app.logger.exception('Starter adventure %s failed for user %s', slug, current_user.id)
+        flash(_('Could not add %(title)s. Please try again.', title=title), 'error')
+        return redirect(url_for('campaigns.index'))
+    flash(_('%(title)s was added to your campaigns.', title=title), 'success')
+    return redirect(url_for('campaigns.index'))
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/', methods=['GET', 'POST'])
@@ -316,7 +353,11 @@ def new_entry():
                                         party_url=party.party_url) + '#campaign-details')
             return redirect(url_for('campaigns.party_materials', party_id=party.id))
         return entry_redirect(entry)
+    initial_category = request.args.get('category')
+    if initial_category not in CATEGORIES or initial_category in ('map', 'overview'):
+        initial_category = 'custom'
     return render_template('campaigns/entry.html', entry=None, campaign=campaign, party=party,
+                           initial_title=request.args.get('title', '')[:200], initial_category=initial_category,
                            campaigns=my_campaigns(), candidates=[], selected_links=set(),
                            parent_candidates=article_parent_choices(library_entries()), selected_parent=request.args.get('parent_id', ''))
 
