@@ -45423,3 +45423,43 @@ msgstr "Exhaustos, no recuperan PG: %(names)s."
 msgctxt "dungeon action"
 msgid "Rest"
 msgstr "Descansar"
+
+#: app/templates/main/dice_modal.html
+msgid "3D dice"
+msgstr "Dados 3D"
+
+#: app/templates/main/dice_modal.html
+msgid "Esc to close"
+msgstr "Esc para cerrar"
+
+#: app/templates/main/dice_modal.html
+msgid "Choose a die to roll."
+msgstr "Elige un dado para tirar."
+
+#: app/templates/main/dice_modal.html
+msgid "One die"
+msgstr "Un dado"
+
+#: app/templates/main/dice_modal.html
+msgid "Two dice"
+msgstr "Dos dados"
+
+#: app/templates/main/dice_modal.html
+msgid "Recent rolls"
+msgstr "Tiradas recientes"
+
+#: app/templates/main/dice_modal.html
+msgid "Rolling…"
+msgstr "Tirando…"
+
+#: app/templates/main/dice_modal.html
+msgid "Highest"
+msgstr "Mayor"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "Warden rolls"
+msgstr "Tiradas de la Guardiana"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "2d6"
+msgstr "2d6"

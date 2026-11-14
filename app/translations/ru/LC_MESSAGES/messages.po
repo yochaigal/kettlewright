@@ -35713,3 +35713,43 @@ msgstr "В истощении, ОЗ не восстановлены: %(names)s."
 msgctxt "dungeon action"
 msgid "Rest"
 msgstr "Отдых"
+
+#: app/templates/main/dice_modal.html
+msgid "3D dice"
+msgstr "3D-кости"
+
+#: app/templates/main/dice_modal.html
+msgid "Esc to close"
+msgstr "Esc — закрыть"
+
+#: app/templates/main/dice_modal.html
+msgid "Choose a die to roll."
+msgstr "Выберите кость для броска."
+
+#: app/templates/main/dice_modal.html
+msgid "One die"
+msgstr "Одна кость"
+
+#: app/templates/main/dice_modal.html
+msgid "Two dice"
+msgstr "Две кости"
+
+#: app/templates/main/dice_modal.html
+msgid "Recent rolls"
+msgstr "Недавние броски"
+
+#: app/templates/main/dice_modal.html
+msgid "Rolling…"
+msgstr "Бросок…"
+
+#: app/templates/main/dice_modal.html
+msgid "Highest"
+msgstr "Наибольшее"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "Warden rolls"
+msgstr "Броски Стража"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "2d6"
+msgstr "2к6"
