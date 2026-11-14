@@ -1,45 +1,53 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token, page_header with context %}
+{% from 'campaigns/forms.html' import token, page_header, delete_dialog with context %}
 {% from 'campaigns/material_tree.html' import material_children, tree_toolbar with context %}
 {% block workspace %}
+<div x-data="{}">
 {% call page_header(_('Campaigns')) %}
-<a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a><a href="{{ url_for('campaigns.new_entry') }}">{{ _('New article') }}</a>
+<a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a><button type="button" class="primary" aria-haspopup="dialog" @click="$refs.createDialog.showModal()">{{ _('Create New') }}</button>
 {% endcall %}
+<dialog class="create-dialog" x-ref="createDialog" @close="$refs.createDialog.querySelector('form').reset()" aria-labelledby="create-title">
+<h2 id="create-title">{{ _('Create new') }}</h2>
+<form method="post" action="{{ url_for('campaigns.create_new') }}">{{ token() }}
+<fieldset class="segmented"><legend class="sr-only">{{ _('Type') }}</legend>
+<label><input type="radio" name="kind" value="campaign" checked><span>{{ _('Campaign') }}</span></label>
+<label><input type="radio" name="kind" value="note"><span>{{ _('Note') }}</span></label>
+</fieldset>
+<label>{{ _('Name') }}<input type="text" name="name" required maxlength="200" autofocus></label>
+<div class="create-dialog-actions"><button type="button" @click="$refs.createDialog.close()">{{ _('Cancel') }}</button><button type="submit" class="primary">{{ _('Create') }}</button></div>
+</form>
+</dialog>
+</div>
 <p>{{ _('Your world at a glance. Expand a branch, open an article, or review what you have shared.') }}</p>
-{% for category, message in get_flashed_messages(with_categories=true) %}{% if category == 'error' %}<p class="import-error" role="alert" tabindex="-1" autofocus>{{ message }}</p>{% else %}<p role="status">{{ message }}</p>{% endif %}{% endfor %}
+{% set flashed = get_flashed_messages(with_categories=true) %}
+{% for category, message in flashed if category == 'error' %}<p class="import-error" role="alert" tabindex="-1" autofocus>{{ message }}</p>{% endfor %}
+{% set notices = flashed|rejectattr(0, 'equalto', 'error')|list %}
+{% if notices %}<div class="toasts" role="status">
+{% for category, message in notices %}<div class="toast" x-data="{open:true,t:null}" x-show="open" x-init="t=setTimeout(()=>open=false,6000)" @mouseenter="clearTimeout(t)" @focusin="clearTimeout(t)" @mouseleave="clearTimeout(t);t=setTimeout(()=>open=false,3000)" @focusout="clearTimeout(t);t=setTimeout(()=>open=false,3000)"><span>{{ message }}</span><button type="button" class="toast-close" aria-label="{{ _('Dismiss') }}" @click="open=false">×</button></div>
+{% endfor %}</div>{% endif %}
 
-<section aria-labelledby="starter-heading">
-<h2 id="starter-heading">{{ _('Starter adventures') }}</h2>
-<p>{{ _('Free Cairn adventures by Yochai Gal. Read one on cairnrpg.com first, then add a copy to your campaigns to edit and run.') }}</p>
-<div class="campaign-cards">
-{% for card in starter %}
-<article class="campaign-card">
-<h3 id="starter-{{ card.slug }}" tabindex="-1">{{ card.title }}</h3>
-<p>{{ card.description }}</p>
-<p><a href="{{ card.url }}" target="_blank" rel="noopener" aria-describedby="starter-{{ card.slug }}">{{ _('Read on Cairn (opens in a new tab)') }}</a></p>
-<div class="campaign-actions">
-{% if card.campaign %}<form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=card.campaign.id) }}">{{ token(card.campaign.version) }}<button type="submit" aria-describedby="starter-{{ card.slug }}">{{ _('Remove') }}</button></form><a href="{{ url_for('campaigns.workspace', campaign_id=card.campaign.id) }}" aria-describedby="starter-{{ card.slug }}">{{ _('Open campaign') }}</a>
-{% else %}<form method="post" action="{{ url_for('campaigns.add_starter', slug=card.slug) }}">{{ token() }}<button type="submit" aria-describedby="starter-{{ card.slug }}">{{ _('Add to Campaigns') }}</button></form>{% endif %}
-</div>
-</article>
-{% endfor %}
-</div>
-</section>
-
-<div x-data="materialTree">
-{{ tree_toolbar() }}
+{% set starter_titles = starter|map(attribute='title')|list %}
+{% set available = starter|rejectattr('campaign')|list %}
+<div x-data="materialTree({collapsed:true})">
+{{ tree_toolbar(true) }}
+<div class="campaign-tree-root tree-empty tree-heading"><h3{% if not campaigns %} class="tree-empty-title"{% endif %}>{{ _('My campaigns') }}</h3><button type="button" class="link-button heading-toggle" @click="toggle()" x-text='expanded ? {{ _('Collapse all')|tojson }} : {{ _('Expand all')|tojson }}'>{{ _('Expand all') }}</button></div>
 {% for campaign in campaigns %}
-<details open class="campaign-tree-root" data-tree-key="campaign-{{ campaign.id }}" data-tree-row data-search="{{ campaign.name|lower }}">
-<summary><span class="tree-row"><a class="tree-title" href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}">{{ campaign.name }}</a><span class="tree-meta">{{ _('Campaign') }}</span><span>{{ campaign.entries|length }} {{ _('articles') }}</span><span class="tree-excerpt">{% for link in campaign.parties %}{{ link.party.name }}{% if not loop.last %}, {% endif %}{% else %}{{ _('No connected parties') }}{% endfor %}</span></span></summary>
+<details class="campaign-tree-root{% if available and loop.last %} before-starters{% endif %}" data-tree-key="campaign-{{ campaign.id }}" data-tree-row data-search="{{ campaign.name|lower }}">
+<summary><span class="tree-row"><a class="tree-title" href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}">{{ campaign.name }}</a><span class="tree-meta">{{ _('Campaign') }}</span><span>{{ campaign.entries|length }} {{ _('articles') }}</span><span class="tree-excerpt">{% for link in campaign.parties %}{{ link.party.name }}{% if not loop.last %}, {% endif %}{% else %}{{ _('No connected parties') }}{% endfor %}</span></span>{% if campaign.name in starter_titles %}<form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}" @submit.prevent="document.getElementById('delete-{{ campaign.id }}').showModal()">{{ token(campaign.version) }}<button type="submit" class="link-button" aria-label="{{ _('Remove %(title)s', title=campaign.name) }}">{{ _('Remove') }}</button></form>{% endif %}</summary>
 {{ material_children(trees[campaign.id], False) }}
 {% if not trees[campaign.id] %}<p>{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id) }}">{{ _('New article') }}</a></p>{% endif %}
 </details>
-{% else %}<p>{{ _('No campaigns yet.') }}</p>{% endfor %}
-<details open class="campaign-tree-root" data-tree-key="unfiled" data-tree-row data-search="unfiled articles"><summary><a href="{{ url_for('campaigns.library') }}">{{ _('Unfiled articles') }}</a></summary>{{ material_children(unfiled, False) }}</details>
+{% if campaign.name in starter_titles %}{{ delete_dialog(campaign) }}{% endif %}
+{% endfor %}
+{% if available %}<section aria-labelledby="starter-heading">
+<h3 id="starter-heading">{{ _('Free Starter Adventures') }}</h3>
+{% for card in available %}
+<div class="starter-row">
+<span class="tree-row"><a class="tree-title" id="starter-{{ card.slug }}" href="{{ card.url }}" target="_blank" rel="noopener">{{ card.title }}<svg class="starter-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr-only"> {{ _('(opens cairnrpg.com in a new tab)') }}</span></a><span class="tree-excerpt">{{ card.description }}</span></span>
+<form method="post" action="{{ url_for('campaigns.add_starter', slug=card.slug) }}">{{ token() }}<button type="submit" aria-label="{{ _('Add %(title)s', title=card.title) }}">{{ _('Add') }}</button></form>
 </div>
-<details class="new-campaign"><summary>{{ _('Create campaign') }}</summary>
-<form method="post">{{ token() }}
-<label>{{ _('Campaign name') }}<input type="text" name="name" required maxlength="200"></label>
-<button type="submit">{{ _('Create campaign') }}</button>
-</form></details>
+{% endfor %}
+</section>{% endif %}
+{% if unfiled %}<details class="campaign-tree-root" data-tree-key="unfiled" data-tree-row data-search="unfiled articles"><summary><a href="{{ url_for('campaigns.library') }}">{{ _('Unfiled articles') }}</a></summary>{{ material_children(unfiled, False) }}</details>{% else %}<div class="campaign-tree-root tree-empty" data-tree-row data-search="unfiled articles"><span class="tree-empty-title">{{ _('Unfiled articles') }}</span></div>{% endif %}
+</div>
 {% endblock %}

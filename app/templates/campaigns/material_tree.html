@@ -26,11 +26,10 @@
 {% endfor %}
 </ul>
 {% endmacro %}
-{% macro tree_toolbar() %}
+{% macro tree_toolbar(collapsed=False) %}
 <div class="campaign-actions tree-toolbar">
-<label>{{ _('Find in tree') }}<input type="search" x-model="query" @input="filter()" placeholder="{{ _('Title, type or description') }}"></label>
-<button type="button" @click="expand(true)">{{ _('Expand all') }}</button>
-<button type="button" @click="expand(false)">{{ _('Collapse all') }}</button>
+<label>{{ _('Search') }}<input type="search" x-model="query" @input="filter()" placeholder="{{ _('Title, type or description') }}"></label>
+<button type="button" class="link-button{% if collapsed %} toolbar-toggle{% endif %}" @click="toggle()" x-text='expanded ? {{ _('Collapse all')|tojson }} : {{ _('Expand all')|tojson }}'>{{ _('Expand all') if collapsed else _('Collapse all') }}</button>
 </div>
 <p x-show="query && !matches" x-cloak>{{ _('No matching articles.') }}</p>
 {% endmacro %}

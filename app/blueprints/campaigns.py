@@ -124,19 +124,34 @@ def entry_redirect(entry):
     return redirect(url_for('campaigns.edit_entry', entry_id=entry.id))
 
 
+def create_campaign(name):
+    campaign = Campaign(owner_id=current_user.id, name=name)
+    db.session.add(campaign)
+    db.session.commit()
+    return redirect(url_for('campaigns.new_map', campaign_id=campaign.id, kind='realm'))
+
+
 @campaigns.route('/campaigns/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        campaign = Campaign(owner_id=current_user.id, name=text_value(request.form.get('name'), 200, True))
-        db.session.add(campaign)
-        db.session.commit()
-        return redirect(url_for('campaigns.new_map', campaign_id=campaign.id, kind='realm'))
+        return create_campaign(text_value(request.form.get('name'), 200, True))
     campaigns_list = my_campaigns()
     entries = library_entries().order_by(ContentEntry.title).all()
     return render_template('campaigns/index.html', campaigns=campaigns_list,
         starter=starter_cards({c.name: c for c in campaigns_list}),
         trees={campaign.id: material_hierarchy([e for e in entries if e.campaign_id == campaign.id]) for campaign in campaigns_list},
         unfiled=material_hierarchy([e for e in entries if e.campaign_id is None]))
+
+
+@campaigns.route('/campaigns/create', methods=['POST'])
+def create_new():
+    kind = request.form.get('kind')
+    if kind not in ('campaign', 'note'):
+        abort(400)
+    name = text_value(request.form.get('name'), 200, True)
+    if kind == 'campaign':
+        return create_campaign(name)
+    return redirect(url_for('campaigns.new_entry', title=name, category='note'))
 
 
 @campaigns.route('/campaigns/starter/<slug>', methods=['POST'])
@@ -308,7 +323,11 @@ def new_entry():
                                         party_url=party.party_url) + '#campaign-details')
             return redirect(url_for('campaigns.party_materials', party_id=party.id))
         return entry_redirect(entry)
+    initial_category = request.args.get('category')
+    if initial_category not in CATEGORIES or initial_category in ('map', 'overview'):
+        initial_category = 'custom'
     return render_template('campaigns/entry.html', entry=None, campaign=campaign, party=party,
+                           initial_title=request.args.get('title', '')[:200], initial_category=initial_category,
                            campaigns=my_campaigns(), candidates=[], selected_links=set(),
                            parent_candidates=article_parent_choices(library_entries()), selected_parent=request.args.get('parent_id', ''))
 

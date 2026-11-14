@@ -44,3 +44,17 @@
 </select></label>
 </div>
 {% endmacro %}
+{% macro delete_dialog(campaign) %}
+<dialog class="create-dialog confirm-dialog" role="alertdialog" id="delete-{{ campaign.id }}" aria-labelledby="delete-title-{{ campaign.id }}" aria-describedby="delete-desc-{{ campaign.id }}">
+<h2 id="delete-title-{{ campaign.id }}">{{ _('Delete campaign?') }}</h2>
+<p><strong>{{ campaign.name }}</strong></p>
+<p id="delete-desc-{{ campaign.id }}">{{ _('Deleting this campaign permanently deletes all its articles, drawings and published party versions. This cannot be undone. Connected parties and their characters are kept.') }}</p>
+<p>{{ _('Articles to delete:') }} {{ campaign.entries|length }}</p>
+<form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}">{{ token(campaign.version) }}
+<div class="create-dialog-actions">
+<button type="button" autofocus onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
+<button type="submit" name="confirm" value="delete" class="danger">{{ _('Delete campaign') }}</button>
+</div>
+</form>
+</dialog>
+{% endmacro %}

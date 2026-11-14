@@ -66,7 +66,10 @@ def test_campaigns_page_offers_every_adventure_without_adding_any(user):
     for path in DIRS:
         assert title_of(path) in page
         assert f'href="{SOURCE.format(path.name)}"' in page
-    assert page.count('Add to Campaigns') == COUNT
+    assert page.count('>Add<') == COUNT
+    assert page.count('class="starter-icon"') == COUNT and page.count('target="_blank" rel="noopener"') == COUNT
+    assert 'Read on Cairn' not in page
+    assert '<h3 id="starter-heading">Free Starter Adventures</h3>' in page and 'materialTree({collapsed:true})' in page
     assert 'Remove' not in page
     with app.app_context():
         assert Campaign.query.count() == 0
@@ -83,8 +86,18 @@ def test_add_creates_only_that_campaign_and_card_shows_added(user):
         campaign_id = campaign.id
     page = campaigns_page(client)
     assert f'{title_of(SECOND)} was added to your campaigns.' in page
-    assert page.count('Add to Campaigns') == COUNT - 1
+    assert 'class="toast"' in page and '<p role="status">' not in page
+    assert page.count('>Add<') == COUNT - 1
     assert f'href="/campaigns/{campaign_id}/"' in page and '>Remove<' in page
+
+
+def test_heading_stays_until_every_adventure_is_added(user):
+    app, client = user
+    for path in DIRS[:-1]:
+        client.post(f'/campaigns/starter/{path.name}')
+    assert 'starter-heading' in campaigns_page(client)
+    client.post(f'/campaigns/starter/{DIRS[-1].name}')
+    assert 'starter-heading' not in campaigns_page(client)
 
 
 def test_adding_twice_does_not_duplicate(user):
@@ -114,12 +127,12 @@ def test_renamed_or_deleted_copy_restores_the_button(user):
     with app.app_context():
         Campaign.query.one().name = 'My own name'
         db.session.commit()
-    assert campaigns_page(client).count('Add to Campaigns') == COUNT
+    assert campaigns_page(client).count('>Add<') == COUNT
     client.post(f'/campaigns/starter/{SECOND.name}')
     with app.app_context():
         db.session.delete(Campaign.query.filter_by(name=title_of(SECOND)).one())
         db.session.commit()
-    assert campaigns_page(client).count('Add to Campaigns') == COUNT
+    assert campaigns_page(client).count('>Add<') == COUNT
 
 
 def test_remove_asks_for_confirmation_then_deletes_and_restores_add(user):
@@ -135,7 +148,7 @@ def test_remove_asks_for_confirmation_then_deletes_and_restores_add(user):
     assert client.post(action, data={'version': version, 'confirm': 'delete'}).status_code == 302
     with app.app_context():
         assert Campaign.query.count() == 0 and ContentEntry.query.count() == 0
-    assert campaigns_page(client).count('Add to Campaigns') == COUNT
+    assert campaigns_page(client).count('>Add<') == COUNT
 
 
 def test_unknown_slug_is_404_and_logged_out_is_redirected(user):
@@ -168,7 +181,9 @@ def test_failed_import_is_rolled_back_and_reported(user):
     with app.app_context():
         assert Campaign.query.count() == 0 and ContentEntry.query.count() == 0
         assert db.session.get(User, 1) is not None
-    assert f'Could not add {title_of(FIRST)}' in campaigns_page(client)
+    page = campaigns_page(client)
+    assert f'Could not add {title_of(FIRST)}' in page
+    assert 'role="alert"' in page and 'class="toast"' not in page
 
 
 def test_add_starter_adventure_rejects_unknown_slug(user):

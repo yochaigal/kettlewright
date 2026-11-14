@@ -1,5 +1,5 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token, page_header with context %}
+{% from 'campaigns/forms.html' import token, page_header, delete_dialog with context %}
 {% from 'campaigns/material_tree.html' import material_children, tree_toolbar with context %}
 {% block workspace %}
 {% call page_header(campaign.name if campaign else _('Unfiled articles')) %}
@@ -39,9 +39,10 @@
 <p>{{ _('Disconnecting a party hides this campaign’s published articles from it.') }}</p>
 <button>{{ _('Save settings') }}</button>
 </form>
-<form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}">{{ token(campaign.version) }}
+<form method="post" x-data action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}" @submit.prevent="document.getElementById('delete-{{ campaign.id }}').showModal()">{{ token(campaign.version) }}
 <p>{{ _('Deleting this campaign permanently deletes all its articles, drawings and published party versions. This cannot be undone. Connected parties and their characters are kept.') }}</p>
 <button>{{ _('Delete campaign and all articles…') }}</button></form>
+{{ delete_dialog(campaign) }}
 </details>
 {% endif %}
 {% endblock %}
