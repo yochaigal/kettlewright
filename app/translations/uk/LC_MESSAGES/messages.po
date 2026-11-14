@@ -27216,3 +27216,43 @@ msgstr "У позбавленні, ПЗ не відновлено: %(names)s."
 msgctxt "dungeon action"
 msgid "Rest"
 msgstr "Відпочинок"
+
+#: app/templates/main/dice_modal.html
+msgid "3D dice"
+msgstr "3D-кістки"
+
+#: app/templates/main/dice_modal.html
+msgid "Esc to close"
+msgstr "Esc — закрити"
+
+#: app/templates/main/dice_modal.html
+msgid "Choose a die to roll."
+msgstr "Оберіть кістку для кидка."
+
+#: app/templates/main/dice_modal.html
+msgid "One die"
+msgstr "Одна кістка"
+
+#: app/templates/main/dice_modal.html
+msgid "Two dice"
+msgstr "Дві кістки"
+
+#: app/templates/main/dice_modal.html
+msgid "Recent rolls"
+msgstr "Останні кидки"
+
+#: app/templates/main/dice_modal.html
+msgid "Rolling…"
+msgstr "Кидок…"
+
+#: app/templates/main/dice_modal.html
+msgid "Highest"
+msgstr "Найбільше"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "Warden rolls"
+msgstr "Кидки Стража"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "2d6"
+msgstr "2к6"

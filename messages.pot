@@ -42632,3 +42632,43 @@ msgstr ""
 msgctxt "dungeon action"
 msgid "Rest"
 msgstr ""
+
+#: app/templates/main/dice_modal.html
+msgid "3D dice"
+msgstr ""
+
+#: app/templates/main/dice_modal.html
+msgid "Esc to close"
+msgstr ""
+
+#: app/templates/main/dice_modal.html
+msgid "Choose a die to roll."
+msgstr ""
+
+#: app/templates/main/dice_modal.html
+msgid "One die"
+msgstr ""
+
+#: app/templates/main/dice_modal.html
+msgid "Two dice"
+msgstr ""
+
+#: app/templates/main/dice_modal.html
+msgid "Recent rolls"
+msgstr ""
+
+#: app/templates/main/dice_modal.html
+msgid "Rolling…"
+msgstr ""
+
+#: app/templates/main/dice_modal.html
+msgid "Highest"
+msgstr ""
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "Warden rolls"
+msgstr ""
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "2d6"
+msgstr ""

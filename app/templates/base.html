@@ -121,6 +121,10 @@
 
   {% block content %} {% endblock %}
 
+  {# 3D dice for rolls the server made before a redirect, and for htmx rolls (app/lib/dice_feedback.py). #}
+  {% set dice3d_pending = pending_dice() %}
+  {% if dice3d_pending %}<script id="dice3d-pending" type="application/json">{{ dice3d_pending|tojson }}</script>{% endif %}
+  <script type="module" src="{{ url_for('static', filename='src/js/dice3d_events.js') }}"></script>
 </body>
 
 </html>

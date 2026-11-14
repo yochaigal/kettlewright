@@ -1,4 +1,5 @@
 import diceModal from '../dice_modal.js';
+import dice3d from '../dice3d.js';
 import {actorKey} from './token_stats.js';
 
 export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPreview}) {
@@ -82,7 +83,8 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
     });
     actions.append(button); return button;
   }
-  async function request(actor, {dice = '', kind = 'dice', save = ''}, publicRoll = publicToggle?.checked) {
+  // The quick-roll panel animates its own rolls; the modal's rolls are animated by diceModal.showResult.
+  async function request(actor, {dice = '', kind = 'dice', save = ''}, publicRoll = publicToggle?.checked, animate = true) {
     if (rolling || !canRoll() || (!config.warden && !actor)) throw new Error(config.messages.rollFailed);
     const body = new FormData();
     body.set('csrf_token', config.csrfToken); body.set('party_id', config.partyId);
@@ -97,6 +99,7 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
         {method: 'POST', body, cache: 'no-store', signal: AbortSignal.timeout(15000)});
       if (!response.ok || response.redirected) throw new Error(config.messages.rollFailed);
       const roll = await response.json();
+      if (animate && !stopped) await dice3d.show(roll);
       if (!stopped && actorId === active?.id) result.textContent = roll.result;
       return roll;
     } catch (error) {
@@ -113,13 +116,16 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
     diceModal.setMode(config.warden ? 'party' : 'character');
     diceModal.showDiceModal();
   }
-  diceModal.initialize(dice => request(modalActor, {dice}, modalPublic?.checked));
+  diceModal.initialize(dice => request(modalActor, {dice}, modalPublic?.checked, false));
   const special = [];
   document.querySelectorAll('#warden-dice [data-warden-roll]').forEach(button => {
     const listener = async () => {
-      try {const roll = await request(null, {kind: button.dataset.wardenRoll}, modalPublic.checked);
-        diceModal.resultText.textContent = roll.result;
-      } catch (_) {diceModal.resultText.textContent = config.messages.rollFailed;}
+      const label = (button.querySelector?.('span') || button).textContent?.trim() || '';
+      diceModal.hold();
+      diceModal.showRolling(label, button.dataset.wardenRoll === 'reaction' ? 'd6+d6' : 'd6');
+      try {await diceModal.showResult(await request(null, {kind: button.dataset.wardenRoll}, modalPublic.checked, false), {label});
+      } catch (_) {diceModal.showError(config.messages.rollFailed);
+      } finally {diceModal.release();}
     };
     button.addEventListener('click', listener); special.push([button, listener]);
   });

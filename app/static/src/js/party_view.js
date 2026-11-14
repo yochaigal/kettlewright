@@ -1,6 +1,31 @@
 import utils from "./utils.js";
+import dice3d from "./dice3d.js";
+import notification from "./notification.js";
+import { refreshRollHistory } from "./party_roll_history.js";
 
 window.KW_alert = utils.styledAlert;
+
+// Dice on party storage items: a public roll in the party's history under the viewer's name, shown in 3D.
+let itemRolling = false;
+window.KW_rollDiceCallback = async (sides) => {
+  const config = document.getElementById('party-item-roll');
+  if (!config || itemRolling) return;
+  itemRolling = true;
+  try {
+    const body = new URLSearchParams({
+      dice: sides.map((side) => `d${side}`).join('+'), csrf_token: config.dataset.csrf, public_roll: 'on',
+    });
+    const response = await fetch(config.dataset.url, {method: 'POST', body, cache: 'no-store'});
+    if (!response.ok || response.redirected) throw new Error(config.dataset.error);
+    const result = await response.json();
+    refreshRollHistory(party_id);
+    if (!await dice3d.show(result)) notification.showNotification(result.result);
+  } catch (error) {
+    notification.showNotification(error.message || config.dataset.error);
+  } finally {
+    itemRolling = false;
+  }
+};
 
 // A double click must not roll twice.
 document.addEventListener('submit', event => {

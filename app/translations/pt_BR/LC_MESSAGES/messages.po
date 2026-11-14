@@ -24127,3 +24127,43 @@ msgstr "Em exaustão, sem recuperar PV: %(names)s."
 msgctxt "dungeon action"
 msgid "Rest"
 msgstr "Descansar"
+
+#: app/templates/main/dice_modal.html
+msgid "3D dice"
+msgstr "Dados 3D"
+
+#: app/templates/main/dice_modal.html
+msgid "Esc to close"
+msgstr "Esc para fechar"
+
+#: app/templates/main/dice_modal.html
+msgid "Choose a die to roll."
+msgstr "Escolha um dado para rolar."
+
+#: app/templates/main/dice_modal.html
+msgid "One die"
+msgstr "Um dado"
+
+#: app/templates/main/dice_modal.html
+msgid "Two dice"
+msgstr "Dois dados"
+
+#: app/templates/main/dice_modal.html
+msgid "Recent rolls"
+msgstr "Rolagens recentes"
+
+#: app/templates/main/dice_modal.html
+msgid "Rolling…"
+msgstr "Rolando…"
+
+#: app/templates/main/dice_modal.html
+msgid "Highest"
+msgstr "Maior"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "Warden rolls"
+msgstr "Rolagens do Guardião"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "2d6"
+msgstr "2d6"

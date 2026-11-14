@@ -24,6 +24,8 @@ const navigation = initToolsNavigation(data, key => labels.navigation?.[key] ?? 
       try {
         const { requestWardenRoll } = await import('./warden_dice.js');
         const rolled = await requestWardenRoll('reaction');
+        const { default: dice3d } = await import('./dice3d.js');
+        await dice3d.show(rolled);
         result = { title: 'Reaction Roll', category: 'note', fields: { Reaction: rolled.result } };
       } catch (error) {
         styledAlert(t('Reaction Roll'), error.message);

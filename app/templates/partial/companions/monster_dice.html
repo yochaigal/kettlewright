@@ -3,10 +3,13 @@
 <div id="monster-roll" data-url="{{url_for('party.shared_map_roll', party_id=c.party_id)}}"
      data-csrf="{{monster_csrf}}" data-id="{{c.id}}">
   <form id="monster-dice-form">
-    <label class="warden-roll-toggle">
-      <input class="checkbox" id="monster-public-roll" type="checkbox" name="public_roll" value="on">
-      {{_('Public roll')}}
-    </label>
+    <div class="dice-modal-options">
+      <label class="dice-switch warden-roll-toggle">
+        <input type="checkbox" role="switch" id="monster-public-roll" name="public_roll" value="on">
+        <span class="dice-switch-track" aria-hidden="true"></span>
+        {{_('Public roll')}}
+      </label>
+    </div>
     {{ super() }}
   </form>
 </div>

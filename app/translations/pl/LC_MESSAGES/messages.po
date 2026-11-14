@@ -23432,3 +23432,43 @@ msgstr "W dyskomforcie, bez odzyskania OCHR: %(names)s."
 msgctxt "dungeon action"
 msgid "Rest"
 msgstr "Odpoczynek"
+
+#: app/templates/main/dice_modal.html
+msgid "3D dice"
+msgstr "Kości 3D"
+
+#: app/templates/main/dice_modal.html
+msgid "Esc to close"
+msgstr "Esc, aby zamknąć"
+
+#: app/templates/main/dice_modal.html
+msgid "Choose a die to roll."
+msgstr "Wybierz kość do rzutu."
+
+#: app/templates/main/dice_modal.html
+msgid "One die"
+msgstr "Jedna kość"
+
+#: app/templates/main/dice_modal.html
+msgid "Two dice"
+msgstr "Dwie kości"
+
+#: app/templates/main/dice_modal.html
+msgid "Recent rolls"
+msgstr "Ostatnie rzuty"
+
+#: app/templates/main/dice_modal.html
+msgid "Rolling…"
+msgstr "Rzucanie…"
+
+#: app/templates/main/dice_modal.html
+msgid "Highest"
+msgstr "Najwyższy"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "Warden rolls"
+msgstr "Rzuty Strażnika"
+
+#: app/templates/partial/partyview/warden_dice.html
+msgid "2d6"
+msgstr "2k6"

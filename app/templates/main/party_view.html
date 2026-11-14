@@ -12,6 +12,8 @@
 </script>
 {% endif %}
 <script src="{{ url_for('static', filename='src/js/party_view.js') }}" defer type="module"></script>
+{% if can_view_rolls %}<div id="party-item-roll" hidden data-url="{{ url_for('party.shared_map_roll', party_id=party.id) }}"
+  data-csrf="{{ roll_form.csrf_token.current_token if roll_form.csrf_token is defined else '' }}" data-error="{{ _('Unable to roll dice. Please try again.') }}"></div>{% endif %}
 {% if campaign_enabled %}<link rel="stylesheet" href="{{url_for('static', filename='src/css/campaigns.css')}}">{% endif %}
 <section class="body-container">
   {% with messages = get_flashed_messages(with_categories=true) %} {% if messages is not none and messages|length > 0 %}
