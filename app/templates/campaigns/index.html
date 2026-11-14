@@ -3,8 +3,8 @@
 {% from 'campaigns/material_tree.html' import material_children, tree_toolbar with context %}
 {% block workspace %}
 <div x-data="{}">
-{% call page_header(_('Campaigns')) %}
-<a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a><button type="button" class="primary" aria-haspopup="dialog" @click="$refs.createDialog.showModal()">{{ _('Create New') }}</button>
+{% call page_header(_('Campaigns'), class_='index-header') %}
+<a class="icon-only-phone" href="{{ url_for('campaigns.import_archive') }}" title="{{ _('Import archive') }}"><i class="fa-solid fa-file-import" aria-hidden="true"></i><span class="icon-label">{{ _('Import archive') }}</span></a><button type="button" class="primary" aria-haspopup="dialog" @click="$refs.createDialog.showModal()">{{ _('Create New') }}</button>
 {% endcall %}
 <dialog class="create-dialog" x-ref="createDialog" @close="$refs.createDialog.querySelector('form').reset()" aria-labelledby="create-title">
 <h2 id="create-title">{{ _('Create new') }}</h2>
@@ -33,7 +33,7 @@
 <div class="campaign-tree-root tree-empty tree-heading"><h3{% if not campaigns %} class="tree-empty-title"{% endif %}>{{ _('My campaigns') }}</h3><button type="button" class="link-button heading-toggle" @click="toggle()" x-text='expanded ? {{ _('Collapse all')|tojson }} : {{ _('Expand all')|tojson }}'>{{ _('Expand all') }}</button></div>
 {% for campaign in campaigns %}
 <details class="campaign-tree-root{% if available and loop.last %} before-starters{% endif %}" data-tree-key="campaign-{{ campaign.id }}" data-tree-row data-search="{{ campaign.name|lower }}">
-<summary><span class="tree-row"><a class="tree-title" href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}">{{ campaign.name }}</a><span class="tree-meta">{{ _('Campaign') }}</span><span>{{ campaign.entries|length }} {{ _('articles') }}</span><span class="tree-excerpt">{% for link in campaign.parties %}{{ link.party.name }}{% if not loop.last %}, {% endif %}{% else %}{{ _('No connected parties') }}{% endfor %}</span></span>{% if campaign.name in starter_titles %}<form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}" @submit.prevent="document.getElementById('delete-{{ campaign.id }}').showModal()">{{ token(campaign.version) }}<button type="submit" class="link-button" aria-label="{{ _('Remove %(title)s', title=campaign.name) }}">{{ _('Remove') }}</button></form>{% endif %}</summary>
+<summary><span class="tree-row"><a class="tree-title" href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}"><span class="title-text">{{ campaign.name }}</span></a><span class="tree-meta">{{ _('Campaign') }}</span><span class="tree-articles">{{ campaign.entries|length }} {{ _('articles') }}</span><span class="tree-excerpt">{% for link in campaign.parties %}{{ link.party.name }}{% if not loop.last %}, {% endif %}{% else %}{{ _('No connected parties') }}{% endfor %}</span></span>{% if campaign.name in starter_titles %}<form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}" @submit.prevent="document.getElementById('delete-{{ campaign.id }}').showModal()">{{ token(campaign.version) }}<button type="submit" class="link-button icon-only-phone" title="{{ _('Remove %(title)s', title=campaign.name) }}" aria-label="{{ _('Remove %(title)s', title=campaign.name) }}"><i class="fa-solid fa-trash" aria-hidden="true"></i><span class="icon-label">{{ _('Remove') }}</span></button></form>{% endif %}</summary>
 {{ material_children(trees[campaign.id], False) }}
 {% if not trees[campaign.id] %}<p>{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id) }}">{{ _('New article') }}</a></p>{% endif %}
 </details>
@@ -43,7 +43,7 @@
 <h3 id="starter-heading">{{ _('Free Starter Adventures') }}</h3>
 {% for card in available %}
 <div class="starter-row">
-<span class="tree-row"><a class="tree-title" id="starter-{{ card.slug }}" href="{{ card.url }}" target="_blank" rel="noopener">{{ card.title }}<svg class="starter-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr-only"> {{ _('(opens cairnrpg.com in a new tab)') }}</span></a><span class="tree-excerpt">{{ card.description }}</span></span>
+<span class="tree-row"><a class="tree-title" id="starter-{{ card.slug }}" href="{{ card.url }}" target="_blank" rel="noopener"><span class="title-text">{{ card.title }}</span><svg class="starter-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr-only"> {{ _('(opens cairnrpg.com in a new tab)') }}</span></a><span class="tree-excerpt">{{ card.description }}</span></span>
 <form method="post" action="{{ url_for('campaigns.add_starter', slug=card.slug) }}">{{ token() }}<button type="submit" aria-label="{{ _('Add %(title)s', title=card.title) }}">{{ _('Add') }}</button></form>
 </div>
 {% endfor %}

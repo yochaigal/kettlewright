@@ -247,12 +247,14 @@ def delete_campaign(campaign_id):
     # presentations are removed together. Related materials outside this campaign
     # and the connected parties themselves remain independent.
     audiences = {link.party_id for link in campaign.parties}
+    title = campaign.name
     for entry in list(campaign.entries):
         audiences.update(presentation.party_id for presentation in entry.presentations)
         db.session.delete(entry)
     db.session.delete(campaign)
     db.session.commit()
     notify_parties(audiences)
+    flash(_('%(title)s was removed from your campaigns.', title=title), 'success')
     return redirect(url_for('campaigns.index'))
 
 
