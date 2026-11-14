@@ -25,9 +25,10 @@
 {% endfor %}
 </ul>
 {% endmacro %}
-{% macro tree_toolbar() %}
+{% macro tree_toolbar(collapsed=False) %}
 <div class="campaign-actions tree-toolbar" role="search">
 <label>{{ _('Search') }}<input type="search" x-model="query" @input="filter()" placeholder="{{ _('Search by title, type or text') }}"></label>
+{% if collapsed %}<button type="button" class="link-button toolbar-toggle" @click="toggle()" x-text='expanded ? {{ _('Collapse all')|tojson }} : {{ _('Expand all')|tojson }}'>{{ _('Expand all') }}</button>{% endif %}
 <button type="button" @click="clearFilters()" x-show="filtering" x-cloak>{{ _('Clear search') }}</button>
 </div>
 <p x-show="filtering && !matches" x-cloak>{{ _('No matching articles.') }}</p>
