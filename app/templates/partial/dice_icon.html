@@ -1,0 +1,23 @@
+{#- Flat die silhouettes: the outline says how many sides, the number sits in the middle.
+    Used by the dice modal's buttons; dice_modal.js clones them to draw rolled results. -#}
+{% macro die_icon(sides, label=none) -%}
+<svg class="die-icon" data-sides="{{ sides }}" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+  {%- if sides == 4 %}
+  <polygon class="die-shape" points="24,4 45,42 3,42"/>
+  {%- elif sides == 6 %}
+  <rect class="die-shape" x="5" y="5" width="38" height="38" rx="6"/>
+  {%- elif sides == 8 %}
+  <polygon class="die-shape" points="24,2 46,24 24,46 2,24"/>
+  {%- elif sides == 12 %}
+  <polygon class="die-shape" points="24,2 46,18 37.5,45 10.5,45 2,18"/>
+  <polygon class="die-facet" points="24,11 36,20 31.5,35 16.5,35 12,20"/>
+  {%- elif sides == 20 %}
+  <polygon class="die-shape" points="24,2 44,13.5 44,34.5 24,46 4,34.5 4,13.5"/>
+  <polygon class="die-facet" points="24,10 37,33 11,33"/>
+  {%- else %}{# d10 and d100 #}
+  <polygon class="die-shape" points="24,2 46,20 24,46 2,20"/>
+  <polyline class="die-facet" points="2,20 13,26 24,22 35,26 46,20"/>
+  {%- endif %}
+  <text class="die-num" x="24" y="{{ 30 if sides == 4 else 32 if sides in (10, 100) else 25 }}">{{ label if label is not none else sides }}</text>
+</svg>
+{%- endmacro %}

@@ -1,39 +1,65 @@
-<div class="modal" id="dice-modal">
+<div class="modal dice-modal" id="dice-modal" role="dialog" aria-modal="true" aria-labelledby="dice-modal-title"
+  data-rolling-text="{{ _('Rolling…') }}" data-highest-text="{{ _('Highest') }}">
   {% block dice_modal_scripts %}<script src="{{ url_for('static', filename='src/js/dice_modal.js') }}" type="module"></script>{% endblock %}
   <div class="modal-background" id="dice-modal-background"></div>
   <div class="modal-card" id="dice-modal-card">
-    <header class="modal-card-head">
-      <h3 class="modal-card-title">{{_('Roll Dice')}}</h3>
+    <header class="modal-card-head dice-modal-head">
+      <h3 class="modal-card-title" id="dice-modal-title">{{_('Roll Dice')}}</h3>
+      <button class="dice-modal-close" id="dice-modal-close" type="button" aria-label="{{_('Close')}}">&times;</button>
     </header>
-    <section class="modal-card-body">
+    <section class="modal-card-body dice-modal-body">
       {% block dice_modal_body %}
-      <div class="dice-modal-result-container">
-        <div class="dice-modal-result-center">
-          <p id="dice-modal-roll-result" role="status" aria-live="polite">0</p>
+      {% from 'partial/dice_icon.html' import die_icon %}
+      {# Existing message ids: translations localise the die letter (W6, k6, к6). #}
+      {% set single_labels = {4: _('d4'), 6: _('d6'), 8: _('d8'), 10: _('d10'), 12: _('d12'), 20: _('d20'), 100: _('d100')} %}
+      {% set paired_labels = {4: _('d4+d4'), 6: _('d6+d6'), 8: _('d8+d8'), 10: _('d10+d10'), 12: _('d12+d12')} %}
+      <div class="dice-modal-tray" id="dice-modal-tray" data-state="idle">
+        <p class="dice-modal-notation" id="dice-modal-notation" aria-hidden="true"></p>
+        <div class="dice-modal-faces" id="dice-modal-faces" aria-hidden="true"></div>
+        <p class="dice-modal-hint" id="dice-modal-hint">{{_('Choose a die to roll.')}}</p>
+        <p id="dice-modal-roll-result" role="status" aria-live="polite"></p>
+        <p id="dice-modal-roll-detail"></p>
+      </div>
+
+      <div class="dice-modal-group">
+        <p class="dice-modal-group-label" id="dice-modal-single-label">{{_('One die')}}</p>
+        <div class="dice-modal-buttons-container dice-modal-single-dice" role="group" aria-labelledby="dice-modal-single-label">
+          {% for sides in [4, 6, 8, 10, 12, 20, 100] %}
+          <button class="dice-modal-die" id="dice-modal-d{{ sides }}-button" type="button"
+            data-dice="d{{ sides }}"{% if sides == 100 %} hidden{% endif %}>
+            {{ die_icon(sides, '%' if sides == 100 else none) }}
+            <span class="dice-modal-die-label">{{ single_labels[sides] }}</span>
+          </button>
+          {% endfor %}
         </div>
       </div>
-      <div class="dice-modal-buttons-container dice-modal-single-dice">
-        <button class="button is-blue dice-modal-button" id="dice-modal-d4-button" type="button">{{_('d4')}}</button>
-        <button class="button is-blue dice-modal-button" id="dice-modal-d6-button" type="button">{{_('d6')}}</button>
-        <button class="button is-blue dice-modal-button" id="dice-modal-d8-button" type="button">{{_('d8')}}</button>
-        <button class="button is-blue dice-modal-button" id="dice-modal-d10-button" type="button">{{_('d10')}}</button>
-        <button class="button is-blue dice-modal-button" id="dice-modal-d12-button" type="button">{{_('d12')}}</button>
-        <button class="button is-blue dice-modal-button" id="dice-modal-d20-button" type="button">{{_('d20')}}</button>
-        <button class="button is-blue dice-modal-button" id="dice-modal-d100-button" type="button" hidden>{{_('d100')}}</button>
-      </div>
-      <div class="dice-modal-buttons-container dice-modal-paired-dice">
-        <button class="button is-yellow dice-modal-button" id="dice-modal-d4+d4-button"
-          type="button">{{_('d4+d4')}}</button>
-        <button class="button is-yellow dice-modal-button" id="dice-modal-d6+d6-button"
-          type="button">{{_('d6+d6')}}</button>
-        <button class="button is-yellow dice-modal-button" id="dice-modal-d8+d8-button"
-          type="button">{{_('d8+d8')}}</button>
-        <button class="button is-yellow dice-modal-button" id="dice-modal-d10+d10-button"
-          type="button">{{_('d10+d10')}}</button>
-        <button class="button is-yellow dice-modal-button" id="dice-modal-d12+d12-button"
-          type="button">{{_('d12+d12')}}</button>
+
+      <div class="dice-modal-group">
+        <p class="dice-modal-group-label" id="dice-modal-paired-label">{{_('Two dice')}}</p>
+        <div class="dice-modal-buttons-container dice-modal-paired-dice" role="group" aria-labelledby="dice-modal-paired-label">
+          {% for sides in [4, 6, 8, 10, 12] %}
+          <button class="dice-modal-die dice-modal-pair" id="dice-modal-d{{ sides }}+d{{ sides }}-button" type="button"
+            data-dice="d{{ sides }}+d{{ sides }}">
+            <span class="dice-modal-pair-icons">{{ die_icon(sides) }}{{ die_icon(sides) }}</span>
+            <span class="dice-modal-die-label">{{ paired_labels[sides] }}</span>
+          </button>
+          {% endfor %}
+        </div>
       </div>
       {% endblock %}
+
+      <div class="dice-modal-history-wrap" id="dice-modal-history-wrap" hidden>
+        <p class="dice-modal-group-label" id="dice-modal-history-label">{{_('Recent rolls')}}</p>
+        <ol class="dice-modal-history" id="dice-modal-history" aria-labelledby="dice-modal-history-label"></ol>
+      </div>
     </section>
+    <footer class="modal-card-foot dice-modal-foot">
+      <label class="dice-switch dice-modal-3d-toggle" hidden>
+        <input type="checkbox" role="switch" id="dice-modal-3d-toggle" checked>
+        <span class="dice-switch-track" aria-hidden="true"></span>
+        {{_('3D dice')}}
+      </label>
+      <span class="dice-modal-keys" aria-hidden="true">{{_('Esc to close')}}</span>
+    </footer>
   </div>
 </div>

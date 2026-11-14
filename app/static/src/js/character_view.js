@@ -1,6 +1,7 @@
 import './inventory_slots.js';
 import utils from "./utils.js";
 import diceModal from "./dice_modal.js";
+import dice3d from "./dice3d.js";
 import notification from "./notification.js";
 
 const requestRoll = async (dice) => {
@@ -17,15 +18,23 @@ const requestRoll = async (dice) => {
   const result = typeof companion_id !== "undefined"
     ? await manager.rollDice(dice, party_id, null, companion_id)
     : await manager.rollDice(dice, party_id, character_id);
-  if (party_id === "None") notification.showNotification(`You rolled a ${result.result}`);
   return result;
 };
 
+// Item and attack dice roll straight away, without the modal: the 3D dice are the feedback, and the
+// result is announced once they settle (always, when there is no party roll history to show it).
+let directRolling = false;
 const rollDiceCallback = async (sides) => {
+  if (directRolling) return;
+  directRolling = true;
   try {
-    await requestRoll(sides.map((side) => `d${side}`).join("+"));
+    const result = await requestRoll(sides.map((side) => `d${side}`).join("+"));
+    const shown = await dice3d.show(result);
+    if (party_id === "None" || !shown) notification.showNotification(`You rolled ${result.result}`);
   } catch (error) {
     notification.showNotification(error.message);
+  } finally {
+    directRolling = false;
   }
 };
 

@@ -9,6 +9,7 @@ from flask_wtf import FlaskForm
 from app.forms import *
 import json
 from flask_babel import _
+from app.lib.dice_feedback import queue_dice
 
 party = Blueprint('party', __name__)
 
@@ -372,7 +373,7 @@ def shared_map_roll(party_id):
     db.session.commit()
     if public:
         publish_roll(target, name, result)
-    return _board_json({'result': result, 'values': values})
+    return _board_json({'result': result, 'values': values, 'sides': sides})
 
 
 @party.route('/party/<int:party_id>/shared-map/sources')
@@ -1009,6 +1010,8 @@ def wilderness_summary(action, participants, form, target, characters):
         if path not in labels:
             abort(400)
         roll, lost = travel(path)
+        if roll is not None:
+            queue_dice([roll], 6)
         if roll is None:
             return _('Travel by %(path)s (%(who)s): no risk of getting lost.', path=labels[path], who=who)
         if lost:
@@ -1028,7 +1031,9 @@ def roll_events(party_id, category, roll_event, label, night=False):
         abort(403)
     if not FlaskForm().validate_on_submit():
         abort(400)
-    rolls = [label(roll, event) for roll, event in (roll_event() for _i in range(2 if night else 1))]
+    results = [roll_event() for _i in range(2 if night else 1)]
+    queue_dice([roll for roll, _event in results], 6)
+    rolls = [label(roll, event) for roll, event in results]
     result = fit_roll(' '.join([_('Night watch, rolled twice:')] + rolls if night else rolls))
     db.session.add(PartyRoll(party_id=target.id, character_name=current_user.username, result=result))
     db.session.commit()

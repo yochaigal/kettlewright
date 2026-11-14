@@ -4,25 +4,35 @@
      data-error="{{ _('Unable to roll dice. Please try again.') }}">
   <form id="warden-dice-form">
     {{ roll_form.hidden_tag() }}
-    {% if warden_parties is defined %}
-    <div class="warden-roll-party-field">
-      <label for="warden-roll-party">{{ _('Party') }}</label>
-      <select id="warden-roll-party" name="party_id">
-        <option value="">{{ _('No party') }}</option>
-        {% for target in warden_parties %}<option value="{{ target.id }}">{{ target.name }}</option>{% endfor %}
-      </select>
+    <div class="dice-modal-options">
+      {% if warden_parties is defined %}
+      <div class="warden-roll-party-field">
+        <label for="warden-roll-party">{{ _('Party') }}</label>
+        <select id="warden-roll-party" name="party_id">
+          <option value="">{{ _('No party') }}</option>
+          {% for target in warden_parties %}<option value="{{ target.id }}">{{ target.name }}</option>{% endfor %}
+        </select>
+      </div>
+      {% else %}
+      <input type="hidden" name="party_id" value="{{ party.id }}">
+      {% endif %}
+      <label class="dice-switch warden-roll-toggle">
+        <input type="checkbox" role="switch" id="warden-public-roll" name="public_roll" value="on">
+        <span class="dice-switch-track" aria-hidden="true"></span>
+        {{ _('Public roll') }}
+      </label>
     </div>
-    {% else %}
-    <input type="hidden" name="party_id" value="{{ party.id }}">
-    {% endif %}
-    <label class="warden-roll-toggle">
-      <input class="checkbox" type="checkbox" id="warden-public-roll" name="public_roll" value="on">
-      {{ _('Public roll') }}
-    </label>
     {{ super() }}
-    <div class="dice-modal-buttons-container warden-special-rolls">
-      <button type="button" class="button" data-warden-roll="reaction">{{ _('Reaction Roll') }}</button>
-      <button type="button" class="button" data-warden-roll="fate">{{ _('Die of Fate') }}</button>
+    <div class="dice-modal-group">
+      <p class="dice-modal-group-label" id="warden-special-label">{{ _('Warden rolls') }}</p>
+      <div class="dice-modal-buttons-container warden-special-rolls" role="group" aria-labelledby="warden-special-label">
+        <button type="button" class="dice-modal-special" data-warden-roll="reaction">
+          <i class="fa-solid fa-handshake-simple" aria-hidden="true"></i><span>{{ _('Reaction Roll') }}</span><small>{{ _('2d6') }}</small>
+        </button>
+        <button type="button" class="dice-modal-special" data-warden-roll="fate">
+          <i class="fa-solid fa-dice-d6" aria-hidden="true"></i><span>{{ _('Die of Fate') }}</span><small>{{ _('d6') }}</small>
+        </button>
+      </div>
     </div>
   </form>
 </div>

@@ -347,137 +347,466 @@ img.edit-portrait-modal-thumbnail.highlighted {
 
 .modal-text-area {}
 
-// Dice Modal
+// Dice Modal: ink on paper, like the party dialogs. Sizes are in px/em because the map page
+// (board-modals.scss) has no magick.css root size.
 
 #dice-modal-card {
-  width: 400px;
-  max-width: calc(100vw - 32px);
-  max-height: calc(100dvh - 32px);
-  padding: 24px;
+  width: 460px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100vh - 24px);
+  max-height: calc(100dvh - 24px);
+  padding: 0;
   align-items: stretch;
+  justify-content: flex-start;
+  overflow: hidden;
+  border: 1px solid var(--fg);
+  border-radius: 2px;
+  background: var(--form-bg);
+  box-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.55);
+}
 
-  .modal-card-head {
-    padding: 0 0 20px;
-  }
+.dice-modal-head {
+  position: relative;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 16px 60px 6px 20px;
+  border-radius: 0;
 
   .modal-card-title {
+    flex: 1 1 auto;
     margin: 0;
-    flex-shrink: 1;
-    text-align: center;
-  }
-
-  .modal-card-body {
-    padding: 0;
-    min-height: 0;
-    gap: 16px;
+    font-size: 22px;
+    line-height: 1.25;
+    text-align: left;
+    overflow-wrap: anywhere;
   }
 }
 
-.dice-modal-result-container {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  min-height: 80px;
-  padding: 12px 0;
-  border-block: 1px solid color-mix(in srgb, var(--fg) 15%, transparent);
+.dice-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--fg);
+  font-size: 30px;
+  line-height: 1;
+  opacity: 0.65;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible { opacity: 1; }
+  &:focus-visible { outline: 2px solid var(--fg); outline-offset: -2px; }
 }
 
-.dice-modal-result-center {
+.dice-modal-body {
+  min-height: 0;
+  overflow: auto;
+  padding: 8px 20px 18px;
+  gap: 18px;
+  font-size: 16px;
+  line-height: 1.35;
+
+  p { margin: 0; }
+}
+
+// The tray: where the result lands.
+.dice-modal-tray {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 150px;
+  padding: 14px 12px;
+  border: 1px dashed color-mix(in lab, transparent 50%, var(--fg));
+  border-radius: 2px;
+  background:
+    radial-gradient(ellipse at 50% 45%, color-mix(in lab, transparent 93%, var(--fg)), transparent 72%);
+  text-align: center;
 }
+
+.dice-modal-notation {
+  min-height: 1.2em;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  opacity: 0.6;
+  overflow-wrap: anywhere;
+}
+
+.dice-modal-faces {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+
+  &:empty { display: none; }
+}
+
+.dice-modal-face {
+  display: inline-grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  animation: dice-face-land 0.38s cubic-bezier(0.2, 1.5, 0.4, 1);
+
+  .die-icon { width: 100%; height: 100%; overflow: visible; }
+  .die-shape { fill: var(--fg); stroke: var(--fg); stroke-width: 2; stroke-linejoin: round; }
+  .die-facet { fill: none; stroke: var(--form-bg); stroke-width: 1; stroke-opacity: 0.35; }
+  .die-num { fill: var(--form-bg); font-size: 17px; }
+  .die-num.is-long { font-size: 13px; }
+}
+
+.dice-modal-tray[data-state="rolling"] .dice-modal-face {
+  animation: dice-face-wobble 0.55s ease-in-out infinite;
+  .die-num { opacity: 0.55; }
+}
+.dice-modal-tray[data-state="rolling"] .dice-modal-face:nth-child(2) { animation-delay: -0.2s; }
+
+@keyframes dice-face-wobble {
+  0%, 100% { transform: rotate(-9deg) translateY(0); }
+  50% { transform: rotate(9deg) translateY(-5px); }
+}
+
+@keyframes dice-face-land {
+  from { transform: scale(0.55) rotate(-25deg); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.dice-modal-hint {
+  font-style: italic;
+  opacity: 0.6;
+}
+.dice-modal-tray:not([data-state="idle"]) .dice-modal-hint { display: none; }
 
 #dice-modal-roll-result {
-  margin: 0;
-  font-size: 2.5em;
-  font-weight: bold;
-  line-height: 1.2;
+  font-family: "Averia Libre", Alegreya, serif;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.15;
   overflow-wrap: anywhere;
   text-align: center;
+
+  &:empty { display: none; }
+}
+
+// With faces in the tray the numbers are already on the dice; keep the text for screen readers.
+.dice-modal-tray:is([data-state="done"], [data-state="rolling"]) #dice-modal-roll-result {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.dice-modal-tray[data-state="error"] #dice-modal-roll-result {
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 400;
+}
+
+#dice-modal-roll-detail {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+
+  &:empty { display: none; }
+}
+
+// Groups of buttons, each under a small ruled label.
+.dice-modal-group,
+.dice-modal-history-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dice-modal-history-wrap[hidden] { display: none; }
+// e.g. Warden rolls on the map, hidden while the modal rolls for a monster.
+.dice-modal-group:not(:has(button:not([hidden]))) { display: none; }
+
+.dice-modal-group-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.7;
+
+  &::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid color-mix(in lab, transparent 78%, var(--fg));
+  }
 }
 
 .dice-modal-buttons-container {
   display: grid;
   gap: 8px;
   margin: 0;
+}
 
-  button {
-    width: 100%;
+// Wide enough for all seven dice (with the Warden's d100) on one row; balanced rows on phones.
+.dice-modal-single-dice { grid-template-columns: repeat(auto-fit, minmax(48px, 1fr)); gap: 6px; }
+.dice-modal-paired-dice { grid-template-columns: repeat(auto-fit, minmax(72px, 1fr)); gap: 6px; }
+.warden-special-rolls { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+
+// Die buttons: an outlined silhouette that inks in on hover, like a stamp.
+.dice-modal-die,
+.dice-modal-special {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  border: 1px solid color-mix(in lab, transparent 65%, var(--fg));
+  border-radius: 2px;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease, transform 0.08s ease;
+
+  &:hover:not(:disabled) {
+    border-color: var(--fg);
+    background: var(--fg);
+    color: var(--form-bg);
+  }
+  &:active:not(:disabled) { transform: translateY(1px); }
+  &:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+  &:disabled {
+    border-style: solid;
+    text-decoration: none;
+    opacity: 0.45;
+    cursor: progress;
+  }
+  &[hidden] { display: none; }
+}
+
+.dice-modal-die {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px 4px 8px;
+
+  .die-icon { width: 34px; height: 34px; overflow: visible; }
+  .die-shape { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linejoin: round; }
+  .die-facet { fill: none; stroke: currentColor; stroke-width: 1.2; stroke-linejoin: round; opacity: 0.4; }
+  .die-num { fill: currentColor; font-size: 13px; }
+}
+
+.dice-modal-die-label {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.dice-modal-pair-icons {
+  display: flex;
+  .die-icon { width: 28px; height: 28px; }
+  .die-icon + .die-icon { margin-left: -8px; }
+  .die-num { font-size: 14px; }
+}
+
+.die-num {
+  font-family: "Averia Libre", Alegreya, serif;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.dice-modal-special {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 12px;
+  padding: 10px 14px;
+  text-align: left;
+
+  i { grid-row: span 2; font-size: 20px; opacity: 0.8; }
+  span { font-weight: 600; line-height: 1.2; overflow-wrap: anywhere; }
+  small { font-size: 12px; opacity: 0.65; }
+}
+
+// Who sees the roll, and for which party (Warden and monster dice).
+.dice-modal-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 18px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in lab, transparent 82%, var(--fg));
+  border-radius: 2px;
+  background: color-mix(in lab, transparent 96%, var(--fg));
+
+  .warden-roll-party-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 200px;
     min-width: 0;
-    max-width: none;
-    min-height: 44px;
+
+    label { margin: 0; font-size: 14px; font-weight: 600; }
+    select { flex: 1; min-width: 0; max-width: none; margin: 0; padding: 4px 8px; font-size: 15px; }
+  }
+}
+
+// A switch over a real checkbox, which keeps its name, value and keyboard behaviour.
+.dice-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
     margin: 0;
-    padding: 8px 4px;
-    justify-content: center;
+    opacity: 0;
   }
-}
 
-.dice-modal-single-dice {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  #dice-modal-d100-button { grid-column: span 2; }
-  button[hidden] { display: none; }
+  .dice-switch-track {
+    position: relative;
+    flex: 0 0 auto;
+    width: 34px;
+    height: 18px;
+    border: 1.5px solid var(--fg);
+    border-radius: 999px;
+    transition: background-color 0.15s ease;
 
-  &:has(#dice-modal-d100-button[hidden]) {
-    #dice-modal-d12-button,
-    #dice-modal-d20-button { grid-column: span 2; }
+    &::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--fg);
+      transition: transform 0.15s ease;
+    }
   }
+
+  input:checked + .dice-switch-track {
+    background: var(--fg);
+    &::after { background: var(--form-bg); transform: translateX(16px); }
+  }
+  input:focus-visible + .dice-switch-track { outline: 2px solid var(--fg); outline-offset: 2px; }
+  &:has(input:disabled) { opacity: 0.45; cursor: default; }
+  &[hidden] { display: none; }
 }
 
-.dice-modal-paired-dice {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  button { grid-column: span 2; }
-  button:nth-child(n + 4) { grid-column: span 3; }
+// Recent rolls in this modal, newest first.
+.dice-modal-history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    margin: 0;
+    padding: 3px 10px;
+    border: 1px solid color-mix(in lab, transparent 80%, var(--fg));
+    border-radius: 999px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  li:first-child { border-color: var(--fg); }
+  .dice-modal-history-what { opacity: 0.65; }
+  .dice-modal-history-value { font-weight: 700; }
 }
 
-.warden-special-rolls {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  padding-top: 16px;
-  border-top: 1px solid color-mix(in srgb, var(--fg) 15%, transparent);
-  button { white-space: normal; }
+.dice-modal-foot {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 10px 20px 12px;
+  border-top: 1px solid color-mix(in lab, transparent 82%, var(--fg));
+  border-radius: 0;
 }
 
-.dice-modal-button.is-blue {
-  // background-color: #3273dc;
-  color: white;
-}
-
-.dice-modal-button.button.is-yellow {
-  // background-color: #ffdd57;
-  color: rgba(0, 0, 0, 0.7);
-
-}
-
-.dice-modal-button {
-  font-size: 16pt;
-  border: none;
+.dice-modal-keys {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: 0.55;
+  @media (hover: none) { display: none; }
 }
 
 #warden-dice-form,
 #monster-dice-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
+  width: 100%;
+  max-width: none;
   margin: 0;
   padding: 0;
-  width: 100%;
   background: transparent;
+  box-shadow: none;
+}
 
-  .warden-roll-party-field {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    select { width: 100%; min-width: 0; }
+@media (max-width: 420px) {
+  .dice-modal-single-dice { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .dice-modal-paired-dice { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dice-modal-body { padding: 6px 14px 14px; }
+  .dice-modal-head { padding-left: 14px; }
+  .dice-modal-foot { padding: 10px 14px 12px; }
+  .dice-modal-face { width: 64px; height: 64px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dice-modal-face,
+  .dice-modal-tray[data-state="rolling"] .dice-modal-face { animation: none; }
+  .dice-modal-die,
+  .dice-modal-special,
+  .dice-switch .dice-switch-track,
+  .dice-switch .dice-switch-track::after { transition: none; }
+}
+
+// 3D dice (src/js/dice3d.js): a full-screen layer above modals that never takes clicks.
+#dice3d-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+
+  &.is-rolling {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.15s ease;
   }
 
-  .warden-roll-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0;
-    cursor: pointer;
-    input { margin: 0; flex: 0 0 auto; }
-    &:has(input:disabled) { opacity: .5; cursor: default; }
+  &.is-rolling.is-fading {
+    opacity: 0;
+    transition: opacity 0.4s ease;
   }
+
+  canvas { display: block; }
 }
 
 /* --- Modal alert --- */
