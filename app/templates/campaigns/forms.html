@@ -1,5 +1,5 @@
-{% macro page_header(title, level=1, title_model=None) %}
-<div class="campaign-page-header">
+{% macro page_header(title, level=1, title_model=None, class_=None) %}
+<div class="campaign-page-header{% if class_ %} {{ class_ }}{% endif %}">
 <h{{ level }}{% if title_model %} x-text="{{ title_model }}"{% endif %}>{{ title }}</h{{ level }}>
 {% if caller is defined %}<div class="campaign-actions campaign-page-actions">{{ caller() }}</div>{% endif %}
 </div>
@@ -65,15 +65,15 @@
 </footer>
 {% endmacro %}
 {% macro delete_dialog(campaign) %}
-<dialog class="create-dialog confirm-dialog" role="alertdialog" id="delete-{{ campaign.id }}" aria-labelledby="delete-title-{{ campaign.id }}" aria-describedby="delete-desc-{{ campaign.id }}">
+<dialog class="create-dialog confirm-dialog" role="alertdialog" id="delete-{{ campaign.id }}" aria-labelledby="delete-title-{{ campaign.id }} delete-name-{{ campaign.id }}" aria-describedby="delete-desc-{{ campaign.id }}">
 <h2 id="delete-title-{{ campaign.id }}">{{ _('Delete campaign?') }}</h2>
-<p><strong>{{ campaign.name }}</strong></p>
+<p id="delete-name-{{ campaign.id }}"><strong>{{ campaign.name }}</strong></p>
 <p id="delete-desc-{{ campaign.id }}">{{ _('Deleting this campaign permanently deletes all its articles, drawings and published party versions. This cannot be undone. Connected parties and their characters are kept.') }}</p>
 <p>{{ _('Articles to delete:') }} {{ campaign.entries|length }}</p>
 <form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}">{{ token(campaign.version) }}
 <div class="create-dialog-actions">
 <button type="button" autofocus onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
-<button type="submit" name="confirm" value="delete" class="danger">{{ _('Delete campaign') }}</button>
+<button type="submit" name="confirm" value="delete" class="danger">{{ _('Delete') }}</button>
 </div>
 </form>
 </dialog>

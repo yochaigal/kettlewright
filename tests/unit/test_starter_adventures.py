@@ -89,6 +89,7 @@ def test_add_creates_only_that_campaign_and_card_shows_added(user):
     assert 'class="toast"' in page and '<p role="status">' not in page
     assert page.count('>Add<') == COUNT - 1
     assert f'href="/campaigns/{campaign_id}/"' in page and '>Remove<' in page
+    assert '>Delete</button>' in page
 
 
 def test_heading_stays_until_every_adventure_is_added(user):
@@ -148,7 +149,9 @@ def test_remove_asks_for_confirmation_then_deletes_and_restores_add(user):
     assert client.post(action, data={'version': version, 'confirm': 'delete'}).status_code == 302
     with app.app_context():
         assert Campaign.query.count() == 0 and ContentEntry.query.count() == 0
-    assert campaigns_page(client).count('>Add<') == COUNT
+    page = campaigns_page(client)
+    assert page.count('>Add<') == COUNT
+    assert f'{title_of(FIRST)} was removed from your campaigns.' in page and 'class="toast"' in page
 
 
 def test_unknown_slug_is_404_and_logged_out_is_redirected(user):
