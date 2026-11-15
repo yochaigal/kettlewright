@@ -38,7 +38,7 @@
           </button>
         </a>
 
-        <label class="character-pdf-attributes"><input type="checkbox" x-model="exportAttributes" checked> {{_('Export Current Attributes')}}</label>
+        <label class="character-pdf-attributes"><input type="checkbox" x-model="exportAttributes" checked> {{_('Include Current Attributes')}}</label>
         {% if character.is_barebones %}
         {# One Barebones sheet (A4); the portrait route serves it. #}
         <a class="button is-light character-pdf-action" id="character-pdf-barebones" href="{{ url_for('main.print_character_portrait', username=username, url_name=url_name) }}"

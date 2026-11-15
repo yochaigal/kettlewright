@@ -21521,7 +21521,7 @@ msgid "Click a field to edit."
 msgstr "Kliknij pole, aby je edytować."
 
 #. Application interface
-msgid "Export Current Attributes"
+msgid "Include Current Attributes"
 msgstr "Eksportuj cechy"
 
 #. Application interface

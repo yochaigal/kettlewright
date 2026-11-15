@@ -23985,7 +23985,7 @@ msgid "Everyone in the party can see these rolls."
 msgstr "Эти броски видны всем участникам партии."
 
 #: app/templates/main/character_view.html
-msgid "Export Current Attributes"
+msgid "Include Current Attributes"
 msgstr "Экспортировать характеристики"
 
 
