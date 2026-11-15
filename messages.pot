@@ -38748,7 +38748,7 @@ msgid "Click a field to edit."
 msgstr ""
 
 #: app/templates/main/character_view.html:104
-msgid "Export Current Attributes"
+msgid "Include Current Attributes"
 msgstr ""
 
 #: app/templates/main/character_view.html:107
