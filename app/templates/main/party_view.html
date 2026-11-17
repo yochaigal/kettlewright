@@ -96,7 +96,11 @@
         <div class="party-view-controls" :class="{ hidden: collapsed }" role="group" aria-label="{{_('Member display')}}">
           <button type="button" data-party-layout="compact" aria-pressed="{{ 'true' if is_owner else 'false' }}">{{_('Compact')}}</button>
           <button type="button" data-party-layout="cards" aria-pressed="{{ 'false' if is_owner else 'true' }}">{{_('Cards')}}</button>
+          {% if is_owner %}<button type="button" data-connected-only aria-pressed="false"
+            title="{{_('Show only characters whose players have Kettlewright open')}}"><span class="party-presence is-online" aria-hidden="true"></span> {{_('Connected only')}}</button>{% endif %}
         </div>
+        {% if is_owner %}<p class="party-presence-summary" hidden
+           data-template="{{_('%(connected)s connected · %(hidden)s not connected (hidden)', connected='%(connected)s', hidden='%(hidden)s')}}"></p>{% endif %}
         <p class="party-members-status quick-stats-status" role="status" aria-live="polite"></p>
         <div id="party-members-content" class="party-section-content" :class="{ hidden: collapsed }">
           {% include "partial/partyview/members.html" %}

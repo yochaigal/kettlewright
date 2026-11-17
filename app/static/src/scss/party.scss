@@ -30,6 +30,8 @@ button.party-section-action { display: inline-flex; align-items: center; gap: .6
   border-radius: 2px;
   button { margin: 0; padding: .4rem 1rem; border: 0; border-radius: 0; font-size: 1.5rem; }
   button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+  // An independent switch, not a third layout: set it apart.
+  button[data-connected-only] { display: inline-flex; align-items: center; gap: .1rem; border-left: 1px solid var(--fg); }
 }
 .party-section-bar {
   display: flex;
@@ -117,6 +119,24 @@ button.party-section-action { display: inline-flex; align-items: center; gap: .6
   color: var(--fg);
   &:hover { background: color-mix(in lab, transparent 90%, var(--fg)); }
 }
+
+// Presence (#424): a dot for players with Kettlewright open (Warden only), and
+// "Connected only" hides the rest of the roster.
+.party-presence {
+  display: inline-block;
+  flex: none;
+  width: .7em;
+  height: .7em;
+  margin-left: .35em;
+  vertical-align: middle;
+  border: 1.5px solid color-mix(in lab, transparent 40%, var(--fg));
+  border-radius: 50%;
+  &.is-online { border-color: #2f8f4e; background: #2f8f4e; }
+  .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+// Outranks both layouts' "#party-members-content .party-member { display: … }".
+#party-members.party-connected-only #party-members-content .party-member[data-online="0"] { display: none; }
+.party-presence-summary { margin: .25rem 0 .5rem; font-size: 1.3rem; opacity: .75; }
 
 // Cards follow the character cards: attributes left, resources right.
 #party-members:not(.party-compact) {
@@ -813,6 +833,8 @@ pointer-events: none;
   }
   .monster-attack-rolls { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .5rem; }
   .monster-attack-rolls button { margin: 0; }
+  // Monsters tab: the × in the card's corner deletes it.
+  .companion-card:has(.companion-delete-form) { position: relative; padding-right: 2.75rem; }
   .companion-monster-notes {
     grid-column: 1 / -1;
     min-width: 0;
@@ -886,3 +908,25 @@ pointer-events: none;
 }
 .storage-slots { width: 100%; margin-top: 0; }
 .inventory-footer-buttons button { display: inline-flex; align-items: center; gap: .5rem; }
+
+// The × that deletes a monster from its card (Monsters tab).
+.companion-delete-form { position: absolute; top: .35rem; right: .35rem; margin: 0; padding: 0; background: none; border: 0; width: auto; }
+button.companion-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: none;
+  color: inherit;
+  font-size: 2rem;
+  line-height: 1;
+  opacity: .55;
+  cursor: pointer;
+  &:hover, &:focus-visible { opacity: 1; color: #b84141; }
+}
+.dark-mode button.companion-delete:hover, .dark-mode button.companion-delete:focus-visible { color: #ff8f8f; }

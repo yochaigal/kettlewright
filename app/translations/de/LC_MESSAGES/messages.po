@@ -23169,3 +23169,23 @@ msgstr "Würfe der Spielleitung"
 #: app/templates/partial/partyview/warden_dice.html
 msgid "2d6"
 msgstr "2W6"
+
+#: app/templates/main/party_view.html
+msgid "Not connected"
+msgstr "Nicht verbunden"
+
+#: app/templates/main/party_view.html
+msgid "Connected only"
+msgstr "Nur Verbundene"
+
+#: app/templates/main/party_view.html
+msgid "Show only characters whose players have Kettlewright open"
+msgstr "Nur Charaktere zeigen, deren Spieler Kettlewright geöffnet haben"
+
+#: app/templates/main/party_view.html
+msgid "%(connected)s connected · %(hidden)s not connected (hidden)"
+msgstr "%(connected)s verbunden · %(hidden)s nicht verbunden (ausgeblendet)"
+
+#: app/templates/partial/companions/cards.html
+msgid "Delete %(name)s? This also removes their inventory."
+msgstr "%(name)s löschen? Dabei wird auch das Inventar entfernt."

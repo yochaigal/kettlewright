@@ -8,7 +8,7 @@
               aria-haspopup="dialog" aria-controls="monster-add-modal"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{_('Add monsters')}}</button>
     </header>
     {% from 'partial/companions/cards.html' import cards with context %}
-    {{cards(party.monsters, compact=true)}}
+    {{cards(party.monsters, compact=true, deletable=true)}}
 
     <div class="modal monster-add-modal" id="monster-add-modal" :class="{'is-active': open}">
       <div class="modal-background" @click="hide()"></div>

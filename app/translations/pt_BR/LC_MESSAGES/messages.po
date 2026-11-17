@@ -24167,3 +24167,23 @@ msgstr "Rolagens do Guardião"
 #: app/templates/partial/partyview/warden_dice.html
 msgid "2d6"
 msgstr "2d6"
+
+#: app/templates/main/party_view.html
+msgid "Not connected"
+msgstr "Não conectado"
+
+#: app/templates/main/party_view.html
+msgid "Connected only"
+msgstr "Só conectados"
+
+#: app/templates/main/party_view.html
+msgid "Show only characters whose players have Kettlewright open"
+msgstr "Mostrar só personagens cujos jogadores estão com o Kettlewright aberto"
+
+#: app/templates/main/party_view.html
+msgid "%(connected)s connected · %(hidden)s not connected (hidden)"
+msgstr "%(connected)s conectados · %(hidden)s desconectados (ocultos)"
+
+#: app/templates/partial/companions/cards.html
+msgid "Delete %(name)s? This also removes their inventory."
+msgstr "Excluir %(name)s? Isso também remove o inventário."

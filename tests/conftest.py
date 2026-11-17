@@ -67,3 +67,11 @@ def app_context(app):
 def runner(app):
     """A test runner for the app's Click commands."""
     return app.test_cli_runner()
+
+@pytest.fixture(autouse=True)
+def fresh_presence():
+    """Every test starts with nobody connected (#424), so socket events never depend on test order."""
+    import app.lib.presence as presence
+    presence._presence = presence.Presence()
+    yield presence._presence
+    presence._presence = None

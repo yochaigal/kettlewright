@@ -463,13 +463,25 @@ def party_characters(target_party):
     return [by_id[member_id] for member_id in members if member_id in by_id]
 
 
+def connected_owners(target_party, characters):
+    """For the Warden only (#424): players with Kettlewright open, plus the Warden.
+
+    None for everyone else, so players never see each other's presence.
+    """
+    if not current_user.is_authenticated or current_user.id != target_party.owner:
+        return None
+    from app.lib.presence import online_user_ids
+    return online_user_ids({character.owner for character in characters}) | {target_party.owner}
+
+
 @party.route('/party/<int:party_id>/members', methods=['GET'])
 @login_required
 def members(party_id):
     target_party = db.get_or_404(Party, party_id)
+    characters = party_characters(target_party)
     response = make_response(render_template(
         'partial/partyview/members.html', party=target_party,
-        characters=party_characters(target_party), stat_form=FlaskForm()))
+        characters=characters, online=connected_owners(target_party, characters), stat_form=FlaskForm()))
     response.headers['Cache-Control'] = 'no-store'
     return response
 
@@ -537,6 +549,7 @@ def party_view(ownername, party_url):
                            campaign_editing=is_owner and not campaign_preview,
                            content_categories=CATEGORIES, content_excerpt=content_excerpt,
                            rolls=PartyRoll.latest(party.id, current_user.id) if can_view_rolls else [],
+                           online=connected_owners(party, characters),
                            wilderness_mounts=wilderness_mounts(party, characters)))
     response.headers['Cache-Control'] = 'no-store'
     return response
