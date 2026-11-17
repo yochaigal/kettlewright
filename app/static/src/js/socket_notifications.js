@@ -12,6 +12,11 @@ const socketNotificationManager = {
 
   init() {
     this.connectSocket();
+    // Presence heartbeat (#424): Wardens can see who has Kettlewright open.
+    // The server counts a player as connected for a while after the last beat.
+    setInterval(() => {
+      if (this.socket?.connected) this.socket.emit("presence");
+    }, 30000);
   },
 
   connectSocket() {

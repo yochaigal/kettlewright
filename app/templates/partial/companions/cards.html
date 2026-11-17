@@ -1,4 +1,4 @@
-{% macro cards(creatures, editable_stats=true, compact=false) %}
+{% macro cards(creatures, editable_stats=true, compact=false, deletable=false) %}
 <div class="companion-cards{% if compact %} companion-compact{% endif %}">
   {% for c in creatures %}
   <article class="companion-card">
@@ -39,6 +39,15 @@
       {% if c.notes and can_manage_companion(c) %}<details class="companion-notes-toggle"><summary>{{_('Notes')}}</summary><div class="companion-notes-body">{{c.notes|markdown}}</div></details>{% endif %}
     </div>
     {% endif %}
+    {% endif %}
+    {% if deletable and can_manage_companion(c) %}
+    {# Monsters tab: delete this monster right here, after a confirmation. #}
+    <form class="companion-delete-form" method="post" action="{{ url_for('companions.delete', companion_id=c.id) }}" data-confirm-delete
+          data-confirm="{{_('Delete %(name)s? This also removes their inventory.', name=c.name)}}"
+          data-confirm-title="{{_('Delete monster')}}" data-confirm-button="{{_('Delete')}}">
+      {{ companion_form().hidden_tag() }}
+      <button type="submit" class="companion-delete" title="{{_('Delete monster')}}" aria-label="{{_('Delete monster')}}: {{c.name}}">×</button>
+    </form>
     {% endif %}
     {% if c.kind == 'monster' and can_manage_companion(c) %}
     <div class="monster-attack-rolls">

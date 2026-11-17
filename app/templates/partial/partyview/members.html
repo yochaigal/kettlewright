@@ -1,5 +1,7 @@
 {% for character in characters %}
-<article class="party-member card" data-character-id="{{ character.id }}">
+{# online is set for the Warden only: who has Kettlewright open right now (#424). #}
+{% set connected = online is defined and online is not none and character.owner in online %}
+<article class="party-member card" data-character-id="{{ character.id }}"{% if online is defined and online is not none %} data-online="{{ '1' if connected else '0' }}"{% endif %}>
   <div class="party-member-identity">
     <a href="/users/{{ character.owner_username }}/characters/{{ character.url_name }}/">
       <img src="{{ character.image_url if character.custom_image else url_for('static', filename='images/portraits/' + (character.image_url or 'default-portrait.webp')) }}"
@@ -7,6 +9,7 @@
     </a>
     <div>
       <a class="party-member-name" href="/users/{{ character.owner_username }}/characters/{{ character.url_name }}/">{{ character.name|markdown_inline }}</a>
+      {% if online is defined and online is not none %}<span class="party-presence{% if connected %} is-online{% endif %}" title="{{ _('Connected') if connected else _('Not connected') }}"><span class="sr-only">{{ _('Connected') if connected else _('Not connected') }}</span></span>{% endif %}
       <p class="party-member-background">{{ character.background | tr }}</p>
       {% include "partial/dead_badge.html" %}
       {% if character.deprived %}<small>{{_('DEPRIVED')}}</small>{% endif %}

@@ -45464,6 +45464,26 @@ msgstr "Tiradas de la Guardiana"
 msgid "2d6"
 msgstr "2d6"
 
+#: app/templates/main/party_view.html
+msgid "Not connected"
+msgstr "No conectado"
+
+#: app/templates/main/party_view.html
+msgid "Connected only"
+msgstr "Solo conectados"
+
+#: app/templates/main/party_view.html
+msgid "Show only characters whose players have Kettlewright open"
+msgstr "Mostrar solo personajes cuyos jugadores tienen Kettlewright abierto"
+
+#: app/templates/main/party_view.html
+msgid "%(connected)s connected · %(hidden)s not connected (hidden)"
+msgstr "%(connected)s conectados · %(hidden)s sin conexión (ocultos)"
+
+#: app/templates/partial/companions/cards.html
+msgid "Delete %(name)s? This also removes their inventory."
+msgstr "¿Eliminar a %(name)s? También se elimina su inventario."
+
 #: app/templates/partial/charview/inventory_slots.html
 msgid "Drop to move it to:"
 msgstr "Suelta para moverlo a:"

@@ -27257,6 +27257,26 @@ msgstr "Кидки Стража"
 msgid "2d6"
 msgstr "2к6"
 
+#: app/templates/main/party_view.html
+msgid "Not connected"
+msgstr "Не в мережі"
+
+#: app/templates/main/party_view.html
+msgid "Connected only"
+msgstr "Лише в мережі"
+
+#: app/templates/main/party_view.html
+msgid "Show only characters whose players have Kettlewright open"
+msgstr "Показувати лише персонажів гравців, у яких відкрито Kettlewright"
+
+#: app/templates/main/party_view.html
+msgid "%(connected)s connected · %(hidden)s not connected (hidden)"
+msgstr "У мережі: %(connected)s · не в мережі: %(hidden)s (приховані)"
+
+#: app/templates/partial/companions/cards.html
+msgid "Delete %(name)s? This also removes their inventory."
+msgstr "Видалити %(name)s? Інвентар також буде видалено."
+
 #: app/templates/partial/charview/inventory_slots.html
 msgid "Drop to move it to:"
 msgstr "Відпустіть, щоб перемістити до:"

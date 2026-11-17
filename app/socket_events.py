@@ -88,11 +88,32 @@ def register_socket_events(socketio):
             emit('rate_limited', {'message': 'Too many events. Please wait a moment.'})
         return allowed
 
+    def mark_present(user_id):
+        """Record a heartbeat (#424). Nothing is pushed: the Warden's party page checks again on its own."""
+        from app.lib.presence import presence
+        try:
+            presence().touch(user_id)
+        except Exception:
+            current_app.logger.exception('Presence unavailable')
+
     @socketio.on('connect')
     def handle_connect():
         if not current_user.is_authenticated:
             return False
         join_room(f'user_{current_user.id}')
+        mark_present(current_user.id)
+
+    @socketio.on('presence')
+    def handle_presence():
+        # Heartbeats are quiet: over the limit they are simply ignored, never a warning.
+        if not current_user.is_authenticated:
+            return
+        try:
+            allowed = limiter.allow(current_user.id, 'presence', 20, 10)
+        except Exception:
+            return
+        if allowed:
+            mark_present(current_user.id)
 
     @socketio.on('register')
     def handle_register():

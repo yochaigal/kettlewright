@@ -23473,6 +23473,26 @@ msgstr "Rzuty Strażnika"
 msgid "2d6"
 msgstr "2k6"
 
+#: app/templates/main/party_view.html
+msgid "Not connected"
+msgstr "Niepołączony"
+
+#: app/templates/main/party_view.html
+msgid "Connected only"
+msgstr "Tylko połączeni"
+
+#: app/templates/main/party_view.html
+msgid "Show only characters whose players have Kettlewright open"
+msgstr "Pokaż tylko postacie graczy, którzy mają otwarty Kettlewright"
+
+#: app/templates/main/party_view.html
+msgid "%(connected)s connected · %(hidden)s not connected (hidden)"
+msgstr "Połączeni: %(connected)s · niepołączeni: %(hidden)s (ukryci)"
+
+#: app/templates/partial/companions/cards.html
+msgid "Delete %(name)s? This also removes their inventory."
+msgstr "Usunąć %(name)s? Usunie to też ekwipunek."
+
 #: app/templates/partial/charview/inventory_slots.html
 msgid "Drop to move it to:"
 msgstr "Upuść, aby przenieść do:"

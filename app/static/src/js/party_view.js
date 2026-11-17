@@ -1,3 +1,4 @@
+import "./monster_delete.js";
 import utils from "./utils.js";
 import dice3d from "./dice3d.js";
 import notification from "./notification.js";
