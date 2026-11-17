@@ -150,7 +150,8 @@ def bind_saved_articles(session, *_):
                             row.references = bind_references(source, row.body or '', previous)
 
 
-def reference_urls(body, bindings, entries, party_id=None):
+def reference_urls(body, bindings, entries, party_id=None, link=None):
+    """Token -> URL. `link(entry_id)` overrides where an article link points."""
     result = {}
     by_key = {(entry.get('reference_key') if isinstance(entry, dict) else entry.reference_key): (entry_id, entry)
               for entry_id, entry in entries.items()}
@@ -173,8 +174,13 @@ def reference_urls(body, bindings, entries, party_id=None):
             if match is None:
                 continue
             anchor = '#' + match['anchor']
-        result[token] = (f'/party/{party_id}/materials/{target_id}' if party_id is not None
-                         else f'/materials/{target_id}/edit') + anchor
+        if link is not None:
+            path = link(target_id)
+        elif party_id is not None:
+            path = f'/party/{party_id}/materials/{target_id}'
+        else:
+            path = f'/materials/{target_id}/edit'
+        result[token] = path + anchor
     return result
 
 

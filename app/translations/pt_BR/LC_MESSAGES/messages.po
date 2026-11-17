@@ -24180,6 +24180,86 @@ msgstr "Não há espaço suficiente nesse recipiente."
 msgid "Drag to a slot, another container’s tab or a cart. Arrow keys then Enter also work."
 msgstr "Arraste para um espaço, a aba de outro recipiente ou uma carroça. As setas e depois Enter também funcionam."
 
+#: app/templates/campaigns/wiki.html
+msgid "Read"
+msgstr "Ler"
+
+#: app/templates/campaigns/wiki.html
+msgid "Article location"
+msgstr "Localização do artigo"
+
+#: app/templates/campaigns/wiki.html
+msgid "On this page"
+msgstr "Nesta página"
+
+#: app/templates/campaigns/wiki.html
+msgid "Links to"
+msgstr "Links para"
+
+#: app/templates/campaigns/wiki.html
+msgid "Linked from"
+msgstr "Citado em"
+
+#: app/templates/campaigns/wiki.html
+msgid "In this article"
+msgstr "Neste artigo"
+
+#: app/templates/campaigns/wiki.html
+msgid "About this article"
+msgstr "Sobre este artigo"
+
+#: app/templates/campaigns/wiki.html
+msgid "This article has no text yet."
+msgstr "Este artigo ainda não tem texto."
+
+#: app/templates/campaigns/wiki.html
+msgid "Search by title or type"
+msgstr "Buscar por título ou tipo"
+
+#: app/templates/campaigns/index.html
+msgid "Search campaigns and their articles"
+msgstr "Buscar campanhas e seus artigos"
+
+#: app/templates/campaigns/index.html
+msgid "No matching campaigns."
+msgstr "Nenhuma campanha encontrada."
+
+#: app/templates/campaigns/index.html
+msgid "Articles outside any campaign appear here."
+msgstr "Artigos fora de qualquer campanha aparecem aqui."
+
+#: app/templates/campaigns/index.html
+msgid "Your world at a glance. Open a campaign to read it, or edit it."
+msgstr "Seu mundo num relance. Abra uma campanha para lê-la ou edite-a."
+
+#: app/templates/campaigns/index.html
+msgid "My campaigns"
+msgstr "Minhas campanhas"
+
+#: app/templates/campaigns/index.html
+msgid "Free Starter Adventures"
+msgstr "Aventuras iniciais gratuitas"
+
+#: app/templates/campaigns/index.html
+msgid "Generate it randomly"
+msgstr "Gerar aleatoriamente"
+
+#: app/templates/campaigns/index.html
+msgid "Start with"
+msgstr "Começar com"
+
+#: app/templates/campaigns/index.html
+msgid "Everything generated stays private until you reveal it, and can be edited afterwards."
+msgstr "Tudo o que for gerado fica privado até você revelar e pode ser editado depois."
+
+#: app/templates/campaigns/index.html
+msgid "Note"
+msgstr "Nota"
+
+#: app/templates/campaigns/wiki.html
+msgid "Parties that can read their version of this article"
+msgstr "Grupos que podem ler a sua versão deste artigo"
+
 #: app/lib/character_markdown.py
 msgid "%(current)s/%(maximum)s uses"
 msgstr "%(current)s/%(maximum)s usos"
