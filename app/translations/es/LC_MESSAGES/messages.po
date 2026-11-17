@@ -45463,3 +45463,79 @@ msgstr "Tiradas de la Guardiana"
 #: app/templates/partial/partyview/warden_dice.html
 msgid "2d6"
 msgstr "2d6"
+
+#: app/templates/campaigns/wiki.html
+msgid "Read"
+msgstr "Leer"
+
+#: app/templates/campaigns/wiki.html
+msgid "Article location"
+msgstr "Ubicación del artículo"
+
+#: app/templates/campaigns/wiki.html
+msgid "On this page"
+msgstr "En esta página"
+
+#: app/templates/campaigns/wiki.html
+msgid "Links to"
+msgstr "Enlaza a"
+
+#: app/templates/campaigns/wiki.html
+msgid "Linked from"
+msgstr "Enlazado desde"
+
+#: app/templates/campaigns/wiki.html
+msgid "In this article"
+msgstr "En este artículo"
+
+#: app/templates/campaigns/wiki.html
+msgid "About this article"
+msgstr "Sobre este artículo"
+
+#: app/templates/campaigns/wiki.html
+msgid "This article has no text yet."
+msgstr "Este artículo aún no tiene texto."
+
+#: app/templates/campaigns/wiki.html
+msgid "Search by title or type"
+msgstr "Buscar por título o tipo"
+
+#: app/templates/campaigns/index.html
+msgid "Search campaigns and their articles"
+msgstr "Buscar campañas y sus artículos"
+
+#: app/templates/campaigns/index.html
+msgid "No matching campaigns."
+msgstr "No hay campañas que coincidan."
+
+#: app/templates/campaigns/index.html
+msgid "Articles outside any campaign appear here."
+msgstr "Aquí aparecen los artículos que no pertenecen a ninguna campaña."
+
+#: app/templates/campaigns/index.html
+msgid "Your world at a glance. Open a campaign to read it, or edit it."
+msgstr "Tu mundo de un vistazo. Abre una campaña para leerla o edítala."
+
+#: app/templates/campaigns/index.html
+msgid "My campaigns"
+msgstr "Mis campañas"
+
+#: app/templates/campaigns/index.html
+msgid "Free Starter Adventures"
+msgstr "Aventuras iniciales gratuitas"
+
+#: app/templates/campaigns/index.html
+msgid "Generate it randomly"
+msgstr "Generarla al azar"
+
+#: app/templates/campaigns/index.html
+msgid "Start with"
+msgstr "Empezar con"
+
+#: app/templates/campaigns/index.html
+msgid "Everything generated stays private until you reveal it, and can be edited afterwards."
+msgstr "Todo lo generado es privado hasta que lo reveles y se puede editar después."
+
+#: app/templates/campaigns/index.html
+msgid "Note"
+msgstr "Nota"

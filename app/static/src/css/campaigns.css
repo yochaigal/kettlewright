@@ -318,3 +318,111 @@ section.body-container > .sheet.campaign-workspace {background:transparent;box-s
 .campaign-modal .modal-card:has(button[name="confirm"][value="delete"]) .modal-card-body {padding:28px 32px;font-size:1.1em;}
 .campaign-modal .modal-card:has(button[name="confirm"][value="delete"]) .modal-card-body p {margin:0 0 1em;}
 .campaign-modal .modal-card:has(button[name="confirm"][value="delete"]) .campaign-modal-actions {padding:1.25rem 32px;gap:.75rem;}
+
+/* Campaign wiki (#421): read the campaign as linked pages. Sidebar tree,
+   article, and a right column for "On this page" and links. */
+/* magick.css styles bare aside/article/header (a floated 40% side note, a centered
+   76rem column, 12rem header margins). Undo that here at the same specificity, so
+   the wiki's own class rules below still apply. */
+aside:where(.campaign-wiki *), article:where(.campaign-wiki *), header:where(.campaign-wiki *) {float:none;clear:none;width:auto;max-width:none;margin:0;padding:0;border-left:0;font-size:inherit;line-height:inherit;}
+.campaign-wiki .wiki-header h1 {text-align:left;}
+.campaign-wiki .sr-only {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+.campaign-wiki {--wiki-muted:color-mix(in srgb,var(--fg) 62%,var(--bg));--wiki-line:color-mix(in srgb,var(--fg) 18%,var(--bg));--wiki-soft:color-mix(in srgb,var(--fg) 5%,var(--bg));}
+.campaign-wiki .wiki-topbar {display:flex;align-items:center;justify-content:space-between;gap:1em;}
+.campaign-wiki .wiki-menu-toggle {display:none;align-items:center;gap:.4em;min-height:44px;}
+.wiki-layout {display:grid;grid-template-columns:minmax(13em,17em) minmax(0,1fr);gap:2.5em;align-items:start;margin-top:1em;}
+.wiki-sidebar {position:sticky;top:1em;max-height:calc(100dvh - 2em);overflow:auto;padding-right:1em;border-right:1px solid var(--wiki-line);}
+.wiki-campaign-name {display:block;margin-bottom:.75em;font-size:1.15em;font-weight:700;text-decoration:none;color:inherit;}
+.wiki-search input {width:100%;box-sizing:border-box;margin:0 0 .75em;padding:.45em .6em;border:1px solid var(--wiki-line);border-radius:3px;background:var(--bg);color:var(--fg);font:inherit;}
+.wiki-tree {font-size:.95em;line-height:1.35;}
+.wiki-tree a {display:block;padding:.3em .45em;border-radius:3px;color:inherit;text-decoration:none;overflow-wrap:anywhere;}
+.wiki-tree a:hover {background:var(--wiki-soft);}
+.wiki-tree a[aria-current="page"], .wiki-campaign-name[aria-current="page"] {background:color-mix(in srgb,var(--fg) 12%,var(--bg));font-weight:700;}
+.wiki-tree summary {display:flex;align-items:center;cursor:pointer;list-style:none;}
+.wiki-tree summary::-webkit-details-marker {display:none;}
+.wiki-tree summary::before {content:'›';flex:none;width:1em;text-align:center;color:var(--wiki-muted);transition:transform .15s;}
+.wiki-tree details[open] > summary::before {transform:rotate(90deg);}
+.wiki-tree summary a {flex:1;min-width:0;}
+.wiki-tree-leaf {padding-left:1em;}
+.wiki-tree-children {margin-left:.5em;padding-left:.5em;border-left:1px solid var(--wiki-line);}
+.wiki-main {min-width:0;}
+.wiki-crumbs {display:flex;flex-wrap:wrap;gap:.35em;align-items:center;margin-bottom:.5em;font-size:.9em;color:var(--wiki-muted);}
+.wiki-crumbs a {color:inherit;}
+.wiki-header {display:flex;align-items:flex-start;justify-content:space-between;gap:1em;margin-bottom:1.25em;padding-bottom:1em;border-bottom:1px solid var(--wiki-line);}
+.wiki-header h1 {margin:0 0 .35em;overflow-wrap:anywhere;}
+.wiki-edit {display:inline-flex;align-items:center;gap:.4em;flex:none;min-height:44px;margin:0;padding:.5em 1em;border:1.5px solid var(--fg);border-radius:2px;color:inherit;text-decoration:none;font-weight:600;}
+.wiki-badges {display:inline-flex;flex-wrap:wrap;gap:.4em;}
+.wiki-badge {display:inline-block;padding:.1em .55em;border:1px solid var(--wiki-line);border-radius:999px;font-size:.8em;color:var(--wiki-muted);white-space:nowrap;}
+.wiki-badge-heart {border-color:currentColor;color:var(--fg);font-weight:600;}
+.wiki-body {display:grid;grid-template-columns:minmax(0,1fr) 15em;gap:2.5em;align-items:start;}
+.wiki-body:not(:has(.wiki-aside)) {grid-template-columns:minmax(0,1fr);}
+.wiki-content {min-width:0;max-width:46em;}
+.wiki-content .rich-content {font-size:1.05em;line-height:1.6;}
+.wiki-aside {position:sticky;top:1em;display:flex;flex-direction:column;gap:1.5em;font-size:.92em;}
+.wiki-aside h2, .wiki-related h2 {margin:0 0 .5em;font-size:.8em;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--wiki-muted);}
+.wiki-related h2 small {margin-left:.35em;font-weight:400;}
+.wiki-aside ul, .wiki-related > ul {margin:0;padding:0;list-style:none;}
+.wiki-aside li {margin:.3em 0;}
+.wiki-toc a {color:inherit;}
+.wiki-related {margin-top:2em;}
+.wiki-related > ul li {margin:.35em 0;}
+.wiki-cards {display:grid;grid-template-columns:repeat(auto-fill,minmax(14em,1fr));gap:.75em;margin:0;padding:0;list-style:none;}
+.wiki-card {display:flex;flex-direction:column;gap:.4em;padding:.85em 1em;border:1px solid var(--wiki-line);border-radius:4px;background:var(--wiki-soft);}
+.wiki-card:hover {border-color:var(--fg);}
+.wiki-card > a {font-weight:700;overflow-wrap:anywhere;}
+.wiki-card p {margin:0;font-size:.88em;line-height:1.4;color:var(--wiki-muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.wiki-empty {color:var(--wiki-muted);}
+@media (max-width:1100px) {
+  .wiki-body {grid-template-columns:minmax(0,1fr);}
+  .wiki-aside {position:static;order:2;padding-top:1.5em;border-top:1px solid var(--wiki-line);}
+}
+@media (max-width:760px) {
+  .campaign-wiki .wiki-menu-toggle {display:inline-flex;}
+  .wiki-layout {grid-template-columns:minmax(0,1fr);gap:1em;}
+  .wiki-sidebar {position:static;display:none;max-height:none;padding:1em 0;border-right:0;border-bottom:1px solid var(--wiki-line);}
+  .wiki-sidebar.is-open {display:block;}
+  .wiki-header {flex-direction:column;}
+}
+
+/* Campaigns gallery: one card per campaign; the card reads, Edit edits. */
+.campaign-gallery-page .gallery-heading, .campaign-workspace .campaign-gallery-page #starter-heading {position:static;transform:none;max-width:none;margin:1.75em 0 .75em;padding:0;background:none;}
+/* The starter section used to be a boxed three-column list; in the gallery it is just a heading and cards. */
+.campaign-workspace .campaign-gallery-page section[aria-labelledby="starter-heading"] {display:block;margin:0;padding:0;border:0;border-radius:0;}
+.campaign-gallery-page .sr-only {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+.campaign-gallery-page .gallery-heading small {margin-left:.35em;font-weight:400;color:color-mix(in srgb,var(--fg) 60%,var(--bg));}
+.campaign-gallery {display:grid;grid-template-columns:repeat(auto-fill,minmax(15em,1fr));gap:1em;margin:0;padding:0;list-style:none;}
+.campaign-card {display:flex;flex-direction:column;min-width:0;overflow:hidden;border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;background:color-mix(in srgb,var(--fg) 3%,var(--bg));transition:border-color .15s,transform .15s;}
+.campaign-card:hover, .campaign-card:focus-within {border-color:var(--fg);}
+.campaign-card[hidden] {display:none;}
+.campaign-card-cover {display:block;aspect-ratio:16/9;overflow:hidden;background:color-mix(in srgb,var(--fg) 8%,var(--bg));}
+.campaign-card-cover img {display:block;width:100%;height:100%;object-fit:cover;}
+.campaign-card-placeholder {display:flex;align-items:center;justify-content:center;height:100%;font-size:3em;font-weight:700;color:color-mix(in srgb,var(--fg) 35%,var(--bg));background:repeating-linear-gradient(135deg,transparent 0 12px,color-mix(in srgb,var(--fg) 4%,transparent) 12px 24px);}
+.campaign-card-body {display:flex;flex-direction:column;gap:.3em;flex:1;padding:.85em 1em .5em;min-width:0;}
+.campaign-card-title {font-weight:700;font-size:1.1em;color:inherit;text-decoration:none;overflow-wrap:anywhere;}
+.campaign-card-title:hover {text-decoration:underline;}
+.campaign-card-title::after {content:'';position:absolute;inset:0;} /* Whole card opens it... */
+.campaign-card {position:relative;}
+.campaign-card-meta {font-size:.88em;line-height:1.4;color:color-mix(in srgb,var(--fg) 65%,var(--bg));overflow-wrap:anywhere;}
+.campaign-card-actions {position:relative;z-index:1;display:flex;align-items:center;gap:1em;padding:.5em 1em .85em;} /* ...except its own actions. */
+.campaign-card-actions a, .campaign-card-actions button {display:inline-flex;align-items:center;gap:.35em;min-height:44px;margin:0;color:inherit;font:inherit;font-size:.92em;}
+.campaign-card-actions form {margin:0 0 0 auto;padding:0;background:none;border:0;width:auto;}
+.campaign-card-actions button.link-button {min-width:44px;justify-content:center;padding:0;border:0;background:none;cursor:pointer;opacity:.7;}
+.campaign-card-actions button.link-button:hover {opacity:1;}
+.campaign-card-starter .campaign-card-title::after {content:none;}
+.campaign-card-starter .campaign-card-actions form {margin-left:0;}
+.campaign-card-starter .campaign-card-actions button {padding:.4em 1em;border:1.5px solid var(--fg);border-radius:2px;background:transparent;font-weight:600;cursor:pointer;}
+.campaign-wiki .wiki-cover {display:block;width:100%;max-height:16em;object-fit:cover;margin-bottom:1.25em;border-radius:6px;}
+@media (max-width:480px) {.campaign-gallery {grid-template-columns:1fr;}}
+
+/* "Create new" dialog: random campaign options under a checkbox. */
+.create-dialog .create-random {margin:0 0 .5em;}
+.create-dialog .create-random > .campaign-check {display:flex;align-items:center;gap:.5em;min-height:44px;margin:.75em 0 .25em;font-weight:600;cursor:pointer;}
+.create-dialog .create-random-options {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75em 1em;margin:.25em 0 0;padding:1em;border:1px solid color-mix(in srgb,var(--fg) 25%,var(--bg));border-radius:4px;}
+.create-dialog .create-random-options > .campaign-check, .create-dialog .create-random-options > .import-hint, .create-dialog .create-random-percent {grid-column:1 / -1;}
+.create-dialog .create-random-options .campaign-check {display:flex;align-items:center;gap:.5em;margin:0;cursor:pointer;}
+.create-dialog .create-random-percent {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75em 1em;}
+.create-dialog .create-random-options label:not(.campaign-check) {display:flex;flex-direction:column;gap:.3em;margin:0;}
+.create-dialog .create-random-options :is(select, input[type=number]) {width:100%;max-width:none;box-sizing:border-box;margin:0;padding:.45em .6em;border:1px solid var(--fg);border-radius:2px;background:var(--bg);color:var(--fg);font:inherit;}
+.create-dialog .create-random-options .import-hint {margin:0;font-size:.88em;}
+.create-dialog button.primary:disabled {opacity:.6;cursor:progress;}
+@media (max-width:480px) {.create-dialog .create-random-options, .create-dialog .create-random-percent {grid-template-columns:1fr;}}

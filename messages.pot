@@ -42672,3 +42672,79 @@ msgstr ""
 #: app/templates/partial/partyview/warden_dice.html
 msgid "2d6"
 msgstr ""
+
+#: app/templates/campaigns/wiki.html
+msgid "Read"
+msgstr ""
+
+#: app/templates/campaigns/wiki.html
+msgid "Article location"
+msgstr ""
+
+#: app/templates/campaigns/wiki.html
+msgid "On this page"
+msgstr ""
+
+#: app/templates/campaigns/wiki.html
+msgid "Links to"
+msgstr ""
+
+#: app/templates/campaigns/wiki.html
+msgid "Linked from"
+msgstr ""
+
+#: app/templates/campaigns/wiki.html
+msgid "In this article"
+msgstr ""
+
+#: app/templates/campaigns/wiki.html
+msgid "About this article"
+msgstr ""
+
+#: app/templates/campaigns/wiki.html
+msgid "This article has no text yet."
+msgstr ""
+
+#: app/templates/campaigns/wiki.html
+msgid "Search by title or type"
+msgstr ""
+
+#: app/templates/campaigns/index.html
+msgid "Search campaigns and their articles"
+msgstr ""
+
+#: app/templates/campaigns/index.html
+msgid "No matching campaigns."
+msgstr ""
+
+#: app/templates/campaigns/index.html
+msgid "Articles outside any campaign appear here."
+msgstr ""
+
+#: app/templates/campaigns/index.html
+msgid "Your world at a glance. Open a campaign to read it, or edit it."
+msgstr ""
+
+#: app/templates/campaigns/index.html
+msgid "My campaigns"
+msgstr ""
+
+#: app/templates/campaigns/index.html
+msgid "Free Starter Adventures"
+msgstr ""
+
+#: app/templates/campaigns/index.html
+msgid "Generate it randomly"
+msgstr ""
+
+#: app/templates/campaigns/index.html
+msgid "Start with"
+msgstr ""
+
+#: app/templates/campaigns/index.html
+msgid "Everything generated stays private until you reveal it, and can be edited afterwards."
+msgstr ""
+
+#: app/templates/campaigns/index.html
+msgid "Note"
+msgstr ""

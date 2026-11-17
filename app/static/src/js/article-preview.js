@@ -9,6 +9,8 @@ export function previewURL(href, origin = location.origin) {
     return url.pathname.replace(/\/edit\/?$/, '/preview');
   if (/^\/party\/[1-9]\d*\/materials\/[1-9]\d*\/?$/.test(url.pathname))
     return url.pathname.replace(/\/$/, '') + '/preview';
+  const wiki = url.pathname.match(/^\/campaigns\/[1-9]\d*\/wiki\/([1-9]\d*)\/?$/);
+  if (wiki) return `/materials/${wiki[1]}/preview`;
   return null;
 }
 

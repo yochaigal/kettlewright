@@ -132,45 +132,75 @@ def create_campaign(name):
     return redirect(url_for('campaigns.new_map', campaign_id=campaign.id, kind='realm'))
 
 
+def start_campaign(name, start, kind, form):
+    """Create a campaign: empty, or with a random realm, dungeon or forest.
+
+    The "Create new" dialog and the campaigns page both start campaigns here.
+    """
+    campaign = Campaign(owner_id=current_user.id, name=name)
+    db.session.add(campaign)
+    kind = kind if kind in ('realm', 'dungeon', 'forest') else 'realm'
+    if start == 'random' and form.get('draft'):
+        # The browser generated the draft: save the campaign and its map together,
+        # so a rejected draft leaves no half-created campaign.
+        db.session.flush()
+        create_map_entry(campaign, None, kind, form.get('title') or campaign.name,
+                         form.get('body', ''), form.get('draft'))
+        db.session.commit()
+        return redirect(url_for('campaigns.workspace', campaign_id=campaign.id))
+    db.session.commit()
+    if start == 'empty':
+        return redirect(url_for('campaigns.workspace', campaign_id=campaign.id))
+    options = {}
+    if start != 'random':
+        kind = 'realm'
+    else:
+        # Fallback when the browser could not generate: open the generator with
+        # only bounded, known options.
+        def percent(name, default):
+            value = form.get(name, '')
+            return int(value) if value.isdigit() and int(value) <= 100 else default
+        pois = form.get('poi_count', '')
+        options = {'random': 1, 'children': '1' if form.get('generate_children') else '0',
+                   'forest': percent('forest_chance', 50), 'forest_pois': percent('dungeon_chance', 25)}
+        if pois in ('3', '6', '8', '12', '20'):
+            options['pois'] = pois
+    return redirect(url_for('campaigns.new_map', campaign_id=campaign.id, kind=kind, **options))
+
+
 @campaigns.route('/campaigns/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        campaign = Campaign(owner_id=current_user.id, name=text_value(request.form.get('name'), 200, True))
-        db.session.add(campaign)
-        start = request.form.get('start')
-        kind = request.form.get('kind') if request.form.get('kind') in ('realm', 'dungeon', 'forest') else 'realm'
-        if start == 'random' and request.form.get('draft'):
-            # The New campaign dialog generated the draft in the browser: save the campaign
-            # and its map together, so a rejected draft leaves no half-created campaign.
-            db.session.flush()
-            create_map_entry(campaign, None, kind, request.form.get('title') or campaign.name,
-                             request.form.get('body', ''), request.form.get('draft'))
-            db.session.commit()
-            return redirect(url_for('campaigns.workspace', campaign_id=campaign.id))
-        db.session.commit()
-        if start == 'empty':
-            return redirect(url_for('campaigns.workspace', campaign_id=campaign.id))
-        options = {}
-        if start != 'random':
-            kind = 'realm'
-        else:
-            # Fallback when the browser could not generate: open the generator with
-            # only bounded, known options.
-            def percent(name, default):
-                value = request.form.get(name, '')
-                return int(value) if value.isdigit() and int(value) <= 100 else default
-            pois = request.form.get('poi_count', '')
-            options = {'random': 1, 'children': '1' if request.form.get('generate_children') else '0',
-                       'forest': percent('forest_chance', 50), 'forest_pois': percent('dungeon_chance', 25)}
-            if pois in ('3', '6', '8', '12', '20'):
-                options['pois'] = pois
-        return redirect(url_for('campaigns.new_map', campaign_id=campaign.id, kind=kind, **options))
+        return start_campaign(text_value(request.form.get('name'), 200, True), request.form.get('start'),
+                              request.form.get('kind'), request.form)
+    from app.lib.campaign_wiki import cover_image
     campaigns_list = my_campaigns()
     entries = library_entries().order_by(ContentEntry.title).all()
+    by_campaign = {campaign.id: [e for e in entries if e.campaign_id == campaign.id] for campaign in campaigns_list}
     return render_template('campaigns/index.html', campaigns=campaigns_list,
         starter=starter_cards({c.name: c for c in campaigns_list}),
-        trees={campaign.id: material_hierarchy([e for e in entries if e.campaign_id == campaign.id]) for campaign in campaigns_list},
-        unfiled=material_hierarchy([e for e in entries if e.campaign_id is None]))
+        articles=by_campaign,
+        covers={campaign.id: cover_image(campaign, by_campaign[campaign.id]) is not None for campaign in campaigns_list},
+        unfiled=[e for e in entries if e.campaign_id is None])
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/cover')
+def campaign_cover(campaign_id):
+    """The campaign card's picture: the first image in its articles."""
+    import base64
+    from app.lib.campaign_wiki import campaign_entries, cover_image
+    from app.lib.rich_content import IMAGE_URL
+    campaign = owned(Campaign, campaign_id)
+    url = cover_image(campaign, campaign_entries(campaign))
+    if url is None:
+        abort(404)
+    if IMAGE_URL.fullmatch(url):  # Inline upload: serve the bytes, not a 500 KB page attribute.
+        kind, data = url[len('data:'):].split(';base64,', 1)
+        response = current_app.response_class(base64.b64decode(data), mimetype=kind)
+    else:
+        response = redirect(url)
+    response.headers['X-Content-Type-Options'] = 'nosniff'  # Caching follows the blueprint: private, no-store.
+    return response
 
 
 @campaigns.route('/campaigns/create', methods=['POST'])
@@ -180,6 +210,8 @@ def create_new():
         abort(400)
     name = text_value(request.form.get('name'), 200, True)
     if kind == 'campaign':
+        if request.form.get('start') in ('empty', 'random'):  # From the "Create new" dialog.
+            return start_campaign(name, request.form['start'], request.form.get('map_kind'), request.form)
         return create_campaign(name)
     return redirect(url_for('campaigns.new_entry', title=name, category='note'))
 
@@ -228,6 +260,24 @@ def workspace(campaign_id):
     entries = library_entries().filter_by(campaign_id=campaign.id).order_by(ContentEntry.id).all()
     return render_template('campaigns/workspace.html', campaign=campaign, hierarchy=material_hierarchy(entries),
                            parties=my_parties(), linked={p.party_id for p in campaign.parties})
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/wiki/')
+@campaigns.route('/campaigns/<int:campaign_id>/wiki/<int:entry_id>/')
+def wiki(campaign_id, entry_id=None):
+    """Read the campaign as a wiki; the article editor stays the place to change it."""
+    from app.lib.campaign_wiki import page_context
+    campaign = owned(Campaign, campaign_id)
+    entry = None
+    if entry_id is not None:
+        entry = owned(ContentEntry, entry_id)
+        if entry.campaign_id != campaign.id:
+            abort(404)
+    context = page_context(campaign, entry)
+    if entry is not None and entry.pointcrawl:
+        context.update(graph=map_projection(entry.pointcrawl), pointcrawl=None, editing=False, party=None,
+                       embedded=True, nested_maps=[], locations=[])
+    return render_template('campaigns/wiki.html', **context)
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/export')
