@@ -367,6 +367,116 @@
   }
 }
 
+// Export or print: one button on the sheet, every format in a dialog.
+.character-export [x-cloak] { display: none !important; }
+.character-export-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  box-sizing: border-box;
+  width: 40em;
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+  padding: 1.5rem;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--fg);
+  border-radius: 5px;
+  &::backdrop { background: rgba(0, 0, 0, .45); }
+
+  .character-pdf-attributes { display: flex; align-items: center; gap: .5em; margin: 0 0 .5rem; }
+}
+.character-export-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  h3 { margin: 0; }
+}
+.character-export-close {
+  flex: none;
+  min-width: 44px;
+  min-height: 44px;
+  margin: 0 !important;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: 1.4em;
+  cursor: pointer;
+}
+.character-export-group {
+  margin: 0 0 1.25rem;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+  legend {
+    margin-bottom: .5rem;
+    padding: 0;
+    font-size: .85em;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    opacity: .75;
+  }
+}
+.character-export-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11em, 1fr));
+  gap: .6rem;
+}
+.character-export-option {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: .6rem;
+  row-gap: .2rem;
+  align-items: baseline;
+  margin: 0;
+  padding: .75rem .85rem;
+  border: 1.5px solid color-mix(in srgb, var(--fg) 35%, var(--bg));
+  border-radius: 4px;
+  cursor: pointer;
+  input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+  i { grid-row: 1; font-size: 1.1em; }
+  .character-export-label { font-weight: 700; }
+  .character-export-description { grid-column: 2; font-size: .85em; line-height: 1.35; opacity: .8; }
+  &:hover { border-color: var(--fg); }
+  &:has(input:checked) { border-color: var(--fg); box-shadow: inset 0 0 0 1.5px var(--fg); background: color-mix(in srgb, var(--fg) 8%, var(--bg)); }
+  &:has(input:focus-visible) { outline: 2px solid var(--fg); outline-offset: 2px; }
+}
+.character-export-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-top: 1rem;
+  button, .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    margin: 0 !important;
+    padding: .5em 1.25em;
+    border: 1.5px solid var(--fg);
+    border-radius: 2px;
+    background: transparent;
+    color: var(--fg);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .primary { background: var(--fg); color: var(--bg); }
+}
+@media (max-width: 480px) {
+  .character-export-dialog { padding: 1rem; }
+  .character-export-options { grid-template-columns: 1fr; }
+  .character-export-actions > * { flex: 1 1 auto; }
+}
+
 .character-print-stats {
   display: grid;
   grid-template-columns: max-content minmax(3rem, 1fr) max-content minmax(3rem, 1fr);
