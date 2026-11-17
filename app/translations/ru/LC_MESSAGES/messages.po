@@ -35829,3 +35829,7 @@ msgstr "Всё созданное остаётся скрытым, пока вы
 #: app/templates/campaigns/index.html
 msgid "Note"
 msgstr "Заметка"
+
+#: app/templates/campaigns/wiki.html
+msgid "Parties that can read their version of this article"
+msgstr "Группы, которым доступна их версия этой статьи"

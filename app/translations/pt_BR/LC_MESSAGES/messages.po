@@ -24243,3 +24243,7 @@ msgstr "Tudo o que for gerado fica privado até você revelar e pode ser editado
 #: app/templates/campaigns/index.html
 msgid "Note"
 msgstr "Nota"
+
+#: app/templates/campaigns/wiki.html
+msgid "Parties that can read their version of this article"
+msgstr "Grupos que podem ler a sua versão deste artigo"

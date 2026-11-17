@@ -1,33 +1,51 @@
-"""A read-only, wiki-style view of a campaign for its owner (#421).
+"""Wiki-style reading pages for campaign articles (#421).
 
-Editing stays in the article editor. Here every article is a page: links
-between articles open other pages, and each page shows where it sits in the
-campaign (breadcrumbs, sub-articles) and what refers to it (backlinks).
+Every article is a page: links between articles open other pages, and each page
+shows where it sits (breadcrumbs, sub-articles) and what refers to it (backlinks).
+Editing stays in the article editor.
+
+Three sources share one template:
+- a campaign, for its owner (/campaigns/<id>/wiki/),
+- the owner's unfiled articles (/materials/wiki/),
+- what a party has been shown, for its members (/party/<id>/materials/<entry>).
+  Party pages only ever see published versions (known_entries), never originals.
 """
 import html
 import re
 
 from flask import url_for
+from flask_babel import _
 
 from app.lib.article_references import bind_references, headings, reference_urls
 from app.lib.campaigns import map_related_ids, material_hierarchy
 from app.lib.content_types import CATEGORIES, CATEGORY_GROUPS
-from app.lib.rich_content import content_excerpt
 from app.models import ContentEntry
 
 
-def wiki_url(entry):
-    return url_for('campaigns.wiki', campaign_id=entry.campaign_id, entry_id=entry.id)
+def _id(entry):
+    return entry['id'] if isinstance(entry, dict) else entry.id
+
+
+def _title(entry):
+    return (entry['title'] if isinstance(entry, dict) else entry.title) or ''
+
+
+def _ordered(entries):
+    return sorted(entries, key=lambda entry: (_title(entry).casefold(), _id(entry)))
 
 
 def campaign_entries(campaign):
     return ContentEntry.query.filter_by(owner_id=campaign.owner_id, campaign_id=campaign.id).order_by(ContentEntry.id).all()
 
 
+def unfiled_entries(owner_id):
+    return ContentEntry.query.filter_by(owner_id=owner_id, campaign_id=None).order_by(ContentEntry.id).all()
+
+
 def _path_to(items, entry_id, trail=()):
     """Ancestors of the first place an article appears in the tree."""
     for item in items:
-        if item['entry'].id == entry_id:
+        if _id(item['entry']) == entry_id:
             return list(trail)
         found = _path_to(item['children'], entry_id, trail + (item['entry'],))
         if found is not None:
@@ -35,8 +53,15 @@ def _path_to(items, entry_id, trail=()):
     return None
 
 
-def _ordered(entries):
-    return sorted(entries, key=lambda entry: ((entry.title or '').casefold(), entry.id))
+def _find(items, entry_id):
+    """The first place an article appears, depth first: where the tree expands it."""
+    for item in items:
+        if _id(item['entry']) == entry_id:
+            return item
+        found = _find(item['children'], entry_id)
+        if found is not None:
+            return found
+    return None
 
 
 def home_groups(entries):
@@ -44,62 +69,106 @@ def home_groups(entries):
     group_of = {category: group for group, categories in CATEGORY_GROUPS.items() for category in categories}
     groups = {}
     for entry in entries:
-        group = group_of.get(entry.category, 'Notes')
-        groups.setdefault(group, []).append(entry)
+        category = entry['category'] if isinstance(entry, dict) else entry.category
+        groups.setdefault(group_of.get(category, 'Notes'), []).append(entry)
     order = list(CATEGORY_GROUPS)
     return [(group, _ordered(groups[group])) for group in sorted(groups, key=order.index)]
 
 
-def page_context(campaign, entry=None):
-    entries = campaign_entries(campaign)
+def _article_parts(hierarchy, entry_id, by_id, outgoing, incoming):
+    """Breadcrumbs, sub-articles and both directions of links for one page."""
+    position = _find(hierarchy, entry_id)
+    # Sub-articles come from the same tree as the sidebar, so maps list their points too.
+    children = [item['entry'] for item in position['children']] if position else []
+    child_ids = {_id(child) for child in children}
+    return dict(
+        breadcrumbs=_path_to(hierarchy, entry_id) or [],
+        children=children,
+        links_to=_ordered(by_id[i] for i in outgoing - {entry_id} - child_ids if i in by_id),
+        linked_from=_ordered(by_id[i] for i in incoming - {entry_id} if i in by_id),
+    )
+
+
+# ----- Owner: a campaign, or the unfiled articles -----
+
+def page_context(campaign, entry=None, owner_id=None):
+    """Owner pages. With campaign=None, the owner's unfiled articles."""
+    if campaign is not None:
+        entries = campaign_entries(campaign)
+        page_url = lambda entry_id=None: url_for('campaigns.wiki', campaign_id=campaign.id, entry_id=entry_id)
+        home = dict(home_title=campaign.name, home_edit_url=url_for('campaigns.workspace', campaign_id=campaign.id))
+    else:
+        entries = unfiled_entries(owner_id)
+        page_url = lambda entry_id=None: url_for('campaigns.unfiled_wiki', entry_id=entry_id)
+        home = dict(home_title=_('Unfiled articles'), home_edit_url=url_for('campaigns.library'))
     by_id = {item.id: item for item in entries}
-    context = dict(campaign=campaign, entry=entry, hierarchy=material_hierarchy(entries),
-                   article_count=len(entries), content_categories=CATEGORIES, excerpt=content_excerpt)
+    link = lambda target_id: page_url(target_id)
+    context = dict(campaign=campaign, entry=entry, hierarchy=material_hierarchy(entries), page_url=page_url,
+                   article_count=len(entries), content_categories=CATEGORIES, **home)
     if entry is None:
         # The home page: the campaign's front page if it has one (imported adventures
         # do), then its top-level articles by type. Sub-articles are a click away.
         roots = [item['entry'] for item in context['hierarchy']]
-        intro = next((item for item in roots if item.category == 'overview' and item.title == campaign.name), None)
+        intro = next((item for item in roots if campaign is not None and item.category == 'overview'
+                      and item.title == campaign.name), None)
         context.update(intro=intro, groups=home_groups([item for item in roots if item is not intro]),
                        hearts=[item for item in entries if item.is_heart],
-                       cover=cover_image(campaign, entries) is not None)
+                       cover=campaign is not None and cover_image(campaign, entries) is not None)
         if intro is not None:
             bindings = bind_references(intro, intro.body, intro.references, entries)
-            context['references'] = reference_urls(intro.body, bindings, by_id, link=lambda target_id: wiki_url(by_id[target_id]))
+            context['references'] = reference_urls(intro.body, bindings, by_id, link=link)
         return context
     # Resolve links now: an article saved before its target existed has no stored binding.
     all_bindings = {item.id: bind_references(item, item.body, item.references, entries) for item in entries}
     bindings = all_bindings[entry.id]
-    references = reference_urls(entry.body, bindings, by_id, link=lambda target_id: wiki_url(by_id[target_id]))
     # Related articles chosen in the editor, map structure, and [[links]] in the text.
     by_key = {item.reference_key: item.id for item in entries}
     inline = {by_key[key] for key in (bindings or {}).values() if key in by_key}
-    outgoing = ({link.target_id for link in entry.links} | map_related_ids(entry) | inline) - {entry.id}
+    outgoing = {link.target_id for link in entry.links} | map_related_ids(entry) | inline
     incoming = ({link.source_id for link in entry.incoming_links}
-                | {item_id for item_id, found in all_bindings.items() if entry.reference_key in found.values()}) - {entry.id}
-    # Sub-articles come from the same tree as the sidebar, so maps list their points too.
-    position = _find(context['hierarchy'], entry.id)
-    children = [item['entry'] for item in position['children']] if position else []
-    context.update(
-        references=references,
-        breadcrumbs=_path_to(context['hierarchy'], entry.id) or [],
-        toc=headings(entry.body),
-        children=children,
-        links_to=_ordered(by_id[i] for i in outgoing if i in by_id and by_id[i] not in children),
-        linked_from=_ordered(by_id[i] for i in incoming if i in by_id),
-    )
+                | {item_id for item_id, found in all_bindings.items() if entry.reference_key in found.values()})
+    context.update(references=reference_urls(entry.body, bindings, by_id, link=link), toc=headings(entry.body),
+                   edit_url=url_for('campaigns.edit_entry', entry_id=entry.id),
+                   **_article_parts(context['hierarchy'], entry.id, by_id, outgoing, incoming))
     return context
 
 
-def _find(items, entry_id):
-    """The first place an article appears, depth first: where the tree expands it."""
-    for item in items:
-        if item['entry'].id == entry_id:
-            return item
-        found = _find(item['children'], entry_id)
-        if found is not None:
-            return found
-    return None
+# ----- Party: only what the party has been shown -----
+
+PARTY_LINK = re.compile(r'/party/\d+/materials/(\d+)(?:#|$)')
+
+
+def party_context(party, entry_id, owner_view=False):
+    """A party member's page for one revealed article, from published versions only."""
+    from app.lib.campaigns import party_knowledge_tree
+    entries, hierarchy = party_knowledge_tree(party.id)
+    by_id = {entry['id']: entry for entry in entries}
+    entry = by_id.get(entry_id)
+    if entry is None:
+        return None
+
+    def linked_ids(item):
+        # Published related articles, plus [[links]] that resolved to a revealed page.
+        found = {link['id'] for link in item.get('links', [])}
+        for url in (item.get('references') or {}).values():
+            match = PARTY_LINK.search(url)
+            if match:
+                found.add(int(match.group(1)))
+        return found
+
+    outgoing = linked_ids(entry)
+    incoming = {other['id'] for other in entries if entry_id in linked_ids(other)}
+    page_url = lambda target_id=None: (url_for('campaigns.party_entry', party_id=party.id, entry_id=target_id)
+                                       if target_id is not None else
+                                       url_for('party.party_view', ownername=party.owner_username or party.party_owner.username,
+                                               party_url=party.party_url) + '#campaign-details')
+    context = dict(party=party, campaign=None, entry=entry, hierarchy=hierarchy, page_url=page_url,
+                   content_categories=CATEGORIES, home_title=party.name, references=entry.get('references') or {},
+                   toc=headings(entry['body']),
+                   # The party's owner may open the private original; members never see it.
+                   edit_url=url_for('campaigns.edit_entry', entry_id=entry_id) if owner_view else None,
+                   **_article_parts(hierarchy, entry_id, by_id, outgoing, incoming))
+    return context
 
 
 # ----- Campaign covers -----

@@ -280,6 +280,23 @@ def wiki(campaign_id, entry_id=None):
     return render_template('campaigns/wiki.html', **context)
 
 
+@campaigns.route('/materials/wiki/')
+@campaigns.route('/materials/wiki/<int:entry_id>/')
+def unfiled_wiki(entry_id=None):
+    """Read the articles that belong to no campaign, the same way as a campaign."""
+    from app.lib.campaign_wiki import page_context
+    entry = None
+    if entry_id is not None:
+        entry = owned(ContentEntry, entry_id)
+        if entry.campaign_id is not None:
+            abort(404)
+    context = page_context(None, entry, owner_id=current_user.id)
+    if entry is not None and entry.pointcrawl:
+        context.update(graph=map_projection(entry.pointcrawl), pointcrawl=None, editing=False, party=None,
+                       embedded=True, nested_maps=[], locations=[])
+    return render_template('campaigns/wiki.html', **context)
+
+
 @campaigns.route('/campaigns/<int:campaign_id>/export')
 def campaign_export(campaign_id):
     campaign = owned(Campaign, campaign_id)
@@ -333,13 +350,16 @@ def party_materials_data(party_id):
 
 @campaigns.route('/party/<int:party_id>/materials/<int:entry_id>')
 def party_entry(party_id, entry_id):
+    """A revealed article, read as a wiki page built only from what the party was shown."""
+    from app.lib.campaign_wiki import party_context
     party = party_access(party_id)
-    entry = known_entries(party_id).get(entry_id)
-    if entry is None:
+    context = party_context(party, entry_id, owner_view=party.owner == current_user.id)
+    if context is None:
         abort(404)
+    entry = context['entry']
     graph = map_projection(db.get_or_404(PointcrawlMap, entry['map_id']), party.id) if entry['map_id'] else None
-    return render_template('campaigns/known_entry.html', party=party, entry=entry,
-        graph=graph, pointcrawl=None, editing=False, embedded=True, nested_maps=[], locations=[])
+    return render_template('campaigns/wiki.html', graph=graph, pointcrawl=None, editing=False, embedded=True,
+                           nested_maps=[], locations=[], **context)
 
 
 @campaigns.route('/materials/<int:entry_id>/preview')

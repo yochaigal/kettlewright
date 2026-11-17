@@ -1,6 +1,9 @@
 {% extends 'campaigns/layout.html' %}
-{# Read the campaign as a wiki (#421). Editing stays in the article editor. #}
-{% macro article_title(item) %}{{ item.title or _('Untitled private original') }}{% endmacro %}
+{# Read articles as a wiki (#421). Three sources share this page; the view gives
+   page_url(entry_id=None), home_title and, for owners, edit links:
+   - a campaign or the unfiled articles, for their owner;
+   - a party's revealed articles (party is set), built only from published versions. #}
+{% macro article_title(item) %}{{ (item.title or _('Untitled private original'))|markdown_inline }}{% endmacro %}
 {% macro type_label(item) %}{{ _(content_categories.get(item.category, item.category)) }}{% endmacro %}
 
 {% macro wiki_tree(items) %}
@@ -10,12 +13,12 @@
 {% set search = (node.title ~ ' ' ~ type_label(node))|lower %}
 {% if item.children %}
 <details class="wiki-tree-branch" data-tree-row data-search="{{ search }}" {% if current or (entry and node in breadcrumbs) %}open{% endif %}>
-  <summary><a href="{{ url_for('campaigns.wiki', campaign_id=campaign.id, entry_id=node.id) }}" {% if current %}aria-current="page"{% endif %}>{% if item.number is not none %}{{ item.number }}. {% endif %}{{ article_title(node) }}</a></summary>
+  <summary><a href="{{ page_url(node.id) }}" {% if current %}aria-current="page"{% endif %}>{% if item.number is not none %}{{ item.number }}. {% endif %}{{ article_title(node) }}</a></summary>
   <div class="wiki-tree-children">{{ wiki_tree(item.children) }}</div>
 </details>
 {% else %}
 <div class="wiki-tree-leaf" data-tree-row data-search="{{ search }}">
-  <a href="{{ url_for('campaigns.wiki', campaign_id=campaign.id, entry_id=node.id) }}" {% if current %}aria-current="page"{% endif %}>{% if item.number is not none %}{{ item.number }}. {% endif %}{{ article_title(node) }}</a>
+  <a href="{{ page_url(node.id) }}" {% if current %}aria-current="page"{% endif %}>{% if item.number is not none %}{{ item.number }}. {% endif %}{{ article_title(node) }}</a>
 </div>
 {% endif %}
 {% endfor %}
@@ -25,7 +28,7 @@
 <ul class="wiki-cards">
 {% for item in items %}
 <li class="wiki-card">
-  <a href="{{ url_for('campaigns.wiki', campaign_id=campaign.id, entry_id=item.id) }}">{{ article_title(item) }}</a>
+  <a href="{{ page_url(item.id) }}">{{ article_title(item) }}</a>
   <span class="wiki-badges"><span class="wiki-badge">{{ type_label(item) }}</span>{% if item.is_heart %}<span class="wiki-badge wiki-badge-heart">{{ _('Heart') }}</span>{% endif %}</span>
   {% set summary = content_excerpt(item.body, 160) %}{% if summary %}<p>{{ summary }}</p>{% endif %}
 </li>
@@ -37,15 +40,22 @@
 {% if items %}
 <section class="wiki-related">
   <h2>{{ heading }}</h2>
-  <ul>{% for item in items %}<li><a href="{{ url_for('campaigns.wiki', campaign_id=campaign.id, entry_id=item.id) }}">{{ article_title(item) }}</a> <span class="wiki-badge">{{ type_label(item) }}</span></li>{% endfor %}</ul>
+  <ul>{% for item in items %}<li><a href="{{ page_url(item.id) }}">{{ article_title(item) }}</a> <span class="wiki-badge">{{ type_label(item) }}</span></li>{% endfor %}</ul>
 </section>
 {% endif %}
 {% endmacro %}
 
 {% block workspace %}
+{% if party %}
+{# Party pages refresh themselves (campaign_live.js): the article content below is
+   replaced as the Warden reveals or revokes; the map updates through its own event. #}
+<div data-party-content="{{ party.id }}" data-refresh-url="{{ url_for('campaigns.party_materials_data', party_id=party.id) }}"></div>
+<script type="module" src="{{ url_for('static', filename='src/js/campaign_live.js') }}"></script>
+{% endif %}
 <div class="campaign-wiki" x-data="{ menu: false }">
   <nav class="campaign-breadcrumb wiki-topbar" aria-label="{{ _('Breadcrumb') }}">
-    <a href="{{ url_for('campaigns.index') }}">← {{ _('All campaigns') }}</a>
+    {% if party %}<a href="{{ page_url() }}">← {{ _('Back to party') }}</a>
+    {% else %}<a href="{{ url_for('campaigns.index') }}">← {{ _('All campaigns') }}</a>{% endif %}
     <button type="button" class="link-button wiki-menu-toggle" @click="menu = !menu" :aria-expanded="menu" aria-controls="wiki-sidebar">
       <i class="fa-solid fa-bars" aria-hidden="true"></i> {{ _('Articles') }}
     </button>
@@ -53,7 +63,7 @@
 
   <div class="wiki-layout">
     <aside id="wiki-sidebar" class="wiki-sidebar" :class="{ 'is-open': menu }" aria-label="{{ _('Articles') }}" x-data="materialTree">
-      <a class="wiki-campaign-name" href="{{ url_for('campaigns.wiki', campaign_id=campaign.id) }}" {% if not entry %}aria-current="page"{% endif %}>{{ campaign.name }}</a>
+      <a class="wiki-campaign-name" href="{{ page_url() }}" {% if not entry %}aria-current="page"{% endif %}>{{ home_title|markdown_inline }}</a>
       <div class="wiki-search">
         <label class="sr-only" for="wiki-search">{{ _('Search') }}</label>
         <input id="wiki-search" type="search" x-model="query" @input="filter()" placeholder="{{ _('Search by title or type') }}">
@@ -64,25 +74,32 @@
 
     <article class="wiki-main">
     {% if entry %}
+      <div id="party-content-results">
       {% if breadcrumbs %}
       <nav class="wiki-crumbs" aria-label="{{ _('Article location') }}">
-        <a href="{{ url_for('campaigns.wiki', campaign_id=campaign.id) }}">{{ campaign.name }}</a>
-        {% for parent in breadcrumbs %}<span aria-hidden="true">›</span> <a href="{{ url_for('campaigns.wiki', campaign_id=campaign.id, entry_id=parent.id) }}">{{ article_title(parent) }}</a>{% endfor %}
+        <a href="{{ page_url() }}">{{ home_title|markdown_inline }}</a>
+        {% for parent in breadcrumbs %}<span aria-hidden="true">›</span> <a href="{{ page_url(parent.id) }}">{{ article_title(parent) }}</a>{% endfor %}
       </nav>
       {% endif %}
       <header class="wiki-header">
         <div>
           <h1>{{ article_title(entry) }}</h1>
-          <span class="wiki-badges"><span class="wiki-badge">{{ type_label(entry) }}</span>{% if entry.is_heart %}<span class="wiki-badge wiki-badge-heart">{{ _('Heart') }}</span>{% endif %}</span>
+          <span class="wiki-badges"><span class="wiki-badge">{{ type_label(entry) }}</span>{% if entry.is_heart %}<span class="wiki-badge wiki-badge-heart">{{ _('Heart') }}</span>{% endif %}
+          {% if not party %}{% set shared = entry.presentations|selectattr('published')|list %}{% if shared %}<span class="wiki-badge" title="{{ _('Parties that can read their version of this article') }}">{{ _('Shared') }} · {{ shared|length }}</span>{% endif %}{% endif %}</span>
         </div>
-        <a class="button wiki-edit" href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+        {% if edit_url %}
+        <div class="wiki-actions">
+          {% if not party %}<a class="button wiki-edit" href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{ _('Reveal to party') }}</a>{% endif %}
+          <a class="button wiki-edit" href="{{ edit_url }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Private original') if party else _('Edit') }}</a>
+        </div>
+        {% endif %}
       </header>
 
       <div class="wiki-body">
         <div class="wiki-content">
-          {% if graph %}{% include 'campaigns/map_panel.html' %}{% endif %}
+          {% if graph and not party %}{% include 'campaigns/map_panel.html' %}{% endif %}
           {% if entry.body.strip() %}<div class="rich-content">{{ render_content(entry.body, references) }}</div>
-          {% elif not graph %}<p class="wiki-empty">{{ _('This article has no text yet.') }} <a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ _('Edit') }}</a></p>{% endif %}
+          {% elif not graph %}<p class="wiki-empty">{{ _('This article has no text yet.') }}{% if edit_url and not party %} <a href="{{ edit_url }}">{{ _('Edit') }}</a>{% endif %}</p>{% endif %}
 
           {% if children %}
           <section class="wiki-related">
@@ -105,19 +122,22 @@
         </aside>
         {% endif %}
       </div>
+      </div>
+      {# Outside the refreshed content: a live update must not reload the drawing. #}
+      {% if graph and party %}{% include 'campaigns/map_panel.html' %}{% endif %}
     {% else %}
       {% if cover %}<img class="wiki-cover" src="{{ url_for('campaigns.campaign_cover', campaign_id=campaign.id) }}" alt="">{% endif %}
       <header class="wiki-header">
         <div>
-          <h1>{{ campaign.name }}</h1>
+          <h1>{{ home_title }}</h1>
           <span class="wiki-badges"><span class="wiki-badge">{{ article_count }} {{ _('articles') }}</span></span>
         </div>
-        <a class="button wiki-edit" href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+        <a class="button wiki-edit" href="{{ home_edit_url }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
       </header>
       {% if intro %}
       <div class="wiki-content wiki-intro">
         <div class="rich-content">{{ render_content(intro.body, references) }}</div>
-        <p><a href="{{ url_for('campaigns.wiki', campaign_id=campaign.id, entry_id=intro.id) }}">{{ _('Open article') }} →</a></p>
+        <p><a href="{{ page_url(intro.id) }}">{{ _('Open article') }} →</a></p>
       </div>
       {% endif %}
       {% if hearts %}
@@ -132,7 +152,7 @@
         {{ article_cards(items) }}
       </section>
       {% else %}
-      <p class="wiki-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id) }}">{{ _('New article') }}</a></p>
+      <p class="wiki-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id if campaign else '') }}">{{ _('New article') }}</a></p>
       {% endfor %}
     {% endif %}
     </article>

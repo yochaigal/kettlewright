@@ -396,6 +396,7 @@ aside:where(.campaign-wiki *), article:where(.campaign-wiki *), header:where(.ca
 .campaign-card[hidden] {display:none;}
 .campaign-card-cover {display:block;aspect-ratio:16/9;overflow:hidden;background:color-mix(in srgb,var(--fg) 8%,var(--bg));}
 .campaign-card-cover img {display:block;width:100%;height:100%;object-fit:cover;}
+.campaign-card-placeholder i {font-size:.8em;}
 .campaign-card-placeholder {display:flex;align-items:center;justify-content:center;height:100%;font-size:3em;font-weight:700;color:color-mix(in srgb,var(--fg) 35%,var(--bg));background:repeating-linear-gradient(135deg,transparent 0 12px,color-mix(in srgb,var(--fg) 4%,transparent) 12px 24px);}
 .campaign-card-body {display:flex;flex-direction:column;gap:.3em;flex:1;padding:.85em 1em .5em;min-width:0;}
 .campaign-card-title {font-weight:700;font-size:1.1em;color:inherit;text-decoration:none;overflow-wrap:anywhere;}
@@ -426,3 +427,5 @@ aside:where(.campaign-wiki *), article:where(.campaign-wiki *), header:where(.ca
 .create-dialog .create-random-options .import-hint {margin:0;font-size:.88em;}
 .create-dialog button.primary:disabled {opacity:.6;cursor:progress;}
 @media (max-width:480px) {.create-dialog .create-random-options, .create-dialog .create-random-percent {grid-template-columns:1fr;}}
+.wiki-actions {display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.5em;flex:none;}
+@media (max-width:760px) {.wiki-actions {justify-content:flex-start;}}

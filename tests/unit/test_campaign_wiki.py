@@ -5,7 +5,7 @@ import re
 import pytest
 
 from app.models import Campaign, ContentEntry, ContentLink, db
-from tests.unit.test_campaigns import create_entry, create_map, login, map_entry_id, setup  # noqa: F401
+from tests.unit.test_campaigns import create_entry, create_map, login, map_entry_id, reveal, setup  # noqa: F401
 
 
 def wiki(client, entry_id=None, campaign_id=1):
@@ -262,3 +262,93 @@ def test_wiki_undoes_global_aside_and_article_styles():
     rule = rule[:rule.index('}')]
     for declaration in ('float:none', 'width:auto', 'max-width:none', 'margin:0', 'border-left:0'):
         assert declaration in rule
+
+
+# ----- Unfiled articles read the same way -----
+
+def unfiled(client, **values):
+    result = client.post('/materials/new', data={'category': 'note', 'title': 'Loose', 'body': 'x', **values})
+    assert result.status_code == 302
+    return int(re.search(r'/materials/(\d+)/edit', result.location).group(1))
+
+
+def test_unfiled_articles_have_a_wiki(setup):
+    app, client = setup
+    rumor = unfiled(client, title='Rumor', body='Whispers.')
+    tavern = unfiled(client, title='Tavern notes', body='Ask about the [[Rumor]].\n\n## Prices\n\nCheap.\n\n## Staff\n\nGrim.')
+    in_campaign = create_entry(client, title='Campaign only')
+    home = client.get('/materials/wiki/').get_data(as_text=True)
+    assert '<h1>Unfiled articles</h1>' in home and '2 articles' in home
+    assert f'href="/materials/wiki/{tavern}/"' in home and 'Campaign only' not in home
+    assert 'href="/materials/"' in home  # Edit opens the library.
+    page = client.get(f'/materials/wiki/{tavern}/').get_data(as_text=True)
+    assert re.search(rf'<a [^>]*href="/materials/wiki/{rumor}/"[^>]*>Rumor</a>', page)
+    assert 'On this page' in page and f'href="/materials/{tavern}/edit"' in page
+    assert 'Linked from' in client.get(f'/materials/wiki/{rumor}/').get_data(as_text=True)
+    assert client.get(f'/materials/wiki/{in_campaign}/').status_code == 404
+    login(client, 2)
+    assert client.get(f'/materials/wiki/{tavern}/').status_code == 403
+    assert 'Rumor' not in client.get('/materials/wiki/').get_data(as_text=True)
+
+
+def test_gallery_and_editors_link_unfiled_reading(setup):
+    app, client = setup
+    note = unfiled(client)
+    page = client.get('/campaigns/').get_data(as_text=True)
+    assert 'class="campaign-card-title" href="/materials/wiki/"' in page and 'href="/materials/"' in page
+    assert 'href="/materials/wiki/"' in client.get('/materials/').get_data(as_text=True)
+    assert f'href="/materials/wiki/{note}/"' in client.get(f'/materials/{note}/edit').get_data(as_text=True)
+
+
+# ----- Reveal from read mode -----
+
+def test_owner_reveals_from_the_article_page(setup):
+    app, client = setup
+    entry = create_entry(client)
+    page = wiki(client, entry).get_data(as_text=True)
+    assert f'href="/materials/{entry}/reveal"' in page and 'Reveal to party' in page
+    assert 'Shared · ' not in page
+    assert reveal(client, entry).status_code == 302
+    assert 'Shared · 1' in wiki(client, entry).get_data(as_text=True)
+
+
+# ----- Players read revealed articles as wiki pages -----
+
+def test_players_read_only_published_versions(setup):
+    app, client = setup
+    guild, mira, town, relic = build(app, client)
+    assert reveal(client, guild, title='The Guild', body='Bell people.\n\n## Rumors\n\nMany.\n\n## Dues\n\nHigh.').status_code == 302
+    assert reveal(client, relic, title='A bell', body='It rings. See the [[Ash Guild]].').status_code == 302
+    login(client, 2)
+    page = client.get(f'/party/1/materials/{guild}').get_data(as_text=True)
+    assert 'class="wiki-layout"' in page and 'id="party-content-results"' in page
+    assert '<h1>The Guild</h1>' in page and 'Bell people.' in page and 'On this page' in page
+    # Only published titles and bodies: never the private original or unrevealed articles.
+    for secret in ('Bellmakers', 'Ash Guild</a>', 'Mira', 'Thornwick', 'It rings at dusk'):
+        assert secret not in page
+    assert f'/party/1/materials/{mira}' not in page and f'/party/1/materials/{town}' not in page
+    # The bell's published [[link]] and its related link both point here.
+    assert 'Linked from' in page and f'href="/party/1/materials/{relic}"' in page
+    assert f'/materials/{guild}/edit' not in page and '/reveal' not in page  # No Warden tools for players.
+    assert '← Back to party' in page and 'href="/users/user1/parties/party1/#campaign-details"' in page
+
+
+def test_party_owner_sees_the_private_original_link(setup):
+    app, client = setup
+    entry = create_entry(client)
+    assert reveal(client, entry).status_code == 302
+    page = client.get(f'/party/1/materials/{entry}').get_data(as_text=True)
+    assert f'href="/materials/{entry}/edit"' in page and 'Private original' in page
+    assert f'/materials/{entry}/reveal' not in page
+
+
+def test_party_map_stays_outside_the_refreshed_content(setup):
+    app, client = setup
+    map_id, _graph = create_map(client)
+    entry = map_entry_id(app, map_id)
+    assert reveal(client, entry).status_code == 302
+    login(client, 2)
+    page = client.get(f'/party/1/materials/{entry}').get_data(as_text=True)
+    results = page.index('id="party-content-results"')
+    content = page[results:page.index('x-data="pointcrawl"')]
+    assert content.count('<div') <= content.count('</div>')  # The map panel is not inside the refreshed container.

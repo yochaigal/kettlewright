@@ -23245,3 +23245,7 @@ msgstr "Alles Erzeugte bleibt privat, bis du es enthüllst, und kann danach bear
 #: app/templates/campaigns/index.html
 msgid "Note"
 msgstr "Notiz"
+
+#: app/templates/campaigns/wiki.html
+msgid "Parties that can read their version of this article"
+msgstr "Gruppen, die ihre Fassung dieses Artikels lesen können"

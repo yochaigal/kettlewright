@@ -97,6 +97,8 @@ test('campaign wiki links preview the article they open',()=>{
   const ui=previews();
   assert.equal(ui.previewURL('/campaigns/3/wiki/7/'),'/materials/7/preview');
   assert.equal(ui.previewURL('/campaigns/3/wiki/7/#a-heading'),'/materials/7/preview');
+  assert.equal(ui.previewURL('/materials/wiki/9/'),'/materials/9/preview');
   assert.equal(ui.previewURL('/campaigns/3/wiki/'),null);
+  assert.equal(ui.previewURL('/materials/wiki/'),null);
   assert.equal(ui.previewURL('/materials/7/edit'),'/materials/7/preview');
 });

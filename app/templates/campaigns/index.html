@@ -100,6 +100,21 @@
 {% endif %}
 
 <h3 class="gallery-heading">{{ _('Unfiled articles') }} <small>{{ unfiled|length }}</small></h3>
-<p class="gallery-unfiled" data-tree-row data-search="unfiled articles {{ unfiled|map(attribute='title')|join(' ')|lower }}">{% if unfiled %}<a href="{{ url_for('campaigns.library') }}">{{ _('Unfiled articles') }} →</a>{% else %}<span class="tree-empty-title">{{ _('Articles outside any campaign appear here.') }}</span>{% endif %}</p>
+{% if unfiled %}
+<ul class="campaign-gallery">
+<li class="campaign-card" data-tree-row data-search="unfiled articles {{ unfiled|map(attribute='title')|join(' ')|lower }}">
+  <a class="campaign-card-cover" href="{{ url_for('campaigns.unfiled_wiki') }}" tabindex="-1" aria-hidden="true"><span class="campaign-card-placeholder"><i class="fa-solid fa-note-sticky" aria-hidden="true"></i></span></a>
+  <div class="campaign-card-body">
+    <a class="campaign-card-title" href="{{ url_for('campaigns.unfiled_wiki') }}">{{ _('Unfiled articles') }}</a>
+    <span class="campaign-card-meta">{{ unfiled|length }} {{ _('articles') }}</span>
+    <span class="campaign-card-meta">{{ _('Articles outside any campaign appear here.') }}</span>
+  </div>
+  <div class="campaign-card-actions">
+    <a href="{{ url_for('campaigns.unfiled_wiki') }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read') }}</a>
+    <a href="{{ url_for('campaigns.library') }}" aria-label="{{ _('Edit') }}: {{ _('Unfiled articles') }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+  </div>
+</li>
+</ul>
+{% else %}<p class="gallery-unfiled" data-tree-row data-search="unfiled articles"><span class="tree-empty-title">{{ _('Articles outside any campaign appear here.') }}</span></p>{% endif %}
 </div>
 {% endblock %}

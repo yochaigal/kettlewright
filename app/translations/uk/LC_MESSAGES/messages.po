@@ -27332,3 +27332,7 @@ msgstr "Усе створене лишається прихованим, док�
 #: app/templates/campaigns/index.html
 msgid "Note"
 msgstr "Нотатка"
+
+#: app/templates/campaigns/wiki.html
+msgid "Parties that can read their version of this article"
+msgstr "Групи, яким доступна їхня версія цієї статті"

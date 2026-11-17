@@ -9,7 +9,7 @@
 {% set new_heading = "category==='realm' ? " ~ (_('New Campaign')|tojson|forceescape) ~ " : " ~ (_('New article')|tojson|forceescape) %}
 {% call page_header(_('Create and show') if party else ((_('Edit Campaign') if is_campaign else _('Edit article')) if entry else _('New article')), title_model=new_heading if not entry and not party else none) %}
 {% if entry %}
-{% if entry.campaign_id %}<a href="{{ url_for('campaigns.wiki', campaign_id=entry.campaign_id, entry_id=entry.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read') }}</a>{% endif %}
+<a href="{{ url_for('campaigns.wiki', campaign_id=entry.campaign_id, entry_id=entry.id) if entry.campaign_id else url_for('campaigns.unfiled_wiki', entry_id=entry.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read') }}</a>
 <a href="{{ url_for('campaigns.new_entry', campaign_id=entry.campaign_id or '', parent_id=entry.id) }}">{{ _('Add child article') }}</a>
 <a href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Reveal to party') }}</a>
 {% if not entry.pointcrawl and entry.category in article_map_kinds %}<button type="submit" form="add-drawing-form">{{ _('Add drawing') }}</button>{% endif %}
