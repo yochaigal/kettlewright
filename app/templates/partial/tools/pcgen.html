@@ -29,6 +29,7 @@
       {% if current_user.is_authenticated %}<button id="pcgen-save-party-button" type="button" data-save-kind="party" data-url="{{url_for('generator.save_character', kind='party')}}" disabled><i class="fa-solid fa-users" aria-hidden="true"></i> {{_('Save to Party')}}</button>{% endif %}
       {% if current_user.is_authenticated %}<button id="pcgen-save-npc-button" type="button" data-save-kind="npc" data-url="{{url_for('generator.save_character', kind='npc')}}" disabled><i class="fa-solid fa-bookmark" aria-hidden="true"></i> {{_('Save as NPC')}}</button>{% endif %}
       <button id="pcgen-copy-text-button" type="button" disabled><i class="fa-regular fa-copy" aria-hidden="true"></i> {{_('Copy text')}}</button>
+      <button id="pcgen-copy-markdown-button" type="button" disabled><i class="fa-brands fa-markdown" aria-hidden="true"></i> {{_('Copy Markdown')}}</button>
       <button id="pcgen-json-button" type="button" disabled><i class="fa-solid fa-file-export" aria-hidden="true"></i> {{_('Export')}} JSON</button>
       <button id="gen-print-button" type="button" data-url="{{url_for('generator.character_print')}}" disabled><i class="fa-solid fa-print" aria-hidden="true"></i> {{_('Print')}}</button>
     </div>
