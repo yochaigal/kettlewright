@@ -292,7 +292,7 @@ def test_barebones_pdf_uses_the_a4_barebones_sheet(app_with_babel, client):
         assert 'Physique' in text  # trait labels stored as pre-filled fields survive flattening
         assert name in text and background in text and 'Rations' in text
     view = client.get(f'/users/bare/characters/{url_name}/').get_data(True)
-    assert 'character-pdf-barebones' in view and 'Print PDF (landscape)' not in view
+    assert 'value="pdf-barebones"' in view and 'Print PDF (landscape)' not in view
 
 
 def test_second_edition_pdf_keeps_a4_sheets(app_with_babel, client):

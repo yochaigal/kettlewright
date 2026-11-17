@@ -138,8 +138,8 @@ class Character(db.Model):
                 break
         return max(0, capacity - self.occupiedMainSlots())
 
-    # Serialize object to JSON
-    def toJSON(self):
+    # The exported sheet as a dictionary; JSON and Markdown exports both use it.
+    def export_data(self):
         excluded = {'id', 'party_id', 'party_code', 'created_at', 'url_name', 'owner_username', 'owner'}
         data = {column.name: getattr(self, column.name) for column in self.__table__.columns
                 if column.name not in excluded}
@@ -147,4 +147,8 @@ class Character(db.Model):
         data['containers'] = json.loads(self.containers or '[]')
         data['armor'] = self.armorValue()
         data['pets'] = [pet.export() for pet in self.pets]
-        return json.dumps(data, indent=4, sort_keys=True)
+        return data
+
+    # Serialize object to JSON
+    def toJSON(self):
+        return json.dumps(self.export_data(), indent=4, sort_keys=True)

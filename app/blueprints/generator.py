@@ -90,7 +90,9 @@ def character():
             inventory.select(container['id'])
             inventory.decorate()
             inventories.append((container['id'], inventory))
+        from app.lib.character_markdown import render_character
         render = render_template('partial/tools/pcgen_sheet.html', character=preview,
+            generated_markdown=render_character(preview.export_data()),
             json_data=json_data, inventory=inventories[0][1], preview_inventories=inventories,
             generated_preview=True, generated_snapshot=sign_snapshot(snapshot), generated_character=genchar, is_owner=False, username='', url_name='', party=None,
             portrait_src=url_for('static', filename='images/portraits/' + preview.image_url))

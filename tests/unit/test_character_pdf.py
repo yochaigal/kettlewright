@@ -174,6 +174,6 @@ def test_character_view_keeps_html_print_and_adds_pdf_option(pdf_character, orie
     assert response.status_code == 200
     assert b'/users/printer/characters/hero/print/"' in response.data
     assert PATH.format(orientation=orientation).encode() in response.data
-    assert b'x-model="exportAttributes" checked' in response.data
+    assert b'x-model="attributes"' in response.data and b'attributes: true' in response.data
     assert b'Include Current Attributes' in response.data
     assert b'?export_attributes=' in response.data
