@@ -45484,6 +45484,18 @@ msgstr "%(connected)s conectados · %(hidden)s sin conexión (ocultos)"
 msgid "Delete %(name)s? This also removes their inventory."
 msgstr "¿Eliminar a %(name)s? También se elimina su inventario."
 
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Drop to move it to:"
+msgstr "Suelta para moverlo a:"
+
+#: app/templates/partial/charview/inventory_slots.html
+msgid "There is not enough room in that container."
+msgstr "No hay espacio suficiente en ese contenedor."
+
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Drag to a slot, another container’s tab or a cart. Arrow keys then Enter also work."
+msgstr "Arrastra a una casilla, a la pestaña de otro contenedor o a un carro. También funcionan las flechas y luego Intro."
+
 #: app/templates/campaigns/wiki.html
 msgid "Read"
 msgstr "Leer"

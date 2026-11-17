@@ -27277,6 +27277,18 @@ msgstr "У мережі: %(connected)s · не в мережі: %(hidden)s (пр
 msgid "Delete %(name)s? This also removes their inventory."
 msgstr "Видалити %(name)s? Інвентар також буде видалено."
 
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Drop to move it to:"
+msgstr "Відпустіть, щоб перемістити до:"
+
+#: app/templates/partial/charview/inventory_slots.html
+msgid "There is not enough room in that container."
+msgstr "У цьому контейнері недостатньо місця."
+
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Drag to a slot, another container’s tab or a cart. Arrow keys then Enter also work."
+msgstr "Перетягніть у комірку, на вкладку іншого контейнера або на візок. Також працюють стрілки, потім Enter."
+
 #: app/templates/campaigns/wiki.html
 msgid "Read"
 msgstr "Читати"

@@ -447,6 +447,20 @@
   padding: 6px 10px; max-width: 260px; border: 1px solid var(--fg);
   background: var(--bg); color: var(--fg); opacity: .9;
 }
+// Dragging an item: other containers (tabs, and the slots a carried cart
+// takes up) show they can take it. The one under the pointer is solid,
+// or red when the item does not fit.
+.slot-inventory.slot-dragging-across [data-drop-container] {
+  outline: 1.5px dashed color-mix(in srgb, var(--fg) 60%, transparent);
+  outline-offset: 2px;
+}
+.slot-inventory [data-drop-container].slot-container-target {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+  background: color-mix(in srgb, var(--fg) 12%, var(--bg));
+  &.inventory-slot { outline-offset: -2px; }
+  &.is-full { outline-color: #b84141; background: color-mix(in srgb, #b84141 15%, var(--bg)); cursor: not-allowed; }
+}
 .ground-entry {
   padding: 1rem 0;
   border-bottom: 1px solid currentColor;

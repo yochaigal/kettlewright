@@ -42693,6 +42693,18 @@ msgstr ""
 msgid "Delete %(name)s? This also removes their inventory."
 msgstr ""
 
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Drop to move it to:"
+msgstr ""
+
+#: app/templates/partial/charview/inventory_slots.html
+msgid "There is not enough room in that container."
+msgstr ""
+
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Drag to a slot, another container’s tab or a cart. Arrow keys then Enter also work."
+msgstr ""
+
 #: app/templates/campaigns/wiki.html
 msgid "Read"
 msgstr ""
