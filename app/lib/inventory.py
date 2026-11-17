@@ -110,6 +110,52 @@ class Inventory:
         self.parse(self.character)
         self.select(item['location'])
 
+    def free_slots(self, container_id):
+        from app.lib.inventory_slots import item_size
+        container = self.get_container(container_id)
+        used = sum(item_size(item) for item in container['items'] if not item.get('is_empty'))
+        return max(0, int(container['slots']) - used)
+
+    def move_to_container(self, item_id, container_id, commit=True):
+        """Move an item into another container, into its first free slot.
+
+        Fatigue and the slots a carried container takes up stay where they
+        are, and nothing moves to or from the ground this way. The other
+        items in both containers keep their slots.
+        """
+        from app.lib.inventory_slots import item_size
+        item = self.get_item(item_id)
+        target = self.get_container(container_id) if str(container_id).lstrip('-').isdigit() else None
+        if item is None or target is None:
+            abort(404)
+        source_id, target_id = int(item['location']), int(target['id'])
+        if source_id == target_id:
+            return item
+        if item['name'] in non_editable_items or 'carrying' in item:
+            abort(400, description='This item cannot change containers.')
+        self.require_regular_container(source_id)
+        self.require_regular_container(target_id)
+        if item_size(item) > self.free_slots(target_id):
+            abort(400, description='There is not enough room in that container.')
+        self.pin_slots(source_id)
+        self.pin_slots(target_id)
+        from app.lib.inventory_slots import arrange_slots
+        items = json.loads(self.character.items)
+        for entry in items:
+            if str(entry['id']) == str(item_id):
+                entry['location'] = target_id
+                entry.pop('slot', None)
+                item = entry
+        if item_size(item):  # Save the first free slot there, so it stays put.
+            arranged = arrange_slots([entry for entry in items if entry['location'] == target_id], target['slots'])
+            item['slot'] = arranged['positions'][str(item['id'])]
+        self.character.items = json.dumps(items)
+        if commit:
+            db.session.commit()
+        self.parse(self.character)
+        self.select(source_id)
+        return item
+
     # count slots for a container
     def container_slots(self, container):
         slots = 0

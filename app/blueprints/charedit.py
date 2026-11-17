@@ -465,6 +465,12 @@ def charedit_inplace_inventory_close(username, url_name, container_id):
 def charedit_inplace_inventory_move(username, url_name):
     _, character = get_char_data(username, url_name)
     inventory = Inventory(character)
+    if 'container' in request.form:
+        # Dropped on a container tab or a carried container: keep showing the source.
+        inventory.move_to_container(request.form.get('item_id'), request.form['container'])
+        inventory.decorate()
+        return render_template('partial/charview/inventory_slots.html', character=character,
+                               username=username, url_name=url_name, inventory=inventory)
     try:
         slot = int(request.form['slot'])
     except (KeyError, ValueError):

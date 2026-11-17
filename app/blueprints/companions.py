@@ -779,6 +779,11 @@ def item_move(companion_id):
     item = inventory.get_item(request.form.get('item_id'))
     if item is None:
         abort(404)
+    if 'container' in request.form:
+        # Dropped on a container tab or a carried container: keep showing the source.
+        source = item['location']
+        inventory.move_to_container(item['id'], request.form['container'])
+        return inventory_response(c, source)
     inventory.place_item(item['id'], number('slot'))
     return inventory_response(c, item['location'])
 

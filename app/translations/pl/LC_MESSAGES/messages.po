@@ -23473,6 +23473,18 @@ msgstr "Rzuty Strażnika"
 msgid "2d6"
 msgstr "2k6"
 
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Drop to move it to:"
+msgstr "Upuść, aby przenieść do:"
+
+#: app/templates/partial/charview/inventory_slots.html
+msgid "There is not enough room in that container."
+msgstr "W tym pojemniku nie ma wystarczająco miejsca."
+
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Drag to a slot, another container’s tab or a cart. Arrow keys then Enter also work."
+msgstr "Przeciągnij na miejsce, kartę innego pojemnika lub wózek. Działają też strzałki, a potem Enter."
+
 #: app/templates/campaigns/wiki.html
 msgid "Read"
 msgstr "Czytaj"

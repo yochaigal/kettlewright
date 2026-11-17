@@ -54,8 +54,8 @@
       hx-get="{{ url_for('ground.drop', character_id=character.id, kind='item', object_id=it.id) }}" hx-target="#modal-anchor"><i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button>
     {% endif %}
     {% if editable and slot is not none %}
-    <button type="button" class="slot-move" data-move-item="{{it.id}}"
-      aria-label="{{_('Move')}}: {{item_name}}" title="{{_('Drag to move. Arrow keys then Enter also work.')}}"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button>
+    <button type="button" class="slot-move" data-move-item="{{it.id}}"{% if it.editable %} data-move-across="{{ 2 if 'bulky' in it.tags else 1 }}"{% endif %}
+      aria-label="{{_('Move')}}: {{item_name}}" title="{{_('Drag to a slot, another container’s tab or a cart. Arrow keys then Enter also work.') if it.editable else _('Drag to move. Arrow keys then Enter also work.')}}"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button>
     {% endif %}
     {% if it.description %}
     <button type="button" class="slot-icon" title="{{_('Description')}}" aria-label="{{_('Description')}}: {{item_name}}"
@@ -72,7 +72,8 @@
 <div class="slot-inventory" data-move-url="{{edit_base}}/move" data-csrf="{{csrf}}"
      data-capacity="{{layout.capacity}}" data-move-error="{{_('Unable to move this item. Please try again.')}}"
      data-move-hint="{{_('Choose a slot. Arrow keys to move, Enter to place, Escape to cancel.')}}"
-     data-slot-label="{{_('Slot')}}" hx-vals='{{ {"csrf_token": csrf, "inventory_context": "sheet"} | tojson }}'>
+     data-slot-label="{{_('Slot')}}" data-move-to="{{_('Drop to move it to:')}}"
+     data-container-full="{{_('There is not enough room in that container.')}}" hx-vals='{{ {"csrf_token": csrf, "inventory_context": "sheet"} | tojson }}'>
   <div class="character-inventory-heading">
     <h3>{{_('Inventory')}}</h3>
     {% if editable and not companion_sheet %}<button type="button" class="button smaller-font"
@@ -82,6 +83,7 @@
     {% for cnt in inventory.containers %}
       <button type="button" class="inventory-container-title {% if cnt.is_selected %}inventory-container-title-selected{% endif %}"
         aria-pressed="{{'true' if cnt.is_selected else 'false'}}"
+        {% if editable and not cnt.is_selected and not cnt.on_the_ground %}data-drop-container="{{cnt.id}}" data-drop-name="{{cnt.name}}" data-free="{{inventory.free_slots(cnt.id)}}"{% endif %}
         {% if generated_preview %}data-preview-container="{{cnt.id}}"{% else %}hx-get="{{inventory_select_base|default("/charedit/inventory-select-container/" ~ username ~ "/" ~ url_name)}}/{{cnt.id}}" hx-target="#inventory-container"{% endif %}>{{ cnt.title|markdown_inline }}</button>
     {% endfor %}
     {% if editable %}<button type="button" class="slot-icon" title="{{_('Edit container')}}" aria-label="{{_('Edit container')}}"
@@ -91,6 +93,8 @@
     {% for row in layout.rows %}
     <div class="inventory-slot {% if row.item %}slot-filled{% else %}slot-empty{% endif %} {% if row.span == 2 %}slot-bulky{% endif %} {% if row.overflow %}slot-overflow{% endif %} {% if row.item and row.item.blocker %}item-blocker-text{% endif %}"
       role="listitem" data-slot="{{row.slot}}" data-span="{{row.span}}" {% if row.item %}data-item-id="{{row.item.id}}"{% endif %}
+      {% set carried = inventory.get_container(row.item.carrying) if editable and row.item and row.item.carrying is defined else none %}
+      {% if carried and not carried.on_the_ground %}data-drop-container="{{carried.id}}" data-drop-name="{{carried.name}}" data-free="{{inventory.free_slots(carried.id)}}"{% endif %}
       style="grid-row: {{row.slot // 2 + 1}}; grid-column: {{row.slot % 2 + 1}} / span {{row.span}}">
       {% if container.id == 0 and row.slot < 2 %}
       <span class="slot-hand-label"><i class="fa-solid fa-hand" aria-hidden="true"></i> {{_('Currently held')}}</span>

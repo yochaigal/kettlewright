@@ -35754,6 +35754,18 @@ msgstr "Броски Стража"
 msgid "2d6"
 msgstr "2к6"
 
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Drop to move it to:"
+msgstr "Отпустите, чтобы переместить в:"
+
+#: app/templates/partial/charview/inventory_slots.html
+msgid "There is not enough room in that container."
+msgstr "В этом контейнере недостаточно места."
+
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Drag to a slot, another container’s tab or a cart. Arrow keys then Enter also work."
+msgstr "Перетащите в ячейку, на вкладку другого контейнера или на телегу. Также работают стрелки, затем Enter."
+
 #: app/templates/campaigns/wiki.html
 msgid "Read"
 msgstr "Читать"
