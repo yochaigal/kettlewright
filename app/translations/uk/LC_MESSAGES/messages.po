@@ -27277,6 +27277,86 @@ msgstr "У мережі: %(connected)s · не в мережі: %(hidden)s (пр
 msgid "Delete %(name)s? This also removes their inventory."
 msgstr "Видалити %(name)s? Інвентар також буде видалено."
 
+#: app/templates/campaigns/wiki.html
+msgid "Read"
+msgstr "Читати"
+
+#: app/templates/campaigns/wiki.html
+msgid "Article location"
+msgstr "Розташування статті"
+
+#: app/templates/campaigns/wiki.html
+msgid "On this page"
+msgstr "На цій сторінці"
+
+#: app/templates/campaigns/wiki.html
+msgid "Links to"
+msgstr "Посилається на"
+
+#: app/templates/campaigns/wiki.html
+msgid "Linked from"
+msgstr "Посилаються сюди"
+
+#: app/templates/campaigns/wiki.html
+msgid "In this article"
+msgstr "У цій статті"
+
+#: app/templates/campaigns/wiki.html
+msgid "About this article"
+msgstr "Про цю статтю"
+
+#: app/templates/campaigns/wiki.html
+msgid "This article has no text yet."
+msgstr "У цій статті ще немає тексту."
+
+#: app/templates/campaigns/wiki.html
+msgid "Search by title or type"
+msgstr "Пошук за назвою або типом"
+
+#: app/templates/campaigns/index.html
+msgid "Search campaigns and their articles"
+msgstr "Пошук у кампаніях та їхніх статтях"
+
+#: app/templates/campaigns/index.html
+msgid "No matching campaigns."
+msgstr "Відповідних кампаній немає."
+
+#: app/templates/campaigns/index.html
+msgid "Articles outside any campaign appear here."
+msgstr "Тут з’являються статті поза кампаніями."
+
+#: app/templates/campaigns/index.html
+msgid "Your world at a glance. Open a campaign to read it, or edit it."
+msgstr "Ваш світ з першого погляду. Відкрийте кампанію, щоб читати, або редагуйте її."
+
+#: app/templates/campaigns/index.html
+msgid "My campaigns"
+msgstr "Мої кампанії"
+
+#: app/templates/campaigns/index.html
+msgid "Free Starter Adventures"
+msgstr "Безкоштовні стартові пригоди"
+
+#: app/templates/campaigns/index.html
+msgid "Generate it randomly"
+msgstr "Згенерувати випадково"
+
+#: app/templates/campaigns/index.html
+msgid "Start with"
+msgstr "Почати з"
+
+#: app/templates/campaigns/index.html
+msgid "Everything generated stays private until you reveal it, and can be edited afterwards."
+msgstr "Усе створене лишається прихованим, доки ви його не відкриєте, і його можна потім змінити."
+
+#: app/templates/campaigns/index.html
+msgid "Note"
+msgstr "Нотатка"
+
+#: app/templates/campaigns/wiki.html
+msgid "Parties that can read their version of this article"
+msgstr "Групи, яким доступна їхня версія цієї статті"
+
 #: app/lib/character_markdown.py
 msgid "%(current)s/%(maximum)s uses"
 msgstr "Використань: %(current)s/%(maximum)s"

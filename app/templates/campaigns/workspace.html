@@ -4,6 +4,7 @@
 {% block workspace %}
 <nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ url_for('campaigns.index') }}">← {{ _('All campaigns') }}</a></nav>
 {% call page_header(campaign.name if campaign else _('Unfiled articles')) %}
+<a href="{{ url_for('campaigns.wiki', campaign_id=campaign.id) if campaign else url_for('campaigns.unfiled_wiki') }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read') }}</a>
 <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id if campaign else '') }}">{{ _('New article') }}</a>
 {% if campaign %}<a href="{{ url_for('campaigns.campaign_export', campaign_id=campaign.id) }}">{{ _('Export campaign') }}</a>
 {% call modal('campaign-settings-modal', _('Settings'), _('Campaign settings and parties')) %}
@@ -22,7 +23,6 @@
 </form>
 {% endcall %}
 {% endif %}
-<a href="{{ url_for('main.tools') }}">{{ _('Tools') }}</a>
 <a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a>
 {% endcall %}
 {% if campaign %}{% set connected = parties|selectattr('id', 'in', linked)|list %}

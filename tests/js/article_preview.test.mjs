@@ -38,7 +38,7 @@ function previews(lang='en', preference='on') {
   const source=readFileSync(new URL('../../app/static/src/js/article-preview.js',import.meta.url),'utf8')
     .replace(/^import .*;\n/gm,'').replace('export function previewURL','function previewURL');
   vm.runInContext(source,context);
-  return {panels,stored,setEnabled(enabled){context.enabled=enabled;vm.runInContext('setPreviewsEnabled(enabled)',context);},async show(){
+  return {panels,stored,previewURL(href){context.href=href;return vm.runInContext('previewURL(href)',context);},setEnabled(enabled){context.enabled=enabled;vm.runInContext('setPreviewsEnabled(enabled)',context);},async show(){
     context.link={textContent:'Article',getBoundingClientRect:()=>({})};
     await vm.runInContext("show(link, '/materials/1/preview')",context);
     return panels.at(-1);
@@ -91,4 +91,14 @@ test('unpin replaces an existing transient and cancels its pending close timer',
   assert(!pinned.removed);
   pinned.listeners.pointerleave();ui.flush();
   assert(pinned.removed);
+});
+
+test('campaign wiki links preview the article they open',()=>{
+  const ui=previews();
+  assert.equal(ui.previewURL('/campaigns/3/wiki/7/'),'/materials/7/preview');
+  assert.equal(ui.previewURL('/campaigns/3/wiki/7/#a-heading'),'/materials/7/preview');
+  assert.equal(ui.previewURL('/materials/wiki/9/'),'/materials/9/preview');
+  assert.equal(ui.previewURL('/campaigns/3/wiki/'),null);
+  assert.equal(ui.previewURL('/materials/wiki/'),null);
+  assert.equal(ui.previewURL('/materials/7/edit'),'/materials/7/preview');
 });
