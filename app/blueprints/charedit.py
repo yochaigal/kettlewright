@@ -353,17 +353,31 @@ def charedit_inplace_portrait_save(username, url_name):
                                portrait_src=character_portrait_link(character))
     return response
 
-# ----- JSON EXPORT -----
+# ----- EXPORT -----
 
-# Route: export character to JSON
+EXPORT_FORMATS = {
+    'json': ('json', 'application/json'),
+    'md': ('md', 'text/markdown; charset=utf-8'),
+    'txt': ('txt', 'text/plain; charset=utf-8'),
+}
+
+# Route: export character as JSON (default), Markdown (?format=md) or plain text (?format=txt)
 @character_edit.route('/charedit/export/<username>/<url_name>', methods=['GET'])
 def charedit_export(username, url_name):
     user, character = get_char_data(username, url_name)
-    response_bytes = character.toJSON()
-    response = make_response(response_bytes)
-    response.headers.set('Content-Type', 'application/json')
+    export_format = request.args.get('format', 'json')
+    if export_format not in EXPORT_FORMATS:
+        abort(404)
+    extension, content_type = EXPORT_FORMATS[export_format]
+    if export_format == 'json':
+        body = character.toJSON()
+    else:
+        from app.lib.character_markdown import character_text
+        body = character_text(character, markdown=export_format == 'md')
+    response = make_response(body)
+    response.headers.set('Content-Type', content_type)
     response.headers.set(
-        'Content-Disposition', 'attachment', filename=unidecode(user.username) + '_'+unidecode(character.name) + '.json' )
+        'Content-Disposition', 'attachment', filename=unidecode(user.username) + '_' + unidecode(character.name) + '.' + extension)
     return response
     
 # Route: rest

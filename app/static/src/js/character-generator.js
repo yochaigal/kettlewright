@@ -75,6 +75,14 @@ document.getElementById('pcgen-copy-text-button').addEventListener('click', asyn
     styledAlert(form.dataset.copyLabel, JSON.parse(document.getElementById('tools-content-labels').textContent).copyFailed);
   }
 });
+document.getElementById('pcgen-copy-markdown-button').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(display.querySelector('#pcgen-markdown-source').content.textContent);
+    styledAlert(form.dataset.copyLabel, form.dataset.copied);
+  } catch {
+    styledAlert(form.dataset.copyLabel, JSON.parse(document.getElementById('tools-content-labels').textContent).copyFailed);
+  }
+});
 document.getElementById('pcgen-json-button').addEventListener('click', () => {
   const raw = display.querySelector('#json_data')?.value;
   if (!raw) return;

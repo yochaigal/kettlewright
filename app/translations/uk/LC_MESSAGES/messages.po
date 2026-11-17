@@ -27336,3 +27336,51 @@ msgstr "Нотатка"
 #: app/templates/campaigns/wiki.html
 msgid "Parties that can read their version of this article"
 msgstr "Групи, яким доступна їхня версія цієї статті"
+
+#: app/lib/character_markdown.py
+msgid "%(current)s/%(maximum)s uses"
+msgstr "Використань: %(current)s/%(maximum)s"
+
+#: app/templates/partial/tools/pcgen.html
+msgid "Copy Markdown"
+msgstr "Копіювати Markdown"
+
+#: app/templates/main/new_from_json.html
+msgid "Characters can also be imported from a Markdown export."
+msgstr "Персонажів також можна імпортувати з експорту в Markdown."
+
+#: app/templates/main/new_from_json.html
+msgid "JSON or Markdown file"
+msgstr "Файл JSON або Markdown"
+
+#: app/templates/main/new_from_json.html
+msgid "Choose a valid character, pet or hireling JSON file, or a character Markdown file."
+msgstr "Виберіть коректний JSON-файл персонажа, улюбленця або найманця чи Markdown-файл персонажа."
+
+#: app/templates/partial/charview/export_dialog.html
+msgid "Export or print"
+msgstr "Експорт або друк"
+
+#: app/templates/partial/charview/export_dialog.html
+msgid "Download"
+msgstr "Завантажити"
+
+#: app/templates/partial/charview/export_dialog.html
+msgid "Printer-friendly page. Opens your browser’s print dialog."
+msgstr "Сторінка для друку. Відкриває діалог друку браузера."
+
+#: app/templates/partial/charview/export_dialog.html
+msgid "Character sheet as a PDF, ready to print or share."
+msgstr "Аркуш персонажа в PDF — можна надрукувати або надіслати."
+
+#: app/templates/partial/charview/export_dialog.html
+msgid "Complete backup. Import it to restore every detail."
+msgstr "Повна резервна копія. Імпортуйте, щоб відновити кожну деталь."
+
+#: app/templates/partial/charview/export_dialog.html
+msgid "Readable sheet for notes apps like Obsidian. Can be imported."
+msgstr "Зручний для читання аркуш для нотаток, наприклад в Obsidian. Можна імпортувати."
+
+#: app/templates/partial/charview/export_dialog.html
+msgid "Simple text to paste anywhere."
+msgstr "Простий текст, який можна вставити будь-куди."
