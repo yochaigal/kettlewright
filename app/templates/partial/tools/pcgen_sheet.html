@@ -8,6 +8,9 @@
 <input type="hidden" id="pcgen-snapshot" value="{{generated_snapshot}}">
 <input type="hidden" id="character_name" value="{{character.name}}">
 
+{# Read with .content.textContent, which undoes the HTML escaping. #}
+<template id="pcgen-markdown-source">{{ generated_markdown }}</template>
+
 <template id="pcgen-copy-source">
   {% with character=generated_character %}{% include "partial/tools/pcgen_text.html" %}{% endwith %}
 </template>

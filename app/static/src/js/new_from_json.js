@@ -30,6 +30,21 @@ for (const panel of Object.values(panels)) {
 let selection = 0;
 submit.disabled = true;
 
+// Markdown sheets only describe characters. The server reads them into the
+// JSON export shape, so they go through the same form and checks as JSON.
+function isMarkdown(file, text) {
+  return /\.(md|markdown)$/i.test(file.name) || !text.trimStart().startsWith("{");
+}
+
+async function parseMarkdown(text) {
+  const body = new FormData();
+  body.append("csrf_token", form.elements.csrf_token?.value ?? "");
+  body.append("markdown", text);
+  const response = await fetch(form.dataset.markdownUrl, {method: "POST", body, credentials: "same-origin"});
+  if (!response.ok) throw new Error("Invalid Markdown");
+  return response.json();
+}
+
 fileInput.addEventListener("change", async () => {
   const version = ++selection;
   data = null;
@@ -42,7 +57,8 @@ fileInput.addEventListener("change", async () => {
     return;
   }
   try {
-    const parsed = JSON.parse(await file.text());
+    const text = await file.text();
+    const parsed = isMarkdown(file, text) ? await parseMarkdown(text) : JSON.parse(text);
     if (!parsed || Array.isArray(parsed) || typeof parsed !== "object" || !parsed.name) {
       throw new Error("Invalid export");
     }

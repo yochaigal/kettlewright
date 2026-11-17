@@ -206,6 +206,21 @@ def new_from_json():
     return render_import_page(form=form)
 
 
+# Read a Markdown character sheet into the JSON export shape. The import page
+# then submits it through new_from_json like any JSON file, with the same checks.
+@main.post('/new_from_json/markdown')
+@login_required
+def parse_markdown_character():
+    from app.lib.character_markdown import parse_character, MAX_MARKDOWN
+    request.max_content_length = MAX_MARKDOWN * 4 + 64 * 1024
+    if not FlaskForm().validate_on_submit():
+        return jsonify(error='Invalid CSRF token.'), 400
+    try:
+        return jsonify(parse_character(request.form.get('markdown', '')))
+    except ValueError as error:
+        return jsonify(error=str(error)), 400
+
+
 def string_to_bool(value):
     if isinstance(value, bool):
         return value

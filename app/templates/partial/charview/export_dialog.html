@@ -1,0 +1,74 @@
+{# Every way to print or export a character, behind one button on the sheet.
+   Each choice is a radio card; the primary action follows the selection. #}
+{% set export_url = url_for('character_edit.charedit_export', username=username, url_name=url_name) %}
+{% set print_choices = [('print', 'fa-print', _('Print'), _('Printer-friendly page. Opens your browser’s print dialog.'), url_for('main.print_character', username=username, url_name=url_name))] %}
+{% if character.is_barebones %}
+  {# One Barebones sheet (A4); the portrait route serves it. #}
+  {% set print_choices = print_choices + [('pdf-barebones', 'fa-file-pdf', _('Print PDF'), _('Character sheet as a PDF, ready to print or share.'), url_for('main.print_character_portrait', username=username, url_name=url_name))] %}
+{% else %}
+  {% set print_choices = print_choices + [
+    ('pdf-landscape', 'fa-file-pdf', _('Print PDF (landscape)'), _('Character sheet as a PDF, ready to print or share.'), url_for('main.print_character_landscape', username=username, url_name=url_name)),
+    ('pdf-portrait', 'fa-file-pdf', _('Print PDF (portrait)'), _('Character sheet as a PDF, ready to print or share.'), url_for('main.print_character_portrait', username=username, url_name=url_name))] %}
+{% endif %}
+{% set export_choices = [
+  ('json', 'fa-file-code', 'JSON', _('Complete backup. Import it to restore every detail.'), export_url ~ '?format=json'),
+  ('md', 'fa-file-lines', _('Markdown'), _('Readable sheet for notes apps like Obsidian. Can be imported.'), export_url ~ '?format=md'),
+  ('txt', 'fa-file-alt', _('Plain Text'), _('Simple text to paste anywhere.'), export_url ~ '?format=txt')] if is_owner else [] %}
+
+{% set urls = {} %}
+{% for key, _icon, _label, _description, url in print_choices + export_choices %}{% set _ignored = urls.update({key: url}) %}{% endfor %}
+
+<div class="character-export" data-urls='{{ urls | tojson }}' x-data="{
+    choice: 'print',
+    attributes: true,
+    urls: JSON.parse($el.dataset.urls),
+    get isPdf() { return this.choice.startsWith('pdf-') },
+    get isFile() { return ['json', 'md', 'txt'].includes(this.choice) },
+    get href() { return this.urls[this.choice] + (this.isPdf ? '?export_attributes=' + (this.attributes ? '1' : '0') : '') },
+    open() { this.$refs.dialog.showModal() },
+    close() { this.$refs.dialog.close() },
+  }">
+  <button type="button" class="button" id="character-export-button" @click="open()" aria-haspopup="dialog" aria-controls="character-export-dialog">
+    {{_('Export or print')}} <i class="fa-solid fa-download icon-in-button" aria-hidden="true"></i>
+  </button>
+
+  <dialog id="character-export-dialog" class="character-export-dialog" x-ref="dialog" aria-labelledby="character-export-title"
+          @click="if ($event.target === $refs.dialog) close()">
+    <div class="character-export-header">
+      <h3 id="character-export-title">{{_('Export or print')}}</h3>
+      <button type="button" class="character-export-close" @click="close()" aria-label="{{_('Close')}}"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+
+    {% for heading, choices in [(_('Print'), print_choices), (_('Export'), export_choices)] if choices %}
+    <fieldset class="character-export-group">
+      <legend>{{heading}}</legend>
+      <div class="character-export-options">
+        {% for key, icon, label, description, _url in choices %}
+        <label class="character-export-option">
+          <input type="radio" name="character-export-choice" value="{{key}}" x-model="choice">
+          <i class="fa-solid {{icon}}" aria-hidden="true"></i>
+          <span class="character-export-label">{{label}}</span>
+          <span class="character-export-description">{{description}}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </fieldset>
+    {% endfor %}
+
+    <label class="character-pdf-attributes" x-show="isPdf" x-cloak>
+      <input type="checkbox" x-model="attributes"> {{_('Include Current Attributes')}}
+    </label>
+
+    <div class="character-export-actions">
+      <button type="button" @click="close()">{{_('Cancel')}}</button>
+      {# Files download in place; the PDF opens in a new tab and the print page replaces this one, as before. #}
+      <a class="button primary" id="character-export-go" :href="href" @click="close()"
+         href="{{ url_for('main.print_character', username=username, url_name=url_name) }}"
+         :target="isPdf ? '_blank' : null" :rel="isPdf ? 'noopener' : null" :download="isFile ? '' : null">
+        <span x-show="choice === 'print'">{{_('Print')}} <i class="fa-solid fa-print icon-in-button" aria-hidden="true"></i></span>
+        <span x-show="isPdf" x-cloak>{{_('Print PDF')}} <i class="fa-solid fa-file-pdf icon-in-button" aria-hidden="true"></i></span>
+        <span x-show="isFile" x-cloak>{{_('Download')}} <i class="fa-solid fa-download icon-in-button" aria-hidden="true"></i></span>
+      </a>
+    </div>
+  </dialog>
+</div>
