@@ -1,13 +1,15 @@
 import {localizeGraph, localizeText} from '../../generator-locale.js';
 import {generateResult, graphFromResult} from '../../content_generators.js';
 
-// New campaign dialog. "Random campaign" generates the draft here, with the same
-// generator as the map page, and submits it with the campaign so both save together.
-// If generation fails, the form is sent without a draft and the server opens the
-// map page instead, where the generator can be retried.
+// The "Create new" dialog. For a campaign with "Generate it randomly" ticked, the
+// draft is generated here, with the same generator as the map page, and submitted
+// with the campaign so both save together. If generation fails, the form is sent
+// without a draft and the server opens the map page instead, where it can be retried.
 export default function newCampaign() {
   return {
-    start: 'empty', kind: 'realm', children: true, generating: false,
+    type: 'campaign', start: 'empty', kind: 'realm', children: true, generating: false,
+    // The dialog resets its form when it closes; start the next one from the defaults.
+    restart() { Object.assign(this, {type: 'campaign', start: 'empty', kind: 'realm', children: true, generating: false}); },
     async submit(event) {
       if (this.start !== 'random') return;
       event.preventDefault();

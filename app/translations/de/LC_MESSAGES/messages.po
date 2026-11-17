@@ -23170,6 +23170,86 @@ msgstr "Würfe der Spielleitung"
 msgid "2d6"
 msgstr "2W6"
 
+#: app/templates/campaigns/wiki.html
+msgid "Read"
+msgstr "Lesen"
+
+#: app/templates/campaigns/wiki.html
+msgid "Article location"
+msgstr "Ort des Artikels"
+
+#: app/templates/campaigns/wiki.html
+msgid "On this page"
+msgstr "Auf dieser Seite"
+
+#: app/templates/campaigns/wiki.html
+msgid "Links to"
+msgstr "Verweist auf"
+
+#: app/templates/campaigns/wiki.html
+msgid "Linked from"
+msgstr "Verlinkt von"
+
+#: app/templates/campaigns/wiki.html
+msgid "In this article"
+msgstr "In diesem Artikel"
+
+#: app/templates/campaigns/wiki.html
+msgid "About this article"
+msgstr "Über diesen Artikel"
+
+#: app/templates/campaigns/wiki.html
+msgid "This article has no text yet."
+msgstr "Dieser Artikel hat noch keinen Text."
+
+#: app/templates/campaigns/wiki.html
+msgid "Search by title or type"
+msgstr "Nach Titel oder Typ suchen"
+
+#: app/templates/campaigns/index.html
+msgid "Search campaigns and their articles"
+msgstr "Kampagnen und ihre Artikel durchsuchen"
+
+#: app/templates/campaigns/index.html
+msgid "No matching campaigns."
+msgstr "Keine passenden Kampagnen."
+
+#: app/templates/campaigns/index.html
+msgid "Articles outside any campaign appear here."
+msgstr "Artikel außerhalb einer Kampagne erscheinen hier."
+
+#: app/templates/campaigns/index.html
+msgid "Your world at a glance. Open a campaign to read it, or edit it."
+msgstr "Deine Welt auf einen Blick. Öffne eine Kampagne zum Lesen oder bearbeite sie."
+
+#: app/templates/campaigns/index.html
+msgid "My campaigns"
+msgstr "Meine Kampagnen"
+
+#: app/templates/campaigns/index.html
+msgid "Free Starter Adventures"
+msgstr "Kostenlose Einstiegsabenteuer"
+
+#: app/templates/campaigns/index.html
+msgid "Generate it randomly"
+msgstr "Zufällig erzeugen"
+
+#: app/templates/campaigns/index.html
+msgid "Start with"
+msgstr "Beginnen mit"
+
+#: app/templates/campaigns/index.html
+msgid "Everything generated stays private until you reveal it, and can be edited afterwards."
+msgstr "Alles Erzeugte bleibt privat, bis du es enthüllst, und kann danach bearbeitet werden."
+
+#: app/templates/campaigns/index.html
+msgid "Note"
+msgstr "Notiz"
+
+#: app/templates/campaigns/wiki.html
+msgid "Parties that can read their version of this article"
+msgstr "Gruppen, die ihre Fassung dieses Artikels lesen können"
+
 #: app/lib/character_markdown.py
 msgid "%(current)s/%(maximum)s uses"
 msgstr "%(current)s/%(maximum)s Anwendungen"

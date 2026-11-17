@@ -1318,8 +1318,8 @@ def test_new_article_form_ignores_unsafe_category_hint(setup):
 def test_empty_unfiled_section_is_muted_without_chevron(setup):
     app, client = setup
     page = client.get('/campaigns/').get_data(as_text=True)
-    assert 'data-tree-key="unfiled"' not in page and 'tree-empty-title' in page
+    assert 'href="/materials/"' not in page and 'tree-empty-title' in page
     assert 'Create New' in page and 'create-dialog' in page
     client.post('/materials/new', data={'category': 'note', 'title': 'Loose note', 'body': 'x'})
     page = client.get('/campaigns/').get_data(as_text=True)
-    assert 'data-tree-key="unfiled"' in page and 'tree-empty-title' not in page
+    assert 'href="/materials/"' in page and 'tree-empty-title' not in page
