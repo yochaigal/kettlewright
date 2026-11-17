@@ -1,13 +1,16 @@
 // Pointer events cover both mouse and touch. Keyboard movement uses the same API.
+// Dropping on a container tab, or on the slots a carried container (a cart)
+// takes up, moves the item into that container instead.
 let selection = null;
 let pointer = null;
 let preview = null;
 
 function clearSelection() {
   if (selection) {
-    selection.root.querySelectorAll('.slot-picked, .slot-drop-target').forEach(element => {
-      element.classList.remove('slot-picked', 'slot-drop-target');
+    selection.root.querySelectorAll('.slot-picked, .slot-drop-target, .slot-container-target').forEach(element => {
+      element.classList.remove('slot-picked', 'slot-drop-target', 'slot-container-target', 'is-full');
     });
+    selection.root.classList.remove('slot-dragging-across');
     selection.root.querySelector('.slot-status').textContent = '';
     selection.handle.setAttribute('aria-pressed', 'false');
   }
@@ -30,11 +33,34 @@ function targetSlot(slot) {
     `${selection.root.dataset.moveHint} ${selection.root.dataset.slotLabel}: ${selection.slot + 1}`;
 }
 
+// The container under the pointer, if this item may go there.
+function containerAt(x, y) {
+  if (!selection?.size) return null;
+  const target = document.elementFromPoint(x, y)?.closest('[data-drop-container]');
+  return target && selection.root.contains(target) ? target : null;
+}
+
+function targetContainer(target) {
+  if (!selection) return;
+  selection.root.querySelectorAll('.slot-container-target').forEach(element => {
+    if (element !== target) element.classList.remove('slot-container-target', 'is-full');
+  });
+  selection.container = target;
+  if (!target) return;
+  const full = Number(target.dataset.free) < selection.size;
+  target.classList.add('slot-container-target');
+  target.classList.toggle('is-full', full);
+  selection.root.querySelectorAll('.slot-drop-target').forEach(row => row.classList.remove('slot-drop-target'));
+  selection.root.querySelector('.slot-status').textContent = full ? selection.root.dataset.containerFull
+    : `${selection.root.dataset.moveTo} ${target.dataset.dropName}`;
+}
+
 function pick(handle) {
   clearSelection();
   const row = handle.closest('.inventory-slot');
   selection = { handle, root: handle.closest('.slot-inventory'), itemId: handle.dataset.moveItem,
-    slot: Number(row.dataset.slot), span: Number(row.dataset.span) };
+    slot: Number(row.dataset.slot), span: Number(row.dataset.span),
+    size: Number(handle.dataset.moveAcross || 0), container: null };
   handle.setAttribute('aria-pressed', 'true');
   row.classList.add('slot-picked');
   targetSlot(selection.slot);
@@ -42,13 +68,20 @@ function pick(handle) {
 
 async function place() {
   if (!selection) return;
-  const { root, itemId, slot } = selection;
+  const { root, itemId, slot, container } = selection;
+  if (container && Number(container.dataset.free) < selection.size) {
+    clearSelection();
+    root.querySelector('.slot-status').textContent = root.dataset.containerFull;
+    return;
+  }
   clearSelection();
   root.classList.add('slot-saving');
+  const values = { item_id: itemId, csrf_token: root.dataset.csrf, inventory_context: 'sheet' };
+  if (container) values.container = container.dataset.dropContainer;
+  else values.slot = slot;
   try {
     await window.htmx.ajax('POST', root.dataset.moveUrl, {
-      source: root, target: '#inventory-container', swap: 'innerHTML',
-      values: { item_id: itemId, slot, csrf_token: root.dataset.csrf, inventory_context: 'sheet' },
+      source: root, target: '#inventory-container', swap: 'innerHTML', values,
     });
     document.querySelectorAll('[data-move-item]').forEach(handle => {
       if (handle.dataset.moveItem === itemId) handle.focus({ preventScroll: true });
@@ -76,10 +109,13 @@ document.addEventListener('pointermove', event => {
     preview.className = 'slot-drag-preview';
     preview.textContent = selection.handle.closest('.inventory-slot').querySelector('.slot-item-name').textContent;
     document.body.append(preview);
+    if (selection.size) selection.root.classList.add('slot-dragging-across');
   }
   preview.style.left = `${event.clientX + 12}px`;
   preview.style.top = `${event.clientY + 12}px`;
-  const row = document.elementFromPoint(event.clientX, event.clientY)?.closest('.inventory-slot');
+  const container = containerAt(event.clientX, event.clientY);
+  targetContainer(container);
+  const row = container ? null : document.elementFromPoint(event.clientX, event.clientY)?.closest('.inventory-slot');
   if (row && selection.root.contains(row)) {
     const rect = row.getBoundingClientRect();
     targetSlot(Number(row.dataset.slot) + Math.min(Number(row.dataset.span) - 1,
@@ -94,8 +130,9 @@ document.addEventListener('pointerup', event => {
   const moved = pointer.moved;
   pointer = null;
   if (moved) {
+    targetContainer(containerAt(event.clientX, event.clientY));
     const row = document.elementFromPoint(event.clientX, event.clientY)?.closest('.inventory-slot');
-    if (row && selection?.root.contains(row)) place();
+    if (selection?.container || (row && selection?.root.contains(row))) place();
     else clearSelection();
   }
 });
@@ -103,6 +140,15 @@ document.addEventListener('pointercancel', clearSelection);
 document.addEventListener('click', event => {
   if (!selection) return;
   if (event.target.closest('[data-move-item]')) return;
+  // Picked with a click: a click on a container tab or a cart moves it there.
+  const container = containerAt(event.clientX, event.clientY);
+  if (container) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    targetContainer(container);
+    place();
+    return;
+  }
   const row = event.target.closest('.inventory-slot');
   if (row && selection.root.contains(row)) {
     event.preventDefault();

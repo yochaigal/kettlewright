@@ -23169,3 +23169,15 @@ msgstr "Würfe der Spielleitung"
 #: app/templates/partial/partyview/warden_dice.html
 msgid "2d6"
 msgstr "2W6"
+
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Drop to move it to:"
+msgstr "Loslassen zum Verschieben nach:"
+
+#: app/templates/partial/charview/inventory_slots.html
+msgid "There is not enough room in that container."
+msgstr "In diesem Behälter ist nicht genug Platz."
+
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Drag to a slot, another container’s tab or a cart. Arrow keys then Enter also work."
+msgstr "Auf einen Platz, den Reiter eines anderen Behälters oder einen Karren ziehen. Pfeiltasten und dann Enter funktionieren auch."
