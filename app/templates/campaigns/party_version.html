@@ -1,0 +1,31 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import page_header, token with context %}
+{# Edit what one party sees of a revealed article (its party version), from the party's Wiki tab.
+   Same shape as editing a party note; the private original is never changed here. #}
+{% block workspace %}
+{% set back = url_for('party.party_view', ownername=party.owner_username or party.party_owner.username, party_url=party.party_url) ~ '#campaign-details' %}
+{% set is_original = (row.title, row.body) == (entry.title, entry.body) %}
+{% call page_header(_('What %(party)s sees', party=party.name)) %}<a href="{{ back }}">{{ _('Back to party') }}</a>
+<button type="submit" form="party-version-form">{{ _('Save') }}</button>{% endcall %}
+<p class="reveal-article">{{ _('Article') }}: <strong>{{ entry.title }}</strong> ·
+  {{ _('They see the original.') if is_original else _('They see a party version.') }}</p>
+<form id="party-version-form" class="party-note-form" method="post">
+  {{ token(row.version) }}
+  <label for="party-version-title">{{ _('Title they see') }}</label>
+  <input type="text" id="party-version-title" name="title" required maxlength="200" value="{{ row.title }}">
+  <label for="party-version-body">{{ _('Text they see') }}</label>
+  <textarea id="party-version-body" name="body" rows="12" maxlength="5000000">{{ row.body }}</textarea>
+  {% if entry.category == 'path' %}<label for="party-version-path">{{ _('Path type they see') }}</label>
+  <select id="party-version-path" name="path_type">{% for kind in path_types %}<option value="{{ kind }}" {% if kind == row.path_type %}selected{% endif %}>{{ _(kind|capitalize) }}</option>{% endfor %}</select>{% endif %}
+  <p class="import-hint">{{ _('Only %(party)s sees this text. Saving makes it their party version; your original is unchanged, and later edits to it do not change this.', party=party.name) }}</p>
+</form>
+{% if not is_original %}
+{# Switch back: show this party the original as it is now. #}
+<form class="party-version-original" method="post" action="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">
+  {{ token() }}<input type="hidden" name="party_ids" value="{{ party.id }}"><input type="hidden" name="version_{{ party.id }}" value="{{ row.version }}">
+  <input type="hidden" name="mode" value="everything"><input type="hidden" name="return_to" value="party">
+  <button type="submit" class="link-button">{{ _('Use the original instead') }}</button>
+  <span class="import-hint">{{ _('Replaces this text with your current title and text.') }}</span>
+</form>
+{% endif %}
+{% endblock %}

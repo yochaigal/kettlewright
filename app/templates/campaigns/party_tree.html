@@ -5,7 +5,16 @@
 <span class="tree-meta">{{ _(content_categories.get(entry.category, entry.category)) }}</span>
 {% if item.children %}<span class="tree-count" title="{{ _('Direct children') }}">{{ item.children|length }}</span>{% endif %}
 <span class="tree-excerpt">{{ content_excerpt(entry.body) }}</span>
-{% if editing %}<a href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Update party version') }}</a><a href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ _('Private original') }}</a>{% endif %}
+{% if editing %}
+<span class="tree-meta tree-version" title="{{ _('Only you see this label') }}">{{ _('Party version') if entry.id in versions else _('Original') }}</span>
+<span class="tree-actions kw-actions">
+{% if entry.id in versions %}<a class="kw-action" href="{{ url_for('campaigns.edit_party_version', party_id=party.id, entry_id=entry.id) }}" title="{{ _('Edit what this party sees') }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>{% endif %}
+<form class="tree-hide" method="post" action="{{ url_for('campaigns.revoke', entry_id=entry.id, party_id=party.id) }}"
+      data-confirm="{{ _('Hide this article from the party? What they were shown is deleted.') }}" data-confirm-label="{{ _('Hide') }}">
+  {{ (content_form if content_form is defined else form).csrf_token }}<input type="hidden" name="version" value="{{ entry.version }}"><input type="hidden" name="return_to" value="party">
+  <button type="submit" class="kw-action kw-action-danger" title="{{ _('Hide from this party') }}"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> {{ _('Hide') }}</button>
+</form>
+</span>{% endif %}
 </span>
 {% endmacro %}
 {% macro party_children(items) %}

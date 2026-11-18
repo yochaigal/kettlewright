@@ -88,8 +88,9 @@ def test_add_creates_only_that_campaign_and_card_shows_added(user):
     assert f'{title_of(SECOND)} was added to your campaigns.' in page
     assert 'class="toast"' in page and '<p role="status">' not in page
     assert page.count('>Add<') == COUNT - 1
-    assert f'href="/campaigns/{campaign_id}/"' in page and '>Remove<' in page
-    assert '>Delete</button>' in page
+    assert f'href="/campaigns/{campaign_id}/"' in page
+    edit = client.get(f'/campaigns/{campaign_id}/').get_data(as_text=True)  # Delete lives in Edit.
+    assert f'action="/campaigns/{campaign_id}/delete"' in edit and 'Delete campaign…' in edit
 
 
 def test_heading_stays_until_every_adventure_is_added(user):
@@ -116,7 +117,7 @@ def test_same_named_campaign_counts_as_added_and_is_not_duplicated(user):
     with app.app_context():
         db.session.add(Campaign(owner_id=1, name=title_of(FIRST)))
         db.session.commit()
-    assert '>Remove<' in campaigns_page(client)
+    assert campaigns_page(client).count('>Add<') == COUNT - 1  # Already counts as added.
     client.post(f'/campaigns/starter/{FIRST.name}')
     with app.app_context():
         assert Campaign.query.count() == 1
@@ -139,7 +140,9 @@ def test_renamed_or_deleted_copy_restores_the_button(user):
 def test_remove_asks_for_confirmation_then_deletes_and_restores_add(user):
     app, client = user
     client.post(f'/campaigns/starter/{FIRST.name}')
-    page = campaigns_page(client)
+    with app.app_context():
+        campaign_id = Campaign.query.one().id
+    page = client.get(f'/campaigns/{campaign_id}/').get_data(as_text=True)
     action = re.search(r'action="(/campaigns/\d+/delete)"', page).group(1)
     version = re.search(r'name="version" value="(\d+)"', page).group(1)
     asked = client.post(action, data={'version': version})

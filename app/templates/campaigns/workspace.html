@@ -6,18 +6,10 @@
 {% call page_header(campaign.name if campaign else _('Unfiled articles')) %}
 <a href="{{ url_for('campaigns.wiki', campaign_id=campaign.id) if campaign else url_for('campaigns.unfiled_wiki') }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read') }}</a>
 <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id if campaign else '') }}">{{ _('New article') }}</a>
-{% if campaign %}<a href="{{ url_for('campaigns.campaign_export', campaign_id=campaign.id) }}">{{ _('Export campaign') }}</a>
-{% call modal('campaign-settings-modal', _('Settings'), _('Campaign settings and parties')) %}
+{% if campaign %}{% call modal('campaign-settings-modal', _('Settings'), _('Campaign settings')) %}
 <form method="post">{{ token(campaign.version) }}
 <section class="modal-card-body">
 <label>{{ _('Campaign name') }}<input type="text" name="name" required maxlength="200" value="{{ campaign.name }}"></label>
-<fieldset><legend>{{ _('Connected parties') }}</legend>
-{% for party in parties %}
-<label class="campaign-check"><input type="checkbox" name="party_ids" value="{{ party.id }}" {% if party.id in linked %}checked{% endif %}>{{ party.name|markdown_inline }}</label>
-{% if party.id in linked %}<a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}">{{ _('View as party') }}</a>{% endif %}
-{% else %}<p>{{ _('Create a party to share articles with its members.') }}</p>{% endfor %}
-</fieldset>
-<p class="import-hint">{{ _('Disconnecting a party hides this campaign’s published articles from it.') }}</p>
 </section>
 {{ modal_footer(_('Save settings')) }}
 </form>
@@ -25,10 +17,9 @@
 {% endif %}
 <a href="{{ url_for('campaigns.import_archive') }}">{{ _('Import archive') }}</a>
 {% endcall %}
-{% if campaign %}{% set connected = parties|selectattr('id', 'in', linked)|list %}
-<p class="campaign-shared-with">{% if connected %}{{ _('Shared with') }} {% for party in connected %}<a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}" title="{{ _('View as party') }}">{{ party.name|markdown_inline }}</a>{% if not loop.last %}, {% endif %}{% endfor %}{% else %}{{ _('Not shared with any party yet. Connect one in Settings.') }}{% endif %}</p>{% endif %}
+{% if campaign %}
+<p class="campaign-shared-with">{% if audience %}{{ _('Revealed to') }} {% for party in audience %}<a href="{{ url_for('campaigns.party_wiki', party_id=party.id) }}" title="{{ _('Party wiki') }}">{{ party.name|markdown_inline }}</a>{% if not loop.last %}, {% endif %}{% endfor %}{% else %}{{ _('Not revealed to any party yet. Use Reveal to party on an article.') }}{% endif %}</p>{% endif %}
 <p>{{ _('Only you can see originals. Party versions are published separately.') }}</p>
-{% if campaign %}<p class="import-hint">{{ _('Export includes private articles, maps, drawings and article links. Markdown image URLs are kept as references. Party publications and connections are not exported.') }}</p>{% endif %}
 <form method="post" action="{{ url_for('campaigns.bulk_delete') }}" x-data="materialTree">
 {{ token() }}
 <input type="hidden" name="campaign_id" value="{{ campaign.id if campaign else '' }}">
@@ -51,7 +42,7 @@
 <form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}">{{ token(campaign.version) }}
 <section class="modal-card-body">
 <p><strong>{{ campaign.name }}</strong> · {{ campaign.entries|length }} {{ _('articles') }}</p>
-<p>{{ _('Deleting this campaign permanently deletes all its articles, drawings and published party versions. This cannot be undone. Connected parties and their characters are kept.') }}</p>
+<p>{{ _('Deleting this campaign permanently deletes all its articles, drawings and published party versions. This cannot be undone. Parties and their characters are kept.') }}</p>
 </section>
 {{ modal_footer(_('Permanently delete campaign and all articles'), 'confirm', 'delete') }}
 </form>

@@ -24,6 +24,14 @@ def owned(model, object_id):
     return obj
 
 
+def delete_party_notes(party_id):
+    """Party notes exist only for their party: delete them with it. The caller commits."""
+    from app.lib.content_types import PARTY_NOTE
+    for entry in ContentEntry.query.join(PartyPresentation).filter(
+            PartyPresentation.party_id == party_id, ContentEntry.category == PARTY_NOTE).all():
+        db.session.delete(entry)
+
+
 def party_access(party_id, editing=False):
     party = db.get_or_404(Party, party_id)
     if (party.owner != current_user.id if editing else current_user.id not in party_recipient_ids(party)):
@@ -66,10 +74,8 @@ def campaign_for(value):
 
 
 def publishable_party(entry, party_id):
-    party = party_access(party_id, editing=True)
-    if entry.campaign_id and not db.session.get(CampaignParty, (entry.campaign_id, party.id)):
-        abort(400, 'Connect this party to the campaign first.')
-    return party
+    """Any party I run can be shown any of my articles; there is no campaign connection step."""
+    return party_access(party_id, editing=True)
 
 
 def content_value(value):
@@ -206,7 +212,7 @@ def known_entries(party_id):
     rows = PartyPresentation.query.filter_by(party_id=party_id, published=True).all()
     known = {row.entry_id: {'id': row.entry_id, 'category': row.entry.category,
                            'reference_key': row.entry.reference_key,
-                           'title': row.title, 'body': row.body, 'path_type': row.path_type,
+                           'title': row.title, 'body': row.body, 'path_type': row.path_type, 'version': row.version,
                            'links': [], 'map_id': row.entry.pointcrawl.id if row.entry.pointcrawl else None}
              for row in rows}
     # A path cannot be read indirectly while its map or either endpoint is hidden.
@@ -228,6 +234,14 @@ def known_entries(party_id):
         entry.pop('reference_key', None)
     return known
 
+
+
+def party_versions(party_id):
+    """Ids of revealed articles whose party text differs from the original: a party version.
+
+    Warden only: players never learn whether their text matches the private original."""
+    return {row.entry_id for row in PartyPresentation.query.filter_by(party_id=party_id, published=True)
+            if (row.title, row.body) != (row.entry.title, row.entry.body)}
 
 
 def party_knowledge_tree(party_id):

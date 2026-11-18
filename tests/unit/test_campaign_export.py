@@ -49,7 +49,9 @@ def test_export_roundtrip_duplicate_titles_and_private_scope(setup):
         assert child.parent_id == parent.id and child.is_heart and child.path_type == 'hidden'
         assert parent.body == child.body == 'SECRET BODY'
         assert all(not entry.presentations for entry in imported.entries)
-    assert 'Export campaign' in client.get('/campaigns/1/').get_data(as_text=True)
+    assert 'href="/campaigns/1/export"' in client.get('/campaigns/1/wiki/').get_data(as_text=True)  # On the wiki home.
+    for path in ('/campaigns/', '/campaigns/1/'):
+        assert '/campaigns/1/export' not in client.get(path).get_data(as_text=True)
     login(client, 2)
     assert client.get('/campaigns/1/export').status_code == 403
     login(client, 1)

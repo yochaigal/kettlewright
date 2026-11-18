@@ -1,8 +1,8 @@
 {% from 'partial/partyview/party_actions.html' import action_dialog, event_bar with context %}
 {% set wurl = url_for('party.wilderness_action', party_id=party.id) %}
 {% set wrules = 'https://cairnrpg.com/second-edition/players-guide/procedures/#wilderness-actions' %}
-<details class="party-section wilderness-actions" open>
-  <summary class="subtitle bold">{{_('Wilderness actions')}}</summary>
+<section class="party-section wilderness-actions">
+  <h3 class="party-section-heading">{{_('Wilderness actions')}}</h3>
   <p class="wilderness-intro">{{_('Each character takes one action per watch: morning, afternoon and night. Results are added to the roll history for the whole party.')}}</p>
   <div class="wilderness-tiles">
   {% call action_dialog('wilderness', 'travel', _('Travel'), 'fa-route', _('Move along your route; the party may get lost.'), _('Travel'), wurl, wrules) %}
@@ -47,4 +47,4 @@
   {# Cairn 2e: one roll per exploration cycle, after everyone has acted; twice at night. #}
   {{ event_bar(_('Wilderness Events'), _('After everyone has acted this watch, roll once on the Wilderness Events table.'),
                url_for('party.wilderness_event_roll', party_id=party.id), night=true) }}
-</details>
+</section>

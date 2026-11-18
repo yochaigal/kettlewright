@@ -1,8 +1,35 @@
 {% from 'campaigns/material_tree.html' import tree_toolbar with context %}
 {% from 'campaigns/party_tree.html' import party_children with context %}
+{# Refreshed live (campaign_live.js): party notes first, then the revealed campaign articles. #}
+{% set notes = entries|selectattr('category', 'equalto', 'party_note')|sort(attribute='id', reverse=true) %}
+{% set revealed = entries|rejectattr('category', 'equalto', 'party_note')|list %}
 <div id="party-content-results">
+<ul class="party-notes">
+{% for note in notes %}
+<li class="party-note">
+  <a class="party-note-title" href="{{ url_for('campaigns.party_entry', party_id=party.id, entry_id=note.id) }}">{{ note.title|markdown_inline }}</a>
+  {% set summary = content_excerpt(note.body, 200) %}{% if summary %}<p>{{ summary }}</p>{% endif %}
+  {% if editing %}
+  <span class="party-note-actions kw-actions">
+    <a class="kw-action" href="{{ url_for('campaigns.edit_party_note', party_id=party.id, entry_id=note.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+    <form method="post" action="{{ url_for('campaigns.delete_party_note', party_id=party.id, entry_id=note.id) }}"
+          data-confirm="{{ _('Delete this party note? The party will no longer see it.') }}" data-confirm-label="{{ _('Delete') }}">
+      {{ (content_form if content_form is defined else form).csrf_token }}
+      <button type="submit" class="kw-action kw-action-danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> {{ _('Delete') }}</button>
+    </form>
+  </span>
+  {% endif %}
+</li>
+{% else %}
+<li class="party-notes-empty">{{ _('No party notes yet.') }}</li>
+{% endfor %}
+</ul>
+<h3 class="party-section-heading">{{ _('Revealed articles') }}</h3>
+{% if editing %}<p class="import-hint party-section-hint"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+  {{ _('To reveal an article, open it in Campaigns and choose Reveal to party. Edit here changes only what this party sees.') }}
+  <a href="{{ url_for('campaigns.index') }}">{{ _('Open Campaigns') }}</a></p>{% endif %}
 <div x-data="materialTree">
-{% if entries %}{{ tree_toolbar() }}{{ party_children(hierarchy) }}
+{% if revealed %}{{ tree_toolbar() }}{{ party_children(hierarchy|rejectattr('entry.category', 'equalto', 'party_note')|list) }}
 {% else %}<p>{{ _('Nothing has been revealed yet.') }}</p>{% endif %}
 </div>
 </div>

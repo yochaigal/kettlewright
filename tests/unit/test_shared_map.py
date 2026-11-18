@@ -192,7 +192,7 @@ def test_party_page_shows_whiteboard_and_campaign_for_all_members(shared):
         assert 'href="/party/1/shared-map"' in html
         assert 'href="/campaigns/"' in html
         assert 'id="campaign-details-tab"' in html
-        assert ('Create and show' in html) is (user_id == 1)
+        assert ('Add party note' in html) is (user_id == 1)  # Warden-only tools on the Wiki tab.
 
 
 @pytest.mark.parametrize('version', [0, 1, 99])

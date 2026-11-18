@@ -1,6 +1,6 @@
 # Exporting a campaign
 
-Open a campaign and choose **Export campaign** to download `campaign-<id>.zip`.
+Open a campaign's wiki home (**Read** on its card) and choose **Export** to download `campaign-<id>.zip`.
 The export contains the Warden's private originals. It excludes party connections,
 party publications, characters, accounts and articles from other campaigns or Unfiled.
 

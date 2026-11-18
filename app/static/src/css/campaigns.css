@@ -236,6 +236,9 @@ section.body-container > .sheet.campaign-workspace {background:transparent;box-s
 @media (prefers-reduced-motion:no-preference) {.toast {animation:toast-in .25s ease-out;}}
 @keyframes toast-in {from {opacity:0;transform:translateY(.75em);}}
 .create-dialog.confirm-dialog {width:40em;padding:2.5em;}
+.parties-dialog .campaign-check {display:flex;align-items:center;gap:.5em;min-height:44px;margin:0;cursor:pointer;}
+.campaign-card-actions button.campaign-card-parties {opacity:1;}
+.campaign-card-actions {flex-wrap:wrap;row-gap:0;}
 .confirm-dialog p {margin:0 0 1em;}
 .create-dialog .create-dialog-actions button.danger {border-color:#a33b3b;background:#a33b3b;color:#fff;}
 .create-dialog .create-dialog-actions button.danger:hover {opacity:.85;}
@@ -412,7 +415,22 @@ aside:where(.campaign-wiki *), article:where(.campaign-wiki *), header:where(.ca
 .campaign-card-starter .campaign-card-title::after {content:none;}
 .campaign-card-starter .campaign-card-actions form {margin-left:0;}
 .campaign-card-starter .campaign-card-actions button {padding:.4em 1em;border:1.5px solid var(--fg);border-radius:2px;background:transparent;font-weight:600;cursor:pointer;}
+.campaign-wiki .wiki-move {display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:0;padding:0;border:0;background:none;width:auto;}
+.campaign-wiki .wiki-move select {width:auto;max-width:14em;margin:0;}
 .campaign-wiki .wiki-cover {display:block;width:100%;max-height:16em;object-fit:cover;margin-bottom:1.25em;border-radius:6px;}
+/* Party Campaign tab: the Warden's connected campaigns as gallery cards, without stretching a single card full width. */
+.party-linked-campaigns {margin:1em 0;}
+.party-linked-campaigns .campaign-gallery {grid-template-columns:repeat(auto-fill,minmax(15em,20em));}
+.party-campaign-empty {margin:0;color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
+.party-modal-body textarea {width:100%;box-sizing:border-box;}
+/* Party notes: written for this party only, newest first. */
+.party-notes-head {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem 1rem;margin:1.5em 0 .5em;}
+.party-notes-head .party-section-heading {margin:0;}
+.party-notes {display:grid;gap:.75rem;margin:0 0 1.5em;padding:0;list-style:none;}
+.party-note {display:flex;flex-direction:column;gap:.25rem;padding:.75rem 1rem;border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;background:color-mix(in srgb,var(--fg) 3%,var(--bg));}
+.party-note-title {font-weight:700;color:inherit;}
+.party-note p {margin:0;color:color-mix(in srgb,var(--fg) 75%,var(--bg));}
+.party-notes-empty {color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
 @media (max-width:480px) {.campaign-gallery {grid-template-columns:1fr;}}
 
 /* "Create new" dialog: random campaign options under a checkbox. */
@@ -428,4 +446,63 @@ aside:where(.campaign-wiki *), article:where(.campaign-wiki *), header:where(.ca
 .create-dialog button.primary:disabled {opacity:.6;cursor:progress;}
 @media (max-width:480px) {.create-dialog .create-random-options, .create-dialog .create-random-percent {grid-template-columns:1fr;}}
 .wiki-actions {display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.5em;flex:none;}
+button.wiki-edit {background:transparent;color:var(--fg);font:inherit;font-weight:600;cursor:pointer;width:auto;max-width:none;}
+button.wiki-edit:hover {background:var(--fg);color:var(--bg);}
 @media (max-width:760px) {.wiki-actions {justify-content:flex-start;}}
+
+/* Reveal to party: one party, then the original or a party version (popup on the article and edit pages). */
+.reveal-article {margin:0 0 1em;color:color-mix(in srgb,var(--fg) 75%,var(--bg));}
+.reveal-dialog {width:44em;}
+.reveal-page {max-width:44em;}
+.reveal-form {margin:0;padding:0;border:0;background:transparent;width:auto;}
+.reveal-to {display:flex;flex-direction:column;gap:.3em;font-weight:700;}
+.reveal-to select {width:100%;max-width:none;margin:0;}
+.reveal-now {display:flex;flex-direction:column;margin:.5em 0 1em;color:color-mix(in srgb,var(--fg) 75%,var(--bg));}
+.reveal-modes {margin:0 0 1em;padding:0;border:0;}
+.reveal-modes:disabled {opacity:.5;}
+.reveal-modes legend {margin:0 0 .3em;padding:0;font-weight:700;}
+.reveal-mode {display:flex;align-items:flex-start;gap:.6em;margin:.4em 0;cursor:pointer;}
+.reveal-mode input {margin-top:.3em;}
+.reveal-mode span {display:flex;flex-direction:column;}
+.reveal-mode small {color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
+.reveal-custom {margin:.75em 0 0;padding:1em;border-left:3px solid color-mix(in srgb,var(--fg) 30%,var(--bg));}
+.reveal-custom label {display:block;}
+.reveal-custom input[type=text] {width:100%;box-sizing:border-box;}
+.reveal-buttons {display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:.75em;margin-top:1.25em;}
+.reveal-buttons button {display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin:0;padding:.5em 1.25em;border:1.5px solid var(--fg);border-radius:2px;background:transparent;color:var(--fg);font:inherit;font-weight:600;cursor:pointer;width:auto;max-width:none;}
+.reveal-buttons button.primary {background:var(--fg);color:var(--bg);}
+.reveal-buttons button:disabled {opacity:.45;cursor:not-allowed;}
+.reveal-buttons button.reveal-hide {margin-right:auto;border-color:#a33b3b;color:#a33b3b;}
+.reveal-replaces {margin:0 0 1em;padding:.6em 1em;border-left:3px solid #b8860b;background:color-mix(in srgb,#b8860b 10%,var(--bg));}
+.campaign-workspace .reveal-form .campaign-actions > button.reveal-submit {background:var(--fg);color:var(--bg);}
+/* Party tree: Edit (a link) and Hide (a form button) side by side, same size and baseline. */
+@media (max-width:600px) {.tree-actions {margin-left:0;}}
+.tree-version {border:1px solid color-mix(in srgb,var(--fg) 30%,var(--bg));border-radius:999px;padding:0 .5em;}
+.party-version-original {display:flex;flex-wrap:wrap;align-items:center;gap:.25rem 1rem;margin:1.5em 0 0;padding:0;border:0;background:none;width:auto;}
+.party-version-original button.link-button {min-height:44px;padding:0;border:0;background:none;color:inherit;font:inherit;font-weight:600;text-decoration:underline;cursor:pointer;}
+/* Campaign wiki home: parties shown something from this campaign, with Hide everything. */
+.wiki-audience {margin:0 0 1.5em;}
+.wiki-audience h2 {font-size:1.1em;margin:0 0 .5em;}
+.wiki-audience ul {display:grid;gap:.25rem;margin:0;padding:0;list-style:none;}
+.wiki-audience li {display:flex;flex-wrap:wrap;align-items:center;gap:.5em 1em;}
+.wiki-audience form {margin:0 0 0 auto;padding:0;border:0;background:none;width:auto;}
+
+/* Edit / Hide / Delete on party and campaign pages: one small outlined button, red for removing. */
+.kw-actions {display:inline-flex;flex-wrap:wrap;align-items:center;gap:.5em;}
+.kw-actions form {display:inline-flex;margin:0;padding:0;border:0;background:none;width:auto;max-width:none;}
+.tree-actions {margin-left:auto;flex:none;}
+.kw-action {display:inline-flex;align-items:center;gap:.4em;box-sizing:border-box;min-height:32px;min-width:0;max-width:none;width:auto;
+  margin:0;padding:.25em .75em;border:1px solid color-mix(in srgb,var(--fg) 35%,var(--bg));border-radius:999px;
+  background:transparent;color:var(--fg);font:inherit;font-size:.85em;font-weight:600;line-height:1.2;text-decoration:none;white-space:nowrap;cursor:pointer;
+  transition:background .15s,color .15s,border-color .15s;}
+.kw-action i {font-size:.9em;}
+.kw-action:hover {border-color:var(--fg);background:var(--fg);color:var(--bg);}
+.kw-action:focus-visible {outline:2px solid currentColor;outline-offset:2px;}
+.kw-action-danger {border-color:color-mix(in srgb,#a33b3b 55%,var(--bg));color:#a33b3b;}
+.kw-action-danger:hover {border-color:#a33b3b;background:#a33b3b;color:#fff;}
+body.dark-mode .kw-action-danger {color:#e08080;border-color:color-mix(in srgb,#e08080 55%,var(--bg));}
+body.dark-mode .kw-action-danger:hover {background:#a33b3b;color:#fff;}
+@media (pointer:coarse) {.kw-action {min-height:44px;}}
+@media (max-width:600px) {.tree-actions {margin-left:0;}}
+.party-section-hint {display:flex;flex-wrap:wrap;align-items:baseline;gap:.25em .5em;margin:0 0 .75em;}
+.party-section-hint i {opacity:.7;}

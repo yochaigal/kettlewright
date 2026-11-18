@@ -2,6 +2,10 @@
 import re
 from app.lib.translations import N_
 
+# Party notes are articles written on a party page for that party only. They never
+# appear in Campaigns: not in any list, link picker, wiki or editor there.
+PARTY_NOTE = 'party_note'
+
 CATEGORIES = {
     'realm': N_('Realm'), 'people': N_('People'), 'culture': N_('Culture'), 'resources': N_('Resources'),
     'npc': N_('NPC'), 'faction': N_('Faction'), 'faction_type': N_('Faction types'),

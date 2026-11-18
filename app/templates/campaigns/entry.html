@@ -1,25 +1,22 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token, category, rich_editor, page_header, modal, modal_footer with context %}
+{% from 'campaigns/forms.html' import token, category, rich_editor, page_header, modal, modal_footer, reveal_dialog with context %}
 {% block workspace %}
 {% if entry %}{% include 'campaigns/parents.html' %}{% endif %}
 <form id="article-form" class="campaign-page-form" method="post" x-data="contentDraft" data-category="{{ entry.category if entry else initial_category|default('custom') }}" data-import="{{ 'true' if not entry else 'false' }}" data-generate-error="{{ _('Unable to generate an article. Please try again.') }}"
  data-parent-candidates="{{ parent_candidates|tojson|forceescape }}" data-parent-types="{{ article_parent_types|tojson|forceescape }}" data-existing-parent-label="{{ _('Existing parent') }}">
-{% if party and request.values.get('return_to') == 'party' %}<input type="hidden" name="return_to" value="party">{% endif %}
 {% set is_campaign = entry and entry.category == 'realm' %}
 {% set new_heading = "category==='realm' ? " ~ (_('New Campaign')|tojson|forceescape) ~ " : " ~ (_('New article')|tojson|forceescape) %}
-{% call page_header(_('Create and show') if party else ((_('Edit Campaign') if is_campaign else _('Edit article')) if entry else _('New article')), title_model=new_heading if not entry and not party else none) %}
+{% call page_header((_('Edit Campaign') if is_campaign else _('Edit article')) if entry else _('New article'), title_model=new_heading if not entry else none) %}
 {% if entry %}
 <a href="{{ url_for('campaigns.wiki', campaign_id=entry.campaign_id, entry_id=entry.id) if entry.campaign_id else url_for('campaigns.unfiled_wiki', entry_id=entry.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read') }}</a>
 <a href="{{ url_for('campaigns.new_entry', campaign_id=entry.campaign_id or '', parent_id=entry.id) }}">{{ _('Add child article') }}</a>
-<a href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Reveal to party') }}</a>
+<button type="button" aria-haspopup="dialog" onclick="document.getElementById('reveal-dialog-{{ entry.id }}').showModal()">{{ _('Reveal to party') }}</button>
 {% if not entry.pointcrawl and entry.category in article_map_kinds %}<button type="submit" form="add-drawing-form">{{ _('Add drawing') }}</button>{% endif %}
 {% endif %}
-<button type="submit" form="article-form"{% if not entry and not party %} x-text="category==='realm' ? {{ _('Save Campaign')|tojson|forceescape }} : {{ _('Save Article')|tojson|forceescape }}"{% endif %}>{{ _('Create and show') if party else (_('Save Campaign') if is_campaign else _('Save Article')) }}</button>
+<button type="submit" form="article-form"{% if not entry %} x-text="category==='realm' ? {{ _('Save Campaign')|tojson|forceescape }} : {{ _('Save Article')|tojson|forceescape }}"{% endif %}>{{ _('Save Campaign') if is_campaign else _('Save Article') }}</button>
 {% endcall %}
-{% if party %}<p>{% trans party=party.name|markdown_inline %}This will be visible to members of <strong>{{ party }}</strong>.{% endtrans %}</p>
-{% else %}<p class="import-hint">{{ _('Articles are private by default until you reveal them to a party. Saving here does not change any party’s version.') }}</p>{% endif %}
+<p class="import-hint">{{ _('Articles are private by default until you reveal them to a party. Saving here does not change any party’s version.') }}</p>
 {{ token(entry.version if entry else none) }}
-{% if party %}<input type="hidden" name="party_id" value="{{ party.id }}">{% endif %}
 <div class="article-layout">
 <div class="article-main">
 <label>{{ _('Title') }}<input type="text" name="title" maxlength="200" value="{{ entry.title if entry else initial_title|default('') }}" x-model="title" {% if not entry %}required{% endif %}></label>
@@ -34,11 +31,9 @@
 </div>
 <div class="article-sidebar" role="complementary" aria-label="{{ _('Article settings') }}">
 <h2 class="article-sidebar-title">{{ _('Organize') }}</h2>
-{% if not party %}
 <label>{{ _('Campaign') }}<select name="campaign_id" x-model="campaignId" @change="parentId=''"><option value="">{{ _('Unfiled') }}</option>
 {% for item in campaigns %}<option value="{{ item.id }}" {% if campaign and campaign.id == item.id %}selected{% endif %}>{{ item.name|markdown_inline|striptags }}</option>{% endfor %}
 </select></label>
-{% endif %}
 {% if not entry or entry.category not in ('map', 'path') %}{{ category(entry.category if entry else initial_category|default('custom'), generate=not entry) }}{% endif %}
 <label>{{ _('Parent article') }}<select name="parent_id" x-model="parentId" data-selected-parent="{{ selected_parent }}">
 <option value="">{{ _('None') }}</option>
@@ -103,4 +98,6 @@
 {% endcall %}
 </div>
 {% endif %}
+{# Outside the article form: the Reveal popup submits on its own. #}
+{% if entry %}{{ reveal_dialog(entry, reveal_parties) }}{% endif %}
 {% endblock %}

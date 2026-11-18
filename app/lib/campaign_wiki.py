@@ -7,7 +7,8 @@ Editing stays in the article editor.
 Three sources share one template:
 - a campaign, for its owner (/campaigns/<id>/wiki/),
 - the owner's unfiled articles (/materials/wiki/),
-- what a party has been shown, for its members (/party/<id>/materials/<entry>).
+- what a party has been shown, for its members (/party/<id>/wiki/ and
+  /party/<id>/materials/<entry>).
   Party pages only ever see published versions (known_entries), never originals.
 """
 import html
@@ -16,9 +17,11 @@ import re
 from flask import url_for
 from flask_babel import _
 
+from app.lib.translations import N_
+
 from app.lib.article_references import bind_references, headings, reference_urls
 from app.lib.campaigns import map_related_ids, material_hierarchy
-from app.lib.content_types import CATEGORIES, CATEGORY_GROUPS
+from app.lib.content_types import CATEGORIES, CATEGORY_GROUPS, PARTY_NOTE
 from app.models import ContentEntry
 
 
@@ -39,7 +42,8 @@ def campaign_entries(campaign):
 
 
 def unfiled_entries(owner_id):
-    return ContentEntry.query.filter_by(owner_id=owner_id, campaign_id=None).order_by(ContentEntry.id).all()
+    return ContentEntry.query.filter_by(owner_id=owner_id, campaign_id=None).filter(
+        ContentEntry.category != PARTY_NOTE).order_by(ContentEntry.id).all()
 
 
 def _path_to(items, entry_id, trail=()):
@@ -138,11 +142,30 @@ def page_context(campaign, entry=None, owner_id=None):
 PARTY_LINK = re.compile(r'/party/\d+/materials/(\d+)(?:#|$)')
 
 
-def party_context(party, entry_id, owner_view=False):
-    """A party member's page for one revealed article, from published versions only."""
+def party_url(party):
+    """The party page, opened on its Wiki tab."""
+    return url_for('party.party_view', ownername=party.owner_username or party.party_owner.username,
+                   party_url=party.party_url) + '#campaign-details'
+
+
+def party_context(party, entry_id=None, owner_view=False):
+    """A party member's page for one revealed article, or (entry_id=None) the party's wiki home.
+
+    Built from published versions only."""
     from app.lib.campaigns import party_knowledge_tree
     entries, hierarchy = party_knowledge_tree(party.id)
     by_id = {entry['id']: entry for entry in entries}
+    page_url = lambda target_id=None: (url_for('campaigns.party_entry', party_id=party.id, entry_id=target_id)
+                                       if target_id is not None else url_for('campaigns.party_wiki', party_id=party.id))
+    context = dict(party=party, campaign=None, hierarchy=hierarchy, page_url=page_url, back_url=party_url(party),
+                   content_categories=dict(CATEGORIES, **{PARTY_NOTE: N_('Party note')}),
+                   home_title=party.name, article_count=len(entries))
+    if entry_id is None:
+        # Like a campaign's home: top-level articles by type. No cover or front page:
+        # those belong to the Warden's private campaign.
+        context.update(entry=None, intro=None, hearts=[], cover=False, home_edit_url=None,
+                       groups=home_groups([item['entry'] for item in hierarchy]))
+        return context
     entry = by_id.get(entry_id)
     if entry is None:
         return None
@@ -158,15 +181,18 @@ def party_context(party, entry_id, owner_view=False):
 
     outgoing = linked_ids(entry)
     incoming = {other['id'] for other in entries if entry_id in linked_ids(other)}
-    page_url = lambda target_id=None: (url_for('campaigns.party_entry', party_id=party.id, entry_id=target_id)
-                                       if target_id is not None else
-                                       url_for('party.party_view', ownername=party.owner_username or party.party_owner.username,
-                                               party_url=party.party_url) + '#campaign-details')
-    context = dict(party=party, campaign=None, entry=entry, hierarchy=hierarchy, page_url=page_url,
-                   content_categories=CATEGORIES, home_title=party.name, references=entry.get('references') or {},
-                   toc=headings(entry['body']),
+    if owner_view and entry['category'] != PARTY_NOTE:
+        # Edit is for party versions only; an article showing the original is edited in Campaigns.
+        original = ContentEntry.query.get(entry_id)
+        owner_view = (entry['title'], entry['body']) != (original.title, original.body)
+    context.update(entry=entry, references=entry.get('references') or {}, toc=headings(entry['body']),
                    # The party's owner may open the private original; members never see it.
-                   edit_url=url_for('campaigns.edit_entry', entry_id=entry_id) if owner_view else None,
+                   # Party notes are edited from their party, never in Campaigns.
+                   # The original is edited in Campaigns; here only what this party sees.
+                   edit_url=(url_for('campaigns.edit_party_note', party_id=party.id, entry_id=entry_id)
+                             if entry['category'] == PARTY_NOTE else
+                             url_for('campaigns.edit_party_version', party_id=party.id, entry_id=entry_id))
+                            if owner_view else None,
                    **_article_parts(hierarchy, entry_id, by_id, outgoing, incoming))
     return context
 

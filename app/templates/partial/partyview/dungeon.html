@@ -1,8 +1,8 @@
 {% from 'partial/partyview/party_actions.html' import action_dialog, event_bar with context %}
 {% set durl = url_for('party.dungeon_action', party_id=party.id) %}
 {% set drules = 'https://cairnrpg.com/second-edition/players-guide/procedures/' %}
-<details class="party-section wilderness-actions dungeon-actions" open>
-  <summary class="subtitle bold">{{_('Dungeon actions')}}</summary>
+<section class="party-section wilderness-actions dungeon-actions">
+  <h3 class="party-section-heading">{{_('Dungeon actions')}}</h3>
   <p class="wilderness-intro">{{_('Each turn, a character moves about 40ft and takes one action. Results are added to the roll history for the whole party.')}}</p>
   <div class="wilderness-tiles">
   {% call action_dialog('dungeon', 'search', _('Search'), 'fa-magnifying-glass', _('Search one object or place for treasure, traps or secret doors.'), _('Search'), durl, drules) %}
@@ -23,4 +23,4 @@
   {# Cairn 2e: roll when the party lingers, moves quickly or loudly, or enters a new area. #}
   {{ event_bar(_('Dungeon Events'), _('Roll when the party lingers in a room, moves quickly or loudly, or enters a new area or level.'),
                url_for('party.dungeon_event_roll', party_id=party.id)) }}
-</details>
+</section>

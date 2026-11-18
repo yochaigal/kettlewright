@@ -1,4 +1,5 @@
 {% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import reveal_dialog with context %}
 {# Read articles as a wiki (#421). Three sources share this page; the view gives
    page_url(entry_id=None), home_title and, for owners, edit links:
    - a campaign or the unfiled articles, for their owner;
@@ -54,7 +55,7 @@
 {% endif %}
 <div class="campaign-wiki" x-data="{ menu: false }">
   <nav class="campaign-breadcrumb wiki-topbar" aria-label="{{ _('Breadcrumb') }}">
-    {% if party %}<a href="{{ page_url() }}">← {{ _('Back to party') }}</a>
+    {% if party %}<a href="{{ back_url }}">← {{ _('Back to party') }}</a>
     {% else %}<a href="{{ url_for('campaigns.index') }}">← {{ _('All campaigns') }}</a>{% endif %}
     <button type="button" class="link-button wiki-menu-toggle" @click="menu = !menu" :aria-expanded="menu" aria-controls="wiki-sidebar">
       <i class="fa-solid fa-bars" aria-hidden="true"></i> {{ _('Articles') }}
@@ -85,15 +86,29 @@
         <div>
           <h1>{{ article_title(entry) }}</h1>
           <span class="wiki-badges"><span class="wiki-badge">{{ type_label(entry) }}</span>{% if entry.is_heart %}<span class="wiki-badge wiki-badge-heart">{{ _('Heart') }}</span>{% endif %}
-          {% if not party %}{% set shared = entry.presentations|selectattr('published')|list %}{% if shared %}<span class="wiki-badge" title="{{ _('Parties that can read their version of this article') }}">{{ _('Shared') }} · {{ shared|length }}</span>{% endif %}{% endif %}</span>
+          {% if not party %}{% set shared = entry.presentations|selectattr('published')|list %}{% if shared %}<span class="wiki-badge" title="{{ _('Parties that can read their version of this article') }}">{{ _('Revealed') }} · {{ shared|length }}</span>{% endif %}{% endif %}</span>
         </div>
         {% if edit_url %}
         <div class="wiki-actions">
-          {% if not party %}<a class="button wiki-edit" href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{ _('Reveal to party') }}</a>{% endif %}
-          <a class="button wiki-edit" href="{{ edit_url }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Private original') if party else _('Edit') }}</a>
+          {% if not party %}
+          <button type="button" class="button wiki-edit" aria-haspopup="dialog" onclick="document.getElementById('reveal-dialog-{{ entry.id }}').showModal()"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{ _('Reveal to party') }}</button>
+          {% endif %}
+          <a class="button wiki-edit" href="{{ edit_url }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit party version') if party and entry.category != 'party_note' else _('Edit') }}</a>
+          {% if move_campaigns %}
+          {# Unfiled articles only: file this one (and its sub-articles) under a campaign. #}
+          <form class="wiki-move" method="post" action="{{ url_for('campaigns.move_entry', entry_id=entry.id) }}">
+            {{ content_form.csrf_token }}<input type="hidden" name="version" value="{{ entry.version }}">
+            <label class="sr-only" for="wiki-move-campaign">{{ _('Campaign') }}</label>
+            <select id="wiki-move-campaign" name="campaign_id" required>
+              {% for option in move_campaigns %}<option value="{{ option.id }}">{{ option.name }}</option>{% endfor %}
+            </select>
+            <button type="submit" class="button wiki-edit"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> {{ _('Move to campaign') }}</button>
+          </form>
+          {% endif %}
         </div>
         {% endif %}
       </header>
+      {% if not party and edit_url %}{{ reveal_dialog(entry, reveal_parties) }}{% endif %}
 
       <div class="wiki-body">
         <div class="wiki-content">
@@ -126,14 +141,42 @@
       {# Outside the refreshed content: a live update must not reload the drawing. #}
       {% if graph and party %}{% include 'campaigns/map_panel.html' %}{% endif %}
     {% else %}
+      <div id="party-content-results">
       {% if cover %}<img class="wiki-cover" src="{{ url_for('campaigns.campaign_cover', campaign_id=campaign.id) }}" alt="">{% endif %}
       <header class="wiki-header">
         <div>
           <h1>{{ home_title }}</h1>
           <span class="wiki-badges"><span class="wiki-badge">{{ article_count }} {{ _('articles') }}</span></span>
         </div>
-        <a class="button wiki-edit" href="{{ home_edit_url }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+        {% if home_edit_url %}
+        <div class="wiki-actions">
+          {% if campaign %}
+          {# Campaign-wide actions on its wiki home. Delete stays in Edit. #}
+          <a class="button wiki-edit" href="{{ url_for('campaigns.campaign_export', campaign_id=campaign.id) }}" download
+             title="{{ _('Export includes private articles, maps, drawings and article links. Markdown image URLs are kept as references. Party publications and connections are not exported.') }}"><i class="fa-solid fa-file-export" aria-hidden="true"></i> {{ _('Export') }}</a>
+          {% endif %}
+          <a class="button wiki-edit" href="{{ home_edit_url }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+        </div>
+        {% endif %}
       </header>
+      {% if campaign %}
+      {# Who has been shown this campaign: worked out from reveals, there is no connection step. #}
+      <section class="wiki-audience" aria-labelledby="wiki-audience-title">
+        <h2 id="wiki-audience-title">{{ _('Revealed to') }}</h2>
+        {% if audience %}
+        <ul>
+        {% for party, count in audience %}
+          <li><a href="{{ url_for('campaigns.party_wiki', party_id=party.id) }}">{{ party.name|markdown_inline }}</a>
+            <span class="wiki-badge">{{ _('%(count)s articles', count=count) }}</span>
+            <form method="post" action="{{ url_for('campaigns.hide_campaign', campaign_id=campaign.id, party_id=party.id) }}"
+                  data-confirm="{{ _('Hide everything in %(campaign)s from %(party)s? What they were shown is deleted.', campaign=campaign.name, party=party.name) }}" data-confirm-label="{{ _('Hide everything') }}">
+              {{ content_form.csrf_token }}<button type="submit" class="kw-action kw-action-danger"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> {{ _('Hide everything') }}</button>
+            </form></li>
+        {% endfor %}
+        </ul>
+        {% else %}<p class="wiki-empty">{{ _('No party has been shown anything from this campaign yet. Use Reveal to party on an article.') }}</p>{% endif %}
+      </section>
+      {% endif %}
       {% if intro %}
       <div class="wiki-content wiki-intro">
         <div class="rich-content">{{ render_content(intro.body, references) }}</div>
@@ -152,8 +195,10 @@
         {{ article_cards(items) }}
       </section>
       {% else %}
-      <p class="wiki-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id if campaign else '') }}">{{ _('New article') }}</a></p>
+      {% if party %}<p class="wiki-empty">{{ _('Nothing has been revealed yet.') }}</p>
+      {% else %}<p class="wiki-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id if campaign else '') }}">{{ _('New article') }}</a></p>{% endif %}
       {% endfor %}
+      </div>
     {% endif %}
     </article>
   </div>

@@ -1,28 +1,32 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import token, page_header with context %}
 {% block workspace %}
-{% call page_header(_('Reveal selected articles')) %}
+{% call page_header(_('Reveal %(count)s articles', count=entries|length)) %}
 <a href="{{ back_url }}">{{ _('Cancel') }}</a>
-{% if parties %}<button type="submit" form="reveal-articles-form">{{ _('Publish selected articles') }} ({{ entries|length }})</button>{% endif %}
 {% endcall %}
-<p>{{ _('Publishes the saved private titles and descriptions of the checked articles. Existing party text will be replaced. Child articles are included only if checked separately.') }}</p>
+<p>{{ _('Sub-articles are included only if you checked them too. To give one article its own wording for a party, use Reveal to party on that article.') }}</p>
 {% if parties %}
-<form id="reveal-articles-form" method="post" action="{{ url_for('campaigns.bulk_reveal') }}">
+<form id="reveal-articles-form" class="campaign-page-form reveal-form" method="post" action="{{ url_for('campaigns.bulk_reveal') }}">
 {{ token() }}<input type="hidden" name="reveal_token" value="{{ reveal_token }}">
-<fieldset><legend>{{ _('Reveal to party') }}</legend>
-{% for party in parties %}<label class="campaign-check"><input type="checkbox" name="party_ids" value="{{ party.id }}">{{ party.name|markdown_inline }}</label>{% endfor %}
+<fieldset><legend>{{ _('Reveal to') }}</legend>
+{% for party in parties %}<label class="campaign-check"><input type="checkbox" name="party_ids" value="{{ party.id }}"> {{ party.name|markdown_inline }}</label>{% endfor %}
 </fieldset>
+<p>{{ _('Each party sees the originals: every article’s title and text, as they are now. To write a party version, reveal that article on its own.') }}</p>
 {% if entries|selectattr('pointcrawl')|list %}
-<label class="campaign-check"><input type="checkbox" name="publish_drawing" value="1">{{ _('Also publish the entire saved drawing to selected parties') }}</label>
-<p>{{ _('Includes every freehand mark, text and image. Leave unchecked to keep each party’s existing drawing.') }}</p>
+<fieldset><legend>{{ _('Map drawing') }}</legend>
+<label class="campaign-check"><input type="checkbox" name="publish_drawing" value="1"> {{ _('Also show the map drawings: every mark, text and image on them') }}</label>
+<p class="import-hint">{{ _('Leave unchecked to keep the drawings each party already has.') }}</p>
+</fieldset>
 {% endif %}
+<p class="reveal-replaces">{{ _('If a party already sees one of these articles, what it sees is replaced.') }}</p>
+<div class="campaign-actions"><button type="submit" class="reveal-submit">{{ _('Reveal %(count)s articles', count=entries|length) }}</button></div>
 </form>
-{% else %}<p>{{ _('No parties are connected yet. Connect a party in campaign Settings, or create a party first.') }}</p>{% endif %}
-<h2>{{ _('Articles to publish') }} ({{ entries|length }})</h2>
+{% else %}<p>{{ _('You have no parties yet. Create one in Parties, then reveal articles to it.') }}</p>{% endif %}
+<h2>{{ _('Articles to reveal') }} ({{ entries|length }})</h2>
 <ul class="article-tree reveal-article-list">{% for entry in entries %}
 <li><div class="tree-node"><span class="tree-row"><a class="tree-title" href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{{ entry.title or _('Untitled private original') }}</a>
 <span class="tree-meta">{{ _(content_categories.get(entry.category, entry.category)) }}</span>
 <span class="tree-excerpt">{{ content_excerpt(entry.body) }}</span>
-<a class="tree-visibility" href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Prepare individual party versions') }}</a></span></div></li>
+<a class="tree-visibility" href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}">{{ _('Reveal on its own…') }}</a></span></div></li>
 {% endfor %}</ul>
 {% endblock %}
