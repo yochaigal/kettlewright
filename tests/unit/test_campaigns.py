@@ -314,6 +314,10 @@ def test_party_tree_labels_edits_and_hides_party_versions(setup):
         assert db.session.get(ContentEntry, entry_id).title == 'SECRET NAME'  # The original is unchanged.
     html = client.get('/party/1/materials/').text
     assert f'href="/party/1/materials/{entry_id}/version"' in html and '>Party version</span>' in html  # Edit appears.
+    # Removing a party version deletes its text: the card says Delete, and so does its confirmation.
+    assert 'data-confirm="Delete this party version?' in html and ' Delete</button>' in html and ' Hide</button>' not in html
+    popup = client.get(f'/campaigns/1/wiki/{entry_id}/').text
+    assert 'data-confirm="Delete the party version for Party 1?' in popup and 'Hide this article from Party 2' not in popup
 
     # Back to the original from the same page.
     page = client.get(f'/party/1/materials/{entry_id}/version').text
@@ -324,6 +328,30 @@ def test_party_tree_labels_edits_and_hides_party_versions(setup):
 
     assert client.get(f'/party/2/materials/{entry_id}/version').status_code == 404  # Not revealed to party 2.
     assert client.get(f'/party/3/materials/{entry_id}/version').status_code == 403  # Someone else's party.
+
+
+def test_hide_from_the_party_page_confirms_with_a_toast_not_an_error(setup):
+    """Hide on an Original card returns to the party page with a notice, not an "Error" alert."""
+    app, client = setup
+    renderable_party_page(app)
+    entry_id = create_entry(client)
+    assert reveal(client, entry_id, mode='everything').status_code == 302
+    page = client.post(f'/materials/{entry_id}/revoke/1', data={'version': 1, 'return_to': 'party'}, follow_redirects=True).text
+    assert 'class="toast"' in page and 'Hidden from Party 1.' in page
+    assert page.count('Hidden from Party 1.') == 1  # Only the toast: no KW_alert("Error", …) popup.
+    with app.app_context():
+        assert PartyPresentation.query.filter_by(entry_id=entry_id).count() == 0
+
+
+def test_deleting_a_party_version_says_deleted(setup):
+    app, client = setup
+    renderable_party_page(app)
+    entry_id = create_entry(client)
+    assert reveal(client, entry_id, title='Their name', body='Their text').status_code == 302  # A party version.
+    page = client.post(f'/materials/{entry_id}/revoke/1', data={'version': 1, 'return_to': 'party'}, follow_redirects=True).text
+    assert 'Deleted the party version for Party 1.' in page and 'Hidden from Party 1.' not in page
+    with app.app_context():
+        assert PartyPresentation.query.filter_by(entry_id=entry_id).count() == 0
 
 
 def test_party_cards_take_their_picture_from_the_party_text(setup):

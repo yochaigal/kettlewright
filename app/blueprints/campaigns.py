@@ -329,7 +329,7 @@ def edit_party_version(party_id, entry_id):
         db.session.commit()
         notify_parties([party.id])
         flash(_('Saved what %(party)s sees.', party=party.name) if (row.title, row.body) != (entry.title, entry.body)
-              else _('Saved. The text is the same as your original, so it counts as the original.'))
+              else _('Saved. The text is the same as your original, so it counts as the original.'), 'success')
         return back_to_party(party)
     return render_template('campaigns/party_version.html', party=party, entry=entry, row=row)
 
@@ -352,7 +352,7 @@ def hide_campaign(campaign_id, party_id):
     hide_campaign_from(campaign, party.id)
     db.session.commit()
     notify_parties([party.id])
-    flash(_('Everything from %(campaign)s is hidden from %(party)s.', campaign=campaign.name, party=party.name))
+    flash(_('Everything from %(campaign)s is hidden from %(party)s.', campaign=campaign.name, party=party.name), 'success')
     return redirect(url_for('campaigns.wiki', campaign_id=campaign.id))
 
 
@@ -798,7 +798,7 @@ def bulk_reveal():
                     row.drawing = deepcopy(entry.pointcrawl.drawing)
         db.session.commit()
         notify_parties(selected)
-        flash(_('Revealed %(count)s articles.', count=len(entries)))
+        flash(_('Revealed %(count)s articles.', count=len(entries)), 'success')
         return redirect(back_url)
     return render_template('campaigns/reveal_materials.html', entries=entries, parties=parties,
                            reveal_token=signer.dumps(state), back_url=back_url)
@@ -890,9 +890,9 @@ def reveal(entry_id):
         if request.form.get('mode') == 'custom' and (title, body) == (entry.title, entry.body):
             # Party versions are told apart from the original by their text alone.
             flash(_('Revealed to %(party)s. The text is the same as your original, so it counts as the original '
-                    'until you change it.', party=party.name))
+                    'until you change it.', party=party.name), 'success')
         else:
-            flash(_('Revealed to %(party)s.', party=party.name))
+            flash(_('Revealed to %(party)s.', party=party.name), 'success')
         return after_reveal(entry, party.id)
     return render_template('campaigns/reveal.html', entry=entry, reveal_parties=reveal_choices(entry),
                            selected=request.args.get('party_id', ''), return_to=request.args.get('return_to', ''))
@@ -963,15 +963,18 @@ def import_example():
 
 @campaigns.route('/materials/<int:entry_id>/revoke/<int:party_id>', methods=['POST'])
 def revoke(entry_id, party_id):
-    """Hide from a party: its version is deleted. Revealing again starts from the original."""
+    """Hide (an original) or Delete (a party version) for one party: its copy is deleted either way.
+    Revealing again starts from the original."""
     entry = article(entry_id)
     party = party_access(party_id, editing=True)
     row = PartyPresentation.query.filter_by(entry_id=entry.id, party_id=party_id).first_or_404()
     check_version(row, request.form.get('version'))
+    was_version = (row.title, row.body) != (entry.title, entry.body)
     db.session.delete(row)
     db.session.commit()
     notify_parties([party_id])
-    flash(_('Hidden from %(party)s.', party=party.name))
+    flash(_('Deleted the party version for %(party)s.', party=party.name) if was_version
+          else _('Hidden from %(party)s.', party=party.name), 'success')
     return after_reveal(entry, party_id)
 
 

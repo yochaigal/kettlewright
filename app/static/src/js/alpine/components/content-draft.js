@@ -109,6 +109,7 @@ export function revealContent() {
     mapText(){const party=this.current(); return party ? this.labels.map.replace('{points}', party.points).replace('{paths}', party.paths) : '';},
     named(label){const party=this.current(); return party ? label.replace('{party}', party.name) : this.labels.choose;},
     submitLabel(){const party=this.current(); return this.named(party && party.status!=='none' ? this.labels.update : this.labels.reveal);},
-    hideLabel(){return this.named(this.labels.hide);},
+    // A party version is deleted when removed, so say so; an original is only hidden.
+    hideLabel(){const party=this.current(); return this.named(party && party.status==='custom' ? this.labels.delete : this.labels.hide);},
   };
 }
