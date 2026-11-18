@@ -434,7 +434,7 @@ aside:where(.campaign-wiki *), article:where(.campaign-wiki *), header:where(.ca
 .party-notes-head {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem 1rem;margin:1.5em 0 .5em;}
 .party-notes-head .party-section-heading {margin:0;}
 .party-notes {display:grid;gap:.75rem;margin:0 0 1.5em;padding:0;list-style:none;}
-.party-note {display:flex;flex-direction:column;gap:.25rem;padding:.75rem 1rem;border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;background:color-mix(in srgb,var(--fg) 3%,var(--bg));}
+.party-note {display:flex;flex-direction:column;gap:.35rem;padding:.6rem .8rem;font-size:.95em;border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;background:color-mix(in srgb,var(--fg) 3%,var(--bg));transition:border-color .15s;}
 .party-note-title {font-weight:700;color:inherit;}
 .party-note p {margin:0;color:color-mix(in srgb,var(--fg) 75%,var(--bg));}
 .party-notes-empty {color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
@@ -513,3 +513,16 @@ body.dark-mode .kw-action-danger:hover {background:#a33b3b;color:#fff;}
 @media (max-width:600px) {.tree-actions {margin-left:0;}}
 .party-section-hint {display:flex;flex-wrap:wrap;align-items:baseline;gap:.25em .5em;margin:0 0 .75em;}
 .party-section-hint i {opacity:.7;}
+
+/* Party Wiki tab: party notes and revealed articles as small cards. */
+.party-notes {grid-template-columns:repeat(auto-fill,minmax(min(100%,15em),1fr));gap:.6rem;}
+.party-note:hover, #party-content-results .article-tree .tree-node:hover {border-color:var(--fg);}
+.party-note p {display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.party-note-actions {margin-top:auto;padding-top:.25rem;}
+.party-notes-empty {grid-column:1 / -1;}
+#party-content-results .article-tree {display:grid;gap:.5rem;}
+#party-content-results .article-tree .article-tree {margin:.5rem 0 0 .9rem;padding-left:.6rem;}
+#party-content-results .article-tree .tree-node {padding:.6rem .85rem;border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;background:color-mix(in srgb,var(--fg) 3%,var(--bg));transition:border-color .15s;}
+#party-content-results .article-tree .tree-row {flex-wrap:wrap;gap:.35rem .6rem;}
+#party-content-results .article-tree .tree-title {flex:1 1 auto;min-width:0;}
+#party-content-results .article-tree .tree-excerpt {order:10;flex:1 0 100%;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
