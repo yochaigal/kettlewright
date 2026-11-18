@@ -538,6 +538,8 @@ def delete_party(party_id):
         character.party_id = None
         character.party_code = None
 
+    from app.lib.campaigns import delete_party_notes
+    delete_party_notes(party.id)
     db.session.delete(party)
     db.session.commit()
 

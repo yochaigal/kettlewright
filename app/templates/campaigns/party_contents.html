@@ -1,8 +1,16 @@
 {% from 'campaigns/material_tree.html' import tree_toolbar with context %}
-{% from 'campaigns/party_tree.html' import party_children with context %}
+{% from 'campaigns/party_tree.html' import party_children, party_note_cards with context %}
+{# Refreshed live (campaign_live.js): party notes first, then the revealed campaign articles. #}
+{% set notes = entries|selectattr('category', 'equalto', 'party_note')|sort(attribute='id', reverse=true) %}
+{% set revealed = entries|rejectattr('category', 'equalto', 'party_note')|list %}
 <div id="party-content-results">
+{{ party_note_cards(notes) }}
+<h3 class="party-section-heading">{{ _('Revealed articles') }}</h3>
+{% if editing %}<p class="import-hint party-section-hint"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+  {{ _('To reveal an article, open it in Campaigns and choose Reveal to party. Edit here changes only what this party sees.') }}
+  <a href="{{ url_for('campaigns.index') }}">{{ _('Open Campaigns') }}</a></p>{% endif %}
 <div x-data="materialTree">
-{% if entries %}{{ tree_toolbar() }}{{ party_children(hierarchy) }}
+{% if revealed %}{{ tree_toolbar() }}{{ party_children(hierarchy|rejectattr('entry.category', 'equalto', 'party_note')|list) }}
 {% else %}<p>{{ _('Nothing has been revealed yet.') }}</p>{% endif %}
 </div>
 </div>

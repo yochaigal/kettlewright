@@ -72,7 +72,7 @@ export function contentDraft() {
         this.generated.generateChildren=this.generateChildren;this.generated.forestChance=this.forestChance;this.generated.dungeonChance=this.dungeonChance;
         sessionStorage.setItem('kw-content-result',JSON.stringify(this.generated));
         const params=new URLSearchParams({from_tools:'1'});
-        for(const key of ['party_id','campaign_id']){const value=this.formElement.elements[key]?.value;if(value)params.set(key,value);}
+        for(const key of ['campaign_id']){const value=this.formElement.elements[key]?.value;if(value)params.set(key,value);}
         location.href='/materials/generate?'+params;return;
       }
       this.title=this.generated.title; this.body=this.generated.body;
@@ -85,11 +85,30 @@ export function contentDraft() {
     }
   };
 }
+// Reveal popup/page: one party, and what it sees: the original, or a party version written for it.
 export function revealContent() {
   return {
-    rows:[], original:{},
-    init(){this.rows=JSON.parse(this.$el.dataset.rows);this.original=JSON.parse(this.$el.dataset.original);},
-    copyOriginal(row){Object.assign(row,this.original);},
-    copySelected(source){for(const row of this.rows)if(row.selected){row.title=source.title;row.body=source.body;row.path_type=source.path_type;}}
+    parties:[], original:{}, labels:{}, partyId:'', mode:'everything', title:'', body:'', pathType:'standard',
+    init(){
+      const data=this.$el.dataset;
+      this.parties=JSON.parse(data.parties); this.original=JSON.parse(data.original); this.labels=JSON.parse(data.labels);
+      this.partyId=data.selected || (this.parties.length===1 ? String(this.parties[0].id) : '');
+      this.pick();
+      this.$watch('partyId', () => this.pick());
+      // The text editor starts after this component and empties itself: fill it again once it is ready.
+      this.$nextTick(() => this.pick());
+    },
+    current(){return this.parties.find(party => String(party.id)===String(this.partyId));},
+    // A party with its own version opens on it; otherwise on the original, and Party version starts from your text.
+    pick(){
+      const party=this.current();
+      if(party && party.status==='custom'){this.mode='custom'; this.title=party.title; this.body=party.body; this.pathType=party.path_type; return;}
+      this.mode='everything'; this.title=this.original.title; this.body=this.original.body; this.pathType=this.original.path_type;
+    },
+    statusText(){const party=this.current(); return party ? this.labels[party.status] : '';},
+    mapText(){const party=this.current(); return party ? this.labels.map.replace('{points}', party.points).replace('{paths}', party.paths) : '';},
+    named(label){const party=this.current(); return party ? label.replace('{party}', party.name) : this.labels.choose;},
+    submitLabel(){const party=this.current(); return this.named(party && party.status!=='none' ? this.labels.update : this.labels.reveal);},
+    hideLabel(){return this.named(this.labels.hide);},
   };
 }

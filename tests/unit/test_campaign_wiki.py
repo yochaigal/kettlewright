@@ -148,7 +148,7 @@ def test_campaign_cards_open_to_read_and_offer_edit(setup):
     first = card(page)
     assert 'class="campaign-card-title" href="/campaigns/1/wiki/"' in first  # Reading is the default.
     assert 'href="/campaigns/1/"' in first and '>Edit' in first.replace('</i> ', '>')
-    assert '4 articles' in first and 'Party 1, Party 2' in first
+    assert '4 articles' in first and 'Not revealed to any party yet' in first  # Worked out from reveals.
     assert 'data-search="secret campaign ' in first and 'ash guild' in first  # Search finds articles too.
     assert 'campaign-card-placeholder' in first  # No image anywhere yet.
     assert client.get('/campaigns/1/cover').status_code == 404
@@ -217,7 +217,8 @@ def test_cover_is_private_to_the_owner(setup):
 def test_create_dialog_offers_random_generation_with_defaults(setup):
     app, client = setup
     page = client.get('/campaigns/').get_data(as_text=True)
-    dialog = page[page.index('<dialog class="create-dialog"'):page.index('</dialog>')]
+    start = page.index('x-ref="createDialog"')  # The Create new dialog, not the shared confirmation.
+    dialog = page[start:page.index('</dialog>', start)]
     assert 'x-data="newCampaign"' in dialog and 'Generate it randomly' in dialog
     assert '<select name="map_kind" x-model="kind">' in dialog
     assert 'name="poi_count"' in dialog and '<option value="">Random count</option>' in dialog
@@ -306,10 +307,10 @@ def test_owner_reveals_from_the_article_page(setup):
     app, client = setup
     entry = create_entry(client)
     page = wiki(client, entry).get_data(as_text=True)
-    assert f'href="/materials/{entry}/reveal"' in page and 'Reveal to party' in page
-    assert 'Shared · ' not in page
+    assert f'id="reveal-dialog-{entry}"' in page and f'action="/materials/{entry}/reveal"' in page and 'Reveal to party' in page
+    assert 'Revealed · ' not in page
     assert reveal(client, entry).status_code == 302
-    assert 'Shared · 1' in wiki(client, entry).get_data(as_text=True)
+    assert 'Revealed · 1' in wiki(client, entry).get_data(as_text=True)
 
 
 # ----- Players read revealed articles as wiki pages -----
@@ -333,12 +334,46 @@ def test_players_read_only_published_versions(setup):
     assert '← Back to party' in page and 'href="/users/user1/parties/party1/#campaign-details"' in page
 
 
-def test_party_owner_sees_the_private_original_link(setup):
+def test_party_wiki_home_groups_only_revealed_articles(setup):
+    app, client = setup
+    guild, mira, town, relic = build(app, client)
+    empty = client.get('/party/1/wiki/').get_data(as_text=True)
+    assert 'Nothing has been revealed yet.' in empty and '0 articles' in empty
+    assert reveal(client, guild, title='The Guild', body='Bell people.').status_code == 302
+    assert reveal(client, relic, title='A bell', body='It rings.').status_code == 302
+    login(client, 2)
+    page = client.get('/party/1/wiki/').get_data(as_text=True)
+    assert 'class="wiki-layout"' in page and 'id="party-content-results"' in page  # Refreshes live like article pages.
+    assert '2 articles' in page
+    for group in ('Factions', 'Items'):
+        assert f'<h2>{group} <small>1</small></h2>' in page
+    assert f'href="/party/1/materials/{guild}"' in page and 'Bell people.' in page
+    # No private originals, unrevealed articles, campaign cover or Warden tools.
+    for secret in ('Bellmakers', 'Ash Guild', 'Mira', 'Thornwick', 'It rings at dusk', 'Secret campaign',
+                   'wiki-cover', '/edit', 'New article'):
+        assert secret not in page
+    assert 'aria-current="page"' in page  # The sidebar's home link is this page.
+    assert 'href="/users/user1/parties/party1/#campaign-details"' in page  # Back to party.
+
+
+def test_party_wiki_home_links_and_access(setup):
     app, client = setup
     entry = create_entry(client)
     assert reveal(client, entry).status_code == 302
     page = client.get(f'/party/1/materials/{entry}').get_data(as_text=True)
-    assert f'href="/materials/{entry}/edit"' in page and 'Private original' in page
+    assert 'class="wiki-campaign-name" href="/party/1/wiki/"' in page  # Sidebar home is the party wiki.
+    assert '← Back to party' in page and 'href="/users/user1/parties/party1/#campaign-details"' in page
+    login(client, 3)
+    assert client.get('/party/1/wiki/').status_code == 403
+
+
+def test_party_owner_edits_the_party_version_from_the_article(setup):
+    app, client = setup
+    entry = create_entry(client)
+    assert reveal(client, entry).status_code == 302
+    page = client.get(f'/party/1/materials/{entry}').get_data(as_text=True)
+    assert f'href="/party/1/materials/{entry}/version"' in page and 'Edit party version' in page
+    assert f'/materials/{entry}/edit' not in page and 'Private original' not in page
     assert f'/materials/{entry}/reveal' not in page
 
 

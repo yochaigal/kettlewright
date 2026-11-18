@@ -92,32 +92,22 @@ def test_party_members_can_read_and_author_their_own_campaigns(setup):
     assert client.get('/party/1/materials/data').status_code == 403
 
 
-def test_publication_and_direct_creation_support_all_owned_parties(setup):
+def test_publication_supports_all_owned_parties(setup):
     app, client = setup
     entry_id = create_entry(client)
     assert reveal(client, entry_id, party_id=2).status_code == 302
-    assert client.post('/materials/new', data={'party_id': 2, 'category': 'lore',
-        'title': 'New lore', 'body': 'Known lore'}).status_code == 302
-    assert client.post('/maps/new', data={'party_id': 2, 'title': 'New map',
-        'kind': 'freeform'}).status_code == 302
-    assert client.post('/campaigns/1/', data={'name': 'New', 'version': 1,
-                                           'party_ids': [1, 2]}).status_code == 302
     page = client.get(f'/materials/{entry_id}/reveal').text
     assert 'Party 1' in page and 'Party 2' in page and 'Party 3' not in page
     assert reveal(client, entry_id, party_id=3).status_code == 403
-    with app.app_context():
-        assert db.session.get(CampaignParty, (1, 2)) is not None
 
 
-def test_unlinking_any_party_revokes_publications(setup):
+def test_hiding_a_campaign_revokes_publications(setup):
     app, client = setup
     entry_id = create_entry(client)
     assert reveal(client, entry_id, party_id=2).status_code == 302
-    assert client.post('/campaigns/1/', data={'name': 'New', 'version': 1,
-                                           'party_ids': [1]}).status_code == 302
+    assert client.post('/campaigns/1/hide/2').status_code == 302
     with app.app_context():
-        assert db.session.get(CampaignParty, (1, 2)) is None
-        assert not PartyPresentation.query.filter_by(entry_id=entry_id, party_id=2).one().published
+        assert PartyPresentation.query.filter_by(entry_id=entry_id, party_id=2).count() == 0
     login(client, 3)
     assert client.get('/party/2/materials/data').json['entries'] == []
 

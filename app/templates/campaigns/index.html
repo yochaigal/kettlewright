@@ -1,5 +1,5 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token, page_header, delete_dialog with context %}
+{% from 'campaigns/forms.html' import token, page_header with context %}
 {% block workspace %}
 <div x-data="{}">
 {% call page_header(_('Campaigns'), class_='index-header') %}
@@ -36,14 +36,7 @@
 </dialog>
 </div>
 <p>{{ _('Your world at a glance. Open a campaign to read it, or edit it.') }}</p>
-{% set flashed = get_flashed_messages(with_categories=true) %}
-{% for category, message in flashed if category == 'error' %}<p class="import-error" role="alert" tabindex="-1" autofocus>{{ message }}</p>{% endfor %}
-{% set notices = flashed|rejectattr(0, 'equalto', 'error')|list %}
-{% if notices %}<div class="toasts" role="status">
-{% for category, message in notices %}<div class="toast" x-data="{open:true,t:null}" x-show="open" x-init="t=setTimeout(()=>open=false,6000)" @mouseenter="clearTimeout(t)" @focusin="clearTimeout(t)" @mouseleave="clearTimeout(t);t=setTimeout(()=>open=false,3000)" @focusout="clearTimeout(t);t=setTimeout(()=>open=false,3000)"><span>{{ message }}</span><button type="button" class="toast-close" aria-label="{{ _('Dismiss') }}" @click="open=false">×</button></div>
-{% endfor %}</div>{% endif %}
 
-{% set starter_titles = starter|map(attribute='title')|list %}
 {% set available = starter|rejectattr('campaign')|list %}
 {# A gallery: each campaign opens to read; Edit opens the workspace. #}
 <div class="campaign-gallery-page" x-data="materialTree">
@@ -65,15 +58,13 @@
   <div class="campaign-card-body">
     <a class="campaign-card-title" href="{{ url_for('campaigns.wiki', campaign_id=campaign.id) }}">{{ campaign.name }}</a>
     <span class="campaign-card-meta">{{ entries|length }} {{ _('articles') }}</span>
-    <span class="campaign-card-meta">{% for link in campaign.parties %}{{ link.party.name }}{% if not loop.last %}, {% endif %}{% else %}{{ _('No connected parties') }}{% endfor %}</span>
+    <span class="campaign-card-meta">{% if audiences[campaign.id] %}{{ _('Revealed to') }} {{ audiences[campaign.id]|join(', ') }}{% else %}{{ _('Not revealed to any party yet') }}{% endif %}</span>
   </div>
   <div class="campaign-card-actions">
     <a href="{{ url_for('campaigns.wiki', campaign_id=campaign.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read') }}</a>
     <a href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}" aria-label="{{ _('Edit') }}: {{ campaign.name }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
-    {% if campaign.name in starter_titles %}<form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}" @submit.prevent="document.getElementById('delete-{{ campaign.id }}').showModal()">{{ token(campaign.version) }}<button type="submit" class="link-button" title="{{ _('Remove %(title)s', title=campaign.name) }}" aria-label="{{ _('Remove %(title)s', title=campaign.name) }}"><i class="fa-solid fa-trash" aria-hidden="true"></i><span class="sr-only">{{ _('Remove') }}</span></button></form>{% endif %}
   </div>
 </li>
-{% if campaign.name in starter_titles %}{{ delete_dialog(campaign) }}{% endif %}
 {% endfor %}
 </ul>
 {% else %}

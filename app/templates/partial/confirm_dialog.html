@@ -1,0 +1,10 @@
+{# One confirmation dialog per page for forms with data-confirm (confirm-dialog.js). Styles: campaigns.css. #}
+<dialog class="create-dialog confirm-dialog" id="kw-confirm-dialog" role="alertdialog" aria-labelledby="kw-confirm-title" aria-describedby="kw-confirm-message">
+<h2 id="kw-confirm-title">{{ _('Are you sure?') }}</h2>
+<p id="kw-confirm-message" data-confirm-message></p>
+<div class="create-dialog-actions">
+<button type="button" autofocus onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
+<button type="button" class="danger" data-confirm-ok data-default="{{ _('Confirm') }}">{{ _('Confirm') }}</button>
+</div>
+</dialog>
+<script type="module" src="{{ url_for('static', filename='src/js/confirm-dialog.js') }}"></script>

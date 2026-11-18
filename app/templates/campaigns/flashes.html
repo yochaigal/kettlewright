@@ -1,0 +1,7 @@
+{# Messages after an action on any campaign page: errors inline, the rest as toasts. #}
+{% set flashed = get_flashed_messages(with_categories=true) %}
+{% for category, message in flashed if category == 'error' %}<p class="import-error" role="alert" tabindex="-1" autofocus>{{ message }}</p>{% endfor %}
+{% set notices = flashed|rejectattr(0, 'equalto', 'error')|list %}
+{% if notices %}<div class="toasts" role="status">
+{% for category, message in notices %}<div class="toast" x-data="{open:true,t:null}" x-show="open" x-init="t=setTimeout(()=>open=false,6000)" @mouseenter="clearTimeout(t)" @focusin="clearTimeout(t)" @mouseleave="clearTimeout(t);t=setTimeout(()=>open=false,3000)" @focusout="clearTimeout(t);t=setTimeout(()=>open=false,3000)"><span>{{ message }}</span><button type="button" class="toast-close" aria-label="{{ _('Dismiss') }}" @click="open=false">×</button></div>
+{% endfor %}</div>{% endif %}

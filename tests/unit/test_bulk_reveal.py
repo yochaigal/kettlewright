@@ -34,6 +34,18 @@ def test_bulk_reveal_publishes_exact_selection_to_selected_audience(setup):
         assert db.session.get(ContentEntry, child).presentations == []
 
 
+def test_bulk_reveal_shows_originals(setup):
+    app, client = setup
+    first = create_entry(client, title='First', body='First text')
+    preview = prepare(client, [first])
+    page = preview.get_data(as_text=True)
+    assert 'Reveal 1 articles' in page and 'Titles only' not in page and 'Each party sees the originals' in page
+    assert client.post('/materials/bulk-reveal', data={'reveal_token': confirmation(preview), 'party_ids': '1',
+                                                       'mode': 'title'}).status_code == 302  # Mode is ignored.
+    with app.app_context():
+        assert [(row.title, row.body) for row in PartyPresentation.query] == [('First', 'First text')]
+
+
 def test_bulk_reveal_rejects_stale_or_cross_owner_selection(setup):
     app, client = setup
     first = create_entry(client, title='First')

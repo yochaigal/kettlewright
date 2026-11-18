@@ -16,7 +16,7 @@ def test_preview_uses_owner_and_published_party_versions(setup):
     assert private.status_code == 200
     assert 'Private body' in private.get_data(as_text=True)
     assert private.headers['Cache-Control'] == 'private, no-store'
-    assert reveal(client, entry_id, title_1='Published title', body_1='Published body').status_code == 302
+    assert reveal(client, entry_id, title='Published title', body='Published body').status_code == 302
     login(client, 2)
     published = client.get(f'/party/1/materials/{entry_id}/preview')
     assert published.status_code == 200

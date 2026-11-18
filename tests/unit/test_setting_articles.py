@@ -235,14 +235,14 @@ def test_typed_map_roundtrip_and_standalone_path_publication(setup):
     node.update(category='npc',content_changed=True)
     assert client.post(f'/maps/{map_id}/data',data={'graph':json.dumps(graph)}).status_code == 400
     path=create_entry(client,category='path',path_type='hidden')
-    assert reveal(client,path,path_type_1='standard').status_code == 302
+    assert reveal(client,path,path_type='standard').status_code == 302
     login(client,2)
     assert client.get(f'/party/1/materials/{path}').status_code == 200
 
 
 def test_map_draft_children_remain_private_and_form_has_types(setup):
     app,client=setup
-    response=client.post('/maps/new',data={'kind':'realm','party_id':1,'title':'Map',
+    response=client.post('/maps/new',data={'kind':'realm','title':'Map',
         'draft':json.dumps({'nodes':[],'edges':[],'children':draft()})})
     assert response.status_code == 302
     with app.app_context():
@@ -625,19 +625,6 @@ def test_multiple_terrain_landmarks_survive_save_and_respect_publication(setup):
     assert reveal(client,terrain['entry_id'],title='Known hills').status_code == 302
     public = client.get(f'/party/1/maps/{map_id}/data').json
     assert next(node for node in public['nodes'] if node['category']=='landmark')['terrain_id'] == terrain['id']
-
-
-def test_legacy_direct_publish_does_not_publish_new_geography_sections(setup):
-    app, client = setup
-    response = client.post('/maps/new',data={'kind':'realm','party_id':1,'title':'Region',
-        'draft':json.dumps({'nodes':[],'edges':[],'children':realm_geography_draft()})})
-    assert response.status_code == 302
-    graph = graph_from_article(client,response.location)
-    assert graph['nodes'] == []
-    with app.app_context():
-        root = PointcrawlMap.query.filter_by(kind='realm').one()
-        assert len(root.nodes) == 5
-        assert all(not node.entry.presentations for node in root.nodes)
 
 
 def test_empty_campaign_opens_its_workspace_without_a_realm(setup):

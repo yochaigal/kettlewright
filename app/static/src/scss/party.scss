@@ -220,6 +220,8 @@ button.party-section-action { display: inline-flex; align-items: center; gap: .6
 
 }
 #party-form > .party-section, .party-tab-panel > .party-section { padding: 0; }
+.party-section-heading { margin: 0 0 .5em; }
+.party-tab-panel > .party-section:first-child { margin-top: 1em; }
 .party-material-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
 #party-form a.button {
   display: inline-flex;

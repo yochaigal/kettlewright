@@ -6,8 +6,6 @@
 <div data-party-content="{{ party.id }}" data-refresh-url="{{ url_for('campaigns.party_materials_data', party_id=party.id) }}"></div>
 <script type="module" src="{{ url_for('static', filename='src/js/campaign_live.js') }}"></script>
 {% call page_header((party.name|markdown_inline) ~ ' · ' ~ _('Campaign details')) %}<a href="{{ url_for('party.party_view', ownername=party.owner_username or party.party_owner.username, party_url=party.party_url) }}">{{ _('Back to party') }}</a>
-{% if editing %}<a class="button" href="{{ url_for('campaigns.new_entry', party_id=party.id) }}">{{ _('Create and show') }}</a>
-<a href="{{ url_for('campaigns.party_materials', party_id=party.id, preview=1) }}">{{ _('View as party') }}</a>{% endif %}{% endcall %}
-{% if preview %}<p>{{ _('You are viewing only this party’s published knowledge.') }}</p>{% endif %}
+<a class="button" href="{{ url_for('campaigns.party_wiki', party_id=party.id) }}">{{ _('Open party wiki') }}</a>{% endcall %}
 {% include 'campaigns/party_contents.html' %}
 {% endblock %}

@@ -527,6 +527,21 @@ def get_party_data(ownername, party_url):
     return party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party
 
 
+def linked_campaign_cards(party, known):
+    """The Warden's campaigns this party has been shown something from, with how much of each."""
+    from app.lib.campaign_wiki import campaign_entries, cover_image
+    from app.models import Campaign, ContentEntry
+    revealed = {entry['id'] for entry in known}
+    campaign_ids = {row.campaign_id for row in ContentEntry.query.filter(ContentEntry.id.in_(revealed)) if row.campaign_id}
+    cards = []
+    for campaign in Campaign.query.filter(Campaign.id.in_(campaign_ids), Campaign.owner_id == current_user.id):
+        entries = campaign_entries(campaign)
+        cards.append(dict(campaign=campaign, cover=cover_image(campaign, entries) is not None, total=len(entries),
+                          revealed=sum(entry.id in revealed for entry in entries)))
+    return sorted(cards, key=lambda card: card['campaign'].name.casefold())
+
+
+
 # Route: view party page
 @party.route('/users/<ownername>/parties/<party_url>/', methods=['GET'])
 def party_view(ownername, party_url):
@@ -539,14 +554,15 @@ def party_view(ownername, party_url):
     from app.lib.rich_content import content_excerpt
     campaign_enabled = can_view_rolls
     campaign_entries, campaign_hierarchy = party_knowledge_tree(party.id) if campaign_enabled else ([], [])
-    campaign_preview = is_owner and request.args.get('preview') == '1'
+    from app.lib.campaigns import party_versions
+    versions = party_versions(party.id) if campaign_enabled and is_owner else set()
+    linked_campaigns = linked_campaign_cards(party, campaign_entries) if campaign_enabled and is_owner else []
     response = make_response(render_template('main/party_view.html', party_url=party_url, characters=characters, join_code=join_code, is_owner=is_owner,
                            is_subowner=is_subowner, party_id=party.id, ownername=ownername, inventory=inventory, party=party,
                            can_view_rolls=can_view_rolls, roll_form=FlaskForm(), stat_form=FlaskForm(),
                            templates=monster_catalog() if is_owner else {}, form=FlaskForm(),
                            campaign_enabled=campaign_enabled, campaign_entries=campaign_entries,
-                           campaign_hierarchy=campaign_hierarchy, campaign_preview=campaign_preview,
-                           campaign_editing=is_owner and not campaign_preview,
+                           campaign_hierarchy=campaign_hierarchy, linked_campaigns=linked_campaigns, versions=versions,
                            content_categories=CATEGORIES, content_excerpt=content_excerpt,
                            rolls=PartyRoll.latest(party.id, current_user.id) if can_view_rolls else [],
                            online=connected_owners(party, characters),
@@ -720,6 +736,8 @@ def party_delete(party_id):
 
     PartyRoll.query.filter_by(party_id=party.id).delete(synchronize_session=False)
     PartyMap.query.filter_by(party_id=party.id).delete(synchronize_session=False)
+    from app.lib.campaigns import delete_party_notes
+    delete_party_notes(party.id)
     db.session.delete(party)
     db.session.commit()
     

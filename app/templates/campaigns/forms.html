@@ -64,17 +64,74 @@
 <button type="submit"{% if submit_name %} name="{{ submit_name }}" value="{{ submit_value }}"{% endif %}>{{ submit_label }}</button>
 </footer>
 {% endmacro %}
-{% macro delete_dialog(campaign) %}
-<dialog class="create-dialog confirm-dialog" role="alertdialog" id="delete-{{ campaign.id }}" aria-labelledby="delete-title-{{ campaign.id }} delete-name-{{ campaign.id }}" aria-describedby="delete-desc-{{ campaign.id }}">
-<h2 id="delete-title-{{ campaign.id }}">{{ _('Delete campaign?') }}</h2>
-<p id="delete-name-{{ campaign.id }}"><strong>{{ campaign.name }}</strong></p>
-<p id="delete-desc-{{ campaign.id }}">{{ _('Deleting this campaign permanently deletes all its articles, drawings and published party versions. This cannot be undone. Connected parties and their characters are kept.') }}</p>
-<p>{{ _('Articles to delete:') }} {{ campaign.entries|length }}</p>
-<form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}">{{ token(campaign.version) }}
-<div class="create-dialog-actions">
-<button type="button" autofocus onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
-<button type="submit" name="confirm" value="delete" class="danger">{{ _('Delete') }}</button>
+{% macro reveal_status_label(status) %}{{ {'none': _('Not revealed'), 'same': _('Sees the original'),
+  'custom': _('Sees its party version')}[status] }}{% endmacro %}
+{% macro reveal_form(entry, parties, selected='', return_to='', in_dialog=False) %}
+{# Reveal one article to one party: the original, or a version written for them (#reveal).
+   Used by the article and edit pages' Reveal popup, and as a page (party tree). #}
+<form class="reveal-form" method="post" action="{{ url_for('campaigns.reveal', entry_id=entry.id) }}" x-data="revealContent"
+ data-parties="{{ parties|tojson|forceescape }}" data-selected="{{ selected }}"
+ data-original="{{ {'title': entry.title, 'body': entry.body, 'path_type': entry.path_type}|tojson|forceescape }}"
+ data-labels="{{ {'none': _('Not revealed yet.'), 'same': _('Sees the original.'), 'custom': _('Sees its party version.'),
+                  'reveal': _('Reveal to %(party)s', party='{party}'), 'update': _('Update %(party)s', party='{party}'),
+                  'hide': _('Hide from %(party)s', party='{party}'), 'choose': _('Choose a party'),
+                  'map': _('Points of interest revealed: %(points)s of %(total_points)s · Paths: %(paths)s of %(total_paths)s',
+                           points='{points}', paths='{paths}',
+                           total_points=entry.pointcrawl.nodes|length if entry.pointcrawl else 0,
+                           total_paths=entry.pointcrawl.edges|length if entry.pointcrawl else 0)}|tojson|forceescape }}">
+{{ token() }}
+{% for item in parties %}<input type="hidden" name="version_{{ item.id }}" value="{{ item.version }}">{% endfor %}
+{% if return_to %}<input type="hidden" name="return_to" value="{{ return_to }}">{% endif %}
+<label class="reveal-to">{{ _('Reveal to') }}
+<select name="party_ids" x-model="partyId" required>
+  <option value="">{{ _('Choose a party') }}</option>
+  {# Parties already shown something from this campaign first; any other party can be chosen too. #}
+  {% set seen = parties|selectattr('seen')|list %}{% set others = parties|rejectattr('seen')|list %}
+  {% if seen and others %}
+  <optgroup label="{{ _('Already seeing this campaign') }}">{% for item in seen %}<option value="{{ item.id }}">{{ item.name|markdown_inline|striptags }}</option>{% endfor %}</optgroup>
+  <optgroup label="{{ _('Other parties') }}">{% for item in others %}<option value="{{ item.id }}">{{ item.name|markdown_inline|striptags }}</option>{% endfor %}</optgroup>
+  {% else %}{% for item in parties %}<option value="{{ item.id }}">{{ item.name|markdown_inline|striptags }}</option>{% endfor %}{% endif %}
+</select></label>
+<p class="reveal-now" x-show="partyId" x-cloak>
+  <span x-text="statusText()"></span>
+  {% if entry.pointcrawl %}<span x-text="mapText()"></span>{% endif %}
+</p>
+<fieldset class="reveal-modes" :disabled="!partyId">
+<legend>{{ _('What they see') }}</legend>
+<label class="campaign-check reveal-mode"><input type="radio" name="mode" value="everything" x-model="mode">
+  <span><strong>{{ _('Original') }}</strong><small>{{ _('Your title and text, as they are now.') }}</small></span></label>
+<label class="campaign-check reveal-mode"><input type="radio" name="mode" value="custom" x-model="mode">
+  <span><strong>{{ _('Party version') }}</strong><small>{{ _('Written for them. Later edits to your original do not change it.') }}</small></span></label>
+<div class="reveal-custom" x-show="mode === 'custom'" x-cloak>
+  <label>{{ _('Title they see') }}<input type="text" name="title" x-model="title" maxlength="200" :required="mode === 'custom'"></label>
+  {{ rich_editor(_('Text they see'), model='body') }}
+  {% if entry.category == 'path' %}<label>{{ _('Path type they see') }}<select name="path_type" x-model="pathType">{% for kind in path_types %}<option value="{{ kind }}">{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>{% endif %}
+</div>
+<p class="import-hint" x-show="mode === 'custom'" x-cloak>{{ _('Not about this article? Use Add party note on the party’s Wiki tab instead.') }}</p>
+</fieldset>
+{% if entry.pointcrawl %}
+<input type="hidden" name="map_version" value="{{ entry.pointcrawl.version }}">
+<label class="campaign-check"><input type="checkbox" name="publish_drawing" value="1" :disabled="!partyId"> {{ _('Also show the map drawing: every mark, text and image on it') }}</label>
+{% endif %}
+<div class="reveal-buttons">
+  {% if in_dialog %}<button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>{% endif %}
+  <button type="submit" class="reveal-hide" x-show="current() && current().status !== 'none'" x-cloak :form="'revoke-{{ entry.id }}-' + partyId"
+    x-text="hideLabel()"></button>
+  <button type="submit" class="primary reveal-submit" :disabled="!partyId" x-text="submitLabel()">{{ _('Reveal') }}</button>
 </div>
 </form>
+{% for item in parties if item.status != 'none' %}
+<form id="revoke-{{ entry.id }}-{{ item.id }}" method="post" action="{{ url_for('campaigns.revoke', entry_id=entry.id, party_id=item.id) }}" hidden
+ data-confirm="{{ _('Hide this article from %(party)s? What they were shown is deleted.', party=item.name) }}" data-confirm-label="{{ _('Hide') }}">
+{{ token(item.version) }}{% if return_to %}<input type="hidden" name="return_to" value="{{ return_to }}">{% endif %}</form>
+{% endfor %}
+{% endmacro %}
+{% macro reveal_dialog(entry, parties) %}
+<dialog class="create-dialog reveal-dialog" id="reveal-dialog-{{ entry.id }}" aria-labelledby="reveal-dialog-title-{{ entry.id }}">
+<h2 id="reveal-dialog-title-{{ entry.id }}">{{ _('Reveal to party') }}</h2>
+<p class="reveal-article"><strong>{{ entry.title or _('Untitled private original') }}</strong></p>
+{% if parties %}{{ reveal_form(entry, parties, return_to='article', in_dialog=True) }}
+{% else %}<p>{{ _('You have no parties yet. Create one in Parties, then reveal articles to it.') }}</p>
+<div class="create-dialog-actions"><button type="button" onclick="this.closest('dialog').close()">{{ _('Close') }}</button></div>{% endif %}
 </dialog>
 {% endmacro %}

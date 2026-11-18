@@ -108,8 +108,12 @@ def test_only_the_warden_takes_dungeon_actions(party, user_id):
         assert PartyRoll.query.count() == 0
 
 
-def test_dungeon_section_comes_before_wilderness_for_the_warden_only(party):
+def test_procedures_tab_holds_dungeon_then_wilderness_for_the_warden_only(party):
     _, clients = party
     page = clients[1].get('/users/user1/parties/party/').get_data(as_text=True)
-    assert page.index('Dungeon actions') < page.index('Wilderness actions')
-    assert 'Dungeon actions' not in clients[3].get('/users/user1/parties/party/').get_data(as_text=True)
+    panel = page.index('id="procedures" class="party-tab-panel"')
+    assert 'id="procedures-tab"' in page
+    assert panel < page.index('Dungeon actions') < page.index('Wilderness actions') < page.index('id="monsters"')
+    assert page.index('id="characters" class="party-tab-panel"') < panel
+    player = clients[3].get('/users/user1/parties/party/').get_data(as_text=True)
+    assert 'Dungeon actions' not in player and 'id="procedures-tab"' not in player

@@ -11,6 +11,7 @@ from sqlalchemy import event, inspect
 from sqlalchemy.orm import Session
 
 from app.models import db, ContentEntry, PartyPresentation
+from app.lib.content_types import PARTY_NOTE
 
 
 def destination(value):
@@ -97,7 +98,8 @@ def resolve_token(token, source, candidates):
 def bind_references(source, body, previous=None, candidates=None):
     if candidates is None:
         campaign_id = source.campaign.id if source.campaign is not None else source.campaign_id
-        candidates = ContentEntry.query.filter_by(owner_id=source.owner_id, campaign_id=campaign_id).all()
+        candidates = ContentEntry.query.filter_by(owner_id=source.owner_id, campaign_id=campaign_id).filter(
+            ContentEntry.category != PARTY_NOTE).all()
         candidates += [entry for entry in db.session.new if isinstance(entry, ContentEntry)
             and entry.owner_id == source.owner_id and
             (entry.campaign.id if entry.campaign is not None else entry.campaign_id) == campaign_id]
@@ -185,7 +187,8 @@ def reference_urls(body, bindings, entries, party_id=None, link=None):
 
 
 def private_reference_urls(entry):
-    candidates = ContentEntry.query.filter_by(owner_id=entry.owner_id, campaign_id=entry.campaign_id).all()
+    candidates = ContentEntry.query.filter_by(owner_id=entry.owner_id, campaign_id=entry.campaign_id).filter(
+        ContentEntry.category != PARTY_NOTE).all()
     bindings = bind_references(entry, entry.body, entry.references, candidates)
     return reference_urls(entry.body, bindings, {item.id: item for item in candidates})
 
