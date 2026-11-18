@@ -547,3 +547,8 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 /* Campaigns gallery: Unfiled articles heading with Read all / Manage beside it; one small card per article. */
 .campaign-gallery-page .gallery-heading-row {display:flex;flex-wrap:wrap;align-items:center;gap:.5em 1em;margin:1.75em 0 .75em;}
 .campaign-gallery-page .gallery-heading-row .gallery-heading {margin:0;}
+/* Campaigns gallery: Free Starter Adventures beside My campaigns on wide screens, cards stacked in one column. */
+@media (min-width:900px) {
+  .campaign-gallery-page .gallery-top.has-starters {display:grid;grid-template-columns:minmax(0,1fr) minmax(15em,21em);column-gap:2em;align-items:start;}
+  .campaign-gallery-page .gallery-starters .campaign-gallery {grid-template-columns:minmax(0,1fr);}
+}

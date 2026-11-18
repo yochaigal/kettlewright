@@ -45,6 +45,9 @@
 </div>
 <p x-show="filtering && !matches" x-cloak>{{ _('No matching campaigns.') }}</p>
 
+{# Wide screens: My campaigns on the left, Free Starter Adventures in a column on the right. #}
+<div class="gallery-top{% if available %} has-starters{% endif %}">
+<div class="gallery-main">
 <h3 class="gallery-heading">{{ _('My campaigns') }} <small>{{ campaigns|length }}</small></h3>
 {% if campaigns %}
 <ul class="campaign-gallery">
@@ -70,9 +73,10 @@
 {% else %}
 <p class="gallery-empty">{{ _('No campaigns yet.') }} <button type="button" class="link-button" @click="$root.closest('.campaign-workspace').querySelector('.create-dialog').showModal()">{{ _('Create New') }}</button></p>
 {% endif %}
+</div>
 
 {% if available %}
-<section aria-labelledby="starter-heading">
+<section class="gallery-starters" aria-labelledby="starter-heading">
 <h3 id="starter-heading">{{ _('Free Starter Adventures') }}</h3>
 <ul class="campaign-gallery">
 {% for card in available %}
@@ -89,6 +93,7 @@
 </ul>
 </section>
 {% endif %}
+</div>
 
 <div class="gallery-heading-row">
 <h3 class="gallery-heading">{{ _('Unfiled articles') }} <small>{{ unfiled|length }}</small></h3>
