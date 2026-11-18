@@ -124,7 +124,8 @@ def character_section(username, url_name, section):
         'partial/charview/inline_section.html', section=section, editing=editing,
         fields=fields, form=form, errors=errors, character=character, username=username,
         url_name=url_name, is_owner=character.owner == current_user.id, stat_form=FlaskForm(), party=party,
-        party_url=party_url, scarlist=load_scars()))
+        party_url=party_url, scarlist=load_scars(),
+        party_button_oob=section == 'party' and request.method == 'POST' and not errors))
     response.headers['Cache-Control'] = 'no-store'
     if request.method == 'POST' and not errors:
         response.headers['HX-Trigger'] = json.dumps({'character-section-saved': {
@@ -386,7 +387,8 @@ def charedit_rest(username, url_name):
         abort(403)
     setattr(character,"hp",character.hp_max)
     db.session.commit()
-    return render_template('partial/charview/stats.html', user=user, character=character, username=username, url_name=url_name, is_owner=True, stat_form=FlaskForm())
+    return render_template('partial/charview/stats.html', user=user, character=character, username=username, url_name=url_name,
+                           is_owner=current_user.id == character.owner, stat_form=FlaskForm())
 
 
 @character_edit.route('/charedit/<username>/<url_name>/stats', methods=['GET'])
@@ -408,6 +410,33 @@ def character_stat_save(username, url_name):
     if not can_edit_character(character):
         abort(403)
     return save_character_stat(character)
+
+@character_edit.route('/charedit/<username>/<url_name>/roll', methods=['POST'])
+@login_required
+def character_roll(username, url_name):
+    """Dice and saves from the sheet. Plain HTTP, so rolling never depends on the live socket connecting;
+    the party still hears about it over the socket (publish_roll)."""
+    from flask import jsonify
+    from app.lib.character_rolls import roll_character, publish_roll
+    user = User.query.filter_by(username=username).first_or_404()
+    character = Character.query.filter_by(owner=user.id, url_name=url_name).first_or_404()
+    if character.owner != current_user.id:
+        abort(403)
+    if not FlaskForm().validate_on_submit():
+        abort(400)
+    try:
+        result, party = roll_character(current_user.id, character, request.form.get('dice'),
+                                       save=request.form.get('save') or None, label=request.form.get('label'))
+    except ValueError as error:
+        response = jsonify(error=str(error))
+        response.status_code = 400
+    else:
+        db.session.commit()
+        publish_roll(party, character.name, result['result'])
+        response = jsonify(result)
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
 
 # Route: roll omens on omen edit
 @character_edit.route('/charedit/omen-roll/<username>/<url_name>', methods=['POST'])

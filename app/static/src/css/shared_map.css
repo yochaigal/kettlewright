@@ -116,6 +116,29 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 .board-roll-actions button:focus-visible, #board-roll-actor:focus-visible { outline: 2px solid #8278c8; outline-offset: 2px; }
 .board-roll-actions button:disabled { opacity: .45; cursor: default; }
 #board-roll-actor { max-width: 220px; padding: 3px 6px; }
+/* 3D toggle and Minimize (#436, #385): small buttons at the end of the heading. */
+.board-roll-tool { display: inline-flex; align-items: center; gap: 4px; min-height: 26px; padding: 2px 8px; cursor: pointer;
+  border: 1px solid var(--board-border); border-radius: 6px; background: var(--board-bg); color: var(--board-text); font: inherit; }
+.board-roll-tool[hidden] { display: none; }
+.board-roll-tool:hover { border-color: #8278c8; }
+.board-roll-tool:focus-visible { outline: 2px solid #8278c8; outline-offset: 2px; }
+#board-roll-minimize { padding: 2px 7px; }
+/* Minimized: one compact line out of the way, in the corner, still showing the last result. */
+.board-rolls.is-minimized { left: auto; right: 16px; transform: none; padding: 5px 8px; }
+.board-rolls.is-minimized .board-roll-heading { margin-bottom: 0; flex-wrap: nowrap; }
+.board-rolls.is-minimized #board-roll-actions, .board-rolls.is-minimized .board-roll-public,
+.board-rolls.is-minimized #board-roll-actor, .board-rolls.is-minimized #board-roll-3d { display: none; }
+.board-rolls.is-minimized #board-roll-result { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* On-screen roll results (#385), stacked above the roller. */
+.board-roll-osd { position: fixed; z-index: 6; left: 50%; bottom: 130px; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px; width: max-content; max-width: calc(100vw - 32px); pointer-events: none; }
+.board-roll-osd-item { pointer-events: auto; cursor: pointer; padding: 8px 16px; border-radius: 999px;
+  background: #1c1c1ceb; color: #f6f2e8; box-shadow: 0 4px 18px #0004; font: 600 15px/1.35 system-ui, sans-serif;
+  font-variant-numeric: tabular-nums; text-align: center; overflow-wrap: anywhere; animation: board-roll-osd-in .25s ease-out; transition: opacity .4s; }
+body.dark-mode .board-roll-osd-item { background: #e8e2d3f0; color: #141414; }
+.board-roll-osd-item.is-leaving { opacity: 0; }
+@keyframes board-roll-osd-in { from { opacity: 0; transform: translateY(8px) scale(.96); } }
+@media (prefers-reduced-motion: reduce) { .board-roll-osd-item { animation: none; } }
 @media (max-width: 600px) {
   .board-rolls { width: calc(100vw - 16px); max-width: none; padding: 8px; bottom: 60px; }
   .board-roll-actions { gap: 4px; }
@@ -124,4 +147,8 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
   .board-roll-actions[data-mode="warden"] button:nth-last-child(-n+2) { grid-column: span 2; }
   #board-roll-result { flex-basis: 100%; text-align: left; }
   #board-roll-result:empty { display: none; }
+  .board-rolls.is-minimized { width: auto; right: 8px; }
+  .board-rolls.is-minimized #board-roll-result { flex-basis: auto; }
+  .board-roll-osd { bottom: 200px; }
+  .board-rolls.is-minimized ~ .board-roll-osd, .board-roll-osd:has(~ .board-rolls.is-minimized) { bottom: 110px; }
 }

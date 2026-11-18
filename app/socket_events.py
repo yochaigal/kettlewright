@@ -186,8 +186,9 @@ def register_socket_events(socketio):
             if is_companion:
                 result, party = roll_companion(actor, data.get('dice'), expected_party=party_id)
             else:
+                save = data.get('save') if isinstance(data.get('save'), str) else None
                 result, party = roll_character(current_user.id, actor, data.get('dice'),
-                                               expected_party=party_id)
+                                               expected_party=party_id, save=save)
         except (ValueError, PermissionError) as error:
             return {'error': str(error)}
         db.session.commit()

@@ -192,6 +192,40 @@ def test_socket_roll_uses_server_values_and_acknowledges(app, socket_party, monk
         assert PartyRoll.query.one().result == '6, 8 (d6+d8)'
 
 
+@pytest.mark.parametrize('rolled,score,outcome', [
+    (10, 12, 'Success'), (12, 12, 'Success'), (13, 12, 'Failure'),
+    (1, 0, 'Failure'), (20, 25, 'Success'),  # Only the die against the current value counts.
+])
+def test_character_save_rolls_d20_against_current_attribute(app_with_babel, socket_party, monkeypatch, rolled, score, outcome):
+    app = app_with_babel
+    with app.app_context():
+        db.session.get(Character, 1).dexterity = score
+        db.session.commit()
+    monkeypatch.setattr('app.lib.character_rolls.secrets.randbelow', lambda sides: rolled - 1)
+    # The dice sent by the client are ignored: a save is always one d20.
+    result = socket_party[12].emit('roll_dice', {
+        'character_id': 1, 'party_id': 1, 'dice': 'd6+d8', 'save': 'dexterity',
+    }, callback=True)
+    expected = f'{rolled} (d20) · DEX {score} · {outcome}'
+    assert result == {'result': expected, 'values': [rolled], 'sides': [20],
+                      'save': {'stat': 'dexterity', 'label': 'DEX', 'score': score, 'success': outcome == 'Success'}}
+    with app.app_context():
+        assert PartyRoll.query.one().result == expected
+    announced = [event['args'] for event in socket_party[20].get_received() if event['name'] == 'dice_rolled']
+    assert announced == [[f'Player rolled a {expected}']]
+
+
+@pytest.mark.parametrize('save', ['hp', 'gold', ['strength']])
+def test_character_save_rejects_other_fields(app, socket_party, save):
+    result = socket_party[12].emit('roll_dice', {
+        'character_id': 1, 'party_id': 1, 'dice': 'd20', 'save': save,
+    }, callback=True)
+    with app.app_context():
+        rolls = PartyRoll.query.count()
+    # A list is not a save name, so it is ignored and the plain d20 rolls.
+    assert ('error' not in result and rolls == 1) if isinstance(save, list) else ('error' in result and rolls == 0)
+
+
 def test_precomputed_legacy_results_are_rejected(app, socket_party):
     result = socket_party[12].emit('roll_dice', {
         'character_id': 1, 'party_id': 1, 'roll': '20 (d20)',

@@ -15,6 +15,7 @@
             <i class="fa-solid fa-dice dice"></i>
           </button>
           {% include "main/dice_modal.html" %}
+          {% if not generated_preview %}{% include "partial/charview/party_button.html" %}{% endif %}
         </div>
         {% endif %}
       </div>

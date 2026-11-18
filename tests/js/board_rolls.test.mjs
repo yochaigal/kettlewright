@@ -8,18 +8,22 @@ const source = readFileSync(new URL('../../app/static/src/js/maps/board_rolls.js
   .replace(/^import .*;\n/gm, '').replace(/^export /gm, '');
 const tick = () => new Promise(resolve => setImmediate(resolve));
 class Node {
-  constructor(tag = '') {this.tag = tag; this.children = []; this.dataset = {}; this.events = {}; this.checked = true;}
+  constructor(tag = '') {
+    this.tag = tag; this.children = []; this.dataset = {}; this.events = {}; this.checked = true; this.attributes = {};
+    const classes = new Set();
+    this.classList = {toggle: (name, on) => {if (on) classes.add(name); else classes.delete(name);}, contains: name => classes.has(name)};
+  }
   append(...nodes) {this.children.push(...nodes);}
   replaceChildren() {this.children = [];}
   addEventListener(name, fn) {this.events[name] = fn;}
   removeEventListener() {}
-  setAttribute() {}
+  setAttribute(name, value) {this.attributes[name] = value;}
   querySelectorAll() {return this.children.filter(node => node.tag === 'button');}
 }
 const monster = {id: 'companion:7', name: 'Wolf', kind: 'monster', damage: ['d6+d6', 'd8'],
   stats: {strength: 12, dexterity: 9, willpower: null}};
 
-async function setup(warden = true) {
+async function setup(warden = true, {storage = {}, osd = null} = {}) {
   const nodes = new Map(), events = {}, frames = [], requests = [], intervals = [];
   const node = id => {if (!nodes.has(id)) nodes.set(id, new Node()); return nodes.get(id);};
   let roster = warden ? [monster] : [{id: '3', name: 'Ada', kind: 'character'}, {id: '4', name: 'Pip', kind: 'character'}];
@@ -30,7 +34,10 @@ async function setup(warden = true) {
   const document = {hidden: false, getElementById: node, querySelector: () => node('modal-title'),
     querySelectorAll: () => warden ? specials : [], createElement: tag => new Node(tag),
     addEventListener() {}, removeEventListener() {}};
-  const context = vm.createContext({document, actorKey, diceModal: modal, dice3d: {show: async () => false}, FormData: Map, AbortSignal,
+  const dice3d = {enabled: false, show: async () => false, isAvailable: () => true, isEnabled() {return this.enabled;},
+    setEnabled(value) {this.enabled = value;}};
+  const localStorage = {getItem: key => storage[key] ?? null, setItem: (key, value) => {storage[key] = value;}};
+  const context = vm.createContext({document, actorKey, diceModal: modal, dice3d, localStorage, FormData: Map, AbortSignal,
     requestAnimationFrame: fn => {frames.push(fn); return frames.length;}, cancelAnimationFrame() {},
     setInterval(fn) {intervals.push(fn);}, clearInterval() {},
     fetch: async (url, options) => {
@@ -45,10 +52,10 @@ async function setup(warden = true) {
         const update = () => callback(structuredClone(roster));
         events.party_actors_changed = update; events.party_members_changed = update; update(); return () => {};
       }},
-    canRoll: () => allowed, isPlayerPreview: () => preview});
+    canRoll: () => allowed, isPlayerPreview: () => preview, osd});
   const draw = () => frames.splice(0).forEach(fn => fn());
   await tick(); draw();
-  return {controller, node, requests, modal, specials, events, draw,
+  return {controller, node, requests, modal, specials, events, draw, dice3d, storage,
     button: label => node('board-roll-actions').children.find(child => child.ariaLabel === label),
     select(value) {selected = value; controller.redraw(); draw();},
     setRoster(value) {roster = value;}, setPost(fn) {post = fn;},
@@ -143,4 +150,53 @@ test('pending rolls prevent duplicates, preview hides the roller and revoked act
     player.setRoster([]); player.events.party_members_changed({party_id: 1}); await tick(); player.draw();
     assert.ok(player.node('board-roll-actions').children.every(button => button.disabled));
   } finally {player.controller.destroy();}
+});
+
+test('minimize keeps only the heading and is remembered (#385)', async () => {
+  const s = await setup();
+  try {
+    const minimize = s.node('board-roll-minimize');
+    Object.assign(minimize.dataset, {minimize: 'Minimize', expand: 'Show'});
+    assert.equal(s.node('board-rolls').classList.contains('is-minimized'), false);
+    minimize.events.click();
+    assert.equal(s.node('board-rolls').classList.contains('is-minimized'), true);
+    assert.equal(minimize.attributes['aria-expanded'], 'false');
+    assert.equal(minimize.attributes['aria-label'], 'Show');
+    assert.equal(s.storage['board-rolls-minimized'], 'on');
+    minimize.events.click();
+    assert.equal(s.node('board-rolls').classList.contains('is-minimized'), false);
+    assert.equal(s.storage['board-rolls-minimized'], 'off');
+  } finally {s.controller.destroy();}
+  const again = await setup(true, {storage: {'board-rolls-minimized': 'on'}});
+  try {assert.equal(again.node('board-rolls').classList.contains('is-minimized'), true);
+  } finally {again.controller.destroy();}
+});
+
+test('the 3D toggle switches the whiteboard\'s own 3D dice choice (#436)', async () => {
+  const s = await setup();
+  try {
+    const toggle = s.node('board-roll-3d');
+    assert.equal(toggle.hidden, false);
+    assert.equal(toggle.attributes['aria-pressed'], 'false');
+    toggle.events.click();
+    assert.equal(s.dice3d.enabled, true);
+  } finally {s.controller.destroy();}
+});
+
+test('own rolls go on screen once settled and their socket echo is recognised (#385)', async () => {
+  const calls = [];
+  const osd = {hold: () => calls.push(['hold']), release: (...args) => calls.push(['release', ...args]),
+    own: (...args) => calls.push(['own', ...args])};
+  const s = await setup(true, {osd});
+  try {
+    s.button('d6').events.click(); await tick();
+    assert.deepEqual(calls, [['hold'], ['release', 'Warden', 'A result'], ['own', 'Warden', 'A result']]);
+    calls.length = 0;
+    s.setPost(async () => ({ok: false}));
+    s.button('d6').events.click(); await tick();
+    assert.deepEqual(calls, [['hold'], ['release', null, undefined]]);
+    calls.length = 0;
+    await s.modal.roll('d8');  // The dice modal shows its own result.
+    assert.deepEqual(calls.map(call => call[0]), ['hold', 'release']);
+  } finally {s.controller.destroy();}
 });

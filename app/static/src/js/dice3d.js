@@ -34,19 +34,36 @@ function isAvailable() {
   return webgl && !reducedMotion?.matches;
 }
 
-/** The viewer's own choice, remembered in this browser; on unless turned off. */
-function isEnabled() {
+// A page can keep its own choice (#436): the whiteboard can show 3D dice while they stay off everywhere
+// else. Until the viewer chooses on that page, it follows the site-wide choice.
+let scope = null;
+
+function stored(key) {
   try {
-    return localStorage.getItem(PREFERENCE) !== 'off';
+    return localStorage.getItem(key);
   } catch (_) {
-    return true;
+    return null;
   }
 }
 
+/** Use this page's own preference, e.g. setScope('whiteboard'), for every roll on the page. */
+function setScope(name) {
+  scope = name || null;
+}
+
+/** The viewer's own choice, remembered in this browser; on unless turned off. */
+function isEnabled() {
+  const choice = (scope && stored(`${PREFERENCE}:${scope}`)) || stored(PREFERENCE);
+  return choice !== 'off';
+}
+
 function setEnabled(enabled) {
-  try { localStorage.setItem(PREFERENCE, enabled ? 'on' : 'off'); } catch (_) { /* Optional preference. */ }
+  const key = scope ? `${PREFERENCE}:${scope}` : PREFERENCE;
+  try { localStorage.setItem(key, enabled ? 'on' : 'off'); } catch (_) { /* Optional preference. */ }
   if (!enabled) clear();
   else preload();
+  // Keep every toggle on the page (the dice modal's, the whiteboard's) in step.
+  window.dispatchEvent(new CustomEvent('dice3d-preference', {detail: {enabled}}));
 }
 
 function getStage() {
@@ -183,4 +200,4 @@ document.addEventListener('keyup', event => {
   if (event.code === 'Escape' && !animating && stage?.classList.contains('is-rolling')) clear();
 });
 
-export default {show, preload, isAvailable, isEnabled, setEnabled, notation};
+export default {show, preload, isAvailable, isEnabled, setEnabled, setScope, notation};

@@ -283,8 +283,8 @@ def hide_campaign_from(campaign, party_id):
 
 
 def back_to_party(party):
-    from app.lib.campaign_wiki import party_url
-    return redirect(party_url(party))
+    """Party notes and party versions live in the party wiki (#440): back there after a change."""
+    return redirect(url_for('campaigns.party_wiki', party_id=party.id))
 
 
 # ----- Party notes: written on the party page, for that party only -----
@@ -351,8 +351,6 @@ def delete_party_note(party_id, entry_id):
     db.session.commit()
     notify_parties([party.id])
     flash(_('Party note deleted.'), 'success')
-    if request.form.get('return_to') == 'wiki':
-        return redirect(url_for('campaigns.party_wiki', party_id=party.id))
     return back_to_party(party)
 
 
@@ -467,22 +465,20 @@ def library():
 
 @campaigns.route('/party/<int:party_id>/materials/')
 def party_materials(party_id):
-    """The party's Campaign tab content; the party page refreshes from it as the Warden reveals."""
-    party = party_access(party_id)
-    from app.lib.campaigns import party_knowledge_tree, party_versions
-    entries, hierarchy = party_knowledge_tree(party.id)
-    editing = party.owner == current_user.id
-    return render_template('campaigns/party.html', party=party, entries=entries, hierarchy=hierarchy, editing=editing,
-                           versions=party_versions(party.id) if editing else set())
+    """The party's old Wiki tab: everything it held is in the party wiki now (#440)."""
+    party_access(party_id)
+    return redirect(url_for('campaigns.party_wiki', party_id=party_id))
 
 
 @campaigns.route('/party/<int:party_id>/wiki/')
 def party_wiki(party_id):
-    """The party's revealed articles read as a wiki: the home page, grouped by type."""
+    """Everything the party knows, read as a wiki: party notes, then revealed articles by type.
+    The Warden also adds party notes here and sees the campaigns behind it."""
     from app.lib.campaign_wiki import party_context
     party = party_access(party_id)
     return render_template('campaigns/wiki.html', graph=None, pointcrawl=None, editing=False, embedded=True,
-                           nested_maps=[], locations=[], **party_context(party, owner_view=party.owner == current_user.id))
+                           nested_maps=[], locations=[],
+                           **party_context(party, owner_view=party.owner == current_user.id, owner_id=current_user.id))
 
 
 @campaigns.route('/party/<int:party_id>/materials/data')
@@ -869,12 +865,9 @@ def reveal_choices(entry):
 
 
 def after_reveal(entry, party_id):
-    """Back where the action started: the article (default), the party's Wiki tab, or its party wiki."""
-    if request.values.get('return_to') == 'wiki':
+    """Back where the action started: the article (default) or the party wiki ('party' is its old name)."""
+    if request.values.get('return_to') in ('wiki', 'party'):
         return redirect(url_for('campaigns.party_wiki', party_id=party_id))
-    if request.values.get('return_to') == 'party':
-        from app.lib.campaign_wiki import party_url
-        return redirect(party_url(db.session.get(Party, party_id)))
     return redirect(read_url(entry))
 
 

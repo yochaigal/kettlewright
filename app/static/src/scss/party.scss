@@ -858,7 +858,6 @@ pointer-events: none;
   .companion-compact .companion-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
-#party-form .party-campaign-panel { width: 100%; max-width: none; padding: 1.5rem 0 0; }
 
 // Party storage: container tabs on the left, the ground pile set apart on the right.
 .inventory-header:has(.inventory-ground-tab) {

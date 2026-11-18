@@ -30,7 +30,7 @@
         {% if tag.startswith('d') and it.dice|length > 0 and is_owner and (not companion_sheet or can_roll) %}
         <button type="button" class="slot-tag slot-damage" title="{{_('Roll dice')}}"
           aria-label="{{_('Roll dice')}}: {{item_name}}"
-          onclick="KW_rollDiceCallback({{ '[4]' if character.panicked else it.dice }})">{{tag | tr}}</button>
+          onclick="KW_rollDiceCallback({{ '[4]' if character.panicked else it.dice }}, {{ item_name|striptags|tojson|forceescape }})">{{tag | tr}}</button>
         {% else %}
         <span class="slot-tag {% if 'Armor' in tag and not it.get('armor_active', it.name != 'Sloth-Tarp') %}slot-tag-inactive{% endif %}">
           {% if 'Armor' in tag %}<i class="fa-solid fa-shield-halved" aria-hidden="true"></i> {% if 'bonus defense' in it.tags %}+{% endif %}{% endif %}{{tag | tr}}

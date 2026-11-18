@@ -70,6 +70,8 @@ def test_campaigns_page_offers_every_adventure_without_adding_any(user):
     assert page.count('class="starter-icon"') == COUNT and page.count('target="_blank" rel="noopener"') == 2 * COUNT  # Title and cover
     assert 'Read on Cairn' not in page
     assert '<h3 id="starter-heading">Free Starter Adventures</h3>' in page and 'class="campaign-gallery starter-carousel"' in page
+    # At the bottom of the gallery, after your own campaigns and unfiled articles.
+    assert page.index('My campaigns') < page.index('Unfiled articles') < page.index('id="starter-heading"')
     # A carousel: arrows, a count and one dot per adventure.
     assert 'aria-label="Next adventure"' in page and page.count('cairnrpg.com/adventures/first-party/img/') >= COUNT  # Covers.
     dots = page.split('class="starter-carousel-dots"')[1].split('</span>')[0]

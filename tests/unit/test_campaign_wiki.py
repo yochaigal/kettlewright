@@ -343,7 +343,7 @@ def test_players_read_only_published_versions(setup):
     # The bell's published [[link]] and its related link both point here.
     assert 'Linked from' in page and f'href="/party/1/materials/{relic}"' in page
     assert f'/materials/{guild}/edit' not in page and '/reveal' not in page  # No Warden tools for players.
-    assert '← Back to party' in page and 'href="/users/user1/parties/party1/#campaign-details"' in page
+    assert '← Back to party' in page and 'href="/users/user1/parties/party1/"' in page
 
 
 def test_party_wiki_home_groups_only_revealed_articles(setup):
@@ -365,7 +365,7 @@ def test_party_wiki_home_groups_only_revealed_articles(setup):
                    'wiki-cover', '/edit', 'New article'):
         assert secret not in page
     assert 'aria-current="page"' in page  # The sidebar's home link is this page.
-    assert 'href="/users/user1/parties/party1/#campaign-details"' in page  # Back to party.
+    assert 'href="/users/user1/parties/party1/"' in page  # Back to party.
 
 
 def test_party_wiki_gives_the_warden_edit_hide_and_delete(setup):
@@ -400,7 +400,7 @@ def test_party_wiki_home_links_and_access(setup):
     assert reveal(client, entry).status_code == 302
     page = client.get(f'/party/1/materials/{entry}').get_data(as_text=True)
     assert 'class="wiki-campaign-name" href="/party/1/wiki/"' in page  # Sidebar home is the party wiki.
-    assert '← Back to party' in page and 'href="/users/user1/parties/party1/#campaign-details"' in page
+    assert '← Back to party' in page and 'href="/users/user1/parties/party1/"' in page
     login(client, 3)
     assert client.get('/party/1/wiki/').status_code == 403
 

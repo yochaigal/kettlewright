@@ -79,7 +79,8 @@ def test_party_members_can_read_and_author_their_own_campaigns(setup):
     entry_id = create_entry(client)
     assert reveal(client, entry_id).status_code == 302
     login(client, 2)
-    page = client.get('/party/1/materials/')
+    assert client.get('/party/1/materials/').location == '/party/1/wiki/'  # The old Wiki tab (#440).
+    page = client.get('/party/1/wiki/')
     assert page.status_code == 200
     assert 'href="/campaigns/"' in page.text
     assert 'href="/materials/new' not in page.text
@@ -144,10 +145,9 @@ def test_navigation_and_tools_are_released(setup):
         db.session.commit()
     page = client.get('/users/user1/parties/party1/')
     assert page.status_code == 200
-    for link in ('/campaigns/', '/party/1/shared-map', '/materials/new'):
+    for link in ('/campaigns/', '/party/1/shared-map', '/party/1/wiki/'):
         assert f'href="{link}' in page.text
-    assert 'id="campaign-details-tab"' in page.text
-    assert 'data-content-url="/party/1/materials/?preview=0"' in page.text
+    assert 'id="party-wiki-link"' in page.text
     for visitor in (client, app.test_client()):
         tools = visitor.get('/tools/').text
         assert 'src/js/tools.js' in tools

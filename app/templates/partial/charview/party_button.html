@@ -1,0 +1,38 @@
+{# Next to the dice: the character's party, in a dialog. In a party: go to it or leave it. Without one:
+   join with a code. Re-sent out of band (hx-swap-oob) whenever the Party section changes. #}
+{% set section_url = url_for('character_edit.character_section', username=username, url_name=url_name, section='party') %}
+<span id="character-party-slot" class="character-party-slot"{% if oob %} hx-swap-oob="true"{% endif %}>
+  <button type="button" class="button dice-button character-party-button" id="character-party-button"
+     aria-haspopup="dialog" aria-controls="character-party-dialog"
+     title="{{ _('Party: %(name)s', name=party.name|striptags) if party else _('Join a party') }}"
+     aria-label="{{ _('Party: %(name)s', name=party.name|striptags) if party else _('Join a party') }}">
+    <i class="fa-solid fa-{{ 'users' if party else 'user-plus' }}" aria-hidden="true"></i></button>
+  <dialog class="character-party-dialog" id="character-party-dialog" aria-labelledby="character-party-title">
+    <form method="post" hx-post="{{ section_url }}" hx-target="#character-party-container" hx-disabled-elt="#character-party-dialog button">
+      {{ stat_form.csrf_token(id='character-party-csrf') if stat_form.csrf_token is defined else '' }}
+      {% if party %}
+      <h3 id="character-party-title">{{ _('Party') }}</h3>
+      <p class="character-party-name"><strong>{{ party.name|markdown_inline }}</strong></p>
+      <input type="hidden" name="leave_party" value="1">
+      <p class="character-party-error red-text" role="alert"></p>
+      <div class="row8 character-party-actions">
+        <button type="submit" class="button" data-party-leave
+                data-confirm-text="{{ _('Leave %(name)s?', name=party.name|striptags) }}">{{ _('Leave party') }}</button>
+        <button type="button" class="button" data-party-cancel>{{ _('Cancel') }}</button>
+        <a class="button character-party-go" href="/{{ party_url }}"><i class="fa-solid fa-users" aria-hidden="true"></i> {{ _('Go to party') }}</a>
+      </div>
+      {% else %}
+      <h3 id="character-party-title">{{ _('Join a party') }}</h3>
+      <label for="character-join-code">{{ _('Party Code') }}</label>
+      <input type="text" id="character-join-code" name="party_code" maxlength="32" required autocomplete="off"
+             placeholder="{{ _('join code') }}">
+      <p class="character-party-hint">{{ _('Ask your Warden for the party’s join code.') }}</p>
+      <p class="character-party-error red-text" role="alert"></p>
+      <div class="row8 character-party-actions">
+        <button type="button" class="button" data-party-cancel>{{ _('Cancel') }}</button>
+        <button type="submit" class="button">{{ _('Join') }}</button>
+      </div>
+      {% endif %}
+    </form>
+  </dialog>
+</span>

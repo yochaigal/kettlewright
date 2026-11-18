@@ -54,9 +54,13 @@
 {% macro article_cards(items) %}
 <ul class="wiki-cards">
 {% for item in items %}
+{% set kind = warden_kinds.get(item.id) if party and warden_kinds is defined else none %}
 <li class="wiki-card">
+  {# Party pictures come from what the party was shown (party_entry_image), never the private original. #}
+  {% if party and item.has_image %}<a class="wiki-card-picture" href="{{ page_url(item.id) }}" tabindex="-1" aria-hidden="true"><img src="{{ url_for('campaigns.party_entry_image', party_id=party.id, entry_id=item.id) }}" alt="" loading="lazy"></a>{% endif %}
   <a href="{{ page_url(item.id) }}">{{ article_title(item) }}</a>
-  <span class="wiki-badges"><span class="wiki-badge">{{ type_label(item) }}</span>{% if item.is_heart %}<span class="wiki-badge wiki-badge-heart">{{ _('Heart') }}</span>{% endif %}</span>
+  <span class="wiki-badges"><span class="wiki-badge">{{ type_label(item) }}</span>{% if item.is_heart %}<span class="wiki-badge wiki-badge-heart">{{ _('Heart') }}</span>{% endif %}
+  {% if kind in ('original', 'version') %}<span class="wiki-badge wiki-badge-warden" title="{{ _('Only you see this label') }}">{{ _('Party version') if kind == 'version' else _('Original') }}</span>{% endif %}</span>
   {% set summary = content_excerpt(item.body, 160) %}{% if summary %}<p>{{ summary }}</p>{% endif %}
   {{ warden_actions(item) }}
 </li>
@@ -123,20 +127,34 @@
           {% endif %}
           <a class="button wiki-edit" href="{{ edit_url }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit party version') if party and entry.category != 'party_note' else _('Edit') }}</a>
           {% if move_campaigns %}
-          {# Unfiled articles only: file this one (and its sub-articles) under a campaign. #}
-          <form class="wiki-move" method="post" action="{{ url_for('campaigns.move_entry', entry_id=entry.id) }}">
-            {{ content_form.csrf_token }}<input type="hidden" name="version" value="{{ entry.version }}">
-            <label class="sr-only" for="wiki-move-campaign">{{ _('Campaign') }}</label>
-            <select id="wiki-move-campaign" name="campaign_id" required>
-              {% for option in move_campaigns %}<option value="{{ option.id }}">{{ option.name }}</option>{% endfor %}
-            </select>
-            <button type="submit" class="button wiki-edit"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> {{ _('Move to campaign') }}</button>
-          </form>
+          {# Unfiled articles only: choose the campaign in a dialog, so nothing suggests it is already in one. #}
+          <button type="button" class="button wiki-edit" aria-haspopup="dialog" aria-controls="move-dialog-{{ entry.id }}"
+                  onclick="document.getElementById('move-dialog-{{ entry.id }}').showModal()"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> {{ _('Move to campaign') }}</button>
           {% endif %}
         </div>
         {% endif %}
       </header>
       {% if not party and edit_url %}{{ reveal_dialog(entry, reveal_parties) }}{% endif %}
+      {% if move_campaigns %}
+      <dialog class="create-dialog move-dialog" id="move-dialog-{{ entry.id }}" aria-labelledby="move-dialog-title-{{ entry.id }}">
+        <h2 id="move-dialog-title-{{ entry.id }}">{{ _('Move to campaign') }}</h2>
+        <p class="reveal-article"><strong>{{ article_title(entry) }}</strong></p>
+        <form method="post" action="{{ url_for('campaigns.move_entry', entry_id=entry.id) }}">
+          {{ content_form.csrf_token }}<input type="hidden" name="version" value="{{ entry.version }}">
+          <fieldset class="move-choices">
+            <legend>{{ _('Choose a campaign') }}</legend>
+            {% for option in move_campaigns %}
+            <label class="move-choice"><input type="radio" name="campaign_id" value="{{ option.id }}" required> <span>{{ option.name }}</span></label>
+            {% endfor %}
+          </fieldset>
+          <p class="import-hint">{{ _('The article and its sub-articles move into the campaign and leave Unfiled articles.') }}</p>
+          <div class="create-dialog-actions">
+            <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
+            <button type="submit" class="primary">{{ _('Move') }}</button>
+          </div>
+        </form>
+      </dialog>
+      {% endif %}
 
       <div class="wiki-body">
         <div class="wiki-content">
@@ -169,6 +187,24 @@
       {# Outside the refreshed content: a live update must not reload the drawing. #}
       {% if graph and party %}{% include 'campaigns/map_panel.html' %}{% endif %}
     {% else %}
+      {% if party and owner_view %}
+      {# Outside the refreshed content (campaign_live.js), so a live update cannot wipe a draft. #}
+      <dialog class="create-dialog party-note-dialog" id="party-note-dialog" aria-labelledby="party-note-title">
+        <h2 id="party-note-title">{{ _('Add party note') }}</h2>
+        <form method="post" action="{{ url_for('campaigns.add_party_note', party_id=party.id) }}">
+          {{ content_form.csrf_token }}
+          <label for="party-note-name">{{ _('Title') }}</label>
+          <input type="text" id="party-note-name" name="title" required maxlength="200" autocomplete="off">
+          <label for="party-note-body">{{ _('Text') }}</label>
+          <textarea id="party-note-body" name="body" rows="6" maxlength="50000"></textarea>
+          <p class="import-hint">{{ _('Every member of this party can read it. It is not added to any campaign.') }}</p>
+          <div class="create-dialog-actions">
+            <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
+            <button type="submit" class="primary">{{ _('Add note') }}</button>
+          </div>
+        </form>
+      </dialog>
+      {% endif %}
       <div id="party-content-results">
       {% if cover %}<div class="wiki-cover"><img src="{{ url_for('campaigns.campaign_cover', campaign_id=campaign.id) }}" alt="" data-cover></div>{% endif %}
       <header class="wiki-header">
@@ -184,6 +220,11 @@
              title="{{ _('Export includes private articles, maps, drawings and article links. Markdown image URLs are kept as references. Party publications and connections are not exported.') }}"><i class="fa-solid fa-file-export" aria-hidden="true"></i> {{ _('Export') }}</a>
           {% endif %}
           <a class="button wiki-edit" href="{{ home_edit_url }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+        </div>
+        {% elif party and owner_view %}
+        <div class="wiki-actions">
+          <button type="button" class="button wiki-edit" aria-haspopup="dialog" aria-controls="party-note-dialog"
+                  onclick="document.getElementById('party-note-dialog').showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('Add party note') }}</button>
         </div>
         {% endif %}
       </header>
@@ -208,6 +249,14 @@
         {% else %}<p class="wiki-empty">{{ _('No party has been shown anything from this campaign yet. Use Reveal to party on an article.') }}</p>{% endif %}
       </section>
       {% endif %}
+      {% if party and party_notes is defined and (party_notes or owner_view) %}
+      {# Party notes (#440): quick notes the Warden writes for this party only. They are not in any campaign. #}
+      <section class="wiki-related wiki-party-notes" aria-labelledby="wiki-party-notes-title">
+        <h2 id="wiki-party-notes-title">{{ _('Party notes') }} {% if party_notes %}<small>{{ party_notes|length }}</small>{% endif %}</h2>
+        {% if owner_view %}<p class="wiki-audience-hint">{{ _('Quick notes for this party only, like rumours or what happened at the table. Every member can read them. They are not part of any campaign.') }}</p>{% endif %}
+        {% if party_notes %}{{ article_cards(party_notes) }}{% else %}<p class="wiki-empty">{{ _('No party notes yet.') }}</p>{% endif %}
+      </section>
+      {% endif %}
       {% if intro %}
       <div class="wiki-content wiki-intro">
         <div class="rich-content">{{ render_content(intro.body, references) }}</div>
@@ -226,9 +275,33 @@
         {{ article_cards(items) }}
       </section>
       {% else %}
-      {% if party %}<p class="wiki-empty">{{ _('Nothing has been revealed yet.') }}</p>
+      {% if party %}{% if owner_view or not party_notes %}<p class="wiki-empty">{{ _('Nothing has been revealed yet.') }}</p>{% endif %}
       {% else %}<p class="wiki-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', campaign_id=campaign.id if campaign else '') }}">{{ _('New article') }}</a></p>{% endif %}
       {% endfor %}
+      {% if party and owner_view %}
+      {# The Warden's own campaigns behind this party, as in the Campaigns gallery. Players never see originals. #}
+      <section class="wiki-related party-linked-campaigns" aria-labelledby="wiki-linked-title">
+        <h2 id="wiki-linked-title">{{ _('Campaigns revealed to this party') }}</h2>
+        {% if linked_campaigns %}
+        <ul class="campaign-gallery">
+        {% for item in linked_campaigns %}{% set linked = item.campaign %}
+          <li class="campaign-card">
+            <a class="campaign-card-cover" href="{{ url_for('campaigns.wiki', campaign_id=linked.id) }}" tabindex="-1" aria-hidden="true">
+              {% if item.cover %}<img src="{{ url_for('campaigns.campaign_cover', campaign_id=linked.id) }}" alt="" loading="lazy" data-cover>
+              {% else %}<span class="campaign-card-placeholder">{{ linked.name[:1]|upper }}</span>{% endif %}
+            </a>
+            <div class="campaign-card-body">
+              <a class="campaign-card-title" href="{{ url_for('campaigns.wiki', campaign_id=linked.id) }}">{{ linked.name }}</a>
+              <span class="campaign-card-meta">{{ _('%(revealed)s of %(total)s articles revealed', revealed=item.revealed, total=item.total) }}</span>
+            </div>
+          </li>
+        {% endfor %}
+        </ul>
+        {% else %}
+        <p class="party-campaign-empty">{{ _('Nothing from your campaigns has been revealed to this party yet. Use Reveal to party on an article in Campaigns.') }} <a href="{{ url_for('campaigns.index') }}">{{ _('Open Campaigns') }}</a></p>
+        {% endif %}
+      </section>
+      {% endif %}
       </div>
     {% endif %}
     </article>
