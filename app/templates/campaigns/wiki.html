@@ -142,7 +142,7 @@
       {% if graph and party %}{% include 'campaigns/map_panel.html' %}{% endif %}
     {% else %}
       <div id="party-content-results">
-      {% if cover %}<img class="wiki-cover" src="{{ url_for('campaigns.campaign_cover', campaign_id=campaign.id) }}" alt="">{% endif %}
+      {% if cover %}<div class="wiki-cover"><img src="{{ url_for('campaigns.campaign_cover', campaign_id=campaign.id) }}" alt="" data-cover></div>{% endif %}
       <header class="wiki-header">
         <div>
           <h1>{{ home_title }}</h1>

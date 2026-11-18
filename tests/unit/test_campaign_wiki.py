@@ -175,7 +175,7 @@ def test_cover_prefers_the_front_page(setup):
     assert response.status_code == 302 and '/material-images/1/' in response.location
     assert client.get(response.location).status_code == 200
     home = wiki(client).get_data(as_text=True)
-    assert 'class="wiki-cover" src="/campaigns/1/cover"' in home
+    assert '<div class="wiki-cover"><img src="/campaigns/1/cover"' in home
 
 
 def test_older_inline_images_are_served_as_files(setup):
@@ -217,7 +217,8 @@ def test_cover_is_private_to_the_owner(setup):
 def test_create_dialog_offers_random_generation_with_defaults(setup):
     app, client = setup
     page = client.get('/campaigns/').get_data(as_text=True)
-    dialog = page[page.index('<dialog class="create-dialog"'):page.index('</dialog>')]
+    start = page.index('x-ref="createDialog"')  # The Create new dialog, not the shared confirmation.
+    dialog = page[start:page.index('</dialog>', start)]
     assert 'x-data="newCampaign"' in dialog and 'Generate it randomly' in dialog
     assert '<select name="map_kind" x-model="kind">' in dialog
     assert 'name="poi_count"' in dialog and '<option value="">Random count</option>' in dialog
