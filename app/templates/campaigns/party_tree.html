@@ -1,11 +1,17 @@
-{# Party Wiki tab: party notes and revealed articles as small cards, like the campaign
-   cards but smaller: picture (if the party's text has one), title and the Warden's buttons.
-   Pictures come from what the party was shown (party_entry_image), never the original. #}
-{% macro party_card(entry, search) %}
+{# Party Wiki tab: party notes and revealed articles as small cards, like the campaign cards
+   but smaller and all the same size: picture or placeholder, the Warden's Original / Party
+   version tag, title and buttons. Pictures come from what the party was shown
+   (party_entry_image), never the original. #}
+{% macro party_card(entry, search, tag=None, icon=None) %}
 {% set url = url_for('campaigns.party_entry', party_id=party.id, entry_id=entry.id) %}
 <li class="party-card" data-tree-row data-search="{{ search|lower }}">
 <div class="party-card-inner" data-tree-key="entry-{{ entry.id }}">
-  {% if entry.has_image %}<a class="party-card-cover" href="{{ url }}" tabindex="-1" aria-hidden="true"><img src="{{ url_for('campaigns.party_entry_image', party_id=party.id, entry_id=entry.id) }}" alt="" loading="lazy" data-cover></a>{% endif %}
+  {# Every card has the same picture area: the party's picture, or a placeholder. #}
+  <a class="party-card-cover" href="{{ url }}" tabindex="-1" aria-hidden="true">
+    {% if entry.has_image %}<img src="{{ url_for('campaigns.party_entry_image', party_id=party.id, entry_id=entry.id) }}" alt="" loading="lazy" data-cover>
+    {% else %}<span class="party-card-placeholder">{% if icon %}<i class="fa-solid fa-{{ icon }}"></i>{% else %}{{ (entry.title|striptags)[:1]|upper }}{% endif %}</span>{% endif %}
+  </a>
+  {% if tag %}<span class="party-card-tag" title="{{ _('Only you see this label') }}">{{ tag }}</span>{% endif %}
   <a class="party-card-title" href="{{ url }}">{{ entry.title|markdown_inline }}</a>
   {% if editing %}<span class="party-card-actions kw-actions">{{ caller() }}</span>{% endif %}
 </div>
@@ -24,7 +30,8 @@
 {% macro party_article_cards(items) %}
 {% for item in items %}
 {% set entry = item.entry %}
-{% call party_card(entry, entry.title ~ ' ' ~ _(content_categories.get(entry.category, entry.category)) ~ ' ' ~ content_excerpt(entry.body)) %}
+{% call party_card(entry, entry.title ~ ' ' ~ _(content_categories.get(entry.category, entry.category)) ~ ' ' ~ content_excerpt(entry.body),
+                   tag=(_('Party version') if entry.id in versions else _('Original')) if editing else None) %}
 {% if entry.id in versions %}<a class="kw-action" href="{{ url_for('campaigns.edit_party_version', party_id=party.id, entry_id=entry.id) }}" title="{{ _('Edit what this party sees') }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>{% endif %}
 {{ hide_form(entry) }}
 {% endcall %}
@@ -39,7 +46,7 @@
 {% macro party_note_cards(notes) %}
 <ul class="party-cards party-notes">
 {% for note in notes %}
-{% call party_card(note, note.title ~ ' ' ~ content_excerpt(note.body)) %}
+{% call party_card(note, note.title ~ ' ' ~ content_excerpt(note.body), icon='note-sticky') %}
 <a class="kw-action" href="{{ url_for('campaigns.edit_party_note', party_id=party.id, entry_id=note.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
 <form method="post" action="{{ url_for('campaigns.delete_party_note', party_id=party.id, entry_id=note.id) }}"
       data-confirm="{{ _('Delete this party note? The party will no longer see it.') }}" data-confirm-label="{{ _('Delete') }}">

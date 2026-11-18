@@ -295,7 +295,8 @@ def test_party_tree_labels_edits_and_hides_party_versions(setup):
     entry_id = create_entry(client)  # SECRET NAME / SECRET BODY
     assert reveal(client, entry_id, mode='everything').status_code == 302
     html = client.get('/party/1/materials/').text
-    assert 'class="party-card"' in html and 'party-card-cover' not in html  # Small card; no picture in this text.
+    assert 'class="party-card"' in html and 'party-card-placeholder' in html  # Same-size card; placeholder picture.
+    assert 'class="party-card-tag"' in html and '>Original</span>' in html
     assert f'href="/party/1/materials/{entry_id}/version"' not in html  # No Edit on the original: that is in Campaigns.
     assert f'/party/1/materials/{entry_id}/version' not in client.get(f'/party/1/materials/{entry_id}').text
     assert f'action="/materials/{entry_id}/revoke/1"' in html and ' Hide</button>' in html
@@ -312,7 +313,7 @@ def test_party_tree_labels_edits_and_hides_party_versions(setup):
         assert (row.title, row.body) == ('The guildmaster', 'Polite')
         assert db.session.get(ContentEntry, entry_id).title == 'SECRET NAME'  # The original is unchanged.
     html = client.get('/party/1/materials/').text
-    assert f'href="/party/1/materials/{entry_id}/version"' in html  # A party version: Edit appears.
+    assert f'href="/party/1/materials/{entry_id}/version"' in html and '>Party version</span>' in html  # Edit appears.
 
     # Back to the original from the same page.
     page = client.get(f'/party/1/materials/{entry_id}/version').text
@@ -331,7 +332,7 @@ def test_party_cards_take_their_picture_from_the_party_text(setup):
     entry_id = create_entry(client, body=f'Secret ![map]({png})')
     assert reveal(client, entry_id, body='Told without a picture').status_code == 302
     html = client.get('/party/1/materials/').text
-    assert 'party-card-cover' not in html  # The original's picture never leaks into the card.
+    assert '/image"' not in html  # The original's picture never leaks into the card.
     assert client.get(f'/party/1/materials/{entry_id}/image').status_code == 404
     assert reveal(client, entry_id, version=1, body=f'Seen: ![sketch]({png})').status_code == 302
     html = client.get('/party/1/materials/').text
