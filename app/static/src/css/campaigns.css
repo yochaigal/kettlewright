@@ -544,3 +544,6 @@ body.dark-mode .kw-action-danger:hover {background:#a33b3b;color:#fff;}
 .kw-action.wiki-danger:hover {border-color:#a33b3b;background:#a33b3b;color:#fff;}
 body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {color:#e08080;border-color:color-mix(in srgb,#e08080 55%,var(--bg));}
 .wiki-card-actions {position:relative;z-index:1;margin-top:.5em;}
+/* Campaigns gallery: Unfiled articles heading with Read all / Manage beside it; one small card per article. */
+.campaign-gallery-page .gallery-heading-row {display:flex;flex-wrap:wrap;align-items:center;gap:.5em 1em;margin:1.75em 0 .75em;}
+.campaign-gallery-page .gallery-heading-row .gallery-heading {margin:0;}

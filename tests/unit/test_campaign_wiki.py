@@ -296,7 +296,19 @@ def test_gallery_and_editors_link_unfiled_reading(setup):
     app, client = setup
     note = unfiled(client)
     page = client.get('/campaigns/').get_data(as_text=True)
-    assert 'class="campaign-card-title" href="/materials/wiki/"' in page and 'href="/materials/"' in page
+    # One small card per unfiled article, opening it to read; Read all and Manage beside the heading.
+    assert f'class="pw-card-title" href="/materials/wiki/{note}/"' in page and f'href="/materials/{note}/edit"' in page
+    assert 'href="/materials/wiki/"' in page and 'href="/materials/"' in page
+    assert client.get(f'/materials/{note}/image').status_code == 404  # No picture: placeholder card.
+    pictured = create_entry(client, campaign_id='', title='Pictured', body='![map](https://cairnrpg.com/adventures/first-party/img/cas-1/Dunston.webp)')
+    page = client.get('/campaigns/').get_data(as_text=True)
+    assert f'src="/materials/{pictured}/image"' in page
+    assert client.get(f'/materials/{pictured}/image').location.startswith('https://cairnrpg.com/')
+    client.post('/party/1/notes', data={'title': 'Hidden note', 'body': '![x](https://cairnrpg.com/a.webp)'})
+    from app.models import ContentEntry
+    with app.app_context():
+        hidden = ContentEntry.query.filter_by(category='party_note').one().id
+    assert client.get(f'/materials/{hidden}/image').status_code == 404 and 'Hidden note' not in page  # Party notes stay out.
     assert 'href="/materials/wiki/"' in client.get('/materials/').get_data(as_text=True)
     assert f'href="/materials/wiki/{note}/"' in client.get(f'/materials/{note}/edit').get_data(as_text=True)
 

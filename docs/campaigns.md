@@ -147,3 +147,5 @@ Generated Realm, Faction, POI, Terrain, Landmark, Water and Path names use the f
 ## Creating new items
 
 **Create New** on the Campaigns page opens a dialog with a Campaign / Note switch and a name field. **Campaign** creates the campaign and continues to its creation page; **Note** opens the New article form with the name as the title and the type set to Notes. The Unfiled articles row is shown muted, without a chevron, until there is at least one unfiled article.
+
+The Campaigns page shows each unfiled article as its own small card (its first picture or a placeholder, the title and **Edit**); the card opens it to read. **Read all** and **Manage** beside the **Unfiled articles** heading open the unfiled wiki and the Unfiled articles page for bulk changes.

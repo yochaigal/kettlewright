@@ -90,21 +90,29 @@
 </section>
 {% endif %}
 
+<div class="gallery-heading-row">
 <h3 class="gallery-heading">{{ _('Unfiled articles') }} <small>{{ unfiled|length }}</small></h3>
+{% if unfiled %}<span class="kw-actions">
+  <a class="kw-action" href="{{ url_for('campaigns.unfiled_wiki') }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read all') }}</a>
+  <a class="kw-action" href="{{ url_for('campaigns.library') }}" title="{{ _('Organize, reveal or delete several at once') }}"><i class="fa-solid fa-list" aria-hidden="true"></i> {{ _('Manage') }}</a>
+</span>{% endif %}
+</div>
 {% if unfiled %}
-<ul class="campaign-gallery">
-<li class="campaign-card" data-tree-row data-search="unfiled articles {{ unfiled|map(attribute='title')|join(' ')|lower }}">
-  <a class="campaign-card-cover" href="{{ url_for('campaigns.unfiled_wiki') }}" tabindex="-1" aria-hidden="true"><span class="campaign-card-placeholder"><i class="fa-solid fa-note-sticky" aria-hidden="true"></i></span></a>
-  <div class="campaign-card-body">
-    <a class="campaign-card-title" href="{{ url_for('campaigns.unfiled_wiki') }}">{{ _('Unfiled articles') }}</a>
-    <span class="campaign-card-meta">{{ unfiled|length }} {{ _('articles') }}</span>
-    <span class="campaign-card-meta">{{ _('Articles outside any campaign appear here.') }}</span>
-  </div>
-  <div class="campaign-card-actions">
-    <a href="{{ url_for('campaigns.unfiled_wiki') }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read') }}</a>
-    <a href="{{ url_for('campaigns.library') }}" aria-label="{{ _('Edit') }}: {{ _('Unfiled articles') }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
-  </div>
+{# One small card per unfiled article (same cards as the party's notes and revealed articles):
+   the card opens it to read, Edit opens the editor. #}
+<ul class="pw-cards gallery-unfiled-cards">
+{% for entry in unfiled %}{% set url = url_for('campaigns.unfiled_wiki', entry_id=entry.id) %}
+<li class="pw-card" data-tree-row data-search="unfiled {{ (entry.title ~ ' ' ~ _(content_categories.get(entry.category, entry.category)))|lower }}">
+<div class="pw-card-inner">
+  <a class="pw-card-cover" href="{{ url }}" tabindex="-1" aria-hidden="true">
+    {% if entry.id in unfiled_images %}<img src="{{ url_for('campaigns.entry_image', entry_id=entry.id) }}" alt="" loading="lazy" data-cover>
+    {% else %}<span class="pw-card-placeholder">{{ (entry.title or '?')[:1]|upper }}</span>{% endif %}
+  </a>
+  <a class="pw-card-title" href="{{ url }}">{{ entry.title or _('Untitled private original') }}</a>
+  <span class="pw-card-actions kw-actions"><a class="kw-action" href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}" aria-label="{{ _('Edit') }}: {{ entry.title }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a></span>
+</div>
 </li>
+{% endfor %}
 </ul>
 {% else %}<p class="gallery-unfiled" data-tree-row data-search="unfiled articles"><span class="tree-empty-title">{{ _('Articles outside any campaign appear here.') }}</span></p>{% endif %}
 </div>
