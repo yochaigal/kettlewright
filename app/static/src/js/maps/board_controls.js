@@ -19,6 +19,8 @@ export function setupBoardControls({config, getApi, canEdit}) {
   document.getElementById('cancel-reveal-stats')?.addEventListener('click', () => finishReveal());
   document.getElementById('confirm-reveal-stats')?.addEventListener('click', () => finishReveal(true));
   frame.addEventListener('load', () => {
+    // Both: board-embedded on <html> makes <body> the scroll container (modals.scss, #407).
+    frame.contentDocument?.documentElement.classList.add('board-embedded');
     frame.contentDocument?.body.classList.add('board-embedded');
     frame.contentDocument?.addEventListener('dragstart', event => {
       const portrait = event.target.closest('[data-party-actor]');

@@ -876,6 +876,11 @@ body.board-embedded {
   nav[aria-label="main navigation"] { display: none; }
   .body-container { margin: 0; padding: 8px; }
 }
+/* Pages shown in the whiteboard's party panel (an iframe) scroll inside <body>, never the
+   iframe's own document. iOS Safari otherwise pins position: fixed modals to the top of the
+   whole embedded page, so an item modal opened lower down appears out of view (#407). */
+html.board-embedded { height: 100%; overflow: hidden; }
+html.board-embedded body.board-embedded { box-sizing: border-box; height: 100%; margin: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
 
 .monsters-sheet {
   box-sizing: border-box;
