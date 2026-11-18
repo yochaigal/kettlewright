@@ -536,3 +536,31 @@ body.dark-mode .kw-action-danger:hover {background:#a33b3b;color:#fff;}
 .party-notes-empty {grid-column:1 / -1;color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
 @media (max-width:480px) {.pw-cards {grid-template-columns:repeat(2,minmax(0,1fr));} .pw-card {width:auto;}}
 @media (pointer:coarse) {.pw-card-actions .kw-action {min-height:2.6em;}}
+/* Party wiki, Warden only: Edit / Hide / Delete in the article header and on article cards. */
+.campaign-wiki .wiki-actions form {display:inline-flex;margin:0;padding:0;border:0;background:none;width:auto;}
+.wiki-edit.wiki-danger {border-color:#a33b3b;color:#a33b3b;}
+.wiki-edit.wiki-danger:hover {background:#a33b3b;color:#fff;}
+.kw-action.wiki-danger {border-color:color-mix(in srgb,#a33b3b 55%,var(--bg));color:#a33b3b;}
+.kw-action.wiki-danger:hover {border-color:#a33b3b;background:#a33b3b;color:#fff;}
+body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {color:#e08080;border-color:color-mix(in srgb,#e08080 55%,var(--bg));}
+.wiki-card-actions {position:relative;z-index:1;margin-top:.5em;}
+/* Campaigns gallery: Unfiled articles heading with Read all / Manage beside it; one small card per article. */
+.campaign-gallery-page .gallery-heading-row {display:flex;flex-wrap:wrap;align-items:center;gap:.5em 1em;margin:1.75em 0 .75em;}
+.campaign-gallery-page .gallery-heading-row .gallery-heading {margin:0;}
+/* Campaigns gallery: Free Starter Adventures beside My campaigns on wide screens, cards stacked in one column. */
+@media (min-width:900px) {
+  .campaign-gallery-page .gallery-top.has-starters {display:grid;grid-template-columns:minmax(0,1fr) minmax(15em,21em);column-gap:2em;align-items:start;}
+}
+/* Free Starter Adventures carousel: one card per view, snapping, with a cover like the campaign cards.
+   Arrows framing the dots below, so the heading lines up with My campaigns. */
+.starter-carousel-nav {display:flex;align-items:center;justify-content:center;gap:.75em;margin:.75em 0 0;}
+.starter-carousel-arrow {display:inline-flex;align-items:center;justify-content:center;width:2em;height:2em;min-width:0;max-width:none;margin:0;padding:0;border:1px solid color-mix(in srgb,var(--fg) 30%,var(--bg));border-radius:50%;background:transparent;color:var(--fg);font:inherit;font-size:.9em;cursor:pointer;transition:background .15s,color .15s;}
+.starter-carousel-arrow:hover {background:var(--fg);color:var(--bg);}
+.starter-carousel-arrow:focus-visible, .starter-carousel-dots button:focus-visible {outline:2px solid var(--fg);outline-offset:2px;}
+.campaign-gallery-page .gallery-starters .starter-carousel {display:flex;gap:1em;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;scrollbar-width:none;}
+.campaign-gallery-page .gallery-starters .starter-carousel::-webkit-scrollbar {display:none;}
+.campaign-gallery-page .gallery-starters .starter-carousel > li {flex:0 0 100%;scroll-snap-align:start;}
+.starter-carousel-dots {display:inline-flex;align-items:center;gap:.5em;}
+.starter-carousel-dots button {width:.6em;height:.6em;min-width:0;max-width:none;margin:0;padding:0;border:0;border-radius:50%;background:color-mix(in srgb,var(--fg) 25%,var(--bg));cursor:pointer;}
+.starter-carousel-dots button[aria-current="true"] {background:var(--fg);}
+@media (pointer:coarse) {.starter-carousel-dots button {width:.8em;height:.8em;}}

@@ -121,9 +121,11 @@ document.addEventListener('pointermove', event => {
     targetSlot(Number(row.dataset.slot) + Math.min(Number(row.dataset.span) - 1,
       Math.floor((event.clientX - rect.left) / (rect.width / Number(row.dataset.span)))));
   }
-  // Let long inventories scroll while dragging near the viewport edges.
-  if (event.clientY < 60) window.scrollBy(0, -12);
-  else if (event.clientY > window.innerHeight - 60) window.scrollBy(0, 12);
+  // Let long inventories scroll while dragging near the viewport edges. In the whiteboard's
+  // party panel the page scrolls inside <body>, not the window (#407).
+  const scroller = document.documentElement.classList.contains('board-embedded') ? document.body : window;
+  if (event.clientY < 60) scroller.scrollBy(0, -12);
+  else if (event.clientY > window.innerHeight - 60) scroller.scrollBy(0, 12);
 });
 document.addEventListener('pointerup', event => {
   if (!pointer || event.pointerId !== pointer.id) return;

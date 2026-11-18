@@ -45,6 +45,9 @@
 </div>
 <p x-show="filtering && !matches" x-cloak>{{ _('No matching campaigns.') }}</p>
 
+{# Wide screens: My campaigns on the left, Free Starter Adventures in a column on the right. #}
+<div class="gallery-top{% if available %} has-starters{% endif %}">
+<div class="gallery-main">
 <h3 class="gallery-heading">{{ _('My campaigns') }} <small>{{ campaigns|length }}</small></h3>
 {% if campaigns %}
 <ul class="campaign-gallery">
@@ -70,13 +73,19 @@
 {% else %}
 <p class="gallery-empty">{{ _('No campaigns yet.') }} <button type="button" class="link-button" @click="$root.closest('.campaign-workspace').querySelector('.create-dialog').showModal()">{{ _('Create New') }}</button></p>
 {% endif %}
+</div>
 
 {% if available %}
-<section aria-labelledby="starter-heading">
+{# A carousel: one adventure at a time; arrows, dots, or swipe (native scroll snapping). #}
+<section class="gallery-starters" aria-labelledby="starter-heading" aria-roledescription="{{ _('carousel') }}"
+ x-data="{i: 0, n: {{ available|length }},
+          go(k) { this.i = (k + this.n) % this.n; $refs.track.scrollTo({left: $refs.track.clientWidth * this.i, behavior: 'smooth'}); },
+          sync() { this.i = Math.round($refs.track.scrollLeft / $refs.track.clientWidth); }}">
 <h3 id="starter-heading">{{ _('Free Starter Adventures') }}</h3>
-<ul class="campaign-gallery">
+<ul class="campaign-gallery starter-carousel" x-ref="track" @scroll.debounce.100ms="sync()">
 {% for card in available %}
 <li class="campaign-card campaign-card-starter" data-tree-row data-search="{{ card.title|lower }}">
+  {% if card.cover %}<a class="campaign-card-cover" href="{{ card.url }}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="{{ card.cover }}" alt="" loading="lazy" data-cover></a>{% endif %}
   <div class="campaign-card-body">
     <a class="campaign-card-title" id="starter-{{ card.slug }}" href="{{ card.url }}" target="_blank" rel="noopener">{{ card.title }} <svg class="starter-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr-only"> {{ _('(opens cairnrpg.com in a new tab)') }}</span></a>
     <span class="campaign-card-meta">{{ card.description }}</span>
@@ -87,24 +96,38 @@
 </li>
 {% endfor %}
 </ul>
+{% if available|length > 1 %}<div class="starter-carousel-nav">
+  <button type="button" class="starter-carousel-arrow" @click="go(i - 1)" aria-label="{{ _('Previous adventure') }}"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+  <span class="starter-carousel-dots">{% for card in available %}<button type="button" @click="go({{ loop.index0 }})" :aria-current="i === {{ loop.index0 }}" aria-label="{{ _('Show %(title)s', title=card.title) }}"></button>{% endfor %}</span>
+  <button type="button" class="starter-carousel-arrow" @click="go(i + 1)" aria-label="{{ _('Next adventure') }}"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+</div>{% endif %}
 </section>
 {% endif %}
+</div>
 
+<div class="gallery-heading-row">
 <h3 class="gallery-heading">{{ _('Unfiled articles') }} <small>{{ unfiled|length }}</small></h3>
+{% if unfiled %}<span class="kw-actions">
+  <a class="kw-action" href="{{ url_for('campaigns.unfiled_wiki') }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read all') }}</a>
+  <a class="kw-action" href="{{ url_for('campaigns.library') }}" title="{{ _('Organize, reveal or delete several at once') }}"><i class="fa-solid fa-list" aria-hidden="true"></i> {{ _('Manage') }}</a>
+</span>{% endif %}
+</div>
 {% if unfiled %}
-<ul class="campaign-gallery">
-<li class="campaign-card" data-tree-row data-search="unfiled articles {{ unfiled|map(attribute='title')|join(' ')|lower }}">
-  <a class="campaign-card-cover" href="{{ url_for('campaigns.unfiled_wiki') }}" tabindex="-1" aria-hidden="true"><span class="campaign-card-placeholder"><i class="fa-solid fa-note-sticky" aria-hidden="true"></i></span></a>
-  <div class="campaign-card-body">
-    <a class="campaign-card-title" href="{{ url_for('campaigns.unfiled_wiki') }}">{{ _('Unfiled articles') }}</a>
-    <span class="campaign-card-meta">{{ unfiled|length }} {{ _('articles') }}</span>
-    <span class="campaign-card-meta">{{ _('Articles outside any campaign appear here.') }}</span>
-  </div>
-  <div class="campaign-card-actions">
-    <a href="{{ url_for('campaigns.unfiled_wiki') }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read') }}</a>
-    <a href="{{ url_for('campaigns.library') }}" aria-label="{{ _('Edit') }}: {{ _('Unfiled articles') }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
-  </div>
+{# One small card per unfiled article (same cards as the party's notes and revealed articles):
+   the card opens it to read, Edit opens the editor. #}
+<ul class="pw-cards gallery-unfiled-cards">
+{% for entry in unfiled %}{% set url = url_for('campaigns.unfiled_wiki', entry_id=entry.id) %}
+<li class="pw-card" data-tree-row data-search="unfiled {{ (entry.title ~ ' ' ~ _(content_categories.get(entry.category, entry.category)))|lower }}">
+<div class="pw-card-inner">
+  <a class="pw-card-cover" href="{{ url }}" tabindex="-1" aria-hidden="true">
+    {% if entry.id in unfiled_images %}<img src="{{ url_for('campaigns.entry_image', entry_id=entry.id) }}" alt="" loading="lazy" data-cover>
+    {% else %}<span class="pw-card-placeholder">{{ (entry.title or '?')[:1]|upper }}</span>{% endif %}
+  </a>
+  <a class="pw-card-title" href="{{ url }}">{{ entry.title or _('Untitled private original') }}</a>
+  <span class="pw-card-actions kw-actions"><a class="kw-action" href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}" aria-label="{{ _('Edit') }}: {{ entry.title }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a></span>
+</div>
 </li>
+{% endfor %}
 </ul>
 {% else %}<p class="gallery-unfiled" data-tree-row data-search="unfiled articles"><span class="tree-empty-title">{{ _('Articles outside any campaign appear here.') }}</span></p>{% endif %}
 </div>

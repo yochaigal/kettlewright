@@ -25,6 +25,32 @@
 {% endfor %}
 {% endmacro %}
 
+{# Party wiki, Warden only: Edit / Delete for party notes and party versions, Hide for originals.
+   Same rules and confirmations as the party's Wiki tab; afterwards back to the party wiki. #}
+{% macro warden_actions(item, header=False) %}
+{% set kind = warden_kinds.get(item.id) if party and warden_kinds is defined else none %}
+{% if kind %}
+{% set button = 'button wiki-edit' if header else 'kw-action' %}
+<span class="{{ 'wiki-actions' if header else 'kw-actions wiki-card-actions' }}">
+  {% if kind == 'note' %}<a class="{{ button }}" href="{{ url_for('campaigns.edit_party_note', party_id=party.id, entry_id=item.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+  {% elif kind == 'version' %}<a class="{{ button }}" href="{{ url_for('campaigns.edit_party_version', party_id=party.id, entry_id=item.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit party version') if header else _('Edit') }}</a>{% endif %}
+  {% if kind == 'note' %}
+  <form method="post" action="{{ url_for('campaigns.delete_party_note', party_id=party.id, entry_id=item.id) }}"
+        data-confirm="{{ _('Delete this party note? The party will no longer see it.') }}" data-confirm-label="{{ _('Delete') }}">
+  {% else %}
+  <form method="post" action="{{ url_for('campaigns.revoke', entry_id=item.id, party_id=party.id) }}"
+        {% if kind == 'version' %}data-confirm="{{ _('Delete this party version? The party will no longer see this article. Your original is not changed.') }}" data-confirm-label="{{ _('Delete') }}"
+        {% else %}data-confirm="{{ _('Hide this article from the party? They will no longer see it. Your original is not changed.') }}" data-confirm-label="{{ _('Hide') }}"{% endif %}>
+    <input type="hidden" name="version" value="{{ item.version }}">
+  {% endif %}
+    {{ content_form.csrf_token }}<input type="hidden" name="return_to" value="wiki">
+    {% if kind == 'original' %}<button type="submit" class="{{ button }} wiki-danger"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> {{ _('Hide') }}</button>
+    {% else %}<button type="submit" class="{{ button }} wiki-danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> {{ _('Delete') }}</button>{% endif %}
+  </form>
+</span>
+{% endif %}
+{% endmacro %}
+
 {% macro article_cards(items) %}
 <ul class="wiki-cards">
 {% for item in items %}
@@ -32,6 +58,7 @@
   <a href="{{ page_url(item.id) }}">{{ article_title(item) }}</a>
   <span class="wiki-badges"><span class="wiki-badge">{{ type_label(item) }}</span>{% if item.is_heart %}<span class="wiki-badge wiki-badge-heart">{{ _('Heart') }}</span>{% endif %}</span>
   {% set summary = content_excerpt(item.body, 160) %}{% if summary %}<p>{{ summary }}</p>{% endif %}
+  {{ warden_actions(item) }}
 </li>
 {% endfor %}
 </ul>
@@ -88,6 +115,7 @@
           <span class="wiki-badges"><span class="wiki-badge">{{ type_label(entry) }}</span>{% if entry.is_heart %}<span class="wiki-badge wiki-badge-heart">{{ _('Heart') }}</span>{% endif %}
           {% if not party %}{% set shared = entry.presentations|selectattr('published')|list %}{% if shared %}<span class="wiki-badge" title="{{ _('Parties that can read their version of this article') }}">{{ _('Revealed') }} · {{ shared|length }}</span>{% endif %}{% endif %}</span>
         </div>
+        {% if party %}{{ warden_actions(entry, header=True) }}{% endif %}
         {% if edit_url %}
         <div class="wiki-actions">
           {% if not party %}

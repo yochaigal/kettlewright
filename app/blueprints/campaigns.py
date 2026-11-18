@@ -187,7 +187,7 @@ def index():
     if request.method == 'POST':
         return start_campaign(text_value(request.form.get('name'), 200, True), request.form.get('start'),
                               request.form.get('kind'), request.form)
-    from app.lib.campaign_wiki import cover_image
+    from app.lib.campaign_wiki import cover_image, first_image
     campaigns_list = my_campaigns()
     entries = library_entries().order_by(ContentEntry.title).all()
     by_campaign = {campaign.id: [e for e in entries if e.campaign_id == campaign.id] for campaign in campaigns_list}
@@ -198,7 +198,9 @@ def index():
         starter=starter_cards({c.name: c for c in campaigns_list}),
         articles=by_campaign,
         covers={campaign.id: cover_image(campaign, by_campaign[campaign.id]) is not None for campaign in campaigns_list},
-        unfiled=[e for e in entries if e.campaign_id is None])
+        unfiled=[e for e in entries if e.campaign_id is None],
+        # Unfiled articles are shown one card each, with their first picture when they have one.
+        unfiled_images={e.id for e in entries if e.campaign_id is None and first_image(e.body)})
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/cover')
@@ -222,6 +224,13 @@ def card_image(url):
         response = redirect(url)
     response.headers['X-Content-Type-Options'] = 'nosniff'  # Caching follows the blueprint: private, no-store.
     return response
+
+
+@campaigns.route('/materials/<int:entry_id>/image')
+def entry_image(entry_id):
+    """An article card's picture, for its owner: the first image in the article."""
+    from app.lib.campaign_wiki import first_image
+    return card_image(first_image(article(entry_id).body))
 
 
 @campaigns.route('/party/<int:party_id>/materials/<int:entry_id>/image')
@@ -341,6 +350,9 @@ def delete_party_note(party_id, entry_id):
     db.session.delete(entry)
     db.session.commit()
     notify_parties([party.id])
+    flash(_('Party note deleted.'), 'success')
+    if request.form.get('return_to') == 'wiki':
+        return redirect(url_for('campaigns.party_wiki', party_id=party.id))
     return back_to_party(party)
 
 
@@ -857,7 +869,9 @@ def reveal_choices(entry):
 
 
 def after_reveal(entry, party_id):
-    """Back where the Reveal popup was opened: the article (default) or the party's Wiki tab."""
+    """Back where the action started: the article (default), the party's Wiki tab, or its party wiki."""
+    if request.values.get('return_to') == 'wiki':
+        return redirect(url_for('campaigns.party_wiki', party_id=party_id))
     if request.values.get('return_to') == 'party':
         from app.lib.campaign_wiki import party_url
         return redirect(party_url(db.session.get(Party, party_id)))
