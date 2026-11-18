@@ -81,17 +81,11 @@
  x-data="{i: 0, n: {{ available|length }},
           go(k) { this.i = (k + this.n) % this.n; $refs.track.scrollTo({left: $refs.track.clientWidth * this.i, behavior: 'smooth'}); },
           sync() { this.i = Math.round($refs.track.scrollLeft / $refs.track.clientWidth); }}">
-<div class="starter-carousel-head">
 <h3 id="starter-heading">{{ _('Free Starter Adventures') }}</h3>
-{% if available|length > 1 %}<span class="starter-carousel-nav">
-  <button type="button" class="starter-carousel-arrow" @click="go(i - 1)" aria-label="{{ _('Previous adventure') }}"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
-  <span class="starter-carousel-count" aria-live="polite" x-text="(i + 1) + ' / ' + n">1 / {{ available|length }}</span>
-  <button type="button" class="starter-carousel-arrow" @click="go(i + 1)" aria-label="{{ _('Next adventure') }}"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
-</span>{% endif %}
-</div>
 <ul class="campaign-gallery starter-carousel" x-ref="track" @scroll.debounce.100ms="sync()">
 {% for card in available %}
 <li class="campaign-card campaign-card-starter" data-tree-row data-search="{{ card.title|lower }}">
+  {% if card.cover %}<a class="campaign-card-cover" href="{{ card.url }}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="{{ card.cover }}" alt="" loading="lazy" data-cover></a>{% endif %}
   <div class="campaign-card-body">
     <a class="campaign-card-title" id="starter-{{ card.slug }}" href="{{ card.url }}" target="_blank" rel="noopener">{{ card.title }} <svg class="starter-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr-only"> {{ _('(opens cairnrpg.com in a new tab)') }}</span></a>
     <span class="campaign-card-meta">{{ card.description }}</span>
@@ -102,8 +96,10 @@
 </li>
 {% endfor %}
 </ul>
-{% if available|length > 1 %}<div class="starter-carousel-dots">
-{% for card in available %}<button type="button" @click="go({{ loop.index0 }})" :aria-current="i === {{ loop.index0 }}" aria-label="{{ _('Show %(title)s', title=card.title) }}"></button>{% endfor %}
+{% if available|length > 1 %}<div class="starter-carousel-nav">
+  <button type="button" class="starter-carousel-arrow" @click="go(i - 1)" aria-label="{{ _('Previous adventure') }}"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+  <span class="starter-carousel-dots">{% for card in available %}<button type="button" @click="go({{ loop.index0 }})" :aria-current="i === {{ loop.index0 }}" aria-label="{{ _('Show %(title)s', title=card.title) }}"></button>{% endfor %}</span>
+  <button type="button" class="starter-carousel-arrow" @click="go(i + 1)" aria-label="{{ _('Next adventure') }}"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
 </div>{% endif %}
 </section>
 {% endif %}

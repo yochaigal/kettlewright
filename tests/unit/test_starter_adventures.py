@@ -67,12 +67,12 @@ def test_campaigns_page_offers_every_adventure_without_adding_any(user):
         assert title_of(path) in page
         assert f'href="{SOURCE.format(path.name)}"' in page
     assert page.count('>Add<') == COUNT
-    assert page.count('class="starter-icon"') == COUNT and page.count('target="_blank" rel="noopener"') == COUNT
+    assert page.count('class="starter-icon"') == COUNT and page.count('target="_blank" rel="noopener"') == 2 * COUNT  # Title and cover
     assert 'Read on Cairn' not in page
     assert '<h3 id="starter-heading">Free Starter Adventures</h3>' in page and 'class="campaign-gallery starter-carousel"' in page
     # A carousel: arrows, a count and one dot per adventure.
-    assert 'aria-label="Next adventure"' in page and f'1 / {COUNT}' in page
-    dots = page.split('class="starter-carousel-dots"')[1].split('</div>')[0]
+    assert 'aria-label="Next adventure"' in page and page.count('cairnrpg.com/adventures/first-party/img/') >= COUNT  # Covers.
+    dots = page.split('class="starter-carousel-dots"')[1].split('</span>')[0]
     assert dots.count('<button') == COUNT and page.count('@click="go(i') == 2  # A dot per adventure, two arrows.
     assert 'Remove' not in page
     with app.app_context():

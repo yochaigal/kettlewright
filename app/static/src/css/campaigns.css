@@ -551,18 +551,16 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 @media (min-width:900px) {
   .campaign-gallery-page .gallery-top.has-starters {display:grid;grid-template-columns:minmax(0,1fr) minmax(15em,21em);column-gap:2em;align-items:start;}
 }
-/* Free Starter Adventures carousel: one card per view, snapping; arrows and count beside the heading, dots below. */
-.campaign-gallery-page .starter-carousel-head {display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5em 1em;margin:1.75em 0 .75em;}
-.campaign-workspace .campaign-gallery-page .starter-carousel-head #starter-heading {margin:0;}
-.starter-carousel-nav {display:inline-flex;align-items:center;gap:.5em;}
-.starter-carousel-count {min-width:3.2em;text-align:center;font-size:.85em;color:color-mix(in srgb,var(--fg) 65%,var(--bg));font-variant-numeric:tabular-nums;}
-.starter-carousel-arrow {display:inline-flex;align-items:center;justify-content:center;width:2.2em;height:2.2em;min-width:0;max-width:none;margin:0;padding:0;border:1px solid color-mix(in srgb,var(--fg) 30%,var(--bg));border-radius:50%;background:transparent;color:var(--fg);font:inherit;cursor:pointer;transition:background .15s,color .15s;}
+/* Free Starter Adventures carousel: one card per view, snapping, with a cover like the campaign cards.
+   Arrows framing the dots below, so the heading lines up with My campaigns. */
+.starter-carousel-nav {display:flex;align-items:center;justify-content:center;gap:.75em;margin:.75em 0 0;}
+.starter-carousel-arrow {display:inline-flex;align-items:center;justify-content:center;width:2em;height:2em;min-width:0;max-width:none;margin:0;padding:0;border:1px solid color-mix(in srgb,var(--fg) 30%,var(--bg));border-radius:50%;background:transparent;color:var(--fg);font:inherit;font-size:.9em;cursor:pointer;transition:background .15s,color .15s;}
 .starter-carousel-arrow:hover {background:var(--fg);color:var(--bg);}
 .starter-carousel-arrow:focus-visible, .starter-carousel-dots button:focus-visible {outline:2px solid var(--fg);outline-offset:2px;}
 .campaign-gallery-page .gallery-starters .starter-carousel {display:flex;gap:1em;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;scrollbar-width:none;}
 .campaign-gallery-page .gallery-starters .starter-carousel::-webkit-scrollbar {display:none;}
 .campaign-gallery-page .gallery-starters .starter-carousel > li {flex:0 0 100%;scroll-snap-align:start;}
-.starter-carousel-dots {display:flex;justify-content:center;gap:.5em;margin:.75em 0 0;}
+.starter-carousel-dots {display:inline-flex;align-items:center;gap:.5em;}
 .starter-carousel-dots button {width:.6em;height:.6em;min-width:0;max-width:none;margin:0;padding:0;border:0;border-radius:50%;background:color-mix(in srgb,var(--fg) 25%,var(--bg));cursor:pointer;}
 .starter-carousel-dots button[aria-current="true"] {background:var(--fg);}
 @media (pointer:coarse) {.starter-carousel-dots button {width:.8em;height:.8em;}}

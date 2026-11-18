@@ -1,6 +1,7 @@
 """Offer the bundled Cairn starter adventures, imported on request through the archive importer."""
 import io
 import zipfile
+from functools import lru_cache
 from pathlib import Path
 
 from flask_babel import lazy_gettext as _l
@@ -36,9 +37,16 @@ def bundle_archive(path):
     return stream.getvalue()
 
 
+@lru_cache(maxsize=None)
+def bundle_cover(slug):
+    """The adventure's cover: the first image in its bundled campaign.md (read once)."""
+    from app.lib.campaign_wiki import first_image
+    return first_image((BUNDLES / slug / 'campaign.md').read_text(encoding='utf-8'))
+
+
 def starter_cards(owned):
     """One card per bundle; campaign is the user's Campaign of that name, if they have one."""
-    return [{'slug': slug, 'url': SOURCE.format(slug), 'campaign': owned.get(info['title']), **info}
+    return [{'slug': slug, 'url': SOURCE.format(slug), 'campaign': owned.get(info['title']), 'cover': bundle_cover(slug), **info}
             for slug, info in STARTERS.items()]
 
 
