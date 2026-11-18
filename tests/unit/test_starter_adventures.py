@@ -69,7 +69,11 @@ def test_campaigns_page_offers_every_adventure_without_adding_any(user):
     assert page.count('>Add<') == COUNT
     assert page.count('class="starter-icon"') == COUNT and page.count('target="_blank" rel="noopener"') == COUNT
     assert 'Read on Cairn' not in page
-    assert '<h3 id="starter-heading">Free Starter Adventures</h3>' in page and 'class="campaign-gallery"' in page
+    assert '<h3 id="starter-heading">Free Starter Adventures</h3>' in page and 'class="campaign-gallery starter-carousel"' in page
+    # A carousel: arrows, a count and one dot per adventure.
+    assert 'aria-label="Next adventure"' in page and f'1 / {COUNT}' in page
+    dots = page.split('class="starter-carousel-dots"')[1].split('</div>')[0]
+    assert dots.count('<button') == COUNT and page.count('@click="go(i') == 2  # A dot per adventure, two arrows.
     assert 'Remove' not in page
     with app.app_context():
         assert Campaign.query.count() == 0
