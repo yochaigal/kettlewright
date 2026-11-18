@@ -1,17 +1,22 @@
 from flask_login import login_required
-from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response, abort
+from flask_wtf import FlaskForm
 from app.lib import get_char_data, load_market, Market, Inventory
 from app.models import db, User, Character, Party
 import json
 from flask_babel import _
+from app.lib.companions import can_transfer_from
 
 marketplace = Blueprint('marketplace', __name__)
 
 
 # Route: show marketplace dialog for a user and character
 @marketplace.route('/marketplace/<username>/<url_name>/<container_id>', methods=['GET'])
+@login_required
 def marketplace_show(username, url_name, container_id):
     user, character = get_char_data(username, url_name)
+    if not can_transfer_from(character):
+        abort(403)
     market = Market()
     inventory = Inventory(character)
     container = inventory.get_container(container_id)
@@ -30,8 +35,13 @@ def marketplace_show(username, url_name, container_id):
 
 # Route: buy items
 @marketplace.route('/marketplace/<username>/<url_name>/<container_id>/buy', methods=['POST'])
+@login_required
 def marketplace_buy(username, url_name, container_id):
     user, character = get_char_data(username, url_name)
+    if not can_transfer_from(character):
+        abort(403)
+    if not FlaskForm().validate_on_submit():
+        abort(400)
     market = Market()
     inventory = Inventory(character)
     data = request.form

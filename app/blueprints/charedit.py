@@ -232,21 +232,18 @@ def charedit_cancel(username, url_name):
 
 
 # Route: leave current character party
-@character_edit.route('/charedit/leave-party/<username>/<url_name>', methods=['GET'])
+@character_edit.route('/charedit/leave-party/<username>/<url_name>', methods=['POST'])
+@login_required
 def charedit_leave_party(username, url_name):
     user, character = get_char_data(username, url_name)
+    if character.owner != current_user.id:
+        abort(403)
+    if not FlaskForm().validate_on_submit():
+        abort(400)
     remove_character_from_party(character)
     db.session.commit()
     response = make_response("Redirect")
     response.headers["HX-Redirect"] = "/charedit/"+username+"/"+url_name
-    return response
-
-@character_edit.route('/charedit/clear-party-err/<username>/<url_name>', methods=['GET'])
-def charedit_clear_party_err(username, url_name):
-    user, character = get_char_data(username, url_name)
-    character.party_code = ""
-    db.session.commit()
-    response = make_response("")
     return response
 
     

@@ -84,6 +84,7 @@
 </script>
 <div id="marketplace-modal">
   <form class="no-space">
+    <input type="hidden" name="csrf_token" value="{{ companion_form().csrf_token.current_token if companion_form().csrf_token is defined else '' }}" />
     <input type="hidden" name="current-gold" id="current-gold" value="{{character.gold}}" />
     <input type="hidden" name="current-cart" id="current-cart" value="" />
     <input type="hidden" name="current-container" id="current-container" value="{{container.id}}" />
