@@ -209,10 +209,12 @@ def delete_material_plan(entries, maps):
 
 def known_entries(party_id):
     """Only independently published fields; never serialize an ORM original."""
+    from app.lib.campaign_wiki import first_image
     rows = PartyPresentation.query.filter_by(party_id=party_id, published=True).all()
     known = {row.entry_id: {'id': row.entry_id, 'category': row.entry.category,
                            'reference_key': row.entry.reference_key,
                            'title': row.title, 'body': row.body, 'path_type': row.path_type, 'version': row.version,
+                           'has_image': first_image(row.body) is not None,
                            'links': [], 'map_id': row.entry.pointcrawl.id if row.entry.pointcrawl else None}
              for row in rows}
     # A path cannot be read indirectly while its map or either endpoint is hidden.

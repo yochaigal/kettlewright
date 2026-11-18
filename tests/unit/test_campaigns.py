@@ -295,7 +295,7 @@ def test_party_tree_labels_edits_and_hides_party_versions(setup):
     entry_id = create_entry(client)  # SECRET NAME / SECRET BODY
     assert reveal(client, entry_id, mode='everything').status_code == 302
     html = client.get('/party/1/materials/').text
-    assert 'class="tree-meta tree-version"' in html and '>Original</span>' in html
+    assert 'class="party-card"' in html and 'party-card-cover' not in html  # Small card; no picture in this text.
     assert f'href="/party/1/materials/{entry_id}/version"' not in html  # No Edit on the original: that is in Campaigns.
     assert f'/party/1/materials/{entry_id}/version' not in client.get(f'/party/1/materials/{entry_id}').text
     assert f'action="/materials/{entry_id}/revoke/1"' in html and ' Hide</button>' in html
@@ -312,17 +312,33 @@ def test_party_tree_labels_edits_and_hides_party_versions(setup):
         assert (row.title, row.body) == ('The guildmaster', 'Polite')
         assert db.session.get(ContentEntry, entry_id).title == 'SECRET NAME'  # The original is unchanged.
     html = client.get('/party/1/materials/').text
-    assert '>Party version</span>' in html and f'href="/party/1/materials/{entry_id}/version"' in html
+    assert f'href="/party/1/materials/{entry_id}/version"' in html  # A party version: Edit appears.
 
     # Back to the original from the same page.
     page = client.get(f'/party/1/materials/{entry_id}/version').text
     assert 'They see a party version.' in page and 'Use the original instead' in page
     assert client.post(f'/materials/{entry_id}/reveal', data={'party_ids': '1', 'version_1': 2, 'mode': 'everything',
                                                               'return_to': 'party'}).status_code == 302
-    assert '>Original</span>' in client.get('/party/1/materials/').text
+    assert f'/party/1/materials/{entry_id}/version' not in client.get('/party/1/materials/').text  # Original again.
 
     assert client.get(f'/party/2/materials/{entry_id}/version').status_code == 404  # Not revealed to party 2.
     assert client.get(f'/party/3/materials/{entry_id}/version').status_code == 403  # Someone else's party.
+
+
+def test_party_cards_take_their_picture_from_the_party_text(setup):
+    app, client = setup
+    png = 'data:image/png;base64,' + 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+    entry_id = create_entry(client, body=f'Secret ![map]({png})')
+    assert reveal(client, entry_id, body='Told without a picture').status_code == 302
+    html = client.get('/party/1/materials/').text
+    assert 'party-card-cover' not in html  # The original's picture never leaks into the card.
+    assert client.get(f'/party/1/materials/{entry_id}/image').status_code == 404
+    assert reveal(client, entry_id, version=1, body=f'Seen: ![sketch]({png})').status_code == 302
+    html = client.get('/party/1/materials/').text
+    assert f'src="/party/1/materials/{entry_id}/image"' in html
+    image = client.get(f'/party/1/materials/{entry_id}/image')
+    assert image.status_code in (200, 302)  # Stored uploads redirect to their (access-checked) file.
+    assert client.get(f'/party/2/materials/{entry_id}/image').status_code == 404  # Not shown to party 2.
 
 
 def test_map_reveal_shows_points_and_paths_progress(setup):
@@ -1309,7 +1325,7 @@ def test_party_campaign_tab_uses_published_knowledge(setup):
     page = client.get(url)
     assert page.status_code == 200
     assert 'id="campaign-details-tab"' in page.text
-    assert 'Known name' in page.text and 'Known facts' in page.text
+    assert 'Known name' in page.text and 'Known facts' not in page.text  # Cards: title only.
     assert 'SECRET NAME' not in page.text and 'SECRET BODY' not in page.text
     assert 'Add party note' in page.text and 'Open party wiki' in page.text and 'href="/party/1/wiki/"' in page.text
     # The Warden's connected campaign, as a gallery card with how much of it this party has seen.
@@ -1326,20 +1342,20 @@ def test_party_campaign_tab_uses_published_knowledge(setup):
 
     login(client, 2)
     player = client.get(url)
-    assert 'Known facts' in player.text and 'Open party wiki' in player.text
+    assert 'Known name' in player.text and 'Open party wiki' in player.text
     assert 'Add party note' not in player.text and 'party-linked-campaigns' not in player.text
     assert f'/party/1/materials/{entry_id}/version' not in player.text
 
     login(client, 3)
     outsider = client.get(url)
     assert 'id="campaign-details-tab"' not in outsider.text
-    assert 'Known facts' not in outsider.text
+    assert 'Known name' not in outsider.text
 
     login(client, 1)
     app.config['FEATURE_TEST_PARTY_IDS'] = set()
     released = client.get(url)
     assert 'id="campaign-details-tab"' in released.text
-    assert 'Known facts' in released.text
+    assert 'Known name' in released.text
 
 
 def test_no_connection_step_audience_comes_from_reveals(setup):
@@ -1385,7 +1401,7 @@ def test_party_notes_live_only_on_their_party(setup):
 
     # On the party: listed under Party notes, readable in the party wiki, editable by the Warden.
     page = client.get(url).text
-    assert 'Told at the table' in page and 'The ferryman lies' in page
+    assert 'Told at the table' in page and 'The ferryman lies' not in page  # Cards show the title only.
     assert f'/party/1/notes/{note_id}/edit' in page and f'/party/1/notes/{note_id}/delete' in page
     wiki = client.get(f'/party/1/materials/{note_id}').text
     assert 'Party note' in wiki and f'href="/party/1/notes/{note_id}/edit"' in wiki and 'Private original' not in wiki

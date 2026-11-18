@@ -430,14 +430,8 @@ aside:where(.campaign-wiki *), article:where(.campaign-wiki *), header:where(.ca
 .party-linked-campaigns .campaign-gallery {grid-template-columns:repeat(auto-fill,minmax(15em,20em));}
 .party-campaign-empty {margin:0;color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
 .party-modal-body textarea {width:100%;box-sizing:border-box;}
-/* Party notes: written for this party only, newest first. */
 .party-notes-head {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem 1rem;margin:1.5em 0 .5em;}
 .party-notes-head .party-section-heading {margin:0;}
-.party-notes {display:grid;gap:.75rem;margin:0 0 1.5em;padding:0;list-style:none;}
-.party-note {display:flex;flex-direction:column;gap:.35rem;padding:.6rem .8rem;font-size:.95em;border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;background:color-mix(in srgb,var(--fg) 3%,var(--bg));transition:border-color .15s;}
-.party-note-title {font-weight:700;color:inherit;}
-.party-note p {margin:0;color:color-mix(in srgb,var(--fg) 75%,var(--bg));}
-.party-notes-empty {color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
 @media (max-width:480px) {.campaign-gallery {grid-template-columns:1fr;}}
 
 /* "Create new" dialog: random campaign options under a checkbox. */
@@ -482,9 +476,6 @@ button.wiki-edit:hover {background:var(--fg);color:var(--bg);}
 .reveal-buttons button.reveal-hide {margin-right:auto;border-color:#a33b3b;color:#a33b3b;}
 .reveal-replaces {margin:0 0 1em;padding:.6em 1em;border-left:3px solid #b8860b;background:color-mix(in srgb,#b8860b 10%,var(--bg));}
 .campaign-workspace .reveal-form .campaign-actions > button.reveal-submit {background:var(--fg);color:var(--bg);}
-/* Party tree: Edit (a link) and Hide (a form button) side by side, same size and baseline. */
-@media (max-width:600px) {.tree-actions {margin-left:0;}}
-.tree-version {border:1px solid color-mix(in srgb,var(--fg) 30%,var(--bg));border-radius:999px;padding:0 .5em;}
 .party-version-original {display:flex;flex-wrap:wrap;align-items:center;gap:.25rem 1rem;margin:1.5em 0 0;padding:0;border:0;background:none;width:auto;}
 .party-version-original button.link-button {min-height:44px;padding:0;border:0;background:none;color:inherit;font:inherit;font-weight:600;text-decoration:underline;cursor:pointer;}
 /* Campaign wiki home: parties shown something from this campaign, with Hide everything. */
@@ -497,7 +488,6 @@ button.wiki-edit:hover {background:var(--fg);color:var(--bg);}
 /* Edit / Hide / Delete on party and campaign pages: one small outlined button, red for removing. */
 .kw-actions {display:inline-flex;flex-wrap:wrap;align-items:center;gap:.5em;}
 .kw-actions form {display:inline-flex;margin:0;padding:0;border:0;background:none;width:auto;max-width:none;}
-.tree-actions {margin-left:auto;flex:none;}
 .kw-action {display:inline-flex;align-items:center;gap:.4em;box-sizing:border-box;min-height:32px;min-width:0;max-width:none;width:auto;
   margin:0;padding:.25em .75em;border:1px solid color-mix(in srgb,var(--fg) 35%,var(--bg));border-radius:999px;
   background:transparent;color:var(--fg);font:inherit;font-size:.85em;font-weight:600;line-height:1.2;text-decoration:none;white-space:nowrap;cursor:pointer;
@@ -510,19 +500,23 @@ button.wiki-edit:hover {background:var(--fg);color:var(--bg);}
 body.dark-mode .kw-action-danger {color:#e08080;border-color:color-mix(in srgb,#e08080 55%,var(--bg));}
 body.dark-mode .kw-action-danger:hover {background:#a33b3b;color:#fff;}
 @media (pointer:coarse) {.kw-action {min-height:44px;}}
-@media (max-width:600px) {.tree-actions {margin-left:0;}}
 .party-section-hint {display:flex;flex-wrap:wrap;align-items:baseline;gap:.25em .5em;margin:0 0 .75em;}
 .party-section-hint i {opacity:.7;}
 
-/* Party Wiki tab: party notes and revealed articles as small cards. */
-.party-notes {grid-template-columns:repeat(auto-fill,minmax(min(100%,15em),1fr));gap:.6rem;}
-.party-note:hover, #party-content-results .article-tree .tree-node:hover {border-color:var(--fg);}
-.party-note p {display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
-.party-note-actions {margin-top:auto;padding-top:.25rem;}
-.party-notes-empty {grid-column:1 / -1;}
-#party-content-results .article-tree {display:grid;gap:.5rem;}
-#party-content-results .article-tree .article-tree {margin:.5rem 0 0 .9rem;padding-left:.6rem;}
-#party-content-results .article-tree .tree-node {padding:.6rem .85rem;border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;background:color-mix(in srgb,var(--fg) 3%,var(--bg));transition:border-color .15s;}
-#party-content-results .article-tree .tree-row {flex-wrap:wrap;gap:.35rem .6rem;}
-#party-content-results .article-tree .tree-title {flex:1 1 auto;min-width:0;}
-#party-content-results .article-tree .tree-excerpt {order:10;flex:1 0 100%;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* Party Wiki tab: party notes and revealed articles as small cards, like the campaign cards but smaller.
+   Picture only when the party's text has one; the whole card opens the article. */
+.party-cards {display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,11em),1fr));gap:.6rem;margin:0 0 1.5em;padding:0;list-style:none;}
+.party-card {min-width:0;margin:0;}
+.party-card[hidden] {display:none;}
+.party-card-inner {position:relative;display:flex;flex-direction:column;height:100%;overflow:hidden;border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;background:color-mix(in srgb,var(--fg) 3%,var(--bg));transition:border-color .15s;}
+.party-card-inner:hover, .party-card-inner:focus-within {border-color:var(--fg);}
+.party-card-cover {display:block;aspect-ratio:16/9;overflow:hidden;background:color-mix(in srgb,var(--fg) 8%,var(--bg));}
+.party-card-cover img {display:block;width:100%;height:100%;margin:0;object-fit:cover;}
+.party-card-title {padding:.5rem .7rem;font-weight:700;font-size:.92em;line-height:1.3;color:inherit;text-decoration:none;overflow-wrap:anywhere;}
+.party-card-title::after {content:'';position:absolute;inset:0;}
+.party-card-title:hover {text-decoration:underline;}
+.party-card-actions {position:relative;z-index:1;margin-top:auto;padding:0 .7rem .55rem;gap:.35em;}
+.party-card-actions .kw-action {min-height:28px;padding:.15em .6em;font-size:.78em;}
+.party-notes-empty {grid-column:1 / -1;color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
+@media (pointer:coarse) {.party-card-actions .kw-action {min-height:40px;}}

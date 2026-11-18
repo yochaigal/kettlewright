@@ -204,20 +204,35 @@ def index():
 @campaigns.route('/campaigns/<int:campaign_id>/cover')
 def campaign_cover(campaign_id):
     """The campaign card's picture: the first image in its articles."""
-    import base64
     from app.lib.campaign_wiki import campaign_entries, cover_image
-    from app.lib.rich_content import IMAGE_URL
     campaign = owned(Campaign, campaign_id)
-    url = cover_image(campaign, campaign_entries(campaign))
+    return card_image(cover_image(campaign, campaign_entries(campaign)))
+
+
+def card_image(url):
+    """Serve a card's picture: inline uploads as bytes (not a 500 KB page attribute), anything else by redirect."""
+    import base64
+    from app.lib.rich_content import IMAGE_URL
     if url is None:
         abort(404)
-    if IMAGE_URL.fullmatch(url):  # Inline upload: serve the bytes, not a 500 KB page attribute.
+    if IMAGE_URL.fullmatch(url):
         kind, data = url[len('data:'):].split(';base64,', 1)
         response = current_app.response_class(base64.b64decode(data), mimetype=kind)
     else:
         response = redirect(url)
     response.headers['X-Content-Type-Options'] = 'nosniff'  # Caching follows the blueprint: private, no-store.
     return response
+
+
+@campaigns.route('/party/<int:party_id>/materials/<int:entry_id>/image')
+def party_entry_image(party_id, entry_id):
+    """A party card's picture: the first image in what this party was shown, never the private original."""
+    from app.lib.campaign_wiki import first_image
+    party_access(party_id)
+    entry = known_entries(party_id).get(entry_id)
+    if entry is None:
+        abort(404)
+    return card_image(first_image(entry['body']))
 
 
 @campaigns.route('/campaigns/create', methods=['POST'])
