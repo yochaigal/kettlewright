@@ -14,8 +14,7 @@
 <script src="{{ url_for('static', filename='src/js/party_view.js') }}" defer type="module"></script>
 {% if can_view_rolls %}<div id="party-item-roll" hidden data-url="{{ url_for('party.shared_map_roll', party_id=party.id) }}"
   data-csrf="{{ roll_form.csrf_token.current_token if roll_form.csrf_token is defined else '' }}" data-error="{{ _('Unable to roll dice. Please try again.') }}"></div>{% endif %}
-{% if campaign_enabled %}<link rel="stylesheet" href="{{url_for('static', filename='src/css/campaigns.css')}}">
-<script type="module" src="{{url_for('static', filename='src/js/campaign-covers.js')}}"></script>{% endif %}
+{% if campaign_enabled %}<link rel="stylesheet" href="{{url_for('static', filename='src/css/campaigns.css')}}">{% endif %}
 <section class="body-container">
   {% with messages = get_flashed_messages(with_categories=true) %} {% if messages is not none and messages|length > 0 %}
   {# Confirmations (success) are short toasts; anything else keeps the alert, titled Error unless known. #}
@@ -44,6 +43,11 @@
           <i class="fa-solid fa-link icon-in-button"></i>
         </button>
         {% endif %}
+        {% if campaign_enabled %}
+        {# Party notes and everything revealed to the party, in one place (#440). #}
+        <a class="button no-margin-top" id="party-wiki-link" href="{{ url_for('campaigns.party_wiki', party_id=party.id) }}"
+          title="{{ _('Party wiki') }}"><i class="fa-solid fa-book-open icon-in-button" aria-hidden="true"></i> <span class="mobile-hidden">{{ _('Wiki') }}</span></a>
+        {% endif %}
         {% if can_view_rolls %}
         <a class="button no-margin-top" href="{{ url_for('party.shared_map', party_id=party.id) }}"
           title="{{ _('Whiteboard') }}" aria-label="{{ _('Whiteboard') }}">{{ _('Whiteboard') }}</a>
@@ -68,78 +72,9 @@
     <div id="party-tabs" class="party-tab-list" role="tablist" aria-label="{{_('Party sections')}}">
       <button type="button" id="characters-tab" role="tab" aria-selected="true" aria-controls="characters" tabindex="0">{{_('Characters')}}</button>
       {% if is_owner %}<button type="button" id="procedures-tab" role="tab" aria-selected="false" aria-controls="procedures" tabindex="-1">{{_('Procedures')}}</button>{% endif %}
-      {% if campaign_enabled %}<button type="button" id="campaign-details-tab" role="tab" aria-selected="false" aria-controls="campaign-details" tabindex="-1">{{_('Wiki')}}</button>{% endif %}
       {% if is_owner %}<button type="button" id="monsters-tab" role="tab" aria-selected="false" aria-controls="monsters" tabindex="-1">{{_('Monsters')}}</button>{% endif %}
       {% if can_view_rolls %}<button type="button" id="roll-history-tab" role="tab" aria-selected="false" aria-controls="roll-history" tabindex="-1">{{_('Roll history')}}</button>{% endif %}
     </div>
-    {% if campaign_enabled %}
-    <div id="campaign-details" class="party-tab-panel party-campaign-panel campaign-workspace" role="tabpanel" aria-labelledby="campaign-details-tab" hidden>
-      <div data-party-content="{{party.id}}" data-content-url="{{url_for('campaigns.party_materials', party_id=party.id)}}"></div>
-      {% include 'partial/confirm_dialog.html' %}
-      {% if is_owner %}
-      {# The Warden's own campaigns behind this party, as in the Campaigns gallery. Players never see originals. #}
-      <section class="party-linked-campaigns" aria-label="{{_('Campaigns revealed to this party')}}">
-        {% if linked_campaigns %}
-        <ul class="campaign-gallery">
-        {% for item in linked_campaigns %}{% set campaign = item.campaign %}
-          <li class="campaign-card">
-            <a class="campaign-card-cover" href="{{url_for('campaigns.wiki', campaign_id=campaign.id)}}" tabindex="-1" aria-hidden="true">
-              {% if item.cover %}<img src="{{url_for('campaigns.campaign_cover', campaign_id=campaign.id)}}" alt="" loading="lazy" data-cover>
-              {% else %}<span class="campaign-card-placeholder">{{campaign.name[:1]|upper}}</span>{% endif %}
-            </a>
-            <div class="campaign-card-body">
-              <a class="campaign-card-title" href="{{url_for('campaigns.wiki', campaign_id=campaign.id)}}">{{campaign.name}}</a>
-              <span class="campaign-card-meta">{{_('%(revealed)s of %(total)s articles revealed', revealed=item.revealed, total=item.total)}}</span>
-            </div>
-          </li>
-        {% endfor %}
-        </ul>
-        {% else %}
-        <p class="party-campaign-empty">{{_('Nothing from your campaigns has been revealed to this party yet. Use Reveal to party on an article in Campaigns.')}} <a href="{{url_for('campaigns.index')}}">{{_('Open Campaigns')}}</a></p>
-        {% endif %}
-      </section>
-      {% endif %}
-      {# Everyone, the Warden included: what this party has been shown, read as a wiki. #}
-      <div class="campaign-actions"><a class="button" href="{{url_for('campaigns.party_wiki', party_id=party.id)}}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{_('Open party wiki')}}</a></div>
-      {# Party notes belong to this party only and never appear in Campaigns. The list below
-         refreshes live; the Add popup stays outside it so a refresh cannot wipe a draft. #}
-      <div class="party-notes-head">
-        <h3 class="party-section-heading">{{_('Party notes')}}</h3>
-        {% if is_owner %}
-        <span class="party-modal-host" x-data="campaignModal(false)" @keydown.escape.window="hide()">
-          <button type="button" class="campaign-modal-trigger" x-ref="trigger" @click="show()" aria-haspopup="dialog" aria-controls="party-note-modal"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{_('Add party note')}}</button>
-          <div class="modal party-modal" id="party-note-modal" :class="{'is-active': open}">
-            <div class="modal-background" @click="hide()"></div>
-            <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="party-note-title" x-ref="dialog">
-            <form class="party-modal-form" method="post" action="{{url_for('campaigns.add_party_note', party_id=party.id)}}">
-              {{ form.csrf_token }}
-              <div class="party-modal-head"><h3 id="party-note-title">{{_('Add party note')}}</h3></div>
-              <div class="party-modal-body">
-                <label for="party-note-name">{{_('Title')}}</label>
-                <input type="text" id="party-note-name" name="title" required maxlength="200" autocomplete="off">
-                <label for="party-note-body">{{_('Text')}}</label>
-                <textarea id="party-note-body" name="body" rows="6" maxlength="50000"></textarea>
-                <p class="party-modal-hint">{{_('Every member of this party can read it. It is not added to any campaign.')}}</p>
-              </div>
-              <div class="party-modal-foot">
-                <button type="button" @click="hide()">{{_('Cancel')}}</button>
-                <button type="submit" class="party-modal-submit">{{_('Add note')}}</button>
-              </div>
-              <button type="button" class="party-modal-close" @click="hide()" aria-label="{{_('Close')}}" title="{{_('Close')}}">×</button>
-            </form>
-            </div>
-          </div>
-        </span>
-        {% endif %}
-      </div>
-      <p class="import-hint party-section-hint"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-        {% if is_owner %}{{_('Quick notes for this party only, like rumours or what happened at the table. Every member can read them. They are not part of any campaign.')}}
-        {% else %}{{_('Notes from your Warden for this party.')}}{% endif %}</p>
-      {% with entries=campaign_entries, hierarchy=campaign_hierarchy, editing=is_owner %}
-        {% include 'campaigns/party_contents.html' %}
-      {% endwith %}
-    </div>
-    {% endif %}
     <div id="characters" class="party-tab-panel" role="tabpanel" aria-labelledby="characters-tab">
     <div class="party-section">
       <h3 class="party-section-heading">{{_('Members')}}</h3>

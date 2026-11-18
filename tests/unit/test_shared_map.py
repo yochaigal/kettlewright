@@ -143,7 +143,7 @@ def test_empty_map_and_access(shared):
             assert 'id="load-map"' not in html and 'id="map-import"' not in html
         assert 'data-library=' not in html
         assert clients[i].get('/campaigns/').status_code == 200
-        assert clients[i].get('/party/1/materials/').status_code == 200
+        assert clients[i].get('/party/1/wiki/').status_code == 200
     for i in (3, 4):
         assert clients[i].get(URL).status_code == 403
         assert clients[i].get('/party/1/shared-map').status_code == 403
@@ -191,8 +191,10 @@ def test_party_page_shows_whiteboard_and_campaign_for_all_members(shared):
         html = response.get_data(as_text=True)
         assert 'href="/party/1/shared-map"' in html
         assert 'href="/campaigns/"' in html
-        assert 'id="campaign-details-tab"' in html
-        assert ('Add party note' in html) is (user_id == 1)  # Warden-only tools on the Wiki tab.
+        assert 'href="/party/1/wiki/"' in html  # Party notes and revealed articles live in the party wiki (#440).
+        assert 'Add party note' not in html
+        wiki = clients[user_id].get('/party/1/wiki/').get_data(as_text=True)
+        assert ('Add party note' in wiki) is (user_id == 1)  # Warden-only tools on the party wiki.
 
 
 @pytest.mark.parametrize('version', [0, 1, 99])

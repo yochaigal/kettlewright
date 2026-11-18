@@ -37,6 +37,7 @@ async function setup(editing = true, failedLibrary = null, language = 'en') {
     setupBoardControls: () => ({selection() {}, destroy() {}}),
     createTokenPortraits: options => {projection = options.onProjection; return {elements: elements => elements.map(element => element.fileId === 'live-image' ? {...element, fileId: 'original-image'} : element), redraw() {}, destroy() {}};},
     createBoardRolls: () => ({redraw() {}, destroy() {}}),
+    createRollOsd: () => ({received() {}}), dice3d: {setScope() {}},
     createTokenStats: () => ({redraw() {}, reset() {}, destroy() {}}),
     Blob, structuredClone, editorLocale, createLaserSync: () => ({pointerUpdate() {}, stop() {}, clear() {}, destroy() {}}),
     io: () => ({on: (name, handler) => {handlers[name] = handler;}}),

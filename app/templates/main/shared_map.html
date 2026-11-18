@@ -52,12 +52,20 @@
   {% endif %}
   <div id="board-notices" aria-live="polite"></div>
   <div id="editor"></div>
+  {# Roll results on screen (#385): yours and everyone's public rolls, over the board for a few seconds. #}
+  <div id="board-roll-osd" class="board-roll-osd" role="log" aria-live="polite" aria-label="{{_('Dice results')}}"></div>
   <section id="board-rolls" class="board-rolls" aria-label="{{_('Roll Dice')}}">
     <div class="board-roll-heading">
       <strong id="board-roll-name">{{_('Warden') if warden else _('Roll Dice')}}</strong>
       <select id="board-roll-actor" aria-label="{{_('Character')}}" hidden></select>
       {% if warden %}<label class="board-roll-public"><input id="board-roll-public" type="checkbox"> {{_('Public roll')}}</label>{% endif %}
-      <output id="board-roll-result" role="status" aria-live="polite"></output>
+      <output id="board-roll-result"></output>
+      {# The whiteboard keeps its own 3D dice choice (#436), so they can be on here and off elsewhere. #}
+      <button type="button" id="board-roll-3d" class="board-roll-tool" aria-pressed="false" hidden
+        title="{{_('3D dice on the whiteboard')}}" aria-label="{{_('3D dice on the whiteboard')}}"><i class="fa-solid fa-cube" aria-hidden="true"></i> 3D</button>
+      <button type="button" id="board-roll-minimize" class="board-roll-tool" aria-expanded="true" aria-controls="board-roll-actions"
+        data-minimize="{{_('Minimize dice roller')}}" data-expand="{{_('Show dice roller')}}"
+        title="{{_('Minimize dice roller')}}" aria-label="{{_('Minimize dice roller')}}"><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
     </div>
     <div id="board-roll-actions" class="board-roll-actions"></div>
   </section>
@@ -120,6 +128,7 @@
       'warden': _('Warden'), 'rollDice': _('Roll Dice'), 'damage': _('Damage'),
       'reaction': _('Reaction Roll'), 'fate': _('Die of Fate'),
       'rollFailed': _('Unable to roll dice. Please try again.'),
+      'rolled': _('%(name)s rolled %(result)s', name='{name}', result='{result}'),
       'showStats': _('Show stats to players'), 'hideStats': _('Hide stats from players'),
       'lockMap': _('Lock map'), 'unlockMap': _('Unlock map'), 'armor': _('Armor'),
       'visibilityFailed': _('Unable to save visibility. Please try again.'),

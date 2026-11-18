@@ -26,13 +26,41 @@ def character_party(character):
     return None
 
 
-def roll_character(user_id, character, expression, expected_party=None):
+SAVES = {'strength': 'STR', 'dexterity': 'DEX', 'willpower': 'WIL'}
+
+
+def save_outcome(roll, score):
+    """Saves: roll a d20; it fails when the die is higher than the attribute's current value."""
+    return roll <= score
+
+
+def describe_save(result, save, score, roll):
+    """'7 (d20)' becomes '7 (d20) · STR 12 · Success'."""
+    from flask_babel import gettext
+    outcome = gettext('Success') if save_outcome(roll, score) else gettext('Failure')
+    return f'{result} · {SAVES[save]} {score} · {outcome}'
+
+
+def roll_label(value):
+    """What was rolled for, e.g. an item's name, kept short and on one line for the roll history."""
+    if not isinstance(value, str):
+        return None
+    return ' '.join(value.split())[:60] or None
+
+
+def roll_character(user_id, character, expression, expected_party=None, save=None, label=None):
     if character is None or character.owner != user_id:
         raise PermissionError('You can only roll for your own characters.')
     party = character_party(character)
     if expected_party is not None and (not party or party.id != expected_party):
         raise PermissionError('This character is no longer in the channel’s party. Use /kw select again.')
-    return roll_for_party(character.name, expression, party), party
+    if save is not None:
+        # A save is a single d20 against the attribute's current value (#398).
+        if save not in SAVES or getattr(character, save) is None:
+            raise ValueError('Choose STR, DEX or WIL to roll a save.')
+        expression = 'd20'
+    return roll_for_party(character.name, expression, party,
+                          save=(save, getattr(character, save)) if save else None, label=label), party
 
 
 def roll_companion(companion, expression, expected_party=None):
@@ -47,13 +75,24 @@ def roll_companion(companion, expression, expected_party=None):
     return roll_for_party(companion.name, expression, party), party
 
 
-def roll_for_party(name, expression, party):
+def roll_for_party(name, expression, party, save=None, label=None):
     dice = parse_dice(expression)
     values = [secrets.randbelow(sides) + 1 for sides in dice]
     result = f'{", ".join(map(str, values))} ({"+".join(f"d{sides}" for sides in dice)})'
+    outcome = None
+    label = roll_label(label)
+    if label and save is None:
+        result = f'{result} · {label}'  # e.g. '7 (d8) · Sword': the history says what was rolled for.
+    if save is not None:
+        result = describe_save(result, save[0], save[1], values[0])
+        # For the sheet's notification: which save, against what, and whether it passed.
+        outcome = {'stat': save[0], 'label': SAVES[save[0]], 'score': save[1], 'success': save_outcome(values[0], save[1])}
     if party:
         db.session.add(PartyRoll(party_id=party.id, character_name=name, result=result))
-    return {'result': result, 'values': values, 'sides': dice}
+    rolled = {'result': result, 'values': values, 'sides': dice}
+    if outcome:
+        rolled['save'] = outcome
+    return rolled
 
 
 def publish_roll(party, name, result, private_user_id=None):

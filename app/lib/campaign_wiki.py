@@ -143,9 +143,22 @@ PARTY_LINK = re.compile(r'/party/\d+/materials/(\d+)(?:#|$)')
 
 
 def party_url(party):
-    """The party page, opened on its Wiki tab."""
+    """The party page."""
     return url_for('party.party_view', ownername=party.owner_username or party.party_owner.username,
-                   party_url=party.party_url) + '#campaign-details'
+                   party_url=party.party_url)
+
+
+def linked_campaign_cards(party, known, owner_id):
+    """The Warden's campaigns this party has been shown something from, with how much of each."""
+    from app.models import Campaign
+    revealed = {entry['id'] for entry in known}
+    campaign_ids = {row.campaign_id for row in ContentEntry.query.filter(ContentEntry.id.in_(revealed)) if row.campaign_id}
+    cards = []
+    for campaign in Campaign.query.filter(Campaign.id.in_(campaign_ids), Campaign.owner_id == owner_id):
+        entries = campaign_entries(campaign)
+        cards.append(dict(campaign=campaign, cover=cover_image(campaign, entries) is not None, total=len(entries),
+                          revealed=sum(entry.id in revealed for entry in entries)))
+    return sorted(cards, key=lambda card: card['campaign'].name.casefold())
 
 
 def _warden_kinds(party, entries):
@@ -156,10 +169,11 @@ def _warden_kinds(party, entries):
             for entry in entries}
 
 
-def party_context(party, entry_id=None, owner_view=False):
+def party_context(party, entry_id=None, owner_view=False, owner_id=None):
     """A party member's page for one revealed article, or (entry_id=None) the party's wiki home.
 
-    Built from published versions only."""
+    Built from published versions only. The home is the one place for everything the party knows (#440):
+    the Warden's party notes, then what was revealed by type, and for the Warden the campaigns behind it."""
     from app.lib.campaigns import party_knowledge_tree
     entries, hierarchy = party_knowledge_tree(party.id)
     by_id = {entry['id']: entry for entry in entries}
@@ -167,14 +181,17 @@ def party_context(party, entry_id=None, owner_view=False):
                                        if target_id is not None else url_for('campaigns.party_wiki', party_id=party.id))
     context = dict(party=party, campaign=None, hierarchy=hierarchy, page_url=page_url, back_url=party_url(party),
                    content_categories=dict(CATEGORIES, **{PARTY_NOTE: N_('Party note')}),
-                   home_title=party.name, article_count=len(entries),
+                   home_title=party.name, article_count=len(entries), owner_view=owner_view,
                    # The Warden's buttons per item: note (Edit, Delete), version (Edit, Delete), original (Hide).
                    warden_kinds=_warden_kinds(party, entries) if owner_view else {})
     if entry_id is None:
         # Like a campaign's home: top-level articles by type. No cover or front page:
-        # those belong to the Warden's private campaign.
-        context.update(entry=None, intro=None, hearts=[], cover=False, home_edit_url=None,
-                       groups=home_groups([item['entry'] for item in hierarchy]))
+        # those belong to the Warden's private campaign. Party notes come first, newest first.
+        roots = [item['entry'] for item in hierarchy]
+        notes = sorted((item for item in roots if item['category'] == PARTY_NOTE), key=lambda item: item['id'], reverse=True)
+        context.update(entry=None, intro=None, hearts=[], cover=False, home_edit_url=None, party_notes=notes,
+                       groups=home_groups([item for item in roots if item['category'] != PARTY_NOTE]),
+                       linked_campaigns=linked_campaign_cards(party, entries, owner_id) if owner_view else [])
         return context
     entry = by_id.get(entry_id)
     if entry is None:

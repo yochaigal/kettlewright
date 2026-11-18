@@ -8,7 +8,14 @@
   {% for field, label, short in [('strength', _('STR'), 'str'), ('dexterity', _('DEX'), 'dex'), ('willpower', _('WIL'), 'wil'), ('hp', _('HP'), 'hp')] %}
   <div class="character-stat-card" id="character-{{ short }}-container">
     <div class="stat-card-heading">
+      {% if is_owner and field != 'hp' and not generated_preview and character[field] is not none %}
+      {# Roll a save against the current value (#398). #}
+      {% set save_label = _('%(stat)s save', stat=label) %}
+      <h4><button type="button" class="stat-save-roll" data-save-roll="{{ field }}" data-save-label="{{ save_label }}"
+        title="{{ _('Roll a %(stat)s save', stat=label) }}" aria-label="{{ _('Roll a %(stat)s save', stat=label) }}">{{ label }} <i class="fa-solid fa-dice-d20" aria-hidden="true"></i></button></h4>
+      {% else %}
       <h4>{{ label }}</h4>
+      {% endif %}
     </div>
     {% if can_edit_sheet %}
     <div class="stat-card-values">

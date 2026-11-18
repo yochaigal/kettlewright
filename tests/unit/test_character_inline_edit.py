@@ -130,6 +130,32 @@ def test_party_join_invalid_code_and_leave(sheet):
         assert json.loads(db.session.get(Party, 1).members) == []
 
 
+def test_party_button_beside_the_dice_opens_a_dialog_to_join_go_or_leave(sheet):
+    app, client = sheet
+    with app.app_context():
+        db.session.add(Party(id=1, owner=2, name='Ash Party', party_url='party', join_code='JOIN', members='[]', subowners='[]'))
+        db.session.commit()
+    page = client.get('/users/owner/characters/hero/').data
+    assert b'title="Join a party"' in page and b'id="character-party-dialog"' in page and b'name="party_code"' in page
+    wrong = client.post(section_path('party'), data={'party_code': 'wrong'}).data
+    assert b'hx-swap-oob' not in wrong  # A wrong code leaves the button alone.
+    joined = client.post(section_path('party'), data={'party_code': 'JOIN'}).data
+    assert b'id="character-party-slot" class="character-party-slot" hx-swap-oob="true"' in joined
+    assert b'title="Party: Ash Party"' in joined
+    # In a party, the same button opens a dialog: go to the party, or leave it.
+    page = client.get('/users/owner/characters/hero/').data
+    dialog = page.split(b'id="character-party-dialog"')[1].split(b'</dialog>')[0]
+    assert b'href="/users/other/parties/party/"' in dialog and b'Go to party' in dialog
+    assert b'name="leave_party" value="1"' in dialog and b'Leave party' in dialog and b'name="party_code"' not in dialog
+    left = client.post(section_path('party'), data={'leave_party': '1'}).data
+    assert b'hx-swap-oob="true"' in left and b'title="Join a party"' in left
+    with app.app_context():
+        assert db.session.get(Character, 1).party_id is None
+    with client.session_transaction() as session:
+        session['_user_id'] = '2'
+    assert b'character-party-slot' not in client.get('/users/owner/characters/hero/').data  # Owner only.
+
+
 def test_owner_only_and_csrf(sheet):
     app, client = sheet
     with client.session_transaction() as session:
@@ -161,6 +187,44 @@ def test_sheet_has_inline_controls_without_global_edit_button(sheet):
     assert client.get(section_path('stats')).status_code == 404
     for section in ('name', 'traits', 'notes', 'party', 'background'):
         assert section_path(section).encode() in response.data
+
+
+def test_owner_rolls_saves_from_stat_headings(sheet):
+    _, client = sheet
+    for html in (client.get('/users/owner/characters/hero/').data, client.get('/charedit/owner/hero/stats').data,
+                 client.get('/charedit/rest/owner/hero').data):
+        for field in (b'strength', b'dexterity', b'willpower'):
+            assert b'data-save-roll="' + field + b'"' in html
+        assert b'data-save-roll="hp"' not in html
+    assert b'data-damage="{item} damage"' in client.get('/users/owner/characters/hero/').data
+
+
+def test_owner_rolls_over_http_without_the_socket(sheet, monkeypatch):
+    app, client = sheet
+    monkeypatch.setattr('app.lib.character_rolls.secrets.randbelow', lambda sides: 6)  # Rolls a 7.
+    page = client.get('/users/owner/characters/hero/').data
+    assert b'id="character-roll"' in page and b'data-url="/charedit/owner/hero/roll"' in page
+    rolled = client.post('/charedit/owner/hero/roll', data={'dice': 'd6+d8'})
+    assert rolled.status_code == 200 and rolled.json == {'result': '7, 7 (d6+d8)', 'values': [7, 7], 'sides': [6, 8]}
+    assert rolled.headers['Cache-Control'] == 'no-store'
+    save = client.post('/charedit/owner/hero/roll', data={'dice': 'd6', 'save': 'dexterity'}).json
+    assert save['result'] == '7 (d20) · DEX 8 · Success' and save['sides'] == [20]
+    assert save['save'] == {'stat': 'dexterity', 'label': 'DEX', 'score': 8, 'success': True}
+    monkeypatch.setattr('app.lib.character_rolls.secrets.randbelow', lambda sides: 8)  # A 9: higher than DEX 8.
+    failed = client.post('/charedit/owner/hero/roll', data={'save': 'dexterity'}).json
+    assert failed['result'] == '9 (d20) · DEX 8 · Failure' and failed['save']['success'] is False
+    # A weapon's damage says what it was for, in the history too; the label is kept short and on one line.
+    damage = client.post('/charedit/owner/hero/roll', data={'dice': 'd8', 'label': '  Long\nsword  '}).json
+    assert damage['result'] == '9 (d8) · Long sword' and 'save' not in damage  # The patched die rolls 9 here.
+    long = client.post('/charedit/owner/hero/roll', data={'dice': 'd8', 'label': 'x' * 200}).json['result']
+    assert long == '9 (d8) · ' + 'x' * 60
+    assert client.post('/charedit/owner/hero/roll', data={'dice': 'd20', 'save': 'hp'}).status_code == 400
+
+    assert client.post('/charedit/owner/hero/roll', data={'dice': '9d9'}).status_code == 400
+    with client.session_transaction() as session:
+        session['_user_id'] = '2'
+    assert client.post('/charedit/owner/hero/roll', data={'dice': 'd6'}).status_code == 403
+    assert b'id="character-roll"' not in client.get('/users/owner/characters/hero/').data
 
 
 def test_inline_portrait_cancel_and_save_stay_on_sheet(sheet):
@@ -237,8 +301,10 @@ def test_warden_sheet_controls_and_portrait_survive_fragment_refreshes(warden_sh
     assert b'inline-edit-hint' in html
     for section in ('name', 'traits', 'notes', 'background'):
         assert section_path(section).encode() in html
-    for owner_action in (b'character-dice-button', b'delete-character-button', b'/section/party'):
+    for owner_action in (b'character-dice-button', b'delete-character-button', b'/section/party', b'data-save-roll'):
         assert owner_action not in html
+    for fragment in ('/charedit/owner/hero/stats', '/charedit/rest/owner/hero'):
+        assert b'data-save-roll' not in client.get(fragment).data  # Only the owner rolls for the character.
     assert client.get('/charedit/inplace-portrait/owner/hero').status_code == 200
     assert b'character-portrait-edit' in client.get(
         '/charedit/inplace-portrait/owner/hero/cancel?sheet_context=inline').data

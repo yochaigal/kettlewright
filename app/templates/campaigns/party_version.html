@@ -1,11 +1,11 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import page_header, token with context %}
-{# Edit what one party sees of a revealed article (its party version), from the party's Wiki tab.
+{# Edit what one party sees of a revealed article (its party version), from the party wiki.
    Same shape as editing a party note; the private original is never changed here. #}
 {% block workspace %}
-{% set back = url_for('party.party_view', ownername=party.owner_username or party.party_owner.username, party_url=party.party_url) ~ '#campaign-details' %}
+{% set back = url_for('campaigns.party_wiki', party_id=party.id) %}
 {% set is_original = (row.title, row.body) == (entry.title, entry.body) %}
-{% call page_header(_('What %(party)s sees', party=party.name)) %}<a href="{{ back }}">{{ _('Back to party') }}</a>
+{% call page_header(_('What %(party)s sees', party=party.name)) %}<a href="{{ back }}">{{ _('Back to party wiki') }}</a>
 <button type="submit" form="party-version-form">{{ _('Save') }}</button>{% endcall %}
 <p class="reveal-article">{{ _('Article') }}: <strong>{{ entry.title }}</strong> ·
   {{ _('They see the original.') if is_original else _('They see a party version.') }}</p>

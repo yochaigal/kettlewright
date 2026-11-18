@@ -13,6 +13,11 @@
 <script>
   const character_id = "{{ character.id }}";
 </script>
+<div id="character-roll" hidden data-url="{{ url_for('character_edit.character_roll', username=username, url_name=url_name) }}"
+  data-csrf="{{ stat_form.csrf_token.current_token if stat_form.csrf_token is defined else '' }}"
+  data-error="{{ _('Unable to roll dice. Please try again.') }}"
+  data-success="{{ _('Success') }}" data-failure="{{ _('Failure') }}"
+  data-damage="{{ _('%(item)s damage', item='{item}') }}"></div>
 {% endif %}
 <script src="{{url_for('static', filename='src/js/character_view.js')}}" type="module"></script>
 

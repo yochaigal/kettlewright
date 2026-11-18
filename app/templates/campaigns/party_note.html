@@ -2,8 +2,8 @@
 {% from 'campaigns/forms.html' import page_header, token with context %}
 {# Edit a party note: the party sees the change straight away. Notes never appear in Campaigns. #}
 {% block workspace %}
-{% set back = url_for('party.party_view', ownername=party.owner_username or party.party_owner.username, party_url=party.party_url) ~ '#campaign-details' %}
-{% call page_header(_('Edit party note')) %}<a href="{{ back }}">{{ _('Back to party') }}</a>
+{% set back = url_for('campaigns.party_wiki', party_id=party.id) %}
+{% call page_header(_('Edit party note')) %}<a href="{{ back }}">{{ _('Back to party wiki') }}</a>
 <button type="submit" form="party-note-form">{{ _('Save note') }}</button>{% endcall %}
 <form id="party-note-form" class="party-note-form" method="post">
   {{ token(entry.version) }}

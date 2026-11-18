@@ -2,17 +2,49 @@ import diceModal from '../dice_modal.js';
 import dice3d from '../dice3d.js';
 import {actorKey} from './token_stats.js';
 
-export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPreview}) {
+const MINIMIZED = 'board-rolls-minimized';
+function stored(key) {try {return localStorage.getItem(key);} catch (_) {return null;}}
+function store(key, value) {try {localStorage.setItem(key, value);} catch (_) { /* Optional preference. */ }}
+
+export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPreview, osd = null}) {
   const panel = document.getElementById('board-rolls');
   const name = document.getElementById('board-roll-name'), choices = document.getElementById('board-roll-actor');
   const actions = document.getElementById('board-roll-actions'), result = document.getElementById('board-roll-result');
   const publicToggle = document.getElementById('board-roll-public');
+  const minimize = document.getElementById('board-roll-minimize'), toggle3d = document.getElementById('board-roll-3d');
   const modalPublic = document.getElementById('warden-public-roll');
   const modalTitle = document.querySelector('#dice-modal .modal-card-title');
   let actors = new Map(), active = null, preferred = '', modalActor = null;
   let stopped = false, rolling = false, frame = null, rendered = '', lastSelection = '';
   if (publicToggle) publicToggle.checked = false;
   if (modalPublic) modalPublic.checked = false;
+
+  // Minimize (#385): only the heading stays, so the roller is out of the way when zoomed in. Remembered.
+  function setMinimized(minimized) {
+    panel.classList?.toggle('is-minimized', minimized);
+    if (!minimize) return;
+    minimize.setAttribute('aria-expanded', String(!minimized));
+    const label = minimized ? minimize.dataset.expand : minimize.dataset.minimize;
+    minimize.title = label; minimize.setAttribute('aria-label', label);
+    const icon = minimize.querySelector?.('i');
+    if (icon) icon.className = `fa-solid fa-chevron-${minimized ? 'up' : 'down'}`;
+  }
+  const onMinimize = () => {
+    const minimized = !panel.classList?.contains('is-minimized');
+    setMinimized(minimized); store(MINIMIZED, minimized ? 'on' : 'off');
+  };
+  setMinimized(stored(MINIMIZED) === 'on');
+  minimize?.addEventListener('click', onMinimize);
+
+  // 3D dice on the whiteboard only (#436): dice3d keeps this page's choice apart from the site-wide one.
+  const show3d = () => {if (toggle3d) toggle3d.setAttribute('aria-pressed', String(dice3d.isEnabled()));};
+  const on3d = () => dice3d.setEnabled(!dice3d.isEnabled());
+  if (toggle3d) {
+    toggle3d.hidden = !dice3d.isAvailable?.();
+    toggle3d.addEventListener('click', on3d);
+    show3d();
+  }
+  globalThis.addEventListener?.('dice3d-preference', show3d);
 
   function redraw() {if (!stopped && frame === null) frame = requestAnimationFrame(draw);}
   function draw() {
@@ -94,18 +126,26 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
     if (save) body.set('save', save);
     rolling = true; draw();
     const actorId = actor?.id;
+    // The name the server gives this roll, so its echo over the socket is recognised (board_roll_osd.js).
+    const rollName = actor?.name || config.messages.warden;
+    let released = false;
+    const release = (roll = null) => {if (!released) {released = true; osd?.release(roll && rollName, roll?.result);}};
+    osd?.hold();
     try {
       const response = await fetch(config.warden && !actor ? config.wardenRollUrl : config.rollUrl,
         {method: 'POST', body, cache: 'no-store', signal: AbortSignal.timeout(15000)});
       if (!response.ok || response.redirected) throw new Error(config.messages.rollFailed);
       const roll = await response.json();
+      release(roll);
       if (animate && !stopped) await dice3d.show(roll);
       if (!stopped && actorId === active?.id) result.textContent = roll.result;
+      // Rolls from the dice modal already show their result there.
+      if (animate && !stopped) osd?.own(rollName, roll.result);
       return roll;
     } catch (error) {
       if (!stopped && actorId === active?.id) result.textContent = config.messages.rollFailed;
       throw error;
-    } finally {rolling = false; if (!stopped) draw();}
+    } finally {release(); rolling = false; if (!stopped) draw();}
   }
   function openModal(actor) {
     if (!canRoll() || rolling) return;
@@ -138,6 +178,8 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
   redraw();
   return {redraw, destroy() {
     stopped = true; unsubscribe(); panel.hidden = true;
+    minimize?.removeEventListener('click', onMinimize); toggle3d?.removeEventListener('click', on3d);
+    globalThis.removeEventListener?.('dice3d-preference', show3d);
     if (frame !== null) cancelAnimationFrame(frame);
     for (const [button, listener] of special) button.removeEventListener('click', listener);
   }};

@@ -41,11 +41,11 @@
       </div>
       {% endif %} {% if it.dice|length > 0 and is_owner and (not companion_sheet or can_roll) %}
       {% if character.panicked %}
-      <div class="pointer" title="{{_('Roll dice (impaired)')}}" onclick="KW_rollDiceCallback('4')" style="color:#ff5555">
+      <div class="pointer" title="{{_('Roll dice (impaired)')}}" onclick="KW_rollDiceCallback('4', {{ (it.name|tr('equipment'))|striptags|tojson|forceescape }})" style="color:#ff5555">
         <i class="fa-solid fa-dice dice"></i>
       </div>
       {% else %}
-      <div class="pointer" title="{{_('Roll dice')}}" onclick="KW_rollDiceCallback({{it.dice}})">
+      <div class="pointer" title="{{_('Roll dice')}}" onclick="KW_rollDiceCallback({{it.dice}}, {{ (it.name|tr('equipment'))|striptags|tojson|forceescape }})">
         <i class="fa-solid fa-dice dice"></i>
       </div>
       {% endif %}          

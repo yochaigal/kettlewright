@@ -56,6 +56,7 @@ const diceModal = {
     toggle.closest("label").hidden = !dice3d.isAvailable();
     toggle.checked = dice3d.isEnabled();
     toggle.addEventListener("change", () => dice3d.setEnabled(toggle.checked));
+    window.addEventListener("dice3d-preference", () => { toggle.checked = dice3d.isEnabled(); });
   },
 
   // Rolls and their dice animation keep the modal's buttons disabled; nested holds release together.

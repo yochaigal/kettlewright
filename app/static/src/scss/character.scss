@@ -347,6 +347,44 @@
   }
 }
 
+// Party button beside the dice, and its join dialog.
+.character-party-slot { display: contents; }
+.character-party-button { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; color: inherit; }
+.character-party-dialog {
+  // Centred over the page like the export dialog (the site's reset leaves <dialog> unpositioned).
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); margin: 0;
+  width: 26em; max-width: calc(100vw - 2em); max-height: calc(100dvh - 2em); overflow: auto;
+  box-sizing: border-box; padding: 1.5em;
+  border: 1px solid var(--fg); border-radius: 6px; background: var(--bg); color: var(--fg);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, .25);
+  &::backdrop { background: rgba(0, 0, 0, .45); }
+  form { margin: 0; padding: 0; border: 0; box-shadow: none; background: transparent; width: auto; }
+  h3 { margin: 0 0 .6em; }
+  label { display: block; margin-bottom: .35em; font-weight: 600; }
+  input[type=text] { width: 100%; box-sizing: border-box; }
+  .character-party-name { margin: 0; font-size: 1.15em; overflow-wrap: anywhere; }
+  .character-party-hint { margin: .6em 0 0; font-size: .9em; opacity: .8; }
+  .character-party-error { margin: .75em 0 0; }
+  .character-party-error:empty { display: none; }
+  // Leave on the left, away from the main action; Cancel and the main action on the right.
+  .character-party-actions {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .6em; margin-top: 1.5em;
+    > * { margin: 0; box-sizing: border-box; min-height: 2.6em; }
+    [data-party-leave] { margin-right: auto; }
+    [data-party-leave].is-danger { border-color: #b33a3a; color: #b33a3a; }
+  }
+  .character-party-go, .character-party-actions button[type=submit]:not([data-party-leave]) {
+    display: inline-flex; align-items: center; gap: .4em; padding: 10px 14px;
+    border: 1.5px solid var(--fg); border-radius: 2px; background: var(--fg); color: var(--bg);
+    font-weight: 600; text-decoration: none;
+    &:hover { opacity: .85; }
+  }
+}
+@media (max-width: 480px) {
+  .character-party-dialog .character-party-actions > * { flex: 1 1 auto; justify-content: center; }
+  .character-party-dialog .character-party-actions [data-party-leave] { flex-basis: 100%; order: 1; margin-right: 0; }
+}
+
 .character-print-inventories {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(65mm, 1fr));
@@ -678,6 +716,20 @@
     margin: 0; font-size: 4.4rem; line-height: 1; font-style: normal;
     font-weight: 700; letter-spacing: .04em;
   }
+  // STR/DEX/WIL roll a save (#398): the heading itself is the button, with a small d20 as the cue.
+  .stat-card-heading .stat-save-roll {
+    display: inline-flex; align-items: center; gap: .3em; margin: 0; padding: .05em .2em;
+    border: 0; border-radius: 6px; background: transparent; box-shadow: none; color: inherit;
+    font: inherit; letter-spacing: inherit; line-height: inherit; cursor: pointer;
+    i { font-size: .32em; opacity: .55; transition: opacity .15s, transform .15s; }
+    &:hover, &:focus-visible { background: color-mix(in srgb, var(--fg) 7%, transparent); }
+    &:hover i, &:focus-visible i { opacity: 1; transform: rotate(-20deg); }
+    &:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+    &:disabled { cursor: progress; opacity: .6; }
+  }
+  // The outcome of a save, briefly, on its card.
+  .character-stat-card.save-success { box-shadow: 0 0 0 3px #3f8f4f; transition: box-shadow .2s; }
+  .character-stat-card.save-failure { box-shadow: 0 0 0 3px #b33a3a; transition: box-shadow .2s; }
   .stat-card-values { display: grid; grid-template-columns: minmax(0, 1fr) .5rem minmax(0, 1fr); align-items: end; gap: .4rem; }
   .sheet-stat-form { display: block; margin: 0; padding: 0; min-width: 0; max-width: 100%; box-sizing: border-box; box-shadow: none; background: transparent; }
   .sheet-stat-form > label { display: block; text-align: center; font-size: 1rem; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .5rem; }

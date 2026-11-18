@@ -13,10 +13,14 @@ import {stateFromUpdate} from './whiteboard_updates.js';
 import {setupBoardControls} from './board_controls.js';
 import {createTokenStats} from './token_stats.js';
 import {createBoardRolls} from './board_rolls.js';
+import {createRollOsd} from './board_roll_osd.js';
+import dice3d from '../dice3d.js';
 import {createTokenPortraits} from './token_portraits.js';
 import {editorLocale} from './locale.js';
 
 const config = JSON.parse(document.getElementById('shared-map-config').textContent);
+// The whiteboard keeps its own 3D dice choice (#436); set before the roller and dice modal read it.
+dice3d.setScope('whiteboard');
 const editor = document.getElementById('editor'), root = createRoot(editor);
 const status = document.getElementById('map-status');
 const tell = key => {status.textContent = config.messages[key];};
@@ -51,9 +55,11 @@ const tokens = setupPartyTokens({editor, config, getApi: () => api, getGeneratio
 
 const boardControls = setupBoardControls({config, getApi: () => api, socket,
   canEdit: () => config.editing && initialized && !stopped && !importing && !playerPreview});
+const rollOsd = createRollOsd({container: document.getElementById('board-roll-osd'),
+  format: (name, result) => config.messages.rolled.replace('{name}', name).replace('{result}', result)});
 const boardRolls = createBoardRolls({config, getApi: () => api, updates: actorUpdates,
   canRoll: () => initialized && !stopped && !importing && !playerPreview,
-  isPlayerPreview: () => playerPreview});
+  isPlayerPreview: () => playerPreview, osd: rollOsd});
 const tokenStats = createTokenStats({editor, config, getApi: () => api, updates: actorUpdates,
   confirmReveal: boardControls.confirmReveal,
   canReveal: () => config.warden && initialized && !stopped && !importing && !playerPreview,
@@ -298,6 +304,7 @@ function polling() {clearInterval(poll); poll = setInterval(() => {if (!document
 socket.on('connect', () => {connected = true; polling(); refresh();});
 socket.on('disconnect', () => {connected = false; polling(); refresh();});
 socket.on('shared_map_changed', receiveUpdate);
+socket.on('dice_rolled', message => {if (!stopped) rollOsd.received(message);});
 socket.on('party_members_changed', data => {if (data.party_id === config.partyId) refresh();});
 document.addEventListener('visibilitychange', () => {if (!document.hidden) refresh();});
 window.addEventListener('online', () => {refresh(); if (pending) scheduleSave(); scheduleFog();});
