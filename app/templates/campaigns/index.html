@@ -59,7 +59,7 @@
 {% set entries = articles[campaign.id] %}
 <li class="campaign-card" data-tree-row data-search="{{ (campaign.name ~ ' ' ~ entries|map(attribute='title')|join(' '))|lower }}">
   <a class="campaign-card-cover" href="{{ url_for('campaigns.wiki', campaign_id=campaign.id) }}" tabindex="-1" aria-hidden="true">
-    {% if covers[campaign.id] %}<img src="{{ url_for('campaigns.campaign_cover', campaign_id=campaign.id) }}" alt="" loading="lazy">
+    {% if covers[campaign.id] %}<img src="{{ url_for('campaigns.campaign_cover', campaign_id=campaign.id) }}" alt="" loading="lazy" data-cover>
     {% else %}<span class="campaign-card-placeholder">{{ campaign.name[:1]|upper }}</span>{% endif %}
   </a>
   <div class="campaign-card-body">

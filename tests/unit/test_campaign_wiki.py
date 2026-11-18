@@ -175,7 +175,7 @@ def test_cover_prefers_the_front_page(setup):
     assert response.status_code == 302 and '/material-images/1/' in response.location
     assert client.get(response.location).status_code == 200
     home = wiki(client).get_data(as_text=True)
-    assert 'class="wiki-cover" src="/campaigns/1/cover"' in home
+    assert '<div class="wiki-cover"><img src="/campaigns/1/cover"' in home
 
 
 def test_older_inline_images_are_served_as_files(setup):

@@ -126,7 +126,7 @@
       {# Outside the refreshed content: a live update must not reload the drawing. #}
       {% if graph and party %}{% include 'campaigns/map_panel.html' %}{% endif %}
     {% else %}
-      {% if cover %}<img class="wiki-cover" src="{{ url_for('campaigns.campaign_cover', campaign_id=campaign.id) }}" alt="">{% endif %}
+      {% if cover %}<div class="wiki-cover"><img src="{{ url_for('campaigns.campaign_cover', campaign_id=campaign.id) }}" alt="" data-cover></div>{% endif %}
       <header class="wiki-header">
         <div>
           <h1>{{ home_title }}</h1>
