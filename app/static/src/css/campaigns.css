@@ -536,3 +536,11 @@ body.dark-mode .kw-action-danger:hover {background:#a33b3b;color:#fff;}
 .party-notes-empty {grid-column:1 / -1;color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
 @media (max-width:480px) {.pw-cards {grid-template-columns:repeat(2,minmax(0,1fr));} .pw-card {width:auto;}}
 @media (pointer:coarse) {.pw-card-actions .kw-action {min-height:2.6em;}}
+/* Party wiki, Warden only: Edit / Hide / Delete in the article header and on article cards. */
+.campaign-wiki .wiki-actions form {display:inline-flex;margin:0;padding:0;border:0;background:none;width:auto;}
+.wiki-edit.wiki-danger {border-color:#a33b3b;color:#a33b3b;}
+.wiki-edit.wiki-danger:hover {background:#a33b3b;color:#fff;}
+.kw-action.wiki-danger {border-color:color-mix(in srgb,#a33b3b 55%,var(--bg));color:#a33b3b;}
+.kw-action.wiki-danger:hover {border-color:#a33b3b;background:#a33b3b;color:#fff;}
+body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {color:#e08080;border-color:color-mix(in srgb,#e08080 55%,var(--bg));}
+.wiki-card-actions {position:relative;z-index:1;margin-top:.5em;}

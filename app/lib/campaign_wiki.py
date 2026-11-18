@@ -148,6 +148,14 @@ def party_url(party):
                    party_url=party.party_url) + '#campaign-details'
 
 
+def _warden_kinds(party, entries):
+    """{entry id: 'note' | 'version' | 'original'} for what this party sees, for the Warden's buttons."""
+    from app.lib.campaigns import party_versions
+    versions = party_versions(party.id)
+    return {entry['id']: 'note' if entry['category'] == PARTY_NOTE else 'version' if entry['id'] in versions else 'original'
+            for entry in entries}
+
+
 def party_context(party, entry_id=None, owner_view=False):
     """A party member's page for one revealed article, or (entry_id=None) the party's wiki home.
 
@@ -159,7 +167,9 @@ def party_context(party, entry_id=None, owner_view=False):
                                        if target_id is not None else url_for('campaigns.party_wiki', party_id=party.id))
     context = dict(party=party, campaign=None, hierarchy=hierarchy, page_url=page_url, back_url=party_url(party),
                    content_categories=dict(CATEGORIES, **{PARTY_NOTE: N_('Party note')}),
-                   home_title=party.name, article_count=len(entries))
+                   home_title=party.name, article_count=len(entries),
+                   # The Warden's buttons per item: note (Edit, Delete), version (Edit, Delete), original (Hide).
+                   warden_kinds=_warden_kinds(party, entries) if owner_view else {})
     if entry_id is None:
         # Like a campaign's home: top-level articles by type. No cover or front page:
         # those belong to the Warden's private campaign.
@@ -181,19 +191,10 @@ def party_context(party, entry_id=None, owner_view=False):
 
     outgoing = linked_ids(entry)
     incoming = {other['id'] for other in entries if entry_id in linked_ids(other)}
-    if owner_view and entry['category'] != PARTY_NOTE:
-        # Edit is for party versions only; an article showing the original is edited in Campaigns.
-        original = ContentEntry.query.get(entry_id)
-        owner_view = (entry['title'], entry['body']) != (original.title, original.body)
+    # The Warden's buttons come from warden_kinds (see wiki.html warden_actions); originals are
+    # edited in Campaigns, party versions and notes from the party.
     context.update(entry=entry, references=entry.get('references') or {}, toc=headings(entry['body']),
-                   # The party's owner may open the private original; members never see it.
-                   # Party notes are edited from their party, never in Campaigns.
-                   # The original is edited in Campaigns; here only what this party sees.
-                   edit_url=(url_for('campaigns.edit_party_note', party_id=party.id, entry_id=entry_id)
-                             if entry['category'] == PARTY_NOTE else
-                             url_for('campaigns.edit_party_version', party_id=party.id, entry_id=entry_id))
-                            if owner_view else None,
-                   **_article_parts(hierarchy, entry_id, by_id, outgoing, incoming))
+                   edit_url=None, **_article_parts(hierarchy, entry_id, by_id, outgoing, incoming))
     return context
 
 

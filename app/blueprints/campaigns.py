@@ -341,6 +341,9 @@ def delete_party_note(party_id, entry_id):
     db.session.delete(entry)
     db.session.commit()
     notify_parties([party.id])
+    flash(_('Party note deleted.'), 'success')
+    if request.form.get('return_to') == 'wiki':
+        return redirect(url_for('campaigns.party_wiki', party_id=party.id))
     return back_to_party(party)
 
 
@@ -857,7 +860,9 @@ def reveal_choices(entry):
 
 
 def after_reveal(entry, party_id):
-    """Back where the Reveal popup was opened: the article (default) or the party's Wiki tab."""
+    """Back where the action started: the article (default), the party's Wiki tab, or its party wiki."""
+    if request.values.get('return_to') == 'wiki':
+        return redirect(url_for('campaigns.party_wiki', party_id=party_id))
     if request.values.get('return_to') == 'party':
         from app.lib.campaign_wiki import party_url
         return redirect(party_url(db.session.get(Party, party_id)))

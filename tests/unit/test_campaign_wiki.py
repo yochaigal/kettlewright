@@ -356,6 +356,32 @@ def test_party_wiki_home_groups_only_revealed_articles(setup):
     assert 'href="/users/user1/parties/party1/#campaign-details"' in page  # Back to party.
 
 
+def test_party_wiki_gives_the_warden_edit_hide_and_delete(setup):
+    """Party wiki, Warden: Hide on originals, Edit and Delete on party versions and notes; back to the wiki."""
+    app, client = setup
+    original = create_entry(client, title='Plain', body='As written')
+    version = create_entry(client, title='Secret', body='Truth')
+    assert reveal(client, original, mode='everything').status_code == 302
+    assert reveal(client, version, title='Rumour', body='What they heard').status_code == 302
+    assert client.post('/party/1/notes', data={'title': 'Table note', 'body': 'Said aloud'}).status_code == 302
+    home = client.get('/party/1/wiki/').text
+    assert home.count('name="return_to" value="wiki"') == 3  # One remove form per card.
+    assert f'href="/party/1/materials/{version}/version"' in home and f'href="/party/1/materials/{original}/version"' not in home
+    assert 'data-confirm="Hide this article from the party?' in home and 'data-confirm="Delete this party version?' in home
+    assert 'data-confirm="Delete this party note?' in home
+    page = client.get(f'/party/1/materials/{version}').text
+    assert 'Edit party version' in page and f'action="/materials/{version}/revoke/1"' in page
+    plain = client.get(f'/party/1/materials/{original}').text
+    assert ' Hide</button>' in plain and f'/party/1/materials/{original}/version' not in plain
+    gone = client.post(f'/materials/{original}/revoke/1', data={'version': 1, 'return_to': 'wiki'})
+    assert gone.location == '/party/1/wiki/'
+    with app.app_context():
+        note_id = ContentEntry.query.filter_by(category='party_note').one().id
+    assert client.post(f'/party/1/notes/{note_id}/delete', data={'return_to': 'wiki'}).location == '/party/1/wiki/'
+    login(client, 2)  # Players get no buttons.
+    assert 'name="return_to" value="wiki"' not in client.get('/party/1/wiki/').text
+
+
 def test_party_wiki_home_links_and_access(setup):
     app, client = setup
     entry = create_entry(client)
