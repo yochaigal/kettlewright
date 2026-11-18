@@ -4,16 +4,16 @@
    (party_entry_image), never the original. #}
 {% macro party_card(entry, search, tag=None, icon=None) %}
 {% set url = url_for('campaigns.party_entry', party_id=party.id, entry_id=entry.id) %}
-<li class="party-card" data-tree-row data-search="{{ search|lower }}">
-<div class="party-card-inner" data-tree-key="entry-{{ entry.id }}">
+<li class="pw-card" data-tree-row data-search="{{ search|lower }}">
+<div class="pw-card-inner" data-tree-key="entry-{{ entry.id }}">
   {# Every card has the same picture area: the party's picture, or a placeholder. #}
-  <a class="party-card-cover" href="{{ url }}" tabindex="-1" aria-hidden="true">
+  <a class="pw-card-cover" href="{{ url }}" tabindex="-1" aria-hidden="true">
     {% if entry.has_image %}<img src="{{ url_for('campaigns.party_entry_image', party_id=party.id, entry_id=entry.id) }}" alt="" loading="lazy" data-cover>
-    {% else %}<span class="party-card-placeholder">{% if icon %}<i class="fa-solid fa-{{ icon }}"></i>{% else %}{{ (entry.title|striptags)[:1]|upper }}{% endif %}</span>{% endif %}
+    {% else %}<span class="pw-card-placeholder">{% if icon %}<i class="fa-solid fa-{{ icon }}"></i>{% else %}{{ (entry.title|striptags)[:1]|upper }}{% endif %}</span>{% endif %}
   </a>
-  {% if tag %}<span class="party-card-tag" title="{{ _('Only you see this label') }}">{{ tag }}</span>{% endif %}
-  <a class="party-card-title" href="{{ url }}">{{ entry.title|markdown_inline }}</a>
-  {% if editing %}<span class="party-card-actions kw-actions">{{ caller() }}</span>{% endif %}
+  {% if tag %}<span class="pw-card-tag" title="{{ _('Only you see this label') }}">{{ tag }}</span>{% endif %}
+  <a class="pw-card-title" href="{{ url }}">{{ entry.title|markdown_inline }}</a>
+  {% if editing %}<span class="pw-card-actions kw-actions">{{ caller() }}</span>{% endif %}
 </div>
 </li>
 {% endmacro %}
@@ -40,11 +40,11 @@
 {% endmacro %}
 
 {% macro party_children(items) %}
-<ul class="party-cards">{{ party_article_cards(items) }}</ul>
+<ul class="pw-cards">{{ party_article_cards(items) }}</ul>
 {% endmacro %}
 
 {% macro party_note_cards(notes) %}
-<ul class="party-cards party-notes">
+<ul class="pw-cards party-notes">
 {% for note in notes %}
 {% call party_card(note, note.title ~ ' ' ~ content_excerpt(note.body), icon='note-sticky') %}
 <a class="kw-action" href="{{ url_for('campaigns.edit_party_note', party_id=party.id, entry_id=note.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>

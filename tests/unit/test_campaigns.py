@@ -295,8 +295,8 @@ def test_party_tree_labels_edits_and_hides_party_versions(setup):
     entry_id = create_entry(client)  # SECRET NAME / SECRET BODY
     assert reveal(client, entry_id, mode='everything').status_code == 302
     html = client.get('/party/1/materials/').text
-    assert 'class="party-card"' in html and 'party-card-placeholder' in html  # Same-size card; placeholder picture.
-    assert 'class="party-card-tag"' in html and '>Original</span>' in html
+    assert 'class="pw-card"' in html and 'pw-card-placeholder' in html  # Same-size card; placeholder picture.
+    assert 'class="pw-card-tag"' in html and '>Original</span>' in html
     assert f'href="/party/1/materials/{entry_id}/version"' not in html  # No Edit on the original: that is in Campaigns.
     assert f'/party/1/materials/{entry_id}/version' not in client.get(f'/party/1/materials/{entry_id}').text
     assert f'action="/materials/{entry_id}/revoke/1"' in html and ' Hide</button>' in html
