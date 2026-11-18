@@ -3,7 +3,8 @@
     <h3 id="character-party-heading" class="no-space">{{_('Party')}}</h3>
     {% if party %}
     <button type="button" class="button" style="margin-top: 0px"
-      hx-get="/charedit/leave-party/{{username}}/{{url_name}}" hx-target="#character-party-container"
+      hx-post="/charedit/leave-party/{{username}}/{{url_name}}" hx-target="#character-party-container"
+      hx-vals='{{ {"csrf_token": companion_form().csrf_token.current_token if companion_form().csrf_token is defined else ''}|tojson }}'
       hx-confirm="Do you want to leave party <br/>{{ party.name|markdown_inline }}?" data-confirm-title="Leave party"
       data-confirm-button="Leave">
       {{_('Leave party')}}
