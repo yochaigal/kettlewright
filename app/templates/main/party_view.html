@@ -18,13 +18,18 @@
 <script type="module" src="{{url_for('static', filename='src/js/campaign-covers.js')}}"></script>{% endif %}
 <section class="body-container">
   {% with messages = get_flashed_messages(with_categories=true) %} {% if messages is not none and messages|length > 0 %}
-  {% for category, message in messages %}
+  {# Confirmations (success) are short toasts; anything else keeps the alert, titled Error unless known. #}
+  {% for category, message in messages if category != 'success' or not campaign_enabled %}
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       KW_alert({{ {'wilderness': _("Wilderness actions"), 'dungeon': _("Dungeon actions")}.get(category, _("Error"))|tojson }}, '{{message|squote2js}}')
     });
   </script>
   {% endfor %}
+  {% set notices = messages|selectattr(0, 'equalto', 'success')|list if campaign_enabled else [] %}
+  {% if notices %}<div class="toasts" role="status">
+  {% for category, message in notices %}<div class="toast" x-data="{open:true,t:null}" x-show="open" x-init="t=setTimeout(()=>open=false,6000)" @mouseenter="clearTimeout(t)" @mouseleave="clearTimeout(t);t=setTimeout(()=>open=false,3000)"><span>{{ message }}</span><button type="button" class="toast-close" aria-label="{{ _('Dismiss') }}" @click="open=false">×</button></div>
+  {% endfor %}</div>{% endif %}
   {% endif %} {% endwith %}
   <div id="party-form" class="sheet box form party-view-sheet">
     <div class="party-header">

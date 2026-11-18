@@ -162,14 +162,17 @@
       {% if campaign %}
       {# Who has been shown this campaign: worked out from reveals, there is no connection step. #}
       <section class="wiki-audience" aria-labelledby="wiki-audience-title">
-        <h2 id="wiki-audience-title">{{ _('Revealed to') }}</h2>
+        <div class="wiki-audience-head">
+          <h2 id="wiki-audience-title"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{ _('Revealed to') }}</h2>
+          {% if audience %}<p class="wiki-audience-hint">{{ _('Parties that can read articles from this campaign.') }}</p>{% endif %}
+        </div>
         {% if audience %}
         <ul>
         {% for party, count in audience %}
           <li><a href="{{ url_for('campaigns.party_wiki', party_id=party.id) }}">{{ party.name|markdown_inline }}</a>
             <span class="wiki-badge">{{ _('%(count)s articles', count=count) }}</span>
             <form method="post" action="{{ url_for('campaigns.hide_campaign', campaign_id=campaign.id, party_id=party.id) }}"
-                  data-confirm="{{ _('Hide everything in %(campaign)s from %(party)s? What they were shown is deleted.', campaign=campaign.name, party=party.name) }}" data-confirm-label="{{ _('Hide everything') }}">
+                  data-confirm="{{ _('Hide everything in %(campaign)s from %(party)s? They will no longer see any of its articles, and party versions written for them are deleted. Your originals are not changed.', campaign=campaign.name, party=party.name) }}" data-confirm-label="{{ _('Hide everything') }}">
               {{ content_form.csrf_token }}<button type="submit" class="kw-action kw-action-danger"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> {{ _('Hide everything') }}</button>
             </form></li>
         {% endfor %}

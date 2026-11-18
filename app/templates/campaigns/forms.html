@@ -74,7 +74,8 @@
  data-original="{{ {'title': entry.title, 'body': entry.body, 'path_type': entry.path_type}|tojson|forceescape }}"
  data-labels="{{ {'none': _('Not revealed yet.'), 'same': _('Sees the original.'), 'custom': _('Sees its party version.'),
                   'reveal': _('Reveal to %(party)s', party='{party}'), 'update': _('Update %(party)s', party='{party}'),
-                  'hide': _('Hide from %(party)s', party='{party}'), 'choose': _('Choose a party'),
+                  'hide': _('Hide from %(party)s', party='{party}'), 'delete': _('Delete %(party)s’s version', party='{party}'),
+                  'choose': _('Choose a party'),
                   'map': _('Points of interest revealed: %(points)s of %(total_points)s · Paths: %(paths)s of %(total_paths)s',
                            points='{points}', paths='{paths}',
                            total_points=entry.pointcrawl.nodes|length if entry.pointcrawl else 0,
@@ -122,7 +123,8 @@
 </form>
 {% for item in parties if item.status != 'none' %}
 <form id="revoke-{{ entry.id }}-{{ item.id }}" method="post" action="{{ url_for('campaigns.revoke', entry_id=entry.id, party_id=item.id) }}" hidden
- data-confirm="{{ _('Hide this article from %(party)s? What they were shown is deleted.', party=item.name) }}" data-confirm-label="{{ _('Hide') }}">
+ {% if item.status == 'custom' %}data-confirm="{{ _('Delete the party version for %(party)s? They will no longer see this article. Your original is not changed.', party=item.name) }}" data-confirm-label="{{ _('Delete') }}"
+ {% else %}data-confirm="{{ _('Hide this article from %(party)s? They will no longer see it. Your original is not changed.', party=item.name) }}" data-confirm-label="{{ _('Hide') }}"{% endif %}>
 {{ token(item.version) }}{% if return_to %}<input type="hidden" name="return_to" value="{{ return_to }}">{% endif %}</form>
 {% endfor %}
 {% endmacro %}

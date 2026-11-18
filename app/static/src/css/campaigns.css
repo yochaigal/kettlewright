@@ -20,7 +20,8 @@
 .campaign-workspace .campaign-actions > form > button,
 .campaign-workspace .campaign-tree-root > summary > form > button,
 .campaign-workspace .campaign-modal-trigger {
-  display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
+  /* gap: flex drops the space between an icon and its label (#432). */
+  display:inline-flex;align-items:center;justify-content:center;gap:.45em;box-sizing:border-box;
   min-width:0;max-width:100%;min-height:44px;margin:0;padding:.6rem 1rem;
   border:1.5px solid currentColor;border-radius:2px;background:transparent;color:var(--fg);
   font:inherit;font-weight:600;line-height:1.3;text-align:center;text-decoration:none;
@@ -479,11 +480,19 @@ button.wiki-edit:hover {background:var(--fg);color:var(--bg);}
 .party-version-original {display:flex;flex-wrap:wrap;align-items:center;gap:.25rem 1rem;margin:1.5em 0 0;padding:0;border:0;background:none;width:auto;}
 .party-version-original button.link-button {min-height:44px;padding:0;border:0;background:none;color:inherit;font:inherit;font-weight:600;text-decoration:underline;cursor:pointer;}
 /* Campaign wiki home: parties shown something from this campaign, with Hide everything. */
-.wiki-audience {margin:0 0 1.5em;}
-.wiki-audience h2 {font-size:1.1em;margin:0 0 .5em;}
-.wiki-audience ul {display:grid;gap:.25rem;margin:0;padding:0;list-style:none;}
-.wiki-audience li {display:flex;flex-wrap:wrap;align-items:center;gap:.5em 1em;}
-.wiki-audience form {margin:0 0 0 auto;padding:0;border:0;background:none;width:auto;}
+/* .campaign-wiki prefix: .campaign-workspace section (margin, padding 0) would otherwise win. */
+.campaign-wiki .wiki-audience {margin:1.25em 0 2.5em;padding:1em 1.25em .35em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.campaign-wiki .wiki-audience-head {display:flex;flex-wrap:wrap;align-items:baseline;gap:.25em .75em;margin:0 0 .35em;}
+.campaign-wiki .wiki-audience h2 {display:flex;align-items:center;gap:.45em;margin:0;font-size:.82em;letter-spacing:.07em;color:color-mix(in srgb,var(--fg) 75%,var(--bg));}
+.campaign-wiki .wiki-audience h2 i {font-size:.95em;opacity:.8;}
+.campaign-wiki .wiki-audience-hint {margin:0;font-size:.85em;color:color-mix(in srgb,var(--fg) 60%,var(--bg));}
+.campaign-wiki .wiki-audience ul {margin:0;padding:0;list-style:none;}
+.campaign-wiki .wiki-audience li {display:flex;flex-wrap:wrap;align-items:center;gap:.5em .75em;margin:0;padding:.7em 0;}
+.campaign-wiki .wiki-audience li + li {border-top:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));}
+.campaign-wiki .wiki-audience li > a {font-weight:600;color:inherit;text-decoration:none;}
+.campaign-wiki .wiki-audience li > a:hover {text-decoration:underline;}
+.campaign-wiki .wiki-audience form {margin:0 0 0 auto;padding:0;border:0;background:none;width:auto;}
+.campaign-wiki .wiki-audience .wiki-empty {margin:0;padding:.4em 0 .9em;}
 
 /* Edit / Hide / Delete on party and campaign pages: one small outlined button, red for removing. */
 .kw-actions {display:inline-flex;flex-wrap:wrap;align-items:center;gap:.5em;}
