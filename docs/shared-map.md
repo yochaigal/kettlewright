@@ -2,6 +2,8 @@
 
 Whiteboard (formerly Shared Map) is an independent, collaborative Excalidraw canvas per party. The existing `/party/<id>/shared-map` URLs and drawings remain valid. All current party members can draw and edit; only the Warden can load a campaign map or change Fog of War. Only the Warden has **Reset the canvas** and **Open** in the menu. The server also refuses a player's save that would remove every unlocked object from a board with 10 or more; the player's page then puts the board back and says why (#437). The same happens to a player's change to locked objects. Leaving the party revokes read/write access.
 
+The whiteboard can also run inside Discord as an Activity; see [Whiteboard in Discord](discord.md#whiteboard-in-discord).
+
 ## Access and deployment
 
 Whiteboard is available to all current party members without tester lists. Its scene, tokens and laser require current membership; map sources, previews, imports and fog changes require the party Warden. Map sources also require ownership of the source map. See [access and deployment](campaigns.md#deployment-and-maintenance).

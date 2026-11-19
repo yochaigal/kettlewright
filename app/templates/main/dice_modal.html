@@ -1,6 +1,7 @@
 <div class="modal dice-modal" id="dice-modal" role="dialog" aria-modal="true" aria-labelledby="dice-modal-title"
   data-rolling-text="{{ _('Rolling…') }}" data-highest-text="{{ _('Highest') }}">
-  {% block dice_modal_scripts %}<script src="{{ url_for('static', filename='src/js/dice_modal.js') }}" type="module"></script>{% endblock %}
+  {# Inside a Discord Activity the whiteboard's modules come from activity.static; one URL keeps one dice modal (#423). #}
+  {% block dice_modal_scripts %}<script src="{{ url_for('activity.static' if activity_token else 'static', filename='src/js/dice_modal.js') }}" type="module"></script>{% endblock %}
   <div class="modal-background" id="dice-modal-background"></div>
   <div class="modal-card" id="dice-modal-card">
     <header class="modal-card-head dice-modal-head">

@@ -36084,3 +36084,76 @@ msgstr "Лава"
 msgctxt "floor color"
 msgid "Arcane"
 msgstr "Магия"
+
+#. Whiteboard as a Discord Activity (#423)
+msgid "Opening the whiteboard…"
+msgstr "Открываем доску…"
+
+#. Whiteboard as a Discord Activity (#423)
+msgid "Open Kettlewright"
+msgstr "Открыть Kettlewright"
+
+#. Whiteboard as a Discord Activity (#423)
+msgid "Unable to open the whiteboard. Close it and open it again."
+msgstr "Не удалось открыть доску. Закройте её и откройте снова."
+
+#. Whiteboard as a Discord Activity (#423)
+msgid "Open the whiteboard from a Discord server channel."
+msgstr "Откройте доску из канала на сервере Discord."
+
+#. Whiteboard as a Discord Activity (#423)
+msgid "Discord did not confirm who you are. Close the whiteboard and open it again."
+msgstr "Discord не подтвердил, кто вы. Закройте доску и откройте её снова."
+
+#. Whiteboard as a Discord Activity (#423)
+msgid "Connect your Discord account to Kettlewright first, then open the whiteboard again."
+msgstr "Сначала подключите свой аккаунт Discord к Kettlewright, затем откройте доску снова."
+
+#. Whiteboard as a Discord Activity (#423)
+msgid "This channel has no party yet. The Warden can bind one with /kw bind."
+msgstr "У этого канала ещё нет группы. Смотритель может привязать её командой /kw bind."
+
+#. Whiteboard as a Discord Activity (#423)
+#, python-format
+msgid "Only members of %(party)s can open its whiteboard."
+msgstr "Только участники группы %(party)s могут открыть её доску."
+
+#. Compact character sheet in the Discord Activity (#423)
+msgid "Character sheet"
+msgstr "Лист персонажа"
+
+#. Compact character sheet in the Discord Activity (#423)
+#, python-format
+msgid "%(used)s/%(total)s slots"
+msgstr "%(used)s/%(total)s слотов"
+
+#. Compact character sheet in the Discord Activity (#423)
+msgid "Use"
+msgstr "Использовать"
+
+#. Compact character sheet in the Discord Activity (#423)
+msgid "Add Fatigue"
+msgstr "Добавить Усталость"
+
+#. Compact character sheet in the Discord Activity (#423)
+#, python-format
+msgid "Lower %(stat)s"
+msgstr "Уменьшить %(stat)s"
+
+#. Compact character sheet in the Discord Activity (#423)
+#, python-format
+msgid "Raise %(stat)s"
+msgstr "Увеличить %(stat)s"
+
+#. Compact character sheet in the Discord Activity (#423)
+msgid "Unable to load your character. Close and try again."
+msgstr "Не удалось загрузить персонажа. Закройте и попробуйте снова."
+
+#. Compact character sheet in the Discord Activity (#423)
+msgid "Unable to save. Try again."
+msgstr "Не удалось сохранить. Попробуйте снова."
+
+#. Compact character sheet in the Discord Activity (#423)
+#, python-format
+msgid "Effective HP: %(hp)s"
+msgstr "Фактические ОЗ: %(hp)s"

@@ -28,6 +28,11 @@ logging.basicConfig(level=logging.INFO)
 # Get allowed origins from BASE_URL and split to allow multiple origins
 base_url = os.getenv('BASE_URL', 'http://127.0.0.1:8000')
 allowed_origins = base_url.split(',')
+# The whiteboard inside a Discord Activity (#423) is served from Discord's proxy, so its
+# Socket.IO connection comes from that origin. It signs in with its own token, never a cookie.
+discord_activity_origin = (f"https://{os.environ['DISCORD_APPLICATION_ID']}.discordsays.com"
+                           if os.getenv('DISCORD_APPLICATION_ID') else None)
+socket_origins = allowed_origins + ([discord_activity_origin] if discord_activity_origin else [])
 
 # Check if Redis should be used
 use_redis = os.getenv('USE_REDIS', 'False').lower() in ['true', '1', 't']
@@ -41,14 +46,14 @@ if use_redis:
     logging.info(f"Using Redis as a message queue: {redis_url}")
     socketio_config = {
         'manage_session': True,
-        'cors_allowed_origins': allowed_origins,
+        'cors_allowed_origins': socket_origins,
         'message_queue': redis_url
     }
 else:
     logging.info("Not using Redis; falling back to local sessions.")
     socketio_config = {
         'manage_session': True,
-        'cors_allowed_origins': allowed_origins
+        'cors_allowed_origins': socket_origins
     }
 
 
@@ -140,6 +145,10 @@ def create_app():
         # since the user_id is the primary key
         return db.session.get(User, int(user_id))
 
+    # The whiteboard inside a Discord Activity has no cookie session; its requests carry a token (#423).
+    from app.lib.activity import load_request_user
+    login_manager.request_loader(load_request_user)
+
     # blueprint for auth routes
     from app.blueprints import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
@@ -180,6 +189,8 @@ def create_app():
 
     from app.blueprints.discord import discord
     app.register_blueprint(discord)
+    from app.blueprints.activity import activity
+    app.register_blueprint(activity)
     from app.blueprints.ground import ground
     app.register_blueprint(ground)
 

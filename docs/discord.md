@@ -70,6 +70,20 @@ Rebinding also clears selections. Both binding and unbinding require the current
 
 Cards, party summaries, player rolls and explicitly public Warden rolls are public to **everyone who can read that Discord channel**. Only linked party members (or its Warden) can request them. Private notes and party join codes are never included. Login, selection, binding responses, dice panels, private Warden rolls, inventory lists, sheet-action confirmations and errors are visible only to the invoking user. Mentions are disabled.
 
+## Whiteboard in Discord
+
+The party whiteboard can run inside Discord as an **Activity** (#423), so the party plays on it in a voice or text channel without leaving Discord or signing in again. Kettlewright is still the only copy of the board: drawings, tokens, Fog of War, the laser and rolls are shared live with anyone who has the board open on the website.
+
+1. The Warden binds the channel with `/kw bind` (in a voice channel, use its text chat).
+2. Each Warden and player connects their Discord account on the Kettlewright Discord page.
+3. Start **Kettlewright** from the channel's Activities (rocket) button, or with the app's **Launch** command.
+
+The Activity opens the whiteboard of the party bound to that channel, with the same Warden and player permissions as the website. People who are not linked, not in the party, or in a channel without a binding see why and what to do.
+
+**Character sheet**, at the top of the board, opens a compact sheet of your characters in the party: HP, STR, DEX and WIL with −/+ buttons, armor, Deprived and Panicked, and each container with its items, used slots, and remaining uses and charges. **Use** spends a use or charge, **Add Fatigue** adds one Fatigue to the main inventory, and **Clear** removes it. These follow the same rules as the `/kw` sheet actions: values stay between 0 and their maximum, Fatigue needs a free slot, and an empty item stays until you remove it on the full sheet. When the sheet shows effective HP below the recorded HP, the character is panicked or carrying a full main inventory. Changes made on the website or with `/kw` appear while the sheet is open. Without a character in the party (usually the Warden) there is no button.
+
+Inside Discord the board has no **Party** panel or link back to the party page: those pages need the website's own sign-in. Everything else on the sheet (adding, moving, dropping or removing other items, notes) stays on the full sheet and the `/kw` commands. Portraits hosted on other websites show initials, because Discord only lets the Activity load images from Kettlewright and Discord.
+
 ## Administrator setup
 
 Create an application in the [Discord Developer Portal](https://discord.com/developers/applications). Configure **Guild Install** with `bot` and `applications.commands`. Use a dedicated test server first. Give the app access to the intended channel; View Channel and Send Messages are sufficient for this command surface. Privileged intents and Message Content access are not used. Users managing bindings need Manage Channels; the bot itself does not need that permission.
@@ -117,6 +131,23 @@ different binding; both must fail. Repeated delivery of an interaction must keep
 
 For player-action acceptance, test on mobile: open `/kw roll`, click several dice, update HP, add/clear both conditions, add Fatigue and a Torch, spend uses, drop/pick up, transfer between two players, and append a note. Verify both sheets in KW, full-inventory rejection, old buttons after changing selection, and loss of access after leaving the party.
 
+### Activity
+
+In the Developer Portal, under **Activities**:
+
+- **Settings:** turn on **Enable Activities**. Discord adds the **Launch** entry point command; `flask discord register` only creates or updates `/kw`, so it keeps it.
+- **URL Mappings** (the Activity may only talk to its own address, `https://<application id>.discordsays.com`, and these mappings):
+
+  | Prefix | Target |
+  | --- | --- |
+  | `/` | your Kettlewright host, e.g. `kettlewright.com` |
+  | `/esm` | `esm.sh` |
+  | `/cdnjs` | `cdnjs.cloudflare.com` |
+
+No new variables are needed: the Activity uses `DISCORD_APPLICATION_ID` and `DISCORD_CLIENT_SECRET`, and Socket.IO accepts connections from `https://<DISCORD_APPLICATION_ID>.discordsays.com`. Only the `identify` scope is requested. The existing OAuth2 redirect stays as it is; an Activity's code exchange sends none.
+
+Test it in your test server with a Warden and a player: launch it in a bound voice channel, draw, place tokens, use Fog of War, the laser and the dice, and check the same board on the website. As the player, change HP, add and clear Fatigue and use an item on the character sheet, then check the full sheet on the website. Then try a channel without a binding, a user without a linked account, and someone outside the party.
+
 ## Implementation and limits
 
 - Ed25519 signatures cover the unmodified request body; timestamps must be within five minutes. Commands are guild-only and rate-limited per Discord user using the existing Redis/in-process limiter, with the same worker-scope behavior as KW.
@@ -126,4 +157,12 @@ For player-action acceptance, test on mobile: open `/kw roll`, click several dic
 - This version responds to Discord commands in their channel. It does **not** automatically forward rolls initiated on the website to Discord or update pinned messages. Reliable outbound forwarding would require delivery/retry handling.
 - Player commands edit current stats, conditions, inventory and notes. Roll commands display dice values; they do not change stats or resolve saves automatically. Transfer targets are characters in the current party, not companions or party storage.
 
-References: [HTTP interactions](https://docs.discord.com/developers/interactions/receiving-and-responding), [application commands](https://docs.discord.com/developers/interactions/application-commands), [button components](https://docs.discord.com/developers/components/reference), [OAuth2](https://docs.discord.com/developers/topics/oauth2).
+### Activity
+
+- Discord opens the Activity at `/` with its launch parameters (`frame_id`, `instance_id`, …); the site sends them to `/activity`. That page signs in with the Embedded App SDK (`@discord/embedded-app-sdk`), and `/activity/token` exchanges the code with Discord, finds the linked Kettlewright account and the channel's binding, and returns a two-minute ticket. The board then opens in a frame at `/activity/board/<party>`.
+- Cookies are not reliable in Discord's frame, so the board sends a signed token (12 hours) as `Authorization: Bearer` on its requests and as the Socket.IO `auth`. A token works only for the whiteboard requests of its party (`app/lib/activity.py`), carries its own CSRF secret, and stops working when the player disconnects or relinks Discord. Party membership is still checked on every request, as on the website.
+- Discord's proxy sends a strict Content Security Policy: no inline scripts and no other websites. In the Activity the board page therefore has no inline script and no import map. Its modules are served from `/activity/static/…` with their bare imports (`react`, `excalidraw`) rewritten to esm.sh paths. esm.sh modules import each other by root-relative paths such as `/react@18.3.1/…`; Kettlewright answers those with a cached redirect to `/esm/…`, which Discord maps to esm.sh. Excalidraw's fonts and CSS, Font Awesome and the Socket.IO client also come through the mappings.
+- The compact sheet reads `/party/<id>/shared-map/sheets` (only the viewer's own characters) and posts one change at a time to `/party/<id>/shared-map/sheets/<character>`. Changes go through the Discord sheet actions (`app/lib/compact_sheet.py` over `app/lib/discord_character.py`), limited to stats, conditions, Fatigue, using up an item, and clearing Fatigue.
+- This was tested against an emulation of Discord's proxy (its CSP, the URL mappings, no cookies, WebSockets) with the SDK handshake simulated, not inside a real Discord client. Test a real installation before relying on it.
+
+References: [HTTP interactions](https://docs.discord.com/developers/interactions/receiving-and-responding), [application commands](https://docs.discord.com/developers/interactions/application-commands), [button components](https://docs.discord.com/developers/components/reference), [OAuth2](https://docs.discord.com/developers/topics/oauth2), [Activities](https://docs.discord.com/developers/activities/overview).

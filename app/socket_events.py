@@ -97,11 +97,33 @@ def register_socket_events(socketio):
             current_app.logger.exception('Presence unavailable')
 
     @socketio.on('connect')
-    def handle_connect():
-        if not current_user.is_authenticated:
+    def handle_connect(auth=None):
+        if not current_user.is_authenticated and not activity_login(auth):
             return False
         join_room(f'user_{current_user.id}')
         mark_present(current_user.id)
+
+    def activity_login(auth):
+        """The whiteboard in a Discord Activity signs its socket in with its token (#423).
+
+        This connection's own session then holds the user, the token's CSRF secret (for the
+        laser) and its party; other parties' boards and dice from other pages stay closed to it.
+        """
+        from flask import session
+        from flask_login import login_user
+        from app.lib.activity import read
+        from app.models import User
+        claims = read(auth.get('activity'), 'session') if isinstance(auth, dict) else None
+        user = db.session.get(User, claims['u']) if claims else None
+        if user is None:
+            return False
+        login_user(user)
+        session['csrf_token'], session['activity_party'] = claims['c'], claims['p']
+        return True
+
+    def activity_party():
+        from flask import session
+        return session.get('activity_party')
 
     @socketio.on('presence')
     def handle_presence():
@@ -131,6 +153,8 @@ def register_socket_events(socketio):
             return
         party_id, generation = data.get('party_id'), data.get('generation')
         if type(party_id) is not int or type(generation) is not int:
+            return
+        if activity_party() not in (None, party_id):
             return
         if current_app.config.get('WTF_CSRF_ENABLED', True):
             try:
@@ -168,6 +192,9 @@ def register_socket_events(socketio):
     @socketio.on('roll_dice')
     def handle_roll_dice(data):
         if not current_user.is_authenticated or not isinstance(data, dict):
+            return
+        # The whiteboard rolls over HTTP; an Activity's socket is for the board only.
+        if activity_party() is not None:
             return
         if not allow_event('roll_dice'):
             return

@@ -3,12 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <link rel="stylesheet" href="https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/index.css">
+  {# Inside a Discord Activity (#423) the page may load nothing from other sites and run no inline script:
+     CDN files come through Discord's /cdnjs and /esm URL mappings, and modules through activity.static,
+     which replaces the import map (docs/discord.md). #}
+  {% set cdnjs = '/cdnjs' if activity_token else 'https://cdnjs.cloudflare.com' %}
+  {% set esm = '/esm' if activity_token else 'https://esm.sh' %}
+  <link rel="stylesheet" href="{{ cdnjs }}/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="{{ esm }}/@excalidraw/excalidraw@0.18.0/dist/prod/index.css">
   <title>{{ party.name }}</title>
   {% assets "board_modals" %}<link rel="stylesheet" href="{{ ASSET_URL }}">{% endassets %}
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/shared_map.css') }}">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  <script src="{{ cdnjs }}/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  {% if not activity_token %}
   <script>window.EXCALIDRAW_ASSET_PATH = 'https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/';</script>
   <script type="importmap">
   {"imports": {
@@ -19,11 +25,17 @@
     "excalidraw": "https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/index.js?external=react,react-dom"
   }}
   </script>
+  {% endif %}
 </head>
-<body{% if warden %} class="warden-board"{% endif %}>
+<body class="{{ 'warden-board' if warden }}{{ ' in-activity' if activity_token }}">
   <header class="map-header">
-    <a id="back-to-party" href="{{ url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) }}" title="{{ _('Back to party') }}" aria-label="{{ _('Back to party') }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>
-    <button type="button" id="board-party" title="{{ party.name }}" aria-controls="party-panel" aria-expanded="false"><i class="fa-solid fa-users" aria-hidden="true"></i> {{ _('Party') }}</button>
+    {# Inside Discord the party page cannot sign in, so the board offers neither link to it. #}
+    <a id="back-to-party"{% if activity_token %} hidden{% endif %} href="{{ url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) }}" title="{{ _('Back to party') }}" aria-label="{{ _('Back to party') }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>
+    <button type="button" id="board-party"{% if activity_token %} hidden{% endif %} title="{{ party.name }}" aria-controls="party-panel" aria-expanded="false"><i class="fa-solid fa-users" aria-hidden="true"></i> {{ _('Party') }}</button>
+    {% if activity_token and has_character %}
+    {# Inside Discord there is no full sheet to open, so the board has a compact one (#423). #}
+    <button type="button" id="board-sheet" aria-controls="character-sheet" aria-expanded="false"><i class="fa-solid fa-id-card" aria-hidden="true"></i> {{ _('Character sheet') }}</button>
+    {% endif %}
     <div class="map-view-controls">
       <button type="button" id="board-theme" title="{{ _('Light / dark') }}" aria-label="{{ _('Light / dark') }}"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i></button>
       <button type="button" id="fit-map" title="{{ _('Fit map') }}" aria-label="{{ _('Fit map') }}"><i class="fa-solid fa-expand" aria-hidden="true"></i></button>
@@ -125,6 +137,15 @@
     </div>
   </dialog>
   {% endif %}
+  {% if activity_token and has_character %}
+  <dialog id="character-sheet" aria-labelledby="sheet-title">
+    <div class="tokens-heading"><h2 id="sheet-title">{{ _('Character sheet') }}</h2>
+      <button type="button" id="close-sheet">{{ _('Close') }}</button></div>
+    <select id="sheet-character" aria-label="{{ _('Character') }}" hidden></select>
+    <div id="sheet-body"></div>
+    <p id="sheet-status" role="status" aria-live="polite"></p>
+  </dialog>
+  {% endif %}
   <dialog id="party-panel" aria-labelledby="party-panel-title">
     <div class="tokens-heading"><h2 id="party-panel-title">{{ _('Party') }} · {{ party.name }}</h2><button type="button" id="close-party">{{ _('Close') }}</button></div>
     <iframe id="party-frame" title="{{ _('Party') }}"></iframe>
@@ -143,7 +164,7 @@
   {% if warden %}{% with board_roller=true %}{% include 'partial/partyview/warden_dice.html' %}{% endwith %}
   {% else %}{% include 'main/dice_modal.html' %}{% endif %}
   <script id="shared-map-config" type="application/json">{{ {
-    'partyId': party.id, 'editing': editing, 'warden': warden, 'canLoadMaps': can_load_maps, 'csrfToken': csrf_token,
+    'partyId': party.id, 'activityToken': activity_token, 'editing': editing, 'warden': warden, 'canLoadMaps': can_load_maps, 'csrfToken': csrf_token,
     'partyUrl': url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url),
     'actorsUrl': url_for('party.shared_map_actors', party_id=party.id),
     'visibilityUrl': url_for('party.shared_map_monster_visibility', party_id=party.id, companion_id=0) if warden else none,
@@ -151,6 +172,7 @@
     'rollUrl': url_for('party.shared_map_roll', party_id=party.id),
     'monster': _('Monster'),
     'tokensUrl': url_for('party.shared_map_tokens', party_id=party.id),
+    'sheetsUrl': url_for('party.shared_map_sheets', party_id=party.id) if activity_token and has_character else none,
     'sceneUrl': url_for('party.shared_map_scene', party_id=party.id),
     'fogUrl': url_for('party.shared_map_fog', party_id=party.id),
     'sourcesUrl': url_for('party.shared_map_sources', party_id=party.id) if can_load_maps else none,
@@ -194,13 +216,26 @@
       'floorColors': {'stone': pgettext('floor color', 'Stone'), 'slate': pgettext('floor color', 'Slate'),
         'sand': pgettext('floor color', 'Sand'), 'wood': pgettext('floor color', 'Wood'),
         'moss': pgettext('floor color', 'Moss'), 'water': pgettext('floor color', 'Water'),
-        'lava': pgettext('floor color', 'Lava'), 'arcane': pgettext('floor color', 'Arcane')}
+        'lava': pgettext('floor color', 'Lava'), 'arcane': pgettext('floor color', 'Arcane')},
+      'sheet': {'hp': _('HP'), 'strength': _('STR'), 'dexterity': _('DEX'), 'willpower': _('WIL'), 'armor': _('Armor'),
+        'deprived': _('Deprived'), 'panicked': _('Panicked'), 'dead': _('Dead'), 'inventory': _('Inventory'),
+        'slots': _('%(used)s/%(total)s slots', used='{used}', total='{total}'), 'uses': _('uses'), 'charges': _('charges'),
+        'use': _('Use'), 'clear': _('Clear'), 'addFatigue': _('Add Fatigue'), 'fatigue': _('Fatigue'),
+        'lower': _('Lower %(stat)s', stat='{stat}'), 'raise': _('Raise %(stat)s', stat='{stat}'),
+        'loading': _('Loading…'), 'failed': _('Unable to load your character. Close and try again.'),
+        'saveFailed': _('Unable to save. Try again.'), 'effective': _('Effective HP: %(hp)s', hp='{hp}')}
     }
   }|tojson }}</script>
+  {% if activity_token %}
+  <script src="{{ url_for('activity.static', filename='src/js/activity/board.js') }}"
+    data-asset-path="/esm/@excalidraw/excalidraw@0.18.0/dist/prod/"></script>
+  <script type="module" src="{{ url_for('activity.static', filename='src/js/maps/shared_map.js') }}"></script>
+  {% else %}
   <script type="module">
     import({{ url_for('static', filename='src/js/maps/shared_map.js')|tojson }}).catch(() => {
       document.getElementById('map-status').textContent = JSON.parse(document.getElementById('shared-map-config').textContent).messages.loadFailed;
     });
   </script>
+  {% endif %}
 </body>
 </html>

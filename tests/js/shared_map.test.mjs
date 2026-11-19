@@ -41,6 +41,7 @@ async function setup(editing = true, failedLibrary = null, language = 'en', ward
     convertToExcalidrawElements: elements => elements,
     applyFogOperation: (fog) => fog, setupMapImport() {}, setupPartyTokens: () => ({open() {}, close() {}}),
     setupBoardControls: () => ({selection() {}, destroy() {}}),
+    setupCharacterSheet: () => ({destroy() {}}),
     createTokenPortraits: options => {projection = options.onProjection; return {elements: elements => elements.map(element => element.fileId === 'live-image' ? {...element, fileId: 'original-image'} : element), redraw() {}, destroy() {}};},
     createBoardRolls: () => ({redraw() {}, destroy() {}}),
     createRollOsd: () => ({received() {}}), dice3d: {setScope() {}},
