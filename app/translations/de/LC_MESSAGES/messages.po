@@ -23329,3 +23329,29 @@ msgstr "Lesbarer Bogen für Notiz-Apps wie Obsidian. Kann importiert werden."
 #: app/templates/partial/charview/export_dialog.html
 msgid "Simple text to paste anywhere."
 msgstr "Einfacher Text zum Einfügen überall."
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+#: app/templates/partial/charedit/inventory.html
+msgid "Set down"
+msgstr "Abstellen"
+
+#. Application interface
+#: app/lib/inventory.py
+msgid "set down"
+msgstr "abgestellt"
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Takes no slots while set down; its contents stay inside."
+msgstr "Abgestellt belegt er keine Plätze; der Inhalt bleibt darin."
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Delete everything in this container?"
+msgstr "Alles in diesem Behälter löschen?"
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Remove this container and everything in it?"
+msgstr "Diesen Behälter samt Inhalt entfernen?"

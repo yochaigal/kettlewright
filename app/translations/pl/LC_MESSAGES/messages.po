@@ -23632,3 +23632,29 @@ msgstr "Czytelna karta do aplikacji notatek, takich jak Obsidian. Można ją zai
 #: app/templates/partial/charview/export_dialog.html
 msgid "Simple text to paste anywhere."
 msgstr "Zwykły tekst do wklejenia gdziekolwiek."
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+#: app/templates/partial/charedit/inventory.html
+msgid "Set down"
+msgstr "Odstaw"
+
+#. Application interface
+#: app/lib/inventory.py
+msgid "set down"
+msgstr "odstawiony"
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Takes no slots while set down; its contents stay inside."
+msgstr "Odstawiony nie zajmuje miejsc; zawartość zostaje w środku."
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Delete everything in this container?"
+msgstr "Usunąć całą zawartość tego pojemnika?"
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Remove this container and everything in it?"
+msgstr "Usunąć ten pojemnik razem z zawartością?"

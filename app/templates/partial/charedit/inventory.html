@@ -26,6 +26,25 @@
     </div>
     {% endfor %}
 </div>
+{% set container = inventory.selected_container %}
+{% if not companion_sheet and container.id != 0 and not container.get('on_the_ground') %}
+{% set edit_base = inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name) %}
+<div class="slot-container-actions" role="toolbar" aria-label="{{ container.name|markdown_inline|striptags }}">
+    {% if container.get('carried_by') not in (none, '') and container.get('load')|int > 0 %}
+    <button class="button smaller-font" type="button" hx-post="{{edit_base}}/container-edit/{{container.id}}/set-down"
+        hx-vals='{{ {"down": "0" if container.get('set_down') else "1"} | tojson }}' hx-target="#inventory-container">
+        {{ _('Pick up') if container.get('set_down') else _('Set down') }}</button>
+    {% endif %}
+    <button class="button smaller-font" type="button" hx-post="{{edit_base}}/container-edit/{{container.id}}/clear"
+        hx-target="#inventory-container" {% if not container.get('used_slots') %}disabled{% endif %}
+        hx-confirm="{{ _('Delete everything in this container?') }}"
+        data-confirm-title="{{ _('Clear') }}: {{ container.name|markdown_inline|striptags }}" data-confirm-button="{{ _('Clear') }}">{{ _('Clear') }}</button>
+    <button class="button smaller-font" type="button" hx-post="{{edit_base}}/container-edit/{{container.id}}/delete"
+        hx-vals='{"delete-items": ""}' hx-target="#inventory-container"
+        hx-confirm="{{ _('Remove this container and everything in it?') }}"
+        data-confirm-title="{{ _('Delete container') }}: {{ container.name|markdown_inline|striptags }}" data-confirm-button="{{ _('Remove') }}">{{ _('Remove') }}</button>
+</div>
+{% endif %}
 <div style="margin-top: 0px; width: 100%">
     {% for it in inventory.selected_container["items"] %}
     <div class="inventory-item-container {% if it.blocker %} item-blocker-text {% endif %}">

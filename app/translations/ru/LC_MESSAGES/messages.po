@@ -35913,3 +35913,29 @@ msgstr "Удобный для чтения лист для заметок, на�
 #: app/templates/partial/charview/export_dialog.html
 msgid "Simple text to paste anywhere."
 msgstr "Простой текст, который можно вставить куда угодно."
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+#: app/templates/partial/charedit/inventory.html
+msgid "Set down"
+msgstr "Поставить"
+
+#. Application interface
+#: app/lib/inventory.py
+msgid "set down"
+msgstr "поставлен"
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Takes no slots while set down; its contents stay inside."
+msgstr "Поставленный не занимает слотов; содержимое остаётся внутри."
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Delete everything in this container?"
+msgstr "Удалить всё содержимое этого контейнера?"
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Remove this container and everything in it?"
+msgstr "Убрать этот контейнер вместе с содержимым?"

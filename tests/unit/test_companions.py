@@ -209,7 +209,8 @@ def test_hireling_cart_load_and_removal(world):
     assert clients[2].post(path,data=dict(action='container',name='Cart',slots=4,load=2)).status_code == 302
     with app.app_context():
         c = db.session.get(Companion,1)
-        assert len([it for it in json.loads(c.items) if 'carrying' in it]) == 2
+        held = [it for it in json.loads(c.items) if 'carrying' in it]
+        assert len(held) == 1 and held[0]['tags'] == ['bulky']
     assert clients[2].post(path,data=dict(action='delete-container',container_id=1)).status_code == 302
     with app.app_context():
         assert not any('carrying' in it for it in json.loads(db.session.get(Companion,1).items))
