@@ -51,6 +51,8 @@ body.warden-board .excalidraw .App-toolbar .Stack_horizontal { grid-auto-flow: r
 body.warden-board .excalidraw .App-menu_top .layer-ui__wrapper__top-right { grid-column: 3; }
 body.warden-board .excalidraw .App-toolbar__divider { width: 24px; height: 1px; margin: 4px 0; }
 body.warden-board .excalidraw .HintViewer { display: none; }
+/* The selected shape's properties (opacity, layers, actions) open beside the rail and laser, not under them. */
+body.warden-board .excalidraw .App-menu__left { margin-left: 100px; }
 /* Narrow screens use Excalidraw's mobile layout; keep the Warden tools as a row above the board. */
 @media (max-width: 900px) {
   .board-stage { flex-direction: column; }
@@ -60,6 +62,7 @@ body.warden-board .excalidraw .HintViewer { display: none; }
   body.warden-board .excalidraw .App-toolbar .Stack_horizontal { grid-auto-flow: column; }
   body.warden-board .excalidraw .App-toolbar__divider { width: 1px; height: 24px; margin: 0; }
   body.warden-board .excalidraw .HintViewer { display: revert; }
+  body.warden-board .excalidraw .App-menu__left { margin-left: 0; }
 }
 #fog-status { font-size: 12px; }
 #board-notices:empty { display: none; }
@@ -140,6 +143,8 @@ body.warden-board .excalidraw .HintViewer { display: none; }
 #confirm-reveal-stats { background: var(--board-active); border-color: #8278c8; }
 
 
+/* Excalidraw's notices (a refused change, a dungeon too big, a new board) sit above the dice roller and roll results, not behind them. */
+.excalidraw .Toast { bottom: 180px; }
 .board-rolls { position: fixed; z-index: 5; left: 50%; bottom: 16px; transform: translateX(-50%);
   box-sizing: border-box; width: max-content; max-width: min(800px, calc(100vw - 24px));
   padding: 9px 12px; border: 1px solid var(--board-border); border-radius: 12px;
@@ -194,6 +199,7 @@ body.dark-mode .board-roll-osd-item { background: #e8e2d3f0; color: #141414; }
 @media (prefers-reduced-motion: reduce) { .board-roll-osd-item { animation: none; } }
 @media (max-width: 600px) {
   .board-rolls { width: calc(100vw - 16px); max-width: none; padding: 8px; bottom: 60px; }
+  .excalidraw .Toast { bottom: auto; top: 64px; }
   .board-roll-actions { gap: 4px; }
   .board-roll-actions button { padding: 6px 7px; }
   .board-roll-actions[data-mode="warden"], .board-roll-actions[data-mode="player"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }

@@ -1,3 +1,5 @@
+import json
+import re
 from copy import deepcopy
 
 import pytest
@@ -334,3 +336,75 @@ def test_player_token_picker_excludes_other_owners_and_all_monsters(shared):
         db.session.commit()
     assert [t['name'] for t in clients[2].get(path).json['tokens']] == ['Player', 'My pet']
     assert [t['name'] for t in clients[3].get(path).json['tokens']] == ['Other player', 'Their pet']
+
+
+def test_scene_reads_renew_the_csrf_token_and_expired_tokens_are_named(shared):
+    # The board stays open longer than a CSRF token lasts; every read hands out a fresh one (#386, #399, #400).
+    from unittest.mock import patch
+    import time
+    app, clients, _ = shared
+    html = clients[1].get(BASE).get_data(as_text=True)
+    page_token = json.loads(re.search(r'id="shared-map-config" type="application/json">(.*?)</script>', html, re.S)[1])['csrfToken']
+    app.config['WTF_CSRF_ENABLED'] = True
+    try:
+        payload = {'version': 0, 'generation': 1, 'drawing': DRAWING}
+        later = time.time() + 2 * 3600
+        with patch('itsdangerous.timed.time.time', return_value=later):
+            expired = clients[1].post(URL, json={**payload, 'csrf_token': page_token})
+            assert expired.status_code == 400
+            assert expired.json['reason'] == 'csrf'
+            for query in ({}, {'version': 0, 'generation': 1, 'fog_version': 0}):
+                read = clients[1].get(URL, query_string=query)
+                assert read.headers['X-CSRF-Token'] and read.headers['Cache-Control'] == 'no-store'
+            assert read.status_code == 204
+            renewed = clients[1].post(URL, json={**payload, 'csrf_token': read.headers['X-CSRF-Token']})
+            assert renewed.status_code == 200
+        fog_refused = clients[1].post(f'{BASE}/fog', json={'generation': 1, 'fog_version': 0, 'operation': {}})
+        assert fog_refused.status_code == 400 and fog_refused.json['reason'] == 'csrf'
+    finally:
+        app.config['WTF_CSRF_ENABLED'] = False
+
+
+def test_refused_drawings_say_why(shared):
+    # The page shows the reason instead of a generic message (#386).
+    _, clients, _ = shared
+    too_many = {'elements': [{'id': f'e{i}', 'type': 'rectangle', 'x': i} for i in range(2001)], 'files': {}}
+    refused = clients[1].post(URL, json={'version': 0, 'drawing': too_many})
+    assert refused.status_code == 400
+    assert refused.json == {'reason': 'invalid', 'message': 'A drawing supports up to 2000 elements.'}
+    svg = {'elements': [{'id': 'art', 'type': 'image', 'fileId': 'svg'}],
+           'files': {'svg': {'id': 'svg', 'mimeType': 'image/svg+xml', 'dataURL': 'data:image/svg+xml;base64,PHN2Zz4='}}}
+    assert clients[1].post(URL, json={'version': 0, 'drawing': svg}).json['reason'] == 'invalid'
+
+
+def board(count, locked=()):
+    return {'elements': [{'id': f'e{i}', 'type': 'rectangle', 'x': i * 10, 'y': 0, 'width': 5, 'height': 5,
+                          'locked': i in locked} for i in range(count)], 'files': {}}
+
+
+def test_players_cannot_wipe_the_whole_board(shared):
+    # Reset the canvas, or select all and delete, would clear the board for everyone (#437).
+    from app.lib.whiteboard import CLEAR_BOARD_MINIMUM
+    _, clients, _ = shared
+    full = board(CLEAR_BOARD_MINIMUM, locked={0})
+    assert clients[1].post(URL, json={'version': 0, 'drawing': full}).status_code == 200
+    only_locked = {'elements': full['elements'][:1], 'files': {}}
+    full['elements'].append({'id': 'extra', 'type': 'rectangle', 'x': 500, 'y': 0, 'width': 5, 'height': 5})
+    assert clients[1].post(URL, json={'version': 1, 'drawing': full}).status_code == 200
+    refused = clients[2].post(URL, json={'version': 2, 'drawing': only_locked})
+    assert refused.status_code == 400
+    assert refused.json == {'reason': 'protected', 'message': 'Only the Warden can clear the whole whiteboard.'}
+    wiped = clients[2].post(URL, json={'version': 2, 'drawing': {'elements': [], 'files': {}}})
+    assert wiped.status_code == 400 and wiped.json['reason'] == 'protected'
+    # Deleting some of the board, even most of it, is still a player's to do.
+    some = {'elements': full['elements'][:2], 'files': {}}
+    assert clients[2].post(URL, json={'version': 2, 'drawing': some}).status_code == 200
+    assert clients[1].post(URL, json={'version': 3, 'drawing': {'elements': [], 'files': {}}}).status_code == 200
+
+
+def test_players_can_clear_a_nearly_empty_board(shared):
+    from app.lib.whiteboard import CLEAR_BOARD_MINIMUM
+    _, clients, _ = shared
+    assert clients[2].post(URL, json={'version': 0, 'drawing': board(CLEAR_BOARD_MINIMUM - 1)}).status_code == 200
+    assert clients[2].post(URL, json={'version': 1, 'drawing': {'elements': [], 'files': {}}}).status_code == 200
+

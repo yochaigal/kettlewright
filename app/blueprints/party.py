@@ -25,7 +25,8 @@ def _board_data():
     from app.lib.map_drawing import MAX_DRAWING_BYTES
     request.max_content_length = MAX_DRAWING_BYTES + 65536
     if not FlaskForm().validate_on_submit():
-        abort(400)
+        # Tell the page to renew its token (#399): it stays open for whole sessions, longer than a token lasts.
+        abort(_board_error('csrf', 'The CSRF token is missing or has expired.'))
     data = request.get_json()
     if not isinstance(data, dict):
         abort(400)
@@ -35,6 +36,13 @@ def _board_data():
 def _board_json(data):
     response = make_response(data)
     response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+def _board_error(reason, message):
+    """A 400 the whiteboard can act on: renew its token, undo a refused change, or say what to fix (#386)."""
+    response = _board_json({'reason': reason, 'message': message})
+    response.status_code = 400
     return response
 
 
@@ -90,18 +98,23 @@ def shared_map(party_id):
 @party.route('/party/<int:party_id>/shared-map/scene', methods=['GET', 'POST'])
 @login_required
 def shared_map_scene(party_id):
+    from flask_wtf.csrf import generate_csrf
+    from werkzeug.exceptions import BadRequest
     from app.lib.whiteboard import board_state, drawing_value, integer
     target = _board_party(party_id)
-    if request.method == 'GET' and request.args:
-        # Check small revision columns before loading the embedded image JSON.
-        revision = db.session.query(PartyMap.version, PartyMap.generation, PartyMap.fog_version).filter_by(party_id=party_id).first()
-        values = revision if revision else (0, 1, 0)
-        if all(request.args.get(key, type=int) == value for key, value in zip(('version', 'generation', 'fog_version'), values)):
-            return _board_json(('', 204))
+    if request.method == 'GET':
+        # Each poll hands the page a fresh token, so saves, fog, rolls and the laser
+        # keep working however long the board stays open (#386, #399, #400).
+        csrf = {'X-CSRF-Token': generate_csrf()}
+        if request.args:
+            # Check small revision columns before loading the embedded image JSON.
+            revision = db.session.query(PartyMap.version, PartyMap.generation, PartyMap.fog_version).filter_by(party_id=party_id).first()
+            values = revision if revision else (0, 1, 0)
+            if all(request.args.get(key, type=int) == value for key, value in zip(('version', 'generation', 'fog_version'), values)):
+                return _board_json(('', 204, csrf))
+        return _board_json((board_state(db.session.get(PartyMap, party_id)), 200, csrf))
     saved = db.session.get(PartyMap, party_id)
     state = board_state(saved)
-    if request.method == 'GET':
-        return _board_json(state)
     data = _board_data()
     version, generation = integer(data, 'version'), integer(data, 'generation', 1)
     if generation != state['generation']:
@@ -110,10 +123,17 @@ def shared_map_scene(party_id):
         return _board_conflict()
     if 'drawing' not in data:
         abort(400)
-    drawing = drawing_value(data['drawing'], stored_files=state['drawing']['files'], reuse_files=data.get('reuse_files'))
+    try:
+        drawing = drawing_value(data['drawing'], stored_files=state['drawing']['files'], reuse_files=data.get('reuse_files'))
+    except BadRequest as error:
+        return _board_error('invalid', error.description)
     if current_user.id != target.owner:
         from app.lib.whiteboard import protect_locked_elements
-        protect_locked_elements(state['drawing'], drawing)
+        try:
+            protect_locked_elements(state['drawing'], drawing)
+        except BadRequest as error:
+            # The player's page puts the board back as it was (#437).
+            return _board_error('protected', error.description)
     if not _board_write(target, saved, {'version': version, 'generation': generation},
                         {'drawing': drawing, 'version': version + 1}):
         return _board_conflict()
@@ -371,8 +391,8 @@ def shared_map_roll(party_id):
     db.session.add(PartyRoll(party_id=target.id, character_name=name, result=result,
                              private_user_id=None if public else current_user.id))
     db.session.commit()
-    if public:
-        publish_roll(target, name, result)
+    # A private roll still refreshes the roller's own history, as Warden rolls do (#399).
+    publish_roll(target, name, result, None if public else current_user.id)
     return _board_json({'result': result, 'values': values, 'sides': sides})
 
 

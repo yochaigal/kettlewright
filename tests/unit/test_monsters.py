@@ -213,8 +213,12 @@ def test_import_atomic_and_private_rolls(shared):
     assert clients[1].post('/parties/1/monsters', data={'monster_file': (BytesIO(b'bad'), 'bad.md')}).status_code == 400
     data = {'companion_id': cid, 'dice': 'd6'}
     assert clients[2].post('/party/1/shared-map/roll', data=data).status_code == 403
+    sockets[1].get_received()
     assert clients[1].post('/party/1/shared-map/roll', data=data).status_code == 200
     assert sockets[2].get_received() == []
+    # The Warden's own history still refreshes for a private roll (#399).
+    assert [event['name'] for event in sockets[1].get_received()] == ['roll_history_changed']
+    assert 'Wolf' in clients[1].get('/party/1/roll-history').text
     assert 'Wolf' not in clients[2].get('/party/1/roll-history').text
     assert clients[1].post('/party/1/shared-map/roll', data=dict(data, public_roll='on')).status_code == 200
     assert 'Wolf' in clients[2].get('/party/1/roll-history').text

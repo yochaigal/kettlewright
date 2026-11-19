@@ -16,8 +16,14 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
   const modalTitle = document.querySelector('#dice-modal .modal-card-title');
   let actors = new Map(), active = null, preferred = '', modalActor = null;
   let stopped = false, rolling = false, frame = null, rendered = '', lastSelection = '';
+  // Rolls start private. Once the Warden makes them public they stay public, whichever token is
+  // selected, until switched off again; the panel and dice-modal switches are one choice (#399).
   if (publicToggle) publicToggle.checked = false;
   if (modalPublic) modalPublic.checked = false;
+  const fromPanel = () => {if (modalPublic) modalPublic.checked = publicToggle.checked;};
+  const fromModal = () => {if (publicToggle) publicToggle.checked = modalPublic.checked;};
+  publicToggle?.addEventListener('change', fromPanel);
+  modalPublic?.addEventListener('change', fromModal);
 
   // Minimize (#385): only the heading stays, so the roller is out of the way when zoomed in. Remembered.
   function setMinimized(minimized) {
@@ -66,10 +72,7 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
     if (signature !== rendered) {
       const changed = (active?.id || '') !== panel.dataset.actor;
       rendered = signature; panel.dataset.actor = active?.id || '';
-      if (changed) {
-        result.textContent = '';
-        if (publicToggle) publicToggle.checked = false;
-      }
+      if (changed) result.textContent = '';
       name.textContent = active?.name || (config.warden ? config.messages.warden : config.messages.tokensEmpty);
       choices.hidden = config.warden || actors.size < 2;
       name.hidden = !choices.hidden;
@@ -191,6 +194,7 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
   return {redraw, destroy() {
     stopped = true; unsubscribe(); panel.hidden = true;
     minimize?.removeEventListener('click', onMinimize); toggle3d?.removeEventListener('click', on3d);
+    publicToggle?.removeEventListener('change', fromPanel); modalPublic?.removeEventListener('change', fromModal);
     globalThis.removeEventListener?.('dice3d-preference', show3d);
     if (frame !== null) cancelAnimationFrame(frame);
     for (const [button, listener] of special) button.removeEventListener('click', listener);
