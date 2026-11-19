@@ -72,19 +72,21 @@ def get_locale():
         return lang
     return "en"
     
+_json_consolidated = False
+
+
 def create_app():
     app = Flask(__name__)
     from app.lib.feature_access import init_feature_access
     init_feature_access(app)
 
-    # Ensure the consolidation is performed only once, in the main process
-    if not app.config.get('JSON_CONSOLIDATED'):
-        # Consolidate JSON files
-        consolidate_json_files('app/static/json/backgrounds',
-                               'app/static/json/backgrounds/background_data.json')
-        consolidate_json_files('app/static/json/generators',
-                               'app/static/json/generators/event_data.json')
-        app.config['JSON_CONSOLIDATED'] = True
+    # Consolidate the JSON data once per process; tests build many apps.
+    global _json_consolidated
+    if not _json_consolidated:
+        json_root = os.path.join(os.path.dirname(__file__), 'static', 'json')
+        for folder, output in (('backgrounds', 'background_data.json'), ('generators', 'event_data.json')):
+            consolidate_json_files(os.path.join(json_root, folder), os.path.join(json_root, folder, output))
+        _json_consolidated = True
 
     # Configure CORS using allowed origins
     CORS(app, resources={r"/*": {"origins": allowed_origins}})
@@ -133,7 +135,7 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         # since the user_id is the primary key
-        return User.query.get(int(user_id))
+        return db.session.get(User, int(user_id))
 
     # blueprint for auth routes
     from app.blueprints import auth as auth_blueprint

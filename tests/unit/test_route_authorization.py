@@ -3,6 +3,7 @@ import json
 
 import pytest
 from app.models import User, Character, Party, db
+from tests.helpers import login
 
 
 @pytest.fixture
@@ -16,11 +17,6 @@ def setup(app_with_babel):
                                  containers='[{"id":0,"name":"Main","slots":10}]'))
         db.session.commit()
     return app_with_babel, app_with_babel.test_client()
-
-
-def login(client, user_id):
-    with client.session_transaction() as session:
-        session['_user_id'] = str(user_id)
 
 
 def character(app):

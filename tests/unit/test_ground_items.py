@@ -1,7 +1,6 @@
 import json
 
 import pytest
-from flask import g
 from werkzeug.exceptions import BadRequest
 
 from app.lib.ground_items import ground_container, ground_items, preserve_ground
@@ -12,12 +11,6 @@ from app.models import Character, Party, User, db
 @pytest.fixture
 def ground_game(app_with_babel):
     app = app_with_babel
-    # create_app retains an application context in this repository's fixtures.
-    # Real requests get fresh g; do not let Flask-Login cache one client's user
-    # while these tests switch between independent player sessions.
-    @app.before_request
-    def reset_test_login_cache():
-        g.pop('_login_user', None)
     with app.app_context():
         db.session.add_all([User(id=i, username=name) for i, name in enumerate(('alice', 'bob', 'warden', 'outsider'), 1)])
         db.session.add(Party(id=1, owner=3, name='Party', party_url='test', members='[1,2]', items='[]',

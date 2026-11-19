@@ -4,6 +4,7 @@ import json
 import pytest
 
 from app.models import Character, Party, User, db
+from tests.helpers import clients_for
 
 CONTAINERS = '[{"id":0,"name":"Main","slots":10}]'
 ITEM = dict(id='gear', name='Rope', tags=['uses'], uses=3, location=0)
@@ -22,14 +23,7 @@ def storage(app_with_babel):
                                      url_name=f'hero{character_id}', background='Prowler', party_id=1,
                                      items='[]', containers=CONTAINERS))
         db.session.commit()
-    clients = {}
-    for user_id in range(1, 5):
-        client = app.test_client()
-        with client.session_transaction() as session:
-            session['_user_id'] = str(user_id)
-            session['_fresh'] = True
-        clients[user_id] = client
-    return app, clients
+    return app, clients_for(app, range(1, 5))
 
 
 # Each request changes storage, or opens a dialog that does.

@@ -148,7 +148,7 @@ def confirm(token):
     confirmed_id = User.confirm_email(token)
     # confirm account in db
     if confirmed_id:
-        user = User.query.get(confirmed_id)
+        user = db.session.get(User, confirmed_id)
         user.confirmed = True
         db.session.commit()
         flash('You have confirmed your account! Please login to continue.', 'success')
@@ -289,7 +289,7 @@ def delete_account():
             logout_user()
             
             # Delete user from database
-            user_to_delete = User.query.get(user_id)
+            user_to_delete = db.session.get(User, user_id)
             if user_to_delete:
                 db.session.delete(user_to_delete)
                 db.session.commit()

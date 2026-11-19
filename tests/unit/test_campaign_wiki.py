@@ -1,11 +1,14 @@
 """Reading a campaign as a wiki (#421) and the campaign page header (#420)."""
 import json
 import re
+from pathlib import Path
 
 import pytest
 
 from app.models import Campaign, ContentEntry, ContentLink, db
 from tests.unit.test_campaigns import create_entry, create_map, login, map_entry_id, reveal, setup  # noqa: F401
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def wiki(client, entry_id=None, campaign_id=1):
@@ -258,7 +261,7 @@ def test_dialog_falls_back_to_the_generator_with_its_options(setup):
 
 
 def test_wiki_undoes_global_aside_and_article_styles():
-    css = open('app/static/src/css/campaigns.css').read()
+    css = (ROOT / 'app/static/src/css/campaigns.css').read_text(encoding='utf-8')
     rule = css[css.index('aside:where(.campaign-wiki *)'):]
     rule = rule[:rule.index('}')]
     for declaration in ('float:none', 'width:auto', 'max-width:none', 'margin:0', 'border-left:0'):

@@ -825,7 +825,8 @@ def revealed_version(entry, form, mode=None):
         return text_value(entry.title, 200, True), entry.body, entry.path_type
     if mode != 'custom':
         abort(400)
-    kind = form.get('path_type', entry.path_type)
+    # A party version never inherits the original's private path type unless the Warden picks it.
+    kind = form.get('path_type', 'standard')
     if kind not in PATH_TYPES:
         abort(400)
     return text_value(form.get('title'), 200, True), content_value(form.get('body', '')), kind

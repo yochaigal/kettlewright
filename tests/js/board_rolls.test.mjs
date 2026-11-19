@@ -196,6 +196,7 @@ test('own rolls go on screen once settled and their socket echo is recognised (#
     s.button('d6').events.click(); await tick();
     assert.deepEqual(calls, [['hold'], ['release', null, undefined]]);
     calls.length = 0;
+    s.setPost(async () => ({ok: true, json: async () => ({result: 'A result', values: [4]})}));
     await s.modal.roll('d8');  // The dice modal shows its own result.
     assert.deepEqual(calls.map(call => call[0]), ['hold', 'release']);
   } finally {s.controller.destroy();}

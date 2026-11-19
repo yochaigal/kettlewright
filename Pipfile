@@ -60,4 +60,4 @@ mistune = ">=3.4.0"
 
 [dev-packages]
 pytest = "*"
-pytest-flask = "*"
+pytest-xdist = "*"

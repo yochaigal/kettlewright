@@ -406,7 +406,7 @@ def _print_character_pdf(username, url_name, orientation):
 @main.route('/delete-character/<int:character_id>/', methods=['POST', 'GET'])
 @login_required
 def delete(character_id):
-    character = Character.query.get_or_404(character_id)
+    character = db.get_or_404(Character, character_id)
 
     if character.owner != current_user.id:
         flash('You do not have permission to delete this character.', 'error')
@@ -527,7 +527,7 @@ def party_tools(ownername, party_url):
 @ main.route('/delete-party/<int:party_id>/', methods=['POST', 'GET'])
 @ login_required
 def delete_party(party_id):
-    party = Party.query.get_or_404(party_id)
+    party = db.get_or_404(Party, party_id)
 
     if party.owner != current_user.id:
         return redirect(url_for('main.parties', username=current_user.username))

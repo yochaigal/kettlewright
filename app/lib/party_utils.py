@@ -11,7 +11,7 @@ def load_party_subowners(party):
 def save_party_subowners(party, party_subowners):
     party.subowners = json.dumps(party_subowners)
 def get_user_characters_in_party(party_members, user_id):
-    return [member for member in party_members if Character.query.get(member).owner == user_id]
+    return [member for member in party_members if db.session.get(Character, member).owner == user_id]
 
 # Add character to party (assuming party_id in charater is already set)
 def add_character_to_party(character):
