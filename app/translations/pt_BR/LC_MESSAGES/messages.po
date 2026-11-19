@@ -24353,3 +24353,93 @@ msgstr "Apagar tudo o que há neste recipiente?"
 #: app/templates/partial/charview/inventory_slots.html
 msgid "Remove this container and everything in it?"
 msgstr "Remover este recipiente e tudo o que há nele?"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Warden tools"
+msgstr "Ferramentas do Guardião"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Fog"
+msgstr "Névoa"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Turn Fog of War on or off for everyone"
+msgstr "Ligar ou desligar a névoa de guerra para todos"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Drag to reveal part of the map"
+msgstr "Arraste para revelar parte do mapa"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Drag to cover part of the map"
+msgstr "Arraste para cobrir parte do mapa"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Cover all"
+msgstr "Ocultar tudo"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "See the board as your players do"
+msgstr "Ver o quadro como seus jogadores"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Draw"
+msgstr "Desenhar"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Drag over the grid to draw floor; walls follow. Hold Alt to erase."
+msgstr "Arraste sobre a grade para desenhar o piso; as paredes acompanham. Segure Alt para apagar."
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Erase"
+msgstr "Apagar"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Drag to erase floor."
+msgstr "Arraste para apagar o piso."
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Doors"
+msgstr "Portas"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Click a wall to make it a door, then an opening. Click between two floor squares to add a wall."
+msgstr "Clique numa parede para torná-la uma porta e depois uma passagem. Clique entre dois quadrados de piso para adicionar uma parede."
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Clear dungeon"
+msgstr "Limpar masmorra"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Remove the whole dungeon for everyone in the party?"
+msgstr "Remover a masmorra inteira para todo o grupo?"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "This dungeon is too big: a whiteboard holds up to 2000 shapes."
+msgstr "Esta masmorra é grande demais: um quadro comporta até 2000 formas."
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "More fog actions"
+msgstr "Mais ações de névoa"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "More dungeon actions"
+msgstr "Mais ações de masmorra"

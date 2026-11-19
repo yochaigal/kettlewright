@@ -93,8 +93,8 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
         const icon = document.createElement('i'); icon.className = 'fa-solid fa-dice'; icon.setAttribute('aria-hidden', 'true');
         more.append(icon);
       } else {
-        for (const sides of [4, 6, 8, 10, 12, 20, ...(config.warden ? [100] : [])]) button(`d${sides}`, {dice: `d${sides}`});
-        for (const sides of [4, 6, 8, 10, 12]) button(`d${sides}+d${sides}`, {dice: `d${sides}+d${sides}`});
+        for (const sides of [4, 6, 8, 10, 12, 20, ...(config.warden ? [100] : [])]) diceButton(sides, 1);
+        for (const sides of [4, 6, 8, 10, 12]) diceButton(sides, 2);
         if (config.warden) {
           button(config.messages.reaction, {kind: 'reaction'});
           button(config.messages.fate, {kind: 'fate'});
@@ -105,6 +105,18 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
       || (!config.warden && !active) || button.dataset.unavailable === 'true';
     choices.disabled = rolling || !canRoll();
     if (publicToggle) publicToggle.disabled = rolling || !canRoll();
+  }
+  // Dice buttons show the die shapes of the dice modal; the label stays as their name and tooltip.
+  const dieIcons = document.getElementById('board-die-icons');
+  function diceButton(sides, count) {
+    const label = count === 2 ? `d${sides}+d${sides}` : `d${sides}`;
+    const control = button(label, {dice: label});
+    const icon = dieIcons?.content?.querySelector?.(`[data-sides="${sides}"]`);
+    if (!icon) return control;
+    control.textContent = '';
+    control.classList?.toggle('board-roll-die', true);
+    control.append(...Array.from({length: count}, () => icon.cloneNode(true)));
+    return control;
   }
   function button(label, action, unavailable = false) {
     const button = document.createElement('button'); button.type = 'button'; button.textContent = label;

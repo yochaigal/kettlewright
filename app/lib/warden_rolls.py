@@ -23,7 +23,9 @@ def roll_warden(user, party, kind, expression=None, *, public=False):
         raise ValueError('Unknown roll type.')
     values = [secrets.randbelow(side) + 1 for side in sides]
     total = sum(values)
-    result = f'{label}: {", ".join(map(str, values))} ({"+".join(f"d{side}" for side in sides)})'
+    # A reaction roll is written the way the rules name it: 2d6.
+    notation = '2d6' if kind == 'reaction' else '+'.join(f'd{side}' for side in sides)
+    result = f'{label}: {", ".join(map(str, values))} ({notation})'
     if kind == 'reaction':
         reaction = 'Hostile' if total == 2 else 'Wary' if total <= 5 else 'Curious' if total <= 8 else 'Kind' if total <= 11 else 'Helpful'
         result += f' = {total} — {_(reaction)}'

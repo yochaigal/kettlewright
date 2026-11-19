@@ -27442,3 +27442,93 @@ msgstr "Видалити весь вміст цього контейнера?"
 #: app/templates/partial/charview/inventory_slots.html
 msgid "Remove this container and everything in it?"
 msgstr "Прибрати цей контейнер разом із вмістом?"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Warden tools"
+msgstr "Інструменти Хранителя"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Fog"
+msgstr "Туман"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Turn Fog of War on or off for everyone"
+msgstr "Увімкнути або вимкнути туман війни для всіх"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Drag to reveal part of the map"
+msgstr "Ведіть, щоб відкрити частину мапи"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Drag to cover part of the map"
+msgstr "Ведіть, щоб сховати частину мапи"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Cover all"
+msgstr "Сховати все"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "See the board as your players do"
+msgstr "Дивитися на дошку очима гравців"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Draw"
+msgstr "Малювати"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Drag over the grid to draw floor; walls follow. Hold Alt to erase."
+msgstr "Ведіть по сітці, щоб малювати підлогу; стіни з'являться самі. Утримуйте Alt, щоб стирати."
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Erase"
+msgstr "Стерти"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Drag to erase floor."
+msgstr "Ведіть, щоб стерти підлогу."
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Doors"
+msgstr "Двері"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Click a wall to make it a door, then an opening. Click between two floor squares to add a wall."
+msgstr "Клацніть по стіні, щоб зробити двері, потім прохід. Клацніть між двома клітинками підлоги, щоб поставити стіну."
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Clear dungeon"
+msgstr "Очистити підземелля"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "Remove the whole dungeon for everyone in the party?"
+msgstr "Прибрати все підземелля для всієї групи?"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "This dungeon is too big: a whiteboard holds up to 2000 shapes."
+msgstr "Підземелля завелике: на дошці вміщується не більше 2000 фігур."
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "More fog actions"
+msgstr "Інші дії з туманом"
+
+#. Whiteboard dungeon brush
+#: app/templates/main/shared_map.html
+msgid "More dungeon actions"
+msgstr "Інші дії з підземеллям"

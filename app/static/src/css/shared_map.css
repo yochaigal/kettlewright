@@ -2,27 +2,72 @@ html, body { margin: 0; height: 100%; overflow: hidden; }
 body { --board-bg: #f8f6f1; --board-panel: #fff; --board-text: #30343b; --board-border: #d9d7d2; --board-active: #e1defa;
   display: flex; flex-direction: column; font-family: system-ui, sans-serif; color: var(--board-text); background: var(--board-bg); }
 body.dark-mode { --board-bg: #202126; --board-panel: #292b32; --board-text: #efeff4; --board-border: #464852; --board-active: #494365; color-scheme: dark; }
-.map-header, .fog-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 16px; background: var(--board-bg); border-bottom: 1px solid var(--board-border); }
+.map-header, .board-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 16px; background: var(--board-bg); border-bottom: 1px solid var(--board-border); }
 .map-header a, #board-notices a { color: var(--board-text); }
 #back-to-party { display: inline-flex; align-items: center; justify-content: center; padding: 7px 10px;
   border: 1px solid var(--board-border); border-radius: 6px; background: var(--board-panel); font-size: 13px; text-decoration: none; }
 #back-to-party:focus-visible { outline: 2px solid #8278c8; outline-offset: 2px; }
 .map-header strong { margin-right: 4px; }
 .map-header > span:not(#map-status) { font-size: 12px; opacity: .75; }
-.map-header button, .fog-toolbar button, dialog button { cursor: pointer; padding: 7px 10px; font: inherit; font-size: 13px;
+.map-header button, .board-toolbar button, dialog button { cursor: pointer; padding: 7px 10px; font: inherit; font-size: 13px;
   border: 1px solid var(--board-border); border-radius: 6px; background: var(--board-panel); color: var(--board-text); }
 button[aria-pressed="true"], #confirm-import { background: var(--board-active); border-color: #8278c8; }
 button:disabled { opacity: .45; cursor: default; }
 button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid #8278c8; outline-offset: 2px; }
 #map-status { margin-left: auto; font-size: 13px; max-width: 32em; }
-.fog-toolbar { padding-block: 7px; font-size: 12px; }
-#fog-radius { width: 95px; accent-color: #8278c8; }
+.board-stage { flex: 1; min-height: 0; position: relative; display: flex; }
+/* The Warden's island sits where Excalidraw's tools were (top centre); those move to a rail on the left. */
+.board-island { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 5;
+  flex-wrap: nowrap; gap: 10px; padding: 4px 8px; border: 0; border-radius: 8px; background: var(--board-panel);
+  box-shadow: 0 0 0 1px #0000000d, 0 1px 3px #0000001f, 0 4px 12px #00000014; font-size: 12px; max-width: calc(100% - 460px); }
+.tool-group { display: flex; align-items: center; gap: 6px; }
+.tool-group + .tool-group { padding-left: 10px; border-left: 1px solid var(--board-border); }
+.tool-group-label { font-weight: 600; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+.board-toolbar button, .board-toolbar summary { display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
+.board-toolbar button i, .tool-group-label i { font-size: 13px; }
+.board-island button, .board-island summary { height: 32px; padding: 0 9px; border: 1px solid transparent; border-radius: 6px; background: none; }
+.board-island button:hover:not(:disabled), .board-island summary:hover { background: var(--board-active); }
+.board-island .tool-icon { width: 34px; padding: 0; }
+.board-island button[aria-pressed="true"] { background: var(--board-active); border-color: #8278c8; }
+.tool-segment { display: inline-flex; gap: 2px; }
+.tool-switch { font-weight: 600; }
+.tool-switch[aria-pressed="true"]::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #3fa34d; }
+#fog-radius { width: 80px; accent-color: #8278c8; }
+#fog-status:empty, .board-island #discard-fog[hidden] { display: none; }
+/* Less frequent actions open from a small menu. */
+.tool-more { position: relative; }
+.tool-more summary { list-style: none; cursor: pointer; }
+.tool-more summary::-webkit-details-marker { display: none; }
+.tool-menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 6; display: flex; flex-direction: column; min-width: 170px; padding: 4px;
+  border-radius: 8px; background: var(--board-panel); box-shadow: 0 0 0 1px #0000000d, 0 4px 16px #00000026; }
+.board-island .tool-menu button { justify-content: flex-start; width: 100%; padding: 0 10px; }
+/* Excalidraw's drawing tools and laser as a vertical rail below its menu button (Warden only). */
+body.warden-board .excalidraw .App-menu_top .shapes-section { position: absolute; top: 64px; left: 0; }
+/* The laser pointer island stays beside the top of the rail. */
+body.warden-board .excalidraw .App-toolbar-container { align-items: start; gap: 8px; }
+body.warden-board .excalidraw .App-toolbar-container > .Island:not(.App-toolbar) { align-self: start !important; }
+body.warden-board .excalidraw .App-toolbar .Stack_horizontal { grid-auto-flow: row; }
+/* With the tools out of Excalidraw's top grid, keep Tokens and Library in its right column. */
+body.warden-board .excalidraw .App-menu_top .layer-ui__wrapper__top-right { grid-column: 3; }
+body.warden-board .excalidraw .App-toolbar__divider { width: 24px; height: 1px; margin: 4px 0; }
+body.warden-board .excalidraw .HintViewer { display: none; }
+/* Narrow screens use Excalidraw's mobile layout; keep the Warden tools as a row above the board. */
+@media (max-width: 900px) {
+  .board-stage { flex-direction: column; }
+  .board-island { position: static; transform: none; max-width: none; flex-wrap: wrap; border-radius: 0; box-shadow: none;
+    border-bottom: 1px solid var(--board-border); }
+  body.warden-board .excalidraw .App-menu_top .shapes-section { position: static; }
+  body.warden-board .excalidraw .App-toolbar .Stack_horizontal { grid-auto-flow: column; }
+  body.warden-board .excalidraw .App-toolbar__divider { width: 1px; height: 24px; margin: 0; }
+  body.warden-board .excalidraw .HintViewer { display: revert; }
+}
 #fog-status { font-size: 12px; }
 #board-notices:empty { display: none; }
 #board-notices { padding: 6px 16px; display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; }
 #editor { flex: 1; min-height: 0; width: 100%; position: relative; }
 /* Above drawing, selection and text editing, below Excalidraw's controls (4). */
 .excalidraw canvas.whiteboard-fog { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; cursor: crosshair; filter: none !important; }
+.excalidraw canvas.whiteboard-dungeon { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; touch-action: none; filter: none !important; }
 .fog-brush-cursor { display: none; position: absolute; z-index: 3; pointer-events: none; border-radius: 50%; border: 1px solid white;
   box-shadow: 0 0 0 1px #171923; transform: translate(-50%, -50%); box-sizing: border-box; }
 #map-import { width: min(720px, calc(100vw - 48px)); max-height: calc(100dvh - 60px); overflow: auto; padding: 24px;
@@ -37,7 +82,7 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 #map-import p { font-size: 14px; line-height: 1.5; }
 #import-error { color: #bd5148; }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
-@media (max-width: 600px) { .map-header, .fog-toolbar { gap: 6px; padding: 8px; } .map-header { font-size: 13px; }
+@media (max-width: 600px) { .map-header, .board-toolbar { gap: 6px; padding: 8px; } .tool-group + .tool-group { padding-left: 0; border-left: 0; } .map-header { font-size: 13px; }
   #map-status { width: 100%; } .map-header > span:not(#map-status) { display: none; } #map-import { padding: 16px; } }
 
 .excalidraw .party-tokens-button { height: 36px; padding: 0 12px; border: 1px solid var(--board-border); border-radius: 8px;
@@ -112,6 +157,14 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 .board-roll-actions button, #board-roll-actor { cursor: pointer; border: 1px solid var(--board-border);
   border-radius: 6px; background: var(--board-bg); color: var(--board-text); padding: 6px 9px; font: inherit; }
 .board-roll-actions button { min-height: 32px; min-width: 36px; }
+/* Die-shaped dice buttons (the dice modal's icons); two dice overlap slightly. */
+.board-roll-actions button.board-roll-die { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 4px; color: var(--board-text); }
+.board-roll-die .die-icon { width: 36px; height: 36px; overflow: visible; flex: none; }
+.board-roll-die .die-icon + .die-icon { margin-left: -8px; }
+.board-roll-die .die-shape { fill: var(--board-panel); stroke: currentColor; stroke-width: 2.4; stroke-linejoin: round; }
+.board-roll-die .die-facet { fill: none; stroke: currentColor; stroke-width: 1.2; stroke-linejoin: round; opacity: .4; }
+.board-roll-die .die-num { fill: currentColor; font: 700 15px system-ui, sans-serif; text-anchor: middle; dominant-baseline: central; }
+.board-roll-die:hover:not(:disabled) .die-shape { fill: var(--board-active); }
 .board-roll-actions button:hover:not(:disabled) { background: var(--board-active); border-color: #8278c8; }
 .board-roll-actions button:focus-visible, #board-roll-actor:focus-visible { outline: 2px solid #8278c8; outline-offset: 2px; }
 .board-roll-actions button:disabled { opacity: .45; cursor: default; }
