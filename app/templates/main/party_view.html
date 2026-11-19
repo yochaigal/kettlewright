@@ -46,7 +46,8 @@
         {% if campaign_enabled %}
         {# Party notes and everything revealed to the party, in one place (#440). #}
         <a class="button no-margin-top" id="party-wiki-link" href="{{ url_for('campaigns.party_wiki', party_id=party.id) }}"
-          title="{{ _('Party wiki') }}"><i class="fa-solid fa-book-open icon-in-button" aria-hidden="true"></i> <span class="mobile-hidden">{{ _('Wiki') }}</span></a>
+          title="{{ _('Party wiki') }}"><span class="mobile-hidden">{{ _('Wiki') }}</span>
+          <i class="fa-solid fa-book-open icon-in-button" aria-hidden="true"></i></a>
         {% endif %}
         {% if can_view_rolls %}
         <a class="button no-margin-top" href="{{ url_for('party.shared_map', party_id=party.id) }}"
