@@ -143,6 +143,8 @@ body.warden-board .excalidraw .App-menu__left { margin-left: 100px; }
 #confirm-reveal-stats { background: var(--board-active); border-color: #8278c8; }
 
 
+/* Excalidraw's notices (a refused change, a dungeon too big, a new board) sit above the dice roller and roll results, not behind them. */
+.excalidraw .Toast { bottom: 180px; }
 .board-rolls { position: fixed; z-index: 5; left: 50%; bottom: 16px; transform: translateX(-50%);
   box-sizing: border-box; width: max-content; max-width: min(800px, calc(100vw - 24px));
   padding: 9px 12px; border: 1px solid var(--board-border); border-radius: 12px;
@@ -197,6 +199,7 @@ body.dark-mode .board-roll-osd-item { background: #e8e2d3f0; color: #141414; }
 @media (prefers-reduced-motion: reduce) { .board-roll-osd-item { animation: none; } }
 @media (max-width: 600px) {
   .board-rolls { width: calc(100vw - 16px); max-width: none; padding: 8px; bottom: 60px; }
+  .excalidraw .Toast { bottom: auto; top: 64px; }
   .board-roll-actions { gap: 4px; }
   .board-roll-actions button { padding: 6px 7px; }
   .board-roll-actions[data-mode="warden"], .board-roll-actions[data-mode="player"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }

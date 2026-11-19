@@ -36034,3 +36034,9 @@ msgstr "Другие действия с подземельем"
 #: app/templates/main/shared_map.html
 msgid "Only the Warden can change locked objects or clear the whole whiteboard. Your change was undone."
 msgstr "Только Смотритель может менять закреплённые объекты или очищать всю доску. Ваше изменение отменено."
+
+#. Whiteboard: why a save was refused (#386)
+#: app/templates/main/shared_map.html
+#, python-format
+msgid "Unable to save this drawing: %(reason)s"
+msgstr "Не удалось сохранить рисунок: %(reason)s"

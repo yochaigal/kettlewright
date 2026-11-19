@@ -100,7 +100,10 @@ function showStatus() {
   tell(saveBlocked ? 'invalid' : saveFailed ? 'failed' : readFailed ? 'offline'
     : pending || saving || importing || waitingForImages ? 'saving' : 'saved');
   // Say which limit was hit (#386): too many shapes, too many MB, or an unsupported image.
-  if (saveBlocked && refusedBecause) status.textContent += ` (${refusedBecause})`;
+  // The full limits stay in the tooltip so the header keeps to one line.
+  const because = saveBlocked && refusedBecause;
+  if (because) status.textContent = config.messages.invalidBecause.replace('{reason}', refusedBecause);
+  status.title = because ? config.messages.invalid : '';
   const fogStatus = document.getElementById('fog-status');
   if (fogStatus) fogStatus.textContent = config.messages[fogBlocked ? 'fogInvalid' : fogFailed ? 'fogFailed'
     : fogQueue.length || fogSaving ? 'saving' : ''] || '';

@@ -19,7 +19,7 @@ async function setup(editing = true, failedLibrary = null, language = 'en', ward
   const requests = [], libraryRequests = [], handlers = {}, windowHandlers = {}, intervals = [], drafts = [], timers = new Map();
   let projection, nextTimer = 0, props, elements = [], files = {}, appState = {viewBackgroundColor: '#ffffff', theme: 'light'};
   const config = {editing, warden, partyId: 1, sceneUrl: '/scene', libraryUrl: '/libraries/', messages: Object.fromEntries(
-    ['saved', 'live', 'saving', 'conflict', 'denied', 'invalid', 'failed', 'offline', 'loadFailed', 'draft'].map(key => [key, key]))};
+    ['saved', 'live', 'saving', 'conflict', 'denied', 'invalid', 'failed', 'offline', 'loadFailed', 'draft'].map(key => [key, key]).concat([['invalidBecause', 'Unable to save: {reason}']]))};
   const stored = new Map(), uiHandlers = {};
   const status = {textContent: ''};
   const api = {
@@ -468,5 +468,6 @@ test('other refusals stay visible with the reason the server gave (#386)', async
   state.change('huge'); await state.timers();
   state.requests.shift().resolve(response({reason: 'invalid', message: 'Drawing exceeds 12 MB.'}, 400));
   await tick();
-  assert.equal(state.status.textContent, 'invalid (Drawing exceeds 12 MB.)');
+  assert.equal(state.status.textContent, 'Unable to save: Drawing exceeds 12 MB.');
+  assert.equal(state.status.title, 'invalid');
 });
