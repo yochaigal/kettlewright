@@ -23,7 +23,18 @@ export async function refreshPartyContent(partyId = null) {
       } else {
         const page=new DOMParser().parseFromString(await response.text(),'text/html');
         const container=document.getElementById('party-content-results'), updated=page.getElementById('party-content-results');
-        if (container && updated) container.replaceChildren(...updated.childNodes);
+        if (container && updated) {
+          container.replaceChildren(...updated.childNodes);
+          // A new cover gets the same portrait framing as on page load.
+          const covers = container.querySelectorAll?.('img[data-cover]') ?? [];
+          if (covers.length) {
+            const {fitCover} = await import('./campaign-covers.js');
+            for (const img of covers) {
+              if (img.complete) fitCover(img);
+              else img.addEventListener('load', () => fitCover(img), {once: true});
+            }
+          }
+        }
         const drawing=page.querySelector('[data-graph]');
         if(drawing)window.dispatchEvent(new CustomEvent('campaign-refresh',{detail:{graph:JSON.parse(drawing.dataset.graph)}}));
         else if(document.querySelector('[data-graph]'))window.dispatchEvent(new CustomEvent('campaign-access-lost'));

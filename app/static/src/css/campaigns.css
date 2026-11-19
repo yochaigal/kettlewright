@@ -371,12 +371,16 @@ aside:where(.campaign-wiki *), article:where(.campaign-wiki *), header:where(.ca
 .wiki-related {margin-top:2em;}
 .wiki-related > ul li {margin:.35em 0;}
 .wiki-cards {display:grid;grid-template-columns:repeat(auto-fill,minmax(14em,1fr));gap:.75em;margin:0;padding:0;list-style:none;}
-.wiki-card {display:flex;flex-direction:column;gap:.4em;padding:.85em 1em;border:1px solid var(--wiki-line);border-radius:4px;background:var(--wiki-soft);}
-.wiki-card:hover {border-color:var(--fg);}
-.wiki-card > a {font-weight:700;overflow-wrap:anywhere;}
-/* Party wiki (#440): the picture the party was shown, and the Warden's Original / Party version label. */
-.wiki-card-picture {display:block;margin:-.85em -1em .2em;aspect-ratio:16/9;overflow:hidden;border-radius:4px 4px 0 0;background:color-mix(in srgb,var(--fg) 7%,var(--bg));}
+/* Article cards: the article's first picture (for a party, the one it was shown) or a patterned initial on top;
+   the whole card opens the article, except its own actions. Same lift on hover as the other cards. */
+.wiki-card {position:relative;display:flex;flex-direction:column;min-width:0;overflow:hidden;border:1px solid var(--wiki-line);border-radius:8px;background:var(--wiki-soft);}
+.wiki-card-picture {display:block;flex:none;aspect-ratio:16/9;overflow:hidden;background:color-mix(in srgb,var(--fg) 7%,var(--bg));text-decoration:none;}
 .wiki-card-picture img {display:block;width:100%;height:100%;margin:0;object-fit:cover;}
+.wiki-card-placeholder {display:flex;align-items:center;justify-content:center;height:100%;font-size:2em;font-weight:700;color:color-mix(in srgb,var(--fg) 30%,var(--bg));background:repeating-linear-gradient(135deg,transparent 0 10px,color-mix(in srgb,var(--fg) 4%,transparent) 10px 20px);}
+.wiki-card-body {display:flex;flex-direction:column;gap:.4em;flex:1;padding:.7em 1em .85em;min-width:0;}
+.wiki-card-title {font-weight:700;overflow-wrap:anywhere;}
+.wiki-card-title::after {content:'';position:absolute;inset:0;}
+/* Party wiki (#440): the Warden's Original / Party version label. */
 .wiki-badge-warden {font-style:italic;}
 .party-note-dialog label {display:block;margin:.75em 0 .35em;font-weight:600;}
 .party-note-dialog :is(input[type=text],textarea) {display:block;width:100%;box-sizing:border-box;margin:0;padding:.5em .6em;border:1px solid var(--fg);border-radius:2px;background:var(--bg);color:var(--fg);font:inherit;}
@@ -404,7 +408,6 @@ aside:where(.campaign-wiki *), article:where(.campaign-wiki *), header:where(.ca
 .campaign-gallery-page .gallery-heading small {margin-left:.35em;font-weight:400;color:color-mix(in srgb,var(--fg) 60%,var(--bg));}
 .campaign-gallery {display:grid;grid-template-columns:repeat(auto-fill,minmax(15em,1fr));gap:1em;margin:0;padding:0;list-style:none;}
 .campaign-card {display:flex;flex-direction:column;min-width:0;overflow:hidden;border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;background:color-mix(in srgb,var(--fg) 3%,var(--bg));transition:border-color .15s,transform .15s;}
-.campaign-card:hover, .campaign-card:focus-within {border-color:var(--fg);}
 .campaign-card[hidden] {display:none;}
 .campaign-card-cover {position:relative;display:block;aspect-ratio:16/9;overflow:hidden;background:color-mix(in srgb,var(--fg) 8%,var(--bg));}
 .campaign-card-cover img {display:block;width:100%;height:100%;margin:0;object-fit:cover;} /* No global img margin: it left a band above the picture. */
@@ -532,7 +535,12 @@ body.dark-mode .kw-action-danger:hover {background:#a33b3b;color:#fff;}
 .pw-card {width:13em;min-width:0;margin:0;padding:0;}
 .pw-card[hidden] {display:none;}
 .pw-card-inner {position:relative;display:flex;flex-direction:column;height:100%;box-sizing:border-box;overflow:hidden;border:1px solid color-mix(in srgb,var(--fg) 18%,var(--bg));border-radius:8px;background:var(--bg);box-shadow:0 1px 2px rgba(0,0,0,.06);transition:border-color .15s,box-shadow .15s,transform .15s;}
-.pw-card-inner:hover, .pw-card-inner:focus-within {border-color:color-mix(in srgb,var(--fg) 55%,var(--bg));box-shadow:0 4px 14px rgba(0,0,0,.12);transform:translateY(-1px);}
+/* The lift on hover, shared by every card: campaigns, article cards in the wikis, unfiled articles. */
+.pw-card-inner:hover, .pw-card-inner:focus-within,
+.campaign-card:hover, .campaign-card:focus-within,
+.wiki-card:hover, .wiki-card:focus-within {border-color:color-mix(in srgb,var(--fg) 55%,var(--bg));box-shadow:0 4px 14px rgba(0,0,0,.12);transform:translateY(-1px);}
+.campaign-card, .wiki-card {box-shadow:0 1px 2px rgba(0,0,0,.06);transition:border-color .15s,box-shadow .15s,transform .15s;}
+.campaign-gallery-page .gallery-starters .campaign-card {transform:none;} /* In the carousel the lift would clip. */
 .pw-card-cover {display:block;flex:none;width:100%;aspect-ratio:16/9;overflow:hidden;background:color-mix(in srgb,var(--fg) 7%,var(--bg));text-decoration:none;}
 .pw-card-cover img {display:block;width:100%;height:100%;margin:0;object-fit:cover;}
 .pw-card-placeholder {display:flex;align-items:center;justify-content:center;height:100%;font-size:1.6em;font-weight:700;color:color-mix(in srgb,var(--fg) 30%,var(--bg));text-decoration:none;background:repeating-linear-gradient(135deg,transparent 0 9px,color-mix(in srgb,var(--fg) 4%,transparent) 9px 18px);}
@@ -544,9 +552,9 @@ body.dark-mode .kw-action-danger:hover {background:#a33b3b;color:#fff;}
 /* Buttons never shrink under their label; if they do not fit side by side they wrap. */
 .pw-card-actions {position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:.4em;margin-top:auto;padding:.5em .75em .7em;}
 .pw-card-actions > *, .pw-card-actions form > * {flex:none;}
-.pw-card-actions .kw-action {min-width:max-content;min-height:2em;padding:.15em .65em;font-size:.78em;}
+.pw-card-actions .kw-action, .campaign-card-actions .kw-action {min-width:max-content;min-height:2em;padding:.15em .65em;font-size:.78em;}
 @media (max-width:480px) {.pw-cards {grid-template-columns:repeat(2,minmax(0,1fr));} .pw-card {width:auto;}}
-@media (pointer:coarse) {.pw-card-actions .kw-action {min-height:2.6em;}}
+@media (pointer:coarse) {.pw-card-actions .kw-action, .campaign-card-actions .kw-action {min-height:2.6em;}}
 /* Party wiki, Warden only: Edit / Hide / Delete in the article header and on article cards. */
 .campaign-wiki .wiki-actions form {display:inline-flex;margin:0;padding:0;border:0;background:none;width:auto;}
 .wiki-edit.wiki-danger {border-color:#a33b3b;color:#a33b3b;}
@@ -554,7 +562,8 @@ body.dark-mode .kw-action-danger:hover {background:#a33b3b;color:#fff;}
 .kw-action.wiki-danger {border-color:color-mix(in srgb,#a33b3b 55%,var(--bg));color:#a33b3b;}
 .kw-action.wiki-danger:hover {border-color:#a33b3b;background:#a33b3b;color:#fff;}
 body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {color:#e08080;border-color:color-mix(in srgb,#e08080 55%,var(--bg));}
-.wiki-card-actions {position:relative;z-index:1;margin-top:.5em;}
+.wiki-card-actions {position:relative;z-index:1;margin-top:auto;padding-top:.5em;}
+.wiki-card-actions form {display:inline-flex;margin:0;padding:0;border:0;background:none;width:auto;}
 /* Campaigns gallery: Unfiled articles heading with Read all / Manage beside it; one small card per article. */
 .campaign-gallery-page .gallery-heading-row {display:flex;flex-wrap:wrap;align-items:center;gap:.5em 1em;margin:1.75em 0 .75em;}
 .campaign-gallery-page .gallery-heading-row .gallery-heading {margin:0;}
