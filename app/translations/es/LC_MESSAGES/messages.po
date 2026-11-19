@@ -45750,3 +45750,76 @@ msgstr "Solo la Guardiana puede cambiar objetos bloqueados o vaciar toda la piza
 #, python-format
 msgid "Unable to save this drawing: %(reason)s"
 msgstr "No se puede guardar este dibujo: %(reason)s"
+
+#. Whiteboard as a Discord Activity (#423)
+msgid "Opening the whiteboard…"
+msgstr "Abriendo la pizarra…"
+
+#. Whiteboard as a Discord Activity (#423)
+msgid "Open Kettlewright"
+msgstr "Abrir Kettlewright"
+
+#. Whiteboard as a Discord Activity (#423)
+msgid "Unable to open the whiteboard. Close it and open it again."
+msgstr "No se puede abrir la pizarra. Ciérrala y vuelve a abrirla."
+
+#. Whiteboard as a Discord Activity (#423)
+msgid "Open the whiteboard from a Discord server channel."
+msgstr "Abre la pizarra desde un canal de un servidor de Discord."
+
+#. Whiteboard as a Discord Activity (#423)
+msgid "Discord did not confirm who you are. Close the whiteboard and open it again."
+msgstr "Discord no ha confirmado quién eres. Cierra la pizarra y vuelve a abrirla."
+
+#. Whiteboard as a Discord Activity (#423)
+msgid "Connect your Discord account to Kettlewright first, then open the whiteboard again."
+msgstr "Conecta primero tu cuenta de Discord a Kettlewright y luego vuelve a abrir la pizarra."
+
+#. Whiteboard as a Discord Activity (#423)
+msgid "This channel has no party yet. The Warden can bind one with /kw bind."
+msgstr "Este canal aún no tiene grupo. La Guardiana puede vincular uno con /kw bind."
+
+#. Whiteboard as a Discord Activity (#423)
+#, python-format
+msgid "Only members of %(party)s can open its whiteboard."
+msgstr "Solo los miembros de %(party)s pueden abrir su pizarra."
+
+#. Compact character sheet in the Discord Activity (#423)
+msgid "Character sheet"
+msgstr "Hoja de personaje"
+
+#. Compact character sheet in the Discord Activity (#423)
+#, python-format
+msgid "%(used)s/%(total)s slots"
+msgstr "%(used)s/%(total)s espacios"
+
+#. Compact character sheet in the Discord Activity (#423)
+msgid "Use"
+msgstr "Usar"
+
+#. Compact character sheet in the Discord Activity (#423)
+msgid "Add Fatigue"
+msgstr "Añadir Fatiga"
+
+#. Compact character sheet in the Discord Activity (#423)
+#, python-format
+msgid "Lower %(stat)s"
+msgstr "Bajar %(stat)s"
+
+#. Compact character sheet in the Discord Activity (#423)
+#, python-format
+msgid "Raise %(stat)s"
+msgstr "Subir %(stat)s"
+
+#. Compact character sheet in the Discord Activity (#423)
+msgid "Unable to load your character. Close and try again."
+msgstr "No se puede cargar tu personaje. Cierra e inténtalo de nuevo."
+
+#. Compact character sheet in the Discord Activity (#423)
+msgid "Unable to save. Try again."
+msgstr "No se puede guardar. Inténtalo de nuevo."
+
+#. Compact character sheet in the Discord Activity (#423)
+#, python-format
+msgid "Effective HP: %(hp)s"
+msgstr "PG efectivos: %(hp)s"

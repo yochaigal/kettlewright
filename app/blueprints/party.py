@@ -85,12 +85,18 @@ def _board_write(target, row, conditions, values):
 @party.route('/party/<int:party_id>/shared-map')
 @login_required
 def shared_map(party_id):
+    return shared_map_page(party_id)
+
+
+def shared_map_page(party_id, activity_token=None):
+    """The whiteboard page, on the site or (with a token) inside a Discord Activity (#423)."""
     from flask_wtf.csrf import generate_csrf
     target = _board_party(party_id)
     response = make_response(render_template('main/shared_map.html', party=target,
         editing=True, warden=current_user.id == target.owner,
         can_load_maps=current_user.id == target.owner,
-        csrf_token=generate_csrf(), roll_form=FlaskForm()))
+        csrf_token=generate_csrf(), roll_form=FlaskForm(), activity_token=activity_token,
+        has_character=any(c.owner == current_user.id for c in party_characters(target))))
     response.headers['Cache-Control'] = 'no-store'
     return response
 
@@ -324,6 +330,37 @@ def shared_map_character(party_id, character_id):
     if character is None:
         abort(403)
     return redirect(url_for('main.character', username=character.owner_username, url_name=character.url_name))
+
+
+@party.get('/party/<int:party_id>/shared-map/sheets')
+@login_required
+def shared_map_sheets(party_id):
+    """Compact sheets of your own characters in this party (#423): the Activity has no full sheet."""
+    from app.lib.compact_sheet import sheet
+    target = _board_party(party_id)
+    return _board_json({'characters': [sheet(c) for c in party_characters(target) if c.owner == current_user.id]})
+
+
+@party.post('/party/<int:party_id>/shared-map/sheets/<int:character_id>')
+@login_required
+def shared_map_sheet_action(party_id, character_id):
+    """One change from the compact sheet, by the character's owner, as with the Discord /kw actions."""
+    from app.lib.compact_sheet import apply, sheet
+    _board_party(party_id)
+    data = _board_data()
+    # Serialize read-modify-write changes within this party, as Discord actions do.
+    target = Party.query.filter_by(id=party_id).with_for_update().populate_existing().first()
+    characters = party_characters(target)
+    character = next((c for c in characters if c.id == character_id and c.owner == current_user.id), None)
+    if character is None:
+        abort(403)
+    try:
+        apply(character, characters, data)
+    except ValueError as error:
+        db.session.rollback()
+        return _board_error('invalid', str(error))
+    db.session.commit()
+    return _board_json(sheet(character))
 
 
 @party.get('/party/<int:party_id>/shared-map/roll-actors')

@@ -48,6 +48,9 @@ with open(scars_file_path, 'r') as file:
 
 @main.route('/')
 def index():
+    # Discord opens an Activity at "/" with its launch parameters (#423).
+    if request.args.get('frame_id') and request.args.get('instance_id'):
+        return redirect(url_for('activity.launch', **request.args.to_dict()))
     if current_user.is_authenticated:
         return redirect(url_for('main.characters', username=current_user.username))
     else:
