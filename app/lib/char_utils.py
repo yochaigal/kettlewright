@@ -298,23 +298,11 @@ def generate_character(bkg):
             "name": "Main",
             "slots": 10
         })
-    if "starting_containers" in genchar.background:
-        idx = 1
-        for c in genchar.background['starting_containers']:
-            c['id'] = idx 
-            idx += 1
-            genchar.containers.append(c)
-    if "containers" in t1o:
-        for c in t1o['containers']:
-            c['id'] = idx
-            idx += 1
-            genchar.containers.append(c)
-    if "containers" in t2o:
-        for c in t2o['containers']:
-            c['id'] = idx
-            idx += 1
-            genchar.containers.append(c)            
-            
+    from app.lib.inventory import starting_containers
+    specs = list(genchar.background.get('starting_containers', []))
+    specs += t1o.get('containers', []) + t2o.get('containers', [])
+    genchar.containers.extend(starting_containers(specs, genchar.items))
+
     generated_data = genchar.toJSON()
     genchar.pets = generated_data['pets']
     json_data = json.dumps(generated_data)

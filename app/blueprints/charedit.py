@@ -577,6 +577,31 @@ def charedit_inplace_inventory_container_delete(username, url_name, container_id
     inventory.decorate()
     return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
 
+# Route: set a carried container down or pick it back up
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/container-edit/<int:container_id>/set-down', methods=['POST'])
+def charedit_inplace_inventory_container_set_down(username, url_name, container_id):
+    user, character = get_char_data(username, url_name)
+    inventory = Inventory(character)
+    if not inventory.get_container(container_id):
+        abort(404)
+    inventory.set_container_down(container_id, request.form.get('down') == '1')
+    shown = request.form.get('container', '')
+    inventory.select(int(shown) if shown.isdigit() and inventory.get_container(shown) else container_id)
+    inventory.decorate()
+    return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
+
+# Route: delete everything in a container
+@character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/container-edit/<int:container_id>/clear', methods=['POST'])
+def charedit_inplace_inventory_container_clear(username, url_name, container_id):
+    user, character = get_char_data(username, url_name)
+    inventory = Inventory(character)
+    if not inventory.get_container(container_id):
+        abort(404)
+    inventory.clear_container(container_id)
+    inventory.select(container_id)
+    inventory.decorate()
+    return render_template('partial/charedit/inventory.html', user=user, character=character, username=username, url_name=url_name, inventory=inventory)
+
 # Route: edit item dialog
 @character_edit.route('/charedit/inplace-inventory/<username>/<url_name>/item-edit/<item_id>', methods=['GET'])
 def charedit_inplace_inventory_item_edit(username, url_name, item_id):

@@ -27416,3 +27416,29 @@ msgstr "Зручний для читання аркуш для нотаток, �
 #: app/templates/partial/charview/export_dialog.html
 msgid "Simple text to paste anywhere."
 msgstr "Простий текст, який можна вставити будь-куди."
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+#: app/templates/partial/charedit/inventory.html
+msgid "Set down"
+msgstr "Поставити"
+
+#. Application interface
+#: app/lib/inventory.py
+msgid "set down"
+msgstr "поставлено"
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Takes no slots while set down; its contents stay inside."
+msgstr "Поставлений не займає слотів; вміст лишається всередині."
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Delete everything in this container?"
+msgstr "Видалити весь вміст цього контейнера?"
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Remove this container and everything in it?"
+msgstr "Прибрати цей контейнер разом із вмістом?"

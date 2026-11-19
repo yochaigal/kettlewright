@@ -22,6 +22,43 @@ def bring_fatigue_to_end(item):
         return item["name"]
     
 
+def carrying_items(carrier_id, container_id, name, load):
+    """Reservation items that make a carried container take `load` slots in its carrier.
+
+    Every two slots are one bulky item, so a cart (load 2) shows as a single tile.
+    """
+    load = int(load)
+    base = uuid.uuid4().hex
+    sizes = [2] * (load // 2) + [1] * (load % 2)
+    return [{"id": base + "_" + str(i), "name": "Carrying " + name, "editable": False,
+             "location": int(carrier_id), "tags": ["bulky"] if size == 2 else [], "carrying": int(container_id)}
+            for i, size in enumerate(sizes)]
+
+
+def starting_containers(specs, items, next_id=1):
+    """Build containers from background data and append their load reservations to items.
+
+    `carried_by` names the carrying container ("main" or another starting container
+    such as "Donkey"); `load` is how many of its slots the container takes.
+    """
+    ids = {'main': 0}
+    built = []
+    for spec in specs:
+        container = {'id': next_id, 'name': spec.get('name') or '?', 'slots': safeint(spec.get('slots'))}
+        ids.setdefault(container['name'].lower(), next_id)
+        built.append((container, spec))
+        next_id += 1
+    for container, spec in built:
+        load = safeint(spec.get('load'))
+        carrier = str(spec.get('carried_by', '')).strip()
+        carrier_id = int(carrier) if carrier.isdigit() else ids.get(carrier.lower())
+        if load > 0 and carrier_id is not None and carrier_id != container['id']:
+            container['carried_by'] = str(carrier_id)
+            container['load'] = load
+            items.extend(carrying_items(carrier_id, container['id'], container['name'], load))
+    return [container for container, _spec in built]
+
+
 class Inventory:
     # character can be a player character or a party
     def __init__(self, character):
@@ -181,6 +218,8 @@ class Inventory:
                     self.decorate_item(item)
                 continue
             c["title"] = c["name"] + " ("+str(curr_slots)+"/"+str(c["slots"])+")"
+            if c.get("set_down"):
+                c["title"] += " · " + _("set down")
             c["used_slots"] = curr_slots
             c["over_capacity"] = curr_slots > int(c["slots"])
             if curr_slots >= int(c["slots"]):
@@ -376,11 +415,8 @@ class Inventory:
     
     # add carrying tag
     def add_carrying(self, carried_by, container_id, name, amount):
-        items = json.loads(self.character.items)  
-        new_id = self.generate_item_id()
-        for i in range(amount):
-            new_item = {"id": new_id+"_"+str(i), "name": "Carrying "+name, "editable": False, "location": int(carried_by),"tags":[], "carrying":int(container_id)}
-            items.append(new_item)
+        items = json.loads(self.character.items)
+        items.extend(carrying_items(carried_by, container_id, name, amount))
         return items
     
     # remove carried by
@@ -409,6 +445,7 @@ class Inventory:
         else:
             cnt.pop("carried_by", None)
             cnt.pop("load", None)
+            cnt.pop("set_down", None)
             
         containers = json.loads(self.character.containers)
         result = []
@@ -419,11 +456,41 @@ class Inventory:
         
         # Replace all old reservations, including duplicates from earlier edits.
         self.character.items = json.dumps(self.remove_carrying(container_id))
-        if has_carried:
+        if has_carried and not cnt.get("set_down"):
             items = self.add_carrying(carried_by,container_id, name, int(load))
             self.character.items = json.dumps(items)
             
         self.character.containers = json.dumps(result)
+        db.session.commit()
+        self.parse(self.character)
+
+    # Delete everything a container holds. Load markers of containers it carries stay.
+    def clear_container(self, container_id):
+        self.require_regular_container(container_id)
+        items = json.loads(self.character.items)
+        kept = [it for it in items if int(it["location"]) != int(container_id) or "carrying" in it]
+        self.character.items = json.dumps(kept)
+        db.session.commit()
+        self.parse(self.character)
+
+    # Set a carried container (e.g. a cart) down or pick it back up.
+    # While it is set down it keeps its contents but takes no slots in its carrier.
+    def set_container_down(self, container_id, down):
+        self.require_regular_container(container_id)
+        containers = json.loads(self.character.containers)
+        target = next((c for c in containers if c["id"] == int(container_id)), None)
+        if target is None:
+            abort(404)
+        if target.get("carried_by") in (None, "") or not safeint(target.get("load")):
+            abort(400, description='Only a container that something carries can be set down.')
+        items = self.remove_carrying(container_id)
+        if down:
+            target["set_down"] = True
+        else:
+            target.pop("set_down", None)
+            items += carrying_items(target["carried_by"], container_id, target["name"], safeint(target["load"]))
+        self.character.items = json.dumps(items)
+        self.character.containers = json.dumps(containers)
         db.session.commit()
         self.parse(self.character)
         

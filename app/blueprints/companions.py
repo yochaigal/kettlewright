@@ -7,7 +7,7 @@ from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from app.models import db, Character, Party, Companion
 from app.lib.companions import STATS, can_manage_pets, can_manage, can_roll, companion_party, catalog, import_pet, new_hireling, party_member, pet_data, companion_destinations, record_transfer, finish_companion_transfers
-from app.lib.inventory import Inventory
+from app.lib.inventory import Inventory, carrying_items
 from app.lib.data import sanitize_json_content
 from app.lib.quick_stats import save_current_stat
 
@@ -281,7 +281,7 @@ def inventory_update(companion_id):
                 load = number('load',1000,optional=True) or 0
                 container.update(carried_by=0,load=load)
                 items = [it for it in items if it.get('carrying') != container['id']]
-                items.extend(dict(id=uuid.uuid4().hex,name='Carrying '+name,tags=[],location=0,carrying=container['id']) for _ in range(load))
+                items.extend(carrying_items(0, container['id'], name, load))
     elif action in ('item', 'delete-item'):
         iid = request.form.get('item_id','')
         item = next((v for v in items if str(v['id']) == iid), None)
@@ -522,6 +522,31 @@ def fatigue(companion_id, container_id):
         abort(404)
     inventory.add_fatigue(container_id)
     return inventory_response(c, container_id)
+
+
+@companions.route('/companions/<int:companion_id>/inventory/container-edit/<int:container_id>/clear', methods=['POST'])
+@login_required
+def container_clear(companion_id, container_id):
+    c = editable(companion_id)
+    csrf()
+    inventory = Inventory(c)
+    if not inventory.get_container(container_id):
+        abort(404)
+    inventory.clear_container(container_id)
+    return inventory_response(c, container_id)
+
+
+@companions.route('/companions/<int:companion_id>/inventory/container-edit/<int:container_id>/set-down', methods=['POST'])
+@login_required
+def container_set_down(companion_id, container_id):
+    c = editable(companion_id)
+    csrf()
+    inventory = Inventory(c)
+    if not inventory.get_container(container_id):
+        abort(404)
+    inventory.set_container_down(container_id, request.form.get('down') == '1')
+    shown = request.form.get('container', '')
+    return inventory_response(c, int(shown) if shown.isdigit() and inventory.get_container(shown) else container_id)
 
 
 @companions.route('/companions/<int:companion_id>/cancel', methods=['POST'])

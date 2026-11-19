@@ -39,7 +39,8 @@ def test_container_edits_replace_load_and_preserve_contents(app_with_babel, mode
             inventory.update_container(str(bag_id), 'Renamed bag', 9, parent, load)
             items = json.loads(owner.items)
             reservations = [it for it in items if it.get('carrying') == bag_id]
-            assert len(reservations) == int(load or 0)
+            assert sum(2 if 'bulky' in it['tags'] else 1 for it in reservations) == int(load or 0)
+            assert len(reservations) == (int(load or 0) + 1) // 2
             assert all(it['location'] == int(parent) and it['name'] == 'Carrying Renamed bag'
                        for it in reservations)
             assert content in items and other in items

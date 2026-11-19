@@ -67,6 +67,14 @@
       hx-confirm="{{_('Are you sure you want to delete')}} {{item_name}}?"
       data-confirm-title="{{_('Delete item')}}" data-confirm-button="{{_('Delete')}}">×</button>
     {% endif %}
+    {% set carried = inventory.get_container(it.carrying) if editable and it.carrying is defined else none %}
+    {% if carried and not carried.get('on_the_ground') %}
+    {% set carried_name = carried.name|markdown_inline|striptags %}
+    <button type="button" class="slot-icon" title="{{ _('Remove') }}: {{ carried_name }}" aria-label="{{ _('Remove') }}: {{ carried_name }}"
+      hx-post="{{edit_base}}/container-edit/{{carried.id}}/delete" hx-vals='{"delete-items": ""}' hx-target="#inventory-container"
+      hx-confirm="{{ _('Remove this container and everything in it?') }}"
+      data-confirm-title="{{ _('Delete container') }}: {{ carried_name }}" data-confirm-button="{{ _('Remove') }}">×</button>
+    {% endif %}
   </div>
 {% endmacro %}
 <div class="slot-inventory" data-move-url="{{edit_base}}/move" data-csrf="{{csrf}}"
@@ -89,6 +97,25 @@
     {% if editable %}<button type="button" class="slot-icon" title="{{_('Edit container')}}" aria-label="{{_('Edit container')}}"
       hx-get="{{edit_base}}/container-edit/{{container.id}}" hx-target="#modal-anchor"><i class="fa-solid fa-gear" aria-hidden="true"></i></button>{% endif %}
   </div>
+  {% if editable and container.id != 0 and not container.get('on_the_ground') %}
+  {% set has_items = layout.rows|selectattr('item')|rejectattr('item.carrying', 'defined')|list or layout.petty %}
+  <div class="slot-container-actions" role="toolbar" aria-label="{{ container.name|markdown_inline|striptags }}">
+    {% if container.get('carried_by') not in (none, '') and container.get('load')|int > 0 %}
+    <button type="button" class="button smaller-font" hx-post="{{edit_base}}/container-edit/{{container.id}}/set-down"
+      hx-vals='{{ {"down": "0" if container.get('set_down') else "1"} | tojson }}' hx-target="#inventory-container"
+      title="{{ '' if container.get('set_down') else _('Takes no slots while set down; its contents stay inside.') }}">
+      {{ _('Pick up') if container.get('set_down') else _('Set down') }}</button>
+    {% endif %}
+    <button type="button" class="button smaller-font" hx-post="{{edit_base}}/container-edit/{{container.id}}/clear"
+      hx-target="#inventory-container" {% if not has_items %}disabled{% endif %}
+      hx-confirm="{{ _('Delete everything in this container?') }}"
+      data-confirm-title="{{ _('Clear') }}: {{ container.name|markdown_inline|striptags }}" data-confirm-button="{{ _('Clear') }}">{{ _('Clear') }}</button>
+    <button type="button" class="button smaller-font" hx-post="{{edit_base}}/container-edit/{{container.id}}/delete"
+      hx-vals='{"delete-items": ""}' hx-target="#inventory-container"
+      hx-confirm="{{ _('Remove this container and everything in it?') }}"
+      data-confirm-title="{{ _('Delete container') }}: {{ container.name|markdown_inline|striptags }}" data-confirm-button="{{ _('Remove') }}">{{ _('Remove') }}</button>
+  </div>
+  {% endif %}
   <div class="inventory-slots" role="list" aria-label="{{container.name}}">
     {% for row in layout.rows %}
     <div class="inventory-slot {% if row.item %}slot-filled{% else %}slot-empty{% endif %} {% if row.span == 2 %}slot-bulky{% endif %} {% if row.overflow %}slot-overflow{% endif %} {% if row.item and row.item.blocker %}item-blocker-text{% endif %}"

@@ -45623,3 +45623,29 @@ msgstr "Hoja legible para apps de notas como Obsidian. Se puede importar."
 #: app/templates/partial/charview/export_dialog.html
 msgid "Simple text to paste anywhere."
 msgstr "Texto simple para pegar en cualquier sitio."
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+#: app/templates/partial/charedit/inventory.html
+msgid "Set down"
+msgstr "Aparcar"
+
+#. Application interface
+#: app/lib/inventory.py
+msgid "set down"
+msgstr "aparcado"
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Takes no slots while set down; its contents stay inside."
+msgstr "Aparcado no ocupa espacios; su contenido se queda dentro."
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Delete everything in this container?"
+msgstr "¿Borrar todo lo que hay en este contenedor?"
+
+#. Application interface
+#: app/templates/partial/charview/inventory_slots.html
+msgid "Remove this container and everything in it?"
+msgstr "¿Quitar este contenedor y todo lo que contiene?"

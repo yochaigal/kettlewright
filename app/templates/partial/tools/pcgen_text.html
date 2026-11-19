@@ -31,7 +31,7 @@
 <div>
     <div><b>{{_('Items')}}:</b></div>
     <ul style="list-style-position:inside; padding-inline-start:16px">
-        {% for it in character.items %}
+        {% for it in character.items if 'carrying' not in it %}
         <li style="float:none; display: list-item;">{{ it.title|markdown_inline }}</li>
         {% endfor %}
     </ul>
