@@ -33,7 +33,8 @@ def test_home_groups_articles_and_highlights_hearts(setup):
     for group in ('Factions', 'POIs', 'Items'):
         assert f'<h2>{group} <small>1</small></h2>' in page
     assert '<h2>People' not in page  # Mira sits inside the guild, so only the top level is grouped.
-    assert page.count(f'href="/campaigns/1/wiki/{town}/"') == 3  # Heart section, its group, the sidebar.
+    # Heart section and its group (picture and title on each card), and the sidebar.
+    assert page.count(f'href="/campaigns/1/wiki/{town}/"') == 5
     assert 'A market town.' in page  # Card excerpt.
     assert 'href="/campaigns/1/"' in page  # Edit goes back to the editing view.
 
@@ -60,8 +61,9 @@ def test_article_page_links_breadcrumbs_and_backlinks(setup):
     page = wiki(client, guild).get_data(as_text=True)
     assert '<h1>Ash Guild</h1>' in page
     # The [[Mira]] link opens Mira's wiki page, not her editor.
+    text = page[page.index('class="rich-content"'):page.index('In this article')]
     assert re.search(rf'<a [^>]*href="/campaigns/1/wiki/{mira}/"[^>]*>Mira</a>', page)
-    assert f'href="/materials/{mira}/edit"' not in page
+    assert f'href="/materials/{mira}/edit"' not in text  # Her card below has Edit; the link in the text reads.
     # Mira is a sub-article; the Bell links here.
     assert 'In this article' in page
     assert 'Linked from' in page and f'href="/campaigns/1/wiki/{relic}/"' in page
@@ -148,6 +150,7 @@ def test_campaign_cards_open_to_read_and_offer_edit(setup):
     first = card(page)
     assert 'class="campaign-card-title" href="/campaigns/1/wiki/"' in first  # Reading is the default.
     assert 'href="/campaigns/1/"' in first and '>Edit' in first.replace('</i> ', '>')
+    assert 'class="kw-action" href="/campaigns/1/"' in first and 'Read' not in first  # The card itself reads.
     assert '4 articles' in first and 'Not revealed to any party yet' in first  # Worked out from reveals.
     assert 'data-search="secret campaign ' in first and 'ash guild' in first  # Search finds articles too.
     assert 'campaign-card-placeholder' in first  # No image anywhere yet.
@@ -273,6 +276,34 @@ def unfiled(client, **values):
     return int(re.search(r'/materials/(\d+)/edit', result.location).group(1))
 
 
+def wiki_card(page, title):
+    """The article card whose title is this text."""
+    for match in re.finditer(r'<li class="wiki-card">(.*?)</li>', page, re.S):
+        if f'>{title}</a>' in match.group(1):
+            return match.group(1)
+    raise AssertionError(f'No card for {title}')
+
+
+def test_article_cards_show_a_picture_or_a_placeholder(setup):
+    app, client = setup
+    pictured = create_entry(client, category='npc', title='Portrait', body='![face](https://example.org/face.png)')
+    create_entry(client, category='relic', title='Plain', body='No picture.')
+    page = wiki(client).get_data(as_text=True)
+    assert f'<img src="/materials/{pictured}/image"' in wiki_card(page, 'Portrait')
+    plain = wiki_card(page, 'Plain')
+    assert '<img' not in plain and '<span class="wiki-card-placeholder">P</span>' in plain
+
+
+def test_owner_article_cards_offer_edit_but_not_delete(setup):
+    app, client = setup
+    guild, mira, town, relic = build(app, client)
+    card_html = wiki_card(wiki(client).get_data(as_text=True), 'Bell of Ash')
+    assert f'href="/materials/{relic}/edit"' in card_html
+    assert 'Delete' not in card_html and '<form' not in card_html  # Delete is at the bottom of the editor.
+    rumor = unfiled(client, title='Rumor', body='Whispers.')
+    assert f'href="/materials/{rumor}/edit"' in wiki_card(client.get('/materials/wiki/').get_data(as_text=True), 'Rumor')
+
+
 def test_unfiled_articles_have_a_wiki(setup):
     app, client = setup
     rumor = unfiled(client, title='Rumor', body='Whispers.')
@@ -377,18 +408,24 @@ def test_party_wiki_gives_the_warden_edit_hide_and_delete(setup):
     assert reveal(client, version, title='Rumour', body='What they heard').status_code == 302
     assert client.post('/party/1/notes', data={'title': 'Table note', 'body': 'Said aloud'}).status_code == 302
     home = client.get('/party/1/wiki/').text
-    assert home.count('name="return_to" value="wiki"') == 3  # One remove form per card.
+    # Cards: Hide stays on originals; Delete is at the bottom of the note and party version editors.
+    assert home.count('name="return_to" value="wiki"') == 1
     assert f'href="/party/1/materials/{version}/version"' in home and f'href="/party/1/materials/{original}/version"' not in home
-    assert 'data-confirm="Hide this article from the party?' in home and 'data-confirm="Delete this party version?' in home
-    assert 'data-confirm="Delete this party note?' in home
+    assert 'data-confirm="Hide this article from the party?' in home and 'data-confirm="Delete this party' not in home
+    editor = client.get(f'/party/1/materials/{version}/version').text
+    footer = editor[editor.index('campaign-footer-actions'):]
+    assert f'action="/materials/{version}/revoke/1"' in footer and 'Delete party version…' in footer
+    with app.app_context():
+        note_id = ContentEntry.query.filter_by(category='party_note').one().id
+    editor = client.get(f'/party/1/notes/{note_id}/edit').text
+    footer = editor[editor.index('campaign-footer-actions'):]
+    assert f'action="/party/1/notes/{note_id}/delete"' in footer and 'data-confirm="Delete this party note?' in footer
     page = client.get(f'/party/1/materials/{version}').text
-    assert 'Edit party version' in page and f'action="/materials/{version}/revoke/1"' in page
+    assert 'Edit party version' in page and f'action="/materials/{version}/revoke/1"' not in page  # Delete: in the editor.
     plain = client.get(f'/party/1/materials/{original}').text
     assert ' Hide</button>' in plain and f'/party/1/materials/{original}/version' not in plain
     gone = client.post(f'/materials/{original}/revoke/1', data={'version': 1, 'return_to': 'wiki'})
     assert gone.location == '/party/1/wiki/'
-    with app.app_context():
-        note_id = ContentEntry.query.filter_by(category='party_note').one().id
     assert client.post(f'/party/1/notes/{note_id}/delete', data={'return_to': 'wiki'}).location == '/party/1/wiki/'
     login(client, 2)  # Players get no buttons.
     assert 'name="return_to" value="wiki"' not in client.get('/party/1/wiki/').text
@@ -425,3 +462,17 @@ def test_party_map_stays_outside_the_refreshed_content(setup):
     results = page.index('id="party-content-results"')
     content = page[results:page.index('x-data="pointcrawl"')]
     assert content.count('<div') <= content.count('</div>')  # The map panel is not inside the refreshed container.
+
+
+def test_party_wiki_home_has_a_cover_from_what_the_party_was_shown(setup):
+    app, client = setup
+    pictured = create_entry(client, title='Portrait', body='![face](https://example.org/face.png)')
+    secret = create_entry(client, title='Hidden', body='![map](https://example.org/secret.png)')
+    assert client.get('/party/1/wiki/').text.count('class="wiki-cover"') == 0  # Nothing shown yet.
+    assert reveal(client, pictured, title='Portrait', body='No picture for them.').status_code == 302
+    assert 'class="wiki-cover"' not in client.get('/party/1/wiki/').text  # Their version has none.
+    assert reveal(client, secret, mode='everything').status_code == 302
+    home = client.get('/party/1/wiki/').text
+    assert f'<div class="wiki-cover"><img src="/party/1/materials/{secret}/image"' in home
+    login(client, 2)  # Members see it too.
+    assert f'/party/1/materials/{secret}/image" alt="" data-cover' in client.get('/party/1/wiki/').text

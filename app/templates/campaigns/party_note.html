@@ -13,4 +13,12 @@
   <textarea id="party-note-edit-body" name="body" rows="12" maxlength="50000">{{ entry.body }}</textarea>
   <p class="import-hint">{{ _('Every member of %(party)s can read this note.', party=party.name) }}</p>
 </form>
+{# At the bottom, as in the article editor. #}
+<div class="campaign-actions campaign-footer-actions">
+<form method="post" action="{{ url_for('campaigns.delete_party_note', party_id=party.id, entry_id=entry.id) }}"
+      data-confirm="{{ _('Delete this party note? The party will no longer see it.') }}" data-confirm-label="{{ _('Delete') }}">
+  {{ token() }}<input type="hidden" name="return_to" value="wiki">
+  <button type="submit"><i class="fa-solid fa-trash" aria-hidden="true"></i> {{ _('Delete note…') }}</button>
+</form>
+</div>
 {% endblock %}

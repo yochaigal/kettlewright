@@ -28,4 +28,14 @@
   <span class="import-hint">{{ _('Replaces this text with your current title and text.') }}</span>
 </form>
 {% endif %}
+{# At the bottom, as in the article editor: Delete the party version, or Hide when they see the original. #}
+<div class="campaign-actions campaign-footer-actions">
+<form method="post" action="{{ url_for('campaigns.revoke', entry_id=entry.id, party_id=party.id) }}"
+      {% if is_original %}data-confirm="{{ _('Hide this article from the party? They will no longer see it. Your original is not changed.') }}" data-confirm-label="{{ _('Hide') }}"
+      {% else %}data-confirm="{{ _('Delete this party version? The party will no longer see this article. Your original is not changed.') }}" data-confirm-label="{{ _('Delete') }}"{% endif %}>
+  {{ token(row.version) }}<input type="hidden" name="return_to" value="wiki">
+  {% if is_original %}<button type="submit"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> {{ _('Hide from party…') }}</button>
+  {% else %}<button type="submit"><i class="fa-solid fa-trash" aria-hidden="true"></i> {{ _('Delete party version…') }}</button>{% endif %}
+</form>
+</div>
 {% endblock %}

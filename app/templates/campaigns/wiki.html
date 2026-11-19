@@ -25,8 +25,9 @@
 {% endfor %}
 {% endmacro %}
 
-{# Party wiki, Warden only: Edit / Delete for party notes and party versions, Hide for originals.
-   Same rules and confirmations as the party's Wiki tab; afterwards back to the party wiki. #}
+{# Party wiki, Warden only: Edit for party notes and party versions, Hide for originals; Delete for notes in the header.
+   Same rules and confirmations as the party's Wiki tab; afterwards back to the party wiki.
+   Cards leave Delete out (it is at the bottom of the editor) but keep Hide. #}
 {% macro warden_actions(item, header=False) %}
 {% set kind = warden_kinds.get(item.id) if party and warden_kinds is defined else none %}
 {% if kind %}
@@ -34,6 +35,7 @@
 <span class="{{ 'wiki-actions' if header else 'kw-actions wiki-card-actions' }}">
   {% if kind == 'note' %}<a class="{{ button }}" href="{{ url_for('campaigns.edit_party_note', party_id=party.id, entry_id=item.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
   {% elif kind == 'version' %}<a class="{{ button }}" href="{{ url_for('campaigns.edit_party_version', party_id=party.id, entry_id=item.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit party version') if header else _('Edit') }}</a>{% endif %}
+  {% if kind == 'original' or (header and kind == 'note') %}{# Hide stays; a party version's Delete is at the bottom of its editor, and on cards a note's too. #}
   {% if kind == 'note' %}
   <form method="post" action="{{ url_for('campaigns.delete_party_note', party_id=party.id, entry_id=item.id) }}"
         data-confirm="{{ _('Delete this party note? The party will no longer see it.') }}" data-confirm-label="{{ _('Delete') }}">
@@ -47,22 +49,37 @@
     {% if kind == 'original' %}<button type="submit" class="{{ button }} wiki-danger"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> {{ _('Hide') }}</button>
     {% else %}<button type="submit" class="{{ button }} wiki-danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> {{ _('Delete') }}</button>{% endif %}
   </form>
+  {% endif %}
 </span>
 {% endif %}
+{% endmacro %}
+
+{# Owner wiki (campaign or unfiled): Edit opens the editor, where Delete is (at the bottom). #}
+{% macro owner_actions(item) %}
+<span class="kw-actions wiki-card-actions">
+  <a class="kw-action" href="{{ url_for('campaigns.edit_entry', entry_id=item.id) }}" aria-label="{{ _('Edit') }}: {{ item.title }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+</span>
 {% endmacro %}
 
 {% macro article_cards(items) %}
 <ul class="wiki-cards">
 {% for item in items %}
 {% set kind = warden_kinds.get(item.id) if party and warden_kinds is defined else none %}
+{# Party pictures come from what the party was shown (party_entry_image), never the private original. #}
+{% set picture = (url_for('campaigns.party_entry_image', party_id=party.id, entry_id=item.id) if item.has_image else none) if party
+   else (url_for('campaigns.entry_image', entry_id=item.id) if card_images is defined and item.id in card_images else none) %}
 <li class="wiki-card">
-  {# Party pictures come from what the party was shown (party_entry_image), never the private original. #}
-  {% if party and item.has_image %}<a class="wiki-card-picture" href="{{ page_url(item.id) }}" tabindex="-1" aria-hidden="true"><img src="{{ url_for('campaigns.party_entry_image', party_id=party.id, entry_id=item.id) }}" alt="" loading="lazy"></a>{% endif %}
-  <a href="{{ page_url(item.id) }}">{{ article_title(item) }}</a>
-  <span class="wiki-badges"><span class="wiki-badge">{{ type_label(item) }}</span>{% if item.is_heart %}<span class="wiki-badge wiki-badge-heart">{{ _('Heart') }}</span>{% endif %}
-  {% if kind in ('original', 'version') %}<span class="wiki-badge wiki-badge-warden" title="{{ _('Only you see this label') }}">{{ _('Party version') if kind == 'version' else _('Original') }}</span>{% endif %}</span>
-  {% set summary = content_excerpt(item.body, 160) %}{% if summary %}<p>{{ summary }}</p>{% endif %}
-  {{ warden_actions(item) }}
+  <a class="wiki-card-picture" href="{{ page_url(item.id) }}" tabindex="-1" aria-hidden="true">
+    {% if picture %}<img src="{{ picture }}" alt="" loading="lazy">
+    {% else %}<span class="wiki-card-placeholder">{{ (item.title or '?')[:1]|upper }}</span>{% endif %}
+  </a>
+  <div class="wiki-card-body">
+    <a class="wiki-card-title" href="{{ page_url(item.id) }}">{{ article_title(item) }}</a>
+    <span class="wiki-badges"><span class="wiki-badge">{{ type_label(item) }}</span>{% if item.is_heart %}<span class="wiki-badge wiki-badge-heart">{{ _('Heart') }}</span>{% endif %}
+    {% if kind in ('original', 'version') %}<span class="wiki-badge wiki-badge-warden" title="{{ _('Only you see this label') }}">{{ _('Party version') if kind == 'version' else _('Original') }}</span>{% endif %}</span>
+    {% set summary = content_excerpt(item.body, 160) %}{% if summary %}<p>{{ summary }}</p>{% endif %}
+    {% if party %}{{ warden_actions(item) }}{% else %}{{ owner_actions(item) }}{% endif %}
+  </div>
 </li>
 {% endfor %}
 </ul>
@@ -206,7 +223,8 @@
       </dialog>
       {% endif %}
       <div id="party-content-results">
-      {% if cover %}<div class="wiki-cover"><img src="{{ url_for('campaigns.campaign_cover', campaign_id=campaign.id) }}" alt="" data-cover></div>{% endif %}
+      {% if cover %}<div class="wiki-cover"><img src="{{ url_for('campaigns.campaign_cover', campaign_id=campaign.id) }}" alt="" data-cover></div>
+      {% elif party and party_cover %}<div class="wiki-cover"><img src="{{ url_for('campaigns.party_entry_image', party_id=party.id, entry_id=party_cover) }}" alt="" data-cover></div>{% endif %}
       <header class="wiki-header">
         <div>
           <h1>{{ home_title }}</h1>

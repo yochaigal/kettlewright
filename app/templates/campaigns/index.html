@@ -61,9 +61,9 @@
     <span class="campaign-card-meta">{{ entries|length }} {{ _('articles') }}</span>
     <span class="campaign-card-meta">{% if audiences[campaign.id] %}{{ _('Revealed to') }} {{ audiences[campaign.id]|join(', ') }}{% else %}{{ _('Not revealed to any party yet') }}{% endif %}</span>
   </div>
-  <div class="campaign-card-actions">
-    <a href="{{ url_for('campaigns.wiki', campaign_id=campaign.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read') }}</a>
-    <a href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}" aria-label="{{ _('Edit') }}: {{ campaign.name }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+  {# The card itself opens the wiki to read; Edit opens the campaign, styled like the unfiled article cards. #}
+  <div class="campaign-card-actions kw-actions">
+    <a class="kw-action" href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}" aria-label="{{ _('Edit') }}: {{ campaign.name }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
   </div>
 </li>
 {% endfor %}

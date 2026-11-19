@@ -314,8 +314,10 @@ def test_party_tree_labels_edits_and_hides_party_versions(setup):
         assert db.session.get(ContentEntry, entry_id).title == 'SECRET NAME'  # The original is unchanged.
     html = client.get('/party/1/wiki/').text
     assert f'href="/party/1/materials/{entry_id}/version"' in html and '>Party version</span>' in html  # Edit appears.
-    # Removing a party version deletes its text: the card says Delete, and so does its confirmation.
-    assert 'data-confirm="Delete this party version?' in html and ' Delete</button>' in html and ' Hide</button>' not in html
+    # Removing a party version deletes its text: Delete, at the bottom of its editor (not on the card).
+    assert ' Delete</button>' not in html and ' Hide</button>' not in html
+    editor = client.get(f'/party/1/materials/{entry_id}/version').text
+    assert 'data-confirm="Delete this party version?' in editor and 'Delete party version…' in editor
     popup = client.get(f'/campaigns/1/wiki/{entry_id}/').text
     assert 'data-confirm="Delete the party version for Party 1?' in popup and 'Hide this article from Party 2' not in popup
 
@@ -1435,7 +1437,8 @@ def test_party_notes_live_only_on_their_party(setup):
     page = client.get('/party/1/wiki/').text
     section = page.split('id="wiki-party-notes-title"')[1].split('</section>')[0]
     assert 'Told at the table' in section and page.index('wiki-party-notes') < page.index('wiki-cards')
-    assert f'/party/1/notes/{note_id}/edit' in page and f'/party/1/notes/{note_id}/delete' in page
+    assert f'/party/1/notes/{note_id}/edit' in page and f'/party/1/notes/{note_id}/delete' not in page
+    assert f'/party/1/notes/{note_id}/delete' in client.get(f'/party/1/notes/{note_id}/edit').text  # Delete: in the editor.
     assert 'Told at the table' not in client.get(url).text  # Not on the party page itself.
     login(client, 2)
     player = client.get('/party/1/wiki/').text

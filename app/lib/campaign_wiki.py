@@ -108,7 +108,9 @@ def page_context(campaign, entry=None, owner_id=None):
     by_id = {item.id: item for item in entries}
     link = lambda target_id: page_url(target_id)
     context = dict(campaign=campaign, entry=entry, hierarchy=material_hierarchy(entries), page_url=page_url,
-                   article_count=len(entries), content_categories=CATEGORIES, **home)
+                   article_count=len(entries), content_categories=CATEGORIES,
+                   # Article cards show the article's first picture (served by entry_image).
+                   card_images={item.id for item in entries if first_image(item.body)}, **home)
     if entry is None:
         # The home page: the campaign's front page if it has one (imported adventures
         # do), then its top-level articles by type. Sub-articles are a click away.
@@ -185,11 +187,16 @@ def party_context(party, entry_id=None, owner_view=False, owner_id=None):
                    # The Warden's buttons per item: note (Edit, Delete), version (Edit, Delete), original (Hide).
                    warden_kinds=_warden_kinds(party, entries) if owner_view else {})
     if entry_id is None:
-        # Like a campaign's home: top-level articles by type. No cover or front page:
-        # those belong to the Warden's private campaign. Party notes come first, newest first.
+        # Like a campaign's home: top-level articles by type. No front page: that belongs to the
+        # Warden's private campaign. Party notes come first, newest first.
         roots = [item['entry'] for item in hierarchy]
         notes = sorted((item for item in roots if item['category'] == PARTY_NOTE), key=lambda item: item['id'], reverse=True)
-        context.update(entry=None, intro=None, hearts=[], cover=False, home_edit_url=None, party_notes=notes,
+        # A cover like a campaign's, from what the party was shown: the first picture in a revealed
+        # top-level article, else in any revealed article, else in a party note.
+        pictured = [item for item in roots if item['category'] != PARTY_NOTE] + \
+                   [item for item in entries if item['category'] != PARTY_NOTE] + notes
+        cover = next((item['id'] for item in pictured if item['has_image']), None)
+        context.update(entry=None, intro=None, hearts=[], cover=False, party_cover=cover, home_edit_url=None, party_notes=notes,
                        groups=home_groups([item for item in roots if item['category'] != PARTY_NOTE]),
                        linked_campaigns=linked_campaign_cards(party, entries, owner_id) if owner_view else [])
         return context
