@@ -27660,3 +27660,24 @@ msgstr "Не вдалося зберегти. Спробуйте знову."
 #, python-format
 msgid "Effective HP: %(hp)s"
 msgstr "Фактичні ПЗ: %(hp)s"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Terms of Service"
+msgstr "Умови використання"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Privacy Policy"
+msgstr "Політика конфіденційності"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "This page is available in English only."
+msgstr "Ця сторінка доступна лише англійською."
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Legal"
+msgstr "Правова інформація"
+
+#. Terms of Service and Privacy Policy (#455)
+#, python-format
+msgid "By signing up, you agree to the %(terms)s and the %(privacy)s."
+msgstr "Реєструючись, ви погоджуєтеся з документами «%(terms)s» і «%(privacy)s»."

@@ -86,5 +86,9 @@
     <p>{{ _('Character cards, party summaries and rolls are visible to everyone who can read the channel. Account connection, binding, selection and error messages are private to you.') }}</p>
     <p>{{ _('Sheet actions only affect your own selected character. Their confirmations, inventory lists and dice panels are private. Changes are saved in KW; reload an open character sheet to see them.') }}</p>
   </section>
+  {# Discord's app settings link to these pages too (#455). #}
+  <p class="discord-guide-legal">
+    <a href="{{ url_for('main.terms') }}">{{ _('Terms of Service') }}</a> · <a href="{{ url_for('main.privacy') }}">{{ _('Privacy Policy') }}</a>
+  </p>
 </main>
 {% endblock %}

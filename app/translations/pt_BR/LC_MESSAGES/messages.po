@@ -24571,3 +24571,24 @@ msgstr "Não foi possível salvar. Tente de novo."
 #, python-format
 msgid "Effective HP: %(hp)s"
 msgstr "PV efetivos: %(hp)s"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Terms of Service"
+msgstr "Termos de serviço"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Privacy Policy"
+msgstr "Política de privacidade"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "This page is available in English only."
+msgstr "Esta página está disponível apenas em inglês."
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Legal"
+msgstr "Jurídico"
+
+#. Terms of Service and Privacy Policy (#455)
+#, python-format
+msgid "By signing up, you agree to the %(terms)s and the %(privacy)s."
+msgstr "Ao se cadastrar, você concorda com os %(terms)s e a %(privacy)s."

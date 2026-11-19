@@ -87,3 +87,22 @@ def cleanup_images():
             (image_directory() / match[1] / filename).unlink(missing_ok=True)
         except OSError:
             current_app.logger.warning('Could not remove unused material image %s', url, exc_info=True)
+
+
+def remove_owner_images(owner_id):
+    """After an account is deleted (#455): remove its description images that nothing still shows."""
+    folder = image_directory() / str(int(owner_id))
+    if not folder.is_dir():
+        return
+    for path in folder.glob('*.webp'):
+        if (ContentEntry.query.filter(ContentEntry.body.contains(path.name)).first() is not None
+                or PartyPresentation.query.filter(PartyPresentation.body.contains(path.name)).first() is not None):
+            continue
+        try:
+            path.unlink(missing_ok=True)
+        except OSError:
+            current_app.logger.warning('Could not remove image %s of a deleted account', path.name, exc_info=True)
+    try:
+        folder.rmdir()
+    except OSError:
+        pass  # Still holds an image that other content shows.

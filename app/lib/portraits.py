@@ -6,7 +6,7 @@ from pathlib import Path
 
 from flask import current_app, url_for
 
-from app.models import Character, Companion
+from app.models import Character, Companion, db
 from app.lib.translations import N_
 
 MAX_PORTRAIT_BYTES = 2 * 1024 * 1024
@@ -93,3 +93,16 @@ def validate_portrait_reference(image_url, custom_image):
         valid = False
     if not valid:
         raise ValueError(N_('Enter an http or https image URL.'))
+
+
+def uploaded_portraits_of(user_id):
+    """Uploaded portraits on a user's characters and companions, to clean up after deleting the account (#455)."""
+    from app.models import Party
+    characters = Character.query.filter_by(owner=user_id).all()
+    character_ids = [c.id for c in characters]
+    party_ids = [p.id for p in Party.query.filter_by(owner=user_id).all()]
+    companions = Companion.query.filter(db.or_(Companion.character_id.in_(character_ids),
+                                               Companion.party_id.in_(party_ids))).all()
+    hireling_ids = [c.id for c in companions if c.kind == 'hireling']
+    companions += Companion.query.filter(Companion.hireling_id.in_(hireling_ids)).all() if hireling_ids else []
+    return {item.image_url for item in [*characters, *companions] if item.image_url}

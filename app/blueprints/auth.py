@@ -291,8 +291,15 @@ def delete_account():
             # Delete user from database
             user_to_delete = db.session.get(User, user_id)
             if user_to_delete:
+                from app.lib.portraits import uploaded_portraits_of, delete_unreferenced_portrait
+                from app.lib.material_images import remove_owner_images
+                portraits = uploaded_portraits_of(user_id)
                 db.session.delete(user_to_delete)
                 db.session.commit()
+                # Uploaded images go too, as the privacy policy says (#455), unless other content still shows them.
+                for url in portraits:
+                    delete_unreferenced_portrait(url)
+                remove_owner_images(user_id)
             
             flash(_('Your account has been successfully deleted.'), 'success')
             return redirect(url_for('main.index'))

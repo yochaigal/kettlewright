@@ -43,6 +43,9 @@
     </div>
     {% endif %} 
     
+    {# Terms of Service and Privacy Policy (#455) #}
+    <p class="signup-legal">{{ _('By signing up, you agree to the %(terms)s and the %(privacy)s.', terms=('<a href="%s">%s</a>' | format(url_for('main.terms'), _('Terms of Service'))) | safe, privacy=('<a href="%s">%s</a>' | format(url_for('main.privacy'), _('Privacy Policy'))) | safe) }}</p>
+
     {% if use_captcha %}
       <button class="button is-block is-info is-fullwidth" onClick="captchaSubmit()" type="button">
         Sign Up

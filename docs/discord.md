@@ -4,7 +4,7 @@ Kettlewright handles Discord slash commands over HTTP in the existing Flask app.
 
 ## Playing
 
-Open the Discord page from the icon beside the language selector in Kettlewright. It also links to the [Cairn Discord server](https://discord.gg/T5Ykgw74DF). Each Warden and player connects their own Discord account there. Only Discord identity is requested; no email permission is needed. OAuth access tokens are not stored.
+Open the Discord page from the icon beside the language selector in Kettlewright. It also links to the [Cairn Discord server](https://discord.gg/T5Ykgw74DF). Each Warden and player connects their own Discord account there. Only Discord identity is requested; no email permission is needed. OAuth access tokens are not stored. The [Terms of Service](/terms) and [Privacy Policy](/privacy) cover the Discord app as well as the website.
 
 ### Warden
 
@@ -109,6 +109,7 @@ docker compose -f .devcontainer/docker-compose.yml up -d --build app
 In the Developer Portal:
 
 - Add the exact OAuth2 redirect: `https://your-kettlewright.example/account/discord/callback`.
+- Under **General Information**, set the **Terms of Service URL** to `https://your-kettlewright.example/terms` and the **Privacy Policy URL** to `https://your-kettlewright.example/privacy`. Discord asks for both before an app can be verified (#455).
 - Set the Interactions Endpoint URL: `https://your-kettlewright.example/discord/interactions`. The running app must be reachable from Discord for its signed PING validation.
 - Install the app into the test server using the application's installation link.
 

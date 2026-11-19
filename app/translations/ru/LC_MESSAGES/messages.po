@@ -36157,3 +36157,24 @@ msgstr "Не удалось сохранить. Попробуйте снова.
 #, python-format
 msgid "Effective HP: %(hp)s"
 msgstr "Фактические ОЗ: %(hp)s"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Terms of Service"
+msgstr "Условия использования"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Privacy Policy"
+msgstr "Политика конфиденциальности"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "This page is available in English only."
+msgstr "Эта страница доступна только на английском."
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Legal"
+msgstr "Правовая информация"
+
+#. Terms of Service and Privacy Policy (#455)
+#, python-format
+msgid "By signing up, you agree to the %(terms)s and the %(privacy)s."
+msgstr "Регистрируясь, вы соглашаетесь с документами «%(terms)s» и «%(privacy)s»."

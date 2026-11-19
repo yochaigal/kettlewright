@@ -45867,3 +45867,24 @@ msgstr "No se puede guardar. Inténtalo de nuevo."
 #, python-format
 msgid "Effective HP: %(hp)s"
 msgstr "PG efectivos: %(hp)s"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Terms of Service"
+msgstr "Términos del servicio"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Privacy Policy"
+msgstr "Política de privacidad"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "This page is available in English only."
+msgstr "Esta página solo está disponible en inglés."
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Legal"
+msgstr "Legal"
+
+#. Terms of Service and Privacy Policy (#455)
+#, python-format
+msgid "By signing up, you agree to the %(terms)s and the %(privacy)s."
+msgstr "Al registrarte, aceptas los %(terms)s y la %(privacy)s."

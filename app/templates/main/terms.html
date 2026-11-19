@@ -1,0 +1,82 @@
+{% extends "base.html" %} {% block content %}
+{# Terms of Service (#455), linked from sign-up, About, the Discord page and Discord's app settings.
+   The text is in English only: it is what users agree to, so it is not machine-translated. #}
+<section class="body-container legal-page">
+  <section class="about-text-container">
+    <h2>{{ _('Terms of Service') }}</h2>
+    {% if locale != 'en' %}<p><em>{{ _('This page is available in English only.') }}</em></p>{% endif %}
+    <p><em>Last updated: November 19, 2026</em></p>
+
+    <h3>1. About these terms</h3>
+    <p>Kettlewright (“Kettlewright”, “we”, “us”) is a free, open-source app for managing characters, parties and
+      campaigns for the <a href="https://cairnrpg.com" target="_blank" rel="noopener noreferrer">Cairn</a> roleplaying game,
+      available at kettlewright.com. These terms apply to the website and to the Kettlewright Discord app, including its
+      <code>/kw</code> commands and the whiteboard Activity (together, the “Service”).</p>
+    <p>By creating an account or using the Discord app, you agree to these terms and to our
+      <a href="{{ url_for('main.privacy') }}">Privacy Policy</a>. If you do not agree, please do not use the Service.</p>
+
+    <h3>2. Who can use Kettlewright</h3>
+    <p>You must be at least 13 years old to create an account or use the Discord app, and old enough in your country
+      to agree to these terms. Give a working email address, keep your password to yourself, and tell us if you think
+      someone else is using your account. You are responsible for what happens under your account.</p>
+
+    <h3>3. A free service in beta</h3>
+    <p>Kettlewright is free and still in beta. Features may change, be added or be removed, and the Service may
+      sometimes be unavailable or lose data. Keep your own copies of anything important: characters and campaigns
+      can be exported from Kettlewright.</p>
+
+    <h3>4. Your content</h3>
+    <p>Characters, parties, campaigns, notes, drawings, images and anything else you add (“your content”) remain
+      yours. You allow Kettlewright to store, copy, process and display your content only as needed to run the
+      Service, including showing it to the people you share it with: members of your parties, anyone who has the link
+      to one of your character sheets, and everyone who can read a Discord channel where you or your party use the
+      app.</p>
+    <p>Only add content that you have the right to share. You are responsible for your content.</p>
+
+    <h3>5. Acceptable use</h3>
+    <p>Do not use Kettlewright to:</p>
+    <ul>
+      <li>break the law, or post content that is illegal, hateful, harassing, or sexual content involving minors;</li>
+      <li>infringe someone else’s copyright, trademark, privacy or other rights;</li>
+      <li>impersonate others, send spam, or upload malware;</li>
+      <li>access accounts or data that are not yours, or test, probe, overload or disrupt the Service;</li>
+      <li>collect data from the Service by automated means, other than through its public API within reasonable
+        limits.</li>
+    </ul>
+
+    <h3>6. Discord</h3>
+    <p>When you use Kettlewright in Discord, Discord’s
+      <a href="https://discord.com/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a> and
+      <a href="https://discord.com/guidelines" target="_blank" rel="noopener noreferrer">Community Guidelines</a> also
+      apply. Messages that the app posts in a channel, such as public rolls and party summaries, can be read by everyone
+      who can read that channel. The Discord server’s owners and moderators decide who can see their channels.</p>
+
+    <h3>7. Open source</h3>
+    <p>Kettlewright’s source code is published on
+      <a href="https://github.com/yochaigal/kettlewright" target="_blank" rel="noopener noreferrer">GitHub</a> under the
+      GNU General Public License, version 3. That license covers the code; these terms cover your use of the Service
+      that Kettlewright runs. Cairn and the other games and art used by Kettlewright belong to their creators and are
+      used under their licenses, as listed on the <a href="{{ url_for('main.about') }}">About</a> page.</p>
+
+    <h3>8. Ending your use</h3>
+    <p>You can stop using Kettlewright at any time and delete your account on your
+      <a href="{{ url_for('auth.account') }}">Account</a> page. We may suspend or
+      remove accounts or content that break these terms, or that put the Service or its users at risk.</p>
+
+    <h3>9. No warranty</h3>
+    <p>The Service is provided “as is” and “as available”, without warranties of any kind. To the extent the law
+      allows, Kettlewright and its contributors are not liable for any indirect, incidental or consequential damages,
+      or for any loss of data, arising from your use of the Service.</p>
+
+    <h3>10. Changes to these terms</h3>
+    <p>We may update these terms. The date at the top of this page shows the latest version. If a change is
+      significant, we will announce it on the website or on GitHub. Continuing to use Kettlewright after a change
+      means you accept the updated terms.</p>
+
+    <h3>11. Contact</h3>
+    <p>Questions about these terms can be asked by opening an issue on
+      <a href="https://github.com/yochaigal/kettlewright/issues" target="_blank" rel="noopener noreferrer">GitHub</a>.
+      Issues are public, so do not include personal information there.</p>
+  </section>
+</section>
+{% endblock %}
