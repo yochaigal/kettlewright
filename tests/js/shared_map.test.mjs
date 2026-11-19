@@ -22,6 +22,8 @@ async function setup(editing = true, failedLibrary = null, language = 'en', ward
     ['saved', 'live', 'saving', 'conflict', 'denied', 'invalid', 'failed', 'offline', 'loadFailed', 'draft'].map(key => [key, key]).concat([['invalidBecause', 'Unable to save: {reason}']]))};
   config.messages.floorColors = {stone: 'Stone'};
   const stored = new Map(), uiHandlers = {};
+  // One Warden brush button; stopBrushes() releases it through querySelectorAll.
+  const brush = {pressed: false, tools: [], button: {setAttribute(name, value) {if (name === 'aria-pressed') brush.pressed = value === 'true';}}};
   const status = {textContent: ''};
   const api = {
     setToast() {}, scrollToContent() {}, history: {clear() {}}, addFiles(value) {for (const file of value) files[file.id] = file;},
@@ -30,12 +32,13 @@ async function setup(editing = true, failedLibrary = null, language = 'en', ward
   };
   const context = vm.createContext({
     document: {documentElement: {lang: language}, body: {classList: {toggle() {}}}, createElement: () => ({dataset: {}, style: {}, append() {}, setAttribute() {}, addEventListener() {}}), getElementById: id => id === 'shared-map-config' ? {textContent: JSON.stringify(config)} : id === 'map-status' ? status : {style: {}, addEventListener(name, fn) {uiHandlers[id + ':' + name] = fn;}, setAttribute() {}, append(value) {drafts.push(value);}},
-      addEventListener() {}, querySelectorAll: () => []},
+      addEventListener() {}, querySelector: selector => brush.pressed && selector.includes('[aria-pressed="true"]') ? brush.button : null,
+      querySelectorAll: selector => selector === '[data-fog-tool], [data-dungeon-tool]' ? [brush.button] : []},
     window: {addEventListener(name, fn) {windowHandlers[name] = fn;}},
     localStorage: {getItem: key => stored.get(key) || 'false', setItem: (key, value) => stored.set(key, value)},
     createActorUpdates: () => ({placed() {}, destroy() {}}),
     createFogLayer: () => ({redraw() {}, destroy() {}, setState() {}, setTool() {}}),
-    createDungeonLayer: () => {let color = ''; return {redraw() {}, destroy() {}, setTool() {}, tool: () => '', hasDungeon: () => false,
+    createDungeonLayer: () => {let color = ''; return {redraw() {}, destroy() {}, setTool(value) {brush.tools.push(value);}, tool: () => '', hasDungeon: () => false,
       setColor(value) {color = value;}, color: () => color};},
     FLOOR_COLORS: [{name: 'stone', color: '#e6e6e6'}],
     convertToExcalidrawElements: elements => elements,
@@ -68,7 +71,8 @@ async function setup(editing = true, failedLibrary = null, language = 'en', ward
   vm.runInContext(librarySource + '\n' + mergeSource + '\n' + updatesSource + '\n' + imagesSource + '\n' + source, context);
   requests.shift().resolve(response({version: 0, drawing: empty}));
   await tick();
-  return {requests, libraryRequests, handlers, windowHandlers, intervals, drafts, status, stored, uiHandlers, get props() {return props;},
+  return {requests, libraryRequests, handlers, windowHandlers, intervals, drafts, status, stored, uiHandlers, brush, get props() {return props;},
+    pickTool(type) {appState = {...appState, activeTool: {type}}; props.onChange(elements, appState, files);},
     project() {projection(() => {files['live-image'] = {id: 'live-image', dataURL: 'fresh portrait'}; elements[0] = {...elements[0], fileId: 'live-image'}; props.onChange(elements, appState, files);});},
     change(id) {elements = [{id, type: 'rectangle'}]; props.onChange(elements, appState, files);},
     image(fileId, available = false) {elements = [{id: 'pasted', type: 'image', fileId}]; if (available) files[fileId] = {id: fileId, mimeType: 'image/png', dataURL: 'data:image/png;base64,example'}; props.onChange(elements, appState, files);},
@@ -277,6 +281,22 @@ test('only the Warden can reset the canvas or open a file over it (#437)', async
   const warden = await setup(true, null, 'en', true);
   assert.equal(warden.props.UIOptions.canvasActions.clearCanvas, true);
   assert.equal(warden.props.UIOptions.canvasActions.loadScene, true);
+});
+
+test('picking an Excalidraw tool puts the Dungeon or Fog brush down (#460)', async () => {
+  const state = await setup(true, null, 'en', true);
+  const toolbar = {target: {closest: selector => selector.includes('.App-toolbar-container .ToolIcon') ? {} : null}};
+  const canvas = {target: {closest: () => null}};
+  state.pickTool('selection');
+  // A click on the board itself leaves the brush on.
+  state.brush.pressed = true; state.uiHandlers['editor:pointerdown'](canvas);
+  assert.equal(state.brush.pressed, true);
+  // Clicking a toolbar tool, even the one already chosen, releases it.
+  state.uiHandlers['editor:pointerdown'](toolbar);
+  assert.equal(state.brush.pressed, false); assert.equal(state.brush.tools.at(-1), '');
+  // So does a keyboard shortcut that changes Excalidraw's tool.
+  state.brush.pressed = true; state.brush.tools.length = 0; state.pickTool('hand');
+  assert.equal(state.brush.pressed, false); assert.deepEqual(state.brush.tools, ['']);
 });
 
 test('fog updates disable player export without writing or clearing the drawing', async () => {

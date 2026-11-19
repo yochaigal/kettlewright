@@ -36182,3 +36182,7 @@ msgstr "Регистрируясь, вы соглашаетесь с докум�
 #. Whiteboard Tokens panel (#457)
 msgid "Click a portrait to add a token to the center of your view, or drag it onto the board."
 msgstr "Нажмите на портрет, чтобы добавить фишку в центр экрана, или перетащите его на доску."
+
+#. Tools page tab (#461)
+msgid "World"
+msgstr "Мир"
