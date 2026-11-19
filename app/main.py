@@ -79,6 +79,17 @@ def about():
     return render_template('main/about.html', version=version)
 
 
+# Linked from sign-up, the About and Discord pages, and Discord's app settings (#455).
+@main.route('/terms')
+def terms():
+    return render_template('main/terms.html')
+
+
+@main.route('/privacy')
+def privacy():
+    return render_template('main/privacy.html')
+
+
 @main.route('/users/<username>/characters/')
 @login_required
 def characters(username):

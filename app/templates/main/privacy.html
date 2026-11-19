@@ -1,0 +1,102 @@
+{% extends "base.html" %} {% block content %}
+{# Privacy Policy (#455), linked from sign-up, About, the Discord page and Discord's app settings.
+   Keep it true to the code: update it with any change to what is stored, shared or kept. #}
+<section class="body-container legal-page">
+  <section class="about-text-container">
+    <h2>{{ _('Privacy Policy') }}</h2>
+    {% if locale != 'en' %}<p><em>{{ _('This page is available in English only.') }}</em></p>{% endif %}
+    <p><em>Last updated: November 19, 2026</em></p>
+
+    <p>This policy explains what Kettlewright (“we”) collects when you use kettlewright.com and the Kettlewright
+      Discord app, why, who can see it, and how to remove it. Kettlewright is free and shows no ads. We do not sell
+      your data and we use no analytics or tracking. This policy is part of our
+      <a href="{{ url_for('main.terms') }}">Terms of Service</a>.</p>
+
+    <h3>What we collect</h3>
+    <ul>
+      <li><strong>Your account:</strong> username, email address and password. The password is stored only as a
+        secure hash. We also keep when the account was created, when you last signed in, and whether your email is
+        confirmed. If you turn on two-step sign-in, we keep the one-time codes we email you, hashed, for up to
+        10 minutes.</li>
+      <li><strong>What you create:</strong> characters and their inventories and notes, companions, parties,
+        campaigns, articles and maps, whiteboard drawings and fog, and dice roll history.</li>
+      <li><strong>Images you upload:</strong> character and companion portraits, images in articles, and images on
+        the whiteboard.</li>
+      <li><strong>Discord, if you connect it:</strong> your Discord user ID and display name, linked to your
+        account. Discord’s sign-in is used only to confirm who you are (the “identify” permission); we do not store
+        Discord’s access tokens. When a Warden binds a channel to a party, we store that server and channel ID and
+        the character you select there. To avoid running a command twice, we keep a record of each Discord command
+        for 24 hours.</li>
+      <li><strong>Whether you are online:</strong> while Kettlewright is open, your browser tells the server every
+        30 seconds, so your Warden can see who is connected. This lasts about a minute and is not stored in the
+        database.</li>
+      <li><strong>Technical logs:</strong> like most websites, the server and its hosting provider may record
+        technical information such as IP addresses and requests, to run and protect the Service.</li>
+    </ul>
+
+    <h3>Cookies and storage in your browser</h3>
+    <ul>
+      <li>A <strong>session cookie</strong> keeps you signed in and protects your forms. If you choose “remember
+        me”, a cookie keeps you signed in across visits.</li>
+      <li>A <strong>language cookie</strong> remembers your language for 180 days.</li>
+      <li>Your browser’s <strong>local storage</strong> remembers preferences on that device, such as dark mode,
+        3D dice and whiteboard settings. It stays on your device.</li>
+    </ul>
+    <p>We use no advertising or analytics cookies.</p>
+
+    <h3>Who can see your information</h3>
+    <ul>
+      <li><strong>Character sheets</strong> can be read by anyone who has their link.</li>
+      <li><strong>Party pages</strong> can be read by signed-in users who have their link. Party members, and the
+        party’s Warden, see what the party shares, such as rolls, the whiteboard and revealed articles. Private rolls
+        stay private.</li>
+      <li><strong>Your email address</strong> is not shown to other users.</li>
+      <li><strong>In Discord</strong>, what the app posts in a channel (for example public rolls, character cards
+        and party summaries) can be read by everyone who can read that channel. Replies marked as only visible to you
+        are shown to you alone.</li>
+      <li>Kettlewright’s public API returns game data such as backgrounds and tables, never user data.</li>
+    </ul>
+
+    <h3>Services we rely on</h3>
+    <p>To run, Kettlewright uses a few other services, which receive only what they need:</p>
+    <ul>
+      <li>a hosting provider, which stores the database and uploaded images;</li>
+      <li>an email provider, to send confirmation, password reset and sign-in emails;</li>
+      <li><strong>Google reCAPTCHA</strong>, when it is turned on, on the sign-up page only, to stop automated
+        sign-ups. See <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google’s
+        Privacy Policy</a>;</li>
+      <li>font and code delivery networks (Google Fonts, cdnjs, unpkg, jsDelivr and esm.sh), from which your browser
+        loads fonts and libraries. Like any website, they receive your IP address and browser details;</li>
+      <li><strong>Discord</strong>, if you use the Discord app. See
+        <a href="https://discord.com/privacy" target="_blank" rel="noopener noreferrer">Discord’s Privacy Policy</a>.</li>
+    </ul>
+    <p>We may disclose information if the law requires it.</p>
+
+    <h3>How long we keep it, and deleting it</h3>
+    <p>We keep your information while you have an account. You can change it at any time, export your characters and
+      campaigns, and delete your account on your <a href="{{ url_for('auth.account') }}">Account</a> page. Deleting your account removes your account, characters,
+      parties, campaigns, Discord connection and uploaded images; images that other remaining content still uses are
+      kept for that content. Disconnecting Discord, on the Discord page, removes your Discord link, channel selections
+      and the bindings you created. If the server keeps backups, deleted information may remain in them until they
+      are replaced.</p>
+
+    <h3>Children</h3>
+    <p>Kettlewright is not meant for children under 13, and they may not create an account. If you believe a child
+      under 13 has an account, let us know and we will delete it.</p>
+
+    <h3>Security</h3>
+    <p>Passwords are hashed, connections are encrypted, and two-step sign-in is available. No system is perfectly
+      secure, so please use a password you do not use elsewhere.</p>
+
+    <h3>Changes to this policy</h3>
+    <p>We will update this page when what we collect or how we use it changes, and change the date at the top. If a
+      change is significant, we will announce it on the website or on GitHub.</p>
+
+    <h3>Contact</h3>
+    <p>Questions or requests about your information can be raised by opening an issue on
+      <a href="https://github.com/yochaigal/kettlewright/issues" target="_blank" rel="noopener noreferrer">GitHub</a>.
+      Issues are public, so do not include personal information there: we will reply on the issue and arrange a private
+      way to continue. You can delete your account and disconnect Discord yourself at any time.</p>
+  </section>
+</section>
+{% endblock %}

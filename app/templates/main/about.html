@@ -29,6 +29,11 @@
     </ul>
   </section>
 
+  {# Terms of Service and Privacy Policy (#455) #}
+  <section class="about-text-container">
+    <h2>{{ _('Legal') }}</h2>
+    <p><a href="{{ url_for('main.terms') }}">{{ _('Terms of Service') }}</a> · <a href="{{ url_for('main.privacy') }}">{{ _('Privacy Policy') }}</a></p>
+  </section>
   <section class="about-text-container about-list">
     <h2>{{_('Tools')}}</h2>
     <ul>

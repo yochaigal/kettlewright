@@ -23573,3 +23573,24 @@ msgstr "Speichern nicht möglich. Versuche es erneut."
 #, python-format
 msgid "Effective HP: %(hp)s"
 msgstr "Effektive SP: %(hp)s"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Terms of Service"
+msgstr "Nutzungsbedingungen"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Privacy Policy"
+msgstr "Datenschutzerklärung"
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "This page is available in English only."
+msgstr "Diese Seite ist nur auf Englisch verfügbar."
+
+#. Terms of Service and Privacy Policy (#455)
+msgid "Legal"
+msgstr "Rechtliches"
+
+#. Terms of Service and Privacy Policy (#455)
+#, python-format
+msgid "By signing up, you agree to the %(terms)s and the %(privacy)s."
+msgstr "Mit der Registrierung stimmst du den %(terms)s und der %(privacy)s zu."
