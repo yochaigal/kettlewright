@@ -36040,3 +36040,47 @@ msgstr "Только Смотритель может менять закрепл
 #, python-format
 msgid "Unable to save this drawing: %(reason)s"
 msgstr "Не удалось сохранить рисунок: %(reason)s"
+
+#. Whiteboard dungeon brush (#453)
+msgid "Floor color"
+msgstr "Цвет пола"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Stone"
+msgstr "Камень"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Slate"
+msgstr "Сланец"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Sand"
+msgstr "Песок"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Wood"
+msgstr "Дерево"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Moss"
+msgstr "Мох"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Water"
+msgstr "Вода"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Lava"
+msgstr "Лава"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Arcane"
+msgstr "Магия"

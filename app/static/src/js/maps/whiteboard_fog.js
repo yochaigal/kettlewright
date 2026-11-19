@@ -13,14 +13,20 @@ export const fogPoint = (x, y, rect, state) => [
   (y - rect.top) / state.zoom.value - state.scrollY,
 ];
 
+// The mask's color. The Warden sees fog through a 45% layer; in dark mode a dark
+// mask on a dark board barely shows, so the Warden's fog there is light (#453).
+// Players' fog (and the Warden's player preview) stays dark and opaque in both themes.
+export const FOG_COLOR = '#171923', WARDEN_DARK_FOG_COLOR = '#c3c6d4';
+export const fogColor = ({seeThrough, dark}) => seeThrough && dark ? WARDEN_DARK_FOG_COLOR : FOG_COLOR;
+
 // Paint an opaque logical mask first, then apply role opacity to the whole layer.
-export function paintFog(ctx, width, height, fog, state, ratio = 1) {
+export function paintFog(ctx, width, height, fog, state, ratio = 1, color = FOG_COLOR) {
   ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
   ctx.clearRect(0, 0, width, height);
   if (!fog.enabled) return;
   ctx.globalCompositeOperation = 'source-over';
-  ctx.fillStyle = '#171923';
-  ctx.strokeStyle = '#171923';
+  ctx.fillStyle = color;
+  ctx.strokeStyle = color;
   if (fog.base === 'covered') ctx.fillRect(0, 0, width, height);
   const zoom = state.zoom.value;
   ctx.setTransform(ratio * zoom, 0, 0, ratio * zoom, state.scrollX * zoom * ratio, state.scrollY * zoom * ratio);
@@ -59,10 +65,13 @@ export function createFogLayer({editor, getApi, warden, onOperation}) {
     if (canvas.width !== Math.round(rect.width * ratio) || canvas.height !== Math.round(rect.height * ratio)) {
       canvas.width = Math.round(rect.width * ratio); canvas.height = Math.round(rect.height * ratio);
     }
-    canvas.style.opacity = warden && !preview ? '0.45' : '1';
+    const seeThrough = warden && !preview;
+    canvas.style.opacity = seeThrough ? '0.45' : '1';
     canvas.style.pointerEvents = warden && tool && fog.enabled && !preview ? 'auto' : 'none';
+    const state = getApi().getAppState();
     paintFog(canvas.getContext('2d'), rect.width, rect.height,
-      active ? {...fog, strokes: [...fog.strokes, active]} : fog, getApi().getAppState(), ratio);
+      active ? {...fog, strokes: [...fog.strokes, active]} : fog, state, ratio,
+      fogColor({seeThrough, dark: state.theme === 'dark'}));
   }
   function redraw() {if (frame === null) frame = requestAnimationFrame(draw);}
   function point(event) {return fogPoint(event.clientX, event.clientY, host.getBoundingClientRect(), getApi().getAppState());}

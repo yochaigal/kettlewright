@@ -1,8 +1,8 @@
 // The Dungeon brush (#439): an overlay above Excalidraw, like the fog brush.
 // Dragging highlights squares; releasing rebuilds the dungeon's shapes in one
 // undoable step, and the whiteboard saves and shares them like any drawing.
-import {DEFAULT_SIZE, boardSize, cellsAlong, cycleEdge, dungeonFromShapes, dungeonPart,
-  dungeonShapes, edgeAt, edgeKind, paint} from './whiteboard_dungeon.js';
+import {DEFAULT_SIZE, STYLE, boardSize, cellsAlong, cycleEdge, dungeonFromShapes, dungeonPart,
+  dungeonShapes, edgeAt, edgeKind, floorColor, paint} from './whiteboard_dungeon.js';
 
 const MAX_ELEMENTS = 2000; // map_drawing.validate_drawing
 const GEOMETRY = ['x', 'y', 'width', 'height', 'strokeWidth', 'strokeColor', 'backgroundColor', 'opacity'];
@@ -33,7 +33,7 @@ export function createDungeonLayer({editor, getApi, canEdit, toElements, capture
   const canvas = document.createElement('canvas');
   canvas.className = 'whiteboard-dungeon';
   canvas.setAttribute('aria-hidden', 'true');
-  let tool = '', host = null, frame = null;
+  let tool = '', host = null, frame = null, color = STYLE.floor;
   let active = null, pan = null, space = false, hover = null;
 
   const scene = () => getApi()?.getSceneElementsIncludingDeleted() || [];
@@ -64,13 +64,16 @@ export function createDungeonLayer({editor, getApi, canEdit, toElements, capture
     if (!enabled) return;
     ctx.setTransform(ratio * zoom, 0, 0, ratio * zoom, state.scrollX * zoom * ratio, state.scrollY * zoom * ratio);
     if (active?.cells) {
-      ctx.fillStyle = active.erase ? 'rgba(200, 60, 60, .35)' : 'rgba(80, 140, 220, .35)';
+      // The squares about to be painted, in the brush's color (#453).
+      ctx.fillStyle = active.erase ? 'rgba(200, 60, 60, .35)' : color;
+      ctx.globalAlpha = active.erase ? 1 : .7;
       ctx.strokeStyle = active.erase ? '#c83c3c' : '#3c78c8';
       ctx.lineWidth = 2 / zoom;
       for (const key of active.cells) {
         const [c, r] = key.split(',').map(Number);
         ctx.fillRect(c * s, r * s, s, s); ctx.strokeRect(c * s, r * s, s, s);
       }
+      ctx.globalAlpha = 1;
     }
     if (tool === 'door' && hover) {
       const [kind, c, r] = hover.split(':'), x = Number(c) * s, y = Number(r) * s;
@@ -93,7 +96,7 @@ export function createDungeonLayer({editor, getApi, canEdit, toElements, capture
 
   function finish() {
     const stroke = active; active = null;
-    if (stroke?.cells?.size) commit(dungeon => paint(dungeon, stroke.cells, stroke.erase));
+    if (stroke?.cells?.size) commit(dungeon => paint(dungeon, stroke.cells, stroke.erase, color));
     redraw();
   }
   function end(event) {
@@ -162,7 +165,9 @@ export function createDungeonLayer({editor, getApi, canEdit, toElements, capture
     redraw,
     tool: () => tool,
     setTool(value) {tool = value; active = null; hover = null; redraw();},
-    clear() {commit(dungeon => dungeon.cells.size ? {...dungeon, cells: new Set(), edges: new Map()} : dungeon);},
+    color: () => color,
+    setColor(value) {color = floorColor(value); redraw();},
+    clear() {commit(dungeon => dungeon.cells.size ? {...dungeon, cells: new Map(), edges: new Map()} : dungeon);},
     hasDungeon: () => boardSize(scene()) !== null,
     destroy() {
       resize.disconnect(); window.removeEventListener('keydown', keys); window.removeEventListener('keyup', keys);

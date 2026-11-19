@@ -36,6 +36,8 @@ The Warden can toggle monster stats with the eye beside them. Revealing requires
 
 ## Load map
 
+**Load map** is turned off for now (#438): there are no campaign maps worth loading yet. Set `WHITEBOARD_LOAD_MAP=true` in the environment to show it again; the routes below stay in place, for the Warden only.
+
 The Warden chooses a map from their campaigns or Unfiled and previews its visual snapshot. The snapshot contains the drawing, images, nodes with numbers/titles, and paths with their visual styles. It excludes material descriptions, links, and nested-map contents. Fresh IDs and remapped file/group/binding references turn graph glyphs into independent editable elements. The source is never modified or automatically synchronized.
 
 **Replace whiteboard** confirms replacement of the current drawing and fog for the whole party. **Cover with fog** is selected by default. The server verifies source ownership, the preview digest, and current board revisions before replacing both atomically. A changed source or board requires a fresh preview.
@@ -44,7 +46,7 @@ Every replacement increments the board generation. Open clients must discard the
 
 ## Fog of War v1
 
-Fog is a separate canvas mask above the drawing and below Excalidraw controls. It covers the infinite canvas, including tokens and annotations. The Warden sees it at 45% opacity; players see an opaque mask. **Player view** gives the Warden an opaque, read-only preview.
+Fog is a separate canvas mask above the drawing and below Excalidraw controls. It covers the infinite canvas, including tokens and annotations. The Warden sees it at 45% opacity, as a dark tint, or a light one in dark mode, where a dark tint barely shows on the inverted board (#453); players see an opaque dark mask. **Player view** gives the Warden an opaque, read-only preview.
 
 The Warden can enable/disable fog, reveal or cover with a round brush, adjust its scene-space radius, undo the last fog stroke, hide all, or reveal all. Mass changes require confirmation. The same revealed areas apply to every player. Stroke coordinates follow pan, zoom, Fit and viewport resizing. In brush mode, space-drag or middle-drag pans the canvas.
 
@@ -60,10 +62,11 @@ For the Warden, the island at the top of the board holds the **Dungeon** tools (
 - **Erase**: drag to remove squares; the walls close up behind.
 - **Doors**: click an outer wall to make it a door, then an opening, then a wall again. Click between two floor squares to add an inner wall, then a door.
 - **Clear dungeon** in the ⋯ menu removes the whole dungeon.
+- **Floor color** (the swatch, #453): Stone, Slate, Sand, Wood, Moss, Water, Lava or Arcane. Choosing a color switches to Draw; painting over floor gives it the new color, and walls and doors stay as they are. The choice is remembered on that device.
 
 Each square is one token wide (80 px).
 
-The dungeon is saved as ordinary, locked Excalidraw rectangles and lines underneath everything else, so saving, live sync, undo (Ctrl+Z) and export work as for any drawing. Their IDs (`dungeon-<size>-floor|wall|door-…`) encode the geometry, so the brush reads the dungeon back from the board and stores nothing extra. Floors are merged into rectangles and walls into long lines to stay within the board's 2000 shapes; the brush refuses a change that would exceed it. **Lock map** unlocks dungeon shapes along with the rest of the map; the next brush stroke redraws any that were moved. Fog of War is drawn above the dungeon.
+The dungeon is saved as ordinary, locked Excalidraw rectangles and lines underneath everything else, so saving, live sync, undo (Ctrl+Z) and export work as for any drawing. Their IDs (`dungeon-<size>-floor|wall|door-…`) encode the geometry, so the brush reads the dungeon back from the board and stores nothing extra. Floors are merged into rectangles and walls into long lines to stay within the board's 2000 shapes; the brush refuses a change that would exceed it. **Lock map** unlocks dungeon shapes along with the rest of the map; the next brush stroke redraws any that were moved. Fog of War is drawn above the dungeon. Squares of one color merge into rectangles, and each floor's fill is its color, so colors need no extra data either; floors drawn before colors existed read back as Stone.
 
 ## Focused checks
 

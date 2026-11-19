@@ -31,3 +31,11 @@ test('optimistic fog operations retain ordering and do not replay acknowledged s
   assert.equal(applyFogOperation({...fog, applied: ['one']}, reveal).strokes.length, 1);
   assert.equal(base.strokes.length, 0);
 });
+
+test('the Warden sees light fog in dark mode; players always see a dark mask (#453)', async () => {
+  const {fogColor, FOG_COLOR, WARDEN_DARK_FOG_COLOR} = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
+  assert.equal(fogColor({seeThrough: true, dark: true}), WARDEN_DARK_FOG_COLOR);
+  assert.equal(fogColor({seeThrough: true, dark: false}), FOG_COLOR);
+  assert.equal(fogColor({seeThrough: false, dark: true}), FOG_COLOR);
+  assert.equal(fogColor({seeThrough: false, dark: false}), FOG_COLOR);
+});

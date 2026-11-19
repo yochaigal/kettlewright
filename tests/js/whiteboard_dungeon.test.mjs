@@ -8,7 +8,7 @@ const room = (c1, r1, c2, r2, size = 80) => D.paint(D.emptyDungeon(size), D.cell
 const ids = shapes => shapes.map(shape => shape.id).sort();
 const roundTrip = dungeon => D.dungeonFromShapes(D.dungeonShapes(dungeon), dungeon.size);
 const same = (a, b) => {
-  assert.deepEqual([...a.cells].sort(), [...b.cells].sort());
+  assert.deepEqual([...a.cells.keys()].sort(), [...b.cells.keys()].sort());
   assert.deepEqual([...a.edges].sort(), [...b.edges].sort());
 };
 
@@ -75,7 +75,7 @@ test('only dungeon shapes of the board size are read; other shapes and deleted o
   const shapes = [...D.dungeonShapes(room(0, 0, 0, 0)), ...D.dungeonShapes(room(5, 5, 5, 5, 40)),
     {id: 'dungeon-80-floor-9_9_1_1', isDeleted: true}, {id: 'rect-1'}, {id: 'dungeon-80-floor-bad'}];
   assert.equal(D.boardSize(shapes), 80);
-  assert.deepEqual([...D.dungeonFromShapes(shapes, 80).cells], ['0,0']);
+  assert.deepEqual([...D.dungeonFromShapes(shapes, 80).cells.keys()], ['0,0']);
   assert.equal(D.boardSize([{id: 'x'}]), null);
   assert.equal(D.isDungeonShape({id: 'dungeon-80-wall-v--2_10_20'}), true);
 });
@@ -118,4 +118,32 @@ test('a shape restored after deletion gets a newer version, and the shape limit 
   assert.ok(revived.length === shapes.length && revived.every(element => element.version === 6));
   const crowded = Array.from({length: 1999}, (_, i) => ({id: `x${i}`, version: 1}));
   assert.equal(nextScene(crowded, 80, shapes, toElements).tooBig, true);
+});
+
+test('floors are painted in the brush color, and repainting changes only the color (#453)', () => {
+  const water = D.FLOOR_COLORS.find(({name}) => name === 'water').color;
+  let dungeon = room(0, 0, 2, 0);
+  assert.ok([...dungeon.cells.values()].every(color => color === D.STYLE.floor));
+  dungeon = D.paint(dungeon, D.cellsInBox([160, 0], [160, 0], 80), false, water);
+  assert.equal(dungeon.cells.get('2,0'), water);
+  const shapes = D.dungeonShapes(dungeon);
+  const floors = shapes.filter(shape => shape.id.includes('-floor-'));
+  // Two colors, two rectangles; walls ignore the floor's color.
+  assert.deepEqual(floors.map(shape => [shape.id, shape.backgroundColor]).sort(),
+    [['dungeon-80-floor-0_0_2_1', D.STYLE.floor], ['dungeon-80-floor-2_0_1_1', water]]);
+  assert.ok(shapes.filter(shape => shape.id.includes('-wall-')).every(shape => shape.strokeColor === D.STYLE.wall));
+  // Read back from the board with the colors it was drawn in.
+  same(D.dungeonFromShapes(shapes, 80), dungeon);
+  assert.equal(D.dungeonFromShapes(shapes, 80).cells.get('2,0'), water);
+  // Erasing never leaves a color behind.
+  assert.equal(D.paint(dungeon, new Set(['2,0']), true).cells.has('2,0'), false);
+});
+
+test('older dungeons and unknown colors read back as stone', () => {
+  assert.equal(D.floorColor('#A5D8FF'), '#a5d8ff');
+  for (const value of [undefined, '', 'red', '#fff', 'url(x)']) assert.equal(D.floorColor(value), D.STYLE.floor);
+  const shapes = [{id: 'dungeon-80-floor-0_0_1_1', backgroundColor: 'transparent'}];
+  assert.deepEqual([...D.dungeonFromShapes(shapes, 80).cells], [['0,0', D.STYLE.floor]]);
+  assert.equal(D.FLOOR_COLORS[0].color, D.STYLE.floor);
+  assert.equal(new Set(D.FLOOR_COLORS.map(({color}) => color)).size, D.FLOOR_COLORS.length);
 });

@@ -1,19 +1,29 @@
 // Grid dungeons for the whiteboard (#439): paint floor squares, and walls follow
 // the edge of the floor, as with a wet-erase marker on a battle mat.
 //
-// A dungeon is a set of floor squares plus edge overrides (doors, openings and
-// inner walls). It is saved as ordinary Excalidraw shapes; their IDs encode the
-// geometry, so the dungeon is read back from the board and needs no extra data.
+// A dungeon is a set of floor squares, each with its color (#453), plus edge
+// overrides (doors, openings and inner walls). It is saved as ordinary Excalidraw
+// shapes; their IDs encode the geometry and the floor's fill is the color, so the
+// dungeon is read back from the board and needs no extra data.
 // This module has no imports so it can be tested directly.
 
 export const DEFAULT_SIZE = 80; // one token
 export const STYLE = {floor: '#e6e6e6', wall: '#1e1e1e', door: '#9a9a9a', floorOpacity: 85};
+// Floor colors to paint with (#453): Excalidraw's own light fills, so dark mode inverts them as it
+// does every drawing. Stone is the original floor; Slate stays light in dark mode, so fog shows on it.
+export const FLOOR_COLORS = [
+  {name: 'stone', color: STYLE.floor}, {name: 'slate', color: '#868e96'}, {name: 'sand', color: '#ffec99'},
+  {name: 'wood', color: '#e9c48f'}, {name: 'moss', color: '#b2f2bb'}, {name: 'water', color: '#a5d8ff'},
+  {name: 'lava', color: '#ffc9c9'}, {name: 'arcane', color: '#d0bfff'},
+];
+const HEX = /^#[0-9a-f]{6}$/i;
+export const floorColor = value => HEX.test(value || '') ? value.toLowerCase() : STYLE.floor;
 const TENTHS = 10;
 const DOOR_GAP = [3, 7]; // the door takes the middle of its edge, in tenths
 
 const cellKey = (c, r) => `${c},${r}`;
 const parseCell = key => key.split(',').map(Number);
-export const emptyDungeon = (size = DEFAULT_SIZE) => ({size, cells: new Set(), edges: new Map()});
+export const emptyDungeon = (size = DEFAULT_SIZE) => ({size, cells: new Map(), edges: new Map()});
 
 // Squares and edges --------------------------------------------------------
 // h:c:r is the top edge of square (c, r); v:c:r is its left edge.
@@ -86,11 +96,12 @@ function tidy(dungeon) {
   return dungeon;
 }
 
-const copy = dungeon => ({size: dungeon.size, cells: new Set(dungeon.cells), edges: new Map(dungeon.edges)});
+const copy = dungeon => ({size: dungeon.size, cells: new Map(dungeon.cells), edges: new Map(dungeon.edges)});
 
-export function paint(dungeon, cells, erase = false) {
-  const next = copy(dungeon);
-  for (const cell of cells) erase ? next.cells.delete(cell) : next.cells.add(cell);
+// Painting over floor gives it the brush's color; walls and doors stay as they are.
+export function paint(dungeon, cells, erase = false, color = STYLE.floor) {
+  const next = copy(dungeon), fill = floorColor(color);
+  for (const cell of cells) erase ? next.cells.delete(cell) : next.cells.set(cell, fill);
   return tidy(next);
 }
 
@@ -112,9 +123,10 @@ const base = {roughness: 0, locked: true, angle: 0, strokeStyle: 'solid', roundn
 
 // Floor squares merged into rectangles: runs along each row, then equal runs
 // on consecutive rows. Keeps a large dungeon well under the board's 2000 shapes.
+// `cells` are square keys (a Set, or a dungeon's Map whose keys are used).
 export function floorRectangles(cells) {
   const rows = new Map();
-  for (const key of cells) {
+  for (const key of cells instanceof Map ? cells.keys() : cells) {
     const [c, r] = parseCell(key);
     if (!rows.has(r)) rows.set(r, []);
     rows.get(r).push(c);
@@ -148,7 +160,7 @@ function wallRuns(dungeon) {
   };
   const doors = [];
   const edges = new Set();
-  for (const key of dungeon.cells) for (const edge of cellEdges(...parseCell(key))) edges.add(edge);
+  for (const key of dungeon.cells.keys()) for (const edge of cellEdges(...parseCell(key))) edges.add(edge);
   for (const edge of [...dungeon.edges.keys()]) edges.add(edge);
   for (const edge of edges) {
     const kind = edgeKind(dungeon, edge);
@@ -179,10 +191,15 @@ function wallRuns(dungeon) {
 // Excalidraw element skeletons for the whole dungeon, floor first.
 export function dungeonShapes(dungeon, style = STYLE) {
   const s = dungeon.size, id = prefix(s), wallWidth = Math.max(3, Math.round(s / 10));
-  const floors = floorRectangles(dungeon.cells).map(({c, r, w, h}) => ({...base, type: 'rectangle',
-    id: `${id}floor-${c}_${r}_${w}_${h}`, x: c * s, y: r * s, width: w * s, height: h * s,
-    backgroundColor: style.floor, strokeColor: style.floor, fillStyle: 'solid', strokeWidth: 1,
-    opacity: style.floorOpacity}));
+  // Squares of one color merge into rectangles; different colors never share one.
+  const colors = new Map();
+  for (const [key, color] of dungeon.cells) {
+    if (!colors.has(color)) colors.set(color, []);
+    colors.get(color).push(key);
+  }
+  const floors = [...colors].flatMap(([color, keys]) => floorRectangles(keys).map(({c, r, w, h}) => ({...base,
+    type: 'rectangle', id: `${id}floor-${c}_${r}_${w}_${h}`, x: c * s, y: r * s, width: w * s, height: h * s,
+    backgroundColor: color, strokeColor: color, fillStyle: 'solid', strokeWidth: 1, opacity: style.floorOpacity})));
   const {runs, doors} = wallRuns(dungeon);
   const walls = runs.map(({orientation, line, from, to}) => {
     const length = (to - from) / TENTHS * s;
@@ -229,9 +246,9 @@ export function dungeonFromShapes(elements, size) {
     if (!part || part.size !== size || part.rest.some(Number.isNaN)) continue;
     const [kind, orientation] = part.part.split('-');
     if (kind === 'floor' && part.rest.length === 4) {
-      const [c, r, w, h] = part.rest;
+      const [c, r, w, h] = part.rest, color = floorColor(element.backgroundColor);
       if (w > 0 && h > 0 && w * h <= 100000)
-        for (let i = 0; i < w; i++) for (let j = 0; j < h; j++) dungeon.cells.add(cellKey(c + i, r + j));
+        for (let i = 0; i < w; i++) for (let j = 0; j < h; j++) dungeon.cells.set(cellKey(c + i, r + j), color);
     } else if (kind === 'door' && part.rest.length === 2) {
       doors.add(`${orientation}:${part.rest[0]}:${part.rest[1]}`);
     } else if (kind === 'wall' && part.rest.length === 3) {
@@ -241,7 +258,7 @@ export function dungeonFromShapes(elements, size) {
     }
   }
   const edges = new Set();
-  for (const key of dungeon.cells) for (const edge of cellEdges(...parseCell(key))) edges.add(edge);
+  for (const key of dungeon.cells.keys()) for (const edge of cellEdges(...parseCell(key))) edges.add(edge);
   for (const edge of edges) {
     const sides = floorSides(dungeon, edge);
     const kind = doors.has(edge) ? 'door' : walls.has(edge) ? 'wall' : sides === 1 ? 'open' : null;

@@ -24454,3 +24454,47 @@ msgstr "Só o Guardião pode alterar objetos bloqueados ou limpar o quadro intei
 #, python-format
 msgid "Unable to save this drawing: %(reason)s"
 msgstr "Não foi possível salvar este desenho: %(reason)s"
+
+#. Whiteboard dungeon brush (#453)
+msgid "Floor color"
+msgstr "Cor do piso"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Stone"
+msgstr "Pedra"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Slate"
+msgstr "Ardósia"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Sand"
+msgstr "Areia"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Wood"
+msgstr "Madeira"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Moss"
+msgstr "Musgo"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Water"
+msgstr "Água"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Lava"
+msgstr "Lava"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Arcane"
+msgstr "Arcano"

@@ -49,7 +49,8 @@ def fog(clients, operation, **overrides):
 
 
 def test_owned_sources_and_visual_snapshot(sources):
-    _, clients, _ = sources
+    app, clients, _ = sources
+    app.config['WHITEBOARD_LOAD_MAP'] = True
     html = clients[1].get(BASE).get_data(as_text=True)
     assert 'id="load-map"' in html and 'id="map-import"' in html
     maps = clients[1].get(f'{BASE}/sources').json['maps']
