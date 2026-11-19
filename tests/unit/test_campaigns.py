@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.models import (db, User, Party, Character, Campaign, CampaignParty,
                         ContentEntry, ContentLink, PartyPresentation, PointcrawlMap, MapNode, MapEdge)
 from app.lib.campaigns import render_content
+from tests.helpers import login
 
 
 def drawing(text='SECRET DRAWING'):
@@ -109,12 +110,6 @@ def setup(app_with_babel, tmp_path):
     client = app.test_client()
     login(client, 1)
     return app, client
-
-
-def login(client, user_id):
-    with client.session_transaction() as session:
-        session['_user_id'] = str(user_id)
-        session['_fresh'] = True
 
 
 def create_entry(client, **values):
@@ -798,7 +793,8 @@ def test_delete_campaign_removes_nested_maps_but_keeps_external_materials_and_pa
         assert [(link.source_id, link.target_id) for link in ContentLink.query.all()] == [(standalone_id, other_entry_id)]
         assert Party.query.count() == 3
         assert Character.query.count() == 2
-    assert {payload['party_id'] for event, payload, kw in notifications} == {1, 2}
+    # Only parties that were shown something hear about it; campaign connections no longer matter.
+    assert {payload['party_id'] for event, payload, kw in notifications} == {1}
     assert all(event == 'campaign_content_changed' for event, payload, kw in notifications)
     assert client.get(f'/maps/{map_id}/data').status_code == 404
     assert client.get(f'/maps/{nested_id}/data').status_code == 404
@@ -1037,7 +1033,8 @@ def test_material_files_keep_publication_access_and_references(setup):
     login(client, 2)
     assert client.get(url).status_code == 404
     login(client, 1)
-    assert client.get(url).status_code == 200  # Warden can still edit the revoked draft.
+    # Hiding deletes the party version, and the edited original no longer uses the image.
+    assert client.get(url).status_code == 404
     assert client.post('/campaigns/1/delete', data={'version': 1, 'confirm': 'delete'}).status_code == 302
     assert client.get(url).status_code == 404
     assert not list(Path(app.config['MATERIAL_IMAGE_UPLOAD_FOLDER']).rglob('*.webp'))

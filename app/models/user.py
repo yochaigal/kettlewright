@@ -49,7 +49,7 @@ class User(UserMixin, db.Model):
             data = s.loads(token.encode('utf-8'))
         except:
             return False
-        user = User.query.get(data.get('reset'))
+        user = db.session.get(User, data["reset"]) if isinstance(data, dict) and data.get("reset") is not None else None
         if user is None:
             return False
         user.password = new_password

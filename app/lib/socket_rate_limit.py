@@ -1,12 +1,23 @@
 """Per-user event limits shared by workers when Redis is enabled."""
 from threading import Lock
 from time import monotonic
+from weakref import WeakSet
 
 
 class SocketRateLimiter:
+    _instances = WeakSet()
+
+    @classmethod
+    def reset_all(cls):
+        """Forget in-process counts (tests share one app, so limits must not carry over)."""
+        for limiter in list(cls._instances):
+            with limiter.lock:
+                limiter.windows.clear()
+
     def __init__(self, redis_url=None):
         self.windows = {}
         self.lock = Lock()
+        SocketRateLimiter._instances.add(self)
         self.redis = None
         if redis_url:
             from redis import Redis

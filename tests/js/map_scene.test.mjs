@@ -134,7 +134,10 @@ test('realm geography applies through the component endpoint and sends both vers
     assert.equal(fields.get('children'),'[]');
     return {ok:true,json:async()=>({nodes:[],edges:[],version:5,article_version:2})};
   });
-  t.mock.method(globalThis,'FormData',function(){return {set:(key,value)=>fields.set(key,value)};});
+  // Swap FormData by assignment: it is an accessor on Node 22, which mock.method cannot wrap.
+  const RealFormData=globalThis.FormData;
+  globalThis.FormData=function(){return {set:(key,value)=>fields.set(key,value)};};
+  t.after(()=>{globalThis.FormData=RealFormData;});
   Object.assign(component,{$el:{dataset:{}},$refs:{saveForm:{}},$nextTick:callback=>callback(),fit(){},
     geographyUrl:'/maps/7/geography',geographyDraft:[],graph:{version:4,article_version:2},labels:{saved:'Saved'}});
   await component.applyGeography();

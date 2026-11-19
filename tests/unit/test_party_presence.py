@@ -1,10 +1,14 @@
 """Large rosters: Wardens can filter the party to players who are connected (#424)."""
+from pathlib import Path
+
 import pytest
 
 import app.lib.presence as presence_module
 from app import socketio
 from app.lib.presence import TTL, Presence
 from app.models import Character, Party, User, db
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 @pytest.fixture
@@ -108,6 +112,6 @@ def test_presence_needs_no_database_change():
 
 def test_connected_filter_outranks_both_member_layouts():
     """The hide rule must beat '.party-compact #party-members-content .party-member { display: grid }'."""
-    scss = open('app/static/src/scss/party.scss').read()
+    scss = (ROOT / 'app/static/src/scss/party.scss').read_text(encoding='utf-8')
     assert ('#party-members.party-connected-only #party-members-content .party-member[data-online="0"] '
             '{ display: none; }') in scss
