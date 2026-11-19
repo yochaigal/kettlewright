@@ -27,6 +27,16 @@ def test_wiki_parser_code_aliases_paths_and_headings():
     assert 'id="kw-h-зима-и-снег-2"' in str(render_content('## Зима и **снег**\n\n## Зима и **снег**'))
 
 
+def test_labelled_wiki_links_inside_table_cells_keep_the_table():
+    """A [[Target|Label]] in a cell used to add a column and drop the whole table to plain text (#463)."""
+    body = ('| d2 | Event |\n| --- | --- |\n| 1 | Quiet |\n| 2 | The [[Knight|Chitin Knight]] arrives |\n\n'
+            'Outside a table: [[Knight|the Knight]].\n\n```\n| [[Knight|raw]] |\n```')
+    assert tokens(body) == ['Knight']
+    rendered = str(render_content(body, {'Knight': '/materials/9/edit'}))
+    assert rendered.count('<tr>') == 3 and '<td>The <a href="/materials/9/edit"' in rendered and 'Chitin Knight</a> arrives</td>' in rendered
+    assert '>the Knight</a>' in rendered and '| [[Knight|raw]] |' in rendered
+
+
 def test_stable_bindings_rename_and_editor_preview(setup):
     app, client = setup
     target = create_entry(client, title='Village')

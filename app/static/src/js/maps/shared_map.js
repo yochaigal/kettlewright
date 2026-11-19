@@ -37,7 +37,7 @@ let pending = null, saving = false, loading = false, importing = false, refreshA
 let lastDrawing = null, baseDrawing = null, saveBlocked = false, saveFailed = false, readFailed = false;
 let fog = {enabled: false, base: 'covered', strokes: [], applied: []}, fogVersion = 0;
 let fogQueue = [], fogSaving = false, fogBlocked = false, fogTimer, fogFailed = false;
-let playerPreview = false, theme = 'light', connected = false;
+let playerPreview = false, theme = 'light', connected = false, lastTool;
 let socketUpdates = [];
 let waitingForImages = false, refusedBecause = '', csrfRenewals = 0;
 try {theme = localStorage.getItem('darkMode') === 'true' ? 'dark' : 'light';} catch (_) {}
@@ -55,6 +55,12 @@ function stopBrushes() {
   layer.setTool(''); dungeon.setTool('');
   document.querySelectorAll('[data-fog-tool], [data-dungeon-tool]').forEach(button => button.setAttribute('aria-pressed', 'false'));
 }
+const brushActive = () => Boolean(document.querySelector('[data-fog-tool][aria-pressed="true"], [data-dungeon-tool][aria-pressed="true"]'));
+// Picking a tool on Excalidraw's own toolbar puts the brush down (#460): the
+// brush's overlay would otherwise keep taking every click on the board.
+editor.addEventListener('pointerdown', event => {
+  if (brushActive() && event.target.closest?.('.App-toolbar-container .ToolIcon, .App-toolbar-content .ToolIcon, .App-toolbar__extra-tools-dropdown')) stopBrushes();
+}, true);
 function dungeonControls() {
   if (!config.warden) return;
   const usable = config.editing && !playerPreview && !importing && !stopped;
@@ -207,7 +213,10 @@ function onChange(elements, appState, files) {
   if (stopped || appState.isLoading) return;
   setTheme(appState.theme);
   if (appState.activeTool?.type !== 'laser') laser.stop();
-  else if (document.querySelector('[data-fog-tool][aria-pressed="true"], [data-dungeon-tool][aria-pressed="true"]')) stopBrushes();
+  // A tool picked by keyboard shortcut also puts the brush down (#460).
+  const activeTool = appState.activeTool?.type;
+  if (activeTool !== lastTool && lastTool !== undefined && brushActive()) stopBrushes();
+  lastTool = activeTool;
   if (!api || applying) return;
   const drawing = snapshot(elements, files, appState);
   const imagesWerePending = waitingForImages;

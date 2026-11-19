@@ -18,8 +18,10 @@
 .rich-content img {display:inline-block;max-width:100%;max-height:600px;object-fit:contain;height:auto;}
 .rich-content pre {overflow:auto;padding:.75rem;background:var(--bg);white-space:pre;}
 .rich-content code {font-family:'Courier Prime',monospace;}
-.rich-content table {display:block;max-width:100%;overflow:auto;border-collapse:collapse;}
-.rich-content th,.rich-content td {padding:.4rem .65rem;border:1px solid currentColor;}
+/* Space between tables so two in a row never read as one (#463). Cells break long words only when they must, so short
+   cells such as "d4" keep their width instead of wrapping letter by letter. */
+.rich-content table {display:block;max-width:100%;overflow:auto;border-collapse:collapse;margin:1em 0;}
+.rich-content th,.rich-content td {padding:.4rem .65rem;border:1px solid currentColor;overflow-wrap:break-word;}
 .markdown-inline-preview {font-size:.9em;margin:.35rem 0 .7rem;padding:.35rem .7rem;border-left:2px solid currentColor;}
 .markdown-field [hidden] {display:none!important;}
 @media(max-width:600px){.markdown-toolbar{gap:.1rem;padding:.3rem}.markdown-toolbar button{min-width:32px;padding:.2rem .4rem}.rich-editor textarea,.markdown-preview{padding:.75rem}}

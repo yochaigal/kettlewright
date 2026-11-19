@@ -14,7 +14,7 @@ export function renderArticleMarkdown(value, references={}) {
     tokenizer(src) {
       const match=/^\[\[([^\]\n]+)\]\]/.exec(src);
       if(!match)return;
-      const [target,...labels]=match[1].split('|');
+      const [target,...labels]=match[1].split(/\\?\|/);
       return {type:'wikiLink',raw:match[0],target:linkKey(target),label:labels.join('|').trim() || target.trim()};
     },
     renderer(token) {
@@ -40,7 +40,20 @@ export function renderArticleMarkdown(value, references={}) {
   parser.use({extensions:[{name:'wikiEmbed',level:'inline',start:src=>src.indexOf('![['),
     tokenizer(src){const match=/^!\[\[[^\]\n]+\]\]/.exec(src);if(match)return {type:'wikiEmbed',raw:match[0]};},
     renderer:token=>escape(token.raw)}]});
-  return parser.parse(value,{gfm:true,breaks:true});
+  return parser.parse(escapeTableWikiPipes(value),{gfm:true,breaks:true});
+}
+
+// A table splits its rows at every unescaped pipe, so [[Target|Label]] in a cell broke the cell (#463). Escape the
+// pipe on table rows the GFM way; the table hands it back unescaped. Matches escape_table_wiki_pipes on the server.
+export function escapeTableWikiPipes(value) {
+  if(!value.includes('[[') || !value.includes('|'))return value;
+  let fence='';
+  return value.split('\n').map(line=>{
+    const marker=/^ {0,3}(`{3,}|~{3,})/.exec(line)?.[1];
+    if(marker){if(!fence)fence=marker;else if(marker[0]===fence[0] && marker.length>=fence.length)fence='';return line;}
+    if(fence || !/^ {0,3}\|/.test(line) || !line.includes('[['))return line;
+    return line.replace(/!?\[\[[^\]\n]+\]\]/g,link=>link.replace(/(?<!\\)\|/g,'\\|'));
+  }).join('\n');
 }
 
 export function wikiQuery(value, caret) {

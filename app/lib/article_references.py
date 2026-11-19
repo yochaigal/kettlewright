@@ -28,14 +28,49 @@ def heading_id(text):
     return 'kw-h-' + re.sub(r'[\s_]+', '-', value).strip('-')
 
 
+WIKI_LINK = re.compile(r'!?\[\[[^\]\n]+\]\]')
+TABLE_ROW = re.compile(r' {0,3}\|')
+FENCE = re.compile(r' {0,3}(`{3,}|~{3,})')
+
+
+def escape_table_wiki_pipes(text):
+    """Escape the pipe in [[Target|Label]] on table rows, as GFM escapes a pipe in a cell (#463).
+
+    A table splits its rows at every unescaped pipe, so a labelled link in a cell gave that row an extra cell and
+    the whole table fell back to plain text. The table hands the cell back with the pipe unescaped, and the wiki
+    link parsers also read [[Target\\|Label]] for the rare row that turns out not to be a table. Fenced code is
+    left alone. The client does the same in article-links.js.
+    """
+    if '[[' not in text or '|' not in text:
+        return text
+    lines, fence = text.split('\n'), None
+    for index, line in enumerate(lines):
+        marker = FENCE.match(line)
+        if marker:
+            run = marker.group(1)
+            if fence is None:
+                fence = run
+            elif run[0] == fence[0] and len(run) >= len(fence):
+                fence = None
+            continue
+        if fence is None and TABLE_ROW.match(line) and '[[' in line:
+            lines[index] = WIKI_LINK.sub(lambda link: re.sub(r'(?<!\\)\|', r'\\|', link.group(0)), line)
+    return '\n'.join(lines)
+
+
 def wiki_plugin(md):
     def parse(inline, match, state):
         raw = match.group(0)[2:-2]
-        target, _, label = raw.partition('|')
+        target, label = (re.split(r'\\?\|', raw, maxsplit=1) + [''])[:2]
         state.append_token({'type': 'wiki_link', 'attrs': {'target': destination(target),
                             'label': label.strip() or target.strip()}})
         return match.end()
+
+    def escape_pipes(md, state):
+        state.src = escape_table_wiki_pipes(state.src)
+        state.cursor_max = len(state.src)
     md.inline.register('wiki_link', r'(?<!!)\[\[[^\]\n]+\]\]', parse, before='link')
+    md.before_parse_hooks.append(escape_pipes)
 
 
 ast = mistune.create_markdown(renderer='ast', plugins=['strikethrough', 'table', wiki_plugin])

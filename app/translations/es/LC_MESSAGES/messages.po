@@ -45892,3 +45892,7 @@ msgstr "Al registrarte, aceptas los %(terms)s y la %(privacy)s."
 #. Whiteboard Tokens panel (#457)
 msgid "Click a portrait to add a token to the center of your view, or drag it onto the board."
 msgstr "Haz clic en un retrato para añadir una ficha en el centro de tu vista, o arrástralo a la pizarra."
+
+#. Tools page tab (#461)
+msgid "World"
+msgstr "Mundo"

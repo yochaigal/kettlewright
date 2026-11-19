@@ -12,6 +12,12 @@ test('wiki and relative Markdown links resolve only through supplied audience bi
   assert.match(html,/!\[\[Village\]\]/);assert.doesNotMatch(html,/href="Hidden"/);
   assert.doesNotMatch(renderArticleMarkdown('[[Village]]',{Village:'javascript:alert(1)'}),/<a /);
 });
+test('labelled wiki links inside table cells keep their cell (#463)',()=>{
+  const html=renderArticleMarkdown('| d2 | Event |\n| --- | --- |\n| 1 | Quiet |\n| 2 | The [[Knight|Chitin Knight]] arrives |\n\n```\n| [[Knight|raw]] |\n```',
+    {Knight:'/materials/9/edit'});
+  assert.match(html,/<td>The <a href="\/materials\/9\/edit">Chitin Knight<\/a> arrives<\/td>/);
+  assert.match(html,/\| \[\[Knight\|raw\]\] \|/);
+});
 test('Unicode heading anchors match server convention, including duplicate headings',()=>{
   assert.equal(headingID('Зима и снег'),'kw-h-зима-и-снег');
   const html=renderArticleMarkdown('## Зима и **снег**\n\n## Зима и **снег**');
