@@ -1,3 +1,4 @@
+{% set is_warden = current_user.is_authenticated and party.owner == current_user.id %}
 <div class="inventory-header flex-row storage-tabs">
     {% for cnt in inventory.containers if not cnt.get('on_the_ground') %}
     <div class="row8">
@@ -6,7 +7,7 @@
             hx-target="#inventory-container">
             {{ cnt.title|markdown_inline }}
         </div>
-        {% if cnt.is_selected %}
+        {% if cnt.is_selected and is_warden %}
         <div class="pointer" title="{{ _('Edit') }}: {{cnt.name}}" aria-label="{{ _('Edit') }}: {{cnt.name}}" role="button" tabindex="0" hx-trigger="click, keydown[key=='Enter']"
             hx-get="/party/inventory/{{party.id}}/container-edit/{{inventory.selected_container['id']}}"
             hx-target="#inventory-container">
@@ -91,11 +92,13 @@
             hx-target="#inventory-container" {% if inventory.selected_container["encumbered"] %} disabled {% endif %}>
             + Fatigue
         </button> #}
+        {% if is_warden %}
         <button class="button smaller-font" type="button"
             hx-get="/party/inventory/{{party.id}}/container-edit/{{inventory.selected_container['id']}}?mode=create"
             hx-target="#modal-anchor">
             <i class="fa-solid fa-plus" aria-hidden="true"></i> {{_('Container')}}
         </button>
+        {% endif %}
         <div id="modal-anchor"></div>
     </div>
 </div>

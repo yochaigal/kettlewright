@@ -615,7 +615,7 @@ def party_show_user(username, url_name):
 @login_required
 def party_edit(ownername, party_url):
     party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party = get_party_data(ownername, party_url)
-    if not can_edit_storage(party):
+    if not is_party_warden(party):
         abort(403)
     form = PartyEditForm(obj=party) 
     render =  render_template('main/party_edit.html', party_url=party_url, characters = characters, join_code = join_code, is_owner=is_owner, is_subowner=is_subowner,ownername=ownername, inventory=inventory, party=party, form=form)
@@ -659,7 +659,7 @@ def party_edit_save(ownername, party_url):
     party = get_party_by_owner(ownername, party_url)
     if party is None:
         abort(404)
-    if not can_edit_storage(party):
+    if not is_party_warden(party):
         abort(403)
     form = PartyEditForm(obj=party) 
     for field in fields_to_update:
@@ -724,8 +724,13 @@ def party_delete(party_id):
     return response
 
 
+def is_party_warden(party):
+    """Only the Warden changes the party itself: its name, description and storage containers."""
+    return party is not None and current_user.is_authenticated and party.owner == current_user.id
+
+
 def can_edit_storage(party):
-    """The Warden and co-owners manage shared storage, matching who can open Edit party."""
+    """The Warden and the party's players (co-owners) manage the items in shared storage."""
     if party is None or not current_user.is_authenticated:
         return False
     try:
@@ -740,6 +745,14 @@ def storage_party(party_id, write=True):
     if party is None:
         abort(404)
     if write and not can_edit_storage(party):
+        abort(403)
+    return party
+
+
+def container_party(party_id):
+    """Adding, renaming, resizing or removing storage containers is the Warden's call."""
+    party = storage_party(party_id)
+    if not is_party_warden(party):
         abort(403)
     return party
 
@@ -762,7 +775,7 @@ def party_inventory_edit(party_id, container_id):
 @party.route('/party/inventory/<party_id>/container-edit/<container_id>', methods=['GET'])
 @login_required
 def party_inventory_container_edit(party_id, container_id):
-    party = storage_party(party_id)
+    party = container_party(party_id)
     inventory = Inventory(party)
     inventory.setItemsWithRolls(False)
     inventory.decorate()
@@ -782,7 +795,7 @@ def party_inventory_container_edit(party_id, container_id):
 @party.route('/party/inventory/<party_id>/container-edit/<container_id>/save', methods=['POST'])
 @login_required
 def party_inventory_container_edit_save(party_id, container_id):
-    party = storage_party(party_id)
+    party = container_party(party_id)
     inventory = Inventory(party)
     data = request.form
     slots = 1
@@ -819,7 +832,7 @@ def party_inventory_select_container(party_id, container_id):
 @party.route('/party/inventory/<party_id>/container-edit/<container_id>/delete', methods=['POST'])
 @login_required
 def party_inventory_container_delete(party_id, container_id):
-    party = storage_party(party_id)
+    party = container_party(party_id)
     inventory = Inventory(party)
     data = request.form
     inventory.delete_container(container_id, data["delete-items"])

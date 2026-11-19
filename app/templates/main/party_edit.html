@@ -17,7 +17,7 @@
       <input type="hidden" name="old_containers" id="old_items" value="{{party.containers}}" />
       <div style="display: flex; justify-content: space-between">
         <div class="title level-item justify-centered">{{ form.name(class='input') }}</div>
-        {% if is_owner or is_subowner %}
+        {% if is_owner %}
         <div class="charedit-action-pad" id="action-pad">
           <button type="button" class="dice-button ghost40" hx-post="/party/edit/{{ownername}}/{{party_url}}/save">
             <i class="fa-solid fa-check check"></i>
