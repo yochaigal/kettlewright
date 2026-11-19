@@ -89,7 +89,8 @@ def create_app():
         _json_consolidated = True
 
     # Configure CORS using allowed origins
-    CORS(app, resources={r"/*": {"origins": allowed_origins}})
+    # The public API (/api/v1) reads no cookies or user data, so any site may call it.
+    CORS(app, resources={r"/api/v1/*": {"origins": "*"}, r"/*": {"origins": allowed_origins}})
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
     for key in ('APPLICATION_ID', 'PUBLIC_KEY', 'CLIENT_SECRET', 'BOT_TOKEN'):
@@ -277,6 +278,9 @@ def create_app():
     @app.after_request
     def remember_lang_param(response):
         lang = request.args.get('lang')
+        # API calls choose a language per request; they must not change the site's.
+        if request.path.startswith('/api/'):
+            return response
         if lang in SUPPORTED_LOCALES and request.cookies.get('kw_lang') != lang:
             response.set_cookie('kw_lang', lang, expires=datetime.now() + timedelta(days=180))
         return response

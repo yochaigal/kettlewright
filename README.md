@@ -183,6 +183,11 @@ See [Campaigns and party knowledge](docs/campaigns.md) for private preparation,
 independent party versions, Tools results and pointcrawl maps. Apply the database
 migrations (`flask db upgrade`) before serving the updated application.
 
+## Public API
+
+Read-only JSON endpoints for the public Tools (random characters, monsters and
+tables), with no login. See [the API documentation](docs/api.md).
+
 ## Uploaded portraits
 
 Uploads live in `instance/portraits`, alongside the SQLite database in the existing
