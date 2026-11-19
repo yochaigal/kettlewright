@@ -20,7 +20,7 @@
   }}
   </script>
 </head>
-<body>
+<body{% if warden %} class="warden-board"{% endif %}>
   <header class="map-header">
     <a id="back-to-party" href="{{ url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) }}" title="{{ _('Back to party') }}" aria-label="{{ _('Back to party') }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>
     <button type="button" id="board-party" title="{{ party.name }}" aria-controls="party-panel" aria-expanded="false"><i class="fa-solid fa-users" aria-hidden="true"></i> {{ _('Party') }}</button>
@@ -35,23 +35,49 @@
     {% endif %}
     <span id="map-status" role="status" aria-live="polite">{{ _('Loading…') }}</span>
   </header>
+  <div id="board-notices" aria-live="polite"></div>
+  <div class="board-stage">
   {% if warden %}
-  <section class="fog-toolbar" aria-label="{{ _('Fog of War') }}">
-    <button type="button" id="fog-enabled" aria-pressed="false">{{ _('Fog of War') }}</button>
-    <button type="button" data-fog-tool="reveal" aria-pressed="false" disabled>{{ _('Reveal') }}</button>
-    <button type="button" data-fog-tool="cover" aria-pressed="false" disabled>{{ _('Cover') }}</button>
-    <label for="fog-radius">{{ _('Brush size') }}</label>
-    <input id="fog-radius" type="range" min="10" max="300" value="60" step="5">
-    <button type="button" data-fog-action="undo">{{ _('Undo fog stroke') }}</button>
-    <button type="button" data-fog-action="hide_all">{{ _('Hide all') }}</button>
-    <button type="button" data-fog-action="reveal_all">{{ _('Reveal all') }}</button>
-    <button type="button" id="player-preview" aria-pressed="false">{{ _('Player view') }}</button>
+  {# Warden tools in the top island: grid dungeons (#439) on the left, Fog of War on the right. Excalidraw's own tools
+     move to a rail on the left (shared_map.css). shared_map.js finds these controls by ID and data attribute. #}
+  <section class="board-toolbar board-island" aria-label="{{ _('Warden tools') }}">
+    <div class="tool-group" role="group" aria-label="{{ _('Dungeon') }}">
+      <span class="tool-group-label"><i class="fa-solid fa-dungeon" aria-hidden="true"></i> {{ _('Dungeon') }}</span>
+      <span class="tool-segment">
+        <button type="button" class="tool-icon" data-dungeon-tool="floor" aria-pressed="false" aria-label="{{ _('Draw') }}" title="{{ _('Draw') }}: {{ _('Drag over the grid to draw floor; walls follow. Hold Alt to erase.') }}"><i class="fa-solid fa-paintbrush" aria-hidden="true"></i></button>
+        <button type="button" class="tool-icon" data-dungeon-tool="erase" aria-pressed="false" aria-label="{{ _('Erase') }}" title="{{ _('Erase') }}: {{ _('Drag to erase floor.') }}"><i class="fa-solid fa-eraser" aria-hidden="true"></i></button>
+        <button type="button" class="tool-icon" data-dungeon-tool="door" aria-pressed="false" aria-label="{{ _('Doors') }}" title="{{ _('Doors') }}: {{ _('Click a wall to make it a door, then an opening. Click between two floor squares to add a wall.') }}"><i class="fa-solid fa-door-open" aria-hidden="true"></i></button>
+      </span>
+      <details class="tool-more">
+        <summary class="tool-icon" aria-label="{{ _('More dungeon actions') }}" title="{{ _('More dungeon actions') }}"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></summary>
+        <div class="tool-menu">
+          <button type="button" id="dungeon-clear" disabled><i class="fa-solid fa-trash-can" aria-hidden="true"></i> {{ _('Clear dungeon') }}</button>
+        </div>
+      </details>
+    </div>
+    <div class="tool-group" role="group" aria-label="{{ _('Fog of War') }}">
+      <button type="button" id="fog-enabled" class="tool-switch" aria-pressed="false" title="{{ _('Turn Fog of War on or off for everyone') }}"><i class="fa-solid fa-smog" aria-hidden="true"></i> {{ _('Fog') }}</button>
+      <span class="tool-segment">
+        <button type="button" class="tool-icon" data-fog-tool="reveal" aria-pressed="false" disabled aria-label="{{ _('Reveal') }}" title="{{ _('Reveal') }}: {{ _('Drag to reveal part of the map') }}"><i class="fa-solid fa-eye" aria-hidden="true"></i></button>
+        <button type="button" class="tool-icon" data-fog-tool="cover" aria-pressed="false" disabled aria-label="{{ _('Cover') }}" title="{{ _('Cover') }}: {{ _('Drag to cover part of the map') }}"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i></button>
+      </span>
+      <input id="fog-radius" type="range" min="10" max="300" value="60" step="5" aria-label="{{ _('Brush size') }}" title="{{ _('Brush size') }}">
+      <button type="button" class="tool-icon" id="player-preview" aria-pressed="false" aria-label="{{ _('Player view') }}" title="{{ _('Player view') }}: {{ _('See the board as your players do') }}"><i class="fa-solid fa-user" aria-hidden="true"></i></button>
+      <details class="tool-more">
+        <summary class="tool-icon" aria-label="{{ _('More fog actions') }}" title="{{ _('More fog actions') }}"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></summary>
+        <div class="tool-menu">
+          <button type="button" data-fog-action="undo"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> {{ _('Undo fog stroke') }}</button>
+          <button type="button" data-fog-action="hide_all"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> {{ _('Cover all') }}</button>
+          <button type="button" data-fog-action="reveal_all"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{ _('Reveal all') }}</button>
+        </div>
+      </details>
+    </div>
     <span id="fog-status" role="status" aria-live="polite"></span>
     <button type="button" id="discard-fog" hidden>{{ _('Discard unsaved fog') }}</button>
   </section>
   {% endif %}
-  <div id="board-notices" aria-live="polite"></div>
   <div id="editor"></div>
+  </div>
   {# Roll results on screen (#385): yours and everyone's public rolls, over the board for a few seconds. #}
   <div id="board-roll-osd" class="board-roll-osd" role="log" aria-live="polite" aria-label="{{_('Dice results')}}"></div>
   <section id="board-rolls" class="board-rolls" aria-label="{{_('Roll Dice')}}">
@@ -68,6 +94,9 @@
         title="{{_('Minimize dice roller')}}" aria-label="{{_('Minimize dice roller')}}"><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
     </div>
     <div id="board-roll-actions" class="board-roll-actions"></div>
+    {# The die shapes from the dice modal; board_rolls.js puts copies on its dice buttons. #}
+    {% from 'partial/dice_icon.html' import die_icon %}
+    <template id="board-die-icons">{% for sides in [4, 6, 8, 10, 12, 20, 100] %}{{ die_icon(sides, '%' if sides == 100 else none) }}{% endfor %}</template>
   </section>
   <dialog id="party-tokens" aria-labelledby="tokens-title">
     <div class="tokens-heading"><h2 id="tokens-title">{{ _('Tokens') }}</h2>
@@ -152,7 +181,9 @@
       'confirmFog': _('Change fog for everyone in the party?'),
       'fogFailed': _('Fog changes could not be saved. Retrying…'),
       'fogInvalid': _('Fog changes were rejected. Discard the unsaved fog changes to continue.'),
-      'discardFog': _('Discard your unsaved fog changes?')
+      'discardFog': _('Discard your unsaved fog changes?'),
+      'confirmClearDungeon': _('Remove the whole dungeon for everyone in the party?'),
+      'dungeonTooBig': _('This dungeon is too big: a whiteboard holds up to 2000 shapes.')
     }
   }|tojson }}</script>
   <script type="module">

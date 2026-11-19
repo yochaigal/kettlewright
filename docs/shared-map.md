@@ -50,6 +50,19 @@ Completed strokes enter an independent save queue with operation IDs and a fog r
 
 This is visual hiding, not server-side secrecy: the player's browser still receives the complete drawing. The ordinary player export menu is disabled while fog is active because it would omit the mask. Fog is independent of selection, erasing and drawing undo. There are no walls, lighting, automatic token vision or individual player visibility in v1.
 
+## Dungeon brush
+
+For the Warden, the island at the top of the board holds the **Dungeon** tools (left) and the **Fog** tools (right); less frequent actions are in each group's ⋯ menu. Excalidraw's drawing tools and the laser pointer move to a rail on the left. Players keep Excalidraw's usual layout, and on narrow screens the Warden tools sit in a row above the board. The Dungeon tools draw grid dungeons quickly, like a wet-erase marker on a battle mat (#439):
+
+- **Draw**: drag over the grid to draw floor. Walls appear wherever floor meets empty space and move as the floor grows. Hold Alt to erase.
+- **Erase**: drag to remove squares; the walls close up behind.
+- **Doors**: click an outer wall to make it a door, then an opening, then a wall again. Click between two floor squares to add an inner wall, then a door.
+- **Clear dungeon** in the ⋯ menu removes the whole dungeon.
+
+Each square is one token wide (80 px).
+
+The dungeon is saved as ordinary, locked Excalidraw rectangles and lines underneath everything else, so saving, live sync, undo (Ctrl+Z) and export work as for any drawing. Their IDs (`dungeon-<size>-floor|wall|door-…`) encode the geometry, so the brush reads the dungeon back from the board and stores nothing extra. Floors are merged into rectangles and walls into long lines to stay within the board's 2000 shapes; the brush refuses a change that would exceed it. **Lock map** unlocks dungeon shapes along with the rest of the map; the next brush stroke redraws any that were moved. Fog of War is drawn above the dungeon.
+
 ## Focused checks
 
 ```sh

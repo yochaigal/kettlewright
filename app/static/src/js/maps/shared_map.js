@@ -1,11 +1,12 @@
 import {createElement as h} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Excalidraw, restoreElements, CaptureUpdateAction} from 'excalidraw';
+import {Excalidraw, restoreElements, convertToExcalidrawElements, CaptureUpdateAction} from 'excalidraw';
 import {drawingFromScene, drawingImagesReady, drawingForSave} from './scene.js';
 import {createActorUpdates} from './actor_updates.js';
 import {mergeDrawings, sameDrawing} from './shared_map_merge.js';
 import {loadLibraries, MAP_LIBRARIES} from './libraries.js';
 import {createFogLayer, applyFogOperation} from './whiteboard_fog.js';
+import {createDungeonLayer} from './whiteboard_dungeon_layer.js';
 import {setupMapImport} from './whiteboard_import.js';
 import {setupPartyTokens} from './party_tokens.js';
 import {createLaserSync} from './whiteboard_laser.js';
@@ -39,6 +40,25 @@ let waitingForImages = false;
 try {theme = localStorage.getItem('darkMode') === 'true' ? 'dark' : 'light';} catch (_) {}
 document.body.classList.toggle('dark-mode', theme === 'dark');
 const layer = createFogLayer({editor, getApi: () => api, warden: config.warden, onOperation: queueFog});
+// The Dungeon brush (#439) draws ordinary shapes, so saving and sync need nothing new.
+const dungeon = createDungeonLayer({editor, getApi: () => api,
+  canEdit: () => config.warden && config.editing && initialized && !stopped && !importing && !playerPreview,
+  toElements: shapes => restoreElements(convertToExcalidrawElements(shapes, {regenerateIds: false}), null),
+  captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+  onTooBig: () => api?.setToast({message: config.messages.dungeonTooBig}),
+  onChange: () => dungeonControls()});
+// Fog and dungeon tools share the pointer; only one is active at a time.
+function stopBrushes() {
+  layer.setTool(''); dungeon.setTool('');
+  document.querySelectorAll('[data-fog-tool], [data-dungeon-tool]').forEach(button => button.setAttribute('aria-pressed', 'false'));
+}
+function dungeonControls() {
+  if (!config.warden) return;
+  const usable = config.editing && !playerPreview && !importing && !stopped;
+  document.getElementById('dungeon-clear').disabled = !dungeon.hasDungeon() || !usable;
+  document.querySelectorAll('[data-dungeon-tool]').forEach(button => {button.disabled = !usable;});
+  if (!usable && dungeon.tool()) stopBrushes();
+}
 const library = loadLibraries([...MAP_LIBRARIES, 'clocks'], new URL(config.libraryUrl, location.href));
 // Match the app's existing Socket.IO transport. HTTP polling below is the fallback.
 const socket = io({transports: ['websocket'], reconnectionDelay: 1000, reconnectionDelayMax: 10000});
@@ -51,7 +71,7 @@ window.addEventListener('blur', () => laser.stop());
 
 const tokens = setupPartyTokens({editor, config, getApi: () => api, getGeneration: () => generation,
   canInsert: () => config.editing && initialized && !stopped && !importing && !playerPreview,
-  beforeInsert: () => {layer.setTool(''); document.querySelectorAll('[data-fog-tool]').forEach(button => button.setAttribute('aria-pressed', 'false'));}});
+  beforeInsert: stopBrushes});
 
 const boardControls = setupBoardControls({config, getApi: () => api, socket,
   canEdit: () => config.editing && initialized && !stopped && !importing && !playerPreview});
@@ -107,7 +127,7 @@ function revoke() {
   stopped = true; pending = null; fogQueue = [];
   clearTimeout(timer); clearTimeout(fogTimer); clearInterval(poll);
   actorUpdates.destroy();
-  boardControls.destroy(); boardRolls.destroy(); tokenStats.destroy(); portraits.destroy(); tokens.close(); laser.destroy(); layer.destroy(); root.unmount(); api = null; tell('denied');
+  boardControls.destroy(); boardRolls.destroy(); tokenStats.destroy(); portraits.destroy(); tokens.close(); laser.destroy(); layer.destroy(); dungeon.destroy(); root.unmount(); api = null; tell('denied');
 }
 function denied(response) {
   if (response.redirected || [401, 403, 404].includes(response.status)) {revoke(); return true;}
@@ -142,13 +162,11 @@ async function save() {
 }
 
 function onChange(elements, appState, files) {
-  layer.redraw(); tokenStats.redraw(); portraits.redraw(); boardRolls.redraw(); boardControls.selection(appState);
+  layer.redraw(); dungeon.redraw(); dungeonControls(); tokenStats.redraw(); portraits.redraw(); boardRolls.redraw(); boardControls.selection(appState);
   if (stopped || appState.isLoading) return;
   setTheme(appState.theme);
   if (appState.activeTool?.type !== 'laser') laser.stop();
-  else document.querySelectorAll('[data-fog-tool][aria-pressed="true"]').forEach(button => {
-    button.setAttribute('aria-pressed', 'false'); layer.setTool('');
-  });
+  else if (document.querySelector('[data-fog-tool][aria-pressed="true"], [data-dungeon-tool][aria-pressed="true"]')) stopBrushes();
   if (!api || applying) return;
   const drawing = snapshot(elements, files, appState);
   const imagesWerePending = waitingForImages;
@@ -218,7 +236,7 @@ function acceptState(data) {
   if (version >= 0 && nextGeneration !== generation) {
     tokens.close(); laser.clear(); preserveDraft(); pending = null; fogQueue = []; saveBlocked = fogBlocked = saveFailed = fogFailed = false;
     clearTimeout(timer); timer = null; clearTimeout(fogTimer); fogTimer = null;
-    layer.setTool(''); document.querySelectorAll('[data-fog-tool]').forEach(button => button.setAttribute('aria-pressed', 'false'));
+    stopBrushes();
     generation = nextGeneration; version = data.version; fogVersion = -1;
     applyDrawing(data.drawing); baseDrawing = lastDrawing;
     api?.setToast({message: config.messages.replaced});
@@ -321,23 +339,38 @@ if (config.warden) {
   });
   document.querySelectorAll('[data-fog-tool]').forEach(button => button.addEventListener('click', () => {
     const active = button.getAttribute('aria-pressed') !== 'true';
-    document.querySelectorAll('[data-fog-tool]').forEach(item => item.setAttribute('aria-pressed', 'false'));
+    stopBrushes();
     button.setAttribute('aria-pressed', String(active)); layer.setTool(active ? button.dataset.fogTool : '');
   }));
+  document.querySelectorAll('[data-dungeon-tool]').forEach(button => button.addEventListener('click', () => {
+    const active = button.getAttribute('aria-pressed') !== 'true';
+    stopBrushes();
+    button.setAttribute('aria-pressed', String(active)); dungeon.setTool(active ? button.dataset.dungeonTool : '');
+  }));
+  // The island's "more" menus close after a choice or a click elsewhere.
+  document.querySelectorAll('.tool-more').forEach(menu => menu.addEventListener('click', event => {
+    if (event.target.closest('.tool-menu button')) menu.open = false;
+  }));
+  document.addEventListener('pointerdown', event => document.querySelectorAll('.tool-more[open]').forEach(menu => {
+    if (!menu.contains(event.target)) menu.open = false;
+  }));
+  document.getElementById('dungeon-clear').addEventListener('click', () => {
+    if (confirm(config.messages.confirmClearDungeon)) dungeon.clear();
+  });
   document.getElementById('fog-radius').addEventListener('input', event => layer.setRadius(Number(event.target.value)));
   document.querySelectorAll('[data-fog-action]').forEach(button => button.addEventListener('click', () => {
     if (button.dataset.fogAction === 'undo' || confirm(config.messages.confirmFog)) queueFog({type: button.dataset.fogAction});
   }));
   document.getElementById('player-preview').addEventListener('click', event => {
     playerPreview = !playerPreview; event.currentTarget.setAttribute('aria-pressed', String(playerPreview));
-    layer.setPreview(playerPreview); tokenStats.reset(); boardRolls.redraw(); displayFog();
+    layer.setPreview(playerPreview); tokenStats.reset(); boardRolls.redraw(); displayFog(); dungeonControls(); dungeon.redraw();
   });
   document.getElementById('discard-fog').addEventListener('click', () => {
     if (confirm(config.messages.discardFog)) {fogQueue = []; fogBlocked = fogFailed = false; displayFog(); refresh();}
   });
   if (config.canLoadMaps) setupMapImport({config, tell, replace: async (source, cover) => {
     if (pending || saving || waitingForImages || loading || fogQueue.length || fogSaving || version < 0) throw new Error(config.messages.waitForSave);
-    importing = true; renderEditor(); showStatus();
+    importing = true; renderEditor(); showStatus(); dungeonControls();
     try {
       const response = await post(config.importUrl, {source_id: source.source_id, digest: source.digest,
         generation, version, fog_version: fogVersion, cover});
@@ -346,7 +379,7 @@ if (config.warden) {
       if (!response.ok) throw new Error(config.messages.importFailed);
       acceptState(await response.json());
       api?.scrollToContent(undefined, {fitToContent: true});
-    } finally {importing = false; drainUpdates(); renderEditor(); showStatus(); if (refreshAgain) {refreshAgain = false; refresh();}}
+    } finally {importing = false; drainUpdates(); renderEditor(); showStatus(); dungeonControls(); if (refreshAgain) {refreshAgain = false; refresh();}}
   }});
 }
 polling(); refresh();

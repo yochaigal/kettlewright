@@ -33,6 +33,8 @@ async function setup(editing = true, failedLibrary = null, language = 'en') {
     localStorage: {getItem: key => stored.get(key) || 'false', setItem: (key, value) => stored.set(key, value)},
     createActorUpdates: () => ({placed() {}, destroy() {}}),
     createFogLayer: () => ({redraw() {}, destroy() {}, setState() {}, setTool() {}}),
+    createDungeonLayer: () => ({redraw() {}, destroy() {}, setTool() {}, tool: () => '', hasDungeon: () => false}),
+    convertToExcalidrawElements: elements => elements,
     applyFogOperation: (fog) => fog, setupMapImport() {}, setupPartyTokens: () => ({open() {}, close() {}}),
     setupBoardControls: () => ({selection() {}, destroy() {}}),
     createTokenPortraits: options => {projection = options.onProjection; return {elements: elements => elements.map(element => element.fileId === 'live-image' ? {...element, fileId: 'original-image'} : element), redraw() {}, destroy() {}};},
