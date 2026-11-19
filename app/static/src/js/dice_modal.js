@@ -5,9 +5,10 @@ const HISTORY_MAX = 6;
 const modal = document.getElementById("dice-modal");
 const $ = (id) => document.getElementById(id);
 
-// "4, 3 (d6+d6) · STR 12 · Success" → "STR 12 · Success": what the result line says beyond the dice.
-function extraDetail(text) {
-  const match = String(text || "").match(/\(d\d+(?:\+d\d+)*\)\s*(.*)$/);
+// "4, 3 (d6+d6) · STR 12 · Success" → "STR 12 · Success", and "6, 1 (2d6) = 7 — Curious" → "7 — Curious":
+// what the result line says beyond the dice.
+export function extraDetail(text) {
+  const match = String(text || "").match(/\(\d*d\d+(?:\+\d*d\d+)*\)\s*(.*)$/);
   return match ? match[1].replace(/^[=·:\s—-]+/, "").trim() : "";
 }
 

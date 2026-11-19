@@ -249,7 +249,7 @@ def test_standalone_character_can_roll_without_party_history(app, socket_party):
 
 @pytest.mark.parametrize('kind,dice,expected', [
     ('dice', 'd20', '20 (d20)'),
-    ('reaction', '', '6, 6 (d6+d6) = 12 — Helpful'),
+    ('reaction', '', '6, 6 (2d6) = 12 — Helpful'),
     ('fate', '', '6 (d6)'),
 ])
 def test_warden_rolls_are_private_in_http_and_socket(app, app_with_babel, socket_party, monkeypatch, kind, dice, expected):
