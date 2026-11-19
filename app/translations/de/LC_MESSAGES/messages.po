@@ -23457,6 +23457,50 @@ msgstr "Nur die Spielleitung kann gesperrte Objekte ändern oder das ganze White
 msgid "Unable to save this drawing: %(reason)s"
 msgstr "Diese Zeichnung kann nicht gespeichert werden: %(reason)s"
 
+#. Whiteboard dungeon brush (#453)
+msgid "Floor color"
+msgstr "Bodenfarbe"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Stone"
+msgstr "Stein"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Slate"
+msgstr "Schiefer"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Sand"
+msgstr "Sand"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Wood"
+msgstr "Holz"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Moss"
+msgstr "Moos"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Water"
+msgstr "Wasser"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Lava"
+msgstr "Lava"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Arcane"
+msgstr "Arkan"
+
 #. Whiteboard as a Discord Activity (#423)
 msgid "Opening the whiteboard…"
 msgstr "Whiteboard wird geöffnet…"

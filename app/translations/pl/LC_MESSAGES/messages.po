@@ -23760,6 +23760,50 @@ msgstr "Tylko Strażnik może zmieniać zablokowane obiekty lub wyczyścić cał
 msgid "Unable to save this drawing: %(reason)s"
 msgstr "Nie można zapisać tego rysunku: %(reason)s"
 
+#. Whiteboard dungeon brush (#453)
+msgid "Floor color"
+msgstr "Kolor podłogi"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Stone"
+msgstr "Kamień"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Slate"
+msgstr "Łupek"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Sand"
+msgstr "Piasek"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Wood"
+msgstr "Drewno"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Moss"
+msgstr "Mech"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Water"
+msgstr "Woda"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Lava"
+msgstr "Lawa"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Arcane"
+msgstr "Arkana"
+
 #. Whiteboard as a Discord Activity (#423)
 msgid "Opening the whiteboard…"
 msgstr "Otwieranie tablicy…"

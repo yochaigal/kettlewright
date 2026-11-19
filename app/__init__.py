@@ -103,6 +103,8 @@ def create_app():
     app.config['DISCORD_BASE_URL'] = os.environ.get('DISCORD_BASE_URL', base_url.split(',')[0])
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
         'SQLALCHEMY_DATABASE_URI')
+    # The whiteboard's Load map waits until there are maps worth loading (#438).
+    app.config['WHITEBOARD_LOAD_MAP'] = os.getenv('WHITEBOARD_LOAD_MAP', 'False').lower() in ('true', '1', 't')
 
     db.init_app(app)
 

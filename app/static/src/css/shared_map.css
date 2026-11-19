@@ -43,6 +43,11 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 .tool-menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 6; display: flex; flex-direction: column; min-width: 170px; padding: 4px;
   border-radius: 8px; background: var(--board-panel); box-shadow: 0 0 0 1px #0000000d, 0 4px 16px #00000026; }
 .board-island .tool-menu button { justify-content: flex-start; width: 100%; padding: 0 10px; }
+/* Floor colors (#453). In dark mode the swatches are inverted the way Excalidraw shows the floor. */
+.floor-swatch { display: inline-block; width: 16px; height: 16px; border: 1px solid #0003; border-radius: 4px; vertical-align: middle; }
+body.dark-mode .floor-swatch { filter: invert(93%) hue-rotate(180deg); border-color: #fff4; }
+.board-island .floor-colors button { gap: 8px; }
+.board-island .floor-colors button[aria-pressed="true"] { font-weight: 600; }
 /* Excalidraw's drawing tools and laser as a vertical rail below its menu button (Warden only). */
 body.warden-board .excalidraw .App-menu_top .shapes-section { position: absolute; top: 64px; left: 0; }
 /* The laser pointer island stays beside the top of the rail. */

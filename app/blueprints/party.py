@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response, abort
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response, abort, current_app
 from flask_login import login_required, current_user
 from app.lib import *
 from app.models import db, User, Character, Party, PartyRoll, PartyMap
@@ -94,7 +94,8 @@ def shared_map_page(party_id, activity_token=None):
     target = _board_party(party_id)
     response = make_response(render_template('main/shared_map.html', party=target,
         editing=True, warden=current_user.id == target.owner,
-        can_load_maps=current_user.id == target.owner,
+        # Load map is off until there are maps worth loading (#438); WHITEBOARD_LOAD_MAP turns it back on.
+        can_load_maps=current_user.id == target.owner and current_app.config.get('WHITEBOARD_LOAD_MAP', False),
         csrf_token=generate_csrf(), roll_form=FlaskForm(), activity_token=activity_token,
         has_character=any(c.owner == current_user.id for c in party_characters(target))))
     response.headers['Cache-Control'] = 'no-store'

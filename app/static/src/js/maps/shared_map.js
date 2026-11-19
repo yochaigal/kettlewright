@@ -7,6 +7,7 @@ import {mergeDrawings, sameDrawing} from './shared_map_merge.js';
 import {loadLibraries, MAP_LIBRARIES} from './libraries.js';
 import {createFogLayer, applyFogOperation} from './whiteboard_fog.js';
 import {createDungeonLayer} from './whiteboard_dungeon_layer.js';
+import {FLOOR_COLORS} from './whiteboard_dungeon.js';
 import {setupMapImport} from './whiteboard_import.js';
 import {setupPartyTokens} from './party_tokens.js';
 import {createLaserSync} from './whiteboard_laser.js';
@@ -58,7 +59,7 @@ function dungeonControls() {
   if (!config.warden) return;
   const usable = config.editing && !playerPreview && !importing && !stopped;
   document.getElementById('dungeon-clear').disabled = !dungeon.hasDungeon() || !usable;
-  document.querySelectorAll('[data-dungeon-tool]').forEach(button => {button.disabled = !usable;});
+  document.querySelectorAll('[data-dungeon-tool], [data-floor-color]').forEach(button => {button.disabled = !usable;});
   if (!usable && dungeon.tool()) stopBrushes();
 }
 const library = loadLibraries([...MAP_LIBRARIES, 'clocks'], new URL(config.libraryUrl, location.href));
@@ -402,6 +403,29 @@ if (config.warden) {
   document.addEventListener('pointerdown', event => document.querySelectorAll('.tool-more[open]').forEach(menu => {
     if (!menu.contains(event.target)) menu.open = false;
   }));
+  // Floor colors (#453): choosing one paints with it. The choice is remembered on this device.
+  const swatch = document.getElementById('dungeon-color-swatch');
+  const chooseColor = (color, remember = true) => {
+    dungeon.setColor(color);
+    swatch.style.background = dungeon.color();
+    document.querySelectorAll('[data-floor-color]').forEach(button =>
+      button.setAttribute('aria-pressed', String(button.dataset.floorColor === dungeon.color())));
+    if (remember) {try {localStorage.setItem('whiteboardFloorColor', dungeon.color());} catch (_) { /* Optional. */ }}
+  };
+  document.getElementById('dungeon-colors').append(...FLOOR_COLORS.map(({name, color}) => {
+    const button = document.createElement('button'), chip = document.createElement('span');
+    button.type = 'button'; button.className = 'floor-color'; button.dataset.floorColor = color;
+    chip.className = 'floor-swatch'; chip.style.background = color; chip.setAttribute('aria-hidden', 'true');
+    button.append(chip, config.messages.floorColors[name]);
+    button.addEventListener('click', () => {
+      chooseColor(color);
+      if (dungeon.tool() !== 'floor') document.querySelector('[data-dungeon-tool="floor"]')?.click();
+    });
+    return button;
+  }));
+  let savedColor = null;
+  try {savedColor = localStorage.getItem('whiteboardFloorColor');} catch (_) { /* Optional. */ }
+  chooseColor(FLOOR_COLORS.some(({color}) => color === savedColor) ? savedColor : FLOOR_COLORS[0].color, false);
   document.getElementById('dungeon-clear').addEventListener('click', () => {
     if (confirm(config.messages.confirmClearDungeon)) dungeon.clear();
   });

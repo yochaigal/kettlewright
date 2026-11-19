@@ -20,6 +20,7 @@ async function setup(editing = true, failedLibrary = null, language = 'en', ward
   let projection, nextTimer = 0, props, elements = [], files = {}, appState = {viewBackgroundColor: '#ffffff', theme: 'light'};
   const config = {editing, warden, partyId: 1, sceneUrl: '/scene', libraryUrl: '/libraries/', messages: Object.fromEntries(
     ['saved', 'live', 'saving', 'conflict', 'denied', 'invalid', 'failed', 'offline', 'loadFailed', 'draft'].map(key => [key, key]).concat([['invalidBecause', 'Unable to save: {reason}']]))};
+  config.messages.floorColors = {stone: 'Stone'};
   const stored = new Map(), uiHandlers = {};
   const status = {textContent: ''};
   const api = {
@@ -28,13 +29,15 @@ async function setup(editing = true, failedLibrary = null, language = 'en', ward
     updateScene(data) {if (data.elements) elements = data.elements; Object.assign(appState, data.appState); props.onChange(elements, appState, files);},
   };
   const context = vm.createContext({
-    document: {documentElement: {lang: language}, body: {classList: {toggle() {}}}, createElement: () => ({}), getElementById: id => id === 'shared-map-config' ? {textContent: JSON.stringify(config)} : id === 'map-status' ? status : {addEventListener(name, fn) {uiHandlers[id + ':' + name] = fn;}, setAttribute() {}, append(value) {drafts.push(value);}},
+    document: {documentElement: {lang: language}, body: {classList: {toggle() {}}}, createElement: () => ({dataset: {}, style: {}, append() {}, setAttribute() {}, addEventListener() {}}), getElementById: id => id === 'shared-map-config' ? {textContent: JSON.stringify(config)} : id === 'map-status' ? status : {style: {}, addEventListener(name, fn) {uiHandlers[id + ':' + name] = fn;}, setAttribute() {}, append(value) {drafts.push(value);}},
       addEventListener() {}, querySelectorAll: () => []},
     window: {addEventListener(name, fn) {windowHandlers[name] = fn;}},
     localStorage: {getItem: key => stored.get(key) || 'false', setItem: (key, value) => stored.set(key, value)},
     createActorUpdates: () => ({placed() {}, destroy() {}}),
     createFogLayer: () => ({redraw() {}, destroy() {}, setState() {}, setTool() {}}),
-    createDungeonLayer: () => ({redraw() {}, destroy() {}, setTool() {}, tool: () => '', hasDungeon: () => false}),
+    createDungeonLayer: () => {let color = ''; return {redraw() {}, destroy() {}, setTool() {}, tool: () => '', hasDungeon: () => false,
+      setColor(value) {color = value;}, color: () => color};},
+    FLOOR_COLORS: [{name: 'stone', color: '#e6e6e6'}],
     convertToExcalidrawElements: elements => elements,
     applyFogOperation: (fog) => fog, setupMapImport() {}, setupPartyTokens: () => ({open() {}, close() {}}),
     setupBoardControls: () => ({selection() {}, destroy() {}}),

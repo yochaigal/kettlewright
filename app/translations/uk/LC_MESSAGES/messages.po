@@ -27544,6 +27544,50 @@ msgstr "Лише Хранитель може змінювати закріпле
 msgid "Unable to save this drawing: %(reason)s"
 msgstr "Не вдалося зберегти малюнок: %(reason)s"
 
+#. Whiteboard dungeon brush (#453)
+msgid "Floor color"
+msgstr "Колір підлоги"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Stone"
+msgstr "Камінь"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Slate"
+msgstr "Сланець"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Sand"
+msgstr "Пісок"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Wood"
+msgstr "Дерево"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Moss"
+msgstr "Мох"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Water"
+msgstr "Вода"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Lava"
+msgstr "Лава"
+
+#. Whiteboard dungeon brush (#453)
+msgctxt "floor color"
+msgid "Arcane"
+msgstr "Магія"
+
 #. Whiteboard as a Discord Activity (#423)
 msgid "Opening the whiteboard…"
 msgstr "Відкриваємо дошку…"

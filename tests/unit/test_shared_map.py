@@ -123,6 +123,7 @@ def shared(app_with_babel):
 
 def test_empty_map_and_access(shared):
     app, clients, _ = shared
+    app.config['WHITEBOARD_LOAD_MAP'] = True
     for i in (1, 2):
         result = clients[i].get(URL)
         assert result.json == {'version': 0, 'drawing': {'elements': [], 'files': {}},
@@ -288,3 +289,13 @@ def test_invalid_legacy_points_are_rejected(shared, kind, point):
     with app.test_request_context(), pytest.raises(BadRequest):
         validate_drawing({'elements': [{'id': 'invalid', 'type': kind,
                                        'points': [[0, 0], point]}], 'files': {}})
+
+
+def test_load_map_is_off_by_default(shared):
+    # Until there are maps worth loading (#438), not even the Warden sees Load map.
+    app, clients, _ = shared
+    assert app.config['WHITEBOARD_LOAD_MAP'] is False
+    html = clients[1].get('/party/1/shared-map').get_data(as_text=True)
+    config = json.loads(re.search(r'id="shared-map-config" type="application/json">(.*?)</script>', html, re.S)[1])
+    assert config['canLoadMaps'] is False and config['sourcesUrl'] is None and config['importUrl'] is None
+    assert 'id="load-map"' not in html and 'id="map-import"' not in html
