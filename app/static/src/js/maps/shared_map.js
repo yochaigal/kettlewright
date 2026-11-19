@@ -18,6 +18,7 @@ import {createRollOsd} from './board_roll_osd.js';
 import dice3d from '../dice3d.js';
 import {createTokenPortraits} from './token_portraits.js';
 import {createImageCompressor} from './whiteboard_images.js';
+import {setupCharacterSheet} from './character_sheet.js';
 import {editorLocale} from './locale.js';
 
 const config = JSON.parse(document.getElementById('shared-map-config').textContent);
@@ -62,8 +63,12 @@ function dungeonControls() {
 }
 const library = loadLibraries([...MAP_LIBRARIES, 'clocks'], new URL(config.libraryUrl, location.href));
 // Match the app's existing Socket.IO transport. HTTP polling below is the fallback.
-const socket = io({transports: ['websocket'], reconnectionDelay: 1000, reconnectionDelayMax: 10000});
+// Inside a Discord Activity there is no cookie session; the socket signs in with the board's token (#423).
+const socket = io({transports: ['websocket'], reconnectionDelay: 1000, reconnectionDelayMax: 10000,
+  ...(config.activityToken ? {auth: {activity: config.activityToken}} : {})});
 const actorUpdates = createActorUpdates({config, socket, denied});
+// Inside a Discord Activity, players get a compact sheet beside the board (#423).
+const characterSheet = setupCharacterSheet({config, socket});
 
 const laser = createLaserSync({socket, getApi: () => api, getGeneration: () => generation, config,
   canSend: () => initialized && !stopped && !importing});
@@ -138,7 +143,7 @@ function revoke() {
   stopped = true; pending = null; fogQueue = [];
   clearTimeout(timer); clearTimeout(fogTimer); clearInterval(poll);
   actorUpdates.destroy();
-  boardControls.destroy(); boardRolls.destroy(); tokenStats.destroy(); portraits.destroy(); images.destroy(); tokens.close(); laser.destroy(); layer.destroy(); dungeon.destroy(); root.unmount(); api = null; tell('denied');
+  boardControls.destroy(); boardRolls.destroy(); characterSheet.destroy(); tokenStats.destroy(); portraits.destroy(); images.destroy(); tokens.close(); laser.destroy(); layer.destroy(); dungeon.destroy(); root.unmount(); api = null; tell('denied');
 }
 function denied(response) {
   if (response.redirected || [401, 403, 404].includes(response.status)) {revoke(); return true;}

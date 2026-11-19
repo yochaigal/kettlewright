@@ -7,6 +7,8 @@ body.dark-mode { --board-bg: #202126; --board-panel: #292b32; --board-text: #efe
 #back-to-party { display: inline-flex; align-items: center; justify-content: center; padding: 7px 10px;
   border: 1px solid var(--board-border); border-radius: 6px; background: var(--board-panel); font-size: 13px; text-decoration: none; }
 #back-to-party:focus-visible { outline: 2px solid #8278c8; outline-offset: 2px; }
+/* Inside a Discord Activity the party page cannot sign in, so neither link to it is offered (#423). */
+body.in-activity #back-to-party, body.in-activity #board-party { display: none; }
 .map-header strong { margin-right: 4px; }
 .map-header > span:not(#map-status) { font-size: 12px; opacity: .75; }
 .map-header button, .board-toolbar button, dialog button { cursor: pointer; padding: 7px 10px; font: inherit; font-size: 13px;
@@ -90,9 +92,34 @@ body.warden-board .excalidraw .App-menu__left { margin-left: 100px; }
 
 .excalidraw .party-tokens-button { height: 36px; padding: 0 12px; border: 1px solid var(--board-border); border-radius: 8px;
   background: var(--board-panel); color: var(--board-text); cursor: pointer; font: 13px system-ui, sans-serif; white-space: nowrap; }
-#party-tokens { box-sizing: border-box; width: min(520px, calc(100vw - 24px)); max-height: calc(100dvh - 32px); overflow: auto;
+#party-tokens, #character-sheet { box-sizing: border-box; width: min(520px, calc(100vw - 24px)); max-height: calc(100dvh - 32px); overflow: auto;
   padding: 20px; border: 1px solid var(--board-border); border-radius: 12px; background: var(--board-bg); color: var(--board-text); }
-#party-tokens::backdrop { background: #0006; }
+#party-tokens::backdrop, #character-sheet::backdrop { background: #0006; }
+/* The compact character sheet inside a Discord Activity (#423). */
+#character-sheet #sheet-character { margin: 12px 0 0; padding: 6px 8px; font: inherit; }
+#sheet-status:empty { display: none; }
+#sheet-status { margin: 12px 0 0; font-size: 14px; }
+.sheet { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; font-size: 14px; }
+.sheet-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+.sheet-stat { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border: 1px solid var(--board-border);
+  border-radius: 8px; background: var(--board-panel); }
+.sheet-stat-label { flex: 1; min-width: 0; font-weight: 600; }
+.sheet-stat output { min-width: 3.2em; text-align: center; font-variant-numeric: tabular-nums; }
+.sheet-stat button { min-width: 30px; padding: 4px 8px; }
+.sheet-note { margin: -6px 0 0; color: var(--board-text); opacity: .75; }
+.sheet-conditions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.sheet-conditions label { display: inline-flex; align-items: center; gap: 6px; }
+.sheet-dead { color: #c92a2a; }
+.sheet-inventory-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sheet-inventory h3 { margin: 0; font-size: 16px; }
+.sheet-container h4 { display: flex; justify-content: space-between; gap: 8px; margin: 12px 0 6px; font-size: 14px; }
+.sheet-slots { font-weight: 400; opacity: .75; font-variant-numeric: tabular-nums; }
+.sheet-container ul { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--board-border); }
+.sheet-item { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--board-border); }
+.sheet-item-name { flex: 1; min-width: 8em; overflow-wrap: anywhere; }
+.sheet-item.is-fatigue .sheet-item-name { font-style: italic; }
+.sheet-counter { display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.sheet-item button { padding: 4px 10px; }
 .tokens-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .tokens-heading h2 { margin: 0; font-size: 20px; }
 #party-tokens p { font-size: 14px; line-height: 1.5; }
