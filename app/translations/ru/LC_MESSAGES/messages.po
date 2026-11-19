@@ -36178,3 +36178,7 @@ msgstr "Правовая информация"
 #, python-format
 msgid "By signing up, you agree to the %(terms)s and the %(privacy)s."
 msgstr "Регистрируясь, вы соглашаетесь с документами «%(terms)s» и «%(privacy)s»."
+
+#. Whiteboard Tokens panel (#457)
+msgid "Click a portrait to add a token to the center of your view, or drag it onto the board."
+msgstr "Нажмите на портрет, чтобы добавить фишку в центр экрана, или перетащите его на доску."

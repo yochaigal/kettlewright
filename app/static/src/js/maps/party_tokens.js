@@ -48,7 +48,9 @@ export function setupPartyTokens({editor, config, getApi, getGeneration, canInse
   const dialog = document.getElementById('party-tokens');
   const grid = document.getElementById('tokens-grid'), status = document.getElementById('tokens-status');
   let epoch = 0, busy = false;
-  const close = () => {++epoch; busy = false; if (dialog.open) dialog.close();};
+  // Tokens in the open picker, by actor ID, so a drop reuses the portrait already drawn (#457).
+  let picked = new Map(), dragging = null;
+  const close = () => {++epoch; busy = false; picked = new Map(); dragging = null; if (dialog.open) dialog.close();};
   document.getElementById('mobile-party-tokens').addEventListener('click', open);
   document.getElementById('close-tokens').addEventListener('click', close);
   dialog.addEventListener('cancel', close);
@@ -78,8 +80,14 @@ export function setupPartyTokens({editor, config, getApi, getGeneration, canInse
     if (busy || !canInsert()) return;
     const id = event.dataTransfer.getData('application/x-kettlewright-actor');
     const generation = getGeneration(), point = {x: event.clientX, y: event.clientY};
+    const fromPicker = picked.get(id);
+    if (fromPicker && dragging) dragging.dropped = true;
     busy = true;
     try {
+      if (fromPicker) {
+        await insert(fromPicker.character, fromPicker.portrait, generation, () => true, point);
+        return;
+      }
       const response = await fetch(config.tokensUrl, {cache: 'no-store', signal: AbortSignal.timeout(15000)});
       if (!response.ok || response.redirected) throw new Error();
       const {tokens} = await response.json(), character = tokens.find(token => String(token.id) === id);
@@ -91,6 +99,7 @@ export function setupPartyTokens({editor, config, getApi, getGeneration, canInse
   async function open() {
     if (!canInsert() || dialog.open) return;
     const run = ++epoch, generation = getGeneration();
+    picked = new Map();
     dialog.showModal(); grid.replaceChildren(); status.textContent = config.messages.tokensLoading;
     try {
       const response = await fetch(config.tokensUrl, {cache: 'no-store', signal: AbortSignal.timeout(15000)});
@@ -100,6 +109,7 @@ export function setupPartyTokens({editor, config, getApi, getGeneration, canInse
       status.textContent = tokens.length ? '' : config.messages.tokensEmpty;
       for (const character of tokens) {
         const button = document.createElement('button'); button.type = 'button'; button.className = 'party-token';
+        button.draggable = true;
         const avatar = document.createElement('span'); avatar.className = 'token-avatar'; avatar.textContent = initials(character.name);
         const name = document.createElement('span'); name.textContent = character.name;
         button.append(avatar, name); grid.append(button);
@@ -110,7 +120,7 @@ export function setupPartyTokens({editor, config, getApi, getGeneration, canInse
         }
         const portrait = tokenPortrait(character).then(result => {
           if (run === epoch) {
-            const img = document.createElement('img'); img.src = result.file.dataURL; img.alt = '';
+            const img = document.createElement('img'); img.src = result.file.dataURL; img.alt = ''; img.draggable = false;
             avatar.replaceChildren(img);
             if (result.fallback) button.title = config.messages.tokenFallback;
           }
@@ -118,6 +128,24 @@ export function setupPartyTokens({editor, config, getApi, getGeneration, canInse
         });
         // Attach a rejection handler immediately, even before a token is chosen.
         portrait.catch(() => {if (run === epoch) button.title = config.messages.tokensFailed;});
+        picked.set(String(character.id), {character, portrait});
+        // Drag a portrait onto the board to place the token there (#457). The picker is a modal
+        // dialog, which keeps the board from receiving the drop, so it steps aside once the drag
+        // has started, and comes back if the token is not dropped on the board.
+        button.addEventListener('dragstart', event => {
+          if (busy || !canInsert()) {event.preventDefault(); return;}
+          event.dataTransfer.setData('application/x-kettlewright-actor', String(character.id));
+          event.dataTransfer.effectAllowed = 'copy';
+          const drag = dragging = {dropped: false};
+          // Changing the page inside dragstart would cancel the drag in some browsers.
+          setTimeout(() => {if (dragging === drag && run === epoch && dialog.open) dialog.close();});
+        });
+        button.addEventListener('dragend', () => {
+          const drag = dragging; dragging = null;
+          if (!drag || run !== epoch) return;
+          if (drag.dropped) close();
+          else if (!dialog.open && canInsert()) dialog.showModal();
+        });
         button.addEventListener('click', async () => {
           if (busy || !canInsert()) return;
           busy = true; grid.setAttribute('aria-busy', 'true'); status.textContent = config.messages.tokensLoading;

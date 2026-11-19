@@ -24592,3 +24592,7 @@ msgstr "Jurídico"
 #, python-format
 msgid "By signing up, you agree to the %(terms)s and the %(privacy)s."
 msgstr "Ao se cadastrar, você concorda com os %(terms)s e a %(privacy)s."
+
+#. Whiteboard Tokens panel (#457)
+msgid "Click a portrait to add a token to the center of your view, or drag it onto the board."
+msgstr "Clique em um retrato para adicionar uma ficha ao centro da sua visualização, ou arraste-o para o quadro."
