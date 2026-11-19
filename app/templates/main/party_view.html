@@ -5,7 +5,7 @@
   const url_name = `{{url_name}}`;
   const selected_container = `{{inventory.selected_container["id"]}}`;
 </script>
-{% if is_owner or is_subowner %}
+{% if is_owner %}
 <script>
   joinCode = `{{ join_code }}`;
   const isOwner = "{{ is_owner }}";
@@ -37,7 +37,7 @@
         {% if is_owner %}<p class="subtitle">{{_("Warden")}}</p>{% endif %}
       </div>
       <div class="party-header-actions">
-        {% if is_owner or is_subowner %}
+        {% if is_owner %}
         <button class="button is-light no-margin-top" id="join-code-button" type="button" title="Join Code">
           <span class="mobile-hidden">{{_('Join Code')}}</span>
           <i class="fa-solid fa-link icon-in-button"></i>
@@ -52,7 +52,7 @@
         <a class="button no-margin-top" href="{{ url_for('party.shared_map', party_id=party.id) }}"
           title="{{ _('Whiteboard') }}" aria-label="{{ _('Whiteboard') }}">{{ _('Whiteboard') }}</a>
         {% endif %}
-        {% if is_owner or is_subowner %}
+        {% if is_owner %}
         <button class="button dice-button no-margin-top" type="button" title="{{_('Edit party')}}" aria-label="{{_('Edit party')}}"
           hx-get="/party/edit/{{ownername}}/{{party_url}}" hx-target="body">
           <i class="fa-solid fa-pencil" aria-hidden="true"></i>

@@ -88,21 +88,57 @@ def test_switching_tabs_shows_editors_the_editable_view(storage):
     _, clients = storage
     url = '/party/inventory-select-container/1/0'
     for user_id in (WARDEN, CO_OWNER):
-        assert 'Marketplace' in clients[user_id].get(url).get_data(as_text=True)
+        assert 'hx-get="/marketplace/party/1/' in clients[user_id].get(url).get_data(as_text=True)
     page = clients[MEMBER].get(url)
     assert page.status_code == 200
     assert 'Rope' in page.get_data(as_text=True)
-    assert 'Marketplace' not in page.get_data(as_text=True)
+    assert 'hx-get="/marketplace/party/1/' not in page.get_data(as_text=True)
 
 
-@pytest.mark.parametrize('user_id', [MEMBER, OUTSIDER])
-def test_edit_party_is_limited_to_the_warden_and_co_owners(storage, user_id):
+@pytest.mark.parametrize('user_id', [CO_OWNER, MEMBER, OUTSIDER])
+def test_edit_party_is_limited_to_the_warden(storage, user_id):
+    # Every player who joins becomes a co-owner, so co-owners are players, not Wardens (#443).
     app, clients = storage
     assert clients[user_id].get('/party/edit/user1/expedition').status_code == 403
     assert clients[user_id].post('/party/edit/user1/expedition/save',
                                  data=dict(name='Renamed', description='')).status_code == 403
     with app.app_context():
         assert db.session.get(Party, 1).name == 'Expedition'
+
+
+def test_the_warden_can_edit_the_party(storage):
+    app, clients = storage
+    assert clients[WARDEN].get('/party/edit/user1/expedition').status_code == 200
+    assert clients[WARDEN].post('/party/edit/user1/expedition/save',
+                                data=dict(name='Renamed', description='')).status_code == 200
+    with app.app_context():
+        assert db.session.get(Party, 1).name == 'Renamed'
+
+
+CONTAINER_CHANGES = [change for change in CHANGES if '/container-edit/' in change[1]]
+
+
+@pytest.mark.parametrize('method,url,data', CONTAINER_CHANGES)
+def test_co_owners_cannot_change_containers(storage, method, url, data):
+    app, clients = storage
+    assert getattr(clients[CO_OWNER], method)(url, data=data).status_code == 403
+    assert unchanged(app)
+
+
+def test_only_the_warden_sees_container_controls(storage):
+    _, clients = storage
+    url = '/party/inventory-select-container/1/0'
+    warden = clients[WARDEN].get(url).get_data(as_text=True)
+    co_owner = clients[CO_OWNER].get(url).get_data(as_text=True)
+    assert '/container-edit/' in warden
+    assert 'hx-get="/marketplace/party/1/' in co_owner and '/container-edit/' not in co_owner
+
+
+def test_only_the_warden_sees_the_edit_party_button(storage):
+    _, clients = storage
+    assert 'hx-get="/party/edit/user1/expedition"' in clients[WARDEN].get('/users/user1/parties/expedition/').get_data(as_text=True)
+    page = clients[CO_OWNER].get('/users/user1/parties/expedition/').get_data(as_text=True)
+    assert 'hx-get="/party/edit/user1/expedition"' not in page
 
 
 def test_empty_storage_explains_itself(storage):
@@ -124,3 +160,15 @@ def test_over_capacity_is_called_out(storage):
         db.session.commit()
     page = clients[MEMBER].get('/party/inventory-select-container/1/0').get_data(as_text=True)
     assert 'Over capacity: 12 of 10 slots used.' in page
+
+
+def test_only_the_warden_gets_the_join_code(storage):
+    app, clients = storage
+    with app.app_context():
+        db.session.get(Party, 1).join_code = 'secret-code'
+        db.session.commit()
+    warden = clients[WARDEN].get('/users/user1/parties/expedition/').get_data(as_text=True)
+    assert 'join-code-button' in warden and 'secret-code' in warden
+    for user_id in (CO_OWNER, MEMBER):
+        page = clients[user_id].get('/users/user1/parties/expedition/').get_data(as_text=True)
+        assert 'join-code-button' not in page and 'secret-code' not in page
