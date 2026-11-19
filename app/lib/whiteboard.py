@@ -10,6 +10,10 @@ from flask import abort
 from app.lib.map_drawing import EMPTY_DRAWING, validate_drawing
 
 
+# A player's save may not remove every unlocked object from a board this full (#437).
+CLEAR_BOARD_MINIMUM = 10
+
+
 def empty_fog():
     return {'enabled': False, 'base': 'covered', 'strokes': [], 'applied': []}
 
@@ -52,6 +56,11 @@ def protect_locked_elements(before, after):
     for element in after['elements']:
         if element.get('locked') and not previous.get(element['id'], {}).get('locked'):
             abort(400, 'Only the Warden can lock map objects.')
+    # Reset the canvas, or select all and delete, would wipe the board for everyone (#437).
+    # Players can still delete their own drawings, just not everything at once.
+    unlocked = [key for key, element in previous.items() if not element.get('locked')]
+    if len(unlocked) >= CLEAR_BOARD_MINIMUM and not any(key in elements for key in unlocked):
+        abort(400, 'Only the Warden can clear the whole whiteboard.')
 
 
 def integer(data, key, default=None):

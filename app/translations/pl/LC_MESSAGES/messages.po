@@ -23748,3 +23748,8 @@ msgstr "Więcej działań mgły"
 #: app/templates/main/shared_map.html
 msgid "More dungeon actions"
 msgstr "Więcej działań lochu"
+
+#. Whiteboard: a player's refused change is put back (#437)
+#: app/templates/main/shared_map.html
+msgid "Only the Warden can change locked objects or clear the whole whiteboard. Your change was undone."
+msgstr "Tylko Strażnik może zmieniać zablokowane obiekty lub wyczyścić całą tablicę. Twoja zmiana została cofnięta."

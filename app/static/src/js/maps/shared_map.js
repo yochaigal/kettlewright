@@ -17,6 +17,7 @@ import {createBoardRolls} from './board_rolls.js';
 import {createRollOsd} from './board_roll_osd.js';
 import dice3d from '../dice3d.js';
 import {createTokenPortraits} from './token_portraits.js';
+import {createImageCompressor} from './whiteboard_images.js';
 import {editorLocale} from './locale.js';
 
 const config = JSON.parse(document.getElementById('shared-map-config').textContent);
@@ -36,7 +37,7 @@ let fog = {enabled: false, base: 'covered', strokes: [], applied: []}, fogVersio
 let fogQueue = [], fogSaving = false, fogBlocked = false, fogTimer, fogFailed = false;
 let playerPreview = false, theme = 'light', connected = false;
 let socketUpdates = [];
-let waitingForImages = false;
+let waitingForImages = false, refusedBecause = '', csrfRenewals = 0;
 try {theme = localStorage.getItem('darkMode') === 'true' ? 'dark' : 'light';} catch (_) {}
 document.body.classList.toggle('dark-mode', theme === 'dark');
 const layer = createFogLayer({editor, getApi: () => api, warden: config.warden, onOperation: queueFog});
@@ -90,11 +91,16 @@ const portraits = createTokenPortraits({getApi: () => api, updates: actorUpdates
     applying = true;
     try {update();} finally {applying = false;}
   }});
+// Large images are compressed before they are saved (#386); the save waits like it does for a paste.
+const images = createImageCompressor({getApi: () => api, captureUpdate: CaptureUpdateAction.NEVER,
+  onSettled: () => {if (api) onChange(api.getSceneElementsIncludingDeleted(), api.getAppState(), api.getFiles());}});
 
 function showStatus() {
   if (stopped) {tell('denied'); return;}
   tell(saveBlocked ? 'invalid' : saveFailed ? 'failed' : readFailed ? 'offline'
     : pending || saving || importing || waitingForImages ? 'saving' : 'saved');
+  // Say which limit was hit (#386): too many shapes, too many MB, or an unsupported image.
+  if (saveBlocked && refusedBecause) status.textContent += ` (${refusedBecause})`;
   const fogStatus = document.getElementById('fog-status');
   if (fogStatus) fogStatus.textContent = config.messages[fogBlocked ? 'fogInvalid' : fogFailed ? 'fogFailed'
     : fogQueue.length || fogSaving ? 'saving' : ''] || '';
@@ -108,8 +114,10 @@ function renderEditor() {
     renderTopRightUI: () => h('button', {type: 'button', className: 'party-tokens-button',
       disabled: !config.editing || playerPreview || importing, onClick: tokens.open}, config.messages.tokens),
     viewModeEnabled: !config.editing || playerPreview || importing,
+    // Reset the canvas and Open (which replaces the board with a file) are the Warden's (#437).
     UIOptions: {tools: {image: config.editing}, canvasActions: {
-      loadScene: config.editing, saveToActiveFile: false, toggleTheme: true,
+      loadScene: config.editing && config.warden, clearCanvas: config.editing && config.warden,
+      saveToActiveFile: false, toggleTheme: true,
       export: !config.warden && fog.enabled || playerPreview ? false : {saveFileToDisk: true},
       saveAsImage: !((!config.warden && fog.enabled) || playerPreview),
     }},
@@ -127,7 +135,7 @@ function revoke() {
   stopped = true; pending = null; fogQueue = [];
   clearTimeout(timer); clearTimeout(fogTimer); clearInterval(poll);
   actorUpdates.destroy();
-  boardControls.destroy(); boardRolls.destroy(); tokenStats.destroy(); portraits.destroy(); tokens.close(); laser.destroy(); layer.destroy(); dungeon.destroy(); root.unmount(); api = null; tell('denied');
+  boardControls.destroy(); boardRolls.destroy(); tokenStats.destroy(); portraits.destroy(); images.destroy(); tokens.close(); laser.destroy(); layer.destroy(); dungeon.destroy(); root.unmount(); api = null; tell('denied');
 }
 function denied(response) {
   if (response.redirected || [401, 403, 404].includes(response.status)) {revoke(); return true;}
@@ -136,6 +144,20 @@ function denied(response) {
 function post(url, body, timeout = 15000) {
   return fetch(url, {method: 'POST', headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({...body, csrf_token: config.csrfToken}), signal: AbortSignal.timeout(timeout)});
+}
+// What a refused save or fog change means: {reason: 'csrf' | 'invalid' | 'protected', message}.
+async function refusal(response) {
+  try {
+    const data = await response.json();
+    return {reason: String(data?.reason || ''), message: String(data?.message || '')};
+  } catch (_) {return {reason: '', message: ''};}
+}
+// The server refused a player's change to locked objects, or wiping the board (#437): put the
+// board back as the server has it instead of leaving this tab stuck on a change that never saves.
+function putBack() {
+  pending = null; saveBlocked = false; refusedBecause = '';
+  if (api && baseDrawing) applyDrawing(baseDrawing);
+  api?.setToast({message: config.messages.protected});
 }
 function scheduleSave(delay = 400) {
   if (stopped || saveBlocked || waitingForImages) return;
@@ -150,9 +172,19 @@ async function save() {
     const response = await post(config.sceneUrl, {...drawingForSave(drawing, baseDrawing), version, generation: sentGeneration}, 60000);
     if (denied(response)) return;
     if (response.status === 409) {pending ||= drawing; refreshAgain = true; return;}
-    if ([400, 413].includes(response.status)) {pending ||= drawing; saveBlocked = true; return;}
+    if ([400, 413].includes(response.status)) {
+      const {reason, message} = response.status === 400 ? await refusal(response) : {reason: '', message: ''};
+      if (reason === 'csrf') {
+        // The page's token expired: the next refresh brings a new one, then this saves again.
+        // A token that keeps failing falls back to the slower retry of a failed save.
+        pending ||= drawing; refreshAgain = true; saveFailed = ++csrfRenewals > 2; return;
+      }
+      // Edits made meanwhile still contain the refused change, so they go back too.
+      if (reason === 'protected') {putBack(); refreshAgain = true; return;}
+      pending ||= drawing; saveBlocked = true; refusedBecause = message; return;
+    }
     if (!response.ok) throw new Error();
-    version = (await response.json()).version; baseDrawing = drawing; saveFailed = false;
+    version = (await response.json()).version; baseDrawing = drawing; saveFailed = false; csrfRenewals = 0;
     actorUpdates.placed(drawing.elements);
   } catch (_) {pending ||= drawing; saveFailed = true; scheduleSave(2500);}
   finally {
@@ -170,7 +202,8 @@ function onChange(elements, appState, files) {
   if (!api || applying) return;
   const drawing = snapshot(elements, files, appState);
   const imagesWerePending = waitingForImages;
-  waitingForImages = !drawingImagesReady(drawing);
+  waitingForImages = !drawingImagesReady(drawing)
+    || initialized && config.editing && !playerPreview && !importing && images.busy(drawing, baseDrawing);
   if (waitingForImages) {showStatus(); return;}
   if (!initialized) {
     initialized = true; lastDrawing = baseDrawing = drawing;
@@ -264,6 +297,9 @@ async function refresh() {
     const response = await fetch(config.sceneUrl + query, {cache: 'no-store', signal: AbortSignal.timeout(60000)});
     if (denied(response)) return;
     if (!response.ok) throw new Error();
+    // Every read renews the CSRF token; the one in the page expires after an hour (#386, #399, #400).
+    const token = response.headers.get('X-CSRF-Token');
+    if (token) config.csrfToken = token;
     if (response.status === 204) {readFailed = false; return;}
     const data = await response.json();
     if (!stopped) {acceptState(data); readFailed = false;}
@@ -271,7 +307,7 @@ async function refresh() {
   finally {
     loading = false; drainUpdates(); if (version >= 0) showStatus();
     if (refreshAgain) {refreshAgain = false; refresh();}
-    else {if (pending) scheduleSave(readFailed ? 2500 : 180); scheduleFog();}
+    else {if (pending) scheduleSave(readFailed || saveFailed ? 2500 : 180); scheduleFog();}
   }
 }
 function scheduleFog(delay = 180) {
@@ -288,6 +324,10 @@ async function saveFog() {
     const response = await post(config.fogUrl, {operation, generation: sentGeneration, fog_version: fogVersion});
     if (denied(response)) return;
     if (response.status === 409) {await refresh(); return;}
+    if (response.status === 400 && (await refusal(response)).reason === 'csrf') {
+      // Renew the expired token, then send the stroke again.
+      await refresh(); scheduleFog(1000); return;
+    }
     if ([400, 413].includes(response.status)) {fogBlocked = true; return;}
     if (!response.ok) throw new Error();
     const data = await response.json();

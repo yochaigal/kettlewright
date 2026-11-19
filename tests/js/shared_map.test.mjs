@@ -10,14 +10,15 @@ const librarySource = readFileSync(new URL('../../app/static/src/js/maps/librari
   .replace(/^export /gm, '').replace('import.meta.url', 'location.href');
 const mergeSource = readFileSync(new URL('../../app/static/src/js/maps/shared_map_merge.js', import.meta.url), 'utf8').replace(/^export /gm, '');
 const updatesSource = readFileSync(new URL('../../app/static/src/js/maps/whiteboard_updates.js', import.meta.url), 'utf8').replace(/^export /gm, '');
+const imagesSource = readFileSync(new URL('../../app/static/src/js/maps/whiteboard_images.js', import.meta.url), 'utf8').replace(/^export /gm, '');
 const tick = () => new Promise(resolve => setImmediate(resolve));
 const empty = {elements: [], files: {}};
-const response = (body, status = 200) => ({ok: status === 200, status, json: async () => body});
+const response = (body, status = 200, headers = {}) => ({ok: status >= 200 && status < 300, status, json: async () => body, headers: new Headers(headers)});
 
-async function setup(editing = true, failedLibrary = null, language = 'en') {
+async function setup(editing = true, failedLibrary = null, language = 'en', warden = false) {
   const requests = [], libraryRequests = [], handlers = {}, windowHandlers = {}, intervals = [], drafts = [], timers = new Map();
   let projection, nextTimer = 0, props, elements = [], files = {}, appState = {viewBackgroundColor: '#ffffff', theme: 'light'};
-  const config = {editing, partyId: 1, sceneUrl: '/scene', libraryUrl: '/libraries/', messages: Object.fromEntries(
+  const config = {editing, warden, partyId: 1, sceneUrl: '/scene', libraryUrl: '/libraries/', messages: Object.fromEntries(
     ['saved', 'live', 'saving', 'conflict', 'denied', 'invalid', 'failed', 'offline', 'loadFailed', 'draft'].map(key => [key, key]))};
   const stored = new Map(), uiHandlers = {};
   const status = {textContent: ''};
@@ -60,7 +61,7 @@ async function setup(editing = true, failedLibrary = null, language = 'en') {
       return new Promise(resolve => requests.push({options, resolve}));
     },
   });
-  vm.runInContext(librarySource + '\n' + mergeSource + '\n' + updatesSource + '\n' + source, context);
+  vm.runInContext(librarySource + '\n' + mergeSource + '\n' + updatesSource + '\n' + imagesSource + '\n' + source, context);
   requests.shift().resolve(response({version: 0, drawing: empty}));
   await tick();
   return {requests, libraryRequests, handlers, windowHandlers, intervals, drafts, status, stored, uiHandlers, get props() {return props;},
@@ -265,6 +266,15 @@ test('replacement archives unsaved work and never merges it into the new board',
   assert.equal(JSON.parse(state.requests.shift().options.body).generation, 2);
 });
 
+test('only the Warden can reset the canvas or open a file over it (#437)', async () => {
+  const player = await setup();
+  assert.equal(player.props.UIOptions.canvasActions.clearCanvas, false);
+  assert.equal(player.props.UIOptions.canvasActions.loadScene, false);
+  const warden = await setup(true, null, 'en', true);
+  assert.equal(warden.props.UIOptions.canvasActions.clearCanvas, true);
+  assert.equal(warden.props.UIOptions.canvasActions.loadScene, true);
+});
+
 test('fog updates disable player export without writing or clearing the drawing', async () => {
   const state = await setup();
   state.handlers.shared_map_changed({party_id: 1, version: 0, fog_version: 1});
@@ -416,8 +426,47 @@ test('unchanged scene polls send revisions and accept 204 without reading JSON',
   state.handlers.connect();
   const read = state.requests.shift();
   assert.equal(read.options.method, undefined);
-  read.resolve({ok: true, status: 204, json() {assert.fail('204 has no JSON body');}});
+  read.resolve({ok: true, status: 204, headers: new Headers({'X-CSRF-Token': 'renewed'}), json() {assert.fail('204 has no JSON body');}});
   await tick(); await state.timers();
   assert.equal(state.status.textContent, 'saved');
   assert.equal(state.requests.length, 0);
+  // Every read renews the page's CSRF token, which the next save sends (#386, #399).
+  state.change('after-poll'); await state.timers();
+  assert.equal(JSON.parse(state.requests[0].options.body).csrf_token, 'renewed');
+});
+
+test('an expired CSRF token is renewed by a read and the same drawing is saved again (#399)', async () => {
+  const state = await setup();
+  state.change('kept'); await state.timers();
+  const first = state.requests.shift();
+  first.resolve(response({reason: 'csrf', message: 'expired'}, 400));
+  await tick();
+  assert.notEqual(state.status.textContent, 'invalid');
+  const read = state.requests.shift();
+  assert.equal(read.options.method, undefined);
+  read.resolve(response(null, 204, {'X-CSRF-Token': 'fresh'}));
+  await tick(); await state.timers();
+  const retry = JSON.parse(state.requests.shift().options.body);
+  assert.equal(retry.csrf_token, 'fresh');
+  assert.deepEqual(retry.drawing.elements.map(element => element.id), ['kept']);
+});
+
+test('a refused player change puts the board back instead of blocking saves (#437)', async () => {
+  const state = await setup();
+  state.change('wiped'); await state.timers();
+  state.requests.shift().resolve(response({reason: 'protected', message: 'Only the Warden can clear the whole whiteboard.'}, 400));
+  await tick();
+  assert.deepEqual(state.elements(), []);
+  assert.notEqual(state.status.textContent, 'invalid');
+  state.requests.shift().resolve(response(null, 204));
+  await tick(); await state.timers();
+  assert.equal(state.requests.length, 0);
+});
+
+test('other refusals stay visible with the reason the server gave (#386)', async () => {
+  const state = await setup();
+  state.change('huge'); await state.timers();
+  state.requests.shift().resolve(response({reason: 'invalid', message: 'Drawing exceeds 12 MB.'}, 400));
+  await tick();
+  assert.equal(state.status.textContent, 'invalid (Drawing exceeds 12 MB.)');
 });

@@ -84,13 +84,30 @@ test('Warden always has the full roller, with explicit public opt-in and special
   } finally {s.controller.destroy();}
 });
 
+test('the panel and dice-modal public switches are one choice (#399)', async () => {
+  const s = await setup();
+  try {
+    const panel = s.node('board-roll-public'), modal = s.node('warden-public-roll');
+    assert.equal(panel.checked, false); assert.equal(modal.checked, false);
+    panel.checked = true; panel.events.change();
+    assert.equal(modal.checked, true);
+    modal.checked = false; modal.events.change();
+    assert.equal(panel.checked, false);
+    modal.checked = true; modal.events.change();
+    s.select({'actor-companion-7-token': true}); s.select({});
+    assert.equal(panel.checked, true);
+  } finally {s.controller.destroy();}
+});
+
 test('selecting a monster offers damage, saves and its own modal, then returns to Warden controls', async () => {
   const s = await setup();
   try {
     s.node('board-roll-public').checked = true;
     s.select({'actor-companion-7-token': true});
     assert.equal(s.node('board-roll-name').textContent, 'Wolf');
-    assert.equal(s.node('board-roll-public').checked, false);
+    // A public choice stays when another token is selected (#399).
+    assert.equal(s.node('board-roll-public').checked, true);
+    s.node('board-roll-public').checked = false;
     assert.equal(s.button('WIL').disabled, true);
     assert.equal(s.button('d100'), undefined);
     s.button('DMG d6+d6').events.click(); await tick();

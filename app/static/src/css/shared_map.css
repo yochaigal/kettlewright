@@ -51,6 +51,8 @@ body.warden-board .excalidraw .App-toolbar .Stack_horizontal { grid-auto-flow: r
 body.warden-board .excalidraw .App-menu_top .layer-ui__wrapper__top-right { grid-column: 3; }
 body.warden-board .excalidraw .App-toolbar__divider { width: 24px; height: 1px; margin: 4px 0; }
 body.warden-board .excalidraw .HintViewer { display: none; }
+/* The selected shape's properties (opacity, layers, actions) open beside the rail and laser, not under them. */
+body.warden-board .excalidraw .App-menu__left { margin-left: 100px; }
 /* Narrow screens use Excalidraw's mobile layout; keep the Warden tools as a row above the board. */
 @media (max-width: 900px) {
   .board-stage { flex-direction: column; }
@@ -60,6 +62,7 @@ body.warden-board .excalidraw .HintViewer { display: none; }
   body.warden-board .excalidraw .App-toolbar .Stack_horizontal { grid-auto-flow: column; }
   body.warden-board .excalidraw .App-toolbar__divider { width: 1px; height: 24px; margin: 0; }
   body.warden-board .excalidraw .HintViewer { display: revert; }
+  body.warden-board .excalidraw .App-menu__left { margin-left: 0; }
 }
 #fog-status { font-size: 12px; }
 #board-notices:empty { display: none; }

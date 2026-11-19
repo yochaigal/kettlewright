@@ -1,6 +1,6 @@
 # Whiteboard
 
-Whiteboard (formerly Shared Map) is an independent, collaborative Excalidraw canvas per party. The existing `/party/<id>/shared-map` URLs and drawings remain valid. All current party members can draw and edit; only the Warden can load a campaign map or change Fog of War. Leaving the party revokes read/write access.
+Whiteboard (formerly Shared Map) is an independent, collaborative Excalidraw canvas per party. The existing `/party/<id>/shared-map` URLs and drawings remain valid. All current party members can draw and edit; only the Warden can load a campaign map or change Fog of War. Only the Warden has **Reset the canvas** and **Open** in the menu. The server also refuses a player's save that would remove every unlocked object from a board with 10 or more; the player's page then puts the board back and says why (#437). The same happens to a player's change to locked objects. Leaving the party revokes read/write access.
 
 ## Access and deployment
 
@@ -12,9 +12,11 @@ Apply `flask db upgrade` before starting the updated workers (revision `319a01`)
 
 Drawings autosave after approximately 180 ms, with one drawing request at a time. Socket.IO uses the same WebSocket transport as the rest of the application. Confirmed drawing deltas and fog updates are pushed over Socket.IO and applied directly, without a GET per edit. Drawing deltas omit unchanged image data. Replacements send a complete new generation. Clients fetch the authoritative scene on first load, reconnect, missing base revisions, and tab visibility changes. Periodic HTTP refresh runs every 60 seconds with a connected socket and every 3 seconds without one. Updates arriving during a save or load are queued before applying them to the acknowledged base; pending local edits are rebased as usual. A socket outage alone does not report a save failure; HTTP errors and unsaved drawings retain their own state and retries.
 
+Every scene read (including the 204 revision check) returns a fresh CSRF token in `X-CSRF-Token`, and the page uses it for saves, fog, rolls and the laser. The token embedded in the page expires after an hour, and boards stay open for whole sessions (#399, #400). A save or fog change refused with `{"reason": "csrf"}` renews the token with a read and is sent again. Other refusals carry `{"reason": "invalid", "message": …}`, and the status line shows that message, such as too many shapes, more than 12 MB, or an unsupported image (#386).
+
 Concurrent drawing saves use optimistic versions and reapply local changes to the latest acknowledged scene. Different-object changes are combined; the last saved local change wins for the same object. Remote drawings clear local undo history. Camera, selection and theme remain local. Whiteboard reads and updates the site's `localStorage.darkMode` preference, including cross-tab changes.
 
-The five bundled libraries preload without adding items to the canvas: Architecture, Maps, Creatures (99 grouped Maffen tokens), Planning and Clocks. Attribution and MIT licensing remain in `app/static/vendor/excalidraw-libraries/`. Scenes support 2000 elements and 12 MB of validated PNG, JPEG, WebP or GIF data. Frames and background colors are saved; external embeds and links are disabled.
+The five bundled libraries preload without adding items to the canvas: Architecture, Maps, Creatures (99 grouped Maffen tokens), Planning and Clocks. Attribution and MIT licensing remain in `app/static/vendor/excalidraw-libraries/`. Scenes support 2000 elements and 12 MB of validated PNG, JPEG, WebP or GIF data. A new image larger than about 450 KB of PNG or JPEG, and every SVG, is redrawn as WebP (up to 1440 px) before it is saved; the save waits until it is done. A copy that is not smaller is not used, and images already on the board are left alone (#386). Frames and background colors are saved; external embeds and links are disabled.
 
 ## Laser pointer
 
@@ -30,7 +32,7 @@ Current stats appear below each placed party token with known stats: characters,
 
 The Warden can toggle monster stats with the eye beside them. Revealing requires a confirmation dialog; cancellation makes no request. Visibility belongs to the creature, so all copies of its token update together. This toggle preserves existing public notes. The single lock icon toggles background locking without locking party tokens.
 
-**Party**, after the back-to-party arrow, opens the main party page beside the map for both roles, with the normal server-enforced permissions. Its highlight is active only while the panel is open. Theme, Fit map and Load map follow as a group of icons with tooltips. **Roll Dice** uses the shared player/Warden modal; Warden special rolls and the default-private public-roll opt-in are preserved. History remains on the party page.
+**Party**, after the back-to-party arrow, opens the main party page beside the map for both roles, with the normal server-enforced permissions. Its highlight is active only while the panel is open. Theme, Fit map and Load map follow as a group of icons with tooltips. **Roll Dice** uses the shared player/Warden modal; Warden special rolls and the default-private public-roll opt-in are preserved. **Public roll** starts off each time the board opens; once switched on it stays on whichever token is selected, and the roller and dice-modal switches are one setting. A private roll still refreshes the Warden's own roll history (#399). History remains on the party page.
 
 ## Load map
 

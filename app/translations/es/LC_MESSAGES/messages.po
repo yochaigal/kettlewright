@@ -45739,3 +45739,8 @@ msgstr "Más acciones de niebla"
 #: app/templates/main/shared_map.html
 msgid "More dungeon actions"
 msgstr "Más acciones de mazmorra"
+
+#. Whiteboard: a player's refused change is put back (#437)
+#: app/templates/main/shared_map.html
+msgid "Only the Warden can change locked objects or clear the whole whiteboard. Your change was undone."
+msgstr "Solo la Guardiana puede cambiar objetos bloqueados o vaciar toda la pizarra. Tu cambio se ha deshecho."

@@ -36029,3 +36029,8 @@ msgstr "Другие действия с туманом"
 #: app/templates/main/shared_map.html
 msgid "More dungeon actions"
 msgstr "Другие действия с подземельем"
+
+#. Whiteboard: a player's refused change is put back (#437)
+#: app/templates/main/shared_map.html
+msgid "Only the Warden can change locked objects or clear the whole whiteboard. Your change was undone."
+msgstr "Только Смотритель может менять закреплённые объекты или очищать всю доску. Ваше изменение отменено."
