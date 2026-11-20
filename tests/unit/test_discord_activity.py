@@ -78,11 +78,10 @@ def exchange(app, monkeypatch, discord=None, **body):
 def test_discord_launch_opens_the_activity_page(activity):
     app, _, _ = activity
     client = app.test_client()
-    launched = client.get('/?frame_id=f&instance_id=i&platform=desktop&guild_id=10&channel_id=20')
-    assert launched.status_code == 302
-    assert launched.location.startswith('/activity?') and 'frame_id=f' in launched.location
-    page = client.get(launched.location)
+    # Shown at "/" itself: Discord's proxy follows redirects instead of passing them on.
+    page = client.get('/?frame_id=f&instance_id=i&platform=desktop&guild_id=10&channel_id=20')
     assert page.status_code == 200 and page.headers['Cache-Control'] == 'no-store'
+    assert client.get('/activity?frame_id=f&instance_id=i').status_code == 200
     html = page.get_data(as_text=True)
     assert executable_scripts(html) == []
     assert '"clientId": "900"' in html and '/activity/static/src/js/activity/launch.js' in html
@@ -249,23 +248,109 @@ def test_activity_socket_signs_in_with_its_token(activity):
     assert token
 
 
-def test_esm_paths_go_to_the_esm_mapping(activity):
-    app, _, _ = activity
+class EsmSh:
+    """Stands in for esm.sh: every module path has a small module, unless listed otherwise."""
+    def __init__(self, answers=None):
+        self.answers, self.calls = answers or {}, []
+
+    def get(self, url, timeout=None, stream=None):
+        self.calls.append(url)
+        status, content_type, body, final = self.answers.get(url, (200, 'application/javascript; charset=utf-8',
+                                                                     b'export default 1;', url))
+        return self.Response(status, content_type, body, final)
+
+    class Response:
+        def __init__(self, status, content_type, body, url):
+            self.status_code, self.headers, self.body, self.url = status, {'Content-Type': content_type}, body, url
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+        def iter_content(self, size):
+            for start in range(0, len(self.body), size):
+                yield self.body[start:start + size]
+
+
+@pytest.fixture
+def esm_sh(activity, monkeypatch, tmp_path):
+    app = activity[0]
+    fake = EsmSh()
+    monkeypatch.setattr('app.lib.activity.requests.get', fake.get)
+    monkeypatch.setitem(app.config, 'ESM_CACHE_FOLDER', str(tmp_path / 'esm'))
+    return app, fake
+
+
+def test_esm_paths_are_served_from_esm_sh_without_a_redirect(esm_sh):
+    app, fake = esm_sh
     client = app.test_client()
-    for path, target in [
-        ('/react@18.3.1', '/esm/react@18.3.1'),
-        ('/react-dom@18.3.1/X-ZHJl/es2022/client.mjs', '/esm/react-dom@18.3.1/X-ZHJl/es2022/client.mjs'),
-        ('/scheduler@%5E0.23.2?target=es2022', '/esm/scheduler@%5E0.23.2?target=es2022'),
+    for path, upstream in [
+        ('/react@18.3.1', 'https://esm.sh/react@18.3.1'),
+        ('/react-dom@18.3.1/X-ZHJl/es2022/client.mjs', 'https://esm.sh/react-dom@18.3.1/X-ZHJl/es2022/client.mjs'),
+        ('/scheduler@%5E0.23.2?target=es2022', 'https://esm.sh/scheduler@%5E0.23.2?target=es2022'),
         ('/@excalidraw/excalidraw@0.18.0/dist/prod/index.js?deps=react@18.3.1',
-         '/esm/@excalidraw/excalidraw@0.18.0/dist/prod/index.js?deps=react@18.3.1'),
-        ('/node/process.mjs', '/esm/node/process.mjs'),
+         'https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/index.js?deps=react@18.3.1'),
+        ('/node/process.mjs', 'https://esm.sh/node/process.mjs'),
     ]:
         response = client.get(path)
-        assert response.status_code == 301, path
-        assert response.location == target
+        assert response.status_code == 200, path
+        assert response.get_data() == b'export default 1;'
+        assert response.headers['Content-Type'] == 'application/javascript; charset=utf-8'
         assert 'immutable' in response.headers['Cache-Control']
+        assert fake.calls[-1] == upstream
+    # Kept on disk: esm.sh is asked once per module.
+    calls = len(fake.calls)
+    assert client.get('/react@18.3.1').get_data() == b'export default 1;'
+    assert len(fake.calls) == calls
     assert client.get('/node/anything').status_code == 404
     assert client.get('/static/src/css/shared_map.css').status_code == 200
+
+
+def test_esm_failures_are_not_kept(esm_sh):
+    app, fake = esm_sh
+    client = app.test_client()
+    fake.answers.update({
+        'https://esm.sh/missing@1.0.0': (404, 'text/plain', b'not found', 'https://esm.sh/missing@1.0.0'),
+        'https://esm.sh/broken@1.0.0': (500, 'text/plain', b'error', 'https://esm.sh/broken@1.0.0'),
+        'https://esm.sh/page@1.0.0': (200, 'text/html', b'<html>', 'https://esm.sh/page@1.0.0'),
+        'https://esm.sh/away@1.0.0': (200, 'application/javascript', b'x', 'https://elsewhere.example/away'),
+    })
+    assert client.get('/missing@1.0.0').status_code == 404
+    for path in ('/broken@1.0.0', '/page@1.0.0', '/away@1.0.0'):
+        assert client.get(path).status_code == 502, path
+    calls = len(fake.calls)
+    client.get('/broken@1.0.0')
+    assert len(fake.calls) == calls + 1
+
+
+IMPORTS = re.compile(r'''(?:\bfrom|\bimport)\s*\(?\s*['"]([^'"]+)['"]''')
+ASSETS = re.compile(r'''<(?:script|link)\b[^>]*?\b(?:src|href)="([^"]+)"''')
+
+
+def test_nothing_the_activity_loads_is_a_redirect(esm_sh):
+    """Discord's proxy follows redirects against Kettlewright, so every page, module and asset must answer 200.
+    /esm/… and /cdnjs/… are Discord's own URL mappings and never reach Kettlewright."""
+    from urllib.parse import urljoin
+    app, _ = esm_sh
+    client = app.test_client()
+    launch = client.get('/?frame_id=f&instance_id=i&platform=desktop&guild_id=10&channel_id=20')
+    board = client.get(f"/activity/board/1?ticket={issue(app, 'ticket')}")
+    pending = [urljoin('/?frame_id=f', url) for page in (launch, board) for url in ASSETS.findall(page.get_data(as_text=True))]
+    seen = set()
+    while pending:
+        url = pending.pop()
+        if url in seen or url.startswith(('/esm/', '/cdnjs/')):
+            continue
+        seen.add(url)
+        response = client.get(url)
+        assert response.status_code == 200, (url, response.status_code, response.location)
+        if 'javascript' in response.headers['Content-Type']:
+            pending += [urljoin(url, spec) for spec in IMPORTS.findall(response.get_data(as_text=True))
+                        if spec.startswith(('/', './', '../'))]
+    assert '/activity/static/vendor/discord-embedded-app-sdk/embedded-app-sdk.js' in seen
+    assert {path for path in seen if path.startswith('/react')}, seen
 
 
 def test_activity_modules_import_esm_paths_instead_of_the_import_map(activity):

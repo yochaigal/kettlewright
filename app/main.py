@@ -48,9 +48,11 @@ with open(scars_file_path, 'r') as file:
 
 @main.route('/')
 def index():
-    # Discord opens an Activity at "/" with its launch parameters (#423).
+    # Discord opens an Activity at "/" with its launch parameters (#423). Shown here, not
+    # redirected: Discord's proxy follows redirects itself, so the page stays at "/" anyway.
     if request.args.get('frame_id') and request.args.get('instance_id'):
-        return redirect(url_for('activity.launch', **request.args.to_dict()))
+        from app.blueprints.activity import launch
+        return launch()
     if current_user.is_authenticated:
         return redirect(url_for('main.characters', username=current_user.username))
     else:

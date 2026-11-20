@@ -10,10 +10,19 @@ signs in with the Embedded App SDK and then carries a signed token on every requ
 
 Tokens only work for the whiteboard of their party, never for the rest of the site, and
 stop working when the player disconnects Discord or relinks another Discord account.
+
+Discord's proxy follows redirects itself, against Kettlewright, instead of handing them to the
+client. So nothing the Activity loads may be a redirect: esm.sh modules are served from here.
 """
+import hashlib
+import os
 import re
 import secrets
+import tempfile
+from pathlib import Path
+from urllib.parse import quote
 
+import requests
 from flask import current_app, g, request, session
 from itsdangerous import BadSignature, URLSafeTimedSerializer
 
@@ -33,9 +42,16 @@ BOARD_ENDPOINTS = {
 BOARD_PAGE = 'activity.board'
 
 # esm.sh modules import each other by root-relative paths ("/react@18.3.1/…"). Behind the
-# Activity proxy those reach Kettlewright, which sends them on to Discord's /esm mapping.
+# Activity proxy those reach Kettlewright, which serves them from esm.sh (esm_module).
 # esm.sh also serves Node polyfills such as /node/process.mjs.
 ESM_PATH = re.compile(r'^((@[a-z0-9][\w.-]*/)?[a-z0-9][\w.-]*@[^/]+(/|$)|node/[\w.-]+\.mjs$)', re.I)
+ESM_ORIGIN = 'https://esm.sh'
+ESM_TYPES = {'application/javascript', 'text/javascript', 'text/css', 'application/json', 'application/wasm'}
+MAX_ESM_BYTES = 16 * 1024 * 1024
+
+
+class EsmUnavailable(Exception):
+    """esm.sh could not be reached or sent something that is not a module."""
 
 # The whiteboard's bare imports, as root-relative esm.sh paths. `deps` pins React so that
 # Excalidraw and the board share one React and one ReactDOM, as the import map does on the site.
@@ -107,3 +123,54 @@ def load_request_user(req):
 def rewrite_imports(source):
     """Point the whiteboard's bare imports at esm.sh paths: Discord's CSP allows no inline import map."""
     return _BARE.sub(lambda m: m.group(1) + m.group(2) + ESM_IMPORTS[m.group(3)] + m.group(2), source)
+
+
+def esm_directory():
+    return Path(current_app.config.get('ESM_CACHE_FOLDER', Path(current_app.instance_path) / 'esm'))
+
+
+def esm_module(path, query=''):
+    """The esm.sh module at this path, as (body, content type), or None if esm.sh has none.
+
+    The Activity cannot be redirected to Discord's /esm mapping (see above), so Kettlewright
+    fetches the module once and keeps it on disk. The paths are versioned and esm.sh serves
+    them as immutable, so a kept module stays valid. Raises EsmUnavailable when esm.sh fails
+    or sends something else.
+    """
+    url = ESM_ORIGIN + '/' + quote(path, safe='/@.,=-_~+') + ('?' + query if query else '')
+    cached = esm_directory() / hashlib.sha256(url.encode()).hexdigest()
+    try:
+        content_type, _, body = cached.read_bytes().partition(b'\n')
+        return body, content_type.decode()
+    except OSError:
+        pass
+    try:
+        # Redirects esm.sh makes are followed here, on the server, but must stay on esm.sh.
+        with requests.get(url, timeout=10, stream=True) as response:
+            if response.status_code == 404:
+                return None
+            content_type = response.headers.get('Content-Type', '')
+            if (response.status_code != 200 or not response.url.startswith(ESM_ORIGIN + '/')
+                    or content_type.split(';')[0].strip().lower() not in ESM_TYPES):
+                raise EsmUnavailable(f'esm.sh answered {response.status_code} {content_type!r}')
+            body = bytearray()
+            for chunk in response.iter_content(65536):
+                body += chunk
+                if len(body) > MAX_ESM_BYTES:
+                    raise EsmUnavailable('esm.sh module too large')
+    except requests.RequestException as error:
+        raise EsmUnavailable(str(error)) from error
+    body = bytes(body)
+    temporary = None
+    try:
+        cached.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile(dir=cached.parent, delete=False) as file:
+            temporary = file.name
+            file.write(content_type.encode() + b'\n' + body)
+        os.replace(temporary, cached)
+    except OSError:
+        # Still serve it; the next request fetches it again.
+        current_app.logger.warning('Unable to cache esm.sh module %s', path, exc_info=True)
+        if temporary:
+            Path(temporary).unlink(missing_ok=True)
+    return body, content_type

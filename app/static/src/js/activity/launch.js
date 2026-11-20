@@ -1,7 +1,7 @@
 // The first page Discord shows in the Activity (#423): sign in with the Embedded App SDK,
 // then show the whiteboard of the party bound to this channel (/kw bind) in a frame.
-// The SDK comes from esm.sh through Discord's /esm URL mapping (app/blueprints/activity.py).
-import {DiscordSDK} from '/@discord/embedded-app-sdk@2.5.0';
+// The SDK is served by Kettlewright (static/vendor): Discord's proxy cannot be redirected to its /esm mapping.
+import {DiscordSDK} from '/activity/static/vendor/discord-embedded-app-sdk/embedded-app-sdk.js';
 
 // `show(message, link)` reports a problem; `frame(url)` shows the board.
 export async function openBoard({sdk, config, post, show, frame}) {
