@@ -1,9 +1,8 @@
 """The party whiteboard as a Discord Activity (#423). See app/lib/activity.py and docs/discord.md."""
 import os
-from urllib.parse import quote
 
 import requests
-from flask import (Blueprint, abort, current_app, g, jsonify, make_response, redirect, render_template,
+from flask import (Blueprint, abort, current_app, g, jsonify, make_response, render_template,
                    request, send_from_directory, url_for)
 from flask_babel import _
 from flask_login import login_required
@@ -37,7 +36,7 @@ def _refuse(reason, message, status=403, link=None):
 
 @activity.get('/activity')
 def launch():
-    """Discord opens the Activity at "/"; main.index sends its launch parameters here."""
+    """The page that signs in. Discord opens the Activity at "/", where main.index shows this too."""
     from app.blueprints.discord import enabled
     if not enabled():
         abort(404)
@@ -113,17 +112,30 @@ def static(filename):
         response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
         response.headers['Cache-Control'] = 'no-cache'
         return response
-    return send_from_directory(current_app.static_folder, filename)
+    response = send_from_directory(current_app.static_folder, filename)
+    if filename.endswith('.js'):
+        # Browsers refuse a module without a JavaScript type, and not every server's MIME table knows .js.
+        response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
+    return response
 
 
 @activity.get('/<esm:path>')
-def esm_redirect(path):
-    """Send an esm.sh module path to Discord's /esm mapping. These paths are versioned, so it is cached."""
+def esm(path):
+    """An esm.sh module the board imports by a root-relative path, served from Kettlewright.
+
+    Not a redirect to Discord's /esm mapping: Discord's proxy follows redirects itself, against
+    Kettlewright, where /esm/… does not exist. These paths are versioned, so it is cached.
+    """
     if not tokens.ESM_PATH.match(path):
         abort(404)
-    target = '/esm/' + quote(path, safe='/@.,=-_~+')
-    if request.query_string:
-        target += '?' + request.query_string.decode('latin-1')
-    response = redirect(target, 301)
+    try:
+        module = tokens.esm_module(path, request.query_string.decode('latin-1'))
+    except tokens.EsmUnavailable:
+        current_app.logger.warning('esm.sh module unavailable: %s', path, exc_info=True)
+        abort(502)
+    if module is None:
+        abort(404)
+    response = make_response(module[0])
+    response.headers['Content-Type'] = module[1]
     response.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
     return response
