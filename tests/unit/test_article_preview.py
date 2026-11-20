@@ -30,21 +30,21 @@ def test_preview_uses_the_original_for_owner_and_party(setup):
     assert client.get(f'/party/1/materials/{entry_id}/preview').status_code in (403, 404)
 
 
-def test_preview_map_projects_only_published_drawing_and_markers(setup):
+def test_preview_map_projects_current_drawing_and_only_revealed_markers(setup):
     app, client = setup
     map_id, graph = create_map(client)
     entry_id = map_entry_id(app, map_id)
     with app.app_context():
         pointcrawl = db.session.get(PointcrawlMap, map_id)
-        pointcrawl.drawing = drawing('Published drawing')
+        pointcrawl.drawing = drawing('First drawing')
         db.session.commit()
     private = preview_graph(client.get(f'/materials/{entry_id}/preview'))
     assert len(private['nodes']) == 2
     assert private['edges']
-    assert reveal(client, entry_id, publish_drawing='1', map_version=private['version']).status_code == 302
+    assert reveal(client, entry_id).status_code == 302
     assert reveal(client, graph['nodes'][0]['entry_id']).status_code == 302
     with app.app_context():
-        db.session.get(PointcrawlMap, map_id).drawing = drawing('New private drawing')
+        db.session.get(PointcrawlMap, map_id).drawing = drawing('Redrawn')
         db.session.commit()
     login(client, 2)
     response = client.get(f'/party/1/materials/{entry_id}/preview')
@@ -52,7 +52,7 @@ def test_preview_map_projects_only_published_drawing_and_markers(setup):
     assert len(public['nodes']) == 1
     assert public['nodes'][0]['title'] == 'SECRET ROOM 0'  # The revealed point, as it is.
     assert public['edges'] == []
-    assert public['drawing']['elements'][0]['text'] == 'Published drawing'  # Drawings are shown as published.
+    assert public['drawing']['elements'][0]['text'] == 'Redrawn'  # The map's current drawing.
     text = response.get_data(as_text=True)
-    assert 'New private drawing' not in text
+    assert 'First drawing' not in text
     assert 'SECRET ROOM 1' not in text and 'SECRET TRAP 1' not in text  # The point that was not revealed.

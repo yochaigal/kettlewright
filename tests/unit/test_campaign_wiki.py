@@ -92,13 +92,21 @@ def test_empty_article_offers_to_edit(setup):
     assert 'On this page' not in page and 'Linked from' not in page
 
 
-def test_map_article_shows_its_map_read_only(setup):
+def test_map_page_shows_its_map_read_only_apart_from_articles(setup):
     app, client = setup
     map_id, _graph = create_map(client)
     page = wiki(client, map_entry_id(app, map_id)).get_data(as_text=True)
     assert 'x-data="pointcrawl"' in page and 'data-editing="false"' in page
     assert 'data-save-url' not in page
-    assert 'In this article' in page and 'SECRET ROOM 0' in page  # The map's points are its sub-articles.
+    assert 'Reveal map' in page and f'href="/maps/{map_id}/edit"' in page and 'SECRET ROOM 0' in page
+    sidebar = page[page.index('id="wiki-sidebar"'):page.index('</aside>')]
+    # Maps have their own section in the sidebar; the article tree holds the points (articles), not the map.
+    maps = sidebar[sidebar.index('class="wiki-maps"'):sidebar.index('class="wiki-articles-title"')]
+    assert 'SECRET MAP' in maps
+    assert 'SECRET MAP' not in sidebar[sidebar.index('class="wiki-tree"'):]
+    home = wiki(client).get_data(as_text=True)
+    main = home[home.index('class="wiki-main"'):]
+    assert 'id="wiki-home-maps"' in main and main.index('id="wiki-home-maps"') < main.index('SECRET ROOM 0')
 
 
 def test_wiki_is_private_to_the_owner(setup):
@@ -123,8 +131,9 @@ def test_article_must_belong_to_the_campaign(setup):
 def test_campaign_lobby_renames_with_the_pencil_and_has_no_edit_view(setup):
     app, client = setup
     home = client.get('/campaigns/1/').get_data(as_text=True)
-    header = home[home.index('class="wiki-header"'):home.index('</header>', home.index('class="wiki-header"'))]
+    header = home[home.index('class="wiki-header lobby-header"'):home.index('</header>', home.index('class="wiki-header lobby-header"'))]
     assert 'campaign-rename' in header and '>Edit<' not in header and 'Export' not in header and '/tools/' not in header
+    assert 'wiki-badge' not in header  # Just the name, centred.
     dialog = home[home.index('id="campaign-settings-dialog"'):home.index('</dialog>', home.index('id="campaign-settings-dialog"'))]
     assert 'action="/campaigns/1/"' in dialog and 'name="name"' in dialog and 'action="/campaigns/1/delete"' in dialog
     assert 'name="image"' not in dialog  # Only a name.
@@ -273,7 +282,7 @@ def test_dialog_falls_back_to_the_generator_with_its_options(setup):
     assert '/materials/generate?' in location and 'kind=forest' in location and f'module_id={module.id}' in location
     assert 'children=1' in location and 'forest_pois=40' in location and 'pois=8' in location
     page = client.get(location).get_data(as_text=True)
-    assert f'<option value="{module.id}" selected>Wild lands</option>' in page
+    assert f'<input type="hidden" name="module_id" value="{module.id}">' in page and 'data-kind="forest"' in page
 
 
 def test_wiki_undoes_global_aside_and_article_styles():
@@ -424,16 +433,18 @@ def test_party_article_page_has_no_party_version_editing(setup):
     assert f'/materials/{entry}/reveal' not in page
 
 
-def test_party_map_stays_outside_the_refreshed_content(setup):
+def test_party_opens_maps_on_the_party_map_page(setup):
+    """A party never reads a map as a wiki article: the wiki lists it under Maps and opens the party map page."""
     app, client = setup
     map_id, _graph = create_map(client)
     entry = map_entry_id(app, map_id)
     assert reveal(client, entry).status_code == 302
     login(client, 2)
-    page = client.get(f'/party/1/materials/{entry}').get_data(as_text=True)
-    results = page.index('id="party-content-results"')
-    content = page[results:page.index('x-data="pointcrawl"')]
-    assert content.count('<div') <= content.count('</div>')  # The map panel is not inside the refreshed container.
+    assert client.get(f'/party/1/materials/{entry}').location == f'/party/1/map/{map_id}/'
+    home = client.get('/party/1/wiki/').get_data(as_text=True)
+    sidebar = home[home.index('id="wiki-sidebar"'):home.index('</aside>')]
+    assert f'href="/party/1/map/{map_id}/"' in sidebar[:sidebar.index('class="wiki-articles-title"')]
+    assert f'href="/party/1/map/{map_id}/"' in home[home.index('id="wiki-home-maps"'):]
 
 
 def test_party_wiki_home_has_a_cover_from_what_the_party_was_shown(setup):
@@ -458,8 +469,9 @@ def test_campaign_opens_on_its_lobby_without_wiki_parts(setup):
     assert 'href="/campaigns/1/"' in client.get('/campaigns/').get_data(as_text=True)  # Cards open the lobby.
     lobby = client.get('/campaigns/1/').get_data(as_text=True)
     for part in ('campaign-parties', 'campaign-modules', 'id="campaign-settings-dialog"', 'id="marketplace-dialog"',
-                 'id="backgrounds-dialog"', 'Read everything as wiki', 'href="/campaigns/1/wiki/"'):
+                 'Read everything as wiki', 'href="/campaigns/1/wiki/"'):
         assert part in lobby
+    assert 'id="backgrounds-dialog"' not in lobby  # Backgrounds are set per party, on the party page.
     # No wiki: no article tree, groups or front page text.
     for part in ('wiki-sidebar', 'wiki-tree', '<h2>Factions', 'Bellmakers'):
         assert part not in lobby

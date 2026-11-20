@@ -1,8 +1,7 @@
 ---
 layout: default
 title: The Ashen Marches
-type: Realm
-parent: My Campaign
+type: Map
+map_type: realm
 map: maps/world.excalidraw
 ---
-Alderbridge is north of the ruined abbey.

@@ -117,3 +117,63 @@ def test_party_versions_become_party_notes(tmp_path, monkeypatch):
         note = run("SELECT owner_id, campaign_id, module_id FROM content_entries WHERE id = 3").one()
         assert note == (1, None, None)
         assert 'Secret' not in str(run('SELECT title, body FROM party_presentations').all())
+
+
+def test_maps_apart_drops_snapshots_and_empty_point_canvases(tmp_path, monkeypatch):
+    """504a01: revealed maps show their current drawing; empty canvases on points and sub-articles go."""
+    monkeypatch.setenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///' + str(tmp_path / 'maps.sqlite'))
+    from app import create_app
+    app = create_app()
+    with app.app_context():
+        upgrade(revision='503a01')
+        run = lambda sql: db.session.execute(text(sql))
+        run("INSERT INTO users (id, username) VALUES (1, 'warden')")
+        run("INSERT INTO campaigns (id, owner_id, name, version, official_backgrounds) VALUES (1, 1, 'C', 1, 1)")
+        run("INSERT INTO parties (id, owner, name, version, campaign_id) VALUES (1, 1, 'P', 0, 1)")
+        entry = ("INSERT INTO content_entries (id, owner_id, campaign_id, category, title, body, path_type, version, "
+                 "source_path, reference_key, \"references\", is_heart, parent_id) VALUES ")
+        run(entry + "(1, 1, 1, 'realm', 'Realm', '', 'standard', 1, '', 'k1', '{}', 0, NULL), "
+                    "(2, 1, 1, 'settlement', 'Town on the map', '', 'standard', 1, '', 'k2', '{}', 0, NULL), "
+                    "(3, 1, 1, 'terrain', 'Sub-article', '', 'standard', 1, '', 'k3', '{}', 0, 1), "
+                    "(4, 1, 1, 'topography', 'Blank map I made', '', 'standard', 1, '', 'k4', '{}', 0, NULL), "
+                    "(5, 1, 1, 'dungeon', 'Drawn dungeon', '', 'standard', 1, '', 'k5', '{}', 0, 1)")
+        run("INSERT INTO pointcrawl_maps (id, entry_id, kind, drawing, version) VALUES "
+            "(1, 1, 'realm', NULL, 1), (2, 2, 'freeform', '{\"elements\": [], \"files\": {}}', 1), "
+            "(3, 3, 'freeform', NULL, 1), (4, 4, 'freeform', NULL, 1), "
+            "(5, 5, 'dungeon', '{\"elements\": [{\"id\": \"a\"}], \"files\": {}}', 1)")
+        run("INSERT INTO map_nodes (id, map_id, entry_id, number, x, y, nested_map_id) VALUES (1, 1, 2, 1, 0, 0, 2)")
+        run("INSERT INTO party_presentations (id, entry_id, party_id, title, body, path_type, published, version, "
+            "\"references\", drawing) VALUES (1, 1, 1, 'Realm', '', 'standard', 1, 1, '{}', '{\"elements\": []}')")
+        db.session.commit()
+
+        upgrade(revision='504a01')
+        kept = sorted(row[0] for row in run('SELECT entry_id FROM pointcrawl_maps'))
+        assert kept == [1, 4, 5]  # The realm, a map someone made, and a drawn one.
+        assert run('SELECT nested_map_id FROM map_nodes WHERE id = 1').scalar() is None
+        assert 'drawing' not in {c['name'] for c in inspect(db.engine).get_columns('party_presentations')}
+        db.session.commit()
+
+        downgrade(revision='503a01')
+        assert 'drawing' in {c['name'] for c in inspect(db.engine).get_columns('party_presentations')}
+
+
+def test_backgrounds_setting_moves_to_each_party(tmp_path, monkeypatch):
+    """505a01: a campaign's "official backgrounds" setting becomes each of its parties' setting."""
+    monkeypatch.setenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///' + str(tmp_path / 'backgrounds.sqlite'))
+    from app import create_app
+    app = create_app()
+    with app.app_context():
+        upgrade(revision='504a01')
+        run = lambda sql: db.session.execute(text(sql))
+        run("INSERT INTO users (id, username) VALUES (1, 'warden')")
+        run("INSERT INTO campaigns (id, owner_id, name, version, official_backgrounds) VALUES "
+            "(1, 1, 'Hidden', 1, 0), (2, 1, 'Shown', 1, 1)")
+        run("INSERT INTO parties (id, owner, name, version, campaign_id) VALUES "
+            "(1, 1, 'A', 0, 1), (2, 1, 'B', 0, 1), (3, 1, 'C', 0, 2), (4, 1, 'Loose', 0, NULL)")
+        db.session.commit()
+        upgrade(revision='505a01')
+        assert dict(run('SELECT name, official_backgrounds FROM parties').all()) == {'A': 0, 'B': 0, 'C': 1, 'Loose': 1}
+        assert 'official_backgrounds' not in {c['name'] for c in inspect(db.engine).get_columns('campaigns')}
+        db.session.commit()
+        downgrade(revision='504a01')
+        assert dict(run('SELECT name, official_backgrounds FROM campaigns').all()) == {'Hidden': 0, 'Shown': 1}

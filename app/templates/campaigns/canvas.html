@@ -1,68 +1,28 @@
 {% from 'campaigns/forms.html' import rich_editor with context %}
-<ul class="map-legend" aria-label="{{ _('Drawing legend') }}" x-show="showLocations">
-<li><span class="map-key terrain"></span>{{ _('Terrain') }}</li>
-<li><span class="map-key landmark"></span>{{ _('Landmark') }}</li>
-<li><span class="map-key water"></span>{{ _('Water') }}</li>
-<li><span class="map-key waypoint"></span>{{ _('Waypoint') }}</li>
-<li><span class="map-key settlement"></span>{{ _('Settlement') }}</li>
-<li><span class="map-key forest"></span>{{ _('Forest') }}</li>
-<li><span class="map-key dungeon"></span>{{ _('Dungeon') }}</li>
-<li><span class="map-key lair"></span>{{ _('Lair') }}</li>
-<li><span class="map-key curiosity"></span>{{ _('Curiosity') }}</li>
-</ul>
-<div class="campaign-actions">
-<button type="button" @click="fit()" :disabled="!canvasReady">{{ _('Center drawing') }}</button>
-<button type="button" @click="loadCanvas()" x-show="!canvasReady">{{ _('Reload drawing editor') }}</button>
-{% if editing %}
-<button type="button" @click="selectTool()" :disabled="!canvasReady">{{ _('Select / resize') }}</button>
-{% endif %}
+{# A map: its drawing and its pins. Each pin has a note (a map note), written here and saved with the map. #}
+{% if editing and not sketch %}
+<div class="campaign-actions map-pin-actions">
+<button type="button" class="kw-add" :class="{'is-active': picking}" @click="startPin()" :disabled="!canvasReady">
+  <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+  <span x-text="picking ? {{ _('Cancel pin')|tojson|forceescape }} : {{ _('Add pin')|tojson|forceescape }}">{{ _('Add pin') }}</span></button>
+<button type="button" @click="loadCanvas()" x-show="!canvasReady" x-cloak>{{ _('Reload drawing editor') }}</button>
 </div>
+{% else %}
+<div class="campaign-actions" x-show="!canvasReady" x-cloak><button type="button" @click="loadCanvas()">{{ _('Reload drawing editor') }}</button></div>
+{% endif %}
 <iframe class="pointcrawl-canvas" x-ref="canvas"
  data-src="{{ url_for('static', filename='src/js/maps/editor.html') }}"
  data-library-error="{{ _('Some map libraries could not load. Reload the editor to retry.') }}"
  title="{{ _('Drawing editor') }}"></iframe>
-<div x-show="showLocations">
-{% if editing %}<p>{{ _('Select terrain to move or resize it. Press Ctrl/Cmd+Enter to edit its border points. Manually edited terrain keeps its shape when landmarks move. Select a Water article below to draw its watercourse.') }}</p>
-{% else %}<p>{{ _('Click a marker or path to read its details below. Pan and zoom to explore the drawing.') }}</p>{% endif %}
-<p>{{ _('Solid: standard · Dashed: hidden · Dotted: conditional') }}</p>
-</div>
-{% if not editing %}<p x-show="!showLocations">{{ _('Pan and zoom to explore the drawing.') }}</p>{% endif %}
-{% if editing %}<p>{% if party %}{{ _('This drawing will be shown to the party when you save.') }}{% else %}{{ _('Drawing, text and images remain private until you publish the saved drawing.') }}{% endif %} {{ _('Use PNG, JPEG, WebP or GIF images; drawings may be up to 12 MB.') }}</p>{% endif %}
-<div class="map-editor-grid" x-show="showLocations">
-<section><h2>{{ _('Articles') }}</h2>
-{% for group, title in [('pois', _('Points of Interest')), ('topography', _('Topography')), ('other', _('Other articles'))] %}
-<div class="map-article-group" x-show="nodesForGroup('{{ group }}').length"><h3>{{ title }}</h3>
-<ol><template x-for="item in nodesForGroup('{{ group }}')" :key="item.id"><li>
+{% if not sketch %}
+<section class="map-pins" aria-labelledby="map-pins-title">
+<h2 id="map-pins-title"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ _('Pins') }} <small x-text="graph.nodes.length"></small></h2>
+<p class="wiki-empty" x-show="!graph.nodes.length">{% if editing %}{{ _('No pins yet. Add pin, then click the map where it goes.') }}{% else %}{{ _('No pins on this map.') }}{% endif %}</p>
+<ol class="map-pin-list"><template x-for="item in graph.nodes" :key="item.id"><li>
 <details :data-map-node="String(item.id)" :open="selected===String(item.id)" :class="{'map-selected':selected===String(item.id)}" @toggle="if($el.open){selectedEdge='';selected=String(item.id)}else if(selected===String(item.id)){selected=''}">
-<summary><span x-text="item.number+'. '"></span><span x-html="$markdownInline(item.title)"></span></summary>
+<summary><span x-html="$markdownInline(item.title)"></span></summary>
 {% include 'campaigns/map_article.html' %}
 </details>
 </li></template></ol>
-</div>
-{% endfor %}
-{% if editing %}
-{% if locations %}<label>{{ _('Existing article') }}<select x-model="locationId" x-ref="locationPicker"><option value="">{{ _('Create a new article') }}</option>{% for location in locations %}<option value="{{ location.id }}" data-category="{{ location.category }}" data-nested-map-id="{{ location.pointcrawl.id if location.pointcrawl else '' }}" data-has-contents="{{ 'true' if location.children or (location.pointcrawl and (location.pointcrawl.nodes or location.pointcrawl.edges or (location.pointcrawl.drawing or {}).get('elements'))) else 'false' }}">{{ (location.title or _('Untitled private original'))|markdown_inline }}</option>{% endfor %}</select></label>{% endif %}
-<button type="button" @click="addNode()">{{ _('Add article to drawing') }}</button>
-{% endif %}
-
 </section>
-<section><h2>{{ _('Paths') }}</h2>
-{% if editing %}
-<label>{{ _('From') }}<select x-model="edgeSource"><option value="">{{ _('Choose article') }}</option><template x-for="item in graph.nodes" :key="item.id"><option :value="item.id" x-text="item.number+'. '+item.title"></option></template></select></label>
-<label>{{ _('To') }}<select x-model="edgeTarget"><option value="">{{ _('Choose article') }}</option><template x-for="item in graph.nodes" :key="item.id"><option :value="item.id" x-text="item.number+'. '+item.title"></option></template></select></label>
-<button type="button" @click="addEdge()" :disabled="generating || saving">{{ _('Connect articles') }}</button>
 {% endif %}
-<template x-for="edge in graph.edges" :key="edge.id"><details :data-map-edge="String(edge.id)" :open="selectedEdge===String(edge.id)" :class="{'map-selected':selectedEdge===String(edge.id)}" @toggle="if($el.open){selectedEdge=String(edge.id);selected='';syncCanvas()}">
-<summary><span x-html="$markdownInline(edge.title)"></span> <span x-text="'('+node(edge.source)?.number+' – '+node(edge.target)?.number+')'"></span></summary>
-{% if editing %}
-<template x-if="selectedEdge===String(edge.id)"><div @input="edge.content_changed=true">
-<label>{{ _('Title') }}<input type="text" maxlength="200" x-model="edge.title"></label>
-<label>{{ _('Path type') }}<select x-model="edge.path_type">{% for kind in path_types %}<option value="{{ kind }}">{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>
-{{ rich_editor(_('Description and conditions'), name=None, model='edge.body') }}
-</div></template>
-<template x-if="edge.entry_id"><div><div class="campaign-actions"><a :href="'/materials/'+edge.entry_id+'/edit'">{{ _('Edit article') }}</a><a :href="'/materials/'+edge.entry_id+'/reveal'">{{ _('Reveal to party') }}</a></div></div></template>
-<button type="button" @click="removeEdge(edge.id)">{{ _('Remove path') }}</button>
-{% else %}<div class="rich-content" x-html="$richHTML(edge.body, edge.references)"></div>{% endif %}
-</details></template>
-</section>
-</div>

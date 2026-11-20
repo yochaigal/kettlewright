@@ -1,0 +1,34 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token, page_header, modal, modal_footer, reveal_dialog with context %}
+{# A map: its title, its drawing and its pins (each with a map note). No types, no hierarchy. #}
+{% block workspace %}
+<nav class="material-parents" aria-label="{{ _('Map location') }}">
+{% if campaign %}<a href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}">← {{ campaign.name }}</a>{% endif %}
+{% if module %}<span aria-hidden="true">›</span> <a href="{{ url_for('campaigns.module_view', campaign_id=module.campaign_id, module_id=module.id) }}#maps">{{ module.title }}</a>{% endif %}
+</nav>
+{% call page_header(_('Edit map'), class_='soft-header') %}
+<a href="{{ url_for('campaigns.wiki', campaign_id=entry.campaign_id, entry_id=entry.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read') }}</a>
+<button type="button" aria-haspopup="dialog" onclick="document.getElementById('reveal-dialog-{{ entry.id }}').showModal()"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{ _('Reveal map') }}</button>
+<button type="submit" class="primary" form="map-form">{{ _('Save map') }}</button>
+{% endcall %}
+{{ reveal_dialog(entry, reveal_parties) }}
+<form id="map-form" class="campaign-page-form map-settings" method="post">
+{{ token(entry.version) }}
+<label class="map-title-field">{{ _('Title') }}<input type="text" name="title" maxlength="200" required value="{{ entry.title }}"></label>
+</form>
+{% include 'campaigns/map_panel.html' %}
+<div class="campaign-actions campaign-footer-actions article-delete danger-zone">
+{% call modal('delete-map-modal', _('Delete map…'), _('Delete map?')) %}
+<form method="post" action="{{ url_for('campaigns.bulk_delete') }}">{{ token() }}
+<input type="hidden" name="campaign_id" value="{{ entry.campaign_id or '' }}">
+<input type="hidden" name="entry_ids" value="{{ entry.id }}">
+<input type="hidden" name="version_{{ entry.id }}" value="{{ entry.version }}">
+<section class="modal-card-body">
+<p><strong>{{ entry.title or _('Untitled private original') }}</strong></p>
+<p>{{ _('This also removes its points, paths, the maps inside it and what parties were shown of them. Review the complete list before deleting.') }}</p>
+</section>
+{{ modal_footer(_('Review what will be deleted')) }}
+</form>
+{% endcall %}
+</div>
+{% endblock %}

@@ -13,7 +13,7 @@ from sqlalchemy.orm import selectinload
 
 import json
 
-from app.models import (db, Campaign, Module, ContentEntry, ContentLink,
+from app.models import (db, Campaign, Module, MapPin, ContentEntry, ContentLink,
                         Party, PartyPresentation, PointcrawlMap, CampaignImport)
 from app.lib.campaign_import import (preview_archive, single_file_preview, import_preview, apply_overrides,
     ImportError, MAX_ARCHIVE, MAX_FILE)
@@ -22,12 +22,12 @@ from app.lib.modules import MODULES, add_module
 from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, check_version,
     entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
     party_access, publishable_party, render_content, save_geometry, text_value, content_value,
-    material_hierarchy, material_parents, material_deletion_plan, delete_material_plan, save_article_children, set_article_parent, POINT_TYPES)
+    material_hierarchy, material_deletion_plan, delete_material_plan, save_article_children, set_article_parent, POINT_TYPES)
 from app.lib.rich_content import content_excerpt
 from app.lib.article_references import (private_reference_urls, bind_references, reference_urls,
     headings, tokens)
 from app.lib.content_types import CATEGORY_GROUPS, CATEGORY_ROOTS, ARTICLE_MAP_KINDS, ARTICLE_PARENT_TYPES, PARTY_NOTE
-from app.lib.campaigns import ensure_article_map, ensure_article_tree_maps, populate_realm_map, article_parent_choices, place_new_realm_poi
+from app.lib.campaigns import attach_map, map_only, article_entries, reveal_entry, ensure_article_map, ensure_article_tree_maps, populate_realm_map, article_parent_choices, place_new_realm_poi
 from app.lib.material_images import LOCAL_IMAGE, image_directory, cleanup_images, image_references
 
 campaigns = Blueprint('campaigns', __name__)
@@ -69,7 +69,18 @@ def common_context():
     return {'content_categories': CATEGORIES, 'category_groups': CATEGORY_GROUPS, 'category_roots': CATEGORY_ROOTS, 'article_map_kinds': ARTICLE_MAP_KINDS, 'article_parent_types': ARTICLE_PARENT_TYPES,
             'point_categories': {k: CATEGORIES[k] for k in CATEGORIES if k in POINT_TYPES}, 'path_types': PATH_TYPES,
             'content_form': FlaskForm(), 'render_content': render_content, 'content_excerpt': content_excerpt,
-            'private_reference_urls': private_reference_urls}
+            'private_reference_urls': private_reference_urls, 'module_parts': _module_parts(),
+            'part_badges': _part_badges}
+
+
+def _module_parts():
+    from app.lib.modules import MODULE_PARTS
+    return MODULE_PARTS
+
+
+def _part_badges(counts):
+    from app.lib.modules import part_badges
+    return part_badges(counts)
 
 
 @campaigns.route('/materials/reference-catalog')
@@ -141,6 +152,9 @@ def available_parties(entry):
 
 
 def entry_redirect(entry):
+    """After saving: a map goes back to its map editor, an article to the article editor."""
+    if map_only(entry):
+        return redirect(url_for('campaigns.map_edit', map_id=entry.pointcrawl.id))
     return redirect(url_for('campaigns.edit_entry', entry_id=entry.id))
 
 
@@ -315,9 +329,12 @@ def module_view(campaign_id, module_id):
         return redirect(module_page(module))
     entries = library_entries().filter_by(module_id=module.id).order_by(ContentEntry.id).all()
     backgrounds = module.backgrounds or {}
+    # Maps are listed on their own: region maps first, then the maps entered from their points.
+    maps = sorted((entry for entry in entries if entry.pointcrawl),
+                  key=lambda entry: (bool(maps_showing(entry)), entry.title.casefold(), entry.id))
     return render_template('campaigns/module.html', campaign=campaign, module=module,
-                           hierarchy=material_hierarchy(entries), article_count=len(entries),
-                           backgrounds=backgrounds)
+                           hierarchy=material_hierarchy(article_entries(entries)), article_count=len(article_entries(entries)),
+                           maps=[(entry, maps_showing(entry)) for entry in maps], backgrounds=backgrounds)
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/export')
@@ -346,7 +363,7 @@ def delete_module(campaign_id, module_id):
 
 @campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/background', methods=['GET', 'POST'])
 def module_background(campaign_id, module_id):
-    """Write a background (Markdown or JSON), edit one (?name=), upload files, or remove one."""
+    """Write a background (Markdown), edit one (?name=), or remove one. Files are added with Add files (import)."""
     from app.lib.campaign_backgrounds import (BackgroundError, add_backgrounds, background_markdown,
                                               parse_background_text, remove_background, BACKGROUND_TEMPLATE)
     campaign, module = campaign_module(campaign_id, module_id)
@@ -361,16 +378,6 @@ def module_background(campaign_id, module_id):
         try:
             if action == 'remove':
                 remove_background(module, name)
-            elif action == 'upload':
-                found = {}
-                for upload in request.files.getlist('backgrounds'):
-                    data = upload.stream.read(512 * 1024 + 1)
-                    if len(data) > 512 * 1024:
-                        raise BackgroundError(_('%(file)s exceeds 512 KB.', file=upload.filename))
-                    found.update(parse_background_text(data.decode('utf-8-sig'), upload.filename or 'background'))
-                if not found:
-                    raise BackgroundError(_('Choose a Markdown or JSON file.'))
-                add_backgrounds(module, found)
             elif action == 'save':
                 text = text_value(request.form.get('text'), 200000, True)
                 found = parse_background_text(text, name or 'background')
@@ -379,8 +386,8 @@ def module_background(campaign_id, module_id):
                 add_backgrounds(module, found)
             else:
                 abort(400)
-        except (BackgroundError, UnicodeError) as exc:
-            error = str(exc) if isinstance(exc, BackgroundError) else _('Use UTF-8 text files.')
+        except BackgroundError as exc:
+            error = str(exc)
         if error is None:
             module.version += 1
             db.session.commit()
@@ -390,38 +397,25 @@ def module_background(campaign_id, module_id):
             flash(error, 'error')
             return redirect(module_page(module) + '#backgrounds')
     if text is None:
-        text = (background_markdown(name, current) or json.dumps({name: current}, ensure_ascii=False, indent=2)
-                if current is not None else BACKGROUND_TEMPLATE)
+        text = background_markdown(name, current) if current is not None else BACKGROUND_TEMPLATE
     return render_template('campaigns/background.html', campaign=campaign, module=module, name=name,
                            text=text, error=error)
 
 
-# ----- Character options: the backgrounds the campaign's party chooses from -----
+# ----- Character options: the backgrounds a party's characters choose from (set on the party page) -----
 
-@campaigns.route('/campaigns/<int:campaign_id>/backgrounds', methods=['GET', 'POST'])
-def campaign_backgrounds(campaign_id):
-    """Official backgrounds on or off (the modules' own backgrounds are edited in each module)."""
-    campaign = owned(Campaign, campaign_id)
-    if request.method == 'POST':
-        check_version(campaign, request.form.get('version'))
-        campaign.official_backgrounds = request.form.get('official') == '1'
-        campaign.version += 1
-        db.session.commit()
-        if request.accept_mimetypes.best == 'application/json':
-            # Saved in place from the Backgrounds dialog: what players now choose from.
-            from app.lib.campaign_backgrounds import campaign_backgrounds as offered, custom_backgrounds, has_custom_options
-            return jsonify(version=campaign.version, offered=list(offered(campaign)), customized=has_custom_options(campaign),
-                           fallback=not campaign.official_backgrounds and not custom_backgrounds(campaign))
-    # Shown in the Backgrounds dialog on the campaign's lobby.
-    return redirect(url_for('campaigns.lobby', campaign_id=campaign.id) + '#backgrounds')
-
-
-def hide_campaign_from(campaign, party_id):
-    """Hide every article of this campaign from one party: it no longer sees them. The caller commits."""
-    entry_ids = [entry.id for entry in campaign.entries]
-    for presentation in PartyPresentation.query.filter(
-            PartyPresentation.party_id == party_id, PartyPresentation.entry_id.in_(entry_ids)).all():
-        db.session.delete(presentation)
+@campaigns.route('/party/<int:party_id>/backgrounds', methods=['POST'])
+def party_backgrounds(party_id):
+    """The Warden offers the official backgrounds to this party, or not (its campaign's modules' ones always)."""
+    from app.lib.campaign_backgrounds import custom_backgrounds, has_custom_options, party_backgrounds as offered
+    party = party_access(party_id, editing=True)
+    party.official_backgrounds = request.form.get('official') == '1'
+    db.session.commit()
+    if request.accept_mimetypes.best == 'application/json':
+        # Saved in place from the party page: what its players now choose from.
+        return jsonify(offered=sorted(offered(party)), customized=has_custom_options(party),
+                       fallback=not party.official_backgrounds and not custom_backgrounds(party.campaign))
+    return redirect(url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) + '#backgrounds')
 
 
 def back_to_party(party):
@@ -467,10 +461,23 @@ def edit_party_note(party_id, entry_id):
         g.kept_local_images = image_references(entry.body)
         entry.title = presentation.title = text_value(request.form.get('title'), 200, True)
         entry.body = presentation.body = content_value(request.form.get('body', ''))
+        if request.form.get('drawing'):  # Sent only when the sketch changed.
+            entry.drawing = note_drawing(request.form['drawing'])
         db.session.commit()
         notify_parties([party.id])
         return back_to_party(party)
     return render_template('campaigns/party_note.html', party=party, entry=entry, is_warden=party.owner == current_user.id)
+
+
+def note_drawing(text):
+    """A party note's sketch from the editor, validated like a map's drawing. None when it is empty."""
+    import json
+    from app.lib.map_drawing import validate_drawing
+    try:
+        drawing = validate_drawing(json.loads(text))
+    except (ValueError, TypeError):
+        abort(400, 'Invalid drawing.')
+    return drawing if drawing.get('elements') else None
 
 
 @campaigns.route('/party/<int:party_id>/materials/<int:entry_id>/version', methods=['GET', 'POST'])
@@ -491,18 +498,6 @@ def delete_party_note(party_id, entry_id):
     return back_to_party(party)
 
 
-@campaigns.route('/campaigns/<int:campaign_id>/hide/<int:party_id>', methods=['POST'])
-def hide_campaign(campaign_id, party_id):
-    """Campaign wiki home: Hide everything from one party."""
-    campaign = owned(Campaign, campaign_id)
-    party = party_access(party_id, editing=True)
-    hide_campaign_from(campaign, party.id)
-    db.session.commit()
-    notify_parties([party.id])
-    flash(_('Everything from %(campaign)s is hidden from %(party)s.', campaign=campaign.name, party=party.name), 'success')
-    return redirect(url_for('campaigns.lobby', campaign_id=campaign.id))
-
-
 @campaigns.route('/campaigns/<int:campaign_id>/', methods=['GET', 'POST'])
 def lobby(campaign_id):
     """The campaign lobby, for its Warden: its name, parties and modules. POST renames it.
@@ -510,8 +505,6 @@ def lobby(campaign_id):
     No wiki here: a module's card opens it in wiki mode, and Read everything as wiki opens all of it."""
     from app.lib.campaign_wiki import campaign_entries, module_cover
     from app.lib.campaign_parties import party_cards
-    from app.lib.campaign_backgrounds import (campaign_backgrounds as offered_backgrounds, has_custom_options,
-                                              official_backgrounds)
     from app.lib.modules import marketplace, module_counts
     campaign = owned(Campaign, campaign_id)
     if request.method == 'POST':
@@ -520,24 +513,20 @@ def lobby(campaign_id):
         campaign.version += 1
         db.session.commit()
         return redirect(url_for('campaigns.lobby', campaign_id=campaign.id))
-    counts, shown = {}, {}
-    # What each party was shown from this campaign, for its Manage revealed dialog.
-    for row, shown_entry in db.session.query(PartyPresentation, ContentEntry).join(ContentEntry).filter(
-            ContentEntry.campaign_id == campaign.id, PartyPresentation.published.is_(True)).order_by(
-            ContentEntry.title, ContentEntry.id):
-        counts[row.party_id] = counts.get(row.party_id, 0) + 1
-        shown.setdefault(row.party_id, []).append((shown_entry, row))
+    counts = {}
+    # How much each party was shown from this campaign (parties of other campaigns are listed with it).
+    for (party_id,) in db.session.query(PartyPresentation.party_id).join(ContentEntry).filter(
+            ContentEntry.campaign_id == campaign.id, PartyPresentation.published.is_(True)):
+        counts[party_id] = counts.get(party_id, 0) + 1
     entries = campaign_entries(campaign)
     return render_template('campaigns/lobby.html', campaign=campaign, article_count=len(entries),
-        parties=[dict(card, revealed=counts.get(card['party'].id, 0), shown=shown.get(card['party'].id, []))
-                 for card in party_cards(campaign.parties)],
+        parties=party_cards(campaign.parties),
         # Parties of other campaigns that were shown something from this one (say, after they moved).
         audience=[(party, counts[party.id]) for party in my_parties()
                   if party.id in counts and party.campaign_id != campaign.id],
         modules=[(module, module_counts(module)) for module in campaign.modules],
         module_covers={module.id for module in campaign.modules if module_cover(module, list(module.entries))},
-        marketplace=marketplace(campaign), custom_options=has_custom_options(campaign),
-        offered=list(offered_backgrounds(campaign)), official_count=len(official_backgrounds()))
+        marketplace=marketplace(campaign))
 
 
 def lobby_url(campaign_id, anchor=''):
@@ -578,8 +567,12 @@ def render_wiki(context, entry):
     if entry is not None:
         context['reveal_parties'] = reveal_choices(entry)
         if entry.pointcrawl:
+            # A map's page shows the map (read only); Edit opens the map editor.
             context.update(graph=map_projection(entry.pointcrawl), pointcrawl=None, editing=False, party=None,
-                           embedded=True, nested_maps=[], locations=[])
+                           embedded=True, nested_maps=[], locations=[], is_map=map_only(entry),
+                           map_edit_url=url_for('campaigns.map_edit', map_id=entry.pointcrawl.id))
+            if map_only(entry):
+                context['edit_url'] = context['map_edit_url']
     return render_template('campaigns/wiki.html', **context)
 
 
@@ -652,13 +645,18 @@ def party_entry(party_id, entry_id):
     """A revealed article, read as a wiki page built only from what the party was shown."""
     from app.lib.campaign_wiki import party_context
     party = party_access(party_id)
+    shown = known_entries(party.id).get(entry_id)
+    if shown is not None and shown['map_only']:
+        # A map is opened on the party map page (its fog and pins), never as an article.
+        return redirect(url_for('campaigns.party_map_view', party_id=party.id, map_id=shown['map_id']))
     context = party_context(party, entry_id, owner_view=party.owner == current_user.id)
     if context is None:
         abort(404)
     entry = context['entry']
-    graph = map_projection(db.get_or_404(PointcrawlMap, entry['map_id']), party.id) if entry['map_id'] else None
-    return render_template('campaigns/wiki.html', graph=graph, pointcrawl=None, editing=False, embedded=True,
-                           nested_maps=[], locations=[], **context)
+    map_url = url_for('campaigns.party_map_view', party_id=party.id, map_id=entry['map_id']) if entry['map_id'] else None
+    # A party note's sketch, below its text (read only here; drawn in the note's editor).
+    sketch = db.session.get(ContentEntry, entry_id).drawing if entry['category'] == PARTY_NOTE else None
+    return render_template('campaigns/wiki.html', graph=None, map_url=map_url, sketch=sketch, **context)
 
 
 @campaigns.route('/materials/<int:entry_id>/preview')
@@ -814,9 +812,19 @@ def move_to_module(entry, module):
         item.module = module
 
 
+def maps_showing(entry):
+    """The maps this article is a point on (for a map: the maps whose points lead into it)."""
+    nodes = list(entry.map_nodes) + (list(entry.pointcrawl.entrances) if entry.pointcrawl else [])
+    maps = {node.map.entry_id: node.map.entry for node in nodes
+            if node.map.entry_id != entry.id and node.map.entry.owner_id == entry.owner_id}
+    return [maps[key] for key in sorted(maps)]
+
+
 @campaigns.route('/materials/<int:entry_id>/edit', methods=['GET', 'POST'])
 def edit_entry(entry_id):
     entry = article(entry_id)
+    if map_only(entry) and request.method == 'GET':
+        return redirect(url_for('campaigns.map_edit', map_id=entry.pointcrawl.id))
     previous_category = entry.category
     previous_parent = entry.parent
     if request.method == 'POST':
@@ -847,7 +855,8 @@ def edit_entry(entry_id):
             if entry.pointcrawl and ARTICLE_MAP_KINDS.get(category) != entry.pointcrawl.kind:
                 abort(400, 'Keep the map type for this article.')
             entry.category = category
-        entry.is_heart = entry.category == 'settlement' and request.form.get('is_heart') == 'on'
+        if 'category' in request.form:  # A map's page has no Type: it keeps its Heart.
+            entry.is_heart = entry.category == 'settlement' and request.form.get('is_heart') == 'on'
         if entry.category == 'path':
             kind = request.form.get('path_type')
             if kind not in PATH_TYPES:
@@ -885,16 +894,8 @@ def edit_entry(entry_id):
     automatic_links = map_related_ids(entry)
     selected_links = {link.target_id for link in entry.links}
     candidates.sort(key=lambda item: (item.id not in automatic_links | selected_links, item.id))
-    map_context = {}
-    if entry.pointcrawl:
-        map_context = dict(pointcrawl=entry.pointcrawl, graph=map_projection(entry.pointcrawl),
-            editing=True, embedded=True,
-            nested_maps=PointcrawlMap.query.join(ContentEntry).filter(ContentEntry.owner_id == current_user.id,
-                ContentEntry.campaign_id == entry.campaign_id, PointcrawlMap.id != entry.pointcrawl.id).all(),
-            locations=ContentEntry.query.filter_by(owner_id=current_user.id,campaign_id=entry.campaign_id)
-                .filter(ContentEntry.category.in_(POINT_TYPES)).all())
-    return render_template('campaigns/entry.html', **map_context, entry=entry, campaign=entry.campaign, party=None,
-                           module=entry.module, parent_entries=material_parents(entry),
+    return render_template('campaigns/entry.html', entry=entry, campaign=entry.campaign, party=None,
+                           module=entry.module, parent_entries=[entry.parent] if entry.parent else [], on_maps=maps_showing(entry),
                            module_groups=module_choices(), candidates=candidates,
                            selected_links=selected_links, automatic_links=automatic_links,
                            parent_candidates=article_parent_choices(library_entries(), entry), selected_parent=entry.parent_id or '')
@@ -1013,8 +1014,6 @@ def bulk_reveal():
                 row.title, row.body, row.path_type = versions[entry.id]
                 row.references = dict(entry.references or {})
                 row.published = True
-                if entry.pointcrawl and request.form.get('publish_drawing') == '1':
-                    row.drawing = deepcopy(entry.pointcrawl.drawing)
         db.session.commit()
         notify_parties(selected)
         flash(_('Revealed %(count)s articles.', count=len(entries)), 'success')
@@ -1025,13 +1024,12 @@ def bulk_reveal():
 
 @campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/reveal', methods=['POST'])
 def reveal_module(campaign_id, module_id):
-    """Reveal a whole module to one of the campaign's parties: every titled article it holds (and, if asked,
-    its maps' drawings). The party reads the originals, as with any reveal."""
+    """Reveal a whole module to one of the campaign's parties: every titled article and map it holds.
+    The party reads the originals, as with any reveal."""
     campaign, module = campaign_module(campaign_id, module_id)
     party = party_access(integer(request.form.get('party_id')), editing=True)
     if party.campaign_id != campaign.id:
         abort(403)
-    drawings = request.form.get('publish_drawing') == '1'
     entries = [entry for entry in module.entries if entry.title.strip()]
     rows = {row.entry_id: row for row in PartyPresentation.query.filter(
         PartyPresentation.party_id == party.id, PartyPresentation.entry_id.in_([e.id for e in entries]))}
@@ -1042,8 +1040,6 @@ def reveal_module(campaign_id, module_id):
             db.session.add(row)
         row.title, row.body, row.path_type = revealed_version(entry)
         row.references, row.published = dict(entry.references or {}), True
-        if entry.pointcrawl and drawings:
-            row.drawing = deepcopy(entry.pointcrawl.drawing)
     db.session.commit()
     notify_parties([party.id])
     flash(_('Revealed %(count)s articles of %(module)s to %(party)s.', count=len(entries), module=module.title,
@@ -1095,8 +1091,7 @@ def after_reveal(entry, party_id):
     if request.values.get('return_to') in ('wiki', 'party'):
         return redirect(url_for('campaigns.party_wiki', party_id=party_id))
     if request.values.get('return_to') == 'campaign' and entry.campaign_id:
-        # The campaign home, with that party's Manage revealed dialog open again.
-        return redirect(url_for('campaigns.lobby', campaign_id=entry.campaign_id) + f'#revealed-{party_id}')
+        return redirect(url_for('campaigns.lobby', campaign_id=entry.campaign_id))
     return redirect(read_url(entry))
 
 
@@ -1111,20 +1106,19 @@ def reveal(entry_id):
         party = publishable_party(entry, party_id)
         row = PartyPresentation.query.filter_by(entry_id=entry.id, party_id=party.id).first()
         check_version(row, request.form.get(f'version_{party.id}'))
-        publish_drawing = entry.pointcrawl and request.form.get('publish_drawing') == '1'
-        if publish_drawing:
-            check_version(entry.pointcrawl, request.form.get('map_version'))
-        title, body, kind = revealed_version(entry)
-        if row is None:
-            row = PartyPresentation(entry=entry, party=party)
-            db.session.add(row)
-        row.title, row.body, row.path_type, row.published = title, body, kind, True
-        row.references = dict(entry.references or {})
-        if publish_drawing:
-            row.drawing = deepcopy(entry.pointcrawl.drawing)
+        reveal_entry(entry, party)
+        count = 0
+        if entry.pointcrawl and request.form.get('with_contents') == '1':
+            # The whole map at once: every pin on it (and any older path; the maps inside points stay hidden).
+            for item in [node.entry for node in entry.pointcrawl.nodes] + [edge.entry for edge in entry.pointcrawl.edges]:
+                reveal_entry(item, party)
+                count += 1
         db.session.commit()
         notify_parties([party.id])
-        flash(_('Revealed to %(party)s.', party=party.name), 'success')
+        if count:
+            flash(_('Revealed the map and its pins to %(party)s.', party=party.name), 'success')
+        else:
+            flash(_('Revealed to %(party)s.', party=party.name), 'success')
         return after_reveal(entry, party.id)
     return render_template('campaigns/reveal.html', entry=entry, reveal_parties=reveal_choices(entry),
                            selected=request.args.get('party_id', ''), return_to=request.args.get('return_to', ''))
@@ -1196,8 +1190,10 @@ def import_archive():
     selected = request.values.get('campaign_id', '')
     module_id = request.values.get('module_id', '')
     module = chosen_module({'module_id': module_id}) if module_id else None
+    from app.lib.modules import preview_counts
     return render_template('campaigns/import_archive.html', preview=preview, preview_id=preview_id, message=message,
                            campaigns_list=my_campaigns(), module=module,
+                           preview_counts=preview_counts(preview) if preview else None,
                            selected_campaign=module.campaign_id if module else int(selected) if selected.isdigit() else None)
 
 
@@ -1208,13 +1204,14 @@ def import_example():
     from pathlib import Path
 
     stream = io.BytesIO()
-    examples = Path(current_app.static_folder) / 'examples' / 'campaign-import'
+    # An example module in the format exports use: one folder per part, all Markdown.
+    examples = Path(current_app.static_folder) / 'examples' / 'module'
     with zipfile.ZipFile(stream, 'w', zipfile.ZIP_DEFLATED) as archive:
-        for path in sorted(examples.glob('*.md')):
-            archive.writestr(path.name, path.read_bytes())
+        for path in sorted(examples.rglob('*.md')):
+            archive.writestr(path.relative_to(examples).as_posix(), path.read_bytes())
     stream.seek(0)
     return send_file(stream, mimetype='application/zip', as_attachment=True,
-                     download_name='campaign-example.zip')
+                     download_name='module-example.zip')
 
 
 @campaigns.route('/materials/<int:entry_id>/revoke/<int:party_id>', methods=['POST'])
@@ -1233,13 +1230,15 @@ def revoke(entry_id, party_id):
 
 @campaigns.route('/materials/<int:entry_id>/map', methods=['POST'])
 def article_map(entry_id):
+    """Make a point (or any article) a map of its own, from the map editor: its sub-articles become its points."""
     entry = article(entry_id)
     check_version(entry, request.form.get('version'))
-    if entry.category not in ARTICLE_MAP_KINDS and not entry.pointcrawl:
-        abort(400, 'This article type does not have a map.')
-    ensure_article_tree_maps(entry)
+    if entry.category in ('path', 'paths', PARTY_NOTE):
+        abort(400, 'This article cannot be a map.')
+    pointcrawl = attach_map(entry)
+    entry.version += 1
     db.session.commit()
-    return entry_redirect(entry)
+    return redirect(url_for('campaigns.map_edit', map_id=pointcrawl.id))
 
 
 def create_map_entry(campaign, kind, title, body, draft, module=None):
@@ -1291,8 +1290,8 @@ def new_map():
             abort(400)
         if module is None:
             abort(400, 'Choose a module.')
-        pointcrawl = create_map_entry(module.campaign, kind, request.form.get('title'),
-                                      request.form.get('body', ''), request.form.get('draft'), module=module)
+        pointcrawl = create_map_entry(module.campaign, kind, request.form.get('title'), '',
+                                      request.form.get('draft'), module=module)
         db.session.commit()
         return entry_redirect(pointcrawl.entry)
     if module is not None and module.id is None:
@@ -1301,17 +1300,50 @@ def new_map():
     if module is None and not my_campaigns():
         flash(_('Create a campaign first: maps are made in its modules.'), 'error')
         return redirect(url_for('campaigns.index'))
-    kind = request.args.get('kind', 'realm')
+    kind = request.args.get('kind', 'freeform')
     if kind not in MAP_KINDS:
         abort(400)
     return render_template('campaigns/new_map.html', module=module, module_groups=module_choices(), kind=kind,
                            campaign=module.campaign if module else None)
 
 
-@campaigns.route('/maps/<int:map_id>/edit')
+@campaigns.route('/maps/<int:map_id>/edit', methods=['GET', 'POST'])
 def map_edit(map_id):
+    """A map's editor: its title, its drawing, its points and paths. A map has no text of its own.
+
+    POST saves the title, the module and (when it changed) the drawing with its points and paths."""
+    import json
     pointcrawl = owned(PointcrawlMap, map_id)
-    return entry_redirect(pointcrawl.entry)
+    entry = pointcrawl.entry
+    if request.method == 'POST':
+        check_version(entry, request.form.get('version'))
+        if 'graph' in request.form:
+            try:
+                graph = json.loads(request.form['graph'])
+            except (ValueError, TypeError):
+                abort(400, 'Invalid map drawing.')
+            if not isinstance(graph, dict):
+                abort(400, 'Invalid map drawing.')
+            with db.session.no_autoflush:
+                save_geometry(pointcrawl, graph)
+        entry.title = text_value(request.form.get('title', ''), 200, True)
+        if request.form.get('module_id'):
+            target = chosen_module(request.form)
+            if target is not None and target is not entry.module:
+                move_to_module(entry, target)
+        entry.version += 1
+        audiences = entry_audiences(entry)
+        db.session.commit()
+        notify_parties(audiences)
+        return redirect(url_for('campaigns.map_edit', map_id=pointcrawl.id))
+    return render_template('campaigns/map.html', entry=entry, pointcrawl=pointcrawl, campaign=entry.campaign,
+        module=entry.module, party=None, graph=map_projection(pointcrawl), editing=True, embedded=True,
+        module_groups=module_choices(), inside=maps_showing(entry), article_url=None if map_only(entry) else
+        url_for('campaigns.edit_entry', entry_id=entry.id), reveal_parties=reveal_choices(entry),
+        nested_maps=PointcrawlMap.query.join(ContentEntry).filter(ContentEntry.owner_id == current_user.id,
+            ContentEntry.campaign_id == entry.campaign_id, PointcrawlMap.id != pointcrawl.id).all(),
+        locations=ContentEntry.query.filter_by(owner_id=current_user.id, campaign_id=entry.campaign_id)
+            .filter(ContentEntry.category.in_(POINT_TYPES)).all())
 
 
 @campaigns.route('/maps/<int:map_id>/geography', methods=['POST'])
@@ -1371,6 +1403,130 @@ def party_map(party_id, map_id):
     pointcrawl = db.get_or_404(PointcrawlMap, map_id)
     map_projection(pointcrawl, party.id)  # Authorize the legacy URL before redirecting.
     return redirect(url_for('campaigns.party_entry', party_id=party.id, entry_id=pointcrawl.entry_id))
+
+
+# ----- Party map: a revealed map with the party's fog and pins -----
+
+def revealed_maps(party_id):
+    """The maps a party was shown (published copies of map articles), by title."""
+    rows = PartyPresentation.query.join(ContentEntry).filter(
+        PartyPresentation.party_id == party_id, PartyPresentation.published.is_(True)).all()
+    return sorted(((row.entry.pointcrawl, row) for row in rows if row.entry.pointcrawl),
+                  key=lambda item: (item[1].title.casefold(), item[0].id))
+
+
+def map_presentation(party, pointcrawl):
+    """This party's copy of the map article: holds its fog. 404 when the map was not revealed to it."""
+    row = PartyPresentation.query.filter_by(entry_id=pointcrawl.entry_id, party_id=party.id, published=True).first()
+    if row is None:
+        abort(404)
+    return row
+
+
+def map_state(party, pointcrawl, row):
+    """Fog and pins of a party map, for its page and its refreshes."""
+    from app.lib.whiteboard import empty_fog
+    pins = MapPin.query.filter_by(map_id=pointcrawl.id, party_id=party.id).order_by(MapPin.id).all()
+    return {'fog': row.fog or empty_fog(), 'fog_version': row.fog_version,
+            'pins': [{'id': pin.id, 'x': pin.x, 'y': pin.y, 'title': pin.entry.title, 'note_id': pin.entry_id,
+                      'html': str(render_content(pin.entry.body)),
+                      'edit_url': url_for('campaigns.edit_party_note', party_id=party.id, entry_id=pin.entry_id)}
+                     for pin in pins]}
+
+
+@campaigns.route('/party/<int:party_id>/map/')
+def party_maps(party_id):
+    """The party page's Map button: its map, or a choice when it was shown several."""
+    party = party_access(party_id)
+    maps = revealed_maps(party.id)
+    # Maps entered from a point of another revealed map open from that map: the button opens the region.
+    shown = {pointcrawl.id for pointcrawl, _ in maps}
+    top = [item for item in maps if not any(node.map_id in shown for node in item[0].entrances)] or maps
+    if len(top) == 1:
+        return redirect(url_for('campaigns.party_map_view', party_id=party.id, map_id=top[0][0].id))
+    return render_template('campaigns/party_maps.html', party=party, maps=maps)
+
+
+@campaigns.route('/party/<int:party_id>/map/<int:map_id>/')
+def party_map_view(party_id, map_id):
+    """A revealed map for the party: what it was shown, under its fog, with its pins.
+    Members add pins; the Warden also uncovers the fog."""
+    from flask_wtf.csrf import generate_csrf
+    from app.lib.campaign_wiki import party_url
+    party = party_access(party_id)
+    pointcrawl = db.get_or_404(PointcrawlMap, map_id)
+    row = map_presentation(party, pointcrawl)
+    return render_template('campaigns/party_map.html', party=party, pointcrawl=pointcrawl, row=row, csrf=generate_csrf(),
+                           graph=map_projection(pointcrawl, party.id), state=map_state(party, pointcrawl, row),
+                           warden=party.owner == current_user.id, back_url=party_url(party), map_only=map_only(pointcrawl.entry),
+                           maps=revealed_maps(party.id))
+
+
+@campaigns.route('/party/<int:party_id>/map/<int:map_id>/state')
+def party_map_state(party_id, map_id):
+    party = party_access(party_id)
+    pointcrawl = db.get_or_404(PointcrawlMap, map_id)
+    return jsonify(map_state(party, pointcrawl, map_presentation(party, pointcrawl)))
+
+
+@campaigns.route('/party/<int:party_id>/map/<int:map_id>/fog', methods=['POST'])
+def party_map_fog(party_id, map_id):
+    """The Warden uncovers (or covers) part of the map for this party: one whiteboard fog operation."""
+    import json as json_module
+    from app.lib.whiteboard import empty_fog, fog_operation
+    party = party_access(party_id, editing=True)
+    pointcrawl = db.get_or_404(PointcrawlMap, map_id)
+    row = map_presentation(party, pointcrawl)
+    try:
+        data = json_module.loads(request.form.get('payload', ''))
+    except ValueError:
+        abort(400)
+    operation = data.get('operation') if isinstance(data, dict) else None
+    fog = row.fog or empty_fog()
+    if isinstance(operation, dict) and operation.get('id') in fog['applied']:  # A retry: already applied.
+        return jsonify(fog=fog, fog_version=row.fog_version)
+    if data.get('fog_version') != row.fog_version:
+        return jsonify(error='changed', fog=fog, fog_version=row.fog_version), 409
+    row.fog, _changed = fog_operation(fog, operation)
+    row.fog_version += 1
+    db.session.commit()
+    notify_parties([party.id])
+    return jsonify(fog=row.fog, fog_version=row.fog_version)
+
+
+@campaigns.route('/party/<int:party_id>/map/<int:map_id>/pins', methods=['POST'])
+def add_map_pin(party_id, map_id):
+    """Any member places a pin: a party note (title and text) at a point of the map."""
+    from app.lib.campaigns import coordinate
+    party = party_access(party_id)
+    pointcrawl = db.get_or_404(PointcrawlMap, map_id)
+    map_presentation(party, pointcrawl)
+    if MapPin.query.filter_by(map_id=pointcrawl.id, party_id=party.id).count() >= 500:
+        abort(400, 'This map has too many pins.')
+    title = text_value(request.form.get('title'), 200, True)
+    body = content_value(request.form.get('body', ''))
+    note = ContentEntry(owner_id=party.owner, category=PARTY_NOTE, title=title, body=body)
+    note.presentations.append(PartyPresentation(party=party, title=title, body=body))
+    db.session.add(note)
+    db.session.add(MapPin(map_id=pointcrawl.id, party_id=party.id, entry=note, created_by=current_user.id,
+                          x=coordinate(request.form.get('x')), y=coordinate(request.form.get('y'))))
+    db.session.commit()
+    notify_parties([party.id])
+    return jsonify(map_state(party, pointcrawl, map_presentation(party, pointcrawl)))
+
+
+@campaigns.route('/party/<int:party_id>/map/<int:map_id>/pins/<int:pin_id>/delete', methods=['POST'])
+def delete_map_pin(party_id, map_id, pin_id):
+    """Only the Warden removes pins (with their notes), as with every party note."""
+    party = party_access(party_id, editing=True)
+    pointcrawl = db.get_or_404(PointcrawlMap, map_id)
+    pin = db.get_or_404(MapPin, pin_id)
+    if pin.map_id != pointcrawl.id or pin.party_id != party.id:
+        abort(404)
+    db.session.delete(pin.entry)
+    db.session.commit()
+    notify_parties([party.id])
+    return jsonify(map_state(party, pointcrawl, map_presentation(party, pointcrawl)))
 
 
 @campaigns.route('/party/<int:party_id>/maps/<int:map_id>/data')

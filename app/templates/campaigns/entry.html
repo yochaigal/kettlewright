@@ -2,19 +2,18 @@
 {% from 'campaigns/forms.html' import token, category, rich_editor, page_header, modal, modal_footer, reveal_dialog with context %}
 {% block workspace %}
 {% include 'campaigns/parents.html' %}
-<form id="article-form" class="campaign-page-form article-editor" method="post" x-data="contentDraft" data-category="{{ entry.category if entry else initial_category|default('custom') }}" data-import="{{ 'true' if not entry else 'false' }}" data-generate-error="{{ _('Unable to generate an article. Please try again.') }}"
- data-parent-candidates="{{ parent_candidates|tojson|forceescape }}" data-parent-types="{{ article_parent_types|tojson|forceescape }}" data-existing-parent-label="{{ _('Existing parent') }}">
-{% set is_campaign = entry and entry.category == 'realm' %}
-{% set new_heading = "category==='realm' ? " ~ (_('New Campaign')|tojson|forceescape) ~ " : " ~ (_('New article')|tojson|forceescape) %}
-{% call page_header((_('Edit Campaign') if is_campaign else _('Edit article')) if entry else _('New article'), title_model=new_heading if not entry else none, class_='soft-header') %}
+{# Articles are text. A map is edited in the map editor; an article that has a map (a dungeon point
+   with its rooms) links to it under Organize. #}
+{% call page_header(_('Edit article') if entry else _('New article'), class_='soft-header') %}
 {% if entry %}
 <a href="{{ url_for('campaigns.wiki', campaign_id=entry.campaign_id, entry_id=entry.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read') }}</a>
-<a href="{{ url_for('campaigns.new_entry', module_id=entry.module_id or '', campaign_id=entry.campaign_id or '', parent_id=entry.id) }}"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('Add child article') }}</a>
-{% if not entry.pointcrawl and entry.category in article_map_kinds %}<button type="submit" form="add-drawing-form"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Add drawing') }}</button>{% endif %}
+<a class="kw-add" href="{{ url_for('campaigns.new_entry', module_id=entry.module_id or '', campaign_id=entry.campaign_id or '', parent_id=entry.id) }}"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('Add child article') }}</a>
 {% endif %}
-<button type="submit" class="primary" form="article-form"{% if not entry %} x-text="category==='realm' ? {{ _('Save Campaign')|tojson|forceescape }} : {{ _('Save Article')|tojson|forceescape }}"{% endif %}>{{ _('Save Campaign') if is_campaign else _('Save Article') }}</button>
+<button type="submit" class="primary" form="article-form">{{ _('Save article') }}</button>
 {% endcall %}
-<p class="import-hint">{{ _('Articles are private until you reveal them to a party. A party it was revealed to reads your changes when you save.') }}</p>
+<p class="import-hint">{{ _('Private until you reveal it to a party. A party it was revealed to sees your changes when you save.') }}</p>
+<form id="article-form" class="campaign-page-form article-editor" method="post" x-data="contentDraft" data-category="{{ entry.category if entry else initial_category|default('custom') }}" data-import="{{ 'true' if not entry else 'false' }}" data-generate-error="{{ _('Unable to generate an article. Please try again.') }}"
+ data-parent-candidates="{{ parent_candidates|tojson|forceescape }}" data-parent-types="{{ article_parent_types|tojson|forceescape }}" data-existing-parent-label="{{ _('Existing parent') }}">
 {{ token(entry.version if entry else none) }}
 <div class="article-layout">
 <div class="article-main">
@@ -39,12 +38,16 @@
 {% if not group_modules %}<option value="c{{ group_campaign.id }}" data-campaign="{{ group_campaign.id }}">{{ _('%(campaign)s (first module)', campaign=group_campaign.name|markdown_inline|striptags) }}</option>{% endif %}
 </optgroup>{% endfor %}
 </select></label>
+{% if entry and entry.pointcrawl %}<p class="organize-fact"><span>{{ _('Its map') }}</span>
+<a href="{{ url_for('campaigns.map_edit', map_id=entry.pointcrawl.id) }}"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Open map') }}</a></p>{% endif %}
 {% if not entry or entry.category not in ('map', 'path') %}{{ category(entry.category if entry else initial_category|default('custom'), generate=not entry) }}{% endif %}
-<label>{{ _('Parent article') }}<select name="parent_id" x-model="parentId" data-selected-parent="{{ selected_parent }}">
+<label class="campaign-check" x-show.important="category==='settlement'" x-cloak><input type="checkbox" name="is_heart" x-model="isHeart" {% if entry and entry.is_heart %}checked{% endif %}>{{ _('Heart') }}</label>
+<label>{{ _('Parent (optional)') }}<select name="parent_id" x-model="parentId" data-selected-parent="{{ selected_parent }}">
 <option value="">{{ _('None') }}</option>
 <template x-for="item in parentChoices" :key="item.id"><option :value="item.id" :disabled="item.legacy" x-text="item.label"></option></template>
 </select></label>
-<label class="campaign-check" x-show.important="category==='settlement'" x-cloak><input type="checkbox" name="is_heart" x-model="isHeart" {% if entry and entry.is_heart %}checked{% endif %}>{{ _('Heart') }}</label>
+{% if on_maps %}<p class="organize-fact"><span>{{ _('On map') }}</span>
+{% for item in on_maps %}<a href="{{ url_for('campaigns.map_edit', map_id=item.pointcrawl.id) }}"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ item.title or _('Untitled private original') }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</p>{% endif %}
 {% if not entry %}
 <div class="article-generator" x-show="category!=='custom'" x-cloak>
 <label class="campaign-check" x-show.important="canGenerateChildren"><input type="checkbox" x-model="generateChildren">{{ _('Generate all child articles') }}</label>
@@ -86,10 +89,8 @@
 </div>
 </form>
 {% if entry %}
-{% if not entry.pointcrawl and entry.category in article_map_kinds %}<form id="add-drawing-form" method="post" action="{{ url_for('campaigns.article_map', entry_id=entry.id) }}" hidden>{{ token(entry.version) }}</form>{% endif %}
-{% if entry.pointcrawl %}{% include 'campaigns/map_panel.html' %}{% endif %}
 <div class="campaign-actions campaign-footer-actions article-delete danger-zone">
-{% call modal('delete-entry-modal', _('Delete Campaign…') if is_campaign else _('Delete article…'), _('Delete Campaign?') if is_campaign else _('Delete article?')) %}
+{% call modal('delete-entry-modal', _('Delete article…'), _('Delete article?')) %}
 <form method="post" action="{{ url_for('campaigns.bulk_delete') }}">{{ token() }}
 <input type="hidden" name="campaign_id" value="{{ entry.campaign_id or '' }}">
 <input type="hidden" name="entry_ids" value="{{ entry.id }}">

@@ -2,6 +2,7 @@ import Alpine from 'https://cdn.jsdelivr.net/npm/alpinejs@3.17.4/dist/module.esm
 import itemEditor from './components/item-editor.js';
 import collapseSection from './components/collapse-section.js';
 import pointcrawl from './components/pointcrawl.js';
+import partyMap from './components/party-map.js';
 import materialTree from './components/material-tree.js';
 import campaignModal from './components/campaign-modal.js';
 import newCampaign from './components/new-campaign.js';
@@ -15,6 +16,7 @@ Alpine.data('itemEditor', itemEditor);
 Alpine.data('collapseSection', collapseSection);
 Alpine.data('mobileMenu', mobileMenu);
 Alpine.data('pointcrawl', pointcrawl);
+Alpine.data('partyMap', partyMap);
 Alpine.data('materialTree', materialTree);
 Alpine.data('campaignModal', campaignModal);
 Alpine.data('newCampaign', newCampaign);

@@ -23,10 +23,10 @@ character_create = Blueprint('character_create', __name__)
 @character_create.before_request
 def campaign_character_options():
     """Creating a character for a party: its campaign's backgrounds replace or extend the official ones."""
-    from app.lib.campaign_backgrounds import party_for_code, use_campaign_backgrounds
+    from app.lib.campaign_backgrounds import party_for_code, use_party_backgrounds
     party = party_for_code(request.values.get('party_code'))
     if party is not None:
-        use_campaign_backgrounds(party.campaign)
+        use_party_backgrounds(party)
 
 
 def rebuild_names(names):

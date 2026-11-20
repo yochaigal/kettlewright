@@ -1,9 +1,11 @@
 """Modules: the content a campaign is built from.
 
-A module holds articles, notes, maps and backgrounds. A Warden creates one in a
-campaign (blank or randomly generated), adds one from the Modules Marketplace
-(bundled with Kettlewright in app/modules/<slug>/), or uploads one; any module
-can be edited and exported in the same archive format (docs/campaigns.md).
+A module is a package of parts: maps, articles and backgrounds for now (items,
+missions and more later). Each part has its own section on the module page, its
+own folder in a module archive and its own Markdown type (MODULE_PARTS). A Warden
+creates a module in a campaign (blank or randomly generated), adds one from the
+Modules Marketplace (bundled in app/modules/<slug>/), or uploads one; any module
+can be edited and exported in the same all-Markdown format (docs/campaigns.md).
 """
 import io
 import zipfile
@@ -16,6 +18,16 @@ from app.lib.campaign_import import import_preview, preview_archive
 from app.models import db, Module
 
 BUNDLES = Path(__file__).resolve().parent.parent / 'modules'
+
+# The parts a module packs, in the order pages show them. To add a part (items, missions...):
+# give it a folder and a Markdown type here, a section on the module page, and its import/export.
+MODULE_PARTS = (
+    {'key': 'maps', 'label': _l('Maps'), 'one': _l('map'), 'many': _l('maps'), 'icon': 'fa-map', 'folder': 'maps', 'type': 'Map'},
+    {'key': 'backgrounds', 'label': _l('Backgrounds'), 'one': _l('background'), 'many': _l('backgrounds'),
+     'icon': 'fa-user-gear', 'folder': 'backgrounds', 'type': 'Background'},
+    {'key': 'articles', 'label': _l('Articles'), 'one': _l('article'), 'many': _l('articles'), 'icon': 'fa-file-lines',
+     'folder': 'articles', 'type': None},
+)
 SOURCE = 'https://cairnrpg.com/adventures/first-party/{}/'
 
 # The Modules Marketplace. Each title must equal the `title:` in the bundle's campaign.md (a test checks this).
@@ -44,13 +56,18 @@ def bundle_archive(path):
     return stream.getvalue()
 
 
+def preview_counts(payload):
+    """What a staged module holds, part by part (a map that is only a map is not an article)."""
+    rows = [row for row in payload['rows'] if row['category'] != 'campaign']
+    return {'maps': sum(1 for row in rows if row.get('map') or row['category'] == 'map'),
+            'articles': sum(1 for row in rows if row['category'] not in ('map', 'map_note')),
+            'backgrounds': len(payload.get('backgrounds') or {})}
+
+
 @lru_cache(maxsize=None)
 def bundle_contents(slug):
-    """What the Marketplace says a module holds: articles, maps and backgrounds (counted once)."""
-    payload = preview_archive(bundle_archive(BUNDLES / slug), None)
-    rows = [row for row in payload['rows'] if row['category'] != 'campaign']
-    return {'articles': len(rows), 'maps': sum(1 for row in rows if row.get('map') or row['category'] == 'map'),
-            'backgrounds': len(payload.get('backgrounds') or {})}
+    """What the Marketplace says a module holds, part by part (counted once)."""
+    return preview_counts(preview_archive(bundle_archive(BUNDLES / slug), None))
 
 
 @lru_cache(maxsize=None)
@@ -101,6 +118,15 @@ def add_module(campaign, slug):
 
 
 def module_counts(module):
-    entries = [entry for entry in module.entries]
-    return {'articles': len(entries), 'maps': sum(1 for entry in entries if entry.pointcrawl),
+    """What a module holds, part by part: its maps, its articles (not the maps) and its backgrounds."""
+    from app.lib.campaigns import map_only
+    entries = list(module.entries)
+    return {'maps': sum(1 for entry in entries if entry.pointcrawl),
+            'articles': sum(1 for entry in entries if not map_only(entry) and entry.category != 'map_note'),
             'backgrounds': len(module.backgrounds or {})}
+
+
+def part_badges(counts):
+    """["3 maps", "12 articles"]: the parts a module holds, in MODULE_PARTS order, skipping empty ones."""
+    return [f"{counts[part['key']]} {part['one'] if counts[part['key']] == 1 else part['many']}"
+            for part in MODULE_PARTS if counts.get(part['key'])]

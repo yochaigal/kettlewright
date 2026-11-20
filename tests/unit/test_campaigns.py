@@ -18,7 +18,8 @@ def drawing(text='SECRET DRAWING'):
 
 
 @pytest.mark.parametrize('kind', ['dungeon', 'freeform'])
-def test_drawing_publication_is_explicit_independent_and_revocable(setup, kind):
+def test_revealed_map_shows_its_current_drawing_until_hidden(setup, kind):
+    """No drawing snapshots: a party that was shown the map sees the drawing as it is now."""
     app, client = setup
     map_id, graph = create_map(client, kind=kind, nodes=0 if kind == 'freeform' else 2)
     assert graph['kind'] == kind
@@ -27,20 +28,19 @@ def test_drawing_publication_is_explicit_independent_and_revocable(setup, kind):
     response = client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)})
     assert response.status_code == 200
     graph = response.json
+    assert client.get(f'/party/1/maps/{map_id}/data').status_code == 404  # Not revealed yet.
     assert reveal(client, entry_id).status_code == 302
-    assert client.get(f'/party/1/maps/{map_id}/data').json['drawing']['elements'] == []
-    assert reveal(client, entry_id, version=1, publish_drawing='1', map_version=graph['version']).status_code == 302
-    graph['drawing'] = drawing('CHANGED PRIVATE DRAWING')
+    assert 'SECRET DRAWING' in client.get(f'/party/1/maps/{map_id}/data').get_data(as_text=True)
+    graph['drawing'] = drawing('CHANGED DRAWING')
     assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)}).status_code == 200
-    assert reveal(client, entry_id, version=2, publish_drawing='1', map_version=graph['version']).status_code == 409
     login(client, 2)
     published = client.get(f'/party/1/maps/{map_id}/data')
     assert published.json['kind'] == kind
-    assert 'SECRET DRAWING' in published.get_data(as_text=True)
-    assert 'CHANGED PRIVATE DRAWING' not in published.get_data(as_text=True)
+    assert 'CHANGED DRAWING' in published.get_data(as_text=True)
+    assert 'SECRET DRAWING' not in published.get_data(as_text=True)
     assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)}).status_code == 403
     login(client, 1)
-    assert client.post(f'/materials/{entry_id}/revoke/1', data={'version': 2}).status_code == 302
+    assert client.post(f'/materials/{entry_id}/revoke/1', data={'version': 1}).status_code == 302
     assert client.get(f'/party/1/maps/{map_id}/data').status_code == 404
 
 
@@ -134,8 +134,19 @@ def reveal(client, entry_id, party_id=1, version=0, **extra):
         f'version_{party_id}':version, 'mode':'everything', **extra})
 
 
+def map_page(client, entry_id):
+    """The map editor of an article's map: a map opens there, an article with a map links to it."""
+    page = client.get(f'/materials/{entry_id}/edit', follow_redirects=True).get_data(as_text=True)
+    if 'data-graph=' not in page and (link := re.search(r'href="(/maps/\d+/edit)"', page)):
+        page = client.get(link[1]).get_data(as_text=True)
+    return page
+
+
 def graph_from_article(client, url):
+    """The map data on a map's page. An article with a map (text of its own) links to its map editor."""
     page = client.get(url, follow_redirects=True).get_data(as_text=True)
+    if 'data-graph=' not in page and (link := re.search(r'href="(/maps/\d+/edit)"', page)):
+        page = client.get(link[1]).get_data(as_text=True)
     return json.loads(unescape(re.search(r'data-graph="([^"]+)"', page)[1]))
 
 
@@ -351,9 +362,10 @@ def test_map_reveal_shows_points_and_paths_progress(setup):
         room = db.session.get(PointcrawlMap, map_id).nodes[0].entry.id
     assert reveal(client, room).status_code == 302
     page = client.get(f'/campaigns/1/wiki/{root}/').text
-    assert 'Points of interest revealed: {points} of 2' in page and 'Paths: {paths} of 1' in page
+    assert 'Pins revealed: {points} of 2' in page
     assert '&#34;paths&#34;: 0, &#34;points&#34;: 1' in page  # The campaign's party.
-    assert 'Also show the map drawing' in page
+    assert 'Also show the map drawing' not in page  # A revealed map shows its current drawing.
+    assert 'Reveal map' in page and 'Also reveal its pins' in page
 
 
 def test_map_projection_filters_geometry_and_nested_maps(setup):
@@ -454,15 +466,14 @@ def test_party_deletion_keeps_campaign_originals(setup):
         assert db.session.get(Party,2) is None
 
 
-def test_hide_everything_and_deleting_campaign_removes_materials(setup):
+def test_hiding_from_one_party_and_deleting_campaign_removes_materials(setup):
     app,client=setup
     entry_id=create_entry(client)
     reveal(client,entry_id)
     reveal(client,entry_id,party_id=2)
-    assert client.post('/campaigns/1/hide/1').location=='/campaigns/1/'
-    with app.app_context():  # Party 1's versions are deleted; party 2 keeps its own.
+    assert client.post(f'/materials/{entry_id}/revoke/1',data={'version':1}).status_code==302
+    with app.app_context():  # Hidden from party 1; party 2 still reads it.
         assert [p.party_id for p in PartyPresentation.query.filter_by(entry_id=entry_id)]==[2]
-    assert client.post('/campaigns/1/hide/3').status_code==403  # Not my party.
     login(client,2)
     assert client.get('/party/1/materials/data').json['entries']==[]
     login(client,1)
@@ -520,7 +531,8 @@ def test_templates_and_tools_handoff(setup):
         response=client.get(path)
         assert response.status_code==200, (path,response.get_data(as_text=True))
     map_id,_=create_map(client)
-    assert client.get(f'/maps/{map_id}/edit').location == f'/materials/{map_entry_id(app,map_id)}/edit'
+    assert client.get(f'/materials/{map_entry_id(app,map_id)}/edit').location == f'/maps/{map_id}/edit'  # A map, not an article.
+    assert client.get(f'/maps/{map_id}/edit').status_code == 200
     assert set(client.get('/maps/tables').json)=={'Dungeon','Forest','Realm','NPCGenerator','Names'}
 
 
@@ -576,13 +588,18 @@ def test_map_pois_are_children_not_workspace_locations(setup, kind, campaign_id)
     root_id = map_entry_id(app, map_id)
     workspace = module_url(app, campaign_id)
     html = client.get(workspace).get_data(as_text=True)
-    assert set(map(int, re.findall(r'data-root-entry-id="(\d+)"', html))) == {standalone, root_id}
-    assert set(map(int, re.findall(r'data-child-entry-id="(\d+)"', html))) == {n['entry_id'] for n in graph['nodes'] + graph['edges']}
+    # Maps are listed apart: the map is not in the article tree, its points are articles there.
+    assert f'href="/maps/{map_id}/edit"' in html.split('id="module-articles-title"')[0]
+    roots = set(map(int, re.findall(r'data-root-entry-id="(\d+)"', html)))
+    assert root_id not in roots and standalone in roots
+    assert {n['entry_id'] for n in graph['nodes']} <= roots | set(map(int, re.findall(r'data-child-entry-id="(\d+)"', html)))
     for node in graph['nodes']:
         page = client.get(f'/materials/{node["entry_id"]}/edit').get_data(as_text=True)
-        parents = re.search(r'<nav class="material-parents".*?</nav>', page, re.S)[0]
-        assert f'href="/materials/{root_id}/edit"' in parents
-        assert 'Root map' in parents
+        # Being a point on a map is not a parent: the map is named apart, under Organize.
+        on_map = re.search(r'<p class="organize-fact"><span>On map</span>.*?</p>', page, re.S)[0]
+        assert f'href="/maps/{map_id}/edit"' in on_map
+        assert 'Root map' in on_map
+        assert f'/materials/{root_id}/edit' not in re.search(r'<nav class="material-parents".*?</nav>', page, re.S)[0]
     # A detached original still exists and becomes standalone, as before.
     removed_id = graph['nodes'].pop()['entry_id']
     graph['edges'] = []
@@ -610,10 +627,16 @@ def test_nested_maps_follow_entrance_in_material_hierarchy(setup, kind):
         assert entrance['entry'].id == child_id
         assert [item['entry'].title for item in entrance['children']] == ['Entrance', 'Treasure', 'Secret door']
     html = client.get(module_url(app)).get_data(as_text=True)
-    assert re.findall(r'data-root-entry-id="(\d+)"', html) == [str(root_id)]
-    child_page = client.get(f'/materials/{child_id}/edit').get_data(as_text=True)
-    parents = re.search(r'<nav class="material-parents".*?</nav>', child_page, re.S)[0]
-    assert f'/materials/{root_id}/edit' in parents
+    # The module's Maps list has both maps; its article tree has the entrance (an article with its own map).
+    maps_section = html.split('id="module-articles-title"')[0]
+    assert f'href="/maps/{map_id}/edit"' in maps_section and f'href="/maps/{child_map_id}/edit"' in maps_section
+    assert str(root_id) not in re.findall(r'data-root-entry-id="(\d+)"', html)
+    assert str(child_id) in re.findall(r'data-(?:root|child)-entry-id="(\d+)"', html)
+    child_page = client.get(f'/materials/{child_id}/edit').get_data(as_text=True)  # Text: an article.
+    assert f'href="/maps/{child_map_id}/edit"' in child_page  # Its map.
+    map_editor = client.get(f'/maps/{child_map_id}/edit').get_data(as_text=True)
+    assert 'organize-fact' not in map_editor and 'Map type' not in map_editor  # Maps are just maps.
+    assert 'Edit map' in map_editor and 'Save map' in map_editor and 'name="body"' not in map_editor
 
 
 def test_legacy_hierarchy_cycles_remain_accessible_and_scoped(setup):
@@ -664,8 +687,7 @@ def test_generated_nested_map_is_atomic_private_and_not_duplicated(setup, kind):
     assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(saved)}).status_code == 200
     with app.app_context():
         assert PointcrawlMap.query.count() == 2
-    html = client.get(f'/materials/{root_id}/edit').get_data(as_text=True)
-    assert re.search(fr'value="{child_entry_id}"\s+checked\s+disabled', html)
+    assert f'href="/maps/{nested_id}/edit"' in client.get(f'/materials/{child_entry_id}/edit').get_data(as_text=True)
     assert reveal(client, root_id, title='Region').status_code == 302
     assert reveal(client, saved['nodes'][0]['entry_id'], title='Known dungeon').status_code == 302
     public = client.get('/party/1/materials/data').json['entries']
@@ -684,13 +706,18 @@ def test_automatic_map_relations_include_existing_locations_and_follow_removal(s
     map_id, graph = create_map(client)
     root_id = map_entry_id(app, map_id)
     location_id = graph['nodes'][0]['entry_id']
-    html = client.get(f'/materials/{root_id}/edit').get_data(as_text=True)
-    assert re.search(fr'value="{location_id}"\s+checked\s+disabled', html)
+    html = client.get(f'/materials/{location_id}/edit').get_data(as_text=True)
+    assert re.search(r'<span>On map</span>.*?href="/maps/%d/edit"' % map_id, html, re.S)  # Its map, automatically.
+    with app.app_context():
+        from app.lib.campaigns import map_related_ids
+        assert location_id in map_related_ids(db.session.get(ContentEntry, root_id))
     graph['nodes'] = graph['nodes'][1:]
     graph['edges'] = []
     assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)}).status_code == 200
-    html = client.get(f'/materials/{root_id}/edit').get_data(as_text=True)
-    assert not re.search(fr'value="{location_id}"\s+checked', html)
+    html = client.get(f'/materials/{location_id}/edit').get_data(as_text=True)
+    assert '<span>On map</span>' not in html
+    with app.app_context():
+        assert location_id not in map_related_ids(db.session.get(ContentEntry, root_id))
     assert client.get(f'/materials/{location_id}/edit').status_code == 200
 
 
@@ -876,7 +903,7 @@ def test_rich_map_notes_locations_and_paths_roundtrip(setup):
     assert response.status_code == 302
     map_id = graph_from_article(client,response.location)['id']
     graph = client.get(f'/maps/{map_id}/data').json
-    assert graph['body'] == rich
+    assert graph['body'] == ''  # A map has no text of its own; its points and paths do.
     assert graph['nodes'][0]['body'] == rich
     assert graph['edges'][0]['body'] == rich
 
@@ -1401,11 +1428,11 @@ def test_the_campaign_party_is_on_its_home_and_reveals_go_to_it(setup):
     assert reveal(client, entry_id).status_code == 302
 
     home = client.get('/campaigns/1/').text
-    assert 'campaign-party' in home and 'action="/campaigns/1/hide/1"' in home and 'Manage revealed' in home
+    assert 'campaign-party' in home and 'Manage revealed' not in home and '/hide/' not in home
     assert 'Open party</a>' not in home and 'articles revealed' not in home  # The party's name opens it.
     assert 'invite' not in home.lower()  # Players join with the join code, from their Characters page.
     assert 'SECRET NAME' in client.get('/party/1/wiki/').text  # The party reads the revealed article.
-    assert 'id="revealed-1-dialog"' in home and 'Manage revealed' in home and '>SECRET NAME</a>' in home.split('id="revealed-1-dialog"')[1]
+    assert 'revealed-1-dialog' not in home  # What a party was shown is managed in its party wiki (Hide).
 
 
 
@@ -1579,24 +1606,20 @@ def test_campaigns_page_only_lists_campaigns(setup):
     assert client.get('/materials/wiki/').location.endswith('/campaigns/')
     assert client.post('/materials/new', data={'category': 'note', 'title': 'Loose note'}).status_code == 400
 
-def test_manage_revealed_hides_one_article_or_everything(setup):
+def test_lobby_has_no_manage_revealed_and_hiding_is_in_the_party_wiki(setup):
     app, client = setup
     first, second = create_entry(client, title='First'), create_entry(client, title='Second')
     reveal(client, first)
     reveal(client, second)
     home = client.get('/campaigns/1/').text
-    assert 'Hide everything' not in home.split('id="revealed-1-dialog"')[0]  # Only inside the dialog now.
-    dialog = home.split('id="revealed-1-dialog"')[1].split('</dialog>')[0]
-    assert '>First</a>' in dialog and '>Second</a>' in dialog and 'Party version' not in dialog
-    assert f'action="/materials/{first}/revoke/1"' in dialog and 'action="/campaigns/1/hide/1"' in dialog
+    assert 'Manage revealed' not in home and 'Hide everything' not in home
+    assert client.post('/campaigns/1/hide/1').status_code == 404  # No "hide everything" any more.
+    wiki = client.get('/party/1/wiki/').text
+    assert f'action="/materials/{first}/revoke/1"' in wiki  # Hide, one by one, in the party wiki.
     hidden = client.post(f'/materials/{first}/revoke/1', data={'version': 1, 'return_to': 'campaign'})
-    assert hidden.location.endswith('/campaigns/1/#revealed-1')  # The dialog opens again.
+    assert hidden.location.endswith('/campaigns/1/')
     with app.app_context():
         assert [row.entry_id for row in PartyPresentation.query.filter_by(party_id=1)] == [second]
-    assert client.post('/campaigns/1/hide/1').status_code == 302
-    with app.app_context():
-        assert PartyPresentation.query.filter_by(party_id=1).count() == 0
-    assert 'Nothing from this campaign has been revealed' in client.get('/campaigns/1/').text
 
 
 def test_party_members_edit_party_notes_but_only_the_warden_deletes_them(setup):
@@ -1627,17 +1650,25 @@ def test_party_members_edit_party_notes_but_only_the_warden_deletes_them(setup):
     assert client.post(f'/party/1/notes/{note_id}/delete').status_code == 302
 
 
-def test_official_backgrounds_toggle_saves_in_place(setup):
+def test_party_backgrounds_are_set_on_the_party_page(setup):
+    """The Warden sets a party's backgrounds in its Characters section, saved in place; the lobby has none."""
     app, client = setup
-    lobby = client.get('/campaigns/1/').text
-    assert 'id="official-backgrounds-form"' in lobby and 'onchange="this.form.requestSubmit()"' not in lobby
-    response = client.post('/campaigns/1/backgrounds', data={'version': 1}, headers={'Accept': 'application/json'})
+    renderable_party_page(app)
+    assert 'backgrounds' not in client.get('/campaigns/1/').text.split('<main')[-1].lower().split('modules')[0]
+    page = client.get('/users/user1/parties/party1/').text
+    assert 'id="party-backgrounds-form"' in page and 'Offer the official Cairn backgrounds' in page
+    assert page.index('id="characters"') < page.index('id="party-backgrounds-button"') < page.index('id="procedures"')
+    assert page.index('<dialog class="create-dialog backgrounds-dialog"') < page.index('id="party-backgrounds-form"')
+    response = client.post('/party/1/backgrounds', data={}, headers={'Accept': 'application/json'})
     assert response.status_code == 200
-    assert response.json['version'] == 2 and response.json['fallback'] is True and response.json['customized'] is True
+    assert response.json['fallback'] is True and response.json['customized'] is True
     assert 'Aurifex' in response.json['offered']  # No module backgrounds: the official ones are still offered.
-    response = client.post('/campaigns/1/backgrounds', data={'version': 2, 'official': '1'}, headers={'Accept': 'application/json'})
-    assert response.json == {**response.json, 'version': 3, 'fallback': False, 'customized': False}
-    assert client.post('/campaigns/1/backgrounds', data={'version': 2}, headers={'Accept': 'application/json'}).status_code == 409
+    response = client.post('/party/1/backgrounds', data={'official': '1'}, headers={'Accept': 'application/json'})
+    assert response.json['fallback'] is False and response.json['customized'] is False
+    login(client, 2)  # A member sees no button, no settings, and cannot change them.
+    member_page = client.get('/users/user1/parties/party1/').text
+    assert 'id="party-backgrounds-button"' not in member_page and 'id="party-backgrounds-form"' not in member_page
+    assert client.post('/party/1/backgrounds', data={}).status_code == 403
 
 
 def test_module_cards_have_no_read_button(setup):
@@ -1646,3 +1677,131 @@ def test_module_cards_have_no_read_button(setup):
     lobby = client.get('/campaigns/1/').text
     cards = lobby[lobby.index('class="campaign-module-cards"'):lobby.index('</ul>', lobby.index('class="campaign-module-cards"'))]
     assert '/wiki/"' in cards and '> Read</a>' not in cards and '> Edit</a>' in cards and '> Export</a>' in cards
+
+
+# ----- Party map: fog and pins (#467) -----
+
+def test_party_map_button_lists_or_opens_revealed_maps(setup):
+    app, client = setup
+    renderable_party_page(app)
+    assert 'id="party-map-link"' in client.get('/users/user1/parties/party1/').text
+    assert 'No map has been revealed' in client.get('/party/1/map/').text
+    map_id, graph = create_map(client)
+    assert client.get(f'/party/1/map/{map_id}/').status_code == 404  # Not revealed yet.
+    reveal(client, map_entry_id(app, map_id))
+    assert client.get('/party/1/map/').location.endswith(f'/party/1/map/{map_id}/')  # One map: open it.
+    second_id, _ = create_map(client, title='Second map')
+    reveal(client, map_entry_id(app, second_id))
+    page = client.get('/party/1/map/').text
+    assert f'/party/1/map/{map_id}/' in page and f'/party/1/map/{second_id}/' in page
+    login(client, 2)  # A member.
+    view = client.get(f'/party/1/map/{map_id}/').text
+    assert 'x-data="partyMap"' in view and 'Add pin' in view and 'Cover all' not in view  # No fog tools for players.
+    login(client, 3)  # Not in party 1.
+    assert client.get(f'/party/1/map/{map_id}/').status_code == 403
+
+
+def test_warden_uncovers_fog_per_party(setup):
+    import json as json_module
+    app, client = setup
+    map_id, graph = create_map(client)
+    reveal(client, map_entry_id(app, map_id))
+    assert 'Cover all' in client.get(f'/party/1/map/{map_id}/').text
+    post = lambda operation, version: client.post(f'/party/1/map/{map_id}/fog',
+        data={'payload': json_module.dumps({'operation': operation, 'fog_version': version})})
+    covered = post({'id': 'a1', 'type': 'hide_all'}, 0)
+    assert covered.status_code == 200 and covered.json['fog']['enabled'] and covered.json['fog_version'] == 1
+    brush = {'id': 'a2', 'type': 'reveal', 'radius': 50, 'points': [[10, 10], [40, 20]]}
+    assert post(brush, 1).json['fog']['strokes'][0]['type'] == 'reveal'
+    assert post(brush, 2).json['fog_version'] == 2  # A retried operation is applied once.
+    assert post({'id': 'a3', 'type': 'undo'}, 0).status_code == 409  # Stale version.
+    login(client, 2)
+    state = client.get(f'/party/1/map/{map_id}/state').json
+    assert state['fog']['enabled'] and len(state['fog']['strokes']) == 1  # Players get the party's fog.
+    assert post({'id': 'b1', 'type': 'disable'}, 2).status_code == 403  # Only the Warden.
+
+
+def test_party_members_add_pins_and_only_the_warden_deletes_them(setup):
+    app, client = setup
+    map_id, graph = create_map(client)
+    reveal(client, map_entry_id(app, map_id))
+    login(client, 2)
+    added = client.post(f'/party/1/map/{map_id}/pins', data={'x': '120.5', 'y': '-40', 'title': 'Our camp', 'body': 'Safe *here*'})
+    assert added.status_code == 200
+    pin = added.json['pins'][0]
+    assert (pin['x'], pin['y'], pin['title']) == (120.5, -40.0, 'Our camp') and '<em>here</em>' in pin['html']
+    with app.app_context():
+        note = db.session.get(ContentEntry, pin['note_id'])
+        assert note.category == 'party_note' and note.owner_id == 1 and note.presentations[0].party_id == 1
+    assert 'Our camp' in client.get('/party/1/wiki/').text  # Pins are party notes.
+    assert client.get(pin['edit_url']).status_code == 200  # Members edit them.
+    assert client.post(f'/party/1/map/{map_id}/pins', data={'x': 'nan', 'y': '0', 'title': 'Bad'}).status_code == 400
+    assert client.post(f"/party/1/map/{map_id}/pins/{pin['id']}/delete").status_code == 403
+    login(client, 3)  # Another party's player.
+    assert client.post(f'/party/1/map/{map_id}/pins', data={'x': '0', 'y': '0', 'title': 'Nope'}).status_code == 403
+    assert client.get(f'/party/2/map/{map_id}/state').status_code == 404  # Not revealed to party 2.
+    login(client, 1)
+    assert client.post(f"/party/1/map/{map_id}/pins/{pin['id']}/delete").json['pins'] == []
+    with app.app_context():
+        assert db.session.get(ContentEntry, pin['note_id']) is None
+
+
+def test_module_parts_are_counted_apart(setup):
+    """A module packs parts (maps, articles, backgrounds): a map is never counted as an article."""
+    from app.lib.modules import module_counts, part_badges
+    app, client = setup
+    create_entry(client)
+    create_map(client, nodes=2)
+    with app.app_context():
+        from app.models import Module
+        counts = module_counts(Module.query.first())
+        assert counts == {'maps': 1, 'articles': 4, 'backgrounds': 0}  # The note, two rooms and their path.
+        assert part_badges(counts) == ['1 map', '4 articles']
+    assert '1 map · 4 articles' in client.get('/campaigns/1/').text
+
+
+def test_map_pins_are_map_notes_kept_apart_from_articles(setup):
+    """A pin added on a map is a map note: saved with the map, not listed with the articles, gone with its pin."""
+    app, client = setup
+    map_id, graph = create_map(client, nodes=0, kind='freeform')
+    graph['nodes'].append({'id': 'new-pin-1', 'number': 1, 'x': 120, 'y': 80, 'title': 'Old well',
+                           'body': 'Something hums below.', 'category': 'map_note', 'content_changed': True})
+    saved = client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)}).json
+    assert [(n['title'], n['category'], n['x']) for n in saved['nodes']] == [('Old well', 'map_note', 120)]
+    page = client.get(f'/maps/{map_id}/edit').get_data(as_text=True)
+    assert 'Add pin' in page and 'map-pins-title' in page
+    for gone in ('Center drawing', 'Select / resize', 'How to draw', 'Add path', 'Map type'):
+        assert gone not in page
+    module = client.get(module_url(app)).get_data(as_text=True)
+    assert 'Old well' not in module.split('id="module-articles-title"')[1]  # Not an article.
+    assert '1 pins' in module.split('id="module-articles-title"')[0]
+    saved['nodes'] = []
+    assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(saved)}).status_code == 200
+    with app.app_context():
+        assert ContentEntry.query.filter_by(title='Old well').count() == 0  # Its note went with the pin.
+
+
+def test_party_notes_hold_a_drawing_below_their_text(setup):
+    """A party note can have a sketch: drawn in its editor (members too), read below its text in the party wiki."""
+    app, client = setup
+    assert client.post('/party/1/notes', data={'title': 'Cellar layout', 'body': 'Two doors.'}).status_code == 302
+    with app.app_context():
+        note = ContentEntry.query.filter_by(title='Cellar layout').one()
+        note_id, version = note.id, note.version
+    editor = client.get(f'/party/1/notes/{note_id}/edit').get_data(as_text=True)
+    assert 'class="note-sketch"' in editor and 'data-form="party-note-form"' in editor and 'Add pin' not in editor
+    form = {'version': version, 'title': 'Cellar layout', 'body': 'Two doors.', 'drawing': json.dumps(drawing('THE CELLAR'))}
+    assert client.post(f'/party/1/notes/{note_id}/edit', data=form).status_code == 302
+    with app.app_context():
+        assert db.session.get(ContentEntry, note_id).drawing['elements'][0]['text'] == 'THE CELLAR'
+    login(client, 2)  # A member reads it below the text.
+    page = client.get(f'/party/1/materials/{note_id}').get_data(as_text=True)
+    assert 'class="note-sketch"' in page and 'THE CELLAR' in page and 'data-editing="false"' in page
+    with app.app_context():
+        version = db.session.get(ContentEntry, note_id).version
+    bad = {'version': version, 'title': 'Cellar layout', 'body': 'Two doors.', 'drawing': '{broken'}
+    assert client.post(f'/party/1/notes/{note_id}/edit', data=bad).status_code == 400
+    no_change = {'version': version, 'title': 'Cellar layout', 'body': 'Two doors, one locked.'}
+    assert client.post(f'/party/1/notes/{note_id}/edit', data=no_change).status_code == 302
+    with app.app_context():
+        assert db.session.get(ContentEntry, note_id).drawing['elements'][0]['text'] == 'THE CELLAR'  # Kept.

@@ -132,8 +132,9 @@ def test_import_export_preserves_relative_paths_and_renamed_bindings(setup):
         export_url = f'/campaigns/{source.campaign_id}/modules/{source.module_id}/export'
     response = client.get(export_url)
     with zipfile.ZipFile(io.BytesIO(response.data)) as exported:
-        manifest = json.loads(exported.read('manifest.json'))
-        assert len(manifest['references']) == 2
+        assert 'manifest.json' not in exported.namelist()  # Each file carries its own metadata.
+        letter = next(exported.read(name).decode() for name in exported.namelist() if 'title: Letter' in exported.read(name).decode())
+        assert letter.count(': article-') >= 2 and 'references:' in letter  # Both link texts, bound by id.
         assert 'places/Village.md' in exported.namelist()
     with app.app_context():
         payload = preview_archive(response.data)

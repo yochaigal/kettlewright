@@ -318,11 +318,11 @@ def new_character():
         portrait_src = ps
     custom_image = request.args.get("custom_image")
     # Created for a party: its campaign's backgrounds, and the character joins it on save.
-    from app.lib.campaign_backgrounds import party_for_code, use_campaign_backgrounds
+    from app.lib.campaign_backgrounds import party_for_code, use_party_backgrounds
     code = (request.args.get('party') or '').strip()
     party = party_for_code(code)
     if party is not None:
-        use_campaign_backgrounds(party.campaign)
+        use_party_backgrounds(party)
         form = CharacterForm()
         form.party_code.data = party.join_code
     custom_fields = {}

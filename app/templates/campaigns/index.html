@@ -1,11 +1,12 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import token, page_header with context %}
+{% from 'campaigns/forms.html' import token with context %}
 {% block workspace %}
-<div x-data="{}">
-{% call page_header(_('Campaigns'), class_='index-header') %}
-<button type="button" class="primary" aria-haspopup="dialog" @click="$refs.createDialog.showModal()">{{ _('New campaign') }}</button>
-{% endcall %}
-{# A campaign starts with its party; modules (articles, notes, maps, backgrounds) are added inside it. #}
+{# Like the characters page: the actions on one row, no page title. #}
+<div class="characters-page-header campaigns-page-header" x-data="{}">
+  <span class="characters-create-actions">
+    <button type="button" class="is-new" aria-haspopup="dialog" @click="$refs.createDialog.showModal()">{{ _('New campaign') }}</button>
+  </span>
+{# A campaign starts with its party; modules (maps, backgrounds, articles) are added inside it. #}
 <dialog class="create-dialog" x-ref="createDialog" @close="$refs.createDialog.querySelector('form').reset()" aria-labelledby="create-title">
 <h2 id="create-title">{{ _('New campaign') }}</h2>
 <form method="post" action="{{ url_for('campaigns.index') }}">{{ token() }}
@@ -15,7 +16,6 @@
 </form>
 </dialog>
 </div>
-<p>{{ _('Everything lives in a campaign: its parties, its modules (articles, maps and backgrounds) and its wiki.') }}</p>
 
 <div class="campaign-gallery-page" x-data="materialTree">
 {% if campaigns|length > 3 %}
@@ -26,7 +26,6 @@
 {% endif %}
 
 <div class="gallery-main">
-<h3 class="gallery-heading">{{ _('My campaigns') }} <small>{{ campaigns|length }}</small></h3>
 {% if campaigns %}
 <ul class="campaign-gallery">
 {% for campaign in campaigns %}

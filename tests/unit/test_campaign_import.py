@@ -135,16 +135,21 @@ def test_downloadable_example_imports_complete_hierarchy(setup):
     assert response.status_code == 200
     assert response.mimetype == 'application/zip'
     assert 'attachment' in response.headers['Content-Disposition']
+    with zipfile.ZipFile(io.BytesIO(response.data)) as example:
+        assert {name.split('/')[0] for name in example.namelist()} == {'module.md', 'maps', 'articles', 'backgrounds'}
     preview = upload(client, response.data)
     html = preview.get_data(as_text=True)
-    assert 'Module / My Campaign / My Dungeon' in html
+    assert 'Module / Alderbridge' in html
+    # The preview lists the module's parts apart.
+    assert '2 maps · 1 background · 4 articles' in html
+    assert html.index('class="import-maps"') < html.index('class="import-preview"') and 'Tidewatcher</strong>' in html
+    assert html.count('name="target_campaign"') == 1
     token = re.search(r'name="preview_id" value="([a-f0-9]+)"', html).group(1)
     assert confirm(client, token).status_code == 302
     with app.app_context():
-        room = ContentEntry.query.filter_by(title='The Cellar').one()
-        assert room.parent.title == 'My Dungeon'
-        assert room.campaign_id == 1 and room.module.title == 'My Campaign'
-        assert room.parent.pointcrawl.kind == 'dungeon'
+        mara = ContentEntry.query.filter_by(title='Mara the Ferryman').one()
+        assert mara.parent.title == 'Alderbridge' and mara.campaign_id == 1 and mara.module.title == 'The Ashen Marches'
+        assert ContentEntry.query.filter_by(title='The Sunken Abbey').one().pointcrawl.kind == 'dungeon'
 
 
 @pytest.mark.parametrize('kind',['zip','tar'])
@@ -382,7 +387,7 @@ def test_module_front_page_and_adding_files_to_a_module(setup):
     app, client = setup
     html = client.post('/materials/import-archive',
         data={'archive': (io.BytesIO(md('Solo', 'Module').encode()), 'solo.md')}).get_data(as_text=True)
-    assert 'Destination: Module' in html
+    assert 'Front page</strong> · solo.md · becomes an Overview article' in html
     assert confirm(client, preview_token(html)).status_code == 302
     with app.app_context():
         overview = ContentEntry.query.filter_by(title='Solo').one()

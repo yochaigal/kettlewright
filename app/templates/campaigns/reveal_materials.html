@@ -12,11 +12,7 @@
 {% for party in parties %}<label class="campaign-check"><input type="checkbox" name="party_ids" value="{{ party.id }}"> {{ party.name|markdown_inline }}</label>{% endfor %}
 </fieldset>
 <p>{{ _('Each party reads the articles themselves; when you edit one, they read the new text.') }}</p>
-{% if entries|selectattr('pointcrawl')|list %}
-<fieldset><legend>{{ _('Map drawing') }}</legend>
-<label class="campaign-check"><input type="checkbox" name="publish_drawing" value="1"> {{ _('Also show the map drawings: every mark, text and image on them') }}</label>
-<p class="import-hint">{{ _('Leave unchecked to keep the drawings each party already has.') }}</p>
-</fieldset>
+{% if entries|selectattr('pointcrawl')|list %}<p class="import-hint">{{ _('Maps are shown with their drawing as it is now; later changes to it reach the party too.') }}</p>
 {% endif %}
 <p class="reveal-replaces">{{ _('If a party already sees one of these articles, what it sees is replaced.') }}</p>
 <div class="campaign-actions"><button type="submit" class="reveal-submit">{{ _('Reveal %(count)s articles', count=entries|length) }}</button></div>

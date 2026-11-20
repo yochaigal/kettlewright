@@ -23,8 +23,6 @@ class Campaign(Versioned, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
     name = db.Column(db.String(200), nullable=False)
-    # Its parties choose from the official backgrounds (unless False) and its modules' backgrounds.
-    official_backgrounds = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
     owner = db.relationship('User', backref=db.backref('campaigns', cascade='all, delete-orphan'))
     # Its parties (several at once for a West Marches game), created in it; the first comes with the
     # campaign. A party can be deleted, or moved to another of the Warden's campaigns.
@@ -61,6 +59,8 @@ class ContentEntry(Versioned, db.Model):
     category = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(200), nullable=False, default='')
     body = db.Column(db.Text, nullable=False, default='')
+    # A party note's sketch (Excalidraw, like a map's drawing), below its text.
+    drawing = db.Column(db.JSON, nullable=True)
     source_path = db.Column(db.String(500), nullable=False, default='', server_default='')
     reference_key = db.Column(db.String(32), nullable=False, unique=True, default=lambda: uuid4().hex)
     references = db.Column(db.JSON, nullable=False, default=dict, server_default='{}')
@@ -97,9 +97,27 @@ class PartyPresentation(Versioned, db.Model):
     references = db.Column(db.JSON, nullable=False, default=dict, server_default='{}')
     path_type = db.Column(db.String(20), nullable=False, default='standard')
     published = db.Column(db.Boolean, nullable=False, default=True)
-    drawing = db.Column(db.JSON, nullable=True)
+    # For a map: this party's fog over the drawing (whiteboard format), uncovered by the Warden.
+    fog = db.Column(db.JSON, nullable=True)
+    fog_version = db.Column(db.Integer, nullable=False, default=0, server_default='0')
     party = db.relationship('Party', backref=db.backref('content_presentations', cascade='all, delete-orphan'))
     __table_args__ = (db.UniqueConstraint('entry_id', 'party_id', name='uq_presentation_entry_party'),)
+
+
+class MapPin(db.Model):
+    """A pin a party placed on a revealed map: a party note (title and text) with a position."""
+    __tablename__ = 'map_pins'
+    id = db.Column(db.Integer, primary_key=True)
+    map_id = db.Column(db.Integer, db.ForeignKey('pointcrawl_maps.id', ondelete='CASCADE'), nullable=False)
+    party_id = db.Column(db.Integer, db.ForeignKey('parties.id', ondelete='CASCADE'), nullable=False)
+    entry_id = db.Column(db.Integer, db.ForeignKey('content_entries.id', ondelete='CASCADE'), nullable=False, unique=True)
+    x = db.Column(db.Float, nullable=False)
+    y = db.Column(db.Float, nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
+    created_at = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
+    entry = db.relationship('ContentEntry', backref=db.backref('pin', uselist=False, cascade='all, delete-orphan'))
+    party = db.relationship('Party', backref=db.backref('map_pins', cascade='all, delete-orphan'))
+    __table_args__ = (db.Index('ix_map_pins_map_party', 'map_id', 'party_id'),)
 
 
 class PointcrawlMap(Versioned, db.Model):
@@ -112,6 +130,7 @@ class PointcrawlMap(Versioned, db.Model):
     nodes = db.relationship('MapNode', foreign_keys='MapNode.map_id', cascade='all, delete-orphan', backref='map')
     edges = db.relationship('MapEdge', cascade='all, delete-orphan', backref='map')
     entrances = db.relationship('MapNode', foreign_keys='MapNode.nested_map_id', backref='nested_map')
+    pins = db.relationship('MapPin', cascade='all, delete-orphan', backref='map')
 
 
 class MapNode(db.Model):

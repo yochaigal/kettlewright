@@ -102,11 +102,11 @@ def test_publication_supports_all_owned_parties(setup):
     assert reveal(client, entry_id, party_id=3).status_code == 403
 
 
-def test_hiding_a_campaign_revokes_publications(setup):
+def test_hiding_an_article_revokes_its_publication(setup):
     app, client = setup
     entry_id = create_entry(client)
     assert reveal(client, entry_id, party_id=2).status_code == 302
-    assert client.post('/campaigns/1/hide/2').status_code == 302
+    assert client.post(f'/materials/{entry_id}/revoke/2', data={'version': 1}).status_code == 302
     with app.app_context():
         assert PartyPresentation.query.filter_by(entry_id=entry_id, party_id=2).count() == 0
     login(client, 3)

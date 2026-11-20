@@ -186,7 +186,7 @@ def test_oversized_map_file_rejected():
 def test_hand_drawn_example_imports(setup):
     from pathlib import Path
     app, _ = setup
-    folder = Path(__file__).resolve().parents[2] / 'docs/examples/hand-drawn-campaign'
+    folder = Path(__file__).resolve().parents[2] / 'docs/examples/hand-drawn-module'
     files = {str(path.relative_to(folder)): path.read_text() for path in folder.rglob('*') if path.is_file()}
     preview = preview_archive(archive(files))
     assert preview['errors'] == []

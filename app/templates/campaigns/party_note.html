@@ -13,6 +13,9 @@
   <textarea id="party-note-edit-body" name="body" rows="12" maxlength="50000">{{ entry.body }}</textarea>
   <p class="import-hint">{{ _('Every member of %(party)s can read and edit this note.', party=party.name) }}</p>
 </form>
+{# Below the text: a sketch, drawn like a map (members can draw too). #}
+{% set sketch_drawing, sketch_editing, sketch_form = entry.drawing, true, 'party-note-form' %}
+{% include 'campaigns/sketch.html' %}
 {# At the bottom, as in the article editor. Only the Warden deletes notes. #}
 {% if is_warden %}
 <div class="campaign-actions campaign-footer-actions">

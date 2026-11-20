@@ -1,5 +1,6 @@
 """Bounded archive parsing. Never extract paths or resolve references outside a batch."""
 import io
+import re
 import stat
 import tarfile
 import zipfile
@@ -13,7 +14,7 @@ from app.lib.campaigns import CATEGORIES, MAP_KINDS, PATH_TYPES
 from app.lib.rich_content import normalize_content
 from app.lib.campaign_map_import import prepare_maps
 from app.lib.article_references import prepare_archive_references
-from app.lib.campaign_backgrounds import BackgroundError, add_backgrounds, background_from_markdown, parse_backgrounds
+from app.lib.campaign_backgrounds import BackgroundError, add_backgrounds, background_from_markdown
 
 MAX_ARCHIVE = 50 * 1024 * 1024
 MAX_TOTAL = 100 * 1024 * 1024
@@ -34,6 +35,9 @@ _INFERABLE_ERRORS = frozenset({
 
 class ImportError(ValueError):
     pass
+
+
+MAP_BLOCK = re.compile(r'^```kettlewright-map[ \t]*\n(.*?)\n```[ \t]*$', re.M | re.S)
 
 
 def archive_files(data):
@@ -60,7 +64,8 @@ def archive_files(data):
                     raise ImportError(f'Links and special files are not supported: {name}')
                 size = member.file_size if zipped else member.size
                 total += size
-                is_map = path.suffix.lower() in ('.json', '.excalidraw') and path.name != 'manifest.json'
+                is_map = ((path.suffix.lower() in ('.json', '.excalidraw') and path.name != 'manifest.json')
+                          or (path.suffix.lower() == '.md' and 'maps' in path.parts[:-1]))  # A map file (format 2).
                 limit = MAX_MAP_FILE if is_map else MAX_FILE
                 if size > limit or total > MAX_TOTAL:
                     raise ImportError('Files exceed the 512 KB Markdown/attachment, 16 MB map or 100 MB total limit.')
@@ -88,19 +93,33 @@ def parse_markdown(name, text):
     if end is None:
         raise ImportError('Unclosed Front Matter.')
     header = '\n'.join(lines[1:end])
-    if len(header) > 8192:
-        raise ImportError('Front Matter exceeds 8 KB.')
+    if len(header) > 65536:
+        raise ImportError('Front Matter exceeds 64 KB.')
     try:
-        # This contract is a flat mapping of scalar strings, not arbitrary YAML.
+        # This contract is a flat mapping of scalar strings, not arbitrary YAML. Only links (a list of
+        # ids) and references (link text: id) hold more, and only plain strings.
         node = yaml.compose(header, Loader=yaml.BaseLoader)
         if not isinstance(node, yaml.MappingNode):
             raise ImportError('Front Matter must be a mapping.')
-        metadata = {}
+        metadata, links, references = {}, [], {}
         for key, value in node.value:
-            if not isinstance(key, yaml.ScalarNode) or not isinstance(value, yaml.ScalarNode):
+            if not isinstance(key, yaml.ScalarNode):
                 raise ImportError('Front Matter values must be plain strings.')
-            if key.value in metadata:
+            if key.value in metadata or (key.value == 'links' and links) or (key.value == 'references' and references):
                 raise ImportError(f'Duplicate metadata key: {key.value}')
+            if key.value == 'links' and isinstance(value, yaml.SequenceNode):
+                if len(value.value) > 1000 or not all(isinstance(item, yaml.ScalarNode) for item in value.value):
+                    raise ImportError('links must be a list of ids.')
+                links = [item.value.strip() for item in value.value]
+                continue
+            if key.value == 'references' and isinstance(value, yaml.MappingNode):
+                if len(value.value) > 1000 or not all(isinstance(k, yaml.ScalarNode) and isinstance(v, yaml.ScalarNode)
+                                                      for k, v in value.value):
+                    raise ImportError('references must map link text to ids.')
+                references = {k.value: v.value.strip() for k, v in value.value}
+                continue
+            if not isinstance(value, yaml.ScalarNode):
+                raise ImportError('Front Matter values must be plain strings.')
             metadata[key.value] = value.value.strip()
     except (yaml.YAMLError, RecursionError) as exc:
         raise ImportError('Invalid YAML Front Matter.') from exc
@@ -109,6 +128,8 @@ def parse_markdown(name, text):
             raise ImportError(f'Missing {key}.')
     if metadata['layout'] != 'default':
         raise ImportError('layout must be default.')
+    if metadata.get('format') and (metadata['format'] != 'kettlewright-module' or metadata.get('version') not in ('1', '2')):
+        raise ImportError('Unsupported module format or version.')
     if len(metadata['title']) > 200:
         raise ImportError('Title exceeds 200 characters.')
     kind = metadata['type'].casefold()
@@ -119,9 +140,21 @@ def parse_markdown(name, text):
     aliases.update({'location': 'custom', 'locations': 'custom', 'article': 'custom', 'gear': 'item', 'weapon': 'item', 'weapons': 'item', 'armor': 'item'})
     # A module's front page: type Campaign, or Module. Backgrounds are character options, not articles.
     category = ('campaign' if kind in ('campaign', 'module') else 'background' if kind in ('background', 'backgrounds')
-                else 'map' if kind in MAP_KINDS else aliases.get(kind))
+                else 'map' if kind in MAP_KINDS or kind == 'map' else aliases.get(kind))
     if category is None:
         raise ImportError(f'Unknown type: {metadata["type"]}')
+    map_block = None
+    if kind == 'map':
+        # A map file (format 2): type: Map, map_type, and its points, paths and drawing in one fenced block.
+        kind = metadata.get('map_type', 'freeform').casefold()
+        if kind not in MAP_KINDS:
+            raise ImportError(f'Unknown map_type: {metadata.get("map_type")}')
+        blocks = MAP_BLOCK.findall('\n'.join(lines[end + 1:]))
+        if len(blocks) > 1:
+            raise ImportError('A map file has one kettlewright-map block.')
+        map_block = blocks[0] if blocks else None
+    elif metadata.get('article'):
+        raise ImportError('article belongs to a map file (type: Map).')
     if category == 'campaign' and metadata.get('parent'):
         raise ImportError('A Campaign cannot have a parent.')
     if category == 'campaign' and metadata.get('parent_id'):
@@ -135,9 +168,10 @@ def parse_markdown(name, text):
     if len(source_path) > 500 or path.is_absolute() or '..' in path.parts or any(c in source_path for c in ('\\', ':', '\x00')):
         raise ImportError('Invalid source_path.')
     try:
-        # A background's body is its own small format (campaign_backgrounds), read as written.
+        # A background's body is its own small format (campaign_backgrounds), read as written. A map file's
+        # body is its map: maps have no text of their own.
         body = '\n'.join(lines[end + 1:]).strip()
-        body = body if category == 'background' else normalize_content(body)
+        body = '' if kind_is_map_file(metadata) else body if category == 'background' else normalize_content(body)
     except HTTPException as exc:
         raise ImportError(exc.description) from exc
     return {'file': name, 'title': metadata['title'], 'type': metadata['type'],
@@ -147,8 +181,15 @@ def parse_markdown(name, text):
             'is_heart': metadata.get('heart', 'false').casefold() == 'true',
             'path_type': metadata.get('path_type', 'standard'),
             'map_file': metadata.get('map', ''),
+            'map_block': map_block, 'attach_to': metadata.get('article', ''),
+            'format_version': metadata.get('version', '') if category == 'campaign' and metadata.get('format') else '',
+            'links': links, 'reference_ids': references,
             'source_path': str(path),
             'body': body}
+
+
+def kind_is_map_file(metadata):
+    return metadata['type'].casefold() == 'map'
 
 
 def infer_metadata(name, text):
@@ -215,15 +256,8 @@ def preview_files(entries, owner_id=None):
             ignored.append(name)
             continue
         if is_backgrounds_file(name):
-            # Modules can bring character options: backgrounds/*.json or backgrounds.json.
-            try:
-                found = parse_backgrounds(text, name)
-            except BackgroundError as exc:
-                errors.append(str(exc))
-                continue
-            for title in set(found) & set(backgrounds):
-                errors.append(f'{name}: background "{title}" is defined twice.')
-            backgrounds.update(found)
+            # Backgrounds are Markdown files (type: Background), like everything people write.
+            errors.append(f'{name}: backgrounds are Markdown files (type: Background), not JSON.')
             continue
         if PurePosixPath(name).suffix.lower() != '.md':
             continue
@@ -251,6 +285,27 @@ def preview_files(entries, owner_id=None):
             rows.append(row)
             warnings.append(f'{name}: No metadata found. Defaults applied: '
                             f'title "{row["title"]}", type "{row["type"]}". You can change them below.')
+    if any(row.get('format_version') == '2' for row in rows):
+        # Format 2: only map files (type: Map) are maps. A Realm, Dungeon or Forest article is an article
+        # (older archives made every such article a map).
+        for row in rows:
+            if row['category'] == 'map' and row['type'].casefold() != 'map':
+                row['category'] = row['kind'] if row['kind'] != 'freeform' else 'topography'
+    # Format 2 map files: the block is the map; a map of an article (article: id) goes on that article.
+    by_id = {row['id']: row for row in rows if row['id']}
+    for row in list(rows):
+        if row.get('map_block') is not None:
+            virtual = f'{row["file"]}#map'
+            files[virtual], row['map_block'] = row['map_block'], None  # Read once, from files, like a sidecar.
+            if row['attach_to']:
+                target = by_id.get(row['attach_to'])
+                if target is None or target['category'] in ('campaign', 'map') or target.get('map_file'):
+                    errors.append(f'{row["file"]}: article "{row["attach_to"]}" is missing or already has a map.')
+                else:
+                    target['map_file'] = virtual
+                rows.remove(row)
+            else:
+                row['map_file'] = virtual
     if not rows and not backgrounds and not errors:
         errors.append('No Markdown files found.')
     titles, ids = {}, {}
@@ -320,7 +375,11 @@ def preview_files(entries, owner_id=None):
             if row['parent'] is None:
                 show(i)
     payload = {'rows': rows, 'order': order, 'display': display, 'errors': errors, 'warnings': warnings, 'ignored': ignored,
-               'backgrounds': backgrounds}
+               'backgrounds': backgrounds,
+               # Links and [[link]] targets written in each file's front matter (format 2), by id.
+               'front_links': [{'source': row['id'], 'target': target} for row in rows for target in row.get('links', [])],
+               'front_references': [{'source': row['id'], 'token': token, 'target': target}
+                                    for row in rows for token, target in row.get('reference_ids', {}).items()]}
     if not errors and rows:
         try:
             prepare_maps(payload, files)
@@ -403,6 +462,8 @@ def import_preview(payload, owner_id, into=None, slug='', module=None, name=''):
                                          drawing=graph['drawing'] if graph else None))
             if row['kind'] != 'freeform':
                 entry.category = row['kind']
+            elif row['category'] == 'map':
+                entry.category = 'topography'
         objects[i] = entry
     # Create all articles and canvases before resolving graph references. Archive
     # identifiers are never interpreted as existing database identifiers.

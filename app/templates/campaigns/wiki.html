@@ -117,6 +117,14 @@
         <input id="wiki-search" type="search" x-model="query" @input="filter()" placeholder="{{ _('Search by title or type') }}">
       </div>
       <p x-show="filtering && !matches" x-cloak class="wiki-empty">{{ _('No matching articles.') }}</p>
+      {# Maps apart from articles: they open on their own page (for a party: with its fog and pins). #}
+      {% if maps %}
+      <nav class="wiki-maps" aria-labelledby="wiki-maps-title">
+        <h2 id="wiki-maps-title"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Maps') }}</h2>
+        <ul>{% for item in maps %}<li data-tree-row data-search="{{ item.title|lower }}"><a href="{{ item.url }}" {% if entry and not party and entry.id == item.id %}aria-current="page"{% endif %}>{{ item.title|markdown_inline }}</a></li>{% endfor %}</ul>
+      </nav>
+      {% endif %}
+      <h2 class="wiki-articles-title"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> {{ _('Articles') }}</h2>
       <div class="wiki-tree">{{ wiki_tree(hierarchy) }}</div>
     </aside>
 
@@ -132,16 +140,18 @@
       <header class="wiki-header">
         <div>
           <h1>{{ article_title(entry) }}</h1>
-          <span class="wiki-badges"><span class="wiki-badge">{{ type_label(entry) }}</span>{% if entry.is_heart %}<span class="wiki-badge wiki-badge-heart">{{ _('Heart') }}</span>{% endif %}
+          <span class="wiki-badges"><span class="wiki-badge">{% if is_map %}{{ _('Map') }}{% else %}{{ type_label(entry) }}{% endif %}</span>{% if entry.is_heart %}<span class="wiki-badge wiki-badge-heart">{{ _('Heart') }}</span>{% endif %}
           {% if not party %}{% set shared = entry.presentations|selectattr('published')|list %}{% if shared %}<span class="wiki-badge" title="{{ _('Parties that can read their version of this article') }}">{{ _('Revealed') }} · {{ shared|length }}</span>{% endif %}{% endif %}</span>
         </div>
         {% if party %}{{ warden_actions(entry, header=True) }}{% endif %}
+        {% if map_url %}<div class="wiki-actions"><a class="button wiki-edit" href="{{ map_url }}"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Open map') }}</a></div>{% endif %}
         {% if edit_url %}
         <div class="wiki-actions">
           {% if not party %}
-          <button type="button" class="button wiki-edit" aria-haspopup="dialog" onclick="document.getElementById('reveal-dialog-{{ entry.id }}').showModal()"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{ _('Reveal to party') }}</button>
+          <button type="button" class="button wiki-edit" aria-haspopup="dialog" onclick="document.getElementById('reveal-dialog-{{ entry.id }}').showModal()"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{ _('Reveal map') if is_map else _('Reveal to party') }}</button>
           {% endif %}
-          <a class="button wiki-edit" href="{{ edit_url }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+          {% if map_edit_url and not is_map %}<a class="button wiki-edit" href="{{ map_edit_url }}"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Edit map') }}</a>{% endif %}
+          <a class="button wiki-edit" href="{{ edit_url }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit map') if is_map else _('Edit') }}</a>
         </div>
         {% endif %}
       </header>
@@ -177,6 +187,7 @@
       </div>
       {# Outside the refreshed content: a live update must not reload the drawing. #}
       {% if graph and party %}{% include 'campaigns/map_panel.html' %}{% endif %}
+      {% if sketch %}{% set sketch_drawing, sketch_editing, sketch_form = sketch, false, '' %}{% include 'campaigns/sketch.html' %}{% endif %}
     {% else %}
       {% if module is defined and module %}
       {# Reveal the whole module to one of the campaign's parties. #}
@@ -190,7 +201,6 @@
           <label>{{ _('Reveal to') }}<select name="party_id" required>
             {% for item in module_parties %}<option value="{{ item.id }}">{{ item.name|markdown_inline|striptags }}</option>{% endfor %}
           </select></label>
-          <label class="campaign-check"><input type="checkbox" name="publish_drawing" value="1"> {{ _('Also show the map drawings: every mark, text and image on them') }}</label>
           <p class="import-hint">{{ _('All %(count)s articles of this module become readable by the party, as they are; your later edits reach it too. Articles it already reads stay revealed.', count=article_count) }}</p>
           <div class="create-dialog-actions">
             <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
@@ -238,7 +248,7 @@
         </div>
         {% elif party and owner_view %}
         <div class="wiki-actions">
-          <button type="button" class="button wiki-edit" aria-haspopup="dialog" aria-controls="party-note-dialog"
+          <button type="button" class="button wiki-edit kw-add" aria-haspopup="dialog" aria-controls="party-note-dialog"
                   onclick="document.getElementById('party-note-dialog').showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('Add party note') }}</button>
         </div>
         {% endif %}
@@ -263,13 +273,20 @@
         {{ article_cards(hearts) }}
       </section>
       {% endif %}
+      {% if maps %}
+      <section class="wiki-related wiki-map-section" aria-labelledby="wiki-home-maps">
+        <h2 id="wiki-home-maps"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Maps') }} <small>{{ maps|length }}</small></h2>
+        <ul class="wiki-map-cards">{% for item in maps %}
+          <li><a href="{{ item.url }}"><i class="fa-solid fa-map" aria-hidden="true"></i> <span>{{ item.title|markdown_inline }}</span></a></li>{% endfor %}</ul>
+      </section>
+      {% endif %}
       {% for group, items in groups %}
       <section class="wiki-related">
         <h2>{{ _(group) }} <small>{{ items|length }}</small></h2>
         {{ article_cards(items) }}
       </section>
       {% else %}
-      {% if party %}{% if owner_view or not party_notes %}<p class="wiki-empty">{{ _('Nothing has been revealed yet.') }}</p>{% endif %}
+      {% if maps %}{% elif party %}{% if owner_view or not party_notes %}<p class="wiki-empty">{{ _('Nothing has been revealed yet.') }}</p>{% endif %}
       {% elif module is defined and module %}<p class="wiki-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', module_id=module.id) }}">{{ _('New article') }}</a></p>
       {% else %}<p class="wiki-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}#modules">{{ _('Add a module') }}</a></p>{% endif %}
       {% endfor %}

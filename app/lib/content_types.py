@@ -19,7 +19,10 @@ CATEGORIES = {
     'overview': N_('Overview'), 'lore': N_('Lore'), 'relic': N_('Relics'), 'note': N_('Notes'),
     'bestiary': N_('Bestiary'), 'item': N_('Items'), 'spellbook': N_('Spellbooks'),
     'map': N_('Geography'), 'custom': N_('Custom'),
+    # A pin's note on a map: part of the map, never listed with the articles.
+    'map_note': N_('Map note'),
 }
+MAP_NOTE = 'map_note'
 # Two-level authoring picker. Stored article types remain the leaf values.
 CATEGORY_GROUPS = {
     'Realm': ('realm',),
@@ -36,7 +39,7 @@ CATEGORY_GROUPS = {
 }
 POINT_TYPES = {'settlement', 'waypoint', 'curiosity', 'lair', 'dungeon', 'forest',
                'terrain', 'landmark', 'water', 'room', 'monster', 'ruins', 'shelter', 'hazard',
-               'trap', 'special', 'lore', 'custom'}
+               'trap', 'special', 'lore', 'custom', 'map_note'}
 
 
 def legacy_point_type(title):

@@ -28,21 +28,17 @@
 </div>
 {% endmacro %}
 {% macro category(selected='custom', generate=False) %}
+{# One Type select, grouped. Realms are maps: they are made with New map, not here. #}
 {% set groups = [] %}
 {% for label, keys in category_groups.items() %}
 {% set choices = [] %}
-{% for key in keys if key != 'map' or generate %}{% set unused = choices.append({'value': key, 'label': (_('Entire dungeon') if label == 'Dungeon' and key == 'dungeon' else (_('Entire forest') if label == 'Forest' and key == 'forest' else (_('None') if category_roots.get(label) == key else _(content_categories[key]))))}) %}{% endfor %}
+{% for key in keys if key not in ('map', 'realm') or key == selected %}{% set unused = choices.append({'value': key, 'label': (_('Entire dungeon') if label == 'Dungeon' and key == 'dungeon' else (_('Entire forest') if label == 'Forest' and key == 'forest' else _(content_categories[key])))}) %}{% endfor %}
 {% if choices %}{% set unused = groups.append({'value': label, 'label': _(label), 'choices': choices}) %}{% endif %}
 {% endfor %}
 {% if selected in ('overview', 'map') %}{% set unused = groups.append({'value': 'Legacy', 'label': _('Legacy'), 'choices': [{'value': selected, 'label': _(content_categories[selected])}]}) %}{% endif %}
-<div data-category-groups="{{ groups|tojson|forceescape }}" data-selected-category="{{ selected }}">
-<label>{{ _('Category') }}<select name="top_category" x-model="topCategory" @change="changeTopCategory()">
-{% for group in groups %}<option value="{{ group.value }}" {% if selected in category_groups.get(group.value, (selected,)) %}selected{% endif %}>{{ group.label }}</option>{% endfor %}
+<label>{{ _('Type') }}<select name="category" x-model="category" @change="resetDraft()" data-selected-category="{{ selected }}">
+{% for group in groups %}<optgroup label="{{ group.label }}">{% for choice in group.choices %}<option value="{{ choice.value }}" {% if choice.value == selected %}selected{% endif %}>{{ choice.label }}</option>{% endfor %}</optgroup>{% endfor %}
 </select></label>
-<label x-show="subCategories.length > 1">{{ _('Sub Category') }}<select name="category" x-model="category" @change="resetDraft()">
-<template x-for="choice in subCategories" :key="choice.value"><option :value="choice.value" x-text="choice.label" :selected="choice.value===category"></option></template>
-</select></label>
-</div>
 {% endmacro %}
 {% macro modal(id, label, title, open=False) %}
 {# A trigger button and its Bulma modal. The caller supplies the body and footer;
@@ -75,10 +71,8 @@
                   'reveal': _('Reveal to %(party)s', party='{party}'), 'update': _('Update %(party)s', party='{party}'),
                   'hide': _('Hide from %(party)s', party='{party}'),
                   'choose': _('Choose a party'),
-                  'map': _('Points of interest revealed: %(points)s of %(total_points)s · Paths: %(paths)s of %(total_paths)s',
-                           points='{points}', paths='{paths}',
-                           total_points=entry.pointcrawl.nodes|length if entry.pointcrawl else 0,
-                           total_paths=entry.pointcrawl.edges|length if entry.pointcrawl else 0)}|tojson|forceescape }}">
+                  'map': _('Pins revealed: %(points)s of %(total_points)s',
+                           points='{points}', total_points=entry.pointcrawl.nodes|length if entry.pointcrawl else 0)}|tojson|forceescape }}">
 {{ token() }}
 {% for item in parties %}<input type="hidden" name="version_{{ item.id }}" value="{{ item.version }}">{% endfor %}
 {% if return_to %}<input type="hidden" name="return_to" value="{{ return_to }}">{% endif %}
@@ -98,10 +92,11 @@
   {% if entry.pointcrawl %}<span x-text="mapText()"></span>{% endif %}
 </p>
 <input type="hidden" name="mode" value="everything">
-<p class="import-hint">{{ _('The party reads your article as it is; when you edit it, they read the new text. Keep secrets in an article you have not revealed, or write a party note.') }}</p>
 {% if entry.pointcrawl %}
-<input type="hidden" name="map_version" value="{{ entry.pointcrawl.version }}">
-<label class="campaign-check"><input type="checkbox" name="publish_drawing" value="1" :disabled="!partyId"> {{ _('Also show the map drawing: every mark, text and image on it') }}</label>
+<label class="campaign-check"><input type="checkbox" name="with_contents" value="1"> {{ _('Also reveal its pins') }}</label>
+<p class="import-hint">{{ _('The party sees the map as it is now, and your later changes to it, on its party page (Map). Pins you do not reveal stay hidden.') }}</p>
+{% else %}
+<p class="import-hint">{{ _('The party reads your article as it is; when you edit it, they read the new text. Keep secrets in an article you have not revealed, or write a party note.') }}</p>
 {% endif %}
 <div class="reveal-buttons">
   {% if in_dialog %}<button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>{% endif %}
@@ -118,7 +113,7 @@
 {% endmacro %}
 {% macro reveal_dialog(entry, parties) %}
 <dialog class="create-dialog reveal-dialog" id="reveal-dialog-{{ entry.id }}" aria-labelledby="reveal-dialog-title-{{ entry.id }}">
-<h2 id="reveal-dialog-title-{{ entry.id }}">{{ _('Reveal to party') }}</h2>
+<h2 id="reveal-dialog-title-{{ entry.id }}">{{ _('Reveal map') if entry.pointcrawl and not entry.map_nodes and not entry.body.strip() else _('Reveal to party') }}</h2>
 <p class="reveal-article"><strong>{{ entry.title or _('Untitled private original') }}</strong></p>
 {% if parties %}{{ reveal_form(entry, parties, return_to='article', in_dialog=True) }}
 {% else %}<p>{{ _('You have no parties yet. Create one in Parties, then reveal articles to it.') }}</p>

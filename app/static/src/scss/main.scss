@@ -1133,3 +1133,17 @@ html[lang="uk"] {
 .legal-page .about-text-container li { margin-bottom: .4em; }
 .signup-legal { margin: .75em 0; font-size: .9em; }
 .discord-guide-legal { margin-top: 2em; font-size: .9em; }
+
+// "+ New…" and "+ Add…" actions are solid, in the page's text colour (black in light mode), everywhere.
+// New Character and New campaign are the exceptions: green (.is-new).
+.kw-add,
+a.kw-add,
+button.kw-add {
+  background: var(--fg) !important;
+  color: var(--bg) !important;
+  border-color: var(--fg) !important;
+}
+
+.kw-add:hover {
+  opacity: .85;
+}

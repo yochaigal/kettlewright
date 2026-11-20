@@ -731,7 +731,7 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 .campaign-lobby .section-links a, .campaign-lobby .section-links .link-button {display:inline-flex;align-items:center;gap:.4em;padding:0;border:0;background:none;color:inherit;font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
 .campaign-lobby .section-links i {opacity:.75;}
 /* Party rows: name, members, then a compact Manage revealed, on one line. */
-.campaign-lobby .campaign-party-row {display:grid;grid-template-columns:minmax(10em,auto) minmax(0,1fr) auto;align-items:center;gap:.5em 1.25em;padding:.75em 0;}
+.campaign-lobby .campaign-party-row {display:grid;grid-template-columns:minmax(10em,auto) minmax(0,1fr);align-items:center;gap:.5em 1.25em;padding:.75em 0;}
 .campaign-lobby .campaign-party-row + .campaign-party-row,
 .campaign-lobby .campaign-party-row + dialog + .campaign-party-row {border-top:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));}
 .campaign-lobby .campaign-party-actions {margin:0;justify-self:end;}
@@ -756,3 +756,87 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 .revealed-dialog .revealed-footer-end {display:inline-flex;gap:.5em;margin-left:auto;}
 .campaign-lobby .section-links {align-items:center;line-height:1.4;}
 .campaign-lobby .section-links .link-button {margin:0;line-height:inherit;min-height:0;}
+
+/* Party map (#467): the map, its fog tools for the Warden, details and pins beside it. */
+.party-map-page .wiki-header {align-items:flex-start;}
+.party-map-page .wiki-actions {display:flex;flex-wrap:wrap;gap:.5em;align-items:center;}
+.party-map-page .wiki-actions > * {margin:0;}
+.party-map-page .wiki-edit.is-active {background:var(--fg);color:var(--bg);}
+.party-map-switch {margin:0;}
+.party-map-switch select {min-height:44px;padding:0 .8em;border:1.5px solid var(--fg);border-radius:2px;background:var(--bg);color:var(--fg);font:inherit;font-weight:600;}
+.party-map-fog {display:flex;flex-wrap:wrap;align-items:center;gap:.5em .6em;margin:.5em 0;padding:.6em .9em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;}
+.party-map-fog .fog-button {min-height:34px;padding:.3em .8em;border:1.5px solid var(--fg);border-radius:2px;background:transparent;color:var(--fg);font:inherit;font-size:.88em;font-weight:600;cursor:pointer;}
+.party-map-fog .fog-button[aria-pressed="true"] {background:var(--fg);color:var(--bg);}
+.party-map-fog .fog-button:disabled {opacity:.4;cursor:default;}
+.party-map-fog .fog-size {display:inline-flex;align-items:center;gap:.4em;font-size:.88em;margin:0;}
+.party-map-layout {display:grid;grid-template-columns:minmax(0,1fr) minmax(16em,22em);gap:1.25em;align-items:start;}
+.party-map-frame {width:100%;height:min(75vh,760px);border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;}
+.party-map-side {padding:1em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;max-height:min(75vh,760px);overflow:auto;}
+.party-map-side h2 {font-size:1.15em;margin:0 0 .5em;}
+.party-map-side h3 {font-size:.82em;letter-spacing:.07em;text-transform:uppercase;margin:1.25em 0 .4em;color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
+.party-map-detail {padding-bottom:.75em;border-bottom:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));}
+.party-map-pins {margin:0;padding:0;list-style:none;}
+.party-map-pins li {padding:.25em 0;}
+.party-map-pins li {display:flex;align-items:center;gap:.5em;}
+.party-map-pins li::before {content:'';flex:none;width:.7em;height:.7em;border-radius:50%;background:#e03131;border:2px solid #f59f00;}
+.party-map-pins .link-button {min-height:0;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;text-decoration:underline;cursor:pointer;}
+@media (max-width:900px) {.party-map-layout {grid-template-columns:1fr;} .party-map-frame {height:60vh;}}
+
+/* Maps apart from articles: the module's Maps list, and the map editor's title. */
+.module-map-list {display:grid;grid-template-columns:repeat(auto-fill,minmax(15em,1fr));gap:.6em;margin:0;padding:0;list-style:none;}
+.module-map-list li {display:flex;flex-direction:column;gap:.2em;padding:.7em .9em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;}
+.module-map-title {font-weight:700;}
+.module-map-meta {font-size:.85em;color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
+.map-title-field {display:block;margin:.5em 0 1em;}
+.organize-fact {margin:.75em 0;}
+.organize-fact > span:first-child {display:block;font-size:.9em;color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
+.map-unsaved {margin:.25em 0;font-size:.9em;color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
+
+/* Party page: the Warden's Backgrounds section. */
+.party-backgrounds h4 {margin:1em 0 .3em;font-size:.95em;}
+.party-background-modules {margin:0;padding:0;list-style:none;}
+.party-background-modules li {display:flex;flex-wrap:wrap;gap:.25em .6em;padding:.2em 0;}
+.party-background-modules span, .party-background-offered {color:color-mix(in srgb,var(--fg) 75%,var(--bg));font-size:.92em;}
+
+/* Wiki: maps in their own section, apart from the articles. */
+.wiki-maps h2, .wiki-articles-title {margin:1em 0 .35em;font-size:.8em;letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
+.wiki-maps ul {margin:0;padding:0;list-style:none;}
+.wiki-maps li a {display:block;padding:.2em .4em;}
+.wiki-maps li a[aria-current="page"] {background:color-mix(in srgb,var(--fg) 10%,var(--bg));}
+.wiki-map-cards {display:grid;grid-template-columns:repeat(auto-fill,minmax(14em,1fr));gap:.6em;margin:0;padding:0;list-style:none;}
+.wiki-map-cards li {display:flex;align-items:center;justify-content:space-between;gap:.5em;padding:.8em 1em;border:1.5px solid var(--fg);border-radius:10px;}
+.wiki-map-cards a {font-weight:700;}
+.map-settings {display:flex;flex-wrap:wrap;align-items:flex-end;gap:.5em 1.5em;margin-bottom:1em;}
+.map-settings .map-title-field {flex:2 1 18em;margin:0;}
+.map-settings > label {flex:1 1 14em;}
+.map-settings .organize-fact {margin:0;}
+.party-backgrounds form {margin:.5em 0;padding:0;}
+.party-backgrounds .campaign-check {display:flex;align-items:center;gap:.5em;margin:0;padding:0;}
+.party-backgrounds .campaign-check input {margin:0;}
+.party-backgrounds h4 {font-family:inherit;font-style:normal;}
+.revealed-group {margin:.9em 0 .3em;font-size:.8em;letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
+.import-maps ul, .import-backgrounds-list {padding-left:1.2em;}
+.import-maps small {display:block;color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
+.import-articles-title {margin:1.2em 0 .4em;font-size:1em;}
+.party-section-heading-row {display:flex;align-items:center;justify-content:space-between;gap:.75em;flex-wrap:wrap;}
+.party-section-heading-row .party-section-heading {margin-bottom:0;}
+#party-backgrounds-button {border-radius:2px;}
+
+dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
+#backgrounds-dialog .campaign-check {justify-content:flex-start;}
+#backgrounds-dialog .campaign-check small {margin-left:.35em;}
+/* The campaigns page lines up with the characters page: the same centred column and action row. */
+.campaign-workspace .campaigns-page-header {width:calc((100% + 25px) * .8);max-width:1120px;margin:-12.5px auto 2em;}
+.campaign-workspace .campaigns-page-header + .campaign-gallery-page {width:calc((100% + 25px) * .8);max-width:1120px;margin:0 auto;}
+.campaign-workspace .campaigns-page-header button.is-new {margin:0;}
+@media (max-width:700px) {.campaign-workspace .campaigns-page-header, .campaign-workspace .campaigns-page-header + .campaign-gallery-page {width:100%;}}
+.map-pin-list {margin:0;padding:0;list-style:none;}
+.map-pins h2 {display:flex;align-items:center;gap:.4em;margin:1em 0 .5em;font-size:1.1em;}
+.map-pin-actions {margin:.5em 0;}
+/* Campaign lobby: the name centred, no badges or divider; parties and modules as islands. */
+.campaign-lobby .lobby-header {justify-content:center;text-align:center;border-bottom:0;padding-bottom:0;margin-bottom:1em;}
+.campaign-lobby .lobby-header h1 {justify-content:center;}
+.campaign-lobby .campaign-parties, .campaign-lobby .campaign-modules {margin:0 0 1.5em;padding:1em 1.25em;
+  border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.campaign-workspace .module-page .module-header.lobby-header {justify-content:center;text-align:center;border-bottom:0;padding-bottom:0;margin-bottom:1em;}
+.lobby-header .lobby-header-actions {display:flex;justify-content:center;flex-wrap:wrap;gap:.5em;margin-top:.5em;}

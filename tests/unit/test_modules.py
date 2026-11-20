@@ -131,7 +131,7 @@ def test_module_page_renames_exports_and_deletes(user):
     page = client.get(f'/campaigns/7/modules/{module_id}/').get_data(as_text=True)
     assert 'category=note' not in page  # No New note on the module page.
     for link in (f'/materials/new?module_id={module_id}',
-                 f'/materials/generate?module_id={module_id}&amp;kind=realm',
+                 f'/materials/generate?module_id={module_id}',
                  f'/campaigns/7/modules/{module_id}/background'):
         assert link in page
     assert client.post(f'/campaigns/7/modules/{module_id}/', data={'name': 'Twin Lakes, my way', 'version': version}).status_code == 302

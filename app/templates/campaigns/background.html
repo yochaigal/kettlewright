@@ -1,6 +1,6 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import token, page_header with context %}
-{# Write or edit one background of a module, as Markdown (or JSON). #}
+{# Write or edit one background of a module, in Markdown. #}
 {% block workspace %}
 <nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ url_for('campaigns.module_view', campaign_id=campaign.id, module_id=module.id) }}#backgrounds">← {{ module.title }}</a></nav>
 {{ page_header(_('Edit background') if name else _('New background')) }}
@@ -21,7 +21,6 @@
 <li>{{ _('## Starting gear: one item per line. Tags go in brackets, like [petty, d6], [uses 3] or [charges 2/3]; a description after " — ".') }}</li>
 <li>{{ _('## Starting containers (optional): like - Cart [6 slots, carried by Mule].') }}</li>
 <li>{{ _('Then two tables: each a ## heading with the question, and its options as a list. Under an option, indented, its rewards: an item, "5 gold", "pet: Raven Familiar" or "container: Donkey [4 slots]".') }}</li>
-<li>{{ _("JSON in the format of Kettlewright's own backgrounds works too. Backgrounds that Markdown cannot fully describe open as JSON.") }}</li>
 </ul>
 </details>
 {% endblock %}

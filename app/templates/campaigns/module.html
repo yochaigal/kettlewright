@@ -1,26 +1,23 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import token, page_header, modal, modal_footer with context %}
 {% from 'campaigns/material_tree.html' import material_children, tree_toolbar with context %}
-{# A module: what the campaign is built from. Its articles, notes and maps, and its backgrounds. #}
+{# A module: what the campaign is built from, part by part: its maps, its backgrounds and its articles. #}
 {% block workspace %}
 <div class="campaign-wiki module-page">
 <nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}#modules">← {{ campaign.name }}</a></nav>
-<header class="module-header">
+{# Like the campaign lobby: just the name, centred; its parts below as islands. #}
+<header class="wiki-header lobby-header module-header">
   <div>
     <h1>{{ module.title }}
       <button type="button" class="link-button campaign-rename" aria-haspopup="dialog" aria-controls="module-settings-dialog"
               title="{{ _('Rename module') }}" aria-label="{{ _('Rename module') }}"
               onclick="document.getElementById('module-settings-dialog').showModal()"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></h1>
-    <span class="wiki-badges">
-      <span class="wiki-badge">{{ _('%(count)s articles', count=article_count) }}</span>
-      <span class="wiki-badge">{{ _('%(count)s backgrounds', count=backgrounds|length) }}</span>
-      {% if module.slug %}<span class="wiki-badge">{{ _('From the Modules Marketplace') }}</span>{% endif %}
+    <span class="kw-actions lobby-header-actions">
+      <a class="kw-action" href="{{ url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read as wiki') }}</a>
+      {# Maps, backgrounds and articles from Markdown files or an archive (see docs/module-format.md). #}
+      <a class="kw-action" href="{{ url_for('campaigns.import_archive', module_id=module.id) }}" title="{{ _('Add maps, articles and backgrounds from Markdown files or an archive') }}"><i class="fa-solid fa-file-import" aria-hidden="true"></i> {{ _('Add files') }}</a>
     </span>
-    <p class="import-hint">{{ _('Only you can see it. Reveal articles to a party when they find them.') }}</p>
   </div>
-  <span class="kw-actions">
-    <a class="kw-action" href="{{ url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read as wiki') }}</a>
-  </span>
 </header>
 <dialog class="create-dialog" id="module-settings-dialog" aria-labelledby="module-settings-title">
   <h2 id="module-settings-title">{{ _('Rename module') }}</h2>
@@ -33,41 +30,38 @@
   </form>
 </dialog>
 
-<section class="module-section module-panel" aria-labelledby="module-articles-title">
+<section class="module-section module-panel" id="maps" aria-labelledby="module-maps-title">
 <div class="module-section-head">
-<h2 id="module-articles-title"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> {{ _('Articles, notes and maps') }} <small>{{ article_count }}</small></h2>
+<h2 id="module-maps-title"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Maps') }} <small>{{ maps|length }}</small></h2>
 <span class="kw-actions">
-  <a class="kw-action" href="{{ url_for('campaigns.new_entry', module_id=module.id) }}"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> {{ _('New article') }}</a>
-  <a class="kw-action" href="{{ url_for('campaigns.new_map', module_id=module.id, kind='realm') }}"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('New map') }}</a>
-  <a class="kw-action" href="{{ url_for('campaigns.import_archive', module_id=module.id) }}"><i class="fa-solid fa-file-import" aria-hidden="true"></i> {{ _('Add files') }}</a>
+  <a class="kw-action kw-add" href="{{ url_for('campaigns.new_map', module_id=module.id) }}"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New map') }}</a>
 </span>
 </div>
-<form method="post" action="{{ url_for('campaigns.bulk_delete') }}" x-data="materialTree">
-{{ token() }}
-<input type="hidden" name="campaign_id" value="{{ campaign.id }}">
-{% if hierarchy %}
-{{ tree_toolbar() }}
-<div class="campaign-actions material-bulk-actions">
-<span class="material-selection-count" role="status"><span x-show="!selected.length">{{ _('Tick articles to reveal or delete several at once.') }}</span><span x-show="selected.length" x-cloak>{{ _('Selected:') }} <span x-text="selected.length">0</span></span></span>
-<button type="button" @click="selected = [...new Set(Array.from($root.querySelectorAll('input[name=entry_ids]'), input => input.value))]">{{ _('Select all') }}</button>
-<button type="button" @click="selected = []" x-show="selected.length" x-cloak>{{ _('Clear selection') }}</button>
-<button type="submit" formaction="{{ url_for('campaigns.bulk_reveal') }}" x-show="selected.length" x-cloak>{{ _('Reveal selected…') }}</button>
-<button type="submit" x-show="selected.length" x-cloak>{{ _('Delete selected…') }}</button>
-</div>
-{{ material_children(hierarchy) }}
-{% else %}<p class="tree-empty">{{ _('Nothing here yet. Write an article or a note, draw a map, or add files.') }}</p>{% endif %}
-</form>
+{% if maps %}
+<ul class="module-map-list">
+{% for entry, inside in maps %}
+<li>
+  <a class="module-map-title" href="{{ url_for('campaigns.map_edit', map_id=entry.pointcrawl.id) }}"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ entry.title or _('Untitled private original') }}</a>
+  <span class="module-map-meta">{{ _('%(count)s pins', count=entry.pointcrawl.nodes|length) }}</span>
+  {% set shown = entry.presentations|selectattr('published')|list %}
+  <span class="kw-actions">
+    <a class="kw-action" href="{{ url_for('campaigns.map_edit', map_id=entry.pointcrawl.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+    <a class="kw-action" href="{{ url_for('campaigns.reveal', entry_id=entry.id) }}"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{ _('Reveal') }}{% if shown %} · {{ shown|length }}{% endif %}</a>
+  </span>
+</li>
+{% endfor %}
+</ul>
+{% else %}<p class="wiki-empty">{{ _('No maps yet. Draw one, or generate a realm, dungeon or forest.') }}</p>{% endif %}
 </section>
 
 <section class="module-section module-panel" id="backgrounds" aria-labelledby="module-backgrounds-title">
 <div class="module-section-head">
 <h2 id="module-backgrounds-title"><i class="fa-solid fa-user-gear" aria-hidden="true"></i> {{ _('Backgrounds') }} <small>{{ backgrounds|length }}</small></h2>
 <span class="kw-actions">
-  <a class="kw-action" href="{{ url_for('campaigns.module_background', campaign_id=campaign.id, module_id=module.id) }}"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New background') }}</a>
+  <a class="kw-action kw-add" href="{{ url_for('campaigns.module_background', campaign_id=campaign.id, module_id=module.id) }}"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New background') }}</a>
 </span>
 </div>
-<p class="import-hint">{{ _("The campaign's party chooses from these when creating characters (with the official ones, unless the campaign hides them).") }}
- <a href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}#backgrounds">{{ _('Campaign backgrounds') }}</a></p>
+<p class="import-hint">{{ _("The campaign's parties choose from these when creating characters. Each party's Warden decides on the party page whether the official ones are offered too.") }}</p>
 {% if backgrounds %}
 <ul class="campaign-background-list">
 {% for name, background in backgrounds|dictsort %}
@@ -87,10 +81,29 @@
 {% endfor %}
 </ul>
 {% else %}<p class="wiki-empty">{{ _('No backgrounds in this module.') }}</p>{% endif %}
-<form method="post" action="{{ url_for('campaigns.module_background', campaign_id=campaign.id, module_id=module.id) }}" enctype="multipart/form-data" class="module-upload">
-{{ token(module.version) }}<input type="hidden" name="action" value="upload">
-<label>{{ _('Upload backgrounds (Markdown or JSON)') }}<input type="file" name="backgrounds" accept=".md,.json,application/json,text/markdown" multiple required></label>
-<button type="submit">{{ _('Upload') }}</button>
+</section>
+
+<section class="module-section module-panel" aria-labelledby="module-articles-title">
+<div class="module-section-head">
+<h2 id="module-articles-title"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> {{ _('Articles') }} <small>{{ article_count }}</small></h2>
+<span class="kw-actions">
+  <a class="kw-action kw-add" href="{{ url_for('campaigns.new_entry', module_id=module.id) }}"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New article') }}</a>
+</span>
+</div>
+<form method="post" action="{{ url_for('campaigns.bulk_delete') }}" x-data="materialTree">
+{{ token() }}
+<input type="hidden" name="campaign_id" value="{{ campaign.id }}">
+{% if hierarchy %}
+{{ tree_toolbar() }}
+<div class="campaign-actions material-bulk-actions">
+<span class="material-selection-count" role="status"><span x-show="!selected.length">{{ _('Tick articles to reveal or delete several at once.') }}</span><span x-show="selected.length" x-cloak>{{ _('Selected:') }} <span x-text="selected.length">0</span></span></span>
+<button type="button" @click="selected = [...new Set(Array.from($root.querySelectorAll('input[name=entry_ids]'), input => input.value))]">{{ _('Select all') }}</button>
+<button type="button" @click="selected = []" x-show="selected.length" x-cloak>{{ _('Clear selection') }}</button>
+<button type="submit" formaction="{{ url_for('campaigns.bulk_reveal') }}" x-show="selected.length" x-cloak>{{ _('Reveal selected…') }}</button>
+<button type="submit" x-show="selected.length" x-cloak>{{ _('Delete selected…') }}</button>
+</div>
+{{ material_children(hierarchy) }}
+{% else %}<p class="tree-empty">{{ _('No articles yet.') }}</p>{% endif %}
 </form>
 </section>
 

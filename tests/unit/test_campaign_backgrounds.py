@@ -1,13 +1,13 @@
-"""Campaign backgrounds: modules bring backgrounds (Markdown or JSON) for the campaign's party."""
+"""Party backgrounds: a campaign's modules bring backgrounds (Markdown) for its parties' characters;
+each party says whether the official ones are offered too."""
 import io
 import json
 import zipfile
 
 import pytest
 
-from app.lib.campaign_backgrounds import (BackgroundError, BACKGROUND_TEMPLATE, background_markdown, campaign_backgrounds,
-                                          official_backgrounds, parse_background_text, parse_backgrounds,
-                                          validate_backgrounds)
+from app.lib.campaign_backgrounds import (BackgroundError, BACKGROUND_TEMPLATE, background_markdown, party_backgrounds,
+                                          official_backgrounds, parse_background_text, validate_background)
 from app.lib.campaign_import import preview_archive, import_preview
 from app.models import db, Campaign, Character, ContentEntry, Module, Party, User
 
@@ -22,6 +22,11 @@ TIDEWATCHER = {
         {'description': 'A smuggler.', 'pets': ['Raven Familiar']}]},
     'image': 'not-ours.webp',  # Unknown keys are dropped.
 }
+
+
+def validate_backgrounds(data):
+    """{name: background}, each cleaned like a saved background."""
+    return dict(validate_background(name, background) for name, background in data.items())
 
 
 def module_zip(files):
@@ -71,7 +76,7 @@ def test_validation_keeps_only_what_creation_reads():
     ({'Bad gear': dict(TIDEWATCHER, starting_gear=[{'tags': []}])}, 'expected text'),
     ({'Bad gold': dict(TIDEWATCHER, table1={'question': 'Q', 'options': [{'description': 'x', 'bonus_gold': -1}]})}, 'whole number'),
     ({'Petless': dict(TIDEWATCHER, table2={'question': 'Q', 'options': [{'description': 'x', 'pets': ['Gull']}]})}, 'unknown pet "Gull"'),
-    ([], 'JSON object'),
+    ({'Not an object': []}, 'expected an object'),
 ])
 def test_invalid_backgrounds_are_rejected(broken, message):
     with pytest.raises(BackgroundError, match=message):
@@ -104,16 +109,16 @@ Mara, Oskel
 """
 
 
-def test_markdown_background_reads_like_json_and_round_trips():
+def test_markdown_is_the_only_background_format_and_round_trips():
     expected = validate_backgrounds({'Tidewatcher': TIDEWATCHER})
     assert parse_background_text(TIDEWATCHER_MD) == expected
     assert parse_background_text(background_markdown('Tidewatcher', expected['Tidewatcher'])) == expected
-    assert parse_background_text(json.dumps({'Tidewatcher': TIDEWATCHER})) == expected  # JSON works too.
+    with pytest.raises(BackgroundError, match='Markdown'):  # JSON is not a format people write any more.
+        parse_background_text(json.dumps({'Tidewatcher': TIDEWATCHER}))
     assert list(parse_background_text(BACKGROUND_TEMPLATE)) == ['Tidewatcher']  # "New background" starts valid.
-    # Every official background either round-trips through Markdown or is offered as JSON instead.
+    # Markdown says everything a background holds: every official one round-trips.
     for name, background in validate_backgrounds(official_backgrounds()).items():
-        text = background_markdown(name, background)
-        assert text is None or parse_background_text(text) == {name: background}
+        assert parse_background_text(background_markdown(name, background)) == {name: background}
     rich = parse_background_text(BACKGROUND_TEMPLATE.replace('- Gaff [d6]', '- Whistle [charges 2/3, petty] — Recharge: blow at dawn.\n'
                                                             '- Shield [armor active, 1 Armor]'))['Tidewatcher']
     whistle, shield = rich['starting_gear'][2:]
@@ -133,17 +138,17 @@ def test_markdown_background_errors_say_what_to_fix(text, message):
         parse_background_text(text)
 
 
-def test_campaign_offers_official_and_module_backgrounds_or_only_module_ones(warden):
+def test_party_offers_official_and_module_backgrounds_or_only_module_ones(warden):
     app, _ = warden
     with app.app_context():
-        campaign = db.session.get(Campaign, 1)
-        assert campaign_backgrounds(campaign) == official_backgrounds()
+        party = db.session.get(Party, 1)
+        assert party_backgrounds(party) == official_backgrounds()
         db.session.get(Module, 1).backgrounds = validate_backgrounds({'Tidewatcher': TIDEWATCHER})
-        assert 'Tidewatcher' in campaign_backgrounds(campaign) and 'Aurifex' in campaign_backgrounds(campaign)
-        campaign.official_backgrounds = False
-        assert list(campaign_backgrounds(campaign)) == ['Tidewatcher']
+        assert 'Tidewatcher' in party_backgrounds(party) and 'Aurifex' in party_backgrounds(party)
+        party.official_backgrounds = False
+        assert list(party_backgrounds(party)) == ['Tidewatcher']
         db.session.get(Module, 1).backgrounds = None  # Never empty: the official ones come back.
-        assert campaign_backgrounds(campaign) == official_backgrounds()
+        assert party_backgrounds(party) == official_backgrounds()
 
 
 def test_warden_writes_edits_uploads_and_removes_module_backgrounds(warden):
@@ -161,23 +166,35 @@ def test_warden_writes_edits_uploads_and_removes_module_backgrounds(warden):
     client.post('/campaigns/1/modules/1/background?name=Tidewatcher', data={'action': 'save', 'version': 2, 'text': renamed})
     bad = client.post('/campaigns/1/modules/1/background', data={'action': 'save', 'version': 3, 'text': 'nonsense'})
     assert bad.status_code == 200 and 'role="alert"' in bad.get_data(as_text=True)
-    upload = {'action': 'upload', 'version': 3, 'backgrounds': [
-        (io.BytesIO(json.dumps({'Tidewatcher': TIDEWATCHER}).encode()), 'tide.json'),
-        (io.BytesIO(renamed.replace('Lampkeeper', 'Ferryman').encode()), 'ferryman.md')]}
-    assert client.post('/campaigns/1/modules/1/background', data=upload, content_type='multipart/form-data').status_code == 302
+    # Background files are added with Add files (the module import), like every module part; Markdown only.
+    page = client.get('/campaigns/1/modules/1/').get_data(as_text=True)
+    assert 'module-upload' not in page and 'name="backgrounds"' not in page
+    assert page.index('id="module-maps-title"') < page.index('id="module-backgrounds-title"') < page.index('id="module-articles-title"')
+    header = page[:page.index('id="module-maps-title"')]
+    assert 'href="/materials/import-archive?module_id=1"' in header and 'Add files' in header
+    assert 'Add files' not in page[page.index('id="module-articles-title"'):]
+    files = {'tide.md': TIDEWATCHER_MD, 'ferryman.md': renamed.replace('Lampkeeper', 'Ferryman')}
+    preview = client.post('/materials/import-archive', data={'module_id': '1', 'archive': (io.BytesIO(module_zip(files)), 'more.zip')},
+                          content_type='multipart/form-data').get_data(as_text=True)
+    preview_id = preview.split('name="preview_id" value="')[1].split('"')[0]
+    assert client.post('/materials/import-archive', data={'preview_id': preview_id, 'module_id': '1'}).status_code == 302
     with app.app_context():
         assert sorted(db.session.get(Module, 1).backgrounds) == ['Ferryman', 'Lampkeeper', 'Tidewatcher']
-    assert client.post('/campaigns/1/modules/1/background?name=Ferryman', data={'action': 'remove', 'version': 4}).status_code == 302
-    assert client.post('/campaigns/1/modules/1/background?name=Ferryman', data={'action': 'remove', 'version': 5}).status_code == 404
-    off = client.post('/campaigns/1/backgrounds', data={'version': 1})  # Official ones off.
-    assert off.location.endswith('/campaigns/1/#backgrounds')  # Its dialog opens again, in the lobby.
-    page = client.get('/campaigns/1/').get_data(as_text=True)
-    dialog = page[page.index('id="backgrounds-dialog"'):page.index('</dialog>', page.index('id="backgrounds-dialog"'))]
-    assert 'Coast Kit' in dialog and 'Lampkeeper' in dialog and 'Aurifex' not in dialog.split('What players choose from')[1]
-    assert 'name="official"' in dialog and 'checked' not in dialog.split('name="official"')[1].split('>')[0]
+        version = db.session.get(Module, 1).version
+    assert client.post('/campaigns/1/modules/1/background?name=Ferryman', data={'action': 'remove', 'version': version}).status_code == 302
+    assert client.post('/campaigns/1/modules/1/background?name=Ferryman', data={'action': 'remove', 'version': version + 1}).status_code == 404
+    # The party sets what its characters choose from, on the party page (Characters).
+    off = client.post('/party/1/backgrounds', data={})  # Official ones off.
+    assert off.location.endswith('/users/warden/parties/lamplighters/#backgrounds')
+    page = client.get('/users/warden/parties/lamplighters/').get_data(as_text=True)
+    assert 'id="party-backgrounds-button"' in page and 'aria-controls="backgrounds-dialog"' in page  # A button opens it.
+    section = page[page.index('id="backgrounds-dialog"'):page.index('</dialog>', page.index('id="backgrounds-dialog"'))]
+    assert 'Coast Kit' in section and 'Lampkeeper' in section and 'Aurifex' not in section.split('What players choose from')[1]
+    assert 'name="official"' in section and 'checked' not in section.split('name="official"')[1].split('>')[0]
+    assert 'id="backgrounds-dialog"' not in client.get('/campaigns/1/').get_data(as_text=True)
     login(client, 2)
     assert client.get('/campaigns/1/modules/1/').status_code == 403
-    assert client.post('/campaigns/1/backgrounds', data={'version': 2}).status_code == 403
+    assert client.post('/party/1/backgrounds', data={}).status_code == 403
 
 
 def test_module_export_brings_its_backgrounds_back(warden):
@@ -191,7 +208,7 @@ def test_module_export_brings_its_backgrounds_back(warden):
     assert exported.status_code == 200 and 'coast-kit.zip' in exported.headers['Content-Disposition']
     with zipfile.ZipFile(io.BytesIO(exported.data)) as archive:
         names = archive.namelist()
-        assert 'backgrounds/tidewatcher.md' in names and 'type: Module' in archive.read('campaign.md').decode()
+        assert 'backgrounds/tidewatcher.md' in names and 'type: Module' in archive.read('module.md').decode()
     with app.app_context():
         payload = preview_archive(exported.data, 1)
         assert payload['errors'] == [] and list(payload['backgrounds']) == ['Tidewatcher']
@@ -208,7 +225,7 @@ def test_module_upload_loads_its_articles_and_backgrounds(warden):
         'module.md': '---\nlayout: default\ntitle: Harbor Kit\ntype: Module\n---\nA kit for the harbor.',
         'npc.md': '---\nlayout: default\ntitle: Harbormaster\ntype: NPC\nparent: Harbor Kit\n---\nStern.',
         'backgrounds/tidewatcher.md': TIDEWATCHER_MD,
-        'backgrounds/ferry.json': json.dumps({'Ferryman': dict(TIDEWATCHER)}),
+        'backgrounds/ferry.md': TIDEWATCHER_MD.replace('title: Tidewatcher', 'title: Ferryman'),
     })
     page = client.post('/materials/import-archive', data={'campaign_id': '1', 'archive': (io.BytesIO(archive), 'harbor.zip')},
                        content_type='multipart/form-data').get_data(as_text=True)
@@ -225,15 +242,15 @@ def test_module_upload_loads_its_articles_and_backgrounds(warden):
 
 def test_backgrounds_only_module(warden):
     app, client = warden
-    archive = module_zip({'backgrounds.json': json.dumps({'Tidewatcher': TIDEWATCHER})})
+    archive = module_zip({'backgrounds/tidewatcher.md': TIDEWATCHER_MD})
     with app.app_context():
         payload = preview_archive(archive, 1)
         assert payload['errors'] == [] and payload['rows'] == []
         import_preview(payload, 1, into=db.session.get(Campaign, 1), name='coast')
         assert list(Module.query.filter_by(title='coast').one().backgrounds) == ['Tidewatcher']
-    bad = module_zip({'backgrounds/x.json': '{"X": {"names": ["A"]}}'})
+    bad = module_zip({'backgrounds.json': json.dumps({'Tidewatcher': TIDEWATCHER})})  # JSON is not imported.
     with app.app_context():
-        assert any('background_description' in error for error in preview_archive(bad, 1)['errors'])
+        assert any('Markdown' in error for error in preview_archive(bad, 1)['errors'])
     bad = module_zip({'x.md': TIDEWATCHER_MD.replace('pet: Raven Familiar', 'pet: Gull')})
     with app.app_context():
         assert any('unknown pet' in error for error in preview_archive(bad, 1)['errors'])
@@ -253,9 +270,8 @@ def creation_form(**values):
 def test_character_created_with_a_join_code_uses_the_campaign_and_joins_the_party(warden):
     app, client = warden
     with app.app_context():
-        campaign = db.session.get(Campaign, 1)
         db.session.get(Module, 1).backgrounds = validate_backgrounds({'Tidewatcher': TIDEWATCHER})
-        campaign.official_backgrounds = False
+        db.session.get(Party, 1).official_backgrounds = False
         db.session.commit()
     login(client, 2)
     page = client.get('/new_character/?party=coast-code').get_data(as_text=True)

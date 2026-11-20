@@ -20,7 +20,7 @@ from flask_babel import _
 from app.lib.translations import N_
 
 from app.lib.article_references import bind_references, headings, reference_urls
-from app.lib.campaigns import map_related_ids, material_hierarchy
+from app.lib.campaigns import article_entries, map_related_ids, material_hierarchy
 from app.lib.content_types import CATEGORIES, CATEGORY_GROUPS, PARTY_NOTE
 from app.models import ContentEntry
 
@@ -68,8 +68,25 @@ def _find(items, entry_id):
     return None
 
 
+_MAP_KINDS = {'realm': N_('Realm'), 'dungeon': N_('Dungeon'), 'forest': N_('Forest'), 'freeform': N_('Freeform')}
+
+
+def wiki_maps(entries, url):
+    """The wiki's Maps section: every map (nested ones too), apart from the articles. url(map entry) opens one."""
+    maps = []
+    for entry in entries:
+        if isinstance(entry, dict):
+            if entry.get('map_id'):
+                maps.append({'id': entry['id'], 'map_id': entry['map_id'], 'title': entry['title'],
+                             'kind': entry.get('map_kind', 'freeform')})
+        elif entry.pointcrawl is not None:
+            maps.append({'id': entry.id, 'map_id': entry.pointcrawl.id, 'title': entry.title, 'kind': entry.pointcrawl.kind})
+    return [dict(item, url=url(item), kind_label=_MAP_KINDS.get(item['kind'], N_('Freeform')))
+            for item in sorted(maps, key=lambda item: (item['title'].casefold(), item['id']))]
+
+
 def home_groups(entries):
-    """Articles grouped like the article type picker, in its order."""
+    """Articles grouped like the article type picker, in its order (maps have their own section)."""
     group_of = {category: group for group, categories in CATEGORY_GROUPS.items() for category in categories}
     groups = {}
     for entry in entries:
@@ -113,7 +130,8 @@ def page_context(campaign, entry=None, owner_id=None, module=None):
         home = dict(home_title=_('Unfiled articles'), home_edit_url=url_for('campaigns.library'))
     by_id = {item.id: item for item in entries}
     link = lambda target_id: page_url(target_id)
-    context = dict(campaign=campaign, module=module, entry=entry, hierarchy=material_hierarchy(entries), page_url=page_url,
+    context = dict(campaign=campaign, module=module, entry=entry, hierarchy=material_hierarchy(article_entries(entries)),
+                   maps=wiki_maps(entries, lambda item: page_url(item['id'])), page_url=page_url,
                    article_count=len(entries), content_categories=CATEGORIES,
                    # Article cards show the article's first picture (served by entry_image).
                    card_images={item.id for item in entries if first_image(item.body)}, **home)
@@ -170,12 +188,15 @@ def party_context(party, entry_id=None, owner_view=False, owner_id=None):
 
     Built from published versions only. The home is the one place for everything the party knows (#440):
     the party notes, then what was revealed by type."""
-    from app.lib.campaigns import party_knowledge_tree
+    from app.lib.campaigns import known_entries, party_knowledge_tree
     entries, hierarchy = party_knowledge_tree(party.id)
+    # Maps open on the party map page (fog and pins), never as wiki articles.
+    maps = wiki_maps(known_entries(party.id).values(),
+                     lambda item: url_for('campaigns.party_map_view', party_id=party.id, map_id=item['map_id']))
     by_id = {entry['id']: entry for entry in entries}
     page_url = lambda target_id=None: (url_for('campaigns.party_entry', party_id=party.id, entry_id=target_id)
                                        if target_id is not None else url_for('campaigns.party_wiki', party_id=party.id))
-    context = dict(party=party, campaign=None, hierarchy=hierarchy, page_url=page_url, back_url=party_url(party),
+    context = dict(party=party, campaign=None, hierarchy=hierarchy, maps=maps, page_url=page_url, back_url=party_url(party),
                    content_categories=dict(CATEGORIES, **{PARTY_NOTE: N_('Party note')}),
                    home_title=party.name, article_count=len(entries), owner_view=owner_view,
                    # The Warden's buttons per item: note (Edit, Delete), original (Hide).

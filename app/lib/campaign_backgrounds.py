@@ -1,14 +1,14 @@
-"""Campaign backgrounds: character options a campaign gives its party.
+"""Party backgrounds: character options a campaign's modules give its parties.
 
 Backgrounds live in the campaign's modules (Module.backgrounds, in the format of
-static/json/backgrounds/background_data.json: name -> background); the campaign
-only says whether the official ones are offered too. A module brings them as JSON
-(backgrounds/*.json) or Markdown (type: Background, see background_markdown).
+static/json/backgrounds/background_data.json: name -> background); each party
+says whether the official ones are offered too (set on the party page). Modules
+bring them as Markdown (type: Background, see background_markdown).
 
-Character creation for a party of the campaign uses them: the creation request
-names the party by its join code, use_campaign_backgrounds() puts the campaign's
-list on flask.g, and load_backgrounds() returns it for the rest of the request.
-Characters keep a copy of what they rolled, so later changes never alter them.
+Character creation for a party uses them: the creation request names the party
+by its join code, use_party_backgrounds() puts the party's list on flask.g, and
+load_backgrounds() returns it for the rest of the request. Characters keep a copy
+of what they rolled, so later changes never alter them.
 """
 import copy
 import json
@@ -108,7 +108,7 @@ def _option(option, where):
     if not isinstance(option, dict):
         raise BackgroundError(f'{where}: an option must be an object with a description.')
     clean = {'description': _text(option.get('description'), f'{where} description', required=True)}
-    if 'items' in option:
+    if option.get('items'):  # No items is the same as none listed (Markdown writes neither).
         clean['items'] = [_item(item, f'{where} item') for item in _list(option['items'], f'{where} items')]
     if 'pets' in option:
         clean['pets'] = [_pet(pet, f'{where} pet') for pet in _list(option['pets'], f'{where} pets', 5)]
@@ -157,28 +157,6 @@ def validate_background(name, data):
     return name, clean
 
 
-def validate_backgrounds(data):
-    """A {name: background} mapping (the format of background_data.json). Raises BackgroundError."""
-    if not isinstance(data, dict) or not data:
-        raise BackgroundError('Backgrounds must be a JSON object of background names to backgrounds.')
-    if len(data) > MAX_BACKGROUNDS:
-        raise BackgroundError(f'At most {MAX_BACKGROUNDS} backgrounds.')
-    return dict(validate_background(name, background) for name, background in data.items())
-
-
-def parse_backgrounds(text, source='backgrounds'):
-    """Backgrounds from JSON text, e.g. an uploaded file or a module's backgrounds/*.json."""
-    from app.lib.campaign_map_import import read_json
-    try:
-        data = read_json(text, source)
-    except ValueError as exc:
-        raise BackgroundError(str(exc)) from exc
-    try:
-        return validate_backgrounds(data)
-    except BackgroundError as exc:
-        raise BackgroundError(f'{source}: {exc}') from exc
-
-
 def add_backgrounds(module, backgrounds):
     """Add or replace a module's backgrounds by name. The caller commits."""
     merged = dict(module.backgrounds or {})
@@ -196,24 +174,31 @@ def remove_background(module, name):
 def custom_backgrounds(campaign):
     """The backgrounds of the campaign's modules; a later module's background replaces an earlier one of that name."""
     custom = {}
-    for module in campaign.modules:
+    for module in (campaign.modules if campaign is not None else []):
         custom.update(module.backgrounds or {})
     return custom
 
 
-def campaign_backgrounds(campaign):
-    """What the campaign's party chooses from: official ones (unless hidden), then its modules' ones.
-
-    A module background with an official name replaces it. Never empty: with no module
+def party_backgrounds(party):
+    """What a party's characters choose from: official ones (unless the party hides them), then its campaign's
+    modules' ones. A module background with an official name replaces it. Never empty: with no module
     backgrounds the official ones are offered even when hidden."""
-    custom = custom_backgrounds(campaign)
-    backgrounds = official_backgrounds() if campaign.official_backgrounds or not custom else {}
+    custom = custom_backgrounds(party.campaign)
+    backgrounds = official_backgrounds() if party.official_backgrounds or not custom else {}
     backgrounds.update(copy.deepcopy(custom))
     return backgrounds
 
 
-def has_custom_options(campaign):
-    return bool(custom_backgrounds(campaign)) or not campaign.official_backgrounds
+def background_panel(party):
+    """The party page's Backgrounds section (Warden): the official switch, the modules' backgrounds, the result."""
+    modules = [module for module in (party.campaign.modules if party.campaign else []) if module.backgrounds]
+    return {'official': party.official_backgrounds, 'official_count': len(official_backgrounds()),
+            'modules': [(module, sorted(module.backgrounds)) for module in modules],
+            'offered': sorted(party_backgrounds(party)), 'fallback': not party.official_backgrounds and not modules}
+
+
+def has_custom_options(party):
+    return bool(custom_backgrounds(party.campaign)) or not party.official_backgrounds
 
 
 # ----- Markdown backgrounds -----
@@ -298,7 +283,10 @@ def _md_item(line, where):
         lower = token.casefold()
         uses = re.fullmatch(r'uses\s+(\d+)', lower)
         charges = re.fullmatch(r'charges\s+(\d+)(?:\s*/\s*(\d+))?', lower)
-        if uses:
+        count = re.fullmatch(r'([a-z_]+)\s*=\s*(\d+)', lower)
+        if count and count.group(1) in ITEM_INTEGERS:
+            item[count.group(1)] = int(count.group(2))
+        elif uses:
             item['tags'].append('uses')
             item['uses'] = int(uses.group(1))
         elif charges:
@@ -419,6 +407,10 @@ def _item_markdown(item):
             tokens.append(tag)
     if 'armor_active' in item:
         tokens.append('armor active' if item['armor_active'] else 'armor inactive')
+    # Counts that no tag shows (say "1 use" written as a plain tag): key=value keeps them.
+    shown = {'uses'} if 'uses' in item.get('tags', []) else set()
+    shown |= {'charges', 'max_charges'} if 'charges' in item.get('tags', []) else set()
+    tokens += [f'{key}={item[key]}' for key in ITEM_INTEGERS if key in item and key not in shown]
     line = item['name'] + (f' [{", ".join(tokens)}]' if tokens else '')
     return line + (f' — {item["description"]}' if 'description' in item else '')
 
@@ -433,7 +425,7 @@ def _container_markdown(container):
 
 
 def background_markdown(name, background):
-    """The Markdown file for a background, or None when Markdown cannot say all of it (use JSON then)."""
+    """The Markdown file for a background: it reads back as the same background."""
     lines = ['---', 'layout: default', f'title: {json.dumps(name, ensure_ascii=False)}', 'type: Background', '---',
              background['background_description'], '', '## Names', ', '.join(background['names']), '',
              '## Starting gear']
@@ -450,19 +442,14 @@ def background_markdown(name, background):
             rewards += [f'container: {_container_markdown(c)}' for c in option.get('containers', [])]
             rewards += [f'gear table: {option["gear_table"]}'] if 'gear_table' in option else []
             lines += [f'  - {reward}' for reward in rewards]
-    text = '\n'.join(lines) + '\n'
-    try:
-        parsed = parse_background_text(text)
-    except BackgroundError:
-        return None
-    return text if parsed == {name: background} else None
+    return '\n'.join(lines) + '\n'
 
 
 def parse_background_text(text, source='background'):
-    """Backgrounds from text a Warden wrote or uploaded: JSON ({name: background}) or one Markdown background."""
+    """One Markdown background, as a Warden wrote or uploaded it (Markdown is the only format people write)."""
     stripped = text.lstrip('\ufeff').strip()
-    if stripped.startswith('{'):
-        return parse_backgrounds(stripped, source)
+    if stripped.startswith('{') or stripped.startswith('['):
+        raise BackgroundError(f'{source}: backgrounds are Markdown files (type: Background), not JSON.')
     from app.lib.campaign_import import parse_markdown, ImportError as ArchiveError
     try:
         row = parse_markdown(source, stripped)
@@ -474,10 +461,10 @@ def parse_background_text(text, source='background'):
     return {name: background}
 
 
-def use_campaign_backgrounds(campaign):
-    """For the rest of this request, character creation uses the campaign's backgrounds."""
-    if campaign is not None and has_custom_options(campaign):
-        g.campaign_backgrounds = campaign_backgrounds(campaign)
+def use_party_backgrounds(party):
+    """For the rest of this request, character creation uses the party's backgrounds."""
+    if party is not None and has_custom_options(party):
+        g.campaign_backgrounds = party_backgrounds(party)
 
 
 def active_backgrounds():
