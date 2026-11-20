@@ -1,3 +1,5 @@
+{# The party this character is created for (its join code): its campaign's backgrounds, and it joins on save. #}
+{{ form.party_code(id='party-code-field') }}
 <!-- items and additional gold  are changed during background change -->
 <input type="hidden" id="char_items" name="items" value="{{custom_fields['items']}}" />
 <input type="hidden" name="bonus_gold_t1" value="{{custom_fields['bonus_gold_t1']}}" />

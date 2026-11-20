@@ -31,6 +31,12 @@
   {% endfor %}</div>{% endif %}
   {% endif %} {% endwith %}
   <div id="party-form" class="sheet box form party-view-sheet">
+    {% if party.campaign and is_owner %}
+    {# Parties live inside campaigns: back to it. Its name stays private to the Warden. #}
+    <nav class="party-campaign-crumb" aria-label="{{ _('Campaign') }}">
+      <a href="{{ url_for('campaigns.lobby', campaign_id=party.campaign_id) }}">← {{ party.campaign.name }}</a>
+    </nav>
+    {% endif %}
     <div class="party-header">
       <div class="party-heading">
         <h1 class="title level-item">{{ party.name|markdown_inline }}</h1>

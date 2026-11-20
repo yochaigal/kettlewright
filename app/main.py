@@ -1,7 +1,7 @@
 from app.lib.translation_contexts import (
     _EVENTS_UNTRANSLATED_KEYS, _EVENTS_UNTRANSLATED_PATHS, _EVENTS_TRANSLATION_CONTEXTS,
 )
-from flask import Blueprint, render_template, redirect, url_for, jsonify, flash, request, make_response, send_file
+from flask import Blueprint, render_template, redirect, url_for, jsonify, flash, request, make_response, send_file, abort
 from flask_login import login_required, current_user
 from flask_wtf import FlaskForm
 from .models import User, Character, Party
@@ -317,6 +317,14 @@ def new_character():
     if ps != None and ps != "":
         portrait_src = ps
     custom_image = request.args.get("custom_image")
+    # Created for a party: its campaign's backgrounds, and the character joins it on save.
+    from app.lib.campaign_backgrounds import party_for_code, use_campaign_backgrounds
+    code = (request.args.get('party') or '').strip()
+    party = party_for_code(code)
+    if party is not None:
+        use_campaign_backgrounds(party.campaign)
+        form = CharacterForm()
+        form.party_code.data = party.join_code
     custom_fields = {}
     custom_fields['background'] = None
     custom_fields['traits'] = load_traits()
@@ -337,7 +345,7 @@ def new_character():
     custom_fields['custom_image'] = 'false'
     
     return render_template('main/character_create.html', portrait_src = portrait_src, custom_image=custom_image, 
-                           form=form, custom_fields=custom_fields)
+                           form=form, custom_fields=custom_fields, party=party, party_code_error=bool(code) and party is None)
 
 
 @main.route('/new_character/barebones/', methods=['GET'])
@@ -444,90 +452,11 @@ def delete(character_id):
     return response
 
 
-def generate_unique_join_code():
-    while True:
-        join_code = os.urandom(8).hex()
-        existing_party = Party.query.filter_by(join_code=join_code).first()
-        if existing_party is None:
-            break
-
-    return join_code
-
-
-def generate_unique_party_url(name):
-    # check that owner doesn't already have a party with the same name
-    party_url = slugify(name)
-    # filter for both party_url and owner
-    existing_party = Party.query.filter_by(
-        party_url=party_url, owner=current_user.id).first()
-    if existing_party is not None:
-        counter = 1
-        while True:
-            party_url = slugify(name) + str(counter)
-            existing_party = Party.query.filter_by(
-                party_url=party_url, owner=current_user.id).first()
-            if existing_party is None:
-                break
-            counter += 1
-
-    return party_url
-
-
-@main.route('/users/<username>/parties/',  methods=['GET', 'POST'])
+@main.route('/users/<username>/parties/', methods=['GET', 'POST'])
 @login_required
 def parties(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    form = PartyForm()
-
-    if username != current_user.username:
-        return redirect(url_for('main.index'))
-    if current_user.is_authenticated:
-        # get all parties owned by the user
-        parties = Party.query.filter_by(owner=user.id).all()
-        parties_sorted = sorted(
-            parties, key=lambda x: x.created_at, reverse=True)
-
-        # go through each character the user owns, and if they are in a party, add the party to the list of parties
-        characters = Character.query.filter_by(owner=user.id).all()
-        for character in characters:
-            if character.party_id:
-                party = Party.query.filter_by(id=character.party_id).first()
-                if party not in parties_sorted:
-                    parties_sorted.append(party)
-
-        # for each party in parties_sorted, get the member names, and add them to the party object
-        for party in parties_sorted:
-            party.member_names = ""
-            party.member_portraits = []
-            if party.members and party.members.strip():
-                members_list = json.loads(party.members)
-                for member in members_list:
-                    character = Character.query.filter_by(id=member).first()
-                    if character:
-                        party.member_names += character.name + ", "
-                        if not character.custom_image:
-                            character.portrait_src = url_for(
-                                'static', filename='images/portraits/' + character.image_url)
-                        else:
-                            character.portrait_src = character.image_url
-                        party.member_portraits.append(character.portrait_src)
-            if party.member_names == "":
-                party.member_names = "No members yet."
-            else:
-                party.member_names = party.member_names[:-2]
-
-        if form.validate_on_submit():
-            party_url = generate_unique_party_url(
-                sanitize_data(form.name.data))
-            join_code = generate_unique_join_code()
-            new_party = Party(name=sanitize_data(form.name.data),
-                              owner=current_user.id, owner_username=current_user.username, description=sanitize_data(form.description.data), join_code=join_code, party_url=party_url, items='[]', containers='[{"name":"Main","slots":10,"id":0}]')
-            db.session.add(new_party)
-            db.session.commit()
-            # redirect to the new party page
-            return redirect(url_for('party.party_view', ownername=username, party_url=party_url))
-
-    return render_template('main/parties.html', form=form, parties=parties_sorted, base_url=base_url)
+    """Parties live inside campaigns now: the old Parties page opens Campaigns."""
+    return redirect(url_for('campaigns.index'))
 
 
 @main.route('/users/<ownername>/parties/<party_url>/tools/', methods=['POST', 'GET'])
@@ -538,27 +467,23 @@ def party_tools(ownername, party_url):
     return render_template('main/party_tools.html', username=current_user.username, user_id=current_user.id, party_id=party_id)
 
 
-@ main.route('/delete-party/<int:party_id>/', methods=['POST', 'GET'])
-@ login_required
+@main.route('/delete-party/<int:party_id>/', methods=['POST'])
+@login_required
 def delete_party(party_id):
+    from flask_wtf.csrf import validate_csrf
+    from wtforms import ValidationError
+    from app.lib.campaign_parties import delete_party as remove_party
     party = db.get_or_404(Party, party_id)
-
     if party.owner != current_user.id:
-        return redirect(url_for('main.parties', username=current_user.username))
-
-    # remove party from all characters in the party
-    characters = Character.query.filter_by(party_id=party.id).all()
-    for character in characters:
-        character.party_id = None
-        character.party_code = None
-
-    from app.lib.campaigns import delete_party_notes
-    delete_party_notes(party.id)
-    db.session.delete(party)
+        return redirect(url_for('campaigns.index'))
+    try:
+        validate_csrf(request.form.get('csrf_token'))
+    except ValidationError:
+        abort(400)
+    campaign_id = party.campaign_id
+    remove_party(party)
     db.session.commit()
-
-    # flash('Party deleted successfully.', 'success')
-    return redirect(url_for('main.parties', username=current_user.username))
+    return redirect(url_for('campaigns.lobby', campaign_id=campaign_id) if campaign_id else url_for('campaigns.index'))
 
 
 def translate_events_data(node, path=()):

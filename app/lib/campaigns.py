@@ -4,7 +4,7 @@ import random
 from flask import abort, current_app
 from flask_login import current_user
 
-from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
+from app.models import (db, Campaign, ContentEntry, ContentLink,
                         Party, PartyPresentation, PointcrawlMap, MapNode, MapEdge)
 from app.socket_events import party_recipient_ids
 from app.lib.map_drawing import EMPTY_DRAWING, validate_drawing, validate_node_geometry
@@ -74,8 +74,15 @@ def campaign_for(value):
 
 
 def publishable_party(entry, party_id):
-    """Any party I run can be shown any of my articles; there is no campaign connection step."""
-    return party_access(party_id, editing=True)
+    """A party I run that may be shown this article: one of the article's campaign's parties.
+
+    Unfiled articles can be shown to any of my parties, and a party already shown the article
+    (from another campaign, before parties lived in campaigns) can still be updated."""
+    party = party_access(party_id, editing=True)
+    if (entry.campaign_id is not None and party.campaign_id not in (None, entry.campaign_id)
+            and not any(p.party_id == party.id for p in entry.presentations)):
+        abort(403)
+    return party
 
 
 def content_value(value):
@@ -238,14 +245,6 @@ def known_entries(party_id):
 
 
 
-def party_versions(party_id):
-    """Ids of revealed articles whose party text differs from the original: a party version.
-
-    Warden only: players never learn whether their text matches the private original."""
-    return {row.entry_id for row in PartyPresentation.query.filter_by(party_id=party_id, published=True)
-            if (row.title, row.body) != (row.entry.title, row.entry.body)}
-
-
 def party_knowledge_tree(party_id):
     entries = {entry_id: entry for entry_id, entry in known_entries(party_id).items()
                if entry['category'] != 'path' or not db.session.get(ContentEntry, entry_id).map_edges}
@@ -384,7 +383,7 @@ def save_geometry(pointcrawl, data, *, nested_draft=False):
                     abort(400, 'Choose a location from this campaign.')
             else:
                 entry = ContentEntry(owner_id=current_user.id, campaign_id=pointcrawl.entry.campaign_id,
-                    category=point_category(item), is_heart=heart_value(item, point_category(item)),
+                    module_id=pointcrawl.entry.module_id, category=point_category(item), is_heart=heart_value(item, point_category(item)),
                     title=text_value(item.get('title', ''), 200, True),
                     body=content_value(item.get('body', '')))
                 db.session.add(entry)
@@ -465,7 +464,7 @@ def save_geometry(pointcrawl, data, *, nested_draft=False):
             if kind not in PATH_TYPES:
                 abort(400)
             entry = ContentEntry(owner_id=current_user.id, campaign_id=pointcrawl.entry.campaign_id,
-                category='path', title=text_value(item.get('title', 'Path'), 200, True),
+                module_id=pointcrawl.entry.module_id, category='path', title=text_value(item.get('title', 'Path'), 200, True),
                 body=content_value(item.get('body', '')), path_type=kind)
             if 'paths' in groups:
                 entry.parent = groups['paths']
@@ -532,7 +531,7 @@ def save_article_children(parent, children, *, body=None):
             path_type = row.get('path_type', 'standard')
             if path_type not in PATH_TYPES:
                 abort(400, 'Invalid path type.')
-            child = ContentEntry(owner_id=parent.owner_id, campaign=parent.campaign,
+            child = ContentEntry(owner_id=parent.owner_id, campaign=parent.campaign, module=parent.module,
                 parent=owner, category=category, title=text_value(row.get('title'), 200, True),
                 body=content_value(row.get('body', '')), path_type=path_type,
                 is_heart=heart_value(row, category))

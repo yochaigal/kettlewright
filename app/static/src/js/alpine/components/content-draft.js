@@ -85,31 +85,21 @@ export function contentDraft() {
     }
   };
 }
-// Reveal popup/page: one party, and what it sees: the original, or a party version written for it.
+// Reveal popup/page: reveal an article to one party, or hide it again.
 export function revealContent() {
   return {
-    parties:[], original:{}, labels:{}, partyId:'', mode:'everything', title:'', body:'', pathType:'standard',
+    // A party reads the original (there are no party versions): choose the party, reveal or hide.
+    parties:[], labels:{}, partyId:'',
     init(){
       const data=this.$el.dataset;
-      this.parties=JSON.parse(data.parties); this.original=JSON.parse(data.original); this.labels=JSON.parse(data.labels);
+      this.parties=JSON.parse(data.parties); this.labels=JSON.parse(data.labels);
       this.partyId=data.selected || (this.parties.length===1 ? String(this.parties[0].id) : '');
-      this.pick();
-      this.$watch('partyId', () => this.pick());
-      // The text editor starts after this component and empties itself: fill it again once it is ready.
-      this.$nextTick(() => this.pick());
     },
     current(){return this.parties.find(party => String(party.id)===String(this.partyId));},
-    // A party with its own version opens on it; otherwise on the original, and Party version starts from your text.
-    pick(){
-      const party=this.current();
-      if(party && party.status==='custom'){this.mode='custom'; this.title=party.title; this.body=party.body; this.pathType=party.path_type; return;}
-      this.mode='everything'; this.title=this.original.title; this.body=this.original.body; this.pathType=this.original.path_type;
-    },
     statusText(){const party=this.current(); return party ? this.labels[party.status] : '';},
     mapText(){const party=this.current(); return party ? this.labels.map.replace('{points}', party.points).replace('{paths}', party.paths) : '';},
     named(label){const party=this.current(); return party ? label.replace('{party}', party.name) : this.labels.choose;},
     submitLabel(){const party=this.current(); return this.named(party && party.status!=='none' ? this.labels.update : this.labels.reveal);},
-    // A party version is deleted when removed, so say so; an original is only hidden.
-    hideLabel(){const party=this.current(); return this.named(party && party.status==='custom' ? this.labels.delete : this.labels.hide);},
+    hideLabel(){return this.named(this.labels.hide);},
   };
 }

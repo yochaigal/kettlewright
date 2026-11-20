@@ -108,10 +108,10 @@ def load_version():
     return ver_data["version"]
 
 def load_backgrounds():
-    bkg_file_path = os.path.join(app_static_path(), 'json', 'backgrounds', 'background_data.json')
-    with open(bkg_file_path, 'r') as file:
-        bkg_data = json.load(file)    
-    return bkg_data
+    """The backgrounds to choose from: the official ones, or a campaign's during character creation for its party."""
+    from app.lib.campaign_backgrounds import active_backgrounds, official_backgrounds
+    custom = active_backgrounds()
+    return custom if custom is not None else official_backgrounds()
 
 def load_traits():
     result = []

@@ -4,14 +4,14 @@
 {% call page_header(_('Reveal %(count)s articles', count=entries|length)) %}
 <a href="{{ back_url }}">{{ _('Cancel') }}</a>
 {% endcall %}
-<p>{{ _('Sub-articles are included only if you checked them too. To give one article its own wording for a party, use Reveal to party on that article.') }}</p>
+<p>{{ _('Sub-articles are included only if you checked them too.') }}</p>
 {% if parties %}
 <form id="reveal-articles-form" class="campaign-page-form reveal-form" method="post" action="{{ url_for('campaigns.bulk_reveal') }}">
 {{ token() }}<input type="hidden" name="reveal_token" value="{{ reveal_token }}">
 <fieldset><legend>{{ _('Reveal to') }}</legend>
 {% for party in parties %}<label class="campaign-check"><input type="checkbox" name="party_ids" value="{{ party.id }}"> {{ party.name|markdown_inline }}</label>{% endfor %}
 </fieldset>
-<p>{{ _('Each party sees the originals: every article’s title and text, as they are now. To write a party version, reveal that article on its own.') }}</p>
+<p>{{ _('Each party reads the articles themselves; when you edit one, they read the new text.') }}</p>
 {% if entries|selectattr('pointcrawl')|list %}
 <fieldset><legend>{{ _('Map drawing') }}</legend>
 <label class="campaign-check"><input type="checkbox" name="publish_drawing" value="1"> {{ _('Also show the map drawings: every mark, text and image on them') }}</label>

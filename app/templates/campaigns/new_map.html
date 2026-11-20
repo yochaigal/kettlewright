@@ -15,7 +15,13 @@
 </div>
 <div class="article-sidebar" role="complementary" aria-label="{{ _('Article settings') }}">
 <h2 class="article-sidebar-title">{{ _('Organize') }}</h2>
-<label>{{ _('Campaign') }}<select name="campaign_id"><option value="">{{ _('Unfiled') }}</option>{% for item in campaigns %}<option value="{{ item.id }}" {% if campaign and campaign.id == item.id %}selected{% endif %}>{{ item.name|markdown_inline|striptags }}</option>{% endfor %}</select></label>
+<label>{{ _('Module') }}<select name="module_id" required>
+{% if not module %}<option value="" disabled selected>{{ _('Choose a module') }}</option>{% endif %}
+{% for group_campaign, group_modules in module_groups %}<optgroup label="{{ group_campaign.name|markdown_inline|striptags }}">
+{% for item in group_modules %}<option value="{{ item.id }}" {% if module and module.id == item.id %}selected{% endif %}>{{ item.title }}</option>{% endfor %}
+{% if not group_modules %}<option value="c{{ group_campaign.id }}">{{ _('%(campaign)s (first module)', campaign=group_campaign.name|markdown_inline|striptags) }}</option>{% endif %}
+</optgroup>{% endfor %}
+</select></label>
 <label>{{ _('Article type') }}<select name="kind" x-model="kind"><option value="realm">{{ _('Realm') }}</option><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option><option value="freeform">{{ _('Topography') }}</option></select></label>
 <div class="article-generator" x-show="kind!=='freeform'">
 <label class="campaign-check"><input type="checkbox" x-model="generateChildren">{{ _('Generate all child articles') }}</label>

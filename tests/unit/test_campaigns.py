@@ -6,7 +6,7 @@ import pytest
 from sqlalchemy.orm.exc import StaleDataError
 from sqlalchemy.orm import Session
 
-from app.models import (db, User, Party, Character, Campaign, CampaignParty,
+from app.models import (db, User, Party, Character, Campaign,
                         ContentEntry, ContentLink, PartyPresentation, PointcrawlMap, MapNode, MapEdge)
 from app.lib.campaigns import render_content
 from tests.helpers import login
@@ -64,7 +64,7 @@ def test_new_map_keeps_drawing_and_drops_unused_files(setup, kind):
     app, client = setup
     draft = {'nodes': [], 'edges': [], 'drawing': drawing('PUBLIC DRAWING')}
     draft['drawing']['files']['unused'] = {'dataURL': 'SECRET UNUSED FILE'}
-    response = client.post('/maps/new', data={'title': 'Shared map',
+    response = client.post('/maps/new', data={'title': 'Shared map', 'campaign_id': 1,
         'kind': kind, 'draft': json.dumps(draft)})
     assert response.status_code == 302
     graph = graph_from_article(client,response.location)
@@ -99,17 +99,26 @@ def setup(app_with_babel, tmp_path):
     app.config['MATERIAL_IMAGE_UPLOAD_FOLDER'] = str(tmp_path / 'material-images')
     with app.app_context():
         db.session.add_all([User(id=i, username=f'user{i}') for i in range(1, 5)])
-        db.session.add_all([Party(id=i, owner=1 if i < 3 else 4, name=f'Party {i}',
+        db.session.add(Campaign(id=1, owner_id=1, name='Secret campaign'))
+        # Party 1 is the campaign's party; party 2 is an older party of the same Warden that is in
+        # no campaign (it can still be shown articles); party 3 is someone else's.
+        db.session.add_all([Party(id=i, owner=1 if i < 3 else 4, name=f'Party {i}', campaign_id=1 if i == 1 else None,
             owner_username='user1' if i < 3 else 'user4', party_url=f'party{i}', members=json.dumps([i]),
             items='[]', containers='[{"id":0,"name":"Main","slots":10}]') for i in range(1, 4)])
         db.session.add_all([Character(id=1, owner=2, party_id=1, name='Player A', background='Test'),
                             Character(id=2, owner=3, party_id=2, name='Player B', background='Test')])
-        db.session.add(Campaign(id=1, owner_id=1, name='Secret campaign'))
-        db.session.add_all([CampaignParty(campaign_id=1, party_id=i) for i in (1, 2)])
         db.session.commit()
     client = app.test_client()
     login(client, 1)
     return app, client
+
+
+def module_url(app, campaign_id=1, suffix=''):
+    """The page of the campaign's first module, where its articles are listed (and exported, with suffix 'export')."""
+    from app.models import Module
+    with app.app_context():
+        module = Module.query.filter_by(campaign_id=campaign_id).order_by(Module.id).first()
+        return f'/campaigns/{campaign_id}/modules/{module.id}/{suffix}'
 
 
 def create_entry(client, **values):
@@ -119,10 +128,10 @@ def create_entry(client, **values):
     return int(re.search(r'/materials/(\d+)/edit', result.location).group(1))
 
 
-def reveal(client, entry_id, party_id=1, version=0, title='Known name', body='Known facts', mode='custom', **extra):
-    """Reveal a version written for the party (mode=custom) unless another mode is given."""
+def reveal(client, entry_id, party_id=1, version=0, **extra):
+    """Reveal an article to a party: it reads the original (there are no party versions)."""
     return client.post(f'/materials/{entry_id}/reveal', data={'party_ids':str(party_id),
-        f'version_{party_id}':version, 'mode':mode, 'title':title, 'body':body, **extra})
+        f'version_{party_id}':version, 'mode':'everything', **extra})
 
 
 def graph_from_article(client, url):
@@ -150,8 +159,8 @@ def map_entry_id(app, map_id):
 def test_private_default_and_owner_routes(setup):
     app,client=setup
     entry_id=create_entry(client)
-    assert client.get('/campaigns/1/').status_code==200
-    assert client.get('/materials/').status_code==200
+    assert client.get('/campaigns/1/').status_code==200  # The lobby.
+    assert client.get('/materials/').status_code==302  # No unfiled articles: Campaigns.
     assert client.get(f'/materials/{entry_id}/edit').status_code==200
     assert client.get(f'/materials/{entry_id}/reveal').status_code==200
     login(client,2)
@@ -165,34 +174,34 @@ def test_private_default_and_owner_routes(setup):
     assert client.get('/party/1/materials/').status_code==403
 
 
-def test_independent_versions_original_changes_and_safe_links(setup):
+def test_parties_read_the_original_and_its_edits_and_only_revealed_links(setup):
     app,client=setup
     entry_id=create_entry(client)
     target_id=create_entry(client,title='SECRET TARGET')
-    assert reveal(client,entry_id,title='Alias A').status_code==302
-    assert reveal(client,entry_id,party_id=2,title='Alias B').status_code==302
-    assert client.post(f'/materials/{entry_id}/edit',data={'version':1,'title':'NEW SECRET',
-        'body':'NEW SECRET BODY','category':'npc','campaign_id':1,'links':target_id}).status_code==302
-    for user,party,title in [(2,1,'Alias A'),(3,2,'Alias B')]:
+    assert reveal(client,entry_id,title='Ignored alias').status_code==302  # No party wording: the original.
+    assert reveal(client,entry_id,party_id=2).status_code==302
+    assert client.post(f'/materials/{entry_id}/edit',data={'version':1,'title':'NEW NAME',
+        'body':'NEW BODY','category':'npc','campaign_id':1,'links':target_id}).status_code==302
+    for user,party in [(2,1),(3,2)]:
         login(client,user)
         response=client.get(f'/party/{party}/materials/data')
-        assert 'SECRET' not in response.get_data(as_text=True)
-        assert response.json['entries'][0]['title']==title
+        assert response.json['entries'][0]['title']=='NEW NAME' and response.json['entries'][0]['body']=='NEW BODY'
+        assert 'SECRET TARGET' not in response.get_data(as_text=True)  # The link's target was not revealed.
         assert response.json['entries'][0]['links']==[]
     login(client,1)
-    assert reveal(client,target_id,title='Known target').status_code==302
+    assert reveal(client,target_id).status_code==302
     login(client,2)
     entries=client.get('/party/1/materials/data').json['entries']
-    assert entries[0]['links']==[{'id':target_id,'title':'Known target'}]
+    assert next(e for e in entries if e['id']==entry_id)['links']==[{'id':target_id,'title':'SECRET TARGET'}]
 
 
 def test_new_articles_and_maps_are_private_even_with_a_party_id(setup):
     """"Create and show" is gone: articles are created privately, then revealed."""
     app, client = setup
-    article = client.post('/materials/new', data={'party_id': 1, 'category': 'lore', 'title': 'Rumour', 'body': 'Heard'})
+    article = client.post('/materials/new', data={'party_id': 1, 'campaign_id': 1, 'category': 'lore', 'title': 'Rumour', 'body': 'Heard'})
     assert article.status_code == 302 and '/party/' not in article.location
     draft = {'nodes': [{'id': 'new-a', 'number': 1, 'x': 100, 'y': 100, 'title': 'Place', 'body': 'Facts'}], 'edges': []}
-    drawn = client.post('/maps/new', data={'party_id': 1, 'title': 'Drawn', 'kind': 'realm', 'draft': json.dumps(draft)})
+    drawn = client.post('/maps/new', data={'party_id': 1, 'campaign_id': 1, 'title': 'Drawn', 'kind': 'realm', 'draft': json.dumps(draft)})
     assert drawn.status_code == 302 and '/party/' not in drawn.location
     with app.app_context():
         assert ContentEntry.query.filter_by(title='Rumour').one().body == 'Heard'
@@ -204,10 +213,10 @@ def test_republish_revoke_conflicts_and_membership(setup):
     app,client=setup
     entry_id=create_entry(client)
     assert reveal(client,entry_id).status_code==302
-    assert reveal(client,entry_id,version=0,title='Stale').status_code==409
-    assert reveal(client,entry_id,version=1,title='Updated').status_code==302
-    assert client.post(f'/materials/{entry_id}/revoke/1',data={'version':1}).status_code==409
-    assert client.post(f'/materials/{entry_id}/revoke/1',data={'version':2}).status_code==302
+    assert reveal(client,entry_id,version=0).status_code==409  # Stale form.
+    assert reveal(client,entry_id,version=1).status_code==302
+    assert client.post(f'/materials/{entry_id}/revoke/1',data={'version':0}).status_code==409
+    assert client.post(f'/materials/{entry_id}/revoke/1',data={'version':1}).status_code==302
     login(client,2)
     assert client.get('/party/1/materials/data').json['entries']==[]
     login(client,1)
@@ -230,48 +239,40 @@ def test_reveal_goes_to_one_party_at_a_time(setup):
         assert PartyPresentation.query.count()==0
     assert client.post(f'/materials/{entry_id}/reveal',data={'party_ids':['1','2'],'mode':'custom',
         'version_1':0,'version_2':0,'title':'A','body':'A facts'}).status_code==302
-    with app.app_context():  # Only the first party submitted: the popup chooses one.
-        assert [(p.party_id, p.title) for p in PartyPresentation.query] == [(1,'A')]
+    with app.app_context():  # Only the first party submitted: the popup chooses one. Custom text is ignored.
+        assert [(p.party_id, p.title) for p in PartyPresentation.query] == [(1,'SECRET NAME')]
     assert reveal(client,entry_id,party_id=3).status_code==403
 
 
-def test_reveal_popup_original_or_party_version_and_hide(setup):
-    """Reveal to party: one party, then the original or a party version. Hide deletes the version."""
+def test_reveal_popup_shows_the_original_and_hides(setup):
+    """Reveal to party: one party; it reads the original. There is no party wording to write."""
     app, client = setup
     entry_id = create_entry(client)  # SECRET NAME / SECRET BODY
     page = client.get(f'/campaigns/1/wiki/{entry_id}/').text
     assert f'id="reveal-dialog-{entry_id}"' in page and 'name="party_ids"' in page and 'class="wiki-reveal-menu"' not in page
-    assert 'Original' in page and 'Party version' in page and 'Title only' not in page
-    assert f'id="reveal-dialog-{entry_id}"' in client.get(f'/materials/{entry_id}/edit').text  # Same popup in Edit.
+    assert 'Party version' not in page and 'Text they see' not in page and 'name="mode" value="everything"' in page
+    assert 'reveal-dialog' not in client.get(f'/materials/{entry_id}/edit').text  # Revealing is on the reading page only.
 
     def shown(party_id):
         with app.app_context():
             row = PartyPresentation.query.filter_by(entry_id=entry_id, party_id=party_id).first()
             return row and (row.title, row.body, row.version)
 
-    # Original: the private title and text as they are now; back to the article afterwards.
-    original = client.post(f'/materials/{entry_id}/reveal', data={'party_ids': '1', 'version_1': 0, 'mode': 'everything',
-                                                                 'return_to': 'article', 'title': 'ignored'})
+    original = client.post(f'/materials/{entry_id}/reveal', data={'party_ids': '1', 'version_1': 0, 'mode': 'custom',
+                                                                 'return_to': 'article', 'title': 'ignored', 'body': 'ignored'})
     assert original.location == f'/campaigns/1/wiki/{entry_id}/'
-    assert shown(1) == ('SECRET NAME', 'SECRET BODY', 1)
-    data = client.get(f'/campaigns/1/wiki/{entry_id}/').text
-    assert '&#34;status&#34;: &#34;same&#34;' in data and '&#34;status&#34;: &#34;none&#34;' in data  # Party 1, party 2.
+    assert shown(1) == ('SECRET NAME', 'SECRET BODY', 1)  # Custom wording is ignored.
+    assert '&#34;status&#34;: &#34;same&#34;' in client.get(f'/campaigns/1/wiki/{entry_id}/').text
+    # Editing the original changes what the party reads.
+    assert client.post(f'/materials/{entry_id}/edit', data={'version': 1, 'title': 'The guildmaster', 'body': 'Polite',
+                                                            'category': 'npc'}).status_code == 302
+    assert shown(1)[:2] == ('The guildmaster', 'Polite')
 
-    # A "party version" left identical to the original counts as the original, and the message says so.
-    same = client.post(f'/materials/{entry_id}/reveal', data={'party_ids': '1', 'version_1': 1, 'mode': 'custom',
-                                                             'title': 'SECRET NAME', 'body': 'SECRET BODY'}, follow_redirects=True)
-    assert 'counts as the original' in same.text and shown(1) == ('SECRET NAME', 'SECRET BODY', 1)  # Nothing changed.
-    # Party version: written for them; opens on it next time.
-    assert reveal(client, entry_id, version=1, title='The guildmaster', body='Polite').status_code == 302
-    assert shown(1) == ('The guildmaster', 'Polite', 2)
-    assert '&#34;status&#34;: &#34;custom&#34;' in client.get(f'/campaigns/1/wiki/{entry_id}/').text
-    assert reveal(client, entry_id, version=2, title=' ').status_code == 400  # A party version needs a title.
-    assert reveal(client, entry_id, version=2, mode='title').status_code == 400  # No other modes.
-
-    # Hide deletes the party version; the party tree can hide too, and returns to the party.
-    assert client.post(f'/materials/{entry_id}/revoke/1', data={'version': 2}).location == f'/campaigns/1/wiki/{entry_id}/'
+    # Hide; the party tree can hide too, and returns to the party.
+    version = shown(1)[2]
+    assert client.post(f'/materials/{entry_id}/revoke/1', data={'version': version}).location == f'/campaigns/1/wiki/{entry_id}/'
     assert shown(1) is None
-    assert reveal(client, entry_id, party_id=2, version=0, mode='everything').status_code == 302
+    assert reveal(client, entry_id, party_id=2, version=0).status_code == 302
     hidden = client.post(f'/materials/{entry_id}/revoke/2', data={'version': 1, 'return_to': 'party'})
     assert hidden.location == '/party/2/wiki/' and shown(2) is None
 
@@ -284,46 +285,21 @@ def test_reveal_popup_original_or_party_version_and_hide(setup):
                                                               'return_to': 'https://evil.example'}).location == f'/campaigns/1/wiki/{entry_id}/'
 
 
-def test_party_tree_labels_edits_and_hides_party_versions(setup):
-    """Party wiki, Warden: each revealed article says Original or Party version, with Edit and Hide."""
+def test_party_wiki_hides_revealed_articles_and_has_no_party_versions(setup):
+    """Party wiki, Warden: revealed articles have Hide; their text is edited in the module, not here."""
     app, client = setup
     entry_id = create_entry(client)  # SECRET NAME / SECRET BODY
-    assert reveal(client, entry_id, mode='everything').status_code == 302
+    assert reveal(client, entry_id).status_code == 302
     html = client.get('/party/1/wiki/').text
-    assert 'wiki-badge-warden' in html and '>Original</span>' in html
-    assert f'href="/party/1/materials/{entry_id}/version"' not in html  # No Edit on the original: that is in Campaigns.
-    assert f'/party/1/materials/{entry_id}/version' not in client.get(f'/party/1/materials/{entry_id}').text
+    assert 'wiki-badge-warden' not in html and '>Original</span>' not in html and 'Party version' not in html
+    assert f'/party/1/materials/{entry_id}/version' not in html
     assert f'action="/materials/{entry_id}/revoke/1"' in html and ' Hide</button>' in html
     assert 'data-confirm="Hide this article from the party?' in html and 'confirm(' not in html  # Modal, not confirm().
-    assert 'Change what they see' not in html and 'Private original' not in html and f'/materials/{entry_id}/edit' not in html
-
-    page = client.get(f'/party/1/materials/{entry_id}/version').text
-    assert 'href="/party/1/wiki/"' in page and 'Back to party wiki' in page
-    assert 'What Party 1 sees' in page and 'They see the original.' in page and 'Use the original instead' not in page
-    assert client.post(f'/party/1/materials/{entry_id}/version', data={'version': 9, 'title': 'X'}).status_code == 409
-    saved = client.post(f'/party/1/materials/{entry_id}/version', data={'version': 1, 'title': 'The guildmaster', 'body': 'Polite'})
-    assert saved.location == '/party/1/wiki/'
+    # The old party version address opens the article.
+    assert client.get(f'/party/1/materials/{entry_id}/version').location.endswith(f'/party/1/materials/{entry_id}')
+    assert client.post(f'/party/1/materials/{entry_id}/version', data={'version': 1, 'title': 'X'}).status_code == 302
     with app.app_context():
-        row = PartyPresentation.query.filter_by(entry_id=entry_id, party_id=1).one()
-        assert (row.title, row.body) == ('The guildmaster', 'Polite')
-        assert db.session.get(ContentEntry, entry_id).title == 'SECRET NAME'  # The original is unchanged.
-    html = client.get('/party/1/wiki/').text
-    assert f'href="/party/1/materials/{entry_id}/version"' in html and '>Party version</span>' in html  # Edit appears.
-    # Removing a party version deletes its text: Delete, at the bottom of its editor (not on the card).
-    assert ' Delete</button>' not in html and ' Hide</button>' not in html
-    editor = client.get(f'/party/1/materials/{entry_id}/version').text
-    assert 'data-confirm="Delete this party version?' in editor and 'Delete party version…' in editor
-    popup = client.get(f'/campaigns/1/wiki/{entry_id}/').text
-    assert 'data-confirm="Delete the party version for Party 1?' in popup and 'Hide this article from Party 2' not in popup
-
-    # Back to the original from the same page.
-    page = client.get(f'/party/1/materials/{entry_id}/version').text
-    assert 'They see a party version.' in page and 'Use the original instead' in page
-    assert client.post(f'/materials/{entry_id}/reveal', data={'party_ids': '1', 'version_1': 2, 'mode': 'everything',
-                                                              'return_to': 'party'}).status_code == 302
-    assert f'/party/1/materials/{entry_id}/version' not in client.get('/party/1/wiki/').text  # Original again.
-
-    assert client.get(f'/party/2/materials/{entry_id}/version').status_code == 404  # Not revealed to party 2.
+        assert PartyPresentation.query.filter_by(entry_id=entry_id, party_id=1).one().title == 'SECRET NAME'
     assert client.get(f'/party/3/materials/{entry_id}/version').status_code == 403  # Someone else's party.
 
 
@@ -340,26 +316,26 @@ def test_hide_from_the_party_page_confirms_with_a_toast_not_an_error(setup):
         assert PartyPresentation.query.filter_by(entry_id=entry_id).count() == 0
 
 
-def test_deleting_a_party_version_says_deleted(setup):
+def test_hiding_an_article_says_hidden(setup):
     app, client = setup
     renderable_party_page(app)
     entry_id = create_entry(client)
-    assert reveal(client, entry_id, title='Their name', body='Their text').status_code == 302  # A party version.
+    assert reveal(client, entry_id).status_code == 302
     page = client.post(f'/materials/{entry_id}/revoke/1', data={'version': 1, 'return_to': 'party'}, follow_redirects=True).text
-    assert 'Deleted the party version for Party 1.' in page and 'Hidden from Party 1.' not in page
+    assert 'Hidden from Party 1.' in page and 'party version' not in page
     with app.app_context():
         assert PartyPresentation.query.filter_by(entry_id=entry_id).count() == 0
 
 
-def test_party_cards_take_their_picture_from_the_party_text(setup):
+def test_party_cards_take_their_picture_from_what_the_party_reads(setup):
     app, client = setup
     png = 'data:image/png;base64,' + 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
-    entry_id = create_entry(client, body=f'Secret ![map]({png})')
-    assert reveal(client, entry_id, body='Told without a picture').status_code == 302
-    html = client.get('/party/1/wiki/').text
-    assert '/image"' not in html  # The original's picture never leaks into the card.
+    entry_id = create_entry(client, body='Told without a picture')
+    assert reveal(client, entry_id).status_code == 302
+    assert '/image"' not in client.get('/party/1/wiki/').text
     assert client.get(f'/party/1/materials/{entry_id}/image').status_code == 404
-    assert reveal(client, entry_id, version=1, body=f'Seen: ![sketch]({png})').status_code == 302
+    assert client.post(f'/materials/{entry_id}/edit', data={'version': 1, 'title': 'SECRET NAME', 'category': 'npc',
+                                                            'body': f'Seen: ![sketch]({png})'}).status_code == 302
     html = client.get('/party/1/wiki/').text
     assert f'src="/party/1/materials/{entry_id}/image"' in html
     image = client.get(f'/party/1/materials/{entry_id}/image')
@@ -376,7 +352,7 @@ def test_map_reveal_shows_points_and_paths_progress(setup):
     assert reveal(client, room).status_code == 302
     page = client.get(f'/campaigns/1/wiki/{root}/').text
     assert 'Points of interest revealed: {points} of 2' in page and 'Paths: {paths} of 1' in page
-    assert '&#34;paths&#34;: 0, &#34;points&#34;: 1' in page and '&#34;paths&#34;: 0, &#34;points&#34;: 0' in page  # Party 1, party 2.
+    assert '&#34;paths&#34;: 0, &#34;points&#34;: 1' in page  # The campaign's party.
     assert 'Also show the map drawing' in page
 
 
@@ -398,19 +374,20 @@ def test_map_projection_filters_geometry_and_nested_maps(setup):
     assert len(response.json['nodes'])==1
     assert response.json['nodes'][0]['nested_map_id'] is None
     assert response.json['edges']==[]
-    assert 'SECRET' not in response.get_data(as_text=True)
+    hidden = ('SECRET NESTED', 'SECRET ROOM 1', 'SECRET PASSAGE', 'SECRET KEY')  # Not revealed (or not reachable).
+    assert not any(text in response.get_data(as_text=True) for text in hidden)
     assert 'version' not in response.json
     assert client.get(f'/party/1/materials/{graph["edges"][0]["entry_id"]}').status_code==404
     assert client.get(f'/party/1/maps/{nested_id}/data').status_code==404
     assert client.get(f'/maps/{map_id}/data').status_code==403
-    assert 'SECRET' not in client.get(f'/party/1/maps/{map_id}/').get_data(as_text=True)
+    assert not any(text in client.get(f'/party/1/maps/{map_id}/').get_data(as_text=True) for text in hidden)
     login(client,1)
     reveal(client,graph['nodes'][1]['entry_id'],title='Known destination')
     reveal(client,nested_root,title='Known dungeon')
     login(client,2)
     known=client.get(f'/party/1/maps/{map_id}/data').json
     assert len(known['edges'])==1
-    assert known['edges'][0]['path_type']=='standard' # Private hidden type is not inherited.
+    assert known['edges'][0]['path_type']=='hidden'  # The party reads the path as it is.
     assert known['nodes'][0]['nested_map_id']==nested_id
     login(client,3)
     assert client.get(f'/party/2/maps/{map_id}/data').status_code==404
@@ -465,15 +442,16 @@ def test_remove_map_elements_removes_presentations(setup):
 
 
 def test_party_deletion_keeps_campaign_originals(setup):
+    """A party in no campaign (from before parties lived in campaigns) can still be deleted on its own."""
     app,client=setup
     entry_id=create_entry(client)
-    reveal(client,entry_id)
-    assert client.post('/party/delete/1').status_code==200
+    reveal(client,entry_id,party_id=2)
+    assert client.post('/party/delete/2').status_code==200
     with app.app_context():
         assert db.session.get(ContentEntry,entry_id) is not None
         assert db.session.get(Campaign,1) is not None
         assert PartyPresentation.query.count()==0
-        assert db.session.get(CampaignParty,(1,1)) is None
+        assert db.session.get(Party,2) is None
 
 
 def test_hide_everything_and_deleting_campaign_removes_materials(setup):
@@ -481,7 +459,7 @@ def test_hide_everything_and_deleting_campaign_removes_materials(setup):
     entry_id=create_entry(client)
     reveal(client,entry_id)
     reveal(client,entry_id,party_id=2)
-    assert client.post('/campaigns/1/hide/1').location=='/campaigns/1/wiki/'
+    assert client.post('/campaigns/1/hide/1').location=='/campaigns/1/'
     with app.app_context():  # Party 1's versions are deleted; party 2 keeps its own.
         assert [p.party_id for p in PartyPresentation.query.filter_by(entry_id=entry_id)]==[2]
     assert client.post('/campaigns/1/hide/3').status_code==403  # Not my party.
@@ -537,7 +515,7 @@ def test_parallel_session_updates_are_rejected(setup):
 
 def test_templates_and_tools_handoff(setup):
     app,client=setup
-    for path in ['/campaigns/','/campaigns/1/','/materials/','/materials/new',
+    for path in ['/campaigns/','/campaigns/1/wiki/','/materials/new',
                  '/materials/import','/materials/generate','/tools/']:
         response=client.get(path)
         assert response.status_code==200, (path,response.get_data(as_text=True))
@@ -559,20 +537,23 @@ def test_delete_location_cleans_paths_and_conflicts_with_old_map_editor(setup):
         assert PartyPresentation.query.filter_by(entry_id=edge_id).count()==0
 
 
-def test_adopt_standalone_map_retains_published_knowledge(setup):
+def test_moving_a_map_to_another_campaigns_module_keeps_published_knowledge(setup):
     app,client=setup
-    map_id,graph=create_map(client,campaign_id='')
-    root_id=map_entry_id(app,map_id)
-    reveal(client,root_id,title='Known map')
-    reveal(client,graph['nodes'][0]['entry_id'],title='Known place')
-    assert client.post(f'/materials/{root_id}/edit',data={'version':1,'title':'Private map',
-        'body':'Private theme','campaign_id':1}).status_code==302
     with app.app_context():
-        assert all(entry.campaign_id==1 for entry in ContentEntry.query.all())
-    login(client,2)
-    response=client.get(f'/party/1/maps/{map_id}/data')
-    assert response.json['title']=='Known map'
-    assert response.json['nodes'][0]['title']=='Known place'
+        db.session.add(Campaign(id=2,owner_id=1,name='Other campaign'))
+        db.session.commit()
+    map_id,graph=create_map(client,campaign_id=2)
+    root_id=map_entry_id(app,map_id)
+    reveal(client,root_id,party_id=2,title='Known map')
+    reveal(client,graph['nodes'][0]['entry_id'],party_id=2,title='Known place')
+    assert client.post(f'/materials/{root_id}/edit',data={'version':1,'title':'Moved map',
+        'body':'Theme','module_id':'c1'}).status_code==302
+    with app.app_context():
+        assert all(entry.campaign_id==1 and entry.module.campaign_id==1 for entry in ContentEntry.query.all())
+    login(client,3)  # Plays in party 2.
+    response=client.get(f'/party/2/maps/{map_id}/data')
+    assert response.json['title']=='Moved map'  # Still revealed; it reads the edited original.
+    assert response.json['nodes'][0]['title']=='SECRET ROOM 0'
 
 
 def nested_draft(kind='dungeon'):
@@ -584,7 +565,7 @@ def nested_draft(kind='dungeon'):
 
 
 @pytest.mark.parametrize('kind', ['dungeon', 'forest'])
-@pytest.mark.parametrize('campaign_id', [1, ''])
+@pytest.mark.parametrize('campaign_id', [1])
 def test_map_pois_are_children_not_workspace_locations(setup, kind, campaign_id):
     app, client = setup
     standalone = create_entry(client, campaign_id=campaign_id, category='location', title='Standalone')
@@ -593,7 +574,7 @@ def test_map_pois_are_children_not_workspace_locations(setup, kind, campaign_id)
     map_id = graph_from_article(client,response.location)['id']
     graph = client.get(f'/maps/{map_id}/data').json
     root_id = map_entry_id(app, map_id)
-    workspace = f'/campaigns/{campaign_id}/' if campaign_id else '/materials/'
+    workspace = module_url(app, campaign_id)
     html = client.get(workspace).get_data(as_text=True)
     assert set(map(int, re.findall(r'data-root-entry-id="(\d+)"', html))) == {standalone, root_id}
     assert set(map(int, re.findall(r'data-child-entry-id="(\d+)"', html))) == {n['entry_id'] for n in graph['nodes'] + graph['edges']}
@@ -628,7 +609,7 @@ def test_nested_maps_follow_entrance_in_material_hierarchy(setup, kind):
         assert entrance['number'] == 1
         assert entrance['entry'].id == child_id
         assert [item['entry'].title for item in entrance['children']] == ['Entrance', 'Treasure', 'Secret door']
-    html = client.get('/campaigns/1/').get_data(as_text=True)
+    html = client.get(module_url(app)).get_data(as_text=True)
     assert re.findall(r'data-root-entry-id="(\d+)"', html) == [str(root_id)]
     child_page = client.get(f'/materials/{child_id}/edit').get_data(as_text=True)
     parents = re.search(r'<nav class="material-parents".*?</nav>', child_page, re.S)[0]
@@ -656,7 +637,7 @@ def test_legacy_hierarchy_cycles_remain_accessible_and_scoped(setup):
         # A scope missing a linked map must never pull its private original in.
         scoped = material_hierarchy([a.entry, a.nodes[0].entry])
         assert set(flattened(scoped)) == {a.entry_id, a.nodes[0].entry_id}
-    assert client.get('/campaigns/1/').status_code == 200
+    assert client.get(module_url(app)).status_code == 200
 
 
 @pytest.mark.parametrize('kind', ['dungeon', 'forest'])
@@ -689,12 +670,12 @@ def test_generated_nested_map_is_atomic_private_and_not_duplicated(setup, kind):
     assert reveal(client, saved['nodes'][0]['entry_id'], title='Known dungeon').status_code == 302
     public = client.get('/party/1/materials/data').json['entries']
     root = next(item for item in public if item['id'] == root_id)
-    assert root['links'] == [{'id': saved['nodes'][0]['entry_id'], 'title': 'Known dungeon'}]
+    assert root['links'] == [{'id': saved['nodes'][0]['entry_id'], 'title': graph['nodes'][0]['title']}]
     assert client.get(f'/party/1/maps/{nested_id}/data').json['nodes'] == []
-    assert reveal(client, child_entry_id, version=1, title='Known interior').status_code == 302
+    assert reveal(client, child_entry_id, version=1).status_code == 302
     public = client.get('/party/1/materials/data').json['entries']
     root = next(item for item in public if item['id'] == root_id)
-    assert {'id': child_entry_id, 'title': 'Known interior'} in root['links']
+    assert {'id': child_entry_id, 'title': graph['nodes'][0]['title']} in root['links']
     assert client.get(f'/party/1/maps/{nested_id}/data').json['nodes'] == []
 
 
@@ -735,17 +716,20 @@ def test_invalid_nested_draft_rolls_back_all_new_materials(setup, mutation):
 
 def test_region_and_nested_maps_use_submitted_campaign_over_url_default(setup):
     app, client = setup
+    with app.app_context():
+        db.session.add(Campaign(id=2, owner_id=1, name='Other campaign'))
+        db.session.commit()
     draft = {'nodes': [{'id': 'new-forest', 'number': 1, 'x': 0, 'y': 0,
                        'title': 'Forest', 'nested_draft': nested_draft('forest')}], 'edges': []}
-    response = client.post('/maps/new?campaign_id=1', data={'campaign_id': '',
-        'title': 'Unfiled region', 'kind': 'realm', 'draft': json.dumps(draft)})
+    response = client.post('/maps/new?campaign_id=1', data={'campaign_id': '2',
+        'title': 'Other region', 'kind': 'realm', 'draft': json.dumps(draft)})
     assert response.status_code == 302
     with app.app_context():
         assert PointcrawlMap.query.count() == 2
-        assert all(entry.campaign_id is None for entry in ContentEntry.query.all())
+        assert all(entry.campaign_id == 2 and entry.module.campaign_id == 2 for entry in ContentEntry.query.all())
 
 
-def test_delete_campaign_removes_nested_maps_but_keeps_external_materials_and_parties(setup, monkeypatch):
+def test_delete_campaign_removes_nested_maps_and_its_parties_but_keeps_external_materials(setup, monkeypatch):
     app, client = setup
     map_id, graph = create_map(client)
     graph['drawing'] = drawing()
@@ -755,10 +739,10 @@ def test_delete_campaign_removes_nested_maps_but_keeps_external_materials_and_pa
     nested_id = response.json['nodes'][0]['nested_map_id']
     root_id = map_entry_id(app, map_id)
     child_id = map_entry_id(app, nested_id)
-    standalone_id = create_entry(client, campaign_id='', title='Keep unfiled')
     with app.app_context():
         db.session.add(Campaign(id=2, owner_id=1, name='Keep campaign'))
         db.session.commit()
+    standalone_id = create_entry(client, campaign_id=2, title='Keep standalone')
     other_id, other_graph = create_map(client, campaign_id=2, title='Keep map')
     other_entry_id = map_entry_id(app, other_id)
     with app.app_context():
@@ -784,23 +768,25 @@ def test_delete_campaign_removes_nested_maps_but_keeps_external_materials_and_pa
         assert db.session.get(Campaign, 2) is not None
         assert ContentEntry.query.filter(ContentEntry.id.in_(doomed_ids)).count() == 0
         assert PartyPresentation.query.filter(PartyPresentation.entry_id.in_(doomed_ids)).count() == 0
-        assert CampaignParty.query.filter_by(campaign_id=1).count() == 0
+        # The campaign's parties go with it; their characters are kept and leave them.
+        assert Party.query.filter_by(campaign_id=1).count() == 0
+        assert db.session.get(Character, 1).party_id is None
         assert PointcrawlMap.query.count() == 1
         assert MapNode.query.count() == len(other_graph['nodes'])
         assert MapEdge.query.count() == len(other_graph['edges'])
         assert db.session.get(ContentEntry, standalone_id) is not None
         assert db.session.get(ContentEntry, other_entry_id) is not None
         assert [(link.source_id, link.target_id) for link in ContentLink.query.all()] == [(standalone_id, other_entry_id)]
-        assert Party.query.count() == 3
+        assert {party.id for party in Party.query} == {2, 3}  # The party in no campaign and the other Warden's.
         assert Character.query.count() == 2
-    # Only parties that were shown something hear about it; campaign connections no longer matter.
-    assert {payload['party_id'] for event, payload, kw in notifications} == {1}
+    # Deleted parties are not notified; nobody else was shown anything from this campaign.
+    assert {payload['party_id'] for event, payload, kw in notifications} == set()
     assert all(event == 'campaign_content_changed' for event, payload, kw in notifications)
     assert client.get(f'/maps/{map_id}/data').status_code == 404
     assert client.get(f'/maps/{nested_id}/data').status_code == 404
     assert client.get(f'/materials/{child_id}/edit').status_code == 404
     login(client, 2)
-    assert client.get('/party/1/materials/data').json['entries'] == []
+    assert client.get('/party/1/materials/data').status_code == 404  # The party went with its campaign.
 
 
 def test_delete_campaign_checks_owner_and_version_before_removing_contents(setup):
@@ -811,25 +797,26 @@ def test_delete_campaign_checks_owner_and_version_before_removing_contents(setup
     login(client, 1)
     assert client.post('/campaigns/1/delete', data={'version': 0, 'confirm': 'delete'}).status_code == 409
     assert client.get(f'/maps/{map_id}/data').json == graph
-    assert client.get('/campaigns/1/').status_code == 200
+    assert client.get('/campaigns/1/wiki/').status_code == 200
 
 
-def test_rich_descriptions_preserve_formatting_and_independent_publication(setup):
+def test_rich_descriptions_preserve_formatting_and_follow_the_original(setup):
     from app.lib.rich_content import RICH_PREFIX
     app, client = setup
     rich = RICH_PREFIX + '<h2>Clues</h2><p><strong>Secret</strong> <em>history</em></p><ul><li>Door</li></ul>'
     entry_id = create_entry(client, body=rich)
     with app.app_context():
         assert db.session.get(ContentEntry, entry_id).body == rich
-    public = RICH_PREFIX + '<p><strong>Known clue</strong></p>'
-    assert reveal(client, entry_id, body=public).status_code == 302
-    assert client.post(f'/materials/{entry_id}/edit', data={'version': 1, 'title': 'Private',
-        'body': RICH_PREFIX + '<p>Changed secret</p>', 'category': 'npc', 'campaign_id': 1}).status_code == 302
+    assert reveal(client, entry_id).status_code == 302
     login(client, 2)
     page = client.get(f'/party/1/materials/{entry_id}').get_data(as_text=True)
-    assert '<strong>Known clue</strong>' in page
-    assert 'Changed secret' not in page
-    assert '<!--kw-rich-text' not in page
+    assert '<strong>Secret</strong>' in page and '<em>history</em>' in page and '<!--kw-rich-text' not in page
+    login(client, 1)
+    assert client.post(f'/materials/{entry_id}/edit', data={'version': 1, 'title': 'Private',
+        'body': RICH_PREFIX + '<p><strong>Known clue</strong></p>', 'category': 'npc', 'campaign_id': 1}).status_code == 302
+    login(client, 2)
+    page = client.get(f'/party/1/materials/{entry_id}').get_data(as_text=True)
+    assert '<strong>Known clue</strong>' in page and 'history' not in page  # Edits reach the party.
 
 
 def test_rich_images_are_stored_and_published_with_the_description(setup):
@@ -1018,22 +1005,22 @@ def test_material_files_keep_publication_access_and_references(setup):
     assert client.get(url).status_code == 404
     assert client.post('/materials/new', data={'category': 'note', 'title': 'Stolen', 'body': stored}).status_code == 400
     login(client, 1)
-    assert reveal(client, entry_id, body=stored).status_code == 302
+    assert reveal(client, entry_id).status_code == 302
     login(client, 2)
     assert client.get(url).status_code == 200
     login(client, 3)  # A different party cannot see the image.
     assert client.get(url).status_code == 404
     login(client, 1)
+    assert client.post(f'/materials/{entry_id}/revoke/1', data={'version': 1}).status_code == 302
+    login(client, 2)
+    assert client.get(url).status_code == 404  # Hidden again.
+    login(client, 1)
+    assert reveal(client, entry_id).status_code == 302
     assert client.post(f'/materials/{entry_id}/edit', data={'version': 1, 'title': 'Changed',
         'body': '', 'category': 'npc', 'campaign_id': 1}).status_code == 302
     login(client, 2)
-    assert client.get(url).status_code == 200  # Published copy retains its file.
+    assert client.get(url).status_code == 404  # The party reads the edited article, without the image.
     login(client, 1)
-    assert client.post(f'/materials/{entry_id}/revoke/1', data={'version': 1}).status_code == 302
-    login(client, 2)
-    assert client.get(url).status_code == 404
-    login(client, 1)
-    # Hiding deletes the party version, and the edited original no longer uses the image.
     assert client.get(url).status_code == 404
     assert client.post('/campaigns/1/delete', data={'version': 1, 'confirm': 'delete'}).status_code == 302
     assert client.get(url).status_code == 404
@@ -1113,8 +1100,8 @@ def test_bulk_delete_preview_then_atomic_scoped_delete(setup, monkeypatch):
     from app import socketio
     from app.models import PartyMap
     app, client = setup
-    first = create_entry(client, campaign_id='', title='Trap')
-    second = create_entry(client, campaign_id='', title='Lore')
+    first = create_entry(client, title='Trap')
+    second = create_entry(client, title='Lore')
     keep = create_entry(client, title='Campaign material')
     reveal(client, first)
     with app.app_context():
@@ -1123,12 +1110,12 @@ def test_bulk_delete_preview_then_atomic_scoped_delete(setup, monkeypatch):
         db.session.commit()
     notifications = []
     monkeypatch.setattr(socketio, 'emit', lambda event, payload, **kw: notifications.append(payload))
-    token, listed = deletion_preview(client, [first, second], campaign_id='')
+    token, listed = deletion_preview(client, [first, second], campaign_id=1)
     assert listed == {first, second}
     with app.app_context():
         assert ContentEntry.query.count() == 3  # Preview is read-only.
     response = client.post('/materials/bulk-delete', data={'deletion_token': token})
-    assert response.status_code == 302 and response.location.endswith('/materials/')
+    assert response.status_code == 302 and re.search(r'/campaigns/1/modules/\d+/$', response.location)  # Back to the module.
     with app.app_context():
         assert [entry.id for entry in ContentEntry.query.all()] == [keep]
         assert PartyPresentation.query.count() == ContentLink.query.count() == 0
@@ -1180,8 +1167,11 @@ def test_bulk_delete_rejects_changed_preview_without_partial_deletion(setup, cha
 
 def test_bulk_delete_validates_selection_scope_versions_and_csrf(setup):
     app, client = setup
+    with app.app_context():
+        db.session.add(Campaign(id=2, owner_id=1, name='Other campaign'))
+        db.session.commit()
     entry_id = create_entry(client)
-    unfiled = create_entry(client, campaign_id='')
+    unfiled = create_entry(client, campaign_id=2)  # Another campaign.
     data = {'entry_ids': [entry_id, unfiled], f'version_{entry_id}': 1, f'version_{unfiled}': 1}
     assert client.post('/materials/bulk-delete', data=data).status_code == 409
     assert client.post('/materials/bulk-delete', data={'campaign_id': 1}).status_code == 400
@@ -1279,14 +1269,14 @@ def test_markdown_images_use_existing_private_storage_and_access_checks(setup):
 
 
 @pytest.mark.parametrize('category', ['bestiary', 'item', 'spellbook', 'culture', 'custom'])
-def test_new_article_categories_can_be_created_unfiled(setup, category):
+def test_new_article_categories_are_created_in_a_module(setup, category):
     app, client = setup
-    response = client.post('/materials/new', data={'category': category,
+    response = client.post('/materials/new', data={'category': category, 'campaign_id': 1,
         'title': '**Known** article', 'body': 'A *public* description'})
     assert response.status_code == 302
     with app.app_context():
         entry = ContentEntry.query.one()
-        assert entry.campaign_id is None and entry.category == category
+        assert entry.campaign_id == 1 and entry.module.campaign_id == 1 and entry.category == category
         assert entry.body == 'A *public* description' and not entry.presentations
 
 
@@ -1294,15 +1284,16 @@ def test_map_inline_card_edits_are_private_and_version_checked(setup):
     app, client = setup
     map_id, graph = create_map(client)
     edge = graph['edges'][0]
-    assert reveal(client, edge['entry_id'], body='Public path').status_code == 302
-    edge.update(content_changed=True, title='Secret tunnel', body='**Locked** gate', path_type='hidden')
+    assert reveal(client, edge['entry_id']).status_code == 302
+    edge.update(content_changed=True, title='Secret tunnel', body='**Locked** gate', path_type='standard')
     response = client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)})
     assert response.status_code == 200
     saved = response.json
     assert saved['edges'][0]['body'] == '**Locked** gate'
-    assert saved['edges'][0]['path_type'] == 'hidden'
-    with app.app_context():
-        assert PartyPresentation.query.filter_by(entry_id=edge['entry_id']).one().body == 'Public path'
+    assert saved['edges'][0]['path_type'] == 'standard'
+    with app.app_context():  # Edits on the map card reach the party too.
+        row = PartyPresentation.query.filter_by(entry_id=edge['entry_id']).one()
+        assert (row.title, row.body, row.path_type) == ('Secret tunnel', '**Locked** gate', 'standard')
     saved['edges'][0].update(content_changed=True, entry_version=edge['entry_version'], body='Stale')
     assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(saved)}).status_code == 409
     assert client.get(f'/maps/{map_id}/data').json['edges'][0]['body'] == '**Locked** gate'
@@ -1318,14 +1309,18 @@ def test_party_tree_uses_published_fields_and_promotes_children_of_hidden_parent
         db.session.get(ContentEntry, child).parent_id = parent
         db.session.get(ContentEntry, orphan).parent_id = hidden
         db.session.commit()
-    for entry_id, title in [(parent, 'Published parent'), (child, 'Published child'),
-                            (orphan, 'Published orphan')]:
-        assert reveal(client, entry_id, title=title).status_code == 302
+    with app.app_context():
+        for entry_id, title in [(parent, 'Published parent'), (child, 'Published child'),
+                                (orphan, 'Published orphan'), (hidden, 'Never shown')]:
+            db.session.get(ContentEntry, entry_id).title = title
+        db.session.commit()
+    for entry_id in (parent, child, orphan):
+        assert reveal(client, entry_id).status_code == 302
     login(client, 2)
     html = client.get('/party/1/wiki/').get_data(as_text=True)
     assert f'href="/party/1/materials/{parent}"' in html
     assert 'Published parent' in html and 'Published child' in html and 'Published orphan' in html
-    assert 'SECRET NAME' not in html and 'SECRET BODY' not in html
+    assert 'Never shown' not in html
     assert f'/party/1/materials/{hidden}' not in html
     assert 'campaign-card' not in html  # Players never see the Warden's campaigns.
     assert 'wiki-badge-warden' not in html  # Nor the Warden's Original / Party version labels.
@@ -1354,26 +1349,23 @@ def test_party_page_links_to_the_party_wiki_which_holds_everything(setup):
     page = client.get(url)
     assert page.status_code == 200
     assert 'id="party-wiki-link"' in page.text and 'href="/party/1/wiki/"' in page.text
-    for gone in ('campaign-details', 'Known name', 'Add party note', 'party-linked-campaigns', 'kw-confirm-dialog'):
+    for gone in ('campaign-details', 'SECRET NAME', 'Add party note', 'party-linked-campaigns', 'kw-confirm-dialog'):
         assert gone not in page.text
     assert client.get('/party/1/materials/').location == '/party/1/wiki/'  # Old links to the tab's content.
 
     wiki = client.get('/party/1/wiki/').text
-    assert 'Known name' in wiki and 'SECRET NAME' not in wiki and 'SECRET BODY' not in wiki
+    assert 'SECRET NAME' in wiki  # The revealed article, as it is.
     assert 'id="party-note-dialog"' in wiki and 'action="/party/1/notes"' in wiki and 'Quick notes for this party only' in wiki
-    # The Warden's connected campaign, as a gallery card with how much of it this party has seen.
-    assert 'party-linked-campaigns' in wiki and 'href="/campaigns/1/wiki/"' in wiki
-    card = wiki.split('party-linked-campaigns')[1].split('</section>')[0]
-    assert 'campaign-card-actions' not in card and '/campaigns/1/"' not in card  # Card opens to read; no Read/Edit.
-    assert '1 of 1 articles revealed' in wiki
-    assert f'/party/1/materials/{entry_id}/version' in wiki and f'/materials/{entry_id}/edit' not in wiki
+    # No campaign cards at the bottom: the party wiki is the party's notes and what it was shown.
+    assert 'party-linked-campaigns' not in wiki and 'href="/campaigns/1/"' not in wiki
+    assert f'/party/1/materials/{entry_id}/version' not in wiki and f'/materials/{entry_id}/edit' not in wiki
     # The add-note dialog sits outside the live-refreshed content, so a refresh cannot wipe a draft.
     assert wiki.index('id="party-note-dialog"') < wiki.index('id="party-content-results"')
 
     login(client, 2)
     assert 'id="party-wiki-link"' in client.get(url).text
     player = client.get('/party/1/wiki/').text
-    assert 'Known name' in player
+    assert 'SECRET NAME' in player
     for warden_only in ('Add party note', 'party-note-dialog', 'party-linked-campaigns', 'Party notes',
                         f'/party/1/materials/{entry_id}/version'):
         assert warden_only not in player
@@ -1388,32 +1380,90 @@ def test_party_page_links_to_the_party_wiki_which_holds_everything(setup):
     assert 'id="party-wiki-link"' in client.get(url).text
 
 
-def test_no_connection_step_audience_comes_from_reveals(setup):
-    """Any of my parties can be shown any article; who has seen a campaign is worked out from reveals."""
+def test_the_campaign_party_is_on_its_home_and_reveals_go_to_it(setup):
+    """A campaign has one party: its home shows it, and its articles are revealed to it."""
     app, client = setup
     renderable_party_page(app)
     with app.app_context():
-        CampaignParty.query.delete()  # Old connections no longer matter.
+        db.session.add(Campaign(id=2, owner_id=1, name='Other campaign'))
+        db.session.get(Party, 2).campaign_id = 2
         db.session.commit()
     gallery = client.get('/campaigns/').text
-    assert 'Not revealed to any party yet' in gallery and '/campaigns/1/parties' not in gallery and 'campaign-card-parties' not in gallery
+    assert 'Party: <a href="/users/user1/parties/party1/">Party 1</a>' in gallery
     party_wiki = client.get('/party/1/wiki/').text
-    assert 'Nothing from your campaigns has been revealed to this party yet.' in party_wiki
+    assert 'party-linked-campaigns' not in party_wiki
     assert 'Add party note' in party_wiki and 'Nothing has been revealed yet.' in party_wiki
 
     entry_id = create_entry(client)
-    page = client.get(f'/campaigns/1/wiki/{entry_id}/').text  # Every party I run, no group yet.
-    assert 'value="1"' in page and 'value="2"' in page and 'Already seeing this campaign' not in page
-    assert reveal(client, entry_id).status_code == 302  # No "connect first" rejection.
+    page = client.get(f'/campaigns/1/wiki/{entry_id}/').text  # Only this campaign's party.
+    assert '<option value="1">Party 1</option>' in page and '<option value="2">' not in page
+    assert reveal(client, entry_id, party_id=2).status_code == 403  # The party of another campaign.
+    assert reveal(client, entry_id).status_code == 302
 
-    assert 'Revealed to Party 1' in client.get('/campaigns/').text
-    home = client.get('/campaigns/1/wiki/').text
-    assert 'action="/campaigns/1/hide/1"' in home and 'Hide everything' in home and '1 articles' in home
+    home = client.get('/campaigns/1/').text
+    assert 'campaign-party' in home and 'action="/campaigns/1/hide/1"' in home and 'Manage revealed' in home
+    assert 'Open party</a>' not in home and 'articles revealed' not in home  # The party's name opens it.
+    assert 'invite' not in home.lower()  # Players join with the join code, from their Characters page.
+    assert 'SECRET NAME' in client.get('/party/1/wiki/').text  # The party reads the revealed article.
+    assert 'id="revealed-1-dialog"' in home and 'Manage revealed' in home and '>SECRET NAME</a>' in home.split('id="revealed-1-dialog"')[1]
+
+
+
+def test_west_marches_campaign_has_several_parties_that_can_move_or_go(setup):
+    """Parties are created in a campaign, several at once if wanted; they can be deleted or moved to another campaign."""
+    app, client = setup
+    response = client.post('/campaigns/1/parties', data={'name': 'West Marches', 'description': 'Weekly'})
+    assert response.status_code == 302 and response.location.endswith('/users/user1/parties/west-marches/')
+    with app.app_context():
+        marches = Party.query.filter_by(name='West Marches').one()
+        assert marches.campaign_id == 1 and marches.owner == 1 and marches.join_code and marches.containers
+        assert [party.name for party in db.session.get(Campaign, 1).parties] == ['Party 1', 'West Marches']
+        marches_id = marches.id
+    home = client.get('/campaigns/1/').text
+    assert 'id="new-party-dialog"' in home and 'Parties <small>2</small>' in home and 'West Marches' in home
+    assert 'Parties: <a' in client.get('/campaigns/').text
+    # Articles of the campaign can be revealed to each of its parties.
+    entry_id = create_entry(client)
     page = client.get(f'/campaigns/1/wiki/{entry_id}/').text
-    assert page.index('Already seeing this campaign') < page.index('Other parties')
-    party_wiki = client.get('/party/1/wiki/').text
-    assert 'party-linked-campaigns' in party_wiki and '1 of 1 articles revealed' in party_wiki
-    assert 'Revealed to' in client.get('/campaigns/1/').text and 'name="party_ids"' not in client.get('/campaigns/1/').text
+    assert '<option value="1">Party 1</option>' in page and f'<option value="{marches_id}">West Marches</option>' in page
+    assert reveal(client, entry_id, party_id=marches_id).status_code == 302
+    # A party moves to another of the Warden's campaigns, and keeps what it was shown.
+    with app.app_context():
+        db.session.add_all([Campaign(id=2, owner_id=1, name='Other campaign'), Campaign(id=3, owner_id=2, name='Not mine')])
+        db.session.commit()
+    form = client.get('/party/edit/user1/west-marches').text
+    assert 'name="campaign_id"' in form and 'Other campaign' in form and 'Not mine' not in form and 'delete-party-button' in form
+    assert client.post('/party/edit/user1/west-marches/save', data={'name': 'West Marches', 'description': '',
+                                                                    'campaign_id': '3'}).status_code == 400
+    assert client.post('/party/edit/user1/west-marches/save', data={'name': 'West Marches', 'description': '',
+                                                                    'campaign_id': '2'}).status_code == 200
+    with app.app_context():
+        assert db.session.get(Party, marches_id).campaign_id == 2
+        assert PartyPresentation.query.filter_by(party_id=marches_id).count() == 1
+    assert 'Also revealed to parties of other campaigns' in client.get('/campaigns/1/').text
+    # Any party can be deleted; its characters stay. A campaign with none offers New party.
+    assert client.post(f'/party/delete/{marches_id}').headers['HX-Redirect'] == '/campaigns/2/'
+    assert client.post('/party/delete/1').headers['HX-Redirect'] == '/campaigns/1/'
+    with app.app_context():
+        assert db.session.get(Character, 1).party_id is None
+    assert 'No parties yet' in client.get('/campaigns/1/').text
+    login(client, 2)
+    assert client.post('/campaigns/1/parties', data={'name': 'Mine'}).status_code == 403
+
+
+def test_old_parties_page_opens_campaigns(setup):
+    app, client = setup
+    response = client.get('/users/user1/parties/')
+    assert response.status_code == 302 and response.location.endswith('/campaigns/')
+    assert '/parties/"' not in client.get('/campaigns/').text.split('navbar-start', 1)[1].split('navbar-end', 1)[0]
+
+
+def test_players_find_their_parties_on_campaigns(setup):
+    app, client = setup
+    login(client, 2)  # Plays Player A in Party 1 of user1's campaign.
+    page = client.get('/campaigns/').text
+    assert 'Playing in' in page and '/users/user1/parties/party1/' in page
+    assert 'Secret campaign' not in page  # The Warden's campaign stays private.
 
 
 def test_party_notes_live_only_on_their_party(setup):
@@ -1478,44 +1528,28 @@ def test_deleting_a_party_deletes_its_notes(setup):
         assert ContentEntry.query.filter_by(category='party_note').count() == 0
 
 
-def test_unfiled_party_note_moves_to_a_campaign(setup):
-    app, client = setup
-    client.post('/materials/new', data={'category': 'note', 'title': 'Loose note', 'body': 'Ferry at dawn'})
-    with app.app_context():
-        note = ContentEntry.query.filter_by(title='Loose note').one()
-        note_id, version = note.id, note.version
-        assert note.campaign_id is None
-    page = client.get(f'/materials/wiki/{note_id}/').text
-    assert 'Move to campaign' in page and f'id="move-dialog-{note_id}"' in page
-    # Chosen in a dialog: no campaign is preselected, so nothing suggests the article is already in one.
-    dialog = page.split(f'id="move-dialog-{note_id}"')[1].split('</dialog>')[0]
-    assert 'name="campaign_id" value="1" required> <span>Secret campaign</span>' in dialog
-    assert 'checked' not in dialog and 'selected' not in dialog and '<select' not in page.split('wiki-actions')[1].split('</header>')[0]
-    assert client.post(f'/materials/{note_id}/move', data={'campaign_id': 1, 'version': version + 5}).status_code == 409
-    moved = client.post(f'/materials/{note_id}/move', data={'campaign_id': 1, 'version': version})
-    assert moved.status_code == 302 and moved.location == f'/campaigns/1/wiki/{note_id}/'
-    with app.app_context():
-        assert db.session.get(ContentEntry, note_id).campaign_id == 1
-    assert 'Move to campaign' not in client.get(f'/campaigns/1/wiki/{note_id}/').text  # Only offered for unfiled articles.
-
-
-def test_create_new_campaign_redirects_to_campaign_creation(setup):
+def test_new_campaign_has_a_name_and_its_empty_party(setup):
     app, client = setup
     response = client.post('/campaigns/create', data={'kind': 'campaign', 'name': 'Fresh start'})
     assert response.status_code == 302
     with app.app_context():
         created = Campaign.query.filter_by(owner_id=1, name='Fresh start').one()
-    assert f'campaign_id={created.id}' in response.location and 'kind=realm' in response.location
+        assert [party.name for party in created.parties] == ['Fresh start'] and not created.modules
+        assert created.parties[0].members in (None, '[]')
+    assert response.location.endswith(f'/campaigns/{created.id}/')
+    assert client.post('/campaigns/', data={'name': 'Second'}).status_code == 302
 
 
-def test_create_new_note_opens_article_form_with_name_and_type(setup):
+def test_notes_are_written_in_modules_not_on_the_campaigns_page(setup):
     app, client = setup
-    response = client.post('/campaigns/create', data={'kind': 'note', 'name': 'Session zero notes'})
-    assert response.status_code == 302 and response.location.endswith('/materials/new?title=Session+zero+notes&category=note')
-    page = client.get(response.location).get_data(as_text=True)
-    assert 'value="Session zero notes"' in page and 'data-selected-category="note"' in page
+    assert client.post('/campaigns/create', data={'kind': 'note', 'name': 'Session zero notes'}).status_code == 400
+    page = client.get('/materials/new?module_id=c1&category=note').get_data(as_text=True)
+    assert 'data-selected-category="note"' in page and '<option value="c1" data-campaign="1">' in page
+    response = client.post('/materials/new', data={'module_id': 'c1', 'category': 'note', 'title': 'Session zero', 'body': 'x'})
+    assert response.status_code == 302
     with app.app_context():
-        assert Campaign.query.filter_by(name='Session zero notes').count() == 0
+        note = ContentEntry.query.filter_by(title='Session zero').one()
+        assert note.campaign_id == 1 and note.module.title == 'Secret campaign'
 
 
 def test_create_new_rejects_bad_kind_and_blank_name_and_requires_csrf(setup):
@@ -1535,11 +1569,80 @@ def test_new_article_form_ignores_unsafe_category_hint(setup):
         assert 'data-selected-category="custom"' in page and 'value="Hello"' in page
 
 
-def test_empty_unfiled_section_is_muted_without_chevron(setup):
+def test_campaigns_page_only_lists_campaigns(setup):
     app, client = setup
     page = client.get('/campaigns/').get_data(as_text=True)
-    assert 'href="/materials/"' not in page and 'tree-empty-title' in page
-    assert 'Create New' in page and 'create-dialog' in page
-    client.post('/materials/new', data={'category': 'note', 'title': 'Loose note', 'body': 'x'})
-    page = client.get('/campaigns/').get_data(as_text=True)
-    assert 'href="/materials/"' in page and 'tree-empty-title' not in page
+    for gone in ('Unfiled articles', 'Import module', 'Free modules', 'name="kind"', 'Generate it randomly'):
+        assert gone not in page
+    assert 'New campaign' in page and 'create-dialog' in page and 'name="name"' in page
+    assert client.get('/materials/').location.endswith('/campaigns/')
+    assert client.get('/materials/wiki/').location.endswith('/campaigns/')
+    assert client.post('/materials/new', data={'category': 'note', 'title': 'Loose note'}).status_code == 400
+
+def test_manage_revealed_hides_one_article_or_everything(setup):
+    app, client = setup
+    first, second = create_entry(client, title='First'), create_entry(client, title='Second')
+    reveal(client, first)
+    reveal(client, second)
+    home = client.get('/campaigns/1/').text
+    assert 'Hide everything' not in home.split('id="revealed-1-dialog"')[0]  # Only inside the dialog now.
+    dialog = home.split('id="revealed-1-dialog"')[1].split('</dialog>')[0]
+    assert '>First</a>' in dialog and '>Second</a>' in dialog and 'Party version' not in dialog
+    assert f'action="/materials/{first}/revoke/1"' in dialog and 'action="/campaigns/1/hide/1"' in dialog
+    hidden = client.post(f'/materials/{first}/revoke/1', data={'version': 1, 'return_to': 'campaign'})
+    assert hidden.location.endswith('/campaigns/1/#revealed-1')  # The dialog opens again.
+    with app.app_context():
+        assert [row.entry_id for row in PartyPresentation.query.filter_by(party_id=1)] == [second]
+    assert client.post('/campaigns/1/hide/1').status_code == 302
+    with app.app_context():
+        assert PartyPresentation.query.filter_by(party_id=1).count() == 0
+    assert 'Nothing from this campaign has been revealed' in client.get('/campaigns/1/').text
+
+
+def test_party_members_edit_party_notes_but_only_the_warden_deletes_them(setup):
+    app, client = setup
+    picture = description_image(client)
+    assert client.post('/party/1/notes', data={'title': 'Rumour', 'body': f'Heard at the inn. {picture}'}).status_code == 302
+    with app.app_context():
+        note = ContentEntry.query.filter_by(category='party_note').one()
+        note_id, version, body = note.id, note.version, note.body
+    login(client, 2)  # Plays in party 1.
+    wiki = client.get('/party/1/wiki/').text
+    assert f'href="/party/1/notes/{note_id}/edit"' in wiki and f'/party/1/notes/{note_id}/delete' not in wiki
+    editor = client.get(f'/party/1/notes/{note_id}/edit').text
+    assert 'name="title"' in editor and 'Delete note' not in editor and 'can read and edit' in editor
+    # The Warden's picture stays in the note when the player saves it.
+    saved = client.post(f'/party/1/notes/{note_id}/edit', data={'version': version, 'title': 'Rumour (checked)',
+                                                                'body': body + '\n\nIt was true.'})
+    assert saved.location == '/party/1/wiki/'
+    with app.app_context():
+        note = db.session.get(ContentEntry, note_id)
+        assert note.title == 'Rumour (checked)' and note.body.endswith('It was true.')
+        assert PartyPresentation.query.filter_by(entry_id=note_id).one().title == 'Rumour (checked)'
+    assert client.post(f'/party/1/notes/{note_id}/delete').status_code == 403
+    login(client, 3)  # Party 2's player: not their party.
+    assert client.get(f'/party/1/notes/{note_id}/edit').status_code == 403
+    assert client.get(f'/party/2/notes/{note_id}/edit').status_code == 404
+    login(client, 1)
+    assert client.post(f'/party/1/notes/{note_id}/delete').status_code == 302
+
+
+def test_official_backgrounds_toggle_saves_in_place(setup):
+    app, client = setup
+    lobby = client.get('/campaigns/1/').text
+    assert 'id="official-backgrounds-form"' in lobby and 'onchange="this.form.requestSubmit()"' not in lobby
+    response = client.post('/campaigns/1/backgrounds', data={'version': 1}, headers={'Accept': 'application/json'})
+    assert response.status_code == 200
+    assert response.json['version'] == 2 and response.json['fallback'] is True and response.json['customized'] is True
+    assert 'Aurifex' in response.json['offered']  # No module backgrounds: the official ones are still offered.
+    response = client.post('/campaigns/1/backgrounds', data={'version': 2, 'official': '1'}, headers={'Accept': 'application/json'})
+    assert response.json == {**response.json, 'version': 3, 'fallback': False, 'customized': False}
+    assert client.post('/campaigns/1/backgrounds', data={'version': 2}, headers={'Accept': 'application/json'}).status_code == 409
+
+
+def test_module_cards_have_no_read_button(setup):
+    app, client = setup
+    create_entry(client)
+    lobby = client.get('/campaigns/1/').text
+    cards = lobby[lobby.index('class="campaign-module-cards"'):lobby.index('</ul>', lobby.index('class="campaign-module-cards"'))]
+    assert '/wiki/"' in cards and '> Read</a>' not in cards and '> Edit</a>' in cards and '> Export</a>' in cards

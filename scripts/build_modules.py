@@ -1,6 +1,6 @@
-"""Regenerate app/starter_adventures/ from the open Cairn first-party adventures.
+"""Regenerate app/modules/ from the open Cairn first-party adventures.
 
-Usage: python scripts/build_starter_adventures.py [--source DIR] [--only 1 2 ...]
+Usage: python scripts/build_modules.py [--source DIR] [--only 1 2 ...]
 
 Each CAS-N markdown file is split into a campaign.md plus one article per
 top-level (# / ##) heading, in the front matter format that
@@ -15,7 +15,7 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / 'app' / 'starter_adventures'
+OUT = ROOT / 'app' / 'modules'
 RAW = 'https://raw.githubusercontent.com/yochaigal/cairn/main/adventures/first-party/cas-{}.md'
 SITE = 'https://cairnrpg.com'
 MAX_BODY = 45000

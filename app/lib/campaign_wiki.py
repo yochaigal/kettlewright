@@ -95,19 +95,25 @@ def _article_parts(hierarchy, entry_id, by_id, outgoing, incoming):
 
 # ----- Owner: a campaign, or the unfiled articles -----
 
-def page_context(campaign, entry=None, owner_id=None):
-    """Owner pages. With campaign=None, the owner's unfiled articles."""
-    if campaign is not None:
+def page_context(campaign, entry=None, owner_id=None, module=None):
+    """Owner pages: everything in a campaign, or (module) one module of it. With campaign=None, unfiled articles."""
+    if module is not None:
+        entries = ContentEntry.query.filter_by(owner_id=campaign.owner_id, module_id=module.id).order_by(ContentEntry.id).all()
+        page_url = lambda entry_id=None: url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id,
+                                                 entry_id=entry_id)
+        home = dict(home_title=module.title, home_edit_url=url_for('campaigns.module_view', campaign_id=campaign.id,
+                                                                   module_id=module.id))
+    elif campaign is not None:
         entries = campaign_entries(campaign)
         page_url = lambda entry_id=None: url_for('campaigns.wiki', campaign_id=campaign.id, entry_id=entry_id)
-        home = dict(home_title=campaign.name, home_edit_url=url_for('campaigns.workspace', campaign_id=campaign.id))
+        home = dict(home_title=campaign.name, home_edit_url=None)
     else:
         entries = unfiled_entries(owner_id)
         page_url = lambda entry_id=None: url_for('campaigns.unfiled_wiki', entry_id=entry_id)
         home = dict(home_title=_('Unfiled articles'), home_edit_url=url_for('campaigns.library'))
     by_id = {item.id: item for item in entries}
     link = lambda target_id: page_url(target_id)
-    context = dict(campaign=campaign, entry=entry, hierarchy=material_hierarchy(entries), page_url=page_url,
+    context = dict(campaign=campaign, module=module, entry=entry, hierarchy=material_hierarchy(entries), page_url=page_url,
                    article_count=len(entries), content_categories=CATEGORIES,
                    # Article cards show the article's first picture (served by entry_image).
                    card_images={item.id for item in entries if first_image(item.body)}, **home)
@@ -115,11 +121,15 @@ def page_context(campaign, entry=None, owner_id=None):
         # The home page: the campaign's front page if it has one (imported adventures
         # do), then its top-level articles by type. Sub-articles are a click away.
         roots = [item['entry'] for item in context['hierarchy']]
-        intro = next((item for item in roots if campaign is not None and item.category == 'overview'
-                      and item.title == campaign.name), None)
+        front = module.title if module is not None else campaign.name if campaign is not None else None
+        intro = next((item for item in roots if item.category == 'overview' and item.title == front), None)
         context.update(intro=intro, groups=home_groups([item for item in roots if item is not intro]),
-                       hearts=[item for item in entries if item.is_heart],
-                       cover=campaign is not None and cover_image(campaign, entries) is not None)
+                       hearts=[item for item in entries if item.is_heart])
+        if module is not None:
+            if module_cover(module, entries) is not None:
+                context['cover_url'] = url_for('campaigns.module_cover', campaign_id=campaign.id, module_id=module.id)
+        elif campaign is not None and cover_image(campaign, entries) is not None:
+            context['cover_url'] = url_for('campaigns.campaign_cover', campaign_id=campaign.id)
         if intro is not None:
             bindings = bind_references(intro, intro.body, intro.references, entries)
             context['references'] = reference_urls(intro.body, bindings, by_id, link=link)
@@ -150,32 +160,16 @@ def party_url(party):
                    party_url=party.party_url)
 
 
-def linked_campaign_cards(party, known, owner_id):
-    """The Warden's campaigns this party has been shown something from, with how much of each."""
-    from app.models import Campaign
-    revealed = {entry['id'] for entry in known}
-    campaign_ids = {row.campaign_id for row in ContentEntry.query.filter(ContentEntry.id.in_(revealed)) if row.campaign_id}
-    cards = []
-    for campaign in Campaign.query.filter(Campaign.id.in_(campaign_ids), Campaign.owner_id == owner_id):
-        entries = campaign_entries(campaign)
-        cards.append(dict(campaign=campaign, cover=cover_image(campaign, entries) is not None, total=len(entries),
-                          revealed=sum(entry.id in revealed for entry in entries)))
-    return sorted(cards, key=lambda card: card['campaign'].name.casefold())
-
-
 def _warden_kinds(party, entries):
-    """{entry id: 'note' | 'version' | 'original'} for what this party sees, for the Warden's buttons."""
-    from app.lib.campaigns import party_versions
-    versions = party_versions(party.id)
-    return {entry['id']: 'note' if entry['category'] == PARTY_NOTE else 'version' if entry['id'] in versions else 'original'
-            for entry in entries}
+    """{entry id: 'note' | 'original'} for what this party sees, for the Warden's buttons (Edit/Delete or Hide)."""
+    return {entry['id']: 'note' if entry['category'] == PARTY_NOTE else 'original' for entry in entries}
 
 
 def party_context(party, entry_id=None, owner_view=False, owner_id=None):
     """A party member's page for one revealed article, or (entry_id=None) the party's wiki home.
 
     Built from published versions only. The home is the one place for everything the party knows (#440):
-    the Warden's party notes, then what was revealed by type, and for the Warden the campaigns behind it."""
+    the party notes, then what was revealed by type."""
     from app.lib.campaigns import party_knowledge_tree
     entries, hierarchy = party_knowledge_tree(party.id)
     by_id = {entry['id']: entry for entry in entries}
@@ -184,8 +178,10 @@ def party_context(party, entry_id=None, owner_view=False, owner_id=None):
     context = dict(party=party, campaign=None, hierarchy=hierarchy, page_url=page_url, back_url=party_url(party),
                    content_categories=dict(CATEGORIES, **{PARTY_NOTE: N_('Party note')}),
                    home_title=party.name, article_count=len(entries), owner_view=owner_view,
-                   # The Warden's buttons per item: note (Edit, Delete), version (Edit, Delete), original (Hide).
-                   warden_kinds=_warden_kinds(party, entries) if owner_view else {})
+                   # The Warden's buttons per item: note (Edit, Delete), original (Hide).
+                   # Members edit the party's notes too (only the Warden deletes them or hides articles).
+                   warden_kinds=_warden_kinds(party, entries) if owner_view else
+                   {entry['id']: 'member_note' for entry in entries if entry['category'] == PARTY_NOTE})
     if entry_id is None:
         # Like a campaign's home: top-level articles by type. No front page: that belongs to the
         # Warden's private campaign. Party notes come first, newest first.
@@ -197,8 +193,7 @@ def party_context(party, entry_id=None, owner_view=False, owner_id=None):
                    [item for item in entries if item['category'] != PARTY_NOTE] + notes
         cover = next((item['id'] for item in pictured if item['has_image']), None)
         context.update(entry=None, intro=None, hearts=[], cover=False, party_cover=cover, home_edit_url=None, party_notes=notes,
-                       groups=home_groups([item for item in roots if item['category'] != PARTY_NOTE]),
-                       linked_campaigns=linked_campaign_cards(party, entries, owner_id) if owner_view else [])
+                       groups=home_groups([item for item in roots if item['category'] != PARTY_NOTE]))
         return context
     entry = by_id.get(entry_id)
     if entry is None:
@@ -216,7 +211,7 @@ def party_context(party, entry_id=None, owner_view=False, owner_id=None):
     outgoing = linked_ids(entry)
     incoming = {other['id'] for other in entries if entry_id in linked_ids(other)}
     # The Warden's buttons come from warden_kinds (see wiki.html warden_actions); originals are
-    # edited in Campaigns, party versions and notes from the party.
+    # edited in their module, notes from the party.
     context.update(entry=entry, references=entry.get('references') or {}, toc=headings(entry['body']),
                    edit_url=None, **_article_parts(hierarchy, entry_id, by_id, outgoing, incoming))
     return context
@@ -241,6 +236,7 @@ def first_image(body):
 
 
 def cover_image(campaign, entries):
+    """The first picture in the campaign's front page, else in its other articles."""
     front = [entry for entry in entries if entry.category == 'overview' and entry.title == campaign.name]
     for entry in front + sorted((entry for entry in entries if entry not in front), key=lambda entry: entry.id):
         url = first_image(entry.body)
@@ -248,3 +244,13 @@ def cover_image(campaign, entries):
             return url
     return None
 
+
+
+def module_cover(module, entries):
+    """A module's picture: the first in its front page (the Overview named after it), else in its other articles."""
+    front = [entry for entry in entries if entry.category == 'overview' and entry.title == module.title]
+    for entry in front + sorted((entry for entry in entries if entry not in front), key=lambda entry: entry.id):
+        url = first_image(entry.body)
+        if url:
+            return url
+    return None

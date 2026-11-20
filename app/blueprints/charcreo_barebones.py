@@ -51,7 +51,7 @@ def _items(value):
 
 
 def read_state(data):
-    state = {key: (data.get(key) or '').strip() for key in ('name', 'gear_source', 'portrait_src', 'custom_image')}
+    state = {key: (data.get(key) or '').strip() for key in ('name', 'gear_source', 'portrait_src', 'custom_image', 'party_code')}
     for key in ('age', 'strength', 'dexterity', 'willpower', 'hp', 'gold', 'background', 'armor', 'weapon', 'gear'):
         state[key] = _int(data.get(key))
     for name in TRAIT_NAMES:
@@ -165,7 +165,15 @@ def new_state():
 
 
 def creation_page():
-    return render_template('main/character_create_barebones.html', form_html=render_form(new_state()))
+    """The Barebones creator. With ?party=<join code> the character joins that party when saved
+    (Barebones rolls its own background table, so campaign backgrounds do not apply)."""
+    from app.lib.campaign_backgrounds import party_for_code
+    code = (request.args.get('party') or '').strip()
+    party = party_for_code(code)
+    state = new_state()
+    state['party_code'] = party.join_code if party else ''
+    return render_template('main/character_create_barebones.html', form_html=render_form(state), party=party,
+                           party_code_error=bool(code) and party is None)
 
 
 @charcreo_barebones.post('/charcreo/barebones/change/<field>')
@@ -240,6 +248,14 @@ def save():
         custom_image=state['custom_image'] == 'true', image_url=image_url)
     character.armor = str(character.armorValue())
     db.session.add(character)
+    # Created for a party (Join a party): the character joins it.
+    from app.lib.campaign_backgrounds import party_for_code
+    from app.lib import add_character_to_party
+    party = party_for_code(state['party_code'])
+    if party is not None:
+        db.session.flush()
+        character.party_id, character.party_code = party.id, party.join_code
+        add_character_to_party(character)
     db.session.commit()
     response = make_response('Redirecting')
     response.headers['HX-Redirect'] = url_for('main.character', username=current_user.username, url_name=url_name)

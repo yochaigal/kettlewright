@@ -51,9 +51,9 @@ def test_excalidraw_scene_preview_confirmation_and_images(setup):
         assert Campaign.query.count() == 1
     token = re.search(r'name="preview_id" value="([a-f0-9]+)"', html).group(1)
     login(client, 2)
-    assert client.post('/materials/import-archive', data={'preview_id': token}).status_code == 404
+    assert client.post('/materials/import-archive', data={'preview_id': token, 'target_campaign': 1}).status_code == 404
     login(client, 1)
-    assert client.post('/materials/import-archive', data={'preview_id': token}).status_code == 302
+    assert client.post('/materials/import-archive', data={'preview_id': token, 'target_campaign': 1}).status_code == 302
     with app.app_context():
         pointcrawl = PointcrawlMap.query.one()
         assert pointcrawl.kind == 'realm' and pointcrawl.nodes == [] and pointcrawl.edges == []
@@ -68,7 +68,7 @@ def test_excalidraw_scene_preview_confirmation_and_images(setup):
     assert saved.status_code == 200 and len(saved.json['drawing']['elements']) == 2
     assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(saved.json)}).status_code == 200
     assert client.get('/party/1/materials/data').json == {'entries': []}
-    assert client.post('/materials/import-archive', data={'preview_id': token}).status_code == 409
+    assert client.post('/materials/import-archive', data={'preview_id': token, 'target_campaign': 1}).status_code == 409
 
 
 @pytest.mark.parametrize('case, expected', [

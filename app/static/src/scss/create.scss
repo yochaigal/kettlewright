@@ -350,3 +350,14 @@ html:has(#barebones-form) {
     }
   }
 }
+
+// Creating a character for a party: its join code (campaign backgrounds, joins on save).
+.create-party-box {
+  margin: 0 0 1em;
+  padding: .75em 1em;
+  border: 1px dashed currentColor;
+  border-radius: 8px;
+  p { margin: 0; }
+  .create-party-row { display: flex; gap: .5em; margin-top: .4em; flex-wrap: wrap; }
+  .create-party-row .input { max-width: 16em; }
+}

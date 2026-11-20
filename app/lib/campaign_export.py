@@ -16,14 +16,44 @@ def markdown_file(metadata, body=''):
     return f'---\n{header}\n---\n{body or ""}\n'
 
 
-def export_campaign(campaign):
-    # Query the owner as well as the campaign: never export another owner's data
+def _entries(owner_id, **scope):
+    # Query the owner as well as the campaign or module: never export another owner's data
     # even if a corrupt record or cross-campaign reference exists.
-    entries = ContentEntry.query.filter_by(campaign_id=campaign.id,
-        owner_id=campaign.owner_id).options(selectinload(ContentEntry.links),
+    return ContentEntry.query.filter_by(owner_id=owner_id, **scope).options(selectinload(ContentEntry.links),
             selectinload(ContentEntry.pointcrawl).selectinload(PointcrawlMap.nodes),
             selectinload(ContentEntry.pointcrawl).selectinload(PointcrawlMap.edges)
         ).order_by(ContentEntry.id).all()
+
+
+def export_campaign(campaign):
+    return export_archive(campaign.name, 'Campaign', _entries(campaign.owner_id, campaign_id=campaign.id))
+
+
+def export_module(module):
+    """A module as an archive that imports again: articles, maps, and backgrounds (Markdown, or JSON
+    when Markdown cannot say all of a background)."""
+    return export_archive(module.title, 'Module', _entries(module.campaign.owner_id, module_id=module.id),
+                          module.backgrounds or {})
+
+
+def background_files(backgrounds):
+    from slugify import slugify
+    from app.lib.campaign_backgrounds import background_markdown
+    used = set()
+    for name, background in sorted(backgrounds.items()):
+        base = slugify(name) or 'background'
+        stem, counter = base, 1
+        while stem in used:
+            stem, counter = f'{base}-{counter}', counter + 1
+        used.add(stem)
+        text = background_markdown(name, background)
+        if text is not None:
+            yield f'backgrounds/{stem}.md', text
+        else:
+            yield f'backgrounds/{stem}.json', json.dumps({name: background}, ensure_ascii=False, indent=2) + '\n'
+
+
+def export_archive(title, front_type, entries, backgrounds=None):
     ids = {entry.id: f'article-{i:04d}' for i, entry in enumerate(entries, 1)}
     maps = {entry.pointcrawl.id: ids[entry.id] for entry in entries if entry.pointcrawl}
     reference_ids = {entry.reference_key: ids[entry.id] for entry in entries}
@@ -33,8 +63,11 @@ def export_campaign(campaign):
     output = io.BytesIO()
     with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
         archive.writestr('campaign.md', markdown_file({
-            'layout': 'default', 'id': 'campaign', 'title': campaign.name, 'type': 'Campaign'}))
+            'layout': 'default', 'id': 'campaign', 'title': title, 'type': front_type}))
         filenames = {'campaign.md', 'manifest.json'}
+        for filename, text in background_files(backgrounds or {}):
+            archive.writestr(filename, text)
+            filenames.add(filename)
         for entry in entries:
             ref = ids[entry.id]
             path = PurePosixPath(entry.source_path or f'articles/{ref}.md')

@@ -8,7 +8,7 @@ import pytest
 
 from app.lib.campaign_import import preview_archive, import_preview
 from app.models import db, Campaign, ContentEntry, ContentLink, PointcrawlMap
-from test_campaigns import setup, login, create_entry, create_map, drawing
+from test_campaigns import setup, login, create_entry, create_map, drawing, module_url
 from test_campaign_import import upload, archive, md
 
 
@@ -24,7 +24,8 @@ def test_export_roundtrip_duplicate_titles_and_private_scope(setup):
         db.session.add(Campaign(id=2, owner_id=1, name='OTHER CAMPAIGN SECRET'))
         db.session.add(ContentEntry(owner_id=1, campaign_id=2, title='OTHER SECRET', category='note', body='outside'))
         db.session.commit()
-    response = client.get('/campaigns/1/export')
+    export_url = module_url(app, 1, 'export')  # Modules are exported, one by one.
+    response = client.get(export_url)
     assert response.status_code == 200
     assert response.mimetype == 'application/zip'
     assert 'attachment' in response.headers['Content-Disposition']
@@ -37,11 +38,12 @@ def test_export_roundtrip_duplicate_titles_and_private_scope(setup):
     assert preview['errors'] == []
     response = upload(client, response.data)
     token = re.search(r'name="preview_id" value="([a-f0-9]+)"', response.get_data(as_text=True)).group(1)
-    assert client.post('/materials/import-archive', data={'preview_id': token}).status_code == 302
+    # An exported campaign imports again as a module of another campaign.
+    assert client.post('/materials/import-archive', data={'preview_id': token, 'target_campaign': 2}).status_code == 302
     with app.app_context():
-        imported = Campaign.query.filter(Campaign.id.notin_([1, 2])).one()
-        assert imported.name == 'Secret campaign'
-        assert imported.parties == []
+        from app.models import Module
+        imported = Module.query.filter_by(campaign_id=2).one()
+        assert imported.title == 'Secret campaign' and Campaign.query.count() == 2
         assert len(imported.entries) == 2
         parent = next(entry for entry in imported.entries if entry.parent_id is None)
         child = next(entry for entry in imported.entries if entry.parent_id is not None)
@@ -49,14 +51,13 @@ def test_export_roundtrip_duplicate_titles_and_private_scope(setup):
         assert child.parent_id == parent.id and child.is_heart and child.path_type == 'hidden'
         assert parent.body == child.body == 'SECRET BODY'
         assert all(not entry.presentations for entry in imported.entries)
-    assert 'href="/campaigns/1/export"' in client.get('/campaigns/1/wiki/').get_data(as_text=True)  # On the wiki home.
-    for path in ('/campaigns/', '/campaigns/1/'):
-        assert '/campaigns/1/export' not in client.get(path).get_data(as_text=True)
+    assert f'href="{export_url}"' in client.get('/campaigns/1/').get_data(as_text=True)  # On its module card, in the lobby.
+    assert '/export' not in client.get('/campaigns/').get_data(as_text=True)
     login(client, 2)
-    assert client.get('/campaigns/1/export').status_code == 403
+    assert client.get(export_url).status_code == 403
     login(client, 1)
     app.config['FEATURE_TEST_USER_IDS'] = set()
-    assert client.get('/campaigns/1/export').status_code == 200
+    assert client.get(export_url).status_code == 200
 
 
 def test_export_map_sidecar_roundtrip(setup):
@@ -70,7 +71,7 @@ def test_export_map_sidecar_roundtrip(setup):
                                    target_id=pointcrawl.nodes[1].entry_id))
         pointcrawl.entry.body = '![Image](https://example.com/world.webp)'
         db.session.commit()
-    response = client.get('/campaigns/1/export')
+    response = client.get(module_url(app, 1, 'export'))
     with zipfile.ZipFile(io.BytesIO(response.data)) as exported:
         manifest = json.loads(exported.read('manifest.json'))
         assert manifest['format'] == 'kettlewright-campaign' and manifest['version'] == 1
@@ -136,9 +137,13 @@ def test_example_archive_is_importable(setup):
         assert next(node for node in realm.pointcrawl.nodes if node.entry_id == dungeon.id).nested_map_id == dungeon.pointcrawl.id
 
 
-def test_empty_campaign_export(setup):
+def test_empty_module_export(setup):
     app, client = setup
-    response = client.get('/campaigns/1/export')
+    from app.models import Module
+    with app.app_context():
+        db.session.add(Module(id=9, campaign_id=1, title='Empty'))
+        db.session.commit()
+    response = client.get('/campaigns/1/modules/9/export')
     preview = preview_archive(response.data)
     assert preview['errors'] == [] and len(preview['rows']) == 1
     with app.app_context():

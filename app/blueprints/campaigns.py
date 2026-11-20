@@ -11,12 +11,14 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import StaleDataError
 from sqlalchemy.orm import selectinload
 
-from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
+import json
+
+from app.models import (db, Campaign, Module, ContentEntry, ContentLink,
                         Party, PartyPresentation, PointcrawlMap, CampaignImport)
 from app.lib.campaign_import import (preview_archive, single_file_preview, import_preview, apply_overrides,
     ImportError, MAX_ARCHIVE, MAX_FILE)
-from app.lib.campaign_export import export_campaign
-from app.lib.starter_adventures import STARTERS, add_starter_adventure, starter_cards
+from app.lib.campaign_backgrounds import BackgroundError
+from app.lib.modules import MODULES, add_module
 from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, check_version,
     entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
     party_access, publishable_party, render_content, save_geometry, text_value, content_value,
@@ -130,77 +132,53 @@ def campaign_audience(campaign):
 
 
 def available_parties(entry):
-    """Every party I run; those already shown something from this article's campaign first."""
-    audience = campaign_audience(entry.campaign)
-    return sorted(my_parties(), key=lambda party: (party.id not in audience, party.name.casefold()))
+    """The parties an article can be revealed to: its campaign's party.
+
+    Parties of other campaigns that were already shown it stay listed, so the Warden can still change or hide that."""
+    shown = {p.party_id for p in entry.presentations}
+    return sorted((party for party in my_parties() if party.campaign_id == entry.campaign_id or party.id in shown),
+                  key=lambda party: (party.campaign_id != entry.campaign_id, party.name.casefold()))
 
 
 def entry_redirect(entry):
     return redirect(url_for('campaigns.edit_entry', entry_id=entry.id))
 
 
-def create_campaign(name):
-    campaign = Campaign(owner_id=current_user.id, name=name)
-    db.session.add(campaign)
+def campaign_module(campaign_id, module_id):
+    """One of my campaigns and one of its modules."""
+    campaign = owned(Campaign, campaign_id)
+    module = db.get_or_404(Module, module_id)
+    if module.campaign_id != campaign.id:
+        abort(404)
+    return campaign, module
+
+
+def module_page(module):
+    return url_for('campaigns.module_view', campaign_id=module.campaign_id, module_id=module.id)
+
+
+def new_campaign(name):
+    """A campaign is created with its (empty) party; it opens on its home, ready for modules."""
+    from app.lib.campaign_parties import create_campaign
+    campaign = create_campaign(current_user.id, text_value(name, 200, True))
     db.session.commit()
-    return redirect(url_for('campaigns.new_map', campaign_id=campaign.id, kind='realm'))
-
-
-def start_campaign(name, start, kind, form):
-    """Create a campaign: empty, or with a random realm, dungeon or forest.
-
-    The "Create new" dialog and the campaigns page both start campaigns here.
-    """
-    campaign = Campaign(owner_id=current_user.id, name=name)
-    db.session.add(campaign)
-    kind = kind if kind in ('realm', 'dungeon', 'forest') else 'realm'
-    if start == 'random' and form.get('draft'):
-        # The browser generated the draft: save the campaign and its map together,
-        # so a rejected draft leaves no half-created campaign.
-        db.session.flush()
-        create_map_entry(campaign, kind, form.get('title') or campaign.name,
-                         form.get('body', ''), form.get('draft'))
-        db.session.commit()
-        return redirect(url_for('campaigns.workspace', campaign_id=campaign.id))
-    db.session.commit()
-    if start == 'empty':
-        return redirect(url_for('campaigns.workspace', campaign_id=campaign.id))
-    options = {}
-    if start != 'random':
-        kind = 'realm'
-    else:
-        # Fallback when the browser could not generate: open the generator with
-        # only bounded, known options.
-        def percent(name, default):
-            value = form.get(name, '')
-            return int(value) if value.isdigit() and int(value) <= 100 else default
-        pois = form.get('poi_count', '')
-        options = {'random': 1, 'children': '1' if form.get('generate_children') else '0',
-                   'forest': percent('forest_chance', 50), 'forest_pois': percent('dungeon_chance', 25)}
-        if pois in ('3', '6', '8', '12', '20'):
-            options['pois'] = pois
-    return redirect(url_for('campaigns.new_map', campaign_id=campaign.id, kind=kind, **options))
+    return redirect(url_for('campaigns.lobby', campaign_id=campaign.id))
 
 
 @campaigns.route('/campaigns/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        return start_campaign(text_value(request.form.get('name'), 200, True), request.form.get('start'),
-                              request.form.get('kind'), request.form)
-    from app.lib.campaign_wiki import cover_image, first_image
+        return new_campaign(request.form.get('name'))
+    from app.lib.campaign_wiki import cover_image
+    from app.lib.campaign_parties import party_cards, played_parties
     campaigns_list = my_campaigns()
     entries = library_entries().order_by(ContentEntry.title).all()
     by_campaign = {campaign.id: [e for e in entries if e.campaign_id == campaign.id] for campaign in campaigns_list}
-    names = {party.id: party.name for party in my_parties()}
-    return render_template('campaigns/index.html', campaigns=campaigns_list,
-        audiences={campaign.id: [names[i] for i in sorted(campaign_audience(campaign), key=lambda i: names.get(i, '')) if i in names]
-                   for campaign in campaigns_list},
-        starter=starter_cards({c.name: c for c in campaigns_list}),
-        articles=by_campaign,
+    return render_template('campaigns/index.html', campaigns=campaigns_list, articles=by_campaign,
+        parties={c.id: c.parties for c in campaigns_list},
         covers={campaign.id: cover_image(campaign, by_campaign[campaign.id]) is not None for campaign in campaigns_list},
-        unfiled=[e for e in entries if e.campaign_id is None],
-        # Unfiled articles are shown one card each, with their first picture when they have one.
-        unfiled_images={e.id for e in entries if e.campaign_id is None and first_image(e.body)})
+        # Players reach the parties they play in (other Wardens' campaigns) from here.
+        played=party_cards(played_parties(current_user.id)))
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/cover')
@@ -209,6 +187,14 @@ def campaign_cover(campaign_id):
     from app.lib.campaign_wiki import campaign_entries, cover_image
     campaign = owned(Campaign, campaign_id)
     return card_image(cover_image(campaign, campaign_entries(campaign)))
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/cover')
+def module_cover(campaign_id, module_id):
+    """A module's picture, for its wiki: the first image in its articles."""
+    from app.lib.campaign_wiki import module_cover as cover
+    campaign, module = campaign_module(campaign_id, module_id)
+    return card_image(cover(module, list(module.entries)))
 
 
 def card_image(url):
@@ -246,36 +232,192 @@ def party_entry_image(party_id, entry_id):
 
 @campaigns.route('/campaigns/create', methods=['POST'])
 def create_new():
-    kind = request.form.get('kind')
-    if kind not in ('campaign', 'note'):
+    """The "New campaign" dialog: a name. Notes and articles are written inside a campaign's modules."""
+    if request.form.get('kind', 'campaign') != 'campaign':
         abort(400)
-    name = text_value(request.form.get('name'), 200, True)
-    if kind == 'campaign':
-        if request.form.get('start') in ('empty', 'random'):  # From the "Create new" dialog.
-            return start_campaign(name, request.form['start'], request.form.get('map_kind'), request.form)
-        return create_campaign(name)
-    return redirect(url_for('campaigns.new_entry', title=name, category='note'))
+    return new_campaign(request.form.get('name'))
 
 
-@campaigns.route('/campaigns/starter/<slug>', methods=['POST'])
-def add_starter(slug):
-    if slug not in STARTERS:
+# ----- Parties: created in a campaign (several at once for a West Marches game) -----
+
+@campaigns.route('/campaigns/<int:campaign_id>/parties', methods=['POST'])
+def new_party(campaign_id):
+    """Another party in the campaign: same world, modules and backgrounds; its own roster, storage and board."""
+    from app.lib.campaign_parties import create_party, party_page
+    campaign = owned(Campaign, campaign_id)
+    party = create_party(campaign, text_value(request.form.get('name'), 64, True),
+                         text_value(request.form.get('description', ''), 2000))
+    db.session.commit()
+    return redirect(party_page(party))
+
+
+# ----- Modules: what a campaign is built from -----
+
+@campaigns.route('/campaigns/<int:campaign_id>/marketplace/<slug>', methods=['POST'])
+def add_marketplace_module(campaign_id, slug):
+    """Modules Marketplace: add a bundled module (articles, maps, backgrounds) to this campaign."""
+    from app.lib.modules import MODULES, add_module
+    campaign = owned(Campaign, campaign_id)
+    if slug not in MODULES:
         abort(404)
-    title = STARTERS[slug]['title']
+    title = MODULES[slug]['title']
     try:
-        add_starter_adventure(current_user.id, slug)
+        module = add_module(campaign, slug)
         db.session.commit()
     except Exception:
         db.session.rollback()
-        current_app.logger.exception('Starter adventure %s failed for user %s', slug, current_user.id)
+        current_app.logger.exception('Module %s failed for user %s', slug, current_user.id)
         flash(_('Could not add %(title)s. Please try again.', title=title), 'error')
-        return redirect(url_for('campaigns.index'))
-    flash(_('%(title)s was added to your campaigns.', title=title), 'success')
-    return redirect(url_for('campaigns.index'))
+        return redirect(url_for('campaigns.lobby', campaign_id=campaign_id))
+    flash(_('%(title)s was added to %(campaign)s.', title=title, campaign=campaign.name), 'success')
+    return redirect(module_page(module))
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/modules', methods=['POST'])
+def new_module(campaign_id):
+    """A new module: empty, or with a random realm, dungeon or forest (generated in the browser)."""
+    from app.lib.modules import create_module
+    campaign = owned(Campaign, campaign_id)
+    module = create_module(campaign, text_value(request.form.get('name'), 200, True))
+    kind = request.form.get('kind') if request.form.get('kind') in ('realm', 'dungeon', 'forest') else 'realm'
+    if request.form.get('start') != 'random':
+        db.session.commit()
+        return redirect(module_page(module))
+    if request.form.get('draft'):
+        # The browser generated the draft: save the module and its map together.
+        db.session.flush()
+        create_map_entry(campaign, kind, request.form.get('title') or module.title,
+                         request.form.get('body', ''), request.form.get('draft'), module=module)
+        db.session.commit()
+        return redirect(module_page(module))
+    db.session.commit()
+    # Fallback when the browser could not generate: the map page, with only bounded, known options.
+    def percent(name, default):
+        value = request.form.get(name, '')
+        return int(value) if value.isdigit() and int(value) <= 100 else default
+    options = {'random': 1, 'children': '1' if request.form.get('generate_children') else '0',
+               'forest': percent('forest_chance', 50), 'forest_pois': percent('dungeon_chance', 25)}
+    if request.form.get('poi_count', '') in ('3', '6', '8', '12', '20'):
+        options['pois'] = request.form['poi_count']
+    return redirect(url_for('campaigns.new_map', campaign_id=campaign.id, module_id=module.id, kind=kind, **options))
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/', methods=['GET', 'POST'])
+def module_view(campaign_id, module_id):
+    """A module: its articles, notes, maps and backgrounds. POST renames it."""
+    from app.lib.campaign_backgrounds import background_markdown
+    campaign, module = campaign_module(campaign_id, module_id)
+    if request.method == 'POST':
+        check_version(module, request.form.get('version'))
+        module.title = text_value(request.form.get('name'), 200, True)
+        module.version += 1
+        db.session.commit()
+        return redirect(module_page(module))
+    entries = library_entries().filter_by(module_id=module.id).order_by(ContentEntry.id).all()
+    backgrounds = module.backgrounds or {}
+    return render_template('campaigns/module.html', campaign=campaign, module=module,
+                           hierarchy=material_hierarchy(entries), article_count=len(entries),
+                           backgrounds=backgrounds)
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/export')
+def module_export(campaign_id, module_id):
+    from slugify import slugify
+    from app.lib.campaign_export import export_module
+    campaign, module = campaign_module(campaign_id, module_id)
+    return send_file(export_module(module), mimetype='application/zip', as_attachment=True,
+                     download_name=f'{slugify(module.title) or "module"}.zip')
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/delete', methods=['POST'])
+def delete_module(campaign_id, module_id):
+    """Delete a module with its articles, maps and backgrounds. What parties were shown goes too."""
+    campaign, module = campaign_module(campaign_id, module_id)
+    check_version(module, request.form.get('version'))
+    title = module.title
+    entries = list(module.entries)
+    if entries:  # Deletes them (with their maps and what parties were shown), commits and tells the parties.
+        delete_material_plan(*material_deletion_plan(entries, current_user.id, campaign.id))
+    db.session.delete(module)
+    db.session.commit()
+    flash(_('%(title)s was removed from %(campaign)s.', title=title, campaign=campaign.name), 'success')
+    return redirect(url_for('campaigns.lobby', campaign_id=campaign.id))
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/background', methods=['GET', 'POST'])
+def module_background(campaign_id, module_id):
+    """Write a background (Markdown or JSON), edit one (?name=), upload files, or remove one."""
+    from app.lib.campaign_backgrounds import (BackgroundError, add_backgrounds, background_markdown,
+                                              parse_background_text, remove_background, BACKGROUND_TEMPLATE)
+    campaign, module = campaign_module(campaign_id, module_id)
+    name = request.values.get('name', '')
+    current = (module.backgrounds or {}).get(name) if name else None
+    if name and current is None:
+        abort(404)
+    error, text = None, None
+    if request.method == 'POST':
+        check_version(module, request.form.get('version'))
+        action = request.form.get('action')
+        try:
+            if action == 'remove':
+                remove_background(module, name)
+            elif action == 'upload':
+                found = {}
+                for upload in request.files.getlist('backgrounds'):
+                    data = upload.stream.read(512 * 1024 + 1)
+                    if len(data) > 512 * 1024:
+                        raise BackgroundError(_('%(file)s exceeds 512 KB.', file=upload.filename))
+                    found.update(parse_background_text(data.decode('utf-8-sig'), upload.filename or 'background'))
+                if not found:
+                    raise BackgroundError(_('Choose a Markdown or JSON file.'))
+                add_backgrounds(module, found)
+            elif action == 'save':
+                text = text_value(request.form.get('text'), 200000, True)
+                found = parse_background_text(text, name or 'background')
+                if name and name not in found:
+                    remove_background(module, name)  # Renamed.
+                add_backgrounds(module, found)
+            else:
+                abort(400)
+        except (BackgroundError, UnicodeError) as exc:
+            error = str(exc) if isinstance(exc, BackgroundError) else _('Use UTF-8 text files.')
+        if error is None:
+            module.version += 1
+            db.session.commit()
+            return redirect(module_page(module) + '#backgrounds')
+        db.session.rollback()
+        if action != 'save':
+            flash(error, 'error')
+            return redirect(module_page(module) + '#backgrounds')
+    if text is None:
+        text = (background_markdown(name, current) or json.dumps({name: current}, ensure_ascii=False, indent=2)
+                if current is not None else BACKGROUND_TEMPLATE)
+    return render_template('campaigns/background.html', campaign=campaign, module=module, name=name,
+                           text=text, error=error)
+
+
+# ----- Character options: the backgrounds the campaign's party chooses from -----
+
+@campaigns.route('/campaigns/<int:campaign_id>/backgrounds', methods=['GET', 'POST'])
+def campaign_backgrounds(campaign_id):
+    """Official backgrounds on or off (the modules' own backgrounds are edited in each module)."""
+    campaign = owned(Campaign, campaign_id)
+    if request.method == 'POST':
+        check_version(campaign, request.form.get('version'))
+        campaign.official_backgrounds = request.form.get('official') == '1'
+        campaign.version += 1
+        db.session.commit()
+        if request.accept_mimetypes.best == 'application/json':
+            # Saved in place from the Backgrounds dialog: what players now choose from.
+            from app.lib.campaign_backgrounds import campaign_backgrounds as offered, custom_backgrounds, has_custom_options
+            return jsonify(version=campaign.version, offered=list(offered(campaign)), customized=has_custom_options(campaign),
+                           fallback=not campaign.official_backgrounds and not custom_backgrounds(campaign))
+    # Shown in the Backgrounds dialog on the campaign's lobby.
+    return redirect(url_for('campaigns.lobby', campaign_id=campaign.id) + '#backgrounds')
 
 
 def hide_campaign_from(campaign, party_id):
-    """Hide every article of this campaign from one party: its party versions are deleted. The caller commits."""
+    """Hide every article of this campaign from one party: it no longer sees them. The caller commits."""
     entry_ids = [entry.id for entry in campaign.entries]
     for presentation in PartyPresentation.query.filter(
             PartyPresentation.party_id == party_id, PartyPresentation.entry_id.in_(entry_ids)).all():
@@ -283,7 +425,7 @@ def hide_campaign_from(campaign, party_id):
 
 
 def back_to_party(party):
-    """Party notes and party versions live in the party wiki (#440): back there after a change."""
+    """Party notes live in the party wiki (#440): back there after a change."""
     return redirect(url_for('campaigns.party_wiki', party_id=party.id))
 
 
@@ -292,9 +434,10 @@ def back_to_party(party):
 # version holding the same text. Campaigns never lists them (see article()).
 
 def party_note(party, entry_id):
-    entry = owned(ContentEntry, entry_id)
+    """A note of this party: written by its Warden and given to it. Members may edit it; only the Warden deletes it."""
+    entry = db.get_or_404(ContentEntry, entry_id)
     presentation = PartyPresentation.query.filter_by(entry_id=entry.id, party_id=party.id).first()
-    if entry.category != PARTY_NOTE or presentation is None:
+    if entry.category != PARTY_NOTE or presentation is None or entry.owner_id != party.owner:
         abort(404)
     return entry, presentation
 
@@ -314,33 +457,27 @@ def add_party_note(party_id):
 
 @campaigns.route('/party/<int:party_id>/notes/<int:entry_id>/edit', methods=['GET', 'POST'])
 def edit_party_note(party_id, entry_id):
-    party = party_access(party_id, editing=True)
+    """Party notes are the party's shared notes: every member can edit them (deleting stays with the Warden)."""
+    from flask import g
+    from app.lib.material_images import image_references
+    party = party_access(party_id)
     entry, presentation = party_note(party, entry_id)
     if request.method == 'POST':
         check_version(entry, request.form.get('version'))
+        g.kept_local_images = image_references(entry.body)
         entry.title = presentation.title = text_value(request.form.get('title'), 200, True)
         entry.body = presentation.body = content_value(request.form.get('body', ''))
         db.session.commit()
         notify_parties([party.id])
         return back_to_party(party)
-    return render_template('campaigns/party_note.html', party=party, entry=entry)
+    return render_template('campaigns/party_note.html', party=party, entry=entry, is_warden=party.owner == current_user.id)
 
 
 @campaigns.route('/party/<int:party_id>/materials/<int:entry_id>/version', methods=['GET', 'POST'])
 def edit_party_version(party_id, entry_id):
-    """Edit what one party sees of a revealed article, from its Wiki tab: saving makes it a party version."""
-    party = party_access(party_id, editing=True)
-    entry = article(entry_id)
-    row = PartyPresentation.query.filter_by(entry_id=entry.id, party_id=party.id, published=True).first_or_404()
-    if request.method == 'POST':
-        check_version(row, request.form.get('version'))
-        row.title, row.body, row.path_type = revealed_version(entry, request.form, 'custom')
-        db.session.commit()
-        notify_parties([party.id])
-        flash(_('Saved what %(party)s sees.', party=party.name) if (row.title, row.body) != (entry.title, entry.body)
-              else _('Saved. The text is the same as your original, so it counts as the original.'), 'success')
-        return back_to_party(party)
-    return render_template('campaigns/party_version.html', party=party, entry=entry, row=row)
+    """There are no party versions any more: a party reads the original. Its old address opens the article."""
+    party_access(party_id, editing=True)
+    return redirect(url_for('campaigns.party_entry', party_id=party_id, entry_id=entry_id))
 
 
 @campaigns.route('/party/<int:party_id>/notes/<int:entry_id>/delete', methods=['POST'])
@@ -363,28 +500,54 @@ def hide_campaign(campaign_id, party_id):
     db.session.commit()
     notify_parties([party.id])
     flash(_('Everything from %(campaign)s is hidden from %(party)s.', campaign=campaign.name, party=party.name), 'success')
-    return redirect(url_for('campaigns.wiki', campaign_id=campaign.id))
+    return redirect(url_for('campaigns.lobby', campaign_id=campaign.id))
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/', methods=['GET', 'POST'])
-def workspace(campaign_id):
+def lobby(campaign_id):
+    """The campaign lobby, for its Warden: its name, parties and modules. POST renames it.
+
+    No wiki here: a module's card opens it in wiki mode, and Read everything as wiki opens all of it."""
+    from app.lib.campaign_wiki import campaign_entries, module_cover
+    from app.lib.campaign_parties import party_cards
+    from app.lib.campaign_backgrounds import (campaign_backgrounds as offered_backgrounds, has_custom_options,
+                                              official_backgrounds)
+    from app.lib.modules import marketplace, module_counts
     campaign = owned(Campaign, campaign_id)
     if request.method == 'POST':
         check_version(campaign, request.form.get('version'))
         campaign.name = text_value(request.form.get('name'), 200, True)
         campaign.version += 1
         db.session.commit()
-        return redirect(url_for('campaigns.workspace', campaign_id=campaign.id))
-    entries = library_entries().filter_by(campaign_id=campaign.id).order_by(ContentEntry.id).all()
-    audience = campaign_audience(campaign)
-    return render_template('campaigns/workspace.html', campaign=campaign, hierarchy=material_hierarchy(entries),
-                           audience=[party for party in my_parties() if party.id in audience])
+        return redirect(url_for('campaigns.lobby', campaign_id=campaign.id))
+    counts, shown = {}, {}
+    # What each party was shown from this campaign, for its Manage revealed dialog.
+    for row, shown_entry in db.session.query(PartyPresentation, ContentEntry).join(ContentEntry).filter(
+            ContentEntry.campaign_id == campaign.id, PartyPresentation.published.is_(True)).order_by(
+            ContentEntry.title, ContentEntry.id):
+        counts[row.party_id] = counts.get(row.party_id, 0) + 1
+        shown.setdefault(row.party_id, []).append((shown_entry, row))
+    entries = campaign_entries(campaign)
+    return render_template('campaigns/lobby.html', campaign=campaign, article_count=len(entries),
+        parties=[dict(card, revealed=counts.get(card['party'].id, 0), shown=shown.get(card['party'].id, []))
+                 for card in party_cards(campaign.parties)],
+        # Parties of other campaigns that were shown something from this one (say, after they moved).
+        audience=[(party, counts[party.id]) for party in my_parties()
+                  if party.id in counts and party.campaign_id != campaign.id],
+        modules=[(module, module_counts(module)) for module in campaign.modules],
+        module_covers={module.id for module in campaign.modules if module_cover(module, list(module.entries))},
+        marketplace=marketplace(campaign), custom_options=has_custom_options(campaign),
+        offered=list(offered_backgrounds(campaign)), official_count=len(official_backgrounds()))
+
+
+def lobby_url(campaign_id, anchor=''):
+    return url_for('campaigns.lobby', campaign_id=campaign_id) + anchor
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/wiki/')
 @campaigns.route('/campaigns/<int:campaign_id>/wiki/<int:entry_id>/')
 def wiki(campaign_id, entry_id=None):
-    """Read the campaign as a wiki; the article editor stays the place to change it."""
+    """Read everything in the campaign (all its modules) as a wiki; the article editor stays the place to change it."""
     from app.lib.campaign_wiki import page_context
     campaign = owned(Campaign, campaign_id)
     entry = None
@@ -392,48 +555,39 @@ def wiki(campaign_id, entry_id=None):
         entry = article(entry_id)
         if entry.campaign_id != campaign.id:
             abort(404)
-    context = page_context(campaign, entry)
-    if entry is None:
-        # Who has been shown this campaign, and how much: the home page's Hide everything list.
-        audience = campaign_audience(campaign)
-        counts = {}
-        for (party_id,) in db.session.query(PartyPresentation.party_id).join(ContentEntry).filter(
-                ContentEntry.campaign_id == campaign.id, PartyPresentation.published.is_(True)):
-            counts[party_id] = counts.get(party_id, 0) + 1
-        context['audience'] = [(party, counts[party.id]) for party in my_parties() if party.id in audience]
-    else:
+    return render_wiki(page_context(campaign, entry), entry)
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/wiki/')
+@campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/wiki/<int:entry_id>/')
+def module_wiki(campaign_id, module_id, entry_id=None):
+    """Read one module as a wiki: its own articles and maps."""
+    from app.lib.campaign_wiki import page_context
+    campaign, module = campaign_module(campaign_id, module_id)
+    entry = None
+    if entry_id is not None:
+        entry = article(entry_id)
+        if entry.module_id != module.id:
+            abort(404)
+    return render_wiki(page_context(campaign, entry, module=module), entry)
+
+
+def render_wiki(context, entry):
+    if entry is not None:
         context['reveal_parties'] = reveal_choices(entry)
-    if entry is not None and entry.pointcrawl:
-        context.update(graph=map_projection(entry.pointcrawl), pointcrawl=None, editing=False, party=None,
-                       embedded=True, nested_maps=[], locations=[])
+        if entry.pointcrawl:
+            context.update(graph=map_projection(entry.pointcrawl), pointcrawl=None, editing=False, party=None,
+                           embedded=True, nested_maps=[], locations=[])
     return render_template('campaigns/wiki.html', **context)
 
 
 @campaigns.route('/materials/wiki/')
 @campaigns.route('/materials/wiki/<int:entry_id>/')
 def unfiled_wiki(entry_id=None):
-    """Read the articles that belong to no campaign, the same way as a campaign."""
-    from app.lib.campaign_wiki import page_context
-    entry = None
+    """There are no unfiled articles any more: every article is in a module of a campaign."""
     if entry_id is not None:
-        entry = article(entry_id)
-        if entry.campaign_id is not None:
-            abort(404)
-    context = page_context(None, entry, owner_id=current_user.id)
-    context['move_campaigns'] = my_campaigns() if entry is not None else []
-    if entry is not None:
-        context['reveal_parties'] = reveal_choices(entry)
-    if entry is not None and entry.pointcrawl:
-        context.update(graph=map_projection(entry.pointcrawl), pointcrawl=None, editing=False, party=None,
-                       embedded=True, nested_maps=[], locations=[])
-    return render_template('campaigns/wiki.html', **context)
-
-
-@campaigns.route('/campaigns/<int:campaign_id>/export')
-def campaign_export(campaign_id):
-    campaign = owned(Campaign, campaign_id)
-    return send_file(export_campaign(campaign), mimetype='application/zip',
-                     as_attachment=True, download_name=f'campaign-{campaign.id}.zip')
+        return redirect(read_url(article(entry_id)))
+    return redirect(url_for('campaigns.index'))
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/delete', methods=['POST'])
@@ -450,6 +604,11 @@ def delete_campaign(campaign_id):
     for entry in list(campaign.entries):
         audiences.update(presentation.party_id for presentation in entry.presentations)
         db.session.delete(entry)
+    # Its parties go with it; the characters are kept and leave their party.
+    from app.lib.campaign_parties import delete_party
+    for party in list(campaign.parties):
+        audiences.discard(party.id)
+        delete_party(party)
     db.session.delete(campaign)
     db.session.commit()
     notify_parties(audiences)
@@ -459,8 +618,7 @@ def delete_campaign(campaign_id):
 
 @campaigns.route('/materials/')
 def library():
-    entries = library_entries().filter_by(campaign_id=None).order_by(ContentEntry.id).all()
-    return render_template('campaigns/workspace.html', campaign=None, hierarchy=material_hierarchy(entries), parties=[], linked=set())
+    return redirect(url_for('campaigns.index'))
 
 
 @campaigns.route('/party/<int:party_id>/materials/')
@@ -522,11 +680,42 @@ def party_entry_preview(party_id, entry_id):
                            article_url=url_for('campaigns.party_entry', party_id=party_id, entry_id=entry_id))
 
 
+def chosen_module(values):
+    """The module an article goes to: module_id ("c<id>" for a campaign without modules yet), else campaign_id's
+    first module. None when neither is given."""
+    from app.lib.modules import default_module
+    value = values.get('module_id') or ''
+    if value.startswith('c'):
+        return default_module(owned(Campaign, integer(value[1:])))
+    if value:
+        module = db.get_or_404(Module, integer(value))
+        if module.campaign.owner_id != current_user.id:
+            abort(403)
+        return module
+    campaign = campaign_for(values.get('campaign_id'))
+    return default_module(campaign) if campaign else None
+
+
+def module_choices():
+    """The article form's Module select: my campaigns, each with its modules."""
+    return [(campaign, campaign.modules) for campaign in my_campaigns()]
+
+
 @campaigns.route('/materials/new', methods=['GET', 'POST'])
 def new_entry():
-    """A new private article. Parties see it only once it is revealed to them."""
-    campaign = campaign_for(request.values.get('campaign_id'))
+    """A new private article (or note) in a module. Parties see it only once it is revealed to them."""
+    # What the form submits wins over the page's URL defaults.
+    module = chosen_module(request.form if request.method == 'POST' else request.args)
+    if request.method == 'GET' and module is None and not my_campaigns():
+        flash(_('Create a campaign first: articles are written in its modules.'), 'error')
+        return redirect(url_for('campaigns.index'))
+    if request.method == 'GET' and module is not None and module.id is None:
+        db.session.rollback()  # Don't create the campaign's first module just to show the form.
+        module = None
+    campaign = module.campaign if module is not None else campaign_for(request.args.get('campaign_id'))
     if request.method == 'POST':
+        if module is None:
+            abort(400, 'Choose a module.')
         category = request.form.get('category')
         if category == 'location':
             from app.lib.content_types import legacy_point_type
@@ -535,7 +724,7 @@ def new_entry():
             abort(400)
         title = text_value(request.form.get('title'), 200, True)
         body = content_value(request.form.get('body', ''))
-        entry = ContentEntry(owner_id=current_user.id, campaign=campaign, category=category,
+        entry = ContentEntry(owner_id=current_user.id, campaign=campaign, module=module, category=category,
                              title=title, body=body,
                              is_heart=category == 'settlement' and request.form.get('is_heart') == 'on',
                              path_type=request.form.get('path_type', 'standard'))
@@ -556,9 +745,9 @@ def new_entry():
     initial_category = request.args.get('category')
     if initial_category not in CATEGORIES or initial_category in ('map', 'overview'):
         initial_category = 'custom'
-    return render_template('campaigns/entry.html', entry=None, campaign=campaign,
+    return render_template('campaigns/entry.html', entry=None, campaign=campaign, module=module,
                            initial_title=request.args.get('title', '')[:200], initial_category=initial_category,
-                           campaigns=my_campaigns(), candidates=[], selected_links=set(),
+                           module_groups=module_choices(), candidates=[], selected_links=set(),
                            parent_candidates=article_parent_choices(library_entries()), selected_parent=request.args.get('parent_id', ''))
 
 
@@ -604,16 +793,23 @@ def move_to_campaign(entry, campaign):
             item.campaign = campaign
 
 
-@campaigns.route('/materials/<int:entry_id>/move', methods=['POST'])
-def move_entry(entry_id):
-    """Move to campaign, from the article's reading page."""
-    entry = article(entry_id)
-    check_version(entry, request.form.get('version'))
-    campaign = campaign_for(request.form.get('campaign_id'))
-    move_to_campaign(entry, campaign)
-    db.session.commit()
-    return redirect(url_for('campaigns.wiki', campaign_id=campaign.id, entry_id=entry.id) if campaign
-                    else url_for('campaigns.unfiled_wiki', entry_id=entry.id))
+def move_to_module(entry, module):
+    """Move an article, its sub-articles and its map's contents to another module (of any of my campaigns)."""
+    if module.campaign_id != entry.campaign_id:
+        move_to_campaign(entry, module.campaign)
+    moved, pending = {}, [entry]
+    while pending:
+        item = pending.pop()
+        if item.id in moved or (item.campaign is not module.campaign and item is not entry):
+            continue
+        moved[item.id] = item
+        pending.extend(item.children)
+        if item.pointcrawl:
+            pending.extend(n.entry for n in item.pointcrawl.nodes)
+            pending.extend(e.entry for e in item.pointcrawl.edges)
+            pending.extend(n.nested_map.entry for n in item.pointcrawl.nodes if n.nested_map)
+    for item in moved.values():
+        item.module = module
 
 
 @campaigns.route('/materials/<int:entry_id>/edit', methods=['GET', 'POST'])
@@ -655,7 +851,11 @@ def edit_entry(entry_id):
             if kind not in PATH_TYPES:
                 abort(400)
             entry.path_type = kind
-        move_to_campaign(entry, campaign_for(request.form.get('campaign_id')))
+        # Module: chosen in the form; a form that only names the article's own campaign keeps its module.
+        if request.form.get('module_id') or request.form.get('campaign_id') not in (None, '', str(entry.campaign_id)):
+            target = chosen_module(request.form)
+            if target is not None and target is not entry.module:
+                move_to_module(entry, target)
         if 'parent_id' in request.form:
             set_article_parent(entry, request.form.get('parent_id'), previous_category=previous_category)
         elif entry.category != previous_category and entry.parent:
@@ -692,8 +892,8 @@ def edit_entry(entry_id):
             locations=ContentEntry.query.filter_by(owner_id=current_user.id,campaign_id=entry.campaign_id)
                 .filter(ContentEntry.category.in_(POINT_TYPES)).all())
     return render_template('campaigns/entry.html', **map_context, entry=entry, campaign=entry.campaign, party=None,
-                           parent_entries=material_parents(entry), reveal_parties=reveal_choices(entry),
-                           campaigns=my_campaigns(), candidates=candidates,
+                           module=entry.module, parent_entries=material_parents(entry),
+                           module_groups=module_choices(), candidates=candidates,
                            selected_links=selected_links, automatic_links=automatic_links,
                            parent_candidates=article_parent_choices(library_entries(), entry), selected_parent=entry.parent_id or '')
 
@@ -703,8 +903,17 @@ def delete_entry(entry_id):
     entry = article(entry_id)
     check_version(entry, request.form.get('version'))
     campaign_id = entry.campaign_id
+    back_url = materials_url([entry], campaign_id)
     delete_material_plan(*material_deletion_plan([entry], current_user.id, campaign_id))
-    return redirect(url_for('campaigns.workspace', campaign_id=campaign_id) if campaign_id else url_for('campaigns.library'))
+    return redirect(back_url)
+
+
+def materials_url(entries, campaign_id):
+    """Where bulk and single article actions return: their module's page, else the campaign home."""
+    modules = {entry.module_id for entry in entries}
+    if len(modules) == 1 and None not in modules:
+        return url_for('campaigns.module_view', campaign_id=campaign_id, module_id=modules.pop())
+    return url_for('campaigns.lobby', campaign_id=campaign_id) if campaign_id else url_for('campaigns.index')
 
 
 @campaigns.route('/materials/bulk-delete', methods=['POST'])
@@ -737,8 +946,7 @@ def bulk_delete():
              'selected_ids': selected_ids,
              'entries': {str(key): entry.version for key, entry in entries.items()},
              'maps': {str(key): pointcrawl.version for key, pointcrawl in maps.items()}}
-    back_url = (url_for('campaigns.workspace', campaign_id=campaign_id)
-                if campaign_id else url_for('campaigns.library'))
+    back_url = materials_url(selected, campaign_id)
     if confirmation:
         if snapshot != state:
             abort(409, 'The materials or map contents changed. Review the deletion again.')
@@ -783,14 +991,14 @@ def bulk_reveal():
              'maps': {str(entry.id): entry.pointcrawl.version for entry in entries if entry.pointcrawl},
              'presentations': {str(entry.id): {str(p.id): presentations[entry.id][p.id].version
                  if p.id in presentations[entry.id] else 0 for p in parties} for entry in entries}}
-    back_url = url_for('campaigns.workspace', campaign_id=campaign_id) if campaign_id else url_for('campaigns.library')
+    back_url = materials_url(entries, campaign_id)
     if confirmation:
         if snapshot != state:
-            abort(409, 'The articles or party versions changed. Review publication again.')
+            abort(409, 'The articles or what parties see changed. Review publication again.')
         selected = {integer(value) for value in request.form.getlist('party_ids')}
         if not selected:
             abort(400, 'Choose at least one party.')
-        # Several articles: each party sees the originals (party versions are written one article at a time).
+        # Several articles: each party reads the originals.
         # Validate every audience and title before creating or changing any version.
         audiences = {party_id: publishable_party(entries[0], party_id) for party_id in selected}
         versions = {entry.id: revealed_version(entry, request.form, 'everything') for entry in entries}
@@ -801,6 +1009,7 @@ def bulk_reveal():
                     row = PartyPresentation(entry=entry, party=party)
                     db.session.add(row)
                 row.title, row.body, row.path_type = versions[entry.id]
+                row.references = dict(entry.references or {})
                 row.published = True
                 if entry.pointcrawl and request.form.get('publish_drawing') == '1':
                     row.drawing = deepcopy(entry.pointcrawl.drawing)
@@ -813,35 +1022,22 @@ def bulk_reveal():
 
 
 # What a party sees when an article is revealed to it:
-#   everything - "Original": the private title and text as they are now,
-#   custom     - "Party version": a title and text written for the party (form fields title, body, path_type).
 REVEAL_MODES = ('everything', 'custom')
 
 
-def revealed_version(entry, form, mode=None):
-    """(title, body, path_type) for the chosen reveal mode; 400 on an unknown mode or empty title."""
-    mode = mode or form.get('mode', 'custom')
-    if mode == 'everything':
-        return text_value(entry.title, 200, True), entry.body, entry.path_type
-    if mode != 'custom':
-        abort(400)
-    # A party version never inherits the original's private path type unless the Warden picks it.
-    kind = form.get('path_type', 'standard')
-    if kind not in PATH_TYPES:
-        abort(400)
-    return text_value(form.get('title'), 200, True), content_value(form.get('body', '')), kind
+def revealed_version(entry, form=None, mode=None):
+    """(title, body, path_type): a party sees the original. There are no party versions."""
+    return text_value(entry.title, 200, True), entry.body, entry.path_type
 
 
 def reveal_status(entry, row):
-    """none (not revealed), same (sees the original as it is now) or custom (sees its own version)."""
-    if row is None or not row.published:
-        return 'none'
-    return 'same' if (row.title, row.body) == (entry.title, entry.body) else 'custom'
+    """none (not revealed) or same (sees the original: a party's copy always mirrors it)."""
+    return 'none' if row is None or not row.published else 'same'
 
 
 def read_url(entry):
     return (url_for('campaigns.wiki', campaign_id=entry.campaign_id, entry_id=entry.id) if entry.campaign_id
-            else url_for('campaigns.unfiled_wiki', entry_id=entry.id))
+            else url_for('campaigns.edit_entry', entry_id=entry.id))
 
 
 def reveal_choices(entry):
@@ -853,7 +1049,6 @@ def reveal_choices(entry):
     def revealed(items, party_id):
         return sum(any(p.party_id == party_id and p.published for p in item.presentations) for item in items)
 
-    audience = campaign_audience(entry.campaign)
     choices = []
     for party in available_parties(entry):
         row = presentations.get(party.id)
@@ -861,7 +1056,7 @@ def reveal_choices(entry):
                         'version': row.version if row else 0, 'title': row.title if row else '',
                         'body': row.body if row else '', 'path_type': row.path_type if row else entry.path_type,
                         'points': revealed(points, party.id), 'paths': revealed(paths, party.id),
-                        'seen': party.id in audience})
+                        'own': entry.campaign_id is None or party.campaign_id == entry.campaign_id})
     return choices
 
 
@@ -869,12 +1064,15 @@ def after_reveal(entry, party_id):
     """Back where the action started: the article (default) or the party wiki ('party' is its old name)."""
     if request.values.get('return_to') in ('wiki', 'party'):
         return redirect(url_for('campaigns.party_wiki', party_id=party_id))
+    if request.values.get('return_to') == 'campaign' and entry.campaign_id:
+        # The campaign home, with that party's Manage revealed dialog open again.
+        return redirect(url_for('campaigns.lobby', campaign_id=entry.campaign_id) + f'#revealed-{party_id}')
     return redirect(read_url(entry))
 
 
 @campaigns.route('/materials/<int:entry_id>/reveal', methods=['GET', 'POST'])
 def reveal(entry_id):
-    """Reveal one article to one party: the original, or a version written for them.
+    """Reveal one article to one party: it reads the original, and later edits reach it too.
 
     GET shows the same form as the article page's Reveal popup, as a page (the party tree links here)."""
     entry = article(entry_id)
@@ -886,21 +1084,17 @@ def reveal(entry_id):
         publish_drawing = entry.pointcrawl and request.form.get('publish_drawing') == '1'
         if publish_drawing:
             check_version(entry.pointcrawl, request.form.get('map_version'))
-        title, body, kind = revealed_version(entry, request.form)
+        title, body, kind = revealed_version(entry)
         if row is None:
             row = PartyPresentation(entry=entry, party=party)
             db.session.add(row)
         row.title, row.body, row.path_type, row.published = title, body, kind, True
+        row.references = dict(entry.references or {})
         if publish_drawing:
             row.drawing = deepcopy(entry.pointcrawl.drawing)
         db.session.commit()
         notify_parties([party.id])
-        if request.form.get('mode') == 'custom' and (title, body) == (entry.title, entry.body):
-            # Party versions are told apart from the original by their text alone.
-            flash(_('Revealed to %(party)s. The text is the same as your original, so it counts as the original '
-                    'until you change it.', party=party.name), 'success')
-        else:
-            flash(_('Revealed to %(party)s.', party=party.name), 'success')
+        flash(_('Revealed to %(party)s.', party=party.name), 'success')
         return after_reveal(entry, party.id)
     return render_template('campaigns/reveal.html', entry=entry, reveal_parties=reveal_choices(entry),
                            selected=request.args.get('party_id', ''), return_to=request.args.get('return_to', ''))
@@ -920,14 +1114,24 @@ def import_archive():
                 payload = apply_overrides(deepcopy(batch.payload), request.form)
             except ImportError as exc:
                 abort(400, str(exc))
+            # Destination: a new module in one of my campaigns, or more files for one of my modules.
+            module = chosen_module({'module_id': request.form.get('module_id')}) if request.form.get('module_id') else None
+            target = module.campaign if module is not None else campaign_for(request.form.get('target_campaign'))
+            if target is None:
+                abort(400, 'Choose the campaign to add this module to.')
             claimed = CampaignImport.query.filter_by(id=batch.id, owner_id=current_user.id, consumed=False).filter(
                 CampaignImport.created_at >= cutoff).update({'consumed': True}, synchronize_session=False)
             if not claimed:
                 abort(409, 'This preview was already imported.')
-            import_preview(payload, current_user.id)
+            try:
+                import_preview(payload, current_user.id, into=target, module=module, name=payload.get('name', ''))
+            except BackgroundError as exc:
+                abort(400, str(exc))
             batch.payload = {}
             db.session.commit()
-            return redirect(url_for('campaigns.index'))
+            module = module or target.modules[-1]
+            flash(_('%(title)s was added to %(campaign)s.', title=module.title, campaign=target.name), 'success')
+            return redirect(module_page(module))
         upload = request.files.get('archive')
         if not upload:
             message = _('Choose a Markdown file or a ZIP/TAR archive.')
@@ -943,6 +1147,15 @@ def import_archive():
                 preview = preview_archive(upload.stream.read(MAX_ARCHIVE + 1), owner_id=current_user.id)
             except ImportError as exc:
                 message = str(exc)
+        if preview is not None:
+            # A module without a front page is named after its file.
+            from pathlib import PurePosixPath
+            stem = PurePosixPath(upload.filename or '').name
+            for suffix in ('.tar.gz', '.tgz', '.zip', '.tar', '.md'):
+                if stem.lower().endswith(suffix):
+                    stem = stem[:-len(suffix)]
+                    break
+            preview['name'] = stem[:200] or 'Imported module'
         if preview and not preview['errors']:
             preview_id = uuid4().hex
             # Keep staging bounded; expired previews never contain library records.
@@ -950,7 +1163,12 @@ def import_archive():
             CampaignImport.query.filter_by(owner_id=current_user.id, consumed=False).delete(synchronize_session=False)
             db.session.add(CampaignImport(id=preview_id, owner_id=current_user.id, payload=preview))
             db.session.commit()
-    return render_template('campaigns/import_archive.html', preview=preview, preview_id=preview_id, message=message)
+    selected = request.values.get('campaign_id', '')
+    module_id = request.values.get('module_id', '')
+    module = chosen_module({'module_id': module_id}) if module_id else None
+    return render_template('campaigns/import_archive.html', preview=preview, preview_id=preview_id, message=message,
+                           campaigns_list=my_campaigns(), module=module,
+                           selected_campaign=module.campaign_id if module else int(selected) if selected.isdigit() else None)
 
 
 @campaigns.route('/materials/import-example.zip')
@@ -971,18 +1189,15 @@ def import_example():
 
 @campaigns.route('/materials/<int:entry_id>/revoke/<int:party_id>', methods=['POST'])
 def revoke(entry_id, party_id):
-    """Hide (an original) or Delete (a party version) for one party: its copy is deleted either way.
-    Revealing again starts from the original."""
+    """Hide an article from one party: it no longer sees it. Revealing again shows it again."""
     entry = article(entry_id)
     party = party_access(party_id, editing=True)
     row = PartyPresentation.query.filter_by(entry_id=entry.id, party_id=party_id).first_or_404()
     check_version(row, request.form.get('version'))
-    was_version = (row.title, row.body) != (entry.title, entry.body)
     db.session.delete(row)
     db.session.commit()
     notify_parties([party_id])
-    flash(_('Deleted the party version for %(party)s.', party=party.name) if was_version
-          else _('Hidden from %(party)s.', party=party.name), 'success')
+    flash(_('Hidden from %(party)s.', party=party.name), 'success')
     return after_reveal(entry, party_id)
 
 
@@ -997,12 +1212,13 @@ def article_map(entry_id):
     return entry_redirect(entry)
 
 
-def create_map_entry(campaign, kind, title, body, draft):
-    """Create a private spatial article and its canvas, optionally from a generated draft.
+def create_map_entry(campaign, kind, title, body, draft, module=None):
+    """Create a private spatial article and its canvas in a module, optionally from a generated draft.
 
     The caller validates kind and commits. Reveal it to parties afterwards, like any article.
     """
-    entry = ContentEntry(owner_id=current_user.id, campaign=campaign, category=kind if kind != 'freeform' else 'topography',
+    entry = ContentEntry(owner_id=current_user.id, campaign=campaign, module=module,
+                         category=kind if kind != 'freeform' else 'topography',
                          title=text_value(title, 200, True), body=content_value(body or ''))
     pointcrawl = PointcrawlMap(entry=entry, kind=kind)
     db.session.add(pointcrawl)
@@ -1038,19 +1254,28 @@ def create_map_entry(campaign, kind, title, body, draft):
 def new_map():
     if request.method == 'GET' and request.path == '/maps/new':
         return redirect(url_for('campaigns.new_map', **request.args))
-    campaign = campaign_for(request.form.get('campaign_id', request.args.get('campaign_id')))
+    module = chosen_module(request.form if request.method == 'POST' else request.args)
     if request.method == 'POST':
         kind = request.form.get('kind')
         if kind not in MAP_KINDS:
             abort(400)
-        pointcrawl = create_map_entry(campaign, kind, request.form.get('title'),
-                                      request.form.get('body', ''), request.form.get('draft'))
+        if module is None:
+            abort(400, 'Choose a module.')
+        pointcrawl = create_map_entry(module.campaign, kind, request.form.get('title'),
+                                      request.form.get('body', ''), request.form.get('draft'), module=module)
         db.session.commit()
         return entry_redirect(pointcrawl.entry)
+    if module is not None and module.id is None:
+        db.session.rollback()
+        module = None
+    if module is None and not my_campaigns():
+        flash(_('Create a campaign first: maps are made in its modules.'), 'error')
+        return redirect(url_for('campaigns.index'))
     kind = request.args.get('kind', 'realm')
     if kind not in MAP_KINDS:
         abort(400)
-    return render_template('campaigns/new_map.html', campaign=campaign, campaigns=my_campaigns(), kind=kind)
+    return render_template('campaigns/new_map.html', module=module, module_groups=module_choices(), kind=kind,
+                           campaign=module.campaign if module else None)
 
 
 @campaigns.route('/maps/<int:map_id>/edit')

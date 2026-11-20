@@ -69,13 +69,16 @@ def test_player_links_only_published_targets_and_headings(setup):
         db.session.get(ContentEntry, target).body = '## Secret heading\nPRIVATE SECRET'
         db.session.get(ContentEntry, source).body = '[[Village|home]] [[Village#Secret heading|history]]'
         db.session.commit()
-    assert reveal(client, source, body='[[Village|home]] [[Village#Secret heading|history]]').status_code == 302
+    assert reveal(client, source).status_code == 302
     login(client, 2)
     hidden = client.get(f'/party/1/materials/{source}').get_data(as_text=True)
     assert 'home' in hidden and f'/party/1/materials/{target}' not in hidden
     assert 'PRIVATE SECRET' not in hidden
     login(client, 1)
-    assert reveal(client, target, title='Public village', body='## Public heading\nPublic history.').status_code == 302
+    with app.app_context():  # The secret moves out of the article before it is revealed.
+        db.session.get(ContentEntry, target).body = '## Public heading\nPublic history.'
+        db.session.commit()
+    assert reveal(client, target).status_code == 302
     login(client, 2)
     shown = client.get(f'/party/1/materials/{source}').get_data(as_text=True)
     assert f'href="/party/1/materials/{target}"' in shown
@@ -90,7 +93,7 @@ def test_player_links_only_published_targets_and_headings(setup):
     assert f'/party/1/materials/{target}' not in client.get(f'/party/1/materials/{source}').get_data(as_text=True)
 
 
-def test_published_bindings_do_not_follow_original_edits(setup):
+def test_published_bindings_follow_original_edits(setup):
     app, client = setup
     first = create_entry(client, title='First')
     second = create_entry(client, title='Second')
@@ -98,13 +101,15 @@ def test_published_bindings_do_not_follow_original_edits(setup):
     with app.app_context():
         db.session.get(ContentEntry, source).body = '[[First]]'
         db.session.commit()
-    assert reveal(client, source, body='[[First]]').status_code == 302
+    assert reveal(client, source).status_code == 302
     with app.app_context():
+        assert PartyPresentation.query.filter_by(entry_id=source, party_id=1).one().references == {'First': db.session.get(ContentEntry, first).reference_key}
         original = db.session.get(ContentEntry, source)
         original.body = '[[Second]]'
         db.session.commit()
         assert original.references == {'Second': db.session.get(ContentEntry, second).reference_key}
-        assert PartyPresentation.query.filter_by(entry_id=source, party_id=1).one().references == {'First': db.session.get(ContentEntry, first).reference_key}
+        row = PartyPresentation.query.filter_by(entry_id=source, party_id=1).one()
+        assert row.body == '[[Second]]' and row.references == original.references  # The party reads the edit.
 
 
 def test_import_export_preserves_relative_paths_and_renamed_bindings(setup):
@@ -124,8 +129,8 @@ def test_import_export_preserves_relative_paths_and_renamed_bindings(setup):
         target.title = 'Renamed village'
         db.session.commit()
         assert source.references == {'../places/Village#History': target.reference_key, '../places/Village.md': target.reference_key}
-        campaign_id = source.campaign_id
-    response = client.get(f'/campaigns/{campaign_id}/export')
+        export_url = f'/campaigns/{source.campaign_id}/modules/{source.module_id}/export'
+    response = client.get(export_url)
     with zipfile.ZipFile(io.BytesIO(response.data)) as exported:
         manifest = json.loads(exported.read('manifest.json'))
         assert len(manifest['references']) == 2

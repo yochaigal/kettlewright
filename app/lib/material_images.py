@@ -25,8 +25,11 @@ def image_references(body):
 
 
 def validate_local_image(url):
+    from flask import g
     match = LOCAL_IMAGE.fullmatch(url)
-    if not match or not current_user.is_authenticated or int(match[1]) != current_user.id:
+    # A player editing a party note keeps the pictures already in it (g.kept_local_images), but adds none of the Warden's.
+    kept = url in g.get('kept_local_images', ())
+    if not match or not current_user.is_authenticated or (int(match[1]) != current_user.id and not kept):
         abort(400, 'Choose an image belonging to your materials.')
     if not (image_directory() / match[1] / match[2]).is_file():
         abort(400, 'This image is no longer available.')

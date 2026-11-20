@@ -1,0 +1,277 @@
+{% extends 'campaigns/layout.html' %}
+{# The campaign lobby, for its Warden: its name, its parties and its modules.
+   Content is read in wiki mode: a module from its card, or everything with Read everything as wiki. #}
+{% macro article_title(item) %}{{ (item.title or _('Untitled private original'))|markdown_inline }}{% endmacro %}
+{% macro type_label(item) %}{{ _(content_categories.get(item.category, item.category)) }}{% endmacro %}
+{% macro page_url(entry_id=None) %}{{ url_for('campaigns.wiki', campaign_id=campaign.id, entry_id=entry_id) }}{% endmacro %}
+{% block workspace %}
+<div class="campaign-wiki campaign-lobby">
+  <nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ url_for('campaigns.index') }}">← {{ _('All campaigns') }}</a></nav>
+  <header class="wiki-header">
+    <div>
+      <h1>{{ campaign.name }}
+        <button type="button" class="link-button campaign-rename" aria-haspopup="dialog" aria-controls="campaign-settings-dialog"
+                title="{{ _('Campaign settings') }}" aria-label="{{ _('Campaign settings') }}"
+                onclick="document.getElementById('campaign-settings-dialog').showModal()"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></h1>
+      <span class="wiki-badges"><span class="wiki-badge">{{ modules|length }} {{ _('modules') }}</span><span class="wiki-badge">{{ article_count }} {{ _('articles') }}</span></span>
+    </div>
+  </header>
+      <dialog class="create-dialog" id="campaign-settings-dialog" aria-labelledby="campaign-settings-title">
+        <h2 id="campaign-settings-title">{{ _('Campaign settings') }}</h2>
+        <form method="post" action="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}">
+          {{ content_form.csrf_token }}<input type="hidden" name="version" value="{{ campaign.version }}">
+          <label>{{ _('Campaign name') }}<input type="text" name="name" required maxlength="200" value="{{ campaign.name }}"></label>
+          <div class="create-dialog-actions">
+            <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
+            <button type="submit" class="primary">{{ _('Save') }}</button>
+          </div>
+        </form>
+        <form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}" class="campaign-danger-zone"
+              data-confirm="{{ _('Delete %(campaign)s? Its modules, articles, drawings, backgrounds, what was revealed to parties, and its parties are permanently deleted. Characters are kept and leave their party. This cannot be undone.', campaign=campaign.name) }}"
+              data-confirm-label="{{ _('Delete campaign') }}">
+          {{ content_form.csrf_token }}<input type="hidden" name="version" value="{{ campaign.version }}"><input type="hidden" name="confirm" value="delete">
+          <button type="submit" class="kw-action kw-action-danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> {{ _('Delete campaign…') }}</button>
+        </form>
+      </dialog>
+      {# The campaign's parties: one, or several at once for a West Marches game. They share its modules. #}
+      <section class="wiki-audience campaign-parties" aria-labelledby="campaign-parties-title">
+        <div class="wiki-audience-head">
+          <h2 id="campaign-parties-title"><i class="fa-solid fa-users" aria-hidden="true"></i> {{ _('Parties') }} <small>{{ parties|length }}</small></h2>
+          <button type="button" class="kw-action" aria-haspopup="dialog" onclick="document.getElementById('new-party-dialog').showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New party') }}</button>
+        </div>
+        {% for card in parties %}{% set item = card.party %}
+        <div class="campaign-party-row">
+          <a class="campaign-party-name" href="{{ card.url }}">{{ item.name|markdown_inline }}</a>
+          <span class="campaign-party-members">
+            {% for member in card.members[:8] %}<img src="{{ member.src }}" alt="" title="{{ member.name }}" loading="lazy">{% endfor %}
+            {% if not card.members %}<span class="wiki-audience-hint">{{ _("No characters yet: give your players the party's join code.") }}</span>{% endif %}
+          </span>
+          <span class="kw-actions campaign-party-actions">
+            <button type="button" class="kw-action" aria-haspopup="dialog" aria-controls="revealed-{{ item.id }}-dialog"
+                    onclick="document.getElementById('revealed-{{ item.id }}-dialog').showModal()"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{ _('Manage revealed') }}</button>
+          </span>
+        </div>
+        {# What this party was shown from the campaign: hide one article, or everything. #}
+        <dialog class="create-dialog revealed-dialog" id="revealed-{{ item.id }}-dialog" aria-labelledby="revealed-{{ item.id }}-title">
+          <h2 id="revealed-{{ item.id }}-title">{{ _('Revealed to %(party)s', party=item.name) }}</h2>
+          {% if card.shown %}
+          <ul class="revealed-list">
+          {% for shown_entry, row in card.shown %}
+            <li>
+              <a href="{{ page_url(shown_entry.id) }}">{{ article_title(row) }}</a>
+              <span class="wiki-badge">{{ type_label(shown_entry) }}</span>
+              <form method="post" action="{{ url_for('campaigns.revoke', entry_id=shown_entry.id, party_id=item.id) }}">
+                {{ content_form.csrf_token }}<input type="hidden" name="version" value="{{ row.version }}"><input type="hidden" name="return_to" value="campaign">
+                <button type="submit" class="kw-action kw-action-danger"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> {{ _('Hide') }}</button>
+              </form>
+            </li>
+          {% endfor %}
+          </ul>
+          {% else %}<p class="wiki-empty">{{ _('Nothing from this campaign has been revealed to this party yet. Use Reveal to party on an article.') }}</p>{% endif %}
+          <div class="kw-actions revealed-actions">
+            {% if card.shown %}
+            <form method="post" action="{{ url_for('campaigns.hide_campaign', campaign_id=campaign.id, party_id=item.id) }}"
+                  data-confirm="{{ _('Hide everything in %(campaign)s from %(party)s? They will no longer see any of its articles. Your articles are not changed.', campaign=campaign.name, party=item.name) }}" data-confirm-label="{{ _('Hide everything') }}">
+              {{ content_form.csrf_token }}<button type="submit" class="kw-action kw-action-danger"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> {{ _('Hide everything') }}</button>
+            </form>
+            {% endif %}
+            <a class="kw-action" href="{{ url_for('campaigns.party_wiki', party_id=item.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Party wiki') }}</a>
+          </div>
+          <div class="create-dialog-actions"><button type="button" onclick="this.closest('dialog').close()">{{ _('Close') }}</button></div>
+        </dialog>
+        {% endfor %}
+        {% if not parties %}<p class="wiki-empty">{{ _("No parties yet. Create one, then give your players its join code: they use Join a party on their Characters page.") }}</p>{% endif %}
+        {% if audience %}
+        <p class="wiki-audience-hint">{{ _('Also revealed to parties of other campaigns:') }}
+          {% for other, count in audience %}<a href="{{ url_for('campaigns.party_wiki', party_id=other.id) }}">{{ other.name|markdown_inline }}</a> ({{ count }}){% if not loop.last %}, {% endif %}{% endfor %}</p>
+        {% endif %}
+      </section>
+      <dialog class="create-dialog" id="new-party-dialog" aria-labelledby="new-party-title">
+        <h2 id="new-party-title">{{ _('New party') }}</h2>
+        <form method="post" action="{{ url_for('campaigns.new_party', campaign_id=campaign.id) }}">
+          {{ content_form.csrf_token }}
+          <label>{{ _('Name') }}<input type="text" name="name" required maxlength="64" autocomplete="off"></label>
+          <label>{{ _('Description') }}<textarea name="description" rows="3" maxlength="2000"></textarea></label>
+          <p class="import-hint">{{ _("Another group in the same world, like a West Marches game: it shares this campaign's modules and backgrounds, and has its own characters, storage, whiteboard and what it has been shown.") }}</p>
+          <div class="create-dialog-actions">
+            <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
+            <button type="submit" class="primary">{{ _('Create party') }}</button>
+          </div>
+        </form>
+      </dialog>
+
+      {# Modules: articles, notes, maps and backgrounds, written here, generated, uploaded or from the Marketplace. #}
+      <section class="wiki-audience campaign-modules" id="modules" aria-labelledby="campaign-modules-title">
+        <div class="wiki-audience-head">
+          <h2 id="campaign-modules-title"><i class="fa-solid fa-box-open" aria-hidden="true"></i> {{ _('Modules') }} {% if modules %}<small>{{ modules|length }}</small>{% endif %}</h2>
+          <span class="kw-actions">
+            <a class="kw-action" href="{{ url_for('campaigns.wiki', campaign_id=campaign.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read everything as wiki') }}</a>
+            <button type="button" class="kw-action" aria-haspopup="dialog" onclick="document.getElementById('new-module-dialog').showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New module') }}</button>
+            <button type="button" class="kw-action" aria-haspopup="dialog" onclick="document.getElementById('marketplace-dialog').showModal()"><i class="fa-solid fa-store" aria-hidden="true"></i> {{ _('Modules Marketplace') }}</button>
+            <button type="button" class="kw-action" aria-haspopup="dialog" aria-controls="backgrounds-dialog"
+                    onclick="document.getElementById('backgrounds-dialog').showModal()"><i class="fa-solid fa-user-gear" aria-hidden="true"></i> {{ _('Backgrounds') }}<span data-backgrounds-customized {% if not custom_options %}hidden{% endif %}> · {{ _('customized') }}</span></button>
+          </span>
+        </div>
+        {% if modules %}
+        <ul class="campaign-module-cards">
+        {% for module, counts in modules %}
+          <li class="campaign-module-card">
+            {# The module's picture: the first image in its front page or other articles. #}
+            <a class="campaign-module-cover" href="{{ url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id) }}" tabindex="-1" aria-hidden="true">
+              {% if module.id in module_covers %}<img src="{{ url_for('campaigns.module_cover', campaign_id=campaign.id, module_id=module.id) }}" alt="" loading="lazy" data-cover>
+              {% else %}<span class="campaign-card-placeholder">{{ module.title[:1]|upper }}</span>{% endif %}
+            </a>
+            <a class="campaign-party-name" href="{{ url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id) }}">{{ module.title }}</a>
+            <span class="campaign-party-meta">{{ _('%(count)s articles', count=counts.articles) }} · {{ _('%(count)s maps', count=counts.maps) }} · {{ _('%(count)s backgrounds', count=counts.backgrounds) }}</span>
+            <span class="kw-actions">
+              <a class="kw-action" href="{{ url_for('campaigns.module_view', campaign_id=campaign.id, module_id=module.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+              <a class="kw-action" href="{{ url_for('campaigns.module_export', campaign_id=campaign.id, module_id=module.id) }}" download><i class="fa-solid fa-file-export" aria-hidden="true"></i> {{ _('Export') }}</a>
+            </span>
+          </li>
+        {% endfor %}
+        </ul>
+        {% else %}<p class="wiki-empty">{{ _('No modules yet. Write a new one, generate one randomly, or pick one from the Modules Marketplace.') }}</p>{% endif %}
+      </section>
+
+      {# What the campaign's parties choose from when creating characters. #}
+      <dialog class="create-dialog backgrounds-dialog" id="backgrounds-dialog" aria-labelledby="backgrounds-title">
+        <h2 id="backgrounds-title"><i class="fa-solid fa-user-gear" aria-hidden="true"></i> {{ _('Backgrounds') }}</h2>
+        <p class="import-hint">{{ _("Characters created for this campaign's parties choose from these. Characters keep what they rolled, so later changes never alter them.") }}</p>
+        {# Saved in place when ticked: no page reload. Without JavaScript, Save posts the form. #}
+        <form method="post" action="{{ url_for('campaigns.campaign_backgrounds', campaign_id=campaign.id) }}" id="official-backgrounds-form"
+              data-saved="{{ _('Saved') }}" data-error="{{ _('Could not save. Reload the page and try again.') }}">
+          {{ content_form.csrf_token }}<input type="hidden" name="version" value="{{ campaign.version }}">
+          <label class="campaign-check"><input type="checkbox" name="official" value="1" {% if campaign.official_backgrounds %}checked{% endif %}>
+            {{ _('Offer the official Cairn backgrounds') }} <small>({{ official_count }})</small></label>
+          <span class="import-hint" role="status" data-status></span>
+          <noscript><button type="submit">{{ _('Save') }}</button></noscript>
+        </form>
+        <h3>{{ _('From modules') }}</h3>
+        {% set with_backgrounds = campaign.modules|selectattr('backgrounds')|list %}
+        {% if with_backgrounds %}
+        <ul class="revealed-list">
+        {% for module in with_backgrounds %}
+          <li><a href="{{ url_for('campaigns.module_view', campaign_id=campaign.id, module_id=module.id) }}#backgrounds">{{ module.title }}</a>
+            <span class="wiki-audience-hint">{{ module.backgrounds|list|sort|join(', ') }}</span></li>
+        {% endfor %}
+        </ul>
+        {% else %}<p class="wiki-empty">{{ _('No module has backgrounds yet. Write one in a module, or add a module that has some.') }}</p>{% endif %}
+        <h3>{{ _('What players choose from') }} <small data-offered-count>{{ offered|length }}</small></h3>
+        <p class="wiki-audience-hint" data-offered>{{ offered|join(', ') }}</p>
+        <p class="import-hint" data-fallback {% if campaign.official_backgrounds or with_backgrounds %}hidden{% endif %}>{{ _("The campaign's modules have no backgrounds, so the official ones are still offered.") }}</p>
+        <div class="create-dialog-actions"><button type="button" onclick="this.closest('dialog').close()">{{ _('Close') }}</button></div>
+      </dialog>
+      <script>
+        // Official backgrounds on or off: saved in place, and the list players choose from updates.
+        (() => {
+          const form = document.getElementById('official-backgrounds-form');
+          const dialog = form.closest('dialog'), status = form.querySelector('[data-status]');
+          form.addEventListener('change', async () => {
+            status.textContent = '';
+            try {
+              const response = await fetch(form.action, {method: 'POST', body: new FormData(form), headers: {'Accept': 'application/json'}});
+              if (!response.ok) throw new Error(response.status);
+              const data = await response.json();
+              form.elements.version.value = data.version;
+              dialog.querySelector('[data-offered]').textContent = data.offered.join(', ');
+              dialog.querySelector('[data-offered-count]').textContent = data.offered.length;
+              dialog.querySelector('[data-fallback]').hidden = !data.fallback;
+              document.querySelectorAll('[data-backgrounds-customized]').forEach(label => { label.hidden = !data.customized; });
+              status.textContent = form.dataset.saved;
+            } catch {
+              status.textContent = form.dataset.error;
+            }
+          });
+        })();
+      </script>
+      {# A link to #backgrounds or #revealed-<party> (after saving there) opens that dialog again. #}
+      <script>
+        const openFromHash = () => {
+          const dialog = location.hash && document.getElementById(location.hash.slice(1) + '-dialog');
+          if (dialog && dialog.showModal && !dialog.open) dialog.showModal();
+        };
+        document.addEventListener('DOMContentLoaded', openFromHash);
+        window.addEventListener('hashchange', openFromHash);
+      </script>
+
+      <dialog class="create-dialog" id="new-module-dialog" aria-labelledby="new-module-title">
+        <h2 id="new-module-title">{{ _('New module') }}</h2>
+        {# Empty, or with a random realm, dungeon or forest generated right here (newCampaign). #}
+        <form method="post" action="{{ url_for('campaigns.new_module', campaign_id=campaign.id) }}" x-data="newCampaign"
+              @submit="submit($event)" @reset="restart()">
+          {{ content_form.csrf_token }}
+          <label>{{ _('Name') }}<input type="text" name="name" required maxlength="200" autocomplete="off"></label>
+          <input type="hidden" name="start" :value="start">
+          <label class="campaign-check"><input type="checkbox" :checked="start === 'random'" @change="start = $event.target.checked ? 'random' : 'empty'"> {{ _('Generate it randomly') }}</label>
+          <div class="create-random-options" x-show="start === 'random'" x-cloak>
+            <label>{{ _('Start with') }}<select name="kind" x-model="kind"><option value="realm">{{ _('Realm') }}</option><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option></select></label>
+            <label>{{ _('Dice / points of interest') }}<select name="poi_count">
+            {% for value, label in [('', _('Random count')), ('3', '3'), ('6', '6'), ('8', '8'), ('12', '12'), ('20', '20')] %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+            </select></label>
+            <label class="campaign-check"><input type="checkbox" name="generate_children" value="1" x-model="children"> {{ _('Generate all child articles') }}</label>
+            <div class="create-random-percent" x-show="children">
+              <label x-show="kind === 'realm'">{{ _('Forest') }} (%)<input type="number" name="forest_chance" min="0" max="100" value="50"></label>
+              <label x-show="kind !== 'dungeon'">{{ _('Forest POIs') }} (%)<input type="number" name="dungeon_chance" min="0" max="100" value="25"></label>
+            </div>
+          </div>
+          <p class="import-hint">{{ _('Write its articles, notes, maps and backgrounds afterwards. Everything stays private until you reveal it.') }}</p>
+          <div class="create-dialog-actions">
+            <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
+            <button type="submit" class="primary" :disabled="generating"><span x-show="!generating">{{ _('Create module') }}</span><span x-show="generating" x-cloak>{{ _('Generating…') }}</span></button>
+          </div>
+        </form>
+      </dialog>
+
+      <dialog class="create-dialog marketplace-dialog" id="marketplace-dialog" aria-labelledby="marketplace-title">
+        <header class="marketplace-header">
+          <h2 id="marketplace-title"><i class="fa-solid fa-store" aria-hidden="true"></i> {{ _('Modules Marketplace') }}</h2>
+          <button type="button" class="link-button marketplace-close" onclick="this.closest('dialog').close()" aria-label="{{ _('Close') }}"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+        </header>
+        <p class="import-hint">{{ _('Free modules: adventures with their articles, maps and backgrounds. Adding one copies it into %(campaign)s, privately; edit it as you like.', campaign=campaign.name) }}</p>
+        <ul class="marketplace-cards">
+        {% for card in marketplace %}
+          <li class="marketplace-card">
+            <span class="marketplace-cover">{% if card.cover %}<img src="{{ card.cover }}" alt="" loading="lazy">{% else %}<span class="campaign-card-placeholder">{{ card.title[:1] }}</span>{% endif %}</span>
+            <div class="marketplace-body">
+              <strong class="marketplace-title">{{ card.title }}</strong>
+              <span class="marketplace-meta">{{ card.author }} · {{ card.license }} · <a href="{{ card.url }}" target="_blank" rel="noopener">{{ _('Original') }} <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></span>
+              <span class="marketplace-description">{{ card.description }}</span>
+              <span class="wiki-badges">
+                <span class="wiki-badge">{{ _('%(count)s articles', count=card.contents.articles) }}</span>
+                {% if card.contents.maps %}<span class="wiki-badge">{{ _('%(count)s maps', count=card.contents.maps) }}</span>{% endif %}
+                {% if card.contents.backgrounds %}<span class="wiki-badge">{{ _('%(count)s backgrounds', count=card.contents.backgrounds) }}</span>{% endif %}
+              </span>
+            </div>
+            <div class="marketplace-action">
+              {% if card.module %}
+              <span class="wiki-badge wiki-badge-heart"><i class="fa-solid fa-check" aria-hidden="true"></i> {{ _('Added') }}</span>
+              <a class="kw-action" href="{{ url_for('campaigns.module_view', campaign_id=campaign.id, module_id=card.module.id) }}">{{ _('Open') }}</a>
+              {% else %}
+              <form method="post" action="{{ url_for('campaigns.add_marketplace_module', campaign_id=campaign.id, slug=card.slug) }}">
+                {{ content_form.csrf_token }}
+                <button type="submit" class="primary" aria-label="{{ _('Add %(title)s', title=card.title) }}"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('Add') }}</button>
+              </form>
+              {% endif %}
+            </div>
+          </li>
+        {% endfor %}
+        </ul>
+        <section class="marketplace-upload" aria-labelledby="marketplace-upload-title">
+          <form method="post" action="{{ url_for('campaigns.import_archive') }}" enctype="multipart/form-data" class="marketplace-upload-form">
+            {{ content_form.csrf_token }}<input type="hidden" name="campaign_id" value="{{ campaign.id }}">
+            <i class="fa-solid fa-file-arrow-up marketplace-upload-icon" aria-hidden="true"></i>
+            <div class="marketplace-upload-text">
+              <h3 id="marketplace-upload-title">{{ _('Have your own module?') }}</h3>
+              <p class="import-hint">{{ _('Upload a Markdown file or a ZIP/TAR archive of articles, maps and backgrounds. You review it before anything is added.') }}
+                <a href="{{ url_for('campaigns.import_example') }}">{{ _('Example module') }}</a></p>
+              <div class="marketplace-upload-row">
+                <label class="sr-only" for="marketplace-upload-file">{{ _('Module file') }}</label>
+                <input type="file" id="marketplace-upload-file" name="archive" accept=".md,.zip,.tar,.tar.gz,.tgz" required>
+                <button type="submit" class="primary"><i class="fa-solid fa-upload" aria-hidden="true"></i> {{ _('Upload module') }}</button>
+              </div>
+            </div>
+          </form>
+        </section>
+      </dialog>
+</div>
+{% endblock %}

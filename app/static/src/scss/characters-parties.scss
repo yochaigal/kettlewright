@@ -127,3 +127,29 @@ padding: 2em;
 #new-party-submit-button {
     width: auto;
 }
+
+// Characters page: Join a party (a new character for the party, with its campaign's backgrounds).
+.join-party-dialog {
+  width: 30em;
+  max-width: calc(100vw - 2em);
+  margin: auto;  // Centered: the site's resets drop the browser's default dialog margin.
+  padding: 1.25em 1.5em;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--fg);
+  form { margin: 0; padding: 0; background: none; box-shadow: none; }
+  h2 { margin: 0 0 .75em; }
+  .input { width: 100%; margin: .25em 0 .5em; }
+  .join-party-hint { font-size: .9em; opacity: .8; margin: .4em 0; }
+  .join-party-actions { display: flex; justify-content: flex-end; gap: .5em; margin-top: 1em; }
+  &::backdrop { background: rgba(0, 0, 0, .4); }
+}
+
+// New Character and Join a party side by side; Import on the right.
+.characters-create-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5em;
+  align-items: center;
+}

@@ -13,6 +13,8 @@ class Party(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     owner = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
+    # The Warden's campaign this party plays in (several parties can share one, as in West Marches).
+    campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id', ondelete='SET NULL'), index=True)
     created_at = db.Column(db.DateTime(timezone=True),
                            server_default=func.now())
 

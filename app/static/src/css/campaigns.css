@@ -581,3 +581,142 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 .starter-carousel-dots button {width:.6em;height:.6em;min-width:0;max-width:none;margin:0;padding:0;border:0;border-radius:50%;background:color-mix(in srgb,var(--fg) 25%,var(--bg));cursor:pointer;}
 .starter-carousel-dots button[aria-current="true"] {background:var(--fg);}
 @media (pointer:coarse) {.starter-carousel-dots button {width:.8em;height:.8em;}}
+
+/* Parties inside a campaign (campaign home, Campaigns gallery "Playing in"). */
+.campaign-party-cards {display:grid;grid-template-columns:repeat(auto-fill,minmax(16em,1fr));gap:.75em;margin:.5em 0 1em;padding:0;list-style:none;}
+.campaign-party-cards > .campaign-party-card {display:flex;flex-direction:column;align-items:flex-start;gap:.45em;margin:0;padding:.8em 1em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;background:var(--bg);}
+.campaign-wiki .wiki-audience .campaign-party-cards > li + li {border-top:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));}
+.campaign-party-name {font-weight:700;color:inherit;text-decoration:none;}
+.campaign-party-name:hover {text-decoration:underline;}
+.campaign-party-members {display:flex;flex-wrap:wrap;gap:.3em;min-height:2.4em;align-items:center;}
+.campaign-party-members img {width:2.4em;height:2.4em;border-radius:50%;object-fit:cover;border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));}
+.campaign-party-meta {font-size:.85em;color:color-mix(in srgb,var(--fg) 62%,var(--bg));}
+.campaign-party-meta a {color:inherit;}
+.campaign-wiki .wiki-audience .campaign-party-card form {margin:0;}
+.campaign-wiki .wiki-audience-head > .kw-action, .campaign-wiki .wiki-audience-head > .kw-actions {margin-left:auto;}
+.campaign-module-list {display:flex;flex-wrap:wrap;gap:.4em;}
+.campaign-wiki .wiki-audience .campaign-module-list li {padding:.2em .7em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:999px;font-size:.88em;}
+.campaign-wiki .wiki-audience .campaign-module-list li + li {border-top:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));}
+.module-choices {margin:0 0 1em;padding:0;list-style:none;max-height:60vh;overflow:auto;}
+.module-choices li {display:grid;grid-template-columns:1fr auto;gap:.2em .75em;align-items:center;padding:.6em 0;border-bottom:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));}
+.module-choices li .import-hint {grid-column:1;margin:0;}
+.module-choices li form, .module-choices li .wiki-badge {grid-column:2;grid-row:1 / span 2;margin:0;}
+/* The campaign's Backgrounds page. */
+.campaign-background-list {margin:0 0 1em;padding:0;list-style:none;}
+.campaign-background-list li {display:flex;gap:1em;align-items:flex-start;justify-content:space-between;padding:.75em 0;border-bottom:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));}
+.campaign-background-list p {margin:.25em 0;}
+.campaign-background-list form {flex:none;margin:0;}
+.import-destination select {display:block;margin-top:.25em;max-width:100%;}
+
+/* Campaign home: its one party, its modules. */
+.campaign-party-row {display:flex;flex-wrap:wrap;align-items:center;gap:.6em 1em;padding:.4em 0 .8em;}
+.campaign-party-actions {margin-left:auto;}
+.campaign-party-actions form {display:inline;margin:0;}
+.campaign-module-cards {display:grid;grid-template-columns:repeat(auto-fill,minmax(15em,1fr));gap:.75em;margin:.5em 0 1em;padding:0;list-style:none;}
+.campaign-wiki .wiki-audience .campaign-module-cards > li {display:flex;flex-direction:column;align-items:flex-start;gap:.45em;padding:.8em 1em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;}
+/* Modules Marketplace */
+.marketplace-dialog {width:min(52em,calc(100vw - 2em));max-height:calc(100vh - 2em);}
+.marketplace-header {display:flex;align-items:center;justify-content:space-between;gap:1em;}
+.marketplace-header h2 {display:flex;align-items:center;gap:.5em;margin:0;}
+.marketplace-close {font-size:1.3em;}
+.marketplace-cards {display:grid;gap:.75em;margin:1em 0;padding:0;list-style:none;}
+.marketplace-card {display:grid;grid-template-columns:6.5em 1fr auto;gap:1em;align-items:start;padding:.75em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;}
+.marketplace-cover {display:block;width:6.5em;height:8.5em;overflow:hidden;border-radius:6px;background:color-mix(in srgb,var(--fg) 6%,var(--bg));}
+.marketplace-cover img {width:100%;height:100%;object-fit:cover;}
+.marketplace-cover .campaign-card-placeholder {display:flex;align-items:center;justify-content:center;height:100%;}
+.marketplace-body {display:flex;flex-direction:column;gap:.35em;min-width:0;}
+.marketplace-title {font-size:1.05em;}
+.marketplace-meta {font-size:.82em;color:color-mix(in srgb,var(--fg) 60%,var(--bg));}
+.marketplace-meta a {color:inherit;}
+.marketplace-description {font-size:.92em;}
+.marketplace-action {display:flex;flex-direction:column;align-items:flex-end;gap:.4em;}
+.marketplace-action form {margin:0;}
+.marketplace-upload {margin-top:1em;padding-top:1em;border-top:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));}
+.marketplace-upload h3 {margin:0 0 .5em;font-size:1em;}
+@media (max-width:600px) {
+  .marketplace-card {grid-template-columns:4.5em 1fr;}
+  .marketplace-cover {width:4.5em;height:6em;}
+  .marketplace-action {grid-column:1 / -1;flex-direction:row;justify-content:flex-end;}
+}
+/* Module page */
+.module-section {margin:1.5em 0;}
+.module-section-head {display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.5em 1em;}
+.module-section-head h2 {margin:0;}
+.module-upload {display:flex;flex-wrap:wrap;align-items:flex-end;gap:.75em;margin-top:.75em;}
+.background-editor textarea {width:100%;font-family:'Courier Prime',monospace;font-size:.95em;line-height:1.45;}
+/* Campaign home: the pencil (settings) beside the name; Manage revealed and Backgrounds dialogs. */
+.campaign-wiki .campaign-rename {font-size:.45em;vertical-align:middle;margin-left:.4em;opacity:.65;}
+.campaign-wiki .campaign-rename:hover, .campaign-wiki .campaign-rename:focus-visible {opacity:1;}
+.revealed-dialog, .backgrounds-dialog {width:min(40em,calc(100vw - 2em));}
+.revealed-list {margin:.5em 0 1em;padding:0;list-style:none;max-height:55vh;overflow:auto;}
+.revealed-list li {display:flex;flex-wrap:wrap;align-items:center;gap:.4em .6em;padding:.5em 0;border-bottom:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));}
+.revealed-list li form {margin:0 0 0 auto;}
+.create-dialog-actions form {margin:0 auto 0 0;}
+.campaign-danger-zone {margin-top:1.25em;padding-top:1em;border-top:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));}
+.campaign-wiki .campaign-rename {border:0;background:none;padding:.15em .3em;cursor:pointer;color:inherit;}
+.revealed-actions {display:flex;flex-wrap:wrap;gap:.5em;align-items:center;}
+.revealed-actions form {margin:0;}
+
+/* Article and module editors, in the lobby's style: pill actions, one solid Save, panels. */
+.campaign-workspace .soft-header .campaign-page-actions > a,
+.campaign-workspace .soft-header .campaign-page-actions > button:not(.primary) {min-height:36px;padding:.35em .95em;gap:.4em;border:1px solid color-mix(in srgb,var(--fg) 30%,var(--bg));border-radius:999px;background:transparent;font-size:.92em;font-weight:600;text-decoration:none;}
+.campaign-workspace .soft-header .campaign-page-actions > button.primary {min-height:36px;padding:.35em 1.2em;border-radius:999px;}
+.campaign-workspace .soft-header .campaign-page-actions > a:hover,
+.campaign-workspace .soft-header .campaign-page-actions > button:not(.primary):hover {background:var(--fg);color:var(--bg);border-color:var(--fg);}
+.campaign-workspace .material-parents {align-items:baseline;gap:.35em .6em;font-size:.95em;}
+.campaign-workspace .material-parents a {text-decoration:none;}
+.campaign-workspace .material-parents a:hover {text-decoration:underline;}
+.campaign-workspace .material-parents-part {margin-left:.75em;color:color-mix(in srgb,var(--fg) 60%,var(--bg));}
+.article-layout {grid-template-columns:minmax(0,1fr) minmax(17em,23em);}
+.article-sidebar {padding:1em 1.1em;border:1px solid color-mix(in srgb,var(--fg) 18%,var(--bg));border-radius:10px;background:var(--bg);}
+.article-sidebar select, .article-sidebar input:not([type=checkbox]):not([type=radio]) {width:100%;max-width:100%;box-sizing:border-box;}
+.campaign-workspace .article-sidebar-title {font-size:.82em;letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
+.campaign-workspace .danger-zone {border-top:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));}
+.campaign-workspace .danger-zone .campaign-modal-trigger {min-height:36px;padding:.35em 1em;border:1px solid color-mix(in srgb,#a33b3b 55%,var(--bg));border-radius:999px;background:transparent;color:#a33b3b;font-size:.92em;font-weight:600;}
+.campaign-workspace .danger-zone .campaign-modal-trigger:hover {border-color:#a33b3b;background:#a33b3b;color:#fff;}
+.module-header {display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:1em;margin:.5em 0 1em;}
+.module-header h1 {margin:0 0 .35em;}
+.module-header .import-hint {margin:.5em 0 0;}
+.module-header .campaign-rename {font-size:.45em;vertical-align:middle;margin-left:.4em;opacity:.65;border:0;background:none;cursor:pointer;color:inherit;}
+.module-panel {padding:1em 1.25em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.module-panel .module-section-head h2 {display:flex;align-items:center;gap:.45em;font-size:.82em;letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--fg) 75%,var(--bg));}
+.module-panel > form {background:transparent;}
+.module-panel .material-bulk-actions > button {min-height:32px;padding:.3em .9em;border:1px solid color-mix(in srgb,var(--fg) 30%,var(--bg));border-radius:999px;background:transparent;font-size:.9em;font-weight:600;}
+.module-panel .material-bulk-actions > button:hover {background:var(--fg);color:var(--bg);border-color:var(--fg);}
+.module-panel .tree-toolbar {margin-bottom:.75em;}
+.module-upload button {min-height:32px;padding:.3em .9em;border:1px solid color-mix(in srgb,var(--fg) 30%,var(--bg));border-radius:999px;background:transparent;font-weight:600;}
+.campaign-workspace .module-page .module-header {display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:1em;}
+.campaign-workspace .module-page .module-header > .kw-actions {margin-left:auto;padding-top:.6em;}
+.campaign-workspace .module-page .module-panel {margin:1.25em 0;padding:1em 1.25em;}
+.campaign-workspace .module-page .module-panel .module-section-head {margin-bottom:.75em;}
+
+/* Buttons are square, like New campaign: solid for the main action, outlined otherwise.
+   Only buttons on cards (modules, campaigns, wiki articles, the Marketplace) stay round. */
+.campaign-workspace .kw-action,
+.campaign-workspace .soft-header .campaign-page-actions > a,
+.campaign-workspace .soft-header .campaign-page-actions > button:not(.primary),
+.campaign-workspace .danger-zone .campaign-modal-trigger,
+.module-panel .material-bulk-actions > button,
+.module-upload button {min-height:36px;padding:.4em .9em;border:1.5px solid var(--fg);border-radius:2px;font-size:.9em;}
+.campaign-workspace .soft-header .campaign-page-actions > button.primary {border-radius:2px;}
+.campaign-workspace .kw-action-danger, .campaign-workspace .kw-action.wiki-danger,
+.campaign-workspace .danger-zone .campaign-modal-trigger {border-color:#a33b3b;color:#a33b3b;}
+.campaign-workspace :is(.campaign-module-card, .campaign-card, .wiki-card, .pw-card, .marketplace-card, .campaign-party-card) .kw-action {
+  min-height:32px;padding:.25em .75em;border:1px solid color-mix(in srgb,var(--fg) 35%,var(--bg));border-radius:999px;font-size:.85em;}
+/* Module cards carry their picture, like campaign cards. */
+.campaign-wiki .wiki-audience .campaign-module-cards > li {padding:0 0 .9em;overflow:hidden;}
+.campaign-wiki .wiki-audience .campaign-module-cards > li > :not(.campaign-module-cover) {margin-left:1em;margin-right:1em;}
+.campaign-module-cover {display:block;width:100%;height:8.5em;overflow:hidden;background:color-mix(in srgb,var(--fg) 6%,var(--bg));}
+.campaign-module-cover img {width:100%;height:100%;object-fit:cover;}
+.campaign-module-cover .campaign-card-placeholder {display:flex;align-items:center;justify-content:center;height:100%;font-size:2em;}
+/* Marketplace: upload your own module. */
+.marketplace-upload {margin-top:1.25em;padding:0;border-top:0;}
+.marketplace-upload-form {display:flex;gap:1em;align-items:flex-start;margin:0;padding:1em 1.25em;border:1.5px dashed color-mix(in srgb,var(--fg) 35%,var(--bg));border-radius:10px;background:color-mix(in srgb,var(--fg) 3%,var(--bg));}
+.marketplace-upload-icon {font-size:1.8em;opacity:.6;padding-top:.15em;}
+.marketplace-upload-text {flex:1;min-width:0;}
+.marketplace-upload-text h3 {margin:0 0 .25em;font-size:1em;}
+.marketplace-upload-text .import-hint {margin:0 0 .75em;}
+.marketplace-upload-row {display:flex;flex-wrap:wrap;gap:.75em;align-items:center;}
+.marketplace-upload-row input[type=file] {flex:1 1 14em;min-width:0;max-width:100%;}
+.create-dialog .marketplace-upload-row button.primary {min-height:38px;gap:.4em;}
+.create-dialog .marketplace-upload-form {display:flex;padding:1em 1.25em;border:1.5px dashed color-mix(in srgb,var(--fg) 35%,var(--bg));border-radius:10px;background:color-mix(in srgb,var(--fg) 3%,var(--bg));}

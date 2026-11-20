@@ -36,6 +36,11 @@ def upload(client, data):
     return client.post('/materials/import-archive', data={'archive': (io.BytesIO(data), 'campaign.zip')})
 
 
+def confirm(client, token, campaign=1, **extra):
+    """Confirm a preview: it becomes a new module of the campaign."""
+    return client.post('/materials/import-archive', data={'preview_id': token, 'target_campaign': campaign, **extra})
+
+
 @pytest.mark.parametrize('filename', ['drawing.excalidraw', 'campaign.rar'])
 def test_unsupported_upload_shows_warning_without_staging(setup, filename):
     app, client = setup
@@ -50,21 +55,23 @@ def test_unsupported_upload_shows_warning_without_staging(setup, filename):
         assert ContentEntry.query.count() == 0
 
 
-def test_single_md_with_metadata_imports_as_unfiled_article(setup):
+def test_single_md_with_metadata_imports_as_a_module(setup):
     app, client = setup
     content = md('My Note', 'Note')
     response = client.post('/materials/import-archive',
         data={'archive': (io.BytesIO(content.encode()), 'my-note.md')})
     assert response.status_code == 200
     html = response.get_data(as_text=True)
-    assert 'My Note' in html and 'Unfiled articles' in html
-    assert 'archive-confirm-form' in html
+    assert 'My Note' in html and 'Destination: Module' in html and 'Unfiled' not in html
+    assert 'archive-confirm-form' in html and 'name="target_campaign" required' in html
     token = re.search(r'name="preview_id" value="([a-f0-9]+)"', html).group(1)
-    assert client.post('/materials/import-archive', data={'preview_id': token}).status_code == 302
+    assert client.post('/materials/import-archive', data={'preview_id': token}).status_code == 400  # A campaign is required.
+    response = confirm(client, token)
     with app.app_context():
         entry = ContentEntry.query.filter_by(title='My Note').one()
-        assert entry.category == 'note'
-        assert entry.campaign_id is None
+        assert entry.category == 'note' and entry.campaign_id == 1
+        assert entry.module.title == 'my-note'  # No front page: named after the file.
+        assert response.location.endswith(f'/campaigns/1/modules/{entry.module_id}/')
 
 
 def test_single_md_without_metadata_infers_defaults_and_imports(setup):
@@ -75,11 +82,11 @@ def test_single_md_without_metadata_infers_defaults_and_imports(setup):
         data={'archive': (io.BytesIO(content), 'adventure-log.md')})
     assert response.status_code == 200
     html = response.get_data(as_text=True)
-    assert 'Adventure Log' in html and 'Unfiled articles' in html
+    assert 'Adventure Log' in html and 'Destination: Module' in html
     assert 'Defaults applied' in html  # warning shown
     assert 'archive-confirm-form' in html
     token = re.search(r'name="preview_id" value="([a-f0-9]+)"', html).group(1)
-    assert client.post('/materials/import-archive', data={'preview_id': token}).status_code == 302
+    assert confirm(client, token).status_code == 302
     with app.app_context():
         entry = ContentEntry.query.filter_by(title='Adventure Log').one()
         assert entry.category == 'note'
@@ -130,113 +137,92 @@ def test_downloadable_example_imports_complete_hierarchy(setup):
     assert 'attachment' in response.headers['Content-Disposition']
     preview = upload(client, response.data)
     html = preview.get_data(as_text=True)
-    assert 'Campaigns / My Campaign / My Dungeon' in html
+    assert 'Module / My Campaign / My Dungeon' in html
     token = re.search(r'name="preview_id" value="([a-f0-9]+)"', html).group(1)
-    assert client.post('/materials/import-archive', data={'preview_id': token}).status_code == 302
+    assert confirm(client, token).status_code == 302
     with app.app_context():
         room = ContentEntry.query.filter_by(title='The Cellar').one()
         assert room.parent.title == 'My Dungeon'
-        assert room.campaign.name == 'My Campaign'
+        assert room.campaign_id == 1 and room.module.title == 'My Campaign'
         assert room.parent.pointcrawl.kind == 'dungeon'
 
 
 @pytest.mark.parametrize('kind',['zip','tar'])
-def test_import_into_existing_owned_campaign_keeps_descendants_private(setup,kind):
+def test_parent_outside_the_module_is_imported_at_its_top_and_kept_private(setup,kind):
     app,client=setup
     existing=create_entry(client,title='Existing article')
-    # Another owner's identical campaign name must not make ours ambiguous.
-    with app.app_context():
-        db.session.add(Campaign(owner_id=2,name='Secret campaign'));db.session.commit()
     response=upload(client,archive({'dungeon.md':md('New Dungeon','Dungeon','Secret campaign'),
         'room.md':md('New Room','Dungeon room','New Dungeon')},kind))
     html=response.get_data(as_text=True)
-    assert 'Existing campaign:' in html and 'Campaigns / Secret campaign' in html
+    assert 'is not in this module' in html and 'Existing campaign:' not in html
     token=re.search(r'name="preview_id" value="([a-f0-9]+)"',html).group(1)
     with app.app_context():
         assert ContentEntry.query.count()==1
-    assert client.post('/materials/import-archive',data={'preview_id':token}).status_code==302
+    assert confirm(client,token).status_code==302
     with app.app_context():
         assert Campaign.query.filter_by(owner_id=1).count()==1
         dungeon=ContentEntry.query.filter_by(title='New Dungeon').one()
         room=ContentEntry.query.filter_by(title='New Room').one()
         assert dungeon.campaign_id==1 and dungeon.parent_id is None
-        assert room.campaign_id==1 and room.parent_id==dungeon.id
+        assert room.campaign_id==1 and room.parent_id==dungeon.id and room.module_id==dungeon.module_id
         assert dungeon.pointcrawl.kind=='dungeon'
         assert not dungeon.presentations and not room.presentations
         assert db.session.get(ContentEntry,existing).title=='Existing article'
-    assert client.post('/materials/import-archive',data={'preview_id':token}).status_code==409
+    assert confirm(client,token).status_code==409
 
 
-@pytest.mark.parametrize('mode',['duplicate','foreign','missing'])
-def test_existing_campaign_lookup_rejects_ambiguous_or_unowned_targets(setup,mode):
+@pytest.mark.parametrize('mutation',['delete','transfer'])
+def test_destination_campaign_is_rechecked_before_atomic_confirmation(setup,mutation):
     app,client=setup
-    name='Secret campaign' if mode=='duplicate' else 'Unavailable campaign'
-    with app.app_context():
-        if mode!='missing':
-            db.session.add(Campaign(owner_id=1 if mode=='duplicate' else 2,name=name));db.session.commit()
-    html=upload(client,archive({'dungeon.md':md('Dungeon','Dungeon',name)})).get_data(as_text=True)
-    assert 'ambiguous' in html
-    assert 'name="preview_id"' not in html
-    with app.app_context():
-        assert ContentEntry.query.count()==0 and CampaignImport.query.count()==0
-
-
-@pytest.mark.parametrize('mutation',['rename','delete','transfer','duplicate','replace'])
-def test_existing_campaign_is_rechecked_before_atomic_confirmation(setup,mutation):
-    app,client=setup
-    html=upload(client,archive({'dungeon.md':md('Dungeon','Dungeon','Secret campaign'),
-        'new.md':md('New campaign','Campaign')})).get_data(as_text=True)
+    html=upload(client,archive({'dungeon.md':md('Dungeon','Dungeon'),
+        'new.md':md('New module','Module')})).get_data(as_text=True)
     token=re.search(r'name="preview_id" value="([a-f0-9]+)"',html).group(1)
     with app.app_context():
         campaign=db.session.get(Campaign,1)
-        if mutation in ('rename','replace'): campaign.name='Renamed'
-        elif mutation=='delete': db.session.delete(campaign)
-        elif mutation=='transfer': campaign.owner_id=2
-        if mutation in ('duplicate','replace'): db.session.add(Campaign(owner_id=1,name='Secret campaign'))
+        if mutation=='delete':
+            from app.lib.campaign_parties import delete_party
+            for party in list(campaign.parties):
+                delete_party(party)
+            db.session.delete(campaign)
+        else:
+            campaign.owner_id=2
         db.session.commit()
-        original_count=Campaign.query.count()
-    response=client.post('/materials/import-archive',data={'preview_id':token})
-    assert response.status_code==409
+    response=confirm(client,token)
+    assert response.status_code==(404 if mutation=='delete' else 403)
     with app.app_context():
         assert not db.session.get(CampaignImport,token).consumed
-        assert ContentEntry.query.count()==0 and Campaign.query.count()==original_count
+        assert ContentEntry.query.count()==0
 
 
 def test_archive_parents_take_priority_and_ids_never_resolve_existing_records(setup):
     app,client=setup
     html=upload(client,archive({'campaign.md':md('Secret campaign','Campaign'),
         'dungeon.md':md('Dungeon','Dungeon','Secret campaign')})).get_data(as_text=True)
-    assert 'Existing campaign:' not in html
+    assert 'is not in this module' not in html  # The parent is the archive's own front page.
     token=re.search(r'name="preview_id" value="([a-f0-9]+)"',html).group(1)
-    assert client.post('/materials/import-archive',data={'preview_id':token}).status_code==302
+    assert confirm(client,token).status_code==302
     with app.app_context():
-        assert ContentEntry.query.filter_by(title='Dungeon').one().campaign_id!=1
+        dungeon=ContentEntry.query.filter_by(title='Dungeon').one()
+        assert dungeon.parent_id is None and dungeon.module.title=='Secret campaign'
     data=md('Another dungeon','Dungeon').replace('type: Dungeon\n','type: Dungeon\nparent_id: 1\n')
     html=upload(client,archive({'dungeon.md':data})).get_data(as_text=True)
     assert 'parent_id' in html and 'is missing' in html and 'name="preview_id"' not in html
 
 
-@pytest.mark.parametrize('same_destination',[True,False])
-def test_links_and_references_respect_existing_campaign_destinations(setup,same_destination):
+def test_links_and_references_resolve_within_the_module(setup):
     app,client=setup
-    with app.app_context():
-        db.session.add(Campaign(owner_id=1,name='Other campaign'));db.session.commit()
-    target_parent='Secret campaign' if same_destination else 'Other campaign'
-    files={'source.md':md('Source',parent='Secret campaign',body='See [[Target]].')
+    files={'source.md':md('Source',body='See [[Target]].')
             .replace('layout: default\n','layout: default\nid: source\n'),
-        'target.md':md('Target',parent=target_parent)
+        'target.md':md('Target',parent='Somewhere else')
             .replace('layout: default\n','layout: default\nid: target\n')}
     with app.app_context():
         preview=preview_archive(archive(files),owner_id=1)
         assert not preview['errors']
         source=next(row for row in preview['rows'] if row['title']=='Source')
-        assert bool(source['references'])==same_destination
+        assert source['references']
         files['manifest.json']=json.dumps({'format':'kettlewright-campaign','version':1,
             'links':[{'source':'source','target':'target'}]})
-        preview=preview_archive(archive(files),owner_id=1)
-        assert bool(preview['errors'])!=same_destination
-        if not same_destination:
-            assert 'same campaign' in preview['errors'][0]
+        assert not preview_archive(archive(files),owner_id=1)['errors']
 
 
 @pytest.mark.parametrize('kind', ['zip', 'tar'])
@@ -249,35 +235,35 @@ def test_preview_confirm_hierarchy_private_and_replay(setup, kind):
     response = upload(client, data)
     assert response.status_code == 200
     html = response.get_data(as_text=True)
-    assert 'Campaigns / My Campaign / Dungeon' in html and 'Unfiled articles' in html
+    assert 'Module / My Campaign / Dungeon' in html and 'Unfiled' not in html
     assert 'image.png' in html
     token = re.search(r'name="preview_id" value="([a-f0-9]+)"', html).group(1)
     with app.app_context():
         assert ContentEntry.query.count() == 0
         assert Campaign.query.count() == 1
     login(client, 2)
-    assert client.post('/materials/import-archive', data={'preview_id': token}).status_code == 404
+    assert confirm(client, token).status_code == 404
     login(client, 1)
-    assert client.post('/materials/import-archive', data={'preview_id': token}).status_code == 302
+    assert confirm(client, token).status_code == 302
     with app.app_context():
         dungeon = ContentEntry.query.filter_by(title='Dungeon').one()
         room = ContentEntry.query.filter_by(title='Room').one()
         assert room.parent_id == dungeon.id
         assert room.campaign_id == dungeon.campaign_id
         assert dungeon.pointcrawl.kind == 'dungeon'
-        assert dungeon.campaign.name == 'My Campaign'
-        assert ContentEntry.query.filter_by(title='Loose').one().campaign_id is None
+        assert dungeon.campaign_id == 1 and dungeon.module.title == 'My Campaign'
+        dungeon_module = dungeon.module_id
+        assert ContentEntry.query.filter_by(title='Loose').one().module_id == dungeon.module_id
         assert ContentEntry.query.filter_by(category='overview').one().body == 'A **private** description.'
         campaign_id = dungeon.campaign_id
     assert client.get('/party/1/materials/data').json == {'entries': []}
-    assert 'Room' in client.get(f'/campaigns/{campaign_id}/').get_data(as_text=True)
-    assert client.post('/materials/import-archive', data={'preview_id': token}).status_code == 409
+    assert 'Room' in client.get(f'/campaigns/{campaign_id}/modules/{dungeon_module}/').get_data(as_text=True)
+    assert confirm(client, token).status_code == 409
     with app.app_context():
-        assert Campaign.query.count() == 2
+        assert Campaign.query.count() == 1  # Modules never create campaigns.
 
 
 @pytest.mark.parametrize('files,expected', [
-    ({'a.md': md('A', parent='Missing')}, 'missing or ambiguous'),
     ({'a.md': md('A', parent='B'), 'b.md': md('B', parent='A')}, 'cycle'),
     ({'a.md': md('A'), 'b.md': md('A'), 'c.md': md('C', parent='A')}, 'ambiguous'),
     ({'a.md': md('A', 'Surprise')}, 'Unknown type'),
@@ -342,16 +328,20 @@ def test_archive_symlinks_and_member_limit():
 
 def test_imported_subtree_moves_and_deletion_preview_includes_children(setup):
     app, client = setup
+    with app.app_context():
+        db.session.add(Campaign(id=2, owner_id=1, name='Elsewhere'))
+        db.session.commit()
     response = upload(client, archive({'root.md': md('Root'), 'child.md': md('Child', parent='Root')}))
     token = re.search(r'name="preview_id" value="([a-f0-9]+)"', response.get_data(as_text=True)).group(1)
-    client.post('/materials/import-archive', data={'preview_id': token})
+    confirm(client, token, campaign=2)
     with app.app_context():
         root = ContentEntry.query.filter_by(title='Root').one()
         root_id = root.id
     assert client.post(f'/materials/{root_id}/edit', data={'version': 1, 'title': 'Root',
         'body': 'changed', 'category': 'note', 'campaign_id': 1}).status_code == 302
     with app.app_context():
-        assert ContentEntry.query.filter_by(title='Child').one().campaign_id == 1
+        child = ContentEntry.query.filter_by(title='Child').one()
+        assert child.campaign_id == 1 and child.module.campaign_id == 1
     response = client.post('/materials/bulk-delete', data={'campaign_id': 1, 'entry_ids': root_id, f'version_{root_id}': 2})
     assert response.status_code == 200 and 'Child' in response.get_data(as_text=True)
     token = re.search(r'name="deletion_token" value="([^"]+)"', response.get_data(as_text=True)).group(1)
@@ -388,19 +378,26 @@ def preview_token(html):
     return re.search(r'name="preview_id" value="([a-f0-9]+)"', html).group(1)
 
 
-def test_single_md_follows_parent_and_campaign_rules(setup):
+def test_module_front_page_and_adding_files_to_a_module(setup):
     app, client = setup
     html = client.post('/materials/import-archive',
-        data={'archive': (io.BytesIO(md('Solo', 'Campaign').encode()), 'solo.md')}).get_data(as_text=True)
-    assert 'Destination: Campaigns' in html
-    assert client.post('/materials/import-archive', data={'preview_id': preview_token(html)}).status_code == 302
-    html = client.post('/materials/import-archive',
-        data={'archive': (io.BytesIO(md('Cave', 'Dungeon', parent='Solo').encode()), 'cave.md')}).get_data(as_text=True)
-    assert 'Campaigns / Solo' in html and 'Existing campaign:' in html
-    assert client.post('/materials/import-archive', data={'preview_id': preview_token(html)}).status_code == 302
+        data={'archive': (io.BytesIO(md('Solo', 'Module').encode()), 'solo.md')}).get_data(as_text=True)
+    assert 'Destination: Module' in html
+    assert confirm(client, preview_token(html)).status_code == 302
+    with app.app_context():
+        overview = ContentEntry.query.filter_by(title='Solo').one()
+        assert overview.category == 'overview' and overview.module.title == 'Solo'
+        module_id = overview.module_id
+    html = client.post('/materials/import-archive', data={'module_id': module_id,
+        'archive': (io.BytesIO(md('Cave', 'Dungeon').encode()), 'cave.md')}).get_data(as_text=True)
+    assert 'Adding to the module Solo.' in html and f'name="module_id" value="{module_id}"' in html
+    assert client.post('/materials/import-archive', data={'preview_id': preview_token(html),
+                                                           'module_id': module_id}).status_code == 302
     with app.app_context():
         cave = ContentEntry.query.filter_by(title='Cave').one()
-        assert cave.campaign.name == 'Solo' and cave.category == 'dungeon'
+        assert cave.module_id == module_id and cave.category == 'dungeon'
+        from app.models import Module
+        assert Module.query.count() == 1
 
 
 def test_inferred_rows_can_be_renamed_and_retyped_before_import(setup):
@@ -411,7 +408,7 @@ def test_inferred_rows_can_be_renamed_and_retyped_before_import(setup):
     assert 'name="title_' + index + '"' in html and html.count('name="title_') == 1
     kept = str(1 - int(index))
     # Overrides for rows that had valid metadata are ignored.
-    response = client.post('/materials/import-archive', data={'preview_id': preview_token(html),
+    response = confirm(client, preview_token(html), **{
         f'title_{index}': 'Renamed', f'category_{index}': 'npc', f'title_{kept}': 'Ignored'})
     assert response.status_code == 302
     with app.app_context():

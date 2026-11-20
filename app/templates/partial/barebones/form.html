@@ -19,6 +19,8 @@
 </div>
 {%- endmacro %}
 <form class="sheet" method="POST" id="barebones-form" hx-target="#barebones-form" hx-swap="outerHTML">
+{# The party this character is created for (Join a party): it joins on save. #}
+<input type="hidden" name="party_code" value="{{ state.party_code }}">
     {% for group in groups %}
     <input type="hidden" name="{{ group }}" value="{{ state[group] | tojson | forceescape }}" />
     {% endfor %}

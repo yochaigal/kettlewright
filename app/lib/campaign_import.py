@@ -13,6 +13,7 @@ from app.lib.campaigns import CATEGORIES, MAP_KINDS, PATH_TYPES
 from app.lib.rich_content import normalize_content
 from app.lib.campaign_map_import import prepare_maps
 from app.lib.article_references import prepare_archive_references
+from app.lib.campaign_backgrounds import BackgroundError, add_backgrounds, background_from_markdown, parse_backgrounds
 
 MAX_ARCHIVE = 50 * 1024 * 1024
 MAX_TOTAL = 100 * 1024 * 1024
@@ -116,7 +117,9 @@ def parse_markdown(name, text):
     aliases.update({'npcs': 'npc', 'factions': 'faction', 'settlements': 'settlement',
                     'waypoints': 'waypoint', 'curiosities': 'curiosity', 'lairs': 'lair'})
     aliases.update({'location': 'custom', 'locations': 'custom', 'article': 'custom', 'gear': 'item', 'weapon': 'item', 'weapons': 'item', 'armor': 'item'})
-    category = 'campaign' if kind == 'campaign' else 'map' if kind in MAP_KINDS else aliases.get(kind)
+    # A module's front page: type Campaign, or Module. Backgrounds are character options, not articles.
+    category = ('campaign' if kind in ('campaign', 'module') else 'background' if kind in ('background', 'backgrounds')
+                else 'map' if kind in MAP_KINDS else aliases.get(kind))
     if category is None:
         raise ImportError(f'Unknown type: {metadata["type"]}')
     if category == 'campaign' and metadata.get('parent'):
@@ -132,7 +135,9 @@ def parse_markdown(name, text):
     if len(source_path) > 500 or path.is_absolute() or '..' in path.parts or any(c in source_path for c in ('\\', ':', '\x00')):
         raise ImportError('Invalid source_path.')
     try:
-        body = normalize_content('\n'.join(lines[end + 1:]).strip())
+        # A background's body is its own small format (campaign_backgrounds), read as written.
+        body = '\n'.join(lines[end + 1:]).strip()
+        body = body if category == 'background' else normalize_content(body)
     except HTTPException as exc:
         raise ImportError(exc.description) from exc
     return {'file': name, 'title': metadata['title'], 'type': metadata['type'],
@@ -203,15 +208,36 @@ def preview_archive(data, owner_id=None):
 def preview_files(entries, owner_id=None):
     """Stage (name, text) pairs; text is None for files that are skipped."""
     rows, errors, warnings, ignored, files = [], [], [], [], {}
+    backgrounds = {}
     for name, text in entries:
         files[name] = text
         if text is None:
             ignored.append(name)
             continue
+        if is_backgrounds_file(name):
+            # Modules can bring character options: backgrounds/*.json or backgrounds.json.
+            try:
+                found = parse_backgrounds(text, name)
+            except BackgroundError as exc:
+                errors.append(str(exc))
+                continue
+            for title in set(found) & set(backgrounds):
+                errors.append(f'{name}: background "{title}" is defined twice.')
+            backgrounds.update(found)
+            continue
         if PurePosixPath(name).suffix.lower() != '.md':
             continue
         try:
-            rows.append(parse_markdown(name, text))
+            row = parse_markdown(name, text)
+            if row['category'] == 'background':
+                found = dict([background_from_markdown(row['title'], row['body'])])
+                for title in set(found) & set(backgrounds):
+                    errors.append(f'{name}: background "{title}" is defined twice.')
+                backgrounds.update(found)
+                continue
+            rows.append(row)
+        except BackgroundError as exc:
+            errors.append(f'{name}: {exc}')
         except ImportError as exc:
             if str(exc) not in _INFERABLE_ERRORS:
                 errors.append(f'{name}: {exc}')
@@ -225,7 +251,7 @@ def preview_files(entries, owner_id=None):
             rows.append(row)
             warnings.append(f'{name}: No metadata found. Defaults applied: '
                             f'title "{row["title"]}", type "{row["type"]}". You can change them below.')
-    if not rows and not errors:
+    if not rows and not backgrounds and not errors:
         errors.append('No Markdown files found.')
     titles, ids = {}, {}
     for i, row in enumerate(rows):
@@ -234,10 +260,6 @@ def preview_files(entries, owner_id=None):
             if row['id'] in ids:
                 errors.append(f'{row["file"]}: duplicate id "{row["id"]}".')
             ids[row['id']] = i
-    existing_by_name = {}
-    if owner_id is not None:
-        for campaign in Campaign.query.filter_by(owner_id=owner_id).all():
-            existing_by_name.setdefault(campaign.name, []).append(campaign)
     for row in rows:
         if row['parent_id']:
             if row['parent_id'] not in ids:
@@ -246,12 +268,10 @@ def preview_files(entries, owner_id=None):
                 row['parent'] = ids[row['parent_id']]
         elif row['parent_title']:
             matches = titles.get(row['parent_title'], [])
-            existing = existing_by_name.get(row['parent_title'], []) if not matches else []
-            if not matches and len(existing) == 1:
-                campaign = existing[0]
-                row['existing_campaign'] = {'id': campaign.id, 'name': campaign.name}
-            elif not matches and len(existing) > 1:
-                errors.append(f'{row["file"]}: existing campaign name "{row["parent_title"]}" is ambiguous.')
+            if not matches:
+                # Everything is imported into one module: a parent outside it (say, a campaign's name) is dropped.
+                warnings.append(f'{row["file"]}: parent "{row["parent_title"]}" is not in this module; '
+                                'it is imported at the top level of the module.')
             elif len(matches) != 1:
                 errors.append(f'{row["file"]}: parent "{row["parent_title"]}" is missing or ambiguous.')
             else:
@@ -271,11 +291,8 @@ def preview_files(entries, owner_id=None):
             visit(parent, depth + 1)
             row['destination'] = rows[parent]['destination'] + ' / ' + rows[parent]['title']
             row['depth'] = rows[parent]['depth'] + 1
-        elif row.get('existing_campaign'):
-            row['destination'] = 'Campaigns / ' + row['existing_campaign']['name']
-            row['depth'] = 0
         else:
-            row['destination'] = 'Campaigns' if row['category'] == 'campaign' else 'Unfiled articles'
+            row['destination'] = 'Module'
             row['depth'] = 0
         if row['depth'] > 20:
             raise ImportError('Hierarchy exceeds 20 levels.')
@@ -302,8 +319,9 @@ def preview_files(entries, owner_id=None):
         for i, row in enumerate(rows):
             if row['parent'] is None:
                 show(i)
-    payload = {'rows': rows, 'order': order, 'display': display, 'errors': errors, 'warnings': warnings, 'ignored': ignored}
-    if not errors:
+    payload = {'rows': rows, 'order': order, 'display': display, 'errors': errors, 'warnings': warnings, 'ignored': ignored,
+               'backgrounds': backgrounds}
+    if not errors and rows:
         try:
             prepare_maps(payload, files)
             prepare_archive_references(payload)
@@ -334,39 +352,47 @@ def apply_overrides(payload, form):
     return payload
 
 
-def import_preview(payload, owner_id):
-    """Caller claims the preview and commits this entire operation atomically."""
-    objects, campaigns = {}, {}
-    existing_campaigns = {}
-    # Never retarget a staged import when names, ownership or uniqueness change.
-    # Check every external destination before creating any library records.
-    for row in payload['rows']:
-        target = row.get('existing_campaign')
-        if not target or target['id'] in existing_campaigns:
-            continue
-        matches = [campaign for campaign in Campaign.query.filter_by(owner_id=owner_id).all()
-                   if campaign.name == target['name']]
-        if len(matches) != 1 or matches[0].id != target['id']:
-            raise Conflict('The destination campaign changed or its name is ambiguous. Upload the archive again.')
-        existing_campaigns[target['id']] = matches[0]
+def is_backgrounds_file(name):
+    path = PurePosixPath(name)
+    return path.suffix.lower() == '.json' and (path.name.lower() == 'backgrounds.json' or path.parent.name.lower() == 'backgrounds')
+
+
+def module_title(payload, fallback=''):
+    """The module's name: the title of its campaign (front page) file."""
+    return next((row['title'] for row in payload['rows'] if row['category'] == 'campaign'), fallback)
+
+
+def import_preview(payload, owner_id, into=None, slug='', module=None, name=''):
+    """Import a staged module. Caller claims the preview and commits this entire operation atomically.
+
+    Everything goes into one module of a campaign: module (add files to an existing module), else a
+    new module of into (one of the owner's campaigns), else a new campaign (with its party) named after
+    the module. The module's front page becomes an Overview article; its backgrounds join the module.
+    slug names a bundled module. Returns (new campaigns, articles)."""
+    from app.models import Module
+    objects = {}
+    payload.setdefault('backgrounds', {})
+    title = module_title(payload, name or 'Imported module')
+    created = 0
+    if module is not None:
+        into = module.campaign
+    elif into is None:
+        from app.lib.campaign_parties import create_campaign
+        into = create_campaign(owner_id, title)
+        created = 1
+    if module is None:
+        module = Module(campaign=into, title=title[:200], slug=slug)
+        db.session.add(module)
     for i in payload['order']:
         row = payload['rows'][i]
         if row['category'] == 'campaign':
-            campaign = Campaign(owner_id=owner_id, name=row['title'])
-            db.session.add(campaign)
-            campaigns[i] = campaign
             if row['body']:
-                db.session.add(ContentEntry(owner_id=owner_id, campaign=campaign,
+                db.session.add(ContentEntry(owner_id=owner_id, campaign=into, module=module,
                     title=row['title'], category='overview', body=normalize_content(row['body'])))
             continue
         parent = row['parent']
-        campaign = campaigns.get(parent)
-        if row.get('existing_campaign'):
-            campaign = existing_campaigns[row['existing_campaign']['id']]
         parent_entry = objects.get(parent)
-        if parent_entry:
-            campaign = parent_entry.campaign
-        entry = ContentEntry(owner_id=owner_id, campaign=campaign, parent=parent_entry,
+        entry = ContentEntry(owner_id=owner_id, campaign=into, module=module, parent=parent_entry,
             title=row['title'], category=row['category'], body=normalize_content(row['body']),
             source_path=row.get('source_path', row['file']), references={},
             is_heart=row.get('is_heart', False), path_type=row.get('path_type', 'standard'))
@@ -400,4 +426,6 @@ def import_preview(payload, owner_id):
                 source_id=nodes[item['source']].id, target_id=nodes[item['target']].id))
     for link in payload.get('links', []):
         db.session.add(ContentLink(source_id=objects[link['source']].id, target_id=objects[link['target']].id))
-    return len(campaigns), len(objects)
+    if payload['backgrounds']:
+        add_backgrounds(module, payload['backgrounds'])
+    return created, len(objects)

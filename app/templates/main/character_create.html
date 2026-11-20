@@ -5,7 +5,7 @@
     <div class="create-header">
         <div>
             <button class="button is-link purple" id="roll-all" type="button" style="margin-right: 8px"
-                hx-get="/charcreo/roll-all" hx-target="#character-form" hx-swap="outerHTML">
+                hx-get="/charcreo/roll-all" hx-include="#party-code-field" hx-target="#character-form" hx-swap="outerHTML">
                 {{_('Roll All')}}
                 <i class="fa-solid fa-dice icon-in-button"></i>
             </button>
@@ -13,13 +13,30 @@
                 {{_('Roll Remaining')}}
                 <i class="fa-solid fa-dice icon-in-button"></i> </button>
         </div>
-        <button class="button" id="reset-button" type="button" hx-get="/reload-page?link=/new_character/"
+        <button class="button" id="reset-button" type="button" hx-get="/reload-page?link=/new_character/{% if party %}%3Fparty%3D{{ party.join_code|urlencode }}{% endif %}"
             hx-confirm="{{_('Do you want to reset character?')}}" data-confirm-title="{{_('Reset character')}}"
             data-confirm-button="{{_('Reset')}}" data-cancel-button="{{_('Cancel')}}">
             {{_('Reset')}}
             <i class="fa-solid fa-rotate-right icon-in-button"></i>
         </button>
     </div>
+    {# Characters are made for a party: its join code brings the campaign's backgrounds, and the character joins it. #}
+    {% if party or party_code_error %}
+    <div class="create-party-box">
+        {% if party %}
+        <p>{{ _('Creating a character for %(party)s', party=party.name) }}.
+            <a href="{{ url_for('main.new_character') }}">{{ _('Create without a party') }}</a></p>
+        {% elif party_code_error %}
+        {# Joining a party starts on the Characters page (Join a party); here only to retry a wrong code. #}
+        <form method="get" action="{{ url_for('main.new_character') }}" class="create-party-form">
+            <label for="create-party-code">{{ _("Joining a party? Enter its join code to use its campaign's backgrounds.") }}</label>
+            <span class="create-party-row"><input type="text" id="create-party-code" name="party" maxlength="64" autocomplete="off" class="input"
+                placeholder="{{ _('join code') }}"><button type="submit" class="button">{{ _('Use code') }}</button></span>
+            <p class="help is-danger" role="alert">{{ _('No party has this join code.') }}</p>
+        </form>
+        {% endif %}
+    </div>
+    {% endif %}
     <form class="sheet" method="POST" id="character-form">
         <div hx-post="/charcreo/roll-remaining" hx-target="#character-form" hx-swap="outerHTML"
             hx-trigger="click from:#roll-remaining" />

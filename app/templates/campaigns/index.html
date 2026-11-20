@@ -3,130 +3,66 @@
 {% block workspace %}
 <div x-data="{}">
 {% call page_header(_('Campaigns'), class_='index-header') %}
-<a class="icon-only-phone" href="{{ url_for('campaigns.import_archive') }}" title="{{ _('Import archive') }}"><i class="fa-solid fa-file-import" aria-hidden="true"></i><span class="icon-label">{{ _('Import archive') }}</span></a><button type="button" class="primary" aria-haspopup="dialog" @click="$refs.createDialog.showModal()">{{ _('Create New') }}</button>
+<button type="button" class="primary" aria-haspopup="dialog" @click="$refs.createDialog.showModal()">{{ _('New campaign') }}</button>
 {% endcall %}
+{# A campaign starts with its party; modules (articles, notes, maps, backgrounds) are added inside it. #}
 <dialog class="create-dialog" x-ref="createDialog" @close="$refs.createDialog.querySelector('form').reset()" aria-labelledby="create-title">
-<h2 id="create-title">{{ _('Create new') }}</h2>
-<form method="post" action="{{ url_for('campaigns.create_new') }}" x-data="newCampaign"
- @submit="if (type === 'campaign') submit($event)" @reset="restart()">{{ token() }}
-<fieldset class="segmented"><legend class="sr-only">{{ _('Type') }}</legend>
-<label><input type="radio" name="kind" value="campaign" x-model="type" checked><span>{{ _('Campaign') }}</span></label>
-<label><input type="radio" name="kind" value="note" x-model="type"><span>{{ _('Note') }}</span></label>
-</fieldset>
+<h2 id="create-title">{{ _('New campaign') }}</h2>
+<form method="post" action="{{ url_for('campaigns.index') }}">{{ token() }}
 <label>{{ _('Name') }}<input type="text" name="name" required maxlength="200" autofocus></label>
-{# Campaigns start empty, or with a random realm, dungeon or forest generated right here. #}
-<template x-if="type === 'campaign'"><div class="create-random">
-<input type="hidden" name="start" :value="start">
-<label class="campaign-check"><input type="checkbox" :checked="start === 'random'" @change="start = $event.target.checked ? 'random' : 'empty'"> {{ _('Generate it randomly') }}</label>
-<div class="create-random-options" x-show="start === 'random'" x-cloak>
-<label>{{ _('Start with') }}<select name="map_kind" x-model="kind"><option value="realm">{{ _('Realm') }}</option><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option></select></label>
-<label>{{ _('Dice / points of interest') }}<select name="poi_count">
-{% for value, label in [('', _('Random count')), ('3', '3'), ('6', '6'), ('8', '8'), ('12', '12'), ('20', '20')] %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
-</select></label>
-<label class="campaign-check"><input type="checkbox" name="generate_children" value="1" x-model="children"> {{ _('Generate all child articles') }}</label>
-<div class="create-random-percent" x-show="children">
-<label x-show="kind === 'realm'">{{ _('Forest') }} (%)<input type="number" name="forest_chance" min="0" max="100" value="50"></label>
-<label x-show="kind !== 'dungeon'">{{ _('Forest POIs') }} (%)<input type="number" name="dungeon_chance" min="0" max="100" value="25"></label>
-</div>
-<p class="import-hint">{{ _('Everything generated stays private until you reveal it, and can be edited afterwards.') }}</p>
-</div>
-</div></template>
-<div class="create-dialog-actions"><button type="button" @click="$refs.createDialog.close()">{{ _('Cancel') }}</button><button type="submit" class="primary" :disabled="generating"><span x-show="!generating">{{ _('Create') }}</span><span x-show="generating" x-cloak>{{ _('Generating…') }}</span></button></div>
+<p class="import-hint">{{ _('The campaign starts with an empty party (add more for a West Marches game). Add modules to it: from the Modules Marketplace, your own files, or new ones you write or generate.') }}</p>
+<div class="create-dialog-actions"><button type="button" @click="$refs.createDialog.close()">{{ _('Cancel') }}</button><button type="submit" class="primary">{{ _('Create') }}</button></div>
 </form>
 </dialog>
 </div>
-<p>{{ _('Your world at a glance. Open a campaign to read it, or edit it.') }}</p>
+<p>{{ _('Everything lives in a campaign: its parties, its modules (articles, maps and backgrounds) and its wiki.') }}</p>
 
-{% set available = starter|rejectattr('campaign')|list %}
-{# A gallery: each campaign opens to read; Edit opens the workspace. #}
 <div class="campaign-gallery-page" x-data="materialTree">
+{% if campaigns|length > 3 %}
 <div class="campaign-actions tree-toolbar" role="search">
 <div class="search-field"><label>{{ _('Search') }}<input type="search" x-model="query" @input="filter()" placeholder="{{ _('Search campaigns and their articles') }}"></label></div>
 </div>
 <p x-show="filtering && !matches" x-cloak>{{ _('No matching campaigns.') }}</p>
+{% endif %}
 
 <div class="gallery-main">
 <h3 class="gallery-heading">{{ _('My campaigns') }} <small>{{ campaigns|length }}</small></h3>
 {% if campaigns %}
 <ul class="campaign-gallery">
 {% for campaign in campaigns %}
-{% set entries = articles[campaign.id] %}
+{% set entries = articles[campaign.id] %}{% set campaign_parties = parties[campaign.id] %}
 <li class="campaign-card" data-tree-row data-search="{{ (campaign.name ~ ' ' ~ entries|map(attribute='title')|join(' '))|lower }}">
-  <a class="campaign-card-cover" href="{{ url_for('campaigns.wiki', campaign_id=campaign.id) }}" tabindex="-1" aria-hidden="true">
+  <a class="campaign-card-cover" href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}" tabindex="-1" aria-hidden="true">
     {% if covers[campaign.id] %}<img src="{{ url_for('campaigns.campaign_cover', campaign_id=campaign.id) }}" alt="" loading="lazy" data-cover>
     {% else %}<span class="campaign-card-placeholder">{{ campaign.name[:1]|upper }}</span>{% endif %}
   </a>
   <div class="campaign-card-body">
-    <a class="campaign-card-title" href="{{ url_for('campaigns.wiki', campaign_id=campaign.id) }}">{{ campaign.name }}</a>
-    <span class="campaign-card-meta">{{ entries|length }} {{ _('articles') }}</span>
-    <span class="campaign-card-meta">{% if audiences[campaign.id] %}{{ _('Revealed to') }} {{ audiences[campaign.id]|join(', ') }}{% else %}{{ _('Not revealed to any party yet') }}{% endif %}</span>
-  </div>
-  {# The card itself opens the wiki to read; Edit opens the campaign, styled like the unfiled article cards. #}
-  <div class="campaign-card-actions kw-actions">
-    <a class="kw-action" href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) }}" aria-label="{{ _('Edit') }}: {{ campaign.name }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+    <a class="campaign-card-title" href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}">{{ campaign.name }}</a>
+    <span class="campaign-card-meta">{{ campaign.modules|length }} {{ _('modules') }} · {{ entries|length }} {{ _('articles') }}</span>
+    {% if campaign_parties %}<span class="campaign-card-meta">{{ _('Parties') if campaign_parties|length > 1 else _('Party') }}: {% for item in campaign_parties %}<a href="{{ url_for('party.party_view', ownername=item.owner_username, party_url=item.party_url) }}">{{ item.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</span>{% endif %}
   </div>
 </li>
 {% endfor %}
 </ul>
 {% else %}
-<p class="gallery-empty">{{ _('No campaigns yet.') }} <button type="button" class="link-button" @click="$root.closest('.campaign-workspace').querySelector('.create-dialog').showModal()">{{ _('Create New') }}</button></p>
+<p class="gallery-empty">{{ _('No campaigns yet.') }} <button type="button" class="link-button" @click="$root.closest('.campaign-workspace').querySelector('.create-dialog').showModal()">{{ _('New campaign') }}</button></p>
 {% endif %}
 </div>
 
-<div class="gallery-heading-row">
-<h3 class="gallery-heading">{{ _('Unfiled articles') }} <small>{{ unfiled|length }}</small></h3>
-{% if unfiled %}<span class="kw-actions">
-  <a class="kw-action" href="{{ url_for('campaigns.unfiled_wiki') }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read all') }}</a>
-  <a class="kw-action" href="{{ url_for('campaigns.library') }}" title="{{ _('Organize, reveal or delete several at once') }}"><i class="fa-solid fa-list" aria-hidden="true"></i> {{ _('Manage') }}</a>
-</span>{% endif %}
-</div>
-{% if unfiled %}
-{# One small card per unfiled article (same cards as the party's notes and revealed articles):
-   the card opens it to read, Edit opens the editor. #}
-<ul class="pw-cards gallery-unfiled-cards">
-{% for entry in unfiled %}{% set url = url_for('campaigns.unfiled_wiki', entry_id=entry.id) %}
-<li class="pw-card" data-tree-row data-search="unfiled {{ (entry.title ~ ' ' ~ _(content_categories.get(entry.category, entry.category)))|lower }}">
-<div class="pw-card-inner">
-  <a class="pw-card-cover" href="{{ url }}" tabindex="-1" aria-hidden="true">
-    {% if entry.id in unfiled_images %}<img src="{{ url_for('campaigns.entry_image', entry_id=entry.id) }}" alt="" loading="lazy" data-cover>
-    {% else %}<span class="pw-card-placeholder">{{ (entry.title or '?')[:1]|upper }}</span>{% endif %}
-  </a>
-  <a class="pw-card-title" href="{{ url }}">{{ entry.title or _('Untitled private original') }}</a>
-  <span class="pw-card-actions kw-actions"><a class="kw-action" href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}" aria-label="{{ _('Edit') }}: {{ entry.title }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a></span>
-</div>
+{% if played %}
+{# Parties in other Wardens' campaigns that one of my characters is in. Their campaigns stay private. #}
+<div class="gallery-main">
+<h3 class="gallery-heading">{{ _('Playing in') }} <small>{{ played|length }}</small></h3>
+<ul class="campaign-party-cards">
+{% for card in played %}{% set item = card.party %}
+<li class="campaign-party-card" data-tree-row data-search="{{ item.name|lower }}">
+  <a class="campaign-party-name" href="{{ card.url }}">{{ item.name|markdown_inline }}</a>
+  <span class="campaign-party-meta">{{ _('Warden') }}: {{ item.owner_username }}</span>
+  <span class="campaign-party-members">{% for member in card.members[:6] %}<img src="{{ member.src }}" alt="" title="{{ member.name }}" loading="lazy">{% endfor %}</span>
 </li>
 {% endfor %}
 </ul>
-{% else %}<p class="gallery-unfiled" data-tree-row data-search="unfiled articles"><span class="tree-empty-title">{{ _('Articles outside any campaign appear here.') }}</span></p>{% endif %}
-
-{# Free Starter Adventures at the bottom of the page: your own campaigns and articles come first. #}
-{% if available %}
-{# A carousel: one adventure at a time; arrows, dots, or swipe (native scroll snapping). #}
-<section class="gallery-starters" aria-labelledby="starter-heading" aria-roledescription="{{ _('carousel') }}"
- x-data="{i: 0, n: {{ available|length }},
-          go(k) { this.i = (k + this.n) % this.n; $refs.track.scrollTo({left: $refs.track.clientWidth * this.i, behavior: 'smooth'}); },
-          sync() { this.i = Math.round($refs.track.scrollLeft / $refs.track.clientWidth); }}">
-<h3 id="starter-heading">{{ _('Free Starter Adventures') }}</h3>
-<ul class="campaign-gallery starter-carousel" x-ref="track" @scroll.debounce.100ms="sync()">
-{% for card in available %}
-<li class="campaign-card campaign-card-starter" data-tree-row data-search="{{ card.title|lower }}">
-  {% if card.cover %}<a class="campaign-card-cover" href="{{ card.url }}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="{{ card.cover }}" alt="" loading="lazy" data-cover></a>{% endif %}
-  <div class="campaign-card-body">
-    <a class="campaign-card-title" id="starter-{{ card.slug }}" href="{{ card.url }}" target="_blank" rel="noopener">{{ card.title }} <svg class="starter-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr-only"> {{ _('(opens cairnrpg.com in a new tab)') }}</span></a>
-    <span class="campaign-card-meta">{{ card.description }}</span>
-  </div>
-  <div class="campaign-card-actions">
-    <form method="post" action="{{ url_for('campaigns.add_starter', slug=card.slug) }}">{{ token() }}<button type="submit" aria-label="{{ _('Add %(title)s', title=card.title) }}"><i class="fa-solid fa-plus" aria-hidden="true"></i> <span>{{ _('Add') }}</span></button></form>
-  </div>
-</li>
-{% endfor %}
-</ul>
-{% if available|length > 1 %}<div class="starter-carousel-nav">
-  <button type="button" class="starter-carousel-arrow" @click="go(i - 1)" aria-label="{{ _('Previous adventure') }}"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
-  <span class="starter-carousel-dots">{% for card in available %}<button type="button" @click="go({{ loop.index0 }})" :aria-current="i === {{ loop.index0 }}" aria-label="{{ _('Show %(title)s', title=card.title) }}"></button>{% endfor %}</span>
-  <button type="button" class="starter-carousel-arrow" @click="go(i + 1)" aria-label="{{ _('Next adventure') }}"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
-</div>{% endif %}
-</section>
+</div>
 {% endif %}
 </div>
 {% endblock %}

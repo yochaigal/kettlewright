@@ -3,14 +3,35 @@
 
 <section class="body-container">
   <div class="characters-page-header">
+    <span class="characters-create-actions">
     <a href="{{ url_for('main.new_character') }} ">
       <button type="button" class="is-new">
         {{_('New Character')}}
       </button></a>
+    {# Joining a party without a character: create one for it, with its campaign's backgrounds.
+       A character you already have joins from its own sheet (Party). #}
+    <button type="button" id="join-party-button" aria-haspopup="dialog" aria-controls="join-party-dialog"
+      onclick="document.getElementById('join-party-dialog').showModal()">
+      {{_('Join a party')}} <i class="fa-solid fa-user-plus" aria-hidden="true"></i></button>
+    </span>
     <a href="{{ url_for('main.new_from_json') }} "><button type="button">
         {{_('Import')}}
         <i class="fa-solid fa-upload"></i></button></a>
   </div>
+  <dialog id="join-party-dialog" class="join-party-dialog" aria-labelledby="join-party-title">
+    <form method="get" action="{{ url_for('main.new_character') }}">
+      <h2 id="join-party-title">{{_('Join a party')}}</h2>
+      <label for="join-party-code">{{_('Join code')}}</label>
+      <input type="text" id="join-party-code" name="party" class="input" maxlength="64" required autocomplete="off"
+        placeholder="{{_('join code')}}">
+      <p class="join-party-hint">{{_("Ask your Warden for the party's join code. You create a new character for it, with the backgrounds of the Warden's campaign, and it joins the party when you save it.")}}</p>
+      <p class="join-party-hint">{{_('To join with a character you already have, open it and enter the code in its Party section.')}}</p>
+      <div class="join-party-actions">
+        <button type="button" onclick="this.closest('dialog').close()">{{_('Cancel')}}</button>
+        <button type="submit" class="is-new">{{_('Create character')}}</button>
+      </div>
+    </form>
+  </dialog>
 
   <section class="characters-cards-container">
     {% for character in characters %}

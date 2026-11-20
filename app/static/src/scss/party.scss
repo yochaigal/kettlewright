@@ -931,3 +931,12 @@ button.companion-delete {
   &:hover, &:focus-visible { opacity: 1; color: #b84141; }
 }
 .dark-mode button.companion-delete:hover, .dark-mode button.companion-delete:focus-visible { color: #ff8f8f; }
+
+// The Warden's way back to the party's campaign.
+.party-campaign-crumb {
+  margin-bottom: .5em;
+  font-size: .9em;
+  a { text-decoration: none; }
+  a:hover { text-decoration: underline; }
+}
+.party-campaign-field { margin-top: 1em; }
