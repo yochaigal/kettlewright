@@ -178,6 +178,31 @@
       {# Outside the refreshed content: a live update must not reload the drawing. #}
       {% if graph and party %}{% include 'campaigns/map_panel.html' %}{% endif %}
     {% else %}
+      {% if module is defined and module %}
+      {# Reveal the whole module to one of the campaign's parties. #}
+      <dialog class="create-dialog" id="reveal-module-dialog" aria-labelledby="reveal-module-title">
+        <h2 id="reveal-module-title">{{ _('Reveal module') }}</h2>
+        {% if module_parties %}
+        <form method="post" action="{{ url_for('campaigns.reveal_module', campaign_id=campaign.id, module_id=module.id) }}"
+              data-confirm="{{ _('Reveal every article of %(module)s? The party will read them all, including what you may not want it to know yet.', module=module.title) }}"
+              data-confirm-label="{{ _('Reveal module') }}">
+          {{ content_form.csrf_token }}
+          <label>{{ _('Reveal to') }}<select name="party_id" required>
+            {% for item in module_parties %}<option value="{{ item.id }}">{{ item.name|markdown_inline|striptags }}</option>{% endfor %}
+          </select></label>
+          <label class="campaign-check"><input type="checkbox" name="publish_drawing" value="1"> {{ _('Also show the map drawings: every mark, text and image on them') }}</label>
+          <p class="import-hint">{{ _('All %(count)s articles of this module become readable by the party, as they are; your later edits reach it too. Articles it already reads stay revealed.', count=article_count) }}</p>
+          <div class="create-dialog-actions">
+            <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
+            <button type="submit" class="primary">{{ _('Reveal module') }}</button>
+          </div>
+        </form>
+        {% else %}
+        <p class="wiki-empty">{{ _('This campaign has no parties yet.') }} <a href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}">{{ _('New party') }}</a></p>
+        <div class="create-dialog-actions"><button type="button" onclick="this.closest('dialog').close()">{{ _('Close') }}</button></div>
+        {% endif %}
+      </dialog>
+      {% endif %}
       {% if party and owner_view %}
       {# Outside the refreshed content (campaign_live.js), so a live update cannot wipe a draft. #}
       <dialog class="create-dialog party-note-dialog" id="party-note-dialog" aria-labelledby="party-note-title">
@@ -207,6 +232,8 @@
         {% if module is defined and module %}
         {# A module read as a wiki: its articles are written and managed on its page. #}
         <div class="wiki-actions">
+          <button type="button" class="button wiki-edit" aria-haspopup="dialog" aria-controls="reveal-module-dialog"
+                  onclick="document.getElementById('reveal-module-dialog').showModal()"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{ _('Reveal module') }}</button>
           <a class="button wiki-edit" href="{{ home_edit_url }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit module') }}</a>
         </div>
         {% elif party and owner_view %}

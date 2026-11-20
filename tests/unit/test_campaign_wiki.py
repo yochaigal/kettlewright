@@ -489,3 +489,27 @@ def test_module_cards_open_the_module_as_a_wiki(setup):
     assert client.get(f'/campaigns/1/modules/5/wiki/{guild}/').status_code == 404  # Not in that module.
     everything = client.get('/campaigns/1/wiki/').get_data(as_text=True)
     assert 'Ash Guild' in everything and 'Other lore' in everything  # Read everything as wiki.
+
+
+def test_reveal_module_reveals_all_its_articles_to_one_party(setup):
+    app, client = setup
+    guild, mira, town, relic = build(app, client)
+    from app.models import Module, PartyPresentation, Party
+    with app.app_context():
+        module_id = db.session.get(ContentEntry, guild).module_id
+        db.session.add(Module(id=5, campaign_id=1, title='Other module'))
+        db.session.add(ContentEntry(owner_id=1, campaign_id=1, module_id=5, category='lore', title='Elsewhere', body='x'))
+        db.session.commit()
+    home = client.get(f'/campaigns/1/modules/{module_id}/wiki/').get_data(as_text=True)
+    assert 'id="reveal-module-dialog"' in home and f'action="/campaigns/1/modules/{module_id}/reveal"' in home
+    assert '<option value="1">Party 1</option>' in home and 'value="2"' not in home.split('reveal-module-dialog')[1].split('</dialog>')[0]
+    assert reveal(client, relic).status_code == 302  # Already revealed: stays revealed.
+    response = client.post(f'/campaigns/1/modules/{module_id}/reveal', data={'party_id': 1})
+    assert response.location.endswith(f'/campaigns/1/modules/{module_id}/wiki/')
+    with app.app_context():
+        shown = {row.entry.title for row in PartyPresentation.query.filter_by(party_id=1)}
+        assert shown == {'Ash Guild', 'Mira', 'Thornwick', 'Bell of Ash'}  # Not the other module's article.
+    assert client.post(f'/campaigns/1/modules/{module_id}/reveal', data={'party_id': 2}).status_code == 403  # Not this campaign's.
+    assert client.post(f'/campaigns/1/modules/{module_id}/reveal', data={'party_id': 3}).status_code == 403  # Not my party.
+    login(client, 2)
+    assert client.post(f'/campaigns/1/modules/{module_id}/reveal', data={'party_id': 1}).status_code == 403

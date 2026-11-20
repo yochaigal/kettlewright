@@ -720,3 +720,39 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 .marketplace-upload-row input[type=file] {flex:1 1 14em;min-width:0;max-width:100%;}
 .create-dialog .marketplace-upload-row button.primary {min-height:38px;gap:.4em;}
 .create-dialog .marketplace-upload-form {display:flex;padding:1em 1.25em;border:1.5px dashed color-mix(in srgb,var(--fg) 35%,var(--bg));border-radius:10px;background:color-mix(in srgb,var(--fg) 3%,var(--bg));}
+
+/* Lobby sections: the title, then one main action (solid) and at most one more (outlined). */
+.campaign-lobby .wiki-audience-head {align-items:center;margin-bottom:.5em;}
+.campaign-lobby .section-actions {display:inline-flex;flex-wrap:wrap;gap:.5em;margin-left:auto;}
+.campaign-lobby .section-button {display:inline-flex;align-items:center;gap:.45em;min-height:38px;margin:0;padding:.4em 1em;border:1.5px solid var(--fg);border-radius:2px;background:transparent;color:var(--fg);font:inherit;font-size:.92em;font-weight:600;cursor:pointer;white-space:nowrap;}
+.campaign-lobby .section-button:hover {opacity:.85;background:var(--fg);color:var(--bg);}
+.campaign-lobby .section-primary {background:var(--fg);color:var(--bg);}
+.campaign-lobby .section-links {display:flex;flex-wrap:wrap;gap:.25em 1.5em;margin:0 0 1em;font-size:.92em;}
+.campaign-lobby .section-links a, .campaign-lobby .section-links .link-button {display:inline-flex;align-items:center;gap:.4em;padding:0;border:0;background:none;color:inherit;font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+.campaign-lobby .section-links i {opacity:.75;}
+/* Party rows: name, members, then a compact Manage revealed, on one line. */
+.campaign-lobby .campaign-party-row {display:grid;grid-template-columns:minmax(10em,auto) minmax(0,1fr) auto;align-items:center;gap:.5em 1.25em;padding:.75em 0;}
+.campaign-lobby .campaign-party-row + .campaign-party-row,
+.campaign-lobby .campaign-party-row + dialog + .campaign-party-row {border-top:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));}
+.campaign-lobby .campaign-party-actions {margin:0;justify-self:end;}
+.campaign-lobby .campaign-party-actions .kw-action {min-height:32px;padding:.25em .75em;font-size:.85em;border-width:1px;}
+@media (max-width:640px) {
+  .campaign-lobby .campaign-party-row {grid-template-columns:minmax(0,1fr) auto;}
+  .campaign-lobby .campaign-party-members {grid-column:1 / -1;grid-row:2;}
+  .campaign-lobby .section-actions {margin-left:0;}
+}
+/* Manage revealed: compact Hide per article; one footer row. */
+.revealed-dialog .revealed-list li {gap:.4em .75em;padding:.6em 0;}
+.revealed-dialog .revealed-list a {font-weight:600;}
+.revealed-dialog .revealed-button {display:inline-flex;align-items:center;gap:.4em;min-height:34px;margin:0;padding:.3em .85em;border:1.5px solid var(--fg);border-radius:2px;background:transparent;color:var(--fg);font:inherit;font-size:.88em;font-weight:600;text-decoration:none;cursor:pointer;white-space:nowrap;}
+.revealed-dialog .revealed-button:hover {background:var(--fg);color:var(--bg);}
+.revealed-dialog .revealed-danger {border-color:#a33b3b;color:#a33b3b;}
+.revealed-dialog .revealed-danger:hover {background:#a33b3b;color:#fff;}
+.revealed-dialog .revealed-hide {min-height:30px;padding:.2em .7em;font-size:.82em;}
+.revealed-dialog .revealed-close {background:var(--fg);color:var(--bg);}
+.revealed-dialog .revealed-close:hover {opacity:.85;}
+.revealed-dialog .revealed-footer {display:flex;flex-wrap:wrap;align-items:center;gap:.75em;margin-top:1.25em;}
+.revealed-dialog .revealed-footer form {margin:0;padding:0;border:0;background:none;width:auto;}
+.revealed-dialog .revealed-footer-end {display:inline-flex;gap:.5em;margin-left:auto;}
+.campaign-lobby .section-links {align-items:center;line-height:1.4;}
+.campaign-lobby .section-links .link-button {margin:0;line-height:inherit;min-height:0;}

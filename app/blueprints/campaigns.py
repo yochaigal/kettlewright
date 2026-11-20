@@ -569,7 +569,9 @@ def module_wiki(campaign_id, module_id, entry_id=None):
         entry = article(entry_id)
         if entry.module_id != module.id:
             abort(404)
-    return render_wiki(page_context(campaign, entry, module=module), entry)
+    context = page_context(campaign, entry, module=module)
+    context['module_parties'] = campaign.parties  # Reveal module: to one of the campaign's parties.
+    return render_wiki(context, entry)
 
 
 def render_wiki(context, entry):
@@ -1019,6 +1021,34 @@ def bulk_reveal():
         return redirect(back_url)
     return render_template('campaigns/reveal_materials.html', entries=entries, parties=parties,
                            reveal_token=signer.dumps(state), back_url=back_url)
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/reveal', methods=['POST'])
+def reveal_module(campaign_id, module_id):
+    """Reveal a whole module to one of the campaign's parties: every titled article it holds (and, if asked,
+    its maps' drawings). The party reads the originals, as with any reveal."""
+    campaign, module = campaign_module(campaign_id, module_id)
+    party = party_access(integer(request.form.get('party_id')), editing=True)
+    if party.campaign_id != campaign.id:
+        abort(403)
+    drawings = request.form.get('publish_drawing') == '1'
+    entries = [entry for entry in module.entries if entry.title.strip()]
+    rows = {row.entry_id: row for row in PartyPresentation.query.filter(
+        PartyPresentation.party_id == party.id, PartyPresentation.entry_id.in_([e.id for e in entries]))}
+    for entry in entries:
+        row = rows.get(entry.id)
+        if row is None:
+            row = PartyPresentation(entry=entry, party=party)
+            db.session.add(row)
+        row.title, row.body, row.path_type = revealed_version(entry)
+        row.references, row.published = dict(entry.references or {}), True
+        if entry.pointcrawl and drawings:
+            row.drawing = deepcopy(entry.pointcrawl.drawing)
+    db.session.commit()
+    notify_parties([party.id])
+    flash(_('Revealed %(count)s articles of %(module)s to %(party)s.', count=len(entries), module=module.title,
+            party=party.name), 'success')
+    return redirect(url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id))
 
 
 # What a party sees when an article is revealed to it:

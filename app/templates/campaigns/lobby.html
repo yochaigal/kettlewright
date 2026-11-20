@@ -37,7 +37,9 @@
       <section class="wiki-audience campaign-parties" aria-labelledby="campaign-parties-title">
         <div class="wiki-audience-head">
           <h2 id="campaign-parties-title"><i class="fa-solid fa-users" aria-hidden="true"></i> {{ _('Parties') }} <small>{{ parties|length }}</small></h2>
-          <button type="button" class="kw-action" aria-haspopup="dialog" onclick="document.getElementById('new-party-dialog').showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New party') }}</button>
+          <span class="section-actions">
+            <button type="button" class="section-button section-primary" aria-haspopup="dialog" onclick="document.getElementById('new-party-dialog').showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New party') }}</button>
+          </span>
         </div>
         {% for card in parties %}{% set item = card.party %}
         <div class="campaign-party-row">
@@ -62,22 +64,25 @@
               <span class="wiki-badge">{{ type_label(shown_entry) }}</span>
               <form method="post" action="{{ url_for('campaigns.revoke', entry_id=shown_entry.id, party_id=item.id) }}">
                 {{ content_form.csrf_token }}<input type="hidden" name="version" value="{{ row.version }}"><input type="hidden" name="return_to" value="campaign">
-                <button type="submit" class="kw-action kw-action-danger"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> {{ _('Hide') }}</button>
+                <button type="submit" class="revealed-button revealed-danger revealed-hide"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> {{ _('Hide') }}</button>
               </form>
             </li>
           {% endfor %}
           </ul>
           {% else %}<p class="wiki-empty">{{ _('Nothing from this campaign has been revealed to this party yet. Use Reveal to party on an article.') }}</p>{% endif %}
-          <div class="kw-actions revealed-actions">
+          {# One footer row: Hide everything on the left; the party wiki and Close on the right. #}
+          <div class="revealed-footer">
             {% if card.shown %}
             <form method="post" action="{{ url_for('campaigns.hide_campaign', campaign_id=campaign.id, party_id=item.id) }}"
                   data-confirm="{{ _('Hide everything in %(campaign)s from %(party)s? They will no longer see any of its articles. Your articles are not changed.', campaign=campaign.name, party=item.name) }}" data-confirm-label="{{ _('Hide everything') }}">
-              {{ content_form.csrf_token }}<button type="submit" class="kw-action kw-action-danger"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> {{ _('Hide everything') }}</button>
+              {{ content_form.csrf_token }}<button type="submit" class="revealed-button revealed-danger"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> {{ _('Hide everything') }}</button>
             </form>
             {% endif %}
-            <a class="kw-action" href="{{ url_for('campaigns.party_wiki', party_id=item.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Party wiki') }}</a>
+            <span class="revealed-footer-end">
+              <a class="revealed-button" href="{{ url_for('campaigns.party_wiki', party_id=item.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Party wiki') }}</a>
+              <button type="button" class="revealed-button revealed-close" autofocus onclick="this.closest('dialog').close()">{{ _('Close') }}</button>
+            </span>
           </div>
-          <div class="create-dialog-actions"><button type="button" onclick="this.closest('dialog').close()">{{ _('Close') }}</button></div>
         </dialog>
         {% endfor %}
         {% if not parties %}<p class="wiki-empty">{{ _("No parties yet. Create one, then give your players its join code: they use Join a party on their Characters page.") }}</p>{% endif %}
@@ -104,14 +109,18 @@
       <section class="wiki-audience campaign-modules" id="modules" aria-labelledby="campaign-modules-title">
         <div class="wiki-audience-head">
           <h2 id="campaign-modules-title"><i class="fa-solid fa-box-open" aria-hidden="true"></i> {{ _('Modules') }} {% if modules %}<small>{{ modules|length }}</small>{% endif %}</h2>
-          <span class="kw-actions">
-            <a class="kw-action" href="{{ url_for('campaigns.wiki', campaign_id=campaign.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read everything as wiki') }}</a>
-            <button type="button" class="kw-action" aria-haspopup="dialog" onclick="document.getElementById('new-module-dialog').showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New module') }}</button>
-            <button type="button" class="kw-action" aria-haspopup="dialog" onclick="document.getElementById('marketplace-dialog').showModal()"><i class="fa-solid fa-store" aria-hidden="true"></i> {{ _('Modules Marketplace') }}</button>
-            <button type="button" class="kw-action" aria-haspopup="dialog" aria-controls="backgrounds-dialog"
-                    onclick="document.getElementById('backgrounds-dialog').showModal()"><i class="fa-solid fa-user-gear" aria-hidden="true"></i> {{ _('Backgrounds') }}<span data-backgrounds-customized {% if not custom_options %}hidden{% endif %}> · {{ _('customized') }}</span></button>
+          {# One main action (solid); the Marketplace beside it. #}
+          <span class="section-actions">
+            <button type="button" class="section-button" aria-haspopup="dialog" onclick="document.getElementById('marketplace-dialog').showModal()"><i class="fa-solid fa-store" aria-hidden="true"></i> {{ _('Modules Marketplace') }}</button>
+            <button type="button" class="section-button section-primary" aria-haspopup="dialog" onclick="document.getElementById('new-module-dialog').showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New module') }}</button>
           </span>
         </div>
+        {# Views and settings of all the modules, quieter than the actions above. #}
+        <p class="section-links">
+          <a href="{{ url_for('campaigns.wiki', campaign_id=campaign.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read everything as wiki') }}</a>
+          <button type="button" class="link-button" aria-haspopup="dialog" aria-controls="backgrounds-dialog"
+                  onclick="document.getElementById('backgrounds-dialog').showModal()"><i class="fa-solid fa-user-gear" aria-hidden="true"></i> {{ _('Backgrounds') }}<span data-backgrounds-customized {% if not custom_options %}hidden{% endif %}> · {{ _('customized') }}</span></button>
+        </p>
         {% if modules %}
         <ul class="campaign-module-cards">
         {% for module, counts in modules %}
