@@ -17,6 +17,8 @@ class Party(db.Model):
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id', ondelete='SET NULL'), index=True)
     # Character creation: the official Cairn backgrounds besides the campaign modules' ones.
     official_backgrounds = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
+    # Cairn Barebones creation: the official d100 background table besides the campaign modules' backgrounds.
+    official_barebones = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
     created_at = db.Column(db.DateTime(timezone=True),
                            server_default=func.now())
 

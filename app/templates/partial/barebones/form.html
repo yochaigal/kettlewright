@@ -140,7 +140,7 @@
     {% if state.gear_source == 'background' %}
     <div class="barebones-gear-tables">
         <div class="barebones-gear-table">
-            <label class="subtitle attribute-font" for="barebones-background">{{_('Background')}} ({{_('d100')}})</label>
+            <label class="subtitle attribute-font" for="barebones-background">{{_('Background')}} (d{{ data.backgrounds|length }})</label>
             <div class="create-field-dice-container">
                 {{ table_select('background', data.backgrounds, _('Background'), _('Background')) }}
                 {{ dice('background', _('Roll background')) }}

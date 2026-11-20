@@ -165,6 +165,8 @@ Backgrounds are written in a campaign's modules, in Markdown only (`type: Backgr
 
 Each party sets what its characters choose from, on the party page: the **Backgrounds** button beside Members (Warden only) opens a dialog with **Offer the official Cairn backgrounds**, besides the campaign modules' backgrounds; the list players choose from updates in place. With no module backgrounds the official ones are always offered. Migration 505a01 copies the campaign's old setting to each of its parties.
 
+**Cairn Barebones** characters roll their background on a table. In the same dialog, **Offer the official Barebones backgrounds** keeps the official d100 table; the campaign modules' backgrounds join it as their name and starting gear (Barebones has no background tables). With the official table off, the Barebones creator for that party rolls only on the module backgrounds (say a d2); with no module backgrounds the official table is always offered. The creator shows the table's size (Background (d100), (d2)…). Migration 507a01 adds the setting; existing parties keep the official table.
+
 ## Party note drawings
 
 A party note can hold a drawing below its text: its editor (every member can edit party notes) has an Excalidraw canvas, the same as maps but without pins; **Save note** keeps it. The party wiki shows it, read only, below the note's text. Migration 506a01 adds the column; existing notes have none.

@@ -194,7 +194,35 @@ def background_panel(party):
     modules = [module for module in (party.campaign.modules if party.campaign else []) if module.backgrounds]
     return {'official': party.official_backgrounds, 'official_count': len(official_backgrounds()),
             'modules': [(module, sorted(module.backgrounds)) for module in modules],
-            'offered': sorted(party_backgrounds(party)), 'fallback': not party.official_backgrounds and not modules}
+            'offered': sorted(party_backgrounds(party)), 'fallback': not party.official_backgrounds and not modules,
+            # Cairn Barebones: the d100 table, the same module backgrounds (name and starting gear).
+            'barebones': party.official_barebones, 'barebones_count': len(official_barebones()),
+            'barebones_offered': len(party_barebones_backgrounds(party)),
+            'barebones_fallback': not party.official_barebones and not modules}
+
+
+def official_barebones():
+    """The Cairn Barebones d100 background table: a name and its items."""
+    from app.lib.barebones import _data
+    return list(_data()['backgrounds'])
+
+
+def party_barebones_backgrounds(party):
+    """What a party's Barebones characters roll on: the official d100 table (unless the party hides it), then its
+    campaign's module backgrounds as a name and their starting gear (Barebones has no background tables). A module
+    background with an official name replaces it. Never empty: without module backgrounds the official table stays."""
+    custom = [{'name': name, 'items': copy.deepcopy(background.get('starting_gear', []))}
+              for name, background in sorted(custom_backgrounds(party.campaign).items())]
+    if not party.official_barebones and custom:
+        return custom
+    names = {row['name'] for row in custom}
+    return [row for row in official_barebones() if row['name'] not in names] + custom
+
+
+def use_party_barebones(party):
+    """For the rest of this request, Barebones creation rolls on the party's background table."""
+    if party is not None and (custom_backgrounds(party.campaign) or not party.official_barebones):
+        g.barebones_backgrounds = party_barebones_backgrounds(party)
 
 
 def has_custom_options(party):

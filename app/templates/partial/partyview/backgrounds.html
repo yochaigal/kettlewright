@@ -7,6 +7,7 @@
     <form method="post" action="{{ url_for('campaigns.party_backgrounds', party_id=party.id) }}" id="party-backgrounds-form"
           data-saved="{{ _('Saved') }}" data-error="{{ _('Could not save. Reload the page and try again.') }}">
       {{ form.csrf_token }}
+      <h4>{{ _('Cairn Second Edition') }}</h4>
       <label class="campaign-check"><input type="checkbox" name="official" value="1" {% if backgrounds.official %}checked{% endif %}>
         {{ _('Offer the official Cairn backgrounds') }} <small>({{ backgrounds.official_count }})</small></label>
       <span class="import-hint" role="status" data-status></span>
@@ -24,6 +25,12 @@
     <h4>{{ _('What players choose from') }} <small data-offered-count>{{ backgrounds.offered|length }}</small></h4>
     <p class="party-background-offered" data-offered>{{ backgrounds.offered|join(', ') }}</p>
     <p class="import-hint" data-fallback {% if not backgrounds.fallback %}hidden{% endif %}>{{ _("The campaign's modules have no backgrounds, so the official ones are still offered.") }}</p>
+    {# Cairn Barebones characters roll a background on a table: the official d100, and the modules' backgrounds. #}
+    <h4>{{ _('Cairn Barebones') }}</h4>
+    <label class="campaign-check"><input type="checkbox" name="barebones" value="1" form="party-backgrounds-form" {% if backgrounds.barebones %}checked{% endif %}>
+      {{ _('Offer the official Barebones backgrounds') }} <small>(d{{ backgrounds.barebones_count }})</small></label>
+    <p class="import-hint">{{ _('Barebones characters roll on a table of') }} <strong data-barebones-count>{{ backgrounds.barebones_offered }}</strong> {{ _("backgrounds. The modules' backgrounds join it with their name and starting gear.") }}</p>
+    <p class="import-hint" data-barebones-fallback {% if not backgrounds.barebones_fallback %}hidden{% endif %}>{{ _("The campaign's modules have no backgrounds, so the official table is still offered.") }}</p>
   </div>
   <div class="create-dialog-actions"><button type="button" onclick="this.closest('dialog').close()">{{ _('Close') }}</button></div>
 </dialog>
@@ -32,7 +39,7 @@
   (() => {
     const form = document.getElementById('party-backgrounds-form');
     const section = form.closest('.party-backgrounds'), status = form.querySelector('[data-status]');
-    form.addEventListener('change', async () => {
+    section.addEventListener('change', async () => {  // Both checkboxes (one sits outside the form, with form=).
       status.textContent = '';
       try {
         const response = await fetch(form.action, {method: 'POST', body: new FormData(form), headers: {'Accept': 'application/json'}});
@@ -41,6 +48,8 @@
         section.querySelector('[data-offered]').textContent = data.offered.join(', ');
         section.querySelector('[data-offered-count]').textContent = data.offered.length;
         section.querySelector('[data-fallback]').hidden = !data.fallback;
+        section.querySelector('[data-barebones-count]').textContent = data.barebones_offered;
+        section.querySelector('[data-barebones-fallback]').hidden = !data.barebones_fallback;
         status.textContent = form.dataset.saved;
       } catch {
         status.textContent = form.dataset.error;

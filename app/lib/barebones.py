@@ -28,8 +28,18 @@ def _spellbooks():
         return {spell['name']: spell for spell in json.load(file)['Spellbooks']}
 
 
+def _rows(table):
+    """A table's rows. The background table can be a party's (its campaign's backgrounds), set for the request."""
+    if table == 'backgrounds':
+        from flask import g, has_app_context
+        if has_app_context() and g.get('barebones_backgrounds') is not None:
+            return g.barebones_backgrounds
+    return _data()[table]
+
+
 def barebones_data():
-    return _data()
+    """The tables, with the background table this request rolls on (a party's, or the official d100)."""
+    return dict(_data(), backgrounds=_rows('backgrounds'))
 
 
 def gear_packages():
@@ -38,11 +48,11 @@ def gear_packages():
 
 def roll_index(table):
     """Roll on a 1-based table; return the 1-based result."""
-    return random.randint(1, len(_data()[table]))
+    return random.randint(1, len(_rows(table)))
 
 
 def entry(table, index):
-    rows = _data()[table]
+    rows = _rows(table)
     index = int(index)
     if not 1 <= index <= len(rows):
         raise ValueError(f'{table} roll out of range: {index}')

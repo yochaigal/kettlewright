@@ -24,6 +24,13 @@ from app.lib.dice_feedback import queue_dice
 
 charcreo_barebones = Blueprint('charcreo_barebones', __name__)
 
+
+@charcreo_barebones.before_request
+def party_background_table():
+    """Creating a character for a party (its join code in the form): roll on the party's background table."""
+    from app.lib.campaign_backgrounds import party_for_code, use_party_barebones
+    use_party_barebones(party_for_code(request.values.get('party_code')))
+
 TRAIT_NAMES = ("Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice")
 ATTRIBUTES = {'str': ('strength', 6, 3), 'dex': ('dexterity', 6, 3), 'wil': ('willpower', 6, 3), 'hp': ('hp', 6, 1)}
 # Hidden JSON item groups, in inventory order.
@@ -165,11 +172,12 @@ def new_state():
 
 
 def creation_page():
-    """The Barebones creator. With ?party=<join code> the character joins that party when saved
-    (Barebones rolls its own background table, so campaign backgrounds do not apply)."""
-    from app.lib.campaign_backgrounds import party_for_code
+    """The Barebones creator. With ?party=<join code> the character rolls on that party's background table
+    (the official d100 and/or its campaign's module backgrounds) and joins the party when saved."""
+    from app.lib.campaign_backgrounds import party_for_code, use_party_barebones
     code = (request.args.get('party') or '').strip()
     party = party_for_code(code)
+    use_party_barebones(party)
     state = new_state()
     state['party_code'] = party.join_code if party else ''
     return render_template('main/character_create_barebones.html', form_html=render_form(state), party=party,

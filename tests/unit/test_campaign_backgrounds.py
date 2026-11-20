@@ -356,3 +356,65 @@ def test_barebones_characters_join_the_party_too(warden):
         character = Character.query.one()
         assert character.edition == 'barebones' and character.party_id == 1
         assert json.loads(db.session.get(Party, 1).members) == [character.id]
+
+
+def test_barebones_table_is_set_per_party(warden):
+    """Cairn Barebones: a party offers the official d100 table, its campaign's module backgrounds (name and starting
+    gear), or both. Without module backgrounds the official table stays."""
+    from app.lib.campaign_backgrounds import party_barebones_backgrounds
+    app, client = warden
+    with app.app_context():
+        party = db.session.get(Party, 1)
+        assert len(party_barebones_backgrounds(party)) == 100  # The official d100.
+        party.official_barebones = False
+        assert len(party_barebones_backgrounds(party)) == 100  # Never empty.
+        db.session.get(Module, 1).backgrounds = validate_backgrounds({'Tidewatcher': TIDEWATCHER})
+        assert party_barebones_backgrounds(party) == [{'name': 'Tidewatcher', 'items': TIDEWATCHER['starting_gear']}]
+        party.official_barebones = True
+        table = party_barebones_backgrounds(party)
+        assert len(table) == 101 and table[-1]['name'] == 'Tidewatcher'
+        party.official_barebones = False
+        db.session.commit()
+    # The party's dialog: a Barebones switch, saved with the Second Edition one.
+    page = client.get('/users/warden/parties/lamplighters/').get_data(as_text=True)
+    dialog = page[page.index('id="backgrounds-dialog"'):page.index('</dialog>', page.index('id="backgrounds-dialog"'))]
+    assert 'Cairn Barebones' in dialog and 'name="barebones"' in dialog and 'form="party-backgrounds-form"' in dialog
+    response = client.post('/party/1/backgrounds', data={'official': '1', 'barebones': '1'}, headers={'Accept': 'application/json'})
+    assert response.json['barebones_offered'] == 101 and response.json['barebones_fallback'] is False
+    response = client.post('/party/1/backgrounds', data={'official': '1'}, headers={'Accept': 'application/json'})
+    assert response.json['barebones_offered'] == 1
+    with app.app_context():
+        assert db.session.get(Party, 1).official_backgrounds and not db.session.get(Party, 1).official_barebones
+    # A player creates a Barebones character for the party: it rolls on the party's table, and joins.
+    login(client, 2)
+    page = client.get('/new_character/barebones/?party=coast-code').get_data(as_text=True)
+    assert 'Creating a character for Lamplighters' in page and '(d1)' in page and 'Tidewatcher' in page
+    rolled = client.post('/charcreo/barebones/roll/background', data={'party_code': 'coast-code'}).get_data(as_text=True)
+    assert 'Storm Lantern' in rolled and 'Gaff' in rolled  # The background's starting gear.
+    form = {'party_code': 'coast-code', 'name': 'Rook', 'background': '1', 'strength': '10', 'dexterity': '10',
+            'willpower': '10', 'hp': '4', 'gold': '5', 'age': '20'}
+    assert client.post('/charcreo/barebones/save', data=form).headers.get('HX-Redirect')
+    with app.app_context():
+        character = Character.query.one()
+        assert character.background == 'Tidewatcher' and character.party_id == 1
+    # Without a party, the official d100 table.
+    assert '(d100)' in client.get('/new_character/barebones/').get_data(as_text=True)
+
+
+def test_party_barebones_migration(tmp_path, monkeypatch):
+    """507a01: parties keep the official Barebones table."""
+    from flask_migrate import downgrade, upgrade
+    from sqlalchemy import inspect, text
+    monkeypatch.setenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///' + str(tmp_path / 'barebones.sqlite'))
+    from app import create_app
+    app = create_app()
+    with app.app_context():
+        upgrade(revision='506a01')
+        db.session.execute(text("INSERT INTO users (id, username) VALUES (1, 'warden')"))
+        db.session.execute(text("INSERT INTO parties (id, owner, name, version) VALUES (1, 1, 'P', 0)"))
+        db.session.commit()
+        upgrade(revision='507a01')
+        assert db.session.execute(text('SELECT official_barebones FROM parties')).scalar() == 1
+        db.session.commit()
+        downgrade(revision='506a01')
+        assert 'official_barebones' not in {c['name'] for c in inspect(db.engine).get_columns('parties')}

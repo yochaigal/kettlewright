@@ -406,15 +406,21 @@ def module_background(campaign_id, module_id):
 
 @campaigns.route('/party/<int:party_id>/backgrounds', methods=['POST'])
 def party_backgrounds(party_id):
-    """The Warden offers the official backgrounds to this party, or not (its campaign's modules' ones always)."""
-    from app.lib.campaign_backgrounds import custom_backgrounds, has_custom_options, party_backgrounds as offered
+    """The Warden offers the official backgrounds to this party, or not, for Second Edition and for Barebones
+    characters (its campaign's modules' ones always)."""
+    from app.lib.campaign_backgrounds import (custom_backgrounds, has_custom_options, party_backgrounds as offered,
+                                              party_barebones_backgrounds)
     party = party_access(party_id, editing=True)
     party.official_backgrounds = request.form.get('official') == '1'
+    party.official_barebones = request.form.get('barebones') == '1'
     db.session.commit()
     if request.accept_mimetypes.best == 'application/json':
         # Saved in place from the party page: what its players now choose from.
+        none = not custom_backgrounds(party.campaign)
         return jsonify(offered=sorted(offered(party)), customized=has_custom_options(party),
-                       fallback=not party.official_backgrounds and not custom_backgrounds(party.campaign))
+                       fallback=not party.official_backgrounds and none,
+                       barebones_offered=len(party_barebones_backgrounds(party)),
+                       barebones_fallback=not party.official_barebones and none)
     return redirect(url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) + '#backgrounds')
 
 
