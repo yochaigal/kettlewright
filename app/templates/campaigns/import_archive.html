@@ -1,59 +1,75 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import token, page_header with context %}
 {% block workspace %}
-{{ page_header(_('Import campaigns and articles')) }}
-<p>{{ _('Bring in a single Markdown file or a whole archive of articles. Nothing enters your library until you review the preview and confirm.') }}</p>
+{% if module %}<nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ url_for('campaigns.module_view', campaign_id=module.campaign_id, module_id=module.id) }}">← {{ module.title }}</a></nav>{% endif %}
+{{ page_header(_('Import to module') if module else _('Import module')) }}
+{% if module %}<p>{{ _('Add maps, articles and backgrounds to %(module)s from a Markdown file or an archive. Nothing is added until you review the preview and confirm.', module=module.title) }}</p>
+{% else %}<p>{{ _('A module is a Markdown file or an archive of maps, articles and backgrounds. It is added to one of your campaigns as a new module. Nothing is added until you review the preview and confirm.') }}</p>{% endif %}
 
 <section class="import-step" aria-labelledby="import-step-upload">
 <h2 id="import-step-upload">{{ _('1. Choose a file') }}</h2>
 {% if message %}<p class="import-error" role="alert">{{ message }}</p>{% endif %}
 <form id="archive-upload-form" method="post" enctype="multipart/form-data">{{ token() }}
+{% if module %}<input type="hidden" name="module_id" value="{{ module.id }}">{% elif selected_campaign %}<input type="hidden" name="campaign_id" value="{{ selected_campaign }}">{% endif %}
 <label>{{ _('Markdown file or archive') }}<input type="file" name="archive" accept=".md,.zip,.tar,.tar.gz,.tgz" required></label>
 <p class="import-hint">{{ _('Accepted: .md, .zip, .tar, .tar.gz. Files without metadata are imported as Notes, and you can rename or retype them in the preview.') }}
-<a href="{{ url_for('campaigns.import_example') }}">{{ _('Download an example archive') }}</a></p>
+<a href="{{ url_for('campaigns.import_example') }}">{{ _('Download an example module') }}</a></p>
 <div class="campaign-actions"><button type="submit">{{ pgettext('import action', 'Load') }}</button></div>
 </form>
-<details class="import-instructions"><summary>{{ _('Markdown format and limits') }}</summary>
-<p>{{ _('For full control, start each file with YAML Front Matter containing layout: default, title and type. Without it, the title comes from the first # heading (or the file name) and the type defaults to Note.') }}</p>
-<p>{{ _('parent first refers to an exact, unique title inside this archive. If that title is absent, it can name one of your existing campaigns. Duplicate campaign names are an error. Folders do not determine hierarchy.') }}</p>
-<p>{{ _('Use id and parent_id when titles repeat; these IDs refer only to files inside this archive. To attach a hand-drawn map, add map: maps/world.excalidraw to an article. Export Obsidian drawings to ordinary .excalidraw JSON first. Drawing shapes remain editable; they do not automatically become interactive article points or paths.') }}</p>
-<h3>campaign.md</h3>
+<details class="import-instructions"><summary>{{ _('Module format and limits') }}</summary>
+<p>{{ _('A module is Markdown files, each starting with YAML front matter (layout: default, title, type). Upload one file, or a ZIP or TAR of several. Folders keep the parts apart; the type says what each file is.') }}</p>
+<pre><code>module.md                 type: Module      {{ _('the front page') }}
+maps/the-ashen-marches.md type: Map         {{ _('a drawing with points and paths') }}
+articles/alderbridge.md   type: Settlement  {{ _('any article type') }}
+backgrounds/tidewatcher.md type: Background {{ _('character options') }}</code></pre>
+<h3>articles/mara-the-ferryman.md</h3>
 <pre><code>---
 layout: default
-title: My Campaign
-type: Campaign
+id: article-0002
+title: Mara the Ferryman
+type: NPC
+parent_id: article-0001
 ---
-Campaign description</code></pre>
-<h3>dungeon.md</h3>
-<pre><code>---
-layout: default
-title: My Dungeon
-parent: My Campaign
-type: Dungeon
----
-Dungeon description</code></pre>
-<p>{{ _('Copy each complete block, including both --- lines, into its own .md file. Upload one file directly, or place several together in one archive.') }}</p>
-<p>{{ _('Types:') }} Campaign, Freeform, {{ content_categories.values()|reject('equalto', 'Geography')|join(', ') }}.</p>
-<p>{{ _('Campaigns become new campaigns; their descriptions become Overview articles. Articles without a parent go to Unfiled articles. Spatial article types include an editable drawing alongside their description. All imported content remains private. Existing library records are never replaced.') }}</p>
-<p>{{ _('Limits: 50 MB archive, 500 entries, 512 KB per Markdown/attachment, 16 MB per map file, 100 MB unpacked, 50,000 description characters and 20 hierarchy levels. Each map supports 200 points, 800 paths and a 12 MB drawing with 2000 elements. Unreferenced map files and attachments are skipped. Markdown image URLs stay as references. Previews expire after one hour; a new preview replaces your previous one.') }}</p>
+Mara knows the river paths.</code></pre>
+<p>{{ _('id is optional and only used inside the module: parent_id names a parent by its id (or parent by its exact title), links lists related articles by id, and a map lists its points and paths by id. Without front matter, the title comes from the first # heading (or the file name) and the type is Note.') }}</p>
+<p>{{ _('Maps are written by Kettlewright when you export (type: Map, map_type: realm, dungeon, forest or freeform, and a kettlewright-map block); a map file without that block is an empty map to draw. Download the example to see every part.') }}
+<a href="{{ url_for('campaigns.import_example') }}">{{ _('Download an example module') }}</a></p>
+<p>{{ _('Older archives (campaign.md, maps/*.json, manifest.json, and .excalidraw drawings attached with map:) still import.') }}</p>
+<p>{{ _('Limits: 50 MB archive, 500 files, 512 KB per Markdown file (16 MB for map files), 100 MB unpacked, 50,000 description characters and 20 hierarchy levels. Each map supports 200 points, 800 paths and a 12 MB drawing with 2000 elements. Markdown image URLs stay as references. Previews expire after one hour.') }}</p>
 </details>
 </section>
 
 {% if preview %}
 {% set campaign_rows = preview.rows|selectattr('category', 'equalto', 'campaign')|list %}
 {% set inferred_rows = preview.rows|selectattr('inferred')|list %}
+{% set backgrounds = preview.backgrounds or {} %}
 <section class="import-step" aria-labelledby="import-step-review">
 <h2 id="import-step-review">{{ _('2. Review and confirm') }}</h2>
-<p class="import-summary" role="status">{{ preview.rows|length }} {{ _('Markdown files') }}
-· {{ campaign_rows|length }} {{ _('campaigns') }}
-· {{ preview.rows|length - campaign_rows|length }} {{ _('articles') }}
+<p class="import-summary" role="status">{{ part_badges(preview_counts)|join(' · ') or _('Nothing to import') }}
 {% if inferred_rows %}· {{ inferred_rows|length }} {{ _('without metadata') }}{% endif %}</p>
 {% if preview.errors %}<div class="import-error" role="alert"><p>{{ _('Resolve these errors and upload the file again. Nothing has been imported.') }}</p><ul>{% for error in preview.errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
 {% if preview.warnings %}<div class="import-warnings" role="status"><p>{{ _('Check these before importing:') }}</p><ul>{% for warning in preview.warnings %}<li>{{ warning }}</li>{% endfor %}</ul></div>{% endif %}
 {% if preview.ignored %}<details><summary>{{ _('Skipped files') }} ({{ preview.ignored|length }})</summary><ul>{% for name in preview.ignored %}<li>{{ name }}</li>{% endfor %}</ul></details>{% endif %}
-{% if not preview.errors %}<form id="archive-confirm-form" method="post">{{ token() }}<input type="hidden" name="preview_id" value="{{ preview_id }}">{% endif %}
+{% if not preview.errors %}<form id="archive-confirm-form" method="post">{{ token() }}<input type="hidden" name="preview_id" value="{{ preview_id }}">
+{% if module %}<input type="hidden" name="module_id" value="{{ module.id }}">
+<p class="import-destination">{{ _('Adding to the module %(module)s.', module=module.title) }}</p>
+{% else %}
+<label class="import-destination">{{ _('Add as a new module to') }}
+<select name="target_campaign" required>
+{% if not selected_campaign %}<option value="" disabled selected>{{ _('Choose a campaign') }}</option>{% endif %}
+{% for option in campaigns_list %}<option value="{{ option.id }}" {% if option.id == selected_campaign %}selected{% endif %}>{{ option.name }}</option>{% endfor %}
+</select></label>
+<p class="import-hint">{{ _('The module is named %(title)s. Its front page becomes an Overview article; its maps, articles and backgrounds join the campaign.', title=(campaign_rows[0].title if campaign_rows else preview.name)) }}</p>
+{% endif %}
+{% set maps_preview = [] %}{% for i in preview.display %}{% set row = preview.rows[i] %}{% if row.map or row.category == 'map' %}{% if maps_preview.append(row) %}{% endif %}{% endif %}{% endfor %}
+{% if maps_preview %}<details class="import-maps" open><summary>{{ _('Maps') }} ({{ maps_preview|length }})</summary>
+<ul>{% for row in maps_preview %}<li><strong>{{ row.title }}</strong>{% if row.category != 'map' %} · {{ _('the map of this article') }}{% endif %}
+{% if row.map %} · {{ _('%(count)s pins', count=row.map.nodes|length) }} · {{ _('%(count)s drawing elements', count=row.map.drawing.elements|length) }}{% else %} · {{ _('empty') }}{% endif %}
+<small>{{ (row.map.file if row.map else row.file)|replace('#map', '') }}</small></li>{% endfor %}</ul></details>{% endif %}
+{% for row in campaign_rows %}<p class="import-front"><strong>{{ _('Front page') }}</strong> · {{ row.file }}{% if row.body %} · {{ _('becomes an Overview article') }}{% endif %}</p>{% endfor %}
+{% if preview.rows|rejectattr('category', 'in', ['map', 'campaign'])|list %}<h3 class="import-articles-title">{{ _('Articles') }}</h3>{% endif %}
 <ol class="import-preview">
-{% for i in preview.display %}{% set row = preview.rows[i] %}
+{% for i in preview.display if preview.rows[i].category not in ('map', 'campaign') %}{% set row = preview.rows[i] %}
 <li style="--tree-depth:{{ row.depth }}"{% if row.inferred %} class="import-inferred"{% endif %}>
 {% if row.inferred and not preview.errors %}
 <div class="import-row-fields">
@@ -65,11 +81,12 @@ Dungeon description</code></pre>
 {% else %}<strong>{{ row.title }}</strong> <span class="tree-meta">{{ row.type }}</span>{% endif %}
 <div>{{ _('Destination:') }} {{ row.destination }}</div><small>{{ row.file }}{% if row.inferred %} · {{ _('no metadata, defaults applied') }}{% endif %}</small>
 {% if row.existing_campaign %}<div>{{ _('Existing campaign:') }} {{ row.existing_campaign.name }}</div>{% endif %}
-{% if row.map %}<div>{{ _('Map:') }} {{ row.map.file }} · {{ row.map.nodes|length }} {{ _('points') }} · {{ row.map.edges|length }} {{ _('paths') }} · {{ row.map.drawing.elements|length }} {{ _('drawing elements') }}</div>{% endif %}
+{% if row.map %}<div><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Has its own map (see Maps).') }}</div>{% endif %}
 {% if row.body %}<details><summary>{{ _('Preview content') }}</summary><div class="rich-content">{{ render_content(row.body) }}</div></details>{% endif %}</li>
 {% endfor %}
 </ol>
-{% if not preview.errors %}
+{% if backgrounds %}<h3 class="import-articles-title">{{ _('Backgrounds') }} ({{ backgrounds|length }})</h3>
+<ul>{% for name, background in backgrounds.items() %}<li><strong>{{ name }}</strong> · {{ background.background_description }}</li>{% endfor %}</ul>{% endif %}
 <div class="campaign-actions import-confirm-actions">
 <button type="submit">{{ pgettext('import action', 'Import') }}</button>
 <a href="{{ url_for('campaigns.import_archive') }}">{{ _('Cancel') }}</a>

@@ -2,7 +2,7 @@
 {% from 'campaigns/forms.html' import page_header, reveal_form with context %}
 {# The Reveal popup's form as a page: opened from the party's Wiki tab ("Change what they see"). #}
 {% block workspace %}
-{% set read_url = url_for('campaigns.wiki', campaign_id=entry.campaign_id, entry_id=entry.id) if entry.campaign_id else url_for('campaigns.unfiled_wiki', entry_id=entry.id) %}
+{% set read_url = url_for('campaigns.wiki', campaign_id=entry.campaign_id, entry_id=entry.id) if entry.campaign_id else url_for('campaigns.edit_entry', entry_id=entry.id) %}
 {% call page_header(_('Reveal to party')) %}
 <a href="{{ read_url }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Back to article') }}</a>
 {% endcall %}

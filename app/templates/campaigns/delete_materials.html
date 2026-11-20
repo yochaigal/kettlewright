@@ -5,7 +5,7 @@
 <a href="{{ back_url }}">{{ _('Cancel') }}</a>
 <button type="submit" form="delete-articles-form">{{ _('Permanently delete') }} ({{ entries|length }})</button>
 {% endcall %}
-<p>{{ _('These articles will be permanently deleted, including their published party versions. This cannot be undone.') }}</p>
+<p>{{ _('These articles will be permanently deleted, and what was revealed of them to parties. This cannot be undone.') }}</p>
 <p>{{ _('The list includes child articles and connected paths. References to these articles will also be removed from other drawings.') }}</p>
 <p><strong>{{ _('Total:') }} {{ entries|length }}</strong></p>
 <ul class="campaign-list">

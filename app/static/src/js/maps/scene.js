@@ -47,6 +47,8 @@ export function nodeAppearance(node, kind) {
     dungeon: {type:'ellipse', width:60, height:60, stroke:'#6741a5', fill:'#e5dbff', label:'Dungeon'},
     lair: {type:'ellipse', width:60, height:60, stroke:'#c92a2a', fill:'#ffe3e3', label:'Lair'},
     curiosity: {type:'ellipse', width:60, height:60, stroke:'#087f8c', fill:'#c5f6fa', label:'Curiosity'},
+    // A pin and its note (the Warden's; a party's own pins are red).
+    map_note: {type:'ellipse', width:26, height:26, stroke:'#1864ab', fill:'#74c0fc', label:''},
   };
   const style = types[node.category];
   if (!style) return {type:'ellipse', width:60, height:60, stroke:'#1b1b1f', fill:'#ffffff', label:''};
@@ -162,4 +164,23 @@ export function graphHit(graph, x, y, tolerance=10) {
   if(closest)return closest;
   for(const node of [...graph.nodes].reverse())if(nodeAppearance(node,graph.kind).background && hitNode(node))return {id:String(node.id),kind:'location'};
   return null;
+}
+
+// Party map pins: a red marker and its title. Pins belong to the party map view, not the drawing.
+export function pinShapes(pins=[], selectedPin='') {
+  return pins.flatMap(pin => {
+    const active=String(pin.id)===String(selectedPin);
+    return [
+      {id:`kw-pin-${pin.id}`,type:'ellipse',x:pin.x-11,y:pin.y-11,width:22,height:22,locked:true,
+       strokeColor:active?'#e67700':'#7f1d1d',backgroundColor:'#e03131',fillStyle:'solid',strokeWidth:active?4:2,roughness:0,
+       customData:{kwType:'pin',pinId:String(pin.id)}},
+      {id:`kw-pinlabel-${pin.id}`,type:'text',x:pin.x+16,y:pin.y-10,text:String(pin.title).slice(0,40),fontSize:16,fontFamily:2,
+       locked:true,strokeColor:'#7f1d1d',customData:{kwType:'label'}},
+    ];
+  });
+}
+
+// The pin under a click (scene coordinates), within tolerance.
+export function pinHit(pins=[], x, y, tolerance=14) {
+  return pins.find(pin => Math.hypot(pin.x-x, pin.y-y) <= tolerance) || null;
 }

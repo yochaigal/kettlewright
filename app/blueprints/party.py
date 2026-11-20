@@ -592,6 +592,7 @@ def party_view(ownername, party_url):
         return redirect(url_for('main.index'))
     party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party = get_party_data(ownername, party_url)
     from app.lib.monsters import monster_catalog
+    from app.lib.campaign_backgrounds import background_panel
     can_view_rolls = current_user.id in party_recipient_ids(party)
     # Party notes and revealed articles are read in the party wiki (#440); the page only links to it.
     campaign_enabled = can_view_rolls
@@ -602,7 +603,8 @@ def party_view(ownername, party_url):
                            campaign_enabled=campaign_enabled,
                            rolls=PartyRoll.latest(party.id, current_user.id) if can_view_rolls else [],
                            online=connected_owners(party, characters),
-                           wilderness_mounts=wilderness_mounts(party, characters)))
+                           wilderness_mounts=wilderness_mounts(party, characters),
+                           backgrounds=background_panel(party) if is_owner and campaign_enabled else None))
     response.headers['Cache-Control'] = 'no-store'
     return response
 
@@ -676,7 +678,10 @@ def party_edit(ownername, party_url):
     if not is_party_warden(party):
         abort(403)
     form = PartyEditForm(obj=party) 
-    render =  render_template('main/party_edit.html', party_url=party_url, characters = characters, join_code = join_code, is_owner=is_owner, is_subowner=is_subowner,ownername=ownername, inventory=inventory, party=party, form=form)
+    from app.models import Campaign
+    campaigns = Campaign.query.filter_by(owner_id=current_user.id).order_by(Campaign.name, Campaign.id).all()
+    render =  render_template('main/party_edit.html', party_url=party_url, characters = characters, join_code = join_code, is_owner=is_owner, is_subowner=is_subowner,ownername=ownername, inventory=inventory, party=party, form=form,
+                              campaigns=campaigns)
     response = make_response(render)
     response.headers["HX-Trigger-After-Settle"] = "party-edit"
     return response
@@ -722,6 +727,14 @@ def party_edit_save(ownername, party_url):
     form = PartyEditForm(obj=party) 
     for field in fields_to_update:
         setattr(party, field, sanitize_data(getattr(form, field).data))
+    # Move the party to another of the Warden's campaigns; it keeps what it was shown.
+    campaign_id = request.form.get('campaign_id', '')
+    if campaign_id:
+        from app.models import Campaign
+        campaign = db.session.get(Campaign, int(campaign_id)) if campaign_id.isdigit() else None
+        if campaign is None or campaign.owner_id != current_user.id:
+            abort(400)
+        party.campaign = campaign
     # Backward compatibility: update item ids
     items = json.loads(party.items)
     result = []
@@ -758,27 +771,19 @@ def party_remove_char(character_id, ownername, party_url):
 @party.route('/party/delete/<party_id>', methods=['POST'])
 @login_required
 def party_delete(party_id):
+    """Delete a party: its characters are kept and leave it. Back to its campaign."""
     party = get_party_by_id(party_id)
     if party is None:
         abort(404)
     if party.owner != current_user.id:
         abort(403)
-
-    # remove party from all characters in the party
-    characters = Character.query.filter_by(party_id=party.id).all()
-    for character in characters:
-        character.party_id = None
-        character.party_code = None
-
-    PartyRoll.query.filter_by(party_id=party.id).delete(synchronize_session=False)
-    PartyMap.query.filter_by(party_id=party.id).delete(synchronize_session=False)
-    from app.lib.campaigns import delete_party_notes
-    delete_party_notes(party.id)
-    db.session.delete(party)
+    from app.lib.campaign_parties import delete_party
+    campaign_id = party.campaign_id
+    delete_party(party)
     db.session.commit()
-    
     response = make_response("redirect")
-    response.headers["HX-Redirect"] = "/users/"+current_user.username+"/parties/"
+    response.headers["HX-Redirect"] = (url_for('campaigns.lobby', campaign_id=campaign_id) if campaign_id
+                                       else url_for('campaigns.index'))
     return response
 
 

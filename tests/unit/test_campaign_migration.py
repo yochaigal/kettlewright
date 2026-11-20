@@ -81,12 +81,16 @@ def test_campaign_migration_preserves_existing_parties_and_matches_models(tmp_pa
         db.session.commit()
         upgrade()
         inspector = inspect(db.engine)
-        names = ('campaigns','campaign_parties','content_entries','content_links','party_presentations',
-                 'pointcrawl_maps','map_nodes','map_edges','campaign_imports')
+        names = ('campaigns','content_entries','content_links','party_presentations',
+                 'pointcrawl_maps','map_nodes','map_edges','campaign_imports','parties')
         for name in names:
             assert {c['name'] for c in inspector.get_columns(name)} == set(db.metadata.tables[name].columns.keys())
         assert db.session.execute(text('SELECT name FROM parties WHERE id=1')).scalar() == 'Existing party'
-        assert db.session.execute(text('SELECT count(*) FROM campaigns')).scalar() == 0
+        # A party with nothing revealed gets a campaign of its own (500a01).
+        assert db.session.execute(text('SELECT name FROM campaigns')).scalars().all() == ['Existing party']
+        assert db.session.execute(text('SELECT campaign_id FROM parties WHERE id=1')).scalar() == \
+            db.session.execute(text('SELECT id FROM campaigns')).scalar()
+        assert 'campaign_parties' not in inspector.get_table_names()
         db.session.commit()
         downgrade(revision='124a01')
         assert 'campaigns' not in inspect(db.engine).get_table_names()

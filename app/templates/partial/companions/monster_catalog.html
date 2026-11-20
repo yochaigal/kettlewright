@@ -4,7 +4,7 @@
            @keydown.escape.window.capture="if (!document.querySelector('#monster-preview:not([hidden])')) hide()">
     <header class="party-section-bar">
       <h3>{{_('Monsters')}} <span class="party-section-count">{{party.monsters|length}}</span></h3>
-      <button type="button" class="button" x-ref="trigger" @click="show(); $nextTick(() => $refs.search.focus())"
+      <button type="button" class="button kw-add" x-ref="trigger" @click="show(); $nextTick(() => $refs.search.focus())"
               aria-haspopup="dialog" aria-controls="monster-add-modal"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{_('Add monsters')}}</button>
     </header>
     {% from 'partial/companions/cards.html' import cards with context %}

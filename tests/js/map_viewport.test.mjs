@@ -14,9 +14,9 @@ test('large maps fill the viewport without rounding zoom down to 10% steps',()=>
   }
 });
 
-test('small drawings zoom in and degenerate bounds remain finite',()=>{
-  assert(fittedViewport([0,0,100,100],800,640).zoom.value>1);
+test('small drawings stay at 100% (a lone pin is not blown up) and degenerate bounds remain finite',()=>{
+  assert.equal(fittedViewport([0,0,100,100],800,640).zoom.value,1);
   const point=fittedViewport([5,5,5,5],800,640);
-  assert.equal(point.zoom.value,30);
+  assert.equal(point.zoom.value,1);
   assert(Number.isFinite(point.scrollX) && Number.isFinite(point.scrollY));
 });

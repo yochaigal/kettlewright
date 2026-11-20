@@ -2,7 +2,7 @@
 
 ## Cairn first-party adventures (CAS-1 to CAS-4)
 
-The Markdown under `app/starter_adventures/` is derived from the Cairn adventures
+The Markdown under `app/modules/` is derived from the Cairn adventures
 *CAS-1: Trouble in Twin Lakes*, *CAS-2: Rise of the Blood Olms*,
 *CAS-3: The Feast of Tegny Wood* and *CAS-4: The Forgetting of Lockwood Manor*,
 written by Yochai Gal and published by Cairn Press

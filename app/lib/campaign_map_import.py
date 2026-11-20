@@ -43,6 +43,8 @@ def prepare_maps(payload, files):
             posixpath.commonpath([str(PurePosixPath(name).parent) for name in files]))
 
     def path_for(reference):
+        if isinstance(reference, str) and reference.endswith('#map') and reference in files:
+            return reference  # The block of a map file (format 2).
         if not isinstance(reference, str) or not reference:
             raise ValueError('Map filenames must be nonempty strings.')
         path = PurePosixPath(reference)
@@ -107,7 +109,8 @@ def prepare_maps(payload, files):
     # before or after their entrance in archive order.
     for i, name in declared.items():
         raw, row = load(name), rows[i]
-        expected = row['kind'] if row['category'] == 'map' else ARTICLE_MAP_KINDS.get(row['category'])
+        expected = (row['kind'] if row['category'] == 'map' else ARTICLE_MAP_KINDS.get(row['category'])
+                    or ('freeform' if name.endswith('#map') and row['category'] not in ('path', 'paths') else None))
         if expected is None:
             raise ValueError(f'{name}: this article type does not support a map. Use Freeform or a spatial type.')
         scene = raw.get('type') == 'excalidraw'
@@ -185,6 +188,9 @@ def prepare_maps(payload, files):
     links = manifest.get('links', [])
     if not isinstance(links, list) or len(links) > 10000:
         raise ValueError('Invalid article link list.')
+    links = links + payload.pop('front_links', [])
+    if len(links) > 10000:
+        raise ValueError('Invalid article link list.')
     pairs = set()
     for link in links:
         if not isinstance(link, dict):
@@ -200,6 +206,7 @@ def prepare_maps(payload, files):
     references = manifest.get('references', [])
     if not isinstance(references, list) or len(references) > 10000:
         raise ValueError('Invalid article reference list.')
+    references = references + payload.pop('front_references', [])
     keys = set()
     from app.lib.article_references import tokens
     for link in references:

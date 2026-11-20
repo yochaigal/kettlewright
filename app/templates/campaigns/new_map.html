@@ -1,39 +1,34 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import token, rich_editor, page_header with context %}
 {% block workspace %}
-<form class="campaign-page-form" method="post" x-data="pointcrawl" data-editing="true" data-creating="true" data-kind="{{ kind }}"
- data-labels="{{ {'loadError':_('Unable to load the drawing editor. Check your connection and retry.'),'location':_('Article'),'error':_('Unable to generate an article. Please try again.'),'duplicate':_('This path already exists.')}|tojson|forceescape }}"
+{# Only a random module (or the Tools) generates a map: then its kind comes from there. Otherwise a map is just a map. #}
+{% set generator = request.args.get('random') or request.args.get('from_tools') %}
+<form class="campaign-page-form" method="post" x-data="pointcrawl" data-editing="true" data-creating="true" data-kind="{{ kind if generator else 'freeform' }}"
+ data-labels="{{ {'loadError':_('Unable to load the drawing editor. Check your connection and retry.'),'location':_('Article'),'error':_('Unable to generate an article. Please try again.'),'duplicate':_('This path already exists.'),'pin':_('Pin'),'pick':_('Click the map where the pin goes.')}|tojson|forceescape }}"
  @submit="if (!canvasReady || generating) $event.preventDefault(); else dirty=false">
-{% call page_header(_('New Campaign') if kind == 'realm' else _('New article'), title_model="kind==='realm' ? " ~ (_('New Campaign')|tojson|forceescape) ~ " : " ~ (_('New article')|tojson|forceescape)) %}<button type="submit" :disabled="!canvasReady || generating" x-text="kind==='realm' ? {{ _('Save Campaign')|tojson|forceescape }} : {{ _('Save private article')|tojson|forceescape }}">{{ _('Save Campaign') if kind == 'realm' else _('Save private article') }}</button>{% endcall %}
+{% call page_header(_('New map')) %}<button type="submit" class="primary" :disabled="!canvasReady || generating">{{ _('Save map') }}</button>{% endcall %}
+<p class="import-hint">{{ _('A map is a drawing with pins, private until you reveal it to a party. Draw on it, add images, then add pins with notes.') }}</p>
 {{ token() }}
-<div class="article-layout">
-<div class="article-main">
-<label>{{ _('Title') }}<input type="text" name="title" required maxlength="200" x-ref="title"></label>
-{{ rich_editor(_('Description'), model='draftBody') }}
-
-<div class="generated-article" x-show="graph.children?.length" x-cloak><h3>{{ _('Child articles') }}</h3><div class="rich-content" x-html="$richHTML(childrenPreview())"></div></div>
+<input type="hidden" name="kind" :value="kind" value="{{ kind if generator else 'freeform' }}">
+<div class="map-settings">
+<label class="map-title-field">{{ _('Title') }}<input type="text" name="title" required maxlength="200" x-ref="title"></label>
+{% if module %}<input type="hidden" name="module_id" value="{{ module.id }}">
+{% else %}<label>{{ _('Module') }}<select name="module_id" required>
+<option value="" disabled selected>{{ _('Choose a module') }}</option>
+{% for group_campaign, group_modules in module_groups %}<optgroup label="{{ group_campaign.name|markdown_inline|striptags }}">
+{% for item in group_modules %}<option value="{{ item.id }}">{{ item.title }}</option>{% endfor %}
+{% if not group_modules %}<option value="c{{ group_campaign.id }}">{{ _('%(campaign)s (first module)', campaign=group_campaign.name|markdown_inline|striptags) }}</option>{% endif %}
+</optgroup>{% endfor %}
+</select></label>{% endif %}
 </div>
-<div class="article-sidebar" role="complementary" aria-label="{{ _('Article settings') }}">
-<h2 class="article-sidebar-title">{{ _('Organize') }}</h2>
-<label>{{ _('Campaign') }}<select name="campaign_id"><option value="">{{ _('Unfiled') }}</option>{% for item in campaigns %}<option value="{{ item.id }}" {% if campaign and campaign.id == item.id %}selected{% endif %}>{{ item.name|markdown_inline|striptags }}</option>{% endfor %}</select></label>
-<label>{{ _('Article type') }}<select name="kind" x-model="kind"><option value="realm">{{ _('Realm') }}</option><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option><option value="freeform">{{ _('Topography') }}</option></select></label>
-<div class="article-generator" x-show="kind!=='freeform'">
+{% if generator %}
+<div class="article-generator">
 <label class="campaign-check"><input type="checkbox" x-model="generateChildren">{{ _('Generate all child articles') }}</label>
-<label x-show="kind==='realm' && generateChildren">{{ _('Forest') }} (%)<input type="number" min="0" max="100" x-model.number="forestChance"></label>
-<label x-show="generateChildren && (kind==='realm' || kind==='forest')">{{ _('Forest POIs') }} (%)<input type="number" min="0" max="100" x-model.number="dungeonChance"></label>
-<fieldset class="poi-options"><legend>{{ _('Dice / points of interest') }}</legend>
-{% for value, label in [('', _('Random count')), ('3', '3'), ('6', '6'), ('8', '8'), ('12', '12'), ('20', '20')] %}
-<label class="campaign-check"><input type="radio" name="poi_count" value="{{ value }}" x-model="poiCount">{{ label }}</label>
-{% endfor %}
-<small x-show="kind==='realm'">{{ _('Includes the Heart: a settlement at point 1.') }}</small>
-</fieldset>
 <button type="button" @click="generate()" :disabled="generating">{{ _('Random') }}</button>
-<p class="import-hint">{{ _('Generating replaces this unsaved draft. Review and edit it before saving.') }}</p>
-<p class="import-hint" x-show="kind==='realm'">{{ _('With child generation enabled, dungeon points receive linked articles and forest terrain may receive forest contents. Child articles remain private until revealed separately.') }}</p>
+<p class="import-hint">{{ _('Generating replaces this unsaved draft. Review it before saving.') }}</p>
 </div>
-<p class="import-hint" x-show="kind==='freeform'">{{ _('Draw a city, settlement or any place with freehand lines, shapes, labels and images.') }}</p>
-</div>
-</div>
+<div class="generated-article" x-show="graph.children?.length" x-cloak><h3>{{ _('Child articles') }}</h3><div class="rich-content" x-html="$richHTML(childrenPreview())"></div></div>
+{% endif %}
 <input type="hidden" name="draft" :value="JSON.stringify(graph)">
 <p class="campaign-status" role="status" x-text="status"></p>
 {% set editing = true %}{% set nested_maps = [] %}{% set locations = [] %}

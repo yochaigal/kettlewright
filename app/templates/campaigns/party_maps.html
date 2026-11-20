@@ -1,0 +1,17 @@
+{% extends 'campaigns/layout.html' %}
+{# The party page's Map button, when the party was shown several maps (or none yet). #}
+{% block workspace %}
+<div class="campaign-wiki party-map-page">
+  <nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) }}">← {{ _('Back to party') }}</a></nav>
+  <header class="wiki-header"><div><h1>{{ _('Maps') }}</h1>
+    <span class="wiki-badges"><span class="wiki-badge">{{ party.name|markdown_inline|striptags }}</span></span></div></header>
+  {% if maps %}
+  <ul class="revealed-list">
+  {% for pointcrawl, row in maps %}
+    <li><a href="{{ url_for('campaigns.party_map_view', party_id=party.id, map_id=pointcrawl.id) }}"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ row.title|markdown_inline }}</a>
+      <span class="wiki-badge">{{ _(pointcrawl.kind|capitalize) }}</span></li>
+  {% endfor %}
+  </ul>
+  {% else %}<p class="wiki-empty">{{ _('No map has been revealed to this party yet.') }}</p>{% endif %}
+</div>
+{% endblock %}

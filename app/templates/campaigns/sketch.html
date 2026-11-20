@@ -1,0 +1,13 @@
+{# A drawing with no pins: a party note's sketch. Set sketch_drawing, sketch_editing and (to edit) sketch_form. #}
+{% set sketch = true %}{% set editing = sketch_editing %}
+<section class="note-sketch" aria-labelledby="note-sketch-title">
+<h2 id="note-sketch-title"><i class="fa-solid fa-pen-ruler" aria-hidden="true"></i> {{ _('Drawing') }}</h2>
+<div x-data="pointcrawl" data-graph="{{ {'nodes': [], 'edges': [], 'kind': 'freeform', 'drawing': sketch_drawing or {'elements': [], 'files': {}}}|tojson|forceescape }}"
+ data-editing="{{ 'true' if editing else 'false' }}" {% if editing %}data-form="{{ sketch_form }}"{% endif %}
+ data-labels="{{ {'loadError': _('Unable to load the drawing editor. Check your connection and retry.')}|tojson|forceescape }}">
+{% if editing %}<input type="hidden" form="{{ sketch_form }}" name="drawing" :disabled="!dirty" :value="JSON.stringify(graph.drawing || {elements: [], files: {}})">
+<p class="import-hint">{{ _('Sketch anything: a room, a route, a symbol. Save note keeps it.') }}</p>{% endif %}
+<p class="campaign-status" role="status" x-text="status"></p>
+{% include 'campaigns/canvas.html' %}
+</div>
+</section>

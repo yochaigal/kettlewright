@@ -1,6 +1,9 @@
+{# Where the article lives: back to its campaign and module, then the articles it is part of. #}
+{% set crumb_module = module if module is defined and module else (entry.module if entry else none) %}
 <nav class="material-parents" aria-label="{{ _('Article hierarchy') }}">
-<a href="{{ url_for('campaigns.workspace', campaign_id=campaign.id) if campaign else url_for('campaigns.library') }}">{{ campaign.name if campaign else _('Unfiled articles') }}</a>
-{% if parent_entries %}<span>{{ _('Part of') }}:</span>
+{% if campaign %}<a href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}">← {{ campaign.name }}</a>{% endif %}
+{% if crumb_module %}<span aria-hidden="true">›</span> <a href="{{ url_for('campaigns.module_view', campaign_id=crumb_module.campaign_id, module_id=crumb_module.id) }}">{{ crumb_module.title }}</a>{% endif %}
+{% if parent_entries is defined and parent_entries %}<span class="material-parents-part">{{ _('Part of') }}:</span>
 {% for parent in parent_entries %}
 <a href="{{ url_for('campaigns.edit_entry', entry_id=parent.id) }}">{{ parent.title or _('Untitled private original') }}</a>
 {% endfor %}{% endif %}

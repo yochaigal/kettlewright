@@ -29,6 +29,13 @@
         {% endif %}
       </div>
       <div>{{ form.description(class='textarea charedit-notes', rows=5) }} </div>
+      {% if is_owner and campaigns %}
+      {# The party plays in one of the Warden's campaigns; it can move to another and keeps what it was shown. #}
+      <label class="label party-campaign-field" for="party-campaign">{{ _('Campaign') }}</label>
+      <div class="select"><select id="party-campaign" name="campaign_id">
+        {% for option in campaigns %}<option value="{{ option.id }}" {% if option.id == party.campaign_id %}selected{% endif %}>{{ option.name }}</option>{% endfor %}
+      </select></div>
+      {% endif %}
     </form>
     <div class="party-section" x-data="collapseSection('party-members-content')">
       <span id="party-members-collapse-button" class="party-collapse-button" role="button" tabindex="0"

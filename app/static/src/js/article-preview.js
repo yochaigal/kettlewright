@@ -190,6 +190,8 @@ function enter(event) {
   if (!previewsEnabled) return;
   const link = event.target.closest('a[href]');
   if (!link || link.contains(event.relatedTarget)) return;
+  // A preview would open behind a modal dialog (the top layer): none for links inside one.
+  if (link.closest('dialog[open]')) return;
   const url = previewURL(link.href);
   if (!url) return;
   if (link.closest('.article-preview')?.dataset.previewUrl === url) return;

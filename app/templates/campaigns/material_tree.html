@@ -7,7 +7,7 @@
 <span class="tree-row">
 {% if selectable %}{{ material_selection(entry) }}{% endif %}
 <a class="tree-title" href="{{ url_for('campaigns.edit_entry', entry_id=entry.id) }}">{% if item.number is not none %}{{ item.number }}. {% endif %}{{ entry.title or _('Untitled private original') }}</a>
-<span class="tree-meta">{{ _(content_categories.get(entry.category, entry.category)) }}</span>
+<span class="tree-meta">{% if entry.pointcrawl %}<i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Map') }} · {% endif %}{{ _(content_categories.get(entry.category, entry.category)) }}</span>
 {% if entry.is_heart %}<span class="tree-meta">{{ _('Heart') }}</span>{% endif %}
 {% if item.children %}<span class="tree-count" title="{{ _('Direct children') }}">{{ item.children|length }}</span>{% endif %}
 <span class="tree-excerpt">{{ content_excerpt(entry.body) }}</span>

@@ -13,6 +13,12 @@ class Party(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     owner = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
+    # The Warden's campaign this party plays in (several parties can share one, as in West Marches).
+    campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id', ondelete='SET NULL'), index=True)
+    # Character creation: the official Cairn backgrounds besides the campaign modules' ones.
+    official_backgrounds = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
+    # Cairn Barebones creation: the official d100 background table besides the campaign modules' backgrounds.
+    official_barebones = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
     created_at = db.Column(db.DateTime(timezone=True),
                            server_default=func.now())
 

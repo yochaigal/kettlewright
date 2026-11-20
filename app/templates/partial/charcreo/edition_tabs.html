@@ -1,5 +1,7 @@
 {# Switch between the Second Edition and Barebones creators (#292). #}
 <nav class="edition-tabs" aria-label="{{_('Rules edition')}}">
-    <a href="{{ url_for('main.new_character') }}" {% if edition != 'barebones' %}aria-current="page"{% endif %}>{{_('Second Edition')}}</a>
-    <a href="{{ url_for('main.new_barebones_character') }}" {% if edition == 'barebones' %}aria-current="page"{% endif %} title="{{_('Cairn Barebones Edition')}}">{{_('Barebones')}}</a>
+    {# Joining a party carries over between editions. #}
+    {% set party_args = {'party': party.join_code} if party is defined and party else {} %}
+    <a href="{{ url_for('main.new_character', **party_args) }}" {% if edition != 'barebones' %}aria-current="page"{% endif %}>{{_('Second Edition')}}</a>
+    <a href="{{ url_for('main.new_barebones_character', **party_args) }}" {% if edition == 'barebones' %}aria-current="page"{% endif %} title="{{_('Cairn Barebones Edition')}}">{{_('Barebones')}}</a>
 </nav>

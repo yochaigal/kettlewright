@@ -8,7 +8,7 @@ export default function pointcrawl() {
   return {
     graph:{nodes:[],edges:[]}, editing:false, creating:false, dirty:false, saving:false, receivingCanvas:false,
     geographyDraft:null, geographyTables:null, geographyUrl:'', submitting:false, articleForm:null,
-    waterBrushWidth:4,
+    waterBrushWidth:4, picking:false,
     status:'', selectedEdge:'', selected:'', saveUrl:'', serial:0, canvasReady:false, generating:false, nestedKind:'dungeon',
     edgeSource:'', edgeTarget:'', kind:'dungeon', tables:null, labels:{}, locationId:'', draftBody:'', poiCount:'', generateChildren:true, forestChance:50, dungeonChance:25,
     init() {
@@ -57,7 +57,8 @@ export default function pointcrawl() {
         this.graph={nodes:[],edges:[],drawing:emptyDrawing()};this.selected='';
         this.$refs.canvas.src='about:blank';this.canvasReady=false;
       }};
-      this.articleForm=this.editing && !this.creating ? document.getElementById('article-form') : null;
+      // The form that saves this drawing (a map, a note): submitting it is not leaving with unsaved changes.
+      this.articleForm=this.editing && !this.creating ? document.getElementById(this.$el.dataset.form || 'article-form') : null;
       this.onArticleSubmit=event=>{
         if(this.saving || this.generating || this.dirty && !this.canvasReady || this.componentElement.querySelector('.rich-editor[data-pending="true"]')) {
           event.preventDefault();this.status=this.labels.error;return;
@@ -85,6 +86,7 @@ export default function pointcrawl() {
         const data=event.data;
         if (data.type === 'ready') this.syncCanvas();
         if (data.type === 'mounted') {this.canvasReady=true;clearTimeout(this.canvasTimer);this.status='';}
+        if (data.type === 'picked' && this.picking) {this.picking=false;this.status='';this.placePin(data.x,data.y);}
         if (data.type === 'select') {
           if(data.kind==='path' && this.graph.edges.some(edge=>String(edge.id)===String(data.id))) {
             this.selected='';this.selectedEdge=String(data.id);this.syncCanvas();
@@ -157,6 +159,23 @@ export default function pointcrawl() {
     newId(type) {return `new-${type}-${Date.now()}-${++this.serial}`;},
     isNew(item) {return String(item.id).startsWith('new-');},
     fit() {this.sendCanvas('fit');this.$refs.canvas.focus({preventScroll:true});},
+    // A pin: click the map, then write its note (a map note, saved with the map).
+    startPin() {
+      if(!this.canvasReady)return;
+      this.picking=!this.picking;
+      this.sendCanvas('pick-point',{value:this.picking});
+      this.status=this.picking?this.labels.pick:'';
+    },
+    placePin(x,y) {
+      const number=Math.max(0,...this.graph.nodes.map(n=>Number(n.number)))+1;
+      const node={id:this.newId('pin'),number,title:`${this.labels.pin} ${number}`,body:'',category:'map_note',
+        is_heart:false,x:Math.round(x),y:Math.round(y),nested_map_id:null,content_changed:true};
+      this.graph.nodes.push(node);this.selected=String(node.id);
+      this.$nextTick(()=>{
+        const row=[...this.$el.querySelectorAll('[data-map-node]')].find(row=>row.getAttribute('data-map-node')===String(node.id));
+        row?.scrollIntoView({behavior:'smooth',block:'nearest'});row?.querySelector('input[type=text]')?.select();
+      });
+    },
     addNode() {
       const number=Math.max(0,...this.graph.nodes.map(n=>Number(n.number)))+1;
       const node={id:this.newId('node'),number,title:`${this.labels.location} ${number}`,body:'',

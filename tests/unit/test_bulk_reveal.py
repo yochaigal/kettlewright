@@ -39,7 +39,7 @@ def test_bulk_reveal_shows_originals(setup):
     first = create_entry(client, title='First', body='First text')
     preview = prepare(client, [first])
     page = preview.get_data(as_text=True)
-    assert 'Reveal 1 articles' in page and 'Titles only' not in page and 'Each party sees the originals' in page
+    assert 'Reveal 1 articles' in page and 'Titles only' not in page and 'Each party reads the articles themselves' in page
     assert client.post('/materials/bulk-reveal', data={'reveal_token': confirmation(preview), 'party_ids': '1',
                                                        'mode': 'title'}).status_code == 302  # Mode is ignored.
     with app.app_context():

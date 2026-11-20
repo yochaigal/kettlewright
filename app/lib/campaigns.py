@@ -4,7 +4,7 @@ import random
 from flask import abort, current_app
 from flask_login import current_user
 
-from app.models import (db, Campaign, CampaignParty, ContentEntry, ContentLink,
+from app.models import (db, Campaign, ContentEntry, ContentLink,
                         Party, PartyPresentation, PointcrawlMap, MapNode, MapEdge)
 from app.socket_events import party_recipient_ids
 from app.lib.map_drawing import EMPTY_DRAWING, validate_drawing, validate_node_geometry
@@ -74,8 +74,15 @@ def campaign_for(value):
 
 
 def publishable_party(entry, party_id):
-    """Any party I run can be shown any of my articles; there is no campaign connection step."""
-    return party_access(party_id, editing=True)
+    """A party I run that may be shown this article: one of the article's campaign's parties.
+
+    Unfiled articles can be shown to any of my parties, and a party already shown the article
+    (from another campaign, before parties lived in campaigns) can still be updated."""
+    party = party_access(party_id, editing=True)
+    if (entry.campaign_id is not None and party.campaign_id not in (None, entry.campaign_id)
+            and not any(p.party_id == party.id for p in entry.presentations)):
+        abort(403)
+    return party
 
 
 def content_value(value):
@@ -94,6 +101,29 @@ def map_related_ids(entry):
         if node.nested_map:
             targets.add(node.nested_map.entry_id)
     return targets - {entry.id}
+
+
+def map_only(entry):
+    """A map and nothing else: no text of its own, and not a point on another map (a dungeon point with its
+    rooms' map is an article with a map). Maps are listed and opened apart from articles."""
+    return entry.pointcrawl is not None and not entry.map_nodes and not (entry.body or '').strip()
+
+
+def article_entries(entries):
+    """The articles among these entries: maps (and their pins' notes) are listed apart."""
+    return [entry for entry in entries if not map_only(entry) and entry.category != 'map_note']
+
+
+def reveal_entry(entry, party):
+    """Show one article (or map) to a party: it reads the original. Returns its row. The caller commits."""
+    row = PartyPresentation.query.filter_by(entry_id=entry.id, party_id=party.id).first()
+    if row is None:
+        row = PartyPresentation(entry=entry, party=party)
+        db.session.add(row)
+    row.title = (entry.title or '').strip()[:200] or 'Untitled'
+    row.body, row.path_type, row.published = entry.body, entry.path_type, True
+    row.references = dict(entry.references or {})
+    return row
 
 
 def material_hierarchy(entries):
@@ -151,17 +181,6 @@ def material_hierarchy(entries):
     return roots
 
 
-def material_parents(entry):
-    parents = {node.map.entry_id: node.map.entry for node in entry.map_nodes}
-    if entry.parent:
-        parents[entry.parent.id] = entry.parent
-    if entry.pointcrawl:
-        parents.update({node.entry_id: node.entry for node in entry.pointcrawl.entrances})
-    return [parent for _, parent in sorted(parents.items())
-            if parent.id != entry.id and parent.owner_id == entry.owner_id
-            and parent.campaign_id == entry.campaign_id]
-
-
 def material_deletion_plan(selected, owner_id, campaign_id):
     """Follow containment, never arbitrary related-material links; tolerate cycles."""
     entries, maps = {}, {}
@@ -215,7 +234,9 @@ def known_entries(party_id):
                            'reference_key': row.entry.reference_key,
                            'title': row.title, 'body': row.body, 'path_type': row.path_type, 'version': row.version,
                            'has_image': first_image(row.body) is not None,
-                           'links': [], 'map_id': row.entry.pointcrawl.id if row.entry.pointcrawl else None}
+                           'links': [], 'map_id': row.entry.pointcrawl.id if row.entry.pointcrawl else None,
+                           'map_kind': row.entry.pointcrawl.kind if row.entry.pointcrawl else None,
+                           'map_only': map_only(row.entry)}
              for row in rows}
     # A path cannot be read indirectly while its map or either endpoint is hidden.
     for row in rows:
@@ -238,17 +259,10 @@ def known_entries(party_id):
 
 
 
-def party_versions(party_id):
-    """Ids of revealed articles whose party text differs from the original: a party version.
-
-    Warden only: players never learn whether their text matches the private original."""
-    return {row.entry_id for row in PartyPresentation.query.filter_by(party_id=party_id, published=True)
-            if (row.title, row.body) != (row.entry.title, row.entry.body)}
-
-
 def party_knowledge_tree(party_id):
+    # Maps are listed apart (the party opens them from its Map button); paths live on their maps.
     entries = {entry_id: entry for entry_id, entry in known_entries(party_id).items()
-               if entry['category'] != 'path' or not db.session.get(ContentEntry, entry_id).map_edges}
+               if not entry['map_only'] and entry['category'] != 'map_note' and (entry['category'] != 'path' or not db.session.get(ContentEntry, entry_id).map_edges)}
     hierarchy = material_hierarchy(ContentEntry.query.filter(ContentEntry.id.in_(entries)).all())
 
     def published_items(items):
@@ -273,11 +287,8 @@ def map_projection(pointcrawl, party_id=None):
 
     root = content(pointcrawl.entry)
     result = {'id': pointcrawl.id, 'kind': pointcrawl.kind, 'title': root['title'], 'body': root['body'], 'nodes': [], 'edges': []}
-    if party_id is None:
-        result['drawing'] = pointcrawl.drawing or EMPTY_DRAWING
-    else:
-        publication = PartyPresentation.query.filter_by(entry_id=pointcrawl.entry_id, party_id=party_id, published=True).first_or_404()
-        result['drawing'] = publication.drawing or EMPTY_DRAWING
+    # A party that was shown the map sees its current drawing (there are no drawing snapshots).
+    result['drawing'] = pointcrawl.drawing or EMPTY_DRAWING
     if known is None:
         result.update(version=pointcrawl.version, kind=pointcrawl.kind)
         result['has_contents'] = bool(pointcrawl.entry.children or pointcrawl.nodes or pointcrawl.edges
@@ -384,12 +395,12 @@ def save_geometry(pointcrawl, data, *, nested_draft=False):
                     abort(400, 'Choose a location from this campaign.')
             else:
                 entry = ContentEntry(owner_id=current_user.id, campaign_id=pointcrawl.entry.campaign_id,
-                    category=point_category(item), is_heart=heart_value(item, point_category(item)),
+                    module_id=pointcrawl.entry.module_id, category=point_category(item), is_heart=heart_value(item, point_category(item)),
                     title=text_value(item.get('title', ''), 200, True),
                     body=content_value(item.get('body', '')))
                 db.session.add(entry)
                 db.session.flush()
-            if not entry.parent and 'pois' in groups:
+            if not entry.parent and 'pois' in groups and entry.category != 'map_note':
                 entry.parent = groups['pois']
             node = MapNode(map=pointcrawl, entry=entry)
             db.session.add(node)
@@ -465,7 +476,7 @@ def save_geometry(pointcrawl, data, *, nested_draft=False):
             if kind not in PATH_TYPES:
                 abort(400)
             entry = ContentEntry(owner_id=current_user.id, campaign_id=pointcrawl.entry.campaign_id,
-                category='path', title=text_value(item.get('title', 'Path'), 200, True),
+                module_id=pointcrawl.entry.module_id, category='path', title=text_value(item.get('title', 'Path'), 200, True),
                 body=content_value(item.get('body', '')), path_type=kind)
             if 'paths' in groups:
                 entry.parent = groups['paths']
@@ -488,11 +499,13 @@ def save_geometry(pointcrawl, data, *, nested_draft=False):
             parent = node.entry.parent
             if parent and parent.category == 'pois' and parent.parent_id == pointcrawl.entry_id:
                 node.entry.parent = None
+            if node.entry.category == 'map_note' and len(node.entry.map_nodes) == 1:
+                db.session.delete(node.entry)  # A pin's note is part of the pin: removing the pin removes it.
             db.session.delete(node)
     for node in resolved.values():
         if node.nested_map and node.nested_map.entry is not node.entry:
             continue  # Preserve legacy linked originals and their saved contents.
-        own_map = ensure_article_map(node.entry)
+        own_map = node.entry.pointcrawl
         if own_map and not node.nested_map:
             node.nested_map = own_map
     pointcrawl.version += 1
@@ -532,7 +545,7 @@ def save_article_children(parent, children, *, body=None):
             path_type = row.get('path_type', 'standard')
             if path_type not in PATH_TYPES:
                 abort(400, 'Invalid path type.')
-            child = ContentEntry(owner_id=parent.owner_id, campaign=parent.campaign,
+            child = ContentEntry(owner_id=parent.owner_id, campaign=parent.campaign, module=parent.module,
                 parent=owner, category=category, title=text_value(row.get('title'), 200, True),
                 body=content_value(row.get('body', '')), path_type=path_type,
                 is_heart=heart_value(row, category))
@@ -620,11 +633,23 @@ def set_article_parent(entry, value, *, previous_category=None):
 
 
 def ensure_article_map(entry):
-    """Attach a canvas to the original, reusing its existing child articles."""
-    kind = ARTICLE_MAP_KINDS.get(entry.category)
-    if not kind or entry.pointcrawl:
+    """A realm is a map: give it its canvas. Other articles stay text until someone makes them a map."""
+    if entry.category != 'realm' or entry.pointcrawl:
         return entry.pointcrawl
+    return attach_map(entry)
+
+
+def attach_map(entry):
+    """Make an article a map (on purpose): a canvas that places its existing child articles as points.
+
+    Where the article is a point on other maps, its point leads into the new map."""
+    if entry.pointcrawl:
+        return entry.pointcrawl
+    kind = ARTICLE_MAP_KINDS.get(entry.category, 'freeform')
     canvas = PointcrawlMap(entry=entry, kind=kind)
+    for node in entry.map_nodes:
+        if node.nested_map is None:
+            node.nested_map = canvas
     db.session.add(canvas)
     if kind == 'realm':
         populate_realm_map(canvas)

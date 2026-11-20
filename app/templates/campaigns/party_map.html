@@ -1,0 +1,98 @@
+{% extends 'campaigns/layout.html' %}
+{# A party's map (#467): what it was shown of a map, under its fog, with its pins.
+   Members place pins (party notes); the Warden also uncovers the fog for this party. #}
+{% block workspace %}
+<div class="campaign-wiki party-map-page" x-data="partyMap"
+     data-graph="{{ graph|tojson|forceescape }}" data-state="{{ state|tojson|forceescape }}"
+     data-warden="{{ 'true' if warden else 'false' }}" data-csrf="{{ csrf }}"
+     data-state-url="{{ url_for('campaigns.party_map_state', party_id=party.id, map_id=pointcrawl.id) }}"
+     data-fog-url="{{ url_for('campaigns.party_map_fog', party_id=party.id, map_id=pointcrawl.id) }}"
+     data-pins-url="{{ url_for('campaigns.add_map_pin', party_id=party.id, map_id=pointcrawl.id) }}"
+     data-labels="{{ {'pick': _('Click the map where the pin goes.'), 'pinSaved': _('Pin added.'),
+                      'error': _('Could not save. Reload the page and try again.'),
+                      'fogChanged': _('The fog changed in another tab; it is up to date now.'),
+                      'deletePin': _('Delete this pin and its note? The party will no longer see it.')}|tojson|forceescape }}">
+  <nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ back_url }}">← {{ _('Back to party') }}</a></nav>
+  <header class="wiki-header">
+    <div>
+      <h1>{{ row.title|markdown_inline }}</h1>
+      <span class="wiki-badges"><span class="wiki-badge">{{ party.name|markdown_inline|striptags }}</span>
+        <span class="wiki-badge" x-text="pins.length + ' ' + {{ _('pins')|tojson|forceescape }}"></span></span>
+    </div>
+    <div class="wiki-actions">
+      {% if maps|length > 1 %}
+      <label class="party-map-switch"><span class="sr-only">{{ _('Map') }}</span>
+        <select onchange="location.href=this.value">
+          {% for other, other_row in maps %}<option value="{{ url_for('campaigns.party_map_view', party_id=party.id, map_id=other.id) }}" {% if other.id == pointcrawl.id %}selected{% endif %}>{{ other_row.title|markdown_inline|striptags }}</option>{% endfor %}
+        </select></label>
+      {% endif %}
+      {# A map has no text; a place with its own map (a dungeon point) does. #}
+      {% if not map_only %}<a class="button wiki-edit" href="{{ url_for('campaigns.party_entry', party_id=party.id, entry_id=pointcrawl.entry_id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read article') }}</a>{% endif %}
+      <a class="button wiki-edit" href="{{ url_for('campaigns.party_wiki', party_id=party.id) }}"><i class="fa-solid fa-book" aria-hidden="true"></i> {{ _('Wiki') }}</a>
+      <button type="button" class="button wiki-edit kw-add" :class="{'is-active': picking}" @click="startPin()" :disabled="!canvasReady"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span x-text="picking ? {{ _('Cancel pin')|tojson|forceescape }} : {{ _('Add pin')|tojson|forceescape }}">{{ _('Add pin') }}</span></button>
+    </div>
+  </header>
+
+  {% if warden %}
+  {# The Warden uncovers the map for this party, as on the whiteboard. #}
+  <div class="party-map-fog" role="toolbar" aria-label="{{ _('Fog') }}">
+    <strong><i class="fa-solid fa-cloud" aria-hidden="true"></i> {{ _('Fog') }}</strong>
+    <button type="button" class="fog-button" @click="fogAction('hide_all')">{{ _('Cover all') }}</button>
+    <button type="button" class="fog-button" @click="fogAction('reveal_all')">{{ _('Clear all') }}</button>
+    <button type="button" class="fog-button" :aria-pressed="fogTool === 'reveal'" @click="setFogTool('reveal')" :disabled="!fog?.enabled">{{ _('Reveal brush') }}</button>
+    <button type="button" class="fog-button" :aria-pressed="fogTool === 'hide'" @click="setFogTool('hide')" :disabled="!fog?.enabled">{{ _('Hide brush') }}</button>
+    <label class="fog-size">{{ _('Size') }} <input type="range" min="15" max="250" step="5" x-model="fogRadius" @change="setRadius()"></label>
+    <button type="button" class="fog-button" @click="fogAction('undo')" :disabled="!fog?.enabled || !fog?.strokes?.length">{{ _('Undo') }}</button>
+    <button type="button" class="fog-button" @click="fogAction('disable')" :disabled="!fog?.enabled">{{ _('Turn off fog') }}</button>
+    <button type="button" class="fog-button" :aria-pressed="preview" @click="togglePreview()" :disabled="!fog?.enabled">{{ _('See as players') }}</button>
+  </div>
+  {% endif %}
+  <p class="campaign-status" role="status" x-text="status"></p>
+
+  <div class="party-map-layout">
+    <div class="party-map-canvas">
+      <iframe class="pointcrawl-canvas party-map-frame" x-ref="canvas" data-src="{{ url_for('static', filename='src/js/maps/editor.html') }}" title="{{ _('Map') }}"></iframe>
+    </div>
+    <aside class="party-map-side" aria-label="{{ _('Details') }}">
+      <template x-if="selectedNode"><section class="party-map-detail">
+        <h2 x-html="$markdownInline(selectedNode.title)"></h2>
+        <div class="rich-content" x-html="$richHTML(selectedNode.body, selectedNode.references)"></div>
+        <a :href="{{ url_for('campaigns.party_entry', party_id=party.id, entry_id=0)|tojson|forceescape }}.replace(/0$/, selectedNode.entry_id)">{{ _('Open article') }} →</a>
+      </section></template>
+      <template x-if="selectedPath"><section class="party-map-detail">
+        <h2 x-html="$markdownInline(selectedPath.title)"></h2>
+        <div class="rich-content" x-html="$richHTML(selectedPath.body, selectedPath.references)"></div>
+      </section></template>
+      <template x-if="pin"><section class="party-map-detail">
+        <h2><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span x-text="pin.title"></span></h2>
+        <div class="rich-content" x-html="pin.html"></div>
+        <span class="kw-actions">
+          <a class="kw-action" :href="pin.edit_url"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit note') }}</a>
+          {% if warden %}<button type="button" class="kw-action kw-action-danger" @click="deletePin(pin)"><i class="fa-solid fa-trash" aria-hidden="true"></i> {{ _('Delete') }}</button>{% endif %}
+        </span>
+      </section></template>
+      <template x-if="!selectedNode && !selectedPath && !pin"><p class="wiki-empty">{{ _('Click a pin to read it. Add pin marks a place with a note the whole party can read and edit.') }}</p></template>
+      <h3>{{ _('Pins') }}</h3>
+      <ul class="party-map-pins">
+        <template x-for="item in pins" :key="item.id"><li>
+          <button type="button" class="link-button" @click="selected=''; selectedEdge=''; selectedPin=String(item.id); sync()" x-text="item.title"></button>
+        </li></template>
+      </ul>
+      <p class="wiki-empty" x-show="!pins.length">{{ _('No pins yet.') }}</p>
+    </aside>
+  </div>
+
+  <dialog class="create-dialog" x-ref="pinDialog" aria-labelledby="pin-dialog-title" @close="draft=null">
+    <h2 id="pin-dialog-title">{{ _('Add pin') }}</h2>
+    <template x-if="draft"><form @submit.prevent="savePin()">
+      <label>{{ _('Title') }}<input type="text" x-ref="pinTitle" x-model="draft.title" required maxlength="200" autocomplete="off"></label>
+      <label>{{ _('Note') }}<textarea x-model="draft.body" rows="5" maxlength="50000"></textarea></label>
+      <p class="import-hint">{{ _('The pin is a party note: every member can read and edit it.') }}</p>
+      <div class="create-dialog-actions">
+        <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
+        <button type="submit" class="primary" :disabled="saving">{{ _('Add pin') }}</button>
+      </div>
+    </form></template>
+  </dialog>
+</div>
+{% endblock %}

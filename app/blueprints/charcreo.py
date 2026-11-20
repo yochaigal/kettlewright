@@ -20,6 +20,15 @@ from flask_login import login_required, current_user
 character_create = Blueprint('character_create', __name__)
 
 
+@character_create.before_request
+def campaign_character_options():
+    """Creating a character for a party: its campaign's backgrounds replace or extend the official ones."""
+    from app.lib.campaign_backgrounds import party_for_code, use_party_backgrounds
+    party = party_for_code(request.values.get('party_code'))
+    if party is not None:
+        use_party_backgrounds(party)
+
+
 def rebuild_names(names):
     result = [('', _l('Name (d10)...')), ('Custom', _l('** Custom **'))]
     for name in names:
@@ -634,7 +643,7 @@ def charcreo_refresh_abo():
 @character_create.route('/charcreo/roll-all', methods=['GET'])
 def charcreo_roll_all():
     # roll values
-    data = {}
+    data = {'party_code': request.args.get('party_code', '')}
     key, background = random_background()
     name = random_name(background)
     data['bkg_items'] = json.dumps(sdv(background,'starting_gear',[]))
@@ -868,6 +877,14 @@ def charcreo_save():
                custom_fields.get(f'background_table{index}_select')) for index in (1, 2)] if background else []
     new_character.pets.extend(starting_pets(new_character, options))
     db.session.add(new_character)
+    # Created for a party (its join code): the character joins it.
+    from app.lib.campaign_backgrounds import party_for_code
+    party = party_for_code(request.form.get('party_code'))
+    if party is not None:
+        db.session.flush()
+        new_character.party_id = party.id
+        new_character.party_code = party.join_code
+        add_character_to_party(new_character)
     db.session.commit()
     response = make_response("Redirecting")
     response.headers["HX-Redirect"] = url_for('main.character', username=current_user.username, url_name=url_name)

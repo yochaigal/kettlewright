@@ -123,6 +123,16 @@ name_choices, background_choices = load_data_from_json(json_file_path)
 
 class CharacterForm(FlaskForm):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Creating a character for a party whose campaign has its own backgrounds.
+        from app.lib.campaign_backgrounds import active_backgrounds
+        backgrounds = active_backgrounds()
+        if backgrounds is not None:
+            self.background.choices = background_choices[:2] + [(name, _l(name)) for name in backgrounds]
+            self.name.choices = name_choices[:2] + [(name, _l(name)) for background in backgrounds.values()
+                                                    for name in background['names']]
+
     background = SelectField(
         _l('Background'), validators=[DataRequired()], choices=background_choices, id="background-field")
     name = SelectField(_l('Name'), choices=name_choices, id="name-field")
@@ -166,6 +176,8 @@ class CharacterForm(FlaskForm):
     image_url = HiddenField()
     custom_image = HiddenField()
     armor = HiddenField()
+    # The join code of the party this character is created for (see campaign_backgrounds).
+    party_code = HiddenField()
 
 
 class CharacterEditForm(FlaskForm):

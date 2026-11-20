@@ -6,7 +6,7 @@ from flask_login import LoginManager, login_user
 
 from app.lib.feature_access import (init_feature_access, user_features_enabled,
                                     party_features_enabled, require_party_features)
-from app.models import db, User, CampaignParty, PartyMap, PartyPresentation
+from app.models import db, User, PartyMap, PartyPresentation
 from test_campaigns import setup, login, create_entry, reveal, description_image
 from test_shared_map import shared, URL, DRAWING
 
@@ -57,7 +57,7 @@ def test_audiences_remain_available_for_future_experiments(monkeypatch):
         assert not user_features_enabled()
 
 
-@pytest.mark.parametrize('url', ['/campaigns/', '/campaigns/1/', '/materials/',
+@pytest.mark.parametrize('url', ['/campaigns/', '/campaigns/1/wiki/', '/materials/',
     '/materials/new', '/materials/import-archive', '/maps/new', '/maps/tables', '/articles/tables'])
 def test_authoring_pages_are_available_without_tester_ids(setup, url):
     _, client = setup
@@ -84,7 +84,7 @@ def test_party_members_can_read_and_author_their_own_campaigns(setup):
     assert page.status_code == 200
     assert 'href="/campaigns/"' in page.text
     assert 'href="/materials/new' not in page.text
-    assert client.get('/party/1/materials/data').json['entries'][0]['title'] == 'Known name'
+    assert client.get('/party/1/materials/data').json['entries'][0]['title'] == 'SECRET NAME'  # The revealed article.
     assert client.get('/campaigns/').status_code == 200
     assert 'Secret campaign' not in client.get('/campaigns/').text
     assert client.get('/campaigns/1/').status_code == 403
@@ -102,11 +102,11 @@ def test_publication_supports_all_owned_parties(setup):
     assert reveal(client, entry_id, party_id=3).status_code == 403
 
 
-def test_hiding_a_campaign_revokes_publications(setup):
+def test_hiding_an_article_revokes_its_publication(setup):
     app, client = setup
     entry_id = create_entry(client)
     assert reveal(client, entry_id, party_id=2).status_code == 302
-    assert client.post('/campaigns/1/hide/2').status_code == 302
+    assert client.post(f'/materials/{entry_id}/revoke/2', data={'version': 1}).status_code == 302
     with app.app_context():
         assert PartyPresentation.query.filter_by(entry_id=entry_id, party_id=2).count() == 0
     login(client, 3)

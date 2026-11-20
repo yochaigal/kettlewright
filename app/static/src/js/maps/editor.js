@@ -1,14 +1,27 @@
 import {h, render} from 'preact';
 import {Excalidraw, convertToExcalidrawElements, restoreElements, CaptureUpdateAction, getCommonBounds} from 'excalidraw';
-import {drawingFromScene, emptyDrawing, graphShapes, movedLocations, isManaged, graphHit, editableGeography, shapeGeometry} from './scene.js';
+import {drawingFromScene, emptyDrawing, graphShapes, movedLocations, isManaged, graphHit, editableGeography, shapeGeometry,
+  pinShapes, pinHit} from './scene.js';
+import {createFogLayer} from './whiteboard_fog.js';
 import {loadLibraries} from './libraries.js';
 import {fittedViewport} from './viewport.js';
 import {editorLocale} from './locale.js';
 
 let api, state, applying = false, lastDrawing = '', inputDrawingKey = '', graphKey = '', disposed = false, repairing = false, initialized = false;
 let waterTarget=null, brushStartIds=null;
+// Party map view only: the party's fog (Warden uncovers it) and pins (click to place one).
+let fogLayer=null, picking=false;
 const send = (type, detail = {}) => parent.postMessage({channel: 'kw-map', type, ...detail}, location.origin);
-const managedElements = graph => restoreElements(convertToExcalidrawElements(graphShapes(graph, state.selected, state.selectedEdge), {regenerateIds:false}), null);
+const managedElements = graph => restoreElements(convertToExcalidrawElements(
+  [...graphShapes(graph, state.selected, state.selectedEdge), ...pinShapes(state.pins, state.selectedPin)], {regenerateIds:false}), null);
+const sceneKey = () => JSON.stringify([state.graph.nodes, state.graph.edges, state.selected, state.selectedEdge, state.pins || [], state.selectedPin || '']);
+
+function syncFog() {
+  if (!state?.fog || !api) return;
+  if (!fogLayer) fogLayer = createFogLayer({editor: document.getElementById('editor'), getApi: () => api,
+    warden: Boolean(state.fogWarden), onOperation: operation => send('fog-operation', {operation})});
+  fogLayer.setState(state.fog);
+}
 const orderedScene = (free, managed) => [
   ...managed.filter(e=>e.customData?.nodeId && state.graph.nodes.some(n=>String(n.id)===e.customData.nodeId && n.category==='terrain')),
   ...free,
@@ -31,7 +44,7 @@ function applyState(next) {
   applying = true;
   try {
     const drawing = state.graph.drawing || emptyDrawing();
-    const nextKey = JSON.stringify([state.graph.nodes, state.graph.edges, state.selected, state.selectedEdge]);
+    const nextKey = sceneKey();
     const drawingKey = JSON.stringify(drawing);
     if (nextKey !== graphKey || drawingKey !== inputDrawingKey) {
       const free = drawingKey === inputDrawingKey
@@ -46,6 +59,7 @@ function applyState(next) {
       inputDrawingKey = drawingKey;
       lastDrawing = JSON.stringify(drawingFromScene(api.getSceneElements(), api.getFiles()));
     }
+    syncFog();
     if (selectionChanged) {
       const selectedElementIds = state.selected ? {[`kw-node-${state.selected}`]: true} : {};
       api.updateScene({appState: {selectedElementIds}, captureUpdate: CaptureUpdateAction.NEVER});
@@ -54,12 +68,13 @@ function applyState(next) {
 }
 
 function onChange(elements, appState, files) {
+  fogLayer?.redraw();  // Fog follows panning and zooming.
   if (!api || !state || applying || disposed) return;
   if (!initialized) {
     if (appState.isLoading) return;
     initialized = true;
     lastDrawing = JSON.stringify(drawingFromScene(elements, files));
-    graphKey = JSON.stringify([state.graph.nodes, state.graph.edges, state.selected, state.selectedEdge]);
+    graphKey = sceneKey();
     send('mounted');
     setTimeout(() => {if (!disposed) {applyState(state); fitDrawing();}}, 0);
     return;
@@ -143,6 +158,9 @@ window.addEventListener('message', event => {
   else if (message.type === 'select-tool' && state?.editing && api) {
     waterTarget=null;brushStartIds=null;api.setActiveTool({type:'selection'});
   }
+  else if (message.type === 'pick-point') {picking = Boolean(message.value);}
+  else if (message.type === 'fog-tool' && fogLayer) {fogLayer.setTool(message.tool || ''); if (message.radius) fogLayer.setRadius(message.radius);}
+  else if (message.type === 'fog-preview' && fogLayer) {fogLayer.setPreview(Boolean(message.value));}
   else if (message.type === 'clear') {
     disposed = true;
     render(null, document.getElementById('editor'));
@@ -161,7 +179,8 @@ document.getElementById('editor').addEventListener('pointerdown',event=>{
   if(event.target.tagName!=='CANVAS' || event.button!==0 || !api)return;
   const tool=api.getAppState().activeTool.type;
   if(state.editing && !['selection','hand'].includes(tool))return;
-  pointerStart={x:event.clientX,y:event.clientY};
+  // Screen coordinates measure the drag: focusing the frame can scroll the page between down and up.
+  pointerStart={x:event.clientX,y:event.clientY,screenX:event.screenX,screenY:event.screenY};
 },true);
 document.getElementById('editor').addEventListener('pointerup',event=>{
   if(waterTarget!==null && api?.getAppState().activeTool.type==='freedraw') {
@@ -184,14 +203,18 @@ document.getElementById('editor').addEventListener('pointerup',event=>{
     },0);
   }
   const start=pointerStart;pointerStart=null;
+  const moved=start?Math.hypot(event.screenX-start.screenX,event.screenY-start.screenY):0;
   // Rebuild terrain around the final landmark position after a drag, without
   // replacing the scene while the pointer is still down.
-  if(start && state?.editing && state.graph.kind==='realm' && Math.hypot(event.clientX-start.x,event.clientY-start.y)>6) {
+  if(start && state?.editing && state.graph.kind==='realm' && moved>6) {
     setTimeout(()=>{if(!disposed){graphKey='';applyState(state);}},0);
   }
-  if(!start || !api || Math.hypot(event.clientX-start.x,event.clientY-start.y)>6)return;
+  if(!start || !api || moved>6)return;
   const view=api.getAppState(), zoom=view.zoom.value;
-  const hit=graphHit(state.graph,(event.clientX-view.offsetLeft)/zoom-view.scrollX,
-    (event.clientY-view.offsetTop)/zoom-view.scrollY,10/zoom);
+  const sceneX=(start.x-view.offsetLeft)/zoom-view.scrollX, sceneY=(start.y-view.offsetTop)/zoom-view.scrollY;
+  if(picking){picking=false;send('picked',{x:sceneX,y:sceneY});return;}
+  const pin=pinHit(state.pins,sceneX,sceneY,16/zoom);
+  if(pin){send('select-pin',{id:String(pin.id)});return;}
+  const hit=graphHit(state.graph,sceneX,sceneY,10/zoom);
   if(hit)send('select',hit);
 },true);

@@ -1,8 +1,9 @@
 """Typed draft persistence, authorization and lifecycle integration."""
 import json
+import re
 import pytest
 from app.models import db, ContentEntry, Campaign, PointcrawlMap
-from tests.unit.test_campaigns import setup, create_entry, create_map, login, reveal, graph_from_article
+from tests.unit.test_campaigns import map_page, setup, create_entry, create_map, login, reveal, graph_from_article
 
 
 def draft():
@@ -59,7 +60,7 @@ def test_duplicate_generated_targets_roll_back(setup):
         assert ContentEntry.query.count() == 0
 
 
-def test_generated_map_description_links_its_article_sections(setup):
+def test_generated_map_keeps_its_sections_and_no_description(setup):
     from app.lib.article_references import private_reference_urls
     app, client = setup
     children = [{'category':'people','title':'People','body':'Culture summary','draft_key':'root/0'}]
@@ -69,8 +70,8 @@ def test_generated_map_description_links_its_article_sections(setup):
     assert response.status_code == 302
     with app.app_context():
         root = PointcrawlMap.query.filter_by(kind='realm').one().entry
-        assert root.body.startswith('Original Tools text')
-        assert set(private_reference_urls(root).values()) == {f'/materials/{root.children[0].id}/edit'}
+        assert root.body == ''  # A map has no text of its own; its sections are articles.
+        assert [child.title for child in root.children] == ['People']
 
 
 def test_tree_roundtrip_scope_publication_and_move(setup):
@@ -118,9 +119,12 @@ def test_parent_owner_workspace_and_cycles(setup):
     root=create_entry(client,category='realm')
     child=create_entry(client,category='people',parent_id=root)
     assert client.post(f'/materials/{root}/edit',data={'version':1,'category':'realm','title':'Cycle','campaign_id':1,'parent_id':child}).status_code == 400
-    assert client.post('/materials/new',data={'category':'npc','title':'Wrong workspace','parent_id':root}).status_code == 400
+    with app.app_context():
+        db.session.add_all([Campaign(id=8,owner_id=1,name='Other'),Campaign(id=9,owner_id=4,name='Theirs')])
+        db.session.commit()
+    assert client.post('/materials/new',data={'category':'npc','title':'Wrong workspace','campaign_id':8,'parent_id':root}).status_code == 400
     login(client,4)
-    assert client.post('/materials/new',data={'category':'npc','title':'Wrong owner','parent_id':root}).status_code == 403
+    assert client.post('/materials/new',data={'category':'npc','title':'Wrong owner','campaign_id':9,'parent_id':root}).status_code == 403
 
 
 def test_new_dungeon_in_realm_pois_is_placed_with_its_existing_contents(setup):
@@ -136,7 +140,14 @@ def test_new_dungeon_in_realm_pois_is_placed_with_its_existing_contents(setup):
     assert after['version']>before['version']
     assert after['nodes'][0]==before['nodes'][0]
     node=next(node for node in after['nodes'] if node['entry_id']==dungeon)
-    assert node['nested_map_id'] and node['has_contents']
+    # The dungeon is text with its rooms until the Warden makes it a map.
+    assert not node['nested_map_id'] and node['has_contents']
+    with app.app_context():
+        assert db.session.get(ContentEntry,dungeon).pointcrawl is None
+    assert client.post(f'/materials/{dungeon}/map',data={'version':1}).status_code==302
+    after=graph_from_article(client,f'/materials/{realm}/edit')
+    node=next(node for node in after['nodes'] if node['entry_id']==dungeon)
+    assert node['nested_map_id']
     with app.app_context():
         entry=db.session.get(ContentEntry,dungeon)
         assert node['nested_map_id']==entry.pointcrawl.id
@@ -144,7 +155,7 @@ def test_new_dungeon_in_realm_pois_is_placed_with_its_existing_contents(setup):
         assert len(entry.pointcrawl.nodes)==1
     assert client.post(f'/maps/{before["id"]}/data',data={'graph':json.dumps(before)}).status_code==409
     assert client.post(f'/materials/{dungeon}/edit',data={'category':'dungeon','title':'Renamed',
-        'campaign_id':1,'parent_id':pois,'version':1}).status_code==302
+        'campaign_id':1,'parent_id':pois,'version':2}).status_code==302
     again=graph_from_article(client,f'/materials/{realm}/edit')
     assert len(again['nodes'])==2 and again['version']==after['version']
 
@@ -155,12 +166,11 @@ def test_reparenting_existing_dungeon_places_it_once_and_picker_reports_contents
     pois=create_entry(client,category='pois',parent_id=realm)
     dungeon=create_entry(client,category='dungeon',title='Dungeon',
         children=json.dumps([{'category':'room','title':'Room'}]))
+    assert client.post(f'/materials/{dungeon}/map',data={'version':1}).status_code==302  # Made a map on purpose.
     with app.app_context():
         nested_id=db.session.get(ContentEntry,dungeon).pointcrawl.id
-    html=client.get(f'/materials/{realm}/edit').get_data(as_text=True)
-    assert f'value="{dungeon}" data-category="dungeon" data-nested-map-id="{nested_id}" data-has-contents="true"' in html
     assert client.post(f'/materials/{dungeon}/edit',data={'category':'dungeon','title':'Dungeon',
-        'campaign_id':1,'parent_id':pois,'version':1}).status_code==302
+        'campaign_id':1,'parent_id':pois,'version':2}).status_code==302
     graph=graph_from_article(client,f'/materials/{realm}/edit')
     assert len(graph['nodes'])==1
     assert graph['nodes'][0]['entry_id']==dungeon
@@ -242,7 +252,7 @@ def test_typed_map_roundtrip_and_standalone_path_publication(setup):
 
 def test_map_draft_children_remain_private_and_form_has_types(setup):
     app,client=setup
-    response=client.post('/maps/new',data={'kind':'realm','title':'Map',
+    response=client.post('/maps/new',data={'kind':'realm','title':'Map','campaign_id':1,
         'draft':json.dumps({'nodes':[],'edges':[],'children':draft()})})
     assert response.status_code == 302
     with app.app_context():
@@ -251,18 +261,22 @@ def test_map_draft_children_remain_private_and_form_has_types(setup):
         assert len(root.children) == 3
         assert all(not row.presentations for row in ContentEntry.query.filter(ContentEntry.id != root.id))
     html=client.get('/materials/new').get_data(as_text=True)
-    assert 'Category' in html and 'Sub Category' in html and 'name="parent_id"' in html
-    assert html.index('name="campaign_id"') < html.index('name="top_category"') < html.index('name="category"') < html.index('name="parent_id"')
+    # One Type select (grouped), then an optional parent.
+    assert 'Type' in html and 'Sub Category' not in html and 'name="top_category"' not in html
+    assert 'Parent (optional)' in html
+    assert html.index('name="module_id"') < html.index('name="category"') < html.index('name="parent_id"')
     from app.lib.content_types import CATEGORIES, CATEGORY_GROUPS
     grouped = [key for keys in CATEGORY_GROUPS.values() for key in keys]
     assert len(grouped) == len(set(grouped))
-    assert set(grouped) == set(CATEGORIES) - {'map', 'overview'}
+    assert set(grouped) == set(CATEGORIES) - {'map', 'overview', 'map_note'}  # Map notes belong to their pins.
     assert 'value="location"' not in html
     html=client.get('/campaigns/').get_data(as_text=True)
     # The header ends where the page intro paragraph starts; modals nest their own divs.
-    navigation=html.split('class="campaign-actions campaign-page-actions"')[1].split('<p>')[0]
-    assert 'Unfiled articles' not in navigation
-    assert 'Import archive' in navigation and 'Create New' in navigation
+    # Like the characters page: one action row (New campaign, green), no page title or description.
+    navigation=html.split('class="characters-page-header campaigns-page-header"')[1].split('<dialog')[0]
+    assert 'Unfiled articles' not in navigation and 'Import module' not in navigation
+    assert 'class="is-new"' in navigation and 'New campaign' in navigation
+    assert '<h1>Campaigns</h1>' not in html and 'Everything lives in a campaign' not in html
 
 
 def test_parent_form_advances_version_once_and_map_groups_roundtrip(setup):
@@ -302,12 +316,18 @@ def test_spatial_article_owns_canvas_and_reuses_existing_descendants(setup):
         keep = root.children[0].children[0]
         assert ContentEntry.query.count() == 4
         assert root.pointcrawl.nodes[0].entry_id == keep.id
+        assert keep.pointcrawl is None  # Only the realm is a map; the keep stays text.
+        keep_id = keep.id
+    assert client.post(f'/materials/{keep_id}/map', data={'version': 1}).status_code == 302
+    with app.app_context():
+        root = db.session.get(ContentEntry, root_id)
+        keep = db.session.get(ContentEntry, keep_id)
+        map_id = root.pointcrawl.id
         assert root.pointcrawl.nodes[0].nested_map_id == keep.pointcrawl.id
         assert keep.pointcrawl.entry_id == keep.id
         assert keep.pointcrawl.nodes[0].entry_id == keep.children[0].id
-        map_id = root.pointcrawl.id
     response = client.post(f'/materials/{root_id}/map', data={'version': 1})
-    assert response.location.endswith(f'/materials/{root_id}/edit')
+    assert response.location == f'/maps/{map_id}/edit'  # Already a map: its map editor.
     with app.app_context():
         assert ContentEntry.query.count() == 4
         assert len(db.session.get(ContentEntry, root_id).pointcrawl.nodes) == 1
@@ -320,14 +340,13 @@ def test_picker_omits_legacy_types_and_root_labels_do_not_repeat(setup):
     from html import unescape
     _, client = setup
     html = client.get('/materials/new').get_data(as_text=True)
-    groups = json.loads(unescape(re.search(r'data-category-groups="([^"]+)"', html)[1]))
-    assert all(choice['value'] not in ('overview', 'map') for group in groups for choice in group['choices'])
-    for name in ('Realm', 'People', 'Topography'):
-        group = next(group for group in groups if group['value'] == name)
-        assert group['choices'][0]['label'] == 'None'
-    for name, value, label in [('Dungeon', 'dungeon', 'Entire dungeon'), ('Forest', 'forest', 'Entire forest')]:
-        group = next(group for group in groups if group['value'] == name)
-        assert group['choices'][0] == {'value': value, 'label': label}
+    select = re.search(r'<select name="category".*?</select>', html, re.S)[0]
+    values = re.findall(r'<option value="([^"]+)"', select)
+    assert not {'overview', 'map', 'realm'} & set(values)  # Realms are maps: New map makes them.
+    assert len(values) == len(set(values))
+    assert re.findall(r'<optgroup label="([^"]+)"', select)[:2] == ['People', 'Factions']
+    assert '<option value="dungeon" >Entire dungeon</option>' in select
+    assert '<option value="forest" >Entire forest</option>' in select
     assert 'data-selected-category="custom"' in html
     assert client.post('/materials/new', data={'title':'Old overview','category':'overview'}).status_code == 400
 
@@ -337,19 +356,20 @@ def test_generated_articles_open_with_embedded_drawing_and_legacy_links_redirect
     app,client=setup
     response=client.post('/materials/generate',data={'title':'Generated article','kind':kind,'campaign_id':1})
     assert response.status_code==302
-    assert response.location.startswith('/materials/') and response.location.endswith('/edit')
+    # A new map opens in the map editor: a title and the drawing, no description.
+    assert re.fullmatch(r'/maps/\d+/edit', response.location)
     graph=graph_from_article(client,response.location)
     page=client.get(response.location).get_data(as_text=True)
-    assert 'form="article-form" name="graph"' in page
-    assert 'Edit map' not in page and 'Save map' not in page and 'Open map' not in page
-    assert client.get(f'/maps/{graph["id"]}/edit').location==response.location
+    assert 'form="map-form" name="graph"' in page and 'name="body"' not in page
+    assert 'Edit map' in page and 'Save map' in page and 'Edit Campaign' not in page
     with app.app_context():
         entry_id=db.session.get(PointcrawlMap,graph['id']).entry_id
-    assert reveal(client,entry_id,title='Known place').status_code==302
-    public_url=f'/party/1/materials/{entry_id}'
-    assert graph_from_article(client,public_url)['title']=='Known place'
-    assert client.get(f'/party/1/maps/{graph["id"]}/').location==public_url
-    assert 'form="article-form" name="graph"' not in client.get(public_url).get_data(as_text=True)
+    assert client.get(f'/materials/{entry_id}/edit').location==response.location  # Not an article.
+    assert reveal(client,entry_id).status_code==302
+    # The party opens a map on its party map page (fog and pins), never as a wiki article.
+    party_map=f'/party/1/map/{graph["id"]}/'
+    assert client.get(f'/party/1/materials/{entry_id}').location==party_map
+    assert graph_from_article(client,party_map)['title']=='Generated article'
     ordinary=create_entry(client,category='note')
     assert 'data-graph=' not in client.get(f'/materials/{ordinary}/edit').get_data(as_text=True)
 
@@ -383,7 +403,8 @@ def test_existing_spatial_article_gets_canvas_without_new_article(setup):
         db.session.add(entry)
         db.session.commit()
         entry_id = entry.id
-    assert 'Add drawing' in client.get(f'/materials/{entry_id}/edit').get_data(as_text=True)
+    page = client.get(f'/materials/{entry_id}/edit').get_data(as_text=True)
+    assert 'Add drawing' not in page and 'data-graph=' not in page  # An article is text.
     assert client.post(f'/materials/{entry_id}/map', data={'version': 9}).status_code == 409
     assert client.post(f'/materials/{entry_id}/map', data={'version': 1}).status_code == 302
     with app.app_context():
@@ -489,8 +510,8 @@ def test_realm_map_contains_geography_and_reuses_paths_without_tree_duplicates(s
         for branch in tree:
             walk(branch)
         assert len(flattened) == len(set(flattened)) == 11
-    html = client.get(f'/materials/{root_id}/edit').get_data(as_text=True)
-    assert '<h2>Drawing</h2>' in html
+    html = map_page(client, root_id)
+    assert '<h1>Edit map</h1>' in html and html.index('<h1>Edit map</h1>') < html.index('title="Drawing editor"')
     assert 'title="Drawing editor"' in html
     assert 'Prepare realm geography' not in html
 
@@ -535,11 +556,12 @@ def test_realm_projection_reveals_only_published_geography(setup):
     public = client.get(f'/party/1/maps/{map_id}/data').json
     assert public['nodes'] == []
     assert 'realm_sections' not in public
-    assert reveal(client,water_id,title='Known river',body='Public banks').status_code == 302
+    with app.app_context():
+        water_title = db.session.get(ContentEntry, water_id).title
+    assert reveal(client,water_id).status_code == 302
     public = client.get(f'/party/1/maps/{map_id}/data').json
     assert len(public['nodes']) == 1 and public['nodes'][0]['category'] == 'water'
-    assert public['nodes'][0]['title'] == 'Known river'
-    assert 'Private water course' not in json.dumps(public)
+    assert public['nodes'][0]['title'] == water_title  # Only the revealed geography.
     assert 'is_heart' not in public['nodes'][0]
 
 
@@ -574,22 +596,23 @@ def test_geography_shapes_persist_and_follow_article_visibility(setup):
 @pytest.mark.parametrize('category', ['realm','forest','dungeon','terrain','water'])
 def test_content_detection_includes_children_and_free_drawing(setup, category):
     app, client = setup
-    root_id = create_entry(client, category=category)
+    def made_map(entry_id):
+        if category != 'realm':  # Only a realm is a map from the start; the others are made one.
+            assert client.post(f'/materials/{entry_id}/map', data={'version': 1}).status_code == 302
+        return entry_id
+    root_id = made_map(create_entry(client, category=category))
     graph = graph_from_article(client, f'/materials/{root_id}/edit')
     assert graph['has_contents'] is False
-    if category == 'realm':
-        assert 'Prepare realm geography' in client.get(f'/materials/{root_id}/edit').get_data(as_text=True)
     create_entry(client, category='note', parent_id=root_id)
     graph = graph_from_article(client, f'/materials/{root_id}/edit')
     assert graph['has_contents'] is True
-    assert 'Prepare realm geography' not in client.get(f'/materials/{root_id}/edit').get_data(as_text=True)
-    blank_id = create_entry(client, category=category)
+    blank_id = made_map(create_entry(client, category=category))
     graph = graph_from_article(client, f'/materials/{blank_id}/edit')
     graph['drawing'] = {'elements':[{'id':'river','type':'freedraw','x':0,'y':0,'width':100,'height':100,
                                    'angle':0,'points':[[0,0],[50,100],[100,50]]}], 'files':{}}
     assert client.post(f'/maps/{graph["id"]}/data',data={'graph':json.dumps(graph)}).status_code == 200
     assert graph_from_article(client, f'/materials/{blank_id}/edit')['has_contents'] is True
-    assert 'Prepare realm geography' not in client.get(f'/materials/{blank_id}/edit').get_data(as_text=True)
+    assert 'Prepare realm geography' not in map_page(client, blank_id)  # Maps have no types: no realm panel.
 
 
 def test_multiple_terrain_landmarks_survive_save_and_respect_publication(setup):
@@ -616,82 +639,85 @@ def test_multiple_terrain_landmarks_survive_save_and_respect_publication(setup):
     restored = client.get(f'/maps/{map_id}/data').json
     assert next(node for node in restored['nodes'] if node['id']==landmark['id'])['x'] == landmark['x']
     assert reveal(client,root_id).status_code == 302
-    assert reveal(client,landmark['entry_id'],title='Known tower').status_code == 302
+    assert reveal(client,landmark['entry_id']).status_code == 302
     public = client.get(f'/party/1/maps/{map_id}/data').json
     assert len(public['nodes']) == 1
-    assert 'terrain_id' not in public['nodes'][0]
-    assert 'Private landmark' not in json.dumps(public)
+    assert 'terrain_id' not in public['nodes'][0]  # Its terrain is not revealed yet.
+    others = {node['title'] for node in landmarks if node['id'] != landmark['id']}
+    assert public['nodes'][0]['title'] == landmark['title'] and not any(title in json.dumps(public) for title in others)
     terrain = next(node for node in terrains if node['id']==landmark['terrain_id'])
-    assert reveal(client,terrain['entry_id'],title='Known hills').status_code == 302
+    assert reveal(client,terrain['entry_id']).status_code == 302
     public = client.get(f'/party/1/maps/{map_id}/data').json
     assert next(node for node in public['nodes'] if node['category']=='landmark')['terrain_id'] == terrain['id']
 
 
-def test_empty_campaign_opens_its_workspace_without_a_realm(setup):
+def test_empty_campaign_opens_its_home_without_a_realm(setup):
     app, client = setup
     response = client.post('/campaigns/', data={'name': 'Blank world', 'start': 'empty',
         'generate_children': '1', 'forest_chance': '90'})
     assert response.status_code == 302
     with app.app_context():
         campaign = Campaign.query.filter_by(name='Blank world').one()
-        assert response.location.endswith(f'/campaigns/{campaign.id}/')
+        assert response.location.endswith(f'/campaigns/{campaign.id}/')  # Its lobby.
         assert not campaign.entries
 
 
-def test_random_campaign_passes_bounded_generator_options(setup):
+def test_random_module_passes_bounded_generator_options(setup):
     app, client = setup
-    response = client.post('/campaigns/', data={'name': 'Random world', 'start': 'random',
+    response = client.post('/campaigns/1/modules', data={'name': 'Random world', 'start': 'random',
         'forest_chance': '70', 'dungeon_chance': '500', 'poi_count': '12'})
     assert response.status_code == 302
     location = response.location
     assert '/materials/generate?' in location and 'kind=realm' in location and 'random=1' in location
     # Unchecked children, an out-of-range percentage falls back, and only known POI counts pass.
     assert 'children=0' in location and 'forest=70' in location and 'forest_pois=25' in location and '&pois=12' in location
-    response = client.post('/campaigns/', data={'name': 'Odd world', 'start': 'random', 'poi_count': '7'})
+    response = client.post('/campaigns/1/modules', data={'name': 'Odd world', 'start': 'random', 'poi_count': '7'})
     assert '&pois=' not in response.location and '?pois=' not in response.location
     # Random starts may be a dungeon or forest; anything else falls back to a realm.
-    assert 'kind=dungeon' in client.post('/campaigns/', data={'name': 'Deep', 'start': 'random', 'kind': 'dungeon'}).location
-    assert 'kind=forest' in client.post('/campaigns/', data={'name': 'Wood', 'start': 'random', 'kind': 'forest'}).location
-    assert 'kind=realm' in client.post('/campaigns/', data={'name': 'Odd', 'start': 'random', 'kind': 'freeform'}).location
+    post = lambda kind: client.post('/campaigns/1/modules', data={'name': kind, 'start': 'random', 'kind': kind}).location
+    assert 'kind=dungeon' in post('dungeon') and 'kind=forest' in post('forest') and 'kind=realm' in post('freeform')
 
 
-def test_random_campaign_with_generated_draft_saves_everything_at_once(setup):
+def test_random_module_with_generated_draft_saves_everything_at_once(setup):
     app, client = setup
     draft = {'nodes': [{'id': 'new-1', 'title': 'Village', 'category': 'settlement', 'is_heart': True,
                         'number': 1, 'x': 10, 'y': 10}], 'edges': [],
              'children': [{'category': 'pois', 'title': 'POIs'}, {'category': 'paths', 'title': 'Paths'}]}
-    response = client.post('/campaigns/', data={'name': 'Rolled world', 'start': 'random', 'kind': 'realm',
+    response = client.post('/campaigns/1/modules', data={'name': 'Rolled world', 'start': 'random', 'kind': 'realm',
         'title': 'The Ashen Reach', 'body': 'Windswept hills.', 'draft': json.dumps(draft)})
     assert response.status_code == 302
+    from app.models import Module
     with app.app_context():
-        campaign = Campaign.query.filter_by(name='Rolled world').one()
-        assert response.location.endswith(f'/campaigns/{campaign.id}/')
-        realm = ContentEntry.query.filter_by(campaign_id=campaign.id, category='realm').one()
-        assert realm.title == 'The Ashen Reach' and realm.pointcrawl.kind == 'realm'
+        module = Module.query.filter_by(title='Rolled world').one()
+        assert response.location.endswith(f'/campaigns/1/modules/{module.id}/')
+        realm = ContentEntry.query.filter_by(campaign_id=1, category='realm').one()
+        assert realm.title == 'The Ashen Reach' and realm.pointcrawl.kind == 'realm' and realm.module_id == module.id
         village = realm.pointcrawl.nodes[0].entry
-        assert village.title == 'Village' and village.campaign_id == campaign.id
+        assert village.title == 'Village' and village.campaign_id == 1 and village.module_id == module.id
+        assert all(child.module_id == module.id for child in realm.children)
         assert not village.presentations
 
 
-def test_rejected_random_draft_creates_no_campaign(setup):
+def test_rejected_random_draft_creates_no_module(setup):
     app, client = setup
-    response = client.post('/campaigns/', data={'name': 'Broken world', 'start': 'random',
+    response = client.post('/campaigns/1/modules', data={'name': 'Broken world', 'start': 'random',
         'title': 'Bad', 'draft': '{not json'})
     assert response.status_code == 400
+    from app.models import Module
     with app.app_context():
-        assert Campaign.query.filter_by(name='Broken world').count() == 0
+        assert Module.query.filter_by(title='Broken world').count() == 0
         assert ContentEntry.query.filter_by(title='Bad').count() == 0
 
 
-def test_campaign_creation_opens_distinct_realm_generator(setup):
+def test_random_module_fallback_opens_distinct_realm_generator(setup):
     app, client = setup
-    response = client.post('/campaigns/', data={'name': 'New world'})
+    response = client.post('/campaigns/1/modules', data={'name': 'New world', 'start': 'random'})
     assert response.status_code == 302
-    assert '/materials/generate?campaign_id=' in response.location
+    assert '/materials/generate?campaign_id=1' in response.location and 'module_id=' in response.location
     assert 'kind=realm' in response.location
     html = client.get(response.location).get_data(as_text=True)
     assert 'data-kind="realm"' in html
-    assert 'New Campaign' in html and 'Save Campaign' in html
+    assert 'New map' in html and 'Save map' in html and 'Campaign' not in html.split('<main')[-1].split('Organize')[0]
     assert 'Top Category' not in html
     assert 'Dungeon contents' not in html and 'Forest contents' not in html
-    assert 'Forest POIs' in html
+    assert 'Generate all child articles' in html and 'Map type' not in html  # Its options come from the dialog.

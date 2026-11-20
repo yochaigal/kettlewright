@@ -1,0 +1,26 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token, page_header with context %}
+{# Write or edit one background of a module, in Markdown. #}
+{% block workspace %}
+<nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ url_for('campaigns.module_view', campaign_id=campaign.id, module_id=module.id) }}#backgrounds">← {{ module.title }}</a></nav>
+{{ page_header(_('Edit background') if name else _('New background')) }}
+{% if error %}<p class="import-error" role="alert">{{ error }}</p>{% endif %}
+<form method="post" class="campaign-page-form background-editor">{{ token(module.version) }}
+<input type="hidden" name="action" value="save">
+<label for="background-text">{{ _('Background') }}</label>
+<textarea id="background-text" name="text" rows="28" spellcheck="true" required>{{ text }}</textarea>
+<div class="campaign-actions">
+  <button type="submit" class="primary">{{ _('Save background') }}</button>
+  <a href="{{ url_for('campaigns.module_view', campaign_id=campaign.id, module_id=module.id) }}#backgrounds">{{ _('Cancel') }}</a>
+</div>
+</form>
+<details class="import-instructions" open><summary>{{ _('How to write a background') }}</summary>
+<ul>
+<li>{{ _('The title in the front matter is its name; the text before the first heading is its description.') }}</li>
+<li>{{ _('## Names: names separated by commas.') }}</li>
+<li>{{ _('## Starting gear: one item per line. Tags go in brackets, like [petty, d6], [uses 3] or [charges 2/3]; a description after " — ".') }}</li>
+<li>{{ _('## Starting containers (optional): like - Cart [6 slots, carried by Mule].') }}</li>
+<li>{{ _('Then two tables: each a ## heading with the question, and its options as a list. Under an option, indented, its rewards: an item, "5 gold", "pet: Raven Familiar" or "container: Donkey [4 slots]".') }}</li>
+</ul>
+</details>
+{% endblock %}

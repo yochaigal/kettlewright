@@ -31,6 +31,12 @@
   {% endfor %}</div>{% endif %}
   {% endif %} {% endwith %}
   <div id="party-form" class="sheet box form party-view-sheet">
+    {% if party.campaign and is_owner %}
+    {# Parties live inside campaigns: back to it. Its name stays private to the Warden. #}
+    <nav class="party-campaign-crumb" aria-label="{{ _('Campaign') }}">
+      <a href="{{ url_for('campaigns.lobby', campaign_id=party.campaign_id) }}">← {{ party.campaign.name }}</a>
+    </nav>
+    {% endif %}
     <div class="party-header">
       <div class="party-heading">
         <h1 class="title level-item">{{ party.name|markdown_inline }}</h1>
@@ -48,6 +54,10 @@
         <a class="button no-margin-top" id="party-wiki-link" href="{{ url_for('campaigns.party_wiki', party_id=party.id) }}"
           title="{{ _('Party wiki') }}"><span class="mobile-hidden">{{ _('Wiki') }}</span>
           <i class="fa-solid fa-book-open icon-in-button" aria-hidden="true"></i></a>
+        {# The party's map (#467): what it was shown, under its fog, with its pins. #}
+        <a class="button no-margin-top" id="party-map-link" href="{{ url_for('campaigns.party_maps', party_id=party.id) }}"
+          title="{{ _('Map') }}"><span class="mobile-hidden">{{ _('Map') }}</span>
+          <i class="fa-solid fa-map icon-in-button" aria-hidden="true"></i></a>
         {% endif %}
         {% if can_view_rolls %}
         <a class="button no-margin-top" href="{{ url_for('party.shared_map', party_id=party.id) }}"
@@ -78,7 +88,14 @@
     </div>
     <div id="characters" class="party-tab-panel" role="tabpanel" aria-labelledby="characters-tab">
     <div class="party-section">
-      <h3 class="party-section-heading">{{_('Members')}}</h3>
+      <div class="party-section-heading-row">
+        <h3 class="party-section-heading">{{_('Members')}}</h3>
+        {% if backgrounds %}{# Warden only: what new characters of this party choose from. #}
+        <button type="button" class="button is-small no-margin-top" id="party-backgrounds-button" aria-haspopup="dialog" aria-controls="backgrounds-dialog"
+          onclick="document.getElementById('backgrounds-dialog').showModal()"><i class="fa-solid fa-user-gear icon-in-button" aria-hidden="true"></i> {{ _('Backgrounds') }}</button>
+        {% endif %}
+      </div>
+      {% if backgrounds %}{% include "partial/partyview/backgrounds.html" %}{% endif %}
       <div id="party-members" class="{% if is_owner %}party-compact{% endif %}"
            data-party-id="{{ party.id }}" data-members-url="{{ url_for('party.members', party_id=party.id) }}"
            data-save-error="{{_('Unable to save this stat. Please try again.')}}"
@@ -99,6 +116,7 @@
     </div>
 
     {% include "partial/companions/hirelings.html" %}
+
 
     <div class="party-section">
       <h3 class="party-section-heading">{{_('Storage')}}</h3>

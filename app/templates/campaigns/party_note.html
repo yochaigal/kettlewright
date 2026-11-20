@@ -1,6 +1,6 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import page_header, token with context %}
-{# Edit a party note: the party sees the change straight away. Notes never appear in Campaigns. #}
+{# Edit a party note: every member can; the party sees the change straight away. Only the Warden deletes it. #}
 {% block workspace %}
 {% set back = url_for('campaigns.party_wiki', party_id=party.id) %}
 {% call page_header(_('Edit party note')) %}<a href="{{ back }}">{{ _('Back to party wiki') }}</a>
@@ -11,9 +11,13 @@
   <input type="text" id="party-note-edit-title" name="title" required maxlength="200" value="{{ entry.title }}">
   <label for="party-note-edit-body">{{ _('Text') }}</label>
   <textarea id="party-note-edit-body" name="body" rows="12" maxlength="50000">{{ entry.body }}</textarea>
-  <p class="import-hint">{{ _('Every member of %(party)s can read this note.', party=party.name) }}</p>
+  <p class="import-hint">{{ _('Every member of %(party)s can read and edit this note.', party=party.name) }}</p>
 </form>
-{# At the bottom, as in the article editor. #}
+{# Below the text: a sketch, drawn like a map (members can draw too). #}
+{% set sketch_drawing, sketch_editing, sketch_form = entry.drawing, true, 'party-note-form' %}
+{% include 'campaigns/sketch.html' %}
+{# At the bottom, as in the article editor. Only the Warden deletes notes. #}
+{% if is_warden %}
 <div class="campaign-actions campaign-footer-actions">
 <form method="post" action="{{ url_for('campaigns.delete_party_note', party_id=party.id, entry_id=entry.id) }}"
       data-confirm="{{ _('Delete this party note? The party will no longer see it.') }}" data-confirm-label="{{ _('Delete') }}">
@@ -21,4 +25,5 @@
   <button type="submit"><i class="fa-solid fa-trash" aria-hidden="true"></i> {{ _('Delete note…') }}</button>
 </form>
 </div>
+{% endif %}
 {% endblock %}
