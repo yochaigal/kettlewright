@@ -40,11 +40,11 @@
         {% include "partial/charview/export_dialog.html" %}
 
         {% if is_owner %}
-        <button class="edit-mode is-danger button" id="delete-character-button" data-character-id="{{ character.id }}"
+        <button class="edit-mode button" id="delete-character-button" data-character-id="{{ character.id }}"
           data-confirm-title="{{_('Delete character')}}" data-confirm-button="{{_('Delete')}}"
           hx-get="/delete-character/{{ character.id }}/"
           hx-confirm="{{_('Are you sure you want to delete')}} {{character.name}}?">
-          {{_('DELETE')}}<i class="fa-solid fa-trash icon-in-button"></i>
+          <i class="fa-solid fa-trash" aria-hidden="true"></i> {{_('Delete')}}
         </button>
         {% endif %}
       </div>

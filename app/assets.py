@@ -18,6 +18,7 @@ def compile_static_assets(app):
     scss = Bundle('src/scss/magic.css/normalize.css', 'src/scss/magic.css/magick.css',
                   'src/scss/main.scss', 'src/scss/modals.scss', 'src/scss/inventory.scss',
                   'src/scss/create.scss', 'src/scss/character.scss', 'src/scss/characters-parties.scss', 'src/scss/party.scss', 'src/scss/tools.scss', 'src/scss/cards.scss',
+                  'src/scss/sheet-clean.scss',  # Last: the character sheet and party page's cleaner look.
                   filters='libsass',
                   # SCSS must be compiled even when Flask debug mode is enabled.
                   debug=False,

@@ -1014,17 +1014,19 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
 .map-player-pin p {margin:.4em 0 0;}
 .map-pin-detail .map-pin-reveal {display:flex;align-items:center;gap:.5em;margin:.5em 0;}
 
-/* Campaigns page: parties without a campaign (#483), an island like Starred. */
-.campaign-workspace .unassigned-island {margin:1.75em 0;padding:1em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:14px;
+/* Campaigns page: parties without a campaign (#483) and Playing in, islands like Starred. */
+.campaign-workspace .campaigns-island {margin:1.75em 0;padding:1em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:14px;
   background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.06);}  /* Like the Starred island. */
-.unassigned-island .island-head {display:flex;flex-wrap:wrap;align-items:baseline;gap:.25em 1em;margin:0 0 .85em;padding:0 .25em;}
-.unassigned-island .island-head h2 {display:flex;align-items:center;gap:.45em;margin:0;font-family:inherit;font-size:.82em;font-weight:700;
+:is(.campaigns-island, .starred-island) .island-head {display:flex;flex-wrap:wrap;align-items:baseline;gap:.25em 1em;margin:0 0 .85em;padding:0 .25em;}
+:is(.campaigns-island, .starred-island) .island-head h2 {display:flex;align-items:center;gap:.45em;margin:0;font-family:inherit;font-size:.82em;font-weight:700;
   letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--fg) 75%,var(--bg));}
-.unassigned-island .island-head h2::before {content:none;}
-.unassigned-island .unassigned-card {padding-right:.75em;}
-.unassigned-island .unassigned-card .starred-card-body {flex:1;}
-.unassigned-island .unassigned-card .campaign-party-members {min-height:0;margin-top:.15em;}
-.unassigned-island .unassigned-card .campaign-party-members img {width:1.9em;height:1.9em;}
+:is(.campaigns-island, .starred-island) .island-head h2::before {content:none;}
+.campaigns-island .island-party-card {padding-right:.75em;}
+.campaigns-island .island-party-card .starred-card-body {flex:1;}
+.campaigns-island .island-party-card .campaign-party-members {min-height:0;margin-top:.15em;}
+.campaigns-island .island-party-card .campaign-party-members img {width:1.9em;height:1.9em;}
 .campaign-workspace .unassigned-island .unassigned-add {align-self:flex-start;margin-top:.45em;min-height:32px;padding:.25em .75em;font-size:.85em;}
 .create-dialog label select {display:block;width:100%;box-sizing:border-box;margin:.4em 0 0;padding:.5em .6em;border:1px solid var(--fg);
   border-radius:2px;background:var(--bg);color:var(--fg);font:inherit;}
+/* No campaigns yet: a quiet line under the islands (New campaign is the button at the top). */
+.campaign-workspace .campaign-gallery-page .gallery-empty {margin:1.75em .25em;color:color-mix(in srgb,var(--fg) 62%,var(--bg));font-style:italic;font-size:.95em;}

@@ -51,7 +51,8 @@ def test_star_and_unstar_everything_on_the_campaigns_island(setup):
                  f'/campaigns/1/modules/{module_id}/wiki/#background-'):
         assert text in island, text
     assert island.count('class="star-button"') == 5 and island.count('aria-pressed="true"') == 5
-    assert '<h3' not in island and '<h2' not in island  # No heading: just the cards.
+    # A small label, like the other islands on the page; the cards are the rest.
+    assert '<h2 id="starred-title">' in island and '> Starred</h2>' in island and '<h3' not in island
     star(client, 'article', entry_id, on=False)
     assert ('article', entry_id, '') not in stars(app)
 

@@ -77,7 +77,7 @@
 {% else %}
   <h3 class="no-space">{{labels[section]}}</h3>
   <div {{ edit_attrs(section, labels[section]) }}>
-    <div id="character-{{section}}-view" class="rich-content character-text-field">{% if character[section] %}{{character[section]|markdown}}{% else %}{{empty[section]}}{% endif %}</div>
+    <div id="character-{{section}}-view" class="rich-content character-text-field{% if not character[section] %} is-empty{% endif %}">{% if character[section] %}{{character[section]|markdown}}{% else %}{{empty[section]}}{% endif %}</div>
   </div>
 {% endif %}
 {% if section == 'party' and party_button_oob %}{% with oob=True %}{% include "partial/charview/party_button.html" %}{% endwith %}{% endif %}

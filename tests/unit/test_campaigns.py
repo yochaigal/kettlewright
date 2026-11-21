@@ -1840,9 +1840,11 @@ def test_top_bar_marks_the_current_section(setup):
 
 
 def test_new_campaign_opens_its_own_dialog(setup):
-    """New campaign (and "No campaigns yet") open the New campaign dialog by its id, never another dialog."""
+    """New campaign opens the New campaign dialog (its own ref), never another dialog; "No campaigns yet" adds no
+    second button."""
     app, client = setup
-    login(client, 3)  # No campaigns: the empty state's link.
+    login(client, 3)  # No campaigns.
     page = client.get('/campaigns/').text
-    assert 'id="new-campaign-dialog"' in page and 'class="create-card' not in page
-    assert "document.getElementById('new-campaign-dialog').showModal()" in page
+    assert 'id="new-campaign-dialog"' in page and 'x-ref="createDialog"' in page and 'class="create-card' not in page
+    assert '@click="$refs.createDialog.showModal()"' in page
+    assert 'No campaigns yet.</p>' in page and page.count('New campaign</button>') == 1

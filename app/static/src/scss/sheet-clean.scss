@@ -1,0 +1,167 @@
+// A cleaner character sheet and party page: fewer labels and borders, quiet section labels like the
+// campaign pages, secondary controls on hover (pointer devices) and roomy touch targets (touch devices).
+// Loaded last; everything is scoped to the character page (.view-character-sheet) or the party page
+// (.party-view-sheet), so the Tools preview, companions and print keep their own look.
+
+$muted: color-mix(in srgb, var(--fg) 62%, transparent);
+$hairline: color-mix(in srgb, var(--fg) 16%, transparent);
+$soft-fill: color-mix(in srgb, var(--fg) 5%, transparent);
+
+// Section headings: a small uppercase label, no ornament.
+@mixin section-label {
+  display: flex; align-items: center; gap: .5em;
+  margin: 0 0 .8rem; font-size: 1.25rem; font-weight: 700; font-style: normal;
+  letter-spacing: .09em; text-transform: uppercase; color: $muted;
+  &::before { display: none; }
+}
+
+// ----- Character sheet -----
+
+.view-character-sheet {
+  // The sheet's sections: labels, not titles; some air between them instead of rules.
+  .character-priority-grid h3, .character-details-grid h3, .character-sheet-notes h3,
+  #character-background-container h3, #character-party-container h3, #character-pets > h3,
+  .character-inventory-heading h3 { @include section-label; }
+  .character-priority-grid, .character-details-grid, .character-sheet-notes,
+  #character-background-container, #character-party-container, #character-pets { margin-top: 2.8rem; }
+
+  // Editable fields say so on hover instead of with a sentence ("Click a field to edit.").
+  .inline-edit-hint { display: none; }
+  .character-inline-trigger { border-radius: 6px; transition: background-color .15s; cursor: pointer; }
+  @media (hover: hover) {
+    .character-inline-trigger:hover { background: $soft-fill; }
+    h3.character-inline-trigger:hover::after, h1.character-inline-trigger:hover::after {
+      content: "\f303"; font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: .75em;
+      margin-left: .5em; opacity: .45;
+    }
+  }
+  .character-inline-trigger:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+  // An empty section reads as a quiet placeholder.
+  .character-text-field.is-empty, #character-no-party-description { color: $muted; font-style: italic; font-size: .92em; }
+
+  // Stats: no "Stats" title; light cards, the name small, the numbers large.
+  #character-quick-stats {
+    > h3 { display: none; }
+    .character-stat-dashboard { gap: 1rem; margin-bottom: 1.4rem; }
+    .character-stat-card {
+      padding: 1.2rem 1rem 1.3rem; border: 1px solid $hairline; border-radius: 12px; outline: 0;
+      background: var(--form-bg); box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+    }
+    .stat-card-heading { margin-bottom: .9rem; }
+    .stat-card-heading h4 { font-size: 1.6rem; letter-spacing: .12em; color: $muted; }
+    .stat-card-heading .stat-save-roll i { font-size: .8em; }
+    // Current / Max: the slash says it; the captions stay for screen readers.
+    .stat-card-values .sheet-stat-form > label {
+      position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+    }
+    // Current is the number you play with: large, with − / +. Max is small and quiet (click to edit).
+    .stat-card-values { grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: .2rem; }
+    .stat-value-divider { line-height: 1; align-self: center; font-size: 1.6rem; opacity: .3; }
+    .stat-card-values .sheet-stat-form:last-child .stat-stepper button { display: none; }
+    // A site-wide rule sizes every input with !important; these numbers need theirs.
+    .stat-card-values .sheet-stat-form:last-child input[type="number"] { width: 3.6rem; height: 3rem; font-size: 1.7rem !important; font-weight: 400; color: $muted; }
+    .stat-stepper { gap: .1rem; }
+    .stat-stepper input[type="number"] { height: 4.4rem; font-size: 3rem !important; border-color: transparent; background: transparent; border-radius: 6px; }
+    .stat-stepper input[type="number"]:hover, .stat-stepper input[type="number"]:focus { border-color: $hairline; background: var(--form-bg); }
+    .stat-stepper button { width: 2.6rem; flex-basis: 2.6rem; height: 3.6rem; border: 0; border-radius: 6px; color: $muted; font-size: 2rem; }
+    .stat-stepper button:hover:not(:disabled) { background: $soft-fill; color: var(--fg); }
+    .stat-readonly { font-size: 2.6rem; font-weight: 700; }
+    .stat-warning:not(:empty) { margin-top: .5rem; color: #b33a3a; font-size: 1.15rem; line-height: 1.35; text-align: center; }
+    .stat-warning small:first-child { font-weight: 700; }
+
+    // Gold, Armor, the conditions and Rest: one quiet row.
+    .character-stat-toolbar { gap: 1.2rem 1.6rem; }
+    .character-stat-resource h4, .character-stat-resource .sheet-stat-form > label {
+      font-size: 1.1rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: $muted;
+    }
+    .character-stat-resource p { font-size: 2rem; font-weight: 700; }
+    #character-gold-container input { height: 3.4rem; border-color: $hairline; border-radius: 6px; font-size: 1.8rem !important; font-weight: 700; }
+    .character-stat-conditions > h4 {
+      position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+    }
+    .character-stat-resource .character-condition, .character-stat-resource .sheet-stat-form > .character-condition {
+      border-color: $hairline; border-radius: 999px; padding: .45rem .9rem; min-height: 3.2rem;
+      font-size: 1.25rem; font-weight: 400; letter-spacing: normal; text-transform: none; color: var(--fg);
+    }
+    .character-condition:has(:checked), .character-condition.is-selected { border-color: var(--fg); background: $soft-fill; font-weight: 700; }
+    .character-stat-rest .button { border-color: $hairline; border-radius: 999px; padding: .45rem 1.1rem; min-height: 3.2rem; }
+  }
+
+  .character-inventory-heading h3 { margin: 0 auto 0 0; }
+  .character-inventory-heading .button, .inventory-footer-buttons .button {
+    min-height: 3.2rem; padding: .3rem 1rem; border: 1px solid $hairline; border-radius: 999px; box-shadow: none;
+    background: transparent; font-size: 1.3rem; font-weight: 700;
+  }
+  .character-inventory-heading .button:hover:not(:disabled), .inventory-footer-buttons .button:hover:not(:disabled) { border-color: var(--fg); }
+
+  // Inventory: the slot's tools appear with the pointer (always there on touch screens).
+  @media (hover: hover) and (pointer: fine) {
+    .slot-item-actions { opacity: 0; transition: opacity .15s; }
+    [data-slot]:hover .slot-item-actions, [data-slot]:focus-within .slot-item-actions,
+    .slot-item:hover .slot-item-actions, .slot-item:focus-within .slot-item-actions { opacity: 1; }
+  }
+
+  // Pets: "Add pet" is a small action, not a full button row.
+  #character-pets > .button { min-height: 0; padding: .35rem .9rem; font-size: 1.3rem; border-radius: 999px; }
+
+  // Export / Delete: quiet outlined buttons; Delete in red only.
+  .character-sheet-actions { gap: .8rem; }
+  .character-sheet-actions .button, .character-sheet-actions button {
+    min-height: 3.6rem; padding: .4rem 1.2rem; border: 1px solid $hairline; border-radius: 999px;
+    background: transparent; color: var(--fg); font-size: 1.35rem; font-weight: 700; box-shadow: none;
+  }
+  .character-sheet-actions .button:hover, .character-sheet-actions button:hover { border-color: var(--fg); }
+  #delete-character-button { color: #a33b3b; border-color: color-mix(in srgb, #a33b3b 45%, transparent); }
+  #delete-character-button:hover { background: #a33b3b; border-color: #a33b3b; color: #fff; }
+}
+
+// ----- Party page -----
+
+.party-view-sheet {
+  .party-section-heading, #party-hirelings > h3 { @include section-label; margin: 0; }
+  .party-section { margin-top: 2.4rem; }
+  .party-section-heading-row { align-items: center; min-height: 3.6rem; margin-bottom: .8rem; }
+
+  // Header actions: light outlined buttons (icons only on phones, as before).
+  .party-header-actions .button, &#party-form .party-header-actions a.button {
+    min-height: 3.6rem; border: 1px solid $hairline; border-radius: 8px; box-shadow: none; background: transparent;
+    font-size: 1.4rem; font-weight: 700;
+  }
+  .party-header-actions .button:hover, &#party-form .party-header-actions a.button:hover { border-color: var(--fg); background: $soft-fill; }
+
+  // Compact / Cards / Connected only: a light segmented control.
+  .party-view-controls { border-color: $hairline; border-radius: 999px; overflow: hidden; }
+  .party-view-controls button { padding: .3rem 1.1rem; font-size: 1.3rem; }
+  .party-view-controls button[data-connected-only] { border-left-color: $hairline; }
+  // Storage's Marketplace / Item / Container: small pills.
+  .inventory-footer-buttons .button {
+    min-height: 3.2rem; padding: .3rem 1rem; border: 1px solid $hairline; border-radius: 999px; box-shadow: none;
+    background: transparent; font-size: 1.3rem; font-weight: 700;
+  }
+  .inventory-footer-buttons .button:hover:not(:disabled) { border-color: var(--fg); }
+  // Storage starts right under its label, aligned with the other sections.
+  #inventory-container.party-section-content { padding: .4rem 0 0; }
+
+  // Members' Backgrounds and Hirelings' Add hireling sit on their heading's row.
+  #party-backgrounds-button, #party-hirelings .party-section-action {
+    min-height: 3.2rem; padding: .3rem 1rem; border-radius: 999px; font-size: 1.3rem;
+  }
+  #party-hirelings { position: relative; }
+  #party-hirelings > h3 { min-height: 3.6rem; margin-bottom: .8rem; }
+  #party-hirelings .party-section-tools { position: absolute; top: 0; right: 0; margin: 0; }
+  #party-hirelings .party-section-tools .button { margin: 0; }
+
+  // Storage: a light header band, hairline rows; empty slots are faint guides.
+  #inventory-container .inventory-header { border-bottom: 1px solid $hairline; border-radius: 8px 8px 0 0; background: $soft-fill; padding: .6rem .8rem; }
+  #inventory-container .inventory-item-container { border-bottom: 1px solid $hairline; min-height: 3.2rem; padding: 0 .8rem; }
+  #inventory-container .inventory-item-container:has(> .inventory-item-text:empty) { border-bottom-color: color-mix(in srgb, var(--fg) 7%, transparent); }
+  #inventory-container .inventory-item-container:hover:not(:has(> .inventory-item-text:empty)) { background: $soft-fill; }
+}
+
+// No pets / no hirelings yet: a quiet line, like the sheet's other empty sections.
+.view-character-sheet, .party-view-sheet {
+  .companion-empty { margin: 0 0 .6rem; color: $muted; font-style: italic; font-size: .92em; }
+}
+
+// Monsters tab: no heading (the tab names it); Add monsters at the end of the bar.
+.party-view-sheet .monster-roster-bar { justify-content: flex-end; }
