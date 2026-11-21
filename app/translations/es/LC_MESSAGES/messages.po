@@ -50876,3 +50876,7 @@ msgstr[1] "%(num)s personajes"
 #. Character sheet: the column of cards beside the inventory (a label for screen readers)
 msgid "About the character"
 msgstr "Sobre el personaje"
+
+#. Whiteboard, Dungeon brush and eraser: drawing or erasing a rectangle of squares (#498)
+msgid "Hold Shift for a rectangle."
+msgstr "Mantén Mayús para un rectángulo."

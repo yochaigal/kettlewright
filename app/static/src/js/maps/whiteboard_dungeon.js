@@ -7,7 +7,9 @@
 // dungeon is read back from the board and needs no extra data.
 // This module has no imports so it can be tested directly.
 
-export const DEFAULT_SIZE = 80; // one token
+// One square holds a token (80) and lines up with the board's grid (#497): Excalidraw draws a 20px grid with
+// a bolder line every 5 squares, so a 100px square is one bold square. Boards keep the size they were drawn at.
+export const DEFAULT_SIZE = 100;
 export const STYLE = {floor: '#e6e6e6', wall: '#1e1e1e', door: '#9a9a9a', floorOpacity: 85};
 // Floor colors to paint with (#453): Excalidraw's own light fills, so dark mode inverts them as it
 // does every drawing. Stone is the original floor; Slate stays light in dark mode, so fog shows on it.
@@ -62,7 +64,7 @@ export function cellsAlong(from, to, size) {
   return cells;
 }
 
-// Squares inside a box; used by tests to build rooms.
+// Squares inside a box: the Shift rectangle (#498), and rooms in tests.
 export function cellsInBox(from, to, size) {
   const [c1, r1] = cellAt(...from, size), [c2, r2] = cellAt(...to, size);
   const cells = new Set();

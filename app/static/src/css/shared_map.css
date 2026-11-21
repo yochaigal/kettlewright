@@ -58,6 +58,9 @@ body.warden-board .excalidraw .App-toolbar .Stack_horizontal { grid-auto-flow: r
 body.warden-board .excalidraw .App-menu_top .layer-ui__wrapper__top-right { grid-column: 3; }
 body.warden-board .excalidraw .App-toolbar__divider { width: 24px; height: 1px; margin: 4px 0; }
 body.warden-board .excalidraw .HintViewer { display: none; }
+/* More tools (#496): Excalidraw opens it under its toolbar, right-aligned, which on the rail is off screen to the
+   left. Open it beside the rail instead, level with the bottom of the rail where its button is. */
+body.warden-board .excalidraw .App-toolbar__extra-tools-dropdown { top: auto; bottom: 0; left: calc(100% + 8px); right: auto; margin-top: 0; }
 /* The selected shape's properties (opacity, layers, actions) open beside the rail and laser, not under them. */
 body.warden-board .excalidraw .App-menu__left { margin-left: 100px; }
 /* Narrow screens use Excalidraw's mobile layout; keep the Warden tools as a row above the board. */
@@ -70,6 +73,7 @@ body.warden-board .excalidraw .App-menu__left { margin-left: 100px; }
   body.warden-board .excalidraw .App-toolbar__divider { width: 1px; height: 24px; margin: 0; }
   body.warden-board .excalidraw .HintViewer { display: revert; }
   body.warden-board .excalidraw .App-menu__left { margin-left: 0; }
+  body.warden-board .excalidraw .App-toolbar__extra-tools-dropdown { top: 100%; bottom: auto; left: auto; right: 0; margin-top: .375rem; }
 }
 #fog-status { font-size: 12px; }
 #board-notices:empty { display: none; }

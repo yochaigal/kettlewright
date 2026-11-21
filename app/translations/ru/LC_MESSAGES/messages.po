@@ -36186,3 +36186,7 @@ msgstr "Нажмите на портрет, чтобы добавить фишк
 #. Tools page tab (#461)
 msgid "World"
 msgstr "Мир"
+
+#. Whiteboard, Dungeon brush and eraser: drawing or erasing a rectangle of squares (#498)
+msgid "Hold Shift for a rectangle."
+msgstr "Удерживайте Shift, чтобы нарисовать прямоугольник."
