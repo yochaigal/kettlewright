@@ -50872,3 +50872,7 @@ msgid "%(num)s character"
 msgid_plural "%(num)s characters"
 msgstr[0] "%(num)s personaje"
 msgstr[1] "%(num)s personajes"
+
+#. Character sheet: the column of cards beside the inventory (a label for screen readers)
+msgid "About the character"
+msgstr "Sobre el personaje"

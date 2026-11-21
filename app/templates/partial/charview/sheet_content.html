@@ -25,49 +25,53 @@
       {% include "partial/charview/stats.html" %}
     </div>
 
-    <div class="inventory-container character-sheet-inventory" id="inventory-container" hx-vals='{"inventory_context": "sheet"}'>
-      {% if generated_preview %}
-        {% include "partial/tools/pcgen_inventory.html" %}
-      {% else %}
-        {% with inventory_sheet=true %}{% include "partial/charview/inventory.html" %}{% endwith %}
-      {% endif %}
-    </div>
-
-    {% with companion_cards_editable=false if generated_preview else true %}{% include "partial/companions/pets.html" %}{% endwith %}
-
-    <div class="character-priority-grid">
-      {% if not character.is_barebones %}
-      <div id="character-omens-container">
-        {% with section='omens' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+    {# One sheet: the inventory beside the rest of the character as small cards (omens, bonds, scars, notes,
+       traits, description, pets, party); the background answers below. The ids stay: edits and refreshes use them. #}
+    <div class="sheet-layout">
+      <div class="sheet-main">
+        <div class="inventory-container character-sheet-inventory" id="inventory-container" hx-vals='{"inventory_context": "sheet"}'>
+          {% if generated_preview %}
+            {% include "partial/tools/pcgen_inventory.html" %}
+          {% else %}
+            {% with inventory_sheet=true %}{% include "partial/charview/inventory.html" %}{% endwith %}
+          {% endif %}
+        </div>
       </div>
-      <div id="character-bonds-container">
-        {% with section='bonds' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
-      </div>
-      {% endif %}
-      <div id="character-scars-container">
-        {% with section='scars' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
-      </div>
-    </div>
-
-    <div class="character-sheet-notes" id="character-notes-container">
-      {% with section='notes' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
-    </div>
-
-    <div class="character-details-grid">
-      <div id="character-traits-container">
-        {% with section='traits' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
-      </div>
-      <div id="character-description-container">
-        {% with section='description' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
-      </div>
+      <aside class="sheet-side" aria-label="{{ _('About the character') }}">
+        <div class="character-priority-grid">
+          {% if not character.is_barebones %}
+          <div id="character-omens-container">
+            {% with section='omens' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+          </div>
+          <div id="character-bonds-container">
+            {% with section='bonds' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+          </div>
+          {% endif %}
+          <div id="character-scars-container">
+            {% with section='scars' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+          </div>
+        </div>
+        <div class="character-sheet-notes" id="character-notes-container">
+          {% with section='notes' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+        </div>
+        <div id="character-traits-container">
+          {% with section='traits' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+        </div>
+        <div id="character-description-container">
+          {% with section='description' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+        </div>
+        {% with companion_cards_editable=false if generated_preview else true %}{% include "partial/companions/pets.html" %}{% endwith %}
+        {% if not generated_preview %}<div id="character-party-container">
+          {% with section='party' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+        </div>{% endif %}
+      </aside>
     </div>
 
     {% if not character.is_barebones %}
-    <div id="character-background-container">
-      {% with section='background' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
-    </div>
+    <section class="sheet-about" aria-label="{{ _('Background') }}">
+      <div id="character-background-container">
+        {% with section='background' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
+      </div>
+    </section>
     {% endif %}
 
-    {% if not generated_preview %}<div id="character-party-container">
-      {% with section='party' %}{% include "partial/charview/inline_section.html" %}{% endwith %}
-    </div>{% endif %}

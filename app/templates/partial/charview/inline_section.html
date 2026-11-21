@@ -69,7 +69,7 @@
     <div id="character-party-name-description">
       {% if can_edit_sheet %}<a class="bold subtitle" id="character-party-link" href="/{{party_url}}">{{ party.name|markdown_inline }}</a>
       {% else %}<div class="bold subtitle">{{ party.name|markdown_inline }}</div>{% endif %}
-      <div class="character-text-field with-whitespace rich-content" id="character-party-description">{{ party.description|markdown }}</div>
+      {% if party.description %}<div class="character-text-field with-whitespace rich-content" id="character-party-description">{{ party.description|markdown }}</div>{% endif %}
     </div>
   {% else %}
     <div {{ edit_attrs(section, labels[section]) }}><p id="character-no-party-description">{{_('This character does not belong to a party...')}}</p></div>
