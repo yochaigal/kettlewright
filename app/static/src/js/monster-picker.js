@@ -59,7 +59,7 @@ export function monsterPreview(monster, {title = true} = {}) {
   portrait.alt = monster.name;
   portrait.className = 'monster-preview-portrait';
   const stats = document.createElement('p');
-  stats.textContent = `${monster.hp} HP · ${monster.armor} Armor · ${monster.strength} STR · ${monster.dexterity} DEX · ${monster.willpower} WIL`;
+  stats.textContent = statLine(monster, ' · ');
   const attack = document.createElement('p'); attack.innerHTML = inlineContentHTML(monster.attack);
   const notes = document.createElement('div'); notes.innerHTML = richContentHTML(monster.notes);
   const source = document.createElement('a'); source.href = monster.source; source.textContent = monster.name; source.target = '_blank'; source.rel = 'noopener noreferrer';
@@ -69,6 +69,14 @@ export function monsterPreview(monster, {title = true} = {}) {
   return content;
 }
 
+// The localized bestiary sends its stat labels; other catalogs keep the English ones.
+const ENGLISH_LABELS = {hp:'HP', armor:'Armor', strength:'STR', dexterity:'DEX', willpower:'WIL'};
+function statLine(monster, separator) {
+  const labels = monster.labels || ENGLISH_LABELS;
+  return ['hp', 'armor', 'strength', 'dexterity', 'willpower']
+    .map(stat => `${monster[stat]} ${labels[stat]}`).join(separator);
+}
+
 export function monsterText(monster) {
-  return `${monster.name}\n\n${monster.hp} HP, ${monster.armor} Armor, ${monster.strength} STR, ${monster.dexterity} DEX, ${monster.willpower} WIL, ${monster.attack}\n\n${monster.notes}`;
+  return `${monster.name}\n\n${statLine(monster, ', ')}, ${monster.attack}\n\n${monster.notes}`;
 }

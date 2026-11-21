@@ -92,7 +92,7 @@
             </div>
             <div class="tools-field">
               <label for="tools-monster-template">{{_('Monster')}}</label>
-              <select id="tools-monster-template">{% for key, monster in monster_templates|dictsort %}<option value="{{key}}">{{monster.name}} · {{monster.hp}} HP · {{monster.armor}} {{_('Armor')}}</option>{% endfor %}</select>
+              <select id="tools-monster-template">{% for key, monster in monster_templates.items()|sort(attribute='1.name') %}<option value="{{key}}">{{monster.name}} · {{monster.hp}} {{_('HP')}} · {{monster.armor}} {{_('Armor')}}</option>{% endfor %}</select>
             </div>
           </div>
           <div id="tools-monster-preview" class="tools-picker-preview" aria-live="polite"></div>

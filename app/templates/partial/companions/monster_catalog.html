@@ -40,7 +40,7 @@
           <p id="monster-catalog-label" class="monster-catalog-label" hidden>{{_('Monsters')}}</p>
           <div class="monster-choices" role="group" aria-labelledby="monster-catalog-label">
       <div class="monster-card-grid">
-      {% for key, monster in templates|dictsort %}
+      {% for key, monster in templates.items()|sort(attribute='1.name') %}
       <div class="monster-choice" data-name="{{monster.name|lower}}" data-key="{{key}}">
         <input type="checkbox" name="template" value="{{key}}" hidden {% if key in request.form.getlist('template') %}checked{% endif %}>
         <div class="monster-card-heading">
@@ -49,7 +49,7 @@
           <button class="monster-preview-button" type="button" data-preview="{{key}}" aria-label="{{_('Preview %(name)s', name=monster.name)}}" aria-controls="monster-preview" aria-expanded="false"><i class="fa-solid fa-eye" aria-hidden="true"></i></button>
         </div>
         <dl class="monster-card-stats">
-          {% for label, value in [('HP', monster.hp), (_('Armor'), monster.armor), ('STR', monster.strength), ('DEX', monster.dexterity), ('WIL', monster.willpower)] %}
+          {% for label, value in [(_('HP'), monster.hp), (_('Armor'), monster.armor), (_('STR'), monster.strength), (_('DEX'), monster.dexterity), (_('WIL'), monster.willpower)] %}
           <div><dt>{{label}}</dt><dd>{{value}}</dd></div>
           {% endfor %}
         </dl>

@@ -94,6 +94,21 @@ def monster_catalog():
     return templates
 
 
+def localized_monster_catalog():
+    """The bestiary in the reader's language, for pages and new monsters. Portraits and
+    keys stay tied to the English names, so they are set before translating."""
+    from flask_babel import gettext
+    templates = monster_catalog()
+    labels = {'hp': gettext('HP'), 'armor': gettext('Armor'), 'strength': gettext('STR'),
+              'dexterity': gettext('DEX'), 'willpower': gettext('WIL')}
+    for template in templates.values():
+        template['labels'] = labels
+        for field in ('name', 'attack', 'notes'):
+            if template.get(field):
+                template[field] = gettext(template[field])
+    return templates
+
+
 @lru_cache(maxsize=1)
 def _monster_portraits(version):
     return json.loads(CATALOG.with_name('monster-portraits.json').read_text())
@@ -111,7 +126,8 @@ def monster_portrait(name):
 def new_monster(party, template):
     from app.lib.companions import import_pet
     data = dict(template, role=template['name'], gold=0, items=[], containers=[dict(id=0, name='Main', slots=10)],
-                image_url=monster_portrait(template['name']))
+                image_url=template.get('image_url') or monster_portrait(template['name']))
+    data.pop('labels', None)
     for stat in ('hp', 'strength', 'dexterity', 'willpower'):
         data[stat + '_max'] = data[stat]
     c = import_pet(data)

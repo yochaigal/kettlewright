@@ -248,13 +248,14 @@ def test_warden_roll_accepts_csrf_from_rendered_form(overview):
 
 
 def test_tools_attach_uses_catalog_template_and_rendered_csrf(overview):
-    from app.lib.monsters import monster_catalog
+    from app.lib.monsters import localized_monster_catalog
     from app.models import Companion
     app, clients, _ = overview
     app.config['WTF_CSRF_ENABLED'] = True
     page = clients[1].get('/tools/').text
     templates = json.loads(re.search(r'<script id="tools-monster-catalog"[^>]*>(.*?)</script>', page, re.S)[1])
-    assert templates == monster_catalog()
+    with app.test_request_context('/'):
+        assert templates == localized_monster_catalog()
     token = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', page)[1]
     response = clients[1].post('/parties/1/monsters', data={'template':'creeping-vines', 'csrf_token':token})
     assert response.status_code == 302

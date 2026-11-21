@@ -591,7 +591,7 @@ def party_view(ownername, party_url):
     if not current_user.is_authenticated:
         return redirect(url_for('main.index'))
     party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party = get_party_data(ownername, party_url)
-    from app.lib.monsters import monster_catalog
+    from app.lib.monsters import localized_monster_catalog
     from app.lib.campaign_backgrounds import background_panel
     from app.models import Star
     can_view_rolls = current_user.id in party_recipient_ids(party)
@@ -600,7 +600,7 @@ def party_view(ownername, party_url):
     response = make_response(render_template('main/party_view.html', party_url=party_url, characters=characters, join_code=join_code, is_owner=is_owner,
                            is_subowner=is_subowner, party_id=party.id, ownername=ownername, inventory=inventory, party=party,
                            can_view_rolls=can_view_rolls, roll_form=FlaskForm(), stat_form=FlaskForm(),
-                           templates=monster_catalog() if is_owner else {}, form=FlaskForm(),
+                           templates=localized_monster_catalog() if is_owner else {}, form=FlaskForm(),
                            campaign_enabled=campaign_enabled,
                            rolls=PartyRoll.latest(party.id, current_user.id) if can_view_rolls else [],
                            online=connected_owners(party, characters),
