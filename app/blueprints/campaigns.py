@@ -1549,18 +1549,8 @@ def import_result():
 @campaigns.route('/articles/tables')
 @campaigns.route('/maps/tables')
 def map_tables():
-    import json
-    from pathlib import Path
-    data = {}
-    folder = Path(__file__).resolve().parents[1] / 'static' / 'json' / 'generators'
-    for name in ('dungeons', 'forests', 'realm', 'factions', 'npcs', 'names', 'bestiary',
-                 'custom-monster', 'reliquary', 'spellbooks', 'dungeon-events', 'wilderness-events'):
-        data.update(json.loads((folder / f'{name}.json').read_text()))
-    data['Equipment'] = json.loads((folder.parent / 'marketplace.json').read_text())
-    if request.path == '/maps/tables':
-        data = {key: data[key] for key in ('Dungeon', 'Forest', 'Realm', 'NPCGenerator', 'Names')}
-    from app.main import translate_events_data
-    return jsonify(translate_events_data(data))
+    from app.lib.generator_tables import generator_tables
+    return jsonify(generator_tables(maps_only=request.path == '/maps/tables'))
 
 
 @campaigns.get('/material-images/<int:owner_id>/<filename>')

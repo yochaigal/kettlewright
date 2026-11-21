@@ -25,7 +25,7 @@ export function initToolsResults(labels, notify) {
   update();
   return {
     copy,
-    add({title, type, html, copyText, onSave, actionLabel = labels.save}) {
+    add({title, type, html, copyText, onSave, onMap, actionLabel = labels.save, actionIcon = 'fa-floppy-disk'}) {
       const card = document.createElement('details');
       card.className = 'tools-generated-result';
       card.open = true;
@@ -46,21 +46,23 @@ export function initToolsResults(labels, notify) {
       const body = document.createElement('div');
       body.className = 'rich-content';
       body.innerHTML = html;
+      // What you can do with a result comes first, right under its title: a long dungeon hid it (#473).
       const actions = document.createElement('div');
       actions.className = 'tools-result-actions tools-actions';
-      const copyButton = document.createElement('button');
-      copyButton.type = 'button';
-      copyButton.textContent = labels.copy;
-      copyButton.addEventListener('click', () => copy(card.dataset.copyText));
-      actions.append(copyButton);
-      if (onSave) {
-        const save = document.createElement('button');
-        save.type = 'button';
-        save.textContent = actionLabel;
-        save.addEventListener('click', onSave);
-        actions.append(save);
-      }
-      content.append(body, actions);
+      const button = (label, icon, onClick, className = '') => {
+        const control = document.createElement('button');
+        control.type = 'button';
+        control.className = className;
+        control.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i> `;
+        control.append(label);
+        control.addEventListener('click', onClick);
+        actions.append(control);
+        return control;
+      };
+      if (onMap) button(labels.showMap, 'fa-map', onMap, 'kw-add tools-show-map');
+      if (onSave) button(actionLabel, actionIcon, onSave);
+      button(labels.copy, 'fa-copy', () => copy(card.dataset.copyText));
+      content.append(actions, body);
       card.append(heading, content);
       display.prepend(card);
       card.dataset.copyText = copyText ?? `${title}\n\n${body.innerText}`;

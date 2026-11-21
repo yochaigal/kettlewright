@@ -10,6 +10,7 @@ export default function pointcrawl() {
     geographyDraft:null, geographyTables:null, geographyUrl:'', submitting:false, articleForm:null,
     waterBrushWidth:4, picking:false,
     status:'', selectedEdge:'', selected:'', saveUrl:'', serial:0, canvasReady:false, generating:false, nestedKind:'dungeon',
+    mapResult:null, mapTitle:'', missing:false,
     edgeSource:'', edgeTarget:'', kind:'dungeon', tables:null, labels:{}, locationId:'', draftBody:'', poiCount:'', generateChildren:true, forestChance:50, dungeonChance:25,
     init() {
       this.componentElement=this.$el;
@@ -38,6 +39,17 @@ export default function pointcrawl() {
         params.delete('random');
         history.replaceState(null,'',`${location.pathname}?${params}`);
         this.$nextTick(()=>this.generate());
+      }
+      if (this.$el.dataset.fromResult) {
+        // The Tools map page (#473): the result the Tools page handed over, drawn as a complete map to look at.
+        try {
+          const result=JSON.parse(localStorage.getItem(this.$el.dataset.fromResult));
+          if (result?.mapKind) {
+            this.generating=true;
+            this.useResult(result).then(()=>{this.mapResult={...result,graph:JSON.parse(JSON.stringify(this.graph))};})
+              .catch(()=>{this.status=this.labels.error;}).finally(()=>{this.generating=false;});
+          } else this.missing=true;
+        } catch {this.missing=true;}
       }
       if (this.creating && params.has('from_tools')) {
         try {
@@ -159,6 +171,12 @@ export default function pointcrawl() {
     newId(type) {return `new-${type}-${Date.now()}-${++this.serial}`;},
     isNew(item) {return String(item.id).startsWith('new-');},
     fit() {this.sendCanvas('fit');this.$refs.canvas.focus({preventScroll:true});},
+    // Tools map page: save this exact map to a module (the New map page, with its module choice).
+    saveFromTools() {
+      if(!this.mapResult)return;
+      sessionStorage.setItem('kw-content-result',JSON.stringify(this.mapResult));
+      location.href='/materials/generate?from_tools=1';
+    },
     // A pin: click the map, then write its note (a map note, saved with the map).
     startPin() {
       if(!this.canvasReady)return;
@@ -267,7 +285,7 @@ export default function pointcrawl() {
     },
     async loadTables() {
       if (!this.tables) {
-        const response=await fetch('/maps/tables');
+        const response=await fetch(this.componentElement?.dataset.tablesUrl || '/maps/tables');
         if (!response.ok) throw new Error(this.labels.error);
         this.tables=await response.json();
       }
@@ -285,9 +303,15 @@ export default function pointcrawl() {
       finally {this.generating=false;}
     },
     async useResult(result) {
-      this.graph=graphFromResult(result,Math.random,await this.loadTables(),{generateChildren:result.generateChildren ?? this.generateChildren,forestChance:result.forestChance ?? this.forestChance,dungeonChance:result.dungeonChance ?? this.dungeonChance});this.kind=result.mapKind;
-      localizeGraph(this.graph);
-      this.$refs.title.value=localizeText(result.title);this.draftBody=this.graph.body;
+      if (result.graph) {
+        // The map already drawn on the Tools map page: keep it exactly as the Warden saw it.
+        this.graph=JSON.parse(JSON.stringify(result.graph));
+      } else {
+        this.graph=graphFromResult(result,Math.random,await this.loadTables(),{generateChildren:result.generateChildren ?? this.generateChildren,forestChance:result.forestChance ?? this.forestChance,dungeonChance:result.dungeonChance ?? this.dungeonChance});
+        localizeGraph(this.graph);
+      }
+      this.kind=result.mapKind;this.mapTitle=localizeText(result.title);
+      if(this.$refs.title)this.$refs.title.value=this.mapTitle;this.draftBody=this.graph.body;
       this.selected='';this.$nextTick(()=>this.fit());
     },
     async generate() {

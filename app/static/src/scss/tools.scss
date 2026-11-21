@@ -1,13 +1,15 @@
 // Tools page: area tabs, one-click tables, a result feed and the character generator.
+// Laid out like the campaign pages: no page title, the areas as tabs, then islands.
 $tools-line: color-mix(in srgb, var(--fg) 18%, transparent);
 $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
 
 .tools-sheet {
   box-sizing: border-box;
   width: calc(100% - 32px);
-  max-width: 940px;
+  max-width: 1120px;
   min-width: 0;
-  padding: 32px;
+  margin: 0 auto;
+  padding: 0;
   text-align: left;
 
   button { min-width: 0; max-width: none; margin: 0; }
@@ -15,14 +17,27 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
   :focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
 }
 
-.tools-header {
+.tools-topbar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin: 0;
-  padding: 0;
-  h2 { margin: 0; }
+  align-items: flex-end;
+  gap: 1.2rem;
+  .tools-nav { flex: 1; margin-top: 0; }
+}
+.tools-topbar .dice-button { flex-shrink: 0; margin-bottom: .6rem; }
+
+// Islands, like a campaign's Parties and Modules: the tables, then the results.
+.tools-island {
+  margin: 0 0 2rem;
+  padding: 2rem 2.4rem;
+  border: 1px solid color-mix(in srgb, var(--fg) 15%, var(--bg));
+  border-radius: 10px;
+  background: var(--bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+}
+.tools-intro {
+  margin: 0 0 1.6rem;
+  color: color-mix(in srgb, var(--fg) 75%, transparent);
+  &:empty { display: none; }
 }
 
 // Area tabs: plain text with an underline, so wrapping on a phone stays tidy.
@@ -54,7 +69,7 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
 
 .tools-panel {
   min-width: 0;
-  padding-top: 2.4rem;
+  padding-top: 2rem;
   overflow-wrap: anywhere;
 }
 
@@ -75,9 +90,32 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
   color: color-mix(in srgb, var(--fg) 65%, transparent);
 }
 .tools-group-choices {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .8rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  gap: 1rem;
+}
+// A table is a tile: its name, a map mark when it can be shown as a map, and what it makes.
+.tools-sheet .tools-choice {
+  flex-direction: column;
+  align-items: flex-start !important;
+  justify-content: flex-start;
+  gap: .3rem !important;
+  min-height: 7rem;
+  padding: 1.2rem 1.4rem !important;
+  border-radius: 6px !important;
+  text-align: left;
+  white-space: normal;
+}
+.tools-choice-name { font-weight: 700; }
+.tools-sheet .tools-choice { position: relative; }
+// The map mark sits in the tile's corner, so a short tile never wraps its name.
+.tools-choice-map { position: absolute; top: 1.3rem; right: 1.2rem; font-size: .85em; opacity: .6; }
+.tools-choice-name { padding-right: 1.8rem; }
+.tools-choice-hint {
+  font-size: 1.45rem;
+  font-weight: 400;
+  line-height: 1.35;
+  color: color-mix(in srgb, currentColor 75%, transparent);
 }
 .tools-sheet .tools-choice,
 .tools-sheet .tools-generate-button {
@@ -100,7 +138,11 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
   .tools-sheet .tools-generate-button:hover:not(:disabled) { background: transparent; color: var(--fg); }
 }
 .tools-choice-toggle {
+  position: relative;
   &::after {
+    position: absolute;
+    top: 1.3rem;
+    right: 1.2rem;
     content: "\f078";
     font: 900 1.2rem/1 "Font Awesome 6 Free";
     transition: transform .12s;
@@ -180,10 +222,10 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
   justify-content: space-between;
   flex-wrap: wrap;
   gap: .8rem 1.6rem;
-  margin-top: 3.2rem;
+  margin-top: 0;
   padding-bottom: 1rem;
   border-bottom: 1px solid $tools-line;
-  h3 { margin: 0; }
+  h3 { display: flex; align-items: center; gap: .5rem; margin: 0; }
 }
 .tools-result-count {
   margin-left: .4rem;
@@ -193,7 +235,7 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
 }
 
 .tools-empty-state {
-  margin: 3.2rem 0 0;
+  margin: 1.6rem 0 0;
   padding: 3.2rem 1.6rem;
   border: 1px dashed $tools-line;
   border-radius: 2px;
@@ -250,8 +292,9 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
   .monster-preview-portrait { float: right; margin: 0 0 1rem 1rem; }
 }
 .tools-result-actions {
-  clear: both;
-  margin-top: 1.6rem;
+  margin: 0 0 1.4rem;
+  // Show map is the main thing to do with a realm, dungeon or forest (#473).
+  .tools-show-map { padding: .7rem 1.4rem; font-size: 1.6rem; }
 }
 
 .tools-attach-dialog {
@@ -317,7 +360,11 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
 
 @media (max-width: 600px) {
   .tools-page { margin-top: 1rem; }
-  .tools-sheet { width: 100%; padding: 16px; box-shadow: none; }
+  .tools-sheet { width: 100%; padding: 0 16px; box-shadow: none; }
+  .tools-island { padding: 1.4rem 1.2rem; }
+  .tools-topbar { flex-direction: column-reverse; align-items: stretch; }
+  .tools-topbar .dice-button { align-self: flex-end; margin: 0; }
+  .tools-group-choices { grid-template-columns: minmax(0, 1fr); }
   .tools-nav button { padding: .8rem 1rem; }
   .tools-picker-fields { grid-template-columns: minmax(0, 1fr); gap: 1.2rem; }
   .tools-character-generation .tools-field { flex-basis: 100%; }

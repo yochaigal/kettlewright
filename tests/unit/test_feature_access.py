@@ -161,6 +161,31 @@ def test_navigation_and_tools_are_released(setup):
     assert 'href="/campaigns/"' not in guest
 
 
+def test_tools_show_any_map_result_as_a_map_without_saving(setup):
+    """#473: a realm, dungeon or forest from Tools can be seen as a complete map before saving, by anyone;
+    a signed-in Warden saves that map to a module from there."""
+    import json
+    app, client = setup
+    guest = app.test_client()
+    tools = guest.get('/tools/').text
+    labels = json.loads(re.search(r'id="tools-content-labels" type="application/json">(.*?)</script>', tools, re.S)[1])
+    assert labels['showMap'] == 'Show map' and labels['save'] == 'Save to a module'
+    for key in ('Worldbuilding:Realm', 'Worldbuilding:Dungeon', 'Worldbuilding:Forest', 'Setting:dungeon'):
+        assert labels['hints'][key]  # Every tile says what it makes.
+    assert set(labels['intros']) == {'realm', 'dungeons', 'forests', 'events', 'monsters', 'items'}
+    assert '<h2>Tools</h2>' not in tools and 'tools-island' in tools  # Islands, no page title.
+    page = guest.get('/tools/map/')
+    assert page.status_code == 200  # No login needed to look.
+    html = page.get_data(as_text=True)
+    assert 'data-from-result="kw-tools-map"' in html and 'data-tables-url="/tools/map/tables"' in html
+    assert 'Log in to save' in html and 'Save to a module' not in html
+    tables = guest.get('/tools/map/tables')
+    assert tables.status_code == 200 and set(tables.json) == {'Dungeon', 'Forest', 'Realm', 'NPCGenerator', 'Names'}
+    signed_in = client.get('/tools/map/').get_data(as_text=True)
+    assert 'Save to a module' in signed_in and 'saveFromTools()' in signed_in and 'Log in to save' not in signed_in
+    assert guest.get('/maps/tables').status_code == 302  # The campaign tables still need a login.
+
+
 def test_shared_map_still_requires_current_membership(shared):
     app, clients, sockets = shared
     assert clients[1].post(URL, json={'version': 0, 'drawing': DRAWING}).status_code == 200

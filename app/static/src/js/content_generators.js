@@ -45,6 +45,11 @@ export function resultText(result, t = generatorTerm) {
   const label = key => t ? t(key) : key;
   const text = value => t ? localizeText(value, t) : value;
   if (['Dungeon Events', 'Wilderness Events'].includes(result.title)) return text(result.fields.description);
+  if (result.category === 'relic') {
+    // Like a spellbook: no repeated name, the tags (say, d6) in italics, then what it does.
+    const tags = (result.fields.tags || []).map(tag => text(tag));
+    return [tags.length ? `_${tags.join(', ')}_` : '', text(result.fields.description)].filter(Boolean).join(' — ');
+  }
   if (result.category === 'spellbook') {
     return [result.fields.description, result.fields.personality ? `_${result.fields.personality}_` : ''].filter(Boolean).join(' ');
   }
