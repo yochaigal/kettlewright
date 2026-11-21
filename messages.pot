@@ -42832,3 +42832,3319 @@ msgstr ""
 #: app/templates/partial/charview/export_dialog.html
 msgid "Simple text to paste anywhere."
 msgstr ""
+
+#: app/blueprints/campaigns.py:1724
+#, python-format
+msgid "%(item)s is an item of %(module)s. Send it to a party from there."
+msgstr ""
+
+#: app/blueprints/campaigns.py:1716
+#, python-format
+msgid ""
+"%(module)s already has an item named %(item)s. Rename this one, or choose"
+" another module."
+msgstr ""
+
+#: app/blueprints/campaigns.py:344 app/blueprints/campaigns.py:1315
+#, python-format
+msgid "%(title)s was added to %(campaign)s."
+msgstr ""
+
+#: app/blueprints/campaigns.py:421
+#, python-format
+msgid "%(title)s was removed from %(campaign)s."
+msgstr ""
+
+#: app/blueprints/campaigns.py:766
+#, python-format
+msgid "%(title)s was removed from your campaigns."
+msgstr ""
+
+#: app/blueprints/campaigns.py:544
+#, python-format
+msgid "A copy of %(item)s is now with %(holder)s."
+msgstr ""
+
+#: app/blueprints/campaigns.py:342
+#, python-format
+msgid "Could not add %(title)s. Please try again."
+msgstr ""
+
+#: app/blueprints/campaigns.py:866
+msgid "Create a campaign first: articles are written in its modules."
+msgstr ""
+
+#: app/blueprints/campaigns.py:1459
+msgid "Create a campaign first: maps are made in its modules."
+msgstr ""
+
+#: app/blueprints/campaigns.py:1385
+#, python-format
+msgid "Hidden from %(party)s."
+msgstr ""
+
+#: app/blueprints/campaigns.py:648
+msgid "Party note deleted."
+msgstr ""
+
+#: app/blueprints/campaigns.py:1203
+#, python-format
+msgid "Revealed %(count)s articles of %(module)s to %(party)s."
+msgstr ""
+
+#: app/blueprints/campaigns.py:1177
+#, python-format
+msgid "Revealed %(count)s articles."
+msgstr ""
+
+#: app/blueprints/campaigns.py:1277
+#, python-format
+msgid "Revealed the map and its pins to %(party)s."
+msgstr ""
+
+#: app/blueprints/campaigns.py:1279
+#, python-format
+msgid "Revealed to %(party)s."
+msgstr ""
+
+#: app/blueprints/campaigns.py:538
+#, python-format
+msgid ""
+"There is no room for %(item)s in %(container)s. Make room, or choose "
+"another container."
+msgstr ""
+
+#: app/forms.py:296
+msgid "Edition"
+msgstr ""
+
+#: app/lib/campaign_wiki.py:71 app/lib/campaign_wiki.py:84
+msgid "Freeform"
+msgstr ""
+
+#: app/lib/campaign_wiki.py:203
+msgid "Party note"
+msgstr ""
+
+#: app/lib/content_types.py:23
+msgid "Map note"
+msgstr ""
+
+#: app/lib/modules.py:41
+msgid ""
+"A deadly starting adventure for new and experienced Wardens. Critical "
+"thinking and careful exploration keep characters alive."
+msgstr ""
+
+#: app/lib/modules.py:47
+msgid ""
+"A wealthy family's estate fell silent decades ago, and a waterborne "
+"illness now fills victims' lungs with moss."
+msgstr ""
+
+#: app/lib/modules.py:44
+msgid ""
+"Disease, duty and decay in a haunted corner of Vald, where an alchemist's"
+" failed experiment is festering in Tegny Wood."
+msgstr ""
+
+#: app/lib/modules.py:38
+msgid ""
+"Two central mysteries for the party to solve, with NPCs, antagonists and "
+"locations to explore. Suits new and veteran players."
+msgstr ""
+
+#: app/lib/modules.py:30
+msgid "article"
+msgstr ""
+
+#: app/lib/modules.py:25
+msgid "map"
+msgstr ""
+
+#: app/lib/modules.py:25
+msgid "maps"
+msgstr ""
+
+#: app/lib/modules.py:26 app/templates/campaigns/import_archive.html:89
+#: app/templates/campaigns/module.html:60 app/templates/campaigns/wiki.html:268
+#: app/templates/campaigns/wiki_sidebar.html:45
+#: app/templates/main/party_view.html:102
+#: app/templates/partial/partyview/backgrounds.html:3
+msgid "Backgrounds"
+msgstr ""
+
+#: app/lib/modules.py:25 app/templates/campaigns/import_archive.html:66
+#: app/templates/campaigns/module.html:36
+#: app/templates/campaigns/party_maps.html:6
+#: app/templates/campaigns/wiki.html:260
+#: app/templates/campaigns/wiki_sidebar.html:38
+msgid "Maps"
+msgstr ""
+
+#: app/lib/modules.py:26 app/templates/campaigns/module.html:144
+msgid "backgrounds"
+msgstr ""
+
+#: app/lib/modules.py:26 app/templates/campaigns/wiki_sidebar.html:46
+msgid "background"
+msgstr ""
+
+#: app/lib/modules.py:28 app/templates/campaigns/wiki_sidebar.html:52
+msgid "item"
+msgstr ""
+
+#: app/templates/campaigns/background.html:20
+msgid "## Names: names separated by commas."
+msgstr ""
+
+#: app/templates/campaigns/background.html:22
+msgid "## Starting containers (optional): like - Cart [6 slots, carried by Mule]."
+msgstr ""
+
+#: app/templates/campaigns/background.html:21
+msgid ""
+"## Starting gear: one item per line. Tags go in brackets, like [petty, "
+"d6], [uses 3] or [charges 2/3]; a description after \" — \"."
+msgstr ""
+
+#: app/templates/campaigns/background.html:6
+msgid "Edit background"
+msgstr ""
+
+#: app/templates/campaigns/background.html:17
+msgid "How to write a background"
+msgstr ""
+
+#: app/templates/campaigns/background.html:13
+msgid "Save background"
+msgstr ""
+
+#: app/templates/campaigns/background.html:19
+msgid ""
+"The title in the front matter is its name; the text before the first "
+"heading is its description."
+msgstr ""
+
+#: app/templates/campaigns/background.html:23
+msgid ""
+"Then two tables: each a ## heading with the question, and its options as "
+"a list. Under an option, indented, its rewards: an item, \"5 gold\", "
+"\"pet: Raven Familiar\" or \"container: Donkey [4 slots]\"."
+msgstr ""
+
+#: app/templates/campaigns/background.html:6
+#: app/templates/campaigns/module.html:62
+msgid "New background"
+msgstr ""
+
+#: app/templates/campaigns/canvas.html:25
+msgid "No pins on this map."
+msgstr ""
+
+#: app/templates/campaigns/canvas.html:25
+msgid "No pins yet. Add pin, then click the map where it goes."
+msgstr ""
+
+#: app/templates/campaigns/canvas.html:8
+#: app/templates/campaigns/party_map.html:37
+#: app/templates/campaigns/party_map.html:91
+#: app/templates/campaigns/party_map.html:98
+msgid "Add pin"
+msgstr ""
+
+#: app/templates/campaigns/canvas.html:8
+#: app/templates/campaigns/party_map.html:37
+msgid "Cancel pin"
+msgstr ""
+
+#: app/templates/campaigns/canvas.html:3
+#: app/templates/campaigns/party_map.html:36
+msgid "Full screen"
+msgstr ""
+
+#: app/templates/campaigns/canvas.html:24
+#: app/templates/campaigns/party_map.html:80
+msgid "Pins"
+msgstr ""
+
+#: app/templates/campaigns/delete_campaign.html:6
+msgid ""
+"Deleting this campaign permanently deletes all its modules, articles, "
+"drawings and parties. This cannot be undone. Characters are kept and "
+"leave their party."
+msgstr ""
+
+#: app/templates/campaigns/delete_materials.html:8
+msgid ""
+"These articles will be permanently deleted, and what was revealed of them"
+" to parties. This cannot be undone."
+msgstr ""
+
+#: app/templates/campaigns/entry.html:45
+msgid "Its map"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:53
+msgid "On map"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:49
+msgid "Parent (optional)"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:15
+msgid ""
+"Private until you reveal it to a party. A party it was revealed to sees "
+"your changes when you save."
+msgstr ""
+
+#: app/templates/campaigns/entry.html:13
+msgid "Save article"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:24
+msgid "Shown above the text and on the article’s card."
+msgstr ""
+
+#: app/templates/campaigns/entry.html:38
+#: app/templates/campaigns/import_item.html:9
+#: app/templates/campaigns/index.html:25
+#: app/templates/campaigns/new_map.html:16
+msgid "Module"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:42
+#: app/templates/campaigns/new_map.html:20
+#, python-format
+msgid "%(campaign)s (first module)"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:39
+#: app/templates/campaigns/new_map.html:17
+msgid "Choose a module"
+msgstr ""
+
+#: app/templates/campaigns/entry.html:46 app/templates/campaigns/wiki.html:115
+msgid "Open map"
+msgstr ""
+
+#: app/templates/campaigns/flashes.html:6 app/templates/main/party_view.html:31
+msgid "Dismiss"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:96
+msgid "Also reveal its pins"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:63
+msgid "Can read it"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:70
+msgid "Can read it."
+msgstr ""
+
+#: app/templates/campaigns/forms.html:72
+#, python-format
+msgid "Hide from %(party)s"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:110
+#, python-format
+msgid ""
+"Hide this article from %(party)s? They will no longer see it. Your "
+"article is not changed."
+msgstr ""
+
+#: app/templates/campaigns/forms.html:63
+msgid "Not revealed"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:70
+msgid "Not revealed yet."
+msgstr ""
+
+#: app/templates/campaigns/forms.html:86
+msgid "Other campaigns"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:85
+msgid "Parties in this campaign"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:74
+#, python-format
+msgid "Pins revealed: %(points)s of %(total_points)s"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:71
+#, python-format
+msgid "Reveal to %(party)s"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:99
+msgid ""
+"The party reads your article as it is; when you edit it, they read the "
+"new text. Keep secrets in an article you have not revealed, or write a "
+"party note."
+msgstr ""
+
+#: app/templates/campaigns/forms.html:97
+msgid ""
+"The party sees the map as it is now, and your later changes to it, on its"
+" party page (Map). Pins you do not reveal stay hidden."
+msgstr ""
+
+#: app/templates/campaigns/forms.html:71
+#, python-format
+msgid "Update %(party)s"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:89
+msgid "You have no parties yet. Create one on a campaign page."
+msgstr ""
+
+#: app/templates/campaigns/forms.html:89 app/templates/campaigns/lobby.html:44
+#: app/templates/campaigns/lobby.html:63 app/templates/campaigns/wiki.html:181
+msgid "New party"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:116 app/templates/campaigns/map.html:11
+#: app/templates/campaigns/wiki.html:119
+msgid "Reveal map"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:119
+#: app/templates/campaigns/reveal.html:13
+#: app/templates/campaigns/reveal_materials.html:20
+msgid ""
+"You have no parties yet. Create one in Parties, then reveal articles to "
+"it."
+msgstr ""
+
+#: app/templates/campaigns/forms.html:79
+#: app/templates/campaigns/reveal_materials.html:11
+#: app/templates/campaigns/wiki.html:171
+msgid "Reveal to"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:110 app/templates/campaigns/wiki.html:26
+#: app/templates/campaigns/wiki.html:30
+msgid "Hide"
+msgstr ""
+
+#: app/templates/campaigns/forms.html:89 app/templates/campaigns/wiki.html:181
+msgid "This campaign has no parties yet."
+msgstr ""
+
+#: app/templates/campaigns/import.html:4
+msgid "Save a Tools result"
+msgstr ""
+
+#: app/templates/campaigns/import.html:11
+msgid "Saved privately. Reveal it to a party from the article afterwards."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:68
+#, python-format
+msgid "%(count)s drawing elements"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:20
+msgid ""
+"A module is Markdown files, each starting with YAML front matter (layout:"
+" default, title, type). Upload one file, or a ZIP or TAR of several. "
+"Folders keep the parts apart; the type says what each file is."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:7
+msgid ""
+"A module is a Markdown file or an archive of maps, articles, backgrounds "
+"and items. It is added to one of your campaigns as a new module. Nothing "
+"is added until you review the preview and confirm."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:58
+msgid "Add as a new module to"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:6
+#, python-format
+msgid ""
+"Add maps, articles, backgrounds and items to %(module)s from a Markdown "
+"file or an archive. Nothing is added until you review the preview and "
+"confirm."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:56
+#, python-format
+msgid "Adding to the module %(module)s."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:60
+msgid "Choose a campaign"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:16
+#: app/templates/campaigns/import_archive.html:37
+msgid "Download an example module"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:70
+msgid "Front page"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:85
+msgid "Has its own map (see Maps)."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:5
+msgid "Import module"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:5
+msgid "Import to module"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:39
+msgid ""
+"Limits: 50 MB archive, 500 files, 512 KB per Markdown file (16 MB for map"
+" files), 100 MB unpacked, 50,000 description characters and 20 hierarchy "
+"levels. Each map supports 200 points, 800 paths and a 12 MB drawing with "
+"2000 elements. Markdown image URLs stay as references. Previews expire "
+"after one hour."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:36
+msgid ""
+"Maps are written by Kettlewright when you export (type: Map, map_type: "
+"realm, dungeon, forest or freeform, and a kettlewright-map block); a map "
+"file without that block is an empty map to draw. Download the example to "
+"see every part."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:19
+msgid "Module format and limits"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:49
+msgid "Nothing to import"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:38
+msgid ""
+"Older archives (campaign.md, maps/*.json, manifest.json, and .excalidraw "
+"drawings attached with map:) still import."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:63
+#, python-format
+msgid ""
+"The module is named %(title)s. Its front page becomes an Overview "
+"article; its maps, articles, backgrounds and items join the campaign."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:22
+msgid "a drawing with points and paths"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:23
+msgid "any article type"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:70
+msgid "becomes an Overview article"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:24
+msgid "character options"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:68
+msgid "empty"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:35
+msgid ""
+"id is optional and only used inside the module: parent_id names a parent "
+"by its id (or parent by its exact title), links lists related articles by"
+" id, and a map lists its points and paths by id. Without front matter, "
+"the title comes from the first # heading (or the file name) and the type "
+"is Note."
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:25
+msgid "items to send the party, each a ### heading"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:21
+msgid "the front page"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:67
+msgid "the map of this article"
+msgstr ""
+
+#: app/templates/campaigns/import_archive.html:68
+#: app/templates/campaigns/module.html:46
+#, python-format
+msgid "%(count)s pins"
+msgstr ""
+
+#: app/templates/campaigns/import_item.html:16
+msgid ""
+"A ### heading with its name and tags in brackets, its description below. "
+"Players never see a module's items: Send gives a party a copy."
+msgstr ""
+
+#: app/templates/campaigns/import_item.html:28
+msgid "Create a campaign first: items are kept in its modules."
+msgstr ""
+
+#: app/templates/campaigns/import_item.html:5
+msgid "Save an item to a module"
+msgstr ""
+
+#: app/templates/campaigns/index.html:72
+msgid "Playing in"
+msgstr ""
+
+#: app/templates/campaigns/index.html:15
+msgid ""
+"The campaign starts with an empty party (add more for a West Marches "
+"game). Add modules to it: from the Modules Marketplace, your own files, "
+"or new ones you write or generate."
+msgstr ""
+
+#: app/templates/campaigns/index.html:58
+msgid "modules"
+msgstr ""
+
+#: app/templates/campaigns/index.html:59 app/templates/campaigns/lobby.html:42
+msgid "Parties"
+msgstr ""
+
+#: app/templates/campaigns/index.html:27
+#: app/templates/partial/star_button.html:7
+msgid "Starred"
+msgstr ""
+
+#: app/templates/campaigns/item.html:27
+msgid ""
+"A ### heading with its name, and its tags in brackets, like [petty, d6], "
+"[bulky], [uses 3] or [charges 2/3]."
+msgstr ""
+
+#: app/templates/campaigns/item.html:28
+msgid "Below it, its description (Markdown). It goes with every copy you send."
+msgstr ""
+
+#: app/templates/campaigns/item.html:6
+msgid "Edit item"
+msgstr ""
+
+#: app/templates/campaigns/item.html:25
+msgid "How to write an item"
+msgstr ""
+
+#: app/templates/campaigns/item.html:29
+msgid ""
+"Players never see the module's items. Send a copy to a party when they "
+"find one."
+msgstr ""
+
+#: app/templates/campaigns/item.html:22
+msgid "Remove item"
+msgstr ""
+
+#: app/templates/campaigns/item.html:20
+#, python-format
+msgid "Remove the item %(name)s? Copies already sent stay with the party."
+msgstr ""
+
+#: app/templates/campaigns/item.html:13
+msgid "Save item"
+msgstr ""
+
+#: app/templates/campaigns/item.html:6 app/templates/campaigns/module.html:91
+msgid "New item"
+msgstr ""
+
+#: app/templates/campaigns/item_send.html:8
+#, python-format
+msgid "Send %(item)s"
+msgstr ""
+
+#: app/templates/campaigns/item_send.html:15
+#: app/templates/campaigns/item_send_dialog.html:12
+msgid "Send a copy to"
+msgstr ""
+
+#: app/templates/campaigns/item_send.html:23
+#: app/templates/campaigns/item_send_dialog.html:21
+msgid ""
+"The party gets its own copy, to use, change or give away. The module "
+"keeps its item."
+msgstr ""
+
+#: app/templates/campaigns/item_send.html:30
+#: app/templates/campaigns/item_send_dialog.html:28
+msgid "This campaign's parties have no storage or characters to send it to yet."
+msgstr ""
+
+#: app/templates/campaigns/item_send.html:25
+#: app/templates/campaigns/item_send_dialog.html:6
+#: app/templates/campaigns/item_send_dialog.html:24
+#: app/templates/campaigns/module.html:103
+#: app/templates/campaigns/wiki.html:300
+msgid "Send"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:170
+#, python-format
+msgid "Add %(title)s"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:165
+msgid "Added"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:58
+msgid "Also revealed to parties of other campaigns:"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:68
+msgid ""
+"Another group in the same world, like a West Marches game: it shares this"
+" campaign's modules and backgrounds, and has its own characters, storage,"
+" whiteboard and what it has been shown."
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:16 app/templates/campaigns/lobby.html:21
+msgid "Campaign settings"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:140
+msgid "Create module"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:71
+msgid "Create party"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:33
+#, python-format
+msgid ""
+"Delete %(campaign)s? Its modules, articles, drawings, backgrounds, what "
+"was revealed to parties, and its parties are permanently deleted. "
+"Characters are kept and leave their party. This cannot be undone."
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:34
+msgid "Delete campaign"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:184
+msgid "Example module"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:150
+#, python-format
+msgid ""
+"Free modules: adventures with their articles, maps and backgrounds. "
+"Adding one copies it into %(campaign)s, privately; edit it as you like."
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:182
+msgid "Have your own module?"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:186
+msgid "Module file"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:82 app/templates/campaigns/lobby.html:147
+msgid "Modules Marketplace"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:83 app/templates/campaigns/lobby.html:118
+msgid "New module"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:52
+msgid "No characters yet: give your players the party's join code."
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:104
+msgid ""
+"No modules yet. Write a new one, generate one randomly, or pick one from "
+"the Modules Marketplace."
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:56
+msgid ""
+"No parties yet. Create one, then give your players its join code: they "
+"use Join a party on their Characters page."
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:166
+msgid "Open"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:157
+msgid "Original"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:26
+msgid "The campaign’s cover. Without one, the first picture in its articles."
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:183
+msgid ""
+"Upload a Markdown file or a ZIP/TAR archive of articles, maps and "
+"backgrounds. You review it before anything is added."
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:188
+msgid "Upload module"
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:137
+msgid ""
+"Write its articles, notes, maps and backgrounds afterwards. Everything "
+"stays private until you reveal it."
+msgstr ""
+
+#: app/templates/campaigns/lobby.html:79
+#: app/templates/partial/partyview/backgrounds.html:24
+msgid "Modules"
+msgstr ""
+
+#: app/templates/campaigns/map.html:21
+msgid "Delete map?"
+msgstr ""
+
+#: app/templates/campaigns/map.html:21
+msgid "Delete map…"
+msgstr ""
+
+#: app/templates/campaigns/map.html:5
+msgid "Map location"
+msgstr ""
+
+#: app/templates/campaigns/map.html:28
+msgid ""
+"This also removes its points, paths, the maps inside it and what parties "
+"were shown of them. Review the complete list before deleting."
+msgstr ""
+
+#: app/templates/campaigns/map.html:12 app/templates/campaigns/new_map.html:9
+msgid "Save map"
+msgstr ""
+
+#: app/templates/campaigns/map.html:9 app/templates/campaigns/wiki.html:121
+#: app/templates/campaigns/wiki.html:122
+msgid "Edit map"
+msgstr ""
+
+#: app/templates/campaigns/map_article.html:11
+msgid "Remove pin"
+msgstr ""
+
+#: app/templates/campaigns/map_article.html:13
+msgid "Save map keeps your changes."
+msgstr ""
+
+#: app/templates/campaigns/map_panel.html:6
+msgid "Unsaved changes: Save map keeps them."
+msgstr ""
+
+#: app/templates/campaigns/map_panel.html:5
+#: app/templates/campaigns/new_map.html:7
+#: app/templates/campaigns/party_map.html:23
+msgid "Click the map where the pin goes."
+msgstr ""
+
+#: app/templates/campaigns/material_tree.html:15
+#: app/templates/campaigns/wiki.html:112
+msgid "Revealed"
+msgstr ""
+
+#: app/templates/campaigns/module.html:19
+msgid "Add files"
+msgstr ""
+
+#: app/templates/campaigns/module.html:19
+msgid ""
+"Add maps, articles, backgrounds and items from Markdown files or an "
+"archive"
+msgstr ""
+
+#: app/templates/campaigns/module.html:141
+msgid "Delete module?"
+msgstr ""
+
+#: app/templates/campaigns/module.html:141
+msgid "Delete module…"
+msgstr ""
+
+#: app/templates/campaigns/module.html:145
+msgid ""
+"Deleting this module permanently deletes its articles, maps, backgrounds,"
+" items and what the party was shown of them. This cannot be undone. "
+"Characters keep their backgrounds, and parties the copies of items they "
+"were sent."
+msgstr ""
+
+#: app/templates/campaigns/module.html:94
+msgid ""
+"Gear, relics and spellbooks the party can find. Players never see them "
+"here: Send gives a party a copy, in its storage or a character's "
+"inventory."
+msgstr ""
+
+#: app/templates/campaigns/module.html:72
+msgid "Names"
+msgstr ""
+
+#: app/templates/campaigns/module.html:84
+msgid "No backgrounds in this module."
+msgstr ""
+
+#: app/templates/campaigns/module.html:112
+msgid "No items in this module."
+msgstr ""
+
+#: app/templates/campaigns/module.html:55
+msgid "No maps yet. Draw one, or generate a realm, dungeon or forest."
+msgstr ""
+
+#: app/templates/campaigns/module.html:147
+msgid "Permanently delete module"
+msgstr ""
+
+#: app/templates/campaigns/module.html:17
+msgid "Read as wiki"
+msgstr ""
+
+#: app/templates/campaigns/module.html:76
+#, python-format
+msgid "Remove the background %(name)s? Characters who have it keep it."
+msgstr ""
+
+#: app/templates/campaigns/module.html:14
+#: app/templates/campaigns/module.html:24
+msgid "Rename module"
+msgstr ""
+
+#: app/templates/campaigns/module.html:65
+msgid ""
+"The campaign's parties choose from these when creating characters. Each "
+"party's Warden decides on the party page whether the official ones are "
+"offered too."
+msgstr ""
+
+#: app/templates/campaigns/module.html:38
+#: app/templates/campaigns/new_map.html:9
+msgid "New map"
+msgstr ""
+
+#: app/templates/campaigns/new_map.html:10
+msgid ""
+"A map is a drawing with pins, private until you reveal it to a party. "
+"Draw on it, add images, then add pins with notes."
+msgstr ""
+
+#: app/templates/campaigns/new_map.html:28
+msgid "Generating replaces this unsaved draft. Review it before saving."
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:46
+msgid "Clear all"
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:77
+msgid ""
+"Click a pin to read it. Add pin marks a place with a note the whole party"
+" can read and edit."
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:26
+msgid "Delete this pin and its note? The party will no longer see it."
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:59
+msgid "Details"
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:73
+msgid "Edit note"
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:48
+msgid "Hide brush"
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:86
+msgid "No pins yet."
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:23
+msgid "Pin added."
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:35
+msgid "Read article"
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:47
+msgid "Reveal brush"
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:52
+msgid "See as players"
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:49
+msgid "Size"
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:25
+msgid "The fog changed in another tab; it is up to date now."
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:95
+msgid "The pin is a party note: every member can read and edit it."
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:51
+msgid "Turn off fog"
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:50
+msgid "Undo"
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:31
+msgid "pins"
+msgstr ""
+
+#: app/templates/campaigns/party_map.html:24
+#: app/templates/partial/partyview/backgrounds.html:8
+msgid "Could not save. Reload the page and try again."
+msgstr ""
+
+#: app/templates/campaigns/party_maps.html:15
+msgid "No map has been revealed to this party yet."
+msgstr ""
+
+#: app/templates/campaigns/party_note.html:6
+msgid "Back to party wiki"
+msgstr ""
+
+#: app/templates/campaigns/party_note.html:25
+msgid "Delete note…"
+msgstr ""
+
+#: app/templates/campaigns/party_note.html:6
+msgid "Edit party note"
+msgstr ""
+
+#: app/templates/campaigns/party_note.html:14
+#, python-format
+msgid "Every member of %(party)s can read and edit this note."
+msgstr ""
+
+#: app/templates/campaigns/party_note.html:7
+msgid "Save note"
+msgstr ""
+
+#: app/templates/campaigns/party_note.html:23
+#: app/templates/campaigns/wiki.html:23
+msgid "Delete this party note? The party will no longer see it."
+msgstr ""
+
+#: app/templates/campaigns/party_note.html:12
+#: app/templates/campaigns/wiki.html:194
+msgid "Text"
+msgstr ""
+
+#: app/templates/campaigns/reveal.html:7
+msgid "Back to article"
+msgstr ""
+
+#: app/templates/campaigns/reveal_materials.html:21
+msgid "Articles to reveal"
+msgstr ""
+
+#: app/templates/campaigns/reveal_materials.html:14
+msgid ""
+"Each party reads the articles themselves; when you edit one, they read "
+"the new text."
+msgstr ""
+
+#: app/templates/campaigns/reveal_materials.html:17
+msgid "If a party already sees one of these articles, what it sees is replaced."
+msgstr ""
+
+#: app/templates/campaigns/reveal_materials.html:15
+msgid ""
+"Maps are shown with their drawing as it is now; later changes to it reach"
+" the party too."
+msgstr ""
+
+#: app/templates/campaigns/reveal_materials.html:4
+#: app/templates/campaigns/reveal_materials.html:18
+#, python-format
+msgid "Reveal %(count)s articles"
+msgstr ""
+
+#: app/templates/campaigns/reveal_materials.html:26
+msgid "Reveal on its own…"
+msgstr ""
+
+#: app/templates/campaigns/reveal_materials.html:7
+msgid "Sub-articles are included only if you checked them too."
+msgstr ""
+
+#: app/templates/campaigns/sketch.html:9
+msgid "Sketch anything: a room, a route, a symbol. Save note keeps it."
+msgstr ""
+
+#: app/templates/campaigns/wiki.html:255
+msgid "Add a module"
+msgstr ""
+
+#: app/templates/campaigns/wiki.html:199
+msgid "Add note"
+msgstr ""
+
+#: app/templates/campaigns/wiki.html:189 app/templates/campaigns/wiki.html:223
+msgid "Add party note"
+msgstr ""
+
+#: app/templates/campaigns/wiki.html:174
+#, python-format
+msgid ""
+"All %(count)s articles of this module become readable by the party, as "
+"they are; your later edits reach it too. Articles it already reads stay "
+"revealed."
+msgstr ""
+
+#: app/templates/campaigns/wiki.html:218
+msgid "Edit module"
+msgstr ""
+
+#: app/templates/campaigns/wiki.html:196
+msgid ""
+"Every member of this party can read and edit it. It is not added to any "
+"campaign."
+msgstr ""
+
+#: app/templates/campaigns/wiki.html:26
+msgid ""
+"Hide this article from the party? They will no longer see it. Your "
+"article is not changed."
+msgstr ""
+
+#: app/templates/campaigns/wiki.html:298
+msgid "No description."
+msgstr ""
+
+#: app/templates/campaigns/wiki.html:232
+msgid "No party notes yet."
+msgstr ""
+
+#: app/templates/campaigns/wiki.html:230
+msgid "Party notes"
+msgstr ""
+
+#: app/templates/campaigns/wiki.html:231
+msgid ""
+"Quick notes for this party only, like rumours or what happened at the "
+"table. Every member can read and edit them; only you delete them. They "
+"are not part of any campaign."
+msgstr ""
+
+#: app/templates/campaigns/wiki.html:168
+#, python-format
+msgid ""
+"Reveal every article of %(module)s? The party will read them all, "
+"including what you may not want it to know yet."
+msgstr ""
+
+#: app/templates/campaigns/wiki.html:165 app/templates/campaigns/wiki.html:169
+#: app/templates/campaigns/wiki.html:177 app/templates/campaigns/wiki.html:217
+msgid "Reveal module"
+msgstr ""
+
+#: app/templates/main/character_create.html:32
+msgid "Joining a party? Enter its join code to use its campaign's backgrounds."
+msgstr ""
+
+#: app/templates/main/character_create.html:34
+msgid "Use code"
+msgstr ""
+
+#: app/templates/main/character_create.html:28
+#: app/templates/main/character_create_barebones.html:28
+msgid "Create without a party"
+msgstr ""
+
+#: app/templates/main/character_create.html:27
+#: app/templates/main/character_create_barebones.html:27
+#, python-format
+msgid "Creating a character for %(party)s"
+msgstr ""
+
+#: app/templates/main/character_create.html:35
+#: app/templates/main/character_create_barebones.html:30
+msgid "No party has this join code."
+msgstr ""
+
+#: app/templates/main/character_view.html:20
+#, python-format
+msgid "%(item)s damage"
+msgstr ""
+
+#: app/templates/main/characters.html:26
+msgid ""
+"Ask your Warden for the party's join code. You create a new character for"
+" it, with the backgrounds of the Warden's campaign, and it joins the "
+"party when you save it."
+msgstr ""
+
+#: app/templates/main/characters.html:56
+msgid "Copy character link"
+msgstr ""
+
+#: app/templates/main/characters.html:58
+msgid "Copy link"
+msgstr ""
+
+#: app/templates/main/characters.html:30
+msgid "Create character"
+msgstr ""
+
+#: app/templates/main/characters.html:23
+msgid "Join code"
+msgstr ""
+
+#: app/templates/main/characters.html:27
+msgid ""
+"To join with a character you already have, open it and enter the code in "
+"its Party section."
+msgstr ""
+
+#: app/templates/main/characters.html:15 app/templates/main/characters.html:22
+#: app/templates/partial/charview/party_button.html:7
+#: app/templates/partial/charview/party_button.html:8
+#: app/templates/partial/charview/party_button.html:25
+msgid "Join a party"
+msgstr ""
+
+#: app/templates/main/party_edit.html:34
+msgid "Shown on the party page and as the cover of its wiki."
+msgstr ""
+
+#: app/templates/main/party_view.html:61
+msgid "Party wiki"
+msgstr ""
+
+#: app/templates/main/party_view.html:92
+msgid "Procedures"
+msgstr ""
+
+#: app/templates/main/party_view.html:61
+msgid "Wiki"
+msgstr ""
+
+#: app/templates/main/shared_map.html:189
+#, python-format
+msgid "%(name)s rolled %(result)s"
+msgstr ""
+
+#: app/templates/main/shared_map.html:110
+msgid "3D dice on the whiteboard"
+msgstr ""
+
+#: app/templates/main/shared_map.html:186
+msgid "Damage"
+msgstr ""
+
+#: app/templates/main/shared_map.html:101
+msgid "Dice results"
+msgstr ""
+
+#: app/templates/main/shared_map.html:112
+#: app/templates/main/shared_map.html:113
+msgid "Minimize dice roller"
+msgstr ""
+
+#: app/templates/main/shared_map.html:112
+msgid "Show dice roller"
+msgstr ""
+
+#: app/templates/main/shared_map.html:46 app/templates/main/shared_map.html:121
+#: app/templates/main/shared_map.html:184
+msgid "Tokens"
+msgstr ""
+
+#: app/templates/main/tools.html:25
+msgid "A complete dungeon with its rooms."
+msgstr ""
+
+#: app/templates/main/tools.html:40
+msgid ""
+"A complete dungeon. Show it as a map, then save it to a module if you "
+"like it."
+msgstr ""
+
+#: app/templates/main/tools.html:26
+msgid "A complete forest with its places."
+msgstr ""
+
+#: app/templates/main/tools.html:41
+msgid ""
+"A complete forest. Show it as a map, then save it to a module if you like"
+" it."
+msgstr ""
+
+#: app/templates/main/tools.html:22
+msgid "A dungeon's site: what it is and how it looks."
+msgstr ""
+
+#: app/templates/main/tools.html:17
+msgid "A group with its goals, advantages and agenda."
+msgstr ""
+
+#: app/templates/main/tools.html:19
+msgid "A landmark on the road, and what is there."
+msgstr ""
+
+#: app/templates/main/tools.html:31
+msgid "A monster from the bestiary."
+msgstr ""
+
+#: app/templates/main/tools.html:32
+msgid "A new monster from random traits."
+msgstr ""
+
+#: app/templates/main/tools.html:23
+msgid "A people: their culture and resources."
+msgstr ""
+
+#: app/templates/main/tools.html:16
+msgid "A region: its terrain, places, paths and people."
+msgstr ""
+
+#: app/templates/main/tools.html:34
+msgid "A relic and its power."
+msgstr ""
+
+#: app/templates/main/tools.html:35
+msgid "A spell and what it does."
+msgstr ""
+
+#: app/templates/main/tools.html:18
+msgid "A village or town, and what is going on there."
+msgstr ""
+
+#: app/templates/main/tools.html:39
+msgid ""
+"Build a world: a realm, its factions, its places and its people. A realm "
+"can be shown as a map."
+msgstr ""
+
+#: app/templates/main/tools.html:12
+msgid "Custom monster"
+msgstr ""
+
+#: app/templates/main/tools.html:29
+msgid "How a creature reacts to the party."
+msgstr ""
+
+#: app/templates/main/tools.html:11
+msgid "Random dungeon"
+msgstr ""
+
+#: app/templates/main/tools.html:11
+msgid "Random forest"
+msgstr ""
+
+#: app/templates/main/tools.html:9 app/templates/main/tools.html:11
+msgid "Random monster"
+msgstr ""
+
+#: app/templates/main/tools.html:12
+msgid "Random relic"
+msgstr ""
+
+#: app/templates/main/tools.html:101
+msgid "Relic"
+msgstr ""
+
+#: app/templates/main/tools.html:13 app/templates/main/tools.html:102
+msgid "Relic picker"
+msgstr ""
+
+#: app/templates/main/tools.html:43
+msgid "Roll a monster, make a new one, or pick one from the bestiary."
+msgstr ""
+
+#: app/templates/main/tools.html:44
+msgid "Roll a relic or a spellbook, or pick one."
+msgstr ""
+
+#: app/templates/main/tools.html:42
+msgid "Roll what happens: events, weather, reactions and what factions do."
+msgstr ""
+
+#: app/templates/main/tools.html:101
+msgid "Search relics"
+msgstr ""
+
+#: app/templates/main/tools.html:101
+msgid "Search spellbooks"
+msgstr ""
+
+#: app/templates/main/tools.html:33
+msgid "Search the bestiary and pick one."
+msgstr ""
+
+#: app/templates/main/tools.html:36
+msgid "Search the relics and pick one."
+msgstr ""
+
+#: app/templates/main/tools.html:37
+msgid "Search the spellbooks and pick one."
+msgstr ""
+
+#: app/templates/main/tools.html:6
+msgid "Show map"
+msgstr ""
+
+#: app/templates/main/tools.html:24
+msgid "Someone to meet, with a name and a want."
+msgstr ""
+
+#: app/templates/main/tools.html:20
+msgid "Something strange to find."
+msgstr ""
+
+#: app/templates/main/tools.html:101
+msgid "Spellbook"
+msgstr ""
+
+#: app/templates/main/tools.html:13 app/templates/main/tools.html:102
+msgid "Spellbook picker"
+msgstr ""
+
+#: app/templates/main/tools.html:30
+msgid "What a faction does next."
+msgstr ""
+
+#: app/templates/main/tools.html:28
+msgid "What happens on the road."
+msgstr ""
+
+#: app/templates/main/tools.html:27
+msgid "What happens while exploring a dungeon."
+msgstr ""
+
+#: app/templates/main/tools.html:21
+msgid "Where a creature lives."
+msgstr ""
+
+#: app/templates/main/tools.html:6
+msgid "Your browser could not keep this result. Try again."
+msgstr ""
+
+#: app/templates/main/tools.html:5 app/templates/main/tools_map.html:25
+msgid "Save to a module"
+msgstr ""
+
+#: app/templates/main/tools_map.html:29
+msgid "Back to Tools"
+msgstr ""
+
+#: app/templates/main/tools_map.html:22
+msgid "Generated from your Tools result. Nothing is saved until you save it."
+msgstr ""
+
+#: app/templates/main/tools_map.html:15
+msgid "Go to Tools"
+msgstr ""
+
+#: app/templates/main/tools_map.html:27
+msgid "Log in to save"
+msgstr ""
+
+#: app/templates/main/tools_map.html:14
+msgid ""
+"No map to show. In Tools, roll a Realm, a Dungeon or a Forest, then click"
+" Show map."
+msgstr ""
+
+#: app/templates/main/tools_map.html:10
+msgid "Unable to draw this map. Go back to Tools and try again."
+msgstr ""
+
+#: app/templates/nav.html:81
+msgid "Close menu"
+msgstr ""
+
+#: app/templates/nav.html:57 app/templates/nav.html:58
+msgid "Dark mode"
+msgstr ""
+
+#: app/templates/nav.html:37
+msgid "Main navigation"
+msgstr ""
+
+#: app/templates/nav.html:81 app/templates/nav.html:82
+msgid "Menu"
+msgstr ""
+
+#: app/templates/partial/charview/party_button.html:29
+msgid "Ask your Warden for the party’s join code."
+msgstr ""
+
+#: app/templates/partial/charview/party_button.html:22
+msgid "Go to party"
+msgstr ""
+
+#: app/templates/partial/charview/party_button.html:33
+msgid "Join"
+msgstr ""
+
+#: app/templates/partial/charview/party_button.html:20
+#, python-format
+msgid "Leave %(name)s?"
+msgstr ""
+
+#: app/templates/partial/charview/party_button.html:7
+#: app/templates/partial/charview/party_button.html:8
+#, python-format
+msgid "Party: %(name)s"
+msgstr ""
+
+#: app/templates/partial/charview/stats.html:13
+#, python-format
+msgid "%(stat)s save"
+msgstr ""
+
+#: app/templates/partial/charview/stats.html:15
+#, python-format
+msgid "Roll a %(stat)s save"
+msgstr ""
+
+#: app/templates/partial/confirm_dialog.html:3
+msgid "Are you sure?"
+msgstr ""
+
+#: app/templates/partial/confirm_dialog.html:7
+msgid "Confirm"
+msgstr ""
+
+#: app/templates/partial/image_field.html:6
+msgid "(optional)"
+msgstr ""
+
+#: app/templates/partial/image_field.html:10
+msgid "Change image"
+msgstr ""
+
+#: app/templates/partial/image_field.html:10
+msgid "Choose image"
+msgstr ""
+
+#: app/templates/partial/image_field.html:6
+msgid "Image"
+msgstr ""
+
+#: app/templates/partial/image_field.html:12
+msgid "Remove image"
+msgstr ""
+
+#: app/templates/partial/image_field.html:5
+msgid "This image is too big. Choose one under 10 MB."
+msgstr ""
+
+#: app/templates/partial/partyview/backgrounds.html:32
+msgid "Barebones characters roll on a table of"
+msgstr ""
+
+#: app/templates/partial/partyview/backgrounds.html:29
+msgid "Cairn Barebones"
+msgstr ""
+
+#: app/templates/partial/partyview/backgrounds.html:10
+msgid "Cairn Second Edition"
+msgstr ""
+
+#: app/templates/partial/partyview/backgrounds.html:16
+msgid "From the campaign’s modules"
+msgstr ""
+
+#: app/templates/partial/partyview/backgrounds.html:5
+msgid ""
+"New characters of this party choose from these. Characters keep what they"
+" rolled, so later changes never alter them."
+msgstr ""
+
+#: app/templates/partial/partyview/backgrounds.html:24
+msgid "No module has backgrounds yet. Write them in a module of this campaign."
+msgstr ""
+
+#: app/templates/partial/partyview/backgrounds.html:31
+msgid "Offer the official Barebones backgrounds"
+msgstr ""
+
+#: app/templates/partial/partyview/backgrounds.html:12
+msgid "Offer the official Cairn backgrounds"
+msgstr ""
+
+#: app/templates/partial/partyview/backgrounds.html:27
+msgid ""
+"The campaign's modules have no backgrounds, so the official ones are "
+"still offered."
+msgstr ""
+
+#: app/templates/partial/partyview/backgrounds.html:33
+msgid ""
+"The campaign's modules have no backgrounds, so the official table is "
+"still offered."
+msgstr ""
+
+#: app/templates/partial/partyview/backgrounds.html:25
+msgid "What players choose from"
+msgstr ""
+
+#: app/templates/partial/partyview/backgrounds.html:32
+msgid ""
+"backgrounds. The modules' backgrounds join it with their name and "
+"starting gear."
+msgstr ""
+
+#: app/templates/partial/star_button.html:7
+msgid "Star"
+msgstr ""
+
+#: app/templates/partial/star_button.html:6
+msgid "Star: listed first on your Campaigns page"
+msgstr ""
+
+#: app/templates/partial/star_button.html:6
+msgid "Unstar"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Holy servants bound to a particular deity. Typically travel in groups "
+"of four or more.\n"
+"- Carry a holy symbol (_Ward_ once per day)."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Air Elemental"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "_detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Living vortexes of whirling air and gas. Lighter creatures are swept "
+"away by their mere presence.\n"
+"- **Whirlwind**: All nearby targets that fail a STR save are blown away."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Enormous spiders with greenish-black skin and large brains. Can shape "
+"shift into human form at will. \n"
+"- Conduct their magical research in dark, web-filled caverns. Carry the "
+"_Charm_ and _Command_ spellbooks at all times.\n"
+"- Fire damage against Aranea is _enhanced_."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "shortsword (d6) or short bow (d6)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Outlaws who raid settlements, attack ships, or ambush travelers. Groups"
+" of four or more are a _detachment_.\n"
+"- A detachment always travels with one leader wearing chainmail or "
+"similar (2 Armor) and a long sword (d10) or crossbow (d8).\n"
+"- **Loyal**: When testing Morale, save using the leader's WIL (13). If "
+"the leader dies, the others will flee."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Incorporeal spirits that linger long after death to haunt the living.\n"
+"- Unharmed by cold, heat, or the elements. Iron weapon damage is "
+"_enhanced_.\n"
+"- **Wail**: Anyone in earshot must make a WIL save or fall unconscious."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Long, serpentine lizards that nest deep below the earth or in brambles "
+"just underfoot. \n"
+"- Fighting a **Basilisk** without meeting its gaze is difficult. (Attacks"
+" facing it are _impaired_.)\n"
+"- **Gaze**: A target facing the Basilisk is slowly petrified from the "
+"bottom up and completely frozen after three rounds. An antidote can be "
+"brewed from the Basilisk's gizzards. The creature's reflection is "
+"harmless."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Berserker"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "twin axes (d8+d8)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Ruthless warriors that derive their power from the skins they wear: "
+"bears, wolves, boars, etc.\n"
+"- Ignore the **Morale** rule and are never treated as part of a "
+"_detachment_.\n"
+"- **Rage**: A Berserker's first attack has both the _enhanced_ and "
+"_blast_ qualities."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Black Bear"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Waist-high bears that subsist mostly on berries and roots. Drawn to "
+"campsites in search of food.  \n"
+"- Aggressive if cornered or feel that their young are threatened. \n"
+"- **Critical Damage**: A large chunk of flesh is bitten off (d6 STR "
+"damage)."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Black Dragon"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "bite (d12), claws (d10+d10), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Amphibious dragons with glossy black scales and thick hides. Dwell in "
+"swamps or similarly dangerous and flooded environments.\n"
+"- Cruel and prone to violence. Make use of the dark and their surprising "
+"agility to separate their victims and kill them one by one."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Black Pudding"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Giant, brainless blobs of black jelly driven only by their insatiable "
+"hunger.\n"
+"- Moves along walls and across ceilings. Squeeze through holes and cracks"
+" with ease.\n"
+"- Immune to mundane attacks, save fire. Normal attacks splits the Black "
+"Pudding. creating two Puddings that share HP and STR.   \n"
+"- **Critical Damage**: Targets wearing non-metallic armor lose 1 point of"
+" Armor, and any STR loss to unarmored targets is _permanent_."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Teleporting canines in service of a powerful master.\n"
+"- Can phase out of reality at will. Melee attacks against them are "
+"_impaired_."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Born from violence resulting from a greedy or selfish act.\n"
+"- Kill their victims for sustenance, but gains no succor. They are always"
+" hungry.\n"
+"- **Critical Damage**: Gores its victims by ripping out their entrails."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Blue Dragon"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Enormous, centipede-like reptilian creatures that dwells in deserts and"
+" rocky drylands. \n"
+"- Proud and vain, they often keep victims as slaves. The more prestigious"
+" the better.\n"
+"- **Thunderclap**: Deals 4 STR damage against a single target. Targets "
+"wearing metal armor take double damage."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Boar"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "tusks (d6)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Omnivorous wild boars that dwell primarily in forests.\n"
+"- Not naturally aggressive, but dangerous if disturbed.\n"
+"- **Critical Damage**: Gores its victims, who bleed out very quickly."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Wild, hairy tricksters that prize shiny trinkets above coin.\n"
+"- Boggarts have true names that describe their true nature. Knowing these"
+" names gives a person control over them.\n"
+"- **Magic**: The Boggart can _bring objects to life_,  _sow confusion_, "
+"_create magical disguises_, use _telekinesis_, and _teleport_."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "sharpened arms (d8+d8), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Gigantic, four-armed constructs made of bone and sorcery.\n"
+"- Mindless guardians that stand ready to attack any creature other than "
+"their creator."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Bronze Construct"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "fists (d10+d10), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Towering humanoid constructs made of pure bronze. Resemble old men with"
+" long beards and hair, and emanate a strong heat.\n"
+"- Immune to fire and heat.\n"
+"- If punctured, spurts a burning hot liquid dealing d6 STR damage to "
+"anyone nearby."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Large, goblin-like creatures covered in fur.\n"
+"- Prefer stealth and trickery to gain an advantage.\n"
+"- Often command parties of like creatures (typically goblins)."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "bite (d10), acid squirt (d8, _blast_)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Huge insectoids with multiple legs and shiny black eyes. Subsist from "
+"dirt, roots, and flesh.\n"
+"- Burrow just beneath surfaces to ambush unsuspecting creatures.\n"
+"- **Critical Damage**: Target loses a body part. Roll 1d6. 1: Head, 2-4: "
+"Leg, 5-6: Arm."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Camel"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "bite or kick (d6)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Beasts of burden native to dry, arid lands.\n"
+"- Can survive without water for weeks at a time.\n"
+"- Moves through sand and broken ground without difficulty."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Catoblepas"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "tail (d8)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- A chimeric monstrosity bearing traits of buffalo, lizard, and boar. Its"
+" enormous head is always pointing towards the ground.\n"
+"- **Paralyze**: A single target is turned to stone. Moonlight reverses "
+"the effect."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Giant plant-eating crickets that dwell in caves. Immune to most types "
+"of poison.\n"
+"- Their natural coloration allows them to blend in with the stone. They "
+"emit loud shrieks when threatened."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Creatures with the lower body and legs of a horse, but a humanoid upper"
+" body.\n"
+"- Rarely found alone, preferring the company of their own."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Chimera"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- A flying, sorcerous hybrid of lion, goat, and dragon (pick one).\n"
+"- **Dragon's Breath**: The dragon's head spits acid, lightning, or fire "
+"depending on its type. d8 STR damage."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Immobile constructs typically used as guardians to great tombs or "
+"artifacts.\n"
+"- Unaffected by mundane persuasion techniques, but love a good bone."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Cockatrice"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "beak (d6)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Small, agile creatures resembling chickens with reptilian features.\n"
+"- **Critical Damage**: The target's injured area is covered in stone, "
+"which spreads to the rest of their body within three rounds. The stone "
+"can be chipped off."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Couatl"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Long, feathered serpents with colorful wings. Live in hot jungles, and "
+"are considered divine by some civilizations.\n"
+"- Highly intelligent and magical, they are capable of speaking any "
+"language.\n"
+"- Can shapechange into the form of a person or small animal."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "vines (d4, _blast_)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Appear as an inert, typical vine. Attacks passing creatures to use "
+"their corpses as fertilizer.\n"
+"- **Critical Damage**: Target is pulled into the air where they "
+"asphyxiate within a few minutes."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Animated skeletons clothed in billowing robes. Their eye sockets are "
+"hypnotically red. Defend crypts and tombs, but will not attack if left "
+"undisturbed.\n"
+"- Non-magical attacks against them are _impaired_.\n"
+"- Can teleport any target in eyesight to a random room nearby."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Cyclops"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Giant humanoids with a single large eye centered on the face. Dwell in "
+"caves and herd small animals.\n"
+"- Slow-witted and easily fooled."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Deep One"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Amphibious, fish-like humanoids that live in the deep sea. Highly "
+"resistant to magical effects.\n"
+"- Occasionally surface to trade with coastal settlements. On land their "
+"movement is slowed by half. \n"
+"- Can only reproduce with land-dwelling humanoids."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Dire Wolf"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Horse-sized, semi-intelligent wolves that roam the forests and "
+"mountains. Highly territorial.\n"
+"- Can be trained as pets if captured young."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Djinn"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "elemental fists (d10+d10), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Magical, intelligent extraplanar beings. Can take any form, or none at "
+"all.\n"
+"- Can conjure mundane objects, sounds, and visions from nothing.\n"
+"- **Whirlwind**: Transforms into a building-sized vortex, destroying "
+"anything in its path (DEX save or take d12 STR damage)."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Draugr"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "rusty broadsword (d8)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Undead horror made of withered flesh. Rises from those killed in battle"
+" and left to rot.\n"
+"- **Critical Damage**: target is instantly killed, only to rise later as "
+"a Thrall."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Driver Ant"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Giant, omnivorous black ants that build colonies deep underground.\n"
+"- Consume any edible object in their path.\n"
+"- Often act as a hive mind. Two or more Driver Ants together is a "
+"_detachment_."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Shy, protective tree spirits that manifest as beautiful, green-skinned "
+"humanoids.\n"
+"- Unable to travel far from the tree they are bound to. They perish if "
+"the tree is destroyed.\n"
+"- **Befuddle**: Target becomes confused, gradually moving further and "
+"further away from the host tree. WIL save once per round to break free."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Dwarf"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "hammer (d8)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Short, humanoids with skin as tough as stone. Dwell in mountains and "
+"underground.\n"
+"- Highly resistant to poison and disease."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Earth Elemental"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "dirt clods (d10)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Enormous humanoid-shaped beings made of earth and stone. \n"
+"- Can move through the ground as if it were water.\n"
+"- **Mudcannon**: A wall of earth is raised and then quickly lowered "
+"beneath a target, dealing d8 STR damage."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Elephant"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "tusks (d10)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Large, intelligent animals that dwell in deserts and plains, usually in"
+" herds.\n"
+"- Their tusks are worth 1000gp to the right buyer. There are some who "
+"consider taking the tusks as immoral. \n"
+"- **Charge**: Nearby targets must make a DEX save or be trampled "
+"underfoot (d12 STR damage, ignoring armor)."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Elf"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "shortsword (d6) or longbow (d8)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Long-lived, slender Fae with pointed ears preferring to live in harmony"
+" with nature.\n"
+"- Highly resistant to charming and mind-controlling effects.\n"
+"- Can cast the following spells at will: _Charm_, _Pacify_, _Telepathy_."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Estrie"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "draining hair (d8)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Appears as a woman with long dark hair that extends all the way to her "
+"feet.\n"
+"- Can transform into owls, but only at night. Binding their hair prevents"
+" transformation. \n"
+"- Drinks the blood of small animals and sleeping travelers, who dream of "
+"feathers and the moon.\n"
+"- If killed they resurrect at the next full moon. This can be stopped by "
+"burying the head under ground and filling the mouth with sand.\n"
+"- **Critical Damage**: target falls unconscious for 1d6 hours."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- The two-headed kin of giants. Prefer caves and underground hovels.\n"
+"- Cannot be surprised."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Floating spheres with large mouths, enormous eyes, and several small "
+"eyes set atop long stalks. \n"
+"- They are highly intelligent, intensely greedy, and completely insane. \n"
+"- Can cast the following spells at will: _Charm, Phobia, Telekinesis, "
+"Sleep, Shuffle, Vision_. Magic used against them requires a WIL save or "
+"it fizzles out."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "False Dragon"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "sting (d6)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Tiny winged draconic creatures with a sting-tipped tail and reddish "
+"scales. Commonly found in forests and caverns.\n"
+"- Can communicate telepathically with nearby creatures.\n"
+"- **Critical Damage**: Target is _deprived_ for d6 days, unless purged of"
+" the sting's toxins."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Fire Beetle"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Dog-sized beetles that make their home deep underground. \n"
+"- Their organs produce a brilliant slime that glows for several days, "
+"making them highly valuable to alchemists and artists alike."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Fire Elemental"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "flare (d10, _blast_), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Living columns of pure flame capable of changing shape at will.\n"
+"- Mundane attacks are ineffective, but water deals d12 STR damage upon "
+"contact.\n"
+"- **Critical Damage**: The target and all their non-metallic belongings "
+"are burnt to a crisp."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Fire Giant"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "greatsword (d10)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Colossal, red-haired humanoids build their fortresses in or near "
+"volcanoes. They are immune to fire and heat.\n"
+"- They forge heavy armor made of brass, bronze, or copper and are masters"
+" of their craft."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Flesh Construct"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Tall, bloated humanoid abominations made of stitched together flesh.\n"
+"- If destroyed, the construct slowly reassembles using parts from nearby "
+"corpses."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Foxwoman"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Can take the form of a fox or a woman with a hidden fox leg.\n"
+"- Immune to attacks from metal weapons.\n"
+"- **Critical damage**: Victim is choked unconscious."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Beautiful, amoral, and long-lived.\n"
+"- Resistant to most forms of magic.\n"
+"- Can cast the following spells at will: _Sleep_, _Teleport_, _Detect "
+"Magic_."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Frost Giant"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "great axe (d12) or longbow (d8)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Colossal, pale-haired humanoids with blueish skin and pale hair. "
+"Unharmed by cold and ice. \n"
+"- Excellent trackers, they are often accompanied by dire wolves."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Magical, slow-moving statues of monstrous winged creatures, typically "
+"employed as guards or watchdogs. \n"
+"- Prowls at night but fear the day, when the sun's light freezes them in "
+"place.\n"
+"- Immune to charms and magical sleep."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Large shapeless masses of transparent jelly. Mindlessly hunt for food "
+"in dungeons and underground caverns.\n"
+"- **Critical Damage**: The target is engulfed, losing d6 STR damage per "
+"round until they are consumed."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Incorporeal spirits of the restless dead, vulnerable only to magic and "
+"specific anointed rites.\n"
+"- **Critical Damage**: Target must save WIL or is possessed, acting only "
+"on behalf of the ghost's whims."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Grey-skinned man-things wearing shredded clothes that crave only the "
+"flesh of the living.\n"
+"- **Critical Damage**: Target is _deprived_ from their necrotic wound, "
+"dying in d4 days unless treated by a priest or skilled healer. If the "
+"body is not burned it later rises as a Ghoul as well."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Giant Aquatic Spider"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Enormous spiders that dwell in large bodies of fresh water, building "
+"air-filled nests in the aquatic vegetation.\n"
+"- Lurk just below the water's surface, waiting to surprise their victims."
+"\n"
+"- **Critical Damage**: Paralyzes their target, dealing an additional d4 "
+"DEX damage."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Giant Centipede"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Dog-sized centipedes that live in damp, underground places. They prefer"
+" to avoid combat if possible. \n"
+"- **Critical Damage**: Venom renders the target _deprived_. Save STR once"
+" per day to recover."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Giant Crab"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "pincers (d8+d8)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Huge crustaceans that live in coastal areas. \n"
+"- Their pincers ignore non-metallic armor completely."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Giant Crocodile"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "bite (d12), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Rare, gigantic reptiles from ancient times.\n"
+"- Natural hunters, they are attracted to the scent of blood in the water,"
+" even at great distances."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Giant Draco"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Tall, carnivorous lizards that glide in the air on flaps of skin.\n"
+"- Wait atop tall natural formations to swing down and surprise their "
+"unsuspecting targets."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Giant Mantis"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "forelegs (d8+d8)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Cow-sized insects with sharp forelimbs and slicing mandibles. Dwell in "
+"tropical forests and jungles.\n"
+"- Relies on its dark green coloration to camouflage in foliage and attack"
+" unsuspecting prey. \n"
+"- **Critical Damage**: Target loses a body part. Roll 1d6. 1: Head, 2-4: "
+"Leg, 5-6: Arm."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Giant Phase Spider"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "bite (d6), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- 8’ long, black spiders that have the ability to become intangible. "
+"Dwell in web-filled lairs and sometimes prey on humans.\n"
+"- Can freely shift in and out of its current plane, phasing back to "
+"attack. It cannot phase out again until its next turn. \n"
+"- **Critical Damage**: Without specialist healing the target begins to "
+"slowly phase out of reality over 1d6 days."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Horse-sized arachnides commonly found in dry terrain or caverns.\n"
+"- **Critical Damage**: The stinger's poison liquifies the target's "
+"insides for an additional d8 STR damage. The STR loss is permanent."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Ferocious humanoid hyenas spawned from arcane experiments long ago.   \n"
+"- Deadly warriors, they attack as a pack (as _detachment_) or on their "
+"own."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Gnome"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "crossbow (d8, _bulky_)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Short humanoids with long noses and ears.   Live underground or deep in"
+" forests.\n"
+"- Intelligent tinkers, love messing with any kind of mechanism. Can "
+"easily be convinced by the promise of something novel or uncommon.\n"
+"- Can understand and communicate with small mammals like moles or "
+"squirrels."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Small, grotesque humanoids with skin in earthly tones of green, brown, "
+"and grey.\n"
+"- Avoid combat, only attacking when advantageous, using hit-and-run "
+"tactics.\n"
+"- Sometimes are found using dire wolves as mounts."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Golem"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "stone fists (d10+d10)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Immune to mental attacks. Damage from fire is _enhanced_.\n"
+"- Scratching off the first letter on its forehead or performing in "
+"reverse the ritual that created it reduces the Golem to mud."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Gorilla"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "fists (d8+d8)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Large, muscular apes that dwell in hot jungles. Highly territorial.\n"
+"- **Critical Damage**: Breaks a limb, dealing 1d4 extra STR damage."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Great White Shark"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "bite (d12)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Enormous grey sharks that dwell in warm water, sometimes attacking "
+"smaller boats.\n"
+"- Can detect the smell of blood from many miles away."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Forest-dwelling snakes topped with tall green scales. Collect great "
+"hoards of treasure.\n"
+"- Use intelligence and cunning to manipulate the weak into their service."
+"\n"
+"- **Chlorine Gas**: Anyone nearby must make a DEX save to escape its "
+"reach or lose 1d4 STR and become _deprived_."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Green Slime"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "acidic touch (d10)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Large blobs of green slime that stick to walls and ceiling. Immune to "
+"all damage except fire.\n"
+"- **Drop Attack**: As trap. Deals 1d6 STR damage per round, corroding "
+"metal, wood, and flesh. Flesh consumed in this way becomes more Green "
+"Slime."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "claws (d6+d6), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Ravenous hybrids, with the head and wings of an eagle and the lower "
+"body of a lion.\n"
+"- Can be used as mounts if taken young and properly trained.\n"
+"- Fly and attack at astonishing speeds, diving in to scoop up their prey."
+"\n"
+"- **Critical Damage**: Tears flesh and bone from its victim with its "
+"razor-sharp beak."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Reddish-brown bears commonly found in mountains, woodlands, and "
+"prairies. \n"
+"- Prefer to eat fish and meat, and will attack the rare unfortunate who "
+"crosses their path.\n"
+"- **Critical Damage**: Bites the victim for an additional d6 STR damage. "
+"They bleed out very quickly."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Halfling"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "shortsword (d6)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Small humanoids with hairy feet live in small settlements. Highly "
+"resistant to mental attacks."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Hideous monstrosities with the body of a giant eagle and a humanoid "
+"head.\n"
+"- Their movements and flight are clumsy due to their disproportionate "
+"size. Rely on charmed victims to do anything of note. \n"
+"- **Song**: Anyone nearby must save WIL or be charmed by its voice, "
+"following the harpy and defending it from any threat."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "bite (d8) or fire breath (d6, _blast_)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Monstrous, intelligent dogs that dwell near volcanoes.\n"
+"- Immune to fire and heat damage. Hot enough to melt iron simply by "
+"biting it."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Large and burly relatives of goblins. Dwell in underground fortresses "
+"until called for war.\n"
+"- Automatically succeed in Morale Saves if a commander is present. \n"
+"- Trained to fight together. Damage dealt is _enhanced_ if an ally is "
+"also engaged with the same enemy."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- The Watchers of the Wood; a cult that derive their power from leylines,"
+" rune stones, and the like.\n"
+"- Carries two of the following spellbooks: _Charm, Hypnotize, Push/Pull, "
+"Shield_.\n"
+"- **Critical Damage**: Leech a part of the victim's soul (1d4 WIL damage)."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Hunting Dog"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Domestic canines shaped into ferocious hunters, attacking only at their"
+" owner’s command.\n"
+"- Track by scent, relentlessly following their target."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "bite (d12, _blast_), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Large reptilians with nine serpentine heads. Very difficult to throw "
+"off once their quarry is detected.\n"
+"- On taking **Critical Damage**, the hydra loses one head. It then "
+"continues fighting until no heads remains."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Ifrit"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "flaming sword (d10)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Clever, djinn-like beings from the elemental plane of fire. Appear as "
+"giant humanoids. Wet weapons deal _enhanced_ damage against them.\n"
+"- Often summoned through powerful magic in service to a wizard, but will "
+"subvert their orders whenever possible.\n"
+"- **Pillar of Flame**: Creates a column of flame as tall as a building, "
+"dealing d12 STR damage to all it touches. It can only do this once per "
+"day."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Intelligent beings shaped into reality by a powerful wizard. Completely"
+" invisible and silent.\n"
+"- Attacks deal direct STR damage (subtracting Armor)."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Iron Construct"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "giant sword (d12)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Tall, humanoid statues forged of metal, fire, and magic. Wield massive "
+"swords of iron.\n"
+"- Immune to mundane attacks, electricity, and cold. Fire damage is "
+"absorbed and heals any lost STR."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "sting (d6), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Oversized bees that build underground hives. Hyper-aggressive, attack "
+"anything that comes near.\n"
+"- Produce special honey that heals 1d6 STR. 3 uses.\n"
+"- When the bees cause STR damage, the stingers are lodged into the "
+"target, dealing d4 damage each round until removed."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Hairless humanoids with canine-like features and scaly skin. Can see "
+"perfectly in the dark, but are harmed by direct sunlight. \n"
+"- Use traps and ambush to defeat opponents. Often act in service of a "
+"more powerful creatures."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Kraken"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "arms (d10, _blast_)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Titanic, eight-armed saltwater monstrosities that build enormous "
+"\"castles\" deep below the ocean.\n"
+"- Terrorize ships and coastal cities alike in their obsessive search for "
+"building materials."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Centaur-like creatures that prey on the life force of others, seducing "
+"their victims through heightened charm and intelligence. Their upper "
+"bodies are typically humanoid, the lower half any number of animal "
+"hybrids.\n"
+"- Inherently magical. Can create illusions, charm creatures, and disguise"
+" themselves at will.\n"
+"- **Critical Damage**: The target takes d6 WIL damage as their spirit is "
+"slowly sapped away. They then become enthralled to the Lamia, obeying its"
+" every command while in its presence."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Powerful sorcerers that paid the ultimate price for immortality: their "
+"own life. Now their thirst for power knows no bounds.\n"
+"- Maintain unlife by binding themselves to an earthly artifact, which is "
+"typically protected by at least d6 other undead servants.\n"
+"- Carry up to six of the following spellbooks: _Animate Object_, _Arcane "
+"Eye_, _Deafen_, _Disassemble_, _Elemental Wall_, _Frenzy_, _Gate_, "
+"_Hover_, _Hatred_, _Identify Owner_, _Knock_, _Pacify_, _Raise Dead_, "
+"_Raise Spirit_, _Shield_, _Sleep_, _Smoke Form_, _Telekinesis_, "
+"_Telepathy_, _Teleport_, _Vision_, _Wizard Mark_."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Lion"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Carnivorous hunters that live in the savannah or other similarly dry "
+"lands.\n"
+"- Can follow the scent of blood over great distances.\n"
+"- **Critical Damage**: Delivers a killing bite to the throat (d6 STR "
+"damage)."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "claws (d6+d6) or tail spike (d8)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Spiteful monstrosities that wear a humanoid face, a lion's body, wings "
+"of a bat, and a scorpion's tail. Dwell in mountainous regions, abandoned "
+"castles, and forgotten dungeons.\n"
+"- Tail spikes act like darts, regrowing after a few days. A single spike "
+"is worth 150gp to a collector.\n"
+"- **Critical Damage**: Target is _deprived_ until they get a good night's"
+" sleep. Until then, they act boorish, selfish, and cruel (or more so, if "
+"that already is their nature)."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Medusa"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "snake bite (d8)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Magical creatures that resemble humanoid women, but have snakes in "
+"place of hair. Proud and territorial. \n"
+"- **Gaze**: Those who look into the eyes of the Medusa are quickly turned"
+" to stone (its reflection is harmless). Attacks against it are almost "
+"normally _impaired_.\n"
+"- If severed, a Medusa’s head maintains its powers for a full day."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Malicious shape shifters that take on the form of inanimate objects "
+"commonly found in dungeons.\n"
+"- Remain motionless while in disguise, surprising anyone that comes near."
+"\n"
+"- The mimic's saliva is extremely sticky and difficult to remove. "
+"Alchemists will pay up to 150gp for even the smallest vial."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "tentacles (d6, _blast_)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Humanoid creatures with purple skin and squid-like heads. Dwell deep "
+"underground or in spacefaring vessels. Feed on the brains of other "
+"humanoids, absorbing their memories and life essence. Highly intelligent,"
+" but evil beyond belief.\n"
+"- **Mind Blast**: Nearby targets must save WIL or lose 1d4 WIL and become"
+" paralyzed.\n"
+"- **Critical Damage**: A tentacle rips the victim's brain out of their "
+"skull."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "two-handed axe (d10) or charge (d12)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Large humanoids (typically male) with the head of a bull. Dwell in "
+"mazes or dungeons.\n"
+"- Extraordinary trackers with an excellent sense of smell and navigation "
+"skills."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Undead humanoids wrapped in funerary cloth. Found in pyramids, ruins, "
+"temples, and tombs.\n"
+"- **Critical Damage**: Target is infected with mummy rot, and is unable "
+"to recover STR until they are cured by a specialist healer. The target is"
+" also _deprived_."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Humanoids with the lower body, tail, and neck of snakes. Dwell in hot "
+"jungles and temples lost to time.\n"
+"- Use cunning and hypnosis to capture other creatures to be enslaved.\n"
+"- **Gaze**: A target facing the Naga is hypnotized, falling under its "
+"will. Its victims cannot be compelled to violence."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Intelligent, nocturnal marsupials that make their homes in forests and "
+"swamps. Hunt in\n"
+"packs.\n"
+"- Critical Damage: The Night Cat begins to eat the target (d4 STR damage)"
+" while they are\n"
+"still alive."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Hideous old women that dwell in dead forests, swamps, and bogs.\n"
+"- Carry three of the following spellbooks: _Arcane Eye_, _Disguise_, _Fog"
+" Cloud_, _Identify Owner_, _Smoke Form_."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Intelligent, demonic horses with eyes like burning coals, smoldering "
+"nostrils, and flaming hooves.\n"
+"- Melee attacks against the Nightmare are _impaired_ due to the thick "
+"clouds of smoke it produces."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Massive, gluttonous brutes of ill-spirit and low intelligence.\n"
+"- Easily impressed by shiny materials, keeping sacks of gold and treasure"
+" in their lairs."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "beak (d10) or claws (d8+d8)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Bear-like carnivores with the face of an owl. Found in dense forests. "
+"Rumored spawn of a magical mishap.\n"
+"- **Critical Damage**: A piece of armor is rent and destroyed."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Panther"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Dark-furred cats that live in forests and plains. Hunt animals of "
+"almost any size, pouncing on unsuspecting targets from on high.\n"
+"- **Critical Damage**: Delivers a killing bite to the target's throat, "
+"dealing an extra d4 STR damage."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Intelligent, hawk-like spirits of pure flame, found in isolated deserts"
+" and high mountains.\n"
+"- If killed, they explode in a burst of flames. They are reborn 1d3 days "
+"later from the ashes.\n"
+"- Their feathers are highly-sought after for their healing properties."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Tiny humanoids with insectoid wings. Naturally invisible.\n"
+"- Can cast _Sleep_ and _Masquerade_ at will."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Pseudodragon"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Winged, cat-sized reptiles capable of flight, speech, and high "
+"intelligence. Commonly found acting as familiars and spies. \n"
+"- Love treats, rubs, and good stories."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Gargantuan worms that lair in enormous burrows deep underground, only "
+"coming to the surface to eat. Found in high deserts and hot tundra.\n"
+"- **Critical Damage**: The target is devoured, taking d8 STR damage from "
+"the acid in the worm's stomach."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Born from blood left to rot in the land of Fairy. Their hats are a deep"
+" red from the blood they bathe in.\n"
+"- Ignore those with little to live for, as there is no pleasure in their "
+"murder.\n"
+"- **Critical Damage**: Target is eviscerated, the spray of their blood "
+"restoring STR loss suffered by the Red Cap."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Red Dragon"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Flaming titans of smoke and fire, boasting a greater wingspan than any "
+"of their brethren. Lair close to volcanos and lava flows.\n"
+"- Immune to fire damage of any kind. Ice and water evaporate on contact.\n"
+"- **Fire Breath**: Deals 8 STR damage to anyone nearby, destroying all "
+"mundane armor it touches in the process."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Amphibian humanoids that live in large tribes near swamps and jungles.\n"
+"- Craft their armor and weapons from the bones of their prey. They will "
+"eat anything, including humanoids."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "beak (d12, _blast_), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Gargantuan birds of prey that roost in high plateau and distant "
+"mountain peaks. Powerful hunters, they will defend a clutch of eggs to "
+"the death.\n"
+"- **Grab**: Their powerful talons can scoop up entire groups of people "
+"(targets must all make a DEX save to escape). Victims are carried back to"
+" the nest to be eaten alive.\n"
+"- **Critical Damage**: Target is pierced through their middle, dying "
+"instantly."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Avoid combat unless they have the advantage (such as greater numbers).\n"
+"- Guard their stolen goods to the death.\n"
+"- Root Goblins prize spellbooks and are always willing to trade."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Excellent tunnelers that hide underground near water. Wiggle tiny "
+"fronds into the air as lures.\n"
+"- Above-ground, appear vaguely humanoid with the face of a rotted tree "
+"stump.\n"
+"- Will exchange rare minerals for a “fresh corpse” of any kind."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Armadillo-like creatures with club-like tails and long antennae. Feed "
+"on iron and rusted metal.\n"
+"- Any mundane metals their antennae touch instantly become rust. Can "
+"smell metal from a long distance away.\n"
+"- **Critical Damage**: Metal armor rusts into useless weight."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Sabre-Toothed Cat"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Huge, primeval cats with enormous fangs. Extremely rare, generally "
+"found in regions untouched by civilization.\n"
+"- **Critical Damage**: Punctures the flesh of its victim (d6 STR damage),"
+" resulting in extreme blood loss."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Satyr"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "horns (d6)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Mythical humanoids with legs and horns of a goat that love to dance and"
+" drink. Found in deep forests. Immune to mind-altering magic.\n"
+"- **Pipes**: Anyone in earshot of their music must save WIL or fall "
+"asleep."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Ghostly, green-skinned hags that dwell in seaweed forests and warm "
+"shallow waters.\n"
+"- Immune to magic from spellbooks. \n"
+"- **Hideous Gaze**: A target is overcome with fear (HP drops to 0). WIL "
+"save each round to break the spell."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "draining touch (d6, ignores armor) "
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Incorporeal monsters that look like animated shadows. Unharmed by "
+"mundane attacks, sleep or mind control.\n"
+"- **Critical Damage**: Target loses d4 STR. If reduced to 0 STR, they "
+"become a shadow as well."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "tendrils (d8+d8), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Tall humanoids made of slimy vegetation. Dwell in dark swamps and damp "
+"undergrounds.\n"
+"- **Critical Damage**: Target is swallowed whole and dragged away."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Frequently found serving a master or necromancer, often in groups of 3 "
+"or more.\n"
+"- Found wearing whatever was on them at the time of their death.\n"
+"- If a skeleton is killed and its bones are not scattered, it reforms."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "mace (d10), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Towering, white-skinned giants that live in castles high in the "
+"mountains.\n"
+"- Missile attacks against them are _impaired_ due to the powerful winds "
+"surrounding them."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "claws (d8+d8, _blast_), beak (d10)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Mythical beasts with the upper body and head of a human, the wings of "
+"an eagle, and the body of a lion. Immune to magic of any kind.\n"
+"- Poses riddles to anyone they meet. Failure to answer correctly is "
+"usually met with death. They know almost everything worth knowing.\n"
+"- **Roar**: Anyone in earshot must save WIL or flee in fear."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "great sword (d12), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Building-sized humanoids with bronze-hued skin and light-colored hair. "
+"Live on the highest mountain peaks and rockiest coastlines.\n"
+"- Unharmed by lightning, can summon storm clouds at their will. Can fly "
+"with the wind as their chariot.\n"
+"- **Thunderclap**: Deals 4 STR damage against a single target. Targets "
+"wearing metal armor take double damage."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Obese humanoids that transform into massive porcine monstrosities to "
+"feast on human flesh.\n"
+"- Prefer to hunt in isolated settlements close to forests and wetlands. "
+"Can only shapeshift at night.\n"
+"- **Charm**: Target obeys the swine's every command until it is killed. "
+"WIL save once per round to break free."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Tiger"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Striped, solitary felines found in temperate regions.\n"
+"- Use camouflage and stealth to surprise their prey. Drag away their "
+"victims for later consumption. \n"
+"- **Critical Damage**: Bites through flesh an bone alike (d6 STR damage)."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "lightning sword (d12), _detachment_"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Mythical, humanoid giants of radiant beauty and powerfully athletic "
+"bodies. Beneficent of character, but prone to megalomania. \n"
+"- Natives of other planes of existence, but sometimes have strongholds in"
+" the mortal world.\n"
+"- Can levitate, shapeshift, and sculpt elements at will."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "roots (d8+d8, _blast_)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Sentient, bipedal trees with a vaguely humanoid face on their trunks. "
+"Found in the deepest part of the wood.\n"
+"- Speak slowly and ponderously, with a deep voice. Timeless, living for "
+"thousands of years."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Aquatic humanoids with silvery skin, blue-green hair, and scaled legs "
+"ending in fins. Dwell in warmer waters close to land.\n"
+"- Lair in beautiful castles sculpted from sea rock and coral. Command "
+"vast schools of fish for both protection and food."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "claws (d8+d8), club (d10)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Giant, warty humanoids of flesh and bark. Dwell underground or in deep "
+"forests, as well as the ruined homes of their former victims. "
+"Carnivorous. \n"
+"- When taking **Critical Damage**, a Troll will continue fighting, "
+"despite loss of flesh and limb. Only when their STR is 0 are they truly "
+"killed. Unless their heads are bathed in acid, fire, or powerful magic, "
+"they will fully regenerate within 1d4 days."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Tyrannosaurus"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Massive, two-legged, predatory reptiles with huge jaws. \n"
+"- Ferocious hunters, attacking the most threatening foe first."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Magical horses with a single long horn on their foreheads. Timid, but "
+"proud and willful, are seen as divine beings.\n"
+"- Their hair is worth a small fortune due to its powerful healing "
+"properties."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "Vampire Bat"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Large, nocturnal mammals that feed on live blood. \n"
+"- Use echolocation to navigate. Fear loud noises.\n"
+"- **Critical Damage**: Target is infected by disease and are _deprived_ "
+"without specialist healing."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Charming, undead creatures that drink the blood of mortals. Act at "
+"night and sleep in a coffin during the day. Can change into a bat at "
+"will.\n"
+"- **Regeneration**: A damaged vampire regains 6 HP when it bites a target"
+" that has blood. If killed, it becomes a cloud of gas and retreats to its"
+" coffin, reforming at the next nightfall. Can only be killed if exposed "
+"to sunlight or if the coffin is destroyed.\n"
+"- **Critical Damage**: The vampire drains the target's essence, dealing "
+"d12 damage to WIL. If the target reaches 0 WIL this way, it dies and is "
+"raised as a thrall of the vampire."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Poisonous snakes often found in caves, pits, and other dark places. An "
+"antitoxin can be made from their poison sacs.\n"
+"- Use heat and smell to track their victims.\n"
+"- **Critical Damage**: Target is poisoned, dying in 1d12 hours without a "
+"cure."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "tentacles (d8+d8, _blast_), bite (d10)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Grotesque panther-like predators with long razored tentacles growing "
+"out of their backs.\n"
+"- Resistant to magical attacks. Caster must make a WIL save for the "
+"intended effect to succeed.\n"
+"- Can teleport a short distance away at will. Hate Blink Dogs."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Giant armored snails with heavy, club-like tentacles. \n"
+"- Some species have colorful shells that can reflect magical attacks."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Rare spirits of lakes, rivers, and seas. \n"
+"- Mundane attacks against the Water Elemental are _impaired_.\n"
+"- **Critical Damage**: Target is enveloped by the water and drowns in "
+"three rounds."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Ferocious lycanthropes that can transform into a wolf-shape at will.\n"
+"- Mundane attacks are _impaired_ against werewolves, but attacks with "
+"weapons made of silver are _enhanced_.\n"
+"- **Critical Damage**: Target becomes infected with lycanthropy, "
+"transforming into a werewolf by the next full moon."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "White Ape"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "claws (d6+d6), rocks (d6, _blast_)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Nocturnal gorillas covered in snow-white hair.\n"
+"- Defend their territory with threatening gestures followed by sudden "
+"violence."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "White Dragon"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- A massive winged creature of frost that lairs comfortably in only the "
+"coldest regions. \n"
+"- Perpetually accompanied by a storm of ice and wind, the White Dragon is"
+" a manifestation of winter itself.\n"
+"- **Frost Breath**: Nearby targets must make a DEX save or are frozen "
+"solid, their breath turned to icicles in their lungs."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid "longsword (d10)"
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Grotesque, fallen warriors, raised from death for ill purpose. Often "
+"astride equally nightmarish steeds, leading lesser undead creatures into "
+"battle.\n"
+"- **Critical Damage**: On a fail, any STR loss is permanent."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Nocturnal spirits of cool flame, commonly found in dense woodlands, "
+"marshes, and swamps.\n"
+"- Known to lead travelers astray, to a corpse, or back home again."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Large canines that dwell primarily in forest or tundra. \n"
+"- Can be trained with effort if captured at a young age."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Large humanoids with elongated arms made of bark or root. They live in "
+"forests, sharing a deep connection with the vegetation around them.\n"
+"- If killed, they will slowly regenerate unless their corpse is taken out"
+" of the forest or burned with fire.\n"
+"- **Critical Damage**: Moss and twigs begin growing out of the target's "
+"wounds."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Large, intelligent, winged reptiles. Dwell in any terrain, but favor "
+"dry cliffs.\n"
+"- Shy away from other creatures, preferring to silently stalk their "
+"targets from afar.\n"
+"- **Critical Damage**: The victim is impaled and held in place. The "
+"wyvern then bites their head off."
+msgstr ""
+
+#: app/static/json/monsters.json:1
+msgid ""
+"- Re-animated corpse brought back through necromantic ritual or fell "
+"influence. Immune to all mind-influencing effects.\n"
+"- If not utterly destroyed (by fire, complete dismemberment, etc.), the "
+"Zombie will rise again within a few minutes.\n"
+"- **Critical Damage**: Target is infected and becomes _deprived_. Without"
+" the services of a specialist or healer, they will become a zombie in d4 "
+"days."
+msgstr ""
