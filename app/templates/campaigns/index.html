@@ -8,7 +8,7 @@
     <button type="button" class="is-new" aria-haspopup="dialog" @click="$refs.createDialog.showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New campaign') }}</button>
   </span>
 {# A campaign starts with its party; modules (maps, backgrounds, articles) are added inside it. #}
-<dialog class="create-dialog" x-ref="createDialog" @close="$refs.createDialog.querySelector('form').reset()" aria-labelledby="create-title">
+<dialog class="create-dialog" id="new-campaign-dialog" x-ref="createDialog" @close="$refs.createDialog.querySelector('form').reset()" aria-labelledby="create-title">
 <h2 id="create-title">{{ _('New campaign') }}</h2>
 <form method="post" action="{{ url_for('campaigns.index') }}">{{ token() }}
 <label>{{ _('Name') }}<input type="text" name="name" required maxlength="200" autofocus></label>
@@ -60,12 +60,9 @@
   </div>
 </li>
 {% endfor %}
-{# One more card: start a new campaign. #}
-<li class="create-card-item"><button type="button" class="create-card" aria-haspopup="dialog"
-    onclick="document.querySelector('.create-dialog').showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i><span>{{ _('New campaign') }}</span></button></li>
 </ul>
 {% else %}
-<p class="gallery-empty">{{ _('No campaigns yet.') }} <button type="button" class="link-button" @click="$root.closest('.campaign-workspace').querySelector('.create-dialog').showModal()">{{ _('New campaign') }}</button></p>
+<p class="gallery-empty">{{ _('No campaigns yet.') }} <button type="button" class="link-button" onclick="document.getElementById('new-campaign-dialog').showModal()">{{ _('New campaign') }}</button></p>
 {% endif %}
 </div>
 

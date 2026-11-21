@@ -67,10 +67,6 @@
       </div>
     </article>
     {% endfor %}
-    {# One more card: start a new character (and fill the row). #}
-    <a class="create-card" href="{{ url_for('main.new_character') }}">
-      <i class="fa-solid fa-plus" aria-hidden="true"></i><span>{{_('New Character')}}</span>
-    </a>
   </section>
 
   {% endblock %}

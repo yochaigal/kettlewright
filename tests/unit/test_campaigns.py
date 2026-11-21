@@ -1834,3 +1834,12 @@ def test_top_bar_marks_the_current_section(setup):
     tools = client.get('/tools/').text
     tools_nav = tools[tools.index('id="navbar"'):tools.index('</nav>', tools.index('id="navbar"'))]
     assert re.search(r'href="/tools/" class="navbar-item navbar-section"\s+aria-current="page"', tools_nav)
+
+
+def test_new_campaign_opens_its_own_dialog(setup):
+    """New campaign (and "No campaigns yet") open the New campaign dialog by its id, never another dialog."""
+    app, client = setup
+    login(client, 3)  # No campaigns: the empty state's link.
+    page = client.get('/campaigns/').text
+    assert 'id="new-campaign-dialog"' in page and 'class="create-card' not in page
+    assert "document.getElementById('new-campaign-dialog').showModal()" in page
