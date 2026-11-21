@@ -153,6 +153,9 @@ def test_board_page_needs_a_valid_ticket_for_its_party(activity):
     assert executable_scripts(html) == []
     assert not re.search(r'<(?:script|link)[^>]+(?:src|href)="https?://', html)
     assert 'class=" in-activity"' in html
+    # Dark mode before the first paint (#470): a file through the Activity's own static route, not inline.
+    assert '<script src="/activity/static/src/js/maps/board_theme.js"></script>' in html
+    assert client.get('/activity/static/src/js/maps/board_theme.js').status_code == 200
     assert client.get('/activity/board/1').status_code == 302
     assert client.get('/activity/board/1?ticket=nonsense').status_code == 302
     assert client.get(f'/activity/board/2?ticket={ticket}').status_code == 302

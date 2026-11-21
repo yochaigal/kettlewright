@@ -299,3 +299,12 @@ def test_load_map_is_off_by_default(shared):
     config = json.loads(re.search(r'id="shared-map-config" type="application/json">(.*?)</script>', html, re.S)[1])
     assert config['canLoadMaps'] is False and config['sourcesUrl'] is None and config['importUrl'] is None
     assert 'id="load-map"' not in html and 'id="map-import"' not in html
+
+
+def test_board_theme_is_set_before_the_first_paint(shared):
+    """#470: a blocking classic script, first thing in <body>, applies dark mode before the board paints."""
+    _, clients, _ = shared
+    html = clients[1].get('/party/1/shared-map').get_data(as_text=True)
+    body = html[html.index('<body'):]
+    assert body[body.index('>') + 1:].lstrip().startswith('<script src="/static/src/js/maps/board_theme.js"></script>')
+    assert body.index('board_theme.js') < body.index('<header')
