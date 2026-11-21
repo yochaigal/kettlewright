@@ -133,6 +133,8 @@ def export_archive(title, front_type, entries, backgrounds=None):
                 metadata['heart'] = 'true'
             if entry.path_type != 'standard':
                 metadata['path_type'] = entry.path_type
+            if entry.image:
+                metadata['image'] = entry.image
             links = [ids[link.target_id] for link in sorted(entry.links, key=lambda link: link.target_id)
                      if link.target_id in ids]
             if links:

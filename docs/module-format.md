@@ -33,6 +33,7 @@ Folders keep the parts tidy; the `type` says what a file is.
 | `links` | articles | Related articles, by id. |
 | `references` | articles | `[[link text]]: id`, keeping links right after renames. |
 | `heart` | articles | `true` for the Heart settlement. |
+| `image` | articles | The article's own picture: an `http(s)` image URL. |
 | `path_type` | articles | `hidden` or `conditional` (paths). |
 | `map_type` | maps | `realm`, `dungeon`, `forest` or `freeform`. |
 | `article` | maps | The map belongs to this article (a dungeon point and its rooms). |

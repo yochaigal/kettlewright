@@ -28,7 +28,7 @@ from app.lib.article_references import (private_reference_urls, bind_references,
     headings, tokens)
 from app.lib.content_types import CATEGORY_GROUPS, CATEGORY_ROOTS, ARTICLE_MAP_KINDS, ARTICLE_PARENT_TYPES, PARTY_NOTE
 from app.lib.campaigns import attach_map, map_only, article_entries, reveal_entry, ensure_article_map, ensure_article_tree_maps, populate_realm_map, article_parent_choices, place_new_realm_poi
-from app.lib.material_images import LOCAL_IMAGE, image_directory, cleanup_images, image_references
+from app.lib.material_images import LOCAL_IMAGE, image_directory, cleanup_images, image_references, image_value
 
 campaigns = Blueprint('campaigns', __name__)
 
@@ -184,7 +184,7 @@ def index():
     if request.method == 'POST':
         return new_campaign(request.form.get('name'))
     from app.lib.campaign_wiki import cover_image
-    from app.lib.campaign_parties import party_cards, played_parties
+    from app.lib.campaign_parties import party_cards, played_parties, starred_parties
     campaigns_list = my_campaigns()
     entries = library_entries().order_by(ContentEntry.title).all()
     by_campaign = {campaign.id: [e for e in entries if e.campaign_id == campaign.id] for campaign in campaigns_list}
@@ -192,7 +192,50 @@ def index():
         parties={c.id: c.parties for c in campaigns_list},
         covers={campaign.id: cover_image(campaign, by_campaign[campaign.id]) is not None for campaign in campaigns_list},
         # Players reach the parties they play in (other Wardens' campaigns) from here.
-        played=party_cards(played_parties(current_user.id)))
+        played=party_cards(played_parties(current_user.id)),
+        starred=party_cards(starred_parties(current_user.id)))
+
+
+@campaigns.route('/materials/<int:entry_id>/give', methods=['POST'])
+def give_to_party(entry_id):
+    """Give to party (#476): an item, relic or spellbook to its storage; a creature to its monsters."""
+    from app.lib.article_transfer import give_kind, give_monster, give_to_storage
+    entry = article(entry_id)
+    kind = give_kind(entry)
+    if kind is None:
+        abort(400, 'Only items, relics, spellbooks and creatures can be given to a party.')
+    party = party_access(integer(request.form.get('party_id')), editing=True)
+    if party.campaign_id != entry.campaign_id:
+        abort(403)
+    if kind == 'storage':
+        if give_to_storage(entry, party) is None:
+            flash(_('%(party)s has no room in its storage. Make room, then try again.', party=party.name), 'error')
+        else:
+            flash(_('%(article)s is in the storage of %(party)s.', article=entry.title, party=party.name), 'success')
+    else:
+        give_monster(entry, party)
+        flash(_('%(article)s is one of the monsters of %(party)s. Check its stats on its sheet.',
+                article=entry.title, party=party.name), 'success')
+    notify_parties([party.id])
+    return redirect(url_for('campaigns.wiki', campaign_id=entry.campaign_id, entry_id=entry.id))
+
+
+@campaigns.route('/party/<int:party_id>/star', methods=['POST'])
+def star_party(party_id):
+    """Star or unstar a party (#476): a bookmark for anyone in it, listed first on the Campaigns page."""
+    from app.models import PartyStar
+    party = party_access(party_id)
+    star = db.session.get(PartyStar, (current_user.id, party.id))
+    if star is None and request.form.get('starred', '1') == '1':
+        db.session.add(PartyStar(user_id=current_user.id, party_id=party.id))
+    elif star is not None and request.form.get('starred', '0') == '0':
+        db.session.delete(star)
+    db.session.commit()
+    target = request.form.get('next', '')
+    # Back where the star was pressed; only to a page of this site.
+    if not target.startswith('/') or target.startswith('//') or '\\' in target:
+        target = url_for('campaigns.index')
+    return redirect(target)
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/cover')
@@ -211,7 +254,7 @@ def module_cover(campaign_id, module_id):
     return card_image(cover(module, list(module.entries)))
 
 
-def card_image(url):
+def card_image(url, own=False):
     """Serve a card's picture: inline uploads as bytes (not a 500 KB page attribute), anything else by redirect."""
     import base64
     from app.lib.rich_content import IMAGE_URL
@@ -220,6 +263,11 @@ def card_image(url):
     if IMAGE_URL.fullmatch(url):
         kind, data = url[len('data:'):].split(';base64,', 1)
         response = current_app.response_class(base64.b64decode(data), mimetype=kind)
+    elif own and LOCAL_IMAGE.fullmatch(url):
+        # An article's own stored image (#476): the caller checked who may see it. It is in no text,
+        # so /material-images (which checks the texts) would not serve it.
+        match = LOCAL_IMAGE.fullmatch(url)
+        response = send_from_directory(image_directory() / match[1], match[2], mimetype='image/webp')
     else:
         response = redirect(url)
     response.headers['X-Content-Type-Options'] = 'nosniff'  # Caching follows the blueprint: private, no-store.
@@ -228,20 +276,23 @@ def card_image(url):
 
 @campaigns.route('/materials/<int:entry_id>/image')
 def entry_image(entry_id):
-    """An article card's picture, for its owner: the first image in the article."""
-    from app.lib.campaign_wiki import first_image
-    return card_image(first_image(article(entry_id).body))
+    """An article card's picture, for its owner: its own image (#476), else the first image in its text."""
+    from app.lib.material_images import article_image
+    entry = article(entry_id)
+    url = article_image(entry)
+    return card_image(url, own=url == entry.image)
 
 
 @campaigns.route('/party/<int:party_id>/materials/<int:entry_id>/image')
 def party_entry_image(party_id, entry_id):
-    """A party card's picture: the first image in what this party was shown, never the private original."""
+    """A party card's picture: the article's own image (#476), else the first image in what this party
+    was shown. Only for what it was shown."""
     from app.lib.campaign_wiki import first_image
     party_access(party_id)
     entry = known_entries(party_id).get(entry_id)
     if entry is None:
         abort(404)
-    return card_image(first_image(entry['body']))
+    return card_image(entry['image'] or first_image(entry['body']), own=bool(entry['image']))
 
 
 @campaigns.route('/campaigns/create', methods=['POST'])
@@ -571,7 +622,12 @@ def module_wiki(campaign_id, module_id, entry_id=None):
 
 def render_wiki(context, entry):
     if entry is not None:
+        from app.lib.article_transfer import give_kind
         context['reveal_parties'] = reveal_choices(entry)
+        # Give to party (#476): items to its storage, creatures to its monsters.
+        context['give_kind'] = give_kind(entry)
+        if context['give_kind']:
+            context['give_parties'] = [party for party in my_parties() if party.campaign_id == entry.campaign_id]
         if entry.pointcrawl:
             # A map's page shows the map (read only); Edit opens the map editor.
             context.update(graph=map_projection(entry.pointcrawl), pointcrawl=None, editing=False, party=None,
@@ -731,7 +787,7 @@ def new_entry():
         title = text_value(request.form.get('title'), 200, True)
         body = content_value(request.form.get('body', ''))
         entry = ContentEntry(owner_id=current_user.id, campaign=campaign, module=module, category=category,
-                             title=title, body=body,
+                             title=title, body=body, image=image_value(request.form.get('image')),
                              is_heart=category == 'settlement' and request.form.get('is_heart') == 'on',
                              path_type=request.form.get('path_type', 'standard'))
         if entry.path_type not in PATH_TYPES:
@@ -847,6 +903,8 @@ def edit_entry(entry_id):
                 save_geometry(entry.pointcrawl, graph)
         entry.title = text_value(request.form.get('title', ''), 200)
         entry.body = content_value(request.form.get('body', ''))
+        if 'image' in request.form:
+            entry.image = image_value(request.form['image'])
         if entry.category not in ('map', 'path'):
             category = request.form.get('category', entry.category)
             if entry.pointcrawl and category == 'map':
@@ -1458,14 +1516,17 @@ def party_map_view(party_id, map_id):
     """A revealed map for the party: what it was shown, under its fog, with its pins.
     Members add pins; the Warden also uncovers the fog."""
     from flask_wtf.csrf import generate_csrf
-    from app.lib.campaign_wiki import party_url
+    from app.lib.campaign_wiki import party_context
     party = party_access(party_id)
     pointcrawl = db.get_or_404(PointcrawlMap, map_id)
     row = map_presentation(party, pointcrawl)
-    return render_template('campaigns/party_map.html', party=party, pointcrawl=pointcrawl, row=row, csrf=generate_csrf(),
+    warden = party.owner == current_user.id
+    # Inside the party wiki (#476): its sidebar lists the maps and articles, this map marked.
+    context = party_context(party, owner_view=warden, owner_id=current_user.id)
+    context.update(breadcrumbs=[], current_map_id=pointcrawl.id)
+    return render_template('campaigns/party_map.html', pointcrawl=pointcrawl, row=row, csrf=generate_csrf(),
                            graph=map_projection(pointcrawl, party.id), state=map_state(party, pointcrawl, row),
-                           warden=party.owner == current_user.id, back_url=party_url(party), map_only=map_only(pointcrawl.entry),
-                           maps=revealed_maps(party.id))
+                           warden=warden, map_only=map_only(pointcrawl.entry), **context)
 
 
 @campaigns.route('/party/<int:party_id>/map/<int:map_id>/state')
@@ -1568,7 +1629,9 @@ def material_image(owner_id, filename):
     url = f'/material-images/{owner_id}/{filename}'
     if not LOCAL_IMAGE.fullmatch(url):
         abort(404)
-    originals = ContentEntry.query.filter_by(owner_id=owner_id).filter(ContentEntry.body.contains(url)).all()
+    # Its owner sees it in a text or as an article's own image (#476), e.g. as a campaign cover.
+    originals = ContentEntry.query.filter_by(owner_id=owner_id).filter(
+        db.or_(ContentEntry.body.contains(url), ContentEntry.image == url)).all()
     versions = PartyPresentation.query.join(ContentEntry).filter(
         ContentEntry.owner_id == owner_id, PartyPresentation.body.contains(url)).all()
     allowed = current_user.id == owner_id and bool(originals or versions)

@@ -59,6 +59,9 @@ class ContentEntry(Versioned, db.Model):
     category = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(200), nullable=False, default='')
     body = db.Column(db.Text, nullable=False, default='')
+    # Its own picture (#476), apart from the text: a stored upload (/material-images/…) or an image URL.
+    # Shown above the text and on its card; parties it was revealed to see it too.
+    image = db.Column(db.String(2000), nullable=False, default='', server_default='')
     # A party note's sketch (Excalidraw, like a map's drawing), below its text.
     drawing = db.Column(db.JSON, nullable=True)
     source_path = db.Column(db.String(500), nullable=False, default='', server_default='')

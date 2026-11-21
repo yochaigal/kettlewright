@@ -11,7 +11,8 @@ from werkzeug.exceptions import HTTPException, Conflict
 
 from app.models import db, Campaign, ContentEntry, PointcrawlMap, MapNode, MapEdge, ContentLink
 from app.lib.campaigns import CATEGORIES, MAP_KINDS, PATH_TYPES
-from app.lib.rich_content import normalize_content
+from app.lib.rich_content import normalize_content, remote_image_url
+from app.lib.material_images import LOCAL_IMAGE
 from app.lib.campaign_map_import import prepare_maps
 from app.lib.article_references import prepare_archive_references
 from app.lib.campaign_backgrounds import BackgroundError, add_backgrounds, background_from_markdown
@@ -39,6 +40,16 @@ class ImportError(ValueError):
 
 MAP_BLOCK = re.compile(r'^```kettlewright-map[ \t]*\n(.*?)\n```[ \t]*$', re.M | re.S)
 
+
+
+def imported_image(url, owner_id):
+    """An article's image from its front matter (#476): an image URL, or a stored picture of this
+    account (its own export). Anyone else's stored picture is left out."""
+    from app.lib.material_images import image_directory
+    match = LOCAL_IMAGE.fullmatch(url or '')
+    if match and (int(match[1]) != owner_id or not (image_directory() / match[1] / match[2]).is_file()):
+        return ''
+    return url or ''
 
 def archive_files(data):
     if len(data) > MAX_ARCHIVE:
@@ -163,6 +174,9 @@ def parse_markdown(name, text):
         raise ImportError('heart must be true or false.')
     if metadata.get('path_type', 'standard') not in PATH_TYPES:
         raise ImportError('Unknown path_type.')
+    image = metadata.get('image', '').strip()
+    if image and (len(image) > 2000 or not (remote_image_url(image) or LOCAL_IMAGE.fullmatch(image))):
+        raise ImportError('image must be an http(s) image URL.')
     source_path = metadata.get('source_path', name)
     path = PurePosixPath(source_path)
     if len(source_path) > 500 or path.is_absolute() or '..' in path.parts or any(c in source_path for c in ('\\', ':', '\x00')):
@@ -179,7 +193,7 @@ def parse_markdown(name, text):
             'parent_title': metadata.get('parent', ''), 'parent': None,
             'id': metadata.get('id', ''), 'parent_id': metadata.get('parent_id', ''),
             'is_heart': metadata.get('heart', 'false').casefold() == 'true',
-            'path_type': metadata.get('path_type', 'standard'),
+            'path_type': metadata.get('path_type', 'standard'), 'image': image,
             'map_file': metadata.get('map', ''),
             'map_block': map_block, 'attach_to': metadata.get('article', ''),
             'format_version': metadata.get('version', '') if category == 'campaign' and metadata.get('format') else '',
@@ -454,7 +468,8 @@ def import_preview(payload, owner_id, into=None, slug='', module=None, name=''):
         entry = ContentEntry(owner_id=owner_id, campaign=into, module=module, parent=parent_entry,
             title=row['title'], category=row['category'], body=normalize_content(row['body']),
             source_path=row.get('source_path', row['file']), references={},
-            is_heart=row.get('is_heart', False), path_type=row.get('path_type', 'standard'))
+            is_heart=row.get('is_heart', False), path_type=row.get('path_type', 'standard'),
+            image=imported_image(row.get('image', ''), owner_id))
         db.session.add(entry)
         graph = row.get('map')
         if graph or row['category'] == 'map':

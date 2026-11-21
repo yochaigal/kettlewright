@@ -1,0 +1,43 @@
+{# The wiki's sidebar: its home, a search, its Maps, then its Articles. Shared by the wiki pages and the
+   party map page (#476: the map is part of the wiki). Import it with context: it reads page_url,
+   home_title, maps, hierarchy, entry and breadcrumbs; current_map_id marks the map being shown. #}
+{% macro article_title(item) %}{{ (item.title or _('Untitled private original'))|markdown_inline }}{% endmacro %}
+{% macro type_label(item) %}{{ _(content_categories.get(item.category, item.category)) }}{% endmacro %}
+
+{% macro wiki_tree(items) %}
+{% for item in items %}
+{% set node = item.entry %}
+{% set current = entry and node.id == entry.id %}
+{% set search = (node.title ~ ' ' ~ type_label(node))|lower %}
+{% if item.children %}
+<details class="wiki-tree-branch" data-tree-row data-search="{{ search }}" {% if current or (entry and node in breadcrumbs) %}open{% endif %}>
+  <summary><a href="{{ page_url(node.id) }}" {% if current %}aria-current="page"{% endif %}>{% if item.number is not none %}{{ item.number }}. {% endif %}{{ article_title(node) }}</a></summary>
+  <div class="wiki-tree-children">{{ wiki_tree(item.children) }}</div>
+</details>
+{% else %}
+<div class="wiki-tree-leaf" data-tree-row data-search="{{ search }}">
+  <a href="{{ page_url(node.id) }}" {% if current %}aria-current="page"{% endif %}>{% if item.number is not none %}{{ item.number }}. {% endif %}{{ article_title(node) }}</a>
+</div>
+{% endif %}
+{% endfor %}
+{% endmacro %}
+
+{% macro wiki_sidebar() %}
+    <aside id="wiki-sidebar" class="wiki-sidebar" :class="{ 'is-open': menu }" aria-label="{{ _('Articles') }}" x-data="materialTree">
+      <a class="wiki-campaign-name" href="{{ page_url() }}" {% if not entry and current_map_id is not defined %}aria-current="page"{% endif %}>{{ home_title|markdown_inline }}</a>
+      <div class="wiki-search">
+        <label class="sr-only" for="wiki-search">{{ _('Search') }}</label>
+        <input id="wiki-search" type="search" x-model="query" @input="filter()" placeholder="{{ _('Search by title or type') }}">
+      </div>
+      <p x-show="filtering && !matches" x-cloak class="wiki-empty">{{ _('No matching articles.') }}</p>
+      {# Maps apart from articles: they open on their own page (for a party: with its fog and pins). #}
+      {% if maps %}
+      <nav class="wiki-maps" aria-labelledby="wiki-maps-title">
+        <h2 id="wiki-maps-title"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Maps') }}</h2>
+        <ul>{% for item in maps %}<li data-tree-row data-search="{{ item.title|lower }}"><a href="{{ item.url }}" {% if (entry and not party and entry.id == item.id) or (current_map_id is defined and item.map_id == current_map_id) %}aria-current="page"{% endif %}>{{ item.title|markdown_inline }}</a></li>{% endfor %}</ul>
+      </nav>
+      {% endif %}
+      <h2 class="wiki-articles-title"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> {{ _('Articles') }}</h2>
+      <div class="wiki-tree">{{ wiki_tree(hierarchy) }}</div>
+    </aside>
+{% endmacro %}

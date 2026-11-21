@@ -59,3 +59,13 @@ class Party(db.Model):
             'containers': self.containers,
             'events': self.events
         }
+
+
+class PartyStar(db.Model):
+    """A party someone starred (#476): a bookmark, listed first on their Campaigns page."""
+    __tablename__ = 'party_stars'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), primary_key=True)
+    party_id = db.Column(db.Integer, db.ForeignKey('parties.id', ondelete='CASCADE'), primary_key=True, index=True)
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    user = db.relationship('User', backref=db.backref('party_stars', cascade='all, delete-orphan'))
+    party = db.relationship('Party', backref=db.backref('stars', cascade='all, delete-orphan'))

@@ -940,3 +940,18 @@ button.companion-delete {
   a:hover { text-decoration: underline; }
 }
 .party-campaign-field { margin-top: 1em; }
+
+.party-heading .party-star-button { margin: 0 0 0 .3em; vertical-align: middle; }
+// Star (#476): a bookmark next to the party's name.
+.party-star-button {
+  min-height: 0;
+  padding: .15em .25em;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: .6em;
+  line-height: 1;
+  cursor: pointer;
+  &[aria-pressed="true"] { color: #f59f00; }
+  &:hover, &:focus-visible { color: #f59f00; }
+}

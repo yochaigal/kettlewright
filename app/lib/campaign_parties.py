@@ -100,3 +100,16 @@ def played_parties(user_id):
         return []
     parties = Party.query.filter(Party.id.in_(party_ids), Party.owner != user_id).all()
     return sorted(parties, key=lambda party: party.id, reverse=True)
+
+
+def starred_parties(user_id):
+    """The parties this person starred (#476), most recently starred first; only those they can still open."""
+    from app.models import PartyStar
+    from app.socket_events import party_recipient_ids
+    stars = PartyStar.query.filter_by(user_id=user_id).order_by(PartyStar.created_at.desc(), PartyStar.party_id.desc()).all()
+    return [star.party for star in stars if user_id in party_recipient_ids(star.party)]
+
+
+def is_starred(user_id, party_id):
+    from app.models import PartyStar
+    return db.session.get(PartyStar, (user_id, party_id)) is not None

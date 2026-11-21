@@ -51,7 +51,8 @@
 .campaign-workspace .campaign-actions > button:disabled {opacity:.45;cursor:default;}
 .content-text {white-space:pre-wrap;overflow-wrap:anywhere;}
 .campaign-workspace fieldset {min-width:0;margin:1rem 0;padding:1rem;}
-.pointcrawl-canvas {display:block;box-sizing:border-box;width:100%;height:640px;border:1px solid currentColor;background:var(--bg,#fff);}
+/* Maps take almost the whole window (#476); Full screen takes all of it. */
+.pointcrawl-canvas {display:block;box-sizing:border-box;width:100%;height:clamp(520px,calc(100vh - 160px),1400px);border:1px solid currentColor;background:var(--bg,#fff);}
 .map-editor-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;}
 .campaign-workspace .map-editor-grid > section {margin:0;}
 .map-editor-grid label {min-width:0;}
@@ -65,7 +66,7 @@
 .map-article-coordinates input[type=number],.map-article-type select,.map-article-type input[type=checkbox] {margin:0;}
 .campaign-status {min-height:1.5rem;white-space:pre-wrap;}
 [x-cloak] {display:none!important;}
-@media(max-width:600px) {.pointcrawl-canvas{height:520px}.map-editor-grid{grid-template-columns:1fr}.campaign-workspace{padding:.75rem}}
+@media(max-width:600px) {.pointcrawl-canvas{height:calc(100vh - 120px);min-height:420px}.map-editor-grid{grid-template-columns:1fr}.campaign-workspace{padding:.75rem}}
 
 
 .article-generator {border-block:1px solid currentColor;margin:1rem 0;padding:.25rem 0;}
@@ -193,7 +194,8 @@
 .campaign-workspace .starter-row > form > button:hover {background:var(--fg);color:var(--bg);}
 .campaign-workspace .starter-row > form > button:focus-visible {outline:2px solid currentColor;outline-offset:3px;}
 .starter-row .sr-only,
-.create-dialog .sr-only {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+.create-dialog .sr-only,
+.article-image .sr-only {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
 section.body-container > .sheet.campaign-workspace {background:transparent;box-shadow:none;}
 .campaign-workspace section[aria-labelledby="starter-heading"] {position:relative;display:grid;grid-template-columns:minmax(8em,min(25em,40%)) minmax(0,1fr) auto;column-gap:1.5em;row-gap:1em;align-items:center;margin:2.5em 0 3em;padding:1.75em 1.25em 1.25em;border:1px solid currentColor;border-radius:.4em;}
 .campaign-workspace #starter-heading {position:absolute;top:0;left:1.25em;transform:translateY(-50%);max-width:calc(100% - 2.5em);margin:0;padding:0 .5em;background:var(--bg);}
@@ -762,16 +764,17 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 .party-map-page .wiki-actions {display:flex;flex-wrap:wrap;gap:.5em;align-items:center;}
 .party-map-page .wiki-actions > * {margin:0;}
 .party-map-page .wiki-edit.is-active {background:var(--fg);color:var(--bg);}
-.party-map-switch {margin:0;}
-.party-map-switch select {min-height:44px;padding:0 .8em;border:1.5px solid var(--fg);border-radius:2px;background:var(--bg);color:var(--fg);font:inherit;font-weight:600;}
 .party-map-fog {display:flex;flex-wrap:wrap;align-items:center;gap:.5em .6em;margin:.5em 0;padding:.6em .9em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;}
 .party-map-fog .fog-button {min-height:34px;padding:.3em .8em;border:1.5px solid var(--fg);border-radius:2px;background:transparent;color:var(--fg);font:inherit;font-size:.88em;font-weight:600;cursor:pointer;}
 .party-map-fog .fog-button[aria-pressed="true"] {background:var(--fg);color:var(--bg);}
 .party-map-fog .fog-button:disabled {opacity:.4;cursor:default;}
 .party-map-fog .fog-size {display:inline-flex;align-items:center;gap:.4em;font-size:.88em;margin:0;}
-.party-map-layout {display:grid;grid-template-columns:minmax(0,1fr) minmax(16em,22em);gap:1.25em;align-items:start;}
-.party-map-frame {width:100%;height:min(75vh,760px);border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;}
-.party-map-side {padding:1em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;max-height:min(75vh,760px);overflow:auto;}
+.party-map-frame {width:100%;border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;}
+.pointcrawl-canvas:fullscreen {height:100vh;border:0;border-radius:0;}
+/* Below the map: what is selected, and the pins. */
+.party-map-below {display:grid;grid-template-columns:repeat(auto-fit,minmax(18em,1fr));gap:1em;margin-top:1em;align-items:start;}
+.campaign-workspace .party-map-side {margin:0;padding:1em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;min-width:0;}
+.party-map-side > h3:first-child {margin-top:0;}
 .party-map-side h2 {font-size:1.15em;margin:0 0 .5em;}
 .party-map-side h3 {font-size:.82em;letter-spacing:.07em;text-transform:uppercase;margin:1.25em 0 .4em;color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
 .party-map-detail {padding-bottom:.75em;border-bottom:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));}
@@ -780,7 +783,6 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 .party-map-pins li {display:flex;align-items:center;gap:.5em;}
 .party-map-pins li::before {content:'';flex:none;width:.7em;height:.7em;border-radius:50%;background:#e03131;border:2px solid #f59f00;}
 .party-map-pins .link-button {min-height:0;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;text-decoration:underline;cursor:pointer;}
-@media (max-width:900px) {.party-map-layout {grid-template-columns:1fr;} .party-map-frame {height:60vh;}}
 
 /* Maps apart from articles: the module's Maps list, and the map editor's title. */
 .module-map-list {display:grid;grid-template-columns:repeat(auto-fill,minmax(15em,1fr));gap:.6em;margin:0;padding:0;list-style:none;}
@@ -840,3 +842,17 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
   border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.06);}
 .campaign-workspace .module-page .module-header.lobby-header {justify-content:center;text-align:center;border-bottom:0;padding-bottom:0;margin-bottom:1em;}
 .lobby-header .lobby-header-actions {display:flex;justify-content:center;flex-wrap:wrap;gap:.5em;margin-top:.5em;}
+
+/* An article's own image (#476): above its text, and in the editor above the description. */
+.wiki-image {margin:0 0 1.25em;}
+.wiki-image img {display:block;max-width:100%;max-height:min(60vh,560px);margin:0 auto;border-radius:6px;object-fit:contain;}
+.article-image {margin:0 0 1rem;}
+.article-image-label {display:block;font-weight:600;margin-bottom:.35rem;}
+.article-image-label small {font-weight:400;opacity:.7;}
+.article-image-preview {display:block;max-width:100%;max-height:260px;margin-bottom:.5rem;border-radius:6px;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));}
+.article-image .campaign-actions {margin:0;}
+.article-image-pick {cursor:pointer;margin:0;}
+/* Starred parties (#476): first on the Campaigns page; the star unstars. */
+.campaign-party-cards > .campaign-party-card.is-starred {position:relative;padding-right:2.75em;}
+.campaign-workspace .campaign-party-card .party-star-button {position:absolute;top:.45em;right:.45em;min-height:0;margin:0;padding:.3em;border:0;background:none;color:#f59f00;font-size:1.05em;line-height:1;cursor:pointer;}
+.gallery-heading .fa-star {color:#f59f00;}

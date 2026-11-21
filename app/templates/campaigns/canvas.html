@@ -1,19 +1,24 @@
 {% from 'campaigns/forms.html' import rich_editor with context %}
 {# A map: its drawing and its pins. Each pin has a note (a map note), written here and saved with the map. #}
+{% set fullscreen_button %}<button type="button" @click="fullscreen()" :disabled="!canvasReady"><i class="fa-solid fa-expand" aria-hidden="true"></i> {{ _('Full screen') }}</button>{% endset %}
 {% if editing and not sketch %}
 <div class="campaign-actions map-pin-actions">
 <button type="button" class="kw-add" :class="{'is-active': picking}" @click="startPin()" :disabled="!canvasReady">
   <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
   <span x-text="picking ? {{ _('Cancel pin')|tojson|forceescape }} : {{ _('Add pin')|tojson|forceescape }}">{{ _('Add pin') }}</span></button>
 <button type="button" @click="loadCanvas()" x-show="!canvasReady" x-cloak>{{ _('Reload drawing editor') }}</button>
+{{ fullscreen_button }}
 </div>
 {% else %}
-<div class="campaign-actions" x-show="!canvasReady" x-cloak><button type="button" @click="loadCanvas()">{{ _('Reload drawing editor') }}</button></div>
+<div class="campaign-actions">
+<button type="button" @click="loadCanvas()" x-show="!canvasReady" x-cloak>{{ _('Reload drawing editor') }}</button>
+{{ fullscreen_button }}
+</div>
 {% endif %}
 <iframe class="pointcrawl-canvas" x-ref="canvas"
  data-src="{{ url_for('static', filename='src/js/maps/editor.html') }}"
  data-library-error="{{ _('Some map libraries could not load. Reload the editor to retry.') }}"
- title="{{ _('Drawing editor') }}"></iframe>
+ title="{{ _('Drawing editor') }}" allowfullscreen></iframe>
 {% if not sketch %}
 <section class="map-pins" aria-labelledby="map-pins-title">
 <h2 id="map-pins-title"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ _('Pins') }} <small x-text="graph.nodes.length"></small></h2>

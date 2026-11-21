@@ -1,8 +1,19 @@
 {% extends 'campaigns/layout.html' %}
 {# A party's map (#467): what it was shown of a map, under its fog, with its pins.
    Members place pins (party notes); the Warden also uncovers the fog for this party. #}
+{% from 'campaigns/wiki_sidebar.html' import wiki_sidebar with context %}
 {% block workspace %}
-<div class="campaign-wiki party-map-page" x-data="partyMap"
+{# Part of the party wiki (#476): its sidebar (maps and articles) on the left, the map across the main column. #}
+<div class="campaign-wiki" x-data="{ menu: false }">
+  <nav class="campaign-breadcrumb wiki-topbar" aria-label="{{ _('Breadcrumb') }}">
+    <a href="{{ back_url }}">← {{ _('Back to party') }}</a>
+    <button type="button" class="link-button wiki-menu-toggle" @click="menu = !menu" :aria-expanded="menu" aria-controls="wiki-sidebar">
+      <i class="fa-solid fa-bars" aria-hidden="true"></i> {{ _('Articles') }}
+    </button>
+  </nav>
+  <div class="wiki-layout">
+    {{ wiki_sidebar() }}
+<article class="wiki-main party-map-page" x-data="partyMap"
      data-graph="{{ graph|tojson|forceescape }}" data-state="{{ state|tojson|forceescape }}"
      data-warden="{{ 'true' if warden else 'false' }}" data-csrf="{{ csrf }}"
      data-state-url="{{ url_for('campaigns.party_map_state', party_id=party.id, map_id=pointcrawl.id) }}"
@@ -12,7 +23,6 @@
                       'error': _('Could not save. Reload the page and try again.'),
                       'fogChanged': _('The fog changed in another tab; it is up to date now.'),
                       'deletePin': _('Delete this pin and its note? The party will no longer see it.')}|tojson|forceescape }}">
-  <nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ back_url }}">← {{ _('Back to party') }}</a></nav>
   <header class="wiki-header">
     <div>
       <h1>{{ row.title|markdown_inline }}</h1>
@@ -20,15 +30,9 @@
         <span class="wiki-badge" x-text="pins.length + ' ' + {{ _('pins')|tojson|forceescape }}"></span></span>
     </div>
     <div class="wiki-actions">
-      {% if maps|length > 1 %}
-      <label class="party-map-switch"><span class="sr-only">{{ _('Map') }}</span>
-        <select onchange="location.href=this.value">
-          {% for other, other_row in maps %}<option value="{{ url_for('campaigns.party_map_view', party_id=party.id, map_id=other.id) }}" {% if other.id == pointcrawl.id %}selected{% endif %}>{{ other_row.title|markdown_inline|striptags }}</option>{% endfor %}
-        </select></label>
-      {% endif %}
       {# A map has no text; a place with its own map (a dungeon point) does. #}
       {% if not map_only %}<a class="button wiki-edit" href="{{ url_for('campaigns.party_entry', party_id=party.id, entry_id=pointcrawl.entry_id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read article') }}</a>{% endif %}
-      <a class="button wiki-edit" href="{{ url_for('campaigns.party_wiki', party_id=party.id) }}"><i class="fa-solid fa-book" aria-hidden="true"></i> {{ _('Wiki') }}</a>
+      <button type="button" class="button wiki-edit" @click="fullscreen()" :disabled="!canvasReady"><i class="fa-solid fa-expand" aria-hidden="true"></i> {{ _('Full screen') }}</button>
       <button type="button" class="button wiki-edit kw-add" :class="{'is-active': picking}" @click="startPin()" :disabled="!canvasReady"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span x-text="picking ? {{ _('Cancel pin')|tojson|forceescape }} : {{ _('Add pin')|tojson|forceescape }}">{{ _('Add pin') }}</span></button>
     </div>
   </header>
@@ -49,11 +53,9 @@
   {% endif %}
   <p class="campaign-status" role="status" x-text="status"></p>
 
-  <div class="party-map-layout">
-    <div class="party-map-canvas">
-      <iframe class="pointcrawl-canvas party-map-frame" x-ref="canvas" data-src="{{ url_for('static', filename='src/js/maps/editor.html') }}" title="{{ _('Map') }}"></iframe>
-    </div>
-    <aside class="party-map-side" aria-label="{{ _('Details') }}">
+  <iframe class="pointcrawl-canvas party-map-frame" x-ref="canvas" data-src="{{ url_for('static', filename='src/js/maps/editor.html') }}" title="{{ _('Map') }}" allowfullscreen></iframe>
+  <div class="party-map-below">
+    <section class="party-map-side" aria-label="{{ _('Details') }}">
       <template x-if="selectedNode"><section class="party-map-detail">
         <h2 x-html="$markdownInline(selectedNode.title)"></h2>
         <div class="rich-content" x-html="$richHTML(selectedNode.body, selectedNode.references)"></div>
@@ -72,14 +74,16 @@
         </span>
       </section></template>
       <template x-if="!selectedNode && !selectedPath && !pin"><p class="wiki-empty">{{ _('Click a pin to read it. Add pin marks a place with a note the whole party can read and edit.') }}</p></template>
-      <h3>{{ _('Pins') }}</h3>
+    </section>
+    <section class="party-map-side" aria-labelledby="party-map-pins-title">
+      <h3 id="party-map-pins-title">{{ _('Pins') }}</h3>
       <ul class="party-map-pins">
         <template x-for="item in pins" :key="item.id"><li>
           <button type="button" class="link-button" @click="selected=''; selectedEdge=''; selectedPin=String(item.id); sync()" x-text="item.title"></button>
         </li></template>
       </ul>
       <p class="wiki-empty" x-show="!pins.length">{{ _('No pins yet.') }}</p>
-    </aside>
+    </section>
   </div>
 
   <dialog class="create-dialog" x-ref="pinDialog" aria-labelledby="pin-dialog-title" @close="draft=null">
@@ -94,5 +98,7 @@
       </div>
     </form></template>
   </dialog>
+</article>
+  </div>
 </div>
 {% endblock %}

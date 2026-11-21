@@ -134,7 +134,7 @@ def page_context(campaign, entry=None, owner_id=None, module=None):
                    maps=wiki_maps(entries, lambda item: page_url(item['id'])), page_url=page_url,
                    article_count=len(entries), content_categories=CATEGORIES,
                    # Article cards show the article's first picture (served by entry_image).
-                   card_images={item.id for item in entries if first_image(item.body)}, **home)
+                   card_images={item.id for item in entries if item.image or first_image(item.body)}, **home)
     if entry is None:
         # The home page: the campaign's front page if it has one (imported adventures
         # do), then its top-level articles by type. Sub-articles are a click away.
@@ -260,7 +260,7 @@ def cover_image(campaign, entries):
     """The first picture in the campaign's front page, else in its other articles."""
     front = [entry for entry in entries if entry.category == 'overview' and entry.title == campaign.name]
     for entry in front + sorted((entry for entry in entries if entry not in front), key=lambda entry: entry.id):
-        url = first_image(entry.body)
+        url = entry.image or first_image(entry.body)
         if url:
             return url
     return None
@@ -271,7 +271,7 @@ def module_cover(module, entries):
     """A module's picture: the first in its front page (the Overview named after it), else in its other articles."""
     front = [entry for entry in entries if entry.category == 'overview' and entry.title == module.title]
     for entry in front + sorted((entry for entry in entries if entry not in front), key=lambda entry: entry.id):
-        url = first_image(entry.body)
+        url = entry.image or first_image(entry.body)
         if url:
             return url
     return None

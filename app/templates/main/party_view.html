@@ -39,7 +39,18 @@
     {% endif %}
     <div class="party-header">
       <div class="party-heading">
-        <h1 class="title level-item">{{ party.name|markdown_inline }}</h1>
+        <h1 class="title level-item">{{ party.name|markdown_inline }}
+          {% if starred is not none %}
+          {# Star (#476): a bookmark, listed first on the Campaigns page. Its form is hidden (forms here are styled as panels). #}
+          <button type="submit" form="party-star-form" class="party-star-button" aria-pressed="{{ 'true' if starred else 'false' }}"
+            title="{{ _('Unstar this party') if starred else _('Star this party: it is listed first on your Campaigns page') }}"
+            aria-label="{{ _('Starred') if starred else _('Star') }}"><i class="fa-{{ 'solid' if starred else 'regular' }} fa-star" aria-hidden="true"></i></button>
+          {% endif %}</h1>
+        {% if starred is not none %}
+        <form id="party-star-form" method="post" action="{{ url_for('campaigns.star_party', party_id=party.id) }}" hidden>
+          {{ form.csrf_token }}<input type="hidden" name="starred" value="{{ '0' if starred else '1' }}"><input type="hidden" name="next" value="{{ request.path }}">
+        </form>
+        {% endif %}
         {% if is_owner %}<p class="subtitle">{{_("Warden")}}</p>{% endif %}
       </div>
       <div class="party-header-actions">

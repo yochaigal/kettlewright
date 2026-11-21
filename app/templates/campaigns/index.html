@@ -25,6 +25,25 @@
 <p x-show="filtering && !matches" x-cloak>{{ _('No matching campaigns.') }}</p>
 {% endif %}
 
+{% if starred %}
+{# Starred parties (#476): bookmarks, first. Unstar from the card or the party page. #}
+<div class="gallery-main">
+<h3 class="gallery-heading"><i class="fa-solid fa-star" aria-hidden="true"></i> {{ _('Starred') }} <small>{{ starred|length }}</small></h3>
+<ul class="campaign-party-cards">
+{% for card in starred %}{% set item = card.party %}
+<li class="campaign-party-card is-starred" data-tree-row data-search="{{ item.name|lower }}">
+  <a class="campaign-party-name" href="{{ card.url }}">{{ item.name|markdown_inline }}</a>
+  <span class="campaign-party-meta">{{ _('Warden') }}: {{ item.owner_username }}</span>
+  <span class="campaign-party-members">{% for member in card.members[:6] %}<img src="{{ member.src }}" alt="" title="{{ member.name }}" loading="lazy">{% endfor %}</span>
+  <button type="submit" form="party-star-{{ item.id }}" class="party-star-button" aria-pressed="true" title="{{ _('Unstar this party') }}" aria-label="{{ _('Unstar %(party)s', party=item.name|striptags) }}"><i class="fa-solid fa-star" aria-hidden="true"></i></button>
+  <form id="party-star-{{ item.id }}" method="post" action="{{ url_for('campaigns.star_party', party_id=item.id) }}" hidden>{{ token() }}
+    <input type="hidden" name="starred" value="0"><input type="hidden" name="next" value="{{ request.path }}"></form>
+</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+
 <div class="gallery-main">
 {% if campaigns %}
 <ul class="campaign-gallery">

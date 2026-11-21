@@ -15,6 +15,27 @@ from app.lib.portraits import portrait_directory
 LOCAL_IMAGE = re.compile(r'/material-images/([1-9][0-9]*)/([0-9a-f]{32}\.webp)')
 
 
+def article_image(entry):
+    """An article's picture for its card and cover: its own image (#476), else the first one in its text."""
+    from app.lib.campaign_wiki import first_image
+    return entry.image or first_image(entry.body) if entry is not None else None
+
+
+def image_value(value):
+    """The Image field of the article form: empty (none), an upload (a data URL, stored on save),
+    an image URL, or the stored picture it already has."""
+    from app.lib.rich_content import optimize_image
+    value = (value or '').strip()
+    if not value:
+        return ''
+    if len(value) > 4 * 1024 * 1024:
+        abort(400, 'Optimize images before saving (maximum input: 2 MB each).')
+    value = optimize_image(value)  # Rejects anything that is not an image.
+    if not value.startswith('data:') and len(value) > 2000:
+        abort(400, 'This image address is too long.')
+    return value
+
+
 def image_directory():
     return Path(current_app.config.get('MATERIAL_IMAGE_UPLOAD_FOLDER',
                 portrait_directory().parent / 'material-images'))
@@ -64,14 +85,23 @@ def store_description_images(session, flush_context, instances):
     for row in set(session.new) | set(session.dirty) | set(session.deleted):
         if not isinstance(row, (ContentEntry, PartyPresentation)):
             continue
-        history = inspect(row).attrs.body.history
-        for previous in history.deleted:
-            candidates.update(image_references(previous))
-        if row in session.deleted:
-            candidates.update(image_references(row.body))
-        elif row in session.new or history.has_changes():
-            owner_id = row.owner_id if isinstance(row, ContentEntry) else row.entry.owner_id
-            row.body = externalize_images(row.body, owner_id, candidates)
+        owner_id = None
+        for field in ('body', 'image') if isinstance(row, ContentEntry) else ('body',):
+            history = inspect(row).attrs[field].history
+            for previous in history.deleted:
+                candidates.update(image_references(previous))
+            if row in session.deleted:
+                candidates.update(image_references(getattr(row, field)))
+            elif row in session.new or history.has_changes():
+                owner_id = owner_id or (row.owner_id if isinstance(row, ContentEntry) else row.entry.owner_id)
+                setattr(row, field, externalize_images(getattr(row, field), owner_id, candidates))
+
+
+def image_in_use(filename):
+    """Whether any text, or any article's own image (#476), still shows this stored picture."""
+    return (ContentEntry.query.filter(ContentEntry.body.contains(filename)).first() is not None
+            or ContentEntry.query.filter(ContentEntry.image.contains(filename)).first() is not None
+            or PartyPresentation.query.filter(PartyPresentation.body.contains(filename)).first() is not None)
 
 
 def cleanup_images():
@@ -83,8 +113,7 @@ def cleanup_images():
             continue
         # Match filename as well as URL to retain absolute links in imported text.
         filename = match[2]
-        if (ContentEntry.query.filter(ContentEntry.body.contains(filename)).first() is not None
-                or PartyPresentation.query.filter(PartyPresentation.body.contains(filename)).first() is not None):
+        if image_in_use(filename):
             continue
         try:
             (image_directory() / match[1] / filename).unlink(missing_ok=True)
@@ -98,8 +127,7 @@ def remove_owner_images(owner_id):
     if not folder.is_dir():
         return
     for path in folder.glob('*.webp'):
-        if (ContentEntry.query.filter(ContentEntry.body.contains(path.name)).first() is not None
-                or PartyPresentation.query.filter(PartyPresentation.body.contains(path.name)).first() is not None):
+        if image_in_use(path.name):
             continue
         try:
             path.unlink(missing_ok=True)

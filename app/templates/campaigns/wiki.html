@@ -1,29 +1,10 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import reveal_dialog with context %}
+{% from 'campaigns/forms.html' import reveal_dialog, token with context %}
 {# Read articles as a wiki (#421). Three sources share this page; the view gives
    page_url(entry_id=None), home_title and, for owners, edit links:
    - a campaign, for its owner;
    - a party's revealed articles (party is set), built only from published versions. #}
-{% macro article_title(item) %}{{ (item.title or _('Untitled private original'))|markdown_inline }}{% endmacro %}
-{% macro type_label(item) %}{{ _(content_categories.get(item.category, item.category)) }}{% endmacro %}
-
-{% macro wiki_tree(items) %}
-{% for item in items %}
-{% set node = item.entry %}
-{% set current = entry and node.id == entry.id %}
-{% set search = (node.title ~ ' ' ~ type_label(node))|lower %}
-{% if item.children %}
-<details class="wiki-tree-branch" data-tree-row data-search="{{ search }}" {% if current or (entry and node in breadcrumbs) %}open{% endif %}>
-  <summary><a href="{{ page_url(node.id) }}" {% if current %}aria-current="page"{% endif %}>{% if item.number is not none %}{{ item.number }}. {% endif %}{{ article_title(node) }}</a></summary>
-  <div class="wiki-tree-children">{{ wiki_tree(item.children) }}</div>
-</details>
-{% else %}
-<div class="wiki-tree-leaf" data-tree-row data-search="{{ search }}">
-  <a href="{{ page_url(node.id) }}" {% if current %}aria-current="page"{% endif %}>{% if item.number is not none %}{{ item.number }}. {% endif %}{{ article_title(node) }}</a>
-</div>
-{% endif %}
-{% endfor %}
-{% endmacro %}
+{% from 'campaigns/wiki_sidebar.html' import article_title, type_label, wiki_tree, wiki_sidebar with context %}
 
 {# Party wiki, Warden only: Edit for party notes, Hide for revealed articles (the party reads the original,
    edited in its module); Delete for notes in the header. Afterwards back to the party wiki.
@@ -110,23 +91,7 @@
   </nav>
 
   <div class="wiki-layout">
-    <aside id="wiki-sidebar" class="wiki-sidebar" :class="{ 'is-open': menu }" aria-label="{{ _('Articles') }}" x-data="materialTree">
-      <a class="wiki-campaign-name" href="{{ page_url() }}" {% if not entry %}aria-current="page"{% endif %}>{{ home_title|markdown_inline }}</a>
-      <div class="wiki-search">
-        <label class="sr-only" for="wiki-search">{{ _('Search') }}</label>
-        <input id="wiki-search" type="search" x-model="query" @input="filter()" placeholder="{{ _('Search by title or type') }}">
-      </div>
-      <p x-show="filtering && !matches" x-cloak class="wiki-empty">{{ _('No matching articles.') }}</p>
-      {# Maps apart from articles: they open on their own page (for a party: with its fog and pins). #}
-      {% if maps %}
-      <nav class="wiki-maps" aria-labelledby="wiki-maps-title">
-        <h2 id="wiki-maps-title"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Maps') }}</h2>
-        <ul>{% for item in maps %}<li data-tree-row data-search="{{ item.title|lower }}"><a href="{{ item.url }}" {% if entry and not party and entry.id == item.id %}aria-current="page"{% endif %}>{{ item.title|markdown_inline }}</a></li>{% endfor %}</ul>
-      </nav>
-      {% endif %}
-      <h2 class="wiki-articles-title"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> {{ _('Articles') }}</h2>
-      <div class="wiki-tree">{{ wiki_tree(hierarchy) }}</div>
-    </aside>
+    {{ wiki_sidebar() }}
 
     <article class="wiki-main">
     {% if entry %}
@@ -150,15 +115,35 @@
           {% if not party %}
           <button type="button" class="button wiki-edit" aria-haspopup="dialog" onclick="document.getElementById('reveal-dialog-{{ entry.id }}').showModal()"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{ _('Reveal map') if is_map else _('Reveal to party') }}</button>
           {% endif %}
-          {% if map_edit_url and not is_map %}<a class="button wiki-edit" href="{{ map_edit_url }}"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Edit map') }}</a>{% endif %}
+          {% if give_kind %}
+          <button type="button" class="button wiki-edit" aria-haspopup="dialog" onclick="document.getElementById('give-dialog-{{ entry.id }}').showModal()"><i class="fa-solid fa-hand-holding" aria-hidden="true"></i> {{ _('Give to party') }}</button>
+          {% endif %}
+                    {% if map_edit_url and not is_map %}<a class="button wiki-edit" href="{{ map_edit_url }}"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Edit map') }}</a>{% endif %}
           <a class="button wiki-edit" href="{{ edit_url }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit map') if is_map else _('Edit') }}</a>
         </div>
         {% endif %}
       </header>
       {% if not party and edit_url %}{{ reveal_dialog(entry, reveal_parties) }}{% endif %}
+      {% if not party and edit_url and give_kind %}
+      {# Give to party (#476): the party gets its own copy; the article stays here, private until revealed. #}
+      <dialog class="create-dialog" id="give-dialog-{{ entry.id }}" aria-labelledby="give-dialog-title-{{ entry.id }}">
+        <h2 id="give-dialog-title-{{ entry.id }}">{{ _('Give to party') }}</h2>
+        <p class="reveal-article"><strong>{{ article_title(entry) }}</strong></p>
+        {% if give_parties %}
+        <form method="post" action="{{ url_for('campaigns.give_to_party', entry_id=entry.id) }}">{{ token() }}
+          <label>{{ _('Party') }}<select name="party_id" required>{% for item in give_parties %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}</select></label>
+          <p class="import-hint">{% if give_kind == 'storage' %}{{ _('It goes to the party storage as an item, with this article’s text as its description.') }}{% else %}{{ _('It becomes one of the party’s monsters. A stat line such as “8 HP, 10 STR, 12 DEX, 2 WIL, claws (d6)” sets its stats; you can change them on its sheet.') }}{% endif %}</p>
+          <div class="create-dialog-actions"><button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button><button type="submit" class="primary">{{ _('Give') }}</button></div>
+        </form>
+        {% else %}<p>{{ _('This campaign has no parties yet.') }}</p>
+        <div class="create-dialog-actions"><button type="button" onclick="this.closest('dialog').close()">{{ _('Close') }}</button></div>{% endif %}
+      </dialog>
+      {% endif %}
 
       <div class="wiki-body">
         <div class="wiki-content">
+          {# The article's own image (#476), apart from its text. #}
+          {% if entry.image %}<figure class="wiki-image"><img src="{{ url_for('campaigns.party_entry_image', party_id=party.id, entry_id=entry.id) if party else url_for('campaigns.entry_image', entry_id=entry.id) }}" alt="{{ entry.title|markdown_inline|striptags }}"></figure>{% endif %}
           {% if graph and not party %}{% include 'campaigns/map_panel.html' %}{% endif %}
           {% if entry.body.strip() %}<div class="rich-content">{{ render_content(entry.body, references) }}</div>
           {% elif not graph %}<p class="wiki-empty">{{ _('This article has no text yet.') }}{% if edit_url and not party %} <a href="{{ edit_url }}">{{ _('Edit') }}</a>{% endif %}</p>{% endif %}

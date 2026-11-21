@@ -593,6 +593,7 @@ def party_view(ownername, party_url):
     party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party = get_party_data(ownername, party_url)
     from app.lib.monsters import monster_catalog
     from app.lib.campaign_backgrounds import background_panel
+    from app.lib.campaign_parties import is_starred
     can_view_rolls = current_user.id in party_recipient_ids(party)
     # Party notes and revealed articles are read in the party wiki (#440); the page only links to it.
     campaign_enabled = can_view_rolls
@@ -604,7 +605,9 @@ def party_view(ownername, party_url):
                            rolls=PartyRoll.latest(party.id, current_user.id) if can_view_rolls else [],
                            online=connected_owners(party, characters),
                            wilderness_mounts=wilderness_mounts(party, characters),
-                           backgrounds=background_panel(party) if is_owner and campaign_enabled else None))
+                           backgrounds=background_panel(party) if is_owner and campaign_enabled else None,
+                           # A bookmark (#476) for anyone in the party; None hides the star.
+                           starred=is_starred(current_user.id, party.id) if can_view_rolls else None))
     response.headers['Cache-Control'] = 'no-store'
     return response
 
