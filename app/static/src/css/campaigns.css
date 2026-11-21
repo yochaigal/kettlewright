@@ -841,6 +841,10 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
   border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.06);}
 .campaign-workspace .module-page .module-header.lobby-header {justify-content:center;text-align:center;border-bottom:0;padding-bottom:0;margin-bottom:1em;}
 .lobby-header .lobby-header-actions {display:flex;justify-content:center;flex-wrap:wrap;gap:.5em;margin-top:.5em;}
+/* Any campaign-style page with a centred name (the lobby, a module, a Tools map). */
+.campaign-workspace .lobby-header {justify-content:center;text-align:center;border-bottom:0;padding-bottom:0;margin-bottom:1em;}
+.campaign-workspace .lobby-header h1 {justify-content:center;}
+.tools-map-missing {display:flex;flex-direction:column;align-items:center;gap:1em;padding:2em 0;text-align:center;}
 
 /* An article's own image (#476): above its text. */
 .wiki-image {margin:0 0 1.25em;}

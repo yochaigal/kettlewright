@@ -11,7 +11,7 @@ for (const name of ['dungeons','forests','realm','factions','npcs','names','fact
 
 test('every table in the campaign-aligned navigation produces usable content', () => {
   for (const sections of Object.values(toolSections(data))) for (const section of sections) for (const choice of section.choices) {
-    if (choice.table === 'Monster picker') continue;
+    if (choice.table.endsWith(' picker')) continue;  // Pickers open a search; they roll nothing.
     const result = generateToolResult(data, choice.category, choice.table, () => 0.4);
     assert.ok(result.title, choice.label);
     const text = resultText(result);
@@ -33,7 +33,12 @@ test('reorganization retains every original table with its original generator', 
   }
   assert.deepEqual(toolSections(data).realm.map(section => section.label), ['Realm','Factions','POIs','People']);
   assert.equal(toolSections(data).monsters.length, 1);
-  assert.deepEqual(toolSections(data).monsters[0].choices.map(choice => choice.label), ['Random Monster','Custom Monster','Monster picker']);
+  assert.deepEqual(toolSections(data).monsters[0].choices.map(choice => choice.label), ['Random monster','Custom monster','Monster picker']);
+  // Items work like Monsters: roll at random, or pick one.
+  assert.deepEqual(toolSections(data).items[0].choices.map(choice => choice.label), ['Random relic','Relic picker','Random spellbook','Spellbook picker']);
+  // A tab's only table is named for what it does, not after the tab.
+  assert.deepEqual(toolSections(data).dungeons[0].choices.map(choice => [choice.label, choice.table]), [['Random dungeon', 'Dungeon']]);
+  assert.deepEqual(toolSections(data).forests[0].choices.map(choice => [choice.label, choice.table]), [['Random forest', 'Forest']]);
 });
 
 
@@ -97,4 +102,18 @@ test('the launcher shows every table once and only labels groups that need a hea
   assert.deepEqual(shape('events').map(([label]) => label), ['Events','Weather','']);
   assert.deepEqual(shape('events').at(-1)[1], ['Reaction Roll','Faction Actions']);
   for (const key of ['dungeons','forests','monsters','items']) assert.deepEqual(shape(key).map(([label]) => label), ['']);
+});
+
+test('the Relic and Spellbook pickers list every one, shown like a rolled one', async () => {
+  const {itemCatalog} = await import('../../app/static/src/js/tools-items.js');
+  const relics = itemCatalog(data, 'Relics'), spellbooks = itemCatalog(data, 'Spellbooks');
+  assert.equal(Object.keys(relics).length, data.Relics.length);
+  assert.equal(Object.keys(spellbooks).length, data.Spellbooks.length);
+  // A pick is the same result a roll on that table gives.
+  assert.deepEqual(relics['relic:A Blade Called Hope'], generateToolResult(data, 'Items', 'Relics', () => 0));
+  assert.deepEqual(spellbooks['spellbook:Adhere'], generateToolResult(data, 'Items', 'Spellbooks', () => 0));
+  // Relics read like spellbooks: no repeated name, tags then what it does.
+  const text = resultText(relics['relic:A Blade Called Hope']);
+  assert.ok(text.startsWith('_d6_ — A thin, curved sword'), text);
+  assert.ok(!text.includes('Name:') && !text.includes('### Tags'));
 });

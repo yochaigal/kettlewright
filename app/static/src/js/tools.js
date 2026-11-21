@@ -1,4 +1,5 @@
 import {initToolsMonsters} from './tools-monsters.js';
+import {initToolsItems} from './tools-items.js';
 import {initToolsResults} from './tools-results.js';
 import {generateToolResult, initToolsNavigation, appendAreaNavigation} from './tools-navigation.js';
 import utils, { styledAlert } from "./utils.js";
@@ -13,11 +14,19 @@ const t = (key) => Object.hasOwn(labels.terms, key) ? labels.terms[key] : key;
 
 const results = initToolsResults(labels, styledAlert);
 const monsters = initToolsMonsters(labels, results);
+// Save to a module: a map result opens the New map page, anything else an article draft.
+function saveResult(result, title, markdown) {
+  sessionStorage.setItem('kw-content-result', JSON.stringify({...result, title, body:markdown}));
+  window.location.href = result.mapKind ? '/materials/generate?from_tools=1' : '/materials/import';
+}
+const items = initToolsItems(data, labels, results, t, labels.authenticated ? saveResult : null);
 const navigation = initToolsNavigation(data, key => labels.navigation?.[key] ?? t(key), {
-  panels: {'Monster picker': monsters.picker},
+  panels: {'Monster picker': monsters.picker, ...items.panels},
+  hints: labels.hints, intros: labels.intros,
+  mapTables: ['Worldbuilding:Realm', 'Worldbuilding:Dungeon', 'Worldbuilding:Forest'],
   async onRoll({category, table}, tool, button) {
     if (table === 'Random Monster') {monsters.random(); return;}
-    const canSave = labels.authenticated && !['events', 'items'].includes(tool);
+    const canSave = labels.authenticated && tool !== 'events';
     let result;
     if (table === 'Reaction Roll' && document.getElementById('warden-dice')) {
       button.disabled = true;
@@ -43,9 +52,13 @@ const navigation = initToolsNavigation(data, key => labels.navigation?.[key] ?? 
       type: t(table.charAt(0).toUpperCase() + table.slice(1)),
       html: richContentHTML(markdown),
       copyText: `${shownTitle}\n\n${markdown}`,
-      onSave: canSave ? () => {
-        sessionStorage.setItem('kw-content-result', JSON.stringify({...result, title:shownTitle, body:markdown}));
-        window.location.href = result.mapKind ? '/materials/generate?from_tools=1' : '/materials/import';
+      onSave: canSave ? () => saveResult(result, shownTitle, markdown) : null,
+      // A realm, dungeon or forest: see it as a complete map first, saved or not (#473). A new tab keeps
+      // these results; the map page reads the result from localStorage.
+      onMap: result.mapKind ? () => {
+        try {localStorage.setItem('kw-tools-map', JSON.stringify({...result, title:shownTitle, body:markdown}));}
+        catch {styledAlert(labels.showMap, labels.mapFailed); return;}
+        window.open('/tools/map/', '_blank');
       } : null,
     });
     appendAreaNavigation(entry.actions, result, navigation, t, data);

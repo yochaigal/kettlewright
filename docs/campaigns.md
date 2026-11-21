@@ -81,7 +81,7 @@ Maps are just maps: a title, a drawing and **pins**. They have no type, no hiera
 
 **Reveal map** works like revealing an article: choose a party, and optionally **Also reveal its pins**. Wikis list **Maps** in their own section (sidebar and home), never in the article tree. In a party wiki, a map opens on the party map page (fog and the party's own pins).
 
-Generate an Article using the existing Dungeon, Forest or Realm tables. Tools has one **Save or reveal** action, preserving the rolled content and opening an article draft with an embedded drawing. Saving opens the Article. Legacy standalone editor URLs redirect to their owning Article. Article descriptions and drawing edits are saved atomically with **Save private original**; a stale drawing or article version rejects the entire operation. There are no separate Map entries or actions in campaign navigation.
+A Dungeon, Forest or Realm rolled in Tools can be seen as a map first: **Show map** (see Tools below). **Save to a module** keeps the rolled content: a map result opens the New map page with that map, any other result an article draft.
 
 Generating a Dungeon or Forest from a point saves the map on that same article. **Generate article contents** previews private contents before saving. The original description is retained, generated detail is appended, and existing map contents are never overwritten. Publishing an entrance also makes its own map accessible, but drawing snapshots and child articles remain independently published. The legacy direct-publish endpoint preserves only the original entrance description in its party snapshot.
 
@@ -109,7 +109,9 @@ The party page's **Map** button opens the map the party was shown (`/party/<id>/
 
 ## Tools
 
-Each result can be saved privately or immediately shown to a party. Results are structured objects shared by Tools and map generation, with the existing JSON tables as their source. Handoff between these pages uses sessionStorage in the same browser tab; save a result to retain it across sessions.
+The Tools page is laid out like the campaign pages: the areas as tabs (World, Dungeons, Forests, Events, Monsters, Items, Character Generator) with **Roll Dice** beside them, then two islands. The first holds the area's tables as tiles: each says in one line what it makes, and a map mark shows the ones that can become a map. One click rolls a table. A tab's only table is named for what it does (**Random dungeon**, **Random forest**). Monsters and Items work alike: roll one at random or pick one — **Random monster**, **Custom monster**, **Monster picker**; **Random relic**, **Relic picker**, **Random spellbook**, **Spellbook picker**. A picker has a search and a list; its pick shows the same text and actions as a rolled result (relics read like spellbooks: tags, then what they do). The second island holds the results, newest first, each with its actions right under its title: **Show map** (Realm, Dungeon, Forest), **Save to a module** (signed in) and **Copy text**.
+
+**Show map** opens the result as a complete map in a new tab (`/tools/map/`), without saving anything and without signing in: the drawing, its points and paths, and the list of its pins. From there, **Save to a module** opens the New map page with that same map (same layout) to choose its module and save it; a guest sees **Log in to save**. The map's tables come from `/tools/map/tables`, public like Tools itself. The result travels in the browser: localStorage from Tools to the map page (a new tab), sessionStorage from there to the New map page. Results are structured objects shared by Tools and map generation, with the existing JSON tables as their source.
 
 ## Deployment and maintenance
 
