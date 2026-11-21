@@ -24,7 +24,10 @@
 {# Starred (#476): an island of bookmarks, first. Each card's star unstars it. #}
 {% set kind_labels = {'party': _('Party'), 'module': _('Module'), 'article': _('Article'), 'map': _('Map'), 'background': _('Background')} %}
 {% set kind_icons = {'party': 'fa-users', 'module': 'fa-box-open', 'article': 'fa-file-lines', 'map': 'fa-map', 'background': 'fa-user-gear'} %}
-<section class="starred-island" aria-label="{{ _('Starred') }}">
+<section class="starred-island" aria-labelledby="starred-title">
+<header class="island-head">
+  <h2 id="starred-title"><i class="fa-solid fa-star" aria-hidden="true"></i> {{ _('Starred') }}</h2>
+</header>
 <ul class="starred-cards">
 {% for card in starred %}
 <li class="starred-card" data-tree-row data-search="{{ card.title|lower }}">
@@ -43,39 +46,16 @@
 </section>
 {% endif %}
 
-<div class="gallery-main">
-{% if campaigns %}
-<ul class="campaign-gallery">
-{% for campaign in campaigns %}
-{% set entries = articles[campaign.id] %}{% set campaign_parties = parties[campaign.id] %}
-<li class="campaign-card" data-tree-row data-search="{{ (campaign.name ~ ' ' ~ entries|map(attribute='title')|join(' '))|lower }}">
-  <a class="campaign-card-cover" href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}" tabindex="-1" aria-hidden="true">
-    {% if covers[campaign.id] %}<img src="{{ url_for('campaigns.campaign_cover', campaign_id=campaign.id) }}" alt="" loading="lazy" data-cover>
-    {% else %}<span class="campaign-card-placeholder">{{ campaign.name[:1]|upper }}</span>{% endif %}
-  </a>
-  <div class="campaign-card-body">
-    <a class="campaign-card-title" href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}">{{ campaign.name }}</a>
-    <span class="campaign-card-meta">{{ campaign.modules|length }} {{ _('modules') }} · {{ entries|length }} {{ _('articles') }}</span>
-    {% if campaign_parties %}<span class="campaign-card-meta">{{ _('Parties') if campaign_parties|length > 1 else _('Party') }}: {% for item in campaign_parties %}<a href="{{ url_for('party.party_view', ownername=item.owner_username, party_url=item.party_url) }}">{{ item.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</span>{% endif %}
-  </div>
-</li>
-{% endfor %}
-</ul>
-{% else %}
-<p class="gallery-empty">{{ _('No campaigns yet.') }} <button type="button" class="link-button" onclick="document.getElementById('new-campaign-dialog').showModal()">{{ _('New campaign') }}</button></p>
-{% endif %}
-</div>
-
 {% if unassigned %}
 {# The Warden's parties without a campaign (#483), an island like Starred: each can be added to a campaign here,
    or from a campaign's Parties (Add existing party). #}
-<section class="unassigned-island" aria-labelledby="unassigned-title">
+<section class="campaigns-island unassigned-island" aria-labelledby="unassigned-title">
 <header class="island-head">
   <h2 id="unassigned-title"><i class="fa-solid fa-users-slash" aria-hidden="true"></i> {{ _('Parties without a campaign') }}</h2>
 </header>
 <ul class="starred-cards">
 {% for card in unassigned %}{% set item = card.party %}
-<li class="starred-card unassigned-card" data-tree-row data-search="{{ item.name|lower }}">
+<li class="starred-card island-party-card" data-tree-row data-search="{{ item.name|lower }}">
   {% if item.image %}<img class="starred-card-picture" src="{{ url_for('campaigns.party_image', party_id=item.id) }}" alt="" loading="lazy">
   {% else %}<span class="starred-card-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></span>{% endif %}
   <span class="starred-card-body">
@@ -104,19 +84,51 @@
 {% endif %}
 
 {% if played %}
-{# Parties in other Wardens' campaigns that one of my characters is in. Their campaigns stay private. #}
-<div class="gallery-main">
-<h3 class="gallery-heading">{{ _('Playing in') }} <small>{{ played|length }}</small></h3>
-<ul class="campaign-party-cards">
+{# Parties in other Wardens' campaigns that one of my characters is in, an island like Starred.
+   Their campaigns stay private. #}
+<section class="campaigns-island played-island" aria-labelledby="played-title">
+<header class="island-head">
+  <h2 id="played-title"><i class="fa-solid fa-dice-d20" aria-hidden="true"></i> {{ _('Playing in') }}</h2>
+</header>
+<ul class="starred-cards">
 {% for card in played %}{% set item = card.party %}
-<li class="campaign-party-card" data-tree-row data-search="{{ item.name|lower }}">
-  <a class="campaign-party-name" href="{{ card.url }}">{{ item.name|markdown_inline }}</a>
-  <span class="campaign-party-meta">{{ _('Warden') }}: {{ item.owner_username }}</span>
-  <span class="campaign-party-members">{% for member in card.members[:6] %}<img src="{{ member.src }}" alt="" title="{{ member.name }}" loading="lazy">{% endfor %}</span>
+<li class="starred-card island-party-card" data-tree-row data-search="{{ item.name|lower }}">
+  {% if item.image %}<img class="starred-card-picture" src="{{ url_for('campaigns.party_image', party_id=item.id) }}" alt="" loading="lazy">
+  {% else %}<span class="starred-card-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></span>{% endif %}
+  <span class="starred-card-body">
+    <span class="starred-card-kind">{{ _('Party') }}</span>
+    <a class="starred-card-title" href="{{ card.url }}">{{ item.name|markdown_inline }}</a>
+    <span class="starred-card-meta">{{ _('Warden') }}: {{ item.owner_username }}</span>
+    {% if card.members %}<span class="campaign-party-members">{% for member in card.members[:6] %}<img src="{{ member.src }}" alt="" title="{{ member.name }}" loading="lazy">{% endfor %}</span>{% endif %}
+  </span>
 </li>
 {% endfor %}
 </ul>
-</div>
+</section>
 {% endif %}
+
+{# The Warden's campaigns, after the islands (Starred, Parties without a campaign, Playing in). #}
+<div class="gallery-main">
+{% if campaigns %}
+<ul class="campaign-gallery">
+{% for campaign in campaigns %}
+{% set entries = articles[campaign.id] %}{% set campaign_parties = parties[campaign.id] %}
+<li class="campaign-card" data-tree-row data-search="{{ (campaign.name ~ ' ' ~ entries|map(attribute='title')|join(' '))|lower }}">
+  <a class="campaign-card-cover" href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}" tabindex="-1" aria-hidden="true">
+    {% if covers[campaign.id] %}<img src="{{ url_for('campaigns.campaign_cover', campaign_id=campaign.id) }}" alt="" loading="lazy" data-cover>
+    {% else %}<span class="campaign-card-placeholder">{{ campaign.name[:1]|upper }}</span>{% endif %}
+  </a>
+  <div class="campaign-card-body">
+    <a class="campaign-card-title" href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}">{{ campaign.name }}</a>
+    <span class="campaign-card-meta">{{ campaign.modules|length }} {{ _('modules') }} · {{ entries|length }} {{ _('articles') }}</span>
+    {% if campaign_parties %}<span class="campaign-card-meta">{{ _('Parties') if campaign_parties|length > 1 else _('Party') }}: {% for item in campaign_parties %}<a href="{{ url_for('party.party_view', ownername=item.owner_username, party_url=item.party_url) }}">{{ item.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</span>{% endif %}
+  </div>
+</li>
+{% endfor %}
+</ul>
+{% else %}
+<p class="gallery-empty">{{ _('No campaigns yet.') }}</p>{# New campaign is the button at the top. #}
+{% endif %}
+</div>
 </div>
 {% endblock %}

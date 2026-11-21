@@ -2,8 +2,8 @@
   {% set import_failed = error and not request.form.getlist('template') %}
   <section class="monster-roster" x-data="{...campaignModal({{ 'true' if error else 'false' }}), mode: '{{ 'import' if import_failed else 'bestiary' }}'}"
            @keydown.escape.window.capture="if (!document.querySelector('#monster-preview:not([hidden])')) hide()">
-    <header class="party-section-bar">
-      <h3>{{_('Monsters')}} <span class="party-section-count">{{party.monsters|length}}</span></h3>
+    {# No heading: the tab already says Monsters. Add monsters sits at the end of the bar. #}
+    <header class="party-section-bar monster-roster-bar">
       <button type="button" class="button kw-add" x-ref="trigger" @click="show(); $nextTick(() => $refs.search.focus())"
               aria-haspopup="dialog" aria-controls="monster-add-modal"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{_('Add monsters')}}</button>
     </header>

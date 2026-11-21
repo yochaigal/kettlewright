@@ -28,7 +28,7 @@ def test_parties_join_and_leave_campaigns(setup):
     assert client.post('/campaigns/1/parties/1/remove').status_code == 302
     assert campaign_of(app, 1) is None
     index = client.get('/campaigns/').text
-    assert 'Parties without a campaign' in index and 'Party 1' in index.split('class="unassigned-island"')[1]
+    assert 'Parties without a campaign' in index and 'Party 1' in index.split('unassigned-island"')[1]
     assert 'No parties yet' in client.get('/campaigns/1/').text  # The page still works without parties.
     # Add both back into the second campaign at once.
     assert client.post('/campaigns/2/parties/add', data={'party_id': ['1', '2']}).status_code == 302
@@ -207,7 +207,7 @@ def test_pin_label_size_and_counts(setup):
 def test_campaigns_page_island_adds_a_party_to_a_campaign(setup):
     app, client = setup
     index = client.get('/campaigns/').text
-    island = index[index.index('class="unassigned-island"'):]
+    island = index[index.index('unassigned-island"'):]
     assert 'Party 2' in island and 'id="assign-party-2"' in island and 'Add to campaign' in island
     response = client.post('/party/2/campaign', data={'campaign_id': '1'})
     assert response.location.endswith('/campaigns/1/') and campaign_of(app, 2) == 1
