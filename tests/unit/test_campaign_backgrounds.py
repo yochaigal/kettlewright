@@ -236,7 +236,7 @@ def test_module_upload_loads_its_articles_and_backgrounds(warden):
         module = Module.query.filter_by(title='Harbor Kit').one()
         assert response.location.endswith(f'/campaigns/1/modules/{module.id}/')
         assert sorted(module.backgrounds) == ['Ferryman', 'Tidewatcher']
-        assert {e.title for e in module.entries} == {'Harbor Kit', 'Harbormaster'}
+        assert {e.title for e in module.entries} == {'Harbormaster'} and module.description == 'A kit for the harbor.'
         assert Campaign.query.count() == 1
 
 

@@ -46176,9 +46176,9 @@ msgstr "Mis campañas"
 msgid "Free Starter Adventures"
 msgstr "Aventuras iniciales gratuitas"
 
-#: app/templates/campaigns/index.html
-msgid "Generate it randomly"
-msgstr "Generarla al azar"
+#: app/templates/campaigns/lobby.html
+msgid "Randomly generate setting"
+msgstr "Generar escenario al azar"
 
 #: app/templates/campaigns/index.html
 msgid "Start with"
@@ -47095,12 +47095,11 @@ msgstr ""
 #: app/templates/campaigns/import_archive.html:63
 #, python-format
 msgid ""
-"The module is named %(title)s. Its front page becomes an Overview "
-"article; its maps, articles, backgrounds and items join the campaign."
+"The module is named %(title)s. Its front page becomes its description; "
+"its maps, articles, backgrounds and items join the campaign."
 msgstr ""
-"El módulo se llama %(title)s. Su portada se convierte en un artículo de "
-"Resumen; sus mapas, artículos, trasfondos y objetos se suman a la "
-"campaña."
+"El módulo se llama %(title)s. Su portada se convierte en su descripción;"
+" sus mapas, artículos, trasfondos y objetos se suman a la campaña."
 
 #: app/templates/campaigns/import_archive.html:22
 msgid "a drawing with points and paths"
@@ -47305,8 +47304,8 @@ msgid "Campaign settings"
 msgstr "Ajustes de la campaña"
 
 #: app/templates/campaigns/lobby.html:140
-msgid "Create module"
-msgstr "Crear módulo"
+msgid "Create adventure"
+msgstr "Crear aventura"
 
 #: app/templates/campaigns/lobby.html:71
 msgid "Create party"
@@ -47353,8 +47352,8 @@ msgid "Modules Marketplace"
 msgstr "Mercado de módulos"
 
 #: app/templates/campaigns/lobby.html:83 app/templates/campaigns/lobby.html:118
-msgid "New module"
-msgstr "Módulo nuevo"
+msgid "Create New Adventure"
+msgstr "Crear nueva aventura"
 
 #: app/templates/campaigns/lobby.html:52
 msgid "No characters yet: give your players the party's join code."
@@ -47362,11 +47361,11 @@ msgstr "Aún no hay personajes: da a tus jugadores el código de acceso del grup
 
 #: app/templates/campaigns/lobby.html:104
 msgid ""
-"No modules yet. Write a new one, generate one randomly, or pick one from "
-"the Modules Marketplace."
+"No adventures yet. Create a new one, randomly generate a setting, or pick"
+" one from the Modules Marketplace."
 msgstr ""
-"Aún no hay módulos. Escribe uno nuevo, genera uno al azar o elige uno del"
-" Mercado de módulos."
+"Aún no hay aventuras. Crea una nueva, genera un escenario al azar o elige"
+" una del Mercado de módulos."
 
 #: app/templates/campaigns/lobby.html:56
 msgid ""
@@ -47540,8 +47539,8 @@ msgstr "¿Quitar el trasfondo %(name)s? Los personajes que lo tienen lo conserva
 
 #: app/templates/campaigns/module.html:14
 #: app/templates/campaigns/module.html:24
-msgid "Rename module"
-msgstr "Cambiar el nombre del módulo"
+msgid "Module settings"
+msgstr "Ajustes del módulo"
 
 #: app/templates/campaigns/module.html:65
 msgid ""
@@ -50717,3 +50716,14 @@ msgstr ""
 "etc.), el zombi vuelve a alzarse en pocos minutos.\n"
 "- **Daño Crítico**: el objetivo se infecta y queda _Exhausto_. Sin la "
 "ayuda de un especialista o sanador, se convertirá en zombi en d4 días."
+
+#. Campaign page: the Adventure Library (#484)
+msgid "Adventure Library"
+msgstr "Biblioteca de aventuras"
+
+#. Module settings: a module's front page is its description
+msgid "Shown first when the module is read as a wiki. Markdown supported."
+msgstr "Se muestra primero al leer el módulo como wiki. Compatible con Markdown."
+
+msgid "becomes the module’s description"
+msgstr "se convierte en la descripción del módulo"

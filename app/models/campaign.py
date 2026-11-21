@@ -43,6 +43,8 @@ class Module(Versioned, db.Model):
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id', ondelete='CASCADE'), nullable=False, index=True)
     title = db.Column(db.String(200), nullable=False)
     slug = db.Column(db.String(64), nullable=False, default='', server_default='')
+    # Its front page (Markdown): an added module's credits, links and license; empty for a new module.
+    description = db.Column(db.Text, nullable=False, default='', server_default='')
     # Custom backgrounds, in the format of background_data.json (name -> background); NULL means none.
     backgrounds = db.Column(db.JSON, nullable=True)
     # Items (#476): gear, relics and spellbooks to send the party (app/lib/module_items.py); NULL means none.

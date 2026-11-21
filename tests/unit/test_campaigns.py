@@ -1609,7 +1609,7 @@ def test_new_article_form_ignores_unsafe_category_hint(setup):
 def test_campaigns_page_only_lists_campaigns(setup):
     app, client = setup
     page = client.get('/campaigns/').get_data(as_text=True)
-    for gone in ('Unfiled articles', 'Import module', 'Free modules', 'name="kind"', 'Generate it randomly'):
+    for gone in ('Unfiled articles', 'Import module', 'Free modules', 'name="kind"', 'Randomly generate setting'):
         assert gone not in page
     assert 'New campaign' in page and 'create-dialog' in page and 'name="name"' in page
     assert client.get('/materials/').location.endswith('/campaigns/')

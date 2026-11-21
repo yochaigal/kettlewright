@@ -49,7 +49,7 @@ def export_campaign(campaign):
 def export_module(module):
     """A module as an archive of Markdown files that imports again, one folder per part (see MODULE_PARTS)."""
     return export_archive(module.title, 'Module', _entries(module.campaign.owner_id, module_id=module.id),
-                          module.backgrounds or {}, module.items or {})
+                          module.backgrounds or {}, module.items or {}, description=module.description)
 
 
 def background_files(backgrounds):
@@ -66,15 +66,18 @@ def map_markdown(metadata, graph):
                                    f'```{MAP_BLOCK}\n{block}\n```')
 
 
-def export_archive(title, front_type, entries, backgrounds=None, items=None):
+def export_archive(title, front_type, entries, backgrounds=None, items=None, description=''):
     """Format 2: every file is Markdown with YAML front matter. One folder per module part:
 
     module.md (type: Module, the front page), maps/*.md (type: Map), articles/*.md (their own types) and
     backgrounds/*.md (type: Background) and items/items.md (type: Items). Ids tie them together: parent_id, links, references, and a
-    map's points and paths. There is no manifest: each file carries its own metadata."""
+    map's points and paths. There is no manifest: each file carries its own metadata.
+
+    description: the module's front page. Without one, an Overview article named after it is the front page
+    (campaigns, and modules added before the front page became the description)."""
     from app.lib.campaigns import map_only
-    front = next((entry for entry in entries if entry.category == 'overview' and entry.title == title
-                  and entry.parent_id is None and not entry.pointcrawl), None)
+    front = None if description else next((entry for entry in entries if entry.category == 'overview' and entry.title == title
+                                           and entry.parent_id is None and not entry.pointcrawl), None)
     maps = [entry for entry in entries if map_only(entry)]
     articles = [entry for entry in entries if entry is not front and not map_only(entry)]
     ids = {entry.id: f'map-{i:04d}' for i, entry in enumerate(maps, 1)}
@@ -85,7 +88,7 @@ def export_archive(title, front_type, entries, backgrounds=None, items=None):
     with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
         archive.writestr('module.md', markdown_file({
             'layout': 'default', 'title': title, 'type': front_type,
-            'format': 'kettlewright-module', 'version': 2}, front.body if front else ''))
+            'format': 'kettlewright-module', 'version': 2}, description or (front.body if front else '')))
         for filename, text in background_files(backgrounds or {}):
             archive.writestr(filename, text)
         if items:

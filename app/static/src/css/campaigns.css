@@ -966,3 +966,9 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
   .campaign-workspace .campaign-modal .campaign-modal-actions {display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));}
   .campaign-workspace .campaign-modal .campaign-modal-actions button {min-width:0;white-space:normal;}
 }
+
+/* Module settings: the description, like the name field above it. */
+#module-settings-dialog label {display:block;margin:0 0 .75em;}
+#module-settings-dialog textarea {display:block;width:100%;box-sizing:border-box;margin:.4em 0 0;padding:.5em .6em;border:1px solid var(--fg);border-radius:2px;
+  background:var(--bg);color:var(--fg);font:inherit;font-size:.95em;line-height:1.45;resize:vertical;max-height:50vh;}
+#module-settings-dialog .import-hint {margin:-.25em 0 0;font-size:.85em;}
