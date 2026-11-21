@@ -11,8 +11,9 @@ export function toolSections(data) {
       {label:'POIs', choices:['Settlement','Waypoint','Curiosity','Lair','Dungeon'].map(label => choice(label, 'Setting', label.toLowerCase()))},
       {label:'People', choices:[choice('People', 'Setting', 'people'), choice('NPC', 'Worldbuilding')]},
     ],
-    dungeons: [{label:'Dungeon', choices:[choice('Dungeon', 'Worldbuilding')]}],
-    forests: [{label:'Forest', choices:[choice('Forest', 'Worldbuilding')]}],
+    // A tab's tables are named for what they do, not after the tab: Random dungeon, Random forest…
+    dungeons: [{label:'Dungeon', choices:[choice('Random dungeon', 'Worldbuilding', 'Dungeon')]}],
+    forests: [{label:'Forest', choices:[choice('Random forest', 'Worldbuilding', 'Forest')]}],
     events: [
       {label:'Events', choices:[choice('Dungeon Events', 'Events'), choice('Wilderness Events', 'Events')]},
       {label:'Weather', choices:Object.keys(data.Weather.Types).map(label => choice(label, 'Weather'))},
@@ -20,9 +21,11 @@ export function toolSections(data) {
       {label:'Faction Actions', choices:[choice('Faction Actions', 'Worldbuilding')]},
     ],
     monsters: [
-      {label:'Generator', choices:[choice('Random Monster', 'Monsters'), choice('Custom Monster', 'Monsters'), choice('Monster picker', 'Monsters')]},
+      {label:'Generator', choices:[choice('Random monster', 'Monsters', 'Random Monster'), choice('Custom monster', 'Monsters', 'Custom Monster'), choice('Monster picker', 'Monsters')]},
     ],
-    items: [{label:'Items', choices:[choice('Relics', 'Items'), choice('Spellbooks', 'Items')]}],
+    // Like Monsters: roll one at random, or pick one.
+    items: [{label:'Items', choices:[choice('Random relic', 'Items', 'Relics'), choice('Relic picker', 'Items'),
+      choice('Random spellbook', 'Items', 'Spellbooks'), choice('Spellbook picker', 'Items')]}],
   };
 }
 
@@ -46,11 +49,13 @@ export function launcherGroups(sections) {
 
 // One row of area tabs; every table below it rolls with a single click.
 // `panels` maps a table name to an element that the table shows instead of rolling.
-export function initToolsNavigation(data, t, {onRoll, panels = {}}) {
+// `hints` explains a table in one line (keyed category:table); `intros` explains each area (keyed by its tab).
+export function initToolsNavigation(data, t, {onRoll, panels = {}, hints = {}, intros = {}, mapTables = []}) {
   const mainTabs = [...document.querySelectorAll('.tools-nav [role=tab]')];
   const panel = document.getElementById('tab-content1');
   const pcPanel = document.getElementById('tab-content2');
   const launcher = document.getElementById('tools-launcher');
+  const intro = document.getElementById('tools-intro');
   const sections = toolSections(data);
   const open = new Set();
 
@@ -64,6 +69,7 @@ export function initToolsNavigation(data, t, {onRoll, panels = {}}) {
     pcPanel.hidden = !!key;
     if (!key) return;
     panel.setAttribute('aria-labelledby', tab.id);
+    if (intro) intro.textContent = intros[key] || '';
     launcher.replaceChildren();
     const shown = new Set();
     for (const group of launcherGroups(sections[key])) {
@@ -86,7 +92,24 @@ export function initToolsNavigation(data, t, {onRoll, panels = {}}) {
         const control = document.createElement('button');
         control.type = 'button';
         control.className = 'button tools-choice';
-        control.textContent = t(item.label);
+        // A tile: the table's name, what it makes, and a map mark when it can be shown as a map (#473).
+        const name = document.createElement('span');
+        name.className = 'tools-choice-name';
+        name.textContent = t(item.label);
+        control.append(name);
+        if (mapTables.includes(`${item.category}:${item.table}`)) {
+          const mark = document.createElement('i');
+          mark.className = 'fa-solid fa-map tools-choice-map';
+          mark.setAttribute('aria-hidden', 'true');
+          name.append(' ', mark);
+        }
+        const hint = hints[`${item.category}:${item.table}`];
+        if (hint) {
+          const line = document.createElement('span');
+          line.className = 'tools-choice-hint';
+          line.textContent = hint;
+          control.append(line);
+        }
         const target = panels[item.table];
         if (target) {
           shown.add(item.table);

@@ -23,22 +23,23 @@ export function initToolsMonsters(labels, results) {
     onSelect(monster, key) {
       preview.replaceChildren();
       if (!monster) return;
-      preview.append(monsterPreview(monster));
+      // Like a result: its actions right under its name (Attach to party, Copy text).
+      const content = monsterPreview(monster);
       const actions = document.createElement('div');
       actions.className = 'tools-result-actions tools-actions';
-      const copy = document.createElement('button');
-      copy.type = 'button';
-      copy.textContent = labels.copy;
-      copy.addEventListener('click', () => results.copy(monsterText(monster)));
-      actions.append(copy);
-      if (dialog) {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.textContent = labels.attach;
-        button.addEventListener('click', () => attach(key));
-        actions.append(button);
-      }
-      preview.append(actions);
+      const button = (label, icon, onClick) => {
+        const control = document.createElement('button');
+        control.type = 'button';
+        control.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i> `;
+        control.append(label);
+        control.addEventListener('click', onClick);
+        actions.append(control);
+      };
+      if (dialog) button(labels.attach, 'fa-users', () => attach(key));
+      button(labels.copy, 'fa-copy', () => results.copy(monsterText(monster)));
+      const heading = content.querySelector('h3');
+      if (heading) heading.after(actions); else content.prepend(actions);
+      preview.append(content);
     },
   });
   return {
@@ -52,7 +53,7 @@ export function initToolsMonsters(labels, results) {
         html: monsterPreview(monster, {title:false}).innerHTML,
         copyText: monsterText(monster),
         onSave: dialog ? () => attach(key) : null,
-        actionLabel: labels.attach,
+        actionLabel: labels.attach, actionIcon: 'fa-users',
       });
     },
   };

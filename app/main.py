@@ -528,6 +528,21 @@ def tools():
     generator_campaigns = Campaign.query.filter_by(owner_id=current_user.id).order_by(Campaign.name, Campaign.id).all() if current_user.is_authenticated else []
     return render_template('main/tools.html', events_data=json.dumps(events_data),pcgen_value="", backgrounds=backgrounds, barebones_packages=gear_packages(), warden_parties=warden_parties, monster_templates=monster_catalog(), generator_campaigns=generator_campaigns, roll_form=FlaskForm())
 
+@main.route('/tools/map/', methods=['GET'])
+def tools_map():
+    """A Tools result (realm, dungeon or forest) shown as a complete map, before saving anything. Open to
+    everyone; signed-in Wardens save it to a module from here. The result comes from the Tools page in the
+    browser (localStorage), so there is nothing to look up here."""
+    return render_template('main/tools_map.html')
+
+
+@main.route('/tools/map/tables', methods=['GET'])
+def tools_map_tables():
+    """The tables a Tools map is drawn from (public, like the Tools page itself)."""
+    from app.lib.generator_tables import generator_tables
+    return jsonify(generator_tables(maps_only=True))
+
+
 @main.route('/reload-page')
 def reload_page():
     response = make_response("Redirecting")

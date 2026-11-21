@@ -1,0 +1,39 @@
+{% extends "base.html" %} {% block content %}
+{# A Tools result shown as a complete map (#473), before saving anything: the Tools page hands it over in the
+   browser. Anyone can look; a signed-in Warden saves it to a module from here. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='src/css/campaigns.css') }}">
+<section class="body-container"><div class="sheet campaign-workspace tools-map-page">
+<div x-data="pointcrawl" data-editing="false" data-from-result="kw-tools-map"
+ data-tables-url="{{ url_for('main.tools_map_tables') }}"
+ data-graph="{{ {'nodes': [], 'edges': []}|tojson|forceescape }}"
+ data-labels="{{ {'loadError': _('Unable to load the drawing editor. Check your connection and retry.'),
+                  'error': _('Unable to draw this map. Go back to Tools and try again.')}|tojson|forceescape }}">
+  <nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ url_for('main.tools') }}">← {{ _('Tools') }}</a></nav>
+  <template x-if="missing">
+    <div class="tools-map-missing">
+      <p class="wiki-empty">{{ _('No map to show. In Tools, roll a Realm, a Dungeon or a Forest, then click Show map.') }}</p>
+      <a class="kw-action kw-add" href="{{ url_for('main.tools') }}"><i class="fa-solid fa-dice" aria-hidden="true"></i> {{ _('Go to Tools') }}</a>
+    </div>
+  </template>
+  <div x-show="!missing">
+    <header class="wiki-header lobby-header">
+      <div>
+        <h1 x-text="mapTitle || {{ _('Map')|tojson|forceescape }}">{{ _('Map') }}</h1>
+        <p class="import-hint">{{ _('Generated from your Tools result. Nothing is saved until you save it.') }}</p>
+        <span class="kw-actions lobby-header-actions">
+          {% if current_user.is_authenticated %}
+          <button type="button" class="kw-action kw-add" @click="saveFromTools()" :disabled="!mapResult"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> {{ _('Save to a module') }}</button>
+          {% else %}
+          <a class="kw-action kw-add" href="{{ url_for('auth.login', next=request.path) }}"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> {{ _('Log in to save') }}</a>
+          {% endif %}
+          <a class="kw-action" href="{{ url_for('main.tools') }}"><i class="fa-solid fa-dice" aria-hidden="true"></i> {{ _('Back to Tools') }}</a>
+        </span>
+      </div>
+    </header>
+    <p class="campaign-status" role="status" x-text="status"></p>
+    {% set editing = false %}
+    {% include 'campaigns/canvas.html' %}
+  </div>
+</div>
+</div></section>
+{% endblock %}
