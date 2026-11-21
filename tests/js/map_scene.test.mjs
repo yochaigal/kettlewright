@@ -168,3 +168,22 @@ test('resized terrain and drawn water retain their shapes and article hit target
   assert.notDeepEqual(graphHit(graph,200,100),{id:'2',kind:'location'});
   assert.deepEqual(drawingFromScene(graphShapes(graph),{}),{elements:[],files:{}});
 });
+
+test('pins are markers without titles on the map; hovering shows the title (#494)', async()=>{
+  const {graphShapes,pinShapes,pinTooltip,pinDiameter,graphHit}=await import('../../app/static/src/js/maps/scene.js');
+  const graph={kind:'freeform',pin_size:34,nodes:[
+    {id:1,category:'map_note',number:1,title:'Waterfall City',x:100,y:100},
+    {id:2,category:'settlement',number:2,title:'Town',x:400,y:100}],edges:[]};
+  const shapes=graphShapes(graph);
+  assert.deepEqual(shapes.map(s=>s.id),['kw-node-1','kw-node-2','kw-label-2']);  // Other locations keep labels.
+  assert.equal(pinDiameter(graph),38);
+  assert.equal(shapes[0].width,38);
+  assert.equal(pinDiameter({}),26);  // Medium by default.
+  assert.deepEqual(graphHit(graph,100+18,100),{id:'1',kind:'location'});  // The whole bigger marker is clickable.
+  const party=pinShapes([{id:7,title:'Our camp',x:300,y:300}],'',26);
+  assert.deepEqual(party.map(s=>[s.id,s.type,s.width]),[['kw-pin-7','ellipse',26]]);
+  assert.equal(pinTooltip(graph,[{id:7,title:'Our camp',x:300,y:300}],305,295),'Our camp');
+  assert.equal(pinTooltip(graph,[],110,90),'1. Waterfall City');
+  assert.equal(pinTooltip(graph,[],400,100),'');  // Not a pin: it has its label.
+  assert.equal(pinTooltip(graph,[],200,200),'');
+});

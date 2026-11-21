@@ -16,7 +16,7 @@
 {{ token(entry.version) }}
 <label class="map-title-field">{{ _('Title') }}<input type="text" name="title" maxlength="200" required value="{{ entry.title }}"></label>
 {# How big pin labels are drawn, for everyone (#482). #}
-<label class="map-pin-size">{{ _('Pin labels') }}<select name="pin_size" data-sizes='{{ pin_sizes|tojson }}'
+<label class="map-pin-size">{{ _('Pin size') }}<select name="pin_size" data-sizes='{{ pin_sizes|tojson }}'
  onchange="window.dispatchEvent(new CustomEvent('kw-pin-size', {detail: JSON.parse(this.dataset.sizes)[this.value]}))">
 {% for value, label in [('small', _('Small')), ('medium', _('Medium')), ('large', _('Large'))] %}<option value="{{ value }}" {% if pointcrawl.pin_size == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
 </select></label>

@@ -72,17 +72,37 @@ export function resultText(result, t = generatorTerm) {
   return render(result.fields);
 }
 
+// A realm's locations scattered over the whole realm (#494), not packed into one corner of it.
+// The area is where the server drops the terrains' seeds (populate_realm_map), so locations fall in
+// different terrains. Each spot is the farthest of a few random candidates from those already placed:
+// random, but never on top of each other.
+export const REALM_AREA = {x:350, y:350, width:1600, height:1200};
+export function realmSpots(count, random = Math.random) {
+  const spots = [];
+  for (let i = 0; i < count; i++) {
+    let best = null;
+    for (let c = 0; c < 12; c++) {
+      const spot = {x:REALM_AREA.x + Math.round(random()*REALM_AREA.width), y:REALM_AREA.y + Math.round(random()*REALM_AREA.height)};
+      const room = Math.min(Infinity, ...spots.map(s => Math.hypot(s.x-spot.x, s.y-spot.y)));
+      if (!best || room > best.room) best = {...spot, room};
+    }
+    spots.push({x:best.x, y:best.y});
+  }
+  return spots;
+}
+
 export function graphFromResult(result, random = Math.random, tables = null, options = {}) {
   if (!result.mapKind || !Array.isArray(result.fields.POIs)) throw new Error('This result has no locations.');
   const pois = options.generateChildren === false ? [] : result.fields.POIs;
   const columns = Math.ceil(Math.sqrt(pois.length));
+  const spots = result.mapKind === 'realm' ? realmSpots(pois.length, random) : null;
   const nodes = pois.map((body, i) => ({id:`new-node-${i}`, number:i+1,
     title:result.poiNames?.[i] || body.replace(/\s+/g,' ').trim().slice(0,200), body,
     poi_kind:result.poiKinds?.[i] || null,
     category:result.poiKinds?.[i] || (body.startsWith('Heart')?'settlement':body.split(':')[0].trim().toLowerCase()),
     is_heart:result.mapKind==='realm' && i===0,
-    x:100+(i%columns)*210+Math.round(random()*60),
-    y:100+Math.floor(i/columns)*180+Math.round(random()*60), nested_map_id:null}));
+    x:spots ? spots[i].x : 100+(i%columns)*210+Math.round(random()*60),
+    y:spots ? spots[i].y : 100+Math.floor(i/columns)*180+Math.round(random()*60), nested_map_id:null}));
   const edges = [], connected = new Set(nodes.length ? [0] : []), pairs = new Set();
   const distance = (a,b) => (nodes[a].x-nodes[b].x)**2+(nodes[a].y-nodes[b].y)**2;
   function add(a,b) {

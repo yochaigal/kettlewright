@@ -414,3 +414,26 @@ test('Realm detail rolls stay in parent descriptions without child articles',()=
   assert.deepEqual(realm.fields,{});
   assert.equal(realm.body,'');
 });
+
+test('a generated realm scatters its locations over the whole realm, apart from each other (#494)',async()=>{
+  const {realmSpots,REALM_AREA}=await import('../../app/static/src/js/content_generators.js');
+  for (let seed=1;seed<=20;seed++) {
+    const result=generateResult(data,'Worldbuilding','Realm',rng(seed));
+    const graph=graphFromResult(result,rng(seed),data);
+    assert.deepEqual(graph,graphFromResult(result,rng(seed),data));
+    const xs=graph.nodes.map(n=>n.x), ys=graph.nodes.map(n=>n.y);
+    for (const node of graph.nodes) {
+      assert(node.x>=REALM_AREA.x && node.x<=REALM_AREA.x+REALM_AREA.width);
+      assert(node.y>=REALM_AREA.y && node.y<=REALM_AREA.y+REALM_AREA.height);
+    }
+    // Spread out: they cover a good part of the realm, not one corner of it.
+    assert(Math.max(...xs)-Math.min(...xs)>REALM_AREA.width/2, `seed ${seed} x ${xs}`);
+    assert(Math.max(...ys)-Math.min(...ys)>REALM_AREA.height/2, `seed ${seed} y ${ys}`);
+  }
+  const spots=realmSpots(10,rng(3));
+  const closest=Math.min(...spots.flatMap((a,i)=>spots.slice(i+1).map(b=>Math.hypot(a.x-b.x,a.y-b.y))));
+  assert(closest>150, `closest pair ${closest}`);
+  // Dungeons and forests keep their compact layout.
+  const dungeon=graphFromResult(generateResult(data,'Worldbuilding','Dungeon',rng(1)),rng(1));
+  assert(dungeon.nodes.every(n=>n.x<1000));
+});

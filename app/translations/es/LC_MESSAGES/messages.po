@@ -50796,8 +50796,8 @@ msgstr "Grupos sin campaña"
 msgid "pin"
 msgstr "marcador"
 
-msgid "Pin labels"
-msgstr "Etiquetas de marcadores"
+msgid "Pin size"
+msgstr "Tamaño de los marcadores"
 
 msgid "Pin moved."
 msgstr "Marcador movido."

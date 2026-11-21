@@ -1493,7 +1493,7 @@ def create_map_entry(campaign, kind, title, body, draft, module=None):
         if kind == 'realm':
             db.session.flush()
             ensure_article_tree_maps(entry)
-            populate_realm_map(pointcrawl)
+            populate_realm_map(pointcrawl, beside=False)
     return pointcrawl
 
 

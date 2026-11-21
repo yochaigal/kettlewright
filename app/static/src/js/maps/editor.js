@@ -1,7 +1,7 @@
 import {h, render} from 'preact';
 import {Excalidraw, convertToExcalidrawElements, restoreElements, CaptureUpdateAction, getCommonBounds} from 'excalidraw';
 import {drawingFromScene, emptyDrawing, graphShapes, movedLocations, isManaged, graphHit, editableGeography, shapeGeometry,
-  pinShapes, pinHit, pinFontSize} from './scene.js';
+  pinShapes, pinHit, pinDiameter, pinTooltip} from './scene.js';
 import {createFogLayer} from './whiteboard_fog.js';
 import {loadLibraries} from './libraries.js';
 import {fittedViewport} from './viewport.js';
@@ -13,7 +13,7 @@ let waterTarget=null, brushStartIds=null;
 let fogLayer=null, picking=false;
 const send = (type, detail = {}) => parent.postMessage({channel: 'kw-map', type, ...detail}, location.origin);
 const managedElements = graph => restoreElements(convertToExcalidrawElements(
-  [...graphShapes(graph, state.selected, state.selectedEdge), ...pinShapes(state.pins, state.selectedPin, pinFontSize(graph))], {regenerateIds:false}), null);
+  [...graphShapes(graph, state.selected, state.selectedEdge), ...pinShapes(state.pins, state.selectedPin, pinDiameter(graph))], {regenerateIds:false}), null);
 const sceneKey = () => JSON.stringify([state.graph.nodes, state.graph.edges, state.graph.pin_size, state.selected, state.selectedEdge,
   state.pins || [], state.selectedPin || '']);
 
@@ -93,7 +93,7 @@ function onChange(elements, appState, files) {
   const managed = elements.filter(element => isManaged(element) && !element.isDeleted);
   // The players' pins (#482) are drawn here too, read only: they are expected, not damage.
   const expected = [...graphShapes(state.graph, state.selected, state.selectedEdge),
-    ...pinShapes(state.pins, state.selectedPin, pinFontSize(state.graph))];
+    ...pinShapes(state.pins, state.selectedPin, pinDiameter(state.graph))];
   const damaged = managed.length !== expected.length || expected.some(shape => {
     const actual = managed.find(element => element.id === shape.id);
     const node=state.graph.nodes.find(node=>String(node.id)===shape.customData?.nodeId);
@@ -175,6 +175,7 @@ send('ready');
 let pointerStart;
 // Moving a pin on the party map (#482): its maker or the Warden drags it (the canvas is read only there).
 let dragging=null;
+const pinReach=zoom=>Math.max(16/zoom,pinDiameter(state.graph)/2+4/zoom);
 const scenePoint=(clientX,clientY)=>{
   const view=api.getAppState(), zoom=view.zoom.value;
   return {x:(clientX-view.offsetLeft)/zoom-view.scrollX, y:(clientY-view.offsetTop)/zoom-view.scrollY};
@@ -182,7 +183,7 @@ const scenePoint=(clientX,clientY)=>{
 document.getElementById('editor').addEventListener('pointerdown',event=>{
   if(event.target.tagName!=='CANVAS' || event.button!==0 || !api || !state || state.editing || picking)return;
   const point=scenePoint(event.clientX,event.clientY);
-  const pin=pinHit(state.pins,point.x,point.y,16/api.getAppState().zoom.value);
+  const pin=pinHit(state.pins,point.x,point.y,pinReach(api.getAppState().zoom.value));
   if(!pin?.movable)return;
   // Keep the canvas from panning while the pin moves.
   event.stopPropagation();event.preventDefault();
@@ -245,8 +246,30 @@ document.getElementById('editor').addEventListener('pointerup',event=>{
   const view=api.getAppState(), zoom=view.zoom.value;
   const sceneX=(start.x-view.offsetLeft)/zoom-view.scrollX, sceneY=(start.y-view.offsetTop)/zoom-view.scrollY;
   if(picking){picking=false;send('picked',{x:sceneX,y:sceneY});return;}
-  const pin=pinHit(state.pins,sceneX,sceneY,16/zoom);
+  const pin=pinHit(state.pins,sceneX,sceneY,pinReach(zoom));
   if(pin){send('select-pin',{id:String(pin.id)});return;}
   const hit=graphHit(state.graph,sceneX,sceneY,10/zoom);
   if(hit)send('select',hit);
 },true);
+
+// A pin's title on hover (#494): pins are drawn without it. Touch screens tap the pin to open it instead.
+const tooltip=document.createElement('div');
+tooltip.className='pin-tooltip';tooltip.setAttribute('role','tooltip');tooltip.hidden=true;
+document.body.append(tooltip);
+const hideTooltip=()=>{tooltip.hidden=true;};
+document.getElementById('editor').addEventListener('pointermove',event=>{
+  if(event.pointerType==='touch' || event.buttons || dragging || !api || !state || event.target.tagName!=='CANVAS')return hideTooltip();
+  const zoom=api.getAppState().zoom.value, point=scenePoint(event.clientX,event.clientY);
+  const title=pinTooltip(state.graph,state.pins,point.x,point.y,4/zoom);
+  if(!title)return hideTooltip();
+  tooltip.textContent=title;
+  tooltip.classList.toggle('is-dark',Boolean(state.dark));
+  tooltip.hidden=false;
+  // Beside the pointer, kept inside the frame.
+  const x=Math.min(event.clientX+14,innerWidth-tooltip.offsetWidth-4), y=event.clientY+18+tooltip.offsetHeight>innerHeight
+    ? event.clientY-tooltip.offsetHeight-10 : event.clientY+18;
+  tooltip.style.left=`${Math.max(4,x)}px`;tooltip.style.top=`${Math.max(4,y)}px`;
+});
+document.getElementById('editor').addEventListener('pointerleave',hideTooltip);
+document.getElementById('editor').addEventListener('pointerdown',hideTooltip);
+document.getElementById('editor').addEventListener('wheel',hideTooltip,{passive:true});
