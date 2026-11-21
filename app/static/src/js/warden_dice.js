@@ -1,5 +1,6 @@
 import diceModal from './dice_modal.js';
 import notification from './notification.js';
+import ownRolls from './own_rolls.js';
 import { refreshRollHistory } from './party_roll_history.js';
 
 const panel = document.getElementById('warden-dice');
@@ -26,10 +27,14 @@ export async function requestWardenRoll(kind, dice = '') {
   if (monster) body.set('companion_id', monster.dataset.monsterRoll);
   if (save) body.set('save', save);
   try {
-    const response = await fetch(monster ? monster.dataset.rollUrl : panel.dataset.rollUrl, { method: 'POST', body, cache: 'no-store' });
-    if (response.redirected) throw new Error(panel.dataset.error);
-    const result = await response.json();
-    if (!response.ok) throw new Error(result.error || panel.dataset.error);
+    // The dice dialog shows the result: the party's echo of it is not shown again (own_rolls.js).
+    const result = await ownRolls.track((async () => {
+      const response = await fetch(monster ? monster.dataset.rollUrl : panel.dataset.rollUrl, { method: 'POST', body, cache: 'no-store' });
+      if (response.redirected) throw new Error(panel.dataset.error);
+      const rolled = await response.json();
+      if (!response.ok) throw new Error(rolled.error || panel.dataset.error);
+      return rolled;
+    })());
     if (body.get('party_id')) refreshRollHistory(body.get('party_id'));
     return result;
   } finally {

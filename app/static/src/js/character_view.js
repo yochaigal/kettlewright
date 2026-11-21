@@ -3,8 +3,11 @@ import utils from "./utils.js";
 import diceModal from "./dice_modal.js";
 import dice3d from "./dice3d.js";
 import notification from "./notification.js";
+import ownRolls from "./own_rolls.js";
 
-const requestRoll = async (dice, label = "") => {
+// Every roll of this page goes through ownRolls, so the party's echo of it is not shown twice.
+const requestRoll = (dice, label = "") => ownRolls.track(requestRollRaw(dice, label));
+const requestRollRaw = async (dice, label = "") => {
   const monster = document.getElementById('monster-roll');
   if (monster) {
     const body = new URLSearchParams({dice, companion_id: monster.dataset.id, csrf_token: monster.dataset.csrf});
@@ -14,7 +17,7 @@ const requestRoll = async (dice, label = "") => {
     return await response.json();
   }
   const sheet = document.getElementById('character-roll');
-  if (sheet && typeof companion_id === "undefined") return rollOnSheet(label ? {dice, label} : {dice});
+  if (sheet && typeof companion_id === "undefined") return postSheetRoll(label ? {dice, label} : {dice});
   const manager = window.socketNotificationManager;
   if (!manager) throw new Error("Unable to roll dice. Please check your connection.");
   const result = typeof companion_id !== "undefined"
@@ -24,7 +27,8 @@ const requestRoll = async (dice, label = "") => {
 };
 
 // The character's own rolls go over HTTP: they work even when the live socket cannot connect.
-const rollOnSheet = async (fields) => {
+const rollOnSheet = (fields) => ownRolls.track(postSheetRoll(fields));
+const postSheetRoll = async (fields) => {
   const sheet = document.getElementById('character-roll');
   const body = new URLSearchParams({...fields, csrf_token: sheet.dataset.csrf});
   let response;
@@ -53,7 +57,7 @@ const rollDiceCallback = async (sides, item = "") => {
     if (item && sheet) {
       const rolled = `${result.values.join(", ")} (${dice})`;
       notification.showNotification(`${sheet.dataset.damage.replace("{item}", item)}: ${rolled}`);
-    } else if (party_id === "None" || !shown) {
+    } else {
       notification.showNotification(`You rolled ${result.result}`);
     }
   } catch (error) {

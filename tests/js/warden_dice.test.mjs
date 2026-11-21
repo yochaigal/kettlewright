@@ -35,6 +35,7 @@ function roller(active = '1') {
       if (publicToggle.checked && !publicToggle.disabled) this.set('public_roll', 'on');
     }},
     fetch: async (url, options) => { requests.push({url, ...options}); return {ok: true, json: async () => ({result: '<private result>', values: [6]})}; },
+    ownRolls: {track: request => request},  // own_rolls.js: hides the party's echo of this tab's roll.
   });
   const source = readFileSync(new URL('../../app/static/src/js/warden_dice.js', import.meta.url), 'utf8')
     .replace(/^import .*;\n/gm, '').replace('export async function', 'async function');
