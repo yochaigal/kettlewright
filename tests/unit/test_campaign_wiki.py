@@ -236,12 +236,15 @@ def test_cover_is_private_to_the_owner(setup):
 
 def test_new_module_dialog_offers_random_generation_with_defaults(setup):
     app, client = setup
-    assert 'Generate it randomly' not in client.get('/campaigns/').get_data(as_text=True)  # Campaigns only have a name.
+    assert 'Randomly generate setting' not in client.get('/campaigns/').get_data(as_text=True)  # Campaigns only have a name.
     page = client.get('/campaigns/1/').get_data(as_text=True)
     start = page.index('id="new-module-dialog"')
     dialog = page[start:page.index('</dialog>', start)]
-    assert 'x-data="newCampaign"' in dialog and 'Generate it randomly' in dialog and 'action="/campaigns/1/modules"' in dialog
+    assert 'x-data="newCampaign"' in dialog and 'Randomly generate setting' in dialog and 'action="/campaigns/1/modules"' in dialog
     assert '<select name="kind" x-model="kind">' in dialog
+    # #484: the section is the Adventure Library; its main action creates a new adventure.
+    assert 'Adventure Library' in page and page.count('Create New Adventure') == 2  # The button and the dialog's title.
+    assert 'New module' not in page and 'Create adventure' in dialog
     assert 'name="poi_count"' in dialog and '<option value="">Random count</option>' in dialog
     assert 'name="generate_children" value="1" x-model="children"' in dialog
     assert 'name="forest_chance" min="0" max="100" value="50"' in dialog

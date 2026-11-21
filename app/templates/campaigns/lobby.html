@@ -73,14 +73,15 @@
         </form>
       </dialog>
 
-      {# Modules: articles, notes, maps and backgrounds, written here, generated, uploaded or from the Marketplace. #}
+      {# The Adventure Library (#484): the campaign's modules (articles, notes, maps, backgrounds and items),
+         written here, generated, uploaded or from the Marketplace. #}
       <section class="wiki-audience campaign-modules" id="modules" aria-labelledby="campaign-modules-title">
         <div class="wiki-audience-head">
-          <h2 id="campaign-modules-title"><i class="fa-solid fa-box-open" aria-hidden="true"></i> {{ _('Modules') }} {% if modules %}<small>{{ modules|length }}</small>{% endif %}</h2>
+          <h2 id="campaign-modules-title"><i class="fa-solid fa-box-open" aria-hidden="true"></i> {{ _('Adventure Library') }} {% if modules %}<small>{{ modules|length }}</small>{% endif %}</h2>
           {# One main action (solid); the Marketplace beside it. #}
           <span class="section-actions">
             <button type="button" class="section-button" aria-haspopup="dialog" title="{{ _('Modules Marketplace') }}" aria-label="{{ _('Modules Marketplace') }}" onclick="document.getElementById('marketplace-dialog').showModal()"><i class="fa-solid fa-store" aria-hidden="true"></i> <span class="label-wide">{{ _('Modules Marketplace') }}</span></button>
-            <button type="button" class="section-button section-primary kw-add" aria-haspopup="dialog" onclick="document.getElementById('new-module-dialog').showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New module') }}</button>
+            <button type="button" class="section-button section-primary kw-add" aria-haspopup="dialog" onclick="document.getElementById('new-module-dialog').showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('Create New Adventure') }}</button>
           </span>
         </div>
         {% if modules %}
@@ -101,7 +102,7 @@
           </li>
         {% endfor %}
         </ul>
-        {% else %}<p class="wiki-empty">{{ _('No modules yet. Write a new one, generate one randomly, or pick one from the Modules Marketplace.') }}</p>{% endif %}
+        {% else %}<p class="wiki-empty">{{ _('No adventures yet. Create a new one, randomly generate a setting, or pick one from the Modules Marketplace.') }}</p>{% endif %}
       </section>
 
       {# A link to #<name> opens the <name>-dialog (say #marketplace). #}
@@ -115,14 +116,14 @@
       </script>
 
       <dialog class="create-dialog" id="new-module-dialog" aria-labelledby="new-module-title">
-        <h2 id="new-module-title">{{ _('New module') }}</h2>
+        <h2 id="new-module-title">{{ _('Create New Adventure') }}</h2>
         {# Empty, or with a random realm, dungeon or forest generated right here (newCampaign). #}
         <form method="post" action="{{ url_for('campaigns.new_module', campaign_id=campaign.id) }}" x-data="newCampaign"
               @submit="submit($event)" @reset="restart()">
           {{ content_form.csrf_token }}
           <label>{{ _('Name') }}<input type="text" name="name" required maxlength="200" autocomplete="off"></label>
           <input type="hidden" name="start" :value="start">
-          <label class="campaign-check"><input type="checkbox" :checked="start === 'random'" @change="start = $event.target.checked ? 'random' : 'empty'"> {{ _('Generate it randomly') }}</label>
+          <label class="campaign-check"><input type="checkbox" :checked="start === 'random'" @change="start = $event.target.checked ? 'random' : 'empty'"> {{ _('Randomly generate setting') }}</label>
           <div class="create-random-options" x-show="start === 'random'" x-cloak>
             <label>{{ _('Start with') }}<select name="kind" x-model="kind"><option value="realm">{{ _('Realm') }}</option><option value="dungeon">{{ _('Dungeon') }}</option><option value="forest">{{ _('Forest') }}</option></select></label>
             <label>{{ _('Dice / points of interest') }}<select name="poi_count">
@@ -137,7 +138,7 @@
           <p class="import-hint">{{ _('Write its articles, notes, maps and backgrounds afterwards. Everything stays private until you reveal it.') }}</p>
           <div class="create-dialog-actions">
             <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
-            <button type="submit" class="primary" :disabled="generating"><span x-show="!generating">{{ _('Create module') }}</span><span x-show="generating" x-cloak>{{ _('Generating…') }}</span></button>
+            <button type="submit" class="primary" :disabled="generating"><span x-show="!generating">{{ _('Create adventure') }}</span><span x-show="generating" x-cloak>{{ _('Generating…') }}</span></button>
           </div>
         </form>
       </dialog>

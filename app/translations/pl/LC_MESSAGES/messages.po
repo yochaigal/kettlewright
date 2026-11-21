@@ -23565,9 +23565,9 @@ msgstr "Moje kampanie"
 msgid "Free Starter Adventures"
 msgstr "Darmowe przygody na start"
 
-#: app/templates/campaigns/index.html
-msgid "Generate it randomly"
-msgstr "Wygeneruj losowo"
+#: app/templates/campaigns/lobby.html
+msgid "Randomly generate setting"
+msgstr "Wygeneruj losowo świat"
 
 #: app/templates/campaigns/index.html
 msgid "Start with"
