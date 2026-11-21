@@ -44,7 +44,9 @@ Folders keep the parts tidy; the `type` says what a file is.
 ## The parts
 
 **module.md** (`type: Module`) names the module. Its text is the module's front
-page: it becomes an Overview article with the module's title.
+page: it becomes the module's description, shown first when the module is read as
+a wiki and editable in the module's settings. (Files added to a module that already
+has a description keep their front page as an Overview article.)
 
 **Maps** (`type: Map`) have no text of their own: a title, a type, and one fenced
 `kettlewright-map` block with the drawing, the points (each an article, by id, with

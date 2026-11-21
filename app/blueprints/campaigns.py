@@ -255,7 +255,7 @@ def party_image(party_id):
 
 @campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/cover')
 def module_cover(campaign_id, module_id):
-    """A module's picture, for its wiki: the first image in its articles."""
+    """A module's picture, for its wiki: the first image in its description, else in its articles."""
     from app.lib.campaign_wiki import module_cover as cover
     campaign, module = campaign_module(campaign_id, module_id)
     return card_image(cover(module, list(module.entries)))
@@ -376,12 +376,14 @@ def new_module(campaign_id):
 
 @campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/', methods=['GET', 'POST'])
 def module_view(campaign_id, module_id):
-    """A module: its articles, notes, maps, backgrounds and items. POST renames it."""
+    """A module: its articles, notes, maps, backgrounds and items. POST saves its settings (name, description)."""
     from app.lib.campaign_backgrounds import background_markdown
     campaign, module = campaign_module(campaign_id, module_id)
     if request.method == 'POST':
         check_version(module, request.form.get('version'))
         module.title = text_value(request.form.get('name'), 200, True)
+        if 'description' in request.form:
+            module.description = content_value(request.form['description'])
         module.version += 1
         db.session.commit()
         return redirect(module_page(module))

@@ -11,7 +11,7 @@
   <div>
     <h1>{{ module.title }}
       <button type="button" class="link-button campaign-rename" aria-haspopup="dialog" aria-controls="module-settings-dialog"
-              title="{{ _('Rename module') }}" aria-label="{{ _('Rename module') }}"
+              title="{{ _('Module settings') }}" aria-label="{{ _('Module settings') }}"
               onclick="document.getElementById('module-settings-dialog').showModal()"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></h1>
     <span class="kw-actions lobby-header-actions">
       <a class="kw-action" href="{{ url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read as wiki') }}</a>
@@ -21,9 +21,13 @@
   </div>
 </header>
 <dialog class="create-dialog" id="module-settings-dialog" aria-labelledby="module-settings-title">
-  <h2 id="module-settings-title">{{ _('Rename module') }}</h2>
+  <h2 id="module-settings-title">{{ _('Module settings') }}</h2>
   <form method="post">{{ token(module.version) }}
     <label>{{ _('Name') }}<input type="text" name="name" required maxlength="200" value="{{ module.title }}"></label>
+    {# Its front page: shown first when the module is read as a wiki, and its module.md when exported. #}
+    <label>{{ _('Description') }} <small>{{ _('(optional)') }}</small>
+      <textarea name="description" rows="8" spellcheck="true">{{ module.description }}</textarea></label>
+    <p class="import-hint">{{ _('Shown first when the module is read as a wiki. Markdown supported.') }}</p>
     <div class="create-dialog-actions">
       <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
       <button type="submit" class="primary">{{ _('Save') }}</button>

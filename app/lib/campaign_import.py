@@ -452,7 +452,7 @@ def import_preview(payload, owner_id, into=None, slug='', module=None, name=''):
 
     Everything goes into one module of a campaign: module (add files to an existing module), else a
     new module of into (one of the owner's campaigns), else a new campaign (with its party) named after
-    the module. The module's front page becomes an Overview article; its backgrounds and items join the module.
+    the module. The module's front page becomes its description; its backgrounds and items join the module.
     slug names a bundled module. Returns (new campaigns, articles)."""
     from app.models import Module
     objects = {}
@@ -472,7 +472,11 @@ def import_preview(payload, owner_id, into=None, slug='', module=None, name=''):
     for i in payload['order']:
         row = payload['rows'][i]
         if row['category'] == 'campaign':
-            if row['body']:
+            # The front page is the module's description. Files added to a module that already
+            # has one keep theirs as an Overview article, so nothing is overwritten.
+            if row['body'] and not module.description:
+                module.description = normalize_content(row['body'])
+            elif row['body']:
                 db.session.add(ContentEntry(owner_id=owner_id, campaign=into, module=module,
                     title=row['title'], category='overview', body=normalize_content(row['body'])))
             continue

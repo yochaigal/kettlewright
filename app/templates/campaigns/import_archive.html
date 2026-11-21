@@ -60,14 +60,14 @@ Mara knows the river paths.</code></pre>
 {% if not selected_campaign %}<option value="" disabled selected>{{ _('Choose a campaign') }}</option>{% endif %}
 {% for option in campaigns_list %}<option value="{{ option.id }}" {% if option.id == selected_campaign %}selected{% endif %}>{{ option.name }}</option>{% endfor %}
 </select></label>
-<p class="import-hint">{{ _('The module is named %(title)s. Its front page becomes an Overview article; its maps, articles, backgrounds and items join the campaign.', title=(campaign_rows[0].title if campaign_rows else preview.name)) }}</p>
+<p class="import-hint">{{ _('The module is named %(title)s. Its front page becomes its description; its maps, articles, backgrounds and items join the campaign.', title=(campaign_rows[0].title if campaign_rows else preview.name)) }}</p>
 {% endif %}
 {% set maps_preview = [] %}{% for i in preview.display %}{% set row = preview.rows[i] %}{% if row.map or row.category == 'map' %}{% if maps_preview.append(row) %}{% endif %}{% endif %}{% endfor %}
 {% if maps_preview %}<details class="import-maps" open><summary>{{ _('Maps') }} ({{ maps_preview|length }})</summary>
 <ul>{% for row in maps_preview %}<li><strong>{{ row.title }}</strong>{% if row.category != 'map' %} · {{ _('the map of this article') }}{% endif %}
 {% if row.map %} · {{ _('%(count)s pins', count=row.map.nodes|length) }} · {{ _('%(count)s drawing elements', count=row.map.drawing.elements|length) }}{% else %} · {{ _('empty') }}{% endif %}
 <small>{{ (row.map.file if row.map else row.file)|replace('#map', '') }}</small></li>{% endfor %}</ul></details>{% endif %}
-{% for row in campaign_rows %}<p class="import-front"><strong>{{ _('Front page') }}</strong> · {{ row.file }}{% if row.body %} · {{ _('becomes an Overview article') }}{% endif %}</p>{% endfor %}
+{% for row in campaign_rows %}<p class="import-front"><strong>{{ _('Front page') }}</strong> · {{ row.file }}{% if row.body %} · {% if module and module.description %}{{ _('becomes an Overview article') }}{% else %}{{ _('becomes the module’s description') }}{% endif %}{% endif %}</p>{% endfor %}
 {% if preview.rows|rejectattr('category', 'in', ['map', 'campaign'])|list %}<h3 class="import-articles-title">{{ _('Articles') }}</h3>{% endif %}
 <ol class="import-preview">
 {% for i in preview.display if preview.rows[i].category not in ('map', 'campaign') %}{% set row = preview.rows[i] %}

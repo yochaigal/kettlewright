@@ -90,7 +90,9 @@ def test_add_copies_the_module_into_the_campaign(user):
         assert module.campaign_id == 7 and module.slug == SECOND.name and module.title == title_of(SECOND)
         count = ContentEntry.query.filter_by(module_id=module.id).count()
         assert count > 1 and ContentEntry.query.count() == count
-        assert ContentEntry.query.filter_by(module_id=module.id, category='overview', title=title_of(SECOND)).count() == 1
+        # Its front page is its description, not an article named like the module.
+        assert ContentEntry.query.filter_by(module_id=module.id, title=title_of(SECOND)).count() == 0
+        assert 'CC-BY-SA 4.0' in module.description
         assert Campaign.query.count() == 1  # Never a new campaign.
         module_id = module.id
     assert response.status_code == 302 and response.location.endswith(f'/campaigns/7/modules/{module_id}/')

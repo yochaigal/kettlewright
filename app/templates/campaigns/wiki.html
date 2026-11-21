@@ -232,10 +232,10 @@
         {% if party_notes %}{{ article_cards(party_notes) }}{% else %}<p class="wiki-empty">{{ _('No party notes yet.') }}</p>{% endif %}
       </section>
       {% endif %}
-      {% if intro %}
+      {% if intro_text %}
       <div class="wiki-content wiki-intro">
-        <div class="rich-content">{{ render_content(intro.body, references) }}</div>
-        <p><a href="{{ page_url(intro.id) }}">{{ _('Open article') }} →</a></p>
+        <div class="rich-content">{{ render_content(intro_text, references) }}</div>
+        {% if intro %}<p><a href="{{ page_url(intro.id) }}">{{ _('Open article') }} →</a></p>{% endif %}
       </div>
       {% endif %}
       {% if hearts %}

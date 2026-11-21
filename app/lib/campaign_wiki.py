@@ -139,12 +139,20 @@ def page_context(campaign, entry=None, owner_id=None, module=None):
         # Listed on its home and in the sidebar of every page.
         context.update(module_backgrounds=module_backgrounds(module), module_items=module_items(module))
     if entry is None:
-        # The home page: the campaign's front page if it has one (imported adventures
-        # do), then its top-level articles by type. Sub-articles are a click away.
+        # The home page: the front page if there is one (a module's description; an Overview named
+        # after the module or campaign, from before), then its top-level articles by type.
         roots = [item['entry'] for item in context['hierarchy']]
         front = module.title if module is not None else campaign.name if campaign is not None else None
         intro = next((item for item in roots if item.category == 'overview' and item.title == front), None)
-        context.update(intro=intro, groups=home_groups([item for item in roots if item is not intro]),
+        if module is not None:
+            description = module.description
+        else:  # A campaign made by adding a module is named after it: that module's description.
+            description = next((item.description for item in (campaign.modules if campaign else [])
+                                if item.title == campaign.name and item.description), '')
+        if description:
+            intro = None
+        context.update(intro=intro, intro_text=description or (intro.body if intro else ''), references={},
+                       groups=home_groups([item for item in roots if item is not intro]),
                        hearts=[item for item in entries if item.is_heart])
         if module is not None:
             if module_cover(module, entries) is not None:
@@ -268,9 +276,13 @@ def first_image(body):
 
 
 def cover_image(campaign, entries):
-    """The first picture in the campaign's front page, else in its other articles."""
+    """The campaign's picture, else the first in its modules' or its own front page, else in its other articles."""
     if campaign.image:  # Its own picture (#476).
         return campaign.image
+    # Its modules' front pages: the one it is named after first (a campaign made by adding a module).
+    for module in sorted(campaign.modules, key=lambda module: (module.title != campaign.name, module.id)):
+        if first_image(module.description):
+            return first_image(module.description)
     front = [entry for entry in entries if entry.category == 'overview' and entry.title == campaign.name]
     for entry in front + sorted((entry for entry in entries if entry not in front), key=lambda entry: entry.id):
         url = entry.image or first_image(entry.body)
@@ -281,7 +293,9 @@ def cover_image(campaign, entries):
 
 
 def module_cover(module, entries):
-    """A module's picture: the first in its front page (the Overview named after it), else in its other articles."""
+    """A module's picture: the first in its description (or an Overview named after it), else in its articles."""
+    if first_image(module.description):
+        return first_image(module.description)
     front = [entry for entry in entries if entry.category == 'overview' and entry.title == module.title]
     for entry in front + sorted((entry for entry in entries if entry not in front), key=lambda entry: entry.id):
         url = entry.image or first_image(entry.body)

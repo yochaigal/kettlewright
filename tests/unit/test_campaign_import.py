@@ -259,7 +259,8 @@ def test_preview_confirm_hierarchy_private_and_replay(setup, kind):
         assert dungeon.campaign_id == 1 and dungeon.module.title == 'My Campaign'
         dungeon_module = dungeon.module_id
         assert ContentEntry.query.filter_by(title='Loose').one().module_id == dungeon.module_id
-        assert ContentEntry.query.filter_by(category='overview').one().body == 'A **private** description.'
+        assert dungeon.module.description == 'A **private** description.'  # The front page.
+        assert ContentEntry.query.filter_by(category='overview').count() == 0
         campaign_id = dungeon.campaign_id
     assert client.get('/party/1/materials/data').json == {'entries': []}
     assert 'Room' in client.get(f'/campaigns/{campaign_id}/modules/{dungeon_module}/').get_data(as_text=True)
@@ -387,12 +388,14 @@ def test_module_front_page_and_adding_files_to_a_module(setup):
     app, client = setup
     html = client.post('/materials/import-archive',
         data={'archive': (io.BytesIO(md('Solo', 'Module').encode()), 'solo.md')}).get_data(as_text=True)
-    assert 'Front page</strong> · solo.md · becomes an Overview article' in html
+    assert 'Front page</strong> · solo.md · becomes the module’s description' in html
     assert confirm(client, preview_token(html)).status_code == 302
     with app.app_context():
-        overview = ContentEntry.query.filter_by(title='Solo').one()
-        assert overview.category == 'overview' and overview.module.title == 'Solo'
-        module_id = overview.module_id
+        from app.models import Module
+        module = Module.query.filter_by(title='Solo').one()
+        # The front page is the module's description, not an article repeating the module's name.
+        assert module.description == 'A **private** description.' and module.entries == []
+        module_id = module.id
     html = client.post('/materials/import-archive', data={'module_id': module_id,
         'archive': (io.BytesIO(md('Cave', 'Dungeon').encode()), 'cave.md')}).get_data(as_text=True)
     assert 'Adding to the module Solo.' in html and f'name="module_id" value="{module_id}"' in html
@@ -401,8 +404,16 @@ def test_module_front_page_and_adding_files_to_a_module(setup):
     with app.app_context():
         cave = ContentEntry.query.filter_by(title='Cave').one()
         assert cave.module_id == module_id and cave.category == 'dungeon'
-        from app.models import Module
         assert Module.query.count() == 1
+    # Another front page added to a module that has a description stays an article: nothing is overwritten.
+    html = client.post('/materials/import-archive', data={'module_id': module_id,
+        'archive': (io.BytesIO(md('Extra', 'Module', body='More.').encode()), 'extra.md')}).get_data(as_text=True)
+    assert 'Front page</strong> · extra.md · becomes an Overview article' in html
+    assert client.post('/materials/import-archive', data={'preview_id': preview_token(html),
+                                                           'module_id': module_id}).status_code == 302
+    with app.app_context():
+        assert db.session.get(Module, module_id).description == 'A **private** description.'
+        assert ContentEntry.query.filter_by(title='Extra', category='overview').one().body == 'More.'
 
 
 def test_inferred_rows_can_be_renamed_and_retyped_before_import(setup):
