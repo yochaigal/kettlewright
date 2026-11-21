@@ -2,6 +2,7 @@ import "./monster_delete.js";
 import utils from "./utils.js";
 import dice3d from "./dice3d.js";
 import notification from "./notification.js";
+import ownRolls from "./own_rolls.js";
 import { refreshRollHistory } from "./party_roll_history.js";
 
 window.KW_alert = utils.styledAlert;
@@ -16,11 +17,15 @@ window.KW_rollDiceCallback = async (sides) => {
     const body = new URLSearchParams({
       dice: sides.map((side) => `d${side}`).join('+'), csrf_token: config.dataset.csrf, public_roll: 'on',
     });
-    const response = await fetch(config.dataset.url, {method: 'POST', body, cache: 'no-store'});
-    if (!response.ok || response.redirected) throw new Error(config.dataset.error);
-    const result = await response.json();
+    const result = await ownRolls.track((async () => {
+      const response = await fetch(config.dataset.url, {method: 'POST', body, cache: 'no-store'});
+      if (!response.ok || response.redirected) throw new Error(config.dataset.error);
+      return response.json();
+    })());
     refreshRollHistory(party_id);
-    if (!await dice3d.show(result)) notification.showNotification(result.result);
+    // Once the dice settle, the result in words (the party's echo of this roll is not shown here).
+    await dice3d.show(result);
+    notification.showNotification(result.result);
   } catch (error) {
     notification.showNotification(error.message || config.dataset.error);
   } finally {

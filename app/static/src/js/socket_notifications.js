@@ -1,5 +1,6 @@
 import { refreshPartyContent } from './campaign_live.js';
 import notification from "./notification.js";
+import ownRolls from "./own_rolls.js";
 import { refreshRollHistory } from "./party_roll_history.js";
 import { refreshPartyMembers } from "./party_members.js";
 import { refreshCharacterStats } from "./character_stats.js";
@@ -67,8 +68,8 @@ const socketNotificationManager = {
     });
 
     this.socket.on("dice_rolled", (data) => {
-      // console.log("Dice roll received:", data);
-      notification.showNotification(data);
+      // Everyone's public rolls; this tab's own roll was already shown its own way (own_rolls.js).
+      ownRolls.receive(data, (message) => notification.showNotification(message));
     });
     this.socket.on("campaign_content_changed", (data) => {
       refreshPartyContent(data.party_id);

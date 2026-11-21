@@ -32,13 +32,19 @@
     {% endif %}</div>
   </div>
   {% endfor %}
+  {# Armor and Gold are cards too: the name, then the number. Direct children of the grid, so
+     the stats refresh updates them like the others. #}
+  <div class="character-stat-card character-resource-card" id="character-armor-container">
+    <div class="stat-card-heading"><h4>{{_('Armor')}}</h4></div>
+    <p class="stat-readonly" id="armor-counter"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> {{ character.armorValue() }}</p>
+  </div>
+  <div class="character-stat-card character-resource-card" id="character-gold-container">
+    <div class="stat-card-heading"><h4>{{_('Gold')}}</h4></div>
+    {% if can_edit_sheet %}
+      <div class="stat-card-gold">{% with control='gold', caption=_('Gold'), label=_('Gold'), limit=9999 %}{% include 'partial/charview/stat_control.html' %}{% endwith %}</div>
+    {% else %}<p class="stat-readonly" id="gold-view-text">{{character.gold}}</p>{% endif %}
+  </div>
   <div class="character-stat-toolbar">
-    <div class="character-stat-resource" id="character-gold-container">
-      {% if can_edit_sheet %}
-        {% with control='gold', caption=_('Gold'), label=_('Gold'), limit=9999 %}{% include 'partial/charview/stat_control.html' %}{% endwith %}
-      {% else %}<h4>{{_('Gold')}}</h4><p id="gold-view-text">{{character.gold}}</p>{% endif %}
-    </div>
-    <div class="character-stat-resource" id="character-armor-container"><h4>{{_('Armor')}}</h4><p id="armor-counter">{{ character.armorValue() }}</p></div>
     <div id="character-deprived-container" class="character-stat-resource character-stat-conditions">
       <h4>{{_('Conditions')}}</h4>
       <div class="character-condition-options">
