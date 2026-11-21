@@ -588,7 +588,9 @@ button,
 }
 
 .navbar-brand { display: flex; align-items: center; flex: none; min-width: 1px; height: 100%; }
-#nav-logo { display: block; width: auto; height: 28px; margin: 0; }
+/* The logo's lettering is fine; at 28px it was too small to read (#495). About 130px wide, like the old top bar. */
+#nav-logo { display: block; width: auto; height: 42px; margin: 0; }
+@media (max-width: 600px) { #nav-logo { height: 36px; } }
 
 .navbar-menu { display: flex; align-items: center; justify-content: space-between; flex: 1; min-width: 0; }
 .navbar-start, .navbar-end { display: flex; align-items: center; gap: .25em; margin: 0; }
