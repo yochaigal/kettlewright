@@ -676,7 +676,8 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 .campaign-workspace .material-parents a {text-decoration:none;}
 .campaign-workspace .material-parents a:hover {text-decoration:underline;}
 .campaign-workspace .material-parents-part {margin-left:.75em;color:color-mix(in srgb,var(--fg) 60%,var(--bg));}
-.article-layout {grid-template-columns:minmax(0,1fr) minmax(17em,23em);}
+/* Two columns only where they fit; below 900px the Organize panel goes under the text. */
+@media (min-width:901px) {.article-layout {grid-template-columns:minmax(0,1fr) minmax(17em,23em);}}
 .article-sidebar {padding:1em 1.1em;border:1px solid color-mix(in srgb,var(--fg) 18%,var(--bg));border-radius:10px;background:var(--bg);}
 .article-sidebar select, .article-sidebar input:not([type=checkbox]):not([type=radio]) {width:100%;max-width:100%;box-sizing:border-box;}
 .campaign-workspace .article-sidebar-title {font-size:.82em;letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
@@ -930,3 +931,38 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
 
 /* A module's page: an empty part says so in the size of the hint above it. */
 .campaign-workspace .module-page .module-panel .wiki-empty {margin:.25em 0 0;font-size:.9em;}
+
+/* Article and map editors on a phone: the actions go under the title and fill the row,
+   instead of hanging right with Save alone on a second line. */
+@media (max-width:600px) {
+  .campaign-workspace .soft-header .campaign-page-actions {flex:1 1 100%;margin-left:0;}
+  .campaign-workspace .soft-header .campaign-page-actions > * {flex:1 1 auto;justify-content:center;}
+}
+/* The map editor already keeps a line for "Unsaved changes"; its empty status line takes no room too. */
+#map-form + [x-data] > .campaign-status:empty {min-height:0;margin:0;}
+
+/* Reveal to party on a phone: Hide on its own row, then Cancel and the main action side by side. */
+@media (max-width:600px) {
+  .reveal-dialog .reveal-buttons {display:grid;grid-template-columns:1fr 1fr;}
+  .reveal-dialog .reveal-buttons button {min-width:0;white-space:normal;}
+  .reveal-dialog .reveal-buttons .reveal-hide {grid-column:1 / -1;grid-row:1;margin:0;}
+}
+
+/* The editors' Related articles and Delete… modals look like the other dialogs (Reveal, New campaign):
+   the title at the start, even padding, and buttons in one row that fits a phone. */
+.campaign-workspace .campaign-modal .modal-card {box-sizing:border-box;width:38em;max-width:calc(100vw - 2em);max-height:calc(100dvh - 2em);
+  padding:2em;align-items:stretch;justify-content:flex-start;background:var(--bg);border:1px solid var(--fg);border-radius:5px;}
+.campaign-workspace .campaign-modal :is(.modal-card-head, .modal-card-body, .modal-card-foot) {margin:0;padding:0;background:none;border:0;}
+.campaign-workspace .campaign-modal .modal-card-head {justify-content:flex-start;}
+.campaign-workspace .campaign-modal .modal-card-title {margin:0 0 1em;line-height:1.2;}
+.campaign-workspace .campaign-modal .modal-card-body {gap:.75em;}
+.campaign-workspace .campaign-modal .modal-card-body p {margin:0;}
+.campaign-workspace .campaign-modal .campaign-modal-actions {display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.75em;margin-top:1.25em;padding:0;}
+.campaign-workspace .campaign-modal .campaign-modal-actions button {display:inline-flex;align-items:center;justify-content:center;min-width:8em;min-height:3em;margin:0;
+  padding:.5em 1.25em;border:1.5px solid var(--fg);border-radius:2px;background:transparent;color:var(--fg);font:inherit;font-weight:600;line-height:1.2;}
+.campaign-workspace .campaign-modal .campaign-modal-actions button[type=submit] {background:var(--fg);color:var(--bg);}
+@media (max-width:600px) {
+  .campaign-workspace .campaign-modal .modal-card {padding:1.5em;}
+  .campaign-workspace .campaign-modal .campaign-modal-actions {display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));}
+  .campaign-workspace .campaign-modal .campaign-modal-actions button {min-width:0;white-space:normal;}
+}
