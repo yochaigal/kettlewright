@@ -845,7 +845,24 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
 /* An article's own image (#476): above its text. */
 .wiki-image {margin:0 0 1.25em;}
 .wiki-image img {display:block;max-width:100%;max-height:min(60vh,560px);margin:0 auto;border-radius:6px;object-fit:contain;}
-/* Starred parties (#476): first on the Campaigns page; the star unstars. */
-.campaign-party-cards > .campaign-party-card.is-starred {position:relative;padding-right:2.75em;}
-.campaign-workspace .campaign-party-card .party-star-button {position:absolute;top:.45em;right:.45em;min-height:0;margin:0;padding:.3em;border:0;background:none;color:#f59f00;font-size:1.05em;line-height:1;cursor:pointer;}
-.gallery-heading .fa-star {color:#f59f00;}
+/* Starred (#476): an island of bookmark cards, first on the Campaigns page; no heading, a star per card. */
+.campaign-workspace .starred-island {margin:0 0 1.75em;padding:1em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:14px;background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.starred-cards {display:grid;grid-template-columns:repeat(auto-fill,minmax(15em,1fr));gap:.75em;margin:0;padding:0;list-style:none;}
+.starred-card {position:relative;display:flex;align-items:flex-start;gap:.75em;margin:0;padding:.75em 2.5em .75em .75em;border:1px solid color-mix(in srgb,var(--fg) 12%,var(--bg));border-radius:10px;background:var(--bg);min-width:0;}
+.starred-card-picture,.starred-card-icon {flex:none;width:3em;height:3em;border-radius:8px;object-fit:cover;}
+.starred-card-icon {display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--fg) 7%,var(--bg));font-size:1.1em;}
+.starred-card-body {display:flex;flex-direction:column;gap:.2em;min-width:0;}
+.starred-card-kind {font-size:.72em;letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--fg) 60%,var(--bg));}
+.starred-card-title {font-weight:700;color:inherit;text-decoration:none;overflow-wrap:anywhere;}
+.starred-card-title:hover {text-decoration:underline;}
+.starred-card-meta {font-size:.85em;color:color-mix(in srgb,var(--fg) 62%,var(--bg));overflow-wrap:anywhere;}
+.campaign-workspace .starred-card .star-button {position:absolute;top:.5em;right:.5em;font-size:1.05em;padding:.3em;}
+/* A module's backgrounds in its wiki (#476): open one to read it; star it. */
+.wiki-background-list {margin:.5em 0 0;padding:0;list-style:none;display:grid;gap:.6em;}
+.wiki-background {border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;padding:.7em 1em;background:var(--bg);}
+.wiki-background > summary {cursor:pointer;display:flex;flex-wrap:wrap;align-items:center;gap:.2em .5em;}
+.wiki-background-name {font-weight:700;}
+.wiki-background-description {flex-basis:100%;font-size:.9em;color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
+.wiki-background[open] > summary {margin-bottom:.6em;}
+.wiki-background[open] .wiki-background-description {display:none;}
+.campaign-wiki .wiki-header h1 .star-button {font-size:.55em;margin-left:.35em;vertical-align:middle;}

@@ -1,0 +1,14 @@
+{# A star (#476): a bookmark, listed first on the Campaigns page. Its form is hidden (forms are styled
+   as panels on some pages); the button submits it. #}
+{% macro star_button(kind, target_id, name='', starred=False) -%}
+{%- set form_id = 'star-' ~ kind ~ '-' ~ target_id ~ ('-' ~ name|replace(' ', '-')|e if name else '') -%}
+<button type="submit" form="{{ form_id }}" class="star-button" aria-pressed="{{ 'true' if starred else 'false' }}"
+  title="{{ _('Unstar') if starred else _('Star: listed first on your Campaigns page') }}"
+  aria-label="{{ _('Starred') if starred else _('Star') }}"><i class="fa-{{ 'solid' if starred else 'regular' }} fa-star" aria-hidden="true"></i></button>
+<form id="{{ form_id }}" method="post" action="{{ url_for('campaigns.star') }}" hidden>
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="kind" value="{{ kind }}"><input type="hidden" name="target_id" value="{{ target_id }}">
+  <input type="hidden" name="name" value="{{ name }}"><input type="hidden" name="starred" value="{{ '0' if starred else '1' }}">
+  <input type="hidden" name="next" value="{{ request.full_path.rstrip('?') }}{% if kind == 'background' %}#{{ background_anchor(name) }}{% endif %}">
+</form>
+{%- endmacro %}

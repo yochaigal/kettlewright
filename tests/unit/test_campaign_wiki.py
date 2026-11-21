@@ -62,7 +62,7 @@ def test_article_page_links_breadcrumbs_and_backlinks(setup):
     app, client = setup
     guild, mira, town, relic = build(app, client)
     page = wiki(client, guild).get_data(as_text=True)
-    assert '<h1>Ash Guild</h1>' in page
+    assert '<h1>Ash Guild<' in page
     # The [[Mira]] link opens Mira's wiki page, not her editor.
     text = page[page.index('class="rich-content"'):page.index('In this article')]
     assert re.search(rf'<a [^>]*href="/campaigns/1/wiki/{mira}/"[^>]*>Mira</a>', page)
@@ -357,7 +357,7 @@ def test_players_read_only_revealed_articles(setup):
     login(client, 2)
     page = client.get(f'/party/1/materials/{guild}').get_data(as_text=True)
     assert 'class="wiki-layout"' in page and 'id="party-content-results"' in page
-    assert '<h1>Ash Guild</h1>' in page and 'Bellmakers.' in page and 'On this page' in page
+    assert '<h1>Ash Guild<' in page and 'Bellmakers.' in page and 'On this page' in page
     # Never unrevealed articles: Mira is named in the text, but not linked; Thornwick is not there at all.
     assert f'/party/1/materials/{mira}' not in page and f'/party/1/materials/{town}' not in page and 'Thornwick' not in page
     # The bell's related link points here.
@@ -497,7 +497,7 @@ def test_module_cards_open_the_module_as_a_wiki(setup):
     assert 'Ash Guild' in page and 'Other lore' not in page and 'Edit module' in page  # Only this module.
     assert f'href="/campaigns/1/modules/{first}/"' in page and '← Secret campaign' in page
     article = client.get(f'/campaigns/1/modules/{first}/wiki/{guild}/').get_data(as_text=True)
-    assert '<h1>Ash Guild</h1>' in article and f'href="/campaigns/1/modules/{first}/wiki/{mira}/"' in article
+    assert '<h1>Ash Guild<' in article and f'href="/campaigns/1/modules/{first}/wiki/{mira}/"' in article
     assert client.get(f'/campaigns/1/modules/5/wiki/{guild}/').status_code == 404  # Not in that module.
     everything = client.get('/campaigns/1/wiki/').get_data(as_text=True)
     assert 'Ash Guild' in everything and 'Other lore' in everything  # Read everything as wiki.

@@ -144,6 +144,7 @@ def page_context(campaign, entry=None, owner_id=None, module=None):
         context.update(intro=intro, groups=home_groups([item for item in roots if item is not intro]),
                        hearts=[item for item in entries if item.is_heart])
         if module is not None:
+            context['module_backgrounds'] = module_backgrounds(module)
             if module_cover(module, entries) is not None:
                 context['cover_url'] = url_for('campaigns.module_cover', campaign_id=campaign.id, module_id=module.id)
         elif campaign is not None and cover_image(campaign, entries) is not None:
@@ -243,6 +244,14 @@ def party_context(party, entry_id=None, owner_view=False, owner_id=None):
 # stored column: change the cover by changing which image comes first.
 
 IMAGE_IN_BODY = re.compile(r'!\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)|<img\b[^>]*?\bsrc="([^"]+)"', re.I)
+
+
+def module_backgrounds(module):
+    """A module's backgrounds for its wiki (#476): name, description and their Markdown (no front matter)."""
+    from app.lib.campaign_backgrounds import background_markdown
+    return [{'name': name, 'description': background.get('background_description', ''),
+             'text': background_markdown(name, background).split('---\n', 2)[2]}
+            for name, background in sorted((module.backgrounds or {}).items(), key=lambda item: item[0].casefold())]
 
 
 def first_image(body):

@@ -64,13 +64,34 @@ def conflict(error):
     return _('This content changed in another tab. Reload before saving.'), 409
 
 
+@campaigns.app_template_global('csrf_token')
+def csrf_token():
+    """A CSRF token for small forms on any page (the star button, #476)."""
+    from flask_wtf.csrf import generate_csrf
+    return generate_csrf()
+
+
 @campaigns.context_processor
 def common_context():
     return {'content_categories': CATEGORIES, 'category_groups': CATEGORY_GROUPS, 'category_roots': CATEGORY_ROOTS, 'article_map_kinds': ARTICLE_MAP_KINDS, 'article_parent_types': ARTICLE_PARENT_TYPES,
             'point_categories': {k: CATEGORIES[k] for k in CATEGORIES if k in POINT_TYPES}, 'path_types': PATH_TYPES,
             'content_form': FlaskForm(), 'render_content': render_content, 'content_excerpt': content_excerpt,
             'private_reference_urls': private_reference_urls, 'module_parts': _module_parts(),
-            'part_badges': _part_badges}
+            'part_badges': _part_badges, 'is_starred': _is_starred, 'background_anchor': _background_anchor}
+
+
+def _is_starred(kind, target_id, name=''):
+    """Whether this person starred it (#476); their stars are read once per request."""
+    from flask import g
+    from app.lib.stars import star_keys
+    if 'star_keys' not in g:
+        g.star_keys = star_keys(current_user.id)
+    return (kind, target_id, name) in g.star_keys
+
+
+def _background_anchor(name):
+    from app.lib.stars import background_anchor
+    return background_anchor(name)
 
 
 def _module_parts():
@@ -184,7 +205,8 @@ def index():
     if request.method == 'POST':
         return new_campaign(request.form.get('name'))
     from app.lib.campaign_wiki import cover_image
-    from app.lib.campaign_parties import party_cards, played_parties, starred_parties
+    from app.lib.campaign_parties import party_cards, played_parties
+    from app.lib.stars import starred_cards
     campaigns_list = my_campaigns()
     entries = library_entries().order_by(ContentEntry.title).all()
     by_campaign = {campaign.id: [e for e in entries if e.campaign_id == campaign.id] for campaign in campaigns_list}
@@ -193,20 +215,15 @@ def index():
         covers={campaign.id: cover_image(campaign, by_campaign[campaign.id]) is not None for campaign in campaigns_list},
         # Players reach the parties they play in (other Wardens' campaigns) from here.
         played=party_cards(played_parties(current_user.id)),
-        starred=party_cards(starred_parties(current_user.id)))
+        starred=starred_cards(current_user.id))
 
 
-@campaigns.route('/party/<int:party_id>/star', methods=['POST'])
-def star_party(party_id):
-    """Star or unstar a party (#476): a bookmark for anyone in it, listed first on the Campaigns page."""
-    from app.models import PartyStar
-    party = party_access(party_id)
-    star = db.session.get(PartyStar, (current_user.id, party.id))
-    if star is None and request.form.get('starred', '1') == '1':
-        db.session.add(PartyStar(user_id=current_user.id, party_id=party.id))
-    elif star is not None and request.form.get('starred', '0') == '0':
-        db.session.delete(star)
-    db.session.commit()
+@campaigns.route('/stars', methods=['POST'])
+def star():
+    """Star or unstar (#476) a party, module, article, map or background: a bookmark on the Campaigns page."""
+    from app.lib.stars import toggle_star
+    toggle_star(request.form.get('kind', ''), integer(request.form.get('target_id')),
+                (request.form.get('name') or '')[:200], request.form.get('starred', '1') == '1')
     target = request.form.get('next', '')
     # Back where the star was pressed; only to a page of this site.
     if not target.startswith('/') or target.startswith('//') or '\\' in target:

@@ -1,5 +1,6 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import reveal_dialog with context %}
+{% from 'partial/star_button.html' import star_button with context %}
 {# Read articles as a wiki (#421). Three sources share this page; the view gives
    page_url(entry_id=None), home_title and, for owners, edit links:
    - a campaign, for its owner;
@@ -104,7 +105,7 @@
       {% endif %}
       <header class="wiki-header">
         <div>
-          <h1>{{ article_title(entry) }}</h1>
+          <h1>{{ article_title(entry) }}{% if not party %}{% set star_kind = 'map' if is_map else 'article' %}{{ star_button(star_kind, entry.id, starred=is_starred(star_kind, entry.id)) }}{% endif %}</h1>
           <span class="wiki-badges"><span class="wiki-badge">{% if is_map %}{{ _('Map') }}{% else %}{{ type_label(entry) }}{% endif %}</span>{% if entry.is_heart %}<span class="wiki-badge wiki-badge-heart">{{ _('Heart') }}</span>{% endif %}
           {% if not party %}{% set shared = entry.presentations|selectattr('published')|list %}{% if shared %}<span class="wiki-badge" title="{{ _('Parties that can read their version of this article') }}">{{ _('Revealed') }} · {{ shared|length }}</span>{% endif %}{% endif %}</span>
         </div>
@@ -204,7 +205,7 @@
       {% elif party and party_cover %}<div class="wiki-cover"><img src="{{ url_for('campaigns.party_entry_image', party_id=party.id, entry_id=party_cover) }}" alt="" data-cover></div>{% endif %}
       <header class="wiki-header">
         <div>
-          <h1>{{ home_title }}</h1>
+          <h1>{{ home_title }}{% if module is defined and module %}{{ star_button('module', module.id, starred=is_starred('module', module.id)) }}{% endif %}</h1>
           <span class="wiki-badges"><span class="wiki-badge">{{ article_count }} {{ _('articles') }}</span></span>
         </div>
         {% if module is defined and module %}
@@ -246,6 +247,20 @@
         <h2 id="wiki-home-maps"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Maps') }} <small>{{ maps|length }}</small></h2>
         <ul class="wiki-map-cards">{% for item in maps %}
           <li><a href="{{ item.url }}"><i class="fa-solid fa-map" aria-hidden="true"></i> <span>{{ item.title|markdown_inline }}</span></a></li>{% endfor %}</ul>
+      </section>
+      {% endif %}
+      {% if module_backgrounds is defined and module_backgrounds %}
+      {# A module's backgrounds (#476): read here, written on the module's page. #}
+      <section class="wiki-related wiki-backgrounds" aria-labelledby="wiki-home-backgrounds">
+        <h2 id="wiki-home-backgrounds"><i class="fa-solid fa-user-gear" aria-hidden="true"></i> {{ _('Backgrounds') }} <small>{{ module_backgrounds|length }}</small></h2>
+        <ul class="wiki-background-list">{% for item in module_backgrounds %}
+          <li id="{{ background_anchor(item.name) }}"><details class="wiki-background">
+            <summary><span class="wiki-background-name">{{ item.name }}</span>{{ star_button('background', module.id, item.name, starred=is_starred('background', module.id, item.name)) }}
+              <span class="wiki-background-description">{{ item.description|markdown_inline }}</span></summary>
+            <div class="rich-content">{{ render_content(item.text) }}</div>
+            <p><a href="{{ url_for('campaigns.module_background', campaign_id=campaign.id, module_id=module.id, name=item.name) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a></p>
+          </details></li>{% endfor %}
+        </ul>
       </section>
       {% endif %}
       {% for group, items in groups %}

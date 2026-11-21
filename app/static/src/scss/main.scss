@@ -1163,3 +1163,16 @@ button.kw-add {
   .image-field-file { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .image-field-hint { margin: .4rem 0 0; font-size: .85em; opacity: .75; }
 }
+
+// A star (#476): a bookmark, listed first on the Campaigns page.
+.star-button {
+  min-height: 0;
+  margin: 0;
+  padding: .15em .25em;
+  border: 0;
+  background: none;
+  color: inherit;
+  line-height: 1;
+  cursor: pointer;
+  &[aria-pressed="true"], &:hover, &:focus-visible { color: #f59f00; }
+}

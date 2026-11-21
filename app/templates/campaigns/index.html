@@ -1,5 +1,6 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import token with context %}
+{% from 'partial/star_button.html' import star_button with context %}
 {% block workspace %}
 {# Like the characters page: the actions on one row, no page title. #}
 <div class="characters-page-header campaigns-page-header" x-data="{}">
@@ -26,22 +27,26 @@
 {% endif %}
 
 {% if starred %}
-{# Starred parties (#476): bookmarks, first. Unstar from the card or the party page. #}
-<div class="gallery-main">
-<h3 class="gallery-heading"><i class="fa-solid fa-star" aria-hidden="true"></i> {{ _('Starred') }} <small>{{ starred|length }}</small></h3>
-<ul class="campaign-party-cards">
-{% for card in starred %}{% set item = card.party %}
-<li class="campaign-party-card is-starred" data-tree-row data-search="{{ item.name|lower }}">
-  <a class="campaign-party-name" href="{{ card.url }}">{{ item.name|markdown_inline }}</a>
-  <span class="campaign-party-meta">{{ _('Warden') }}: {{ item.owner_username }}</span>
-  <span class="campaign-party-members">{% for member in card.members[:6] %}<img src="{{ member.src }}" alt="" title="{{ member.name }}" loading="lazy">{% endfor %}</span>
-  <button type="submit" form="party-star-{{ item.id }}" class="party-star-button" aria-pressed="true" title="{{ _('Unstar this party') }}" aria-label="{{ _('Unstar %(party)s', party=item.name|striptags) }}"><i class="fa-solid fa-star" aria-hidden="true"></i></button>
-  <form id="party-star-{{ item.id }}" method="post" action="{{ url_for('campaigns.star_party', party_id=item.id) }}" hidden>{{ token() }}
-    <input type="hidden" name="starred" value="0"><input type="hidden" name="next" value="{{ request.path }}"></form>
+{# Starred (#476): an island of bookmarks, first. Each card's star unstars it. #}
+{% set kind_labels = {'party': _('Party'), 'module': _('Module'), 'article': _('Article'), 'map': _('Map'), 'background': _('Background')} %}
+{% set kind_icons = {'party': 'fa-users', 'module': 'fa-box-open', 'article': 'fa-file-lines', 'map': 'fa-map', 'background': 'fa-user-gear'} %}
+<section class="starred-island" aria-label="{{ _('Starred') }}">
+<ul class="starred-cards">
+{% for card in starred %}
+<li class="starred-card" data-tree-row data-search="{{ card.title|lower }}">
+  {% if card.picture %}<img class="starred-card-picture" src="{{ card.picture }}" alt="" loading="lazy">
+  {% else %}<span class="starred-card-icon" aria-hidden="true"><i class="fa-solid {{ kind_icons[card.kind] }}"></i></span>{% endif %}
+  <span class="starred-card-body">
+    <span class="starred-card-kind">{{ kind_labels[card.kind] }}</span>
+    <a class="starred-card-title" href="{{ card.url }}">{{ card.title|markdown_inline }}</a>
+    {% if card.subtitle %}<span class="starred-card-meta">{% if card.kind == 'party' %}{{ _('Warden') }}: {% endif %}{{ card.subtitle|markdown_inline|striptags }}</span>{% endif %}
+    {% if card.members %}<span class="campaign-party-members">{% for member in card.members[:6] %}<img src="{{ member.src }}" alt="" title="{{ member.name }}" loading="lazy">{% endfor %}</span>{% endif %}
+  </span>
+  {{ star_button(card.kind if card.kind != 'map' else 'map', card.target_id, card.name, starred=True) }}
 </li>
 {% endfor %}
 </ul>
-</div>
+</section>
 {% endif %}
 
 <div class="gallery-main">
