@@ -734,14 +734,17 @@ def party_edit_save(ownername, party_url):
     if 'image' in request.form:  # Its picture (#476).
         from app.lib.material_images import image_value
         party.image = image_value(request.form['image'])
-    # Move the party to another of the Warden's campaigns; it keeps what it was shown.
-    campaign_id = request.form.get('campaign_id', '')
-    if campaign_id:
-        from app.models import Campaign
-        campaign = db.session.get(Campaign, int(campaign_id)) if campaign_id.isdigit() else None
-        if campaign is None or campaign.owner_id != current_user.id:
-            abort(400)
-        party.campaign = campaign
+    # Move the party to another of the Warden's campaigns, or out of any (#483); it keeps what it was shown.
+    if 'campaign_id' in request.form:
+        campaign_id = request.form['campaign_id']
+        if campaign_id:
+            from app.models import Campaign
+            campaign = db.session.get(Campaign, int(campaign_id)) if campaign_id.isdigit() else None
+            if campaign is None or campaign.owner_id != current_user.id:
+                abort(400)
+            party.campaign = campaign
+        else:
+            party.campaign = None
     # Backward compatibility: update item ids
     items = json.loads(party.items)
     result = []

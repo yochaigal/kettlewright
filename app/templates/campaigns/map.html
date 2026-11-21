@@ -15,6 +15,15 @@
 <form id="map-form" class="campaign-page-form map-settings" method="post">
 {{ token(entry.version) }}
 <label class="map-title-field">{{ _('Title') }}<input type="text" name="title" maxlength="200" required value="{{ entry.title }}"></label>
+{# How big pin labels are drawn, for everyone (#482). #}
+<label class="map-pin-size">{{ _('Pin labels') }}<select name="pin_size" data-sizes='{{ pin_sizes|tojson }}'
+ onchange="window.dispatchEvent(new CustomEvent('kw-pin-size', {detail: JSON.parse(this.dataset.sizes)[this.value]}))">
+{% for value, label in [('small', _('Small')), ('medium', _('Medium')), ('large', _('Large'))] %}<option value="{{ value }}" {% if pointcrawl.pin_size == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+</select></label>
+{% if campaign %}{# The campaign's World Map (#482): what its parties' World Map button opens. #}
+<input type="hidden" name="world_map_field" value="1">
+<label class="campaign-check map-world-field"><input type="checkbox" name="world_map" value="1" {% if pointcrawl.world_map %}checked{% endif %}>
+ {{ _('World Map of %(campaign)s', campaign=campaign.name) }}</label>{% endif %}
 </form>
 {% include 'campaigns/map_panel.html' %}
 <div class="campaign-actions campaign-footer-actions article-delete danger-zone">

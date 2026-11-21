@@ -4,6 +4,8 @@
 {% if editing %}
 <div @input="selectedNode.content_changed=true">
 <label>{{ _('Title') }}<input type="text" maxlength="200" x-model="selectedNode.title"></label>
+{# Parties shown this map are shown the pin too (#482); new pins start with it on. #}
+<label class="campaign-check map-pin-reveal"><input type="checkbox" x-model="selectedNode.reveal"> {{ _('Reveal with the map') }}</label>
 {{ rich_editor(_('Note'), name=None, model='selectedNode.body') }}
 </div>
 <div class="campaign-actions">

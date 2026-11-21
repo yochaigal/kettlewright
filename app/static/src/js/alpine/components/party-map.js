@@ -28,7 +28,7 @@ export default function partyMap() {
     sync() {
       this.send('state', {graph: JSON.parse(JSON.stringify(this.graph)), editing: false,
         selected: this.selected, selectedEdge: this.selectedEdge, selectedPin: this.selectedPin,
-        pins: this.pins.map(({id, x, y, title}) => ({id, x, y, title})),
+        pins: this.pins.map(({id, x, y, title, movable}) => ({id, x, y, title, movable})),
         fog: this.fog && JSON.parse(JSON.stringify(this.fog)), fogWarden: this.warden, dark: document.body.classList.contains('dark-mode'),
         lang: document.documentElement.lang || 'en'});
     },
@@ -51,6 +51,7 @@ export default function partyMap() {
         this.$nextTick(() => {this.$refs.pinDialog.showModal(); this.$refs.pinTitle?.focus();});
       }
       if (data.type === 'fog-operation') this.fogOperation(data.operation);
+      if (data.type === 'move-pin') this.movePin(data);
     },
     // Full screen (#476): the map alone, filling the screen; Esc returns.
     fullscreen() {this.$refs.canvas.requestFullscreen?.().catch(() => {});},
@@ -86,6 +87,14 @@ export default function partyMap() {
         this.selectedPin = String(this.pins.at(-1)?.id || ''); this.sync();
       } catch {this.status = this.labels.error;} finally {this.saving = false;}
     },
+    // A pin dragged to a new place (#482): its maker or the Warden.
+    async movePin({id, x, y}) {
+      const result = await this.post(`${this.urls.pins}/${id}/move`, {x, y});
+      if (result.ok) {this.status = this.labels.pinMoved || ''; this.apply(result.data);}
+      else {this.status = this.labels.error; this.sync();}
+    },
+    // "1 pin", "3 pins" (#482).
+    get pinCount() {return `${this.pins.length} ${this.pins.length === 1 ? this.labels.pinOne : this.labels.pinMany}`;},
     async deletePin(pin) {
       if (!confirm(this.labels.deletePin)) return;
       const result = await this.post(`${this.urls.pins}/${pin.id}/delete`, {});

@@ -1701,7 +1701,9 @@ def test_party_map_button_lists_or_opens_revealed_maps(setup):
     app, client = setup
     renderable_party_page(app)
     assert 'id="party-map-link"' in client.get('/users/user1/parties/party1/').text
-    assert 'No map has been revealed' in client.get('/party/1/map/').text
+    # Nothing revealed: the Warden gets the campaign a World Map from here (#482).
+    empty = client.get('/party/1/map/').text
+    assert 'has no World Map yet' in empty and 'Draw a new World Map' in empty and 'Randomly generate a realm' in empty
     map_id, graph = create_map(client)
     assert client.get(f'/party/1/map/{map_id}/').status_code == 404  # Not revealed yet.
     reveal(client, map_entry_id(app, map_id))
@@ -1790,7 +1792,8 @@ def test_map_pins_are_map_notes_kept_apart_from_articles(setup):
         assert gone not in page
     module = client.get(module_url(app)).get_data(as_text=True)
     assert 'Old well' not in module.split('id="module-articles-title"')[1]  # Not an article.
-    assert '1 pins' in module.split('id="module-articles-title"')[0]
+    assert '1 pin<' in module.split('id="module-articles-title"')[0]  # "1 pin", not "1 pins" (#482).
+    assert 'Reveal with the map' in page
     saved['nodes'] = []
     assert client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(saved)}).status_code == 200
     with app.app_context():

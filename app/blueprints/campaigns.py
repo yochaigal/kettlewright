@@ -22,7 +22,8 @@ from app.lib.modules import MODULES, add_module
 from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, check_version,
     entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
     party_access, publishable_party, render_content, save_geometry, text_value, content_value,
-    material_hierarchy, material_deletion_plan, delete_material_plan, save_article_children, set_article_parent, POINT_TYPES)
+    material_hierarchy, material_deletion_plan, delete_material_plan, save_article_children, set_article_parent, POINT_TYPES,
+    PIN_SIZES, campaign_maps, reveal_with_map, set_world_map, world_map)
 from app.lib.rich_content import content_excerpt
 from app.lib.article_references import (private_reference_urls, bind_references, reference_urls,
     headings, tokens)
@@ -221,6 +222,8 @@ def index():
         covers={campaign.id: cover_image(campaign, by_campaign[campaign.id]) is not None for campaign in campaigns_list},
         # Players reach the parties they play in (other Wardens' campaigns) from here.
         played=party_cards(played_parties(current_user.id)),
+        # Removed from their campaign (#483): a campaign's Add existing party brings one back.
+        unassigned=party_cards([party for party in my_parties() if party.campaign_id is None]),
         starred=starred_cards(current_user.id))
 
 
@@ -323,6 +326,51 @@ def new_party(campaign_id):
     return redirect(party_page(party))
 
 
+@campaigns.route('/campaigns/<int:campaign_id>/parties/add', methods=['POST'])
+def add_parties(campaign_id):
+    """Add existing parties (#483): ones without a campaign, or moved from another of the Warden's campaigns.
+    A party plays in one campaign at a time; it keeps its characters, storage and what it was shown."""
+    campaign = owned(Campaign, campaign_id)
+    ids = {integer(value) for value in request.form.getlist('party_id')}
+    parties = Party.query.filter(Party.id.in_(ids), Party.owner == current_user.id).all() if ids else []
+    if not parties or len(parties) != len(ids):
+        abort(400)
+    for party in parties:
+        party.campaign = campaign
+    db.session.commit()
+    flash(_('Added %(names)s to %(campaign)s.', names=', '.join(party.name for party in parties),
+            campaign=campaign.name), 'success')
+    return redirect(url_for('campaigns.lobby', campaign_id=campaign.id))
+
+
+@campaigns.route('/party/<int:party_id>/campaign', methods=['POST'])
+def assign_party(party_id):
+    """From the Campaigns page (#483): add a party without a campaign to one of the Warden's campaigns."""
+    party = db.get_or_404(Party, party_id)
+    if party.owner != current_user.id:
+        abort(404)
+    campaign = owned(Campaign, integer(request.form.get('campaign_id')))
+    party.campaign = campaign
+    db.session.commit()
+    flash(_('Added %(names)s to %(campaign)s.', names=party.name, campaign=campaign.name), 'success')
+    return redirect(url_for('campaigns.lobby', campaign_id=campaign.id))
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/parties/<int:party_id>/remove', methods=['POST'])
+def remove_party(campaign_id, party_id):
+    """Remove a party from the campaign (#483): it has no campaign until it is added to one again.
+    It keeps its characters, storage and what it was shown."""
+    campaign = owned(Campaign, campaign_id)
+    party = db.get_or_404(Party, party_id)
+    if party.owner != current_user.id or party.campaign_id != campaign.id:
+        abort(404)
+    party.campaign = None
+    db.session.commit()
+    flash(_('Removed %(party)s from %(campaign)s. It is listed under Parties without a campaign.',
+            party=party.name, campaign=campaign.name), 'success')
+    return redirect(url_for('campaigns.lobby', campaign_id=campaign.id))
+
+
 # ----- Modules: what a campaign is built from -----
 
 @campaigns.route('/campaigns/<int:campaign_id>/marketplace/<slug>', methods=['POST'])
@@ -358,8 +406,10 @@ def new_module(campaign_id):
     if request.form.get('draft'):
         # The browser generated the draft: save the module and its map together.
         db.session.flush()
-        create_map_entry(campaign, kind, request.form.get('title') or module.title,
-                         request.form.get('body', ''), request.form.get('draft'), module=module)
+        pointcrawl = create_map_entry(campaign, kind, request.form.get('title') or module.title,
+                                      request.form.get('body', ''), request.form.get('draft'), module=module)
+        if world_map(campaign) is None:  # A generated setting is the World Map of a campaign without one (#488).
+            set_world_map(campaign, pointcrawl)
         db.session.commit()
         return redirect(module_page(module))
     db.session.commit()
@@ -367,7 +417,7 @@ def new_module(campaign_id):
     def percent(name, default):
         value = request.form.get(name, '')
         return int(value) if value.isdigit() and int(value) <= 100 else default
-    options = {'random': 1, 'children': '1' if request.form.get('generate_children') else '0',
+    options = {'random': 1, 'world': 1, 'children': '1' if request.form.get('generate_children') else '0',
                'forest': percent('forest_chance', 50), 'forest_pois': percent('dungeon_chance', 25)}
     if request.form.get('poi_count', '') in ('3', '6', '8', '12', '20'):
         options['pois'] = request.form['poi_count']
@@ -674,8 +724,14 @@ def lobby(campaign_id):
             ContentEntry.campaign_id == campaign.id, PartyPresentation.published.is_(True)):
         counts[party_id] = counts.get(party_id, 0) + 1
     entries = campaign_entries(campaign)
+    # Add existing party (#483): the Warden's parties without a campaign first, then those of their other campaigns.
+    others = {}
+    for party in sorted((party for party in my_parties() if party.campaign_id != campaign.id),
+                        key=lambda party: (party.campaign is not None, party.campaign.name.casefold() if party.campaign else '',
+                                           party.campaign_id or 0, party.name.casefold())):
+        others.setdefault(party.campaign, []).append(party)
     return render_template('campaigns/lobby.html', campaign=campaign, article_count=len(entries),
-        parties=party_cards(campaign.parties),
+        parties=party_cards(campaign.parties), other_parties=others,
         # Parties of other campaigns that were shown something from this one (say, after they moved).
         audience=[(party, counts[party.id]) for party in my_parties()
                   if party.id in counts and party.campaign_id != campaign.id],
@@ -1250,6 +1306,8 @@ def after_reveal(entry, party_id):
     """Back where the action started: the article (default) or the party wiki ('party' is its old name)."""
     if request.values.get('return_to') in ('wiki', 'party'):
         return redirect(url_for('campaigns.party_wiki', party_id=party_id))
+    if request.values.get('return_to') == 'map':  # The party's World Map page (#482).
+        return redirect(url_for('campaigns.party_maps', party_id=party_id))
     if request.values.get('return_to') == 'campaign' and entry.campaign_id:
         return redirect(url_for('campaigns.lobby', campaign_id=entry.campaign_id))
     return redirect(read_url(entry))
@@ -1267,6 +1325,7 @@ def reveal(entry_id):
         row = PartyPresentation.query.filter_by(entry_id=entry.id, party_id=party.id).first()
         check_version(row, request.form.get(f'version_{party.id}'))
         reveal_entry(entry, party)
+        reveal_with_map(entry, party)  # Its pins marked Reveal with the map (#482).
         count = 0
         if entry.pointcrawl and request.form.get('with_contents') == '1':
             # The whole map at once: every pin on it (and any older path; the maps inside points stay hidden).
@@ -1452,6 +1511,9 @@ def new_map():
             abort(400, 'Choose a module.')
         pointcrawl = create_map_entry(module.campaign, kind, request.form.get('title'), '',
                                       request.form.get('draft'), module=module)
+        # A generated setting (#488), or Create World Map on a party's World Map page (#482).
+        if request.form.get('world') == '1' and world_map(module.campaign) is None:
+            set_world_map(module.campaign, pointcrawl)
         db.session.commit()
         return entry_redirect(pointcrawl.entry)
     if module is not None and module.id is None:
@@ -1463,8 +1525,10 @@ def new_map():
     kind = request.args.get('kind', 'freeform')
     if kind not in MAP_KINDS:
         abort(400)
+    # Becomes the campaign's World Map when it has none (#482, #488): a generated setting, or Create World Map.
+    becomes_world = request.args.get('world') == '1' and module is not None and world_map(module.campaign) is None
     return render_template('campaigns/new_map.html', module=module, module_groups=module_choices(), kind=kind,
-                           campaign=module.campaign if module else None)
+                           campaign=module.campaign if module else None, becomes_world=becomes_world)
 
 
 @campaigns.route('/maps/<int:map_id>/edit', methods=['GET', 'POST'])
@@ -1490,13 +1554,30 @@ def map_edit(map_id):
         if request.form.get('module_id'):
             target = chosen_module(request.form)
             if target is not None and target is not entry.module:
+                was = entry.campaign
                 move_to_module(entry, target)
+                if entry.campaign is not was:
+                    pointcrawl.world_map = False  # The World Map of the campaign it left.
+        if request.form.get('pin_size') in PIN_SIZES:
+            pointcrawl.pin_size = request.form['pin_size']
+        if 'world_map_field' in request.form and entry.campaign is not None:
+            if request.form.get('world_map') == '1':
+                set_world_map(entry.campaign, pointcrawl)
+            elif pointcrawl.world_map:
+                set_world_map(entry.campaign, None)
+        reveal_flagged_pins(entry)
         entry.version += 1
         audiences = entry_audiences(entry)
         db.session.commit()
         notify_parties(audiences)
         return redirect(url_for('campaigns.map_edit', map_id=pointcrawl.id))
+    # The players' pins of every party shown this map (#482), read only: the Warden sees them while editing.
+    player_pins = [{'id': f'p{pin.id}', 'x': pin.x, 'y': pin.y, 'title': f'{pin.party.name}: {pin.entry.title}',
+                    'party': pin.party.name, 'note': pin.entry.title, 'html': str(render_content(pin.entry.body)),
+                    'url': url_for('campaigns.party_map_view', party_id=pin.party_id, map_id=pointcrawl.id)}
+                   for pin in sorted(pointcrawl.pins, key=lambda pin: pin.id)]
     return render_template('campaigns/map.html', entry=entry, pointcrawl=pointcrawl, campaign=entry.campaign,
+        player_pins=player_pins, pin_sizes=PIN_SIZES,
         module=entry.module, party=None, graph=map_projection(pointcrawl), editing=True, embedded=True,
         module_groups=module_choices(), inside=maps_showing(entry), article_url=None if map_only(entry) else
         url_for('campaigns.edit_entry', entry_id=entry.id), reveal_parties=reveal_choices(entry),
@@ -1551,10 +1632,19 @@ def map_data(map_id):
         # Delay autoflush until every graph object has complete required fields.
         with db.session.no_autoflush:
             save_geometry(pointcrawl, data)
+        reveal_flagged_pins(pointcrawl.entry)
         audiences = entry_audiences(pointcrawl.entry)
         db.session.commit()
         notify_parties(audiences)
     return jsonify(map_projection(pointcrawl))
+
+
+def reveal_flagged_pins(entry):
+    """Pins marked Reveal with the map reach the parties already shown it (#482). The caller commits."""
+    db.session.flush()
+    for row in list(entry.presentations):
+        if row.published:
+            reveal_with_map(entry, row.party)
 
 
 @campaigns.route('/party/<int:party_id>/maps/<int:map_id>/')
@@ -1589,6 +1679,7 @@ def map_state(party, pointcrawl, row):
     pins = MapPin.query.filter_by(map_id=pointcrawl.id, party_id=party.id).order_by(MapPin.id).all()
     return {'fog': row.fog or empty_fog(), 'fog_version': row.fog_version,
             'pins': [{'id': pin.id, 'x': pin.x, 'y': pin.y, 'title': pin.entry.title, 'note_id': pin.entry_id,
+                      'movable': can_move_pin(party, pin),  # Its maker or the Warden drags it (#482).
                       'html': str(render_content(pin.entry.body)),
                       'edit_url': url_for('campaigns.edit_party_note', party_id=party.id, entry_id=pin.entry_id)}
                      for pin in pins]}
@@ -1596,15 +1687,51 @@ def map_state(party, pointcrawl, row):
 
 @campaigns.route('/party/<int:party_id>/map/')
 def party_maps(party_id):
-    """The party page's Map button: its map, or a choice when it was shown several."""
+    """The party page's World Map button (#482): its campaign's World Map once revealed to it.
+
+    Otherwise the maps it was shown; the Warden also gets to create, choose or reveal the World Map here."""
     party = party_access(party_id)
+    warden = party.owner == current_user.id
     maps = revealed_maps(party.id)
+    world = world_map(party.campaign)
+    if world is not None and any(pointcrawl.id == world.id for pointcrawl, _ in maps):
+        return redirect(url_for('campaigns.party_map_view', party_id=party.id, map_id=world.id))
     # Maps entered from a point of another revealed map open from that map: the button opens the region.
     shown = {pointcrawl.id for pointcrawl, _ in maps}
     top = [item for item in maps if not any(node.map_id in shown for node in item[0].entrances)] or maps
     if len(top) == 1:
         return redirect(url_for('campaigns.party_map_view', party_id=party.id, map_id=top[0][0].id))
-    return render_template('campaigns/party_maps.html', party=party, maps=maps)
+    hidden = PartyPresentation.query.filter_by(entry_id=world.entry_id, party_id=party.id).first() if world else None
+    return render_template('campaigns/party_maps.html', party=party, maps=maps, warden=warden, world=world,
+                           world_version=hidden.version if hidden else 0,
+                           choices=campaign_maps(party.campaign) if warden else [],
+                           modules=party.campaign.modules if warden and party.campaign else [])
+
+
+@campaigns.route('/party/<int:party_id>/world-map', methods=['POST'])
+def party_world_map(party_id):
+    """The Warden makes one of the campaign's maps its World Map (#482), or starts a new one (create=draw|realm)."""
+    party = party_access(party_id, editing=True)
+    campaign = party.campaign
+    if campaign is None:
+        abort(400, 'Add the party to a campaign first.')
+    create = request.form.get('create')
+    if create in ('draw', 'realm'):
+        # A new map in a module of the campaign (its first; a new one when it has none); saving it makes it the World Map.
+        from app.lib.modules import default_module
+        module = db.session.get(Module, integer(request.form.get('module_id'))) if request.form.get('module_id') else None
+        if module is None or module.campaign_id != campaign.id:
+            module = default_module(campaign)
+        db.session.commit()
+        args = {'kind': 'realm', 'random': 1} if create == 'realm' else {'kind': 'freeform'}
+        return redirect(url_for('campaigns.new_map', module_id=module.id, world=1, **args))
+    pointcrawl = db.get_or_404(PointcrawlMap, integer(request.form.get('map_id')))
+    if pointcrawl.entry.campaign_id != campaign.id:
+        abort(404)
+    set_world_map(campaign, pointcrawl)
+    db.session.commit()
+    flash(_('%(map)s is the World Map of %(campaign)s.', map=pointcrawl.entry.title, campaign=campaign.name), 'success')
+    return redirect(url_for('campaigns.party_maps', party_id=party.id))
 
 
 @campaigns.route('/party/<int:party_id>/map/<int:map_id>/')
@@ -1676,6 +1803,28 @@ def add_map_pin(party_id, map_id):
     db.session.commit()
     notify_parties([party.id])
     return jsonify(map_state(party, pointcrawl, map_presentation(party, pointcrawl)))
+
+
+def can_move_pin(party, pin):
+    return current_user.is_authenticated and current_user.id in (pin.created_by, party.owner)
+
+
+@campaigns.route('/party/<int:party_id>/map/<int:map_id>/pins/<int:pin_id>/move', methods=['POST'])
+def move_map_pin(party_id, map_id, pin_id):
+    """Move a pin (#482): the member who placed it, or the Warden."""
+    from app.lib.campaigns import coordinate
+    party = party_access(party_id)
+    pointcrawl = db.get_or_404(PointcrawlMap, map_id)
+    row = map_presentation(party, pointcrawl)
+    pin = db.get_or_404(MapPin, pin_id)
+    if pin.map_id != pointcrawl.id or pin.party_id != party.id:
+        abort(404)
+    if not can_move_pin(party, pin):
+        abort(403)
+    pin.x, pin.y = coordinate(request.form.get('x')), coordinate(request.form.get('y'))
+    db.session.commit()
+    notify_parties([party.id])
+    return jsonify(map_state(party, pointcrawl, row))
 
 
 @campaigns.route('/party/<int:party_id>/map/<int:map_id>/pins/<int:pin_id>/delete', methods=['POST'])

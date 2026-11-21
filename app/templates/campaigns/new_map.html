@@ -6,10 +6,11 @@
 <form class="campaign-page-form" method="post" x-data="pointcrawl" data-editing="true" data-creating="true" data-kind="{{ kind if generator else 'freeform' }}"
  data-labels="{{ {'loadError':_('Unable to load the drawing editor. Check your connection and retry.'),'location':_('Article'),'error':_('Unable to generate an article. Please try again.'),'duplicate':_('This path already exists.'),'pin':_('Pin'),'pick':_('Click the map where the pin goes.')}|tojson|forceescape }}"
  @submit="if (!canvasReady || generating) $event.preventDefault(); else dirty=false">
-{% call page_header(_('New map')) %}<button type="submit" class="primary" :disabled="!canvasReady || generating">{{ _('Save map') }}</button>{% endcall %}
+{% call page_header(_('New World Map') if becomes_world else _('New map')) %}<button type="submit" class="primary" :disabled="!canvasReady || generating">{{ _('Save map') }}</button>{% endcall %}
 <p class="import-hint">{{ _('A map is a drawing with pins, private until you reveal it to a party. Draw on it, add images, then add pins with notes.') }}</p>
 {{ token() }}
 <input type="hidden" name="kind" :value="kind" value="{{ kind if generator else 'freeform' }}">
+{% if becomes_world %}<input type="hidden" name="world" value="1">{# The campaign's World Map (#482, #488), when it has none. #}{% endif %}
 <div class="map-settings">
 <label class="map-title-field">{{ _('Title') }}<input type="text" name="title" required maxlength="200" x-ref="title"></label>
 {% if module %}<input type="hidden" name="module_id" value="{{ module.id }}">

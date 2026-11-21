@@ -135,6 +135,11 @@ class PointcrawlMap(Versioned, db.Model):
     entry_id = db.Column(db.Integer, db.ForeignKey('content_entries.id', ondelete='CASCADE'), nullable=False, unique=True)
     kind = db.Column(db.String(20), nullable=False, default='dungeon')
     drawing = db.Column(db.JSON, nullable=True)
+    # Its campaign's World Map (#482, #488): the party's World Map button opens it. One per campaign
+    # (app/lib/campaigns.py set_world_map); on the map, so deleting the map clears it.
+    world_map = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
+    # How big pin labels are drawn (#482): 'small', 'medium' or 'large' (PIN_SIZES); the Warden sets it.
+    pin_size = db.Column(db.String(10), nullable=False, default='medium', server_default='medium')
     entry = db.relationship('ContentEntry', backref=db.backref('pointcrawl', uselist=False, cascade='all, delete-orphan'))
     nodes = db.relationship('MapNode', foreign_keys='MapNode.map_id', cascade='all, delete-orphan', backref='map')
     edges = db.relationship('MapEdge', cascade='all, delete-orphan', backref='map')
@@ -152,6 +157,8 @@ class MapNode(db.Model):
     y = db.Column(db.Float, nullable=False)
     geometry = db.Column(db.JSON, nullable=True)
     nested_map_id = db.Column(db.Integer, db.ForeignKey('pointcrawl_maps.id', ondelete='SET NULL'))
+    # A pin revealed with its map (#482): parties shown the map are shown this point too. New pins start with it on.
+    reveal = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     entry = db.relationship('ContentEntry', backref=db.backref('map_nodes', cascade='all, delete-orphan'))
     outgoing = db.relationship('MapEdge', foreign_keys='MapEdge.source_id', cascade='all, delete-orphan')
     incoming = db.relationship('MapEdge', foreign_keys='MapEdge.target_id', cascade='all, delete-orphan')

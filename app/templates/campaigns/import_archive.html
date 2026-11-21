@@ -65,7 +65,7 @@ Mara knows the river paths.</code></pre>
 {% set maps_preview = [] %}{% for i in preview.display %}{% set row = preview.rows[i] %}{% if row.map or row.category == 'map' %}{% if maps_preview.append(row) %}{% endif %}{% endif %}{% endfor %}
 {% if maps_preview %}<details class="import-maps" open><summary>{{ _('Maps') }} ({{ maps_preview|length }})</summary>
 <ul>{% for row in maps_preview %}<li><strong>{{ row.title }}</strong>{% if row.category != 'map' %} · {{ _('the map of this article') }}{% endif %}
-{% if row.map %} · {{ _('%(count)s pins', count=row.map.nodes|length) }} · {{ _('%(count)s drawing elements', count=row.map.drawing.elements|length) }}{% else %} · {{ _('empty') }}{% endif %}
+{% if row.map %} · {{ ngettext('%(num)s pin', '%(num)s pins', row.map.nodes|length) }} · {{ _('%(count)s drawing elements', count=row.map.drawing.elements|length) }}{% else %} · {{ _('empty') }}{% endif %}
 <small>{{ (row.map.file if row.map else row.file)|replace('#map', '') }}</small></li>{% endfor %}</ul></details>{% endif %}
 {% for row in campaign_rows %}<p class="import-front"><strong>{{ _('Front page') }}</strong> · {{ row.file }}{% if row.body %} · {% if module and module.description %}{{ _('becomes an Overview article') }}{% else %}{{ _('becomes the module’s description') }}{% endif %}{% endif %}</p>{% endfor %}
 {% if preview.rows|rejectattr('category', 'in', ['map', 'campaign'])|list %}<h3 class="import-articles-title">{{ _('Articles') }}</h3>{% endif %}

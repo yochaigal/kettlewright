@@ -56,6 +56,9 @@ export function nodeAppearance(node, kind) {
   return style;
 }
 
+// Pin label size (#482): the Warden's choice for this map, in pixels (PIN_SIZES on the server).
+export function pinFontSize(graph) {return [16,24,34].includes(graph?.pin_size) ? graph.pin_size : 24;}
+
 export function graphShapes(graph, selected='', selectedEdge='') {
   const nodes = new Map(graph.nodes.map(node => [String(node.id), node]));
   const regions=terrainRegions(graph);
@@ -92,7 +95,7 @@ export function graphShapes(graph, selected='', selectedEdge='') {
     shapes.push({id:`kw-label-${node.id}`,type:'text',
       x:node.geometry?shape.x:region?region.x-85:node.x-(style.background?style.width/2-16:85),
       y:node.geometry?shape.y-45:region?region.y-100:style.background?node.y-style.height/2+12:node.y+style.height/2+10,
-      text:label.replace(/(.{1,20})(?:\s+|$)/g,'$1\n').trim(),fontSize:16,fontFamily:2,locked:true,
+      text:label.replace(/(.{1,20})(?:\s+|$)/g,'$1\n').trim(),fontSize:node.category==='map_note'?pinFontSize(graph):16,fontFamily:2,locked:true,
       strokeColor:style.stroke,customData:{kwType:'label'}});
   }
   for (const edge of graph.edges) {
@@ -167,14 +170,15 @@ export function graphHit(graph, x, y, tolerance=10) {
 }
 
 // Party map pins: a red marker and its title. Pins belong to the party map view, not the drawing.
-export function pinShapes(pins=[], selectedPin='') {
+// In the map editor they are the players' pins, read only, titled with their party (#482).
+export function pinShapes(pins=[], selectedPin='', fontSize=24) {
   return pins.flatMap(pin => {
     const active=String(pin.id)===String(selectedPin);
     return [
       {id:`kw-pin-${pin.id}`,type:'ellipse',x:pin.x-11,y:pin.y-11,width:22,height:22,locked:true,
        strokeColor:active?'#e67700':'#7f1d1d',backgroundColor:'#e03131',fillStyle:'solid',strokeWidth:active?4:2,roughness:0,
        customData:{kwType:'pin',pinId:String(pin.id)}},
-      {id:`kw-pinlabel-${pin.id}`,type:'text',x:pin.x+16,y:pin.y-10,text:String(pin.title).slice(0,40),fontSize:16,fontFamily:2,
+      {id:`kw-pinlabel-${pin.id}`,type:'text',x:pin.x+16,y:pin.y-fontSize*.6,text:String(pin.title).slice(0,40),fontSize,fontFamily:2,
        locked:true,strokeColor:'#7f1d1d',customData:{kwType:'label'}},
     ];
   });

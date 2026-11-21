@@ -60,9 +60,9 @@
         <a class="button no-margin-top" id="party-wiki-link" href="{{ url_for('campaigns.party_wiki', party_id=party.id) }}"
           title="{{ _('Party wiki') }}"><span class="mobile-hidden">{{ _('Wiki') }}</span>
           <i class="fa-solid fa-book-open icon-in-button" aria-hidden="true"></i></a>
-        {# The party's map (#467): what it was shown, under its fog, with its pins. #}
+        {# The party's World Map (#467, #482): its campaign's World Map, under its fog, with its pins. #}
         <a class="button no-margin-top" id="party-map-link" href="{{ url_for('campaigns.party_maps', party_id=party.id) }}"
-          title="{{ _('Map') }}"><span class="mobile-hidden">{{ _('Map') }}</span>
+          title="{{ _('World Map') }}"><span class="mobile-hidden">{{ _('World Map') }}</span>
           <i class="fa-solid fa-map icon-in-button" aria-hidden="true"></i></a>
         {% endif %}
         {% if can_view_rolls %}

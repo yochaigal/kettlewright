@@ -33,9 +33,10 @@
       {% if is_owner %}{{ image_field(party.image, url_for('campaigns.party_image', party_id=party.id) if party.image else '',
          _('Shown on the party page and as the cover of its wiki.')) }}{% endif %}
       {% if is_owner and campaigns %}
-      {# The party plays in one of the Warden's campaigns; it can move to another and keeps what it was shown. #}
+      {# The party plays in one of the Warden's campaigns, or none (#483); it can move and keeps what it was shown. #}
       <label class="label party-campaign-field" for="party-campaign">{{ _('Campaign') }}</label>
       <div class="select"><select id="party-campaign" name="campaign_id">
+        <option value="" {% if party.campaign_id is none %}selected{% endif %}>{{ _('No campaign') }}</option>
         {% for option in campaigns %}<option value="{{ option.id }}" {% if option.id == party.campaign_id %}selected{% endif %}>{{ option.name }}</option>{% endfor %}
       </select></div>
       {% endif %}

@@ -47,7 +47,7 @@
 {% for entry, inside in maps %}
 <li>
   <a class="module-map-title" href="{{ url_for('campaigns.map_edit', map_id=entry.pointcrawl.id) }}"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ entry.title or _('Untitled private original') }}</a>
-  <span class="module-map-meta">{{ _('%(count)s pins', count=entry.pointcrawl.nodes|length) }}</span>
+  <span class="module-map-meta">{% if entry.pointcrawl.world_map %}<span class="world-map-badge"><i class="fa-solid fa-earth-americas" aria-hidden="true"></i> {{ _('World Map') }}</span> · {% endif %}{{ ngettext('%(num)s pin', '%(num)s pins', entry.pointcrawl.nodes|length) }}</span>
   {% set shown = entry.presentations|selectattr('published')|list %}
   <span class="kw-actions">
     <a class="kw-action" href="{{ url_for('campaigns.map_edit', map_id=entry.pointcrawl.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
