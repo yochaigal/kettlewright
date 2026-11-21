@@ -1134,8 +1134,9 @@ button.is-new {
     border-radius: 6px; border: 1px solid color-mix(in srgb, var(--fg) 15%, var(--bg));
   }
   .image-field-actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
-  .image-field-actions .button { margin: 0; cursor: pointer; }
-  .image-field-file { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .image-field-actions .button { position: relative; margin: 0; cursor: pointer; }
+  /* Visually hidden; no padding or border, or the global input styles widen it past a phone's screen. */
+  .image-field-file { position: absolute; top: 0; left: 0; width: 1px; min-width: 0; height: 1px; padding: 0; border: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .image-field-hint { margin: .4rem 0 0; font-size: .85em; opacity: .75; }
 }
 
