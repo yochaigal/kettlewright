@@ -66,6 +66,43 @@
 {% endif %}
 </div>
 
+{% if unassigned %}
+{# The Warden's parties without a campaign (#483), an island like Starred: each can be added to a campaign here,
+   or from a campaign's Parties (Add existing party). #}
+<section class="unassigned-island" aria-labelledby="unassigned-title">
+<header class="island-head">
+  <h2 id="unassigned-title"><i class="fa-solid fa-users-slash" aria-hidden="true"></i> {{ _('Parties without a campaign') }}</h2>
+</header>
+<ul class="starred-cards">
+{% for card in unassigned %}{% set item = card.party %}
+<li class="starred-card unassigned-card" data-tree-row data-search="{{ item.name|lower }}">
+  {% if item.image %}<img class="starred-card-picture" src="{{ url_for('campaigns.party_image', party_id=item.id) }}" alt="" loading="lazy">
+  {% else %}<span class="starred-card-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></span>{% endif %}
+  <span class="starred-card-body">
+    <span class="starred-card-kind">{{ _('Party') }}</span>
+    <a class="starred-card-title" href="{{ card.url }}">{{ item.name|markdown_inline }}</a>
+    <span class="starred-card-meta">{% if card.members %}{{ ngettext('%(num)s character', '%(num)s characters', card.members|length) }}{% else %}{{ _('No characters yet') }}{% endif %}</span>
+    {% if card.members %}<span class="campaign-party-members">{% for member in card.members[:6] %}<img src="{{ member.src }}" alt="" title="{{ member.name }}" loading="lazy">{% endfor %}</span>{% endif %}
+    {% if campaigns %}<button type="button" class="kw-action unassigned-add" aria-haspopup="dialog" onclick="document.getElementById('assign-party-{{ item.id }}').showModal()"><i class="fa-solid fa-link" aria-hidden="true"></i> {{ _('Add to campaign') }}</button>{% endif %}
+  </span>
+</li>
+{% endfor %}
+</ul>
+{% for card in unassigned if campaigns %}{% set item = card.party %}
+<dialog class="create-dialog" id="assign-party-{{ item.id }}" aria-labelledby="assign-party-title-{{ item.id }}">
+  <h2 id="assign-party-title-{{ item.id }}">{{ _('Add %(party)s to a campaign', party=item.name|markdown_inline|striptags) }}</h2>
+  <form method="post" action="{{ url_for('campaigns.assign_party', party_id=item.id) }}">{{ token() }}
+    <label>{{ _('Campaign') }}<select name="campaign_id" required>{% for campaign in campaigns %}<option value="{{ campaign.id }}">{{ campaign.name }}</option>{% endfor %}</select></label>
+    <div class="create-dialog-actions">
+      <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
+      <button type="submit" class="primary">{{ _('Add to campaign') }}</button>
+    </div>
+  </form>
+</dialog>
+{% endfor %}
+</section>
+{% endif %}
+
 {% if played %}
 {# Parties in other Wardens' campaigns that one of my characters is in. Their campaigns stay private. #}
 <div class="gallery-main">

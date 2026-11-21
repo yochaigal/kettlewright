@@ -717,7 +717,9 @@ def test_random_module_fallback_opens_distinct_realm_generator(setup):
     assert 'kind=realm' in response.location
     html = client.get(response.location).get_data(as_text=True)
     assert 'data-kind="realm"' in html
-    assert 'New map' in html and 'Save map' in html and 'Campaign' not in html.split('<main')[-1].split('Organize')[0]
+    # The campaign has no World Map: the generated setting becomes it (#488).
+    assert 'world=1' in response.location and 'name="world" value="1"' in html and 'New World Map' in html
+    assert 'Save map' in html and 'Campaign' not in html.split('<main')[-1].split('Organize')[0]
     assert 'Top Category' not in html
     assert 'Dungeon contents' not in html and 'Forest contents' not in html
     assert 'Generate all child articles' in html and 'Map type' not in html  # Its options come from the dialog.

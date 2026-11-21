@@ -1,7 +1,7 @@
 import {h, render} from 'preact';
 import {Excalidraw, convertToExcalidrawElements, restoreElements, CaptureUpdateAction, getCommonBounds} from 'excalidraw';
 import {drawingFromScene, emptyDrawing, graphShapes, movedLocations, isManaged, graphHit, editableGeography, shapeGeometry,
-  pinShapes, pinHit} from './scene.js';
+  pinShapes, pinHit, pinFontSize} from './scene.js';
 import {createFogLayer} from './whiteboard_fog.js';
 import {loadLibraries} from './libraries.js';
 import {fittedViewport} from './viewport.js';
@@ -13,8 +13,9 @@ let waterTarget=null, brushStartIds=null;
 let fogLayer=null, picking=false;
 const send = (type, detail = {}) => parent.postMessage({channel: 'kw-map', type, ...detail}, location.origin);
 const managedElements = graph => restoreElements(convertToExcalidrawElements(
-  [...graphShapes(graph, state.selected, state.selectedEdge), ...pinShapes(state.pins, state.selectedPin)], {regenerateIds:false}), null);
-const sceneKey = () => JSON.stringify([state.graph.nodes, state.graph.edges, state.selected, state.selectedEdge, state.pins || [], state.selectedPin || '']);
+  [...graphShapes(graph, state.selected, state.selectedEdge), ...pinShapes(state.pins, state.selectedPin, pinFontSize(graph))], {regenerateIds:false}), null);
+const sceneKey = () => JSON.stringify([state.graph.nodes, state.graph.edges, state.graph.pin_size, state.selected, state.selectedEdge,
+  state.pins || [], state.selectedPin || '']);
 
 function syncFog() {
   if (!state?.fog || !api) return;
@@ -90,7 +91,9 @@ function onChange(elements, appState, files) {
   // graph glyphs instead of silently diverging from the saved graph. Terrain
   // and water explicitly support resized and reshaped geometry.
   const managed = elements.filter(element => isManaged(element) && !element.isDeleted);
-  const expected = graphShapes(state.graph, state.selected, state.selectedEdge);
+  // The players' pins (#482) are drawn here too, read only: they are expected, not damage.
+  const expected = [...graphShapes(state.graph, state.selected, state.selectedEdge),
+    ...pinShapes(state.pins, state.selectedPin, pinFontSize(state.graph))];
   const damaged = managed.length !== expected.length || expected.some(shape => {
     const actual = managed.find(element => element.id === shape.id);
     const node=state.graph.nodes.find(node=>String(node.id)===shape.customData?.nodeId);
@@ -170,6 +173,35 @@ window.addEventListener('message', event => {
 send('ready');
 
 let pointerStart;
+// Moving a pin on the party map (#482): its maker or the Warden drags it (the canvas is read only there).
+let dragging=null;
+const scenePoint=(clientX,clientY)=>{
+  const view=api.getAppState(), zoom=view.zoom.value;
+  return {x:(clientX-view.offsetLeft)/zoom-view.scrollX, y:(clientY-view.offsetTop)/zoom-view.scrollY};
+};
+document.getElementById('editor').addEventListener('pointerdown',event=>{
+  if(event.target.tagName!=='CANVAS' || event.button!==0 || !api || !state || state.editing || picking)return;
+  const point=scenePoint(event.clientX,event.clientY);
+  const pin=pinHit(state.pins,point.x,point.y,16/api.getAppState().zoom.value);
+  if(!pin?.movable)return;
+  // Keep the canvas from panning while the pin moves.
+  event.stopPropagation();event.preventDefault();
+  dragging={pin,start:{x:event.clientX,y:event.clientY},origin:{x:pin.x,y:pin.y},offset:{x:pin.x-point.x,y:pin.y-point.y},moved:false};
+},true);
+window.addEventListener('pointermove',event=>{
+  if(!dragging || !api)return;
+  if(!dragging.moved && Math.hypot(event.clientX-dragging.start.x,event.clientY-dragging.start.y)<5)return;
+  dragging.moved=true;
+  const point=scenePoint(event.clientX,event.clientY);
+  dragging.pin.x=Math.round(point.x+dragging.offset.x);dragging.pin.y=Math.round(point.y+dragging.offset.y);
+  if(!dragging.frame)dragging.frame=requestAnimationFrame(()=>{if(dragging)dragging.frame=null;applyState(state);});
+});
+window.addEventListener('pointerup',()=>{
+  if(!dragging)return;
+  const {pin,moved,origin}=dragging;dragging=null;
+  // A click without a drag selects the pin (the pointerup handler below).
+  if(moved && (pin.x!==origin.x || pin.y!==origin.y))send('move-pin',{id:String(pin.id),x:pin.x,y:pin.y});
+});
 document.getElementById('editor').addEventListener('keyup',event=>{
   if(event.key.startsWith('Arrow') && state?.editing && state.graph.kind==='realm') {
     graphKey='';applyState(state);

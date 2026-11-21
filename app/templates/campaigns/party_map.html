@@ -21,6 +21,7 @@
      data-fog-url="{{ url_for('campaigns.party_map_fog', party_id=party.id, map_id=pointcrawl.id) }}"
      data-pins-url="{{ url_for('campaigns.add_map_pin', party_id=party.id, map_id=pointcrawl.id) }}"
      data-labels="{{ {'pick': _('Click the map where the pin goes.'), 'pinSaved': _('Pin added.'),
+                      'pinMoved': _('Pin moved.'), 'pinOne': _('pin'), 'pinMany': _('pins'),
                       'error': _('Could not save. Reload the page and try again.'),
                       'fogChanged': _('The fog changed in another tab; it is up to date now.'),
                       'deletePin': _('Delete this pin and its note? The party will no longer see it.')}|tojson|forceescape }}">
@@ -28,7 +29,8 @@
     <div>
       <h1>{{ row.title|markdown_inline }}</h1>
       <span class="wiki-badges"><span class="wiki-badge">{{ party.name|markdown_inline|striptags }}</span>
-        <span class="wiki-badge" x-text="pins.length + ' ' + {{ _('pins')|tojson|forceescape }}"></span></span>
+        {% if pointcrawl.world_map %}<span class="wiki-badge world-map-badge"><i class="fa-solid fa-earth-americas" aria-hidden="true"></i> {{ _('World Map') }}</span>{% endif %}
+        <span class="wiki-badge" x-text="pinCount"></span></span>
     </div>
     <div class="wiki-actions">
       {# A map has no text; a place with its own map (a dungeon point) does. #}
@@ -74,7 +76,7 @@
           {% if warden %}<button type="button" class="kw-action kw-action-danger" @click="deletePin(pin)"><i class="fa-solid fa-trash" aria-hidden="true"></i> {{ _('Delete') }}</button>{% endif %}
         </span>
       </section></template>
-      <template x-if="!selectedNode && !selectedPath && !pin"><p class="wiki-empty">{{ _('Click a pin to read it. Add pin marks a place with a note the whole party can read and edit.') }}</p></template>
+      <template x-if="!selectedNode && !selectedPath && !pin"><p class="wiki-empty">{{ _('Click a pin to read it. Add pin marks a place with a note the whole party can read and edit. Drag your own pins to move them.') }}</p></template>
     </section>
     <section class="party-map-side" aria-labelledby="party-map-pins-title">
       <h3 id="party-map-pins-title">{{ _('Pins') }}</h3>

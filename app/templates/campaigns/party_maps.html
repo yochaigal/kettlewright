@@ -1,17 +1,58 @@
 {% extends 'campaigns/layout.html' %}
-{# The party page's Map button, when the party was shown several maps (or none yet). #}
+{% from 'campaigns/forms.html' import token with context %}
+{# The party page's World Map button (#482) when it does not open the World Map straight away: the maps the party
+   was shown and, for the Warden, how to get the campaign a World Map (create, choose, or reveal it to this party). #}
 {% block workspace %}
-<div class="campaign-wiki party-map-page">
+<div class="campaign-wiki party-map-page party-world-map">
   <nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) }}">← {{ _('Back to party') }}</a></nav>
-  <header class="wiki-header"><div><h1>{{ _('Maps') }}</h1>
+  <header class="wiki-header"><div><h1>{{ _('World Map') }}</h1>
     <span class="wiki-badges"><span class="wiki-badge">{{ party.name|markdown_inline|striptags }}</span></span></div></header>
+
+  {% if warden %}
+  <section class="module-panel world-map-setup" aria-labelledby="world-map-setup-title">
+    <h2 id="world-map-setup-title"><i class="fa-solid fa-earth-americas" aria-hidden="true"></i> {{ _('World Map') }}</h2>
+    {% if not party.campaign %}
+    <p>{{ _('This party has no campaign. Add it to one (Add existing party, in the campaign’s Parties) to give it a World Map.') }}</p>
+    {% elif world %}
+    {# The campaign has one, but this party was not shown it yet. #}
+    <p>{{ _('The World Map of %(campaign)s is %(map)s. %(party)s has not been shown it yet.', campaign=party.campaign.name,
+           map=world.entry.title, party=party.name|markdown_inline|striptags) }}</p>
+    <div class="kw-actions">
+      <form method="post" action="{{ url_for('campaigns.reveal', entry_id=world.entry_id) }}">{{ token() }}
+        <input type="hidden" name="party_ids" value="{{ party.id }}"><input type="hidden" name="version_{{ party.id }}" value="{{ world_version }}">
+        <input type="hidden" name="return_to" value="map">
+        <button type="submit" class="kw-action kw-add"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{ _('Reveal the World Map to %(party)s', party=party.name|markdown_inline|striptags) }}</button>
+      </form>
+      <a class="kw-action" href="{{ url_for('campaigns.map_edit', map_id=world.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit the World Map') }}</a>
+    </div>
+    {% else %}
+    <p>{{ _('%(campaign)s has no World Map yet: the map its parties open from their World Map button. Create one, or choose one of its maps.', campaign=party.campaign.name) }}</p>
+    <form class="world-map-create" method="post" action="{{ url_for('campaigns.party_world_map', party_id=party.id) }}">{{ token() }}
+      {% if modules|length > 1 %}<label>{{ _('In the adventure') }}<select name="module_id">{% for module in modules %}<option value="{{ module.id }}">{{ module.title }}</option>{% endfor %}</select></label>{% endif %}
+      <div class="kw-actions">
+        <button type="submit" name="create" value="draw" class="kw-action kw-add"><i class="fa-solid fa-pencil" aria-hidden="true"></i> {{ _('Draw a new World Map') }}</button>
+        <button type="submit" name="create" value="realm" class="kw-action"><i class="fa-solid fa-dice" aria-hidden="true"></i> {{ _('Randomly generate a realm') }}</button>
+      </div>
+    </form>
+    {% if choices %}
+    <form class="world-map-choose" method="post" action="{{ url_for('campaigns.party_world_map', party_id=party.id) }}">{{ token() }}
+      <label>{{ _('Or use one of its maps') }}<select name="map_id" required>{% for item in choices %}<option value="{{ item.id }}">{{ item.entry.title }}</option>{% endfor %}</select></label>
+      <button type="submit" class="kw-action">{{ _('Make it the World Map') }}</button>
+    </form>
+    {% endif %}
+    <p class="import-hint">{{ _('Maps are private until you reveal them; the World Map opens for this party once it is revealed to it.') }}</p>
+    {% endif %}
+  </section>
+  {% endif %}
+
   {% if maps %}
+  <h2 class="wiki-articles-title">{{ _('Revealed to %(party)s', party=party.name|markdown_inline|striptags) }}</h2>
   <ul class="revealed-list">
   {% for pointcrawl, row in maps %}
     <li><a href="{{ url_for('campaigns.party_map_view', party_id=party.id, map_id=pointcrawl.id) }}"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ row.title|markdown_inline }}</a>
       <span class="wiki-badge">{{ _(pointcrawl.kind|capitalize) }}</span></li>
   {% endfor %}
   </ul>
-  {% else %}<p class="wiki-empty">{{ _('No map has been revealed to this party yet.') }}</p>{% endif %}
+  {% elif not warden %}<p class="wiki-empty">{{ _('No map has been revealed to this party yet.') }}</p>{% endif %}
 </div>
 {% endblock %}

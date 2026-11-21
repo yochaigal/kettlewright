@@ -126,6 +126,41 @@ def reveal_entry(entry, party):
     return row
 
 
+def reveal_with_map(entry, party):
+    """A map was shown to a party: show it the pins marked Reveal with the map too (#482). The caller commits."""
+    if entry.pointcrawl is not None:
+        for node in entry.pointcrawl.nodes:
+            if node.reveal:
+                reveal_entry(node.entry, party)
+
+
+# ----- World Map (#482, #488): the campaign's main map, opened by a party's World Map button -----
+
+PIN_SIZES = {'small': 16, 'medium': 24, 'large': 34}  # Pin label size (#482): font size on the map.
+
+
+def campaign_maps(campaign):
+    """The campaign's maps (map articles and articles with a map), by title."""
+    if campaign is None:
+        return []
+    return (PointcrawlMap.query.join(ContentEntry, PointcrawlMap.entry_id == ContentEntry.id)
+            .filter(ContentEntry.campaign_id == campaign.id).order_by(ContentEntry.title, PointcrawlMap.id).all())
+
+
+def world_map(campaign):
+    """The campaign's World Map, or None (no campaign, or none chosen yet)."""
+    return next((item for item in campaign_maps(campaign) if item.world_map), None)
+
+
+def set_world_map(campaign, pointcrawl):
+    """Make pointcrawl (one of the campaign's maps) its World Map; None: it has none. The caller commits."""
+    for item in campaign_maps(campaign):
+        if item.world_map and item is not pointcrawl:
+            item.world_map = False
+    if pointcrawl is not None:
+        pointcrawl.world_map = True
+
+
 def material_hierarchy(entries):
     """Project existing map containment, without turning POIs into root cards.
 
@@ -290,6 +325,7 @@ def map_projection(pointcrawl, party_id=None):
     result = {'id': pointcrawl.id, 'kind': pointcrawl.kind, 'title': root['title'], 'body': root['body'], 'nodes': [], 'edges': []}
     # A party that was shown the map sees its current drawing (there are no drawing snapshots).
     result['drawing'] = pointcrawl.drawing or EMPTY_DRAWING
+    result['pin_size'] = PIN_SIZES.get(pointcrawl.pin_size, PIN_SIZES['medium'])  # Everyone sees the Warden's choice.
     if known is None:
         result.update(version=pointcrawl.version, kind=pointcrawl.kind)
         result['has_contents'] = bool(pointcrawl.entry.children or pointcrawl.nodes or pointcrawl.edges
@@ -310,7 +346,7 @@ def map_projection(pointcrawl, party_id=None):
             'number': node.number, 'x': node.x, 'y': node.y,
             'geometry': node.geometry,
             'category': node.entry.category if known is None else item['category'],
-            **({'is_heart': node.entry.is_heart} if known is None else {}),
+            **({'is_heart': node.entry.is_heart, 'reveal': node.reveal} if known is None else {}),
             'title': item['title'], 'body': item['body'],
             'references': item.get('references', {}),
             'nested_map_id': nested.id if nested and (known is None or nested.entry_id in known) else None,
@@ -418,6 +454,8 @@ def save_geometry(pointcrawl, data, *, nested_draft=False):
             abort(400, 'Location numbers must be positive and unique.')
         numbers.add(node.number)
         node.x, node.y = coordinate(item.get('x')), coordinate(item.get('y'))
+        if 'reveal' in item:  # Reveal with the map (#482).
+            node.reveal = item['reveal'] is True
         if 'geometry' in item:
             node.geometry = validate_node_geometry(item['geometry'], node.entry.category)
         nested_id = item.get('nested_map_id')

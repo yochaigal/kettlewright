@@ -11,6 +11,8 @@ export default function pointcrawl() {
     waterBrushWidth:4, picking:false,
     status:'', selectedEdge:'', selected:'', saveUrl:'', serial:0, canvasReady:false, generating:false, nestedKind:'dungeon',
     mapResult:null, mapTitle:'', missing:false,
+    // The players' pins (#482): read only in the map editor, with a show/hide toggle.
+    playerPins:[], showPlayerPins:true, selectedPlayerPin:'',
     edgeSource:'', edgeTarget:'', kind:'dungeon', tables:null, labels:{}, locationId:'', draftBody:'', poiCount:'', generateChildren:true, forestChance:50, dungeonChance:25,
     init() {
       this.componentElement=this.$el;
@@ -21,6 +23,10 @@ export default function pointcrawl() {
       this.geographyUrl=this.$el.dataset.geographyUrl;
       this.creating=this.$el.dataset.creating === 'true';
       this.labels=JSON.parse(this.$el.dataset.labels || '{}');
+      this.playerPins=JSON.parse(this.$el.dataset.playerPins || '[]');
+      // Pin labels size (#482): the map form's choice, previewed before Save map.
+      this.onPinSize=event=>{if(this.editing){this.graph.pin_size=event.detail;}};
+      window.addEventListener('kw-pin-size',this.onPinSize);
       this.$watch('graph', () => {this.dirty=true;if(!this.receivingCanvas)this.syncCanvas();});
       this.$watch('selected', () => {
         this.nestedKind=suggestedMapKind(this.selectedNode || {}) || 'dungeon';
@@ -87,6 +93,7 @@ export default function pointcrawl() {
       clearTimeout(this.canvasTimer);
       this.themeObserver?.disconnect();
       window.removeEventListener('message',this.onCanvasMessage);
+      window.removeEventListener('kw-pin-size',this.onPinSize);
       window.removeEventListener('campaign-refresh',this.onRefresh);
       window.removeEventListener('campaign-access-lost',this.onAccessLost);
       window.removeEventListener('beforeunload',this.onLeave);
@@ -99,6 +106,7 @@ export default function pointcrawl() {
         if (data.type === 'ready') this.syncCanvas();
         if (data.type === 'mounted') {this.canvasReady=true;clearTimeout(this.canvasTimer);this.status='';}
         if (data.type === 'picked' && this.picking) {this.picking=false;this.status='';this.placePin(data.x,data.y);}
+        if (data.type === 'select-pin') {this.selectedPlayerPin=String(data.id);this.syncCanvas();}
         if (data.type === 'select') {
           if(data.kind==='path' && this.graph.edges.some(edge=>String(edge.id)===String(data.id))) {
             this.selected='';this.selectedEdge=String(data.id);this.syncCanvas();
@@ -140,12 +148,15 @@ export default function pointcrawl() {
     syncCanvas() {
       this.sendCanvas('state',{graph:JSON.parse(JSON.stringify(this.graph)),editing:this.editing,
         selected:this.selected,selectedEdge:this.selectedEdge,dark:document.body.classList.contains('dark-mode'),
+        pins:this.editing && this.showPlayerPins ? this.playerPins.map(({id,x,y,title})=>({id,x,y,title})) : [],
+        selectedPin:this.selectedPlayerPin,
         lang:this.$el.dataset.lang || document.documentElement.lang || 'en',
         libraryError:this.$refs.canvas?.dataset.libraryError});
     },
     childrenPreview(){return draftPreview({body:'',children:this.graph.children || []});},
     node(id) {return this.graph.nodes.find(node => String(node.id)===String(id));},
     get selectedNode() {return this.node(this.selected);},
+    get playerPin() {return this.showPlayerPins ? this.playerPins.find(pin=>pin.id===this.selectedPlayerPin) : null;},
     get hasContents() {return Boolean(this.graph.has_contents || this.graph.nodes.length || this.graph.edges.length || this.graph.drawing?.elements?.length);},
     nodesForGroup(group) {
       const topography=['terrain','landmark','water','forest','weather','topography'];
@@ -189,7 +200,7 @@ export default function pointcrawl() {
     placePin(x,y) {
       const number=Math.max(0,...this.graph.nodes.map(n=>Number(n.number)))+1;
       const node={id:this.newId('pin'),number,title:`${this.labels.pin} ${number}`,body:'',category:'map_note',
-        is_heart:false,x:Math.round(x),y:Math.round(y),nested_map_id:null,content_changed:true};
+        is_heart:false,x:Math.round(x),y:Math.round(y),nested_map_id:null,content_changed:true,reveal:true};
       this.graph.nodes.push(node);this.selected=String(node.id);
       this.$nextTick(()=>{
         const row=[...this.$el.querySelectorAll('[data-map-node]')].find(row=>row.getAttribute('data-map-node')===String(node.id));

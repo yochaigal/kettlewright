@@ -50727,3 +50727,148 @@ msgstr "Se muestra primero al leer el módulo como wiki. Compatible con Markdown
 
 msgid "becomes the module’s description"
 msgstr "se convierte en la descripción del módulo"
+
+#. Campaign parties (#483); World Map and pins (#482, #488)
+#, python-format
+msgid "%(campaign)s has no World Map yet: the map its parties open from their World Map button. Create one, or choose one of its maps."
+msgstr "%(campaign)s aún no tiene Mapa del mundo: el mapa que sus grupos abren con su botón Mapa del mundo. Crea uno o elige uno de sus mapas."
+
+#, python-format
+msgid "%(map)s is the World Map of %(campaign)s."
+msgstr "%(map)s es el Mapa del mundo de %(campaign)s."
+
+msgid "A party plays in one campaign at a time: one from another campaign moves here. It keeps its characters, storage and what it was shown."
+msgstr "Un grupo juega en una campaña a la vez: uno de otra campaña se mueve aquí. Conserva sus personajes, su almacén y lo que se le reveló."
+
+msgid "Add existing party"
+msgstr "Añadir grupo existente"
+
+msgid "Add one to a campaign with Add existing party, in the campaign’s Parties."
+msgstr "Añade uno a una campaña con Añadir grupo existente, en los Grupos de la campaña."
+
+msgid "Add to campaign"
+msgstr "Añadir a la campaña"
+
+#, python-format
+msgid "Added %(names)s to %(campaign)s."
+msgstr "Se añadió %(names)s a %(campaign)s."
+
+msgid "Click a pin to read it. Add pin marks a place with a note the whole party can read and edit. Drag your own pins to move them."
+msgstr "Haz clic en un marcador para leerlo. Añadir marcador señala un lugar con una nota que todo el grupo puede leer y editar. Arrastra tus propios marcadores para moverlos."
+
+msgid "Draw a new World Map"
+msgstr "Dibujar un Mapa del mundo nuevo"
+
+msgid "Edit the World Map"
+msgstr "Editar el Mapa del mundo"
+
+#, python-format
+msgid "In %(campaign)s"
+msgstr "En %(campaign)s"
+
+msgid "In the adventure"
+msgstr "En la aventura"
+
+msgid "Large"
+msgstr "Grande"
+
+msgid "Make it the World Map"
+msgstr "Convertirlo en el Mapa del mundo"
+
+msgid "Maps are private until you reveal them; the World Map opens for this party once it is revealed to it."
+msgstr "Los mapas son privados hasta que los reveles; el Mapa del mundo se abre para este grupo cuando se le revela."
+
+msgid "New World Map"
+msgstr "Mapa del mundo nuevo"
+
+msgid "No campaign"
+msgstr "Sin campaña"
+
+msgid "Open on the party’s map"
+msgstr "Abrir en el mapa del grupo"
+
+msgid "Or use one of its maps"
+msgstr "O usa uno de sus mapas"
+
+msgid "Parties without a campaign"
+msgstr "Grupos sin campaña"
+
+msgid "pin"
+msgstr "marcador"
+
+msgid "Pin labels"
+msgstr "Etiquetas de marcadores"
+
+msgid "Pin moved."
+msgstr "Marcador movido."
+
+msgid "Randomly generate a realm"
+msgstr "Generar una región al azar"
+
+#, python-format
+msgid "Remove %(party)s from %(campaign)s? The party keeps its characters, storage and what it was shown, and is listed under Parties without a campaign until you add it to one."
+msgstr "¿Quitar %(party)s de %(campaign)s? El grupo conserva sus personajes, su almacén y lo que se le reveló, y aparece en Grupos sin campaña hasta que lo añadas a una."
+
+#, python-format
+msgid "Remove %(party)s from campaign"
+msgstr "Quitar %(party)s de la campaña"
+
+msgid "Remove from campaign"
+msgstr "Quitar de la campaña"
+
+#, python-format
+msgid "Removed %(party)s from %(campaign)s. It is listed under Parties without a campaign."
+msgstr "Se quitó %(party)s de %(campaign)s. Aparece en Grupos sin campaña."
+
+#, python-format
+msgid "Reveal the World Map to %(party)s"
+msgstr "Revelar el Mapa del mundo a %(party)s"
+
+msgid "Reveal with the map"
+msgstr "Revelar con el mapa"
+
+#, python-format
+msgid "Revealed to %(party)s"
+msgstr "Revelado a %(party)s"
+
+msgid "Show players’ pins"
+msgstr "Mostrar los marcadores de los jugadores"
+
+msgid "Small"
+msgstr "Pequeño"
+
+#, python-format
+msgid "The World Map of %(campaign)s is %(map)s. %(party)s has not been shown it yet."
+msgstr "El Mapa del mundo de %(campaign)s es %(map)s. Aún no se le ha revelado a %(party)s."
+
+msgid "This party has no campaign. Add it to one (Add existing party, in the campaign’s Parties) to give it a World Map."
+msgstr "Este grupo no tiene campaña. Añádelo a una (Añadir grupo existente, en los Grupos de la campaña) para darle un Mapa del mundo."
+
+msgid "Without a campaign"
+msgstr "Sin campaña"
+
+msgid "World Map"
+msgstr "Mapa del mundo"
+
+#, python-format
+msgid "World Map of %(campaign)s"
+msgstr "Mapa del mundo de %(campaign)s"
+
+#, python-format
+msgid "%(num)s pin"
+msgid_plural "%(num)s pins"
+msgstr[0] "%(num)s marcador"
+msgstr[1] "%(num)s marcadores"
+
+#, python-format
+msgid "Add %(party)s to a campaign"
+msgstr "Añadir %(party)s a una campaña"
+
+msgid "No characters yet"
+msgstr "Aún no hay personajes"
+
+#, python-format
+msgid "%(num)s character"
+msgid_plural "%(num)s characters"
+msgstr[0] "%(num)s personaje"
+msgstr[1] "%(num)s personajes"

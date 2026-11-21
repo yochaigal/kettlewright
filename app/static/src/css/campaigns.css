@@ -972,3 +972,59 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
 #module-settings-dialog textarea {display:block;width:100%;box-sizing:border-box;margin:.4em 0 0;padding:.5em .6em;border:1px solid var(--fg);border-radius:2px;
   background:var(--bg);color:var(--fg);font:inherit;font-size:.95em;line-height:1.45;resize:vertical;max-height:50vh;}
 #module-settings-dialog .import-hint {margin:-.25em 0 0;font-size:.85em;}
+
+/* Campaign parties (#483): the whole row opens the party; Remove (unlink) sits above that link. */
+.campaign-lobby .campaign-party-row {position:relative;grid-template-columns:minmax(10em,auto) minmax(0,1fr) auto;margin:0 -.6em;padding:.75em .6em;border-radius:6px;}
+.campaign-lobby .campaign-party-row:hover {background:color-mix(in srgb,var(--fg) 5%,var(--bg));}
+.campaign-lobby .campaign-party-row .campaign-party-name::after {content:'';position:absolute;inset:0;border-radius:inherit;}
+.campaign-lobby .campaign-party-row .campaign-party-name:focus-visible {outline:none;}
+.campaign-lobby .campaign-party-row:has(.campaign-party-name:focus-visible) {outline:2px solid var(--fg);outline-offset:2px;}
+.campaign-lobby .campaign-party-remove {position:relative;z-index:1;margin:0;}
+.campaign-lobby .campaign-party-remove button {display:inline-flex;align-items:center;justify-content:center;min-width:36px;min-height:36px;margin:0;padding:0;
+  border:0;border-radius:4px;background:none;color:color-mix(in srgb,var(--fg) 55%,var(--bg));cursor:pointer;}
+.campaign-lobby .campaign-party-remove button:hover, .campaign-lobby .campaign-party-remove button:focus-visible {color:#a33b3b;background:color-mix(in srgb,#a33b3b 10%,var(--bg));}
+@media (max-width:640px) {
+  .campaign-lobby .campaign-party-row {grid-template-columns:minmax(0,1fr) auto;}
+  .campaign-lobby .campaign-party-remove {grid-column:2;grid-row:1;}
+}
+.add-party-dialog .add-party-group {margin:0 0 1em;padding:0;border:0;}
+.add-party-dialog .add-party-group legend {margin-bottom:.35em;font-size:.8em;letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
+.add-party-dialog .campaign-check {display:flex;align-items:center;gap:.5em;margin:.2em 0;}
+
+/* A party's World Map page (#482): how the Warden gets the campaign a World Map. */
+.party-world-map .world-map-setup {margin:1em 0 1.5em;padding:1em 1.25em;}
+.party-world-map .world-map-setup h2 {display:flex;align-items:center;gap:.45em;margin:0 0 .6em;font-size:.82em;letter-spacing:.07em;text-transform:uppercase;}
+.party-world-map .world-map-setup form {margin:.75em 0;padding:0;background:none;border:0;}
+.party-world-map .world-map-setup .kw-actions {display:flex;flex-wrap:wrap;gap:.5em;}
+.party-world-map .world-map-setup label {display:block;margin:0 0 .5em;}
+.party-world-map .world-map-setup select {display:block;max-width:100%;margin-top:.25em;}
+.party-world-map .world-map-choose {display:flex;flex-wrap:wrap;align-items:flex-end;gap:.5em;}
+.party-world-map .world-map-choose label {margin:0;}
+/* Map editor: pin label size and the World Map checkbox, beside the title (#482). */
+.map-settings > label.map-pin-size {flex:0 1 10em;margin:0;}
+.map-settings .map-pin-size select {display:block;width:100%;margin-top:.25em;}
+.map-settings > label.map-world-field {flex:1 1 100%;display:flex;align-items:center;gap:.5em;margin:0;font-weight:600;}
+.world-map-badge {display:inline-flex;align-items:center;gap:.3em;}
+/* Map editor: the players' pins toggle and the one selected (#482). */
+.map-pin-actions .map-player-pins-toggle {display:inline-flex;align-items:center;gap:.4em;margin:0 0 0 auto;font-size:.9em;}
+.map-player-pin {margin:.5em 0;padding:.75em 1em;border:1px solid #e03131;border-radius:8px;}
+.map-player-pin h3 {display:flex;flex-wrap:wrap;align-items:baseline;gap:.4em;margin:0 0 .4em;font-size:1em;}
+.map-player-pin h3 i {color:#e03131;}
+.map-player-pin h3 small {font-weight:400;color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
+.map-player-pin p {margin:.4em 0 0;}
+.map-pin-detail .map-pin-reveal {display:flex;align-items:center;gap:.5em;margin:.5em 0;}
+
+/* Campaigns page: parties without a campaign (#483), an island like Starred. */
+.campaign-workspace .unassigned-island {margin:1.75em 0;padding:1em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:14px;
+  background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.06);}  /* Like the Starred island. */
+.unassigned-island .island-head {display:flex;flex-wrap:wrap;align-items:baseline;gap:.25em 1em;margin:0 0 .85em;padding:0 .25em;}
+.unassigned-island .island-head h2 {display:flex;align-items:center;gap:.45em;margin:0;font-family:inherit;font-size:.82em;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--fg) 75%,var(--bg));}
+.unassigned-island .island-head h2::before {content:none;}
+.unassigned-island .unassigned-card {padding-right:.75em;}
+.unassigned-island .unassigned-card .starred-card-body {flex:1;}
+.unassigned-island .unassigned-card .campaign-party-members {min-height:0;margin-top:.15em;}
+.unassigned-island .unassigned-card .campaign-party-members img {width:1.9em;height:1.9em;}
+.campaign-workspace .unassigned-island .unassigned-add {align-self:flex-start;margin-top:.45em;min-height:32px;padding:.25em .75em;font-size:.85em;}
+.create-dialog label select {display:block;width:100%;box-sizing:border-box;margin:.4em 0 0;padding:.5em .6em;border:1px solid var(--fg);
+  border-radius:2px;background:var(--bg);color:var(--fg);font:inherit;}

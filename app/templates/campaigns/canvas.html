@@ -8,7 +8,15 @@
   <span x-text="picking ? {{ _('Cancel pin')|tojson|forceescape }} : {{ _('Add pin')|tojson|forceescape }}">{{ _('Add pin') }}</span></button>
 <button type="button" @click="loadCanvas()" x-show="!canvasReady" x-cloak>{{ _('Reload drawing editor') }}</button>
 {{ fullscreen_button }}
+{# The players' pins (#482), read only: shown here so the Warden sees them while editing. #}
+<template x-if="playerPins.length"><label class="campaign-check map-player-pins-toggle"><input type="checkbox" x-model="showPlayerPins" @change="syncCanvas()">
+  <span x-text="{{ _('Show players’ pins')|tojson|forceescape }} + ' (' + playerPins.length + ')'"></span></label></template>
 </div>
+<template x-if="playerPin"><section class="map-player-pin" aria-live="polite">
+  <h3><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span x-text="playerPin.note"></span> <small x-text="playerPin.party"></small></h3>
+  <div class="rich-content" x-html="playerPin.html"></div>
+  <p><a :href="playerPin.url">{{ _('Open on the party’s map') }} →</a> <button type="button" class="link-button" @click="selectedPlayerPin=''">{{ _('Close') }}</button></p>
+</section></template>
 {% else %}
 <div class="campaign-actions">
 <button type="button" @click="loadCanvas()" x-show="!canvasReady" x-cloak>{{ _('Reload drawing editor') }}</button>
