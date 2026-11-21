@@ -4,8 +4,7 @@
   background-color: $red !important;
 }
 
-.is-success,
-.is-new {
+.is-success {
   background-color: $green !important;
 }
 
@@ -60,7 +59,6 @@ body.dark-mode {
     background-color: $dark-green !important;
   }
 
-  .is-new,
   #add-edit-item-modal-transfer {
     background-color: transparent !important;
   }
@@ -272,6 +270,13 @@ button,
   background-color: var(--form-bg);
 }
 
+// A page's sheet (the party page, a character sheet) is framed like the cards: rounded, a soft border.
+.sheet {
+  border: 1px solid var(--card-border, color-mix(in srgb, var(--fg) 14%, var(--bg)));
+  border-radius: var(--card-radius, 12px);
+  box-shadow: var(--card-shadow, 0 1px 3px rgba(0, 0, 0, .08));
+}
+
 // @media (prefers-color-scheme: dark) {
 //   .sheet, .card {
 //     box-shadow: 0 0 8px 0 var(--form-bg);
@@ -368,12 +373,17 @@ button,
     box-shadow: none;
   }
 }
+@media (max-width: 600px) {
+  .body-container { margin-top: 1.6rem; }
+  // On a phone the sheet is the page: no frame, the width of the screen.
+  .sheet { padding: 1.25em 1em; border: 0; border-radius: 0; }
+}
 
 .body-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 80px 0px;
+  margin: 2.4rem 0 4rem;  // Just below the compact top bar.
   box-sizing: border-box;
 
 }
@@ -556,134 +566,96 @@ button,
   border-radius: 4px;
 }
 
-/* Nav and Logos */
+[x-cloak] { display: none !important; }
+
+// A button's label that phones leave out (its icon stays; the button keeps an aria-label or title).
+@media (max-width: 600px) { .label-wide { display: none; } }
+
+/* Nav and Logos: a compact top bar, the brand on the left, the current section marked. On phones the menu
+   is a panel over the page with a backdrop; the ☰ turns into ✕. */
 
 .navbar {
+  position: relative;
   display: flex;
-  align-items: end;
-  //gap: 1rem;
+  align-items: center;
+  gap: 1.5em;
+  box-sizing: border-box;
+  height: 56px;
+  margin: 0;
+  padding: 0 1.5em;
   font-size: 11pt;
-  margin: .5rem 2rem;
-  height: 58px;
+  border-bottom: 1px solid color-mix(in srgb, var(--fg) 10%, var(--bg));
 }
 
-.nav-logo-container {
-  display: flex;
-  align-items: end;
-}
+.navbar-brand { display: flex; align-items: center; flex: none; min-width: 1px; height: 100%; }
+#nav-logo { display: block; width: auto; height: 28px; margin: 0; }
 
-#nav-logo {
-  margin: 8px 0px 0px 0px;
-}
-
-.navbar-menu {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-
-}
-
-.navbar-start,
-.navbar-end {
-  display: flex;
-  gap: 1.5rem;
-  margin: 0 2rem;
-}
+.navbar-menu { display: flex; align-items: center; justify-content: space-between; flex: 1; min-width: 0; }
+.navbar-start, .navbar-end { display: flex; align-items: center; gap: .25em; margin: 0; }
 
 .navbar-item {
-  margin-bottom: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: .45em;
+  margin: 0;
+  padding: .35em .7em;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  font: inherit;
   text-decoration: none;
+  cursor: pointer;
+  transition: background-color .15s;
+  &:hover { background: color-mix(in srgb, var(--fg) 7%, var(--bg)); }
+  &:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
 }
+.navbar-section[aria-current="page"] { background: var(--fg); color: var(--bg); }
+.navbar-icon i { font-size: 1.15em; }
+.navbar-label { display: none; }
+.navbar-locale { font-size: .85em; letter-spacing: .04em; }
+.navbar-divider { width: 1px; height: 1.4em; margin: 0 .4em; background: color-mix(in srgb, var(--fg) 15%, var(--bg)); }
+.navbar-backdrop { display: none; }
 
-.kettlewright-logo-container,
-.nav-logo-container {
-  max-width: 500px;
-  padding: 0 4em;
-  margin: 0 auto;
-  box-sizing: border-box;
-}
-
-.kettlewright-logo-container,
-.nav-logo-container img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.nav-logo-container {
-  max-width: 160px;
-  position: relative;
-  top: 9px;
-  margin: 0px;
-  padding: 1em;
-}
-
-.navbar-mobile-item {
-  display: none;
-}
+.navbar-mobile-item { display: none; }
+#nav-mobile-button { margin-left: auto; padding: .4em .55em; font-size: 1.3em; border-radius: 8px; }
 
 @media screen and (max-width: 760px) {
-
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-  }
+  .navbar { padding: 0 .75em 0 1em; }
+  .navbar-mobile-item { display: inline-flex; }
+  #nav-mobile-button { position: relative; z-index: 102; }
 
   .navbar-menu {
     display: none;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 2em;
     position: fixed;
-    top: 80px;
-    left: 0;
+    top: 0;
     right: 0;
     bottom: 0;
-    z-index: 100;
-    background-color: var(--bg);
-    padding: 4em 2em;
-    font-size: 14pt;
-  }
-
-  .navbar-menu.is-active {
-    display: flex;
-  }
-
-
-
-  .navbar-start,
-  .navbar-end {
+    z-index: 101;
     flex-direction: column;
-    gap: 2em;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 1em;
+    width: #{"min(320px, 85vw)"};
+    box-sizing: border-box;
+    padding: 4.5em 1em 1.5em;
+    overflow-y: auto;
+    background-color: var(--bg);
+    box-shadow: -8px 0 30px rgba(0, 0, 0, .2);
+    font-size: 13pt;
   }
+  .navbar-menu.is-active { display: flex; }
+  .navbar-backdrop { display: block; position: fixed; inset: 0; z-index: 100; background: rgba(0, 0, 0, .35); }
 
-  .navbar-end {
-    flex-direction: column-reverse;
-  }
-
-  .navbar-item {
-    margin: 0;
-  }
-
-  .navbar-mobile-item {
-    display: block;
-  }
-
-  .nav-logo-container {
-    max-width: 180px;
-  }
-}
-
-
-
-#dark-mode-toggle,
-#discord-toggle,
-#language-toggle,
-#nav-mobile-button {
-  margin: 0px 1em 2px 0px;
-  font-size: 14pt;
-  border: none;
-  padding: 0px
+  .navbar-start, .navbar-end { flex-direction: column; align-items: stretch; gap: .15em; }
+  .navbar-item { justify-content: flex-start; padding: .65em .9em; border-radius: 10px; }
+  .navbar-item { text-transform: capitalize; }
+  .navbar-section { font-size: 1.1em; }
+  .navbar-icon i { width: 1.3em; text-align: center; }
+  .navbar-label { display: inline; }
+  .navbar-locale { order: 3; margin-left: auto; opacity: .65; }
+  .navbar-divider { width: auto; height: 1px; margin: .5em .9em; }
+  .navbar-end { padding-top: .75em; border-top: 1px solid color-mix(in srgb, var(--fg) 12%, var(--bg)); }
 }
 
 
@@ -1134,17 +1106,20 @@ html[lang="uk"] {
 .signup-legal { margin: .75em 0; font-size: .9em; }
 .discord-guide-legal { margin-top: 2em; font-size: .9em; }
 
-// "+ New…" and "+ Add…" actions are solid, in the page's text colour (black in light mode), everywhere.
-// New Character and New campaign are the exceptions: green (.is-new).
+// One button system: the page's main action is solid, in the page's text colour (black in light mode):
+// "+ New…", "+ Add…", New Character and New campaign (.is-new) alike. Other actions are outlined.
 .kw-add,
 a.kw-add,
-button.kw-add {
+button.kw-add,
+.is-new,
+button.is-new {
   background: var(--fg) !important;
   color: var(--bg) !important;
   border-color: var(--fg) !important;
 }
 
-.kw-add:hover {
+.kw-add:hover,
+.is-new:hover {
   opacity: .85;
 }
 

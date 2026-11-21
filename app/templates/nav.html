@@ -25,51 +25,61 @@
     };
 </script>
 
-<nav class="navbar" role="navigation" aria-label="main navigation" id="navbar" x-data="mobileMenu">
-    <!-- {% set excluded_routes = ['main.about', 'auth.login', 'auth.signup'] %} {% if request.endpoint not in
-      excluded_routes %}
-      <div class="nav-logo-container">
-        <img src="{{ url_for('static', filename='images/Kettlewright_Logo_Black_Text.png') }}" alt="Kettlewright" />
-      </div>
-      {% else %}
-      <div class="kettlewright-logo-placeholder"></div>
-      {% endif %} -->
-    <div class="kettlewright-logo-placeholder"></div>
+{# The top bar: the brand, the three sections (the current one marked), then settings. On phones the
+   menu is a panel over the page, every entry labelled; the ☰ becomes ✕ and Escape or the backdrop close it. #}
+{% set endpoint = request.endpoint or '' %}
+{% set blueprint = request.blueprint or '' %}
+{% set nav_section = 'tools' if endpoint in ('main.tools', 'main.party_tools') or blueprint == 'generator' or endpoint.endswith('tools_map')
+   else 'campaigns' if blueprint in ('campaigns', 'party') or endpoint in ('main.parties', 'main.delete_party')
+   else 'characters' if blueprint in ('charedit', 'charcreo', 'charcreo_barebones', 'companions')
+        or endpoint.startswith('main.character') or endpoint.startswith('main.new_') or endpoint == 'main.print_character'
+   else '' %}
+<nav class="navbar" role="navigation" aria-label="{{ _('Main navigation') }}" id="navbar" x-data="mobileMenu"
+     @keydown.escape.window="menuOpen = false">
+    {% if endpoint not in ('main.about', 'auth.login', 'auth.signup') %}
+    <a class="navbar-brand" href="{{ url_for('main.index') }}" aria-label="Kettlewright">
+        <img src="{{ url_for('static', filename='images/Kettlewright_Logo_Black.png') }}" alt="" id="nav-logo" />
+    </a>
+    {% else %}<span class="navbar-brand" aria-hidden="true"></span>{% endif %}
     <div class="navbar-menu" id="nav-menu" :class="{ 'is-active': menuOpen }">
         <div class="navbar-start">
             {% if current_user.is_authenticated %}
-            <a href="{{ url_for('main.characters', username=current_user.username) }}" class="navbar-item">
-                {{_('characters')}}
-            </a>
-            <a href="{{ url_for('campaigns.index') }}" class="navbar-item">{{_('Campaigns')|lower}}</a>
+            <a href="{{ url_for('main.characters', username=current_user.username) }}" class="navbar-item navbar-section"
+               {% if nav_section == 'characters' %}aria-current="page"{% endif %}>{{_('characters')}}</a>
+            <a href="{{ url_for('campaigns.index') }}" class="navbar-item navbar-section"
+               {% if nav_section == 'campaigns' %}aria-current="page"{% endif %}>{{_('Campaigns')|lower}}</a>
             {% endif %}
-            <a href="{{ url_for('main.tools')}}" class="navbar-item"> {{_('tools')}} </a>
+            <a href="{{ url_for('main.tools')}}" class="navbar-item navbar-section"
+               {% if nav_section == 'tools' %}aria-current="page"{% endif %}>{{_('tools')}}</a>
         </div>
         <div class="navbar-end">
-            <button type="button" class="navbar-item navbar-desktop-item" id="dark-mode-toggle" @click="toggleDarkMode()">
-                <i class="fa-solid fa-circle-half-stroke"></i>
+            <button type="button" class="navbar-item navbar-icon" id="dark-mode-toggle" @click="toggleDarkMode()"
+                    title="{{ _('Dark mode') }}">
+                <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i><span class="navbar-label">{{ _('Dark mode') }}</span>
             </button>
-            <a href="{{ url_for('discord.settings') }}" class="navbar-item navbar-desktop-item" id="discord-toggle"
-                aria-label="{{ _('Discord integration') }}" title="{{ _('Discord integration') }}">
-                <i class="fa-brands fa-discord" aria-hidden="true"></i>
+            <a href="{{ url_for('discord.settings') }}" class="navbar-item navbar-icon" id="discord-toggle"
+                title="{{ _('Discord integration') }}">
+                <i class="fa-brands fa-discord" aria-hidden="true"></i><span class="navbar-label">{{ _('Discord') }}</span>
             </a>
-            {{locale}}
             <button type="button" onclick="selectLanguage('{{_('Language')}}', '{{_('Cancel')}}')"
-                class="navbar-item navbar-desktop-item" id="language-toggle">
-                <i class="fa-solid fa-globe"></i>
+                class="navbar-item navbar-icon" id="language-toggle" title="{{ _('Language') }}">
+                <i class="fa-solid fa-globe" aria-hidden="true"></i><span class="navbar-locale">{{ locale|upper }}</span><span class="navbar-label">{{ _('Language') }}</span>
             </button>
+            <span class="navbar-divider" aria-hidden="true"></span>
             {% if current_user.is_authenticated %}
-            <a href="{{ url_for('main.about') }}" class="navbar-item navbar-desktop-item"> {{_('about')}} </a>
-            <a href="{{ url_for('auth.account') }}" class="navbar-item navbar-desktop-item"> {{_('account')}} </a>
-            {% endif %} {% if not current_user.is_authenticated %}
-            <a href="{{ url_for('auth.login') }}" class="navbar-item navbar-desktop-item"> {{_('login')}} </a>
-            <a href="{{ url_for('auth.signup') }}" class="navbar-item navbar-desktop-item"> {{_('sign up')}} </a>
-            <a href="{{ url_for('main.about') }}" class="navbar-item navbar-desktop-item"> {{_('about')}} </a>
-            {% endif %} {% if current_user.is_authenticated %} {% endif %}
+            <a href="{{ url_for('main.about') }}" class="navbar-item"> {{_('about')}} </a>
+            <a href="{{ url_for('auth.account') }}" class="navbar-item"> {{_('account')}} </a>
+            {% else %}
+            <a href="{{ url_for('auth.login') }}" class="navbar-item"> {{_('login')}} </a>
+            <a href="{{ url_for('auth.signup') }}" class="navbar-item"> {{_('sign up')}} </a>
+            <a href="{{ url_for('main.about') }}" class="navbar-item"> {{_('about')}} </a>
+            {% endif %}
         </div>
     </div>
-    <button type="button" class="navbar-item navbar-mobile-item" id="nav-mobile-button" style="margin-left: 0px"
-        @click="toggle()" :aria-expanded="menuOpen" aria-controls="nav-menu">
-        <i class="fa-solid fa-bars"></i>
+    <div class="navbar-backdrop" x-show="menuOpen" x-cloak @click="menuOpen = false"></div>
+    <button type="button" class="navbar-item navbar-mobile-item" id="nav-mobile-button"
+        @click="toggle()" :aria-expanded="menuOpen" aria-controls="nav-menu" :aria-label="menuOpen ? '{{ _('Close menu') }}' : '{{ _('Menu') }}'"
+        aria-label="{{ _('Menu') }}">
+        <i class="fa-solid" :class="menuOpen ? 'fa-xmark' : 'fa-bars'" aria-hidden="true"></i>
     </button>
 </nav>

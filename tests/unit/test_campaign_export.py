@@ -148,6 +148,7 @@ def test_example_module_is_importable(setup):
     assert sorted(row['title'] for row in preview['rows']) == [
         'Alderbridge', 'Mara the Ferryman', 'The Ashen Marches', 'The Ashen Marches', 'The Old Pilgrim Road', 'The Sunken Abbey']
     assert list(preview['backgrounds']) == ['Tidewatcher']
+    assert list(preview['items']) == ['The Stolen Bell', "Pilgrim's Token"]
     with app.app_context():
         import_preview(preview, 1)
         db.session.commit()
@@ -163,6 +164,7 @@ def test_example_module_is_importable(setup):
         assert entries['The Old Pilgrim Road'].path_type == 'conditional'
         assert [link.target_id for link in abbey.links] == [entries['Mara the Ferryman'].id]
         assert list(module.backgrounds) == ['Tidewatcher']
+        assert module.items['The Stolen Bell']['tags'] == ['bulky', 'charges']
 
 
 def test_empty_module_export(setup):

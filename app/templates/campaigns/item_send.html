@@ -1,0 +1,32 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token, page_header with context %}
+{# Send a copy of a module item to a party (#476): into its storage or a character's inventory. #}
+{% block workspace %}
+{% if back == 'wiki' %}{% set back_url = url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id) ~ '#' ~ item_anchor(name) %}
+{% else %}{% set back_url = url_for('campaigns.module_view', campaign_id=campaign.id, module_id=module.id) ~ '#items' %}{% endif %}
+<nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ back_url }}">← {{ module.title }}</a></nav>
+{{ page_header(_('Send %(item)s', item=name)) }}
+<div class="rich-content item-send-preview">{{ render_content(text) }}</div>
+{% set has_choices = choices|selectattr(1)|list %}
+{% if has_choices %}
+<form method="post" class="campaign-page-form">{{ token() }}
+<input type="hidden" name="name" value="{{ name }}">
+<input type="hidden" name="next" value="{{ back }}">
+<label for="item-send-to">{{ _('Send a copy to') }}</label>
+<select id="item-send-to" name="to" required>
+{% for party, options in choices %}{% if options %}
+  <optgroup label="{{ party.name }}">
+  {% for value, label in options %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+  </optgroup>
+{% endif %}{% endfor %}
+</select>
+<p class="import-hint">{{ _('The party gets its own copy, to use, change or give away. The module keeps its item.') }}</p>
+<div class="campaign-actions">
+  <button type="submit" class="primary"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> {{ _('Send') }}</button>
+  <a href="{{ back_url }}">{{ _('Cancel') }}</a>
+</div>
+</form>
+{% else %}
+<p class="wiki-empty">{{ _('This campaign\'s parties have no storage or characters to send it to yet.') }}</p>
+{% endif %}
+{% endblock %}

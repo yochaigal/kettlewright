@@ -4,15 +4,16 @@
 {% from 'campaigns/wiki_sidebar.html' import wiki_sidebar with context %}
 {% block workspace %}
 {# Part of the party wiki (#476): its sidebar (maps and articles) on the left, the map across the main column. #}
-<div class="campaign-wiki" x-data="{ menu: false }">
+<div class="campaign-wiki" x-data="{ menu: false }" @keydown.escape.window="menu = false">
   <nav class="campaign-breadcrumb wiki-topbar" aria-label="{{ _('Breadcrumb') }}">
     <a href="{{ back_url }}">← {{ _('Back to party') }}</a>
     <button type="button" class="link-button wiki-menu-toggle" @click="menu = !menu" :aria-expanded="menu" aria-controls="wiki-sidebar">
-      <i class="fa-solid fa-bars" aria-hidden="true"></i> {{ _('Articles') }}
+      <i class="fa-solid fa-list-ul" aria-hidden="true"></i> {{ _('Contents') }}
     </button>
   </nav>
   <div class="wiki-layout">
     {{ wiki_sidebar() }}
+    <div class="wiki-backdrop" x-show="menu" x-cloak @click="menu = false"></div>
 <article class="wiki-main party-map-page" x-data="partyMap"
      data-graph="{{ graph|tojson|forceescape }}" data-state="{{ state|tojson|forceescape }}"
      data-warden="{{ 'true' if warden else 'false' }}" data-csrf="{{ csrf }}"

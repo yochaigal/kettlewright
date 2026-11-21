@@ -43,5 +43,6 @@ def test_character_card_resources(app_with_babel, items, panicked, expected_hp, 
                                panicked=panicked)
     with app_with_babel.test_request_context('/'):
         html = render_template('main/characters.html', characters=[character])
-    assert f'HP {expected_hp}</p>' in html
+    current, maximum = expected_hp.split('/')
+    assert f'<dt>HP</dt><dd>{current}<small>/{maximum}</small></dd>' in html
     assert f'>{expected_slots}</p>' in html

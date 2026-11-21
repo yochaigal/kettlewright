@@ -3,8 +3,8 @@
 {% block workspace %}
 {% if module %}<nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ url_for('campaigns.module_view', campaign_id=module.campaign_id, module_id=module.id) }}">← {{ module.title }}</a></nav>{% endif %}
 {{ page_header(_('Import to module') if module else _('Import module')) }}
-{% if module %}<p>{{ _('Add maps, articles and backgrounds to %(module)s from a Markdown file or an archive. Nothing is added until you review the preview and confirm.', module=module.title) }}</p>
-{% else %}<p>{{ _('A module is a Markdown file or an archive of maps, articles and backgrounds. It is added to one of your campaigns as a new module. Nothing is added until you review the preview and confirm.') }}</p>{% endif %}
+{% if module %}<p>{{ _('Add maps, articles, backgrounds and items to %(module)s from a Markdown file or an archive. Nothing is added until you review the preview and confirm.', module=module.title) }}</p>
+{% else %}<p>{{ _('A module is a Markdown file or an archive of maps, articles, backgrounds and items. It is added to one of your campaigns as a new module. Nothing is added until you review the preview and confirm.') }}</p>{% endif %}
 
 <section class="import-step" aria-labelledby="import-step-upload">
 <h2 id="import-step-upload">{{ _('1. Choose a file') }}</h2>
@@ -21,7 +21,8 @@
 <pre><code>module.md                 type: Module      {{ _('the front page') }}
 maps/the-ashen-marches.md type: Map         {{ _('a drawing with points and paths') }}
 articles/alderbridge.md   type: Settlement  {{ _('any article type') }}
-backgrounds/tidewatcher.md type: Background {{ _('character options') }}</code></pre>
+backgrounds/tidewatcher.md type: Background {{ _('character options') }}
+items/relics.md           type: Items       {{ _('items to send the party, each a ### heading') }}</code></pre>
 <h3>articles/mara-the-ferryman.md</h3>
 <pre><code>---
 layout: default
@@ -59,7 +60,7 @@ Mara knows the river paths.</code></pre>
 {% if not selected_campaign %}<option value="" disabled selected>{{ _('Choose a campaign') }}</option>{% endif %}
 {% for option in campaigns_list %}<option value="{{ option.id }}" {% if option.id == selected_campaign %}selected{% endif %}>{{ option.name }}</option>{% endfor %}
 </select></label>
-<p class="import-hint">{{ _('The module is named %(title)s. Its front page becomes an Overview article; its maps, articles and backgrounds join the campaign.', title=(campaign_rows[0].title if campaign_rows else preview.name)) }}</p>
+<p class="import-hint">{{ _('The module is named %(title)s. Its front page becomes an Overview article; its maps, articles, backgrounds and items join the campaign.', title=(campaign_rows[0].title if campaign_rows else preview.name)) }}</p>
 {% endif %}
 {% set maps_preview = [] %}{% for i in preview.display %}{% set row = preview.rows[i] %}{% if row.map or row.category == 'map' %}{% if maps_preview.append(row) %}{% endif %}{% endif %}{% endfor %}
 {% if maps_preview %}<details class="import-maps" open><summary>{{ _('Maps') }} ({{ maps_preview|length }})</summary>
@@ -87,6 +88,9 @@ Mara knows the river paths.</code></pre>
 </ol>
 {% if backgrounds %}<h3 class="import-articles-title">{{ _('Backgrounds') }} ({{ backgrounds|length }})</h3>
 <ul>{% for name, background in backgrounds.items() %}<li><strong>{{ name }}</strong> · {{ background.background_description }}</li>{% endfor %}</ul>{% endif %}
+{% set module_items = preview['items'] or {} %}
+{% if module_items %}<h3 class="import-articles-title">{{ _('Items') }} ({{ module_items|length }})</h3>
+<ul>{% for name, item in module_items.items() %}<li><strong>{{ name }}</strong>{% if item.description %} · {{ content_excerpt(item.description, 160) }}{% endif %}</li>{% endfor %}</ul>{% endif %}
 <div class="campaign-actions import-confirm-actions">
 <button type="submit">{{ pgettext('import action', 'Import') }}</button>
 <a href="{{ url_for('campaigns.import_archive') }}">{{ _('Cancel') }}</a>

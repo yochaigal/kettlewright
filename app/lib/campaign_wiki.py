@@ -135,6 +135,9 @@ def page_context(campaign, entry=None, owner_id=None, module=None):
                    article_count=len(entries), content_categories=CATEGORIES,
                    # Article cards show the article's first picture (served by entry_image).
                    card_images={item.id for item in entries if item.image or first_image(item.body)}, **home)
+    if module is not None:
+        # Listed on its home and in the sidebar of every page.
+        context.update(module_backgrounds=module_backgrounds(module), module_items=module_items(module))
     if entry is None:
         # The home page: the campaign's front page if it has one (imported adventures
         # do), then its top-level articles by type. Sub-articles are a click away.
@@ -144,7 +147,6 @@ def page_context(campaign, entry=None, owner_id=None, module=None):
         context.update(intro=intro, groups=home_groups([item for item in roots if item is not intro]),
                        hearts=[item for item in entries if item.is_heart])
         if module is not None:
-            context['module_backgrounds'] = module_backgrounds(module)
             if module_cover(module, entries) is not None:
                 context['cover_url'] = url_for('campaigns.module_cover', campaign_id=campaign.id, module_id=module.id)
         elif campaign is not None and cover_image(campaign, entries) is not None:
@@ -286,3 +288,12 @@ def module_cover(module, entries):
         if url:
             return url
     return None
+
+
+def module_items(module):
+    """A module's items for its wiki (#476): name, badges (its tags, as written: "bulky", "charges 3/3") and
+    description (Markdown)."""
+    from app.lib.module_items import item_details, sorted_items
+    return [{'name': name, 'badges': [tag for tag in item_details(item).split(', ') if tag],
+             'description': item.get('description', '')}
+            for name, item in sorted_items(module)]

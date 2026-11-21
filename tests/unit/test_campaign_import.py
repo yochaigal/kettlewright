@@ -136,12 +136,12 @@ def test_downloadable_example_imports_complete_hierarchy(setup):
     assert response.mimetype == 'application/zip'
     assert 'attachment' in response.headers['Content-Disposition']
     with zipfile.ZipFile(io.BytesIO(response.data)) as example:
-        assert {name.split('/')[0] for name in example.namelist()} == {'module.md', 'maps', 'articles', 'backgrounds'}
+        assert {name.split('/')[0] for name in example.namelist()} == {'module.md', 'maps', 'articles', 'backgrounds', 'items'}
     preview = upload(client, response.data)
     html = preview.get_data(as_text=True)
     assert 'Module / Alderbridge' in html
     # The preview lists the module's parts apart.
-    assert '2 maps · 1 background · 4 articles' in html
+    assert '2 maps · 1 background · 2 items · 4 articles' in html
     assert html.index('class="import-maps"') < html.index('class="import-preview"') and 'Tidewatcher</strong>' in html
     assert html.count('name="target_campaign"') == 1
     token = re.search(r'name="preview_id" value="([a-f0-9]+)"', html).group(1)

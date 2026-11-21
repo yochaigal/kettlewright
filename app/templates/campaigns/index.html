@@ -5,7 +5,7 @@
 {# Like the characters page: the actions on one row, no page title. #}
 <div class="characters-page-header campaigns-page-header" x-data="{}">
   <span class="characters-create-actions">
-    <button type="button" class="is-new" aria-haspopup="dialog" @click="$refs.createDialog.showModal()">{{ _('New campaign') }}</button>
+    <button type="button" class="is-new" aria-haspopup="dialog" @click="$refs.createDialog.showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New campaign') }}</button>
   </span>
 {# A campaign starts with its party; modules (maps, backgrounds, articles) are added inside it. #}
 <dialog class="create-dialog" x-ref="createDialog" @close="$refs.createDialog.querySelector('form').reset()" aria-labelledby="create-title">
@@ -19,12 +19,6 @@
 </div>
 
 <div class="campaign-gallery-page" x-data="materialTree">
-{% if campaigns|length > 3 %}
-<div class="campaign-actions tree-toolbar" role="search">
-<div class="search-field"><label>{{ _('Search') }}<input type="search" x-model="query" @input="filter()" placeholder="{{ _('Search campaigns and their articles') }}"></label></div>
-</div>
-<p x-show="filtering && !matches" x-cloak>{{ _('No matching campaigns.') }}</p>
-{% endif %}
 
 {% if starred %}
 {# Starred (#476): an island of bookmarks, first. Each card's star unstars it. #}
@@ -66,6 +60,9 @@
   </div>
 </li>
 {% endfor %}
+{# One more card: start a new campaign. #}
+<li class="create-card-item"><button type="button" class="create-card" aria-haspopup="dialog"
+    onclick="document.querySelector('.create-dialog').showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i><span>{{ _('New campaign') }}</span></button></li>
 </ul>
 {% else %}
 <p class="gallery-empty">{{ _('No campaigns yet.') }} <button type="button" class="link-button" @click="$root.closest('.campaign-workspace').querySelector('.create-dialog').showModal()">{{ _('New campaign') }}</button></p>

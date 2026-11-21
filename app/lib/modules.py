@@ -1,7 +1,7 @@
 """Modules: the content a campaign is built from.
 
-A module is a package of parts: maps, articles and backgrounds for now (items,
-missions and more later). Each part has its own section on the module page, its
+A module is a package of parts: maps, articles, backgrounds and items for now
+(missions and more later). Each part has its own section on the module page, its
 own folder in a module archive and its own Markdown type (MODULE_PARTS). A Warden
 creates a module in a campaign (blank or randomly generated), adds one from the
 Modules Marketplace (bundled in app/modules/<slug>/), or uploads one; any module
@@ -19,12 +19,14 @@ from app.models import db, Module
 
 BUNDLES = Path(__file__).resolve().parent.parent / 'modules'
 
-# The parts a module packs, in the order pages show them. To add a part (items, missions...):
+# The parts a module packs, in the order pages show them. To add a part (missions...):
 # give it a folder and a Markdown type here, a section on the module page, and its import/export.
 MODULE_PARTS = (
     {'key': 'maps', 'label': _l('Maps'), 'one': _l('map'), 'many': _l('maps'), 'icon': 'fa-map', 'folder': 'maps', 'type': 'Map'},
     {'key': 'backgrounds', 'label': _l('Backgrounds'), 'one': _l('background'), 'many': _l('backgrounds'),
      'icon': 'fa-user-gear', 'folder': 'backgrounds', 'type': 'Background'},
+    {'key': 'items', 'label': _l('Items'), 'one': _l('item'), 'many': _l('items'), 'icon': 'fa-gem',
+     'folder': 'items', 'type': 'Items'},
     {'key': 'articles', 'label': _l('Articles'), 'one': _l('article'), 'many': _l('articles'), 'icon': 'fa-file-lines',
      'folder': 'articles', 'type': None},
 )
@@ -61,7 +63,7 @@ def preview_counts(payload):
     rows = [row for row in payload['rows'] if row['category'] != 'campaign']
     return {'maps': sum(1 for row in rows if row.get('map') or row['category'] == 'map'),
             'articles': sum(1 for row in rows if row['category'] not in ('map', 'map_note')),
-            'backgrounds': len(payload.get('backgrounds') or {})}
+            'backgrounds': len(payload.get('backgrounds') or {}), 'items': len(payload.get('items') or {})}
 
 
 @lru_cache(maxsize=None)
@@ -118,12 +120,12 @@ def add_module(campaign, slug):
 
 
 def module_counts(module):
-    """What a module holds, part by part: its maps, its articles (not the maps) and its backgrounds."""
+    """What a module holds, part by part: its maps, its articles (not the maps), its backgrounds and items."""
     from app.lib.campaigns import map_only
     entries = list(module.entries)
     return {'maps': sum(1 for entry in entries if entry.pointcrawl),
             'articles': sum(1 for entry in entries if not map_only(entry) and entry.category != 'map_note'),
-            'backgrounds': len(module.backgrounds or {})}
+            'backgrounds': len(module.backgrounds or {}), 'items': len(module.items or {})}
 
 
 def part_badges(counts):

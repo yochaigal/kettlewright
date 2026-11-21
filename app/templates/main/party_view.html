@@ -67,7 +67,8 @@
         {% endif %}
         {% if can_view_rolls %}
         <a class="button no-margin-top" href="{{ url_for('party.shared_map', party_id=party.id) }}"
-          title="{{ _('Whiteboard') }}" aria-label="{{ _('Whiteboard') }}">{{ _('Whiteboard') }}</a>
+          title="{{ _('Whiteboard') }}" aria-label="{{ _('Whiteboard') }}"><span class="mobile-hidden">{{ _('Whiteboard') }}</span>
+          <i class="fa-solid fa-chalkboard icon-in-button" aria-hidden="true"></i></a>
         {% endif %}
         {% if is_owner %}
         <button class="button dice-button no-margin-top" type="button" title="{{_('Edit party')}}" aria-label="{{_('Edit party')}}"

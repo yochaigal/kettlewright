@@ -1295,7 +1295,7 @@ def test_markdown_images_use_existing_private_storage_and_access_checks(setup):
     assert client.get(url).status_code == 404
 
 
-@pytest.mark.parametrize('category', ['bestiary', 'item', 'spellbook', 'culture', 'custom'])
+@pytest.mark.parametrize('category', ['bestiary', 'note', 'culture', 'custom'])
 def test_new_article_categories_are_created_in_a_module(setup, category):
     app, client = setup
     response = client.post('/materials/new', data={'category': category, 'campaign_id': 1,
@@ -1305,6 +1305,16 @@ def test_new_article_categories_are_created_in_a_module(setup, category):
         entry = ContentEntry.query.one()
         assert entry.campaign_id == 1 and entry.module.campaign_id == 1 and entry.category == category
         assert entry.body == 'A *public* description' and not entry.presentations
+
+
+@pytest.mark.parametrize('category', ['item', 'relic', 'spellbook'])
+def test_items_are_not_articles(setup, category):
+    """#476: items, relics and spellbooks are a module's items, not article types."""
+    app, client = setup
+    response = client.post('/materials/new', data={'category': category, 'campaign_id': 1, 'title': 'Bell', 'body': ''})
+    assert response.status_code == 400
+    page = client.get('/materials/new?campaign_id=1').get_data(as_text=True)
+    assert f'value="{category}"' not in page and f'"value": "{category}"' not in page  # Not in the type picker.
 
 
 def test_map_inline_card_edits_are_private_and_version_checked(setup):
@@ -1671,12 +1681,18 @@ def test_party_backgrounds_are_set_on_the_party_page(setup):
     assert client.post('/party/1/backgrounds', data={}).status_code == 403
 
 
-def test_module_cards_have_no_read_button(setup):
+def test_module_cards_open_for_editing_and_read_as_wiki(setup):
+    """#476: a module's card (picture and title) opens its page to edit it; Read opens it as a wiki."""
     app, client = setup
     create_entry(client)
+    with app.app_context():
+        from app.models import Module
+        module_id = Module.query.filter_by(campaign_id=1).one().id
     lobby = client.get('/campaigns/1/').text
     cards = lobby[lobby.index('class="campaign-module-cards"'):lobby.index('</ul>', lobby.index('class="campaign-module-cards"'))]
-    assert '/wiki/"' in cards and '> Read</a>' not in cards and '> Edit</a>' in cards and '> Export</a>' in cards
+    assert cards.count(f'href="/campaigns/1/modules/{module_id}/"') == 2  # Its picture and title.
+    assert f'href="/campaigns/1/modules/{module_id}/wiki/"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Read</a>' in cards
+    assert '> Edit</a>' not in cards and '> Export</a>' in cards
 
 
 # ----- Party map: fog and pins (#467) -----
@@ -1755,7 +1771,7 @@ def test_module_parts_are_counted_apart(setup):
     with app.app_context():
         from app.models import Module
         counts = module_counts(Module.query.first())
-        assert counts == {'maps': 1, 'articles': 4, 'backgrounds': 0}  # The note, two rooms and their path.
+        assert counts == {'maps': 1, 'articles': 4, 'backgrounds': 0, 'items': 0}  # The note, two rooms and their path.
         assert part_badges(counts) == ['1 map', '4 articles']
     assert '1 map · 4 articles' in client.get('/campaigns/1/').text
 
@@ -1805,3 +1821,16 @@ def test_party_notes_hold_a_drawing_below_their_text(setup):
     assert client.post(f'/party/1/notes/{note_id}/edit', data=no_change).status_code == 302
     with app.app_context():
         assert db.session.get(ContentEntry, note_id).drawing['elements'][0]['text'] == 'THE CELLAR'  # Kept.
+
+
+def test_top_bar_marks_the_current_section(setup):
+    """The top bar (#476): the brand, and the section the page belongs to marked as current."""
+    app, client = setup
+    page = client.get('/campaigns/').text
+    nav = page[page.index('id="navbar"'):page.index('</nav>', page.index('id="navbar"'))]
+    assert 'class="navbar-brand"' in nav and 'id="nav-mobile-button"' in nav
+    assert re.search(r'href="/campaigns/" class="navbar-item navbar-section"\s+aria-current="page"', nav)
+    assert nav.count('aria-current="page"') == 1
+    tools = client.get('/tools/').text
+    tools_nav = tools[tools.index('id="navbar"'):tools.index('</nav>', tools.index('id="navbar"'))]
+    assert re.search(r'href="/tools/" class="navbar-item navbar-section"\s+aria-current="page"', tools_nav)

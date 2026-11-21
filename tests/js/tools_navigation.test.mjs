@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {toolSections, launcherGroups, generateToolResult, appendAreaNavigation} from '../../app/static/src/js/tools-navigation.js';
 import {resultText} from '../../app/static/src/js/content_generators.js';
+import {itemMarkdown} from '../../app/static/src/js/tools-items.js';
 
 const data = {};
 for (const name of ['dungeons','forests','realm','factions','npcs','names','faction-events','bestiary','custom-monster','reactions','weather','dungeon-events','wilderness-events','reliquary','spellbooks']) {
@@ -116,4 +117,17 @@ test('the Relic and Spellbook pickers list every one, shown like a rolled one', 
   const text = resultText(relics['relic:A Blade Called Hope']);
   assert.ok(text.startsWith('_d6_ — A thin, curved sword'), text);
   assert.ok(!text.includes('Name:') && !text.includes('### Tags'));
+});
+
+test('a relic or spellbook saves as a module item (#476): its tags, uses and charges, then what it does', () => {
+  const relic = fields => itemMarkdown({title: 'Thing', category: 'relic', fields: {description: 'Does it.', ...fields}});
+  assert.equal(relic({tags: ['charge', 'petty'], charge: 1, max_charges: 1}), '### Thing [charges 1/1, petty]\nDoes it.\n');
+  assert.equal(relic({tags: ['charges', 'd8'], charges: 2, max_charges: 2}), '### Thing [charges 2/2, d8]\nDoes it.\n');
+  assert.equal(relic({tags: ['use'], uses: 1}), '### Thing [uses 1]\nDoes it.\n');
+  assert.equal(relic({tags: ['+1 Armor', 'bulky']}), '### Thing [+1 Armor, bulky]\nDoes it.\n');
+  assert.equal(relic({tags: []}), '### Thing\nDoes it.\n');
+  assert.equal(itemMarkdown({title: 'Adhere', category: 'spellbook', fields: {tags: [], description: 'Sticky slime.',
+    personality: 'Objects stick to it.'}}), '### Adhere\nSticky slime.\n\n_Objects stick to it._\n');
+  // Every relic in the tables reads back as one item.
+  for (const item of data.Relics) assert.match(itemMarkdown({title: item.name, category: 'relic', fields: item}), /^### /);
 });

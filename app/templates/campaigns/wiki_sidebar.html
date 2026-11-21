@@ -1,4 +1,4 @@
-{# The wiki's sidebar: its home, a search, its Maps, then its Articles. Shared by the wiki pages and the
+{# The wiki's sidebar: its home, a search, its Maps, a module's Backgrounds and Items, then its Articles. Shared by the wiki pages and the
    party map page (#476: the map is part of the wiki). Import it with context: it reads page_url,
    home_title, maps, hierarchy, entry and breadcrumbs; current_map_id marks the map being shown. #}
 {% macro article_title(item) %}{{ (item.title or _('Untitled private original'))|markdown_inline }}{% endmacro %}
@@ -24,17 +24,32 @@
 
 {% macro wiki_sidebar() %}
     <aside id="wiki-sidebar" class="wiki-sidebar" :class="{ 'is-open': menu }" aria-label="{{ _('Articles') }}" x-data="materialTree">
+      <button type="button" class="wiki-sidebar-close" @click="menu = false" aria-label="{{ _('Close') }}"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
       <a class="wiki-campaign-name" href="{{ page_url() }}" {% if not entry and current_map_id is not defined %}aria-current="page"{% endif %}>{{ home_title|markdown_inline }}</a>
       <div class="wiki-search">
         <label class="sr-only" for="wiki-search">{{ _('Search') }}</label>
         <input id="wiki-search" type="search" x-model="query" @input="filter()" placeholder="{{ _('Search by title or type') }}">
       </div>
       <p x-show="filtering && !matches" x-cloak class="wiki-empty">{{ _('No matching articles.') }}</p>
-      {# Maps apart from articles: they open on their own page (for a party: with its fog and pins). #}
+      {# Maps (they open on their own page; for a party: with its fog and pins), a module's backgrounds and
+         items, then the articles. #}
       {% if maps %}
       <nav class="wiki-maps" aria-labelledby="wiki-maps-title">
         <h2 id="wiki-maps-title"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Maps') }}</h2>
         <ul>{% for item in maps %}<li data-tree-row data-search="{{ item.title|lower }}"><a href="{{ item.url }}" {% if (entry and not party and entry.id == item.id) or (current_map_id is defined and item.map_id == current_map_id) %}aria-current="page"{% endif %}>{{ item.title|markdown_inline }}</a></li>{% endfor %}</ul>
+      </nav>
+      {% endif %}
+      {# A module's backgrounds and items (#476): each opens on the wiki's home. #}
+      {% if module_backgrounds is defined and module_backgrounds %}
+      <nav class="wiki-maps wiki-backgrounds-nav" aria-labelledby="wiki-backgrounds-title">
+        <h2 id="wiki-backgrounds-title"><i class="fa-solid fa-user-gear" aria-hidden="true"></i> {{ _('Backgrounds') }}</h2>
+        <ul>{% for item in module_backgrounds %}<li data-tree-row data-search="{{ item.name|lower }} {{ _('background')|lower }}"><a href="{{ page_url() }}#{{ background_anchor(item.name) }}">{{ item.name }}</a></li>{% endfor %}</ul>
+      </nav>
+      {% endif %}
+      {% if module_items is defined and module_items %}
+      <nav class="wiki-maps wiki-items" aria-labelledby="wiki-items-title">
+        <h2 id="wiki-items-title"><i class="fa-solid fa-gem" aria-hidden="true"></i> {{ _('Items') }}</h2>
+        <ul>{% for item in module_items %}<li data-tree-row data-search="{{ item.name|lower }} {{ _('item')|lower }}"><a href="{{ page_url() }}#{{ item_anchor(item.name) }}">{{ item.name }}</a></li>{% endfor %}</ul>
       </nav>
       {% endif %}
       <h2 class="wiki-articles-title"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> {{ _('Articles') }}</h2>

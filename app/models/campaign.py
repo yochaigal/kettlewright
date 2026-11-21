@@ -34,7 +34,7 @@ class Campaign(Versioned, db.Model):
 
 
 class Module(Versioned, db.Model):
-    """Content a campaign is built from: articles, notes, maps and backgrounds.
+    """Content a campaign is built from: articles, notes, maps, backgrounds and items.
 
     Created in the campaign (blank or randomly generated), added from the Modules
     Marketplace (slug names the bundled module) or uploaded; exported as an archive."""
@@ -45,6 +45,8 @@ class Module(Versioned, db.Model):
     slug = db.Column(db.String(64), nullable=False, default='', server_default='')
     # Custom backgrounds, in the format of background_data.json (name -> background); NULL means none.
     backgrounds = db.Column(db.JSON, nullable=True)
+    # Items (#476): gear, relics and spellbooks to send the party (app/lib/module_items.py); NULL means none.
+    items = db.Column(db.JSON, nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
     entries = db.relationship('ContentEntry', backref='module')
 

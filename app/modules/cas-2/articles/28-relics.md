@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Relics"
-type: Relic
+type: Note
 parent: "CAS-2: Rise of the Blood Olms"
 ---
 ### Mud Sieve

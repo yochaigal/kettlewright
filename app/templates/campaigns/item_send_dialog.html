@@ -1,0 +1,44 @@
+{# Send an item (#476) in a modal: one dialog per page, shared by every item's Send button.
+   A Send button is a link to the Send page (it works without JavaScript) with data-send-item="<name>";
+   the script below opens this dialog for that item instead. back: 'module' or 'wiki', where to return. #}
+{% macro send_item_dialog(campaign, module, choices, back) %}
+<dialog class="create-dialog item-send-dialog" id="item-send-dialog" aria-labelledby="item-send-title">
+  <h2 id="item-send-title">{{ _('Send') }} <span data-send-item-name></span></h2>
+  {% if choices|selectattr(1)|list %}
+  <form method="post" action="{{ url_for('campaigns.send_module_item', campaign_id=campaign.id, module_id=module.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="name" value="">
+    <input type="hidden" name="next" value="{{ back }}">
+    <label>{{ _('Send a copy to') }}
+      <select name="to" required>
+      {% for party, options in choices %}{% if options %}
+        <optgroup label="{{ party.name }}">
+        {% for value, label in options %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+        </optgroup>
+      {% endif %}{% endfor %}
+      </select>
+    </label>
+    <p class="import-hint">{{ _('The party gets its own copy, to use, change or give away. The module keeps its item.') }}</p>
+    <div class="create-dialog-actions">
+      <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
+      <button type="submit" class="primary"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> {{ _('Send') }}</button>
+    </div>
+  </form>
+  {% else %}
+  <p class="wiki-empty">{{ _('This campaign\'s parties have no storage or characters to send it to yet.') }}</p>
+  <div class="create-dialog-actions"><button type="button" onclick="this.closest('dialog').close()">{{ _('Close') }}</button></div>
+  {% endif %}
+</dialog>
+<script>
+  document.addEventListener('click', event => {
+    const link = event.target.closest('[data-send-item]');
+    const dialog = document.getElementById('item-send-dialog');
+    if (!link || !dialog) return;
+    event.preventDefault();
+    dialog.querySelector('[data-send-item-name]').textContent = link.dataset.sendItem;
+    const name = dialog.querySelector('input[name="name"]');
+    if (name) name.value = link.dataset.sendItem;
+    dialog.showModal();
+  });
+</script>
+{% endmacro %}

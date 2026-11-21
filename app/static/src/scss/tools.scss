@@ -362,10 +362,16 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
   .tools-page { margin-top: 1rem; }
   .tools-sheet { width: 100%; padding: 0 16px; box-shadow: none; }
   .tools-island { padding: 1.4rem 1.2rem; }
-  .tools-topbar { flex-direction: column-reverse; align-items: stretch; }
-  .tools-topbar .dice-button { align-self: flex-end; margin: 0; }
+  // One row: the area tabs scroll sideways (the right edge fades), the dice button beside them.
+  .tools-topbar { flex-direction: row; align-items: center; gap: .5rem; }
+  .tools-topbar .dice-button { margin: 0; }
+  .tools-nav {
+    flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; min-width: 0;
+    mask-image: linear-gradient(to right, #000 85%, transparent);
+    -webkit-mask-image: linear-gradient(to right, #000 85%, transparent);
+  }
   .tools-group-choices { grid-template-columns: minmax(0, 1fr); }
-  .tools-nav button { padding: .8rem 1rem; }
+  .tools-nav button { flex: none; padding: .8rem .9rem; }
   .tools-picker-fields { grid-template-columns: minmax(0, 1fr); gap: 1.2rem; }
   .tools-character-generation .tools-field { flex-basis: 100%; }
 }

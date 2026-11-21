@@ -1,6 +1,7 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import reveal_dialog with context %}
 {% from 'partial/star_button.html' import star_button with context %}
+{% from 'campaigns/item_send_dialog.html' import send_item_dialog with context %}
 {# Read articles as a wiki (#421). Three sources share this page; the view gives
    page_url(entry_id=None), home_title and, for owners, edit links:
    - a campaign, for its owner;
@@ -81,18 +82,19 @@
 <div data-party-content="{{ party.id }}" data-refresh-url="{{ url_for('campaigns.party_materials_data', party_id=party.id) }}"></div>
 <script type="module" src="{{ url_for('static', filename='src/js/campaign_live.js') }}"></script>
 {% endif %}
-<div class="campaign-wiki" x-data="{ menu: false }">
+<div class="campaign-wiki" x-data="{ menu: false }" @keydown.escape.window="menu = false">
   <nav class="campaign-breadcrumb wiki-topbar" aria-label="{{ _('Breadcrumb') }}">
     {% if party %}<a href="{{ back_url }}">← {{ _('Back to party') }}</a>
     {% elif campaign %}<a href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}">← {{ campaign.name }}</a>
     {% else %}<a href="{{ url_for('campaigns.index') }}">← {{ _('All campaigns') }}</a>{% endif %}
     <button type="button" class="link-button wiki-menu-toggle" @click="menu = !menu" :aria-expanded="menu" aria-controls="wiki-sidebar">
-      <i class="fa-solid fa-bars" aria-hidden="true"></i> {{ _('Articles') }}
+      <i class="fa-solid fa-list-ul" aria-hidden="true"></i> {{ _('Contents') }}
     </button>
   </nav>
 
   <div class="wiki-layout">
     {{ wiki_sidebar() }}
+    <div class="wiki-backdrop" x-show="menu" x-cloak @click="menu = false"></div>
 
     <article class="wiki-main">
     {% if entry %}
@@ -242,6 +244,17 @@
         {{ article_cards(hearts) }}
       </section>
       {% endif %}
+      {% for group, items in groups %}
+      <section class="wiki-related">
+        <h2>{{ _(group) }} <small>{{ items|length }}</small></h2>
+        {{ article_cards(items) }}
+      </section>
+      {% else %}
+      {% if maps %}{% elif party %}{% if owner_view or not party_notes %}<p class="wiki-empty">{{ _('Nothing has been revealed yet.') }}</p>{% endif %}
+      {% elif module is defined and module %}<p class="wiki-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', module_id=module.id) }}">{{ _('New article') }}</a></p>
+      {% else %}<p class="wiki-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}#modules">{{ _('Add a module') }}</a></p>{% endif %}
+      {% endfor %}
+      {# Below the articles (#476): the module's maps, backgrounds and items. #}
       {% if maps %}
       <section class="wiki-related wiki-map-section" aria-labelledby="wiki-home-maps">
         <h2 id="wiki-home-maps"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Maps') }} <small>{{ maps|length }}</small></h2>
@@ -253,6 +266,15 @@
       {# A module's backgrounds (#476): read here, written on the module's page. #}
       <section class="wiki-related wiki-backgrounds" aria-labelledby="wiki-home-backgrounds">
         <h2 id="wiki-home-backgrounds"><i class="fa-solid fa-user-gear" aria-hidden="true"></i> {{ _('Backgrounds') }} <small>{{ module_backgrounds|length }}</small></h2>
+        <script>
+          // A background linked from the sidebar (#background-…) opens where it is listed.
+          (() => {
+            const open = () => { const target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+                                 const details = target && target.querySelector('details.wiki-background');
+                                 if (details) { details.open = true; target.scrollIntoView({block: 'start'}); } };
+            window.addEventListener('DOMContentLoaded', open); window.addEventListener('hashchange', open);
+          })();
+        </script>
         <ul class="wiki-background-list">{% for item in module_backgrounds %}
           <li id="{{ background_anchor(item.name) }}"><details class="wiki-background">
             <summary><span class="wiki-background-name">{{ item.name }}</span>{{ star_button('background', module.id, item.name, starred=is_starred('background', module.id, item.name)) }}
@@ -263,16 +285,26 @@
         </ul>
       </section>
       {% endif %}
-      {% for group, items in groups %}
-      <section class="wiki-related">
-        <h2>{{ _(group) }} <small>{{ items|length }}</small></h2>
-        {{ article_cards(items) }}
+      {% if module_items is defined and module_items %}
+      {# A module's items (#476): only the Warden sees them; Send gives a party a copy. Each card says all of it. #}
+      {% set wiki_return = url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id) %}
+      <section class="wiki-related wiki-items" aria-labelledby="wiki-home-items">
+        <h2 id="wiki-home-items"><i class="fa-solid fa-gem" aria-hidden="true"></i> {{ _('Items') }} <small>{{ module_items|length }}</small></h2>
+        <ul class="wiki-item-cards">{% for item in module_items %}
+          <li class="wiki-item-card" id="{{ item_anchor(item.name) }}">
+            <h3 class="wiki-item-name">{{ item.name }}</h3>
+            {% if item.badges %}<span class="wiki-badges">{% for badge in item.badges %}<span class="wiki-badge">{{ badge }}</span>{% endfor %}</span>{% endif %}
+            {% if item.description %}<div class="rich-content wiki-item-description">{{ render_content(item.description) }}</div>
+            {% else %}<p class="wiki-item-description wiki-empty">{{ _('No description.') }}</p>{% endif %}
+            <span class="kw-actions wiki-item-actions">
+              <a class="kw-action" href="{{ url_for('campaigns.send_module_item', campaign_id=campaign.id, module_id=module.id, name=item.name, next='wiki') }}" data-send-item="{{ item.name }}" aria-haspopup="dialog"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> {{ _('Send') }}</a>
+              <a class="kw-action" href="{{ url_for('campaigns.module_item', campaign_id=campaign.id, module_id=module.id, name=item.name, next='wiki') }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+            </span>
+          </li>{% endfor %}
+        </ul>
+        {{ send_item_dialog(campaign, module, send_choices, 'wiki') }}
       </section>
-      {% else %}
-      {% if maps %}{% elif party %}{% if owner_view or not party_notes %}<p class="wiki-empty">{{ _('Nothing has been revealed yet.') }}</p>{% endif %}
-      {% elif module is defined and module %}<p class="wiki-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', module_id=module.id) }}">{{ _('New article') }}</a></p>
-      {% else %}<p class="wiki-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}#modules">{{ _('Add a module') }}</a></p>{% endif %}
-      {% endfor %}
+      {% endif %}
       </div>
     {% endif %}
     </article>

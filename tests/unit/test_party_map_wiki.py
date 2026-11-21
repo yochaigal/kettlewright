@@ -16,13 +16,15 @@ def test_map_page_has_the_wiki_sidebar(setup):
     page = client.get(f'/party/1/map/{map_id}/').text
     assert 'id="wiki-sidebar"' in page and 'x-data="partyMap"' in page
     # Both maps are listed, this one marked; the revealed article is listed too.
-    current = re.search(r'<a [^>]*aria-current="page"[^>]*>([^<]*)', page)
+    sidebar = page[page.index('id="wiki-sidebar"'):page.index('</aside>')]
+    current = re.search(r'<a [^>]*aria-current="page"[^>]*>([^<]*)', sidebar)
     assert current and 'Coast map' in current.group(1)
     assert f'/party/1/map/{second_id}/' in page and f'/party/1/materials/{article}' in page
     assert 'Full screen' in page and 'allowfullscreen' in page
     # The wiki home keeps its own mark.
     home = client.get('/party/1/wiki/').text
-    assert re.search(r'aria-current="page"[^>]*>[^<]*Party 1', home) or 'aria-current="page"' in home
+    home_sidebar = home[home.index('id="wiki-sidebar"'):home.index('</aside>')]
+    assert re.search(r'aria-current="page"[^>]*>[^<]*Party 1', home_sidebar) or 'aria-current="page"' in home_sidebar
 
 
 def test_map_editor_has_full_screen(setup):

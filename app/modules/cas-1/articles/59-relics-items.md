@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Relics & Items"
-type: Relic
+type: Note
 parent: "CAS-1: Trouble in Twin Lakes"
 ---
 ### The Eye of Vuk

@@ -49,7 +49,7 @@ def export_campaign(campaign):
 def export_module(module):
     """A module as an archive of Markdown files that imports again, one folder per part (see MODULE_PARTS)."""
     return export_archive(module.title, 'Module', _entries(module.campaign.owner_id, module_id=module.id),
-                          module.backgrounds or {})
+                          module.backgrounds or {}, module.items or {})
 
 
 def background_files(backgrounds):
@@ -66,11 +66,11 @@ def map_markdown(metadata, graph):
                                    f'```{MAP_BLOCK}\n{block}\n```')
 
 
-def export_archive(title, front_type, entries, backgrounds=None):
+def export_archive(title, front_type, entries, backgrounds=None, items=None):
     """Format 2: every file is Markdown with YAML front matter. One folder per module part:
 
     module.md (type: Module, the front page), maps/*.md (type: Map), articles/*.md (their own types) and
-    backgrounds/*.md (type: Background). Ids tie them together: parent_id, links, references, and a
+    backgrounds/*.md (type: Background) and items/items.md (type: Items). Ids tie them together: parent_id, links, references, and a
     map's points and paths. There is no manifest: each file carries its own metadata."""
     from app.lib.campaigns import map_only
     front = next((entry for entry in entries if entry.category == 'overview' and entry.title == title
@@ -88,6 +88,9 @@ def export_archive(title, front_type, entries, backgrounds=None):
             'format': 'kettlewright-module', 'version': 2}, front.body if front else ''))
         for filename, text in background_files(backgrounds or {}):
             archive.writestr(filename, text)
+        if items:
+            from app.lib.module_items import items_file
+            archive.writestr('items/items.md', items_file('Items', items))
 
         def common(entry):
             metadata = {'layout': 'default', 'id': ids[entry.id], 'title': entry.title}
@@ -124,7 +127,7 @@ def export_archive(title, front_type, entries, backgrounds=None):
             path = PurePosixPath(entry.source_path or '')
             # Keep an imported file's own path when it is safe: relative Markdown links between files still work.
             if (entry.source_path and path.suffix.lower() == '.md' and not path.is_absolute() and '..' not in path.parts
-                    and not any(c in entry.source_path for c in ('\\', ':', '\x00')) and path.parts[0] not in ('maps', 'backgrounds')
+                    and not any(c in entry.source_path for c in ('\\', ':', '\x00')) and path.parts[0] not in ('maps', 'backgrounds', 'items')
                     and str(path) not in used and str(path) != 'module.md'):
                 filename = str(path)
             used.add(filename)

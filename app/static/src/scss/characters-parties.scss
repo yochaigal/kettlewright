@@ -1,13 +1,17 @@
+// The page's actions, as wide as its cards: the main one solid, the others outlined, on one line that wraps.
 .characters-page-header, .parties-page-header {
-width: 80%;
-margin-bottom: 2em;
-}
-
-.characters-page-header {
-    display: flex;
-    // flex-direction: column;
-    justify-content: space-between;
-    max-width: 1120px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5em;
+  width: 100%;
+  max-width: 1120px;
+  box-sizing: border-box;
+  margin: 0 auto 1.5em;
+  padding: 0 1rem;
+  a { text-decoration: none; }
+  button { display: inline-flex; align-items: center; gap: .45em; margin: 0; white-space: nowrap; }
 }
 
 // @media (max-width: 400px) {

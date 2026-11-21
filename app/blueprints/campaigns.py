@@ -77,7 +77,8 @@ def common_context():
             'point_categories': {k: CATEGORIES[k] for k in CATEGORIES if k in POINT_TYPES}, 'path_types': PATH_TYPES,
             'content_form': FlaskForm(), 'render_content': render_content, 'content_excerpt': content_excerpt,
             'private_reference_urls': private_reference_urls, 'module_parts': _module_parts(),
-            'part_badges': _part_badges, 'is_starred': _is_starred, 'background_anchor': _background_anchor}
+            'part_badges': _part_badges, 'is_starred': _is_starred, 'background_anchor': _background_anchor,
+            'item_anchor': _item_anchor}
 
 
 def _is_starred(kind, target_id, name=''):
@@ -92,6 +93,11 @@ def _is_starred(kind, target_id, name=''):
 def _background_anchor(name):
     from app.lib.stars import background_anchor
     return background_anchor(name)
+
+
+def _item_anchor(name):
+    from app.lib.module_items import item_anchor
+    return item_anchor(name)
 
 
 def _module_parts():
@@ -370,7 +376,7 @@ def new_module(campaign_id):
 
 @campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/', methods=['GET', 'POST'])
 def module_view(campaign_id, module_id):
-    """A module: its articles, notes, maps and backgrounds. POST renames it."""
+    """A module: its articles, notes, maps, backgrounds and items. POST renames it."""
     from app.lib.campaign_backgrounds import background_markdown
     campaign, module = campaign_module(campaign_id, module_id)
     if request.method == 'POST':
@@ -381,12 +387,15 @@ def module_view(campaign_id, module_id):
         return redirect(module_page(module))
     entries = library_entries().filter_by(module_id=module.id).order_by(ContentEntry.id).all()
     backgrounds = module.backgrounds or {}
+    from app.lib.module_items import destinations, item_details, sorted_items
     # Maps are listed on their own: region maps first, then the maps entered from their points.
     maps = sorted((entry for entry in entries if entry.pointcrawl),
                   key=lambda entry: (bool(maps_showing(entry)), entry.title.casefold(), entry.id))
     return render_template('campaigns/module.html', campaign=campaign, module=module,
                            hierarchy=material_hierarchy(article_entries(entries)), article_count=len(article_entries(entries)),
-                           maps=[(entry, maps_showing(entry)) for entry in maps], backgrounds=backgrounds)
+                           maps=[(entry, maps_showing(entry)) for entry in maps], backgrounds=backgrounds,
+                           items=[(name, item, item_details(item)) for name, item in sorted_items(module)],
+                           send_choices=destinations(campaign) if module.items else [])
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/export')
@@ -452,6 +461,90 @@ def module_background(campaign_id, module_id):
         text = background_markdown(name, current) if current is not None else BACKGROUND_TEMPLATE
     return render_template('campaigns/background.html', campaign=campaign, module=module, name=name,
                            text=text, error=error)
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/item', methods=['GET', 'POST'])
+def module_item(campaign_id, module_id):
+    """Write an item (Markdown), edit one (?name=), or remove one (#476). Files are added with Add files (import)."""
+    from app.lib.module_items import ITEM_TEMPLATE, ItemError, add_items, item_markdown, parse_item_text, remove_item
+    campaign, module = campaign_module(campaign_id, module_id)
+    name = request.values.get('name', '')
+    current = (module.items or {}).get(name) if name else None
+    # Back where it was opened: the module's page, or (next=wiki) its wiki's Items.
+    back = request.values.get('next') if request.values.get('next') == 'wiki' else 'module'
+    back_url = (url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id) + '#wiki-home-items'
+                if back == 'wiki' else module_page(module) + '#items')
+    if name and current is None:
+        abort(404)
+    error, text = None, None
+    if request.method == 'POST':
+        check_version(module, request.form.get('version'))
+        action = request.form.get('action')
+        try:
+            if action == 'remove':
+                remove_item(module, name)
+            elif action == 'save':
+                text = text_value(request.form.get('text'), 20000, True)
+                new_name, item = parse_item_text(text)
+                if new_name != name and new_name in (module.items or {}):
+                    raise ItemError(f'This module already has an item named "{new_name}".')
+                if name and new_name != name:
+                    remove_item(module, name)  # Renamed.
+                add_items(module, {new_name: item})
+            else:
+                abort(400)
+        except ItemError as exc:
+            error = str(exc)
+        if error is None:
+            module.version += 1
+            db.session.commit()
+            return redirect(back_url)
+        db.session.rollback()
+        if action != 'save':
+            flash(error, 'error')
+            return redirect(back_url)
+    if text is None:
+        text = item_markdown(current) if current is not None else ITEM_TEMPLATE
+    return render_template('campaigns/item.html', campaign=campaign, module=module, name=name, text=text, error=error,
+                           back=back, back_url=back_url)
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/item/send', methods=['GET', 'POST'])
+def send_module_item(campaign_id, module_id):
+    """Send a copy of a module item (#476) to a party: into its storage or a character's inventory.
+    The module keeps its item."""
+    from app.lib.module_items import destination, destinations, item_markdown, send_item
+    campaign, module = campaign_module(campaign_id, module_id)
+    name = request.values.get('name', '')
+    item = (module.items or {}).get(name)
+    if item is None:
+        abort(404)
+    back = request.values.get('next') if request.values.get('next') == 'wiki' else 'module'
+    if request.method == 'POST':
+        target = destination(campaign, request.form.get('to'))
+        if target is None:
+            abort(400, 'Choose a container of one of this campaign\'s parties.')
+        party, holder, container_id = target
+        if party.owner != current_user.id:
+            abort(403)
+        if back == 'wiki':
+            from app.lib.module_items import item_anchor
+            back_url = (url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id)
+                        + '#' + item_anchor(name))
+        else:
+            back_url = module_page(module) + '#items'
+        if send_item(item, holder, container_id) is None:
+            db.session.rollback()
+            flash(_('There is no room for %(item)s in %(container)s. Make room, or choose another container.',
+                    item=name, container=next((c['name'] for c in json.loads(holder.containers or '[]')
+                                               if c['id'] == container_id), '')), 'error')
+            return redirect(back_url)
+        db.session.commit()
+        notify_parties([party.id])
+        flash(_('A copy of %(item)s is now with %(holder)s.', item=name, holder=holder.name), 'success')
+        return redirect(back_url)
+    return render_template('campaigns/item_send.html', campaign=campaign, module=module, name=name,
+                           text=item_markdown(item), choices=destinations(campaign), back=back)
 
 
 # ----- Character options: the backgrounds a party's characters choose from (set on the party page) -----
@@ -620,6 +713,9 @@ def module_wiki(campaign_id, module_id, entry_id=None):
             abort(404)
     context = page_context(campaign, entry, module=module)
     context['module_parties'] = campaign.parties  # Reveal module: to one of the campaign's parties.
+    if entry is None and module.items:  # Send an item (#476), in a modal on the home's item cards.
+        from app.lib.module_items import destinations
+        context['send_choices'] = destinations(campaign)
     return render_wiki(context, entry)
 
 
@@ -1603,6 +1699,33 @@ def party_map_data(party_id, map_id):
 @campaigns.route('/materials/import')
 def import_result():
     return render_template('campaigns/import.html', campaigns=my_campaigns())
+
+
+@campaigns.route('/materials/import-item', methods=['GET', 'POST'])
+def import_item_result():
+    """Save a Tools relic or spellbook (#476) as an item of one of my modules, ready to send to a party."""
+    from app.lib.module_items import ItemError, add_items, parse_item_text
+    error, text, module_id = None, '', request.values.get('module_id', '')
+    if request.method == 'POST':
+        module = db.get_or_404(Module, integer(module_id))
+        campaign, module = campaign_module(module.campaign_id, module.id)  # One of mine.
+        text = text_value(request.form.get('text'), 20000, True)
+        try:
+            name, item = parse_item_text(text)
+            if name in (module.items or {}):
+                raise ItemError(_('%(module)s already has an item named %(item)s. Rename this one, or choose '
+                                  'another module.', module=module.title, item=name))
+            add_items(module, {name: item})
+        except ItemError as exc:
+            error = str(exc)
+        else:
+            module.version += 1
+            db.session.commit()
+            flash(_('%(item)s is an item of %(module)s. Send it to a party from there.', item=name,
+                    module=module.title), 'success')
+            return redirect(module_page(module) + '#items')
+    return render_template('campaigns/import_item.html', module_groups=module_choices(), text=text,
+                           module_id=str(module_id), error=error)
 
 
 @campaigns.route('/articles/tables')

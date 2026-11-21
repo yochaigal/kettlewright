@@ -1,0 +1,32 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token, page_header with context %}
+{# Write or edit one item of a module (#476), in Markdown. #}
+{% block workspace %}
+<nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ back_url }}">← {{ module.title }}</a></nav>
+{{ page_header(_('Edit item') if name else _('New item')) }}
+{% if error %}<p class="import-error" role="alert">{{ error }}</p>{% endif %}
+<form method="post" class="campaign-page-form background-editor">{{ token(module.version) }}
+<input type="hidden" name="action" value="save"><input type="hidden" name="next" value="{{ back }}">
+<label for="item-text">{{ _('Item') }}</label>
+<textarea id="item-text" name="text" rows="14" spellcheck="true" required>{{ text }}</textarea>
+<div class="campaign-actions">
+  <button type="submit" class="primary">{{ _('Save item') }}</button>
+  <a href="{{ back_url }}">{{ _('Cancel') }}</a>
+</div>
+</form>
+{% if name %}
+{# Remove is here, with the item open, not on its card. #}
+<form method="post" class="campaign-actions danger-zone"
+      data-confirm="{{ _('Remove the item %(name)s? Copies already sent stay with the party.', name=name) }}" data-confirm-label="{{ _('Remove') }}">
+  {{ token(module.version) }}<input type="hidden" name="action" value="remove"><input type="hidden" name="next" value="{{ back }}">
+  <button type="submit" class="kw-action kw-action-danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> {{ _('Remove item') }}</button>
+</form>
+{% endif %}
+<details class="import-instructions" open><summary>{{ _('How to write an item') }}</summary>
+<ul>
+<li>{{ _('A ### heading with its name, and its tags in brackets, like [petty, d6], [bulky], [uses 3] or [charges 2/3].') }}</li>
+<li>{{ _('Below it, its description (Markdown). It goes with every copy you send.') }}</li>
+<li>{{ _('Players never see the module\'s items. Send a copy to a party when they find one.') }}</li>
+</ul>
+</details>
+{% endblock %}

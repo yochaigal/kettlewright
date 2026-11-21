@@ -20,7 +20,7 @@ def build(app, client):
                          body='Bellmakers.\n\n## History\n\nOld.\n\n## Members\n\nLed by [[Mira]].')
     mira = create_entry(client, category='npc', title='Mira', body='The guildmaster.', parent_id=guild)
     town = create_entry(client, category='settlement', title='Thornwick', is_heart='on', body='A market town.')
-    relic = create_entry(client, category='relic', title='Bell of Ash', body='It rings at dusk.')
+    relic = create_entry(client, category='lore', title='Bell of Ash', body='It rings at dusk.')
     with app.app_context():
         db.session.add(ContentLink(source_id=relic, target_id=guild))  # A related article.
         db.session.commit()
@@ -33,7 +33,7 @@ def test_home_groups_articles_and_highlights_hearts(setup):
     page = wiki(client).get_data(as_text=True)
     assert '<h1>Secret campaign</h1>' in page and 'campaign-rename' not in page  # Reading only; the lobby renames it.
     assert '4 articles' in page
-    for group in ('Factions', 'POIs', 'Items'):
+    for group in ('Factions', 'POIs', 'Dungeon'):
         assert f'<h2>{group} <small>1</small></h2>' in page
     assert '<h2>People' not in page  # Mira sits inside the guild, so only the top level is grouped.
     # Heart section and its group (picture and title on each card), and the sidebar.
@@ -100,13 +100,13 @@ def test_map_page_shows_its_map_read_only_apart_from_articles(setup):
     assert 'data-save-url' not in page
     assert 'Reveal map' in page and f'href="/maps/{map_id}/edit"' in page and 'SECRET ROOM 0' in page
     sidebar = page[page.index('id="wiki-sidebar"'):page.index('</aside>')]
-    # Maps have their own section in the sidebar; the article tree holds the points (articles), not the map.
+    # Maps have their own section in the sidebar, first; the article tree holds the points (articles), not the map.
     maps = sidebar[sidebar.index('class="wiki-maps"'):sidebar.index('class="wiki-articles-title"')]
     assert 'SECRET MAP' in maps
     assert 'SECRET MAP' not in sidebar[sidebar.index('class="wiki-tree"'):]
     home = wiki(client).get_data(as_text=True)
     main = home[home.index('class="wiki-main"'):]
-    assert 'id="wiki-home-maps"' in main and main.index('id="wiki-home-maps"') < main.index('SECRET ROOM 0')
+    assert 'id="wiki-home-maps"' in main and main.index('SECRET ROOM 0') < main.index('id="wiki-home-maps"')  # Maps below.
 
 
 def test_wiki_is_private_to_the_owner(setup):
@@ -312,7 +312,7 @@ def wiki_card(page, title):
 def test_article_cards_show_a_picture_or_a_placeholder(setup):
     app, client = setup
     pictured = create_entry(client, category='npc', title='Portrait', body='![face](https://example.org/face.png)')
-    create_entry(client, category='relic', title='Plain', body='No picture.')
+    create_entry(client, category='note', title='Plain', body='No picture.')
     page = wiki(client).get_data(as_text=True)
     assert f'<img src="/materials/{pictured}/image"' in wiki_card(page, 'Portrait')
     plain = wiki_card(page, 'Plain')
@@ -377,7 +377,7 @@ def test_party_wiki_home_groups_only_revealed_articles(setup):
     page = client.get('/party/1/wiki/').get_data(as_text=True)
     assert 'class="wiki-layout"' in page and 'id="party-content-results"' in page  # Refreshes live like article pages.
     assert '2 articles' in page
-    for group in ('Factions', 'Items'):
+    for group in ('Factions', 'Dungeon'):
         assert f'<h2>{group} <small>1</small></h2>' in page
     assert f'href="/party/1/materials/{guild}"' in page and 'Bellmakers.' in page
     # No unrevealed articles, campaign cover or Warden tools.
@@ -468,9 +468,9 @@ def test_campaign_opens_on_its_lobby_without_wiki_parts(setup):
     guild, mira, town, relic = build(app, client)
     assert 'href="/campaigns/1/"' in client.get('/campaigns/').get_data(as_text=True)  # Cards open the lobby.
     lobby = client.get('/campaigns/1/').get_data(as_text=True)
-    for part in ('campaign-parties', 'campaign-modules', 'id="campaign-settings-dialog"', 'id="marketplace-dialog"',
-                 'Read everything as wiki', 'href="/campaigns/1/wiki/"'):
+    for part in ('campaign-parties', 'campaign-modules', 'id="campaign-settings-dialog"', 'id="marketplace-dialog"'):
         assert part in lobby
+    assert 'Read everything as wiki' not in lobby  # Modules are read one at a time, from their cards.
     assert 'id="backgrounds-dialog"' not in lobby  # Backgrounds are set per party, on the party page.
     # No wiki: no article tree, groups or front page text.
     for part in ('wiki-sidebar', 'wiki-tree', '<h2>Factions', 'Bellmakers'):
@@ -500,7 +500,7 @@ def test_module_cards_open_the_module_as_a_wiki(setup):
     assert '<h1>Ash Guild<' in article and f'href="/campaigns/1/modules/{first}/wiki/{mira}/"' in article
     assert client.get(f'/campaigns/1/modules/5/wiki/{guild}/').status_code == 404  # Not in that module.
     everything = client.get('/campaigns/1/wiki/').get_data(as_text=True)
-    assert 'Ash Guild' in everything and 'Other lore' in everything  # Read everything as wiki.
+    assert 'Ash Guild' in everything and 'Other lore' in everything  # The campaign's wiki, by its address.
 
 
 def test_reveal_module_reveals_all_its_articles_to_one_party(setup):
