@@ -536,3 +536,21 @@ def test_combined_actor_state_keeps_viewer_permissions_and_private_fields(shared
         db.session.get(Party, 1).members = '[]'
         db.session.commit()
     assert clients[2].get(base + '/actors').status_code == 403
+
+
+def test_localized_bestiary_translates_text_and_keeps_portraits(shared):
+    from flask_babel import force_locale
+    from app.lib.monsters import localized_monster_catalog, new_monster
+    app, _, _ = shared
+    english = monster_catalog()
+    with app.test_request_context('/'), force_locale('es'):
+        catalog = localized_monster_catalog()
+        acolyte = catalog['acolyte']
+        assert acolyte['name'] == 'Acólito'
+        assert acolyte['attack'] == 'daga ceremonial (d6)'
+        assert acolyte['labels']['hp'] == 'PG'
+        assert set(catalog) == set(english)
+        for key, template in catalog.items():
+            assert template['image_url'] == english[key]['image_url']
+        monster = new_monster(None, catalog['acolyte'])
+        assert monster.image_url == english['acolyte']['image_url']

@@ -25,7 +25,7 @@ def helpers():
 @companions.route('/parties/<int:party_id>/monsters', methods=['GET', 'POST'])
 @login_required
 def monsters(party_id):
-    from app.lib.monsters import MAX_MONSTER_BATCH, monster_catalog, parse_monsters, new_monster
+    from app.lib.monsters import MAX_MONSTER_BATCH, localized_monster_catalog, parse_monsters, new_monster
     party = db.get_or_404(Party, party_id)
     if party.owner != current_user.id:
         abort(403)
@@ -43,7 +43,7 @@ def monsters(party_id):
             elif request.form.get('monster_markdown', '').strip():
                 templates = parse_monsters(request.form['monster_markdown'])
             else:
-                catalog = monster_catalog()
+                catalog = localized_monster_catalog()
                 keys = request.form.getlist('template')
                 if not keys or len(keys) != len(set(keys)) or any(key not in catalog for key in keys):
                     raise ValueError('Choose a monster from the bestiary.')
@@ -64,7 +64,7 @@ def monsters(party_id):
         except (ValueError, UnicodeError) as problem:
             db.session.rollback()
             error = str(problem)
-    return render_template('main/monsters.html', party=party, templates=monster_catalog(),
+    return render_template('main/monsters.html', party=party, templates=localized_monster_catalog(),
                            form=FlaskForm(), error=error), 400 if error else 200
 
 
