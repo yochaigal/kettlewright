@@ -100,3 +100,4 @@ def played_parties(user_id):
         return []
     parties = Party.query.filter(Party.id.in_(party_ids), Party.owner != user_id).all()
     return sorted(parties, key=lambda party: party.id, reverse=True)
+

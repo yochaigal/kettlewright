@@ -1,0 +1,17 @@
+{# One picture of its own (#476), for an article, a campaign or a party: pick it, see it, or remove it.
+   The form sends it as `image` (empty: none). value: the stored picture; preview: a URL showing it. #}
+{% macro image_field(value='', preview='', hint='') %}
+<div class="image-field" x-data="articleImage" data-value="{{ value }}" data-preview="{{ preview }}"
+ data-too-big="{{ _('This image is too big. Choose one under 10 MB.') }}">
+<span class="image-field-label">{{ _('Image') }} <small>{{ _('(optional)') }}</small></span>
+<input type="hidden" name="image" :value="value" value="{{ value }}">
+<template x-if="preview"><img class="image-field-preview" :src="preview" alt=""></template>
+<div class="image-field-actions">
+<label class="button image-field-pick"><i class="fa-solid fa-image" aria-hidden="true"></i> <span x-text="preview ? {{ _('Change image')|tojson|forceescape }} : {{ _('Choose image')|tojson|forceescape }}">{{ _('Choose image') }}</span>
+<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="image-field-file" @change="pick($event)"></label>
+<button type="button" class="button" x-show="preview" x-cloak @click="clear()"><i class="fa-solid fa-xmark" aria-hidden="true"></i> {{ _('Remove image') }}</button>
+</div>
+{% if hint %}<p class="image-field-hint">{{ hint }}</p>{% endif %}
+<p class="image-field-hint" x-show="error" x-text="error" role="alert" x-cloak></p>
+</div>
+{% endmacro %}

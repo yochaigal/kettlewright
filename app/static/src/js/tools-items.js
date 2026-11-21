@@ -9,6 +9,23 @@ export const ITEM_PICKERS = [
   {table: 'Spellbook picker', group: 'Spellbooks', category: 'spellbook', id: 'spellbook'},
 ];
 
+// A relic or spellbook as a module item (#476): '### Name [tags]', then what it does. The tables write
+// uses and charges in two spellings (use/uses, charge/charges); module items say 'uses 2', 'charges 1/1'.
+export function itemMarkdown(result) {
+  const fields = result.fields || {};
+  const tags = (fields.tags || []).map(tag => {
+    if (tag === 'use' || tag === 'uses') return `uses ${fields.uses ?? fields.use ?? 1}`;
+    if (tag === 'charge' || tag === 'charges') {
+      const charges = fields.charges ?? fields.charge ?? 1;
+      return `charges ${charges}/${fields.max_charges ?? charges}`;
+    }
+    return tag;
+  });
+  const description = [fields.description, fields.personality ? `_${fields.personality}_` : '']
+    .filter(Boolean).join('\n\n');
+  return `### ${result.title}${tags.length ? ` [${tags.join(', ')}]` : ''}\n${description}\n`;
+}
+
 // key -> the same result a roll on that table gives.
 export function itemCatalog(data, group) {
   const {category} = ITEM_PICKERS.find(picker => picker.group === group);

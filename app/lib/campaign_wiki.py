@@ -134,7 +134,10 @@ def page_context(campaign, entry=None, owner_id=None, module=None):
                    maps=wiki_maps(entries, lambda item: page_url(item['id'])), page_url=page_url,
                    article_count=len(entries), content_categories=CATEGORIES,
                    # Article cards show the article's first picture (served by entry_image).
-                   card_images={item.id for item in entries if first_image(item.body)}, **home)
+                   card_images={item.id for item in entries if item.image or first_image(item.body)}, **home)
+    if module is not None:
+        # Listed on its home and in the sidebar of every page.
+        context.update(module_backgrounds=module_backgrounds(module), module_items=module_items(module))
     if entry is None:
         # The home page: the campaign's front page if it has one (imported adventures
         # do), then its top-level articles by type. Sub-articles are a click away.
@@ -245,6 +248,14 @@ def party_context(party, entry_id=None, owner_view=False, owner_id=None):
 IMAGE_IN_BODY = re.compile(r'!\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)|<img\b[^>]*?\bsrc="([^"]+)"', re.I)
 
 
+def module_backgrounds(module):
+    """A module's backgrounds for its wiki (#476): name, description and their Markdown (no front matter)."""
+    from app.lib.campaign_backgrounds import background_markdown
+    return [{'name': name, 'description': background.get('background_description', ''),
+             'text': background_markdown(name, background).split('---\n', 2)[2]}
+            for name, background in sorted((module.backgrounds or {}).items(), key=lambda item: item[0].casefold())]
+
+
 def first_image(body):
     from app.lib.material_images import LOCAL_IMAGE
     from app.lib.rich_content import IMAGE_URL, remote_image_url
@@ -258,9 +269,11 @@ def first_image(body):
 
 def cover_image(campaign, entries):
     """The first picture in the campaign's front page, else in its other articles."""
+    if campaign.image:  # Its own picture (#476).
+        return campaign.image
     front = [entry for entry in entries if entry.category == 'overview' and entry.title == campaign.name]
     for entry in front + sorted((entry for entry in entries if entry not in front), key=lambda entry: entry.id):
-        url = first_image(entry.body)
+        url = entry.image or first_image(entry.body)
         if url:
             return url
     return None
@@ -271,7 +284,16 @@ def module_cover(module, entries):
     """A module's picture: the first in its front page (the Overview named after it), else in its other articles."""
     front = [entry for entry in entries if entry.category == 'overview' and entry.title == module.title]
     for entry in front + sorted((entry for entry in entries if entry not in front), key=lambda entry: entry.id):
-        url = first_image(entry.body)
+        url = entry.image or first_image(entry.body)
         if url:
             return url
     return None
+
+
+def module_items(module):
+    """A module's items for its wiki (#476): name, badges (its tags, as written: "bulky", "charges 3/3") and
+    description (Markdown)."""
+    from app.lib.module_items import item_details, sorted_items
+    return [{'name': name, 'badges': [tag for tag in item_details(item).split(', ') if tag],
+             'description': item.get('description', '')}
+            for name, item in sorted_items(module)]

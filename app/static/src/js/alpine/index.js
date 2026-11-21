@@ -9,6 +9,7 @@ import newCampaign from './components/new-campaign.js';
 import {contentDraft, revealContent} from './components/content-draft.js';
 import mobileMenu from './components/mobile-menu.js';
 import richText from './components/rich-text.js';
+import articleImage from './components/article-image.js';
 import {richContentHTML, inlineContentHTML} from '../rich-content.js';
 
 // Register every component before starting Alpine, including those in HTMX fragments.
@@ -23,6 +24,7 @@ Alpine.data('newCampaign', newCampaign);
 Alpine.data('contentDraft', contentDraft);
 Alpine.data('revealContent', revealContent);
 Alpine.data('richText', richText);
+Alpine.data('articleImage', articleImage);
 Alpine.magic('richHTML', () => richContentHTML);
 Alpine.magic('markdownInline', () => inlineContentHTML);
 

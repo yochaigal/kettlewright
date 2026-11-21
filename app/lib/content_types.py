@@ -16,8 +16,8 @@ CATEGORIES = {
     'paths': N_('Paths'), 'path': N_('Path'), 'room': N_('Dungeon room'),
     'monster': N_('Monster encounter'), 'ruins': N_('Ruins'), 'shelter': N_('Shelter'),
     'hazard': N_('Hazard'), 'trap': N_('Trap'), 'special': N_('Special'),
-    'overview': N_('Overview'), 'lore': N_('Lore'), 'relic': N_('Relics'), 'note': N_('Notes'),
-    'bestiary': N_('Bestiary'), 'item': N_('Items'), 'spellbook': N_('Spellbooks'),
+    'overview': N_('Overview'), 'lore': N_('Lore'), 'note': N_('Notes'),
+    'bestiary': N_('Bestiary'),
     'map': N_('Geography'), 'custom': N_('Custom'),
     # A pin's note on a map: part of the map, never listed with the articles.
     'map_note': N_('Map note'),
@@ -34,7 +34,6 @@ CATEGORY_GROUPS = {
     'Dungeon': ('dungeon', 'room', 'lore', 'trap', 'special'),
     'Forest': ('forest', 'ruins', 'shelter', 'hazard'),
     N_('Creatures'): ('bestiary', 'monster'),
-    'Items': ('item', 'relic', 'spellbook'),
     'Notes': ('note', 'custom'),
 }
 POINT_TYPES = {'settlement', 'waypoint', 'curiosity', 'lair', 'dungeon', 'forest',
@@ -55,10 +54,14 @@ ARTICLE_MAP_KINDS = {key: key if key in ('realm', 'forest', 'dungeon') else 'fre
                                  'room', 'ruins', 'shelter')}
 CATEGORY_ROOTS = {'Realm': 'realm', 'People': 'people', 'Factions': 'faction',
                   'Topography': 'topography', 'POIs': 'pois', 'Paths': 'paths',
-                  'Items': 'item', 'Notes': 'note'}
+                  'Notes': 'note'}
+# Items, relics and spellbooks are not articles any more (#476): they are a module's items
+# (app/lib/module_items.py). Articles of these old types became Notes (migration 511a01), and
+# files of these types are imported as Notes.
+FORMER_ITEM_TYPES = ('item', 'relic', 'spellbook')
 
 # Authoring containment. A missing parent always permits a standalone article.
-# General library articles (notes, custom content, equipment) are unrestricted.
+# General library articles (notes, custom content) are unrestricted.
 ARTICLE_PARENT_TYPES = {
     'realm': (), 'people': ('realm',),
     'culture': ('people',), 'resources': ('people',), 'npc': ('people', 'faction'),

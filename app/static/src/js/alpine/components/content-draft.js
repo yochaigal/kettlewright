@@ -54,7 +54,7 @@ export function contentDraft() {
       } catch { /* Manual editing remains available. */ }
     },
     get variants() {
-      return {terrain:['Random','Easy','Tough','Perilous','Forest'],bestiary:['Random Monster','Custom Monster'],item:['Gear','Armor','Weapons'],
+      return {terrain:['Random','Easy','Tough','Perilous','Forest'],bestiary:['Random Monster','Custom Monster'],
         note:['Wilderness Events','Dungeon Events']}[this.category] || [];
     },
     async generate() {

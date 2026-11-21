@@ -233,7 +233,8 @@ def known_entries(party_id):
     known = {row.entry_id: {'id': row.entry_id, 'category': row.entry.category,
                            'reference_key': row.entry.reference_key,
                            'title': row.title, 'body': row.body, 'path_type': row.path_type, 'version': row.version,
-                           'has_image': first_image(row.body) is not None,
+                           # Its own image (#476) is shown with what was revealed; it mirrors the original.
+                           'image': row.entry.image, 'has_image': bool(row.entry.image) or first_image(row.body) is not None,
                            'links': [], 'map_id': row.entry.pointcrawl.id if row.entry.pointcrawl else None,
                            'map_kind': row.entry.pointcrawl.kind if row.entry.pointcrawl else None,
                            'map_only': map_only(row.entry)}

@@ -28,7 +28,7 @@ from app.lib.article_references import (private_reference_urls, bind_references,
     headings, tokens)
 from app.lib.content_types import CATEGORY_GROUPS, CATEGORY_ROOTS, ARTICLE_MAP_KINDS, ARTICLE_PARENT_TYPES, PARTY_NOTE
 from app.lib.campaigns import attach_map, map_only, article_entries, reveal_entry, ensure_article_map, ensure_article_tree_maps, populate_realm_map, article_parent_choices, place_new_realm_poi
-from app.lib.material_images import LOCAL_IMAGE, image_directory, cleanup_images, image_references
+from app.lib.material_images import LOCAL_IMAGE, image_directory, cleanup_images, image_references, image_value
 
 campaigns = Blueprint('campaigns', __name__)
 
@@ -64,13 +64,40 @@ def conflict(error):
     return _('This content changed in another tab. Reload before saving.'), 409
 
 
+@campaigns.app_template_global('csrf_token')
+def csrf_token():
+    """A CSRF token for small forms on any page (the star button, #476)."""
+    from flask_wtf.csrf import generate_csrf
+    return generate_csrf()
+
+
 @campaigns.context_processor
 def common_context():
     return {'content_categories': CATEGORIES, 'category_groups': CATEGORY_GROUPS, 'category_roots': CATEGORY_ROOTS, 'article_map_kinds': ARTICLE_MAP_KINDS, 'article_parent_types': ARTICLE_PARENT_TYPES,
             'point_categories': {k: CATEGORIES[k] for k in CATEGORIES if k in POINT_TYPES}, 'path_types': PATH_TYPES,
             'content_form': FlaskForm(), 'render_content': render_content, 'content_excerpt': content_excerpt,
             'private_reference_urls': private_reference_urls, 'module_parts': _module_parts(),
-            'part_badges': _part_badges}
+            'part_badges': _part_badges, 'is_starred': _is_starred, 'background_anchor': _background_anchor,
+            'item_anchor': _item_anchor}
+
+
+def _is_starred(kind, target_id, name=''):
+    """Whether this person starred it (#476); their stars are read once per request."""
+    from flask import g
+    from app.lib.stars import star_keys
+    if 'star_keys' not in g:
+        g.star_keys = star_keys(current_user.id)
+    return (kind, target_id, name) in g.star_keys
+
+
+def _background_anchor(name):
+    from app.lib.stars import background_anchor
+    return background_anchor(name)
+
+
+def _item_anchor(name):
+    from app.lib.module_items import item_anchor
+    return item_anchor(name)
 
 
 def _module_parts():
@@ -185,6 +212,7 @@ def index():
         return new_campaign(request.form.get('name'))
     from app.lib.campaign_wiki import cover_image
     from app.lib.campaign_parties import party_cards, played_parties
+    from app.lib.stars import starred_cards
     campaigns_list = my_campaigns()
     entries = library_entries().order_by(ContentEntry.title).all()
     by_campaign = {campaign.id: [e for e in entries if e.campaign_id == campaign.id] for campaign in campaigns_list}
@@ -192,7 +220,21 @@ def index():
         parties={c.id: c.parties for c in campaigns_list},
         covers={campaign.id: cover_image(campaign, by_campaign[campaign.id]) is not None for campaign in campaigns_list},
         # Players reach the parties they play in (other Wardens' campaigns) from here.
-        played=party_cards(played_parties(current_user.id)))
+        played=party_cards(played_parties(current_user.id)),
+        starred=starred_cards(current_user.id))
+
+
+@campaigns.route('/stars', methods=['POST'])
+def star():
+    """Star or unstar (#476) a party, module, article, map or background: a bookmark on the Campaigns page."""
+    from app.lib.stars import toggle_star
+    toggle_star(request.form.get('kind', ''), integer(request.form.get('target_id')),
+                (request.form.get('name') or '')[:200], request.form.get('starred', '1') == '1')
+    target = request.form.get('next', '')
+    # Back where the star was pressed; only to a page of this site.
+    if not target.startswith('/') or target.startswith('//') or '\\' in target:
+        target = url_for('campaigns.index')
+    return redirect(target)
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/cover')
@@ -200,7 +242,15 @@ def campaign_cover(campaign_id):
     """The campaign card's picture: the first image in its articles."""
     from app.lib.campaign_wiki import campaign_entries, cover_image
     campaign = owned(Campaign, campaign_id)
-    return card_image(cover_image(campaign, campaign_entries(campaign)))
+    url = cover_image(campaign, campaign_entries(campaign))
+    return card_image(url, own=bool(campaign.image) and url == campaign.image)
+
+
+@campaigns.route('/party/<int:party_id>/image')
+def party_image(party_id):
+    """A party's own picture (#476), for anyone in the party."""
+    party = party_access(party_id)
+    return card_image(party.image or None, own=True)
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/cover')
@@ -211,7 +261,7 @@ def module_cover(campaign_id, module_id):
     return card_image(cover(module, list(module.entries)))
 
 
-def card_image(url):
+def card_image(url, own=False):
     """Serve a card's picture: inline uploads as bytes (not a 500 KB page attribute), anything else by redirect."""
     import base64
     from app.lib.rich_content import IMAGE_URL
@@ -220,6 +270,11 @@ def card_image(url):
     if IMAGE_URL.fullmatch(url):
         kind, data = url[len('data:'):].split(';base64,', 1)
         response = current_app.response_class(base64.b64decode(data), mimetype=kind)
+    elif own and LOCAL_IMAGE.fullmatch(url):
+        # An article's own stored image (#476): the caller checked who may see it. It is in no text,
+        # so /material-images (which checks the texts) would not serve it.
+        match = LOCAL_IMAGE.fullmatch(url)
+        response = send_from_directory(image_directory() / match[1], match[2], mimetype='image/webp')
     else:
         response = redirect(url)
     response.headers['X-Content-Type-Options'] = 'nosniff'  # Caching follows the blueprint: private, no-store.
@@ -228,20 +283,23 @@ def card_image(url):
 
 @campaigns.route('/materials/<int:entry_id>/image')
 def entry_image(entry_id):
-    """An article card's picture, for its owner: the first image in the article."""
-    from app.lib.campaign_wiki import first_image
-    return card_image(first_image(article(entry_id).body))
+    """An article card's picture, for its owner: its own image (#476), else the first image in its text."""
+    from app.lib.material_images import article_image
+    entry = article(entry_id)
+    url = article_image(entry)
+    return card_image(url, own=url == entry.image)
 
 
 @campaigns.route('/party/<int:party_id>/materials/<int:entry_id>/image')
 def party_entry_image(party_id, entry_id):
-    """A party card's picture: the first image in what this party was shown, never the private original."""
+    """A party card's picture: the article's own image (#476), else the first image in what this party
+    was shown. Only for what it was shown."""
     from app.lib.campaign_wiki import first_image
     party_access(party_id)
     entry = known_entries(party_id).get(entry_id)
     if entry is None:
         abort(404)
-    return card_image(first_image(entry['body']))
+    return card_image(entry['image'] or first_image(entry['body']), own=bool(entry['image']))
 
 
 @campaigns.route('/campaigns/create', methods=['POST'])
@@ -318,7 +376,7 @@ def new_module(campaign_id):
 
 @campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/', methods=['GET', 'POST'])
 def module_view(campaign_id, module_id):
-    """A module: its articles, notes, maps and backgrounds. POST renames it."""
+    """A module: its articles, notes, maps, backgrounds and items. POST renames it."""
     from app.lib.campaign_backgrounds import background_markdown
     campaign, module = campaign_module(campaign_id, module_id)
     if request.method == 'POST':
@@ -329,12 +387,15 @@ def module_view(campaign_id, module_id):
         return redirect(module_page(module))
     entries = library_entries().filter_by(module_id=module.id).order_by(ContentEntry.id).all()
     backgrounds = module.backgrounds or {}
+    from app.lib.module_items import destinations, item_details, sorted_items
     # Maps are listed on their own: region maps first, then the maps entered from their points.
     maps = sorted((entry for entry in entries if entry.pointcrawl),
                   key=lambda entry: (bool(maps_showing(entry)), entry.title.casefold(), entry.id))
     return render_template('campaigns/module.html', campaign=campaign, module=module,
                            hierarchy=material_hierarchy(article_entries(entries)), article_count=len(article_entries(entries)),
-                           maps=[(entry, maps_showing(entry)) for entry in maps], backgrounds=backgrounds)
+                           maps=[(entry, maps_showing(entry)) for entry in maps], backgrounds=backgrounds,
+                           items=[(name, item, item_details(item)) for name, item in sorted_items(module)],
+                           send_choices=destinations(campaign) if module.items else [])
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/export')
@@ -400,6 +461,90 @@ def module_background(campaign_id, module_id):
         text = background_markdown(name, current) if current is not None else BACKGROUND_TEMPLATE
     return render_template('campaigns/background.html', campaign=campaign, module=module, name=name,
                            text=text, error=error)
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/item', methods=['GET', 'POST'])
+def module_item(campaign_id, module_id):
+    """Write an item (Markdown), edit one (?name=), or remove one (#476). Files are added with Add files (import)."""
+    from app.lib.module_items import ITEM_TEMPLATE, ItemError, add_items, item_markdown, parse_item_text, remove_item
+    campaign, module = campaign_module(campaign_id, module_id)
+    name = request.values.get('name', '')
+    current = (module.items or {}).get(name) if name else None
+    # Back where it was opened: the module's page, or (next=wiki) its wiki's Items.
+    back = request.values.get('next') if request.values.get('next') == 'wiki' else 'module'
+    back_url = (url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id) + '#wiki-home-items'
+                if back == 'wiki' else module_page(module) + '#items')
+    if name and current is None:
+        abort(404)
+    error, text = None, None
+    if request.method == 'POST':
+        check_version(module, request.form.get('version'))
+        action = request.form.get('action')
+        try:
+            if action == 'remove':
+                remove_item(module, name)
+            elif action == 'save':
+                text = text_value(request.form.get('text'), 20000, True)
+                new_name, item = parse_item_text(text)
+                if new_name != name and new_name in (module.items or {}):
+                    raise ItemError(f'This module already has an item named "{new_name}".')
+                if name and new_name != name:
+                    remove_item(module, name)  # Renamed.
+                add_items(module, {new_name: item})
+            else:
+                abort(400)
+        except ItemError as exc:
+            error = str(exc)
+        if error is None:
+            module.version += 1
+            db.session.commit()
+            return redirect(back_url)
+        db.session.rollback()
+        if action != 'save':
+            flash(error, 'error')
+            return redirect(back_url)
+    if text is None:
+        text = item_markdown(current) if current is not None else ITEM_TEMPLATE
+    return render_template('campaigns/item.html', campaign=campaign, module=module, name=name, text=text, error=error,
+                           back=back, back_url=back_url)
+
+
+@campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/item/send', methods=['GET', 'POST'])
+def send_module_item(campaign_id, module_id):
+    """Send a copy of a module item (#476) to a party: into its storage or a character's inventory.
+    The module keeps its item."""
+    from app.lib.module_items import destination, destinations, item_markdown, send_item
+    campaign, module = campaign_module(campaign_id, module_id)
+    name = request.values.get('name', '')
+    item = (module.items or {}).get(name)
+    if item is None:
+        abort(404)
+    back = request.values.get('next') if request.values.get('next') == 'wiki' else 'module'
+    if request.method == 'POST':
+        target = destination(campaign, request.form.get('to'))
+        if target is None:
+            abort(400, 'Choose a container of one of this campaign\'s parties.')
+        party, holder, container_id = target
+        if party.owner != current_user.id:
+            abort(403)
+        if back == 'wiki':
+            from app.lib.module_items import item_anchor
+            back_url = (url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id)
+                        + '#' + item_anchor(name))
+        else:
+            back_url = module_page(module) + '#items'
+        if send_item(item, holder, container_id) is None:
+            db.session.rollback()
+            flash(_('There is no room for %(item)s in %(container)s. Make room, or choose another container.',
+                    item=name, container=next((c['name'] for c in json.loads(holder.containers or '[]')
+                                               if c['id'] == container_id), '')), 'error')
+            return redirect(back_url)
+        db.session.commit()
+        notify_parties([party.id])
+        flash(_('A copy of %(item)s is now with %(holder)s.', item=name, holder=holder.name), 'success')
+        return redirect(back_url)
+    return render_template('campaigns/item_send.html', campaign=campaign, module=module, name=name,
+                           text=item_markdown(item), choices=destinations(campaign), back=back)
 
 
 # ----- Character options: the backgrounds a party's characters choose from (set on the party page) -----
@@ -516,6 +661,8 @@ def lobby(campaign_id):
     if request.method == 'POST':
         check_version(campaign, request.form.get('version'))
         campaign.name = text_value(request.form.get('name'), 200, True)
+        if 'image' in request.form:
+            campaign.image = image_value(request.form['image'])
         campaign.version += 1
         db.session.commit()
         return redirect(url_for('campaigns.lobby', campaign_id=campaign.id))
@@ -566,6 +713,9 @@ def module_wiki(campaign_id, module_id, entry_id=None):
             abort(404)
     context = page_context(campaign, entry, module=module)
     context['module_parties'] = campaign.parties  # Reveal module: to one of the campaign's parties.
+    if entry is None and module.items:  # Send an item (#476), in a modal on the home's item cards.
+        from app.lib.module_items import destinations
+        context['send_choices'] = destinations(campaign)
     return render_wiki(context, entry)
 
 
@@ -731,7 +881,7 @@ def new_entry():
         title = text_value(request.form.get('title'), 200, True)
         body = content_value(request.form.get('body', ''))
         entry = ContentEntry(owner_id=current_user.id, campaign=campaign, module=module, category=category,
-                             title=title, body=body,
+                             title=title, body=body, image=image_value(request.form.get('image')),
                              is_heart=category == 'settlement' and request.form.get('is_heart') == 'on',
                              path_type=request.form.get('path_type', 'standard'))
         if entry.path_type not in PATH_TYPES:
@@ -847,6 +997,8 @@ def edit_entry(entry_id):
                 save_geometry(entry.pointcrawl, graph)
         entry.title = text_value(request.form.get('title', ''), 200)
         entry.body = content_value(request.form.get('body', ''))
+        if 'image' in request.form:
+            entry.image = image_value(request.form['image'])
         if entry.category not in ('map', 'path'):
             category = request.form.get('category', entry.category)
             if entry.pointcrawl and category == 'map':
@@ -1458,14 +1610,17 @@ def party_map_view(party_id, map_id):
     """A revealed map for the party: what it was shown, under its fog, with its pins.
     Members add pins; the Warden also uncovers the fog."""
     from flask_wtf.csrf import generate_csrf
-    from app.lib.campaign_wiki import party_url
+    from app.lib.campaign_wiki import party_context
     party = party_access(party_id)
     pointcrawl = db.get_or_404(PointcrawlMap, map_id)
     row = map_presentation(party, pointcrawl)
-    return render_template('campaigns/party_map.html', party=party, pointcrawl=pointcrawl, row=row, csrf=generate_csrf(),
+    warden = party.owner == current_user.id
+    # Inside the party wiki (#476): its sidebar lists the maps and articles, this map marked.
+    context = party_context(party, owner_view=warden, owner_id=current_user.id)
+    context.update(breadcrumbs=[], current_map_id=pointcrawl.id)
+    return render_template('campaigns/party_map.html', pointcrawl=pointcrawl, row=row, csrf=generate_csrf(),
                            graph=map_projection(pointcrawl, party.id), state=map_state(party, pointcrawl, row),
-                           warden=party.owner == current_user.id, back_url=party_url(party), map_only=map_only(pointcrawl.entry),
-                           maps=revealed_maps(party.id))
+                           warden=warden, map_only=map_only(pointcrawl.entry), **context)
 
 
 @campaigns.route('/party/<int:party_id>/map/<int:map_id>/state')
@@ -1546,6 +1701,33 @@ def import_result():
     return render_template('campaigns/import.html', campaigns=my_campaigns())
 
 
+@campaigns.route('/materials/import-item', methods=['GET', 'POST'])
+def import_item_result():
+    """Save a Tools relic or spellbook (#476) as an item of one of my modules, ready to send to a party."""
+    from app.lib.module_items import ItemError, add_items, parse_item_text
+    error, text, module_id = None, '', request.values.get('module_id', '')
+    if request.method == 'POST':
+        module = db.get_or_404(Module, integer(module_id))
+        campaign, module = campaign_module(module.campaign_id, module.id)  # One of mine.
+        text = text_value(request.form.get('text'), 20000, True)
+        try:
+            name, item = parse_item_text(text)
+            if name in (module.items or {}):
+                raise ItemError(_('%(module)s already has an item named %(item)s. Rename this one, or choose '
+                                  'another module.', module=module.title, item=name))
+            add_items(module, {name: item})
+        except ItemError as exc:
+            error = str(exc)
+        else:
+            module.version += 1
+            db.session.commit()
+            flash(_('%(item)s is an item of %(module)s. Send it to a party from there.', item=name,
+                    module=module.title), 'success')
+            return redirect(module_page(module) + '#items')
+    return render_template('campaigns/import_item.html', module_groups=module_choices(), text=text,
+                           module_id=str(module_id), error=error)
+
+
 @campaigns.route('/articles/tables')
 @campaigns.route('/maps/tables')
 def map_tables():
@@ -1558,7 +1740,9 @@ def material_image(owner_id, filename):
     url = f'/material-images/{owner_id}/{filename}'
     if not LOCAL_IMAGE.fullmatch(url):
         abort(404)
-    originals = ContentEntry.query.filter_by(owner_id=owner_id).filter(ContentEntry.body.contains(url)).all()
+    # Its owner sees it in a text or as an article's own image (#476), e.g. as a campaign cover.
+    originals = ContentEntry.query.filter_by(owner_id=owner_id).filter(
+        db.or_(ContentEntry.body.contains(url), ContentEntry.image == url)).all()
     versions = PartyPresentation.query.join(ContentEntry).filter(
         ContentEntry.owner_id == owner_id, PartyPresentation.body.contains(url)).all()
     allowed = current_user.id == owner_id and bool(originals or versions)

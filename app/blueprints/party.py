@@ -593,6 +593,7 @@ def party_view(ownername, party_url):
     party_url, characters, join_code, is_owner, is_subowner,ownername, inventory, party = get_party_data(ownername, party_url)
     from app.lib.monsters import monster_catalog
     from app.lib.campaign_backgrounds import background_panel
+    from app.models import Star
     can_view_rolls = current_user.id in party_recipient_ids(party)
     # Party notes and revealed articles are read in the party wiki (#440); the page only links to it.
     campaign_enabled = can_view_rolls
@@ -604,7 +605,10 @@ def party_view(ownername, party_url):
                            rolls=PartyRoll.latest(party.id, current_user.id) if can_view_rolls else [],
                            online=connected_owners(party, characters),
                            wilderness_mounts=wilderness_mounts(party, characters),
-                           backgrounds=background_panel(party) if is_owner and campaign_enabled else None))
+                           backgrounds=background_panel(party) if is_owner and campaign_enabled else None,
+                           # A bookmark (#476) for anyone in the party; None hides the star.
+                           starred=Star.query.filter_by(user_id=current_user.id, kind='party', target_id=party.id).first() is not None
+                           if can_view_rolls else None))
     response.headers['Cache-Control'] = 'no-store'
     return response
 
@@ -727,6 +731,9 @@ def party_edit_save(ownername, party_url):
     form = PartyEditForm(obj=party) 
     for field in fields_to_update:
         setattr(party, field, sanitize_data(getattr(form, field).data))
+    if 'image' in request.form:  # Its picture (#476).
+        from app.lib.material_images import image_value
+        party.image = image_value(request.form['image'])
     # Move the party to another of the Warden's campaigns; it keeps what it was shown.
     campaign_id = request.form.get('campaign_id', '')
     if campaign_id:

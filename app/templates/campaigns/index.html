@@ -1,13 +1,14 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import token with context %}
+{% from 'partial/star_button.html' import star_button with context %}
 {% block workspace %}
 {# Like the characters page: the actions on one row, no page title. #}
 <div class="characters-page-header campaigns-page-header" x-data="{}">
   <span class="characters-create-actions">
-    <button type="button" class="is-new" aria-haspopup="dialog" @click="$refs.createDialog.showModal()">{{ _('New campaign') }}</button>
+    <button type="button" class="is-new" aria-haspopup="dialog" @click="$refs.createDialog.showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New campaign') }}</button>
   </span>
 {# A campaign starts with its party; modules (maps, backgrounds, articles) are added inside it. #}
-<dialog class="create-dialog" x-ref="createDialog" @close="$refs.createDialog.querySelector('form').reset()" aria-labelledby="create-title">
+<dialog class="create-dialog" id="new-campaign-dialog" x-ref="createDialog" @close="$refs.createDialog.querySelector('form').reset()" aria-labelledby="create-title">
 <h2 id="create-title">{{ _('New campaign') }}</h2>
 <form method="post" action="{{ url_for('campaigns.index') }}">{{ token() }}
 <label>{{ _('Name') }}<input type="text" name="name" required maxlength="200" autofocus></label>
@@ -18,11 +19,28 @@
 </div>
 
 <div class="campaign-gallery-page" x-data="materialTree">
-{% if campaigns|length > 3 %}
-<div class="campaign-actions tree-toolbar" role="search">
-<div class="search-field"><label>{{ _('Search') }}<input type="search" x-model="query" @input="filter()" placeholder="{{ _('Search campaigns and their articles') }}"></label></div>
-</div>
-<p x-show="filtering && !matches" x-cloak>{{ _('No matching campaigns.') }}</p>
+
+{% if starred %}
+{# Starred (#476): an island of bookmarks, first. Each card's star unstars it. #}
+{% set kind_labels = {'party': _('Party'), 'module': _('Module'), 'article': _('Article'), 'map': _('Map'), 'background': _('Background')} %}
+{% set kind_icons = {'party': 'fa-users', 'module': 'fa-box-open', 'article': 'fa-file-lines', 'map': 'fa-map', 'background': 'fa-user-gear'} %}
+<section class="starred-island" aria-label="{{ _('Starred') }}">
+<ul class="starred-cards">
+{% for card in starred %}
+<li class="starred-card" data-tree-row data-search="{{ card.title|lower }}">
+  {% if card.picture %}<img class="starred-card-picture" src="{{ card.picture }}" alt="" loading="lazy">
+  {% else %}<span class="starred-card-icon" aria-hidden="true"><i class="fa-solid {{ kind_icons[card.kind] }}"></i></span>{% endif %}
+  <span class="starred-card-body">
+    <span class="starred-card-kind">{{ kind_labels[card.kind] }}</span>
+    <a class="starred-card-title" href="{{ card.url }}">{{ card.title|markdown_inline }}</a>
+    {% if card.subtitle %}<span class="starred-card-meta">{% if card.kind == 'party' %}{{ _('Warden') }}: {% endif %}{{ card.subtitle|markdown_inline|striptags }}</span>{% endif %}
+    {% if card.members %}<span class="campaign-party-members">{% for member in card.members[:6] %}<img src="{{ member.src }}" alt="" title="{{ member.name }}" loading="lazy">{% endfor %}</span>{% endif %}
+  </span>
+  {{ star_button(card.kind if card.kind != 'map' else 'map', card.target_id, card.name, starred=True) }}
+</li>
+{% endfor %}
+</ul>
+</section>
 {% endif %}
 
 <div class="gallery-main">
@@ -44,7 +62,7 @@
 {% endfor %}
 </ul>
 {% else %}
-<p class="gallery-empty">{{ _('No campaigns yet.') }} <button type="button" class="link-button" @click="$root.closest('.campaign-workspace').querySelector('.create-dialog').showModal()">{{ _('New campaign') }}</button></p>
+<p class="gallery-empty">{{ _('No campaigns yet.') }} <button type="button" class="link-button" onclick="document.getElementById('new-campaign-dialog').showModal()">{{ _('New campaign') }}</button></p>
 {% endif %}
 </div>
 

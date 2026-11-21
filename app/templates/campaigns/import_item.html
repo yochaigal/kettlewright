@@ -1,0 +1,30 @@
+{% extends 'campaigns/layout.html' %}
+{% from 'campaigns/forms.html' import token, page_header with context %}
+{# Save a Tools relic or spellbook (#476) as an item of a module. Tools leaves it in sessionStorage. #}
+{% block workspace %}
+{% call page_header(_('Save an item to a module')) %}<button type="submit" form="tools-item-form" class="primary">{{ _('Save') }}</button>{% endcall %}
+{% if error %}<p class="import-error" role="alert">{{ error }}</p>{% endif %}
+{% if module_groups|selectattr(1)|list %}
+<form id="tools-item-form" method="post" class="campaign-page-form background-editor">{{ token() }}
+<label>{{ _('Module') }}<select name="module_id" required>
+{% for campaign, modules in module_groups %}{% if modules %}<optgroup label="{{ campaign.name|markdown_inline|striptags }}">
+{% for module in modules %}<option value="{{ module.id }}" {% if module_id == module.id|string %}selected{% endif %}>{{ module.title }}</option>{% endfor %}
+</optgroup>{% endif %}{% endfor %}
+</select></label>
+<label for="tools-item-text">{{ _('Item') }}</label>
+<textarea id="tools-item-text" name="text" rows="12" spellcheck="true" required data-tools-item>{{ text }}</textarea>
+<p class="import-hint">{{ _('A ### heading with its name and tags in brackets, its description below. Players never see a module\'s items: Send gives a party a copy.') }}</p>
+</form>
+{% if not text %}
+<script>
+  // The relic or spellbook Tools saved (tools.js), unless the form came back with an error.
+  try {
+    const text = sessionStorage.getItem('kw-item-result');
+    if (text) document.querySelector('[data-tools-item]').value = text;
+  } catch { /* Write it by hand. */ }
+</script>
+{% endif %}
+{% else %}
+<p class="wiki-empty">{{ _('Create a campaign first: items are kept in its modules.') }} <a href="{{ url_for('campaigns.index') }}">{{ _('Campaigns') }}</a></p>
+{% endif %}
+{% endblock %}

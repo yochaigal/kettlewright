@@ -1,5 +1,6 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import token, category, rich_editor, page_header, modal, modal_footer, reveal_dialog with context %}
+{% from 'partial/image_field.html' import image_field with context %}
 {% block workspace %}
 {% include 'campaigns/parents.html' %}
 {# Articles are text. A map is edited in the map editor; an article that has a map (a dungeon point
@@ -18,6 +19,9 @@
 <div class="article-layout">
 <div class="article-main">
 <label>{{ _('Title') }}<input type="text" name="title" maxlength="200" value="{{ entry.title if entry else initial_title|default('') }}" x-model="title" {% if not entry %}required{% endif %}></label>
+{# Its own picture (#476), apart from the text: shown above it and on the article's card. #}
+{{ image_field(entry.image if entry else '', url_for('campaigns.entry_image', entry_id=entry.id) if entry and entry.image else '',
+   _('Shown above the text and on the article’s card.')) }}
 {{ rich_editor(_('Description'), entry.body if entry else '', model='body') }}
 <div x-show="category==='path'" x-cloak>
 <label>{{ _('Path type') }}<select name="path_type">{% for kind in path_types %}<option value="{{ kind }}" {% if entry and entry.path_type == kind %}selected{% endif %}>{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>

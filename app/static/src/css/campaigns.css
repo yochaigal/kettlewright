@@ -51,7 +51,8 @@
 .campaign-workspace .campaign-actions > button:disabled {opacity:.45;cursor:default;}
 .content-text {white-space:pre-wrap;overflow-wrap:anywhere;}
 .campaign-workspace fieldset {min-width:0;margin:1rem 0;padding:1rem;}
-.pointcrawl-canvas {display:block;box-sizing:border-box;width:100%;height:640px;border:1px solid currentColor;background:var(--bg,#fff);}
+/* Maps take almost the whole window (#476); Full screen takes all of it. */
+.pointcrawl-canvas {display:block;box-sizing:border-box;width:100%;height:clamp(520px,calc(100vh - 160px),1400px);border:1px solid currentColor;background:var(--bg,#fff);}
 .map-editor-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;}
 .campaign-workspace .map-editor-grid > section {margin:0;}
 .map-editor-grid label {min-width:0;}
@@ -65,7 +66,7 @@
 .map-article-coordinates input[type=number],.map-article-type select,.map-article-type input[type=checkbox] {margin:0;}
 .campaign-status {min-height:1.5rem;white-space:pre-wrap;}
 [x-cloak] {display:none!important;}
-@media(max-width:600px) {.pointcrawl-canvas{height:520px}.map-editor-grid{grid-template-columns:1fr}.campaign-workspace{padding:.75rem}}
+@media(max-width:600px) {.pointcrawl-canvas{height:calc(100vh - 120px);min-height:420px}.map-editor-grid{grid-template-columns:1fr}.campaign-workspace{padding:.75rem}}
 
 
 .article-generator {border-block:1px solid currentColor;margin:1rem 0;padding:.25rem 0;}
@@ -194,7 +195,7 @@
 .campaign-workspace .starter-row > form > button:focus-visible {outline:2px solid currentColor;outline-offset:3px;}
 .starter-row .sr-only,
 .create-dialog .sr-only {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
-section.body-container > .sheet.campaign-workspace {background:transparent;box-shadow:none;}
+section.body-container > .sheet.campaign-workspace {background:transparent;box-shadow:none;border:0;border-radius:0;}
 .campaign-workspace section[aria-labelledby="starter-heading"] {position:relative;display:grid;grid-template-columns:minmax(8em,min(25em,40%)) minmax(0,1fr) auto;column-gap:1.5em;row-gap:1em;align-items:center;margin:2.5em 0 3em;padding:1.75em 1.25em 1.25em;border:1px solid currentColor;border-radius:.4em;}
 .campaign-workspace #starter-heading {position:absolute;top:0;left:1.25em;transform:translateY(-50%);max-width:calc(100% - 2.5em);margin:0;padding:0 .5em;background:var(--bg);}
 .campaign-workspace .starter-row,.campaign-workspace .starter-row > .tree-row {display:contents;}
@@ -334,6 +335,9 @@ aside:where(.campaign-wiki *), article:where(.campaign-wiki *), header:where(.ca
 .campaign-wiki {--wiki-muted:color-mix(in srgb,var(--fg) 62%,var(--bg));--wiki-line:color-mix(in srgb,var(--fg) 18%,var(--bg));--wiki-soft:color-mix(in srgb,var(--fg) 5%,var(--bg));}
 .campaign-wiki .wiki-topbar {display:flex;align-items:center;justify-content:space-between;gap:1em;}
 .campaign-wiki .wiki-menu-toggle {display:none;align-items:center;gap:.4em;min-height:44px;}
+.wiki-backdrop {display:none;}
+.wiki-sidebar-close {display:none;position:absolute;top:.6em;right:.6em;align-items:center;justify-content:center;width:2.4em;height:2.4em;margin:0;padding:0;border:0;border-radius:8px;background:color-mix(in srgb,var(--fg) 7%,var(--bg));color:inherit;font-size:1em;cursor:pointer;}
+@media (prefers-reduced-motion:reduce) {.wiki-sidebar {transition:none;}}
 .wiki-layout {display:grid;grid-template-columns:minmax(13em,17em) minmax(0,1fr);gap:2.5em;align-items:start;margin-top:1em;}
 .wiki-sidebar {position:sticky;top:1em;max-height:calc(100dvh - 2em);overflow:auto;padding-right:1em;border-right:1px solid var(--wiki-line);}
 .wiki-campaign-name {display:block;margin-bottom:.75em;font-size:1.15em;font-weight:700;text-decoration:none;color:inherit;}
@@ -395,8 +399,13 @@ aside:where(.campaign-wiki *), article:where(.campaign-wiki *), header:where(.ca
 @media (max-width:760px) {
   .campaign-wiki .wiki-menu-toggle {display:inline-flex;}
   .wiki-layout {grid-template-columns:minmax(0,1fr);gap:1em;}
-  .wiki-sidebar {position:static;display:none;max-height:none;padding:1em 0;border-right:0;border-bottom:1px solid var(--wiki-line);}
-  .wiki-sidebar.is-open {display:block;}
+  /* The sidebar is a panel that slides in from the left, over the page, with a backdrop. */
+  .wiki-sidebar {position:fixed;top:0;bottom:0;left:0;z-index:91;width:min(320px,85vw);max-height:none;box-sizing:border-box;
+    padding:3.5em 1em 1.5em;overflow-y:auto;border-right:0;background:var(--bg);box-shadow:8px 0 30px rgba(0,0,0,.2);
+    transform:translateX(-105%);transition:transform .2s ease;visibility:hidden;}
+  .wiki-sidebar.is-open {transform:none;visibility:visible;}
+  .wiki-backdrop {position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.35);}
+  .wiki-sidebar-close {display:inline-flex !important;}
   .wiki-header {flex-direction:column;}
 }
 
@@ -691,7 +700,7 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 .campaign-workspace .module-page .module-panel .module-section-head {margin-bottom:.75em;}
 
 /* Buttons are square, like New campaign: solid for the main action, outlined otherwise.
-   Only buttons on cards (modules, campaigns, wiki articles, the Marketplace) stay round. */
+   Only buttons on cards (modules, campaigns, wiki articles and items, the Marketplace) stay round. */
 .campaign-workspace .kw-action,
 .campaign-workspace .soft-header .campaign-page-actions > a,
 .campaign-workspace .soft-header .campaign-page-actions > button:not(.primary),
@@ -701,7 +710,7 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 .campaign-workspace .soft-header .campaign-page-actions > button.primary {border-radius:2px;}
 .campaign-workspace .kw-action-danger, .campaign-workspace .kw-action.wiki-danger,
 .campaign-workspace .danger-zone .campaign-modal-trigger {border-color:#a33b3b;color:#a33b3b;}
-.campaign-workspace :is(.campaign-module-card, .campaign-card, .wiki-card, .pw-card, .marketplace-card, .campaign-party-card) .kw-action {
+.campaign-workspace :is(.campaign-module-card, .campaign-card, .wiki-card, .wiki-item-card, .pw-card, .marketplace-card, .campaign-party-card) .kw-action {
   min-height:32px;padding:.25em .75em;border:1px solid color-mix(in srgb,var(--fg) 35%,var(--bg));border-radius:999px;font-size:.85em;}
 /* Module cards carry their picture, like campaign cards. */
 .campaign-wiki .wiki-audience .campaign-module-cards > li {padding:0 0 .9em;overflow:hidden;}
@@ -739,7 +748,7 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 @media (max-width:640px) {
   .campaign-lobby .campaign-party-row {grid-template-columns:minmax(0,1fr) auto;}
   .campaign-lobby .campaign-party-members {grid-column:1 / -1;grid-row:2;}
-  .campaign-lobby .section-actions {margin-left:0;}
+  .campaign-lobby .section-actions {margin-left:auto;flex-wrap:nowrap;}  /* Beside the title: the Marketplace is its icon. */
 }
 /* Manage revealed: compact Hide per article; one footer row. */
 .revealed-dialog .revealed-list li {gap:.4em .75em;padding:.6em 0;}
@@ -762,16 +771,17 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 .party-map-page .wiki-actions {display:flex;flex-wrap:wrap;gap:.5em;align-items:center;}
 .party-map-page .wiki-actions > * {margin:0;}
 .party-map-page .wiki-edit.is-active {background:var(--fg);color:var(--bg);}
-.party-map-switch {margin:0;}
-.party-map-switch select {min-height:44px;padding:0 .8em;border:1.5px solid var(--fg);border-radius:2px;background:var(--bg);color:var(--fg);font:inherit;font-weight:600;}
 .party-map-fog {display:flex;flex-wrap:wrap;align-items:center;gap:.5em .6em;margin:.5em 0;padding:.6em .9em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;}
 .party-map-fog .fog-button {min-height:34px;padding:.3em .8em;border:1.5px solid var(--fg);border-radius:2px;background:transparent;color:var(--fg);font:inherit;font-size:.88em;font-weight:600;cursor:pointer;}
 .party-map-fog .fog-button[aria-pressed="true"] {background:var(--fg);color:var(--bg);}
 .party-map-fog .fog-button:disabled {opacity:.4;cursor:default;}
 .party-map-fog .fog-size {display:inline-flex;align-items:center;gap:.4em;font-size:.88em;margin:0;}
-.party-map-layout {display:grid;grid-template-columns:minmax(0,1fr) minmax(16em,22em);gap:1.25em;align-items:start;}
-.party-map-frame {width:100%;height:min(75vh,760px);border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;}
-.party-map-side {padding:1em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;max-height:min(75vh,760px);overflow:auto;}
+.party-map-frame {width:100%;border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;}
+.pointcrawl-canvas:fullscreen {height:100vh;border:0;border-radius:0;}
+/* Below the map: what is selected, and the pins. */
+.party-map-below {display:grid;grid-template-columns:repeat(auto-fit,minmax(18em,1fr));gap:1em;margin-top:1em;align-items:start;}
+.campaign-workspace .party-map-side {margin:0;padding:1em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;min-width:0;}
+.party-map-side > h3:first-child {margin-top:0;}
 .party-map-side h2 {font-size:1.15em;margin:0 0 .5em;}
 .party-map-side h3 {font-size:.82em;letter-spacing:.07em;text-transform:uppercase;margin:1.25em 0 .4em;color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
 .party-map-detail {padding-bottom:.75em;border-bottom:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));}
@@ -780,7 +790,6 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 .party-map-pins li {display:flex;align-items:center;gap:.5em;}
 .party-map-pins li::before {content:'';flex:none;width:.7em;height:.7em;border-radius:50%;background:#e03131;border:2px solid #f59f00;}
 .party-map-pins .link-button {min-height:0;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;text-decoration:underline;cursor:pointer;}
-@media (max-width:900px) {.party-map-layout {grid-template-columns:1fr;} .party-map-frame {height:60vh;}}
 
 /* Maps apart from articles: the module's Maps list, and the map editor's title. */
 .module-map-list {display:grid;grid-template-columns:repeat(auto-fill,minmax(15em,1fr));gap:.6em;margin:0;padding:0;list-style:none;}
@@ -801,7 +810,8 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 /* Wiki: maps in their own section, apart from the articles. */
 .wiki-maps h2, .wiki-articles-title {margin:1em 0 .35em;font-size:.8em;letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--fg) 70%,var(--bg));}
 .wiki-maps ul {margin:0;padding:0;list-style:none;}
-.wiki-maps li a {display:block;padding:.2em .4em;}
+.wiki-maps li a {display:block;padding:.3em .45em;border-radius:3px;color:inherit;text-decoration:none;font-size:.95em;line-height:1.35;overflow-wrap:anywhere;}
+.wiki-maps li a:hover {background:var(--wiki-soft);}
 .wiki-maps li a[aria-current="page"] {background:color-mix(in srgb,var(--fg) 10%,var(--bg));}
 .wiki-map-cards {display:grid;grid-template-columns:repeat(auto-fill,minmax(14em,1fr));gap:.6em;margin:0;padding:0;list-style:none;}
 .wiki-map-cards li {display:flex;align-items:center;justify-content:space-between;gap:.5em;padding:.8em 1em;border:1.5px solid var(--fg);border-radius:10px;}
@@ -844,3 +854,79 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
 .campaign-workspace .lobby-header {justify-content:center;text-align:center;border-bottom:0;padding-bottom:0;margin-bottom:1em;}
 .campaign-workspace .lobby-header h1 {justify-content:center;}
 .tools-map-missing {display:flex;flex-direction:column;align-items:center;gap:1em;padding:2em 0;text-align:center;}
+
+/* An article's own image (#476): above its text. */
+.wiki-image {margin:0 0 1.25em;}
+.wiki-image img {display:block;max-width:100%;max-height:min(60vh,560px);margin:0 auto;border-radius:6px;object-fit:contain;}
+/* Starred (#476): an island of bookmark cards, first on the Campaigns page; no heading, a star per card. */
+.campaign-workspace .starred-island {margin:0 0 1.75em;padding:1em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:14px;background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.starred-cards {display:grid;grid-template-columns:repeat(auto-fill,minmax(15em,1fr));gap:.75em;margin:0;padding:0;list-style:none;}
+.starred-card {position:relative;display:flex;align-items:flex-start;gap:.75em;margin:0;padding:.75em 2.5em .75em .75em;border:1px solid color-mix(in srgb,var(--fg) 12%,var(--bg));border-radius:10px;background:var(--bg);min-width:0;}
+.starred-card-picture,.starred-card-icon {flex:none;width:3em;height:3em;border-radius:8px;object-fit:cover;}
+.starred-card-icon {display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--fg) 7%,var(--bg));font-size:1.1em;}
+.starred-card-body {display:flex;flex-direction:column;gap:.2em;min-width:0;}
+.starred-card-kind {font-size:.72em;letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--fg) 60%,var(--bg));}
+.starred-card-title {font-weight:700;color:inherit;text-decoration:none;overflow-wrap:anywhere;}
+.starred-card-title:hover {text-decoration:underline;}
+.starred-card-meta {font-size:.85em;color:color-mix(in srgb,var(--fg) 62%,var(--bg));overflow-wrap:anywhere;}
+.campaign-workspace .starred-card .star-button {position:absolute;top:.5em;right:.5em;font-size:1.05em;padding:.3em;}
+/* A module's backgrounds in its wiki (#476): open one to read it; star it. */
+.wiki-background-list {margin:.5em 0 0;padding:0;list-style:none;display:grid;gap:.6em;}
+.wiki-background {border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;padding:.7em 1em;background:var(--bg);}
+.wiki-background > summary {cursor:pointer;display:flex;flex-wrap:wrap;align-items:center;gap:.2em .5em;}
+.wiki-background-name {font-weight:700;}
+.wiki-background-description {flex-basis:100%;font-size:.9em;color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
+.wiki-background[open] > summary {margin-bottom:.6em;}
+.wiki-background[open] .wiki-background-description {display:none;}
+.campaign-wiki .wiki-header h1 .star-button {font-size:.55em;margin-left:.35em;vertical-align:middle;}
+
+/* A module's items in its wiki (#476): open cards, everything on them, the actions at the bottom. */
+.wiki-item-cards {display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,13em),1fr));gap:.55em;margin:0;padding:0;list-style:none;}
+.wiki-item-card {display:flex;flex-direction:column;gap:.35em;min-width:0;padding:.55em .7em;border:1px solid var(--wiki-line);border-left:3px solid color-mix(in srgb,var(--fg) 45%,var(--bg));border-radius:6px;background:var(--wiki-soft);box-shadow:0 1px 2px rgba(0,0,0,.06);scroll-margin-top:1em;}
+.wiki-item-card:target {border-color:var(--fg);box-shadow:0 0 0 2px color-mix(in srgb,var(--fg) 25%,transparent);}
+.wiki-item-name {margin:0;font-size:.95em;line-height:1.25;overflow-wrap:anywhere;}
+.wiki-item-card .wiki-badges {display:flex;flex-wrap:wrap;gap:.25em;}
+.wiki-item-card .wiki-badge {font-size:.72em;padding:0 .45em;}
+.wiki-item-description {margin:0;font-size:.82em;line-height:1.4;overflow-wrap:anywhere;}
+.wiki-item-description > :first-child {margin-top:0;}
+.wiki-item-description > :last-child {margin-bottom:0;}
+.wiki-item-description p, .wiki-item-description ul {margin:.25em 0;}
+.wiki-item-description ul {padding-left:1.1em;}
+.wiki-item-actions {display:flex;flex-wrap:wrap;gap:.3em;margin-top:auto;padding-top:.4em;border-top:1px solid var(--wiki-line);}
+
+/* A module's items on its page (#476): name, tags and actions on one line (wrapping), the description
+   below at full width, a few lines of it. */
+.module-item-list {margin:0 0 1em;padding:0;list-style:none;}
+.module-item {padding:.8em 0;border-bottom:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));}
+.module-item:last-child {border-bottom:0;}
+.module-item-head {display:flex;flex-wrap:wrap;align-items:center;gap:.4em .6em;}
+.module-item-name {font-size:1.02em;overflow-wrap:anywhere;}
+.module-item-head .wiki-badges {display:inline-flex;flex-wrap:wrap;gap:.25em;}
+.module-item-head .wiki-badge {font-size:.75em;}
+.module-item-actions {display:inline-flex;flex-wrap:wrap;gap:.35em;margin-left:auto;}
+.module-item-actions form {display:inline-flex;margin:0;}
+.module-item-description {max-width:72ch;margin:.45em 0 0;font-size:.92em;line-height:1.5;color:color-mix(in srgb,var(--fg) 75%,var(--bg));
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* Every campaign and wiki card looks alike (#476; tokens in scss/cards.scss): rounded, a soft border and
+   shadow, a small lift on hover, round buttons. Last in the file, so it wins over the older rules above. */
+.campaign-card, .wiki-card, .pw-card-inner, .wiki-item-card, .starred-card, .marketplace-card,
+.campaign-party-cards > .campaign-party-card, .campaign-wiki .wiki-audience .campaign-module-cards > li,
+.wiki-map-cards li {
+  border:1px solid var(--card-border,color-mix(in srgb,var(--fg) 14%,var(--bg)));border-radius:var(--card-radius,12px);
+  box-shadow:var(--card-shadow,0 1px 3px rgba(0,0,0,.08));transition:border-color .15s,box-shadow .15s,transform .15s;}
+.campaign-card:hover, .campaign-card:focus-within, .wiki-card:hover, .wiki-card:focus-within,
+.pw-card-inner:hover, .pw-card-inner:focus-within, .wiki-item-card:hover, .wiki-item-card:focus-within,
+.starred-card:hover, .starred-card:focus-within, .marketplace-card:hover, .marketplace-card:focus-within,
+.campaign-party-cards > .campaign-party-card:hover, .campaign-party-cards > .campaign-party-card:focus-within,
+.campaign-wiki .wiki-audience .campaign-module-cards > li:hover, .campaign-wiki .wiki-audience .campaign-module-cards > li:focus-within,
+.wiki-map-cards li:hover, .wiki-map-cards li:focus-within {
+  border-color:var(--card-border-hover,color-mix(in srgb,var(--fg) 45%,var(--bg)));box-shadow:var(--card-shadow-hover,0 10px 24px rgba(0,0,0,.14));transform:var(--card-lift,translateY(-2px));}
+.wiki-item-card:target {border-color:var(--fg);}
+.campaign-gallery-page .gallery-starters .campaign-card:hover {transform:none;} /* In the carousel the lift would clip. */
+.campaign-workspace :is(.starred-card, .wiki-map-cards li, .marketplace-card) .kw-action,
+.campaign-workspace :is(.campaign-card, .wiki-card, .wiki-item-card, .pw-card, .campaign-module-card, .campaign-party-card) button.kw-action {border-radius:999px;}
+.marketplace-card button, .marketplace-card .button {border-radius:999px;}
+
+/* A module's page: an empty part says so in the size of the hint above it. */
+.campaign-workspace .module-page .module-panel .wiki-empty {margin:.25em 0 0;font-size:.9em;}

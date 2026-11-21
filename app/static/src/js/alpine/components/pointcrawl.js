@@ -126,6 +126,8 @@ export default function pointcrawl() {
       this.themeObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
       this.loadCanvas();
     },
+    // Full screen (#476): the map alone, filling the screen; Esc returns.
+    fullscreen() {this.$refs.canvas.requestFullscreen?.().catch(() => {});},
     loadCanvas() {
       this.canvasReady=false;
       this.$refs.canvas.src=this.$refs.canvas.dataset.src;

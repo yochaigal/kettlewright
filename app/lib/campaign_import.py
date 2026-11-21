@@ -11,10 +11,12 @@ from werkzeug.exceptions import HTTPException, Conflict
 
 from app.models import db, Campaign, ContentEntry, PointcrawlMap, MapNode, MapEdge, ContentLink
 from app.lib.campaigns import CATEGORIES, MAP_KINDS, PATH_TYPES
-from app.lib.rich_content import normalize_content
+from app.lib.rich_content import normalize_content, remote_image_url
+from app.lib.material_images import LOCAL_IMAGE
 from app.lib.campaign_map_import import prepare_maps
 from app.lib.article_references import prepare_archive_references
 from app.lib.campaign_backgrounds import BackgroundError, add_backgrounds, background_from_markdown
+from app.lib.module_items import add_items, items_from_markdown
 
 MAX_ARCHIVE = 50 * 1024 * 1024
 MAX_TOTAL = 100 * 1024 * 1024
@@ -39,6 +41,16 @@ class ImportError(ValueError):
 
 MAP_BLOCK = re.compile(r'^```kettlewright-map[ \t]*\n(.*?)\n```[ \t]*$', re.M | re.S)
 
+
+
+def imported_image(url, owner_id):
+    """An article's image from its front matter (#476): an image URL, or a stored picture of this
+    account (its own export). Anyone else's stored picture is left out."""
+    from app.lib.material_images import image_directory
+    match = LOCAL_IMAGE.fullmatch(url or '')
+    if match and (int(match[1]) != owner_id or not (image_directory() / match[1] / match[2]).is_file()):
+        return ''
+    return url or ''
 
 def archive_files(data):
     if len(data) > MAX_ARCHIVE:
@@ -137,10 +149,14 @@ def parse_markdown(name, text):
     aliases.update({key: key for key in CATEGORIES})
     aliases.update({'npcs': 'npc', 'factions': 'faction', 'settlements': 'settlement',
                     'waypoints': 'waypoint', 'curiosities': 'curiosity', 'lairs': 'lair'})
-    aliases.update({'location': 'custom', 'locations': 'custom', 'article': 'custom', 'gear': 'item', 'weapon': 'item', 'weapons': 'item', 'armor': 'item'})
-    # A module's front page: type Campaign, or Module. Backgrounds are character options, not articles.
+    aliases.update({'location': 'custom', 'locations': 'custom', 'article': 'custom'})
+    # Item, relic and spellbook articles are Notes now (#476); a module's items are type: Items files.
+    aliases.update({kind: 'note' for kind in ('item', 'gear', 'weapon', 'weapons', 'armor', 'relic', 'relics',
+                                              'spellbook', 'spellbooks')})
+    # A module's front page: type Campaign, or Module. Backgrounds are character options and Items things to
+    # give the party, not articles. An old Item, Relic or Spellbook article is a Note.
     category = ('campaign' if kind in ('campaign', 'module') else 'background' if kind in ('background', 'backgrounds')
-                else 'map' if kind in MAP_KINDS or kind == 'map' else aliases.get(kind))
+                else 'items' if kind == 'items' else 'map' if kind in MAP_KINDS or kind == 'map' else aliases.get(kind))
     if category is None:
         raise ImportError(f'Unknown type: {metadata["type"]}')
     map_block = None
@@ -163,15 +179,19 @@ def parse_markdown(name, text):
         raise ImportError('heart must be true or false.')
     if metadata.get('path_type', 'standard') not in PATH_TYPES:
         raise ImportError('Unknown path_type.')
+    image = metadata.get('image', '').strip()
+    if image and (len(image) > 2000 or not (remote_image_url(image) or LOCAL_IMAGE.fullmatch(image))):
+        raise ImportError('image must be an http(s) image URL.')
     source_path = metadata.get('source_path', name)
     path = PurePosixPath(source_path)
     if len(source_path) > 500 or path.is_absolute() or '..' in path.parts or any(c in source_path for c in ('\\', ':', '\x00')):
         raise ImportError('Invalid source_path.')
     try:
-        # A background's body is its own small format (campaign_backgrounds), read as written. A map file's
-        # body is its map: maps have no text of their own.
+        # A background's or items file's body is its own small format (campaign_backgrounds, module_items), read
+        # as written. A map file's body is its map: maps have no text of their own.
         body = '\n'.join(lines[end + 1:]).strip()
-        body = '' if kind_is_map_file(metadata) else body if category == 'background' else normalize_content(body)
+        body = ('' if kind_is_map_file(metadata) else body if category in ('background', 'items')
+                else normalize_content(body))
     except HTTPException as exc:
         raise ImportError(exc.description) from exc
     return {'file': name, 'title': metadata['title'], 'type': metadata['type'],
@@ -179,7 +199,7 @@ def parse_markdown(name, text):
             'parent_title': metadata.get('parent', ''), 'parent': None,
             'id': metadata.get('id', ''), 'parent_id': metadata.get('parent_id', ''),
             'is_heart': metadata.get('heart', 'false').casefold() == 'true',
-            'path_type': metadata.get('path_type', 'standard'),
+            'path_type': metadata.get('path_type', 'standard'), 'image': image,
             'map_file': metadata.get('map', ''),
             'map_block': map_block, 'attach_to': metadata.get('article', ''),
             'format_version': metadata.get('version', '') if category == 'campaign' and metadata.get('format') else '',
@@ -249,7 +269,7 @@ def preview_archive(data, owner_id=None):
 def preview_files(entries, owner_id=None):
     """Stage (name, text) pairs; text is None for files that are skipped."""
     rows, errors, warnings, ignored, files = [], [], [], [], {}
-    backgrounds = {}
+    backgrounds, items = {}, {}
     for name, text in entries:
         files[name] = text
         if text is None:
@@ -268,6 +288,12 @@ def preview_files(entries, owner_id=None):
                 for title in set(found) & set(backgrounds):
                     errors.append(f'{name}: background "{title}" is defined twice.')
                 backgrounds.update(found)
+                continue
+            if row['category'] == 'items':
+                found = items_from_markdown(row['body'], name)
+                for title in set(found) & set(items):
+                    errors.append(f'{name}: item "{title}" is defined twice.')
+                items.update(found)
                 continue
             rows.append(row)
         except BackgroundError as exc:
@@ -306,7 +332,7 @@ def preview_files(entries, owner_id=None):
                 rows.remove(row)
             else:
                 row['map_file'] = virtual
-    if not rows and not backgrounds and not errors:
+    if not rows and not backgrounds and not items and not errors:
         errors.append('No Markdown files found.')
     titles, ids = {}, {}
     for i, row in enumerate(rows):
@@ -375,7 +401,7 @@ def preview_files(entries, owner_id=None):
             if row['parent'] is None:
                 show(i)
     payload = {'rows': rows, 'order': order, 'display': display, 'errors': errors, 'warnings': warnings, 'ignored': ignored,
-               'backgrounds': backgrounds,
+               'backgrounds': backgrounds, 'items': items,
                # Links and [[link]] targets written in each file's front matter (format 2), by id.
                'front_links': [{'source': row['id'], 'target': target} for row in rows for target in row.get('links', [])],
                'front_references': [{'source': row['id'], 'token': token, 'target': target}
@@ -426,11 +452,12 @@ def import_preview(payload, owner_id, into=None, slug='', module=None, name=''):
 
     Everything goes into one module of a campaign: module (add files to an existing module), else a
     new module of into (one of the owner's campaigns), else a new campaign (with its party) named after
-    the module. The module's front page becomes an Overview article; its backgrounds join the module.
+    the module. The module's front page becomes an Overview article; its backgrounds and items join the module.
     slug names a bundled module. Returns (new campaigns, articles)."""
     from app.models import Module
     objects = {}
     payload.setdefault('backgrounds', {})
+    payload.setdefault('items', {})
     title = module_title(payload, name or 'Imported module')
     created = 0
     if module is not None:
@@ -454,7 +481,8 @@ def import_preview(payload, owner_id, into=None, slug='', module=None, name=''):
         entry = ContentEntry(owner_id=owner_id, campaign=into, module=module, parent=parent_entry,
             title=row['title'], category=row['category'], body=normalize_content(row['body']),
             source_path=row.get('source_path', row['file']), references={},
-            is_heart=row.get('is_heart', False), path_type=row.get('path_type', 'standard'))
+            is_heart=row.get('is_heart', False), path_type=row.get('path_type', 'standard'),
+            image=imported_image(row.get('image', ''), owner_id))
         db.session.add(entry)
         graph = row.get('map')
         if graph or row['category'] == 'map':
@@ -489,4 +517,6 @@ def import_preview(payload, owner_id, into=None, slug='', module=None, name=''):
         db.session.add(ContentLink(source_id=objects[link['source']].id, target_id=objects[link['target']].id))
     if payload['backgrounds']:
         add_backgrounds(module, payload['backgrounds'])
+    if payload['items']:
+        add_items(module, payload['items'])
     return created, len(objects)

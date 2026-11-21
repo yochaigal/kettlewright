@@ -1,0 +1,117 @@
+// One look for every card (#476): rounded, a soft border and shadow, a small lift on hover for the cards
+// that open something, and round buttons. The tokens are shared with campaigns.css (campaign and wiki cards).
+// Set on body, where dark mode sets --fg and --bg, so they follow the theme.
+body {
+  --card-radius: 12px;
+  --card-border: color-mix(in srgb, var(--fg) 14%, var(--bg));
+  --card-border-hover: color-mix(in srgb, var(--fg) 45%, var(--bg));
+  --card-bg: var(--form-bg, var(--bg));
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+  --card-shadow-hover: 0 10px 24px rgba(0, 0, 0, .14);
+  --card-lift: translateY(-2px);
+}
+body.dark-mode {
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+  --card-shadow-hover: 0 10px 26px rgba(0, 0, 0, .6);
+}
+@media (prefers-reduced-motion: reduce) { body { --card-lift: none; } }
+
+// Cards that open something: characters, parties.
+.character-card, .party-card {
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  transition: border-color .15s, box-shadow .15s, transform .15s;
+  &:hover, &:focus-within { border-color: var(--card-border-hover); box-shadow: var(--card-shadow-hover); transform: var(--card-lift); }
+}
+.character-card-image, .party-card-member-portrait { border-radius: 50%; }
+
+// Cards that hold controls (party members, companions): the same look, without the lift.
+.party-member.card, #party-members-content .party-member, .companion-card, .companion-compact .companion-card {
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  transition: border-color .15s, box-shadow .15s;
+  &:hover, &:focus-within { border-color: var(--card-border-hover); }
+}
+
+// A character's card (Characters page): portrait, name, stats as tiles, actions as rounded buttons.
+.characters-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(#{"min(100%, 17em)"}, 1fr));
+  gap: 1.25em;
+  width: 100%;
+  max-width: 1120px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 0 1rem;
+  justify-content: initial;
+}
+.character-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  width: auto; max-width: none; height: auto; min-height: 0;
+  margin: 0; padding: 1.25em 1.25em 0;
+  text-align: center; cursor: pointer;
+}
+.character-card-image {
+  width: 96px; height: 96px; margin: 0 0 .65em; object-fit: cover;
+  box-shadow: 0 0 0 3px var(--card-bg), 0 0 0 4px var(--card-border);
+}
+.character-card-name { max-width: 100%; margin: 0; font-size: 1.35em; line-height: 1.2; overflow-wrap: anywhere; }
+.character-card-background { margin: .2em 0 0; font-size: .95em; color: color-mix(in srgb, var(--fg) 65%, var(--bg)); }
+.character-card .character-dead-badge { margin-top: .4em; }
+.character-card-stats {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4em;
+  width: 100%; margin: .9em 0 .6em; padding: 0;
+  div { padding: .35em .2em; border-radius: 8px; background: color-mix(in srgb, var(--fg) 5%, var(--bg)); }
+  dt { margin: 0; font-size: .72em; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+       color: color-mix(in srgb, var(--fg) 60%, var(--bg)); }
+  dd { margin: 0; font-size: 1.05em; font-weight: 700; font-variant-numeric: tabular-nums; }
+  small { font-weight: 400; font-size: .8em; color: color-mix(in srgb, var(--fg) 60%, var(--bg)); }
+}
+.character-card-inventory { margin: 0 0 .9em; font-size: .88em; color: color-mix(in srgb, var(--fg) 65%, var(--bg)); }
+.character-card-footer {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: .4em;
+  width: calc(100% + 2.5em); margin: auto -1.25em 0; padding: .65em 1em .75em;
+  border-top: 1px solid var(--card-border);
+  button {
+    display: inline-flex; align-items: center; gap: .4em; width: auto; min-height: 2em; margin: 0; padding: .2em .85em;
+    border: 1px solid color-mix(in srgb, var(--fg) 30%, var(--bg)); border-radius: 999px;
+    background: transparent; color: inherit; font-size: .82em; cursor: pointer;
+    transition: background-color .15s, color .15s, border-color .15s;
+    &:hover, &:focus-visible { border-color: var(--fg); background: var(--fg); color: var(--bg); }
+  }
+  .card-delete-character-button { border-color: color-mix(in srgb, #a33b3b 55%, var(--bg)); color: #a33b3b; }
+  .card-delete-character-button:hover, .card-delete-character-button:focus-visible { border-color: #a33b3b; background: #a33b3b; color: #fff; }
+}
+body.dark-mode .character-card-footer .card-delete-character-button { color: #e08080; }
+@media (pointer: coarse) { .character-card-footer button { min-height: 2.6em; } }
+
+// A party member's stats (party page): soft tiles like a character's card; a number the viewer may change
+// reads as a number, with a dashed underline, not as a form field.
+.party-member-portrait { border-radius: 50%; }
+.party-member-stat {
+  box-sizing: border-box;
+  padding: .3em .35em;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--fg) 5%, var(--bg));
+}
+.party-member-stat .party-stat-label, .party-member-stat .quick-stat-form label {
+  font-size: .72em !important; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--fg) 60%, var(--bg));
+}
+.party-member-stat .quick-stat-value { font-weight: 700; font-variant-numeric: tabular-nums; }
+.party-member-stat .quick-stat-value span { font-weight: 400; font-size: .85em; color: color-mix(in srgb, var(--fg) 60%, var(--bg)); }
+.party-member-stat .quick-stat-form input[type="number"] {
+  width: 2.6ch; min-width: 0; margin: 0; padding: 0 .1em;
+  border: 0; border-bottom: 1.5px dashed color-mix(in srgb, var(--fg) 40%, var(--bg)); border-radius: 0;
+  background: transparent; color: var(--fg) !important; box-shadow: none;
+  font: inherit; font-weight: 700; text-align: right;
+  -moz-appearance: textfield; appearance: textfield;
+  &::-webkit-inner-spin-button, &::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  &:hover, &:focus { border-bottom-style: solid; border-bottom-color: var(--fg); outline: none; }
+}

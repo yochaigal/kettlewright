@@ -306,6 +306,11 @@ def _split(line):
 
 def _md_item(line, where):
     name, tokens, description = _split(line)
+    return item_from_tokens(name, tokens, description, where)
+
+
+def item_from_tokens(name, tokens, description, where):
+    """An item from its name, its bracket tokens ([petty, uses 3, charges 2/3]) and description (or None)."""
     item = {'name': name, 'tags': []}
     for token in tokens:
         lower = token.casefold()

@@ -1,7 +1,8 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import token, page_header, modal, modal_footer with context %}
 {% from 'campaigns/material_tree.html' import material_children, tree_toolbar with context %}
-{# A module: what the campaign is built from, part by part: its maps, its backgrounds and its articles. #}
+{% from 'campaigns/item_send_dialog.html' import send_item_dialog with context %}
+{# A module: what the campaign is built from, part by part: its maps, its backgrounds, its items and its articles. #}
 {% block workspace %}
 <div class="campaign-wiki module-page">
 <nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}#modules">← {{ campaign.name }}</a></nav>
@@ -14,8 +15,8 @@
               onclick="document.getElementById('module-settings-dialog').showModal()"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></h1>
     <span class="kw-actions lobby-header-actions">
       <a class="kw-action" href="{{ url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read as wiki') }}</a>
-      {# Maps, backgrounds and articles from Markdown files or an archive (see docs/module-format.md). #}
-      <a class="kw-action" href="{{ url_for('campaigns.import_archive', module_id=module.id) }}" title="{{ _('Add maps, articles and backgrounds from Markdown files or an archive') }}"><i class="fa-solid fa-file-import" aria-hidden="true"></i> {{ _('Add files') }}</a>
+      {# Maps, backgrounds, items and articles from Markdown files or an archive (see docs/module-format.md). #}
+      <a class="kw-action" href="{{ url_for('campaigns.import_archive', module_id=module.id) }}" title="{{ _('Add maps, articles, backgrounds and items from Markdown files or an archive') }}"><i class="fa-solid fa-file-import" aria-hidden="true"></i> {{ _('Add files') }}</a>
     </span>
   </div>
 </header>
@@ -83,6 +84,35 @@
 {% else %}<p class="wiki-empty">{{ _('No backgrounds in this module.') }}</p>{% endif %}
 </section>
 
+<section class="module-section module-panel" id="items" aria-labelledby="module-items-title">
+<div class="module-section-head">
+<h2 id="module-items-title"><i class="fa-solid fa-gem" aria-hidden="true"></i> {{ _('Items') }} <small>{{ items|length }}</small></h2>
+<span class="kw-actions">
+  <a class="kw-action kw-add" href="{{ url_for('campaigns.module_item', campaign_id=campaign.id, module_id=module.id) }}"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New item') }}</a>
+</span>
+</div>
+<p class="import-hint">{{ _('Gear, relics and spellbooks the party can find. Players never see them here: Send gives a party a copy, in its storage or a character\'s inventory.') }}</p>
+{% if items %}
+<ul class="module-item-list">
+{% for name, item, details in items %}
+<li class="module-item">
+  <div class="module-item-head">
+    <strong class="module-item-name">{{ name }}</strong>
+    {% if details %}<span class="wiki-badges">{% for tag in details.split(', ') %}<span class="wiki-badge">{{ tag }}</span>{% endfor %}</span>{% endif %}
+    <span class="kw-actions module-item-actions">
+      <a class="kw-action" href="{{ url_for('campaigns.send_module_item', campaign_id=campaign.id, module_id=module.id, name=name) }}" data-send-item="{{ name }}" aria-haspopup="dialog"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> {{ _('Send') }}</a>
+      <a class="kw-action" href="{{ url_for('campaigns.module_item', campaign_id=campaign.id, module_id=module.id, name=name) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+    </span>
+  </div>
+  {# The whole description is on its wiki card and in its editor; here, its first lines. #}
+  {% if item.description %}<p class="module-item-description">{{ content_excerpt(item.description, 600) }}</p>{% endif %}
+</li>
+{% endfor %}
+</ul>
+{% else %}<p class="wiki-empty">{{ _('No items in this module.') }}</p>{% endif %}
+{% if items %}{{ send_item_dialog(campaign, module, send_choices, 'module') }}{% endif %}
+</section>
+
 <section class="module-section module-panel" aria-labelledby="module-articles-title">
 <div class="module-section-head">
 <h2 id="module-articles-title"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> {{ _('Articles') }} <small>{{ article_count }}</small></h2>
@@ -111,8 +141,8 @@
 {% call modal('delete-module-modal', _('Delete module…'), _('Delete module?')) %}
 <form method="post" action="{{ url_for('campaigns.delete_module', campaign_id=campaign.id, module_id=module.id) }}">{{ token(module.version) }}
 <section class="modal-card-body">
-<p><strong>{{ module.title }}</strong> · {{ article_count }} {{ _('articles') }} · {{ backgrounds|length }} {{ _('backgrounds') }}</p>
-<p>{{ _('Deleting this module permanently deletes its articles, maps, backgrounds and what the party was shown of them. This cannot be undone. Characters keep their backgrounds.') }}</p>
+<p><strong>{{ module.title }}</strong> · {{ article_count }} {{ _('articles') }} · {{ backgrounds|length }} {{ _('backgrounds') }} · {{ items|length }} {{ _('items') }}</p>
+<p>{{ _('Deleting this module permanently deletes its articles, maps, backgrounds, items and what the party was shown of them. This cannot be undone. Characters keep their backgrounds, and parties the copies of items they were sent.') }}</p>
 </section>
 {{ modal_footer(_('Permanently delete module')) }}
 </form>

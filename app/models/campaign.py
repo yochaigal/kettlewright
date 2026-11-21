@@ -23,6 +23,8 @@ class Campaign(Versioned, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
     name = db.Column(db.String(200), nullable=False)
+    # Its picture (#476): the campaign's cover. Empty: the first picture in its articles.
+    image = db.Column(db.String(2000), nullable=False, default='', server_default='')
     owner = db.relationship('User', backref=db.backref('campaigns', cascade='all, delete-orphan'))
     # Its parties (several at once for a West Marches game), created in it; the first comes with the
     # campaign. A party can be deleted, or moved to another of the Warden's campaigns.
@@ -32,7 +34,7 @@ class Campaign(Versioned, db.Model):
 
 
 class Module(Versioned, db.Model):
-    """Content a campaign is built from: articles, notes, maps and backgrounds.
+    """Content a campaign is built from: articles, notes, maps, backgrounds and items.
 
     Created in the campaign (blank or randomly generated), added from the Modules
     Marketplace (slug names the bundled module) or uploaded; exported as an archive."""
@@ -43,6 +45,8 @@ class Module(Versioned, db.Model):
     slug = db.Column(db.String(64), nullable=False, default='', server_default='')
     # Custom backgrounds, in the format of background_data.json (name -> background); NULL means none.
     backgrounds = db.Column(db.JSON, nullable=True)
+    # Items (#476): gear, relics and spellbooks to send the party (app/lib/module_items.py); NULL means none.
+    items = db.Column(db.JSON, nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
     entries = db.relationship('ContentEntry', backref='module')
 
@@ -59,6 +63,9 @@ class ContentEntry(Versioned, db.Model):
     category = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(200), nullable=False, default='')
     body = db.Column(db.Text, nullable=False, default='')
+    # Its own picture (#476), apart from the text: a stored upload (/material-images/…) or an image URL.
+    # Shown above the text and on its card; parties it was revealed to see it too.
+    image = db.Column(db.String(2000), nullable=False, default='', server_default='')
     # A party note's sketch (Excalidraw, like a map's drawing), below its text.
     drawing = db.Column(db.JSON, nullable=True)
     source_path = db.Column(db.String(500), nullable=False, default='', server_default='')

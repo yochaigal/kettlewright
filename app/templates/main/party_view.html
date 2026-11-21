@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
+{% from 'partial/star_button.html' import star_button with context %} {% block content %}
 <script>
   const party_id = `{{party.id}}`;
   const username = `{{username}}`;
@@ -38,8 +39,13 @@
     </nav>
     {% endif %}
     <div class="party-header">
+      {% if party.image and starred is not none %}
+      {# Its picture (#476), set by the Warden on the party's edit form. #}
+      <img class="party-picture" src="{{ url_for('campaigns.party_image', party_id=party.id) }}" alt="">
+      {% endif %}
       <div class="party-heading">
-        <h1 class="title level-item">{{ party.name|markdown_inline }}</h1>
+        <h1 class="title level-item">{{ party.name|markdown_inline }}
+          {% if starred is not none %}{{ star_button('party', party.id, starred=starred) }}{% endif %}</h1>
         {% if is_owner %}<p class="subtitle">{{_("Warden")}}</p>{% endif %}
       </div>
       <div class="party-header-actions">
@@ -61,7 +67,8 @@
         {% endif %}
         {% if can_view_rolls %}
         <a class="button no-margin-top" href="{{ url_for('party.shared_map', party_id=party.id) }}"
-          title="{{ _('Whiteboard') }}" aria-label="{{ _('Whiteboard') }}">{{ _('Whiteboard') }}</a>
+          title="{{ _('Whiteboard') }}" aria-label="{{ _('Whiteboard') }}"><span class="mobile-hidden">{{ _('Whiteboard') }}</span>
+          <i class="fa-solid fa-chalkboard icon-in-button" aria-hidden="true"></i></a>
         {% endif %}
         {% if is_owner %}
         <button class="button dice-button no-margin-top" type="button" title="{{_('Edit party')}}" aria-label="{{_('Edit party')}}"

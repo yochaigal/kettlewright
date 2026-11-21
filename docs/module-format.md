@@ -1,7 +1,7 @@
 # Module format
 
-A module is a package of **parts**: maps, articles and backgrounds today, and more
-later (items, missions…). Each part has its own section on the module page, its own
+A module is a package of **parts**: maps, articles, backgrounds and items today, and
+more later (missions…). Each part has its own section on the module page, its own
 folder in an archive and its own Markdown `type`. The parts are listed once, in
 `MODULE_PARTS` (`app/lib/modules.py`).
 
@@ -15,6 +15,7 @@ maps/the-ashen-marches.md    type: Map         a drawing with its points and pat
 articles/alderbridge.md      type: Settlement  any article type
 articles/mara-the-ferryman.md type: NPC
 backgrounds/tidewatcher.md   type: Background  character options
+items/relics.md              type: Items       items to send the party
 ```
 
 The import page offers this example as a download (`/materials/import-example.zip`,
@@ -33,6 +34,7 @@ Folders keep the parts tidy; the `type` says what a file is.
 | `links` | articles | Related articles, by id. |
 | `references` | articles | `[[link text]]: id`, keeping links right after renames. |
 | `heart` | articles | `true` for the Heart settlement. |
+| `image` | articles | The article's own picture: an `http(s)` image URL. |
 | `path_type` | articles | `hidden` or `conditional` (paths). |
 | `map_type` | maps | `realm`, `dungeon`, `forest` or `freeform`. |
 | `article` | maps | The map belongs to this article (a dungeon point and its rooms). |
@@ -61,11 +63,34 @@ type is Note; the preview lets you fix both. Articles link to each other with
 [Campaigns: module format](campaigns.md#module-format) for their Markdown. JSON
 backgrounds are not imported.
 
+**Items** (`type: Items`) are gear, relics and spellbooks the party can find. One file
+holds several: each item is a `###` heading with its name and its tags in brackets,
+its description (Markdown) below. Text before the first heading is an error.
+
+```markdown
+---
+layout: default
+title: Relics
+type: Items
+---
+### The Eye of Vuk
+A heavy iron medallion strung on a fine silver chain.
+- A WIL save is required every time the amulet is put on.
+
+### Fletcher's Ire [bulky, charges 3/3]
+A heavy bar of tungsten, marked with symbols.
+```
+
+Tags are those of background gear: `petty`, `bulky`, `d6`, `1 Armor`, `uses 3`,
+`charges 2/3`, `armor active`. Names are unique in a module. There are no item
+articles: a file of `type: Item`, `Relic`, `Spellbook` (or `Gear`, `Weapon`, `Armor`)
+imports as a Note. Export writes every module's items to `items/items.md`.
+
 ## Importing
 
 Nothing is added until you review the preview and confirm. The preview lists the
 module's parts apart: its maps (points, paths, drawing elements), its articles as a
-tree, and its backgrounds. Everything becomes one module of a campaign (or is added
+tree, its backgrounds and its items. Everything becomes one module of a campaign (or is added
 to an existing module with **Add files**), privately: nothing is revealed to a party.
 Ids never refer to existing records.
 
@@ -84,7 +109,7 @@ are rejected. A preview expires after one hour.
 
 ## Adding a part
 
-A new part (say, items) needs: an entry in `MODULE_PARTS`; its storage; a section
+A new part (say, missions) needs: an entry in `MODULE_PARTS`; its storage; a section
 on the module page (list, **New …**, edit); its Markdown type, read in
 `campaign_import.preview_files` and written in `campaign_export.export_archive`
 under its folder; and its count in `module_counts`/`preview_counts`.

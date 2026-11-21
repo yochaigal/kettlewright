@@ -9,10 +9,31 @@ from flask_login import current_user
 from sqlalchemy import event, inspect
 from sqlalchemy.orm import Session
 
-from app.models import db, ContentEntry, PartyPresentation
+from app.models import db, Campaign, ContentEntry, Party, PartyPresentation
 from app.lib.portraits import portrait_directory
 
 LOCAL_IMAGE = re.compile(r'/material-images/([1-9][0-9]*)/([0-9a-f]{32}\.webp)')
+
+
+def article_image(entry):
+    """An article's picture for its card and cover: its own image (#476), else the first one in its text."""
+    from app.lib.campaign_wiki import first_image
+    return entry.image or first_image(entry.body) if entry is not None else None
+
+
+def image_value(value):
+    """The Image field of the article form: empty (none), an upload (a data URL, stored on save),
+    an image URL, or the stored picture it already has."""
+    from app.lib.rich_content import optimize_image
+    value = (value or '').strip()
+    if not value:
+        return ''
+    if len(value) > 4 * 1024 * 1024:
+        abort(400, 'Optimize images before saving (maximum input: 2 MB each).')
+    value = optimize_image(value)  # Rejects anything that is not an image.
+    if not value.startswith('data:') and len(value) > 2000:
+        abort(400, 'This image address is too long.')
+    return value
 
 
 def image_directory():
@@ -58,20 +79,39 @@ def externalize_images(body, owner_id, candidates):
     return re.sub(r'(data:image/(?:png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+)', replace, body)
 
 
+# Fields that hold stored pictures: texts, and the own images of articles, campaigns and parties (#476).
+IMAGE_FIELDS = {ContentEntry: ('body', 'image'), PartyPresentation: ('body',), Campaign: ('image',), Party: ('image',)}
+
+
+def image_owner(row):
+    if isinstance(row, PartyPresentation):
+        return row.entry.owner_id
+    return row.owner if isinstance(row, Party) else row.owner_id
+
+
 @event.listens_for(Session, 'before_flush')
 def store_description_images(session, flush_context, instances):
     candidates = session.info.setdefault('material_image_candidates', set())
     for row in set(session.new) | set(session.dirty) | set(session.deleted):
-        if not isinstance(row, (ContentEntry, PartyPresentation)):
+        fields = IMAGE_FIELDS.get(type(row))
+        if fields is None:
             continue
-        history = inspect(row).attrs.body.history
-        for previous in history.deleted:
-            candidates.update(image_references(previous))
-        if row in session.deleted:
-            candidates.update(image_references(row.body))
-        elif row in session.new or history.has_changes():
-            owner_id = row.owner_id if isinstance(row, ContentEntry) else row.entry.owner_id
-            row.body = externalize_images(row.body, owner_id, candidates)
+        owner_id = None
+        for field in fields:
+            history = inspect(row).attrs[field].history
+            for previous in history.deleted:
+                candidates.update(image_references(previous))
+            if row in session.deleted:
+                candidates.update(image_references(getattr(row, field)))
+            elif row in session.new or history.has_changes():
+                owner_id = owner_id or image_owner(row)
+                setattr(row, field, externalize_images(getattr(row, field), owner_id, candidates))
+
+
+def image_in_use(filename):
+    """Whether any text, or any article's, campaign's or party's own image (#476), still shows this stored picture."""
+    return any(model.query.filter(getattr(model, field).contains(filename)).first() is not None
+               for model, fields in IMAGE_FIELDS.items() for field in fields)
 
 
 def cleanup_images():
@@ -83,8 +123,7 @@ def cleanup_images():
             continue
         # Match filename as well as URL to retain absolute links in imported text.
         filename = match[2]
-        if (ContentEntry.query.filter(ContentEntry.body.contains(filename)).first() is not None
-                or PartyPresentation.query.filter(PartyPresentation.body.contains(filename)).first() is not None):
+        if image_in_use(filename):
             continue
         try:
             (image_directory() / match[1] / filename).unlink(missing_ok=True)
@@ -98,8 +137,7 @@ def remove_owner_images(owner_id):
     if not folder.is_dir():
         return
     for path in folder.glob('*.webp'):
-        if (ContentEntry.query.filter(ContentEntry.body.contains(path.name)).first() is not None
-                or PartyPresentation.query.filter(PartyPresentation.body.contains(path.name)).first() is not None):
+        if image_in_use(path.name):
             continue
         try:
             path.unlink(missing_ok=True)

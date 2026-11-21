@@ -1,9 +1,10 @@
 {% extends 'campaigns/layout.html' %}
 {# The campaign lobby, for its Warden: its name, its parties and its modules.
-   Content is read in wiki mode: a module from its card, or everything with Read everything as wiki. #}
+   A module's card opens it for editing; Read opens it as a wiki. #}
 {% macro article_title(item) %}{{ (item.title or _('Untitled private original'))|markdown_inline }}{% endmacro %}
 {% macro type_label(item) %}{{ _(content_categories.get(item.category, item.category)) }}{% endmacro %}
 {% macro page_url(entry_id=None) %}{{ url_for('campaigns.wiki', campaign_id=campaign.id, entry_id=entry_id) }}{% endmacro %}
+{% from 'partial/image_field.html' import image_field with context %}
 {% block workspace %}
 <div class="campaign-wiki campaign-lobby">
   <nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ url_for('campaigns.index') }}">← {{ _('All campaigns') }}</a></nav>
@@ -21,6 +22,8 @@
         <form method="post" action="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}">
           {{ content_form.csrf_token }}<input type="hidden" name="version" value="{{ campaign.version }}">
           <label>{{ _('Campaign name') }}<input type="text" name="name" required maxlength="200" value="{{ campaign.name }}"></label>
+          {{ image_field(campaign.image, url_for('campaigns.campaign_cover', campaign_id=campaign.id) if campaign.image else '',
+             _('The campaign’s cover. Without one, the first picture in its articles.')) }}
           <div class="create-dialog-actions">
             <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
             <button type="submit" class="primary">{{ _('Save') }}</button>
@@ -76,27 +79,23 @@
           <h2 id="campaign-modules-title"><i class="fa-solid fa-box-open" aria-hidden="true"></i> {{ _('Modules') }} {% if modules %}<small>{{ modules|length }}</small>{% endif %}</h2>
           {# One main action (solid); the Marketplace beside it. #}
           <span class="section-actions">
-            <button type="button" class="section-button" aria-haspopup="dialog" onclick="document.getElementById('marketplace-dialog').showModal()"><i class="fa-solid fa-store" aria-hidden="true"></i> {{ _('Modules Marketplace') }}</button>
+            <button type="button" class="section-button" aria-haspopup="dialog" title="{{ _('Modules Marketplace') }}" aria-label="{{ _('Modules Marketplace') }}" onclick="document.getElementById('marketplace-dialog').showModal()"><i class="fa-solid fa-store" aria-hidden="true"></i> <span class="label-wide">{{ _('Modules Marketplace') }}</span></button>
             <button type="button" class="section-button section-primary kw-add" aria-haspopup="dialog" onclick="document.getElementById('new-module-dialog').showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New module') }}</button>
           </span>
         </div>
-        {# Views and settings of all the modules, quieter than the actions above. #}
-        <p class="section-links">
-          <a href="{{ url_for('campaigns.wiki', campaign_id=campaign.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read everything as wiki') }}</a>
-        </p>
         {% if modules %}
         <ul class="campaign-module-cards">
         {% for module, counts in modules %}
           <li class="campaign-module-card">
             {# The module's picture: the first image in its front page or other articles. #}
-            <a class="campaign-module-cover" href="{{ url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id) }}" tabindex="-1" aria-hidden="true">
+            <a class="campaign-module-cover" href="{{ url_for('campaigns.module_view', campaign_id=campaign.id, module_id=module.id) }}" tabindex="-1" aria-hidden="true">
               {% if module.id in module_covers %}<img src="{{ url_for('campaigns.module_cover', campaign_id=campaign.id, module_id=module.id) }}" alt="" loading="lazy" data-cover>
               {% else %}<span class="campaign-card-placeholder">{{ module.title[:1]|upper }}</span>{% endif %}
             </a>
-            <a class="campaign-party-name" href="{{ url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id) }}">{{ module.title }}</a>
+            <a class="campaign-party-name" href="{{ url_for('campaigns.module_view', campaign_id=campaign.id, module_id=module.id) }}">{{ module.title }}</a>
             <span class="campaign-party-meta">{{ part_badges(counts)|join(' · ') or _('Empty') }}</span>
             <span class="kw-actions">
-              <a class="kw-action" href="{{ url_for('campaigns.module_view', campaign_id=campaign.id, module_id=module.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit') }}</a>
+              <a class="kw-action" href="{{ url_for('campaigns.module_wiki', campaign_id=campaign.id, module_id=module.id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read') }}</a>
               <a class="kw-action" href="{{ url_for('campaigns.module_export', campaign_id=campaign.id, module_id=module.id) }}" download><i class="fa-solid fa-file-export" aria-hidden="true"></i> {{ _('Export') }}</a>
             </span>
           </li>

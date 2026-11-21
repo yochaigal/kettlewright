@@ -46,11 +46,14 @@ export default function partyMap() {
       if (data.type === 'select-pin') {this.selected = ''; this.selectedEdge = ''; this.selectedPin = String(data.id); this.sync();}
       if (data.type === 'picked') {
         this.picking = false;
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});  // The pin dialog is on the page.
         this.draft = {x: data.x, y: data.y, title: '', body: ''};
         this.$nextTick(() => {this.$refs.pinDialog.showModal(); this.$refs.pinTitle?.focus();});
       }
       if (data.type === 'fog-operation') this.fogOperation(data.operation);
     },
+    // Full screen (#476): the map alone, filling the screen; Esc returns.
+    fullscreen() {this.$refs.canvas.requestFullscreen?.().catch(() => {});},
     get selectedNode() {return this.graph.nodes.find(node => String(node.id) === this.selected);},
     get selectedPath() {return this.graph.edges.find(edge => String(edge.id) === this.selectedEdge);},
     get pin() {return this.pins.find(pin => String(pin.id) === this.selectedPin);},
