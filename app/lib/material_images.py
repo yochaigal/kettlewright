@@ -9,7 +9,7 @@ from flask_login import current_user
 from sqlalchemy import event, inspect
 from sqlalchemy.orm import Session
 
-from app.models import db, ContentEntry, PartyPresentation
+from app.models import db, Campaign, ContentEntry, Party, PartyPresentation
 from app.lib.portraits import portrait_directory
 
 LOCAL_IMAGE = re.compile(r'/material-images/([1-9][0-9]*)/([0-9a-f]{32}\.webp)')
@@ -79,29 +79,39 @@ def externalize_images(body, owner_id, candidates):
     return re.sub(r'(data:image/(?:png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+)', replace, body)
 
 
+# Fields that hold stored pictures: texts, and the own images of articles, campaigns and parties (#476).
+IMAGE_FIELDS = {ContentEntry: ('body', 'image'), PartyPresentation: ('body',), Campaign: ('image',), Party: ('image',)}
+
+
+def image_owner(row):
+    if isinstance(row, PartyPresentation):
+        return row.entry.owner_id
+    return row.owner if isinstance(row, Party) else row.owner_id
+
+
 @event.listens_for(Session, 'before_flush')
 def store_description_images(session, flush_context, instances):
     candidates = session.info.setdefault('material_image_candidates', set())
     for row in set(session.new) | set(session.dirty) | set(session.deleted):
-        if not isinstance(row, (ContentEntry, PartyPresentation)):
+        fields = IMAGE_FIELDS.get(type(row))
+        if fields is None:
             continue
         owner_id = None
-        for field in ('body', 'image') if isinstance(row, ContentEntry) else ('body',):
+        for field in fields:
             history = inspect(row).attrs[field].history
             for previous in history.deleted:
                 candidates.update(image_references(previous))
             if row in session.deleted:
                 candidates.update(image_references(getattr(row, field)))
             elif row in session.new or history.has_changes():
-                owner_id = owner_id or (row.owner_id if isinstance(row, ContentEntry) else row.entry.owner_id)
+                owner_id = owner_id or image_owner(row)
                 setattr(row, field, externalize_images(getattr(row, field), owner_id, candidates))
 
 
 def image_in_use(filename):
-    """Whether any text, or any article's own image (#476), still shows this stored picture."""
-    return (ContentEntry.query.filter(ContentEntry.body.contains(filename)).first() is not None
-            or ContentEntry.query.filter(ContentEntry.image.contains(filename)).first() is not None
-            or PartyPresentation.query.filter(PartyPresentation.body.contains(filename)).first() is not None)
+    """Whether any text, or any article's, campaign's or party's own image (#476), still shows this stored picture."""
+    return any(model.query.filter(getattr(model, field).contains(filename)).first() is not None
+               for model, fields in IMAGE_FIELDS.items() for field in fields)
 
 
 def cleanup_images():

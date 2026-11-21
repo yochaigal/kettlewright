@@ -730,6 +730,9 @@ def party_edit_save(ownername, party_url):
     form = PartyEditForm(obj=party) 
     for field in fields_to_update:
         setattr(party, field, sanitize_data(getattr(form, field).data))
+    if 'image' in request.form:  # Its picture (#476).
+        from app.lib.material_images import image_value
+        party.image = image_value(request.form['image'])
     # Move the party to another of the Warden's campaigns; it keeps what it was shown.
     campaign_id = request.form.get('campaign_id', '')
     if campaign_id:

@@ -196,30 +196,6 @@ def index():
         starred=party_cards(starred_parties(current_user.id)))
 
 
-@campaigns.route('/materials/<int:entry_id>/give', methods=['POST'])
-def give_to_party(entry_id):
-    """Give to party (#476): an item, relic or spellbook to its storage; a creature to its monsters."""
-    from app.lib.article_transfer import give_kind, give_monster, give_to_storage
-    entry = article(entry_id)
-    kind = give_kind(entry)
-    if kind is None:
-        abort(400, 'Only items, relics, spellbooks and creatures can be given to a party.')
-    party = party_access(integer(request.form.get('party_id')), editing=True)
-    if party.campaign_id != entry.campaign_id:
-        abort(403)
-    if kind == 'storage':
-        if give_to_storage(entry, party) is None:
-            flash(_('%(party)s has no room in its storage. Make room, then try again.', party=party.name), 'error')
-        else:
-            flash(_('%(article)s is in the storage of %(party)s.', article=entry.title, party=party.name), 'success')
-    else:
-        give_monster(entry, party)
-        flash(_('%(article)s is one of the monsters of %(party)s. Check its stats on its sheet.',
-                article=entry.title, party=party.name), 'success')
-    notify_parties([party.id])
-    return redirect(url_for('campaigns.wiki', campaign_id=entry.campaign_id, entry_id=entry.id))
-
-
 @campaigns.route('/party/<int:party_id>/star', methods=['POST'])
 def star_party(party_id):
     """Star or unstar a party (#476): a bookmark for anyone in it, listed first on the Campaigns page."""
@@ -243,7 +219,15 @@ def campaign_cover(campaign_id):
     """The campaign card's picture: the first image in its articles."""
     from app.lib.campaign_wiki import campaign_entries, cover_image
     campaign = owned(Campaign, campaign_id)
-    return card_image(cover_image(campaign, campaign_entries(campaign)))
+    url = cover_image(campaign, campaign_entries(campaign))
+    return card_image(url, own=bool(campaign.image) and url == campaign.image)
+
+
+@campaigns.route('/party/<int:party_id>/image')
+def party_image(party_id):
+    """A party's own picture (#476), for anyone in the party."""
+    party = party_access(party_id)
+    return card_image(party.image or None, own=True)
 
 
 @campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/cover')
@@ -567,6 +551,8 @@ def lobby(campaign_id):
     if request.method == 'POST':
         check_version(campaign, request.form.get('version'))
         campaign.name = text_value(request.form.get('name'), 200, True)
+        if 'image' in request.form:
+            campaign.image = image_value(request.form['image'])
         campaign.version += 1
         db.session.commit()
         return redirect(url_for('campaigns.lobby', campaign_id=campaign.id))
@@ -622,12 +608,7 @@ def module_wiki(campaign_id, module_id, entry_id=None):
 
 def render_wiki(context, entry):
     if entry is not None:
-        from app.lib.article_transfer import give_kind
         context['reveal_parties'] = reveal_choices(entry)
-        # Give to party (#476): items to its storage, creatures to its monsters.
-        context['give_kind'] = give_kind(entry)
-        if context['give_kind']:
-            context['give_parties'] = [party for party in my_parties() if party.campaign_id == entry.campaign_id]
         if entry.pointcrawl:
             # A map's page shows the map (read only); Edit opens the map editor.
             context.update(graph=map_projection(entry.pointcrawl), pointcrawl=None, editing=False, party=None,

@@ -1147,3 +1147,19 @@ button.kw-add {
 .kw-add:hover {
   opacity: .85;
 }
+
+// One picture of its own (#476): the Image field of articles, campaigns and parties.
+.image-field {
+  margin: 0 0 1rem;
+  text-align: left;
+  .image-field-label { display: block; font-weight: 600; margin-bottom: .35rem; }
+  .image-field-label small { font-weight: 400; opacity: .7; }
+  .image-field-preview {
+    display: block; max-width: 100%; max-height: 220px; margin-bottom: .5rem;
+    border-radius: 6px; border: 1px solid color-mix(in srgb, var(--fg) 15%, var(--bg));
+  }
+  .image-field-actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+  .image-field-actions .button { margin: 0; cursor: pointer; }
+  .image-field-file { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .image-field-hint { margin: .4rem 0 0; font-size: .85em; opacity: .75; }
+}

@@ -1,5 +1,6 @@
 {% extends 'campaigns/layout.html' %}
 {% from 'campaigns/forms.html' import token, category, rich_editor, page_header, modal, modal_footer, reveal_dialog with context %}
+{% from 'partial/image_field.html' import image_field with context %}
 {% block workspace %}
 {% include 'campaigns/parents.html' %}
 {# Articles are text. A map is edited in the map editor; an article that has a map (a dungeon point
@@ -19,19 +20,8 @@
 <div class="article-main">
 <label>{{ _('Title') }}<input type="text" name="title" maxlength="200" value="{{ entry.title if entry else initial_title|default('') }}" x-model="title" {% if not entry %}required{% endif %}></label>
 {# Its own picture (#476), apart from the text: shown above it and on the article's card. #}
-<div class="article-image" x-data="articleImage" data-value="{{ entry.image if entry else '' }}"
- data-preview="{{ url_for('campaigns.entry_image', entry_id=entry.id) if entry and entry.image else '' }}"
- data-too-big="{{ _('This image is too big. Choose one under 10 MB.') }}">
-<span class="article-image-label">{{ _('Image') }} <small>{{ _('(optional)') }}</small></span>
-<input type="hidden" name="image" :value="value">
-<template x-if="preview"><img class="article-image-preview" :src="preview" alt=""></template>
-<div class="campaign-actions">
-<label class="button article-image-pick"><i class="fa-solid fa-image" aria-hidden="true"></i> <span x-text="preview ? {{ _('Change image')|tojson|forceescape }} : {{ _('Choose image')|tojson|forceescape }}">{{ _('Choose image') }}</span>
-<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="sr-only" @change="pick($event)"></label>
-<button type="button" x-show="preview" x-cloak @click="clear()"><i class="fa-solid fa-xmark" aria-hidden="true"></i> {{ _('Remove image') }}</button>
-</div>
-<p class="import-hint" x-show="error" x-text="error" role="alert" x-cloak></p>
-</div>
+{{ image_field(entry.image if entry else '', url_for('campaigns.entry_image', entry_id=entry.id) if entry and entry.image else '',
+   _('Shown above the text and on the article’s card.')) }}
 {{ rich_editor(_('Description'), entry.body if entry else '', model='body') }}
 <div x-show="category==='path'" x-cloak>
 <label>{{ _('Path type') }}<select name="path_type">{% for kind in path_types %}<option value="{{ kind }}" {% if entry and entry.path_type == kind %}selected{% endif %}>{{ _(kind|capitalize) }}</option>{% endfor %}</select></label>

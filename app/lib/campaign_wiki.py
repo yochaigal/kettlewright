@@ -258,6 +258,8 @@ def first_image(body):
 
 def cover_image(campaign, entries):
     """The first picture in the campaign's front page, else in its other articles."""
+    if campaign.image:  # Its own picture (#476).
+        return campaign.image
     front = [entry for entry in entries if entry.category == 'overview' and entry.title == campaign.name]
     for entry in front + sorted((entry for entry in entries if entry not in front), key=lambda entry: entry.id):
         url = entry.image or first_image(entry.body)

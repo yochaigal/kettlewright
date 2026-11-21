@@ -24,6 +24,8 @@ class Party(db.Model):
 
     name = db.Column(db.String(64), nullable=False)
     description = db.Column(db.String(2000))
+    # Its picture (#476), set by the Warden: on the party page and as its wiki's cover.
+    image = db.Column(db.String(2000), nullable=False, default='', server_default='')
     notes = db.Column(db.String(2000))
     members = db.Column(db.String(2000))
     subowners = db.Column(db.String(2000))

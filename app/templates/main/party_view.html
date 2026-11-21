@@ -38,6 +38,10 @@
     </nav>
     {% endif %}
     <div class="party-header">
+      {% if party.image and starred is not none %}
+      {# Its picture (#476), set by the Warden on the party's edit form. #}
+      <img class="party-picture" src="{{ url_for('campaigns.party_image', party_id=party.id) }}" alt="">
+      {% endif %}
       <div class="party-heading">
         <h1 class="title level-item">{{ party.name|markdown_inline }}
           {% if starred is not none %}

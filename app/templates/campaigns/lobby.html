@@ -4,6 +4,7 @@
 {% macro article_title(item) %}{{ (item.title or _('Untitled private original'))|markdown_inline }}{% endmacro %}
 {% macro type_label(item) %}{{ _(content_categories.get(item.category, item.category)) }}{% endmacro %}
 {% macro page_url(entry_id=None) %}{{ url_for('campaigns.wiki', campaign_id=campaign.id, entry_id=entry_id) }}{% endmacro %}
+{% from 'partial/image_field.html' import image_field with context %}
 {% block workspace %}
 <div class="campaign-wiki campaign-lobby">
   <nav class="campaign-breadcrumb" aria-label="{{ _('Breadcrumb') }}"><a href="{{ url_for('campaigns.index') }}">← {{ _('All campaigns') }}</a></nav>
@@ -21,6 +22,8 @@
         <form method="post" action="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}">
           {{ content_form.csrf_token }}<input type="hidden" name="version" value="{{ campaign.version }}">
           <label>{{ _('Campaign name') }}<input type="text" name="name" required maxlength="200" value="{{ campaign.name }}"></label>
+          {{ image_field(campaign.image, url_for('campaigns.campaign_cover', campaign_id=campaign.id) if campaign.image else '',
+             _('The campaign’s cover. Without one, the first picture in its articles.')) }}
           <div class="create-dialog-actions">
             <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
             <button type="submit" class="primary">{{ _('Save') }}</button>

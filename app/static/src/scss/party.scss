@@ -955,3 +955,13 @@ button.companion-delete {
   &[aria-pressed="true"] { color: #f59f00; }
   &:hover, &:focus-visible { color: #f59f00; }
 }
+
+// A party's picture (#476), beside its name.
+.party-picture {
+  flex: none;
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--fg) 15%, var(--bg));
+}

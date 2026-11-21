@@ -1,4 +1,4 @@
-"""An article's own image (#476): uploaded apart from its text, shown above it and on its card."""
+"""Pictures of their own (#476): an article's (above its text, on its card), a campaign's (its cover) and a party's."""
 import base64
 import io
 import json
@@ -124,3 +124,56 @@ def test_campaign_cover_can_be_an_articles_image(setup):
     assert client.get(response.location).status_code == 200  # Its owner sees it.
     login(client, 2)
     assert client.get(response.location).status_code == 404  # Nobody else does.
+
+
+def campaign_image(app):
+    from app.models import Campaign
+    with app.app_context():
+        return db.session.get(Campaign, 1).image
+
+
+def party_image(app):
+    from app.models import Party
+    with app.app_context():
+        return db.session.get(Party, 1).image
+
+
+def test_campaign_image_is_its_cover(setup, tmp_path):
+    app, client = setup
+    from app.models import Campaign
+    with app.app_context():
+        version = db.session.get(Campaign, 1).version
+    assert 'name="image"' in client.get('/campaigns/1/').text  # In Campaign settings.
+    response = client.post('/campaigns/1/', data={'version': version, 'name': 'Secret campaign', 'image': png()})
+    assert response.status_code == 302
+    image = campaign_image(app)
+    assert image.startswith('/material-images/1/')
+    cover = client.get('/campaigns/1/cover')
+    assert cover.status_code == 200 and cover.mimetype == 'image/webp'
+    # A rename without the field keeps it; an empty field removes it, and its file.
+    client.post('/campaigns/1/', data={'version': version + 1, 'name': 'Renamed'})
+    assert campaign_image(app) == image
+    client.post('/campaigns/1/', data={'version': version + 2, 'name': 'Renamed', 'image': ''})
+    assert campaign_image(app) == ''
+    assert not (tmp_path / 'material-images' / '1' / image.rsplit('/', 1)[1]).exists()
+    assert client.get('/campaigns/1/cover').status_code == 404
+
+
+def test_party_image_for_its_members(setup):
+    app, client = setup
+    from tests.unit.test_campaigns import renderable_party_page
+    renderable_party_page(app)
+    assert 'name="image"' in client.get('/party/edit/user1/party1').text
+    response = client.post('/party/edit/user1/party1/save', data={'name': 'Party 1', 'description': '', 'image': png()})
+    assert response.status_code == 200
+    assert party_image(app).startswith('/material-images/1/')
+    assert 'class="party-picture"' in client.get('/users/user1/parties/party1/').text
+    assert 'src="/party/1/image"' in client.get('/party/1/wiki/').text  # The wiki's cover.
+    login(client, 2)  # A member.
+    picture = client.get('/party/1/image')
+    assert picture.status_code == 200 and picture.mimetype == 'image/webp'
+    login(client, 3)  # Not in party 1.
+    assert client.get('/party/1/image').status_code == 403
+    login(client, 2)  # Members do not change it.
+    assert client.post('/party/edit/user1/party1/save', data={'name': 'Party 1', 'description': '', 'image': ''}).status_code == 403
+    assert party_image(app) != ''

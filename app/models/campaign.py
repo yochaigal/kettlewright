@@ -23,6 +23,8 @@ class Campaign(Versioned, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
     name = db.Column(db.String(200), nullable=False)
+    # Its picture (#476): the campaign's cover. Empty: the first picture in its articles.
+    image = db.Column(db.String(2000), nullable=False, default='', server_default='')
     owner = db.relationship('User', backref=db.backref('campaigns', cascade='all, delete-orphan'))
     # Its parties (several at once for a West Marches game), created in it; the first comes with the
     # campaign. A party can be deleted, or moved to another of the Warden's campaigns.

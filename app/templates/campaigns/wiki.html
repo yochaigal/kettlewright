@@ -1,5 +1,5 @@
 {% extends 'campaigns/layout.html' %}
-{% from 'campaigns/forms.html' import reveal_dialog, token with context %}
+{% from 'campaigns/forms.html' import reveal_dialog with context %}
 {# Read articles as a wiki (#421). Three sources share this page; the view gives
    page_url(entry_id=None), home_title and, for owners, edit links:
    - a campaign, for its owner;
@@ -115,30 +115,12 @@
           {% if not party %}
           <button type="button" class="button wiki-edit" aria-haspopup="dialog" onclick="document.getElementById('reveal-dialog-{{ entry.id }}').showModal()"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{ _('Reveal map') if is_map else _('Reveal to party') }}</button>
           {% endif %}
-          {% if give_kind %}
-          <button type="button" class="button wiki-edit" aria-haspopup="dialog" onclick="document.getElementById('give-dialog-{{ entry.id }}').showModal()"><i class="fa-solid fa-hand-holding" aria-hidden="true"></i> {{ _('Give to party') }}</button>
-          {% endif %}
                     {% if map_edit_url and not is_map %}<a class="button wiki-edit" href="{{ map_edit_url }}"><i class="fa-solid fa-map" aria-hidden="true"></i> {{ _('Edit map') }}</a>{% endif %}
           <a class="button wiki-edit" href="{{ edit_url }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit map') if is_map else _('Edit') }}</a>
         </div>
         {% endif %}
       </header>
       {% if not party and edit_url %}{{ reveal_dialog(entry, reveal_parties) }}{% endif %}
-      {% if not party and edit_url and give_kind %}
-      {# Give to party (#476): the party gets its own copy; the article stays here, private until revealed. #}
-      <dialog class="create-dialog" id="give-dialog-{{ entry.id }}" aria-labelledby="give-dialog-title-{{ entry.id }}">
-        <h2 id="give-dialog-title-{{ entry.id }}">{{ _('Give to party') }}</h2>
-        <p class="reveal-article"><strong>{{ article_title(entry) }}</strong></p>
-        {% if give_parties %}
-        <form method="post" action="{{ url_for('campaigns.give_to_party', entry_id=entry.id) }}">{{ token() }}
-          <label>{{ _('Party') }}<select name="party_id" required>{% for item in give_parties %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}</select></label>
-          <p class="import-hint">{% if give_kind == 'storage' %}{{ _('It goes to the party storage as an item, with this article’s text as its description.') }}{% else %}{{ _('It becomes one of the party’s monsters. A stat line such as “8 HP, 10 STR, 12 DEX, 2 WIL, claws (d6)” sets its stats; you can change them on its sheet.') }}{% endif %}</p>
-          <div class="create-dialog-actions"><button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button><button type="submit" class="primary">{{ _('Give') }}</button></div>
-        </form>
-        {% else %}<p>{{ _('This campaign has no parties yet.') }}</p>
-        <div class="create-dialog-actions"><button type="button" onclick="this.closest('dialog').close()">{{ _('Close') }}</button></div>{% endif %}
-      </dialog>
-      {% endif %}
 
       <div class="wiki-body">
         <div class="wiki-content">
@@ -218,6 +200,7 @@
       {% endif %}
       <div id="party-content-results">
       {% if cover_url is defined %}<div class="wiki-cover"><img src="{{ cover_url }}" alt="" data-cover></div>
+      {% elif party and party.image %}<div class="wiki-cover"><img src="{{ url_for('campaigns.party_image', party_id=party.id) }}" alt="" data-cover></div>
       {% elif party and party_cover %}<div class="wiki-cover"><img src="{{ url_for('campaigns.party_entry_image', party_id=party.id, entry_id=party_cover) }}" alt="" data-cover></div>{% endif %}
       <header class="wiki-header">
         <div>

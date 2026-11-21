@@ -136,7 +136,7 @@ def test_campaign_lobby_renames_with_the_pencil_and_has_no_edit_view(setup):
     assert 'wiki-badge' not in header  # Just the name, centred.
     dialog = home[home.index('id="campaign-settings-dialog"'):home.index('</dialog>', home.index('id="campaign-settings-dialog"'))]
     assert 'action="/campaigns/1/"' in dialog and 'name="name"' in dialog and 'action="/campaigns/1/delete"' in dialog
-    assert 'name="image"' not in dialog  # Only a name.
+    assert 'name="image"' in dialog  # A name and, optionally, its picture (#476).
     assert client.post('/campaigns/1/', data={'name': 'Renamed', 'version': 1}).location.endswith('/campaigns/1/')
     assert '<h1>Renamed' in client.get('/campaigns/1/').get_data(as_text=True)
     assert '<h1>Renamed</h1>' in client.get('/campaigns/1/wiki/').get_data(as_text=True)  # No pencil in the wiki.
