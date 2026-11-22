@@ -183,3 +183,72 @@ def test_bulky_aligns_to_a_full_grid_row():
     assert layout['positions']['torch'] == 0
     assert layout['positions']['axe'] == 2
     assert next(row for row in layout['rows'] if row['slot'] == 1)['item'] is None
+
+
+# Coins (#507): under 100gp they are petty; from 100gp they take one slot in the main inventory.
+
+def set_gold(app, gold, slots=10):
+    with app.app_context():
+        character = db.session.get(Character, 1)
+        character.gold = gold
+        character.containers = json.dumps([dict(id=0, name='Main', slots=slots)])
+        db.session.commit()
+
+
+@pytest.mark.parametrize('gold, used', [(None, 3), (0, 3), (99, 3), (100, 4), (2000, 4)])
+def test_coins_take_one_slot_from_100gp_however_many(inventory_sheet, gold, used):
+    app, _ = inventory_sheet
+    set_gold(app, gold)
+    with app.app_context():
+        character = db.session.get(Character, 1)
+        assert character.occupiedMainSlots() == used
+        inventory = Inventory(character)
+        assert inventory.container_slots(inventory.get_container(0)) == used
+        assert inventory.free_slots(0) == 10 - used
+        assert inventory.slot_layout()['used'] == used
+        # Nothing is stored: the slot comes and goes with the gold.
+        assert all(entry['id'] != 'coins' for entry in json.loads(character.items))
+
+
+def test_coins_fill_the_last_slot_and_overburden(inventory_sheet):
+    app, _ = inventory_sheet
+    set_gold(app, 150, slots=4)  # axe (2) + torch (1) + coins (1)
+    with app.app_context():
+        character = db.session.get(Character, 1)
+        assert character.overburdened() and character.freeMainSlots() == 0
+        inventory = Inventory(character)
+        assert inventory.create_item('Rope', '', '', '', '', 0, '') is None
+        assert inventory.create_item('Pin', 'petty', '', '', '', 0, '') is not None
+        character.gold = 99
+        assert not character.overburdened() and character.freeMainSlots() == 1
+
+
+def test_coins_slot_shows_the_amount_and_cannot_be_changed(inventory_sheet):
+    app, client = inventory_sheet
+    set_gold(app, 250)
+    html = client.get('/charedit/inventory-select-container/owner/hero/0?inventory_context=sheet').get_data(as_text=True)
+    tile = html[html.index('data-item-id="coins"'):]
+    tile = tile[:tile.index('role="listitem"') if 'role="listitem"' in tile else len(tile)]
+    assert 'Coins' in tile and '250 gp' in tile
+    assert 'data-move-item="coins"' not in html and 'item-delete/coins' not in html
+    assert 'item-edit/coins' not in html
+    # Gold is edited on the stats panel; the inventory reloads when it changes.
+    assert 'hx-trigger="refresh-inventory from:body"' in html
+    for url in (MOVE, '/charedit/inplace-inventory/owner/hero/0/item-delete/coins'):
+        client.post(url, data={'item_id': 'coins', 'slot': 5})
+    with app.app_context():
+        assert db.session.get(Character, 1).occupiedMainSlots() == 4
+
+
+def test_coins_only_count_in_the_main_inventory_of_characters_and_companions(app_with_babel):
+    from app.models import Companion, Party
+    with app_with_babel.app_context():
+        party = Party(name='P', items='[]', containers=json.dumps([dict(id=0, name='Storage', slots=10)]))
+        party.gold = 500  # Party storage is not carried by anyone.
+        storage = Inventory(party)
+        assert storage.container_slots(storage.get_container(0)) == 0
+        hireling = Companion(kind='hireling', name='Hob', gold=120, items='[]',
+                             containers=json.dumps([dict(id=0, name='Main', slots=10), dict(id=1, name='Sack', slots=6)]))
+        inventory = Inventory(hireling)
+        assert inventory.container_slots(inventory.get_container(0)) == 1
+        assert inventory.container_slots(inventory.get_container(1)) == 0

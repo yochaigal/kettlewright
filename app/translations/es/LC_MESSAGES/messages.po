@@ -51097,3 +51097,13 @@ msgstr ""
 "Un farol de cristal verde que arde bajo el agua. Su luz señala el camino "
 "hasta el cadáver más cercano.\n"
 "- **Recarga**: déjalo una noche en el fondo de un lago.\n"
+
+#. Inventory: the slot that coins worth 100gp or more take in the main inventory (#507)
+#: app/lib/inventory.py
+msgid "Coins"
+msgstr "Monedas"
+
+#. Inventory: description of the Coins slot (#507)
+#: app/lib/inventory.py
+msgid "A bag of coins worth 100gp or more is not petty: it takes one slot until you carry less than 100gp."
+msgstr "Una bolsa de monedas que vale 100 mo o más no es insignificante: ocupa un espacio hasta que lleves menos de 100 mo."

@@ -1,6 +1,14 @@
 """Stable, backwards-compatible slot positions inside the existing item JSON."""
 from copy import deepcopy
 
+# Cairn 2e: "A bag of coins worth less than 100gp is petty and does not occupy a slot." From 100gp the
+# coins take one slot in the main inventory, however much there is (#507).
+PETTY_GOLD_LIMIT = 100
+
+
+def coins_take_a_slot(gold):
+    return (gold or 0) >= PETTY_GOLD_LIMIT
+
 
 def item_size(item):
     tags = item.get('tags') or []

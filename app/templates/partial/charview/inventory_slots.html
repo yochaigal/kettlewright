@@ -53,7 +53,7 @@
     <button type="button" class="slot-icon" title="{{ _('Drop item') }}" aria-label="{{ _('Drop item') }}: {{ item_name }}"
       hx-get="{{ url_for('ground.drop', character_id=character.id, kind='item', object_id=it.id) }}" hx-target="#modal-anchor"><i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button>
     {% endif %}
-    {% if editable and slot is not none %}
+    {% if editable and slot is not none and it.coins is not defined %}
     <button type="button" class="slot-move" data-move-item="{{it.id}}"{% if it.editable %} data-move-across="{{ 2 if 'bulky' in it.tags else 1 }}"{% endif %}
       aria-label="{{_('Move')}}: {{item_name}}" title="{{_('Drag to a slot, another container’s tab or a cart. Arrow keys then Enter also work.') if it.editable else _('Drag to move. Arrow keys then Enter also work.')}}"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button>
     {% endif %}
@@ -158,4 +158,7 @@
   {% endif %}
   <p class="slot-status" role="status" aria-live="polite"></p>
   <div id="modal-anchor"></div>
+  {# Gold changes on the stats panel; 100gp or more takes a slot here (#507). #}
+  {% if not generated_preview %}<div hidden hx-trigger="refresh-inventory from:body" hx-target="#inventory-container"
+    hx-get="{{inventory_select_base|default("/charedit/inventory-select-container/" ~ username ~ "/" ~ url_name)}}/{{container.id}}"></div>{% endif %}
 </div>

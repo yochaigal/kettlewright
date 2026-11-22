@@ -11,6 +11,7 @@ from flask import abort
 
 FATIGUE_NAME = "Fatigue"
 CARRYING_NAME = "Carrying"
+COINS_ID = "coins"
 non_editable_items = [FATIGUE_NAME]
 
 def bring_fatigue_to_end(item):
@@ -96,6 +97,23 @@ class Inventory:
             if "items" in c:
                 c["items"].sort(key=bring_fatigue_to_end)
         self.containers = containers
+        self.add_coins(cdict.get(0))
+
+    def add_coins(self, main):
+        """Coins worth 100gp or more take one slot in the main inventory (#507).
+
+        The slot is not a stored item: it comes and goes with the gold, so nothing can
+        edit, move, drop or delete it, and every slot count that reads the containers sees it.
+        """
+        from app.lib.inventory_slots import coins_take_a_slot
+        gold = getattr(self.character, 'gold', 0) if isinstance(self.character, (Character, Companion)) else 0
+        if main is None or not coins_take_a_slot(gold):
+            return
+        main["items"].append({
+            "id": COINS_ID, "name": _("Coins"), "tags": [f"{int(gold)} {_('gp')}"], "location": 0,
+            "coins": int(gold), "is_empty": False, "editable": False, "removable": False,
+            "description": _("A bag of coins worth 100gp or more is not petty: it takes one slot until you carry less than 100gp."),
+        })
         
     def slot_layout(self):
         from app.lib.inventory_slots import arrange_slots
@@ -249,6 +267,11 @@ class Inventory:
             item["removable"] = False           
             
         if "carrying" in item or item["name"] == FATIGUE_NAME:
+            item["blocker"] = True
+
+        if "coins" in item:
+            item["editable"] = False
+            item["removable"] = False
             item["blocker"] = True
             
         item["dice"] = []
