@@ -113,13 +113,11 @@ class Character(db.Model):
 
     # Compute occupied slots based on possessed items
     # but only for a main container
+    # (plus one for coins worth 100gp or more, #507)
     def occupiedMainSlots(self):
-        if self.items == None:
-            return 0
-        items = json.loads(self.items)
-        if  len(self.items) == 0:
-            return 0
-        slots = 0
+        from app.lib.inventory_slots import coins_take_a_slot
+        items = json.loads(self.items or '[]')
+        slots = 1 if coins_take_a_slot(self.gold) else 0
         for it in items:
             if "petty" in it["tags"] or it["location"] != 0:
                 continue

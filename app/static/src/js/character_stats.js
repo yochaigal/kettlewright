@@ -94,6 +94,7 @@ export function initializeCharacterStats() {
     const rest = panel.querySelector('#character-rest-container button');
     if (rest) rest.disabled = true;
     let conditionsChanged = false;
+    let goldChanged = false;
     while (state.queue.size && panel.isConnected) {
       const [field, change] = state.queue.entries().next().value;
       state.queue.delete(field);
@@ -118,6 +119,7 @@ export function initializeCharacterStats() {
         }
         markEdited(change.form);
         conditionsChanged ||= field === 'panicked';
+        goldChanged ||= field === 'gold';
         status.textContent = '';
       } catch (error) {
         status.textContent = error.message || panel.dataset.saveError;
@@ -129,6 +131,8 @@ export function initializeCharacterStats() {
     }
     state.saving = false;
     await refreshCharacterStats();
+    // 100gp or more takes a slot in the main inventory (#507).
+    if (goldChanged) window.htmx?.trigger(document.body, 'refresh-inventory');
     if (conditionsChanged) document.dispatchEvent(new CustomEvent('character-section-saved', {
       detail: { section: 'stats', partyId: panel.dataset.partyId === 'None' ? null : panel.dataset.partyId },
     }));
