@@ -83,7 +83,7 @@ $modal-danger: #a33b3b;
 }
 
 .modal {
-  z-index: 40;
+  z-index: 200;
   display: none;
   align-items: center;
   justify-content: center;
@@ -97,8 +97,9 @@ $modal-danger: #a33b3b;
 
 .modal-background {
   // HTMX dialogs can sit between page sections without a .modal wrapper.
-  // Keep their backdrop above stacking contexts created by SVG masks.
-  z-index: 40;
+  // Keep their backdrop above stacking contexts created by SVG masks, and above
+  // the phone navigation (z-index 100-102), whose menu button otherwise shows through.
+  z-index: 200;
   background-color: rgba(15, 15, 15, 0.45);
 }
 
@@ -111,7 +112,7 @@ body.dark-mode .modal-background {
   position: fixed;
   top: 50%;
   left: 50%;
-  z-index: 41;
+  z-index: 201;
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;

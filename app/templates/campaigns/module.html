@@ -148,7 +148,7 @@
 <p><strong>{{ module.title }}</strong> · {{ article_count }} {{ _('articles') }} · {{ backgrounds|length }} {{ _('backgrounds') }} · {{ items|length }} {{ _('items') }}</p>
 <p>{{ _('Deleting this module permanently deletes its articles, maps, backgrounds, items and what the party was shown of them. This cannot be undone. Characters keep their backgrounds, and parties the copies of items they were sent.') }}</p>
 </section>
-{{ modal_footer(_('Permanently delete module')) }}
+{{ modal_footer(_('Permanently delete module'), danger=True) }}
 </form>
 {% endcall %}
 </div>

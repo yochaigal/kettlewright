@@ -54,10 +54,10 @@
 </div>
 </span>
 {% endmacro %}
-{% macro modal_footer(submit_label, submit_name=None, submit_value=None) %}
+{% macro modal_footer(submit_label, submit_name=None, submit_value=None, danger=False) %}
 <footer class="modal-card-foot campaign-modal-actions">
 <button type="button" @click="hide()">{{ _('Cancel') }}</button>
-<button type="submit"{% if submit_value == 'delete' %} class="danger"{% endif %}{% if submit_name %} name="{{ submit_name }}" value="{{ submit_value }}"{% endif %}>{{ submit_label }}</button>
+<button type="submit"{% if danger %} class="danger"{% endif %}{% if submit_name %} name="{{ submit_name }}" value="{{ submit_value }}"{% endif %}>{{ submit_label }}</button>
 </footer>
 {% endmacro %}
 {% macro reveal_status_label(status) %}{{ {'none': _('Not revealed'), 'same': _('Can read it')}[status] }}{% endmacro %}

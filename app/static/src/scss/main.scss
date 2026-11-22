@@ -24,7 +24,11 @@
 /* Use the original ornament as a local vector so missing font glyphs cannot
    turn section decorations into boxes. Empty generated content is decorative. */
 h3::before,
-.left-symbol::before {
+.left-symbol::before,
+// Every dialog title carries the ornament, including campaign dialogs' <h2>s.
+.modal-card-title::before,
+.create-dialog h2::before,
+.swal2-title.modal-alert-card-title::before {
   content: "";
   display: inline-block;
   width: 0.8em;

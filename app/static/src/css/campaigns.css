@@ -284,6 +284,10 @@ section.body-container > .sheet.campaign-workspace {background:transparent;box-s
 .create-dialog {width:480px;}
 .create-dialog.confirm-dialog {width:560px;}
 .campaign-modal .modal-card-body {text-align:start;}
+/* .campaign-workspace section (margin, padding 0) would otherwise win over the shared frame in modals.scss. */
+.campaign-workspace .campaign-modal section.modal-card-body {margin:0;padding:12px 20px 18px;}
+.campaign-workspace .campaign-modal :is(.modal-card-title, .modal-card-body p) {margin:0;}
+@media (max-width:600px) {.campaign-workspace .campaign-modal section.modal-card-body {padding-left:14px;padding-right:14px;}}
 .campaign-workspace .campaign-modal form {margin:0;display:contents;}
 .campaign-workspace .campaign-modal .modal-card-body label {margin:0;}
 /* Article page: content first, organisation alongside. */
@@ -930,25 +934,6 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
   .reveal-dialog .reveal-buttons {display:grid;grid-template-columns:1fr 1fr;}
   .reveal-dialog .reveal-buttons button {min-width:0;white-space:normal;}
   .reveal-dialog .reveal-buttons .reveal-hide {grid-column:1 / -1;grid-row:1;margin:0;}
-}
-
-/* The editors' Related articles and Delete… modals look like the other dialogs (Reveal, New campaign):
-   the title at the start, even padding, and buttons in one row that fits a phone. */
-.campaign-workspace .campaign-modal .modal-card {box-sizing:border-box;width:38em;max-width:calc(100vw - 2em);max-height:calc(100dvh - 2em);
-  padding:2em;align-items:stretch;justify-content:flex-start;background:var(--bg);border:1px solid var(--fg);border-radius:5px;}
-.campaign-workspace .campaign-modal :is(.modal-card-head, .modal-card-body, .modal-card-foot) {margin:0;padding:0;background:none;border:0;}
-.campaign-workspace .campaign-modal .modal-card-head {justify-content:flex-start;}
-.campaign-workspace .campaign-modal .modal-card-title {margin:0 0 1em;line-height:1.2;}
-.campaign-workspace .campaign-modal .modal-card-body {gap:.75em;}
-.campaign-workspace .campaign-modal .modal-card-body p {margin:0;}
-.campaign-workspace .campaign-modal .campaign-modal-actions {display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.75em;margin-top:1.25em;padding:0;}
-.campaign-workspace .campaign-modal .campaign-modal-actions button {display:inline-flex;align-items:center;justify-content:center;min-width:8em;min-height:3em;margin:0;
-  padding:.5em 1.25em;border:1.5px solid var(--fg);border-radius:2px;background:transparent;color:var(--fg);font:inherit;font-weight:600;line-height:1.2;}
-.campaign-workspace .campaign-modal .campaign-modal-actions button[type=submit] {background:var(--fg);color:var(--bg);}
-@media (max-width:600px) {
-  .campaign-workspace .campaign-modal .modal-card {padding:1.5em;}
-  .campaign-workspace .campaign-modal .campaign-modal-actions {display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));}
-  .campaign-workspace .campaign-modal .campaign-modal-actions button {min-width:0;white-space:normal;}
 }
 
 /* Module settings: the description, like the name field above it. */
