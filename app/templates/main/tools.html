@@ -9,7 +9,7 @@
 'attach': _('Attach to party'), 'copyMarkdown': _('Copy Markdown'), 'addToResults': _('Add to results'),
 'export': _('Export'), 'print': _('Print'),
 'navigation': {'Realm': _('Realm'), 'Factions': _('Factions'), 'People': _('People'), 'Places of interest': _('Places of interest'),
-  'Places': _('Places'), 'Dungeon': _('Dungeon'), 'Forest': _('Forest'), 'Dungeon site': _('Dungeon site'),
+  'Maps': _('Maps'), 'Dungeon': _('Dungeon'), 'Forest': _('Forest'), 'Dungeon site': _('Dungeon site'),
   'Characters': _('Characters'), 'Character': _('Character'), 'Monsters': _('Monsters'), 'Monster': _('Monster'),
   'Custom monster': _('Custom monster'), 'Events': _('Events'), 'Weather': _('Weather'), 'Season': _('Season'),
   'Treasure': _('Treasure'), 'Relic': _('Relic'), 'Spellbook': _('Spellbook'),
@@ -38,10 +38,10 @@
   'Items:Relics': _('A relic and its power.'),
   'Items:Spellbooks': _('A spell and what it does.')},
 'intros': {
-  'world': _('Build a world: a realm, its people, its factions and its places. A realm can be shown as a map.'),
-  'places': _('A complete dungeon or forest to explore, or just a dungeon\'s site. Show it as a map, then save it to a module if you like it.'),
+  'world': _('Fill a world: its people, its factions and its places of interest.'),
+  'maps': _('A realm, a dungeon or a forest. Show it as a map, then save it to a module if you like it.'),
   'characters': _('A character to play or hire, with a background you choose or a random one, or an NPC to meet.'),
-  'encounters': _('What the party meets: a monster and how it reacts, events on the way, the weather.'),
+  'encounters': _('A monster from the bestiary, or a new one. Reactions, events and weather are in Quick rolls.'),
   'treasure': _('Roll a relic or a spellbook, or browse them all.')}
 }|tojson }}</script>
 
@@ -68,7 +68,7 @@
   <div class="tools-tabs tools-sheet">
     <div class="tools-topbar">
       <div class="tools-nav" role="tablist" aria-label="{{_('Tools')}}">
-        {% for key, label, icon in [('world', _('World'), 'fa-earth-americas'), ('places', _('Places'), 'fa-dungeon'), ('characters', _('Characters'), 'fa-user'), ('encounters', _('Encounters'), 'fa-dragon'), ('treasure', _('Treasure'), 'fa-gem')] %}
+        {% for key, label, icon in [('world', _('World'), 'fa-earth-americas'), ('maps', _('Maps'), 'fa-map'), ('characters', _('Characters'), 'fa-user'), ('encounters', _('Encounters'), 'fa-dragon'), ('treasure', _('Treasure'), 'fa-gem')] %}
         <button type="button" id="{{key}}-tab" data-tool="{{key}}" role="tab" aria-selected="{{ 'true' if loop.first else 'false' }}" aria-controls="tab-content1"{% if not loop.first %} tabindex="-1"{% endif %}><i class="fa-solid {{icon}}" aria-hidden="true"></i> {{label}}</button>
         {% endfor %}
       </div>

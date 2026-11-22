@@ -3,36 +3,40 @@ import {generateSettingArticle} from './setting_articles.js';
 import {terrainSource} from './naming.js';
 
 // A tool is one card with one Roll button. `browse` names a search panel opened by a second button;
-// `options` (or `option`, a select the page provides) is a choice made before rolling, such as a season.
+// `option` names a select the page provides (the character's background); `options` are choices made
+// before rolling (Weather's season, shown beside its quick roll).
 const tool = (label, category, table = label, extra = {}) => ({label, category, table, ...extra});
 
 // Five tabs, sorted by what the Warden is making. Labels are plain names: "Monster", not "Random monster".
-export function toolSections(data) {
+export function toolSections() {
   return {
     world: [
-      {label:'Realm', tools:[tool('Realm', 'Worldbuilding')]},
       {label:'People', tools:[tool('People', 'Setting', 'people')]},
       {label:'Factions', tools:[tool('Faction', 'Worldbuilding'), tool('Faction Actions', 'Worldbuilding')]},
-      {label:'Places of interest', tools:['Settlement','Waypoint','Curiosity','Lair'].map(label => tool(label, 'Setting', label.toLowerCase()))},
+      // Dungeon site is the site alone (what it is and how it looks); the full dungeon is under Maps.
+      {label:'Places of interest', tools:[...['Settlement','Waypoint','Curiosity','Lair'].map(label => tool(label, 'Setting', label.toLowerCase())),
+        tool('Dungeon site', 'Setting', 'dungeon')]},
     ],
-    // The full dungeon and forest, and the dungeon's site alone (what it is and how it looks).
-    places: [{label:'Places', tools:[tool('Dungeon', 'Worldbuilding'), tool('Forest', 'Worldbuilding'),
-      tool('Dungeon site', 'Setting', 'dungeon')]}],
+    // Everything that can be shown as a map.
+    maps: [{label:'Maps', tools:[tool('Realm', 'Worldbuilding'), tool('Dungeon', 'Worldbuilding'), tool('Forest', 'Worldbuilding')]}],
     characters: [{label:'Characters', tools:[tool('Character', 'Character', 'Character', {option:'background'}),
       tool('NPC', 'Worldbuilding')]}],
-    encounters: [
-      {label:'Monsters', tools:[tool('Monster', 'Monsters', 'Random Monster', {browse:'Monster picker'}),
-        tool('Custom monster', 'Monsters', 'Custom Monster'), tool('Reaction Roll', 'Monsters')]},
-      {label:'Events', tools:[tool('Dungeon Events', 'Events'), tool('Wilderness Events', 'Events'),
-        tool('Weather', 'Weather', 'Weather', {options:Object.keys(data.Weather?.Types || {})})]},
-    ],
+    encounters: [{label:'Monsters', tools:[tool('Monster', 'Monsters', 'Random Monster', {browse:'Monster picker'}),
+      tool('Custom monster', 'Monsters', 'Custom Monster')]}],
     treasure: [{label:'Treasure', tools:[tool('Relic', 'Items', 'Relics', {browse:'Relic picker'}),
       tool('Spellbook', 'Items', 'Spellbooks', {browse:'Spellbook picker'})]}],
   };
 }
 
-// Rolled mid-session from any tab.
-export const QUICK_ROLLS = ['Reaction Roll', 'Weather', 'Dungeon Events', 'Wilderness Events'];
+// Rolled mid-session, so they live only in the Quick rolls row above the tabs, on every tab.
+export function quickRolls(data) {
+  return [
+    tool('Reaction Roll', 'Monsters'),
+    tool('Weather', 'Weather', 'Weather', {options:Object.keys(data.Weather?.Types || {})}),
+    tool('Dungeon Events', 'Events'),
+    tool('Wilderness Events', 'Events'),
+  ];
+}
 
 export const TAB_STORAGE_KEY = 'kw-tools-tab';
 export const OPTION_STORAGE_KEY = 'kw-tools-options';
@@ -75,14 +79,13 @@ export function initToolsNavigation(data, t, {onRoll, panels = {}, selects = {},
   const launcher = document.getElementById('tools-launcher');
   const intro = document.getElementById('tools-intro');
   const quick = document.getElementById('tools-quick-rolls');
-  const sections = toolSections(data);
+  const sections = toolSections();
   const open = new Set();
   const values = storage(store => JSON.parse(store.getItem(OPTION_STORAGE_KEY) || '{}')) || {};
   const remember = (name, value) => {
     values[name] = value;
     storage(store => store.setItem(OPTION_STORAGE_KEY, JSON.stringify(values)));
   };
-  const allTools = Object.entries(sections).flatMap(([key, list]) => list.flatMap(section => section.tools.map(item => [key, item])));
   const valueFor = item => item.options ? values[item.table] : item.option ? selects[item.option]?.value : undefined;
 
   async function roll(item, key, button) {
@@ -151,15 +154,7 @@ export function initToolsNavigation(data, t, {onRoll, panels = {}, selects = {},
       });
       row.append(browse);
     }
-    if (item.options?.length) {
-      const select = document.createElement('select');
-      select.className = 'tools-option';
-      select.setAttribute('aria-label', `${t(item.label)}: ${t('Season')}`);
-      for (const option of item.options) select.append(new Option(t(option), option));
-      select.value = rollTable(item, values[item.table]);
-      select.addEventListener('change', () => remember(item.table, select.value));
-      row.append(select);
-    } else if (selects[item.option]) {
+    if (selects[item.option]) {
       const select = selects[item.option];
       select.classList.add('tools-option');
       row.append(select);
@@ -216,13 +211,26 @@ export function initToolsNavigation(data, t, {onRoll, panels = {}, selects = {},
     quick.setAttribute('role', 'group');
     quick.setAttribute('aria-labelledby', label.id);
     quick.append(label);
-    for (const table of QUICK_ROLLS) {
-      const found = allTools.find(([, item]) => item.table === table);
-      if (!found) continue;
-      const [key, item] = found;
+    for (const item of quickRolls(data)) {
       const control = makeButton('tools-quick-roll', 'fa-dice', t(item.label));
-      control.addEventListener('click', () => roll(item, key, control));
-      quick.append(control);
+      const hint = hints[`${item.category}:${item.table}`];
+      if (hint) control.title = hint;
+      control.addEventListener('click', () => roll(item, 'quick', control));
+      if (!item.options?.length) {
+        quick.append(control);
+        continue;
+      }
+      // Weather keeps its season beside it.
+      const pair = document.createElement('span');
+      pair.className = 'tools-quick-pair';
+      const select = document.createElement('select');
+      select.className = 'tools-quick-option';
+      select.setAttribute('aria-label', `${t(item.label)}: ${t('Season')}`);
+      for (const option of item.options) select.append(new Option(t(option), option));
+      select.value = rollTable(item, values[item.table]);
+      select.addEventListener('change', () => remember(item.table, select.value));
+      pair.append(control, select);
+      quick.append(pair);
     }
   }
 
@@ -263,8 +271,8 @@ export function appendAreaNavigation(container, result, navigation, t, data = {}
     if (!kinds.has(kind)) continue;
     const button = document.createElement('button');
     button.type = 'button';
-    button.textContent = `${t('Places')}: ${t(table)} →`;
-    button.addEventListener('click', () => navigation.open('places', table));
+    button.textContent = `${t('Maps')}: ${t(table)} →`;
+    button.addEventListener('click', () => navigation.open('maps', table));
     actions.append(button);
   }
   if (actions.childElementCount) container.prepend(actions);

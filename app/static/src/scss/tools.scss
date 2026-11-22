@@ -85,6 +85,23 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
   &:disabled { opacity: .4; cursor: default; }
   i { font-size: .85em; }
 }
+// Weather and its season, as one pill.
+.tools-quick-pair {
+  display: inline-flex;
+  align-items: stretch;
+  .tools-quick-roll { border-radius: 999px 0 0 999px; }
+}
+.tools-sheet .tools-quick-option {
+  width: auto;
+  margin: 0;
+  padding: .2rem 2.4rem .2rem .8rem;
+  border: 1px solid $tools-line;
+  border-left: 0;
+  border-radius: 0 999px 999px 0;
+  background-color: var(--bg);
+  font-size: 1.45rem !important;
+  &:focus { border-color: var(--fg); outline: 1px solid var(--fg); }
+}
 @media (hover: hover) {
   .tools-sheet .tools-quick-roll:hover:not(:disabled) { border-color: var(--fg); background: var(--fg); color: var(--bg); }
 }
