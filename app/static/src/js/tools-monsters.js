@@ -1,5 +1,8 @@
 import {initMonsterPicker, monsterPreview, monsterText} from './monster-picker.js';
+import {resultActions} from './tools-results.js';
 
+// Monster: Roll one from the bestiary, or Browse it. A pick shows the same actions as a rolled one,
+// and Add to results puts it in the feed.
 export function initToolsMonsters(labels, results) {
   const catalog = JSON.parse(document.getElementById('tools-monster-catalog').textContent);
   const picker = document.getElementById('tools-monster-picker');
@@ -16,6 +19,21 @@ export function initToolsMonsters(labels, results) {
     if (form) document.getElementById('tools-attach-template').value = key;
     dialog.showModal();
   }
+  // Copy text is what a reader sees; Copy Markdown is the stat block as written.
+  const statBlock = monster => monsterText(monster).split('\n\n').slice(1).join('\n\n');
+  const markdown = monster => `## ${monster.name}\n\n${statBlock(monster)}\n`;
+  const save = key => dialog ? {label:labels.attach, icon:'fa-solid fa-users', onClick:() => attach(key)} : null;
+  function add(key) {
+    const monster = catalog[key];
+    results.add({
+      title: monster.name,
+      type: labels.navigation.Monster,
+      html: monsterPreview(monster, {title:false}).innerHTML,
+      copyText: monsterText(monster),
+      markdown: statBlock(monster),
+      save: save(key),
+    });
+  }
   initMonsterPicker({
     catalog,
     select: document.getElementById('tools-monster-template'),
@@ -23,20 +41,13 @@ export function initToolsMonsters(labels, results) {
     onSelect(monster, key) {
       preview.replaceChildren();
       if (!monster) return;
-      // Like a result: its actions right under its name (Attach to party, Copy text).
       const content = monsterPreview(monster);
-      const actions = document.createElement('div');
-      actions.className = 'tools-result-actions tools-actions';
-      const button = (label, icon, onClick) => {
-        const control = document.createElement('button');
-        control.type = 'button';
-        control.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i> `;
-        control.append(label);
-        control.addEventListener('click', onClick);
-        actions.append(control);
-      };
-      if (dialog) button(labels.attach, 'fa-users', () => attach(key));
-      button(labels.copy, 'fa-copy', () => results.copy(monsterText(monster)));
+      const actions = resultActions([
+        {label:labels.addToResults, icon:'fa-solid fa-plus', onClick:() => add(key), className:'kw-add'},
+        save(key),
+        {label:labels.copy, icon:'fa-regular fa-copy', onClick:() => results.copy(monsterText(monster))},
+        {label:labels.copyMarkdown, icon:'fa-brands fa-markdown', onClick:() => results.copy(markdown(monster))},
+      ]);
       const heading = content.querySelector('h3');
       if (heading) heading.after(actions); else content.prepend(actions);
       preview.append(content);
@@ -45,16 +56,8 @@ export function initToolsMonsters(labels, results) {
   return {
     picker,
     random() {
-      const keys = Object.keys(catalog), key = keys[Math.floor(Math.random() * keys.length)];
-      const monster = catalog[key];
-      results.add({
-        title: monster.name,
-        type: labels.randomMonster,
-        html: monsterPreview(monster, {title:false}).innerHTML,
-        copyText: monsterText(monster),
-        onSave: dialog ? () => attach(key) : null,
-        actionLabel: labels.attach, actionIcon: 'fa-users',
-      });
+      const keys = Object.keys(catalog);
+      add(keys[Math.floor(Math.random() * keys.length)]);
     },
   };
 }

@@ -136,8 +136,8 @@ def test_party_save_available_without_tester_ids_and_defaults_to_hireling(genera
     app, clients, form, _ = generated
     app.config['FEATURE_TEST_USER_IDS'] = set()
     page = clients[1].get('/tools/').text
-    assert 'Save to Party' in page and 'Plain Text' in page
-    assert 'id="pcgen-save-npc-button"' in page
+    assert 'Save to Party' in page and 'id="pcgen-save-dialog"' in page
+    assert '"npc": {' in page
     response = clients[1].post('/gen/character/save/party', data=form)
     assert response.status_code == 302
     with app.app_context():
@@ -146,7 +146,8 @@ def test_party_save_available_without_tester_ids_and_defaults_to_hireling(genera
 
 def test_tools_offers_npc_save_to_all_authenticated_users(generated):
     _, clients, _, _ = generated
-    assert 'id="pcgen-save-npc-button"' in clients[1].get('/tools/').text
+    page = clients[1].get('/tools/').text
+    assert 'id="pcgen-save-options"' in page and '"npc": {' in page and '/gen/character/save/npc' in page
 
 
 @pytest.mark.parametrize('kind', ['party', 'monster', 'npc'])
