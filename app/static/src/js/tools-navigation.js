@@ -7,28 +7,33 @@ import {terrainSource} from './naming.js';
 // before rolling (Weather's season, shown beside its quick roll).
 const tool = (label, category, table = label, extra = {}) => ({label, category, table, ...extra});
 
-// Five tabs, sorted by what the Warden is making. Labels are plain names: "Monster", not "Random monster".
+// Five tabs that follow the rulebooks, in their order. The Warden's Guide, Part 1 (World Building): Setting
+// Seeds (the realm, its people, factions and points of interest), then Dungeon Seeds and Forest Seeds.
+// Part 2 (Warden's Tools): the Bestiary and Creating Monsters, then Spellbooks and the Reliquary. Last,
+// characters: the Player's Guide's character creation, and an NPC (the Guide's NPC tables).
+// Labels are plain names: "Monster", not "Random monster".
 export function toolSections() {
   return {
-    world: [
+    setting: [
+      {label:'Realm', tools:[tool('Realm', 'Worldbuilding')]},
       {label:'People', tools:[tool('People', 'Setting', 'people')]},
       {label:'Factions', tools:[tool('Faction', 'Worldbuilding'), tool('Faction Actions', 'Worldbuilding')]},
-      // Dungeon site is the site alone (what it is and how it looks); the full dungeon is under Maps.
-      {label:'Places of interest', tools:[...['Settlement','Waypoint','Curiosity','Lair'].map(label => tool(label, 'Setting', label.toLowerCase())),
+      // Dungeon site is the site alone (what it is and how it looks); the full dungeon is a Dungeon Seed.
+      {label:'Points of interest', tools:[...['Settlement','Waypoint','Curiosity','Lair'].map(label => tool(label, 'Setting', label.toLowerCase())),
         tool('Dungeon site', 'Setting', 'dungeon')]},
     ],
-    // Everything that can be shown as a map.
-    maps: [{label:'Maps', tools:[tool('Realm', 'Worldbuilding'), tool('Dungeon', 'Worldbuilding'), tool('Forest', 'Worldbuilding')]}],
+    seeds: [{label:'Dungeons & Forests', tools:[tool('Dungeon', 'Worldbuilding'), tool('Forest', 'Worldbuilding')]}],
+    bestiary: [{label:'Bestiary', tools:[tool('Monster', 'Monsters', 'Random Monster', {browse:'Monster picker'}),
+      tool('Custom monster', 'Monsters', 'Custom Monster')]}],
+    spellbooks: [{label:'Spellbooks & Relics', tools:[tool('Spellbook', 'Items', 'Spellbooks', {browse:'Spellbook picker'}),
+      tool('Relic', 'Items', 'Relics', {browse:'Relic picker'})]}],
     characters: [{label:'Characters', tools:[tool('Character', 'Character', 'Character', {option:'background'}),
       tool('NPC', 'Worldbuilding')]}],
-    encounters: [{label:'Monsters', tools:[tool('Monster', 'Monsters', 'Random Monster', {browse:'Monster picker'}),
-      tool('Custom monster', 'Monsters', 'Custom Monster')]}],
-    treasure: [{label:'Treasure', tools:[tool('Relic', 'Items', 'Relics', {browse:'Relic picker'}),
-      tool('Spellbook', 'Items', 'Spellbooks', {browse:'Spellbook picker'})]}],
   };
 }
 
-// Rolled mid-session, so they live only in the Quick rolls row above the tabs, on every tab.
+// The Player's Guide's procedures (Dungeon and Wilderness Events, Weather) and its Reactions: rolled
+// mid-session, so they live only in the Quick rolls row under the tabs, on every tab.
 export function quickRolls(data) {
   return [
     tool('Reaction Roll', 'Monsters'),
@@ -271,8 +276,8 @@ export function appendAreaNavigation(container, result, navigation, t, data = {}
     if (!kinds.has(kind)) continue;
     const button = document.createElement('button');
     button.type = 'button';
-    button.textContent = `${t('Maps')}: ${t(table)} →`;
-    button.addEventListener('click', () => navigation.open('maps', table));
+    button.textContent = `${t('Dungeons & Forests')}: ${t(table)} →`;
+    button.addEventListener('click', () => navigation.open('seeds', table));
     actions.append(button);
   }
   if (actions.childElementCount) container.prepend(actions);

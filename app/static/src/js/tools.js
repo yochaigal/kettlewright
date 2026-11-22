@@ -33,7 +33,9 @@ const name = key => labels.navigation?.[key] ?? t(key);
 
 // Every result goes in the one feed, the same way: a roll, a pick from Browse, a character.
 function showResult(result, item) {
-  const shownTitle = localizeText(result.title, t);
+  // Weather says its season in the title: "Weather: Winter".
+  const season = result.category === 'weather' ? result.fields?.Season : null;
+  const shownTitle = localizeText(result.title, t) + (season ? `: ${localizeText(season, t)}` : '');
   const markdown = resultText(result, t);
   const entry = results.add({
     title: shownTitle,

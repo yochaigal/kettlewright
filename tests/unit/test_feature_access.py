@@ -172,8 +172,8 @@ def test_tools_show_any_map_result_as_a_map_without_saving(setup):
     assert labels['showMap'] == 'Show map' and labels['save'] == 'Save to a module'
     for key in ('Worldbuilding:Realm', 'Worldbuilding:Dungeon', 'Worldbuilding:Forest', 'Setting:dungeon'):
         assert labels['hints'][key]  # Every tile says what it makes.
-    assert set(labels['intros']) == {'world', 'maps', 'characters', 'encounters', 'treasure'}
-    for key in ('world', 'maps', 'characters', 'encounters', 'treasure'):
+    assert set(labels['intros']) == {'setting', 'seeds', 'bestiary', 'spellbooks', 'characters'}
+    for key in ('setting', 'seeds', 'bestiary', 'spellbooks', 'characters'):
         assert f'data-tool="{key}"' in tools
     assert 'id="generator-tab"' not in tools  # The character is an ordinary tool now.
     assert 'id="tools-quick-rolls"' in tools

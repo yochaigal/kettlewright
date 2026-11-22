@@ -28,9 +28,10 @@ test('every tool rolls usable content', () => {
   }
 });
 
-test('five tabs and the quick rolls keep every original table once', () => {
+test('five tabs in the rulebooks\' order and the quick rolls keep every original table once', () => {
   const sections = toolSections();
-  assert.deepEqual(Object.keys(sections), ['world', 'maps', 'characters', 'encounters', 'treasure']);
+  // The rulebooks' order: Setting Seeds, Dungeon and Forest Seeds, the Bestiary, Spellbooks and the Reliquary, characters.
+  assert.deepEqual(Object.keys(sections), ['setting', 'seeds', 'bestiary', 'spellbooks', 'characters']);
   const tables = allTools().flatMap(tool => (tool.options || [tool.table]).map(table => `${tool.category}:${table}`));
   const original = {
     Worldbuilding:['Dungeon','Forest','Realm','Faction','Faction Actions','NPC'],
@@ -42,20 +43,19 @@ test('five tabs and the quick rolls keep every original table once', () => {
     assert.equal(tables.filter(key => key === `${category}:${table}`).length, 1, table);
   }
   const labels = key => sections[key].map(section => [section.label, section.tools.map(tool => tool.label)]);
-  assert.deepEqual(labels('world'), [['People', ['People']], ['Factions', ['Faction', 'Faction Actions']],
-    ['Places of interest', ['Settlement','Waypoint','Curiosity','Lair','Dungeon site']]]);
-  // Everything that can be shown as a map has its own tab.
-  assert.deepEqual(labels('maps'), [['Maps', ['Realm', 'Dungeon', 'Forest']]]);
+  assert.deepEqual(labels('setting'), [['Realm', ['Realm']], ['People', ['People']], ['Factions', ['Faction', 'Faction Actions']],
+    ['Points of interest', ['Settlement','Waypoint','Curiosity','Lair','Dungeon site']]]);
+  assert.deepEqual(labels('seeds'), [['Dungeons & Forests', ['Dungeon', 'Forest']]]);
+  assert.deepEqual(labels('bestiary'), [['Bestiary', ['Monster', 'Custom monster']]]);
+  assert.deepEqual(labels('spellbooks'), [['Spellbooks & Relics', ['Spellbook', 'Relic']]]);
   assert.deepEqual(labels('characters'), [['Characters', ['Character', 'NPC']]]);
-  assert.deepEqual(labels('encounters'), [['Monsters', ['Monster', 'Custom monster']]]);
-  assert.deepEqual(labels('treasure'), [['Treasure', ['Relic', 'Spellbook']]]);
 });
 
 test('every tool is one Roll button, with a second control only when it needs one', () => {
   const extra = Object.fromEntries(allTools().filter(tool => tool.browse || tool.option || tool.options)
     .map(tool => [tool.label, tool.browse || tool.option || 'options']));
-  assert.deepEqual(extra, {Character:'background', Monster:'Monster picker', Weather:'options',
-    Relic:'Relic picker', Spellbook:'Spellbook picker'});
+  assert.deepEqual(extra, {Monster:'Monster picker', Spellbook:'Spellbook picker', Relic:'Relic picker',
+    Character:'background', Weather:'options'});
   // Plain names: one Monster, one Relic, one Spellbook, not "Random X" next to "X picker".
   assert.ok(!allTools().some(tool => /^Random |picker$/.test(tool.label)));
 });
@@ -73,14 +73,13 @@ test('quick rolls are only quick rolls, never also a card on a tab', () => {
   assert.deepEqual(quickRolls(data).map(tool => tool.label), ['Reaction Roll', 'Weather', 'Dungeon Events', 'Wilderness Events']);
   const onTabs = tabTools().map(tool => `${tool.category}:${tool.table}`);
   for (const tool of quickRolls(data)) assert.ok(!onTabs.includes(`${tool.category}:${tool.table}`), tool.label);
-  // Every tool that can be shown as a map is on the Maps tab.
-  const maps = toolSections().maps[0].tools.map(tool => tool.table);
-  const mapped = tabTools().filter(tool => tool.category === 'Worldbuilding' && ['Realm','Dungeon','Forest'].includes(tool.table));
-  assert.deepEqual(mapped.map(tool => tool.table), maps);
+  // The realm is a Setting Seed; the full dungeon and forest are their own seeds.
+  assert.deepEqual(toolSections().setting[0].tools.map(tool => tool.table), ['Realm']);
+  assert.deepEqual(toolSections().seeds[0].tools.map(tool => tool.table), ['Dungeon', 'Forest']);
 });
 
 test('Dungeon site rolls the dungeon site tables without generating a full dungeon', () => {
-  const choice = toolSections().world.flatMap(section => section.tools).find(tool => tool.label === 'Dungeon site');
+  const choice = toolSections().setting.flatMap(section => section.tools).find(tool => tool.label === 'Dungeon site');
   assert.ok(choice);
   const result = generateToolResult(data, choice.category, choice.table, () => 0);
   assert.deepEqual(result.fields, {Type:'Burial Ground', Feature:'Abandoned'});
@@ -108,8 +107,8 @@ test('area shortcuts open full generators without changing or rerolling the sour
   }};
   try {
     for (const [result, expected] of [
-      [generateToolResult(data, 'Setting', 'dungeon', () => 0), [['maps', 'Dungeon']]],
-      [{mapKind:'realm', poiKinds:['dungeon'], fields:{Terrain:['Forest. Difficulty: Easy']}}, [['maps', 'Dungeon'], ['maps', 'Forest']]],
+      [generateToolResult(data, 'Setting', 'dungeon', () => 0), [['seeds', 'Dungeon']]],
+      [{mapKind:'realm', poiKinds:['dungeon'], fields:{Terrain:['Forest. Difficulty: Easy']}}, [['seeds', 'Dungeon'], ['seeds', 'Forest']]],
       [generateToolResult(data, 'Worldbuilding', 'Dungeon', () => 0), []],
       [generateToolResult(data, 'Setting', 'settlement', () => 0), []],
     ]) {
@@ -131,12 +130,13 @@ test('the launcher shows every tool once and only labels groups that need a head
     assert.deepEqual(launcherGroups(list).flatMap(group => group.tools), list.flatMap(section => section.tools), key);
   }
   const shape = key => launcherGroups(sections[key]).map(group => [group.label, group.tools.map(tool => tool.label)]);
-  assert.deepEqual(shape('world'), [
-    ['', ['People']],
+  // Realm and People have one tool each, so they share a row without a heading.
+  assert.deepEqual(shape('setting'), [
+    ['', ['Realm', 'People']],
     ['Factions', ['Faction','Faction Actions']],
-    ['Places of interest', ['Settlement','Waypoint','Curiosity','Lair','Dungeon site']],
+    ['Points of interest', ['Settlement','Waypoint','Curiosity','Lair','Dungeon site']],
   ]);
-  for (const key of ['maps','characters','encounters','treasure']) assert.deepEqual(shape(key).map(([label]) => label), ['']);
+  for (const key of ['seeds','bestiary','spellbooks','characters']) assert.deepEqual(shape(key).map(([label]) => label), ['']);
 });
 
 test('the Relic and Spellbook pickers list every one, shown like a rolled one', async () => {

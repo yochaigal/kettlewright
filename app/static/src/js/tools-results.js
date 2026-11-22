@@ -86,7 +86,9 @@ export function initToolsResults(labels, notify) {
       const name = document.createElement('span');
       name.className = 'tools-result-title';
       name.textContent = title;
-      titleBlock.append(kind, name);
+      // No kind line when it only repeats the title (Reaction Roll, Dungeon Events…).
+      if (type && type !== title) titleBlock.append(kind);
+      titleBlock.append(name);
       heading.append(titleBlock);
       const content = document.createElement('div');
       content.className = 'tools-result-content';

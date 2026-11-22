@@ -2,6 +2,7 @@
 // Random), and it goes in the shared feed like any result: Save to Party / Save as NPC, Copy text,
 // Copy Markdown, then Export JSON and Print, which only a character has.
 import {plainText} from './tools-results.js';
+import {richContentHTML} from './rich-content.js';
 
 export function initToolsCharacters(labels, results, notify) {
   const config = document.getElementById('tools-character');
@@ -85,6 +86,7 @@ export function initToolsCharacters(labels, results, notify) {
     });
   }
 
+  let latest = null;
   async function roll() {
     const url = new URL(config.dataset.url, window.location.href);
     url.searchParams.set('view', 'sheet');
@@ -111,6 +113,9 @@ export function initToolsCharacters(labels, results, notify) {
       label:choice.label, icon:kind === 'party' ? 'fa-solid fa-users' : 'fa-solid fa-bookmark',
       onClick:() => openSave(kind, snapshot, name, choice.url),
     })) : null;
+    // A sheet's ids style it, so only the newest character shows its sheet; earlier ones show their
+    // Markdown and keep every action. Two sheets would repeat every id on the page.
+    if (latest?.body.isConnected) latest.body.innerHTML = richContentHTML(latest.markdown);
     const entry = results.add({
       title:name, type:labels.navigation.Character, html:holder.innerHTML,
       // The server writes the character's Markdown, name included.
@@ -130,6 +135,7 @@ export function initToolsCharacters(labels, results, notify) {
       active.replaceChildren(template.content.cloneNode(true));
       active.querySelector('[aria-pressed="true"]')?.focus();
     });
+    latest = {body:entry.body, markdown};
   }
 
   return {roll, background};

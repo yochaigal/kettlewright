@@ -51097,3 +51097,83 @@ msgstr ""
 "Un farol de cristal verde que arde bajo el agua. Su luz señala el camino "
 "hasta el cadáver más cercano.\n"
 "- **Recarga**: déjalo una noche en el fondo de un lago.\n"
+
+#. Tools tab: Setting Seeds from the Warden's Guide
+#: app/templates/main/tools.html
+msgid "Setting"
+msgstr "Escenario"
+
+#. Tools tab: Dungeon Seeds and Forest Seeds
+#: app/templates/main/tools.html
+msgid "Dungeons & Forests"
+msgstr "Mazmorras y bosques"
+
+#. Tools tab: Spellbooks and the Reliquary
+#: app/templates/main/tools.html
+msgid "Spellbooks & Relics"
+msgstr "Libros de hechizos y reliquias"
+
+#. Tools: group of Settlement, Waypoint, Curiosity, Lair and Dungeon site
+#: app/templates/main/tools.html
+msgid "Points of interest"
+msgstr "Puntos de interés"
+
+#. Tools: a card that rolls a dungeon's site only, not the full dungeon
+#: app/templates/main/tools.html
+msgid "Dungeon site"
+msgstr "Emplazamiento de mazmorra"
+
+#. Tools: the row of mid-session rolls under the tabs
+#: app/templates/main/tools.html
+msgid "Quick rolls"
+msgstr "Tiradas rápidas"
+
+#. Tools: button beside Roll that opens a search (Monster, Spellbook, Relic)
+#: app/templates/main/tools.html
+msgid "Browse"
+msgstr "Explorar"
+
+#. Tools: adds a browsed monster, relic or spellbook to the results feed
+#: app/templates/main/tools.html
+msgid "Add to results"
+msgstr "Añadir a resultados"
+
+#. Tools: empty results feed
+#: app/templates/main/tools.html
+msgid "Roll any tool. Results appear here."
+msgstr "Haz una tirada con cualquier herramienta. Los resultados aparecen aquí."
+
+#. Tools: hint on the Character card
+#: app/templates/main/tools.html
+msgid "A character with a background, stats and gear."
+msgstr "Un personaje con trasfondo, atributos y equipo."
+
+#. Tools: hint on the Weather quick roll
+#: app/templates/main/tools.html
+msgid "The day's weather in a season."
+msgstr "El clima del día en una estación."
+
+#. Tools: intro of the Setting tab
+#: app/templates/main/tools.html
+msgid "Setting Seeds, from the Warden's Guide: a realm, its people, its factions and its points of interest. A realm can be shown as a map."
+msgstr "Semillas de escenario, de la Guía del Guardián: una región, su población, sus facciones y sus puntos de interés. Una región puede mostrarse como mapa."
+
+#. Tools: intro of the Dungeons & Forests tab
+#: app/templates/main/tools.html
+msgid "Dungeon Seeds and Forest Seeds, from the Warden's Guide. Show one as a map, then save it to a module if you like it."
+msgstr "Semillas de mazmorra y de bosque, de la Guía del Guardián. Muéstrala como mapa y guárdala en un módulo si te gusta."
+
+#. Tools: intro of the Bestiary tab
+#: app/templates/main/tools.html
+msgid "A monster from the Bestiary, or a new one from Creating Monsters. Reactions, events and weather are in Quick rolls."
+msgstr "Un monstruo del Bestiario, o uno nuevo de Creación de monstruos. Las reacciones, los eventos y el clima están en Tiradas rápidas."
+
+#. Tools: intro of the Spellbooks & Relics tab
+#: app/templates/main/tools.html
+msgid "Roll a spellbook or a relic from the Reliquary, or browse them all."
+msgstr "Tira un libro de hechizos o una reliquia del Relicario, o explóralos todos."
+
+#. Tools: intro of the Characters tab
+#: app/templates/main/tools.html
+msgid "A character to play or hire, with a background you choose or a random one, or an NPC to meet."
+msgstr "Un personaje para jugar o contratar, con el trasfondo que elijas o uno aleatorio, o un PNJ para conocer."
