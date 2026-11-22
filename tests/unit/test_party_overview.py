@@ -230,7 +230,7 @@ def test_tools_only_lists_owned_parties(overview):
     assert 'id="warden-dice"' not in anonymous_html
     assert 'id="tools-attach-dialog"' not in anonymous_html
     assert 'id="tools-monster-search"' in anonymous_html
-    for key in ('realm', 'dungeons', 'forests', 'events', 'monsters', 'items'):
+    for key in ('world', 'places', 'characters', 'encounters', 'treasure'):
         assert f'id="{key}-tab"' in owner_html
         assert f'id="{key}-tab"' in anonymous_html
     assert 'id="category-buttons"' not in anonymous_html

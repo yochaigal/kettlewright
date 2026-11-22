@@ -1,8 +1,9 @@
-// Items, like Monsters: roll a relic or a spellbook at random (the Items tables), or pick one: a Relic picker
-// and a Spellbook picker. A pick is shown the way a rolled result is, with the same actions.
+// Treasure, like Monster: Roll a relic or a spellbook (the Items tables), or Browse them. A pick shows the
+// same actions as a rolled one, and Add to results puts it in the feed.
 import {initMonsterPicker} from './monster-picker.js';
 import {resultText} from './content_generators.js';
 import {richContentHTML} from './rich-content.js';
+import {resultActions} from './tools-results.js';
 
 export const ITEM_PICKERS = [
   {table: 'Relic picker', group: 'Relics', category: 'relic', id: 'relic'},
@@ -33,7 +34,8 @@ export function itemCatalog(data, group) {
     [`${category}:${item.name}`, {title: item.name, category, fields: {...item}}]));
 }
 
-export function initToolsItems(data, labels, results, t, save) {
+// `add(result)` puts a pick in the feed, the way a roll does; `save` saves it to a module.
+export function initToolsItems(data, labels, results, t, {add, save}) {
   const panels = {};
   for (const {table, group, id} of ITEM_PICKERS) {
     const panel = document.getElementById(`tools-${id}-picker`);
@@ -55,21 +57,15 @@ export function initToolsItems(data, labels, results, t, save) {
         const markdown = resultText(result, t);
         const heading = document.createElement('h3');
         heading.textContent = result.title;
-        const actions = document.createElement('div');
-        actions.className = 'tools-result-actions tools-actions';
-        const button = (label, icon, onClick) => {
-          const control = document.createElement('button');
-          control.type = 'button';
-          control.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i> `;
-          control.append(label);
-          control.addEventListener('click', onClick);
-          actions.append(control);
-        };
-        if (save) button(labels.save, 'fa-floppy-disk', () => save(result, result.title, markdown));
-        button(labels.copy, 'fa-copy', () => results.copy(`${result.title}\n\n${markdown}`));
         const body = document.createElement('div');
         body.className = 'rich-content';
         body.innerHTML = richContentHTML(markdown);
+        const actions = resultActions([
+          {label:labels.addToResults, icon:'fa-solid fa-plus', onClick:() => add(result), className:'kw-add'},
+          save && {label:labels.save, icon:'fa-solid fa-floppy-disk', onClick:() => save(result, result.title, markdown)},
+          {label:labels.copy, icon:'fa-regular fa-copy', onClick:() => results.copy(`${result.title}\n\n${body.innerText || markdown}`)},
+          {label:labels.copyMarkdown, icon:'fa-brands fa-markdown', onClick:() => results.copy(`## ${result.title}\n\n${markdown}`)},
+        ]);
         preview.append(heading, actions, body);
       },
     });

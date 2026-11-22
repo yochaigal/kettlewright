@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {toolSections, launcherGroups, generateToolResult, appendAreaNavigation} from '../../app/static/src/js/tools-navigation.js';
+import {toolSections, launcherGroups, generateToolResult, appendAreaNavigation, rollTable, QUICK_ROLLS} from '../../app/static/src/js/tools-navigation.js';
 import {resultText} from '../../app/static/src/js/content_generators.js';
 import {itemMarkdown} from '../../app/static/src/js/tools-items.js';
 
@@ -10,41 +10,72 @@ for (const name of ['dungeons','forests','realm','factions','npcs','names','fact
   Object.assign(data, JSON.parse(readFileSync(new URL(`../../app/static/json/generators/${name}.json`, import.meta.url))));
 }
 
-test('every table in the campaign-aligned navigation produces usable content', () => {
-  for (const sections of Object.values(toolSections(data))) for (const section of sections) for (const choice of section.choices) {
-    if (choice.table.endsWith(' picker')) continue;  // Pickers open a search; they roll nothing.
-    const result = generateToolResult(data, choice.category, choice.table, () => 0.4);
-    assert.ok(result.title, choice.label);
-    const text = resultText(result);
-    assert.ok(text.length > 0, choice.label);
-    assert.ok(!text.includes('undefined'), choice.label);
-    if (['Dungeon','Forest','Realm'].includes(choice.table)) assert.ok(result.mapKind);
+const allTools = () => Object.values(toolSections(data)).flat().flatMap(section => section.tools);
+
+test('every tool rolls usable content', () => {
+  for (const tool of allTools()) {
+    // The bestiary and the character come from the page and the server, not the tables.
+    if (tool.table === 'Random Monster' || tool.category === 'Character') continue;
+    for (const table of tool.options || [tool.table]) {
+      const result = generateToolResult(data, tool.category, table, () => 0.4);
+      assert.ok(result.title, tool.label);
+      const text = resultText(result);
+      assert.ok(text.length > 0, tool.label);
+      assert.ok(!text.includes('undefined'), tool.label);
+      if (['Dungeon','Forest','Realm'].includes(table)) assert.ok(result.mapKind);
+    }
   }
 });
 
-test('reorganization retains every original table with its original generator', () => {
-  const choices = Object.values(toolSections(data)).flat().flatMap(section => section.choices);
+test('five tabs, sorted by what the Warden is making, keep every original table once', () => {
+  const sections = toolSections(data);
+  assert.deepEqual(Object.keys(sections), ['world', 'places', 'characters', 'encounters', 'treasure']);
+  const tables = allTools().flatMap(tool => (tool.options || [tool.table]).map(table => `${tool.category}:${table}`));
   const original = {
     Worldbuilding:['Dungeon','Forest','Realm','Faction','Faction Actions','NPC'],
     Monsters:['Random Monster','Custom Monster','Reaction Roll'],
     Events:['Dungeon Events','Wilderness Events'], Weather:Object.keys(data.Weather.Types), Items:['Relics','Spellbooks'],
+    Setting:['settlement','waypoint','curiosity','lair','dungeon','people'],
   };
-  for (const [category, tables] of Object.entries(original)) for (const table of tables) {
-    assert.equal(choices.filter(choice => choice.category === category && choice.table === table).length, 1, table);
+  for (const [category, list] of Object.entries(original)) for (const table of list) {
+    assert.equal(tables.filter(key => key === `${category}:${table}`).length, 1, table);
   }
-  assert.deepEqual(toolSections(data).realm.map(section => section.label), ['Realm','Factions','POIs','People']);
-  assert.equal(toolSections(data).monsters.length, 1);
-  assert.deepEqual(toolSections(data).monsters[0].choices.map(choice => choice.label), ['Random monster','Custom monster','Monster picker']);
-  // Items work like Monsters: roll at random, or pick one.
-  assert.deepEqual(toolSections(data).items[0].choices.map(choice => choice.label), ['Random relic','Relic picker','Random spellbook','Spellbook picker']);
-  // A tab's only table is named for what it does, not after the tab.
-  assert.deepEqual(toolSections(data).dungeons[0].choices.map(choice => [choice.label, choice.table]), [['Random dungeon', 'Dungeon']]);
-  assert.deepEqual(toolSections(data).forests[0].choices.map(choice => [choice.label, choice.table]), [['Random forest', 'Forest']]);
+  const labels = key => sections[key].map(section => [section.label, section.tools.map(tool => tool.label)]);
+  assert.deepEqual(labels('world'), [['Realm', ['Realm']], ['People', ['People']],
+    ['Factions', ['Faction', 'Faction Actions']], ['Places of interest', ['Settlement','Waypoint','Curiosity','Lair']]]);
+  // The full dungeon and forest share a tab with the dungeon's site.
+  assert.deepEqual(labels('places'), [['Places', ['Dungeon', 'Forest', 'Dungeon site']]]);
+  assert.deepEqual(labels('characters'), [['Characters', ['Character', 'NPC']]]);
+  assert.deepEqual(labels('encounters'), [['Monsters', ['Monster', 'Custom monster', 'Reaction Roll']],
+    ['Events', ['Dungeon Events', 'Wilderness Events', 'Weather']]]);
+  assert.deepEqual(labels('treasure'), [['Treasure', ['Relic', 'Spellbook']]]);
 });
 
+test('every tool is one Roll button, with a second control only when it needs one', () => {
+  const extra = Object.fromEntries(allTools().filter(tool => tool.browse || tool.option || tool.options)
+    .map(tool => [tool.label, tool.browse || tool.option || 'options']));
+  assert.deepEqual(extra, {Character:'background', Monster:'Monster picker', Weather:'options',
+    Relic:'Relic picker', Spellbook:'Spellbook picker'});
+  // Plain names: one Monster, one Relic, one Spellbook, not "Random X" next to "X picker".
+  assert.ok(!allTools().some(tool => /^Random |picker$/.test(tool.label)));
+});
 
-test('Realm POIs roll the dungeon site tables without generating a full dungeon', () => {
-  const choice = toolSections(data).realm.find(section => section.label === 'POIs').choices.find(choice => choice.table === 'dungeon');
+test('Weather rolls the chosen season, or the first one', () => {
+  const weather = allTools().find(tool => tool.label === 'Weather');
+  assert.deepEqual(weather.options, Object.keys(data.Weather.Types));
+  assert.equal(rollTable(weather, 'Winter'), 'Winter');
+  assert.equal(rollTable(weather, 'Nonsense'), weather.options[0]);
+  assert.equal(rollTable(weather, undefined), weather.options[0]);
+  assert.equal(rollTable({table:'Realm'}, 'Winter'), 'Realm');
+});
+
+test('quick rolls are tools on the Encounters tab', () => {
+  const encounters = toolSections(data).encounters.flatMap(section => section.tools.map(tool => tool.table));
+  for (const table of QUICK_ROLLS) assert.ok(encounters.includes(table), table);
+});
+
+test('Dungeon site rolls the dungeon site tables without generating a full dungeon', () => {
+  const choice = toolSections(data).places[0].tools.find(tool => tool.label === 'Dungeon site');
   assert.ok(choice);
   const result = generateToolResult(data, choice.category, choice.table, () => 0);
   assert.deepEqual(result.fields, {Type:'Burial Ground', Feature:'Abandoned'});
@@ -72,14 +103,14 @@ test('area shortcuts open full generators without changing or rerolling the sour
   }};
   try {
     for (const [result, expected] of [
-      [generateToolResult(data, 'Setting', 'dungeon', () => 0), ['dungeons']],
-      [{mapKind:'realm', poiKinds:['dungeon'], fields:{Terrain:['Forest. Difficulty: Easy']}}, ['dungeons','forests']],
+      [generateToolResult(data, 'Setting', 'dungeon', () => 0), [['places', 'Dungeon']]],
+      [{mapKind:'realm', poiKinds:['dungeon'], fields:{Terrain:['Forest. Difficulty: Easy']}}, [['places', 'Dungeon'], ['places', 'Forest']]],
       [generateToolResult(data, 'Worldbuilding', 'Dungeon', () => 0), []],
       [generateToolResult(data, 'Setting', 'settlement', () => 0), []],
     ]) {
       const before = JSON.stringify(result), actions = [];
       const opened = [];
-      appendAreaNavigation({prepend(child) {actions.push(child);}}, result, {open(key) {opened.push(key);}}, key => key, data);
+      appendAreaNavigation({prepend(child) {actions.push(child);}}, result, {open(key, table) {opened.push([key, table]);}}, key => key, data);
       for (const button of actions[0]?.children || []) button.listeners.click();
       assert.deepEqual(opened, expected);
       assert.equal(JSON.stringify(result), before);
@@ -89,20 +120,19 @@ test('area shortcuts open full generators without changing or rerolling the sour
   }
 });
 
-test('the launcher shows every table once and only labels groups that need a heading', () => {
+test('the launcher shows every tool once and only labels groups that need a heading', () => {
   const sections = toolSections(data);
   for (const [key, list] of Object.entries(sections)) {
-    assert.deepEqual(launcherGroups(list).flatMap(group => group.choices), list.flatMap(section => section.choices), key);
+    assert.deepEqual(launcherGroups(list).flatMap(group => group.tools), list.flatMap(section => section.tools), key);
   }
-  const shape = key => launcherGroups(sections[key]).map(group => [group.label, group.choices.map(choice => choice.label)]);
-  assert.deepEqual(shape('realm'), [
-    ['', ['Realm','Faction']],
-    ['POIs', ['Settlement','Waypoint','Curiosity','Lair','Dungeon']],
-    ['People', ['People','NPC']],
+  const shape = key => launcherGroups(sections[key]).map(group => [group.label, group.tools.map(tool => tool.label)]);
+  assert.deepEqual(shape('world'), [
+    ['', ['Realm','People']],
+    ['Factions', ['Faction','Faction Actions']],
+    ['Places of interest', ['Settlement','Waypoint','Curiosity','Lair']],
   ]);
-  assert.deepEqual(shape('events').map(([label]) => label), ['Events','Weather','']);
-  assert.deepEqual(shape('events').at(-1)[1], ['Reaction Roll','Faction Actions']);
-  for (const key of ['dungeons','forests','monsters','items']) assert.deepEqual(shape(key).map(([label]) => label), ['']);
+  assert.deepEqual(shape('encounters').map(([label]) => label), ['Monsters','Events']);
+  for (const key of ['places','characters','treasure']) assert.deepEqual(shape(key).map(([label]) => label), ['']);
 });
 
 test('the Relic and Spellbook pickers list every one, shown like a rolled one', async () => {
