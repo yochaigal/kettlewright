@@ -91,8 +91,8 @@
     <input type="hidden" name="capacity" id="capacity" value="{{capacity}}" />
 
     <div class="modal-background" id="marketplace-modal-background"></div>
-    <div class="modal-card" style="border-radius: 4px">
-      <header class="modal-card-head" style="display: flex; flex-direction: column">
+    <div class="modal-card marketplace-modal-card">
+      <header class="modal-card-head marketplace-modal-head">
         <h3 class="modal-card-title">{{_('Marketplace')}}</h3>
         <h4>{{_('Storing in')}} {{container.name}} (<span id="current-capacity">{{capacity}}</span>)</h4>
         <div class="row32">
@@ -144,18 +144,17 @@
       <footer class="modal-card-foot">
         <h4 id="gold-display">{{ _('Gold: %(amount)s', amount=character.gold) }}</h4>
         <div class="footer-button-container">
-          <button class="button is-success" type="button" id="marketplace-save-button"
-            hx-post="/marketplace/{{username}}/{{url_name}}/{{container.id}}/buy" hx-target="#inventory-container">
-            {{_('Buy')}}
-          </button>
-
-          <button id="clear-selection-button" class="button is-warning" type="button" style="margin-left: auto"
+          <button id="clear-selection-button" class="button is-warning" type="button"
             onclick="KW_clear_cart()">
             {{_('Clear')}}
           </button>
           <button class="button marketplace-modal-cancel-button" type="button"
             hx-get="/marketplace/{{username}}/{{url_name}}/cancel" hx-target="#inventory-container">
             {{_('Cancel')}}
+          </button>
+          <button class="button is-success" type="button" id="marketplace-save-button"
+            hx-post="/marketplace/{{username}}/{{url_name}}/{{container.id}}/buy" hx-target="#inventory-container">
+            {{_('Buy')}}
           </button>
         </div>
       </footer>

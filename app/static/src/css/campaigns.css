@@ -208,15 +208,10 @@ section.body-container > .sheet.campaign-workspace {background:transparent;box-s
 
 .campaign-workspace .tree-empty {padding:.5em .35em .5em 12px;}
 .campaign-workspace .tree-empty-title {color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
-.campaign-workspace .campaign-page-actions button.primary,
-.create-dialog button.primary {display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:44px;margin:0;padding:.6rem 1rem;border:1.5px solid var(--fg);border-radius:2px;background:var(--fg);color:var(--bg);font:inherit;font-weight:600;cursor:pointer;}
-.campaign-workspace .campaign-page-actions button.primary:hover,
-.create-dialog button.primary:hover {opacity:.85;}
+.campaign-workspace .campaign-page-actions button.primary {display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:44px;margin:0;padding:.6rem 1rem;border:1.5px solid var(--fg);border-radius:2px;background:var(--fg);color:var(--bg);font:inherit;font-weight:600;cursor:pointer;}
+.campaign-workspace .campaign-page-actions button.primary:hover {opacity:.85;}
 .campaign-workspace .campaign-page-actions button.primary:focus-visible,
 .create-dialog :is(button,input):focus-visible {outline:2px solid var(--fg);outline-offset:3px;}
-.create-dialog {position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);margin:0;max-height:calc(100dvh - 2em);overflow:auto;box-sizing:border-box;width:38em;max-width:calc(100vw - 2em);padding:2em;color:var(--fg);background:var(--bg);border:1px solid var(--fg);border-radius:5px;}
-.create-dialog::backdrop {background:rgba(0,0,0,.45);}
-.create-dialog h2 {margin:0 0 1em;}
 .create-dialog form {margin:0;padding:0;background:transparent;border:0;width:auto;}
 .create-dialog fieldset.segmented {display:flex;margin:0 0 1em;padding:0;border:0;min-width:0;}
 .create-dialog .segmented label {position:relative;flex:1 1 0;margin:0;}
@@ -228,9 +223,6 @@ section.body-container > .sheet.campaign-workspace {background:transparent;box-s
 .create-dialog .segmented input:focus-visible + span {outline:2px solid var(--fg);outline-offset:3px;}
 .create-dialog label input[type=text] {display:block;width:100%;box-sizing:border-box;margin:.4em 0 0;padding:.5em .6em;border:1px solid var(--fg);border-radius:2px;background:var(--bg);color:var(--fg);font:inherit;}
 .create-dialog .campaign-check {margin:.9em 0 0;}
-.create-dialog-actions {display:flex;align-items:stretch;justify-content:flex-end;gap:.75em;margin-top:1.25em;}
-.create-dialog .create-dialog-actions button {display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-width:8em;min-height:3em;margin:0;padding:.5em 1.25em;border:1.5px solid var(--fg);border-radius:2px;font:inherit;font-weight:600;line-height:1.2;}
-.create-dialog .create-dialog-actions button:not(.primary) {background:transparent;color:var(--fg);}
 .toasts {position:fixed;left:50%;bottom:1.5em;transform:translateX(-50%);z-index:1000;display:flex;flex-direction:column;gap:.5em;width:max-content;max-width:min(32em,calc(100vw - 2em));}
 .toast {display:flex;align-items:center;gap:1em;box-sizing:border-box;padding:.6em .6em .6em 1.2em;border-radius:2px;background:var(--fg);color:var(--bg);box-shadow:0 .3em 1em rgba(0,0,0,.3);}
 .toast-close {flex:none;min-width:44px;min-height:44px;margin:0;padding:0;border:0;border-radius:2px;background:none;color:inherit;font:inherit;font-size:1.4em;line-height:1;cursor:pointer;}
@@ -238,13 +230,10 @@ section.body-container > .sheet.campaign-workspace {background:transparent;box-s
 .toast-close:focus-visible {outline:2px solid currentColor;outline-offset:-3px;}
 @media (prefers-reduced-motion:no-preference) {.toast {animation:toast-in .25s ease-out;}}
 @keyframes toast-in {from {opacity:0;transform:translateY(.75em);}}
-.create-dialog.confirm-dialog {width:40em;padding:2.5em;}
 .parties-dialog .campaign-check {display:flex;align-items:center;gap:.5em;min-height:44px;margin:0;cursor:pointer;}
 .campaign-card-actions button.campaign-card-parties {opacity:1;}
 .campaign-card-actions {flex-wrap:wrap;row-gap:0;}
 .confirm-dialog p {margin:0 0 1em;}
-.create-dialog .create-dialog-actions button.danger {border-color:#a33b3b;background:#a33b3b;color:#fff;}
-.create-dialog .create-dialog-actions button.danger:hover {opacity:.85;}
 .campaign-workspace .tree-heading .heading-toggle {display:none;}
 .campaign-workspace .tree-heading > h3 {margin:0;font:inherit;font-weight:400;}
 .campaign-workspace .tree-heading > h3::before {content:none;}
@@ -292,10 +281,15 @@ section.body-container > .sheet.campaign-workspace {background:transparent;box-s
 /* Campaign modals reuse the shared Bulma modal card. */
 .campaign-modal-host {display:contents;}
 .campaign-modal .modal-card {width:520px;}
+.create-dialog {width:480px;}
+.create-dialog.confirm-dialog {width:560px;}
 .campaign-modal .modal-card-body {text-align:start;}
+/* .campaign-workspace section (margin, padding 0) would otherwise win over the shared frame in modals.scss. */
+.campaign-workspace .campaign-modal section.modal-card-body {margin:0;padding:12px 20px 18px;}
+.campaign-workspace .campaign-modal :is(.modal-card-title, .modal-card-body p) {margin:0;}
+@media (max-width:600px) {.campaign-workspace .campaign-modal section.modal-card-body {padding-left:14px;padding-right:14px;}}
 .campaign-workspace .campaign-modal form {margin:0;display:contents;}
 .campaign-workspace .campaign-modal .modal-card-body label {margin:0;}
-.campaign-workspace .campaign-modal-actions {flex-direction:row;justify-content:flex-end;margin:0;padding:1rem 20px;}
 /* Article page: content first, organisation alongside. */
 .article-layout {display:grid;grid-template-columns:minmax(0,1fr) minmax(16rem,22rem);gap:2rem;align-items:start;}
 .article-main {min-width:0;}
@@ -317,13 +311,6 @@ section.body-container > .sheet.campaign-workspace {background:transparent;box-s
 .campaign-workspace .campaign-random-options {display:flex;flex-direction:column;gap:.75rem;padding-left:.75rem;border-left:2px solid currentColor;}
 .campaign-workspace .campaign-random-chances {display:flex;gap:.75rem;flex-wrap:wrap;}
 .campaign-workspace .campaign-random-chances label {flex:1 1 8rem;margin:0;}
-.campaign-workspace .campaign-modal-actions button[name="confirm"][value="delete"] {border-color:#a33b3b;background:#a33b3b;color:#fff;}
-.campaign-workspace .campaign-modal-actions button[name="confirm"][value="delete"]:hover {background:#a33b3b;border-color:#a33b3b;color:#fff;opacity:.85;}
-.campaign-workspace .campaign-modal-actions button[name="confirm"][value="delete"]:focus-visible {outline:2px solid var(--fg);outline-offset:3px;}
-.campaign-modal .modal-card:has(button[name="confirm"][value="delete"]) {width:700px;max-width:calc(100vw - 2rem);}
-.campaign-modal .modal-card:has(button[name="confirm"][value="delete"]) .modal-card-body {padding:28px 32px;font-size:1.1em;}
-.campaign-modal .modal-card:has(button[name="confirm"][value="delete"]) .modal-card-body p {margin:0 0 1em;}
-.campaign-modal .modal-card:has(button[name="confirm"][value="delete"]) .campaign-modal-actions {padding:1.25rem 32px;gap:.75rem;}
 
 /* Campaign wiki (#421): read the campaign as linked pages. Sidebar tree,
    article, and a right column for "On this page" and links. */
@@ -947,25 +934,6 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
   .reveal-dialog .reveal-buttons {display:grid;grid-template-columns:1fr 1fr;}
   .reveal-dialog .reveal-buttons button {min-width:0;white-space:normal;}
   .reveal-dialog .reveal-buttons .reveal-hide {grid-column:1 / -1;grid-row:1;margin:0;}
-}
-
-/* The editors' Related articles and Delete… modals look like the other dialogs (Reveal, New campaign):
-   the title at the start, even padding, and buttons in one row that fits a phone. */
-.campaign-workspace .campaign-modal .modal-card {box-sizing:border-box;width:38em;max-width:calc(100vw - 2em);max-height:calc(100dvh - 2em);
-  padding:2em;align-items:stretch;justify-content:flex-start;background:var(--bg);border:1px solid var(--fg);border-radius:5px;}
-.campaign-workspace .campaign-modal :is(.modal-card-head, .modal-card-body, .modal-card-foot) {margin:0;padding:0;background:none;border:0;}
-.campaign-workspace .campaign-modal .modal-card-head {justify-content:flex-start;}
-.campaign-workspace .campaign-modal .modal-card-title {margin:0 0 1em;line-height:1.2;}
-.campaign-workspace .campaign-modal .modal-card-body {gap:.75em;}
-.campaign-workspace .campaign-modal .modal-card-body p {margin:0;}
-.campaign-workspace .campaign-modal .campaign-modal-actions {display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.75em;margin-top:1.25em;padding:0;}
-.campaign-workspace .campaign-modal .campaign-modal-actions button {display:inline-flex;align-items:center;justify-content:center;min-width:8em;min-height:3em;margin:0;
-  padding:.5em 1.25em;border:1.5px solid var(--fg);border-radius:2px;background:transparent;color:var(--fg);font:inherit;font-weight:600;line-height:1.2;}
-.campaign-workspace .campaign-modal .campaign-modal-actions button[type=submit] {background:var(--fg);color:var(--bg);}
-@media (max-width:600px) {
-  .campaign-workspace .campaign-modal .modal-card {padding:1.5em;}
-  .campaign-workspace .campaign-modal .campaign-modal-actions {display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));}
-  .campaign-workspace .campaign-modal .campaign-modal-actions button {min-width:0;white-space:normal;}
 }
 
 /* Module settings: the description, like the name field above it. */

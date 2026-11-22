@@ -297,28 +297,12 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
   .tools-show-map { padding: .7rem 1.4rem; font-size: 1.6rem; }
 }
 
+// Frame and actions come from modals.scss.
 .tools-attach-dialog {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  margin: 0;
-  max-height: calc(100dvh - 4rem);
-  overflow: auto;
-  box-sizing: border-box;
-  width: 28em;
-  max-width: calc(100vw - 4rem);
-  color: var(--fg);
-  background: var(--bg);
-  border: 1px solid var(--fg);
-  border-radius: 5px;
-  padding: 1.5rem;
-  &::backdrop { background: rgba(0, 0, 0, .45); }
+  width: 440px;
   select { width: 100%; }
   form { padding: 0; margin: 0; background: transparent; border: 0; }
-  h3 { margin-top: 0; }
 }
-.tools-attach-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }
 
 // Character generator
 .tools-sheet #pcgen-form { display: block; max-width: none; padding: 0; background: transparent; }

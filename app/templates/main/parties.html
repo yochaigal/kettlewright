@@ -40,7 +40,6 @@
           {{ form.hidden_tag() }}
           <div class="modal-card-head">
             <h3 class="modal-card-title">{{_('New Party')}}</h3>
-            <!-- <button class="delete" type="button" aria-label="close" id="new-party-modal-close"></button> -->
           </div>
           <section class="modal-card-body">
             <div class="field">
@@ -52,11 +51,11 @@
               oninput='resizeTextarea(this)' ) }}
             </div>
           </section>
-          <footer class="footer-button-container">
-            {{ form.submit(class='button is-success', id="new-party-submit-button") }}
-            <button class="button" type="button" id="new-party-cancel-button" style="margin-left: auto">
+          <footer class="modal-card-foot">
+            <button class="button" type="button" id="new-party-cancel-button">
               {{_('Cancel')}}
             </button>
+            {{ form.submit(class='button is-success', id="new-party-submit-button") }}
           </footer>
         </form>
       </div>

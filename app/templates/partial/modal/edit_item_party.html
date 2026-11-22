@@ -146,28 +146,22 @@
           <p class="message-body red-text" id="add-edit-item-modal-error-text"></p>
         </div>
         <div class="footer-button-container">
-          <div>
-            <button class="button is-success" type="button" {% if mode=='edit' %}
-              hx-post="/party/inventory/{{party.id}}/item-edit/{{item.id}}/save" {% else %}
-              hx-post="/party/inventory/{{party.id}}/item-edit/None/save?mode=create" {% endif %}
-              hx-target="#inventory-container">
-              {{_('Save')}}
-            </button>
-          </div>
           {% if characters and characters|length > 0 %}
-          <div class="row16">
-            <button class="button is-primary" type="button" style="margin-left: auto" title="Transfer"
-              hx-get="/party/inventory/{{party.id}}/item-transfer/{{inventory.selected_container.id}}/{{item.id}}"
-              hx-target="#inventory-container"><i class="fa-solid fa-share icon-in-button"></i></button>
-          </div>
+          <button class="button modal-foot-start" type="button" title="{{_('Transfer item')}}" aria-label="{{_('Transfer item')}}"
+            hx-get="/party/inventory/{{party.id}}/item-transfer/{{inventory.selected_container.id}}/{{item.id}}"
+            hx-target="#inventory-container"><i class="fa-solid fa-share" aria-hidden="true"></i></button>
           {% endif %}
-          <div>
-            <button class="button inventory-modal-cancel-button" type="button" {% if mode=='edit' %}
-              hx-get="/party/inventory/{{party.id}}/{{inventory.selected_container.id}}" {% else %}
-              hx-get="/party/inventory/{{party.id}}/None" {% endif %} hx-target="#inventory-container">
-              {{_('Cancel')}}
-            </button>
-          </div>
+          <button class="button inventory-modal-cancel-button" type="button" {% if mode=='edit' %}
+            hx-get="/party/inventory/{{party.id}}/{{inventory.selected_container.id}}" {% else %}
+            hx-get="/party/inventory/{{party.id}}/None" {% endif %} hx-target="#inventory-container">
+            {{_('Cancel')}}
+          </button>
+          <button class="button is-success" type="button" {% if mode=='edit' %}
+            hx-post="/party/inventory/{{party.id}}/item-edit/{{item.id}}/save" {% else %}
+            hx-post="/party/inventory/{{party.id}}/item-edit/None/save?mode=create" {% endif %}
+            hx-target="#inventory-container">
+            {{_('Save')}}
+          </button>
         </div>
       </footer>
     </div>

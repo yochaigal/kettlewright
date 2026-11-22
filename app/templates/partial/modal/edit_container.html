@@ -58,12 +58,6 @@
             </div>
           </div>
         </div>
-        <div>
-          <button class="button is-success" type="button" {% if mode=="edit" %}
-            hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/container-edit/{{container.id}}/save" {% else
-            %} hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/container-edit/None/save" {% endif %}
-            hx-target="#inventory-container">{{ _('Save') }}</button>
-        </div>
 
         {% if mode == "edit" and container.id != 0 %}
         <div>
@@ -92,13 +86,17 @@
           <p class="message-body red-text" id="add-edit-container-error-text"></p>
         </div>
 
-        <div class="footer-button-container" style="justify-content: end">
+        <div class="footer-button-container">
           <button class="button inventory-modal-cancel-button" type="button" {% if mode=="edit" %}
             hx-get="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/{{container.id}}" {% else %}
             hx-get="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/None" {% endif %}
             hx-target="#inventory-container">
             {{_('Cancel')}}
           </button>
+          <button class="button is-success" type="button" {% if mode=="edit" %}
+            hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/container-edit/{{container.id}}/save" {% else
+            %} hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/container-edit/None/save" {% endif %}
+            hx-target="#inventory-container">{{ _('Save') }}</button>
         </div>
       </footer>
     </div>

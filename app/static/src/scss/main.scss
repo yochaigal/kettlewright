@@ -24,7 +24,11 @@
 /* Use the original ornament as a local vector so missing font glyphs cannot
    turn section decorations into boxes. Empty generated content is decorative. */
 h3::before,
-.left-symbol::before {
+.left-symbol::before,
+// Every dialog title carries the ornament, including campaign dialogs' <h2>s.
+.modal-card-title::before,
+.create-dialog h2::before,
+.swal2-title.modal-alert-card-title::before {
   content: "";
   display: inline-block;
   width: 0.8em;
@@ -74,8 +78,7 @@ body.dark-mode {
   .card,
   #save-button-footer-wrapper,
   .notification,
-  .party-member-card,
-  .modal-card {
+  .party-member-card {
     box-shadow: 0px 0px 4px 0px rgba(255, 255, 255, 0.15);
     // box-shadow: none;
     //border: 2px solid rgba(255, 255, 255, 0.1);
@@ -94,14 +97,6 @@ body.dark-mode {
   #kettlewright-logo,
   .nav-logo-container img {
     filter: invert(1);
-  }
-
-  .modal-card {
-    background-color: var(--bg);
-  }
-
-  .modal-background {
-    background-color: rgba(10, 10, 10, 0.85)
   }
 
   // .dice-modal-button {
@@ -684,32 +679,6 @@ button,
 #save-button-footer-save,
 #save-button-footer-cancel {
   margin: 0;
-}
-
-/* Modals */
-
-.modal {
-  display: none;
-}
-
-.modal.is-active {
-  display: block;
-}
-
-.modal-card {
-  max-width: 460px;
-}
-
-.modal-card-head {
-  padding: 0;
-}
-
-.modal-card-body {
-  padding: 0 .7rem;
-}
-
-.modal-card-foot {
-  flex-direction: row;
 }
 
 .notification {

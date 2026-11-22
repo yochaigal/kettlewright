@@ -341,59 +341,13 @@ body.dark-mode .wilderness-tile { box-shadow: 0 0 4px 0 rgba(255, 255, 255, .15)
 }
 
 // Small form dialogs on the party page (add hireling, wilderness actions).
+// Frame, head, foot and close button come from modals.scss.
 .party-modal-host { display: contents; }
 .party-modal {
-  text-align: left;
-  font-style: normal;
   font-weight: 400;
-  .modal-card {
-    position: relative;
-    inset: auto;
-    transform: none;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    box-sizing: border-box;
-    width: calc(100% - 32px);
-    max-width: 560px;
-    max-height: calc(100dvh - 48px);
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    border: 1px solid var(--fg);
-    border-radius: 2px;
-    background: var(--form-bg);
-  }
-  .party-modal-form {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
-    min-height: 0;
-    width: auto;
-    max-width: none;
-    margin: 0;
-    padding: 0;
-    background: transparent;
-  }
-  button { min-width: 0; max-width: none; margin: 0; }
-  .party-modal-head { padding: 1.6rem 5rem .4rem 2rem; h3 { margin: 0; } }
-  .party-modal-close {
-    position: absolute;
-    top: 1rem;
-    right: 1.2rem;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    border: 0;
-    font-size: 2.8rem;
-    line-height: 1;
-  }
+  .modal-card { width: 560px; }
   .party-modal-body {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow: auto;
-    padding: 1.2rem 2rem;
+    display: block;
     > label[for] { display: block; margin: 0 0 .4rem; font-weight: 600; }
     > select, > input[type=text] {
       box-sizing: border-box;
@@ -409,22 +363,6 @@ body.dark-mode .wilderness-tile { box-shadow: 0 0 4px 0 rgba(255, 255, 255, .15)
   }
   .party-modal-hint { margin: 0 0 1.6rem; font-size: 1.5rem; opacity: .8; }
   .party-modal-body > .party-modal-hint:last-child { margin-bottom: 0; }
-  .party-modal-foot {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: .8rem;
-    padding: 1.2rem 2rem 1.6rem;
-    border-top: 1px solid color-mix(in lab, transparent 80%, var(--fg));
-    button { padding: .8rem 1.4rem; border: 1.5px solid var(--fg); font-weight: 600; text-decoration: none; }
-    button:disabled { border-style: solid; opacity: .4; }
-  }
-  .party-modal-submit { background: var(--fg); color: var(--bg); }
-  @media (max-width: 600px) {
-    .modal-card { width: calc(100% - 16px); max-height: calc(100dvh - 16px); }
-    .party-modal-head, .party-modal-body, .party-modal-foot { padding-left: 1.2rem; padding-right: 1.2rem; }
-  }
 }
 
 .party-collapse-button {
@@ -686,36 +624,13 @@ pointer-events: none;
 // Add monsters dialog: fixed head and footer, the bestiary scrolls in between.
 .monster-roster { margin-top: 2rem; }
 .monster-add-modal {
-  text-align: left;
   .modal-card {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    width: calc(100% - 32px);
-    max-width: 960px;
+    width: 960px;
     height: calc(100dvh - 64px);
     max-height: 820px;
-    margin: 0;
-    padding: 0;
-    align-items: stretch;
-    justify-content: flex-start;
-    overflow: hidden;
-    border: 1px solid var(--fg);
-    border-radius: 2px;
   }
-  .modal-card-title { text-align: left; }
   form > * { flex-shrink: 0; }
-  .modal-card-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin: 0;
-    padding: 1.6rem 2rem .8rem;
-    h3 { margin: 0; }
-  }
   button { min-width: 0; max-width: none; margin: 0; }
-  .monster-add-close { width: 36px; height: 36px; padding: 0; border: 0; font-size: 2.8rem; line-height: 1; }
   .monster-add-modes {
     display: flex;
     gap: 0 .4rem;
@@ -803,26 +718,18 @@ pointer-events: none;
     pre { margin: .8rem 0; padding: 1.2rem; border: 1px solid color-mix(in lab, transparent 80%, var(--fg)); white-space: pre-wrap; overflow-wrap: anywhere; }
   }
   .modal-card-foot.monster-selection-actions {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: .8rem 1.6rem;
+    gap: 8px 16px;
     margin: 1.2rem 0 0;
-    padding: 1.2rem 2rem 1.6rem;
-    border-top: 1px solid color-mix(in lab, transparent 80%, var(--fg));
-    border-radius: 0;
     box-sizing: border-box;
     width: 100%;
     p { flex: 0 1 auto; width: auto; margin: 0; text-align: left; }
   }
-  .monster-add-buttons { display: flex; flex-wrap: wrap; gap: .8rem; margin-left: auto; }
-  .monster-add-buttons button { width: auto; padding: .8rem 1.4rem; border-width: 1.5px; }
-  .monster-add-submit:not(:disabled) { background: var(--fg); color: var(--bg); }
+  .monster-add-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
   @media (max-width: 600px) {
-    .modal-card { width: 100%; height: 100dvh; max-height: none; border: 0; }
-    .modal-card-head, .monster-add-filters, .monster-import-body, .modal-card-foot.monster-selection-actions { padding-left: 1.2rem; padding-right: 1.2rem; }
+    .modal-card { width: 100%; max-width: none; height: 100dvh; max-height: none; border: 0; }
+    .monster-add-filters, .monster-import-body { padding-left: 1.2rem; padding-right: 1.2rem; }
+    .monster-add-buttons button { width: auto; }
     .monster-add-modes, .monster-add-intro, .monster-add-error, .monster-catalog-form .monster-choices, .monster-add-hint { margin-left: 1.2rem; margin-right: 1.2rem; }
     .monster-add-intro { display: none; }
   }

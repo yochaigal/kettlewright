@@ -59,7 +59,7 @@
       <select id="tools-attach-party" required>{% for target in warden_parties %}<option value="{{url_for('companions.monsters', party_id=target.id)}}">{{target.name}}</option>{% endfor %}</select>
       <div class="tools-attach-actions"><button type="button" data-close-attach>{{_('Cancel')}}</button><button type="submit">{{_('Attach to party')}}</button></div>
     </form>
-    {% else %}<p>{{_('Create a party first to manage monsters as its Warden.')}}</p><button type="button" data-close-attach>{{_('Close')}}</button>{% endif %}
+    {% else %}<p>{{_('Create a party first to manage monsters as its Warden.')}}</p><div class="tools-attach-actions"><button type="button" data-close-attach>{{_('Close')}}</button></div>{% endif %}
   </dialog>
   {% include 'partial/partyview/warden_dice.html' %}
   {% endif %}
