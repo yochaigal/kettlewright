@@ -13,7 +13,13 @@ from app.lib.article_references import private_reference_urls, reference_urls
 
 from app.lib.content_types import CATEGORIES, POINT_TYPES, ARTICLE_MAP_KINDS, legacy_point_type, accepts_article_parent
 PATH_TYPES = ('standard', 'hidden', 'conditional')
-MAP_KINDS = ('realm', 'dungeon', 'forest', 'freeform')
+# An image map (#506) is a picture with pins: its drawing is one locked image (maps/editor.js).
+MAP_KINDS = ('realm', 'dungeon', 'forest', 'freeform', 'image')
+
+
+def article_map_kind(kind):
+    """The map kind an article's type gives: an image map is a freeform map with a picture."""
+    return 'freeform' if kind == 'image' else kind
 
 
 def owned(model, object_id):
@@ -414,7 +420,7 @@ def save_geometry(pointcrawl, data, *, nested_draft=False):
         entry.body = content_value(item.get('body', ''))
         if entry.category != 'path':
             category = point_category(item, entry.category)
-            if entry.pointcrawl and ARTICLE_MAP_KINDS.get(category) != entry.pointcrawl.kind:
+            if entry.pointcrawl and ARTICLE_MAP_KINDS.get(category) != article_map_kind(entry.pointcrawl.kind):
                 abort(400, 'Keep the map type for this article.')
             entry.category = category
             entry.is_heart = heart_value(item, entry.category, entry.is_heart)

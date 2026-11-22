@@ -19,7 +19,7 @@ from app.lib.campaign_import import (preview_archive, single_file_preview, impor
     ImportError, MAX_ARCHIVE, MAX_FILE)
 from app.lib.campaign_backgrounds import BackgroundError
 from app.lib.modules import MODULES, add_module
-from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, campaign_for, check_version,
+from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, article_map_kind, campaign_for, check_version,
     entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
     party_access, publishable_party, render_content, save_geometry, text_value, content_value,
     material_hierarchy, material_deletion_plan, delete_material_plan, save_article_children, set_article_parent, POINT_TYPES,
@@ -1070,7 +1070,7 @@ def edit_entry(entry_id):
                 abort(400)
             if entry.map_nodes and category not in POINT_TYPES:
                 abort(400, 'Choose a point of interest type for an article on a map.')
-            if entry.pointcrawl and ARTICLE_MAP_KINDS.get(category) != entry.pointcrawl.kind:
+            if entry.pointcrawl and ARTICLE_MAP_KINDS.get(category) != article_map_kind(entry.pointcrawl.kind):
                 abort(400, 'Keep the map type for this article.')
             entry.category = category
         if 'category' in request.form:  # A map's page has no Type: it keeps its Heart.
@@ -1468,7 +1468,7 @@ def create_map_entry(campaign, kind, title, body, draft, module=None):
     The caller validates kind and commits. Reveal it to parties afterwards, like any article.
     """
     entry = ContentEntry(owner_id=current_user.id, campaign=campaign, module=module,
-                         category=kind if kind != 'freeform' else 'topography',
+                         category=kind if kind in ('realm', 'dungeon', 'forest') else 'topography',
                          title=text_value(title, 200, True), body=content_value(body or ''))
     pointcrawl = PointcrawlMap(entry=entry, kind=kind)
     db.session.add(pointcrawl)

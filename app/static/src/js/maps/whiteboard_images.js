@@ -12,21 +12,22 @@ export function needsCompression(file) {
 }
 
 // Draws the image on a canvas and encodes it as WebP (PNG where the browser cannot encode WebP).
-// `size` is the image's size on the board, for SVGs that do not state their own.
-export async function encodeImage(file, size = {}, quality = 0.85) {
+// `size` is the image's size on the board, for SVGs that do not state their own. An image map (#506)
+// keeps more detail than a board image: it is the whole map.
+export async function encodeImage(file, size = {}, quality = 0.85, maxSide = MAX_SIDE) {
   const image = new Image();
   image.src = file.dataURL;
   await image.decode();
   let width = image.naturalWidth || size.width || 1024, height = image.naturalHeight || size.height || 1024;
   // SVGs are drawn at twice their board size so they stay sharp when zoomed in.
   if (file.mimeType === SVG && size.width && size.height) [width, height] = [size.width * 2, size.height * 2];
-  const scale = Math.min(1, MAX_SIDE / Math.max(width, height));
+  const scale = Math.min(1, maxSide / Math.max(width, height));
   const canvas = document.createElement('canvas');
   canvas.width = Math.max(1, Math.round(width * scale)); canvas.height = Math.max(1, Math.round(height * scale));
   canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
   const webp = canvas.toDataURL('image/webp', quality);
-  return webp.startsWith('data:image/webp;') ? {mimeType: 'image/webp', dataURL: webp}
-    : {mimeType: 'image/png', dataURL: canvas.toDataURL('image/png')};
+  return webp.startsWith('data:image/webp;') ? {mimeType: 'image/webp', dataURL: webp, width: canvas.width, height: canvas.height}
+    : {mimeType: 'image/png', dataURL: canvas.toDataURL('image/png'), width: canvas.width, height: canvas.height};
 }
 
 // busy(drawing, base) starts compressing new large images and reports whether any are still

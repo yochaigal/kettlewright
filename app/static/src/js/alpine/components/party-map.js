@@ -1,6 +1,8 @@
 // A party's map (#467): what it was shown, under its fog, with its pins.
 // Members place pins (party notes with a position); the Warden also uncovers the fog.
 // The drawing is the same map iframe (maps/editor.html) as the article pages, in view mode.
+import {imageAspect} from '../../maps/viewport.js';
+
 export default function partyMap() {
   return {
     graph: {nodes: [], edges: []}, pins: [], fog: null, fogVersion: 0, warden: false, labels: {},
@@ -17,6 +19,10 @@ export default function partyMap() {
       this.csrf = data.csrf;
       this.onMessage = event => this.receive(event);
       window.addEventListener('message', this.onMessage);
+      // An image map (#506): the frame takes the picture's shape, so the picture fills it.
+      const aspect = this.graph.kind === 'image' ? imageAspect(this.graph.drawing) : null;
+      this.$refs.canvas.classList.toggle('is-image-map', Boolean(aspect));
+      if (aspect) this.$refs.canvas.style.aspectRatio = String(aspect);
       this.$refs.canvas.src = this.$refs.canvas.dataset.src;
       // Players see new pins and newly uncovered fog without reloading.
       this.poll = setInterval(() => this.refresh(), 20000);

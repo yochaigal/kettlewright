@@ -4,10 +4,19 @@
 {# Only a random module (or the Tools) generates a map: then its kind comes from there. Otherwise a map is just a map. #}
 {% set generator = request.args.get('random') or request.args.get('from_tools') %}
 <form class="campaign-page-form" method="post" x-data="pointcrawl" data-editing="true" data-creating="true" data-kind="{{ kind if generator else 'freeform' }}"
- data-labels="{{ {'loadError':_('Unable to load the drawing editor. Check your connection and retry.'),'location':_('Article'),'error':_('Unable to generate an article. Please try again.'),'duplicate':_('This path already exists.'),'pin':_('Pin'),'pick':_('Click the map where the pin goes.')}|tojson|forceescape }}"
- @submit="if (!canvasReady || generating) $event.preventDefault(); else dirty=false">
-{% call page_header(_('New World Map') if becomes_world else _('New map')) %}<button type="submit" class="primary" :disabled="!canvasReady || generating">{{ _('Save map') }}</button>{% endcall %}
-<p class="import-hint">{{ _('A map is a drawing with pins, private until you reveal it to a party. Draw on it, add images, then add pins with notes.') }}</p>
+ data-labels="{{ {'imageType':_('Choose a PNG, JPG or WebP image.'),'imageTooLarge':_('This image is too large for a map. Try a smaller one.'),'imageLoading':_('Preparing the image…'),'imageError':_('Unable to read this image. Try another one.'),'loadError':_('Unable to load the drawing editor. Check your connection and retry.'),'location':_('Article'),'error':_('Unable to generate an article. Please try again.'),'duplicate':_('This path already exists.'),'pin':_('Pin'),'pick':_('Click the map where the pin goes.')}|tojson|forceescape }}"
+ @submit="if (!canvasReady || generating || kind === 'image' && !hasImage) $event.preventDefault(); else dirty=false">
+{% call page_header(_('New World Map') if becomes_world else _('New map')) %}<button type="submit" class="primary" :disabled="!canvasReady || generating || kind === 'image' && !hasImage">{{ _('Save map') }}</button>{% endcall %}
+{% if not generator %}
+{# A drawing, or an image map (#506): a picture the party sees alone, with pins and fog over it. #}
+<fieldset class="segmented map-kind-choice">
+<legend class="sr-only">{{ _('Kind of map') }}</legend>
+<label><input type="radio" name="map_choice" value="freeform" x-model="kind"><span><i class="fa-solid fa-pen-ruler" aria-hidden="true"></i> {{ _('Drawing') }}</span></label>
+<label><input type="radio" name="map_choice" value="image" x-model="kind"><span><i class="fa-solid fa-image" aria-hidden="true"></i> {{ _('Image') }}</span></label>
+</fieldset>
+{% endif %}
+<p class="import-hint" x-show="kind !== 'image'">{{ _('A map is a drawing with pins, private until you reveal it to a party. Draw on it, add images, then add pins with notes.') }}</p>
+<p class="import-hint" x-show="kind === 'image'" x-cloak>{{ _('An image map is a picture you already have (a scan, an export from a map tool, an adventure’s map). The party sees the picture alone. Choose image, then add pins with notes; fog and reveals work as on any map.') }}</p>
 {{ token() }}
 <input type="hidden" name="kind" :value="kind" value="{{ kind if generator else 'freeform' }}">
 {% if becomes_world %}<input type="hidden" name="world" value="1">{# The campaign's World Map (#482, #488), when it has none. #}{% endif %}
