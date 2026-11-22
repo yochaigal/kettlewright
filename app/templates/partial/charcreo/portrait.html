@@ -27,14 +27,11 @@
     <input type="hidden" id="selected-portrait" name="selected-portrait" />
     <div class="modal-background" id="edit-portrait-modal-background"></div>
     <div class="modal-card">
-      <header class="modal-card-head" style="width:100%">
-        <div class="row16spaced">
-          <h3 class="modal-card-title">{{_('Edit Portrait')}}</h3>
-          <div title="Close" hx-get="/charcreo/portrait/cancel" hx-target="#character-portrait-container"
-            hx-swap="innerHTML">
-            <i class="fa-solid fa-xmark xmark"></i>
-          </div>
-        </div>
+      <header class="modal-card-head">
+        <h3 class="modal-card-title">{{_('Edit Portrait')}}</h3>
+        <button type="button" class="modal-card-close" aria-label="{{_('Close')}}" title="{{_('Close')}}"
+          hx-get="/charcreo/portrait/cancel?src={{portrait_src}}&custom_image={{custom_image}}"
+          hx-target="#character-portrait-container" hx-swap="innerHTML">&times;</button>
       </header>
       <section class="modal-card-body">
         <div id="edit-portrait-modal-custom-url-container">
@@ -48,14 +45,14 @@
       </section>
       <footer class="modal-card-foot">
         <div class="footer-button-container">
-          <button class="button is-success" id="edit-portrait-modal-save" hx-post="/charcreo/portrait/save"
-            hx-target="#character-portrait-container" hx-swap="innerHTML">
-            {{_('Save')}}
-          </button>
           <button class="button" id="edit-portrait-modal-cancel"
             hx-get="/charcreo/portrait/cancel?src={{portrait_src}}&custom_image={{custom_image}}"
             hx-target="#character-portrait-container" hx-swap="innerHTML">
             {{_('Cancel')}}
+          </button>
+          <button class="button is-success" id="edit-portrait-modal-save" hx-post="/charcreo/portrait/save"
+            hx-target="#character-portrait-container" hx-swap="innerHTML">
+            {{_('Save')}}
           </button>
         </div>
       </footer>

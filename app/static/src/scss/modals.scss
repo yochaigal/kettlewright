@@ -1,122 +1,94 @@
 @import '_variables.scss';
 
-/* Defaults from Bulma CSS modals */
+/* =====================================================================
+   Modals: one look for every dialog ("ink on paper").
+
+   Structure (Bulma class names, kept for the HTMX templates):
+     .modal > .modal-background + .modal-card
+       .modal-card-head > .modal-card-title   (left-aligned)
+       .modal-card-body                       (scrolls)
+       .modal-card-foot                       (ruled, actions on the right:
+                                               secondary first, primary last)
+     .modal-card-close                        (× in the top-right corner)
+
+   HTMX partials may render .modal-background + .modal-card without a .modal
+   wrapper, so the card is fixed to the viewport on its own.
+   Sizes are px because the map page (board-modals.scss) has no magick.css
+   root size. Native <dialog>s and SweetAlert popups reuse the same values.
+   ===================================================================== */
+
+$modal-pad-x: 20px;
+$modal-pad-x-phone: 14px;
+$modal-radius: 2px;
+$modal-rule: 1px solid color-mix(in lab, transparent 82%, var(--fg));
+$modal-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.55);
+$modal-danger: #a33b3b;
+
+// Shared by .modal-card-foot buttons, native dialog actions and SweetAlert.
+@mixin modal-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: none;
+  min-height: 40px;
+  margin: 0;
+  padding: 8px 16px;
+  border: 1.5px solid var(--fg);
+  border-radius: $modal-radius;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover:not(:disabled) { background: color-mix(in lab, transparent 90%, var(--fg)); }
+  &:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+  &:disabled { border-style: solid; opacity: 0.4; cursor: default; }
+}
+
+@mixin modal-action-primary {
+  border-color: var(--fg);
+  background: var(--fg) !important;
+  color: var(--bg) !important;
+
+  &:hover:not(:disabled) { background: var(--fg) !important; opacity: 0.85; }
+}
+
+@mixin modal-action-danger {
+  border-color: $modal-danger;
+  background: $modal-danger !important;
+  color: #fff !important;
+
+  &:hover:not(:disabled) { background: $modal-danger !important; opacity: 0.85; }
+}
+
+@mixin modal-frame {
+  box-sizing: border-box;
+  border: 1px solid var(--fg);
+  border-radius: $modal-radius;
+  background: var(--form-bg);
+  color: var(--fg);
+  box-shadow: $modal-shadow;
+}
 
 .modal,
 .modal-background {
-  bottom: 0;
-  left: 0;
   position: fixed;
-  right: 0;
-  top: 0;
-}
-
-
-
-.delete,
-.modal-close {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  // background-color: rgba(10, 10, 10, 0.2);
-  border: none;
-  border-radius: 9999px;
-  cursor: pointer;
-  pointer-events: auto;
-  display: inline-block;
-  flex-grow: 0;
-  flex-shrink: 0;
-  // font-size: 0;
-  height: 20px;
-  max-height: 20px;
-  max-width: 20px;
-  min-height: 20px;
-  min-width: 20px;
-  outline: none;
-  position: relative;
-  vertical-align: top;
-  width: 20px;
-}
-
-.modal-close::before,
-.modal-close::after {
-  // background-color: white;
-  content: "";
-  display: block;
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  transform: translateX(-50%) translateY(-50%) rotate(45deg);
-  transform-origin: center center;
-}
-
-.delete::before,
-.modal-close::before {
-  height: 2px;
-  width: 50%;
-}
-
-.delete::after,
-.modal-close::after {
-  height: 50%;
-  width: 2px;
-}
-
-.delete:hover,
-.modal-close:hover,
-.delete:focus,
-.modal-close:focus {
-  // background-color: rgba(10, 10, 10, 0.3);
-}
-
-.delete:active,
-.modal-close:active {
-  // background-color: rgba(10, 10, 10, 0.4);
-}
-
-.is-small.delete,
-.is-small.modal-close {
-  height: 16px;
-  max-height: 16px;
-  max-width: 16px;
-  min-height: 16px;
-  min-width: 16px;
-  width: 16px;
-}
-
-.is-medium.delete,
-.is-medium.modal-close {
-  height: 24px;
-  max-height: 24px;
-  max-width: 24px;
-  min-height: 24px;
-  min-width: 24px;
-  width: 24px;
-}
-
-.is-large.delete,
-.is-large.modal-close {
-  height: 32px;
-  max-height: 32px;
-  max-width: 32px;
-  min-height: 32px;
-  min-width: 32px;
-  width: 32px;
+  inset: 0;
 }
 
 .modal {
-  align-items: center;
+  z-index: 40;
   display: none;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
   overflow: hidden;
-  position: fixed;
-  z-index: 40;
-
+  text-align: left;
 }
 
 .modal.is-active {
@@ -127,196 +99,270 @@
   // HTMX dialogs can sit between page sections without a .modal wrapper.
   // Keep their backdrop above stacking contexts created by SVG masks.
   z-index: 40;
-  background-color: color-mix(in lab, transparent 40%, var(--bg));
+  background-color: rgba(15, 15, 15, 0.45);
 }
 
-.modal-content,
+body.dark-mode .modal-background {
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
 .modal-card {
+  @include modal-frame;
+  position: fixed;
+  top: 50%;
+  left: 50%;
   z-index: 41;
-  margin: 0 20px;
-  max-height: calc(100vh - 160px);
-  overflow: auto;
-  position: relative;
-  width: 100%;
-  background-color: var(--form-bg)
-}
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 560px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  text-align: left;
+  font-style: normal;
 
-@media screen and (min-width: 769px) {
-
-  .modal-content,
-  .modal-card {
-    margin: 0 auto;
-    max-height: calc(100vh - 40px);
-    width: 640px;
+  // A form may wrap head, body and foot: let it pass the column layout through.
+  > form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
   }
 }
 
-.modal-close {
-  z-index: 42;
-  background: none;
-  height: 40px;
-  position: fixed;
-  right: 20px;
-  top: 20px;
-  width: 40px;
-}
-
-.modal-card {
-  display: flex;
-  flex-direction: column;
-  max-height: calc(100vh - 40px);
-  overflow: hidden;
-  -ms-overflow-y: visible;
-  width: fit-content;
-  padding: 16px;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-card-head,
-.modal-card-foot {
-  align-items: center;
-  // background-color: whitesmoke;
+.modal-card-head {
+  position: relative;
   display: flex;
   flex-shrink: 0;
+  align-items: center;
   justify-content: flex-start;
-  padding: 20px;
-  position: relative;
+  gap: 12px;
+  margin: 0;
+  padding: 16px $modal-pad-x 6px;
+  border-radius: 0;
+
+  h2, h3 { margin: 0; }
 }
 
-.modal-card-head {
-  // border-bottom: 1px solid #dbdbdb;
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
+// Leave room for the close button.
+.modal-card:has(.modal-card-close) .modal-card-head { padding-right: 60px; }
+
+// Campaign dialogs use <h2>; keep every dialog title in the same case and size.
+.modal-card-title,
+.tools-attach-dialog > h3,
+.create-dialog > h2 {
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 .modal-card-title {
-  // color: #363636;
-  flex-grow: 1;
-  flex-shrink: 0;
-  // font-size: 1.5rem;
-  line-height: 1;
-}
-
-.modal-card-foot {
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-  // border-top: 1px solid #dbdbdb;
-}
-
-.modal-card-foot .button:not(:last-child) {
-  margin-right: 0.5em;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-size: 1.5em;
+  line-height: 1.25;
+  text-align: left;
+  overflow-wrap: anywhere;
 }
 
 .modal-card-body {
-  -webkit-overflow-scrolling: touch;
-  // background-color: white;
-  flex-grow: 1;
-  flex-shrink: 1;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 1em;
+  min-height: 0;
   overflow: auto;
-  padding: 20px;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px $modal-pad-x 18px;
 }
 
+.modal-card-foot {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 0;
+  padding: 12px $modal-pad-x 16px;
+  border-top: $modal-rule;
+  border-radius: 0;
 
+  > h4, > p { margin: 0; }
 
-/* Customizations to the Bulma Modal */
+  // Older templates group their buttons; the group sits on the right.
+  > .footer-button-container,
+  > .row16spaced,
+  > .modal-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    width: auto;
+    margin: 0 0 0 auto;
+    padding: 0;
+  }
 
-.modal-card-head {
-  margin: 0px;
+  // A secondary action that belongs on the left (Drop item, Transfer).
+  .footer-button-container:has(> .modal-foot-start) { flex: 1 1 auto; }
+  .modal-foot-start { margin-right: auto !important; }
+
+  // Validation messages take their own row above the actions.
+  > .message { width: 100%; margin: 0; }
+  > .message:has(> .message-body:empty) { display: none; }
+  .message-body { margin: 0; }
 }
 
-.modal-card {
-  margin: auto;
+.modal-card-foot :is(button, .button, input[type="submit"]) {
+  @include modal-action-button;
+}
+
+// Primary and destructive actions read the same in every dialog.
+.modal-card :is(.button, button).is-success,
+.modal-card :is(.button, button).is-primary,
+.modal-card :is(.button, button).is-info,
+.modal-card-foot :is(button, input)[type="submit"]:not(.is-danger, .danger) {
+  @include modal-action-primary;
+}
+
+.modal-card :is(.button, button):is(.is-danger, .danger) {
+  @include modal-action-danger;
+}
+
+.modal-card :is(.button, button).is-warning {
+  background: transparent !important;
+}
+
+.modal-card-close {
   position: absolute;
+  top: 8px;
+  right: 10px;
+  z-index: 1;
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  min-width: 0;
+  max-width: none;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: $modal-radius;
+  background: transparent;
+  color: var(--fg);
+  font-size: 30px;
+  line-height: 1;
+  text-decoration: none;
+  opacity: 0.65;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible { opacity: 1; }
+  &:focus-visible { outline: 2px solid var(--fg); outline-offset: -2px; }
+}
+
+@media (max-width: 600px) {
+  .modal-card {
+    max-width: calc(100vw - 16px);
+    max-height: calc(100vh - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+
+  .modal-card-head,
+  .modal-card-body,
+  .modal-card-foot {
+    padding-left: $modal-pad-x-phone;
+    padding-right: $modal-pad-x-phone;
+  }
+}
+
+// Native <dialog>s: the same frame and actions.
+.tools-attach-dialog,
+.create-dialog {
+  @include modal-frame;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 4px;
-  max-height: 80vh;
-  max-width: 90vw;
-  border: 1px solid color-mix(in lab, transparent 80%, var(--fg));
+  max-height: calc(100dvh - 48px);
+  max-width: calc(100vw - 32px);
+  margin: 0;
+  padding: 18px $modal-pad-x 16px;
+  overflow: auto;
+
+  &::backdrop { background: rgba(15, 15, 15, 0.45); }
+
+  > h2, > h3 { margin: 0 0 12px; font-size: 1.5em; line-height: 1.25; }
+  label { display: block; margin: 12px 0 6px; }
+  p { margin: 0 0 12px; }
+  p:empty { display: none; }
+
+  @media (max-width: 600px) {
+    max-width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+    padding-left: $modal-pad-x-phone;
+    padding-right: $modal-pad-x-phone;
+  }
 }
 
+body.dark-mode :is(.tools-attach-dialog, .create-dialog)::backdrop { background: rgba(0, 0, 0, 0.75); }
 
-
-.modal-card-title {
-  font-size: 1.5em;
-  flex-grow: 0;
-  width: auto;
-}
-
-.modal-card-head {
-  justify-content: center;
-}
-
-.modal-card-body {
+.tools-attach-actions,
+.create-dialog-actions {
   display: flex;
-  flex-direction: column;
-  gap: 1em;
-}
-
-.modal-card-foot {
-  // display: flex; 
-  // justify-content: space-between;
-  // gap: 1em;
-  display: flex;
-  flex-direction: column;
-
-}
-
-.modal-buttons {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  padding: 8px;
-  align-items: center;
-  width: 100%;
-  gap: 48px;
-}
-
-
-.footer-button-container {
-  display: flex;
-  justify-content: flex-start;
-  gap: .5em;
   flex-wrap: wrap;
-  width: 100%;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 16px (-$modal-pad-x) 0;
+  padding: 12px $modal-pad-x 0;
+  border-top: $modal-rule;
+
+  button { @include modal-action-button; }
+  button[type="submit"]:not(.danger),
+  button.primary { @include modal-action-primary; }
+  button.danger { @include modal-action-danger; }
+
+  @media (max-width: 600px) {
+    margin-left: -$modal-pad-x-phone;
+    margin-right: -$modal-pad-x-phone;
+    padding-left: $modal-pad-x-phone;
+    padding-right: $modal-pad-x-phone;
+  }
 }
-
-
-// form input[type="number"].modal-field {
-//   max-width: 100%;
-
-// }
 
 #new-party-modal-card {
-  max-width: 500px;
+  width: 500px;
+}
+
+.marketplace-modal-card { width: 640px; }
+.marketplace-modal-head {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+
+  h4 { margin: 0; }
 }
 
 
 #edit-portrait-modal {
   .modal-card {
     width: 640px;
-    max-width: calc(100vw - 32px);
-    max-height: calc(100vh - 32px);
-    max-height: calc(100dvh - 32px);
-    align-items: stretch;
-  }
-
-  .modal-card-head,
-  .modal-card-body,
-  .modal-card-foot {
-    min-width: 0;
-    margin: 0;
-    padding: 12px;
-  }
-
-  .modal-card-title {
-    flex-shrink: 1;
-  }
-
-  .modal-card-body {
-    min-height: 0;
   }
 
   #edit-portrait-modal-custom-url {
@@ -345,69 +391,16 @@ img.edit-portrait-modal-thumbnail.highlighted {
 }
 
 
-.modal-text-area {}
 
 // Dice Modal: ink on paper, like the party dialogs. Sizes are in px/em because the map page
 // (board-modals.scss) has no magick.css root size.
 
 #dice-modal-card {
   width: 460px;
-  max-width: calc(100vw - 24px);
-  max-height: calc(100vh - 24px);
-  max-height: calc(100dvh - 24px);
-  padding: 0;
-  align-items: stretch;
-  justify-content: flex-start;
-  overflow: hidden;
-  border: 1px solid var(--fg);
-  border-radius: 2px;
-  background: var(--form-bg);
-  box-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.55);
-}
-
-.dice-modal-head {
-  position: relative;
-  justify-content: flex-start;
-  margin: 0;
-  padding: 16px 60px 6px 20px;
-  border-radius: 0;
-
-  .modal-card-title {
-    flex: 1 1 auto;
-    margin: 0;
-    font-size: 22px;
-    line-height: 1.25;
-    text-align: left;
-    overflow-wrap: anywhere;
-  }
-}
-
-.dice-modal-close {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  width: 40px;
-  height: 40px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 2px;
-  background: transparent;
-  color: var(--fg);
-  font-size: 30px;
-  line-height: 1;
-  opacity: 0.65;
-  cursor: pointer;
-
-  &:hover,
-  &:focus-visible { opacity: 1; }
-  &:focus-visible { outline: 2px solid var(--fg); outline-offset: -2px; }
 }
 
 .dice-modal-body {
-  min-height: 0;
-  overflow: auto;
-  padding: 8px 20px 18px;
+  padding-top: 8px;
   gap: 18px;
   font-size: 16px;
   line-height: 1.35;
@@ -737,14 +730,9 @@ img.edit-portrait-modal-thumbnail.highlighted {
 }
 
 .dice-modal-foot {
-  flex-direction: row;
   justify-content: space-between;
-  align-items: center;
   gap: 12px;
   min-height: 48px;
-  padding: 10px 20px 12px;
-  border-top: 1px solid color-mix(in lab, transparent 82%, var(--fg));
-  border-radius: 0;
 }
 
 .dice-modal-keys {
@@ -770,9 +758,6 @@ img.edit-portrait-modal-thumbnail.highlighted {
 @media (max-width: 420px) {
   .dice-modal-single-dice { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .dice-modal-paired-dice { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .dice-modal-body { padding: 6px 14px 14px; }
-  .dice-modal-head { padding-left: 14px; }
-  .dice-modal-foot { padding: 10px 14px 12px; }
   .dice-modal-face { width: 64px; height: 64px; }
 }
 
@@ -809,37 +794,67 @@ img.edit-portrait-modal-thumbnail.highlighted {
   canvas { display: block; }
 }
 
-/* --- Modal alert --- */
+/* --- SweetAlert popups (utils.styledAlert / styledConfirm, language picker) ---
+   SweetAlert injects its own CSS after ours, hence the doubled classes. */
 
-.modal-alert {
-  font-size: 1.6rem;
-  border-radius: 4px;
-  max-height: 80vh;
-  max-width: 45vw;
-  width: fit-content;
-  border: 1px solid color-mix(in lab, transparent 80%, var(--fg));
-  padding-bottom: 4px;
+.swal2-container.swal2-backdrop-show { background: rgba(15, 15, 15, 0.45); }
+body.dark-mode .swal2-container.swal2-backdrop-show { background: rgba(0, 0, 0, 0.75); }
+
+.swal2-popup.modal-alert {
+  @include modal-frame;
+  width: 460px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100dvh - 48px);
+  padding: 0;
+  overflow: auto;
+  background: var(--form-bg) !important;
+  font-size: inherit;
+  text-align: left;
 }
 
-.modal-alert-card-title {
-  display: flex;
+.swal2-title.modal-alert-card-title {
+  display: block;
+  margin: 0;
+  padding: 16px $modal-pad-x 6px;
+  color: var(--fg);
   font-size: 1.5em;
-  padding: 20px;
-  width: auto;
-  justify-content: center;
-  align-items: center;
-  background-color: color-mix(in lab, transparent 90%, var(--fg));
+  line-height: 1.25;
+  text-align: left;
+  overflow-wrap: anywhere;
 }
 
-.modal-alert-content {
-  padding: 16px;
+.swal2-html-container.modal-alert-content {
+  margin: 0;
+  padding: 12px $modal-pad-x 18px;
+  color: var(--fg);
+  font-size: 1em;
+  line-height: 1.45;
+  text-align: left;
+  overflow-wrap: anywhere;
+
+  select { width: 100%; max-width: none; }
 }
 
-.modal-alert-actions {
-  padding: 16px;
-  gap: 16px;
-  width: fit-content;
-  margin-top: 0px;
+.swal2-actions.modal-alert-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 12px $modal-pad-x 16px;
+  border-top: $modal-rule;
+
+  button { @include modal-action-button; }
+  .swal2-confirm { @include modal-action-primary; order: 2; }
+  .swal2-cancel { order: 1; }
+}
+
+@media (max-width: 600px) {
+  .swal2-popup.modal-alert { max-width: calc(100vw - 16px); }
+  .swal2-title.modal-alert-card-title,
+  .swal2-html-container.modal-alert-content,
+  .swal2-actions.modal-alert-actions { padding-left: $modal-pad-x-phone; padding-right: $modal-pad-x-phone; }
 }
 
 .portrait-custom-options {

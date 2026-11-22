@@ -45,14 +45,10 @@
     <input type="hidden" id="selected-portrait" name="selected-portrait"></input>
     <div class="modal-background" id="edit-portrait-modal-background"></div>
     <div class="modal-card">
-      <header class="modal-card-head" style="width:100%">
-        <div class="row16spaced">
-          <h3 class="modal-card-title">{{_('Edit Portrait')}}</h3>
-          <div title="Close" hx-get="{{portrait_cancel_url}}"
-            hx-target="#character-portrait-container">
-            <i class="fa-solid fa-xmark xmark"></i>
-          </div>
-        </div>
+      <header class="modal-card-head">
+        <h3 class="modal-card-title">{{_('Edit Portrait')}}</h3>
+        <button type="button" class="modal-card-close" aria-label="{{_('Close')}}" title="{{_('Close')}}"
+          hx-get="{{portrait_cancel_url}}" hx-target="#character-portrait-container">&times;</button>
       </header>
       <section class="modal-card-body">
         {% if error %}<p role="alert" class="red-text">{{error}}</p>{% endif %}
@@ -78,15 +74,15 @@
       </section>
       <footer class="modal-card-foot">
         <div class="footer-button-container">
-          <button class="button is-success" id="edit-portrait-modal-save"
-            hx-post="{{portrait_save_url}}"
-            hx-target="#character-portrait-container">
-            {{_('Save')}}
-          </button>
           <button class="button" id="edit-portrait-modal-cancel"
             hx-get="{{portrait_cancel_url}}"
             hx-target="#character-portrait-container">
             {{_('Cancel')}}
+          </button>
+          <button class="button is-success" id="edit-portrait-modal-save"
+            hx-post="{{portrait_save_url}}"
+            hx-target="#character-portrait-container">
+            {{_('Save')}}
           </button>
         </div>
       </footer>

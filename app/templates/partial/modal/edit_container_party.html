@@ -57,12 +57,6 @@
             </div>
           </div>
         </div>
-        <div>
-          <button class="button is-success" type="button" {% if mode=="edit" %}
-            hx-post="/party/inventory/{{party.id}}/container-edit/{{container.id}}/save" {% else %}
-            hx-post="/party/inventory/{{party.id}}/container-edit/None/save" {% endif %}
-            hx-target="#inventory-container">{{_('Save')}}</button>
-        </div>
 
         {% if mode == "edit" and container.id != 0 %}
         <div>
@@ -91,12 +85,16 @@
           <p class="message-body red-text" id="add-edit-container-error-text"></p>
         </div>
 
-        <div class="footer-button-container" style="justify-content: end">
+        <div class="footer-button-container">
           <button class="button inventory-modal-cancel-button" type="button" {% if mode=="edit" %}
             hx-get="/party/inventory/{{party.id}}/{{container.id}}" {% else %}
             hx-get="/party/inventory/{{party.id}}/None" {% endif %} hx-target="#inventory-container">
             {{_('Cancel')}}
           </button>
+          <button class="button is-success" type="button" {% if mode=="edit" %}
+            hx-post="/party/inventory/{{party.id}}/container-edit/{{container.id}}/save" {% else %}
+            hx-post="/party/inventory/{{party.id}}/container-edit/None/save" {% endif %}
+            hx-target="#inventory-container">{{_('Save')}}</button>
         </div>
       </footer>
     </div>

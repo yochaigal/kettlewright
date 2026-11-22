@@ -14,13 +14,13 @@
       <form class="wilderness-form party-modal-form" method="post" action="{{url}}">
         {{roll_form.hidden_tag()}}<input type="hidden" name="version" value="{{party.version}}">
         <input type="hidden" name="action" value="{{key}}">
-        <div class="party-modal-head">
-          <h3 id="{{section}}-{{key}}-title">{{title}}</h3>
+        <div class="modal-card-head party-modal-head">
+          <h3 class="modal-card-title" id="{{section}}-{{key}}-title">{{title}}</h3>
         </div>
-        <div class="party-modal-body">
+        <div class="modal-card-body party-modal-body">
           {{ caller() }}
         </div>
-        <div class="party-modal-foot">
+        <div class="modal-card-foot party-modal-foot">
           <a class="wilderness-rules" href="{{rules_url}}" target="_blank" rel="noopener">{{_('Cairn 2e rules')}}</a>
           <button type="button" @click="hide()">{{_('Cancel')}}</button>
           <span class="wilderness-submit" data-selection-hint="{{_('You need to select a PC first')}}"
@@ -28,7 +28,7 @@
             <button class="party-modal-submit" type="submit" disabled>{{button}}</button>
           </span>
         </div>
-        <button type="button" class="party-modal-close" @click="hide()" aria-label="{{_('Close')}}" title="{{_('Close')}}">×</button>
+        <button type="button" class="modal-card-close party-modal-close" @click="hide()" aria-label="{{_('Close')}}" title="{{_('Close')}}">×</button>
       </form>
       </div>
     </div>

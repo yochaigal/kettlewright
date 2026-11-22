@@ -269,30 +269,7 @@
 }
 
 .shared-marketplace {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-
-  .shared-market-form {
-    width: 100%;
-    max-width: 680px;
-  }
-
-  .modal-card {
-    position: relative;
-    top: auto;
-    left: auto;
-    transform: none;
-    max-width: 100%;
-    width: 100%;
-    margin: 0;
-    max-height: calc(100dvh - 48px);
-    align-items: stretch;
-  }
+  .modal-card { width: 680px; }
 
   .modal-card-head {
     display: flex;
@@ -485,10 +462,4 @@ form.ground-pickup {
   select { width: 100%; min-width: 0; max-width: 100%; }
 }
 .ground-page { padding: 0 1.5rem; box-sizing: border-box; }
-.ground-drop-modal {
-  .modal-card { box-sizing: border-box; width: 48rem; max-width: calc(100vw - 3rem); padding: 1.5rem; }
-  .modal-card-head, .modal-card-body, .modal-card-foot { box-sizing: border-box; width: 100%; padding: 1rem; }
-  .modal-card-title { flex-shrink: 1; overflow-wrap: anywhere; line-height: 1.25; }
-  .footer-button-container { flex-wrap: nowrap; justify-content: center; }
-  .modal-card-foot .button { margin: 0; }
-}
+.ground-drop-modal .modal-card { width: 480px; }
