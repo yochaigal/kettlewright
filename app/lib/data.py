@@ -28,6 +28,36 @@ def load_images(include_categories=False):
                            for path in Path(image_folder).glob('*/*.png'))
     return sorted(image_files, key=lambda image: ('/' in image, image))
 
+# The portrait picker's four groups (#502). The files keep their folders, because characters, companions
+# and monsters store paths such as 'monster/monster2.png'; only where the picker shows them changes.
+PORTRAIT_GROUPS = ('humanoids', 'animals', 'monsters', 'objects')
+PORTRAIT_FOLDER_GROUPS = {
+    '': 'humanoids', 'humanoid': 'humanoids', 'human-npcs-for-itmod': 'humanoids', 'fairy': 'humanoids',
+    'brute': 'humanoids',
+    'aqua': 'animals', 'beast': 'animals', 'coldblooded': 'animals', 'insect': 'animals',
+    'monster': 'monsters', 'undead': 'monsters', 'green': 'monsters', 'demonic': 'monsters', 'large': 'monsters',
+    'other': 'objects', 'statues': 'objects',
+}
+PORTRAIT_GROUP_OVERRIDES = {
+    # Large creatures: faces and giants are humanoids, real animals are animals, the rest stay monsters.
+    **{f'large/large{n}.png': 'humanoids' for n in (1, 4, 6, 8, 12, 17, 18)},
+    **{f'large/large{n}.png': 'animals' for n in (19, 22, 23)},  # Giant spider, mammoth, dinosaur.
+    'large/large5.png': 'objects',  # A crystal ball on its stand.
+    # Things, not creatures: helmet, sword, mace, rock, whirlwind.
+    **{f'monster/monster{n}.png': 'objects' for n in (1, 2, 3, 17, 18)},
+}
+
+
+def portrait_groups(images):
+    """[(group, images)] for the portrait picker, in PORTRAIT_GROUPS order, each in the order given."""
+    groups = {group: [] for group in PORTRAIT_GROUPS}
+    for image in images:
+        folder = image.split('/')[0] if '/' in image else ''
+        group = PORTRAIT_GROUP_OVERRIDES.get(image) or PORTRAIT_FOLDER_GROUPS.get(folder, 'monsters')
+        groups[group].append(image)
+    return [(group, items) for group, items in groups.items() if items]
+
+
 def load_omens():
     result = []
     omens_file_path = os.path.join(app_static_path(), 'json', 'omens.json')

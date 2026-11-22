@@ -24604,3 +24604,11 @@ msgstr "Mundo"
 #. Whiteboard, Dungeon brush and eraser: drawing or erasing a rectangle of squares (#498)
 msgid "Hold Shift for a rectangle."
 msgstr "Segure Shift para um retângulo."
+
+#. Portrait picker: the group of animal portraits (#502)
+msgid "Animals"
+msgstr "Animais"
+
+#. Portrait picker: the group of object portraits: weapons, statues, things (#502)
+msgid "Objects"
+msgstr "Objetos"

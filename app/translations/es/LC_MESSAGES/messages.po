@@ -50886,3 +50886,11 @@ msgstr "Mantén Mayús para un rectángulo."
 #. New campaign dialog: also create an empty party for the campaign (#501)
 msgid "Create a party"
 msgstr "Crear un grupo"
+
+#. Portrait picker: the group of animal portraits (#502)
+msgid "Animals"
+msgstr "Animales"
+
+#. Portrait picker: the group of object portraits: weapons, statues, things (#502)
+msgid "Objects"
+msgstr "Objetos"

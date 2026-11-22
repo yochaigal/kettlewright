@@ -125,7 +125,26 @@ def test_categorized_portraits_work_for_creation_and_companions(shared):
     response = clients[1].post(f'/companions/{cid}/portrait', data={'custom-url': '', 'selected-portrait': 'beast/beast1.png'})
     assert response.status_code == 200 and '/static/images/portraits/beast/beast1.png' in response.text
     picker = clients[1].get(f'/companions/{cid}/portrait')
-    assert 'Portrait categories' in picker.text and 'Beasts' in picker.text
+    assert 'Portrait categories' in picker.text and 'Animals' in picker.text
+
+
+def test_portrait_picker_groups(shared):
+    """#502: four groups, Humanoids first; every portrait in exactly one; the files keep their folders."""
+    from app.lib.data import load_images, portrait_groups
+    app, clients, _ = shared
+    with app.app_context():
+        images = load_images(include_categories=True)
+    groups = dict(portrait_groups(images))
+    assert list(groups) == ['humanoids', 'animals', 'monsters', 'objects']
+    assert sorted(sum(groups.values(), [])) == sorted(images)
+    assert all('/' not in image for image in groups['humanoids'][:5])  # The old Characters come first.
+    assert {'fairy/fairy1.png', 'brute/brute1.png', 'large/large1.png'} <= set(groups['humanoids'])
+    assert {'aqua/aqua1.png', 'coldblooded/coldblooded1.png', 'insect/insect1.png'} <= set(groups['animals'])
+    assert {'undead/undead1.png', 'green/green1.png', 'demonic/demonic1.png', 'large/large15.png'} <= set(groups['monsters'])
+    assert {'statues/statue1.png', 'other/other1.png', 'monster/monster2.png', 'monster/monster18.png'} <= set(groups['objects'])
+    picker = clients[1].get('/charcreo/portrait?src=default-portrait.webp&custom_image=false').text
+    assert picker.count('data-portrait-category=') == 4 and 'Large creatures' not in picker
+    assert '<div class="portrait-category-grid" data-portrait-category="humanoids" >' in picker
 
 
 def test_summon_private_sheet_and_board_visibility(shared):
