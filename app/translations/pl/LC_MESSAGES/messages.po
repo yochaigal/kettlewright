@@ -23909,3 +23909,11 @@ msgstr "Świat"
 #. Whiteboard, Dungeon brush and eraser: drawing or erasing a rectangle of squares (#498)
 msgid "Hold Shift for a rectangle."
 msgstr "Przytrzymaj Shift, aby narysować prostokąt."
+
+#. Portrait picker: the group of animal portraits (#502)
+msgid "Animals"
+msgstr "Zwierzęta"
+
+#. Portrait picker: the group of object portraits: weapons, statues, things (#502)
+msgid "Objects"
+msgstr "Przedmioty"

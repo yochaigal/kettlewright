@@ -12,7 +12,10 @@
 <h2 id="create-title">{{ _('New campaign') }}</h2>
 <form method="post" action="{{ url_for('campaigns.index') }}">{{ token() }}
 <label>{{ _('Name') }}<input type="text" name="name" required maxlength="200" autofocus></label>
-<p class="import-hint">{{ _('The campaign starts with an empty party (add more for a West Marches game). Add modules to it: from the Modules Marketplace, your own files, or new ones you write or generate.') }}</p>
+{# Unchecked (#501): no new party; add an existing one from the campaign's Parties instead. #}
+<input type="hidden" name="party_field" value="1">
+<label class="campaign-check"><input type="checkbox" name="create_party" value="1" checked> {{ _('Create a party') }}</label>
+<p class="import-hint">{{ _('The campaign starts with an empty party, named after it (add more for a West Marches game). Uncheck Create a party to add one you already have instead. Add modules to it: from the Modules Marketplace, your own files, or new ones you write or generate.') }}</p>
 <div class="create-dialog-actions"><button type="button" @click="$refs.createDialog.close()">{{ _('Cancel') }}</button><button type="submit" class="primary">{{ _('Create') }}</button></div>
 </form>
 </dialog>

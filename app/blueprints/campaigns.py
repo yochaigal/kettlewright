@@ -200,9 +200,11 @@ def module_page(module):
 
 
 def new_campaign(name):
-    """A campaign is created with its (empty) party; it opens on its home, ready for modules."""
+    """A campaign is created with its (empty) party, unless Create a party was unchecked (#501): the Warden
+    adds an existing party instead. It opens on its home, ready for modules."""
     from app.lib.campaign_parties import create_campaign
-    campaign = create_campaign(current_user.id, text_value(name, 200, True))
+    with_party = 'party_field' not in request.form or request.form.get('create_party') == '1'
+    campaign = create_campaign(current_user.id, text_value(name, 200, True), with_party=with_party)
     db.session.commit()
     return redirect(url_for('campaigns.lobby', campaign_id=campaign.id))
 

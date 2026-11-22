@@ -227,6 +227,7 @@ section.body-container > .sheet.campaign-workspace {background:transparent;box-s
 .create-dialog .segmented input:checked + span {background:var(--fg);color:var(--bg);}
 .create-dialog .segmented input:focus-visible + span {outline:2px solid var(--fg);outline-offset:3px;}
 .create-dialog label input[type=text] {display:block;width:100%;box-sizing:border-box;margin:.4em 0 0;padding:.5em .6em;border:1px solid var(--fg);border-radius:2px;background:var(--bg);color:var(--fg);font:inherit;}
+.create-dialog .campaign-check {margin:.9em 0 0;}
 .create-dialog-actions {display:flex;align-items:stretch;justify-content:flex-end;gap:.75em;margin-top:1.25em;}
 .create-dialog .create-dialog-actions button {display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-width:8em;min-height:3em;margin:0;padding:.5em 1.25em;border:1.5px solid var(--fg);border-radius:2px;font:inherit;font-weight:600;line-height:1.2;}
 .create-dialog .create-dialog-actions button:not(.primary) {background:transparent;color:var(--fg);}

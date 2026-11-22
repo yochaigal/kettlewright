@@ -167,6 +167,23 @@ def test_pins_revealed_with_the_map(setup):
         assert PartyPresentation.query.filter_by(party_id=1, title='New camp', published=True).count() == 1
 
 
+def test_reveal_map_and_all_its_pins_with_a_pin_marked_reveal_with_the_map(setup):
+    """#500: Also reveal its pins on a map whose pin is marked Reveal with the map showed it twice in one save:
+    the second row broke the one-row-per-party rule and the Warden read "changed in another tab"."""
+    app, client = setup
+    map_id, graph = create_map(client, nodes=0)
+    graph['nodes'] = [{'id': 'new-pin', 'number': 1, 'x': 10, 'y': 20, 'title': 'Waterfall City', 'body': '',
+                       'category': 'map_note', 'content_changed': True, 'reveal': True},
+                      {'id': 'new-pin-2', 'number': 2, 'x': 30, 'y': 40, 'title': 'Hidden cave', 'body': '',
+                       'category': 'map_note', 'content_changed': True, 'reveal': False}]
+    client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)})
+    response = reveal(client, map_entry_id(app, map_id), with_contents='1')
+    assert response.status_code == 302, response.text
+    with app.app_context():
+        shown = sorted(row.title for row in PartyPresentation.query.filter_by(party_id=1, published=True))
+    assert shown == ['Hidden cave', 'SECRET MAP', 'Waterfall City']
+
+
 def test_pin_maker_or_warden_moves_a_pin_and_the_warden_sees_it_in_the_editor(setup):
     app, client = setup
     map_id, _ = create_map(client)

@@ -116,7 +116,13 @@ def article_entries(entries):
 
 def reveal_entry(entry, party):
     """Show one article (or map) to a party: it reads the original. Returns its row. The caller commits."""
-    row = PartyPresentation.query.filter_by(entry_id=entry.id, party_id=party.id).first()
+    # A row added earlier in this request is not in the database yet (autoflush is off): reuse it, or the
+    # same article revealed twice in one save (a pin marked Reveal with the map, and Also reveal its pins)
+    # would add a second row for the party (#500).
+    row = next((pending for pending in db.session.new if isinstance(pending, PartyPresentation)
+                and pending.entry is entry and pending.party is party), None)
+    if row is None:
+        row = PartyPresentation.query.filter_by(entry_id=entry.id, party_id=party.id).first()
     if row is None:
         row = PartyPresentation(entry=entry, party=party)
         db.session.add(row)

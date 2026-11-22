@@ -226,6 +226,10 @@ def create_app():
     from app.lib.char_utils import traits_sentence
     app.add_template_global(traits_sentence)
 
+    # The portrait picker's groups (#502)
+    from app.lib.data import portrait_groups
+    app.add_template_global(portrait_groups)
+
     # URL decode
     @app.template_filter("urldec")
     def urldec_filter(text: str) -> str:
