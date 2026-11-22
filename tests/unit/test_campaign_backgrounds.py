@@ -418,3 +418,19 @@ def test_party_barebones_migration(tmp_path, monkeypatch):
         db.session.commit()
         downgrade(revision='506a01')
         assert 'official_barebones' not in {c['name'] for c in inspect(db.engine).get_columns('parties')}
+
+
+def test_section_headings_follow_the_reader_and_read_back(app_with_babel):
+    from flask_babel import force_locale
+    from app.lib.campaign_backgrounds import (BACKGROUND_TEMPLATE, localized_headings, parse_background_text,
+                                              section_headings)
+    english = parse_background_text(BACKGROUND_TEMPLATE)
+    with app_with_babel.test_request_context('/'), force_locale('es'):
+        assert section_headings() == {'names': 'Nombres', 'starting_gear': 'Equipo inicial',
+                                      'starting_containers': 'Contenedores iniciales'}
+        shown = localized_headings(BACKGROUND_TEMPLATE)
+        assert '## Nombres' in shown and '## Equipo inicial' in shown and '## Names' not in shown
+        # What the Warden sees is what is saved: Spanish headings read back as the same background,
+        # and the English ones still work.
+        assert parse_background_text(shown) == english
+        assert parse_background_text(BACKGROUND_TEMPLATE) == english

@@ -50918,3 +50918,24 @@ msgid ""
 msgstr ""
 "Arte de las fichas de monstruos del %(bestiary)s, a través de %(atlas)s, "
 "con licencia CC-BY-SA 4.0."
+
+#. Heading of a background section in the editor and the module wiki. Backgrounds
+#. written with it are read back too (the English heading always works).
+#: app/lib/campaign_backgrounds.py
+msgctxt "background section"
+msgid "Names"
+msgstr "Nombres"
+
+#. Heading of a background section in the editor and the module wiki. Backgrounds
+#. written with it are read back too (the English heading always works).
+#: app/lib/campaign_backgrounds.py
+msgctxt "background section"
+msgid "Starting gear"
+msgstr "Equipo inicial"
+
+#. Heading of a background section in the editor and the module wiki. Backgrounds
+#. written with it are read back too (the English heading always works).
+#: app/lib/campaign_backgrounds.py
+msgctxt "background section"
+msgid "Starting containers"
+msgstr "Contenedores iniciales"

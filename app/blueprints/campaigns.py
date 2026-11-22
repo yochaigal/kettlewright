@@ -480,7 +480,8 @@ def delete_module(campaign_id, module_id):
 def module_background(campaign_id, module_id):
     """Write a background (Markdown), edit one (?name=), or remove one. Files are added with Add files (import)."""
     from app.lib.campaign_backgrounds import (BackgroundError, add_backgrounds, background_markdown,
-                                              parse_background_text, remove_background, BACKGROUND_TEMPLATE)
+                                              parse_background_text, remove_background, BACKGROUND_TEMPLATE,
+                                              localized_headings)
     campaign, module = campaign_module(campaign_id, module_id)
     name = request.values.get('name', '')
     current = (module.backgrounds or {}).get(name) if name else None
@@ -512,7 +513,7 @@ def module_background(campaign_id, module_id):
             flash(error, 'error')
             return redirect(module_page(module) + '#backgrounds')
     if text is None:
-        text = background_markdown(name, current) if current is not None else BACKGROUND_TEMPLATE
+        text = localized_headings(background_markdown(name, current) if current is not None else BACKGROUND_TEMPLATE)
     return render_template('campaigns/background.html', campaign=campaign, module=module, name=name,
                            text=text, error=error)
 

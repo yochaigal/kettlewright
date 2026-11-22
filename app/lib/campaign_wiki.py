@@ -258,9 +258,9 @@ IMAGE_IN_BODY = re.compile(r'!\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)|
 
 def module_backgrounds(module):
     """A module's backgrounds for its wiki (#476): name, description and their Markdown (no front matter)."""
-    from app.lib.campaign_backgrounds import background_markdown
+    from app.lib.campaign_backgrounds import background_markdown, localized_headings
     return [{'name': name, 'description': background.get('background_description', ''),
-             'text': background_markdown(name, background).split('---\n', 2)[2]}
+             'text': localized_headings(background_markdown(name, background).split('---\n', 2)[2])}
             for name, background in sorted((module.backgrounds or {}).items(), key=lambda item: item[0].casefold())]
 
 

@@ -46148,3 +46148,24 @@ msgid ""
 " the services of a specialist or healer, they will become a zombie in d4 "
 "days."
 msgstr ""
+
+#. Heading of a background section in the editor and the module wiki. Backgrounds
+#. written with it are read back too (the English heading always works).
+#: app/lib/campaign_backgrounds.py
+msgctxt "background section"
+msgid "Names"
+msgstr ""
+
+#. Heading of a background section in the editor and the module wiki. Backgrounds
+#. written with it are read back too (the English heading always works).
+#: app/lib/campaign_backgrounds.py
+msgctxt "background section"
+msgid "Starting gear"
+msgstr ""
+
+#. Heading of a background section in the editor and the module wiki. Backgrounds
+#. written with it are read back too (the English heading always works).
+#: app/lib/campaign_backgrounds.py
+msgctxt "background section"
+msgid "Starting containers"
+msgstr ""

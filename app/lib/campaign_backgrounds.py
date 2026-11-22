@@ -290,6 +290,34 @@ Mara, Oskel, Brine, Ilsa, Corwen, Petra
 """
 
 SECTIONS = {'names': 'names', 'starting gear': 'starting_gear', 'starting containers': 'starting_containers'}
+# The English headings of those sections. Files keep them in English; the editor and the wiki show them in
+# the reader's language, and the parser takes either.
+SECTION_HEADINGS = {'names': 'Names', 'starting_gear': 'Starting gear', 'starting_containers': 'Starting containers'}
+
+
+def section_headings():
+    """The section headings in the reader's language (English outside a request)."""
+    from flask import has_request_context
+    if not has_request_context():
+        return dict(SECTION_HEADINGS)
+    from flask_babel import pgettext
+    return {key: pgettext('background section', heading) for key, heading in SECTION_HEADINGS.items()}
+
+
+def _section_key(heading):
+    key = SECTIONS.get(heading.casefold())
+    if key is None:
+        key = {shown.casefold(): key for key, shown in section_headings().items()}.get(heading.casefold())
+    return key
+
+
+def localized_headings(markdown):
+    """A background's Markdown with its section headings in the reader's language."""
+    for key, english in SECTION_HEADINGS.items():
+        shown = section_headings()[key]
+        if shown != english:
+            markdown = re.sub(rf'^## {re.escape(english)}[ \t]*$', f'## {shown}', markdown, flags=re.M)
+    return markdown
 DASH = re.compile(r'\s+(?:—|--)\s+')
 BRACKETS = re.compile(r'^(?P<name>.*?)\s*\[(?P<tags>[^\[\]]*)\]\s*$')
 
@@ -404,7 +432,7 @@ def background_from_markdown(title, body):
             current[1].append(line)
     data, tables = {'background_description': '\n'.join(description).strip()}, []
     for heading, lines in sections:
-        key = SECTIONS.get(heading.casefold())
+        key = _section_key(heading)
         if key == 'names':
             text = ' '.join(re.sub(r'^\s*[-*]\s+', '', line).strip() + (',' if re.match(r'^\s*[-*]\s+', line) else '')
                            for line in lines if line.strip())
