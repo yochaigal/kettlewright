@@ -147,3 +147,10 @@ test('older dungeons and unknown colors read back as stone', () => {
   assert.equal(D.FLOOR_COLORS[0].color, D.STYLE.floor);
   assert.equal(new Set(D.FLOOR_COLORS.map(({color}) => color)).size, D.FLOOR_COLORS.length);
 });
+
+test('new dungeons use squares of 100, one bold square of the board grid; old boards keep theirs (#497)', () => {
+  assert.equal(D.DEFAULT_SIZE, 100);
+  assert.equal(D.emptyDungeon().size, 100);
+  assert.equal(D.boardSize(D.dungeonShapes(room(0, 0, 1, 1))), 80);
+  assert.deepEqual([...D.cellsInBox([350, 50], [120, 260], 100)].sort(), ['1,0', '1,1', '1,2', '2,0', '2,1', '2,2', '3,0', '3,1', '3,2']);
+});

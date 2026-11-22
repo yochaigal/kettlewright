@@ -1,7 +1,9 @@
 // The Dungeon brush (#439): an overlay above Excalidraw, like the fog brush.
 // Dragging highlights squares; releasing rebuilds the dungeon's shapes in one
 // undoable step, and the whiteboard saves and shares them like any drawing.
-import {DEFAULT_SIZE, STYLE, boardSize, cellsAlong, cycleEdge, dungeonFromShapes, dungeonPart,
+// With Shift (#498) the brush and eraser fill a rectangle: Shift-drag from one corner to the other,
+// or Shift-click a corner, move, and click the other corner. Escape cancels.
+import {DEFAULT_SIZE, STYLE, boardSize, cellsAlong, cellsInBox, cycleEdge, dungeonFromShapes, dungeonPart,
   dungeonShapes, edgeAt, edgeKind, floorColor, paint} from './whiteboard_dungeon.js';
 
 const MAX_ELEMENTS = 2000; // map_drawing.validate_drawing
@@ -101,10 +103,21 @@ export function createDungeonLayer({editor, getApi, canEdit, toElements, capture
   }
   function end(event) {
     if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+    // A Shift-click that did not drag sets the rectangle's first corner; the next click sets the other.
+    if (active?.box && !active.waiting && Math.hypot(event.clientX - active.start[0], event.clientY - active.start[1]) < 5) {
+      active.waiting = true; redraw(); return;
+    }
     pan = null; finish();
   }
 
   canvas.addEventListener('pointerdown', event => {
+    if (active?.waiting && event.button === 0) {
+      // The second click of a Shift rectangle: its other corner.
+      event.preventDefault(); event.stopPropagation();
+      active.cells = cellsInBox(active.anchor, point(event), size());
+      finish();
+      return;
+    }
     if (!tool || !canEdit() || active || pan || !host) return;
     if (event.button !== 0 && event.button !== 1) return;
     event.preventDefault(); event.stopPropagation();
@@ -117,7 +130,9 @@ export function createDungeonLayer({editor, getApi, canEdit, toElements, capture
       return;
     }
     const erase = tool === 'erase' || event.altKey;
-    active = {last: at, erase, cells: cellsAlong(at, at, s)};
+    active = event.shiftKey
+      ? {box: true, anchor: at, start: [event.clientX, event.clientY], erase, cells: cellsInBox(at, at, s)}
+      : {last: at, erase, cells: cellsAlong(at, at, s)};
     redraw();
   });
   canvas.addEventListener('pointermove', event => {
@@ -127,6 +142,8 @@ export function createDungeonLayer({editor, getApi, canEdit, toElements, capture
       getApi().updateScene({appState: {scrollX: state.scrollX + (event.clientX - pan[0]) / state.zoom.value,
         scrollY: state.scrollY + (event.clientY - pan[1]) / state.zoom.value}});
       pan = [event.clientX, event.clientY];
+    } else if (active?.box) {
+      active.cells = cellsInBox(active.anchor, point(event), size());
     } else if (active) {
       const at = point(event), s = size();
       if (active.cells.size < 20000) for (const cell of cellsAlong(active.last, at, s)) active.cells.add(cell);

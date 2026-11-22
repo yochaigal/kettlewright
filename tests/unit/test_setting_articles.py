@@ -723,3 +723,26 @@ def test_random_module_fallback_opens_distinct_realm_generator(setup):
     assert 'Top Category' not in html
     assert 'Dungeon contents' not in html and 'Forest contents' not in html
     assert 'Generate all child articles' in html and 'Map type' not in html  # Its options come from the dialog.
+
+def test_generated_realm_spreads_its_terrains_over_its_locations(setup):
+    """#494: a new realm's terrains are spread over the area its locations were scattered on (realmSpots in
+    content_generators.js), so the locations fall in different terrains, not all beside the terrains."""
+    app, client = setup
+    spots = [(400, 420), (1850, 400), (1100, 950), (420, 1500), (1900, 1480), (900, 600)]
+    nodes = [{'id': f'new-node-{i}', 'number': i + 1, 'title': f'Place {i + 1}', 'body': '', 'category': 'settlement' if i == 0 else 'waypoint',
+              'is_heart': i == 0, 'x': x, 'y': y, 'nested_map_id': None} for i, (x, y) in enumerate(spots)]
+    terrains = [{'category': 'terrain', 'title': f'Terrain {i}', 'draft_key': f'root/0/{i}'} for i in range(5)]
+    children = [{'category': 'topography', 'title': 'Topography', 'draft_key': 'root/0', 'children': terrains},
+                {'category': 'pois', 'title': 'POIs', 'draft_key': 'root/1'}]
+    response = client.post('/maps/new', data={'campaign_id': 1, 'kind': 'realm', 'title': 'Realm', 'body': '',
+                                              'draft': json.dumps({'nodes': nodes, 'edges': [], 'children': children})})
+    assert response.status_code == 302, response.get_data(as_text=True)
+    with app.app_context():
+        canvas = PointcrawlMap.query.filter_by(kind='realm').one()
+        placed = {node.entry.title: (node.x, node.y) for node in canvas.nodes}
+        assert [placed[f'Place {i + 1}'] for i in range(6)] == spots  # Locations stay where they were generated.
+        seeds = [placed[f'Terrain {i}'] for i in range(5)]
+        assert all(350 <= x <= 1950 and 350 <= y <= 1550 for x, y in seeds), seeds  # Over them, not to their right.
+        # The locations are in more than one terrain: the nearest seed (a Voronoi cell) differs between them.
+        nearest = {min(range(5), key=lambda i: (seeds[i][0] - x) ** 2 + (seeds[i][1] - y) ** 2) for x, y in spots}
+        assert len(nearest) > 1

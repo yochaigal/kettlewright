@@ -136,7 +136,7 @@ def reveal_with_map(entry, party):
 
 # ----- World Map (#482, #488): the campaign's main map, opened by a party's World Map button -----
 
-PIN_SIZES = {'small': 16, 'medium': 24, 'large': 34}  # Pin label size (#482): font size on the map.
+PIN_SIZES = {'small': 16, 'medium': 24, 'large': 34}  # Pin size (#482, #494): the map draws markers 18, 26 or 38 wide.
 
 
 def campaign_maps(campaign):
@@ -734,8 +734,12 @@ def place_new_realm_poi(entry):
     canvas.version += 1
 
 
-def populate_realm_map(canvas):
-    """Place existing setting articles without duplicating or moving saved points."""
+def populate_realm_map(canvas, beside=True):
+    """Place existing setting articles without duplicating or moving saved points.
+
+    beside: put the terrains to the right of points already on the map (an upgrade, which never moves them).
+    A map just generated passes False: its locations are scattered over the realm area (realmSpots in
+    content_generators.js), and its terrains are spread over that same area, around them (#494)."""
     root = canvas.entry
     terrains, landmarks, waters, forests, pois, paths = [], [], [], [], [], []
     def geography(entry, terrain=None):
@@ -768,7 +772,7 @@ def populate_realm_map(canvas):
     if len(existing) + len(new_points) > 200:
         abort(400, 'A map supports up to 200 points of interest.')
     # An upgrade goes beside an existing layout; existing coordinates stay intact.
-    offset = max((node.x for node in canvas.nodes), default=-500) + 900 if canvas.nodes else 350
+    offset = max((node.x for node in canvas.nodes), default=-500) + 900 if canvas.nodes and beside else 350
     number = max((node.number for node in canvas.nodes), default=0)
     changed = False
     def place(entry, x, y):

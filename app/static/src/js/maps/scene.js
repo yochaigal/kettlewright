@@ -56,15 +56,23 @@ export function nodeAppearance(node, kind) {
   return style;
 }
 
-// Pin label size (#482): the Warden's choice for this map, in pixels (PIN_SIZES on the server).
+// Pin size (#482): the Warden's choice for this map (PIN_SIZES on the server: 16, 24 or 34).
 export function pinFontSize(graph) {return [16,24,34].includes(graph?.pin_size) ? graph.pin_size : 24;}
+// Pins are markers without their titles on the map (#494): a title on a busy map image is unreadable.
+// Hovering shows it (pinTooltip) and clicking opens the pin, as before. The size sets the marker's diameter.
+export function pinDiameter(graph) {return {16:18,24:26,34:38}[pinFontSize(graph)];}
+const isPin = node => node?.category==='map_note';
+function nodeStyle(node, graph) {
+  const style=nodeAppearance(node,graph.kind);
+  return isPin(node) ? {...style,width:pinDiameter(graph),height:pinDiameter(graph)} : style;
+}
 
 export function graphShapes(graph, selected='', selectedEdge='') {
   const nodes = new Map(graph.nodes.map(node => [String(node.id), node]));
   const regions=terrainRegions(graph);
   const backgrounds=[], foregrounds=[], paths=[];
   for (const node of graph.nodes) {
-    const style=nodeAppearance(node,graph.kind), active=String(node.id)===selected;
+    const style=nodeStyle(node,graph), active=String(node.id)===selected;
     const shapes=style.background?backgrounds:foregrounds;
     const region=regions.get(String(node.id));
     const shape={id:`kw-node-${node.id}`,type:style.type,x:node.x-style.width/2,y:node.y-style.height/2,
@@ -89,13 +97,14 @@ export function graphShapes(graph, selected='', selectedEdge='') {
       if(node.category==='water' && shape.type==='line')shape.backgroundColor='transparent';
     }
     shapes.push(shape);
+    if(isPin(node))continue;
     const typeLabel=node.is_heart?'Heart · Settlement':style.label;
     const shortTitle=style.label ? node.title.replace(new RegExp('^'+style.label+':\\s*','i'),'').split(',')[0] : node.title;
     const label=`${node.number}. ${typeLabel ? typeLabel+' · ' : ''}${shortTitle}`;
     shapes.push({id:`kw-label-${node.id}`,type:'text',
       x:node.geometry?shape.x:region?region.x-85:node.x-(style.background?style.width/2-16:85),
       y:node.geometry?shape.y-45:region?region.y-100:style.background?node.y-style.height/2+12:node.y+style.height/2+10,
-      text:label.replace(/(.{1,20})(?:\s+|$)/g,'$1\n').trim(),fontSize:node.category==='map_note'?pinFontSize(graph):16,fontFamily:2,locked:true,
+      text:label.replace(/(.{1,20})(?:\s+|$)/g,'$1\n').trim(),fontSize:16,fontFamily:2,locked:true,
       strokeColor:style.stroke,customData:{kwType:'label'}});
   }
   for (const edge of graph.edges) {
@@ -148,7 +157,7 @@ export function graphHit(graph, x, y, tolerance=10) {
       }
       return px>=-tolerance && px<=g.width+tolerance && py>=-tolerance && py<=g.height+tolerance;
     }
-    const style=nodeAppearance(node,graph.kind), dx=Math.abs(x-node.x), dy=Math.abs(y-node.y);
+    const style=nodeStyle(node,graph), dx=Math.abs(x-node.x), dy=Math.abs(y-node.y);
     const w=style.width/2+tolerance,h=style.height/2+tolerance;
     if(regions.has(String(node.id)))return insideRegion(regions.get(String(node.id)).polygon,x,y);
     return style.type==='diamond'?dx/w+dy/h<=1:style.type==='ellipse'?(dx/w)**2+(dy/h)**2<=1:dx<=w && dy<=h;
@@ -169,22 +178,28 @@ export function graphHit(graph, x, y, tolerance=10) {
   return null;
 }
 
-// Party map pins: a red marker and its title. Pins belong to the party map view, not the drawing.
+// Party map pins: a red marker, its title shown on hover (#494). Pins belong to the party map view, not the drawing.
 // In the map editor they are the players' pins, read only, titled with their party (#482).
-export function pinShapes(pins=[], selectedPin='', fontSize=24) {
-  return pins.flatMap(pin => {
+export function pinShapes(pins=[], selectedPin='', diameter=26) {
+  return pins.map(pin => {
     const active=String(pin.id)===String(selectedPin);
-    return [
-      {id:`kw-pin-${pin.id}`,type:'ellipse',x:pin.x-11,y:pin.y-11,width:22,height:22,locked:true,
-       strokeColor:active?'#e67700':'#7f1d1d',backgroundColor:'#e03131',fillStyle:'solid',strokeWidth:active?4:2,roughness:0,
-       customData:{kwType:'pin',pinId:String(pin.id)}},
-      {id:`kw-pinlabel-${pin.id}`,type:'text',x:pin.x+16,y:pin.y-fontSize*.6,text:String(pin.title).slice(0,40),fontSize,fontFamily:2,
-       locked:true,strokeColor:'#7f1d1d',customData:{kwType:'label'}},
-    ];
+    return {id:`kw-pin-${pin.id}`,type:'ellipse',x:pin.x-diameter/2,y:pin.y-diameter/2,width:diameter,height:diameter,locked:true,
+      strokeColor:active?'#e67700':'#7f1d1d',backgroundColor:'#e03131',fillStyle:'solid',strokeWidth:active?4:2,roughness:0,
+      customData:{kwType:'pin',pinId:String(pin.id)}};
   });
 }
 
 // The pin under a click (scene coordinates), within tolerance.
 export function pinHit(pins=[], x, y, tolerance=14) {
   return pins.find(pin => Math.hypot(pin.x-x, pin.y-y) <= tolerance) || null;
+}
+
+// What hovering a pin shows (#494): its title, or '' away from pins. Party pins are drawn above the Warden's.
+// slack is extra reach in scene units (a few screen pixels at the current zoom).
+export function pinTooltip(graph, pins=[], x, y, slack=4) {
+  const reach=pinDiameter(graph)/2+slack;
+  const pin=pinHit(pins,x,y,reach);
+  if(pin)return String(pin.title || '');
+  const note=[...(graph?.nodes || [])].reverse().find(node=>isPin(node) && Math.hypot(node.x-x,node.y-y)<=reach);
+  return note ? `${note.number}. ${note.title}` : '';
 }

@@ -23905,3 +23905,7 @@ msgstr "Kliknij portret, aby dodać żeton na środku widoku, albo przeciągnij 
 #. Tools page tab (#461)
 msgid "World"
 msgstr "Świat"
+
+#. Whiteboard, Dungeon brush and eraser: drawing or erasing a rectangle of squares (#498)
+msgid "Hold Shift for a rectangle."
+msgstr "Przytrzymaj Shift, aby narysować prostokąt."
