@@ -600,7 +600,7 @@ def party_view(ownername, party_url):
     response = make_response(render_template('main/party_view.html', party_url=party_url, characters=characters, join_code=join_code, is_owner=is_owner,
                            is_subowner=is_subowner, party_id=party.id, ownername=ownername, inventory=inventory, party=party,
                            can_view_rolls=can_view_rolls, roll_form=FlaskForm(), stat_form=FlaskForm(),
-                           templates=localized_monster_catalog() if is_owner else {}, form=FlaskForm(),
+                           templates=localized_monster_catalog(party.monster_art) if is_owner else {}, form=FlaskForm(),
                            campaign_enabled=campaign_enabled,
                            rolls=PartyRoll.latest(party.id, current_user.id) if can_view_rolls else [],
                            online=connected_owners(party, characters),

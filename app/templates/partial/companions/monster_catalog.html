@@ -1,6 +1,7 @@
   {# The roster comes first; the bestiary and the Markdown import live in one dialog. #}
   {% set import_failed = error and not request.form.getlist('template') %}
-  <section class="monster-roster" x-data="{...campaignModal({{ 'true' if error else 'false' }}), mode: '{{ 'import' if import_failed else 'bestiary' }}'}"
+  {% set monster_art = request.form.get('monster_art') if request.form.get('monster_art') in ('kettlewright', 'oozejar') else party.monster_art %}
+  <section class="monster-roster" x-data="{...campaignModal({{ 'true' if error else 'false' }}), mode: '{{ 'import' if import_failed else 'bestiary' }}', art: '{{monster_art}}'}"
            @keydown.escape.window.capture="if (!document.querySelector('#monster-preview:not([hidden])')) hide()">
     {# No heading: the tab already says Monsters. Add monsters sits at the end of the bar. #}
     <header class="party-section-bar monster-roster-bar">
@@ -36,6 +37,13 @@
               <input id="monster-search" type="search" autocomplete="off" x-ref="search">
             </div>
             <label class="monster-selected-filter"><input id="monster-selected-only" type="checkbox"> {{_('Show selected only')}}</label>
+            {# The art the new monsters get (Kettlewright's tokens or Oozejar's Illustrated Bestiary); the party remembers it. #}
+            <fieldset class="monster-art-choice">
+              <legend>{{_('Token art')}}</legend>
+              {% for value, label in [('kettlewright', 'Kettlewright'), ('oozejar', 'Oozejar')] %}
+              <label><input type="radio" name="monster_art" value="{{value}}" x-model="art" {% if value == monster_art %}checked{% endif %}> {{label}}</label>
+              {% endfor %}
+            </fieldset>
           </div>
           <p id="monster-catalog-label" class="monster-catalog-label" hidden>{{_('Monsters')}}</p>
           <div class="monster-choices" role="group" aria-labelledby="monster-catalog-label">
@@ -44,7 +52,8 @@
       <div class="monster-choice" data-name="{{monster.name|lower}}" data-key="{{key}}">
         <input type="checkbox" name="template" value="{{key}}" hidden {% if key in request.form.getlist('template') %}checked{% endif %}>
         <div class="monster-card-heading">
-          <img src="{{url_for('static', filename='images/portraits/' + monster.image_url)}}" alt="" width="44" height="44" loading="lazy">
+          <img src="{{url_for('static', filename='images/portraits/' + monster.image_url)}}" alt="" width="44" height="44" loading="lazy"
+               {% for art, image in monster.art.items() %}data-art-{{art}}="{{url_for('static', filename='images/portraits/' + image)}}" {% endfor %}>
           <h4>{{monster.name}}</h4>
           <button class="monster-preview-button" type="button" data-preview="{{key}}" aria-label="{{_('Preview %(name)s', name=monster.name)}}" aria-controls="monster-preview" aria-expanded="false"><i class="fa-solid fa-eye" aria-hidden="true"></i></button>
         </div>
@@ -66,7 +75,8 @@
       </div>
     </div>
           <p id="monster-no-results" hidden>{{_('No monsters found.')}}</p>
-          <p class="monster-add-hint"><small><a href="https://cairnrpg.com/resources/monsters/" target="_blank" rel="noopener noreferrer">{{_('Cairn bestiary')}}</a> · Yochai Gal &amp; contributors · CC-BY-SA 4.0</small></p>
+          <p class="monster-add-hint"><small><a href="https://cairnrpg.com/resources/monsters/" target="_blank" rel="noopener noreferrer">{{_('Cairn bestiary')}}</a> · Yochai Gal &amp; contributors · CC-BY-SA 4.0</small>
+            <small {% if monster_art != 'oozejar' %}hidden{% endif %} :hidden="art !== 'oozejar'"><br>{{_('Art:')}} <a href="https://oozejar.com" target="_blank" rel="noopener noreferrer">Oozejar</a>, <a href="https://gourdin-konbo-club.itch.io/illustrated-bestiary" target="_blank" rel="noopener noreferrer">{{_('Illustrated Bestiary')}}</a> · <a href="https://github.com/ByteMirror/atlas-vtt-cairn" target="_blank" rel="noopener noreferrer">{{_('Cairn for Atlas VTT')}}</a> · CC-BY-SA 4.0</small></p>
           <div class="modal-card-foot monster-selection-actions">
             <p aria-live="polite">{{_('Selected instances:')}} <output id="monster-total">0</output> / 100</p>
             <div class="monster-add-buttons">

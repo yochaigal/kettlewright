@@ -1,7 +1,7 @@
-{# The portrait picker (#502): four groups. The files keep their folders; app/lib/data.py says which group each is in. #}
+{# The portrait picker (#502): four groups, and Oozejar's Illustrated Bestiary (one token per Cairn monster). The files keep their folders; app/lib/data.py says which group each is in. #}
 {% set groups = portrait_groups(images) %}
 {% set first = groups[0][0] if groups else '' %}
-{% set labels = {'humanoids': _('Humanoids'), 'animals': _('Animals'), 'monsters': _('Monsters'), 'objects': _('Objects')} %}
+{% set labels = {'humanoids': _('Humanoids'), 'animals': _('Animals'), 'monsters': _('Monsters'), 'objects': _('Objects'), 'bestiary': _('Illustrated Bestiary')} %}
 <div class="portrait-categories" role="group" aria-label="{{_('Portrait categories')}}">
   {% for category, portraits in groups %}
   <button type="button" aria-pressed="{{'true' if category == first else 'false'}}"
@@ -10,8 +10,13 @@
 </div>
 {% for category, portraits in groups %}
 <div class="portrait-category-grid" data-portrait-category="{{category}}" {% if category != first %}hidden{% endif %}>
+  {% if category == 'bestiary' %}
+  <p class="portrait-category-credit"><small>{{_('Art:')}} <a href="https://oozejar.com" target="_blank" rel="noopener noreferrer">Oozejar</a>, <a href="https://gourdin-konbo-club.itch.io/illustrated-bestiary" target="_blank" rel="noopener noreferrer">{{_('Illustrated Bestiary')}}</a> · <a href="https://github.com/ByteMirror/atlas-vtt-cairn" target="_blank" rel="noopener noreferrer">{{_('Cairn for Atlas VTT')}}</a> · CC-BY-SA 4.0</small></p>
+  {% endif %}
   {% for image in portraits %}
-  <button type="button" class="portrait-choice" aria-label="{{labels[category]}} {{loop.index}}" onclick="clickImage('{{image}}')">
+  {# A bestiary token is named after its monster (oozejar/black-bear.webp: Black Bear). #}
+  {% set name = image.split('/')[-1].rsplit('.', 1)[0].replace('-', ' ')|title if category == 'bestiary' else labels[category] ~ ' ' ~ loop.index %}
+  <button type="button" class="portrait-choice" aria-label="{{name}}" {% if category == 'bestiary' %}title="{{name}}"{% endif %} onclick="clickImage('{{image}}')">
     <img data_url="{{image}}" id="img-{{image}}" class="edit-portrait-modal-thumbnail" loading="lazy" alt=""
       src="{{url_for('static', filename='images/portraits/' + image)}}">
   </button>
