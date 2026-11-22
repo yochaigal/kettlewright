@@ -48,7 +48,7 @@ class Companion(db.Model):
         portrait = self.image_url
         if not portrait and self.kind == 'monster':
             from app.lib.monsters import monster_portrait
-            portrait = monster_portrait(self.role or self.name)
+            portrait = monster_portrait(self.role or self.name, self.party.monster_art if self.party else 'kettlewright')
         return url_for('static', filename='images/portraits/' + (portrait or 'default-portrait.webp'))
 
     @property

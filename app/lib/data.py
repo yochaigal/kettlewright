@@ -25,18 +25,20 @@ def load_images(include_categories=False):
     if include_categories:
         from pathlib import Path
         image_files.extend(path.relative_to(image_folder).as_posix()
-                           for path in Path(image_folder).glob('*/*.png'))
+                           for pattern in ('*/*.png', '*/*.webp') for path in Path(image_folder).glob(pattern))
     return sorted(image_files, key=lambda image: ('/' in image, image))
 
-# The portrait picker's four groups (#502). The files keep their folders, because characters, companions
+# The portrait picker's groups (#502), and the Illustrated Bestiary tokens as a fifth. The files keep their folders, because characters, companions
 # and monsters store paths such as 'monster/monster2.png'; only where the picker shows them changes.
-PORTRAIT_GROUPS = ('humanoids', 'animals', 'monsters', 'objects')
+PORTRAIT_GROUPS = ('humanoids', 'animals', 'monsters', 'objects', 'bestiary')
 PORTRAIT_FOLDER_GROUPS = {
     '': 'humanoids', 'humanoid': 'humanoids', 'human-npcs-for-itmod': 'humanoids', 'fairy': 'humanoids',
     'brute': 'humanoids',
     'aqua': 'animals', 'beast': 'animals', 'coldblooded': 'animals', 'insect': 'animals',
     'monster': 'monsters', 'undead': 'monsters', 'green': 'monsters', 'demonic': 'monsters', 'large': 'monsters',
     'other': 'objects', 'statues': 'objects',
+    # Oozejar's Illustrated Bestiary, one token per Cairn monster (CC BY-SA 4.0; see the folder's LICENSE.md).
+    'oozejar': 'bestiary',
 }
 PORTRAIT_GROUP_OVERRIDES = {
     # Large creatures: faces and giants are humanoids, real animals are animals, the rest stay monsters.

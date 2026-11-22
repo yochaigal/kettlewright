@@ -866,6 +866,8 @@ img.edit-portrait-modal-thumbnail.highlighted {
 .portrait-category-grid { display: grid; grid-template-columns: repeat(auto-fit, 86px); gap: 8px; justify-content: space-evenly;
   &[hidden] { display: none; }
   .portrait-choice { padding: 0; margin: 0; background: transparent; border: none; }
+  // The Illustrated Bestiary's credit spans the grid.
+  .portrait-category-credit { grid-column: 1 / -1; margin: 0; text-align: center; }
 }
 
 .monsters-page, .monster-controls {

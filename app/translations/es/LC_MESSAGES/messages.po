@@ -50894,3 +50894,27 @@ msgstr "Animales"
 #. Portrait picker: the group of object portraits: weapons, statues, things (#502)
 msgid "Objects"
 msgstr "Objetos"
+
+#. Add monsters dialog: which art the new monsters get, Kettlewright or Oozejar
+msgid "Token art"
+msgstr "Arte de las fichas"
+
+#. Credit for Oozejar's monster tokens, before the artist's name (Add monsters dialog and portrait picker)
+msgid "Art:"
+msgstr "Arte:"
+
+#. Portrait picker group and credit: Oozejar's Illustrated Bestiary (title of the book)
+msgid "Illustrated Bestiary"
+msgstr "Bestiario ilustrado"
+
+#. Credit: the Cairn collection for Atlas VTT the monster tokens come from (title)
+msgid "Cairn for Atlas VTT"
+msgstr "Cairn para Atlas VTT"
+
+#. About page, Attribution: Oozejar's monster tokens
+msgid ""
+"Monster token art from the %(bestiary)s, via %(atlas)s, licensed under "
+"CC-BY-SA 4.0."
+msgstr ""
+"Arte de las fichas de monstruos del %(bestiary)s, a través de %(atlas)s, "
+"con licencia CC-BY-SA 4.0."

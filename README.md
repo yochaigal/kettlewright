@@ -205,6 +205,7 @@ Uploaded material-description images use the neighboring `instance/material-imag
 - [**David Stearns**](https://github.com/david-stearns): Software Development, QA, Testing.
 - [**Yochai Gal**](https://newschoolrevolution.com): Project Design, DevOps, Documentation.
 - [**tlomdev**](https://tlomdev.itch.io/tlomdevs-tokens): Token Art licensed under CC-BY 4.0.
+- [**Oozejar**](https://oozejar.com): Monster token art from the [Illustrated Bestiary](https://gourdin-konbo-club.itch.io/illustrated-bestiary), via [Cairn for Atlas VTT](https://github.com/ByteMirror/atlas-vtt-cairn), licensed under CC-BY-SA 4.0.
 - [**Adam Hensley**](https://adamhensley.itch.io/): Logo/favicon Art.
 
 ### Tools

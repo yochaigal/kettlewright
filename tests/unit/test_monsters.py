@@ -115,7 +115,7 @@ def test_categorized_portraits_work_for_creation_and_companions(shared):
     app, clients, _ = shared
     with app.app_context():
         assert all('/' not in path for path in load_images())
-        assert len(load_images(include_categories=True)) == len(load_images()) + 298
+        assert len(load_images(include_categories=True)) == len(load_images()) + 298 + 145  # 145 Illustrated Bestiary tokens.
         validate_portrait_reference('beast/beast1.png', False)
         with pytest.raises(ValueError):
             validate_portrait_reference('../beast1.png', False)
@@ -129,13 +129,13 @@ def test_categorized_portraits_work_for_creation_and_companions(shared):
 
 
 def test_portrait_picker_groups(shared):
-    """#502: four groups, Humanoids first; every portrait in exactly one; the files keep their folders."""
+    """#502: four groups, Humanoids first, then the Illustrated Bestiary; every portrait in exactly one; the files keep their folders."""
     from app.lib.data import load_images, portrait_groups
     app, clients, _ = shared
     with app.app_context():
         images = load_images(include_categories=True)
     groups = dict(portrait_groups(images))
-    assert list(groups) == ['humanoids', 'animals', 'monsters', 'objects']
+    assert list(groups) == ['humanoids', 'animals', 'monsters', 'objects', 'bestiary']
     assert sorted(sum(groups.values(), [])) == sorted(images)
     assert all('/' not in image for image in groups['humanoids'][:5])  # The old Characters come first.
     assert {'fairy/fairy1.png', 'brute/brute1.png', 'large/large1.png'} <= set(groups['humanoids'])
@@ -143,8 +143,66 @@ def test_portrait_picker_groups(shared):
     assert {'undead/undead1.png', 'green/green1.png', 'demonic/demonic1.png', 'large/large15.png'} <= set(groups['monsters'])
     assert {'statues/statue1.png', 'other/other1.png', 'monster/monster2.png', 'monster/monster18.png'} <= set(groups['objects'])
     picker = clients[1].get('/charcreo/portrait?src=default-portrait.webp&custom_image=false').text
-    assert picker.count('data-portrait-category=') == 4 and 'Large creatures' not in picker
+    assert picker.count('data-portrait-category=') == 5 and 'Large creatures' not in picker
     assert '<div class="portrait-category-grid" data-portrait-category="humanoids" >' in picker
+
+
+def test_illustrated_bestiary_has_a_token_for_every_monster_and_a_credit(shared):
+    from app.lib.data import load_images, portrait_groups
+    from app.lib.monsters import CATALOG
+    app, clients, _ = shared
+    with app.app_context():
+        groups = dict(portrait_groups(load_images(include_categories=True)))
+    assert sorted(groups['bestiary']) == sorted(f'oozejar/{key}.webp' for key in monster_catalog())
+    assert (CATALOG.parents[1] / 'images/portraits/oozejar/LICENSE.md').is_file()
+    picker = clients[1].get('/charcreo/portrait?src=default-portrait.webp&custom_image=false').text
+    bestiary = picker[picker.index('data-portrait-category="bestiary"'):]
+    assert 'Illustrated Bestiary' in bestiary and 'https://oozejar.com' in bestiary and 'CC-BY-SA 4.0' in bestiary
+    assert 'aria-label="Black Bear"' in bestiary and "clickImage('oozejar/black-bear.webp')" in bestiary
+    cid = summon(clients)
+    response = clients[1].post(f'/companions/{cid}/portrait', data={'custom-url': '', 'selected-portrait': 'oozejar/wolf.webp'})
+    assert response.status_code == 200 and '/static/images/portraits/oozejar/wolf.webp' in response.text
+    about = clients[1].get('/about').text
+    assert 'https://oozejar.com' in about and 'https://github.com/ByteMirror/atlas-vtt-cairn' in about
+
+
+def test_monster_art_choice_is_remembered_by_the_party(shared):
+    from app.lib.monsters import monster_portrait
+    app, clients, _ = shared
+    assert monster_portrait('Wolf', 'oozejar') == 'oozejar/wolf.webp'
+    assert monster_portrait('Unknown imported creature', 'oozejar') == 'monster/monster11.png'
+    assert monster_catalog('oozejar')['wolf']['image_url'] == 'oozejar/wolf.webp'
+    assert monster_catalog()['wolf']['art'] == {'kettlewright': 'beast/beast1.png', 'oozejar': 'oozejar/wolf.webp'}
+    page = clients[1].get('/parties/1/monsters').text
+    assert 'name="monster_art" value="kettlewright" x-model="art" checked' in page
+    assert 'data-art-oozejar="/static/images/portraits/oozejar/wolf.webp"' in page
+    # Summoning with Oozejar's art gives the monsters its tokens, and the party keeps the choice.
+    response = clients[1].post('/parties/1/monsters', data={'template': ['wolf', 'goblin'], 'quantity_wolf': '1',
+                                                            'quantity_goblin': '1', 'monster_art': 'oozejar'})
+    assert response.status_code == 302
+    with app.app_context():
+        party = db.session.get(Party, 1)
+        assert party.monster_art == 'oozejar'
+        assert sorted(m.image_url for m in party.monsters) == ['oozejar/goblin.webp', 'oozejar/wolf.webp']
+    page = clients[1].get('/parties/1/monsters').text
+    assert 'name="monster_art" value="oozejar" x-model="art" checked' in page
+    assert '"image_url": "oozejar/wolf.webp"' in page
+    # Markdown imports of bestiary monsters follow the party's art; others keep the default token.
+    assert clients[1].post('/parties/1/monsters', data={'monster_markdown': '# Wolf\n4 HP\n---\n# Bat\n3 HP'}).status_code == 302
+    with app.app_context():
+        imported = db.session.get(Party, 1).monsters[-2:]
+        assert [m.image_url for m in imported] == ['oozejar/wolf.webp', 'monster/monster11.png']
+    # Back to Kettlewright's tokens; an unknown art is refused and changes nothing.
+    assert clients[1].post('/parties/1/monsters', data={'template': 'wolf', 'quantity_wolf': '1',
+                                                        'monster_art': 'kettlewright'}).status_code == 302
+    assert clients[1].post('/parties/1/monsters', data={'template': 'wolf', 'quantity_wolf': '1',
+                                                        'monster_art': '../evil'}).status_code == 400
+    with app.app_context():
+        party = db.session.get(Party, 1)
+        assert party.monster_art == 'kettlewright' and party.monsters[-1].image_url == 'beast/beast1.png'
+        assert len(party.monsters) == 5
+    for user in (2, 3, 4):
+        assert clients[user].post('/parties/1/monsters', data={'template': 'wolf', 'monster_art': 'oozejar'}).status_code == 403
 
 
 def test_summon_private_sheet_and_board_visibility(shared):

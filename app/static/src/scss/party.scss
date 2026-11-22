@@ -755,6 +755,18 @@ pointer-events: none;
     label { margin: 0; }
     .monster-selected-filter { margin: 0 0 .8rem; white-space: nowrap; }
   }
+  // Token art: Kettlewright or Oozejar, as two radios under a label like the search's.
+  .monster-art-choice {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem 1.2rem;
+    margin: 0 0 .8rem;
+    padding: 0;
+    border: 0;
+    legend { float: left; width: 100%; padding: 0; margin: 0 0 .4rem; font-size: 1.3rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
+    label { display: inline-flex; align-items: center; gap: .4rem; white-space: nowrap; }
+    input { width: auto; margin: 0; }
+  }
   .monster-add-search {
     flex: 1 1 24rem;
     min-width: 0;

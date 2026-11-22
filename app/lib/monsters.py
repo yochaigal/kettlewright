@@ -7,6 +7,9 @@ from functools import lru_cache
 from app.models import Companion, Character, db
 
 CATALOG = Path(__file__).resolve().parents[1] / 'static/json/monsters.json'
+# The art a party's new monsters get: Kettlewright's tokens, or Oozejar's Illustrated Bestiary
+# (from the Cairn collection for Atlas VTT, CC BY-SA 4.0), which has one token for each bestiary monster.
+MONSTER_ARTS = ('kettlewright', 'oozejar')
 MAX_MONSTER_BATCH = 100
 
 
@@ -87,18 +90,19 @@ def parse_monster(markdown):
     return result
 
 
-def monster_catalog():
+def monster_catalog(art='kettlewright'):
     templates = json.loads(CATALOG.read_text())
     for template in templates.values():
-        template['image_url'] = monster_portrait(template['name'])
+        template['art'] = {choice: monster_portrait(template['name'], choice) for choice in MONSTER_ARTS}
+        template['image_url'] = template['art'].get(art, template['art']['kettlewright'])
     return templates
 
 
-def localized_monster_catalog():
+def localized_monster_catalog(art='kettlewright'):
     """The bestiary in the reader's language, for pages and new monsters. Portraits and
     keys stay tied to the English names, so they are set before translating."""
     from flask_babel import gettext
-    templates = monster_catalog()
+    templates = monster_catalog(art)
     labels = {'hp': gettext('HP'), 'armor': gettext('Armor'), 'strength': gettext('STR'),
               'dexterity': gettext('DEX'), 'willpower': gettext('WIL')}
     for template in templates.values():
@@ -118,16 +122,22 @@ def monster_portraits():
     return _monster_portraits(CATALOG.with_name('monster-portraits.json').stat().st_mtime_ns)
 
 
-def monster_portrait(name):
+def monster_portrait(name, art='kettlewright'):
+    """A bestiary monster's portrait in the given art. A name outside the bestiary has no Oozejar
+    token, so it gets Kettlewright's."""
     from slugify import slugify
-    return monster_portraits().get(slugify(name or ''), 'monster/monster11.png')
+    slug = slugify(name or '')
+    if art == 'oozejar' and slug in monster_portraits():
+        return f'oozejar/{slug}.webp'
+    return monster_portraits().get(slug, 'monster/monster11.png')
 
 
 def new_monster(party, template):
     from app.lib.companions import import_pet
     data = dict(template, role=template['name'], gold=0, items=[], containers=[dict(id=0, name='Main', slots=10)],
-                image_url=template.get('image_url') or monster_portrait(template['name']))
+                image_url=template.get('image_url') or monster_portrait(template['name'], party.monster_art))
     data.pop('labels', None)
+    data.pop('art', None)
     for stat in ('hp', 'strength', 'dexterity', 'willpower'):
         data[stat + '_max'] = data[stat]
     c = import_pet(data)
@@ -141,7 +151,7 @@ def give_monster(c, character):
     # Avoid delete-orphan cascades when moving between parent collections.
     moved = db.session.execute(db.update(Companion).where(Companion.id == c.id, Companion.kind == 'monster')
                        .values(kind='pet', party_id=None, character_id=character.id, shared=True,
-                               image_url=c.image_url or monster_portrait(c.role or c.name)))
+                               image_url=c.image_url or monster_portrait(c.role or c.name, c.party.monster_art)))
     if moved.rowcount != 1:
         raise ValueError('This monster has already been transferred.')
     db.session.expire_all()
