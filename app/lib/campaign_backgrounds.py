@@ -100,7 +100,8 @@ def _pet(name, where):
     name = _text(name, where, 100, True)
     pets = known_pets()
     if name not in pets:
-        raise BackgroundError(f'{where}: unknown pet "{name}". Use one of: {", ".join(pets)}.')
+        shown = [_shown_pet(pet) for pet in pets] if _localized() else list(pets)
+        raise BackgroundError(f'{where}: unknown pet "{name}". Use one of: {", ".join(shown)}.')
     return name
 
 
@@ -290,18 +291,52 @@ Mara, Oskel, Brine, Ilsa, Corwen, Petra
 """
 
 SECTIONS = {'names': 'names', 'starting gear': 'starting_gear', 'starting containers': 'starting_containers'}
-# The English headings of those sections. Files keep them in English; the editor and the wiki show them in
-# the reader's language, and the parser takes either.
+# The English headings of those sections and the words of the format. Files keep them in English; the editors
+# and the wiki show them in the reader's language, and the parser takes either. A translation may list other
+# forms after a "|" ("tirado por|tirada por"): the first is the one shown, all of them are read.
 SECTION_HEADINGS = {'names': 'Names', 'starting_gear': 'Starting gear', 'starting_containers': 'Starting containers'}
+KEYWORDS = ('uses', 'charges', 'armor active', 'armor inactive', 'slots', 'carried by', 'load', 'gold', 'pet',
+            'container', 'gear table')
+# Tags that the app knows by name, shown translated on items: written in either language, kept in English.
+KNOWN_TAGS = ('petty', 'bulky', 'blast')
+
+
+def _localized():
+    from flask import has_request_context
+    return has_request_context()
 
 
 def section_headings():
     """The section headings in the reader's language (English outside a request)."""
-    from flask import has_request_context
-    if not has_request_context():
+    if not _localized():
         return dict(SECTION_HEADINGS)
     from flask_babel import pgettext
     return {key: pgettext('background section', heading) for key, heading in SECTION_HEADINGS.items()}
+
+
+def _forms(word):
+    """Every form of a format word that is read: the English one and the reader's ones."""
+    forms = [word]
+    if _localized():
+        from flask_babel import pgettext
+        forms += [form.strip() for form in pgettext('background keyword', word).split('|') if form.strip()]
+    return list(dict.fromkeys(form.casefold() for form in forms))
+
+
+def shown_words(localized):
+    """The format words as they are written: in English, or in the reader's language."""
+    words = {word: word for word in KEYWORDS}
+    tags = {tag: tag for tag in KNOWN_TAGS}
+    if localized and _localized():
+        from flask_babel import gettext, pgettext
+        words = {word: pgettext('background keyword', word).split('|')[0].strip() or word for word in KEYWORDS}
+        tags = {tag: gettext(tag) for tag in KNOWN_TAGS}
+    return {'words': words, 'tags': tags, 'headings': section_headings() if localized else dict(SECTION_HEADINGS),
+            'localized': bool(localized and _localized())}
+
+
+def _alternatives(word):
+    return '|'.join(re.escape(form) for form in _forms(word))
 
 
 def _section_key(heading):
@@ -311,13 +346,28 @@ def _section_key(heading):
     return key
 
 
-def localized_headings(markdown):
-    """A background's Markdown with its section headings in the reader's language."""
-    for key, english in SECTION_HEADINGS.items():
-        shown = section_headings()[key]
-        if shown != english:
-            markdown = re.sub(rf'^## {re.escape(english)}[ \t]*$', f'## {shown}', markdown, flags=re.M)
-    return markdown
+def _known_tag(token):
+    """A known tag written in the reader's language, as its English tag (else the token as written)."""
+    lower = token.casefold()
+    if lower in KNOWN_TAGS:
+        return lower
+    if _localized():
+        from flask_babel import gettext
+        for tag in KNOWN_TAGS:
+            if gettext(tag).casefold() == lower:
+                return tag
+    return token
+
+
+def _pet_name(name):
+    """A pet written by its name in the reader's language, as its catalog name."""
+    pets = known_pets()
+    if name in pets or not _localized():
+        return name
+    from flask_babel import gettext
+    return {gettext(pet).casefold(): pet for pet in pets}.get(name.casefold(), name)
+
+
 DASH = re.compile(r'\s+(?:—|--)\s+')
 BRACKETS = re.compile(r'^(?P<name>.*?)\s*\[(?P<tags>[^\[\]]*)\]\s*$')
 
@@ -342,8 +392,8 @@ def item_from_tokens(name, tokens, description, where):
     item = {'name': name, 'tags': []}
     for token in tokens:
         lower = token.casefold()
-        uses = re.fullmatch(r'uses\s+(\d+)', lower)
-        charges = re.fullmatch(r'charges\s+(\d+)(?:\s*/\s*(\d+))?', lower)
+        uses = re.fullmatch(rf'(?:{_alternatives("uses")})\s+(\d+)', lower)
+        charges = re.fullmatch(rf'(?:{_alternatives("charges")})\s+(\d+)(?:\s*/\s*(\d+))?', lower)
         count = re.fullmatch(r'([a-z_]+)\s*=\s*(\d+)', lower)
         if count and count.group(1) in ITEM_INTEGERS:
             item[count.group(1)] = int(count.group(2))
@@ -355,10 +405,10 @@ def item_from_tokens(name, tokens, description, where):
             item['charges'] = int(charges.group(1))
             if charges.group(2) is not None:
                 item['max_charges'] = int(charges.group(2))
-        elif lower in ('armor active', 'armor inactive'):
-            item['armor_active'] = lower == 'armor active'
+        elif lower in _forms('armor active') or lower in _forms('armor inactive'):
+            item['armor_active'] = lower in _forms('armor active')
         else:
-            item['tags'].append(token)
+            item['tags'].append(_known_tag(token))
     if description is not None:
         item['description'] = description
     return _item(item, where)
@@ -369,14 +419,15 @@ def _md_container(line, where):
     container = {'name': name}
     for token in tokens:
         lower = token.casefold()
-        slots = re.fullmatch(r'(\d+)\s+slots?', lower)
-        load = re.fullmatch(r'load\s+(\d+)', lower)
+        slots = re.fullmatch(rf'(\d+)\s+(?:{_alternatives("slots")}|slot)', lower)
+        load = re.fullmatch(rf'(?:{_alternatives("load")})\s+(\d+)', lower)
+        carried = re.match(rf'(?:{_alternatives("carried by")})\s+', lower)
         if slots:
             container['slots'] = int(slots.group(1))
         elif load:
             container['load'] = int(load.group(1))
-        elif lower.startswith('carried by '):
-            container['carried_by'] = token[len('carried by '):].strip()
+        elif carried:
+            container['carried_by'] = token[carried.end():].strip()
         else:
             raise BackgroundError(f'{where}: unknown container detail "{token}". Use N slots, carried by X or load N.')
     return _container(container, where)
@@ -384,16 +435,18 @@ def _md_container(line, where):
 
 def _md_reward(option, line, where):
     lower = line.casefold()
-    gold = re.fullmatch(r'\+?(\d+)\s*(?:gold|gp)', lower)
-    gear = re.fullmatch(r'gear table:?\s*(\d+)', lower)
+    gold = re.fullmatch(rf'\+?(\d+)\s*(?:{_alternatives("gold")}|gp)', lower)
+    gear = re.fullmatch(rf'(?:{_alternatives("gear table")}):?\s*(\d+)', lower)
+    pet = re.match(rf'(?:{_alternatives("pet")}):', lower)
+    container = re.match(rf'(?:{_alternatives("container")}):', lower)
     if gold:
         option['bonus_gold'] = int(gold.group(1))
     elif gear:
         option['gear_table'] = int(gear.group(1))
-    elif lower.startswith('pet:'):
-        option.setdefault('pets', []).append(line[4:].strip())
-    elif lower.startswith('container:'):
-        option.setdefault('containers', []).append(_md_container(line[10:].strip(), where))
+    elif pet:
+        option.setdefault('pets', []).append(_pet_name(line[pet.end():].strip()))
+    elif container:
+        option.setdefault('containers', []).append(_md_container(line[container.end():].strip(), where))
     else:
         option.setdefault('items', []).append(_md_item(line, where))
 
@@ -457,17 +510,19 @@ def background_from_markdown(title, body):
     return validate_background(title, data)
 
 
-def _item_markdown(item):
+def _item_markdown(item, shown=None):
+    shown = shown or shown_words(False)
+    words, tags = shown['words'], shown['tags']
     tokens = []
     for tag in item.get('tags', []):
         if tag == 'uses' and 'uses' in item:
-            tokens.append(f'uses {item["uses"]}')
+            tokens.append(f'{words["uses"]} {item["uses"]}')
         elif tag == 'charges' and 'charges' in item:
-            tokens.append(f'charges {item["charges"]}' + (f'/{item["max_charges"]}' if 'max_charges' in item else ''))
+            tokens.append(f'{words["charges"]} {item["charges"]}' + (f'/{item["max_charges"]}' if 'max_charges' in item else ''))
         else:
-            tokens.append(tag)
+            tokens.append(tags.get(tag, tag))
     if 'armor_active' in item:
-        tokens.append('armor active' if item['armor_active'] else 'armor inactive')
+        tokens.append(words['armor active'] if item['armor_active'] else words['armor inactive'])
     # Counts that no tag shows (say "1 use" written as a plain tag): key=value keeps them.
     shown = {'uses'} if 'uses' in item.get('tags', []) else set()
     shown |= {'charges', 'max_charges'} if 'charges' in item.get('tags', []) else set()
@@ -476,34 +531,53 @@ def _item_markdown(item):
     return line + (f' — {item["description"]}' if 'description' in item else '')
 
 
-def _container_markdown(container):
-    tokens = [f'{container["slots"]} slots']
+def _container_markdown(container, shown=None):
+    words = (shown or shown_words(False))['words']
+    tokens = [f'{container["slots"]} {words["slots"]}']
     if 'carried_by' in container:
-        tokens.append(f'carried by {container["carried_by"]}')
+        tokens.append(f'{words["carried by"]} {container["carried_by"]}')
     if 'load' in container:
-        tokens.append(f'load {container["load"]}')
+        tokens.append(f'{words["load"]} {container["load"]}')
     return f'{container["name"]} [{", ".join(tokens)}]'
 
 
-def background_markdown(name, background):
-    """The Markdown file for a background: it reads back as the same background."""
+def background_markdown(name, background, localized=False):
+    """The Markdown file for a background: it reads back as the same background. Files are in English;
+    localized=True writes the headings and format words in the reader's language (the editor, the wiki)."""
+    shown = shown_words(localized)
+    words, headings = shown['words'], shown['headings']
+    pet_name = _shown_pet if shown['localized'] else (lambda pet: pet)
     lines = ['---', 'layout: default', f'title: {json.dumps(name, ensure_ascii=False)}', 'type: Background', '---',
-             background['background_description'], '', '## Names', ', '.join(background['names']), '',
-             '## Starting gear']
-    lines += [f'- {_item_markdown(item)}' for item in background.get('starting_gear', [])]
+             background['background_description'], '', f'## {headings["names"]}', ', '.join(background['names']), '',
+             f'## {headings["starting_gear"]}']
+    lines += [f'- {_item_markdown(item, shown)}' for item in background.get('starting_gear', [])]
     if background.get('starting_containers'):
-        lines += ['', '## Starting containers'] + [f'- {_container_markdown(c)}' for c in background['starting_containers']]
+        lines += ['', f'## {headings["starting_containers"]}']
+        lines += [f'- {_container_markdown(c, shown)}' for c in background['starting_containers']]
     for key in ('table1', 'table2'):
         lines += ['', f'## {background[key]["question"]}']
         for option in background[key]['options']:
             lines.append(f'- {option["description"]}')
-            rewards = [_item_markdown(item) for item in option.get('items', [])]
-            rewards += [f'{option["bonus_gold"]} gold'] if 'bonus_gold' in option else []
-            rewards += [f'pet: {pet}' for pet in option.get('pets', [])]
-            rewards += [f'container: {_container_markdown(c)}' for c in option.get('containers', [])]
-            rewards += [f'gear table: {option["gear_table"]}'] if 'gear_table' in option else []
+            rewards = [_item_markdown(item, shown) for item in option.get('items', [])]
+            rewards += [f'{option["bonus_gold"]} {words["gold"]}'] if 'bonus_gold' in option else []
+            rewards += [f'{words["pet"]}: {pet_name(pet)}' for pet in option.get('pets', [])]
+            rewards += [f'{words["container"]}: {_container_markdown(c, shown)}' for c in option.get('containers', [])]
+            rewards += [f'{words["gear table"]}: {option["gear_table"]}'] if 'gear_table' in option else []
             lines += [f'  - {reward}' for reward in rewards]
     return '\n'.join(lines) + '\n'
+
+
+def _shown_pet(pet):
+    from flask_babel import gettext
+    return gettext(pet)
+
+
+def background_template():
+    """What "New background" starts from, in the reader's language."""
+    if not _localized():
+        return BACKGROUND_TEMPLATE
+    from flask_babel import gettext
+    return gettext(BACKGROUND_TEMPLATE)
 
 
 def parse_background_text(text, source='background'):

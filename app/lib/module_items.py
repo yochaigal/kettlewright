@@ -13,7 +13,7 @@ inventory. The module keeps its item, private; the party's copy is its own to us
 import json
 import re
 
-from app.lib.campaign_backgrounds import BackgroundError, BRACKETS, _item_markdown, item_from_tokens
+from app.lib.campaign_backgrounds import BackgroundError, BRACKETS, _item_markdown, _localized, item_from_tokens, shown_words
 
 MAX_ITEMS = 200
 
@@ -60,16 +60,25 @@ def items_from_markdown(body, where='Items'):
     return items
 
 
-def item_markdown(item):
-    """One item as Markdown: its heading, then its description. Reads back as the same item."""
-    head = _item_markdown({key: value for key, value in item.items() if key != 'description'})
+def item_template():
+    """What "New item" starts from, in the reader's language."""
+    if not _localized():
+        return ITEM_TEMPLATE
+    from flask_babel import gettext
+    return gettext(ITEM_TEMPLATE)
+
+
+def item_markdown(item, localized=False):
+    """One item as Markdown: its heading, then its description. Reads back as the same item.
+    localized=True writes its tag words in the reader's language (the editor)."""
+    head = _item_markdown({key: value for key, value in item.items() if key != 'description'}, shown_words(localized))
     description = item.get('description', '')
     return f'### {head}\n' + (f'{description}\n' if description else '')
 
 
-def item_details(item):
+def item_details(item, localized=False):
     """Its tags as written in brackets: 'petty, charges 2/3' ('' for none)."""
-    head = _item_markdown({key: value for key, value in item.items() if key != 'description'})
+    head = _item_markdown({key: value for key, value in item.items() if key != 'description'}, shown_words(localized))
     match = BRACKETS.match(head)
     return match.group('tags') if match else ''
 

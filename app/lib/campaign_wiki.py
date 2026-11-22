@@ -258,9 +258,9 @@ IMAGE_IN_BODY = re.compile(r'!\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)|
 
 def module_backgrounds(module):
     """A module's backgrounds for its wiki (#476): name, description and their Markdown (no front matter)."""
-    from app.lib.campaign_backgrounds import background_markdown, localized_headings
+    from app.lib.campaign_backgrounds import background_markdown
     return [{'name': name, 'description': background.get('background_description', ''),
-             'text': localized_headings(background_markdown(name, background).split('---\n', 2)[2])}
+             'text': background_markdown(name, background, localized=True).split('---\n', 2)[2]}
             for name, background in sorted((module.backgrounds or {}).items(), key=lambda item: item[0].casefold())]
 
 
@@ -308,6 +308,6 @@ def module_items(module):
     """A module's items for its wiki (#476): name, badges (its tags, as written: "bulky", "charges 3/3") and
     description (Markdown)."""
     from app.lib.module_items import item_details, sorted_items
-    return [{'name': name, 'badges': [tag for tag in item_details(item).split(', ') if tag],
+    return [{'name': name, 'badges': [tag for tag in item_details(item, localized=True).split(', ') if tag],
              'description': item.get('description', '')}
             for name, item in sorted_items(module)]

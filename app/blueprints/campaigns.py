@@ -448,7 +448,7 @@ def module_view(campaign_id, module_id):
     return render_template('campaigns/module.html', campaign=campaign, module=module,
                            hierarchy=material_hierarchy(article_entries(entries)), article_count=len(article_entries(entries)),
                            maps=[(entry, maps_showing(entry)) for entry in maps], backgrounds=backgrounds,
-                           items=[(name, item, item_details(item)) for name, item in sorted_items(module)],
+                           items=[(name, item, item_details(item, localized=True)) for name, item in sorted_items(module)],
                            send_choices=destinations(campaign) if module.items else [])
 
 
@@ -480,8 +480,7 @@ def delete_module(campaign_id, module_id):
 def module_background(campaign_id, module_id):
     """Write a background (Markdown), edit one (?name=), or remove one. Files are added with Add files (import)."""
     from app.lib.campaign_backgrounds import (BackgroundError, add_backgrounds, background_markdown,
-                                              parse_background_text, remove_background, BACKGROUND_TEMPLATE,
-                                              localized_headings)
+                                              parse_background_text, remove_background, background_template)
     campaign, module = campaign_module(campaign_id, module_id)
     name = request.values.get('name', '')
     current = (module.backgrounds or {}).get(name) if name else None
@@ -513,7 +512,7 @@ def module_background(campaign_id, module_id):
             flash(error, 'error')
             return redirect(module_page(module) + '#backgrounds')
     if text is None:
-        text = localized_headings(background_markdown(name, current) if current is not None else BACKGROUND_TEMPLATE)
+        text = background_markdown(name, current, localized=True) if current is not None else background_template()
     return render_template('campaigns/background.html', campaign=campaign, module=module, name=name,
                            text=text, error=error)
 
@@ -521,7 +520,7 @@ def module_background(campaign_id, module_id):
 @campaigns.route('/campaigns/<int:campaign_id>/modules/<int:module_id>/item', methods=['GET', 'POST'])
 def module_item(campaign_id, module_id):
     """Write an item (Markdown), edit one (?name=), or remove one (#476). Files are added with Add files (import)."""
-    from app.lib.module_items import ITEM_TEMPLATE, ItemError, add_items, item_markdown, parse_item_text, remove_item
+    from app.lib.module_items import ItemError, add_items, item_markdown, item_template, parse_item_text, remove_item
     campaign, module = campaign_module(campaign_id, module_id)
     name = request.values.get('name', '')
     current = (module.items or {}).get(name) if name else None
@@ -559,7 +558,7 @@ def module_item(campaign_id, module_id):
             flash(error, 'error')
             return redirect(back_url)
     if text is None:
-        text = item_markdown(current) if current is not None else ITEM_TEMPLATE
+        text = item_markdown(current, localized=True) if current is not None else item_template()
     return render_template('campaigns/item.html', campaign=campaign, module=module, name=name, text=text, error=error,
                            back=back, back_url=back_url)
 
@@ -599,7 +598,7 @@ def send_module_item(campaign_id, module_id):
         flash(_('A copy of %(item)s is now with %(holder)s.', item=name, holder=holder.name), 'success')
         return redirect(back_url)
     return render_template('campaigns/item_send.html', campaign=campaign, module=module, name=name,
-                           text=item_markdown(item), choices=destinations(campaign), back=back)
+                           text=item_markdown(item, localized=True), choices=destinations(campaign), back=back)
 
 
 # ----- Character options: the backgrounds a party's characters choose from (set on the party page) -----

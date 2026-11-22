@@ -46169,3 +46169,132 @@ msgstr ""
 msgctxt "background section"
 msgid "Starting containers"
 msgstr ""
+
+#. A word of the Markdown format of backgrounds and module items, read and
+#. written in the editors.
+#. Other accepted forms may follow after "|"; the first one is the one shown.
+#: app/lib/campaign_backgrounds.py
+msgctxt "background keyword"
+msgid "uses"
+msgstr ""
+
+#. A word of the Markdown format of backgrounds and module items, read and
+#. written in the editors.
+#. Other accepted forms may follow after "|"; the first one is the one shown.
+#: app/lib/campaign_backgrounds.py
+msgctxt "background keyword"
+msgid "charges"
+msgstr ""
+
+#. A word of the Markdown format of backgrounds and module items, read and
+#. written in the editors.
+#. Other accepted forms may follow after "|"; the first one is the one shown.
+#: app/lib/campaign_backgrounds.py
+msgctxt "background keyword"
+msgid "armor active"
+msgstr ""
+
+#. A word of the Markdown format of backgrounds and module items, read and
+#. written in the editors.
+#. Other accepted forms may follow after "|"; the first one is the one shown.
+#: app/lib/campaign_backgrounds.py
+msgctxt "background keyword"
+msgid "armor inactive"
+msgstr ""
+
+#. A word of the Markdown format of backgrounds and module items, read and
+#. written in the editors.
+#. Other accepted forms may follow after "|"; the first one is the one shown.
+#: app/lib/campaign_backgrounds.py
+msgctxt "background keyword"
+msgid "slots"
+msgstr ""
+
+#. A word of the Markdown format of backgrounds and module items, read and
+#. written in the editors.
+#. Other accepted forms may follow after "|"; the first one is the one shown.
+#: app/lib/campaign_backgrounds.py
+msgctxt "background keyword"
+msgid "carried by"
+msgstr ""
+
+#. A word of the Markdown format of backgrounds and module items, read and
+#. written in the editors.
+#. Other accepted forms may follow after "|"; the first one is the one shown.
+#: app/lib/campaign_backgrounds.py
+msgctxt "background keyword"
+msgid "load"
+msgstr ""
+
+#. A word of the Markdown format of backgrounds and module items, read and
+#. written in the editors.
+#. Other accepted forms may follow after "|"; the first one is the one shown.
+#: app/lib/campaign_backgrounds.py
+msgctxt "background keyword"
+msgid "gold"
+msgstr ""
+
+#. A word of the Markdown format of backgrounds and module items, read and
+#. written in the editors.
+#. Other accepted forms may follow after "|"; the first one is the one shown.
+#: app/lib/campaign_backgrounds.py
+msgctxt "background keyword"
+msgid "pet"
+msgstr ""
+
+#. A word of the Markdown format of backgrounds and module items, read and
+#. written in the editors.
+#. Other accepted forms may follow after "|"; the first one is the one shown.
+#: app/lib/campaign_backgrounds.py
+msgctxt "background keyword"
+msgid "container"
+msgstr ""
+
+#. A word of the Markdown format of backgrounds and module items, read and
+#. written in the editors.
+#. Other accepted forms may follow after "|"; the first one is the one shown.
+#: app/lib/campaign_backgrounds.py
+msgctxt "background keyword"
+msgid "gear table"
+msgstr ""
+
+#. What "New background" starts from. Keep the front matter (type: Background)
+#. and the ## sections; use the format words of this language.
+#: app/lib/campaign_backgrounds.py
+msgid ""
+"---\n"
+"layout: default\n"
+"title: Tidewatcher\n"
+"type: Background\n"
+"---\n"
+"You keep the lighthouse of a drowned town, and the lamp has never gone "
+"out.\n"
+"\n"
+"## Names\n"
+"Mara, Oskel, Brine, Ilsa, Corwen, Petra\n"
+"\n"
+"## Starting gear\n"
+"- Rations [uses 3]\n"
+"- Storm Lantern\n"
+"- Gaff [d6]\n"
+"\n"
+"## What did the sea take?\n"
+"- Your sister. Take her Locket.\n"
+"  - Locket [petty]\n"
+"- Your name. Nobody in town remembers it.\n"
+"  - 5 gold\n"
+"\n"
+"## Who still writes to you?\n"
+"- A smuggler who owes you a favor.\n"
+"- A raven that finds you anywhere.\n"
+"  - pet: Raven Familiar\n"
+msgstr ""
+
+#. What "New item" starts from. Use the format words of this language.
+#: app/lib/module_items.py
+msgid ""
+"### Lantern of the Drowned [charges 3/3]\n"
+"A green glass lantern that burns underwater. Its light shows the way to "
+"the nearest corpse.\n"
+"- **Recharge**: Leave it a night at the bottom of a lake.\n"
+msgstr ""
