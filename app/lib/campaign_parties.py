@@ -33,12 +33,13 @@ def generate_unique_party_url(name, owner_id):
     return party_url
 
 
-def create_campaign(owner_id, name):
-    """A new campaign with its (empty) party, named after it. The caller commits."""
+def create_campaign(owner_id, name, with_party=True):
+    """A new campaign, with an (empty) party named after it unless with_party is False (#501). The caller commits."""
     from app.models import Campaign
     campaign = Campaign(owner_id=owner_id, name=name)
     db.session.add(campaign)
-    create_party(campaign, name[:64])
+    if with_party:
+        create_party(campaign, name[:64])
     return campaign
 
 

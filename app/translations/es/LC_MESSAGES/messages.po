@@ -47176,13 +47176,15 @@ msgstr "Jugando en"
 
 #: app/templates/campaigns/index.html:15
 msgid ""
-"The campaign starts with an empty party (add more for a West Marches "
-"game). Add modules to it: from the Modules Marketplace, your own files, "
+"The campaign starts with an empty party, named after it (add more for a "
+"West Marches game). Uncheck Create a party to add one you already have "
+"instead. Add modules to it: from the Modules Marketplace, your own files, "
 "or new ones you write or generate."
 msgstr ""
-"La campaña empieza con un grupo vacío (añade más para una partida West "
-"Marches). Añádele módulos: del Mercado de módulos, de tus propios "
-"archivos, o nuevos que escribas o generes."
+"La campaña empieza con un grupo vacío, con su mismo nombre (añade más para "
+"una partida West Marches). Desmarca Crear un grupo para añadir uno que ya "
+"tengas. Añádele módulos: del Mercado de módulos, de tus propios archivos, "
+"o nuevos que escribas o generes."
 
 #: app/templates/campaigns/index.html:58
 msgid "modules"
@@ -50880,3 +50882,7 @@ msgstr "Sobre el personaje"
 #. Whiteboard, Dungeon brush and eraser: drawing or erasing a rectangle of squares (#498)
 msgid "Hold Shift for a rectangle."
 msgstr "Mantén Mayús para un rectángulo."
+
+#. New campaign dialog: also create an empty party for the campaign (#501)
+msgid "Create a party"
+msgstr "Crear un grupo"

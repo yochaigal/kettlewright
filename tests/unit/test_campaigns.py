@@ -1575,6 +1575,14 @@ def test_new_campaign_has_a_name_and_its_empty_party(setup):
         assert created.parties[0].members in (None, '[]')
     assert response.location.endswith(f'/campaigns/{created.id}/')
     assert client.post('/campaigns/', data={'name': 'Second'}).status_code == 302
+    # Create a party (#501): checked by default in the dialog; unchecked, the campaign starts without one.
+    page = client.get('/campaigns/').text
+    assert 'name="create_party" value="1" checked' in page
+    client.post('/campaigns/', data={'name': 'With party', 'party_field': '1', 'create_party': '1'})
+    client.post('/campaigns/', data={'name': 'No party', 'party_field': '1'})
+    with app.app_context():
+        assert len(Campaign.query.filter_by(name='With party').one().parties) == 1
+        assert Campaign.query.filter_by(name='No party').one().parties == []
 
 
 def test_notes_are_written_in_modules_not_on_the_campaigns_page(setup):
