@@ -153,11 +153,11 @@ def test_navigation_and_tools_are_released(setup):
         assert 'src/js/tools.js' in tools
         assert 'src/js/tools_legacy.js' not in tools
     tools = client.get('/tools/').text
-    assert 'id="pcgen-save-npc-button"' in tools
+    assert 'id="pcgen-save-options"' in tools
     assert '"authenticated": true' in tools
     guest = app.test_client().get('/tools/').text
     assert '"authenticated": false' in guest
-    assert 'id="pcgen-save-npc-button"' not in guest
+    assert 'id="pcgen-save-options"' not in guest and 'id="background-select"' in guest
     assert 'href="/campaigns/"' not in guest
 
 
@@ -172,7 +172,11 @@ def test_tools_show_any_map_result_as_a_map_without_saving(setup):
     assert labels['showMap'] == 'Show map' and labels['save'] == 'Save to a module'
     for key in ('Worldbuilding:Realm', 'Worldbuilding:Dungeon', 'Worldbuilding:Forest', 'Setting:dungeon'):
         assert labels['hints'][key]  # Every tile says what it makes.
-    assert set(labels['intros']) == {'realm', 'dungeons', 'forests', 'events', 'monsters', 'items'}
+    assert set(labels['intros']) == {'setting', 'seeds', 'bestiary', 'spellbooks', 'characters'}
+    for key in ('setting', 'seeds', 'bestiary', 'spellbooks', 'characters'):
+        assert f'data-tool="{key}"' in tools
+    assert 'id="generator-tab"' not in tools  # The character is an ordinary tool now.
+    assert 'id="tools-quick-rolls"' in tools
     assert '<h2>Tools</h2>' not in tools and 'tools-island' in tools  # Islands, no page title.
     page = guest.get('/tools/map/')
     assert page.status_code == 200  # No login needed to look.

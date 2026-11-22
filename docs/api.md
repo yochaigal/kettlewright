@@ -24,7 +24,7 @@ The base URL is your Kettlewright site, for example
 | `background` | Optional. A Cairn 2e background name (any case), such as `Mountebank`. Random if omitted. |
 | | `barebones` rolls a Barebones character; `barebones:<package>` uses a gear package. |
 
-The response is the same character the Character Generator makes: name,
+The response is the same character the Tools page's Character tool makes: name,
 background and its two table answers, attributes, HP, armor, gold, traits,
 bonds, omens, `items`, `containers` and `pets`. `image_url` is a full URL.
 

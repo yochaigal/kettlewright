@@ -1,5 +1,5 @@
-// Tools page: area tabs, one-click tables, a result feed and the character generator.
-// Laid out like the campaign pages: no page title, the areas as tabs, then islands.
+// Tools page: five tabs, one card per tool, and one result feed for everything.
+// Laid out like the campaign pages: no page title, the tabs, then islands (the tools, the results).
 $tools-line: color-mix(in srgb, var(--fg) 18%, transparent);
 $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
 
@@ -63,14 +63,70 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
     i { margin-right: .4rem; font-size: .85em; }
   }
 }
-@media (min-width: 700px) {
-  .tools-nav-character { margin-left: auto !important; }
+// Quick rolls: rolled mid-session from any tab.
+.tools-quick-rolls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .6rem;
+  padding-top: 1.2rem;
+  &:empty { display: none; }
+}
+.tools-quick-label { margin-right: .4rem; }
+.tools-sheet .tools-quick-roll {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .4rem 1rem;
+  border: 1px solid $tools-line;
+  border-radius: 999px;
+  font-size: 1.45rem;
+  font-weight: 600;
+  &:disabled { opacity: .4; cursor: default; }
+  i { font-size: .85em; }
+}
+// Weather and its season, as one pill.
+.tools-quick-pair {
+  display: inline-flex;
+  align-items: stretch;
+  .tools-quick-roll { border-radius: 999px 0 0 999px; }
+}
+.tools-sheet .tools-quick-option {
+  width: auto;
+  margin: 0;
+  padding: .2rem 2.4rem .2rem .8rem;
+  border: 1px solid $tools-line;
+  border-left: 0;
+  border-radius: 0 999px 999px 0;
+  background-color: var(--bg);
+  font-size: 1.45rem !important;
+  &:focus { border-color: var(--fg); outline: 1px solid var(--fg); }
+}
+@media (hover: hover) {
+  .tools-sheet .tools-quick-roll:hover:not(:disabled) { border-color: var(--fg); background: var(--fg); color: var(--bg); }
 }
 
 .tools-panel {
   min-width: 0;
-  padding-top: 2rem;
+  padding-top: 1.6rem;
   overflow-wrap: anywhere;
+}
+// Desktop: the results are a column beside the tools, always in view.
+@media (min-width: 1000px) {
+  .tools-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 2rem;
+    > .tools-island { margin: 0; }
+  }
+  .tools-results-island {
+    position: sticky;
+    top: 1rem;
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
 }
 
 // Tables: every button rolls at once.
@@ -79,6 +135,7 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
   gap: 1.6rem;
 }
 .tools-group-label,
+.tools-quick-label,
 .tools-result-type,
 .tools-field label {
   display: block;
@@ -94,61 +151,78 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
   grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
   gap: 1rem;
 }
-// A table is a tile: its name, a map mark when it can be shown as a map, and what it makes.
-.tools-sheet .tools-choice {
+// A tool is a card: its name (a map mark when it can be shown as a map), what it makes, then
+// a big Roll button and, only when needed, a second control (Browse, a background, a season).
+.tools-card {
+  position: relative;
+  display: flex;
   flex-direction: column;
-  align-items: flex-start !important;
-  justify-content: flex-start;
-  gap: .3rem !important;
-  min-height: 7rem;
-  padding: 1.2rem 1.4rem !important;
-  border-radius: 6px !important;
-  text-align: left;
-  white-space: normal;
+  gap: .4rem;
+  min-width: 0;
+  padding: 1.2rem 1.4rem 1.4rem;
+  border: 1px solid $tools-line;
+  border-radius: 6px;
+  background: $tools-tint;
 }
-.tools-choice-name { font-weight: 700; }
-.tools-sheet .tools-choice { position: relative; }
-// The map mark sits in the tile's corner, so a short tile never wraps its name.
-.tools-choice-map { position: absolute; top: 1.3rem; right: 1.2rem; font-size: .85em; opacity: .6; }
-.tools-choice-name { padding-right: 1.8rem; }
-.tools-choice-hint {
+.tools-card-name { padding-right: 1.8rem; font-weight: 700; }
+// The map mark sits in the card's corner, so a short card never wraps its name.
+.tools-card-map { position: absolute; top: 1.4rem; right: 1.4rem; font-size: .85em; opacity: .6; }
+.tools-card-hint {
+  flex: 1;
+  margin: 0 0 .6rem;
   font-size: 1.45rem;
-  font-weight: 400;
   line-height: 1.35;
-  color: color-mix(in srgb, currentColor 75%, transparent);
+  color: color-mix(in srgb, var(--fg) 75%, transparent);
 }
-.tools-sheet .tools-choice,
-.tools-sheet .tools-generate-button {
+.tools-card-actions {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: .6rem;
+  margin-top: auto;
+}
+.tools-sheet .tools-roll,
+.tools-sheet .tools-browse {
   display: inline-flex;
   align-items: center;
-  gap: .8rem;
-  padding: .9rem 1.6rem;
+  justify-content: center;
+  gap: .6rem;
   border: 1.5px solid var(--fg);
   border-radius: 2px;
+  font-weight: 700;
   transition: background-color .12s, color .12s;
-
-  &:active:not(:disabled) { background: var(--fg); color: var(--bg); }
   &:disabled { opacity: .4; cursor: default; }
 }
-.tools-sheet .tools-generate-button { background: var(--fg); color: var(--bg); }
-.tools-sheet .tools-generate-button:active:not(:disabled) { background: transparent; color: var(--fg); }
-// Touch screens keep :hover after a tap, which would leave the last table looking selected.
-@media (hover: hover) {
-  .tools-sheet .tools-choice:hover:not(:disabled) { background: var(--fg); color: var(--bg); }
-  .tools-sheet .tools-generate-button:hover:not(:disabled) { background: transparent; color: var(--fg); }
+.tools-sheet .tools-roll {
+  flex: 1 0 auto;
+  padding: .8rem 1.6rem;
+  background: var(--fg);
+  color: var(--bg);
+  &:active:not(:disabled) { background: transparent; color: var(--fg); }
 }
-.tools-choice-toggle {
-  position: relative;
-  &::after {
-    position: absolute;
-    top: 1.3rem;
-    right: 1.2rem;
-    content: "\f078";
-    font: 900 1.2rem/1 "Font Awesome 6 Free";
-    transition: transform .12s;
-  }
-  &[aria-expanded="true"] { background: var(--fg); color: var(--bg); }
-  &[aria-expanded="true"]::after { transform: rotate(180deg); }
+.tools-sheet .tools-browse {
+  padding: .6rem 1rem;
+  font-size: 1.5rem;
+  &:active:not(:disabled), &[aria-expanded="true"] { background: var(--fg); color: var(--bg); }
+}
+// Touch screens keep :hover after a tap, which would leave the last tool looking selected.
+@media (hover: hover) {
+  .tools-sheet .tools-roll:hover:not(:disabled) { background: transparent; color: var(--fg); }
+  .tools-sheet .tools-browse:hover:not(:disabled) { background: var(--fg); color: var(--bg); }
+}
+.tools-sheet .tools-option {
+  // The choice comes first, on its own row: choose, then roll.
+  order: -1;
+  flex: 1 1 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: .6rem .8rem;
+  border: 1px solid $tools-line;
+  border-radius: 2px;
+  background-color: var(--bg);
+  font-size: 1.5rem !important;
+  &:focus { border-color: var(--fg); outline: 1px solid var(--fg); }
 }
 
 // Fields keep the theme's handwritten inputs, with a full outline so they read as controls.
@@ -168,9 +242,7 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
 }
 
 .tools-picker,
-.tools-generated-result,
-.tools-character-preview.view-character-sheet,
-.tools-character-markdown {
+.tools-generated-result {
   border: 1px solid $tools-line;
   border-radius: 2px;
   background: $tools-tint;
@@ -304,40 +376,14 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
   form { padding: 0; margin: 0; background: transparent; border: 0; }
 }
 
-// Character generator
-.tools-sheet #pcgen-form { display: block; max-width: none; padding: 0; background: transparent; }
-.tools-character-generation {
-  display: flex;
-  align-items: flex-end;
-  flex-wrap: wrap;
-  gap: 1.2rem;
-  .tools-field { flex: 0 1 36rem; }
-}
-.tools-segmented {
-  display: inline-flex;
-  border: 1px solid var(--fg);
-  border-radius: 2px;
-
-  button {
-    padding: .5rem 1.2rem;
-    border: 0;
-    border-radius: 0;
-    font-size: 1.5rem;
-    font-weight: 600;
-    &[aria-selected="true"] { background: var(--fg); color: var(--bg); }
-  }
-}
-#pcgen-result-display { margin-top: 1.6rem; }
+// A character in the feed: its sheet, inside the result.
 .tools-character-preview.view-character-sheet {
-  padding: 1.25em;
   max-width: none;
+  margin: 0;
+  padding: 0;
   .character-sheet-header { display: grid; grid-template-columns: 100px minmax(0, 1fr); align-items: start; }
   #character-portrait-container { width: 100px; min-width: 100px; overflow: visible; }
   .portrait-image { display: block; width: 100%; height: 100px; object-fit: contain; }
-}
-.tools-character-markdown {
-  padding: 1.25em;
-  overflow-wrap: anywhere;
 }
 .tools-print-frame { position: fixed; width: 1px; height: 1px; border: 0; opacity: 0; pointer-events: none; }
 .tools-copy-source { position: fixed; left: -10000px; top: 0; width: 60em; }
@@ -357,5 +403,4 @@ $tools-tint: color-mix(in srgb, var(--fg) 4%, var(--bg));
   .tools-group-choices { grid-template-columns: minmax(0, 1fr); }
   .tools-nav button { flex: none; padding: .8rem .9rem; }
   .tools-picker-fields { grid-template-columns: minmax(0, 1fr); gap: 1.2rem; }
-  .tools-character-generation .tools-field { flex-basis: 100%; }
 }

@@ -2,31 +2,53 @@ import {generateResult} from './content_generators.js';
 import {generateSettingArticle} from './setting_articles.js';
 import {terrainSource} from './naming.js';
 
-const choice = (label, category, table = label) => ({label, category, table});
-export function toolSections(data) {
+// A tool is one card with one Roll button. `browse` names a search panel opened by a second button;
+// `option` names a select the page provides (the character's background); `options` are choices made
+// before rolling (Weather's season, shown beside its quick roll).
+const tool = (label, category, table = label, extra = {}) => ({label, category, table, ...extra});
+
+// Five tabs that follow the rulebooks, in their order. The Warden's Guide, Part 1 (World Building): Setting
+// Seeds (the realm, its people, factions and points of interest), then Dungeon Seeds and Forest Seeds.
+// Part 2 (Warden's Tools): the Bestiary and Creating Monsters, then Spellbooks and the Reliquary. Last,
+// characters: the Player's Guide's character creation, and an NPC (the Guide's NPC tables).
+// Labels are plain names: "Monster", not "Random monster".
+export function toolSections() {
   return {
-    realm: [
-      {label:'Realm', choices:[choice('Realm', 'Worldbuilding')]},
-      {label:'Factions', choices:[choice('Faction', 'Worldbuilding')]},
-      {label:'POIs', choices:['Settlement','Waypoint','Curiosity','Lair','Dungeon'].map(label => choice(label, 'Setting', label.toLowerCase()))},
-      {label:'People', choices:[choice('People', 'Setting', 'people'), choice('NPC', 'Worldbuilding')]},
+    setting: [
+      {label:'Realm', tools:[tool('Realm', 'Worldbuilding')]},
+      {label:'People', tools:[tool('People', 'Setting', 'people')]},
+      {label:'Factions', tools:[tool('Faction', 'Worldbuilding'), tool('Faction Actions', 'Worldbuilding')]},
+      // Dungeon site is the site alone (what it is and how it looks); the full dungeon is a Dungeon Seed.
+      {label:'Points of interest', tools:[...['Settlement','Waypoint','Curiosity','Lair'].map(label => tool(label, 'Setting', label.toLowerCase())),
+        tool('Dungeon site', 'Setting', 'dungeon')]},
     ],
-    // A tab's tables are named for what they do, not after the tab: Random dungeon, Random forest…
-    dungeons: [{label:'Dungeon', choices:[choice('Random dungeon', 'Worldbuilding', 'Dungeon')]}],
-    forests: [{label:'Forest', choices:[choice('Random forest', 'Worldbuilding', 'Forest')]}],
-    events: [
-      {label:'Events', choices:[choice('Dungeon Events', 'Events'), choice('Wilderness Events', 'Events')]},
-      {label:'Weather', choices:Object.keys(data.Weather.Types).map(label => choice(label, 'Weather'))},
-      {label:'Reaction Roll', choices:[choice('Reaction Roll', 'Monsters')]},
-      {label:'Faction Actions', choices:[choice('Faction Actions', 'Worldbuilding')]},
-    ],
-    monsters: [
-      {label:'Generator', choices:[choice('Random monster', 'Monsters', 'Random Monster'), choice('Custom monster', 'Monsters', 'Custom Monster'), choice('Monster picker', 'Monsters')]},
-    ],
-    // Like Monsters: roll one at random, or pick one.
-    items: [{label:'Items', choices:[choice('Random relic', 'Items', 'Relics'), choice('Relic picker', 'Items'),
-      choice('Random spellbook', 'Items', 'Spellbooks'), choice('Spellbook picker', 'Items')]}],
+    seeds: [{label:'Dungeons & Forests', tools:[tool('Dungeon', 'Worldbuilding'), tool('Forest', 'Worldbuilding')]}],
+    bestiary: [{label:'Bestiary', tools:[tool('Monster', 'Monsters', 'Random Monster', {browse:'Monster picker'}),
+      tool('Custom monster', 'Monsters', 'Custom Monster')]}],
+    spellbooks: [{label:'Spellbooks & Relics', tools:[tool('Spellbook', 'Items', 'Spellbooks', {browse:'Spellbook picker'}),
+      tool('Relic', 'Items', 'Relics', {browse:'Relic picker'})]}],
+    characters: [{label:'Characters', tools:[tool('Character', 'Character', 'Character', {option:'background'}),
+      tool('NPC', 'Worldbuilding')]}],
   };
+}
+
+// The Player's Guide's procedures (Dungeon and Wilderness Events, Weather) and its Reactions: rolled
+// mid-session, so they live only in the Quick rolls row under the tabs, on every tab.
+export function quickRolls(data) {
+  return [
+    tool('Reaction Roll', 'Monsters'),
+    tool('Weather', 'Weather', 'Weather', {options:Object.keys(data.Weather?.Types || {})}),
+    tool('Dungeon Events', 'Events'),
+    tool('Wilderness Events', 'Events'),
+  ];
+}
+
+export const TAB_STORAGE_KEY = 'kw-tools-tab';
+export const OPTION_STORAGE_KEY = 'kw-tools-options';
+
+// The table a roll uses: a tool with options rolls the chosen one (Weather rolls a season).
+export function rollTable(item, value) {
+  return item.options ? (item.options.includes(value) ? value : item.options[0]) : item.table;
 }
 
 export function generateToolResult(data, category, table, random = Math.random) {
@@ -35,29 +57,116 @@ export function generateToolResult(data, category, table, random = Math.random) 
     : generateResult(data, category, table, random);
 }
 
-// Sections with a single table need no heading of their own: neighbours share one row.
+// Sections with a single tool need no heading of their own: neighbours share one row.
 export function launcherGroups(sections) {
   const groups = [];
   for (const section of sections) {
-    const single = section.choices.length === 1 && sections.length > 1;
+    const single = section.tools.length === 1 && sections.length > 1;
     const last = groups.at(-1);
-    if (single && last && !last.label) last.choices.push(...section.choices);
-    else groups.push({label:single || sections.length === 1 ? '' : section.label, choices:[...section.choices]});
+    if (single && last && !last.label) last.tools.push(...section.tools);
+    else groups.push({label:single || sections.length === 1 ? '' : section.label, tools:[...section.tools]});
   }
   return groups;
 }
 
-// One row of area tabs; every table below it rolls with a single click.
-// `panels` maps a table name to an element that the table shows instead of rolling.
-// `hints` explains a table in one line (keyed category:table); `intros` explains each area (keyed by its tab).
-export function initToolsNavigation(data, t, {onRoll, panels = {}, hints = {}, intros = {}, mapTables = []}) {
+function storage(read) {
+  try {return read(window.localStorage);} catch {return null;}
+}
+
+// One row of tabs; every tool below it is a card with the same layout:
+//   name (and a map mark), what it makes, then [Roll] and, only when needed, a second control.
+// `panels` maps a `browse` name to its search panel; `selects` maps an `option` name to a select the page
+// provides (the character's background). `hints` explains a tool in one line (keyed category:table);
+// `intros` explains each tab.
+export function initToolsNavigation(data, t, {onRoll, panels = {}, selects = {}, hints = {}, intros = {}, mapTables = []}) {
   const mainTabs = [...document.querySelectorAll('.tools-nav [role=tab]')];
   const panel = document.getElementById('tab-content1');
-  const pcPanel = document.getElementById('tab-content2');
   const launcher = document.getElementById('tools-launcher');
   const intro = document.getElementById('tools-intro');
-  const sections = toolSections(data);
+  const quick = document.getElementById('tools-quick-rolls');
+  const sections = toolSections();
   const open = new Set();
+  const values = storage(store => JSON.parse(store.getItem(OPTION_STORAGE_KEY) || '{}')) || {};
+  const remember = (name, value) => {
+    values[name] = value;
+    storage(store => store.setItem(OPTION_STORAGE_KEY, JSON.stringify(values)));
+  };
+  const valueFor = item => item.options ? values[item.table] : item.option ? selects[item.option]?.value : undefined;
+
+  async function roll(item, key, button) {
+    button.disabled = true;
+    try {
+      await onRoll({...item, table:rollTable(item, valueFor(item))}, key, button, valueFor(item));
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  function makeButton(className, icon, text) {
+    const control = document.createElement('button');
+    control.type = 'button';
+    control.className = className;
+    control.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i> `;
+    control.append(text);
+    return control;
+  }
+
+  function card(item, key, index) {
+    const id = `tools-card-${key}-${index}`;
+    const block = document.createElement('div');
+    block.className = 'tools-card';
+    block.setAttribute('role', 'group');
+    block.setAttribute('aria-labelledby', `${id}-name`);
+    block.dataset.table = item.table;
+    const name = document.createElement('span');
+    name.className = 'tools-card-name';
+    name.id = `${id}-name`;
+    name.textContent = t(item.label);
+    block.append(name);
+    // A map mark when the result can be shown as a map (#473).
+    if (mapTables.includes(`${item.category}:${item.table}`)) {
+      const mark = document.createElement('i');
+      mark.className = 'fa-solid fa-map tools-card-map';
+      mark.title = t('Show map');
+      mark.setAttribute('aria-hidden', 'true');
+      block.append(mark);
+    }
+    const hint = hints[`${item.category}:${item.table}`];
+    if (hint) {
+      const line = document.createElement('p');
+      line.className = 'tools-card-hint';
+      line.id = `${id}-hint`;
+      line.textContent = hint;
+      block.append(line);
+    }
+    const row = document.createElement('div');
+    row.className = 'tools-card-actions';
+    const rollButton = makeButton('tools-roll', 'fa-dice', t('Roll'));
+    rollButton.setAttribute('aria-describedby', `${id}-name`);
+    rollButton.addEventListener('click', () => roll(item, key, rollButton));
+    row.append(rollButton);
+    const target = panels[item.browse];
+    if (target) {
+      const browse = makeButton('tools-browse', 'fa-magnifying-glass', t('Browse'));
+      browse.setAttribute('aria-describedby', `${id}-name`);
+      browse.setAttribute('aria-controls', target.id);
+      browse.setAttribute('aria-expanded', String(open.has(item.browse)));
+      browse.addEventListener('click', () => {
+        if (!open.delete(item.browse)) open.add(item.browse);
+        target.hidden = !open.has(item.browse);
+        browse.setAttribute('aria-expanded', String(!target.hidden));
+        if (!target.hidden) target.querySelector('input, select')?.focus();
+      });
+      row.append(browse);
+    }
+    if (selects[item.option]) {
+      const select = selects[item.option];
+      select.classList.add('tools-option');
+      row.append(select);
+    }
+    block.append(row);
+    return block;
+  }
 
   function selectMain(tab) {
     mainTabs.forEach(other => {
@@ -65,13 +174,12 @@ export function initToolsNavigation(data, t, {onRoll, panels = {}, hints = {}, i
       other.tabIndex = other === tab ? 0 : -1;
     });
     const key = tab.dataset.tool;
-    panel.hidden = !key;
-    pcPanel.hidden = !!key;
-    if (!key) return;
+    storage(store => store.setItem(TAB_STORAGE_KEY, key));
     panel.setAttribute('aria-labelledby', tab.id);
     if (intro) intro.textContent = intros[key] || '';
     launcher.replaceChildren();
     const shown = new Set();
+    let index = 0;
     for (const group of launcherGroups(sections[key])) {
       const block = document.createElement('div');
       block.className = 'tools-group';
@@ -88,50 +196,49 @@ export function initToolsNavigation(data, t, {onRoll, panels = {}, hints = {}, i
       }
       const row = document.createElement('div');
       row.className = 'tools-group-choices';
-      for (const item of group.choices) {
-        const control = document.createElement('button');
-        control.type = 'button';
-        control.className = 'button tools-choice';
-        // A tile: the table's name, what it makes, and a map mark when it can be shown as a map (#473).
-        const name = document.createElement('span');
-        name.className = 'tools-choice-name';
-        name.textContent = t(item.label);
-        control.append(name);
-        if (mapTables.includes(`${item.category}:${item.table}`)) {
-          const mark = document.createElement('i');
-          mark.className = 'fa-solid fa-map tools-choice-map';
-          mark.setAttribute('aria-hidden', 'true');
-          name.append(' ', mark);
-        }
-        const hint = hints[`${item.category}:${item.table}`];
-        if (hint) {
-          const line = document.createElement('span');
-          line.className = 'tools-choice-hint';
-          line.textContent = hint;
-          control.append(line);
-        }
-        const target = panels[item.table];
-        if (target) {
-          shown.add(item.table);
-          control.classList.add('tools-choice-toggle');
-          control.setAttribute('aria-controls', target.id);
-          control.setAttribute('aria-expanded', String(open.has(item.table)));
-          control.addEventListener('click', () => {
-            if (!open.delete(item.table)) open.add(item.table);
-            target.hidden = !open.has(item.table);
-            control.setAttribute('aria-expanded', String(!target.hidden));
-            if (!target.hidden) target.querySelector('input, select')?.focus();
-          });
-        } else {
-          control.addEventListener('click', () => onRoll(item, key, control));
-        }
-        row.append(control);
-      }
+      for (const item of group.tools) row.append(card(item, key, index++));
       block.append(row);
       launcher.append(block);
+      // A search panel opens right under the cards that open it.
+      for (const item of group.tools) if (panels[item.browse]) {
+        shown.add(item.browse);
+        launcher.append(panels[item.browse]);
+      }
     }
-    for (const [table, target] of Object.entries(panels)) target.hidden = !(shown.has(table) && open.has(table));
+    for (const [name, target] of Object.entries(panels)) target.hidden = !(shown.has(name) && open.has(name));
   }
+
+  if (quick) {
+    const label = document.createElement('span');
+    label.className = 'tools-quick-label';
+    label.id = 'tools-quick-label';
+    label.textContent = t('Quick rolls');
+    quick.setAttribute('role', 'group');
+    quick.setAttribute('aria-labelledby', label.id);
+    quick.append(label);
+    for (const item of quickRolls(data)) {
+      const control = makeButton('tools-quick-roll', 'fa-dice', t(item.label));
+      const hint = hints[`${item.category}:${item.table}`];
+      if (hint) control.title = hint;
+      control.addEventListener('click', () => roll(item, 'quick', control));
+      if (!item.options?.length) {
+        quick.append(control);
+        continue;
+      }
+      // Weather keeps its season beside it.
+      const pair = document.createElement('span');
+      pair.className = 'tools-quick-pair';
+      const select = document.createElement('select');
+      select.className = 'tools-quick-option';
+      select.setAttribute('aria-label', `${t(item.label)}: ${t('Season')}`);
+      for (const option of item.options) select.append(new Option(t(option), option));
+      select.value = rollTable(item, values[item.table]);
+      select.addEventListener('change', () => remember(item.table, select.value));
+      pair.append(control, select);
+      quick.append(pair);
+    }
+  }
+
   mainTabs.forEach((tab, index) => {
     tab.addEventListener('click', () => selectMain(tab));
     tab.addEventListener('keydown', event => {
@@ -142,10 +249,15 @@ export function initToolsNavigation(data, t, {onRoll, panels = {}, hints = {}, i
       mainTabs[next].focus();
     });
   });
-  selectMain(mainTabs[0]);
-  return {open(key) {
+  // The last tab used, or the first.
+  const saved = storage(store => store.getItem(TAB_STORAGE_KEY));
+  selectMain(mainTabs.find(tab => tab.dataset.tool === saved) || mainTabs[0]);
+  return {open(key, table) {
     const tab = mainTabs.find(tab => tab.dataset.tool === key);
-    if (tab) {selectMain(tab); tab.focus();}
+    if (!tab) return;
+    selectMain(tab);
+    const target = table && [...launcher.querySelectorAll('.tools-card')].find(node => node.dataset.table === table);
+    (target?.querySelector('.tools-roll') || tab).focus();
   }};
 }
 
@@ -160,12 +272,12 @@ export function appendAreaNavigation(container, result, navigation, t, data = {}
   }
   const actions = document.createElement('div');
   actions.className = 'campaign-actions';
-  for (const [kind, key, label] of [['dungeon','dungeons','Dungeon'], ['forest','forests','Forest']]) {
+  for (const [kind, table] of [['dungeon','Dungeon'], ['forest','Forest']]) {
     if (!kinds.has(kind)) continue;
     const button = document.createElement('button');
     button.type = 'button';
-    button.textContent = `${t('POIs')}: ${t(label)} →`;
-    button.addEventListener('click', () => navigation.open(key));
+    button.textContent = `${t('Dungeons & Forests')}: ${t(table)} →`;
+    button.addEventListener('click', () => navigation.open('seeds', table));
     actions.append(button);
   }
   if (actions.childElementCount) container.prepend(actions);
