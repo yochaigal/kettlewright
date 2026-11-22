@@ -418,3 +418,46 @@ def test_party_barebones_migration(tmp_path, monkeypatch):
         db.session.commit()
         downgrade(revision='506a01')
         assert 'official_barebones' not in {c['name'] for c in inspect(db.engine).get_columns('parties')}
+
+
+def test_background_format_follows_the_reader_and_reads_back(app_with_babel):
+    from flask_babel import force_locale
+    from app.lib.campaign_backgrounds import (BACKGROUND_TEMPLATE, background_markdown, background_template,
+                                              parse_background_text, section_headings)
+    from app.lib.module_items import ITEM_TEMPLATE, item_details, item_markdown, item_template, items_from_markdown
+    english = parse_background_text(BACKGROUND_TEMPLATE)
+    full = dict(english['Tidewatcher'])
+    full['starting_containers'] = [{'name': 'Cart', 'slots': 6, 'carried_by': 'Mule', 'load': 2}]
+    full['table1']['options'][0]['containers'] = [{'name': 'Donkey', 'slots': 4}]
+    full['table1']['options'][0]['gear_table'] = 20
+    full['starting_gear'] = full['starting_gear'] + [{'name': 'Mail', 'tags': ['bulky', '2 Armor'], 'armor_active': False},
+                                                     {'name': 'Wand', 'tags': ['charges'], 'charges': 2, 'max_charges': 3}]
+    files = background_markdown('Tidewatcher', full)
+    full = parse_background_text(files)['Tidewatcher']
+    with app_with_babel.test_request_context('/'), force_locale('es'):
+        assert section_headings()['starting_gear'] == 'Equipo inicial'
+        # The editor shows a background in Spanish, and what it shows reads back as the same background.
+        shown = background_markdown('Tidewatcher', full, localized=True)
+        for words in ('## Nombres', '## Equipo inicial', '## Contenedores iniciales', 'usos 3',
+                      'cargas 2/3', 'voluminoso', 'armadura inactiva', '6 espacios', 'tirado por Mule', 'carga 2',
+                      '5 mo', 'mascota: Cuervo familiar', 'contenedor: Donkey [4 espacios]', 'tabla de equipo: 20',
+                      '[insignificante]'):
+            assert words in shown, words
+        assert parse_background_text(shown)['Tidewatcher'] == full
+        # Files stay in English, and English still reads back in Spanish.
+        assert background_markdown('Tidewatcher', full) == files
+        assert parse_background_text(files)['Tidewatcher'] == full
+        # The new background starts from a Spanish example that saves as it is.
+        template = background_template()
+        assert '## Equipo inicial' in template and 'mascota: Cuervo familiar' in template
+        (name, background), = parse_background_text(template).items()
+        assert name == 'Vigía de mareas' and background['table2']['options'][1]['pets'] == ['Raven Familiar']
+        assert background['starting_gear'][0] == {'name': 'Raciones', 'tags': ['uses'], 'uses': 3}
+        assert background['table1']['options'][0]['items'][0]['tags'] == ['petty']
+        # Module items too.
+        (item,) = items_from_markdown(item_template()).values()
+        assert item['charges'] == 3 and item['max_charges'] == 3
+        assert item_markdown(item, localized=True).startswith('### Farol de los Ahogados [cargas 3/3]')
+        assert item_details({'name': 'Coin', 'tags': ['petty']}, localized=True) == 'insignificante'
+        assert items_from_markdown(ITEM_TEMPLATE)
+    assert item_details({'name': 'Coin', 'tags': ['petty']}) == 'petty'
