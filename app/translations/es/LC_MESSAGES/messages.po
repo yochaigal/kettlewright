@@ -51267,3 +51267,13 @@ msgstr "Zoom y deshacer"
 #: app/templates/campaigns/canvas.html app/templates/campaigns/party_map.html
 msgid "Map controls"
 msgstr "Controles del mapa"
+
+#. Map editor: the Fog panel, once the map is revealed (#514)
+#: app/templates/campaigns/map.html
+msgid "Each party sees this map under its own fog. Cover and uncover it on the party’s map:"
+msgstr "Cada grupo ve este mapa bajo su propia niebla. Cúbrelo y descúbrelo en el mapa del grupo:"
+
+#. Map editor: the Fog panel, before the map is revealed (#514)
+#: app/templates/campaigns/map.html
+msgid "Fog is per party: reveal this map to a party, then cover and uncover it on that party’s map."
+msgstr "La niebla es de cada grupo: revela este mapa a un grupo y luego cúbrelo y descúbrelo en el mapa de ese grupo."

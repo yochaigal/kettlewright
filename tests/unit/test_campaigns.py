@@ -1747,6 +1747,42 @@ def test_warden_uncovers_fog_per_party(setup):
     assert post({'id': 'b1', 'type': 'disable'}, 2).status_code == 403  # Only the Warden.
 
 
+
+def test_every_fog_brush_on_the_party_map_is_accepted(setup):
+    """#513: cover all, reveal a part, then hide a part of it. The Hide brush sent 'hide', which the fog
+    (shared with the whiteboard) does not know; it refused the stroke with "Could not save"."""
+    import json as json_module
+    app, client = setup
+    map_id, _ = create_map(client)
+    reveal(client, map_entry_id(app, map_id))
+    page = client.get(f'/party/1/map/{map_id}/', follow_redirects=True).get_data(as_text=True)
+    brushes = re.findall(r"setFogTool\('([a-z]+)'\)", page)
+    assert brushes == ['reveal', 'cover']
+    post = lambda operation, version: client.post(f'/party/1/map/{map_id}/fog',
+        data={'payload': json_module.dumps({'operation': operation, 'fog_version': version})})
+    assert post({'id': 'c0', 'type': 'hide_all'}, 0).status_code == 200
+    for version, brush in enumerate(brushes, start=1):
+        response = post({'id': f'c{version}', 'type': brush, 'radius': 60, 'points': [[100, 100], [140, 120]]}, version)
+        assert response.status_code == 200, brush
+    assert [stroke['type'] for stroke in response.json['fog']['strokes']] == ['reveal', 'cover']
+
+
+def test_the_map_editor_leads_to_each_partys_fog_and_back(setup):
+    """#514: fog is per party, on the party's map. The editor says so and links there; the party map links back."""
+    app, client = setup
+    map_id, _ = create_map(client)
+    editor = client.get(f'/maps/{map_id}/edit').get_data(as_text=True)
+    fog = editor[editor.index('class="map-fog-links"'):]
+    assert 'reveal this map to a party' in fog and f'/party/1/map/{map_id}/' not in fog
+    reveal(client, map_entry_id(app, map_id))
+    fog = client.get(f'/maps/{map_id}/edit').get_data(as_text=True)
+    fog = fog[fog.index('class="map-fog-links"'):fog.index('</section>', fog.index('class="map-fog-links"'))]
+    assert f'href="/party/1/map/{map_id}/"' in fog and 'Party 1' in fog
+    party_map = client.get(f'/party/1/map/{map_id}/', follow_redirects=True).get_data(as_text=True)
+    assert f'href="/maps/{map_id}/edit"' in party_map
+    login(client, 2)  # A player: the party map, without the way into the Warden's editor.
+    assert f'/maps/{map_id}/edit' not in client.get(f'/party/1/map/{map_id}/', follow_redirects=True).get_data(as_text=True)
+
 def test_party_members_add_pins_and_only_the_warden_deletes_them(setup):
     app, client = setup
     map_id, graph = create_map(client)
