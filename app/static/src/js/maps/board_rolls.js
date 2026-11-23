@@ -1,17 +1,14 @@
 import diceModal from '../dice_modal.js';
 import dice3d from '../dice3d.js';
 import {actorKey} from './token_stats.js';
-
-const MINIMIZED = 'board-rolls-minimized';
-function stored(key) {try {return localStorage.getItem(key);} catch (_) {return null;}}
-function store(key, value) {try {localStorage.setItem(key, value);} catch (_) { /* Optional preference. */ }}
+import {hideablePanel} from './board_panels.js';
 
 export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPreview, osd = null}) {
   const panel = document.getElementById('board-rolls');
   const name = document.getElementById('board-roll-name'), choices = document.getElementById('board-roll-actor');
   const actions = document.getElementById('board-roll-actions'), result = document.getElementById('board-roll-result');
   const publicToggle = document.getElementById('board-roll-public');
-  const minimize = document.getElementById('board-roll-minimize'), toggle3d = document.getElementById('board-roll-3d');
+  const toggle3d = document.getElementById('board-roll-3d');
   const modalPublic = document.getElementById('warden-public-roll');
   const modalTitle = document.querySelector('#dice-modal .modal-card-title');
   let actors = new Map(), active = null, preferred = '', modalActor = null;
@@ -25,22 +22,10 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
   publicToggle?.addEventListener('change', fromPanel);
   modalPublic?.addEventListener('change', fromModal);
 
-  // Minimize (#385): only the heading stays, so the roller is out of the way when zoomed in. Remembered.
-  function setMinimized(minimized) {
-    panel.classList?.toggle('is-minimized', minimized);
-    if (!minimize) return;
-    minimize.setAttribute('aria-expanded', String(!minimized));
-    const label = minimized ? minimize.dataset.expand : minimize.dataset.minimize;
-    minimize.title = label; minimize.setAttribute('aria-label', label);
-    const icon = minimize.querySelector?.('i');
-    if (icon) icon.className = `fa-solid fa-chevron-${minimized ? 'up' : 'down'}`;
-  }
-  const onMinimize = () => {
-    const minimized = !panel.classList?.contains('is-minimized');
-    setMinimized(minimized); store(MINIMIZED, minimized ? 'on' : 'off');
-  };
-  setMinimized(stored(MINIMIZED) === 'on');
-  minimize?.addEventListener('click', onMinimize);
+  // Hide (Discord feedback; it was Minimize, #385): × hides the roller, Dice in the top bar shows it again.
+  // Rolls still show on the board while it is hidden (board-roll-osd).
+  const hiding = hideablePanel({panel, hide: document.getElementById('board-roll-hide'), toggle: document.getElementById('board-dice-toggle'),
+    key: 'board-rolls-hidden', legacy: 'board-rolls-minimized', storage: () => localStorage});
 
   // 3D dice on the whiteboard only (#436): dice3d keeps this page's choice apart from the site-wide one.
   const show3d = () => {if (toggle3d) toggle3d.setAttribute('aria-pressed', String(dice3d.isEnabled()));};
@@ -193,7 +178,7 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
   redraw();
   return {redraw, destroy() {
     stopped = true; unsubscribe(); panel.hidden = true;
-    minimize?.removeEventListener('click', onMinimize); toggle3d?.removeEventListener('click', on3d);
+    hiding?.destroy(); toggle3d?.removeEventListener('click', on3d);
     publicToggle?.removeEventListener('change', fromPanel); modalPublic?.removeEventListener('change', fromModal);
     globalThis.removeEventListener?.('dice3d-preference', show3d);
     if (frame !== null) cancelAnimationFrame(frame);

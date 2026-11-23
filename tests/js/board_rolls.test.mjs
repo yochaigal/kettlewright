@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import {actorKey} from '../../app/static/src/js/maps/token_stats.js';
+import {hideablePanel} from '../../app/static/src/js/maps/board_panels.js';
 
 const source = readFileSync(new URL('../../app/static/src/js/maps/board_rolls.js', import.meta.url), 'utf8')
   .replace(/^import .*;\n/gm, '').replace(/^export /gm, '');
@@ -37,7 +38,7 @@ async function setup(warden = true, {storage = {}, osd = null} = {}) {
   const dice3d = {enabled: false, show: async () => false, isAvailable: () => true, isEnabled() {return this.enabled;},
     setEnabled(value) {this.enabled = value;}};
   const localStorage = {getItem: key => storage[key] ?? null, setItem: (key, value) => {storage[key] = value;}};
-  const context = vm.createContext({document, actorKey, diceModal: modal, dice3d, localStorage, FormData: Map, AbortSignal,
+  const context = vm.createContext({document, actorKey, hideablePanel, diceModal: modal, dice3d, localStorage, FormData: Map, AbortSignal,
     requestAnimationFrame: fn => {frames.push(fn); return frames.length;}, cancelAnimationFrame() {},
     setInterval(fn) {intervals.push(fn);}, clearInterval() {},
     fetch: async (url, options) => {
@@ -169,24 +170,26 @@ test('pending rolls prevent duplicates, preview hides the roller and revoked act
   } finally {player.controller.destroy();}
 });
 
-test('minimize keeps only the heading and is remembered (#385)', async () => {
+test('the roller hides from its × and comes back from Dice in the top bar, remembered (Discord feedback)', async () => {
   const s = await setup();
   try {
-    const minimize = s.node('board-roll-minimize');
-    Object.assign(minimize.dataset, {minimize: 'Minimize', expand: 'Show'});
-    assert.equal(s.node('board-rolls').classList.contains('is-minimized'), false);
-    minimize.events.click();
-    assert.equal(s.node('board-rolls').classList.contains('is-minimized'), true);
-    assert.equal(minimize.attributes['aria-expanded'], 'false');
-    assert.equal(minimize.attributes['aria-label'], 'Show');
-    assert.equal(s.storage['board-rolls-minimized'], 'on');
-    minimize.events.click();
-    assert.equal(s.node('board-rolls').classList.contains('is-minimized'), false);
-    assert.equal(s.storage['board-rolls-minimized'], 'off');
+    const panel = s.node('board-rolls'), toggle = s.node('board-dice-toggle');
+    assert.equal(panel.classList.contains('is-user-hidden'), false);
+    s.node('board-roll-hide').events.click();
+    assert.equal(panel.classList.contains('is-user-hidden'), true);
+    assert.equal(toggle.attributes['aria-pressed'], 'false');
+    assert.equal(s.storage['board-rolls-hidden'], 'hidden');
+    toggle.events.click();
+    assert.equal(panel.classList.contains('is-user-hidden'), false);
+    assert.equal(toggle.attributes['aria-pressed'], 'true');
+    assert.equal(s.storage['board-rolls-hidden'], 'shown');
   } finally {s.controller.destroy();}
-  const again = await setup(true, {storage: {'board-rolls-minimized': 'on'}});
-  try {assert.equal(again.node('board-rolls').classList.contains('is-minimized'), true);
-  } finally {again.controller.destroy();}
+  // Hidden last time, or minimized with the old setting: hidden on load.
+  for (const storage of [{'board-rolls-hidden': 'hidden'}, {'board-rolls-minimized': 'on'}]) {
+    const again = await setup(true, {storage});
+    try {assert.equal(again.node('board-rolls').classList.contains('is-user-hidden'), true);
+    } finally {again.controller.destroy();}
+  }
 });
 
 test('the 3D toggle switches the whiteboard\'s own 3D dice choice (#436)', async () => {

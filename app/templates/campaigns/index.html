@@ -3,7 +3,59 @@
 {% from 'partial/star_button.html' import star_button with context %}
 {% block workspace %}
 {# Like the characters page: the actions on one row, no page title. #}
+{% macro party_overview(card, playing=False) %}{% set item = card.party %}
+<li class="party-overview" data-tree-row data-search="{{ (item.name ~ ' ' ~ card.roster|map(attribute='name')|join(' '))|lower }}">
+  <div class="party-overview-head">
+    {% if item.image %}<img class="party-overview-picture" src="{{ url_for('campaigns.party_image', party_id=item.id) }}" alt="" loading="lazy">
+    {% else %}<span class="party-overview-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></span>{% endif %}
+    <span class="party-overview-title-block">
+      <a class="party-overview-title" href="{{ card.url }}">{{ item.name|markdown_inline }}</a>
+      <span class="party-overview-meta">{% if playing %}{{ _('Warden') }}: {{ item.owner_username }}
+        {% elif card.campaign %}<a href="{{ url_for('campaigns.lobby', campaign_id=card.campaign.id) }}"><i class="fa-solid fa-book-atlas" aria-hidden="true"></i> {{ card.campaign.name }}</a>
+        {% else %}{{ _('No campaign') }}{% endif %}</span>
+      {# A party without a campaign (#483) is added to one here, or from a campaign's Parties (Add existing party). #}
+      {% if not playing and not card.campaign and assign_campaigns %}<button type="button" class="kw-action unassigned-add" aria-haspopup="dialog" onclick="document.getElementById('assign-party-{{ item.id }}').showModal()"><i class="fa-solid fa-link" aria-hidden="true"></i> {{ _('Add to campaign') }}</button>{% endif %}
+    </span>
+  </div>
+  {% if not playing and not card.campaign and assign_campaigns %}
+  <dialog class="create-dialog" id="assign-party-{{ item.id }}" aria-labelledby="assign-party-title-{{ item.id }}">
+    <h2 id="assign-party-title-{{ item.id }}">{{ _('Add %(party)s to a campaign', party=item.name|markdown_inline|striptags) }}</h2>
+    <form method="post" action="{{ url_for('campaigns.assign_party', party_id=item.id) }}">{{ token() }}
+      <label>{{ _('Campaign') }}<select name="campaign_id" required>{% for campaign in assign_campaigns %}<option value="{{ campaign.id }}">{{ campaign.name }}</option>{% endfor %}</select></label>
+      <div class="create-dialog-actions">
+        <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
+        <button type="submit" class="primary">{{ _('Add to campaign') }}</button>
+      </div>
+    </form>
+  </dialog>
+  {% endif %}
+  {% if card.roster %}
+  <ul class="party-roster">
+  {% for member in card.roster %}
+    <li class="party-roster-row{% if member.dead %} is-dead{% endif %}">
+      {% if member.url %}<a class="party-roster-name" href="{{ member.url }}">{% else %}<span class="party-roster-name">{% endif %}<img src="{{ member.src }}" alt="" loading="lazy"> {{ member.name }}{% if member.url %}</a>{% else %}</span>{% endif %}
+      <span class="party-roster-stats">
+        <span class="party-roster-hp{% if member.hp == 0 %} is-zero{% endif %}">{{ _('HP') }} <strong>{{ member.hp }}</strong>/{{ member.hp_max }}</span>
+        {% for stat, current, maximum in member.stats %}<span>{{ {'strength': _('STR'), 'dexterity': _('DEX'), 'willpower': _('WIL')}[stat] }} <strong>{{ current if current is not none else '—' }}</strong>{% if maximum is not none and current != maximum %}/{{ maximum }}{% endif %}</span>{% endfor %}
+        <span>{{ _('Armor') }} <strong>{{ member.armor }}</strong></span>
+        <span>{{ ngettext('%(num)s slot free', '%(num)s slots free', member.free) }}</span>
+      </span>
+      {% if member.dead or member.deprived or member.panicked %}<span class="party-roster-conditions">
+        {% if member.dead %}<span class="wiki-badge">{{ _('Dead') }}</span>{% endif %}
+        {% if member.deprived %}<span class="wiki-badge">{{ _('Deprived') }}</span>{% endif %}
+        {% if member.panicked %}<span class="wiki-badge">{{ _('Panicked') }}</span>{% endif %}</span>{% endif %}
+    </li>
+  {% endfor %}
+  </ul>
+  {% else %}<p class="party-overview-empty">{{ _('No characters yet') }}</p>{% endif %}
+</li>
+{% endmacro %}
 <div class="characters-page-header campaigns-page-header" x-data="{}">
+  {# Campaigns or Parties (Discord feedback): the page remembers the last one chosen. #}
+  <nav class="campaigns-view-switch" aria-label="{{ _('View') }}">
+    <a href="{{ url_for('campaigns.index', view='campaigns') }}" {% if view != 'parties' %}aria-current="page"{% endif %}><i class="fa-solid fa-book-atlas" aria-hidden="true"></i> {{ _('Campaigns') }}</a>
+    <a href="{{ url_for('campaigns.index', view='parties') }}" {% if view == 'parties' %}aria-current="page"{% endif %}><i class="fa-solid fa-users" aria-hidden="true"></i> {{ _('Parties') }}</a>
+  </nav>
   <span class="characters-create-actions">
     <button type="button" class="is-new" aria-haspopup="dialog" @click="$refs.createDialog.showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New campaign') }}</button>
   </span>
@@ -49,42 +101,26 @@
 </section>
 {% endif %}
 
-{% if unassigned %}
-{# The Warden's parties without a campaign (#483), an island like Starred: each can be added to a campaign here,
-   or from a campaign's Parties (Add existing party). #}
-<section class="campaigns-island unassigned-island" aria-labelledby="unassigned-title">
+{% if view == 'parties' %}
+{# Every party at once (Discord feedback): its campaign, and each character's HP, stats, armor and slots. #}
+{% if running or not playing %}
+<section class="campaigns-island parties-island" aria-labelledby="running-title">
 <header class="island-head">
-  <h2 id="unassigned-title"><i class="fa-solid fa-users-slash" aria-hidden="true"></i> {{ _('Parties without a campaign') }}</h2>
+  <h2 id="running-title"><i class="fa-solid fa-users" aria-hidden="true"></i> {{ _('Your parties') }}</h2>
 </header>
-<ul class="starred-cards">
-{% for card in unassigned %}{% set item = card.party %}
-<li class="starred-card island-party-card" data-tree-row data-search="{{ item.name|lower }}">
-  {% if item.image %}<img class="starred-card-picture" src="{{ url_for('campaigns.party_image', party_id=item.id) }}" alt="" loading="lazy">
-  {% else %}<span class="starred-card-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></span>{% endif %}
-  <span class="starred-card-body">
-    <span class="starred-card-kind">{{ _('Party') }}</span>
-    <a class="starred-card-title" href="{{ card.url }}">{{ item.name|markdown_inline }}</a>
-    <span class="starred-card-meta">{% if card.members %}{{ ngettext('%(num)s character', '%(num)s characters', card.members|length) }}{% else %}{{ _('No characters yet') }}{% endif %}</span>
-    {% if card.members %}<span class="campaign-party-members">{% for member in card.members[:6] %}<img src="{{ member.src }}" alt="" title="{{ member.name }}" loading="lazy">{% endfor %}</span>{% endif %}
-    {% if campaigns %}<button type="button" class="kw-action unassigned-add" aria-haspopup="dialog" onclick="document.getElementById('assign-party-{{ item.id }}').showModal()"><i class="fa-solid fa-link" aria-hidden="true"></i> {{ _('Add to campaign') }}</button>{% endif %}
-  </span>
-</li>
-{% endfor %}
-</ul>
-{% for card in unassigned if campaigns %}{% set item = card.party %}
-<dialog class="create-dialog" id="assign-party-{{ item.id }}" aria-labelledby="assign-party-title-{{ item.id }}">
-  <h2 id="assign-party-title-{{ item.id }}">{{ _('Add %(party)s to a campaign', party=item.name|markdown_inline|striptags) }}</h2>
-  <form method="post" action="{{ url_for('campaigns.assign_party', party_id=item.id) }}">{{ token() }}
-    <label>{{ _('Campaign') }}<select name="campaign_id" required>{% for campaign in campaigns %}<option value="{{ campaign.id }}">{{ campaign.name }}</option>{% endfor %}</select></label>
-    <div class="create-dialog-actions">
-      <button type="button" onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
-      <button type="submit" class="primary">{{ _('Add to campaign') }}</button>
-    </div>
-  </form>
-</dialog>
-{% endfor %}
+{% if running %}<ul class="party-overviews">{% for card in running %}{{ party_overview(card) }}{% endfor %}</ul>
+{% else %}<p class="gallery-empty">{{ _('No parties yet. A campaign starts with one.') }}</p>{% endif %}
 </section>
 {% endif %}
+{% if playing %}
+<section class="campaigns-island parties-island" aria-labelledby="playing-title">
+<header class="island-head">
+  <h2 id="playing-title"><i class="fa-solid fa-dice-d20" aria-hidden="true"></i> {{ _('Playing in') }}</h2>
+</header>
+<ul class="party-overviews">{% for card in playing %}{{ party_overview(card, playing=True) }}{% endfor %}</ul>
+</section>
+{% endif %}
+{% else %}
 
 {% if played %}
 {# Parties in other Wardens' campaigns that one of my characters is in, an island like Starred.
@@ -133,5 +169,6 @@
 <p class="gallery-empty">{{ _('No campaigns yet.') }}</p>{# New campaign is the button at the top. #}
 {% endif %}
 </div>
+{% endif %}
 </div>
 {% endblock %}

@@ -1,0 +1,11 @@
+/* Clean view (Discord feedback): any canvas can hide Excalidraw's own controls, from toggles beside it.
+   Used by the whiteboard (shared_map.html) and the map frame (maps/editor.html); canvas_ui.js sets the classes. */
+/* Drawing tools: the top menu, the tool rail and Library (and Tokens on the whiteboard); on phones the top tool row
+   and the buttons down the side. */
+body.hide-drawing-tools .excalidraw .App-menu_top, body.hide-drawing-tools .excalidraw .HintViewer,
+body.hide-drawing-tools .excalidraw .App-toolbar--mobile, body.hide-drawing-tools .excalidraw .mobile-misc-tools-container { display: none !important; }
+/* Zoom and undo: the controls at the bottom; on phones the bottom bar (its menu and undo). */
+body.hide-zoom .excalidraw .layer-ui__wrapper__footer,
+body.hide-zoom .excalidraw .App-bottom-bar .App-toolbar:not(.App-toolbar--mobile) { display: none !important; }
+/* A map being read has only the menu and zoom (in a narrow frame, a bar at the bottom): Map controls hides them all. */
+body.canvas-reading.hide-zoom .excalidraw .App-menu_top, body.canvas-reading.hide-zoom .excalidraw .App-bottom-bar { display: none !important; }

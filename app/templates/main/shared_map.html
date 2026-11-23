@@ -13,6 +13,7 @@
   <title>{{ party.name }}</title>
   {% assets "board_modals" %}<link rel="stylesheet" href="{{ ASSET_URL }}">{% endassets %}
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/shared_map.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='src/css/canvas_ui.css') }}">
   <script src="{{ cdnjs }}/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
   {% if not activity_token %}
   <script>window.EXCALIDRAW_ASSET_PATH = 'https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/';</script>
@@ -42,6 +43,13 @@
       <button type="button" id="board-theme" title="{{ _('Light / dark') }}" aria-label="{{ _('Light / dark') }}"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i></button>
       <button type="button" id="fit-map" title="{{ _('Fit map') }}" aria-label="{{ _('Fit map') }}"><i class="fa-solid fa-expand" aria-hidden="true"></i></button>
       {% if can_load_maps %}<button type="button" id="load-map" title="{{ _('Load map') }}" aria-label="{{ _('Load map') }}"><i class="fa-solid fa-map" aria-hidden="true"></i></button>{% endif %}
+    </div>
+    {# The board's floating panels, shown or hidden (Discord feedback): pressed while shown. #}
+    <div class="map-view-controls map-panel-toggles" role="group" aria-label="{{ _('View') }}">
+      <button type="button" data-canvas-ui="drawing" aria-pressed="true" title="{{ _('Drawing tools') }}" aria-label="{{ _('Drawing tools') }}"><i class="fa-solid fa-pen-ruler" aria-hidden="true"></i></button>
+      <button type="button" data-canvas-ui="zoom" aria-pressed="true" title="{{ _('Zoom and undo') }}" aria-label="{{ _('Zoom and undo') }}"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i></button>
+      {% if warden %}<button type="button" id="board-tools-toggle" aria-pressed="true" title="{{ _('Warden tools') }}" aria-label="{{ _('Warden tools') }}"><i class="fa-solid fa-dungeon" aria-hidden="true"></i></button>{% endif %}
+      <button type="button" id="board-dice-toggle" aria-pressed="true" title="{{ _('Dice roller') }}" aria-label="{{ _('Dice roller') }}"><i class="fa-solid fa-dice" aria-hidden="true"></i></button>
     </div>
     <button type="button" id="mobile-party-tokens">{{ _('Tokens') }}</button>
     {% if warden %}
@@ -93,6 +101,9 @@
     </div>
     <span id="fog-status" role="status" aria-live="polite"></span>
     <button type="button" id="discard-fog" hidden>{{ _('Discard unsaved fog') }}</button>
+    {# Hide (Discord feedback), like the dice roller; Warden tools in the top bar shows it again. #}
+    <button type="button" id="board-tools-hide" class="board-panel-hide"
+      title="{{ _('Hide Warden tools') }}" aria-label="{{ _('Hide Warden tools') }}"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
   </section>
   {% endif %}
   <div id="editor"></div>
@@ -108,9 +119,9 @@
       {# The whiteboard keeps its own 3D dice choice (#436), so they can be on here and off elsewhere. #}
       <button type="button" id="board-roll-3d" class="board-roll-tool" aria-pressed="false" hidden
         title="{{_('3D dice on the whiteboard')}}" aria-label="{{_('3D dice on the whiteboard')}}"><i class="fa-solid fa-cube" aria-hidden="true"></i> 3D</button>
-      <button type="button" id="board-roll-minimize" class="board-roll-tool" aria-expanded="true" aria-controls="board-roll-actions"
-        data-minimize="{{_('Minimize dice roller')}}" data-expand="{{_('Show dice roller')}}"
-        title="{{_('Minimize dice roller')}}" aria-label="{{_('Minimize dice roller')}}"><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
+      {# Hide (Discord feedback); Dice in the top bar shows it again. #}
+      <button type="button" id="board-roll-hide" class="board-panel-hide"
+        title="{{_('Hide dice roller')}}" aria-label="{{_('Hide dice roller')}}"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
     </div>
     <div id="board-roll-actions" class="board-roll-actions"></div>
     {# The die shapes from the dice modal; board_rolls.js puts copies on its dice buttons. #}

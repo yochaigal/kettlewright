@@ -1000,7 +1000,7 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
 .campaigns-island .island-party-card .starred-card-body {flex:1;}
 .campaigns-island .island-party-card .campaign-party-members {min-height:0;margin-top:.15em;}
 .campaigns-island .island-party-card .campaign-party-members img {width:1.9em;height:1.9em;}
-.campaign-workspace .unassigned-island .unassigned-add {align-self:flex-start;margin-top:.45em;min-height:32px;padding:.25em .75em;font-size:.85em;}
+.campaign-workspace .party-overview .unassigned-add {align-self:flex-start;margin-top:.45em;min-height:32px;padding:.25em .75em;font-size:.85em;}
 .create-dialog label select {display:block;width:100%;box-sizing:border-box;margin:.4em 0 0;padding:.5em .6em;border:1px solid var(--fg);
   border-radius:2px;background:var(--bg);color:var(--fg);font:inherit;}
 /* No campaigns yet: a quiet line under the islands (New campaign is the button at the top). */
@@ -1031,3 +1031,42 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
 .pointcrawl-canvas.is-image-map {height:auto;min-height:0;max-height:calc(100vh - 160px);background:transparent;}
 .pointcrawl-canvas.is-image-map:fullscreen {max-height:none;height:100vh;aspect-ratio:auto!important;background:#000;}
 .campaign-workspace .campaign-actions > label.map-image-pick.kw-add {background:var(--fg);color:var(--bg);border-color:var(--fg);}
+/* Campaigns or Parties (Discord feedback): a two-way switch beside New campaign, and the Parties view's cards. */
+.campaign-workspace .campaigns-page-header {display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.75em;}
+.campaigns-view-switch {display:inline-flex;border:1.5px solid var(--fg);border-radius:999px;overflow:hidden;}
+.campaigns-view-switch a {display:inline-flex;align-items:center;gap:.4em;min-height:40px;padding:0 1em;color:inherit;font-weight:600;text-decoration:none;}
+.campaigns-view-switch a + a {border-left:1.5px solid var(--fg);}
+.campaigns-view-switch a[aria-current="page"] {background:var(--fg);color:var(--bg);}
+.campaigns-view-switch a:not([aria-current]):hover {background:color-mix(in srgb,var(--fg) 8%,var(--bg));}
+.campaigns-view-switch a:focus-visible {outline:2px solid var(--fg);outline-offset:-4px;}
+.party-overviews {display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,24rem),1fr));align-items:start;gap:.85em;margin:0;padding:0;list-style:none;}
+.party-overview {display:flex;flex-direction:column;gap:.6em;margin:0;padding:.85em;border:1px solid color-mix(in srgb,var(--fg) 12%,var(--bg));border-radius:10px;background:var(--bg);min-width:0;}
+.party-overview-head {display:flex;align-items:center;gap:.7em;min-width:0;}
+.party-overview-picture, .party-overview-icon {flex:none;width:44px;height:44px;border-radius:8px;object-fit:cover;}
+.party-overview-icon {display:grid;place-items:center;background:color-mix(in srgb,var(--fg) 8%,var(--bg));}
+.party-overview-title-block {display:flex;flex-direction:column;min-width:0;}
+.party-overview-title {font-weight:700;font-size:1.1em;color:inherit;overflow-wrap:anywhere;}
+.party-overview-meta {font-size:.85em;color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
+.party-overview-meta a {color:inherit;}
+.party-overview-empty {margin:0;font-size:.9em;font-style:italic;color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
+.party-roster {display:flex;flex-direction:column;margin:0;padding:0;list-style:none;border-top:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));}
+.party-roster-row {display:flex;flex-wrap:wrap;align-items:center;gap:.2em .8em;padding:.5em 0;border-bottom:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));}
+.party-roster-row.is-dead {opacity:.55;}
+.party-roster-name {display:inline-flex;align-items:center;gap:.5em;min-width:9em;flex:1 1 9em;color:inherit;font-weight:600;overflow-wrap:anywhere;}
+.party-roster-name img {flex:none;width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid color-mix(in srgb,var(--fg) 25%,var(--bg));}
+.party-roster-stats {display:flex;flex-wrap:wrap;gap:.15em .8em;font-size:.88em;}
+.party-roster-stats strong {font-variant-numeric:tabular-nums;}
+.party-roster-hp.is-zero strong {color:#a33b3b;}
+body.dark-mode .party-roster-hp.is-zero strong {color:#e08080;}
+.party-roster-conditions {display:flex;flex-wrap:wrap;gap:.3em;width:100%;}
+/* Clean view (Discord feedback): beside a map, its Excalidraw controls shown (pressed) or hidden. They look like the
+   buttons next to them (Full screen, Add pin); a hidden group's button is dashed and dimmed. */
+.canvas-ui-toggles {display:inline-flex;gap:.75rem;}
+.canvas-ui-toggle {display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:none;min-width:44px;max-width:none;
+  min-height:44px;margin:0;padding:.6rem 1rem;border:1.5px solid currentColor;border-radius:2px;background:transparent;color:var(--fg);
+  font:inherit;font-weight:600;line-height:1.3;cursor:pointer;}
+.canvas-ui-toggle[aria-pressed="false"] {border-style:dashed;}
+.canvas-ui-toggle[aria-pressed="false"] i {opacity:.45;}
+.canvas-ui-toggle:hover {background:var(--fg);color:var(--bg);}
+.canvas-ui-toggle:hover i {opacity:1;}
+.canvas-ui-toggle:focus-visible {outline:2px solid currentColor;outline-offset:3px;}

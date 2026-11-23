@@ -51223,6 +51223,51 @@ msgstr "Preparando la imagen…"
 msgid "Unable to read this image. Try another one."
 msgstr "No se pudo leer esta imagen. Prueba con otra."
 
+#. Campaigns page: the Campaigns / Parties switch (its accessible name)
+#: app/templates/campaigns/index.html
+msgid "View"
+msgstr "Vista"
+
+#. Campaigns page, Parties view: the parties you run as Warden
+#: app/templates/campaigns/index.html
+msgid "Your parties"
+msgstr "Tus grupos"
+
+#. Campaigns page, Parties view: when you run no party yet
+#: app/templates/campaigns/index.html
+msgid "No parties yet. A campaign starts with one."
+msgstr "Aún no hay grupos. Cada campaña empieza con uno."
+
+#. Whiteboard: × on the Warden's Dungeon and Fog tools (Discord feedback)
+#: app/templates/main/shared_map.html
+msgid "Hide Warden tools"
+msgstr "Ocultar herramientas del Guardián"
+
+#. Whiteboard: × on the dice roller (Discord feedback)
+#: app/templates/main/shared_map.html
+msgid "Hide dice roller"
+msgstr "Ocultar lanzador de dados"
+
+#. Whiteboard top bar: shows or hides the dice roller (Discord feedback)
+#: app/templates/main/shared_map.html
+msgid "Dice roller"
+msgstr "Lanzador de dados"
+
+#. Whiteboard and maps: shows or hides Excalidraw's drawing tools (Discord feedback: clean view)
+#: app/templates/main/shared_map.html app/templates/campaigns/canvas.html
+msgid "Drawing tools"
+msgstr "Herramientas de dibujo"
+
+#. Whiteboard and map editor: shows or hides Excalidraw's zoom and undo controls (clean view)
+#: app/templates/main/shared_map.html app/templates/campaigns/canvas.html
+msgid "Zoom and undo"
+msgstr "Zoom y deshacer"
+
+#. A map being read: shows or hides its zoom and menu (clean view)
+#: app/templates/campaigns/canvas.html app/templates/campaigns/party_map.html
+msgid "Map controls"
+msgstr "Controles del mapa"
+
 #. Map editor: the Fog panel, once the map is revealed (#514)
 #: app/templates/campaigns/map.html
 msgid "Each party sees this map under its own fog. Cover and uncover it on the party’s map:"

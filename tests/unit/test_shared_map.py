@@ -308,3 +308,19 @@ def test_board_theme_is_set_before_the_first_paint(shared):
     body = html[html.index('<body'):]
     assert body[body.index('>') + 1:].lstrip().startswith('<script src="/static/src/js/maps/board_theme.js"></script>')
     assert body.index('board_theme.js') < body.index('<header')
+
+
+def test_every_panel_and_control_can_be_hidden_from_the_top_bar(shared):
+    """Clean view (Discord feedback): the top bar shows or hides each thing over the board; the panels hide with ×."""
+    _, clients, _ = shared
+    warden = clients[1].get('/party/1/shared-map').get_data(as_text=True)
+    toggles = warden[warden.index('map-panel-toggles'):]
+    toggles = toggles[:toggles.index('</div>')]
+    for control in ('data-canvas-ui="drawing"', 'data-canvas-ui="zoom"', 'id="board-tools-toggle"', 'id="board-dice-toggle"'):
+        assert control in toggles, control
+    assert 'id="board-tools-hide"' in warden and 'id="board-roll-hide"' in warden
+    assert 'src/css/canvas_ui.css' in warden
+    assert 'minimize' not in warden.lower()  # Hide replaced Minimize.
+    player = clients[2].get('/party/1/shared-map').get_data(as_text=True)
+    assert 'data-canvas-ui="drawing"' in player and 'id="board-dice-toggle"' in player
+    assert 'id="board-tools-toggle"' not in player  # The Warden tools are the Warden's.

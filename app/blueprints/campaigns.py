@@ -2,7 +2,7 @@
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
-from flask import Blueprint, abort, current_app, flash, jsonify, redirect, render_template, request, url_for, send_from_directory, send_file
+from flask import Blueprint, abort, current_app, flash, jsonify, make_response, redirect, render_template, request, url_for, send_from_directory, send_file
 from itsdangerous import BadSignature, URLSafeTimedSerializer
 from flask_babel import _
 from flask_login import current_user, login_required
@@ -214,19 +214,37 @@ def index():
     if request.method == 'POST':
         return new_campaign(request.form.get('name'))
     from app.lib.campaign_wiki import cover_image
-    from app.lib.campaign_parties import party_cards, played_parties
+    from app.lib.campaign_parties import party_cards, parties_view, played_parties
     from app.lib.stars import starred_cards
+    # Campaigns or Parties (Discord feedback): a party-first view for groups that play across campaigns, or solo.
+    # The choice is remembered, so whoever prefers Parties lands there.
+    view = request.args.get('view') or request.cookies.get(VIEW_COOKIE)
+    view = view if view in ('campaigns', 'parties') else 'campaigns'
+    if view == 'parties':
+        # A party without a campaign is added to one from its card (it was an island of the Campaigns view).
+        response = make_response(render_template('campaigns/index.html', view=view, starred=starred_cards(current_user.id),
+            assign_campaigns=Campaign.query.filter_by(owner_id=current_user.id).order_by(Campaign.name).all(),
+            **parties_view(current_user.id)))
+        return remember_view(response, view)
     campaigns_list = my_campaigns()
     entries = library_entries().order_by(ContentEntry.title).all()
     by_campaign = {campaign.id: [e for e in entries if e.campaign_id == campaign.id] for campaign in campaigns_list}
-    return render_template('campaigns/index.html', campaigns=campaigns_list, articles=by_campaign,
+    return remember_view(make_response(render_template('campaigns/index.html', view=view, campaigns=campaigns_list, articles=by_campaign,
         parties={c.id: c.parties for c in campaigns_list},
         covers={campaign.id: cover_image(campaign, by_campaign[campaign.id]) is not None for campaign in campaigns_list},
         # Players reach the parties they play in (other Wardens' campaigns) from here.
         played=party_cards(played_parties(current_user.id)),
         # Removed from their campaign (#483): a campaign's Add existing party brings one back.
-        unassigned=party_cards([party for party in my_parties() if party.campaign_id is None]),
-        starred=starred_cards(current_user.id))
+        starred=starred_cards(current_user.id))), view)
+
+
+VIEW_COOKIE = 'kw-campaigns-view'
+
+
+def remember_view(response, view):
+    if request.args.get('view') == view:
+        response.set_cookie(VIEW_COOKIE, view, max_age=365 * 24 * 3600, samesite='Lax', httponly=True)
+    return response
 
 
 @campaigns.route('/stars', methods=['POST'])

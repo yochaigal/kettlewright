@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import {editorLocale} from '../../app/static/src/js/maps/locale.js';
+import {hideablePanel} from '../../app/static/src/js/maps/board_panels.js';
+import {bindCanvasToggles} from '../../app/static/src/js/maps/canvas_ui.js';
 import {drawingFromScene, drawingImagesReady, drawingForSave} from '../../app/static/src/js/maps/scene.js';
 
 const source = readFileSync(new URL('../../app/static/src/js/maps/shared_map.js', import.meta.url), 'utf8').replace(/^import .*;\n/gm, '');
@@ -30,7 +32,7 @@ async function setup(editing = true, failedLibrary = null, language = 'en', ward
     getSceneElements: () => elements, getFiles: () => files, getAppState: () => appState,
     updateScene(data) {if (data.elements) elements = data.elements; Object.assign(appState, data.appState); props.onChange(elements, appState, files);},
   };
-  const context = vm.createContext({
+  const context = vm.createContext({hideablePanel, bindCanvasToggles,
     document: {documentElement: {lang: language}, body: {classList: {toggle() {}}}, createElement: () => ({dataset: {}, style: {}, append() {}, setAttribute() {}, addEventListener() {}}), getElementById: id => id === 'shared-map-config' ? {textContent: JSON.stringify(config)} : id === 'map-status' ? status : {style: {}, addEventListener(name, fn) {uiHandlers[id + ':' + name] = fn;}, setAttribute() {}, append(value) {drafts.push(value);}},
       addEventListener() {}, querySelector: selector => brush.pressed && selector.includes('[aria-pressed="true"]') ? brush.button : null,
       querySelectorAll: selector => selector === '[data-fog-tool], [data-dungeon-tool]' ? [brush.button] : []},

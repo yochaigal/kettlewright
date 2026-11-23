@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/index.css">
+  <link rel="stylesheet" href="../../css/canvas_ui.css">
   <style>html,body,#editor{margin:0;width:100%;height:100%;overflow:hidden}
   /* Party map fog (the whiteboard's layer). */
   .excalidraw canvas.whiteboard-fog{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;cursor:crosshair;filter:none!important}
@@ -20,7 +21,20 @@
   /* The Warden's editor of an image map (#514): the drawing tools sat on top of the picture. Pins, Replace image and
      Full screen are on the page; zoom and undo stay. The main menu's Reset the canvas would wipe the picture. */
   body.image-map:not(.image-map-reading) .excalidraw .App-menu_top,
-  body.image-map:not(.image-map-reading) .excalidraw .layer-ui__wrapper__top-right{display:none!important}</style>
+  body.image-map:not(.image-map-reading) .excalidraw .layer-ui__wrapper__top-right{display:none!important}
+  /* Drawing on a map: Excalidraw's tools as a rail down the left side, not a bar across the top of the map, the same
+     rail as the whiteboard's (shared_map.css). Narrow frames keep Excalidraw's own layout. */
+  @media (min-width:901px){
+    body.drawing-editor .excalidraw .App-menu_top .shapes-section{position:absolute;top:64px;left:0}
+    body.drawing-editor .excalidraw .App-toolbar-container{align-items:start;gap:8px}
+    body.drawing-editor .excalidraw .App-toolbar .Stack_horizontal{grid-auto-flow:row}
+    body.drawing-editor .excalidraw .App-menu_top .layer-ui__wrapper__top-right{grid-column:3}
+    body.drawing-editor .excalidraw .App-toolbar__divider{width:24px;height:1px;margin:4px 0}
+    body.drawing-editor .excalidraw .HintViewer{display:none}
+    body.drawing-editor .excalidraw .App-toolbar__extra-tools-dropdown{top:auto;bottom:0;left:calc(100% + 8px);right:auto;margin-top:0}
+    body.drawing-editor .excalidraw .App-menu__left{margin-left:64px}
+    body.drawing-editor .excalidraw .layer-ui__wrapper__footer-left{margin-left:64px}  /* Zoom beside the rail, not under it. */
+  }</style>
   <script>window.EXCALIDRAW_ASSET_PATH = 'https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/';</script>
   <script type="importmap">
   {"imports": {

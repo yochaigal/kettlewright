@@ -4,6 +4,7 @@ import {generateResult, graphFromResult, nestedMapDraft, suggestedMapKind} from 
 import {emptyDrawing} from '../../maps/scene.js';
 import {encodeImage} from '../../maps/whiteboard_images.js';
 import {imageAspect} from '../../maps/viewport.js';
+import {readCanvasUI, writeCanvasUI} from '../../maps/canvas_ui.js';
 
 // An image map's picture (#506) leaves room in the 12 MB drawing for pins' notes and the rest.
 const IMAGE_MAP_LIMIT = 10 * 1024 * 1024;
@@ -19,6 +20,8 @@ export default function pointcrawl() {
     mapResult:null, mapTitle:'', missing:false,
     // The players' pins (#482): read only in the map editor, with a show/hide toggle.
     playerPins:[], showPlayerPins:true, selectedPlayerPin:'',
+    // Clean view (Discord feedback): Excalidraw's drawing tools and its zoom and undo, shown or hidden on every map.
+    canvasUI:readCanvasUI('kw-map-ui'),
     edgeSource:'', edgeTarget:'', kind:'dungeon', tables:null, labels:{}, locationId:'', draftBody:'', poiCount:'', generateChildren:true, forestChance:50, dungeonChance:25,
     init() {
       this.componentElement=this.$el;
@@ -159,6 +162,10 @@ export default function pointcrawl() {
       this.$refs.canvas?.classList.toggle('is-image-map',Boolean(aspect));
       if(this.$refs.canvas)this.$refs.canvas.style.aspectRatio=aspect ? String(aspect) : '';
     },
+    toggleCanvasUI(group) {
+      this.canvasUI={...this.canvasUI,[group]:!this.canvasUI[group]};
+      writeCanvasUI('kw-map-ui',this.canvasUI);this.syncCanvas();
+    },
     get hasImage() {return Boolean(this.graph.drawing?.elements?.some(element=>element.type==='image' && !element.isDeleted));},
     // New map > Image, or Replace image (#506): PNG, JPEG or WebP, kept as WebP within the drawing's size.
     async chooseImage(event) {
@@ -185,7 +192,7 @@ export default function pointcrawl() {
     syncCanvas() {
       const graph=JSON.parse(JSON.stringify(this.graph));
       graph.kind||=this.kind;
-      this.sendCanvas('state',{graph,editing:this.editing,
+      this.sendCanvas('state',{graph,editing:this.editing,ui:{...this.canvasUI},
         selected:this.selected,selectedEdge:this.selectedEdge,dark:document.body.classList.contains('dark-mode'),
         pins:this.editing && this.showPlayerPins ? this.playerPins.map(({id,x,y,title})=>({id,x,y,title})) : [],
         selectedPin:this.selectedPlayerPin,

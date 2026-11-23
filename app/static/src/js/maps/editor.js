@@ -6,6 +6,7 @@ import {createFogLayer} from './whiteboard_fog.js';
 import {loadLibraries} from './libraries.js';
 import {fittedViewport, imageViewport, clampToImage} from './viewport.js';
 import {editorLocale} from './locale.js';
+import {applyCanvasUI} from './canvas_ui.js';
 
 let api, state, applying = false, lastDrawing = '', inputDrawingKey = '', graphKey = '', disposed = false, repairing = false, initialized = false;
 let waterTarget=null, brushStartIds=null;
@@ -40,6 +41,11 @@ function imageMapLook() {
   const image = isImageMap();
   document.body.classList.toggle('image-map', image);
   document.body.classList.toggle('image-map-reading', image && !state.editing);
+  // Drawing on a map: the tools are a rail on the side, as on the whiteboard (editor.html).
+  document.body.classList.toggle('drawing-editor', !image && Boolean(state.editing));
+  // Clean view (Discord feedback): the page's toggles hide Excalidraw's controls (css/canvas_ui.css).
+  document.body.classList.toggle('canvas-reading', !state.editing);
+  applyCanvasUI(document.body, state.ui);
   return image ? {gridModeEnabled: false, viewBackgroundColor: 'transparent', zenModeEnabled: !state.editing}
     : {gridModeEnabled: true};
 }
@@ -106,6 +112,7 @@ function applyState(next) {
       lastDrawing = JSON.stringify(drawingFromScene(api.getSceneElements(), api.getFiles()));
     }
     syncFog();
+    applyCanvasUI(document.body, state.ui);
     if (isImageMap() !== document.body.classList.contains('image-map')) {
       api.updateScene({appState: imageMapLook(), captureUpdate: CaptureUpdateAction.NEVER});
     }

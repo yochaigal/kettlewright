@@ -88,6 +88,43 @@ def member_portraits(party):
     return portraits
 
 
+def party_roster(party):
+    """The Parties view (Discord feedback): each character at a glance, in member order."""
+    try:
+        member_ids = json.loads(party.members) if party.members and party.members.strip() else []
+    except ValueError:
+        member_ids = []
+    characters = {c.id: c for c in Character.query.filter(Character.id.in_(member_ids), Character.party_id == party.id)} \
+        if member_ids else {}
+    roster = []
+    for member_id in member_ids:
+        character = characters.get(member_id)
+        if character is None:
+            continue
+        hp, hp_max = character.hpValue()
+        roster.append({
+            'name': character.name, 'url': url_for('main.character', username=character.owner_username, url_name=character.url_name)
+                   if character.owner_username and character.url_name else None,
+            'src': character.image_url if character.custom_image else
+                   url_for('static', filename='images/portraits/' + (character.image_url or 'default-portrait.webp')),
+            'hp': hp, 'hp_max': hp_max,
+            'stats': [(stat, getattr(character, stat), getattr(character, stat + '_max')) for stat in ('strength', 'dexterity', 'willpower')],
+            'armor': character.armorValue(), 'free': character.freeMainSlots(),
+            'deprived': bool(character.deprived), 'panicked': bool(character.panicked), 'dead': bool(character.dead)})
+    return roster
+
+
+def parties_view(user_id):
+    """Every party at once (Discord feedback): the ones you run, in any campaign or none, then the ones you play in."""
+    from app.models import Campaign
+    running = Party.query.filter_by(owner=user_id).order_by(Party.name).all()
+    campaigns = {campaign.id: campaign for campaign in Campaign.query.filter(
+        Campaign.id.in_({party.campaign_id for party in running if party.campaign_id}))}
+    card = lambda party: {'party': party, 'url': party_page(party), 'roster': party_roster(party),
+                          'campaign': campaigns.get(party.campaign_id)}
+    return {'running': [card(party) for party in running], 'playing': [card(party) for party in played_parties(user_id)]}
+
+
 def party_cards(parties):
     """What a party card shows: name, link, members' portraits."""
     return [{'party': party, 'url': party_page(party), 'members': member_portraits(party)} for party in parties]

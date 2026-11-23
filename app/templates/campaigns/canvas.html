@@ -1,5 +1,13 @@
 {% from 'campaigns/forms.html' import rich_editor with context %}
 {# A map: its drawing and its pins. Each pin has a note (a map note), written here and saved with the map. #}
+{# Clean view (Discord feedback): Excalidraw's own controls, shown or hidden (pressed = shown). An image map has no
+   drawing tools to show; a map being read has only zoom. #}
+{% set view_toggles %}<span class="canvas-ui-toggles" role="group" aria-label="{{ _('View') }}">
+{% if editing %}<button type="button" class="canvas-ui-toggle" x-show="kind !== 'image'" :aria-pressed="String(canvasUI.drawing)" @click="toggleCanvasUI('drawing')"
+  title="{{ _('Drawing tools') }}" aria-label="{{ _('Drawing tools') }}"><i class="fa-solid fa-pen-ruler" aria-hidden="true"></i></button>{% endif %}
+<button type="button" class="canvas-ui-toggle"{% if not editing %} x-show="kind !== 'image'"{% endif %} :aria-pressed="String(canvasUI.zoom)" @click="toggleCanvasUI('zoom')"
+  title="{{ _('Zoom and undo') if editing else _('Map controls') }}" aria-label="{{ _('Zoom and undo') if editing else _('Map controls') }}"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i></button>
+</span>{% endset %}
 {% set fullscreen_button %}<button type="button" @click="fullscreen()" :disabled="!canvasReady"><i class="fa-solid fa-expand" aria-hidden="true"></i> {{ _('Full screen') }}</button>{% endset %}
 {% if editing and not sketch %}
 <div class="campaign-actions map-pin-actions">
@@ -13,6 +21,7 @@
   <span x-text="hasImage ? {{ _('Replace image')|tojson|forceescape }} : {{ _('Choose image')|tojson|forceescape }}"></span>
   <input type="file" accept="image/png,image/jpeg,image/webp" class="sr-only" @change="chooseImage($event)" :disabled="!canvasReady || generating"></label></template>
 {{ fullscreen_button }}
+{{ view_toggles }}
 {# The players' pins (#482), read only: shown here so the Warden sees them while editing. #}
 <template x-if="playerPins.length"><label class="campaign-check map-player-pins-toggle"><input type="checkbox" x-model="showPlayerPins" @change="syncCanvas()">
   <span x-text="{{ _('Show players’ pins')|tojson|forceescape }} + ' (' + playerPins.length + ')'"></span></label></template>
@@ -26,6 +35,7 @@
 <div class="campaign-actions">
 <button type="button" @click="loadCanvas()" x-show="!canvasReady" x-cloak>{{ _('Reload drawing editor') }}</button>
 {{ fullscreen_button }}
+{{ view_toggles }}
 </div>
 {% endif %}
 <iframe class="pointcrawl-canvas" x-ref="canvas"

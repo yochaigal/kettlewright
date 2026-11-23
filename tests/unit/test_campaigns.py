@@ -1490,8 +1490,8 @@ def test_west_marches_campaign_has_several_parties_that_can_move_or_go(setup):
 
 def test_old_parties_page_opens_campaigns(setup):
     app, client = setup
-    response = client.get('/users/user1/parties/')
-    assert response.status_code == 302 and response.location.endswith('/campaigns/')
+    response = client.get('/users/user1/parties/')  # Its Parties view: every party at once.
+    assert response.status_code == 302 and response.location.endswith('/campaigns/?view=parties')
     assert '/parties/"' not in client.get('/campaigns/').text.split('navbar-start', 1)[1].split('navbar-end', 1)[0]
 
 
@@ -1948,3 +1948,17 @@ def test_an_image_map_is_listed_as_an_image_and_unknown_kinds_are_refused(setup)
         assert [item['kind_label'] for item in wiki_maps([entry], lambda item: '')] == ['Image']
     assert client.post('/maps/new', data={'campaign_id': 1, 'title': 'X', 'kind': 'picture'}).status_code == 400
     assert 'value="image"' in client.get('/maps/new?campaign_id=1', follow_redirects=True).get_data(as_text=True)
+
+
+
+def test_maps_offer_the_clean_view_toggles(setup):
+    """Clean view (Discord feedback): the map editor shows or hides Excalidraw's drawing tools and its zoom and undo;
+    a map being read, its controls."""
+    app, client = setup
+    map_id, _ = create_map(client)
+    editor = client.get(f'/maps/{map_id}/edit').get_data(as_text=True)
+    assert "toggleCanvasUI('drawing')" in editor and "toggleCanvasUI('zoom')" in editor and 'Zoom and undo' in editor
+    reveal(client, map_entry_id(app, map_id))
+    party_map = client.get(f'/party/1/map/{map_id}/', follow_redirects=True).get_data(as_text=True)
+    assert "toggleCanvasUI('zoom')" in party_map and 'Map controls' in party_map
+    assert "toggleCanvasUI('drawing')" not in party_map  # Nothing to draw with on a map being read.
