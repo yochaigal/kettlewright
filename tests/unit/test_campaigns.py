@@ -1856,3 +1856,59 @@ def test_new_campaign_opens_its_own_dialog(setup):
     assert 'id="new-campaign-dialog"' in page and 'x-ref="createDialog"' in page and 'class="create-card' not in page
     assert '@click="$refs.createDialog.showModal()"' in page
     assert 'No campaigns yet.</p>' in page and page.count('New campaign</button>') == 1
+
+
+# Image maps (#506): a picture with pins. Its drawing is one locked image; pins, reveal and fog work as on any map.
+
+def image_drawing(width=1600, height=1000):
+    import base64
+    import io
+    from PIL import Image
+    picture = io.BytesIO()
+    Image.new('RGB', (8, 5), color='tan').save(picture, format='WEBP')
+    return {'elements': [{'id': 'map-image', 'type': 'image', 'x': 0, 'y': 0, 'width': width, 'height': height,
+                          'fileId': 'coast', 'locked': True}],
+            'files': {'coast': {'mimeType': 'image/webp',
+                                'dataURL': 'data:image/webp;base64,' + base64.b64encode(picture.getvalue()).decode()}}}
+
+
+def create_image_map(client, title='Coast of Vald'):
+    response = client.post('/maps/new', data={'campaign_id': 1, 'title': title, 'kind': 'image',
+                                              'draft': json.dumps({'nodes': [], 'edges': [], 'drawing': image_drawing()})})
+    assert response.status_code == 302, response.get_data(as_text=True)
+    graph = graph_from_article(client, response.location)
+    return graph['id'], client.get(f"/maps/{graph['id']}/data").json
+
+
+def test_an_image_map_is_a_locked_picture_with_pins_shown_to_the_party(setup):
+    app, client = setup
+    map_id, graph = create_image_map(client)
+    assert graph['kind'] == 'image'
+    [picture] = graph['drawing']['elements']
+    assert picture['type'] == 'image' and picture['locked'] is True and (picture['width'], picture['height']) == (1600, 1000)
+    with app.app_context():
+        entry = db.session.get(PointcrawlMap, map_id).entry
+        assert entry.category == 'topography'  # Not a Realm, Dungeon or Forest article: just a map.
+    # A pin, in the picture's coordinates.
+    graph['nodes'].append({'id': 'new-pin-1', 'number': 1, 'title': 'The keep', 'body': 'Burned.', 'category': 'map_note',
+                           'x': 1085, 'y': 447, 'reveal': True, 'content_changed': True})
+    graph = client.post(f'/maps/{map_id}/data', data={'graph': json.dumps(graph)}).json
+    assert [(node['x'], node['y']) for node in graph['nodes']] == [(1085, 447)]
+    assert reveal(client, map_entry_id(app, map_id)).status_code == 302
+    login(client, 2)
+    shown = client.get(f'/party/1/maps/{map_id}/data').json
+    assert shown['kind'] == 'image' and shown['drawing']['elements'][0]['type'] == 'image'
+    assert [node['title'] for node in shown['nodes']] == ['The keep']
+    page = client.get(f'/party/1/maps/{map_id}/', follow_redirects=True).get_data(as_text=True)
+    assert 'party-map-frame' in page and 'x-data="partyMap"' in page
+
+
+def test_an_image_map_is_listed_as_an_image_and_unknown_kinds_are_refused(setup):
+    from app.lib.campaign_wiki import wiki_maps
+    app, client = setup
+    map_id, _ = create_image_map(client)
+    with app.app_context():
+        entry = db.session.get(PointcrawlMap, map_id).entry
+        assert [item['kind_label'] for item in wiki_maps([entry], lambda item: '')] == ['Image']
+    assert client.post('/maps/new', data={'campaign_id': 1, 'title': 'X', 'kind': 'picture'}).status_code == 400
+    assert 'value="image"' in client.get('/maps/new?campaign_id=1', follow_redirects=True).get_data(as_text=True)

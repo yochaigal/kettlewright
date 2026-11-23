@@ -316,7 +316,7 @@ def preview_files(entries, owner_id=None):
         # (older archives made every such article a map).
         for row in rows:
             if row['category'] == 'map' and row['type'].casefold() != 'map':
-                row['category'] = row['kind'] if row['kind'] != 'freeform' else 'topography'
+                row['category'] = row['kind'] if row['kind'] in ('realm', 'dungeon', 'forest') else 'topography'
     # Format 2 map files: the block is the map; a map of an article (article: id) goes on that article.
     by_id = {row['id']: row for row in rows if row['id']}
     for row in list(rows):
@@ -492,7 +492,7 @@ def import_preview(payload, owner_id, into=None, slug='', module=None, name=''):
         if graph or row['category'] == 'map':
             db.session.add(PointcrawlMap(entry=entry, kind=graph['kind'] if graph else row['kind'],
                                          drawing=graph['drawing'] if graph else None))
-            if row['kind'] != 'freeform':
+            if row['kind'] in ('realm', 'dungeon', 'forest'):
                 entry.category = row['kind']
             elif row['category'] == 'map':
                 entry.category = 'topography'

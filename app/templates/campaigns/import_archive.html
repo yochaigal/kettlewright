@@ -33,7 +33,7 @@ parent_id: article-0001
 ---
 Mara knows the river paths.</code></pre>
 <p>{{ _('id is optional and only used inside the module: parent_id names a parent by its id (or parent by its exact title), links lists related articles by id, and a map lists its points and paths by id. Without front matter, the title comes from the first # heading (or the file name) and the type is Note.') }}</p>
-<p>{{ _('Maps are written by Kettlewright when you export (type: Map, map_type: realm, dungeon, forest or freeform, and a kettlewright-map block); a map file without that block is an empty map to draw. Download the example to see every part.') }}
+<p>{{ _('Maps are written by Kettlewright when you export (type: Map, map_type: realm, dungeon, forest, freeform or image, and a kettlewright-map block); a map file without that block is an empty map to draw. Download the example to see every part.') }}
 <a href="{{ url_for('campaigns.import_example') }}">{{ _('Download an example module') }}</a></p>
 <p>{{ _('Older archives (campaign.md, maps/*.json, manifest.json, and .excalidraw drawings attached with map:) still import.') }}</p>
 <p>{{ _('Limits: 50 MB archive, 500 files, 512 KB per Markdown file (16 MB for map files), 100 MB unpacked, 50,000 description characters and 20 hierarchy levels. Each map supports 200 points, 800 paths and a 12 MB drawing with 2000 elements. Markdown image URLs stay as references. Previews expire after one hour.') }}</p>

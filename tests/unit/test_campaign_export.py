@@ -178,3 +178,22 @@ def test_empty_module_export(setup):
     assert preview['errors'] == [] and len(preview['rows']) == 1
     with app.app_context():
         assert import_preview(preview, 1) == (1, 0)
+
+
+def test_an_image_map_exports_with_its_picture_and_imports_as_an_image_map(setup):
+    from test_campaigns import create_image_map
+    app, client = setup
+    map_id, _ = create_image_map(client)
+    response = client.get(module_url(app, 1, 'export'))
+    with zipfile.ZipFile(io.BytesIO(response.data)) as exported:
+        map_file = exported.read('maps/coast-of-vald.md').decode()
+        assert 'map_type: image' in map_file and 'data:image/webp;base64,' in map_file  # The picture travels in the map.
+    preview = preview_archive(response.data)
+    assert preview['errors'] == []
+    with app.app_context():
+        original = db.session.get(PointcrawlMap, map_id)
+        import_preview(preview, 2)
+        db.session.commit()
+        imported = PointcrawlMap.query.join(ContentEntry).filter(ContentEntry.owner_id == 2).one()
+        assert imported.kind == 'image' and imported.entry.category == 'topography'
+        assert imported.drawing == original.drawing

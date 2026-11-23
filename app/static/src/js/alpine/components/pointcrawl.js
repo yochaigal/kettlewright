@@ -2,6 +2,12 @@ import {localizeDraft, localizeGraph, localizeText} from '../../generator-locale
 import {draftPreview, generateSettingArticle} from '../../setting_articles.js';
 import {generateResult, graphFromResult, nestedMapDraft, suggestedMapKind} from '../../content_generators.js';
 import {emptyDrawing} from '../../maps/scene.js';
+import {encodeImage} from '../../maps/whiteboard_images.js';
+import {imageAspect} from '../../maps/viewport.js';
+
+// An image map's picture (#506) leaves room in the 12 MB drawing for pins' notes and the rest.
+const IMAGE_MAP_LIMIT = 10 * 1024 * 1024;
+const IMAGE_MAP_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 import {settingName} from '../../naming.js';
 
 export default function pointcrawl() {
@@ -28,6 +34,8 @@ export default function pointcrawl() {
       this.onPinSize=event=>{if(this.editing){this.graph.pin_size=event.detail;}};
       window.addEventListener('kw-pin-size',this.onPinSize);
       this.$watch('graph', () => {this.dirty=true;if(!this.receivingCanvas)this.syncCanvas();});
+      this.$watch('kind', () => this.syncCanvas());  // New map: Drawing or Image (#506).
+      this.$nextTick(() => this.shapeFrame());
       this.$watch('selected', () => {
         this.nestedKind=suggestedMapKind(this.selectedNode || {}) || 'dungeon';
         if (this.selectionFromCanvas) {this.selectionFromCanvas=false;return;}
@@ -145,8 +153,39 @@ export default function pointcrawl() {
     sendCanvas(type,detail={}) {
       this.$refs.canvas?.contentWindow?.postMessage({channel:'kw-map',type,...detail},location.origin);
     },
+    // Readers see an image map in a frame of the picture's shape (#506).
+    shapeFrame() {
+      const aspect=this.kind==='image' && !this.editing ? imageAspect(this.graph.drawing) : null;
+      this.$refs.canvas?.classList.toggle('is-image-map',Boolean(aspect));
+      if(this.$refs.canvas)this.$refs.canvas.style.aspectRatio=aspect ? String(aspect) : '';
+    },
+    get hasImage() {return Boolean(this.graph.drawing?.elements?.some(element=>element.type==='image' && !element.isDeleted));},
+    // New map > Image, or Replace image (#506): PNG, JPEG or WebP, kept as WebP within the drawing's size.
+    async chooseImage(event) {
+      const input=event.target, file=input.files?.[0];
+      input.value='';
+      if(!file || !this.canvasReady || this.generating)return;
+      if(!IMAGE_MAP_TYPES.includes(file.type)){this.status=this.labels.imageType;return;}
+      this.generating=true;this.status=this.labels.imageLoading || '';
+      try {
+        const dataURL=await new Promise((resolve,reject)=>{
+          const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file);
+        });
+        let image=null;
+        for(const [quality,side] of [[0.85,4096],[0.8,3200],[0.75,2400],[0.7,1800]]) {
+          image=await encodeImage({dataURL,mimeType:file.type},{},quality,side);
+          if(image.dataURL.length<IMAGE_MAP_LIMIT)break;
+        }
+        if(image.dataURL.length>=IMAGE_MAP_LIMIT)throw new Error(this.labels.imageTooLarge);
+        this.sendCanvas('set-image',image);
+        this.status='';
+      } catch(error) {this.status=error?.message || this.labels.imageError || this.labels.error;}
+      finally {this.generating=false;}
+    },
     syncCanvas() {
-      this.sendCanvas('state',{graph:JSON.parse(JSON.stringify(this.graph)),editing:this.editing,
+      const graph=JSON.parse(JSON.stringify(this.graph));
+      graph.kind||=this.kind;
+      this.sendCanvas('state',{graph,editing:this.editing,
         selected:this.selected,selectedEdge:this.selectedEdge,dark:document.body.classList.contains('dark-mode'),
         pins:this.editing && this.showPlayerPins ? this.playerPins.map(({id,x,y,title})=>({id,x,y,title})) : [],
         selectedPin:this.selectedPlayerPin,

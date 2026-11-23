@@ -47066,12 +47066,12 @@ msgstr ""
 #: app/templates/campaigns/import_archive.html:36
 msgid ""
 "Maps are written by Kettlewright when you export (type: Map, map_type: "
-"realm, dungeon, forest or freeform, and a kettlewright-map block); a map "
+"realm, dungeon, forest, freeform or image, and a kettlewright-map block); a map "
 "file without that block is an empty map to draw. Download the example to "
 "see every part."
 msgstr ""
 "Kettlewright escribe los mapas al exportar (type: Map, map_type: realm, "
-"dungeon, forest o freeform, y un bloque kettlewright-map); un archivo de "
+"dungeon, forest, freeform o image, y un bloque kettlewright-map); un archivo de "
 "mapa sin ese bloque es un mapa vacío para dibujar. Descarga el ejemplo "
 "para ver todas las partes."
 
@@ -51187,3 +51187,38 @@ msgstr "Tira un libro de hechizos o una reliquia del Relicario, o explóralos to
 #: app/templates/main/tools.html
 msgid "A character to play or hire, with a background you choose or a random one, or an NPC to meet."
 msgstr "Un personaje para jugar o contratar, con el trasfondo que elijas o uno aleatorio, o un PNJ para conocer."
+
+#. New map: the Drawing / Image choice (#506)
+#: app/templates/campaigns
+msgid "Kind of map"
+msgstr "Tipo de mapa"
+
+#. Map editor: swap an image map's picture for a new version, keeping its pins (#506)
+#: app/templates/campaigns
+msgid "Replace image"
+msgstr "Reemplazar imagen"
+
+#. New map > Image: what an image map is (#506)
+#: app/templates/campaigns
+msgid "An image map is a picture you already have (a scan, an export from a map tool, an adventure’s map). The party sees the picture alone. Choose image, then add pins with notes; fog and reveals work as on any map."
+msgstr "Un mapa de imagen es una imagen que ya tienes (un escaneo, una exportación de una herramienta de mapas, el mapa de una aventura). El grupo ve solo la imagen. Elige la imagen y añade marcadores con notas; la niebla y las revelaciones funcionan como en cualquier mapa."
+
+#. Image map: a file that is not PNG, JPG or WebP (#506)
+#: app/templates/campaigns
+msgid "Choose a PNG, JPG or WebP image."
+msgstr "Elige una imagen PNG, JPG o WebP."
+
+#. Image map: the picture does not fit in a map (#506)
+#: app/templates/campaigns
+msgid "This image is too large for a map. Try a smaller one."
+msgstr "Esta imagen es demasiado grande para un mapa. Prueba con una más pequeña."
+
+#. Image map: while the picture is compressed (#506)
+#: app/templates/campaigns
+msgid "Preparing the image…"
+msgstr "Preparando la imagen…"
+
+#. Image map: the browser could not read the picture (#506)
+#: app/templates/campaigns
+msgid "Unable to read this image. Try another one."
+msgstr "No se pudo leer esta imagen. Prueba con otra."

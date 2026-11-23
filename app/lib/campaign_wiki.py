@@ -68,7 +68,8 @@ def _find(items, entry_id):
     return None
 
 
-_MAP_KINDS = {'realm': N_('Realm'), 'dungeon': N_('Dungeon'), 'forest': N_('Forest'), 'freeform': N_('Freeform')}
+_MAP_KINDS = {'realm': N_('Realm'), 'dungeon': N_('Dungeon'), 'forest': N_('Forest'), 'freeform': N_('Freeform'),
+              'image': N_('Image')}
 
 
 def wiki_maps(entries, url):
