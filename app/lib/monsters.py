@@ -145,6 +145,27 @@ def new_monster(party, template):
     return c
 
 
+def number_monsters(party, instances):
+    """Several of the same monster at once get numbers (Goblin 1, Goblin 2…), so their tokens, rolls and
+    HP can be told apart (#375). Numbering continues after the party's monsters already numbered."""
+    import re
+    from collections import Counter
+    counts = Counter(c.name for c in instances)
+    taken = {}
+    for c in party.monsters:
+        if c in instances:
+            continue
+        match = re.fullmatch(r'(.+) ([0-9]{1,4})', c.name or '')
+        if match:
+            taken[match[1]] = max(taken.get(match[1], 0), int(match[2]))
+    for c in instances:
+        if counts[c.name] < 2 and c.name not in taken:
+            continue
+        base = c.name[:94]
+        taken[base] = taken.get(base, 0) + 1
+        c.name = f'{base} {taken[base]}'
+
+
 def give_monster(c, character):
     if c.kind != 'monster' or c.party is None or character.party_id != c.party_id or character.id not in json.loads(c.party.members or '[]'):
         raise ValueError('Choose a current character in this monster’s party.')

@@ -724,6 +724,8 @@ pointer-events: none;
     box-sizing: border-box;
     width: 100%;
     p { flex: 0 1 auto; width: auto; margin: 0; text-align: left; }
+    .monster-numbering { display: inline-flex; align-items: center; gap: 6px; margin: 0; white-space: nowrap; }
+    .monster-numbering input { width: auto; margin: 0; }
   }
   .monster-add-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
   @media (max-width: 600px) {

@@ -51297,3 +51297,7 @@ msgstr "Herramientas de niebla"
 #: app/templates/campaigns/party_map.html
 msgid "Hide fog tools"
 msgstr "Ocultar herramientas de niebla"
+
+#. Add monsters dialog: number several of the same monster (Goblin 1, Goblin 2)
+msgid "Number copies"
+msgstr "Numerar copias"

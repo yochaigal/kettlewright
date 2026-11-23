@@ -631,3 +631,18 @@ def test_localized_bestiary_translates_text_and_keeps_portraits(shared):
             assert template['image_url'] == english[key]['image_url']
         monster = new_monster(None, catalog['acolyte'])
         assert monster.image_url == english['acolyte']['image_url']
+
+
+def test_several_of_one_monster_are_numbered_after_the_party_s_own(shared):
+    """#375: Goblin 1, Goblin 2… so tokens, rolls and HP can be told apart."""
+    app, clients, _ = shared
+    names = lambda: [c.name for c in Companion.query.filter_by(party_id=1, kind='monster').order_by(Companion.id)]
+    form = {'template': ['wolf', 'creeping-vines'], 'quantity_wolf': '2', 'quantity_creeping-vines': '1', 'number_monsters': 'on'}
+    assert clients[1].post('/parties/1/monsters', data=form).status_code == 302
+    with app.app_context():
+        assert names() == ['Wolf 1', 'Wolf 2', 'Creeping Vines']
+    # Numbering goes on from the party's numbered ones, even for a single new Wolf.
+    assert clients[1].post('/parties/1/monsters', data={'template': 'wolf', 'number_monsters': 'on'}).status_code == 302
+    assert clients[1].post('/parties/1/monsters', data={'template': 'wolf', 'quantity_wolf': '2'}).status_code == 302
+    with app.app_context():
+        assert names()[3:] == ['Wolf 3', 'Wolf', 'Wolf']
