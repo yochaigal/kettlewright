@@ -40,6 +40,8 @@ function imageMapLook() {
   const image = isImageMap();
   document.body.classList.toggle('image-map', image);
   document.body.classList.toggle('image-map-reading', image && !state.editing);
+  // Drawing on a map: the tools are a rail on the side, as on the whiteboard (editor.html).
+  document.body.classList.toggle('drawing-editor', !image && Boolean(state.editing));
   return image ? {gridModeEnabled: false, viewBackgroundColor: 'transparent', zenModeEnabled: !state.editing}
     : {gridModeEnabled: true};
 }

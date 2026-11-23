@@ -16,7 +16,20 @@
   /* An image map (#506) read by a party: the picture alone, no editor UI (zoom with the wheel or a pinch). */
   body.image-map{background:transparent}
   body.image-map-reading .excalidraw .layer-ui__wrapper,body.image-map-reading .excalidraw .disable-zen-mode,
-  body.image-map-reading .excalidraw .App-bottom-bar,body.image-map-reading .excalidraw .footer-center{display:none!important}</style>
+  body.image-map-reading .excalidraw .App-bottom-bar,body.image-map-reading .excalidraw .footer-center{display:none!important}
+  /* Drawing on a map: Excalidraw's tools as a rail down the left side, not a bar across the top of the map, the same
+     rail as the whiteboard's (shared_map.css). Narrow frames keep Excalidraw's own layout. */
+  @media (min-width:901px){
+    body.drawing-editor .excalidraw .App-menu_top .shapes-section{position:absolute;top:64px;left:0}
+    body.drawing-editor .excalidraw .App-toolbar-container{align-items:start;gap:8px}
+    body.drawing-editor .excalidraw .App-toolbar .Stack_horizontal{grid-auto-flow:row}
+    body.drawing-editor .excalidraw .App-menu_top .layer-ui__wrapper__top-right{grid-column:3}
+    body.drawing-editor .excalidraw .App-toolbar__divider{width:24px;height:1px;margin:4px 0}
+    body.drawing-editor .excalidraw .HintViewer{display:none}
+    body.drawing-editor .excalidraw .App-toolbar__extra-tools-dropdown{top:auto;bottom:0;left:calc(100% + 8px);right:auto;margin-top:0}
+    body.drawing-editor .excalidraw .App-menu__left{margin-left:64px}
+    body.drawing-editor .excalidraw .layer-ui__wrapper__footer-left{margin-left:64px}  /* Zoom beside the rail, not under it. */
+  }</style>
   <script>window.EXCALIDRAW_ASSET_PATH = 'https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/';</script>
   <script type="importmap">
   {"imports": {

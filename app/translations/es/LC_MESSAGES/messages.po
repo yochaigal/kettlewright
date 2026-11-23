@@ -51237,3 +51237,18 @@ msgstr "Tus grupos"
 #: app/templates/campaigns/index.html
 msgid "No parties yet. A campaign starts with one."
 msgstr "Aún no hay grupos. Cada campaña empieza con uno."
+
+#. Whiteboard: × on the Warden's Dungeon and Fog tools (Discord feedback)
+#: app/templates/main/shared_map.html
+msgid "Hide Warden tools"
+msgstr "Ocultar herramientas del Guardián"
+
+#. Whiteboard: × on the dice roller (Discord feedback)
+#: app/templates/main/shared_map.html
+msgid "Hide dice roller"
+msgstr "Ocultar lanzador de dados"
+
+#. Whiteboard top bar: shows or hides the dice roller (Discord feedback)
+#: app/templates/main/shared_map.html
+msgid "Dice roller"
+msgstr "Lanzador de dados"

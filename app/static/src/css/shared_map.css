@@ -63,6 +63,8 @@ body.warden-board .excalidraw .HintViewer { display: none; }
 body.warden-board .excalidraw .App-toolbar__extra-tools-dropdown { top: auto; bottom: 0; left: calc(100% + 8px); right: auto; margin-top: 0; }
 /* The selected shape's properties (opacity, layers, actions) open beside the rail and laser, not under them. */
 body.warden-board .excalidraw .App-menu__left { margin-left: 100px; }
+/* Zoom and undo beside the rail, not under it on a short screen. */
+body.warden-board .excalidraw .layer-ui__wrapper__footer-left { margin-left: 64px; }
 /* Narrow screens use Excalidraw's mobile layout; keep the Warden tools as a row above the board. */
 @media (max-width: 900px) {
   .board-stage { flex-direction: column; }
@@ -73,6 +75,7 @@ body.warden-board .excalidraw .App-menu__left { margin-left: 100px; }
   body.warden-board .excalidraw .App-toolbar__divider { width: 1px; height: 24px; margin: 0; }
   body.warden-board .excalidraw .HintViewer { display: revert; }
   body.warden-board .excalidraw .App-menu__left { margin-left: 0; }
+  body.warden-board .excalidraw .layer-ui__wrapper__footer-left { margin-left: 0; }
   body.warden-board .excalidraw .App-toolbar__extra-tools-dropdown { top: 100%; bottom: auto; left: auto; right: 0; margin-top: .375rem; }
 }
 #fog-status { font-size: 12px; }
@@ -216,13 +219,19 @@ body.warden-board .excalidraw .App-menu__left { margin-left: 100px; }
 .board-roll-tool[hidden] { display: none; }
 .board-roll-tool:hover { border-color: #8278c8; }
 .board-roll-tool:focus-visible { outline: 2px solid #8278c8; outline-offset: 2px; }
-#board-roll-minimize { padding: 2px 7px; }
-/* Minimized: one compact line out of the way, in the corner, still showing the last result. */
-.board-rolls.is-minimized { left: auto; right: 16px; transform: none; padding: 5px 8px; }
-.board-rolls.is-minimized .board-roll-heading { margin-bottom: 0; flex-wrap: nowrap; }
-.board-rolls.is-minimized #board-roll-actions, .board-rolls.is-minimized .board-roll-public,
-.board-rolls.is-minimized #board-roll-actor, .board-rolls.is-minimized #board-roll-3d { display: none; }
-.board-rolls.is-minimized #board-roll-result { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* The board's two floating panels, the Warden tools and the dice roller, share one frame (Discord feedback): Excalidraw's
+   island, so they read as part of the board. Each hides with the same ×; the top bar brings it back. */
+.board-island, .board-rolls { border: 0; border-radius: 8px; background: var(--board-panel);
+  box-shadow: 0 0 0 1px #0000000d, 0 1px 3px #0000001f, 0 4px 12px #00000014; }
+body.dark-mode .board-island, body.dark-mode .board-rolls { box-shadow: 0 0 0 1px #ffffff14, 0 1px 3px #0006, 0 4px 12px #0005; }
+.board-island .board-panel-hide, .board-rolls .board-panel-hide { display: inline-flex; align-items: center; justify-content: center;
+  flex: none; width: 28px; height: 28px; margin: 0 0 0 auto; padding: 0; border: 0; border-radius: 6px; background: none;
+  color: var(--board-text); font: inherit; font-size: 14px; opacity: .6; cursor: pointer; }
+.board-island .board-panel-hide:hover, .board-rolls .board-panel-hide:hover { opacity: 1; background: var(--board-active); }
+.board-panel-hide:focus-visible { outline: 2px solid #8278c8; outline-offset: 2px; opacity: 1; }
+.is-user-hidden { display: none !important; }
+/* With the roller hidden, roll results show near the bottom instead of above it. */
+.board-roll-osd:has(~ .board-rolls.is-user-hidden) { bottom: 24px; }
 /* On-screen roll results (#385), stacked above the roller. */
 .board-roll-osd { position: fixed; z-index: 6; left: 50%; bottom: 130px; transform: translateX(-50%);
   display: flex; flex-direction: column; align-items: center; gap: 6px; width: max-content; max-width: calc(100vw - 32px); pointer-events: none; }
@@ -242,8 +251,6 @@ body.dark-mode .board-roll-osd-item { background: #e8e2d3f0; color: #141414; }
   .board-roll-actions[data-mode="warden"] button:nth-last-child(-n+2) { grid-column: span 2; }
   #board-roll-result { flex-basis: 100%; text-align: left; }
   #board-roll-result:empty { display: none; }
-  .board-rolls.is-minimized { width: auto; right: 8px; }
-  .board-rolls.is-minimized #board-roll-result { flex-basis: auto; }
   .board-roll-osd { bottom: 200px; }
-  .board-rolls.is-minimized ~ .board-roll-osd, .board-roll-osd:has(~ .board-rolls.is-minimized) { bottom: 110px; }
+  .board-roll-osd:has(~ .board-rolls.is-user-hidden) { bottom: 24px; }
 }

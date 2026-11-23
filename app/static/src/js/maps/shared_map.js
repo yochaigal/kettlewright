@@ -21,6 +21,7 @@ import {createTokenPortraits} from './token_portraits.js';
 import {createImageCompressor} from './whiteboard_images.js';
 import {setupCharacterSheet} from './character_sheet.js';
 import {editorLocale} from './locale.js';
+import {hideablePanel} from './board_panels.js';
 
 const config = JSON.parse(document.getElementById('shared-map-config').textContent);
 // The whiteboard keeps its own 3D dice choice (#436); set before the roller and dice modal read it.
@@ -405,6 +406,10 @@ if (config.warden) {
     stopBrushes();
     button.setAttribute('aria-pressed', String(active)); dungeon.setTool(active ? button.dataset.dungeonTool : '');
   }));
+  // Hide the Warden tools (Discord feedback): × on the bar, Warden tools in the top bar shows it again. A brush in
+  // use is put down, since its button is hidden.
+  hideablePanel({panel: document.querySelector('.board-toolbar.board-island'), hide: document.querySelector('#board-tools-hide'),
+    toggle: document.querySelector('#board-tools-toggle'), key: 'board-tools-hidden', onHide: stopBrushes});
   // The island's "more" menus close after a choice or a click elsewhere.
   document.querySelectorAll('.tool-more').forEach(menu => menu.addEventListener('click', event => {
     if (event.target.closest('.tool-menu button')) menu.open = false;
