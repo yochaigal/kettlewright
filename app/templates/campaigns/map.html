@@ -25,6 +25,16 @@
 <label class="campaign-check map-world-field"><input type="checkbox" name="world_map" value="1" {% if pointcrawl.world_map %}checked{% endif %}>
  {{ _('World Map of %(campaign)s', campaign=campaign.name) }}</label>{% endif %}
 </form>
+{# Fog is per party (#514): each party's map has the fog tools. Without this the Warden has to know to look there. #}
+<section class="map-fog-links" aria-labelledby="map-fog-title">
+<h2 id="map-fog-title"><i class="fa-solid fa-cloud" aria-hidden="true"></i> {{ _('Fog') }}</h2>
+{% if fog_parties %}
+<p>{{ _('Each party sees this map under its own fog. Cover and uncover it on the party’s map:') }}</p>
+<div class="campaign-actions">{% for party in fog_parties %}<a href="{{ url_for('campaigns.party_map_view', party_id=party.id, map_id=pointcrawl.id) }}"><i class="fa-solid fa-cloud" aria-hidden="true"></i> {{ party.name|markdown_inline|striptags }}</a>{% endfor %}</div>
+{% else %}
+<p>{{ _('Fog is per party: reveal this map to a party, then cover and uncover it on that party’s map.') }}</p>
+{% endif %}
+</section>
 {% include 'campaigns/map_panel.html' %}
 <div class="campaign-actions campaign-footer-actions article-delete danger-zone">
 {% call modal('delete-map-modal', _('Delete map…'), _('Delete map?')) %}

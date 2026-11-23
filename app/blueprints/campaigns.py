@@ -1578,8 +1578,11 @@ def map_edit(map_id):
                     'party': pin.party.name, 'note': pin.entry.title, 'html': str(render_content(pin.entry.body)),
                     'url': url_for('campaigns.party_map_view', party_id=pin.party_id, map_id=pointcrawl.id)}
                    for pin in sorted(pointcrawl.pins, key=lambda pin: pin.id)]
+    # Fog is per party, on each party's own map (#514): the parties shown this map, to open there.
+    fog_parties = sorted((row.party for row in PartyPresentation.query.filter_by(entry_id=entry.id, published=True)
+                          if row.party.owner == current_user.id), key=lambda party: party.name.casefold())
     return render_template('campaigns/map.html', entry=entry, pointcrawl=pointcrawl, campaign=entry.campaign,
-        player_pins=player_pins, pin_sizes=PIN_SIZES,
+        player_pins=player_pins, pin_sizes=PIN_SIZES, fog_parties=fog_parties,
         module=entry.module, party=None, graph=map_projection(pointcrawl), editing=True, embedded=True,
         module_groups=module_choices(), inside=maps_showing(entry), article_url=None if map_only(entry) else
         url_for('campaigns.edit_entry', entry_id=entry.id), reveal_parties=reveal_choices(entry),
