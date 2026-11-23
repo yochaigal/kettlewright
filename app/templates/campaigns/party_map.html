@@ -35,6 +35,8 @@
     <div class="wiki-actions">
       {# A map has no text; a place with its own map (a dungeon point) does. #}
       {% if not map_only %}<a class="button wiki-edit" href="{{ url_for('campaigns.party_entry', party_id=party.id, entry_id=pointcrawl.entry_id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read article') }}</a>{% endif %}
+      {# Back to the map's editor (#514): pins, picture and reveals are there; fog is here. #}
+      {% if warden and pointcrawl.entry.owner_id == current_user.id %}<a class="button wiki-edit" href="{{ url_for('campaigns.map_edit', map_id=pointcrawl.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit map') }}</a>{% endif %}
       <button type="button" class="button wiki-edit" @click="fullscreen()" :disabled="!canvasReady"><i class="fa-solid fa-expand" aria-hidden="true"></i> {{ _('Full screen') }}</button>
       <button type="button" class="button wiki-edit kw-add" :class="{'is-active': picking}" @click="startPin()" :disabled="!canvasReady"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span x-text="picking ? {{ _('Cancel pin')|tojson|forceescape }} : {{ _('Add pin')|tojson|forceescape }}">{{ _('Add pin') }}</span></button>
     </div>
@@ -47,7 +49,7 @@
     <button type="button" class="fog-button" @click="fogAction('hide_all')">{{ _('Cover all') }}</button>
     <button type="button" class="fog-button" @click="fogAction('reveal_all')">{{ _('Clear all') }}</button>
     <button type="button" class="fog-button" :aria-pressed="fogTool === 'reveal'" @click="setFogTool('reveal')" :disabled="!fog?.enabled">{{ _('Reveal brush') }}</button>
-    <button type="button" class="fog-button" :aria-pressed="fogTool === 'hide'" @click="setFogTool('hide')" :disabled="!fog?.enabled">{{ _('Hide brush') }}</button>
+    <button type="button" class="fog-button" :aria-pressed="fogTool === 'cover'" @click="setFogTool('cover')" :disabled="!fog?.enabled">{{ _('Hide brush') }}</button>
     <label class="fog-size">{{ _('Size') }} <input type="range" min="15" max="250" step="5" x-model="fogRadius" @change="setRadius()"></label>
     <button type="button" class="fog-button" @click="fogAction('undo')" :disabled="!fog?.enabled || !fog?.strokes?.length">{{ _('Undo') }}</button>
     <button type="button" class="fog-button" @click="fogAction('disable')" :disabled="!fog?.enabled">{{ _('Turn off fog') }}</button>
