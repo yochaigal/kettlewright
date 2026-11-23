@@ -78,6 +78,8 @@
           <p class="monster-add-hint"><small><a href="https://cairnrpg.com/resources/monsters/" target="_blank" rel="noopener noreferrer">{{_('Cairn bestiary')}}</a> · Yochai Gal &amp; contributors · CC-BY-SA 4.0</small>
             <small {% if monster_art != 'oozejar' %}hidden{% endif %} :hidden="art !== 'oozejar'"><br>{{_('Art:')}} <a href="https://oozejar.com" target="_blank" rel="noopener noreferrer">Oozejar</a>, <a href="https://gourdin-konbo-club.itch.io/illustrated-bestiary" target="_blank" rel="noopener noreferrer">{{_('Illustrated Bestiary')}}</a> · <a href="https://github.com/ByteMirror/atlas-vtt-cairn" target="_blank" rel="noopener noreferrer">{{_('Cairn for Atlas VTT')}}</a> · CC-BY-SA 4.0</small></p>
           <div class="modal-card-foot monster-selection-actions">
+            {# Several of one monster get numbers: Goblin 1, Goblin 2 (#375). #}
+            <label class="monster-numbering"><input type="checkbox" name="number_monsters" checked> {{_('Number copies')}}</label>
             <p aria-live="polite">{{_('Selected instances:')}} <output id="monster-total">0</output> / 100</p>
             <div class="monster-add-buttons">
               <button type="button" @click="hide()">{{_('Cancel')}}</button>
@@ -114,7 +116,7 @@
     </div>
           </div>
           <div class="modal-card-foot monster-selection-actions">
-            <span></span>
+            <label class="monster-numbering"><input type="checkbox" name="number_monsters" checked> {{_('Number copies')}}</label>
             <div class="monster-add-buttons">
               <button type="button" @click="hide()">{{_('Cancel')}}</button>
               <button type="submit" class="monster-add-submit">{{_('Import monsters')}}</button>

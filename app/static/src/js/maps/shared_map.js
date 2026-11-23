@@ -94,7 +94,7 @@ const rollOsd = createRollOsd({container: document.getElementById('board-roll-os
   format: (name, result) => config.messages.rolled.replace('{name}', name).replace('{result}', result)});
 const boardRolls = createBoardRolls({config, getApi: () => api, updates: actorUpdates,
   canRoll: () => initialized && !stopped && !importing && !playerPreview,
-  isPlayerPreview: () => playerPreview, osd: rollOsd});
+  isPlayerPreview: () => playerPreview, osd: rollOsd, onActive: id => tokenStats.setActive(id)});
 const tokenStats = createTokenStats({editor, config, getApi: () => api, updates: actorUpdates,
   confirmReveal: boardControls.confirmReveal,
   canReveal: () => config.warden && initialized && !stopped && !importing && !playerPreview,

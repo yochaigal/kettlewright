@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from app.lib import *
 from app.models import db, User, Character, Party, PartyRoll, PartyMap
 from app.socket_events import party_recipient_ids, notify_roll_history_changed
-from app.lib.quick_stats import save_current_stat
+from app.lib.quick_stats import save_character_stat, save_current_stat
 from app.lib.companions import save_item_to_companion, finish_companion_transfers, can_transfer_from
 from flask_wtf import FlaskForm
 from app.forms import *
@@ -371,13 +371,25 @@ def shared_map_roll_actors(party_id):
 
 
 def _board_roll_actors(target):
+    # The roller is also the selected token's panel (#375): its HP, attributes, conditions and sheet.
+    # The Warden rolls for their monsters and edits every character; a player edits and rolls for their own.
+    def character(c):
+        return dict(id=str(c.id), name=c.name, kind='character', hp=[c.hp or 0, c.hp_max or 0],
+                    attributes={field: [getattr(c, field) or 0, getattr(c, field + '_max') or 0]
+                                for field in ('strength', 'dexterity', 'willpower')},
+                    conditions={'deprived': bool(c.deprived), 'panicked': bool(c.panicked)},
+                    statUrl=url_for('party.update_member_stat', party_id=target.id, character_id=c.id),
+                    sheetUrl=url_for('main.character', username=c.owner_username, url_name=c.url_name)
+                    if c.owner_username and c.url_name else None)
     if target.owner == current_user.id:
         actors = [dict(id=f'companion:{c.id}', name=c.name, kind='monster',
                        stats={field: getattr(c, field) for field in ('strength', 'dexterity', 'willpower')},
-                       damage=c.attack_dice) for c in target.monsters]
+                       damage=c.attack_dice, hp=[c.hp or 0, c.hp_max or 0],
+                       statUrl=url_for('companions.stat', companion_id=c.id),
+                       sheetUrl=url_for('companions.sheet', companion_id=c.id)) for c in target.monsters]
+        actors += [character(c) for c in party_characters(target)]
     else:
-        actors = [dict(id=str(c.id), name=c.name, kind='character')
-                  for c in party_characters(target) if c.owner == current_user.id]
+        actors = [character(c) for c in party_characters(target) if c.owner == current_user.id]
     return actors
 
 
@@ -553,6 +565,9 @@ def update_member_stat(party_id, character_id):
         abort(404)
     if current_user.id not in (target_party.owner, character.owner):
         abort(403)
+    # The whiteboard's token panel (#375) also sets Deprived and Panicked.
+    if request.form.get('stat') in ('deprived', 'panicked'):
+        return save_character_stat(character)
     return save_current_stat(character)
 
 

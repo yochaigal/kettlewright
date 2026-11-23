@@ -25,7 +25,7 @@ def helpers():
 @companions.route('/parties/<int:party_id>/monsters', methods=['GET', 'POST'])
 @login_required
 def monsters(party_id):
-    from app.lib.monsters import MAX_MONSTER_BATCH, MONSTER_ARTS, localized_monster_catalog, parse_monsters, new_monster
+    from app.lib.monsters import MAX_MONSTER_BATCH, MONSTER_ARTS, localized_monster_catalog, parse_monsters, new_monster, number_monsters
     party = db.get_or_404(Party, party_id)
     if party.owner != current_user.id:
         abort(403)
@@ -61,6 +61,8 @@ def monsters(party_id):
                         raise ValueError('Add at most 100 monster instances at a time.')
                     templates.extend([catalog[key]] * int(quantity))
             instances = [new_monster(party, template) for template in templates]
+            if request.form.get('number_monsters') == 'on':
+                number_monsters(party, instances)
             db.session.add_all(instances)
             db.session.commit()
             if len(instances) == 1:

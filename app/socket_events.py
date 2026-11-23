@@ -30,12 +30,16 @@ def notify_roll_history_changed(party):
 @event.listens_for(Session, 'after_flush')
 def collect_party_changes(session, flush_context):
     party_ids = session.info.setdefault('changed_party_ids', set())
+    actor_ids = session.info.setdefault('changed_actor_party_ids', set())
     for obj in session.new | session.dirty | session.deleted:
         if isinstance(obj, Character):
             party_ids.add(obj.party_id)
             party_ids.update(inspect(obj).attrs.party_id.history.deleted)
         elif isinstance(obj, Party) and inspect(obj).attrs.members.history.has_changes():
             party_ids.add(obj.id)
+        elif isinstance(obj, Companion) and obj.party_id:
+            # A monster's or hireling's HP or name changed (#375): the whiteboard's tokens refresh.
+            actor_ids.add(obj.party_id)
     party_ids.discard(None)
 
 
@@ -46,6 +50,11 @@ def resolve_party_changes(session, flush_context):
         party = session.get(Party, party_id)
         if party is not None:
             recipients[party_id] = party_recipient_ids(party)
+    actors = session.info.setdefault('actor_update_recipients', {})
+    for party_id in session.info.pop('changed_actor_party_ids', set()):
+        party = session.get(Party, party_id)
+        if party is not None:
+            actors[party_id] = party_recipient_ids(party)
 
 
 @event.listens_for(Session, 'after_commit')
@@ -62,12 +71,20 @@ def publish_party_changes(session):
                 # The data is already committed; a temporary transport failure
                 # must not turn a successful save into an HTTP error.
                 current_app.logger.exception('Unable to publish party update')
+    for party_id, recipients in session.info.pop('actor_update_recipients', {}).items():
+        for user_id in recipients:
+            try:
+                socketio.emit('party_actors_changed', {'party_id': party_id}, room=f'user_{user_id}')
+            except Exception:
+                current_app.logger.exception('Unable to publish party update')
 
 
 @event.listens_for(Session, 'after_rollback')
 def discard_party_changes(session):
     session.info.pop('changed_party_ids', None)
     session.info.pop('party_update_recipients', None)
+    session.info.pop('changed_actor_party_ids', None)
+    session.info.pop('actor_update_recipients', None)
 
 
 def register_socket_events(socketio):
