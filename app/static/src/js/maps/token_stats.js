@@ -16,11 +16,21 @@ export function tokenStatsPosition(element, state) {
     scale};
 }
 
+// The ring around the roller's token (#375): centred on the token, a little wider than it.
+export function tokenRingPosition(element, state) {
+  const zoom = state.zoom.value;
+  return {x: (element.x + element.width / 2 + state.scrollX) * zoom,
+    y: (element.y + element.height / 2 + state.scrollY) * zoom,
+    size: (Math.max(element.width, element.height) + 12) * zoom};
+}
+
 const statKeys = ['hp', 'strength', 'dexterity', 'willpower'];
 
 export function createTokenStats({editor, config, getApi, canReveal, confirmReveal, isPlayerPreview, updates}) {
   const layer = document.createElement('div'); layer.className = 'token-stats-layer';
   let actors = new Map(), nodes = new Map(), host = null, frame = null, stopped = false;
+  // The character or monster in the roller; its tokens get a ring, stats shown or not.
+  let active = null; const rings = new Map();
   const saving = new Set();
   function redraw() {if (!stopped && frame === null) frame = requestAnimationFrame(draw);}
   function draw() {
@@ -28,8 +38,15 @@ export function createTokenStats({editor, config, getApi, canReveal, confirmReve
     const api = getApi(), nextHost = editor.querySelector('.excalidraw');
     if (!api || !nextHost || stopped) return;
     if (host !== nextHost) {host = nextHost; host.append(layer);}
-    const state = api.getAppState(), visible = new Set();
+    const state = api.getAppState(), visible = new Set(), ringed = new Set();
     for (const element of api.getSceneElements()) {
+      if (active && !element.isDeleted && element.opacity !== 0 && actorKey(element.id) === active) {
+        const ring = tokenRingPosition(element, state);
+        let node = rings.get(element.id);
+        if (!node) {node = document.createElement('div'); node.className = 'token-ring'; rings.set(element.id, node); layer.append(node);}
+        Object.assign(node.style, {left: `${ring.x}px`, top: `${ring.y}px`, width: `${ring.size}px`, height: `${ring.size}px`});
+        ringed.add(element.id);
+      }
       const actor = actors.get(actorKey(element.id));
       if (!actor || element.isDeleted || element.opacity === 0 || (isPlayerPreview() && actor.kind === 'monster' && !actor.shared)) continue;
       const position = tokenStatsPosition(element, state);
@@ -43,6 +60,8 @@ export function createTokenStats({editor, config, getApi, canReveal, confirmReve
       }
       Object.assign(node.style, {left: `${position.x}px`, top: `${position.y}px`,
         transform: `translateX(-50%) scale(${position.scale})`});
+      // A monster at 0 HP is down (#375): its label dims, the token stays where the Warden left it.
+      node.classList?.toggle('is-down', actor.kind === 'monster' && actor.stats.hp?.[0] === 0);
       // Reuse DOM while moving a token so buttons keep their focus and pointer target.
       if (node.actor === actor) {
         const button = node.querySelector('button');
@@ -80,6 +99,7 @@ export function createTokenStats({editor, config, getApi, canReveal, confirmReve
       }
     }
     for (const [id, node] of nodes) if (!visible.has(id)) {node.remove(); nodes.delete(id);}
+    for (const [id, node] of rings) if (!ringed.has(id)) {node.remove(); rings.delete(id);}
   }
   function patchStats(node, actor) {
     const previous = node.actor;
@@ -130,8 +150,11 @@ export function createTokenStats({editor, config, getApi, canReveal, confirmReve
     finally {saving.delete(actor.id); redraw();}
   }
   const resize = new ResizeObserver(redraw); resize.observe(editor);
-  return {redraw, refresh, reset() {nodes.forEach(node => node.remove()); nodes.clear(); redraw();}, destroy() {
+  function setActive(id) {if ((id || null) !== active) {active = id || null; redraw();}}
+  return {redraw, refresh, setActive, reset() {
+    nodes.forEach(node => node.remove()); nodes.clear(); rings.forEach(node => node.remove()); rings.clear(); redraw();
+  }, destroy() {
     stopped = true; unsubscribe(); resize.disconnect();
-    if (frame !== null) cancelAnimationFrame(frame); layer.remove(); actors.clear(); nodes.clear();
+    if (frame !== null) cancelAnimationFrame(frame); layer.remove(); actors.clear(); nodes.clear(); rings.clear();
   }};
 }

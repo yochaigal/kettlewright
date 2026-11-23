@@ -549,9 +549,11 @@ def test_board_roll_actors_are_owned_and_monster_actions_follow_stats(shared):
         db.session.commit()
     path = '/party/1/shared-map/roll-actors'
     actors = clients[1].get(path).json['actors']
-    assert len(actors) == 1 and actors[0]['id'] == f'companion:{cid}'
+    # The Warden's monsters, then the party's characters, which the Warden edits but doesn't roll for (#375).
+    assert [(a['id'], a['kind']) for a in actors] == [(f'companion:{cid}', 'monster'), ('1', 'character')]
     assert actors[0]['damage'] == ['d6+d6', 'd8'] and actors[0]['stats']['strength'] == 7
-    assert clients[2].get(path).json['actors'] == [{'id': '1', 'name': 'Player', 'kind': 'character'}]
+    player = clients[2].get(path).json['actors']
+    assert [(a['id'], a['name'], a['kind']) for a in player] == [('1', 'Player', 'character')]
     for user in (3, 4):
         assert clients[user].get(path).status_code == 403
     for user in (1, 2):
@@ -646,3 +648,45 @@ def test_several_of_one_monster_are_numbered_after_the_party_s_own(shared):
     assert clients[1].post('/parties/1/monsters', data={'template': 'wolf', 'quantity_wolf': '2'}).status_code == 302
     with app.app_context():
         assert names()[3:] == ['Wolf 3', 'Wolf', 'Wolf']
+
+
+def test_the_board_s_token_panel_saves_hp_and_conditions_live(shared):
+    """#375: the roller is the selected token's panel; a monster's HP reaches every viewer at once."""
+    app, clients, sockets = shared
+    cid = summon(clients)
+    path = '/party/1/shared-map/roll-actors'
+    monster = clients[1].get(path).json['actors'][0]
+    assert monster['hp'][0] == monster['hp'][1] > 0 and monster['statUrl'] == f'/companions/{cid}/stat'
+    assert monster['sheetUrl'] == f'/companions/{cid}' and 'conditions' not in monster
+    character = clients[2].get(path).json['actors'][0]
+    assert character['conditions'] == {'deprived': False, 'panicked': False}
+    for socket in sockets.values():
+        socket.get_received()
+    assert clients[1].post(monster['statUrl'], data={'stat': 'hp', 'value': '0'}).status_code == 204
+    assert any(e['name'] == 'party_actors_changed' for e in sockets[2].get_received())
+    assert sockets[3].get_received() == sockets[4].get_received() == []
+    assert clients[1].get(path).json['actors'][0]['hp'][0] == 0
+    stats = {a['id']: a for a in clients[1].get('/party/1/shared-map/stats').json['actors']}
+    assert stats[f'companion:{cid}']['stats']['hp'][0] == 0
+    # A player changes their own character only; the Warden's monster stays the Warden's.
+    assert clients[2].post(monster['statUrl'], data={'stat': 'hp', 'value': '1'}).status_code == 403
+    assert clients[2].post(character['statUrl'], data={'stat': 'deprived', 'value': '1'}).status_code == 204
+    assert clients[2].get(path).json['actors'][0]['conditions']['deprived'] is True
+    assert clients[4].post(character['statUrl'], data={'stat': 'hp', 'value': '1'}).status_code == 403
+    # The Warden changes a player's HP, attributes and conditions from the same panel.
+    with app.app_context():
+        db.session.get(Character, 1).strength, db.session.get(Character, 1).strength_max = 8, 10
+        db.session.commit()
+    character = clients[2].get(path).json['actors'][0]
+    warden = next(a for a in clients[1].get(path).json['actors'] if a['kind'] == 'character')
+    assert warden['statUrl'] == character['statUrl'] and set(warden['attributes']) == {'strength', 'dexterity', 'willpower'}
+    strength = warden['attributes']['strength']
+    assert strength == [8, 10] and character['attributes']['strength'] == strength
+    for stat, value in (('hp', 0), ('strength', strength[1] - 1), ('panicked', 1), ('deprived', 0)):
+        assert clients[1].post(warden['statUrl'], data={'stat': stat, 'value': str(value)}).status_code == 204
+    assert clients[1].post(warden['statUrl'], data={'stat': 'strength', 'value': str(strength[1] + 1)}).status_code == 400
+    player = clients[2].get(path).json['actors'][0]
+    assert player['hp'][0] == 0 and player['attributes']['strength'] == [strength[1] - 1, strength[1]]
+    assert player['conditions'] == {'deprived': False, 'panicked': True}
+    for user in (1, 2):
+        assert 'id="board-roll-token"' in clients[user].get('/party/1/shared-map').text

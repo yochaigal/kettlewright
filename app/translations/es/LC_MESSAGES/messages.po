@@ -51301,3 +51301,11 @@ msgstr "Ocultar herramientas de niebla"
 #. Add monsters dialog: number several of the same monster (Goblin 1, Goblin 2)
 msgid "Number copies"
 msgstr "Numerar copias"
+
+#. Whiteboard token panel: a monster at 0 HP
+msgid "Down"
+msgstr "Abatido"
+
+#. Whiteboard token panel: link to the full sheet
+msgid "Open sheet"
+msgstr "Abrir hoja"

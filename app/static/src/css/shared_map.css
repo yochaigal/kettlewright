@@ -160,7 +160,7 @@ body.warden-board .excalidraw .layer-ui__wrapper__footer-left { margin-left: 64p
 @media (max-width: 600px) { #party-panel { height: calc(100dvh - 220px); } }
 
 .token-stats-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
-.token-stats { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 0;
+.token-stats { position: absolute; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0;
   width: max-content; max-width: 144px; padding: 2px 3px; border-radius: 3px; border: 1px solid var(--board-border);
   background: var(--board-panel); color: var(--board-text); font: 9px/1.2 system-ui, sans-serif;
   text-align: center; transform-origin: top center; overflow-wrap: anywhere; }
@@ -213,6 +213,28 @@ body.warden-board .excalidraw .layer-ui__wrapper__footer-left { margin-left: 64p
 .board-roll-actions button:focus-visible, #board-roll-actor:focus-visible { outline: 2px solid #8278c8; outline-offset: 2px; }
 .board-roll-actions button:disabled { opacity: .45; cursor: default; }
 #board-roll-actor { max-width: 220px; padding: 3px 6px; }
+/* The selected token's panel (#375), in the roller's heading. */
+.board-roll-token { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; max-width: 100%; }
+.board-roll-token[hidden] { display: none; }
+.board-roll-hp { display: inline-flex; align-items: center; border: 1px solid var(--board-border); border-radius: 6px; overflow: hidden; }
+.board-roll-hp button { width: 26px; height: 26px; border: 0; background: var(--board-bg); color: inherit; font-size: 15px; cursor: pointer; }
+.board-roll-hp button:hover:not(:disabled) { background: var(--board-active); }
+.board-roll-hp button:disabled { opacity: .35; cursor: default; }
+.board-roll-hp output { padding: 0 8px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.board-roll-down { padding: 1px 8px; border-radius: 999px; background: #a33b3b; color: #fff; font-size: 11px; font-weight: 700; }
+.board-roll-down[hidden] { display: none; }
+.board-roll-condition { height: 26px; padding: 0 9px; border: 1px solid var(--board-border); border-radius: 999px;
+  background: none; color: inherit; font: 600 11px system-ui, sans-serif; cursor: pointer; }
+.board-roll-condition[aria-pressed="true"] { background: #a33b3b; border-color: #a33b3b; color: #fff; }
+.board-roll-condition:disabled { opacity: .45; cursor: default; }
+.board-roll-sheet { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px;
+  border-radius: 6px; color: inherit; opacity: .7; }
+.board-roll-sheet:hover { opacity: 1; background: var(--board-active); }
+:is(.board-roll-hp button, .board-roll-condition, .board-roll-sheet):focus-visible { outline: 2px solid #8278c8; outline-offset: 2px; }
+.token-stats.is-down { opacity: .45; text-decoration: line-through; }
+/* The token the roller is for (#375). */
+.token-ring { position: absolute; z-index: 0; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none;
+  border: 3px solid #8278c8; box-shadow: 0 0 0 3px rgb(130 120 200 / .3), 0 0 14px rgb(130 120 200 / .55); }
 /* 3D toggle and Minimize (#436, #385): small buttons at the end of the heading. */
 .board-roll-tool { display: inline-flex; align-items: center; gap: 4px; min-height: 26px; padding: 2px 8px; cursor: pointer;
   border: 1px solid var(--board-border); border-radius: 6px; background: var(--board-bg); color: var(--board-text); font: inherit; }

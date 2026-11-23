@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {actorKey, tokenStatsPosition, createTokenStats} from '../../app/static/src/js/maps/token_stats.js';
+import {actorKey, tokenStatsPosition, tokenRingPosition, createTokenStats} from '../../app/static/src/js/maps/token_stats.js';
 
 class Node {
   constructor() {this.children = []; this.style = {}; this.attrs = {}; this.events = {};}
@@ -110,5 +110,36 @@ test('inline visibility requires confirmation, preserves notes, and clears on re
   } finally {
     overlay?.destroy();
     for (const [key, value] of originals) if (value === undefined) delete globalThis[key]; else globalThis[key] = value;
+  }
+});
+
+test('the roller\'s token gets a ring, with or without stats, that follows the camera (#375)', () => {
+  assert.deepEqual(tokenRingPosition({x: 40, y: 10, width: 80, height: 40}, {scrollX: -20, scrollY: 5, zoom: {value: 2}}),
+    {x: 120, y: 70, size: 184});
+  const originals = ['document', 'requestAnimationFrame', 'cancelAnimationFrame', 'ResizeObserver'].map(key => [key, globalThis[key]]);
+  const host = new Node(), frames = [];
+  globalThis.document = {createElement(tag) {const node = new Node(); node.tag = tag; return node;}};
+  globalThis.requestAnimationFrame = fn => {frames.push(fn); return frames.length;};
+  globalThis.cancelAnimationFrame = () => {};
+  globalThis.ResizeObserver = class {observe() {} disconnect() {}};
+  const draw = () => frames.splice(0).forEach(fn => fn());
+  const elements = [{id: 'actor-3-a', x: 0, y: 0, width: 80, height: 80}, {id: 'actor-3-b', x: 200, y: 0, width: 80, height: 80},
+    {id: 'actor-4-c', x: 400, y: 0, width: 80, height: 80}, {id: 'actor-3-d', x: 0, y: 0, width: 80, height: 80, isDeleted: true}];
+  let overlay;
+  try {
+    overlay = createTokenStats({editor: {querySelector: () => host}, config: {messages: {}},
+      getApi: () => ({getSceneElements: () => elements, getAppState: () => ({zoom: {value: 1}, scrollX: 0, scrollY: 0, width: 800, height: 600})}),
+      canReveal: () => false, isPlayerPreview: () => false, updates: {subscribe() {return () => {};}}});
+    const rings = () => host.children[0]?.children.filter(node => node.className === 'token-ring') || [];
+    overlay.setActive('3'); draw();
+    assert.deepEqual(rings().map(ring => ring.style.left), ['40px', '240px']);
+    assert.equal(rings()[0].style.width, '92px');
+    overlay.setActive('4'); draw();
+    assert.deepEqual(rings().map(ring => ring.style.left), ['440px']);
+    overlay.setActive(null); draw();
+    assert.equal(rings().length, 0);
+  } finally {
+    overlay?.destroy();
+    for (const [key, value] of originals) globalThis[key] = value;
   }
 });

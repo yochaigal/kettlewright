@@ -3,12 +3,14 @@ import dice3d from '../dice3d.js';
 import {actorKey} from './token_stats.js';
 import {hideablePanel} from './board_panels.js';
 
-export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPreview, osd = null}) {
+export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPreview, osd = null, onActive = null}) {
   const panel = document.getElementById('board-rolls');
   const name = document.getElementById('board-roll-name'), choices = document.getElementById('board-roll-actor');
   const actions = document.getElementById('board-roll-actions'), result = document.getElementById('board-roll-result');
   const publicToggle = document.getElementById('board-roll-public');
   const toggle3d = document.getElementById('board-roll-3d');
+  const token = document.getElementById('board-roll-token');
+  let savingStat = false;
   const modalPublic = document.getElementById('warden-public-roll');
   const modalTitle = document.querySelector('#dice-modal .modal-card-title');
   let actors = new Map(), active = null, preferred = '', modalActor = null;
@@ -53,6 +55,8 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
       active = actors.get(preferred) || actors.values().next().value || null;
       preferred = active?.id || '';
     }
+    // Ring the tokens of the actor this roller is for (#375), which a player may have picked from the list.
+    onActive?.(isPlayerPreview() ? null : active?.id || null);
     const signature = JSON.stringify([active, config.warden ? [] : Array.from(actors.values(), actor => [actor.id, actor.name])]);
     if (signature !== rendered) {
       const changed = (active?.id || '') !== panel.dataset.actor;
@@ -67,6 +71,7 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
         choices.append(option);
       }
       choices.value = preferred;
+      drawToken();
       actions.replaceChildren();
       actions.dataset.mode = active?.kind === 'monster' ? 'monster' : config.warden ? 'warden' : 'player';
       if (active?.kind === 'monster') {
@@ -92,7 +97,87 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
     for (const button of actions.querySelectorAll('button')) button.disabled = rolling || !canRoll()
       || (!config.warden && !active) || button.dataset.unavailable === 'true';
     choices.disabled = rolling || !canRoll();
+    if (token) for (const control of token.querySelectorAll('button')) {
+      const [current, maximum] = statValue(active, control.dataset.field) || [];
+      control.disabled = savingStat || !canRoll() || (control.dataset.step === '-1' && current <= 0)
+        || (control.dataset.step === '1' && current >= maximum);
+    }
     if (publicToggle) publicToggle.disabled = rolling || !canRoll();
+  }
+  // The selected token's panel (#375): HP −/+, a monster at 0 HP is Down, a character's STR, DEX and WIL,
+  // Deprived and Panicked, and its full sheet. Rebuilt only for another actor, so a pressed button keeps its focus.
+  const statLabels = {strength: 'STR', dexterity: 'DEX', willpower: 'WIL'};
+  const statValue = (actor, field) => field === 'hp' ? actor?.hp : actor?.attributes?.[field];
+  function drawToken() {
+    if (!token) return;
+    token.hidden = !active?.hp;
+    if (token.hidden) {token.replaceChildren(); delete token.dataset.actor; return;}
+    if (token.dataset.actor !== active.id) {
+      token.dataset.actor = active.id; token.replaceChildren();
+      const stepper = field => {
+        const box = document.createElement('span'); box.className = 'board-roll-hp';
+        const name = field === 'hp' ? config.messages.hp : statLabels[field];
+        const step = (delta, label, text) => {
+          const control = document.createElement('button'); control.type = 'button';
+          control.dataset.step = String(delta); control.dataset.field = field;
+          control.textContent = text; control.title = control.ariaLabel = label.replace('{stat}', name);
+          control.addEventListener('click', () => {
+            const [current, maximum] = statValue(active, field);
+            saveStat(field, Math.max(0, Math.min(maximum, current + delta)));
+          });
+          return control;
+        };
+        const value = document.createElement('output'); value.dataset.value = field;
+        box.append(step(-1, config.messages.lowerStat, '−'), value, step(1, config.messages.raiseStat, '+'));
+        token.append(box);
+      };
+      stepper('hp');
+      for (const field of Object.keys(statLabels)) if (active.attributes?.[field]) stepper(field);
+      if (active.kind === 'monster') {
+        const down = document.createElement('span'); down.className = 'board-roll-down'; down.textContent = config.messages.down;
+        token.append(down);
+      }
+      for (const condition of Object.keys(active.conditions || {})) {
+        const chip = document.createElement('button'); chip.type = 'button'; chip.className = 'board-roll-condition';
+        chip.dataset.condition = condition; chip.textContent = config.messages[condition];
+        chip.addEventListener('click', () => saveStat(condition, active.conditions[condition] ? 0 : 1));
+        token.append(chip);
+      }
+      if (active.sheetUrl) {
+        const link = document.createElement('a'); link.className = 'board-roll-sheet'; link.href = active.sheetUrl;
+        link.target = '_blank'; link.rel = 'noopener'; link.title = link.ariaLabel = config.messages.openSheet;
+        const icon = document.createElement('i'); icon.className = 'fa-solid fa-arrow-up-right-from-square'; icon.setAttribute('aria-hidden', 'true');
+        link.append(icon); token.append(link);
+      }
+    }
+    for (const value of token.querySelectorAll('[data-value]')) {
+      const field = value.dataset.value, [current, maximum] = statValue(active, field);
+      value.textContent = `${field === 'hp' ? config.messages.hp : statLabels[field]} ${current}/${maximum}`;
+    }
+    const down = token.querySelector('.board-roll-down');
+    if (down) down.hidden = active.hp[0] > 0;
+    for (const chip of token.querySelectorAll('[data-condition]')) chip.setAttribute('aria-pressed', String(Boolean(active.conditions[chip.dataset.condition])));
+  }
+  async function saveStat(stat, value) {
+    const actor = active;
+    if (!actor?.statUrl || savingStat || !canRoll()) return;
+    const body = new FormData();
+    body.set('csrf_token', config.csrfToken); body.set('stat', stat); body.set('value', String(value));
+    savingStat = true; redraw();
+    try {
+      const response = await fetch(actor.statUrl, {method: 'POST', body, cache: 'no-store', signal: AbortSignal.timeout(15000)});
+      if (!response.ok || response.redirected) throw new Error(config.messages.statFailed);
+      // Shown at once; the party's live update brings everyone (and the token's label) the same value.
+      const saved = stat === 'hp' ? {hp: [value, actor.hp[1]]}
+        : stat in statLabels ? {attributes: {...actor.attributes, [stat]: [value, actor.attributes[stat][1]]}}
+          : {conditions: {...actor.conditions, [stat]: Boolean(value)}};
+      const next = {...actor, ...saved};
+      actors.set(actor.id, next);
+      if (active?.id === actor.id) active = next;
+      updates.refresh?.();
+    } catch (_) {
+      if (!stopped && active?.id === actor.id) result.textContent = config.messages.statFailed;
+    } finally {savingStat = false; if (!stopped) redraw();}
   }
   // Dice buttons show the die shapes of the dice modal; the label stays as their name and tooltip.
   const dieIcons = document.getElementById('board-die-icons');
@@ -106,12 +191,14 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
     control.append(...Array.from({length: count}, () => icon.cloneNode(true)));
     return control;
   }
+  // The Warden edits a selected player's character (#375) but still rolls as the Warden.
+  const roller = () => config.warden && active?.kind === 'character' ? null : active;
   function button(label, action, unavailable = false) {
     const button = document.createElement('button'); button.type = 'button'; button.textContent = label;
     button.title = button.ariaLabel = label; button.dataset.unavailable = String(unavailable);
     button.addEventListener('click', () => {
-      if (action.modal) openModal(active);
-      else request(active, action).catch(() => {});
+      if (action.modal) openModal(roller());
+      else request(roller(), action).catch(() => {});
     });
     actions.append(button); return button;
   }
@@ -138,12 +225,12 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
       const roll = await response.json();
       release(roll);
       if (animate && !stopped) await dice3d.show(roll);
-      if (!stopped && actorId === active?.id) result.textContent = roll.result;
+      if (!stopped && actorId === roller()?.id) result.textContent = roll.result;
       // Rolls from the dice modal already show their result there.
       if (animate && !stopped) osd?.own(rollName, roll.result);
       return roll;
     } catch (error) {
-      if (!stopped && actorId === active?.id) result.textContent = config.messages.rollFailed;
+      if (!stopped && actorId === roller()?.id) result.textContent = config.messages.rollFailed;
       throw error;
     } finally {release(); rolling = false; if (!stopped) draw();}
   }

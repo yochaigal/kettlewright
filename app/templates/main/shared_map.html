@@ -114,6 +114,8 @@
     <div class="board-roll-heading">
       <strong id="board-roll-name">{{_('Warden') if warden else _('Roll Dice')}}</strong>
       <select id="board-roll-actor" aria-label="{{_('Character')}}" hidden></select>
+      {# The selected token's HP, conditions and sheet (#375); board_rolls.js fills it. #}
+      <span id="board-roll-token" class="board-roll-token" hidden></span>
       {% if warden %}<label class="board-roll-public"><input id="board-roll-public" type="checkbox"> {{_('Public roll')}}</label>{% endif %}
       <output id="board-roll-result"></output>
       {# The whiteboard keeps its own 3D dice choice (#436), so they can be on here and off elsewhere. #}
@@ -196,6 +198,9 @@
       'pet': _('Pet'), 'hireling': _('Hireling'), 'monster': _('Monster'),
       'warden': _('Warden'), 'rollDice': _('Roll Dice'), 'damage': _('Damage'),
       'reaction': _('Reaction Roll'), 'fate': _('Die of Fate'),
+      'hp': _('HP'), 'lowerStat': _('Lower %(stat)s', stat='{stat}'), 'raiseStat': _('Raise %(stat)s', stat='{stat}'), 'down': _('Down'),
+      'deprived': _('Deprived'), 'panicked': _('Panicked'), 'openSheet': _('Open sheet'),
+      'statFailed': _('Unable to save this stat. Please try again.'),
       'rollFailed': _('Unable to roll dice. Please try again.'),
       'rolled': _('%(name)s rolled %(result)s', name='{name}', result='{result}'),
       'showStats': _('Show stats to players'), 'hideStats': _('Hide stats from players'),

@@ -27,6 +27,7 @@ const monster = {id: 'companion:7', name: 'Wolf', kind: 'monster', damage: ['d6+
 async function setup(warden = true, {storage = {}, osd = null} = {}) {
   const nodes = new Map(), events = {}, frames = [], requests = [], intervals = [];
   const node = id => {if (!nodes.has(id)) nodes.set(id, new Node()); return nodes.get(id);};
+  const actives = [];
   let roster = warden ? [monster] : [{id: '3', name: 'Ada', kind: 'character'}, {id: '4', name: 'Pip', kind: 'character'}];
   let selected = {}, allowed = true, preview = false;
   let post = async () => ({ok: true, json: async () => ({result: 'A result', values: [4]})});
@@ -53,10 +54,10 @@ async function setup(warden = true, {storage = {}, osd = null} = {}) {
         const update = () => callback(structuredClone(roster));
         events.party_actors_changed = update; events.party_members_changed = update; update(); return () => {};
       }},
-    canRoll: () => allowed, isPlayerPreview: () => preview, osd});
+    canRoll: () => allowed, isPlayerPreview: () => preview, osd, onActive: id => actives.push(id)});
   const draw = () => frames.splice(0).forEach(fn => fn());
   await tick(); draw();
-  return {controller, node, requests, modal, specials, events, draw, dice3d, storage,
+  return {controller, node, requests, modal, specials, events, draw, dice3d, storage, actives,
     button: label => node('board-roll-actions').children.find(child => child.ariaLabel === label),
     select(value) {selected = value; controller.redraw(); draw();},
     setRoster(value) {roster = value;}, setPost(fn) {post = fn;},
@@ -146,6 +147,12 @@ test('player roller always shows all player dice, follows owned tokens and suppo
     assert.equal(s.node('board-roll-name').textContent, 'Ada');
     s.select({});
     assert.equal(s.node('board-rolls').hidden, false);
+    // The ring follows the character in the roller, picked or selected (#375); a preview shows none.
+    assert.equal(s.actives.at(-1), '3');
+    s.select({'actor-4-token': true});
+    assert.equal(s.actives.at(-1), '4');
+    s.preview(true);
+    assert.equal(s.actives.at(-1), null);
   } finally {s.controller.destroy();}
 });
 
