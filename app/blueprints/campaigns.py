@@ -346,6 +346,17 @@ def new_party(campaign_id):
     return redirect(party_page(party))
 
 
+@campaigns.route('/parties/new', methods=['POST'])
+def new_party_anywhere():
+    """New party from the Campaigns page's Parties view (Discord feedback): in one of your campaigns, or in none."""
+    from app.lib.campaign_parties import create_party, party_page
+    campaign = owned(Campaign, integer(request.form.get('campaign_id'))) if request.form.get('campaign_id') else None
+    party = create_party(campaign, text_value(request.form.get('name'), 64, True),
+                         text_value(request.form.get('description', ''), 2000), owner_id=current_user.id)
+    db.session.commit()
+    return redirect(party_page(party))
+
+
 @campaigns.route('/campaigns/<int:campaign_id>/parties/add', methods=['POST'])
 def add_parties(campaign_id):
     """Add existing parties (#483): ones without a campaign, or moved from another of the Warden's campaigns.

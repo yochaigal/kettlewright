@@ -57,8 +57,24 @@
     <a href="{{ url_for('campaigns.index', view='parties') }}" {% if view == 'parties' %}aria-current="page"{% endif %}><i class="fa-solid fa-users" aria-hidden="true"></i> {{ _('Parties') }}</a>
   </nav>
   <span class="characters-create-actions">
-    <button type="button" class="is-new" aria-haspopup="dialog" @click="$refs.createDialog.showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New campaign') }}</button>
+    {# The view's own New (Discord feedback): a party in Parties, a campaign in Campaigns. #}
+    {% if view == 'parties' %}<button type="button" class="is-new" aria-haspopup="dialog" @click="$refs.partyDialog.showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New party') }}</button>
+    {% else %}<button type="button" class="is-new" aria-haspopup="dialog" @click="$refs.createDialog.showModal()"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ _('New campaign') }}</button>{% endif %}
   </span>
+{% if view == 'parties' %}
+<dialog class="create-dialog" id="new-party-overview-dialog" x-ref="partyDialog" @close="$refs.partyDialog.querySelector('form').reset()" aria-labelledby="new-party-overview-title">
+<h2 id="new-party-overview-title">{{ _('New party') }}</h2>
+<form method="post" action="{{ url_for('campaigns.new_party_anywhere') }}">{{ token() }}
+<label>{{ _('Name') }}<input type="text" name="name" required maxlength="64" autocomplete="off"></label>
+<label>{{ _('Description') }}<textarea name="description" rows="3" maxlength="2000"></textarea></label>
+<label>{{ _('Campaign') }}<select name="campaign_id">
+  <option value="">{{ _('No campaign') }}</option>
+  {% for campaign in assign_campaigns %}<option value="{{ campaign.id }}">{{ campaign.name }}</option>{% endfor %}
+</select></label>
+<div class="create-dialog-actions"><button type="button" @click="$refs.partyDialog.close()">{{ _('Cancel') }}</button><button type="submit" class="primary">{{ _('Create party') }}</button></div>
+</form>
+</dialog>
+{% endif %}
 {# A campaign starts with its party; modules (maps, backgrounds, articles) are added inside it. #}
 <dialog class="create-dialog" id="new-campaign-dialog" x-ref="createDialog" @close="$refs.createDialog.querySelector('form').reset()" aria-labelledby="create-title">
 <h2 id="create-title">{{ _('New campaign') }}</h2>
