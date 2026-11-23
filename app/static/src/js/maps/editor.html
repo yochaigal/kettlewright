@@ -21,7 +21,11 @@
   /* The Warden's editor of an image map (#514): the drawing tools sat on top of the picture. Pins, Replace image and
      Full screen are on the page; zoom and undo stay. The main menu's Reset the canvas would wipe the picture. */
   body.image-map:not(.image-map-reading) .excalidraw .App-menu_top,
-  body.image-map:not(.image-map-reading) .excalidraw .layer-ui__wrapper__top-right{display:none!important}
+  body.image-map:not(.image-map-reading) .excalidraw .layer-ui__wrapper__top-right,
+  /* On phones (Discord feedback): Excalidraw's top tool row, its side buttons and its menu, which stayed on the picture. */
+  body.image-map:not(.image-map-reading) .excalidraw .App-toolbar--mobile,
+  body.image-map:not(.image-map-reading) .excalidraw .mobile-misc-tools-container,
+  body.image-map:not(.image-map-reading) .excalidraw .App-bottom-bar .main-menu-trigger{display:none!important}
   /* Drawing on a map: Excalidraw's tools as a rail down the left side, not a bar across the top of the map, the same
      rail as the whiteboard's (shared_map.css). Narrow frames keep Excalidraw's own layout. */
   @media (min-width:901px){

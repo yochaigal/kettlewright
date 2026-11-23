@@ -288,3 +288,26 @@ def test_players_see_the_parties_they_play_in(setup):
     assert 'Your parties' not in page  # Nothing to run: no empty box.
     played = parties_view(page)
     assert 'Party 1' in played and 'Warden: user1' in played and 'Party 2' not in played
+
+
+def test_new_party_from_the_parties_view_in_a_campaign_or_none(setup):
+    """Discord feedback: New party in the Parties view, in one of your campaigns or in none."""
+    from app.models import Party
+    app, client = setup
+    page = client.get('/campaigns/?view=parties').text
+    dialog = page[page.index('id="new-party-overview-dialog"'):page.index('</dialog>', page.index('id="new-party-overview-dialog"'))]
+    assert 'action="/parties/new"' in dialog and '<option value="">No campaign</option>' in dialog and 'Secret campaign' in dialog
+    assert 'New party' in page and 'New campaign' not in page.split('characters-create-actions')[1][:400]
+    assert 'New campaign' in client.get('/campaigns/?view=campaigns').text  # The Campaigns view keeps its own New.
+    loose = client.post('/parties/new', data={'name': 'Wanderers', 'campaign_id': ''})
+    in_campaign = client.post('/parties/new', data={'name': 'Raiders', 'description': 'West Marches', 'campaign_id': '1'})
+    assert loose.status_code == in_campaign.status_code == 302
+    with app.app_context():
+        wanderers, raiders = (Party.query.filter_by(name=name).one() for name in ('Wanderers', 'Raiders'))
+        assert wanderers.campaign_id is None and wanderers.owner == 1 and wanderers.join_code
+        assert raiders.campaign_id == 1 and raiders.owner == 1 and raiders.description == 'West Marches'
+    with app.app_context():
+        db.session.add(Campaign(id=9, owner_id=4, name='Theirs'))
+        db.session.commit()
+    assert client.post('/parties/new', data={'name': 'Sneaky', 'campaign_id': '9'}).status_code in (403, 404)
+    assert client.post('/parties/new', data={'name': '', 'campaign_id': ''}).status_code == 400

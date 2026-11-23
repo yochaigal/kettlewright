@@ -1962,3 +1962,23 @@ def test_maps_offer_the_clean_view_toggles(setup):
     party_map = client.get(f'/party/1/map/{map_id}/', follow_redirects=True).get_data(as_text=True)
     assert "toggleCanvasUI('zoom')" in party_map and 'Map controls' in party_map
     assert "toggleCanvasUI('drawing')" not in party_map  # Nothing to draw with on a map being read.
+
+
+def test_a_map_has_one_toolbar_and_full_screen_takes_both(setup):
+    """Discord feedback: the map's tools in one bar on top of the map, like the whiteboard's, which Full screen takes
+    along; on a party's map the Warden's fog is its second row."""
+    app, client = setup
+    map_id, _ = create_map(client)
+    editor = client.get(f'/maps/{map_id}/edit').get_data(as_text=True)
+    frame = editor[editor.index('class="map-frame" x-ref="frame"'):editor.index('</iframe>')]
+    for control in ('startPin()', "toggleCanvasUI('drawing')", "toggleCanvasUI('zoom')", 'fullscreen()', 'class="pointcrawl-canvas"'):
+        assert control in frame, control
+    reveal(client, map_entry_id(app, map_id))
+    party_map = client.get(f'/party/1/map/{map_id}/', follow_redirects=True).get_data(as_text=True)
+    frame = party_map[party_map.index('class="map-frame" x-ref="frame"'):party_map.index('</iframe>')]
+    assert 'startPin()' in frame and 'fullscreen()' in frame and 'map-bar-fog' in frame and "setFogTool('cover')" in frame
+    # The fog row hides like the whiteboard's Warden tools: Fog tools in the bar, × on the row (the Warden's only).
+    assert "toggleCanvasUI('fog')" in frame and 'x-show="canvasUI.fog"' in frame and 'Hide fog tools' in frame
+    login(client, 2)
+    player = client.get(f'/party/1/map/{map_id}/', follow_redirects=True).get_data(as_text=True)
+    assert "toggleCanvasUI('fog')" not in player and 'map-bar-fog' not in player

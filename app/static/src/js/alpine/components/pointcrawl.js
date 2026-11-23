@@ -21,7 +21,7 @@ export default function pointcrawl() {
     // The players' pins (#482): read only in the map editor, with a show/hide toggle.
     playerPins:[], showPlayerPins:true, selectedPlayerPin:'',
     // Clean view (Discord feedback): Excalidraw's drawing tools and its zoom and undo, shown or hidden on every map.
-    canvasUI:readCanvasUI('kw-map-ui'),
+    canvasUI:readCanvasUI('kw-map-ui'), isFullscreen:false,
     edgeSource:'', edgeTarget:'', kind:'dungeon', tables:null, labels:{}, locationId:'', draftBody:'', poiCount:'', generateChildren:true, forestChance:50, dungeonChance:25,
     init() {
       this.componentElement=this.$el;
@@ -99,6 +99,8 @@ export default function pointcrawl() {
       window.addEventListener('campaign-refresh',this.onRefresh);
       window.addEventListener('campaign-access-lost',this.onAccessLost);
       window.addEventListener('beforeunload',this.onLeave);
+      this.onFullscreen=()=>{this.isFullscreen=Boolean(this.$refs.frame) && document.fullscreenElement===this.$refs.frame;};
+      document.addEventListener('fullscreenchange',this.onFullscreen);
     },
     destroy() {
       clearTimeout(this.canvasTimer);
@@ -108,6 +110,7 @@ export default function pointcrawl() {
       window.removeEventListener('campaign-refresh',this.onRefresh);
       window.removeEventListener('campaign-access-lost',this.onAccessLost);
       window.removeEventListener('beforeunload',this.onLeave);
+      document.removeEventListener('fullscreenchange',this.onFullscreen);
       this.articleForm?.removeEventListener('submit',this.onArticleSubmit);
     },
     startCanvas() {
@@ -146,7 +149,11 @@ export default function pointcrawl() {
       this.loadCanvas();
     },
     // Full screen (#476): the map alone, filling the screen; Esc returns.
-    fullscreen() {this.$refs.canvas.requestFullscreen?.().catch(() => {});},
+    // Full screen takes the map and its toolbar (Discord feedback), so its tools stay at hand; again to leave.
+    fullscreen() {
+      if (document.fullscreenElement) {document.exitFullscreen?.().catch(() => {});return;}
+      (this.$refs.frame || this.$refs.canvas).requestFullscreen?.().catch(() => {});
+    },
     loadCanvas() {
       this.canvasReady=false;
       this.$refs.canvas.src=this.$refs.canvas.dataset.src;

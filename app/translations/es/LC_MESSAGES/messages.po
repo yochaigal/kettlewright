@@ -51277,3 +51277,23 @@ msgstr "Cada grupo ve este mapa bajo su propia niebla. Cúbrelo y descúbrelo en
 #: app/templates/campaigns/map.html
 msgid "Fog is per party: reveal this map to a party, then cover and uncover it on that party’s map."
 msgstr "La niebla es de cada grupo: revela este mapa a un grupo y luego cúbrelo y descúbrelo en el mapa de ese grupo."
+
+#. Maps: the toolbar attached to the top of a map (Discord feedback)
+#: app/templates/campaigns/canvas.html app/templates/campaigns/party_map.html
+msgid "Map tools"
+msgstr "Herramientas del mapa"
+
+#. Maps: the Full screen button while in full screen
+#: app/templates/campaigns/canvas.html app/templates/campaigns/party_map.html
+msgid "Exit full screen"
+msgstr "Salir de pantalla completa"
+
+#. A party's map: shows or hides the Warden's fog row in the map's toolbar (Discord feedback)
+#: app/templates/campaigns/party_map.html
+msgid "Fog tools"
+msgstr "Herramientas de niebla"
+
+#. A party's map: × at the end of the Warden's fog row
+#: app/templates/campaigns/party_map.html
+msgid "Hide fog tools"
+msgstr "Ocultar herramientas de niebla"

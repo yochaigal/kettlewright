@@ -43,11 +43,12 @@ def create_campaign(owner_id, name, with_party=True):
     return campaign
 
 
-def create_party(campaign, name, description=''):
-    """A party of the campaign, run by the campaign's owner. The caller commits."""
+def create_party(campaign, name, description='', owner_id=None):
+    """A party of the campaign, run by the campaign's owner; with no campaign, one of owner_id's own (Parties view).
+    The caller commits."""
     from app.models import User
     db.session.flush()  # A campaign created in this request needs its id.
-    owner = db.session.get(User, campaign.owner_id)
+    owner = db.session.get(User, campaign.owner_id if campaign is not None else owner_id)
     party = Party(name=name, description=description, owner=owner.id, owner_username=owner.username,
                   campaign=campaign, join_code=generate_unique_join_code(),
                   party_url=generate_unique_party_url(name, owner.id), items='[]', containers=DEFAULT_CONTAINERS)

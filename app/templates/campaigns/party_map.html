@@ -37,31 +37,44 @@
       {% if not map_only %}<a class="button wiki-edit" href="{{ url_for('campaigns.party_entry', party_id=party.id, entry_id=pointcrawl.entry_id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read article') }}</a>{% endif %}
       {# Back to the map's editor (#514): pins, picture and reveals are there; fog is here. #}
       {% if warden and pointcrawl.entry.owner_id == current_user.id %}<a class="button wiki-edit" href="{{ url_for('campaigns.map_edit', map_id=pointcrawl.id) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ _('Edit map') }}</a>{% endif %}
-      {# Clean view (Discord feedback): the map's zoom and menu, shown or hidden. #}
-      <button type="button" class="canvas-ui-toggle" x-show="graph.kind !== 'image'" :aria-pressed="String(canvasUI.zoom)" @click="toggleCanvasUI('zoom')"
-        title="{{ _('Map controls') }}" aria-label="{{ _('Map controls') }}"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i></button>
-      <button type="button" class="button wiki-edit" @click="fullscreen()" :disabled="!canvasReady"><i class="fa-solid fa-expand" aria-hidden="true"></i> {{ _('Full screen') }}</button>
-      <button type="button" class="button wiki-edit kw-add" :class="{'is-active': picking}" @click="startPin()" :disabled="!canvasReady"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span x-text="picking ? {{ _('Cancel pin')|tojson|forceescape }} : {{ _('Add pin')|tojson|forceescape }}">{{ _('Add pin') }}</span></button>
     </div>
   </header>
 
-  {% if warden %}
-  {# The Warden uncovers the map for this party, as on the whiteboard. #}
-  <div class="party-map-fog" role="toolbar" aria-label="{{ _('Fog') }}">
-    <strong><i class="fa-solid fa-cloud" aria-hidden="true"></i> {{ _('Fog') }}</strong>
-    <button type="button" class="fog-button" @click="fogAction('hide_all')">{{ _('Cover all') }}</button>
-    <button type="button" class="fog-button" @click="fogAction('reveal_all')">{{ _('Clear all') }}</button>
-    <button type="button" class="fog-button" :aria-pressed="fogTool === 'reveal'" @click="setFogTool('reveal')" :disabled="!fog?.enabled">{{ _('Reveal brush') }}</button>
-    <button type="button" class="fog-button" :aria-pressed="fogTool === 'cover'" @click="setFogTool('cover')" :disabled="!fog?.enabled">{{ _('Hide brush') }}</button>
-    <label class="fog-size">{{ _('Size') }} <input type="range" min="15" max="250" step="5" x-model="fogRadius" @change="setRadius()"></label>
-    <button type="button" class="fog-button" @click="fogAction('undo')" :disabled="!fog?.enabled || !fog?.strokes?.length">{{ _('Undo') }}</button>
-    <button type="button" class="fog-button" @click="fogAction('disable')" :disabled="!fog?.enabled">{{ _('Turn off fog') }}</button>
-    <button type="button" class="fog-button" :aria-pressed="preview" @click="togglePreview()" :disabled="!fog?.enabled">{{ _('See as players') }}</button>
-  </div>
-  {% endif %}
   <p class="campaign-status" role="status" x-text="status"></p>
 
+  {# The map's toolbar (Discord feedback), like the whiteboard's top bar; Full screen takes the bar and the map. #}
+  <div class="map-frame" x-ref="frame">
+  <div class="map-bar" role="toolbar" aria-label="{{ _('Map tools') }}">
+    <button type="button" class="map-bar-button is-primary" :aria-pressed="String(picking)" :class="{'is-active': picking}" @click="startPin()" :disabled="!canvasReady"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span x-text="picking ? {{ _('Cancel pin')|tojson|forceescape }} : {{ _('Add pin')|tojson|forceescape }}">{{ _('Add pin') }}</span></button>
+    <span class="map-bar-spacer"></span>
+    {# The Warden's fog row, shown or hidden (Discord feedback), like the whiteboard's Warden tools. #}
+    {% if warden %}<button type="button" class="map-bar-button" x-ref="fogToggle" :aria-pressed="String(canvasUI.fog)" @click="toggleCanvasUI('fog')"
+      title="{{ _('Fog tools') }}" aria-label="{{ _('Fog tools') }}"><i class="fa-solid fa-cloud" aria-hidden="true"></i></button>{% endif %}
+    {# Clean view (Discord feedback): the map's zoom and menu, shown or hidden. #}
+    <button type="button" class="map-bar-button" x-show="graph.kind !== 'image'" :aria-pressed="String(canvasUI.zoom)" @click="toggleCanvasUI('zoom')"
+      title="{{ _('Map controls') }}" aria-label="{{ _('Map controls') }}"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i></button>
+    <button type="button" class="map-bar-button" @click="fullscreen()" :disabled="!canvasReady"
+      :title="isFullscreen ? {{ _('Exit full screen')|tojson|forceescape }} : {{ _('Full screen')|tojson|forceescape }}"
+      :aria-label="isFullscreen ? {{ _('Exit full screen')|tojson|forceescape }} : {{ _('Full screen')|tojson|forceescape }}"><i class="fa-solid" :class="isFullscreen ? 'fa-compress' : 'fa-expand'" aria-hidden="true"></i></button>
+  </div>
+  {% if warden %}
+  {# The Warden uncovers the map for this party, as on the whiteboard: a second row of the map's toolbar. #}
+  <div class="map-bar map-bar-fog party-map-fog" role="toolbar" aria-label="{{ _('Fog') }}" x-show="canvasUI.fog">
+    <strong title="{{ _('Fog') }}"><i class="fa-solid fa-cloud" aria-hidden="true"></i><span class="sr-only">{{ _('Fog') }}</span></strong>
+    <button type="button" class="map-bar-button" @click="fogAction('hide_all')" title="{{ _('Cover all') }}"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> <span class="map-bar-label">{{ _('Cover all') }}</span></button>
+    <button type="button" class="map-bar-button" @click="fogAction('reveal_all')" title="{{ _('Clear all') }}"><i class="fa-solid fa-eye" aria-hidden="true"></i> <span class="map-bar-label">{{ _('Clear all') }}</span></button>
+    <button type="button" class="map-bar-button" :aria-pressed="fogTool === 'reveal'" @click="setFogTool('reveal')" :disabled="!fog?.enabled" title="{{ _('Reveal brush') }}"><i class="fa-solid fa-paintbrush" aria-hidden="true"></i> <span class="map-bar-label">{{ _('Reveal brush') }}</span></button>
+    <button type="button" class="map-bar-button" :aria-pressed="fogTool === 'cover'" @click="setFogTool('cover')" :disabled="!fog?.enabled" title="{{ _('Hide brush') }}"><i class="fa-solid fa-brush" aria-hidden="true"></i> <span class="map-bar-label">{{ _('Hide brush') }}</span></button>
+    <label class="fog-size" title="{{ _('Size') }}"><i class="fa-solid fa-circle-dot" aria-hidden="true"></i><span class="sr-only">{{ _('Size') }}</span> <input type="range" min="15" max="250" step="5" x-model="fogRadius" @change="setRadius()"></label>
+    <button type="button" class="map-bar-button" @click="fogAction('undo')" :disabled="!fog?.enabled || !fog?.strokes?.length" title="{{ _('Undo') }}" aria-label="{{ _('Undo') }}"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i></button>
+    <button type="button" class="map-bar-button" @click="fogAction('disable')" :disabled="!fog?.enabled" title="{{ _('Turn off fog') }}" aria-label="{{ _('Turn off fog') }}"><i class="fa-solid fa-power-off" aria-hidden="true"></i></button>
+    <button type="button" class="map-bar-button" :aria-pressed="preview" @click="togglePreview()" :disabled="!fog?.enabled" title="{{ _('See as players') }}" aria-label="{{ _('See as players') }}"><i class="fa-solid fa-user" aria-hidden="true"></i></button>
+    <span class="map-bar-spacer"></span>
+    <button type="button" class="map-bar-button" @click="toggleCanvasUI('fog'); $nextTick(() => $refs.fogToggle?.focus())" title="{{ _('Hide fog tools') }}" aria-label="{{ _('Hide fog tools') }}"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+  </div>
+  {% endif %}
   <iframe class="pointcrawl-canvas party-map-frame" x-ref="canvas" data-src="{{ url_for('static', filename='src/js/maps/editor.html') }}" title="{{ _('Map') }}" allowfullscreen></iframe>
+  </div>
   <div class="party-map-below">
     <section class="party-map-side" aria-label="{{ _('Details') }}">
       <template x-if="selectedNode"><section class="party-map-detail">
