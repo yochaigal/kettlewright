@@ -35,6 +35,9 @@
     <div class="wiki-actions">
       {# A map has no text; a place with its own map (a dungeon point) does. #}
       {% if not map_only %}<a class="button wiki-edit" href="{{ url_for('campaigns.party_entry', party_id=party.id, entry_id=pointcrawl.entry_id) }}"><i class="fa-solid fa-book-open" aria-hidden="true"></i> {{ _('Read article') }}</a>{% endif %}
+      {# Clean view (Discord feedback): the map's zoom and menu, shown or hidden. #}
+      <button type="button" class="canvas-ui-toggle" x-show="graph.kind !== 'image'" :aria-pressed="String(canvasUI.zoom)" @click="toggleCanvasUI('zoom')"
+        title="{{ _('Map controls') }}" aria-label="{{ _('Map controls') }}"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i></button>
       <button type="button" class="button wiki-edit" @click="fullscreen()" :disabled="!canvasReady"><i class="fa-solid fa-expand" aria-hidden="true"></i> {{ _('Full screen') }}</button>
       <button type="button" class="button wiki-edit kw-add" :class="{'is-active': picking}" @click="startPin()" :disabled="!canvasReady"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span x-text="picking ? {{ _('Cancel pin')|tojson|forceescape }} : {{ _('Add pin')|tojson|forceescape }}">{{ _('Add pin') }}</span></button>
     </div>

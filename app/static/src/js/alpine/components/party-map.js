@@ -2,12 +2,15 @@
 // Members place pins (party notes with a position); the Warden also uncovers the fog.
 // The drawing is the same map iframe (maps/editor.html) as the article pages, in view mode.
 import {imageAspect} from '../../maps/viewport.js';
+import {readCanvasUI, writeCanvasUI} from '../../maps/canvas_ui.js';
 
 export default function partyMap() {
   return {
     graph: {nodes: [], edges: []}, pins: [], fog: null, fogVersion: 0, warden: false, labels: {},
     selected: '', selectedEdge: '', selectedPin: '', canvasReady: false, status: '',
     picking: false, draft: null, saving: false, fogTool: '', fogRadius: 60, preview: false,
+    // Clean view (Discord feedback): the map's own controls, shown or hidden, as on every map.
+    canvasUI: readCanvasUI('kw-map-ui'),
     init() {
       const data = this.$el.dataset;
       this.graph = JSON.parse(data.graph);
@@ -32,7 +35,7 @@ export default function partyMap() {
       this.$refs.canvas.contentWindow?.postMessage({channel: 'kw-map', type, ...detail}, location.origin);
     },
     sync() {
-      this.send('state', {graph: JSON.parse(JSON.stringify(this.graph)), editing: false,
+      this.send('state', {graph: JSON.parse(JSON.stringify(this.graph)), editing: false, ui: {...this.canvasUI},
         selected: this.selected, selectedEdge: this.selectedEdge, selectedPin: this.selectedPin,
         pins: this.pins.map(({id, x, y, title, movable}) => ({id, x, y, title, movable})),
         fog: this.fog && JSON.parse(JSON.stringify(this.fog)), fogWarden: this.warden, dark: document.body.classList.contains('dark-mode'),
@@ -58,6 +61,10 @@ export default function partyMap() {
       }
       if (data.type === 'fog-operation') this.fogOperation(data.operation);
       if (data.type === 'move-pin') this.movePin(data);
+    },
+    toggleCanvasUI(group) {
+      this.canvasUI = {...this.canvasUI, [group]: !this.canvasUI[group]};
+      writeCanvasUI('kw-map-ui', this.canvasUI); this.sync();
     },
     // Full screen (#476): the map alone, filling the screen; Esc returns.
     fullscreen() {this.$refs.canvas.requestFullscreen?.().catch(() => {});},

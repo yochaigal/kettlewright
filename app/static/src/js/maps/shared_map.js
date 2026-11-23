@@ -22,6 +22,7 @@ import {createImageCompressor} from './whiteboard_images.js';
 import {setupCharacterSheet} from './character_sheet.js';
 import {editorLocale} from './locale.js';
 import {hideablePanel} from './board_panels.js';
+import {bindCanvasToggles} from './canvas_ui.js';
 
 const config = JSON.parse(document.getElementById('shared-map-config').textContent);
 // The whiteboard keeps its own 3D dice choice (#436); set before the roller and dice modal read it.
@@ -391,6 +392,8 @@ window.addEventListener('beforeunload', event => {
 });
 document.getElementById('fit-map').addEventListener('click', () => api?.scrollToContent(undefined, {fitToContent: true}));
 document.getElementById('board-theme').addEventListener('click', () => setTheme(theme === 'dark' ? 'light' : 'dark'));
+// Clean view (Discord feedback): Excalidraw's drawing tools and its zoom and undo, from the top bar, for everyone.
+bindCanvasToggles({buttons: document.querySelectorAll('[data-canvas-ui]'), key: 'kw-board-ui', target: document.body});
 if (config.warden) {
   document.getElementById('fog-enabled').addEventListener('click', () => {
     const effective = fogQueue.reduce(applyFogOperation, fog);

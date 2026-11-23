@@ -13,6 +13,7 @@
   <title>{{ party.name }}</title>
   {% assets "board_modals" %}<link rel="stylesheet" href="{{ ASSET_URL }}">{% endassets %}
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/shared_map.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='src/css/canvas_ui.css') }}">
   <script src="{{ cdnjs }}/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
   {% if not activity_token %}
   <script>window.EXCALIDRAW_ASSET_PATH = 'https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/';</script>
@@ -44,7 +45,9 @@
       {% if can_load_maps %}<button type="button" id="load-map" title="{{ _('Load map') }}" aria-label="{{ _('Load map') }}"><i class="fa-solid fa-map" aria-hidden="true"></i></button>{% endif %}
     </div>
     {# The board's floating panels, shown or hidden (Discord feedback): pressed while shown. #}
-    <div class="map-view-controls map-panel-toggles">
+    <div class="map-view-controls map-panel-toggles" role="group" aria-label="{{ _('View') }}">
+      <button type="button" data-canvas-ui="drawing" aria-pressed="true" title="{{ _('Drawing tools') }}" aria-label="{{ _('Drawing tools') }}"><i class="fa-solid fa-pen-ruler" aria-hidden="true"></i></button>
+      <button type="button" data-canvas-ui="zoom" aria-pressed="true" title="{{ _('Zoom and undo') }}" aria-label="{{ _('Zoom and undo') }}"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i></button>
       {% if warden %}<button type="button" id="board-tools-toggle" aria-pressed="true" title="{{ _('Warden tools') }}" aria-label="{{ _('Warden tools') }}"><i class="fa-solid fa-dungeon" aria-hidden="true"></i></button>{% endif %}
       <button type="button" id="board-dice-toggle" aria-pressed="true" title="{{ _('Dice roller') }}" aria-label="{{ _('Dice roller') }}"><i class="fa-solid fa-dice" aria-hidden="true"></i></button>
     </div>
