@@ -1003,16 +1003,13 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
 /* No campaigns yet: a quiet line under the islands (New campaign is the button at the top). */
 .campaign-workspace .campaign-gallery-page .gallery-empty {margin:1.75em .25em;color:color-mix(in srgb,var(--fg) 62%,var(--bg));font-style:italic;font-size:.95em;}
 
-/* Roll on a table (#508): a Roll button above any table keyed by a die; the rolled row is marked. */
+/* Roll on a table (#508): a Roll button above any table keyed by a die; the result is a notification, the rolled row is marked. */
 .rich-content .table-roll {display:flex;flex-wrap:wrap;align-items:center;gap:.4em .8em;margin:.75em 0 .35em;}
 .rich-content .table-roll-button {display:inline-flex;align-items:center;gap:.4em;min-height:36px;margin:0;padding:.3em .85em;
   border:1.5px solid var(--fg);border-radius:2px;background:transparent;color:var(--fg);font:inherit;font-size:.9em;font-weight:600;cursor:pointer;}
 .rich-content .table-roll-button:hover {background:var(--fg);color:var(--bg);}
 .rich-content .table-roll-button:focus-visible {outline:2px solid var(--fg);outline-offset:2px;}
-.rich-content .table-roll-result {font-size:.95em;}
-.rich-content .table-roll-result strong {display:inline-block;min-width:1.6em;margin-right:.25em;padding:0 .35em;border-radius:2px;background:var(--fg);color:var(--bg);text-align:center;}
-.rich-content .table-roll-result.just-rolled strong {animation:table-roll-in .35s ease-out;}
+.rich-content .table-roll-button:disabled {opacity:.6;cursor:progress;text-decoration:none;}
+.rich-content .table-roll .sr-only {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
 .rich-content table .is-rolled, .rich-content table tr.is-rolled > * {background:color-mix(in srgb,var(--fg) 14%,var(--bg));}
 .rich-content table tr.is-rolled > :first-child, .rich-content table td.is-rolled, .rich-content table th.is-rolled {box-shadow:inset 3px 0 0 var(--fg);}
-@keyframes table-roll-in {from {transform:scale(.6);opacity:0;}}
-@media (prefers-reduced-motion:reduce) {.rich-content .table-roll-result.just-rolled strong {animation:none;}}

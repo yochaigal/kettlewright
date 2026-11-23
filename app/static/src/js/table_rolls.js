@@ -2,7 +2,9 @@
 // A table is rollable when its first column numbers its rows (1, 2, 3… or ranges like 3-5) and the
 // numbers cover a die exactly: a header cell like "d4" or "2d6" names the die, otherwise it is read from
 // the numbers (1-6 is a d6, 2-12 is 2d6). A table laid out sideways (a header row of numbers over one
-// row of results, like the Reactions table) works too. The roll is the reader's own: nothing is posted.
+// row of results, like the Reactions table) works too. Like a save on the character sheet, the dice roll
+// in 3D (when they are on) and the result comes as a notification; the rolled row is marked in the table.
+// The roll is the reader's own: nothing is posted to the party.
 
 const DIE = /^\s*(\d*)\s*d\s*(\d+)\s*$/i;
 const KEY = /^\s*(\d{1,3})\s*(?:[-–—]\s*(\d{1,3}))?\s*$/;
@@ -60,10 +62,14 @@ export function tableDice(rows) {
   return null;
 }
 
+// Each die's value, for the 3D dice to land on.
 export function rollDice({count, sides}, random = Math.random) {
-  let total = 0;
-  for (let i = 0; i < count; i++) total += Math.floor(random() * sides) + 1;
-  return total;
+  return Array.from({length: count}, () => Math.floor(random() * sides) + 1);
+}
+
+// "Encounters and Signs (d4): 3 — Infected Mossling — Nearby plant life…"
+export function rollMessage(title, dice, total, result) {
+  return `${title ? `${title} (${diceLabel(dice)})` : diceLabel(dice)}: ${total}${result ? ` — ${result}` : ''}`;
 }
 
 export const diceLabel = ({count, sides}) => `${count > 1 ? count : ''}d${sides}`;
@@ -78,6 +84,14 @@ function resultText(table, found, sideways) {
   const cells = sideways ? rows.slice(1).map(row => row.cells[found.index]).filter(Boolean)
     : [...rows[found.index].cells].slice(1);
   return cells.map(cell => cell.textContent.trim()).filter(Boolean).join(' — ');
+}
+
+// What the table is called: the heading just above it, else the article's title.
+function tableTitle(table) {
+  for (let node = table.previousElementSibling; node; node = node.previousElementSibling) {
+    if (/^H[2-6]$/.test(node.tagName)) return node.textContent.trim();
+  }
+  return document.querySelector('.wiki-header h1')?.textContent.trim() || '';
 }
 
 function highlight(table, found, sideways) {
@@ -100,20 +114,25 @@ export function enhanceTables(root, labels = {}) {
     button.className = 'table-roll-button';
     button.innerHTML = '<i class="fa-solid fa-dice" aria-hidden="true"></i> ';
     button.append(`${labels.roll || 'Roll'} ${diceLabel(info.dice)}`);
+    // Read out for screen readers; the notification is what everyone else sees.
     const status = document.createElement('span');
-    status.className = 'table-roll-result';
+    status.className = 'table-roll-result sr-only';
     status.setAttribute('role', 'status');
-    button.addEventListener('click', () => {
-      const total = rollDice(info.dice);
+    button.addEventListener('click', async () => {
+      const values = rollDice(info.dice), total = values.reduce((sum, value) => sum + value, 0);
       const found = info.entries.find(entry => total >= entry.min && total <= entry.max);
       if (!found) return;
-      highlight(table, found, info.sideways);
-      status.textContent = '';
-      const value = document.createElement('strong');
-      value.textContent = String(total);
-      status.append(value, ` ${resultText(table, found, info.sideways)}`);
-      // Fresh each roll, so a repeated number is announced and the highlight is noticed.
-      status.classList.remove('just-rolled'); void status.offsetWidth; status.classList.add('just-rolled');
+      button.disabled = true;
+      try {
+        const [{default: dice3d}, {default: notification}] = await Promise.all([import('./dice3d.js'), import('./notification.js')]);
+        await dice3d.show({values, sides: values.map(() => info.dice.sides)});
+        const message = rollMessage(tableTitle(table), info.dice, total, resultText(table, found, info.sideways));
+        highlight(table, found, info.sideways);
+        notification.showNotification(message);
+        status.textContent = message;
+      } finally {
+        button.disabled = false;
+      }
     });
     bar.append(button, status);
     // Above the table, inside its scroll wrapper when it has one.

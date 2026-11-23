@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {tableDice, parseKey, rollDice, diceLabel} from '../../app/static/src/js/table_rolls.js';
+import {tableDice, parseKey, rollDice, diceLabel, rollMessage} from '../../app/static/src/js/table_rolls.js';
 
 const rows = (...lines) => lines.map(line => line.split('|').map(cell => cell.trim()));
 
@@ -40,8 +40,9 @@ test('keys and rolls', () => {
   assert.deepEqual(parseKey('**12**'), {min: 12, max: 12});
   assert.deepEqual(parseKey('00'), {min: 100, max: 100});
   assert.equal(parseKey('5-3'), null);
-  assert.equal(rollDice({count: 2, sides: 6}, () => 0), 2);
-  assert.equal(rollDice({count: 2, sides: 6}, () => 0.999), 12);
+  assert.deepEqual(rollDice({count: 2, sides: 6}, () => 0), [1, 1]);
+  assert.deepEqual(rollDice({count: 2, sides: 6}, () => 0.999), [6, 6]);
+  assert.deepEqual(rollDice({count: 1, sides: 4}, () => 0.5), [3]);
 });
 
 test('"On this page" marks the last heading scrolled past, or the first', async () => {
@@ -49,4 +50,10 @@ test('"On this page" marks the last heading scrolled past, or the first', async 
   assert.equal(currentHeading([200, 900, 1600]), 0);
   assert.equal(currentHeading([-500, 40, 700]), 1);
   assert.equal(currentHeading([-2000, -1000, -10]), 2);
+});
+
+test('the result reads like a save on the sheet: what was rolled, the number, then the result', () => {
+  assert.equal(rollMessage('Encounters and Signs', {count: 1, sides: 4}, 3, 'Infected Mossling — Nearby plant life shudders.'),
+    'Encounters and Signs (d4): 3 — Infected Mossling — Nearby plant life shudders.');
+  assert.equal(rollMessage('', {count: 2, sides: 6}, 7, 'Curious'), '2d6: 7 — Curious');
 });
