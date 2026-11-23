@@ -17,7 +17,6 @@
 .campaign-workspace > nav.campaign-actions {margin:0 0 1.5rem;}
 .campaign-workspace .campaign-actions > a,
 .campaign-workspace .campaign-actions > button,
-.campaign-workspace .campaign-actions > label.map-image-pick,
 .campaign-workspace .campaign-actions > form > button,
 .campaign-workspace .campaign-tree-root > summary > form > button,
 .campaign-workspace .campaign-modal-trigger {
@@ -30,13 +29,11 @@
 }
 .campaign-workspace .campaign-actions > a:hover,
 .campaign-workspace .campaign-actions > button:not(:disabled):hover,
-.campaign-workspace .campaign-actions > label.map-image-pick:hover,
 .campaign-workspace .campaign-actions > form > button:not(:disabled):hover,
 .campaign-workspace .campaign-tree-root > summary > form > button:not(:disabled):hover,
 .campaign-workspace .campaign-modal-trigger:hover {background:var(--fg);color:var(--bg);border-color:var(--fg);}
 .campaign-workspace .campaign-actions > a:focus-visible,
 .campaign-workspace .campaign-actions > button:focus-visible,
-.campaign-workspace .campaign-actions > label.map-image-pick:focus-visible,
 .campaign-workspace .campaign-actions > form > button:focus-visible,
 .campaign-workspace .campaign-tree-root > summary > form > button:focus-visible,
 .campaign-workspace .campaign-modal-trigger:focus-visible {outline:2px solid currentColor;outline-offset:3px;}
@@ -766,11 +763,6 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 .party-map-page .wiki-actions {display:flex;flex-wrap:wrap;gap:.5em;align-items:center;}
 .party-map-page .wiki-actions > * {margin:0;}
 .party-map-page .wiki-edit.is-active {background:var(--fg);color:var(--bg);}
-.party-map-fog {display:flex;flex-wrap:wrap;align-items:center;gap:.5em .6em;margin:.5em 0;padding:.6em .9em;border:1px solid color-mix(in srgb,var(--fg) 15%,var(--bg));border-radius:10px;}
-.party-map-fog .fog-button {min-height:34px;padding:.3em .8em;border:1.5px solid var(--fg);border-radius:2px;background:transparent;color:var(--fg);font:inherit;font-size:.88em;font-weight:600;cursor:pointer;}
-.party-map-fog .fog-button[aria-pressed="true"] {background:var(--fg);color:var(--bg);}
-.party-map-fog .fog-button:disabled {opacity:.4;cursor:default;}
-.party-map-fog .fog-size {display:inline-flex;align-items:center;gap:.4em;font-size:.88em;margin:0;}
 .party-map-frame {width:100%;border:1px solid color-mix(in srgb,var(--fg) 20%,var(--bg));border-radius:6px;}
 .pointcrawl-canvas:fullscreen {height:100vh;border:0;border-radius:0;}
 /* Below the map: what is selected, and the pins. */
@@ -981,7 +973,6 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
 .map-settings > label.map-world-field {flex:1 1 100%;display:flex;align-items:center;gap:.5em;margin:0;font-weight:600;}
 .world-map-badge {display:inline-flex;align-items:center;gap:.3em;}
 /* Map editor: the players' pins toggle and the one selected (#482). */
-.map-pin-actions .map-player-pins-toggle {display:inline-flex;align-items:center;gap:.4em;margin:0 0 0 auto;font-size:.9em;}
 .map-player-pin {margin:.5em 0;padding:.75em 1em;border:1px solid #e03131;border-radius:8px;}
 .map-player-pin h3 {display:flex;flex-wrap:wrap;align-items:baseline;gap:.4em;margin:0 0 .4em;font-size:1em;}
 .map-player-pin h3 i {color:#e03131;}
@@ -1026,11 +1017,9 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
 .map-kind-choice input:checked + span {background:var(--fg);color:var(--bg);}
 .map-kind-choice input:focus-visible + span {outline:2px solid var(--fg);outline-offset:3px;}
 :is(.map-kind-choice, .map-image-pick) .sr-only, .map-kind-choice legend {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
-.campaign-workspace .campaign-actions > label.map-image-pick:focus-within {outline:2px solid currentColor;outline-offset:3px;}
 .map-image-pick[aria-disabled="true"] {opacity:.6;cursor:progress;}
 .pointcrawl-canvas.is-image-map {height:auto;min-height:0;max-height:calc(100vh - 160px);background:transparent;}
 .pointcrawl-canvas.is-image-map:fullscreen {max-height:none;height:100vh;aspect-ratio:auto!important;background:#000;}
-.campaign-workspace .campaign-actions > label.map-image-pick.kw-add {background:var(--fg);color:var(--bg);border-color:var(--fg);}
 /* Campaigns or Parties (Discord feedback): a two-way switch beside New campaign, and the Parties view's cards. */
 .campaign-workspace .campaigns-page-header {display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.75em;}
 .campaigns-view-switch {display:inline-flex;border:1.5px solid var(--fg);border-radius:999px;overflow:hidden;}
@@ -1059,14 +1048,31 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
 .party-roster-hp.is-zero strong {color:#a33b3b;}
 body.dark-mode .party-roster-hp.is-zero strong {color:#e08080;}
 .party-roster-conditions {display:flex;flex-wrap:wrap;gap:.3em;width:100%;}
-/* Clean view (Discord feedback): beside a map, its Excalidraw controls shown (pressed) or hidden. They look like the
-   buttons next to them (Full screen, Add pin); a hidden group's button is dashed and dimmed. */
-.canvas-ui-toggles {display:inline-flex;gap:.75rem;}
-.canvas-ui-toggle {display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:none;min-width:44px;max-width:none;
-  min-height:44px;margin:0;padding:.6rem 1rem;border:1.5px solid currentColor;border-radius:2px;background:transparent;color:var(--fg);
-  font:inherit;font-weight:600;line-height:1.3;cursor:pointer;}
-.canvas-ui-toggle[aria-pressed="false"] {border-style:dashed;}
-.canvas-ui-toggle[aria-pressed="false"] i {opacity:.45;}
-.canvas-ui-toggle:hover {background:var(--fg);color:var(--bg);}
-.canvas-ui-toggle:hover i {opacity:1;}
-.canvas-ui-toggle:focus-visible {outline:2px solid currentColor;outline-offset:3px;}
+
+/* The map's toolbar (Discord feedback): one bar attached to the top of the map, like the whiteboard's top bar, on the
+   map editor, New map, sketches, maps being read and a party's map (with the Warden's fog as a second row).
+   Full screen takes the bar and the map together. Pressed buttons are tinted; a hidden view group is dimmed. */
+.map-frame {display:flex;flex-direction:column;min-width:0;}
+.map-bar {display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0;padding:6px 8px;border:1px solid currentColor;border-bottom:0;
+  background:color-mix(in srgb,var(--fg) 4%,var(--bg));font-size:.9em;}
+.map-bar + .map-bar {border-top:1px solid color-mix(in srgb,var(--fg) 18%,var(--bg));}
+.map-bar-spacer {flex:1 1 0;min-width:0;}
+.map-bar > strong {display:inline-flex;align-items:center;gap:.4em;margin-right:.25em;}
+.map-bar .map-bar-button {display:inline-flex;align-items:center;justify-content:center;gap:.4em;box-sizing:border-box;flex:none;min-width:36px;max-width:none;
+  height:36px;margin:0;padding:0 .75em;border:1px solid color-mix(in srgb,var(--fg) 30%,var(--bg));border-radius:6px;background:var(--bg);
+  color:var(--fg);font:inherit;font-weight:600;line-height:1;white-space:nowrap;text-decoration:none;cursor:pointer;}
+.map-bar .map-bar-button:has(> i:only-child) {padding:0;width:36px;}
+.map-bar .map-bar-button:hover:not(:disabled) {border-color:var(--fg);}
+.map-bar .map-bar-button[aria-pressed="true"] {border-color:var(--fg);background:color-mix(in srgb,var(--fg) 14%,var(--bg));}
+.map-bar .map-bar-button[aria-pressed="false"] > i {opacity:.45;}
+.map-bar .map-bar-button.is-primary {border-color:var(--fg);background:var(--fg);color:var(--bg);}
+.map-bar .map-bar-button.is-primary > i {opacity:1;}
+.map-bar .map-bar-button:disabled, .map-bar .map-bar-button[aria-disabled="true"] {opacity:.45;cursor:default;}
+.map-bar .map-bar-button:focus-visible, .map-bar .map-bar-button:focus-within {outline:2px solid var(--fg);outline-offset:2px;}
+.map-bar .fog-size {display:inline-flex;align-items:center;gap:.4em;margin:0;font-size:.95em;}
+.map-frame .map-bar .fog-size input[type=range] {flex:none;width:80px;min-width:0;max-width:80px;margin:0;padding:0;}
+.map-bar .fog-size .sr-only {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+.map-frame:fullscreen {background:var(--bg);}
+.map-frame:fullscreen .map-bar {border-left:0;border-right:0;border-top:0;}
+.map-frame:fullscreen .pointcrawl-canvas {flex:1 1 auto;height:auto !important;min-height:0;max-height:none !important;aspect-ratio:auto !important;border:0;}
+@media (max-width:600px) {.map-bar .map-bar-label {display:none;} .map-bar .map-image-pick {padding:0;width:36px;}}

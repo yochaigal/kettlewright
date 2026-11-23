@@ -1,47 +1,47 @@
 {% from 'campaigns/forms.html' import rich_editor with context %}
 {# A map: its drawing and its pins. Each pin has a note (a map note), written here and saved with the map. #}
-{# Clean view (Discord feedback): Excalidraw's own controls, shown or hidden (pressed = shown). An image map has no
-   drawing tools to show; a map being read has only zoom. #}
-{% set view_toggles %}<span class="canvas-ui-toggles" role="group" aria-label="{{ _('View') }}">
-{% if editing %}<button type="button" class="canvas-ui-toggle" x-show="kind !== 'image'" :aria-pressed="String(canvasUI.drawing)" @click="toggleCanvasUI('drawing')"
-  title="{{ _('Drawing tools') }}" aria-label="{{ _('Drawing tools') }}"><i class="fa-solid fa-pen-ruler" aria-hidden="true"></i></button>{% endif %}
-<button type="button" class="canvas-ui-toggle"{% if not editing %} x-show="kind !== 'image'"{% endif %} :aria-pressed="String(canvasUI.zoom)" @click="toggleCanvasUI('zoom')"
-  title="{{ _('Zoom and undo') if editing else _('Map controls') }}" aria-label="{{ _('Zoom and undo') if editing else _('Map controls') }}"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i></button>
-</span>{% endset %}
-{% set fullscreen_button %}<button type="button" @click="fullscreen()" :disabled="!canvasReady"><i class="fa-solid fa-expand" aria-hidden="true"></i> {{ _('Full screen') }}</button>{% endset %}
+{# The map's toolbar (Discord feedback): one bar attached to the top of the map, like the whiteboard's top bar.
+   Full screen takes the bar and the map together, so every tool stays at hand. Excalidraw's own controls are
+   shown or hidden from it (pressed = shown); an image map has no drawing tools, and a map being read only zoom. #}
+<div class="map-frame" x-ref="frame">
+<div class="map-bar" role="toolbar" aria-label="{{ _('Map tools') }}">
 {% if editing and not sketch %}
-<div class="campaign-actions map-pin-actions">
-<button type="button" class="kw-add" :class="{'is-active': picking}" @click="startPin()" :disabled="!canvasReady">
+<button type="button" class="map-bar-button is-primary" :class="{'is-active': picking}" :aria-pressed="String(picking)" @click="startPin()" :disabled="!canvasReady">
   <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
   <span x-text="picking ? {{ _('Cancel pin')|tojson|forceescape }} : {{ _('Add pin')|tojson|forceescape }}">{{ _('Add pin') }}</span></button>
-<button type="button" @click="loadCanvas()" x-show="!canvasReady" x-cloak>{{ _('Reload drawing editor') }}</button>
 {# An image map's picture (#506): choose it, or replace it with a new version and keep the pins. #}
-<template x-if="kind === 'image'"><label class="button map-image-pick" :class="{'kw-add': !hasImage}" :aria-disabled="!canvasReady || generating">
+<template x-if="kind === 'image'"><label class="map-bar-button map-image-pick" :class="{'is-primary': !hasImage}" :aria-disabled="!canvasReady || generating"
+  :title="hasImage ? {{ _('Replace image')|tojson|forceescape }} : {{ _('Choose image')|tojson|forceescape }}">
   <i class="fa-solid fa-image" aria-hidden="true"></i>
-  <span x-text="hasImage ? {{ _('Replace image')|tojson|forceescape }} : {{ _('Choose image')|tojson|forceescape }}"></span>
+  <span class="map-bar-label" x-text="hasImage ? {{ _('Replace image')|tojson|forceescape }} : {{ _('Choose image')|tojson|forceescape }}"></span>
   <input type="file" accept="image/png,image/jpeg,image/webp" class="sr-only" @change="chooseImage($event)" :disabled="!canvasReady || generating"></label></template>
-{{ fullscreen_button }}
-{{ view_toggles }}
 {# The players' pins (#482), read only: shown here so the Warden sees them while editing. #}
-<template x-if="playerPins.length"><label class="campaign-check map-player-pins-toggle"><input type="checkbox" x-model="showPlayerPins" @change="syncCanvas()">
-  <span x-text="{{ _('Show players’ pins')|tojson|forceescape }} + ' (' + playerPins.length + ')'"></span></label></template>
+<template x-if="playerPins.length"><button type="button" class="map-bar-button" :aria-pressed="String(showPlayerPins)" @click="showPlayerPins = !showPlayerPins; syncCanvas()"
+  title="{{ _('Show players’ pins') }}" :aria-label="{{ _('Show players’ pins')|tojson|forceescape }} + ' (' + playerPins.length + ')'">
+  <i class="fa-solid fa-users" aria-hidden="true"></i> <span x-text="playerPins.length"></span></button></template>
+{% endif %}
+<button type="button" class="map-bar-button" @click="loadCanvas()" x-show="!canvasReady" x-cloak>{{ _('Reload drawing editor') }}</button>
+<span class="map-bar-spacer"></span>
+{% if editing %}<button type="button" class="map-bar-button" x-show="kind !== 'image'" :aria-pressed="String(canvasUI.drawing)" @click="toggleCanvasUI('drawing')"
+  title="{{ _('Drawing tools') }}" aria-label="{{ _('Drawing tools') }}"><i class="fa-solid fa-pen-ruler" aria-hidden="true"></i></button>{% endif %}
+<button type="button" class="map-bar-button"{% if not editing %} x-show="kind !== 'image'"{% endif %} :aria-pressed="String(canvasUI.zoom)" @click="toggleCanvasUI('zoom')"
+  title="{{ _('Zoom and undo') if editing else _('Map controls') }}" aria-label="{{ _('Zoom and undo') if editing else _('Map controls') }}"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i></button>
+<button type="button" class="map-bar-button" @click="fullscreen()" :disabled="!canvasReady"
+  :title="isFullscreen ? {{ _('Exit full screen')|tojson|forceescape }} : {{ _('Full screen')|tojson|forceescape }}"
+  :aria-label="isFullscreen ? {{ _('Exit full screen')|tojson|forceescape }} : {{ _('Full screen')|tojson|forceescape }}"><i class="fa-solid" :class="isFullscreen ? 'fa-compress' : 'fa-expand'" aria-hidden="true"></i></button>
 </div>
+<iframe class="pointcrawl-canvas" x-ref="canvas"
+ data-src="{{ url_for('static', filename='src/js/maps/editor.html') }}"
+ data-library-error="{{ _('Some map libraries could not load. Reload the editor to retry.') }}"
+ title="{{ _('Drawing editor') }}" allowfullscreen></iframe>
+</div>
+{% if editing and not sketch %}
 <template x-if="playerPin"><section class="map-player-pin" aria-live="polite">
   <h3><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span x-text="playerPin.note"></span> <small x-text="playerPin.party"></small></h3>
   <div class="rich-content" x-html="playerPin.html"></div>
   <p><a :href="playerPin.url">{{ _('Open on the party’s map') }} →</a> <button type="button" class="link-button" @click="selectedPlayerPin=''">{{ _('Close') }}</button></p>
 </section></template>
-{% else %}
-<div class="campaign-actions">
-<button type="button" @click="loadCanvas()" x-show="!canvasReady" x-cloak>{{ _('Reload drawing editor') }}</button>
-{{ fullscreen_button }}
-{{ view_toggles }}
-</div>
 {% endif %}
-<iframe class="pointcrawl-canvas" x-ref="canvas"
- data-src="{{ url_for('static', filename='src/js/maps/editor.html') }}"
- data-library-error="{{ _('Some map libraries could not load. Reload the editor to retry.') }}"
- title="{{ _('Drawing editor') }}" allowfullscreen></iframe>
 {% if not sketch %}
 <section class="map-pins" aria-labelledby="map-pins-title">
 <h2 id="map-pins-title"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ _('Pins') }} <small x-text="graph.nodes.length"></small></h2>

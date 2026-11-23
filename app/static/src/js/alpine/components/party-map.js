@@ -10,7 +10,7 @@ export default function partyMap() {
     selected: '', selectedEdge: '', selectedPin: '', canvasReady: false, status: '',
     picking: false, draft: null, saving: false, fogTool: '', fogRadius: 60, preview: false,
     // Clean view (Discord feedback): the map's own controls, shown or hidden, as on every map.
-    canvasUI: readCanvasUI('kw-map-ui'),
+    canvasUI: readCanvasUI('kw-map-ui'), isFullscreen: false,
     init() {
       const data = this.$el.dataset;
       this.graph = JSON.parse(data.graph);
@@ -27,10 +27,15 @@ export default function partyMap() {
       this.$refs.canvas.classList.toggle('is-image-map', Boolean(aspect));
       if (aspect) this.$refs.canvas.style.aspectRatio = String(aspect);
       this.$refs.canvas.src = this.$refs.canvas.dataset.src;
+      this.onFullscreen = () => {this.isFullscreen = Boolean(this.$refs.frame) && document.fullscreenElement === this.$refs.frame;};
+      document.addEventListener('fullscreenchange', this.onFullscreen);
       // Players see new pins and newly uncovered fog without reloading.
       this.poll = setInterval(() => this.refresh(), 20000);
     },
-    destroy() {window.removeEventListener('message', this.onMessage); clearInterval(this.poll);},
+    destroy() {
+      window.removeEventListener('message', this.onMessage); clearInterval(this.poll);
+      document.removeEventListener('fullscreenchange', this.onFullscreen);
+    },
     send(type, detail = {}) {
       this.$refs.canvas.contentWindow?.postMessage({channel: 'kw-map', type, ...detail}, location.origin);
     },
@@ -67,7 +72,11 @@ export default function partyMap() {
       writeCanvasUI('kw-map-ui', this.canvasUI); this.sync();
     },
     // Full screen (#476): the map alone, filling the screen; Esc returns.
-    fullscreen() {this.$refs.canvas.requestFullscreen?.().catch(() => {});},
+    // Full screen takes the map and its toolbar (Discord feedback), fog tools included; again to leave.
+    fullscreen() {
+      if (document.fullscreenElement) {document.exitFullscreen?.().catch(() => {}); return;}
+      (this.$refs.frame || this.$refs.canvas).requestFullscreen?.().catch(() => {});
+    },
     get selectedNode() {return this.graph.nodes.find(node => String(node.id) === this.selected);},
     get selectedPath() {return this.graph.edges.find(edge => String(edge.id) === this.selectedEdge);},
     get pin() {return this.pins.find(pin => String(pin.id) === this.selectedPin);},
