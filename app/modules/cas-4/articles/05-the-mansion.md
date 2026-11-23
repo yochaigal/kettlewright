@@ -284,20 +284,6 @@ A bed occupies the center of the room, a humanoid **shape** pressed into its cen
 
 ![Map](https://cairnrpg.com/adventures/first-party/img/cas-4/private-chambers.webp)
 
-### Dungeon Exploration Cycle
+### Dungeon Exploration Cycle and Dungeon Events
 
-* Each turn, a PC may move ~40ft and take one action. Using the action to move instead allows up to 120ft, but risks a [[NPCs & Creatures|Dungeon Events roll]] (see below).
-* A Dungeon Events roll is triggered when the party spends more than one turn in a room, moves haphazardly, enters a new area or level, or creates a disturbance.
-* Actions are any non-passive activities: searching, forcing doors, listening, disarming traps, combat, spellcasting, resting, etc. Loud or noticeable actions may trigger an encounter. Some actions take multiple turns to complete.
-* Searching one object or location exhaustively takes one turn and reveals hidden treasure, traps, or secret doors. Larger or more complex areas may take longer. Searching first is safer, but costs time.
-* Resting one turn restores all HP, but requires light and a safe location. Resting does not restore Fatigue.
-
-### Dungeon Events Table
-
-| **1** | **Encounter**   | Roll on an encounter table. Possibly **hostile**. (See [[Reactions Table]]).                             |
-| ----- | --------------- | --------------------------------------------------------------------------------------------------------- |
-| **2** | **Sign**        | A clue, spoor, track, abandoned lair, scent, victim, etc is discovered.                                   |
-| **3** | **Environment** | Surroundings shift or escalate. Water rises, ceilings collapse, a ritual nears completion, etc.           |
-| **4** | **Loss**        | Torches are blown out, an ongoing spell fizzles, etc. The party must resolve the effect before moving on. |
-| **5** | **Exhaustion**  | The party must rest (triggering another roll on this table), add a **Fatigue**, or consume a ration.      |
-| **6** | **Quiet**       | The party is left alone (and safe) for the time being.                                                    |
+The maps, the exploration cycle and every events table are together in [[Lockwood Manor Map & Dungeon Events]], to keep open while the party explores.
