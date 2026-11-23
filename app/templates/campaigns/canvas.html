@@ -7,6 +7,11 @@
   <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
   <span x-text="picking ? {{ _('Cancel pin')|tojson|forceescape }} : {{ _('Add pin')|tojson|forceescape }}">{{ _('Add pin') }}</span></button>
 <button type="button" @click="loadCanvas()" x-show="!canvasReady" x-cloak>{{ _('Reload drawing editor') }}</button>
+{# An image map's picture (#506): choose it, or replace it with a new version and keep the pins. #}
+<template x-if="kind === 'image'"><label class="button map-image-pick" :class="{'kw-add': !hasImage}" :aria-disabled="!canvasReady || generating">
+  <i class="fa-solid fa-image" aria-hidden="true"></i>
+  <span x-text="hasImage ? {{ _('Replace image')|tojson|forceescape }} : {{ _('Choose image')|tojson|forceescape }}"></span>
+  <input type="file" accept="image/png,image/jpeg,image/webp" class="sr-only" @change="chooseImage($event)" :disabled="!canvasReady || generating"></label></template>
 {{ fullscreen_button }}
 {# The players' pins (#482), read only: shown here so the Warden sees them while editing. #}
 <template x-if="playerPins.length"><label class="campaign-check map-player-pins-toggle"><input type="checkbox" x-model="showPlayerPins" @change="syncCanvas()">

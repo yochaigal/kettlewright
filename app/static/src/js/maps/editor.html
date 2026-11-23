@@ -12,7 +12,11 @@
   .pin-tooltip{position:fixed;z-index:10;max-width:16rem;padding:.3rem .55rem;border-radius:6px;pointer-events:none;
     font:600 14px/1.3 system-ui,sans-serif;color:#1b1b1f;background:#fff;border:1px solid #ced4da;box-shadow:0 2px 8px rgb(0 0 0/.18)}
   .pin-tooltip.is-dark{color:#e9ecef;background:#232329;border-color:#495057}
-  .pin-tooltip[hidden]{display:none}</style>
+  .pin-tooltip[hidden]{display:none}
+  /* An image map (#506) read by a party: the picture alone, no editor UI (zoom with the wheel or a pinch). */
+  body.image-map{background:transparent}
+  body.image-map-reading .excalidraw .layer-ui__wrapper,body.image-map-reading .excalidraw .disable-zen-mode,
+  body.image-map-reading .excalidraw .App-bottom-bar,body.image-map-reading .excalidraw .footer-center{display:none!important}</style>
   <script>window.EXCALIDRAW_ASSET_PATH = 'https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/';</script>
   <script type="importmap">
   {"imports": {

@@ -4,7 +4,7 @@ import {drawingFromScene, emptyDrawing, graphShapes, movedLocations, isManaged, 
   pinShapes, pinHit, pinDiameter, pinTooltip} from './scene.js';
 import {createFogLayer} from './whiteboard_fog.js';
 import {loadLibraries} from './libraries.js';
-import {fittedViewport} from './viewport.js';
+import {fittedViewport, imageViewport, clampToImage} from './viewport.js';
 import {editorLocale} from './locale.js';
 
 let api, state, applying = false, lastDrawing = '', inputDrawingKey = '', graphKey = '', disposed = false, repairing = false, initialized = false;
@@ -29,13 +29,58 @@ const orderedScene = (free, managed) => [
   ...managed.filter(e=>!e.customData?.nodeId || !state.graph.nodes.some(n=>String(n.id)===e.customData.nodeId && n.category==='terrain')),
 ];
 
+// An image map (#506): its drawing is one locked picture at (0, 0), the lowest element. Pins and fog
+// are in its coordinates. Readers see the picture alone: no grid, no editor UI, no canvas around it.
+const isImageMap = () => state?.graph?.kind === 'image';
+const mapImage = () => api?.getSceneElements().find(element => element.type === 'image' && !element.isDeleted);
+const imageBounds = image => [image.x, image.y, image.x + image.width, image.y + image.height];
+let clamping = false;
+
+function imageMapLook() {
+  const image = isImageMap();
+  document.body.classList.toggle('image-map', image);
+  document.body.classList.toggle('image-map-reading', image && !state.editing);
+  return image ? {gridModeEnabled: false, viewBackgroundColor: 'transparent', zenModeEnabled: !state.editing}
+    : {gridModeEnabled: true};
+}
+
 function fitDrawing() {
   if (!api) return;
   const elements = api.getSceneElements();
   if (!elements.length) return;
   const {width, height} = api.getAppState();
-  api.updateScene({appState: fittedViewport(getCommonBounds(elements), width, height),
+  const image = isImageMap() && mapImage();
+  api.updateScene({appState: image ? imageViewport(imageBounds(image), width, height)
+    : fittedViewport(getCommonBounds(elements), width, height),
     captureUpdate: CaptureUpdateAction.NEVER});
+}
+
+// Readers zoom and pan inside the picture only.
+function keepInsideImage(appState) {
+  if (clamping || !isImageMap() || state.editing) return;
+  const image = mapImage();
+  const next = image && clampToImage(imageBounds(image), appState);
+  if (!next) return;
+  clamping = true;
+  try {api.updateScene({appState: next, captureUpdate: CaptureUpdateAction.NEVER});} finally {clamping = false;}
+}
+
+// New map > Image, or Replace image: the picture becomes the map's lowest element, locked. A replacement
+// keeps the old picture's width, so pins and fog stay where they were on a new version of the same map.
+function setMapImage({dataURL, mimeType, width, height}) {
+  if (!api || !state?.editing || !dataURL || !(width > 0) || !(height > 0)) return;
+  const fileId = crypto.randomUUID().replaceAll('-', '');
+  api.addFiles([{id: fileId, dataURL, mimeType, created: Date.now()}]);
+  const elements = api.getSceneElements();
+  const current = mapImage();
+  // A new picture: 1600 units on its long side, so pins and the fog brush keep their usual size on it.
+  const scale = current ? current.width / width : 1600 / Math.max(width, height);
+  const [image] = restoreElements(convertToExcalidrawElements([{type: 'image', id: current?.id || 'map-image', fileId,
+    x: current?.x ?? 0, y: current?.y ?? 0, width: width * scale, height: height * scale, locked: true, status: 'saved'}],
+    {regenerateIds: false}), null);
+  api.updateScene({elements: [image, ...elements.filter(element => element.id !== image.id)],
+    appState: imageMapLook(), captureUpdate: CaptureUpdateAction.IMMEDIATELY});
+  fitDrawing();
 }
 
 function applyState(next) {
@@ -61,6 +106,9 @@ function applyState(next) {
       lastDrawing = JSON.stringify(drawingFromScene(api.getSceneElements(), api.getFiles()));
     }
     syncFog();
+    if (isImageMap() !== document.body.classList.contains('image-map')) {
+      api.updateScene({appState: imageMapLook(), captureUpdate: CaptureUpdateAction.NEVER});
+    }
     if (selectionChanged) {
       const selectedElementIds = state.selected ? {[`kw-node-${state.selected}`]: true} : {};
       api.updateScene({appState: {selectedElementIds}, captureUpdate: CaptureUpdateAction.NEVER});
@@ -71,6 +119,7 @@ function applyState(next) {
 function onChange(elements, appState, files) {
   fogLayer?.redraw();  // Fog follows panning and zooming.
   if (!api || !state || applying || disposed) return;
+  if (initialized) keepInsideImage(appState);
   if (!initialized) {
     if (appState.isLoading) return;
     initialized = true;
@@ -128,7 +177,7 @@ function mount(next) {
       });
     },
     initialData: {elements: orderedScene(restoreElements(drawing.elements, null),managedElements(next.graph)),
-      files: drawing.files, libraryItems: library.then(result => result.items), appState: {gridModeEnabled: true}},
+      files: drawing.files, libraryItems: library.then(result => result.items), appState: imageMapLook()},
     viewModeEnabled: !next.editing,
     theme: next.dark ? 'dark' : 'light',
     langCode: editorLocale(next.lang),
@@ -148,6 +197,7 @@ window.addEventListener('message', event => {
       api?.updateScene({appState: {theme: message.dark ? 'dark' : 'light'}});
     }
   } else if (message.type === 'fit') fitDrawing();
+  else if (message.type === 'set-image') setMapImage(message);
   else if (message.type === 'water-brush' && state?.editing && api) {
     const target=state.graph.nodes.find(node=>String(node.id)===String(message.nodeId) && node.category==='water');
     if(!target)return;

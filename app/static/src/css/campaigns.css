@@ -17,6 +17,7 @@
 .campaign-workspace > nav.campaign-actions {margin:0 0 1.5rem;}
 .campaign-workspace .campaign-actions > a,
 .campaign-workspace .campaign-actions > button,
+.campaign-workspace .campaign-actions > label.map-image-pick,
 .campaign-workspace .campaign-actions > form > button,
 .campaign-workspace .campaign-tree-root > summary > form > button,
 .campaign-workspace .campaign-modal-trigger {
@@ -29,11 +30,13 @@
 }
 .campaign-workspace .campaign-actions > a:hover,
 .campaign-workspace .campaign-actions > button:not(:disabled):hover,
+.campaign-workspace .campaign-actions > label.map-image-pick:hover,
 .campaign-workspace .campaign-actions > form > button:not(:disabled):hover,
 .campaign-workspace .campaign-tree-root > summary > form > button:not(:disabled):hover,
 .campaign-workspace .campaign-modal-trigger:hover {background:var(--fg);color:var(--bg);border-color:var(--fg);}
 .campaign-workspace .campaign-actions > a:focus-visible,
 .campaign-workspace .campaign-actions > button:focus-visible,
+.campaign-workspace .campaign-actions > label.map-image-pick:focus-visible,
 .campaign-workspace .campaign-actions > form > button:focus-visible,
 .campaign-workspace .campaign-tree-root > summary > form > button:focus-visible,
 .campaign-workspace .campaign-modal-trigger:focus-visible {outline:2px solid currentColor;outline-offset:3px;}
@@ -999,3 +1002,18 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
   border-radius:2px;background:var(--bg);color:var(--fg);font:inherit;}
 /* No campaigns yet: a quiet line under the islands (New campaign is the button at the top). */
 .campaign-workspace .campaign-gallery-page .gallery-empty {margin:1.75em .25em;color:color-mix(in srgb,var(--fg) 62%,var(--bg));font-style:italic;font-size:.95em;}
+/* Image maps (#506): New map's Drawing / Image choice, the picture button, and a frame of the picture's shape. */
+.map-kind-choice {display:flex;max-width:24rem;margin:0 0 1em;padding:0;border:0;min-width:0;}
+.map-kind-choice label {position:relative;flex:1 1 0;margin:0;}
+.map-kind-choice input {position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer;}
+.map-kind-choice span {display:flex;align-items:center;justify-content:center;gap:.45em;min-height:44px;border:1.5px solid var(--fg);font-weight:600;}
+.map-kind-choice label:first-of-type span {border-radius:2px 0 0 2px;}
+.map-kind-choice label:last-of-type span {border-radius:0 2px 2px 0;margin-left:-1.5px;}
+.map-kind-choice input:checked + span {background:var(--fg);color:var(--bg);}
+.map-kind-choice input:focus-visible + span {outline:2px solid var(--fg);outline-offset:3px;}
+:is(.map-kind-choice, .map-image-pick) .sr-only, .map-kind-choice legend {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+.campaign-workspace .campaign-actions > label.map-image-pick:focus-within {outline:2px solid currentColor;outline-offset:3px;}
+.map-image-pick[aria-disabled="true"] {opacity:.6;cursor:progress;}
+.pointcrawl-canvas.is-image-map {height:auto;min-height:0;max-height:calc(100vh - 160px);background:transparent;}
+.pointcrawl-canvas.is-image-map:fullscreen {max-height:none;height:100vh;aspect-ratio:auto!important;background:#000;}
+.campaign-workspace .campaign-actions > label.map-image-pick.kw-add {background:var(--fg);color:var(--bg);border-color:var(--fg);}
