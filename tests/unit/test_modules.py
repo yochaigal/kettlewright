@@ -206,3 +206,25 @@ def test_signup_adds_no_campaigns(app):
         created = User.query.filter_by(username='newwarden').first()
         assert created is not None
         assert Campaign.query.filter_by(owner_id=created.id).count() == 0
+
+
+def test_cas4_map_article_holds_the_maps_and_every_events_table(user):
+    """#508: everything to run the manor at the table is in one article, which links back from the others."""
+    app, client = user
+    assert add(client, 'cas-4').status_code == 302
+    with app.app_context():
+        entries = {entry.title: entry for entry in ContentEntry.query.filter_by(campaign_id=7)}
+        reference, mansion, npcs = (entries[title] for title in (
+            'Lockwood Manor Map & Dungeon Events', 'The Mansion', 'NPCs & Creatures'))
+        ids = {title: entry.id for title, entry in entries.items()}
+        body = reference.body
+        assert body.index('iso-map.webp') < body.index('simple-map-white.webp') < body.index('### Dungeon Exploration Cycle')
+        assert body.index('### Dungeon Exploration Cycle') < body.index('| d6 | Event |') < body.index('| d4  | Encounters') < body.index('| d4  | Environment')
+        # Moved, not copied: the mansion and the bestiary point to it.
+        for entry in (mansion, npcs):
+            assert '[[Lockwood Manor Map & Dungeon Events]]' in entry.body and '| d4  | Encounters' not in entry.body
+        assert 'Dungeon Events Table' not in mansion.body and 'iso-map.webp' not in npcs.body
+    page = client.get(f"/campaigns/7/wiki/{ids['The Mansion']}/").get_data(as_text=True)
+    assert f'/campaigns/7/wiki/{ids["Lockwood Manor Map & Dungeon Events"]}/">Lockwood Manor Map &amp; Dungeon Events</a>' in page
+    # Articles load the table roller and the scrolling "On this page".
+    assert 'id="table-roll-labels"' in page and 'src/js/table_rolls.js' in page and 'src/js/wiki_toc.js' in page
