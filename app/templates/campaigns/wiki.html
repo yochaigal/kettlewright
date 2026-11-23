@@ -82,6 +82,10 @@
 <div data-party-content="{{ party.id }}" data-refresh-url="{{ url_for('campaigns.party_materials_data', party_id=party.id) }}"></div>
 <script type="module" src="{{ url_for('static', filename='src/js/campaign_live.js') }}"></script>
 {% endif %}
+{# Roll on an article's tables, and an "On this page" that scrolls on its own (#508). #}
+<script id="table-roll-labels" type="application/json">{{ {'roll': _('Roll')}|tojson }}</script>
+<script type="module" src="{{ url_for('static', filename='src/js/table_rolls.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='src/js/wiki_toc.js') }}"></script>
 <div class="campaign-wiki" x-data="{ menu: false }" @keydown.escape.window="menu = false">
   <nav class="campaign-breadcrumb wiki-topbar" aria-label="{{ _('Breadcrumb') }}">
     {% if party %}<a href="{{ back_url }}">← {{ _('Back to party') }}</a>

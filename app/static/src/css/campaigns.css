@@ -357,12 +357,15 @@ aside:where(.campaign-wiki *), article:where(.campaign-wiki *), header:where(.ca
 .wiki-body:not(:has(.wiki-aside)) {grid-template-columns:minmax(0,1fr);}
 .wiki-content {min-width:0;max-width:46em;}
 .wiki-content .rich-content {font-size:1.05em;line-height:1.6;}
-.wiki-aside {position:sticky;top:1em;display:flex;flex-direction:column;gap:1.5em;font-size:.92em;}
+.wiki-aside {position:sticky;top:1em;display:flex;flex-direction:column;gap:1.5em;font-size:.92em;
+  /* A long "On this page" scrolls on its own (#508). */
+  max-height:calc(100dvh - 2em);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;}
 .wiki-aside h2, .wiki-related h2 {margin:0 0 .5em;font-size:.8em;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--wiki-muted);}
 .wiki-related h2 small {margin-left:.35em;font-weight:400;}
 .wiki-aside ul, .wiki-related > ul {margin:0;padding:0;list-style:none;}
 .wiki-aside li {margin:.3em 0;}
 .wiki-toc a {color:inherit;}
+.wiki-toc a[aria-current] {font-weight:700;text-decoration-thickness:2px;}
 .wiki-related {margin-top:2em;}
 .wiki-related > ul li {margin:.35em 0;}
 .wiki-cards {display:grid;grid-template-columns:repeat(auto-fill,minmax(14em,1fr));gap:.75em;margin:0;padding:0;list-style:none;}
@@ -1002,6 +1005,17 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
   border-radius:2px;background:var(--bg);color:var(--fg);font:inherit;}
 /* No campaigns yet: a quiet line under the islands (New campaign is the button at the top). */
 .campaign-workspace .campaign-gallery-page .gallery-empty {margin:1.75em .25em;color:color-mix(in srgb,var(--fg) 62%,var(--bg));font-style:italic;font-size:.95em;}
+
+/* Roll on a table (#508): a Roll button above any table keyed by a die; the result is a notification, the rolled row is marked. */
+.rich-content .table-roll {display:flex;flex-wrap:wrap;align-items:center;gap:.4em .8em;margin:.75em 0 .35em;}
+.rich-content .table-roll-button {display:inline-flex;align-items:center;gap:.4em;min-height:36px;margin:0;padding:.3em .85em;
+  border:1.5px solid var(--fg);border-radius:2px;background:transparent;color:var(--fg);font:inherit;font-size:.9em;font-weight:600;cursor:pointer;}
+.rich-content .table-roll-button:hover {background:var(--fg);color:var(--bg);}
+.rich-content .table-roll-button:focus-visible {outline:2px solid var(--fg);outline-offset:2px;}
+.rich-content .table-roll-button:disabled {opacity:.6;cursor:progress;text-decoration:none;}
+.rich-content .table-roll .sr-only {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+.rich-content table .is-rolled, .rich-content table tr.is-rolled > * {background:color-mix(in srgb,var(--fg) 14%,var(--bg));}
+.rich-content table tr.is-rolled > :first-child, .rich-content table td.is-rolled, .rich-content table th.is-rolled {box-shadow:inset 3px 0 0 var(--fg);}
 /* Image maps (#506): New map's Drawing / Image choice, the picture button, and a frame of the picture's shape. */
 .map-kind-choice {display:flex;max-width:24rem;margin:0 0 1em;padding:0;border:0;min-width:0;}
 .map-kind-choice label {position:relative;flex:1 1 0;margin:0;}
