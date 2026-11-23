@@ -47,6 +47,9 @@
   <div class="map-bar" role="toolbar" aria-label="{{ _('Map tools') }}">
     <button type="button" class="map-bar-button is-primary" :aria-pressed="String(picking)" :class="{'is-active': picking}" @click="startPin()" :disabled="!canvasReady"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span x-text="picking ? {{ _('Cancel pin')|tojson|forceescape }} : {{ _('Add pin')|tojson|forceescape }}">{{ _('Add pin') }}</span></button>
     <span class="map-bar-spacer"></span>
+    {# The Warden's fog row, shown or hidden (Discord feedback), like the whiteboard's Warden tools. #}
+    {% if warden %}<button type="button" class="map-bar-button" x-ref="fogToggle" :aria-pressed="String(canvasUI.fog)" @click="toggleCanvasUI('fog')"
+      title="{{ _('Fog tools') }}" aria-label="{{ _('Fog tools') }}"><i class="fa-solid fa-cloud" aria-hidden="true"></i></button>{% endif %}
     {# Clean view (Discord feedback): the map's zoom and menu, shown or hidden. #}
     <button type="button" class="map-bar-button" x-show="graph.kind !== 'image'" :aria-pressed="String(canvasUI.zoom)" @click="toggleCanvasUI('zoom')"
       title="{{ _('Map controls') }}" aria-label="{{ _('Map controls') }}"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i></button>
@@ -56,8 +59,8 @@
   </div>
   {% if warden %}
   {# The Warden uncovers the map for this party, as on the whiteboard: a second row of the map's toolbar. #}
-  <div class="map-bar map-bar-fog party-map-fog" role="toolbar" aria-label="{{ _('Fog') }}">
-    <strong><i class="fa-solid fa-cloud" aria-hidden="true"></i> {{ _('Fog') }}</strong>
+  <div class="map-bar map-bar-fog party-map-fog" role="toolbar" aria-label="{{ _('Fog') }}" x-show="canvasUI.fog">
+    <strong title="{{ _('Fog') }}"><i class="fa-solid fa-cloud" aria-hidden="true"></i><span class="sr-only">{{ _('Fog') }}</span></strong>
     <button type="button" class="map-bar-button" @click="fogAction('hide_all')" title="{{ _('Cover all') }}"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i> <span class="map-bar-label">{{ _('Cover all') }}</span></button>
     <button type="button" class="map-bar-button" @click="fogAction('reveal_all')" title="{{ _('Clear all') }}"><i class="fa-solid fa-eye" aria-hidden="true"></i> <span class="map-bar-label">{{ _('Clear all') }}</span></button>
     <button type="button" class="map-bar-button" :aria-pressed="fogTool === 'reveal'" @click="setFogTool('reveal')" :disabled="!fog?.enabled" title="{{ _('Reveal brush') }}"><i class="fa-solid fa-paintbrush" aria-hidden="true"></i> <span class="map-bar-label">{{ _('Reveal brush') }}</span></button>
@@ -66,6 +69,8 @@
     <button type="button" class="map-bar-button" @click="fogAction('undo')" :disabled="!fog?.enabled || !fog?.strokes?.length" title="{{ _('Undo') }}" aria-label="{{ _('Undo') }}"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i></button>
     <button type="button" class="map-bar-button" @click="fogAction('disable')" :disabled="!fog?.enabled" title="{{ _('Turn off fog') }}" aria-label="{{ _('Turn off fog') }}"><i class="fa-solid fa-power-off" aria-hidden="true"></i></button>
     <button type="button" class="map-bar-button" :aria-pressed="preview" @click="togglePreview()" :disabled="!fog?.enabled" title="{{ _('See as players') }}" aria-label="{{ _('See as players') }}"><i class="fa-solid fa-user" aria-hidden="true"></i></button>
+    <span class="map-bar-spacer"></span>
+    <button type="button" class="map-bar-button" @click="toggleCanvasUI('fog'); $nextTick(() => $refs.fogToggle?.focus())" title="{{ _('Hide fog tools') }}" aria-label="{{ _('Hide fog tools') }}"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
   </div>
   {% endif %}
   <iframe class="pointcrawl-canvas party-map-frame" x-ref="canvas" data-src="{{ url_for('static', filename='src/js/maps/editor.html') }}" title="{{ _('Map') }}" allowfullscreen></iframe>

@@ -1,7 +1,8 @@
 // Clean view (Discord feedback): every canvas can hide Excalidraw's drawing tools and its zoom and undo controls, from
 // toggle buttons beside it (pressed = shown), like the whiteboard's Warden tools and dice roller. Remembered per kind
 // of canvas: 'kw-board-ui' for the whiteboard, 'kw-map-ui' for maps. The classes are styled in css/canvas_ui.css.
-export const CANVAS_GROUPS = ['drawing', 'zoom'];
+// 'fog' is the Warden's fog row on a party's map: the page shows or hides it (party_map.html).
+export const CANVAS_GROUPS = ['drawing', 'zoom', 'fog'];
 
 export function readCanvasUI(key, storage = () => globalThis.localStorage) {
   let saved = {};

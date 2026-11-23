@@ -6,10 +6,10 @@ const memory = (values = {}) => () => ({getItem: key => values[key] ?? null, set
 const classes = () => {const set = new Set(); return {set, toggle: (name, on) => (on ? set.add(name) : set.delete(name))};};
 
 test('every control shows until hidden, and a broken or blocked store shows everything', () => {
-  assert.deepEqual(readCanvasUI('k', memory()), {drawing: true, zoom: true});
-  assert.deepEqual(readCanvasUI('k', memory({k: '{"zoom":false}'})), {drawing: true, zoom: false});
-  assert.deepEqual(readCanvasUI('k', memory({k: 'not json'})), {drawing: true, zoom: true});
-  assert.deepEqual(readCanvasUI('k', () => {throw new Error('blocked');}), {drawing: true, zoom: true});
+  assert.deepEqual(readCanvasUI('k', memory()), {drawing: true, zoom: true, fog: true});
+  assert.deepEqual(readCanvasUI('k', memory({k: '{"zoom":false}'})), {drawing: true, zoom: false, fog: true});
+  assert.deepEqual(readCanvasUI('k', memory({k: 'not json'})), {drawing: true, zoom: true, fog: true});
+  assert.deepEqual(readCanvasUI('k', () => {throw new Error('blocked');}), {drawing: true, zoom: true, fog: true});
   const values = {};
   writeCanvasUI('k', {drawing: false, zoom: true}, memory(values));
   assert.equal(values.k, '{"drawing":false,"zoom":true}');

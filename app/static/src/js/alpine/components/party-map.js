@@ -69,6 +69,8 @@ export default function partyMap() {
     },
     toggleCanvasUI(group) {
       this.canvasUI = {...this.canvasUI, [group]: !this.canvasUI[group]};
+      // The fog row hidden: a fog brush in use is put down, since its button is hidden.
+      if (group === 'fog' && !this.canvasUI.fog && this.fogTool) {this.fogTool = ''; this.send('fog-tool', {tool: '', radius: Number(this.fogRadius)});}
       writeCanvasUI('kw-map-ui', this.canvasUI); this.sync();
     },
     // Full screen (#476): the map alone, filling the screen; Esc returns.

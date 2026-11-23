@@ -1977,3 +1977,8 @@ def test_a_map_has_one_toolbar_and_full_screen_takes_both(setup):
     party_map = client.get(f'/party/1/map/{map_id}/', follow_redirects=True).get_data(as_text=True)
     frame = party_map[party_map.index('class="map-frame" x-ref="frame"'):party_map.index('</iframe>')]
     assert 'startPin()' in frame and 'fullscreen()' in frame and 'map-bar-fog' in frame and "setFogTool('cover')" in frame
+    # The fog row hides like the whiteboard's Warden tools: Fog tools in the bar, × on the row (the Warden's only).
+    assert "toggleCanvasUI('fog')" in frame and 'x-show="canvasUI.fog"' in frame and 'Hide fog tools' in frame
+    login(client, 2)
+    player = client.get(f'/party/1/map/{map_id}/', follow_redirects=True).get_data(as_text=True)
+    assert "toggleCanvasUI('fog')" not in player and 'map-bar-fog' not in player

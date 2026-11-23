@@ -51287,3 +51287,13 @@ msgstr "Herramientas del mapa"
 #: app/templates/campaigns/canvas.html app/templates/campaigns/party_map.html
 msgid "Exit full screen"
 msgstr "Salir de pantalla completa"
+
+#. A party's map: shows or hides the Warden's fog row in the map's toolbar (Discord feedback)
+#: app/templates/campaigns/party_map.html
+msgid "Fog tools"
+msgstr "Herramientas de niebla"
+
+#. A party's map: × at the end of the Warden's fog row
+#: app/templates/campaigns/party_map.html
+msgid "Hide fog tools"
+msgstr "Ocultar herramientas de niebla"
