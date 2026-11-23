@@ -1490,8 +1490,8 @@ def test_west_marches_campaign_has_several_parties_that_can_move_or_go(setup):
 
 def test_old_parties_page_opens_campaigns(setup):
     app, client = setup
-    response = client.get('/users/user1/parties/')
-    assert response.status_code == 302 and response.location.endswith('/campaigns/')
+    response = client.get('/users/user1/parties/')  # Its Parties view: every party at once.
+    assert response.status_code == 302 and response.location.endswith('/campaigns/?view=parties')
     assert '/parties/"' not in client.get('/campaigns/').text.split('navbar-start', 1)[1].split('navbar-end', 1)[0]
 
 

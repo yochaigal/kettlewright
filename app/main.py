@@ -457,8 +457,8 @@ def delete(character_id):
 @main.route('/users/<username>/parties/', methods=['GET', 'POST'])
 @login_required
 def parties(username):
-    """Parties live inside campaigns now: the old Parties page opens Campaigns."""
-    return redirect(url_for('campaigns.index'))
+    """The old Parties page: the Campaigns page's Parties view, every party at once."""
+    return redirect(url_for('campaigns.index', view='parties'))
 
 
 @main.route('/users/<ownername>/parties/<party_url>/tools/', methods=['POST', 'GET'])

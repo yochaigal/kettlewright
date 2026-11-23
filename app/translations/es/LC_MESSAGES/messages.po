@@ -51222,3 +51222,18 @@ msgstr "Preparando la imagen…"
 #: app/templates/campaigns
 msgid "Unable to read this image. Try another one."
 msgstr "No se pudo leer esta imagen. Prueba con otra."
+
+#. Campaigns page: the Campaigns / Parties switch (its accessible name)
+#: app/templates/campaigns/index.html
+msgid "View"
+msgstr "Vista"
+
+#. Campaigns page, Parties view: the parties you run as Warden
+#: app/templates/campaigns/index.html
+msgid "Your parties"
+msgstr "Tus grupos"
+
+#. Campaigns page, Parties view: when you run no party yet
+#: app/templates/campaigns/index.html
+msgid "No parties yet. A campaign starts with one."
+msgstr "Aún no hay grupos. Cada campaña empieza con uno."
