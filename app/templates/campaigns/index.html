@@ -119,7 +119,7 @@
 
 {% if view == 'parties' %}
 {# Every party at once (Discord feedback): its campaign, and each character's HP, stats, armor and slots. #}
-{% if running or not playing %}
+{% set running_island %}{% if running or not playing %}
 <section class="campaigns-island parties-island" aria-labelledby="running-title">
 <header class="island-head">
   <h2 id="running-title"><i class="fa-solid fa-users" aria-hidden="true"></i> {{ _('Your parties') }}</h2>
@@ -127,42 +127,21 @@
 {% if running %}<ul class="party-overviews">{% for card in running %}{{ party_overview(card) }}{% endfor %}</ul>
 {% else %}<p class="gallery-empty">{{ _('No parties yet. A campaign starts with one.') }}</p>{% endif %}
 </section>
-{% endif %}
-{% if playing %}
+{% endif %}{% endset %}
+{% set playing_island %}{% if playing %}
 <section class="campaigns-island parties-island" aria-labelledby="playing-title">
 <header class="island-head">
   <h2 id="playing-title"><i class="fa-solid fa-dice-d20" aria-hidden="true"></i> {{ _('Playing in') }}</h2>
 </header>
 <ul class="party-overviews">{% for card in playing %}{{ party_overview(card, playing=True) }}{% endfor %}</ul>
 </section>
-{% endif %}
+{% endif %}{% endset %}
+{# The active one first: Your parties, unless none of them has players yet and you play in someone else's. #}
+{% if running|selectattr('roster')|list or not playing %}{{ running_island }}{{ playing_island }}
+{% else %}{{ playing_island }}{{ running_island }}{% endif %}
 {% else %}
 
-{% if played %}
-{# Parties in other Wardens' campaigns that one of my characters is in, an island like Starred.
-   Their campaigns stay private. #}
-<section class="campaigns-island played-island" aria-labelledby="played-title">
-<header class="island-head">
-  <h2 id="played-title"><i class="fa-solid fa-dice-d20" aria-hidden="true"></i> {{ _('Playing in') }}</h2>
-</header>
-<ul class="starred-cards">
-{% for card in played %}{% set item = card.party %}
-<li class="starred-card island-party-card" data-tree-row data-search="{{ item.name|lower }}">
-  {% if item.image %}<img class="starred-card-picture" src="{{ url_for('campaigns.party_image', party_id=item.id) }}" alt="" loading="lazy">
-  {% else %}<span class="starred-card-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></span>{% endif %}
-  <span class="starred-card-body">
-    <span class="starred-card-kind">{{ _('Party') }}</span>
-    <a class="starred-card-title" href="{{ card.url }}">{{ item.name|markdown_inline }}</a>
-    <span class="starred-card-meta">{{ _('Warden') }}: {{ item.owner_username }}</span>
-    {% if card.members %}<span class="campaign-party-members">{% for member in card.members[:6] %}<img src="{{ member.src }}" alt="" title="{{ member.name }}" loading="lazy">{% endfor %}</span>{% endif %}
-  </span>
-</li>
-{% endfor %}
-</ul>
-</section>
-{% endif %}
-
-{# The Warden's campaigns, after the islands (Starred, Parties without a campaign, Playing in). #}
+{# The Warden's campaigns, after Starred. The parties you play in are in the Parties view. #}
 <div class="gallery-main">
 {% if campaigns %}
 <ul class="campaign-gallery">
