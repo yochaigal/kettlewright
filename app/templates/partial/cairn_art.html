@@ -1,0 +1,12 @@
+{# An empty state with Cairn art (experiment, CAIRN_ART): the art, the message (the caller's body) and its credit.
+   Without the setting it is the page's usual message, in a <p> with fallback_class (or nothing, without one).
+   Import it "with context", so it sees cairn_art. #}
+{% macro empty_art(key, fallback_class=None) %}
+{% if cairn_art %}{% set art = cairn_art.ART[key] %}
+<figure class="cairn-art cairn-art-silhouette cairn-art-empty{% if art.ink %} cairn-art-ink{% endif %}{% if art.frame %} {{ art.frame }}{% endif %}">
+  <img src="{{ art.src }}" alt="" loading="lazy">
+  <p>{{ caller() }}</p>
+  <figcaption>{{ _('Art:') }} {{ art.credit }}</figcaption>
+</figure>
+{% elif fallback_class %}<p class="{{ fallback_class }}">{{ caller() }}</p>{% else %}<p>{{ caller() }}</p>{% endif %}
+{% endmacro %}

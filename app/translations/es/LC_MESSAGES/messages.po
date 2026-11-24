@@ -51309,3 +51309,23 @@ msgstr "Abatido"
 #. Whiteboard token panel: link to the full sheet
 msgid "Open sheet"
 msgstr "Abrir hoja"
+
+#. Characters page with no characters yet (Cairn art experiment)
+msgid "No characters yet. Make one, or join a party with its code."
+msgstr "Aún no hay personajes. Crea uno o únete a un grupo con su código."
+
+#. Page not found (Cairn art experiment): heading
+msgid "This path leads nowhere"
+msgstr "Este camino no lleva a ninguna parte"
+
+#. Page not found (Cairn art experiment)
+msgid "The page you were looking for is not here."
+msgstr "La página que buscabas no está aquí."
+
+#. Page not found (Cairn art experiment): link to the home page
+msgid "Back to Kettlewright"
+msgstr "Volver a Kettlewright"
+
+#. A party's Monsters tab with no monsters (Cairn art experiment)
+msgid "No monsters yet."
+msgstr "Aún no hay monstruos."

@@ -58,6 +58,7 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/markdown.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/article-preview.css') }}">
+  {% if cairn_art %}<link rel="stylesheet" href="{{ url_for('static', filename='src/css/cairn_art.css') }}">{% endif %}
 <script id="interface-labels" type="application/json">{{ {
   'preview': _('Preview'), 'move': _('Move'), 'pin': _('Pin'), 'unpin': _('Unpin'),
   'previewsOn': _('Hover previews: on'), 'previewsOff': _('Hover previews: off'),

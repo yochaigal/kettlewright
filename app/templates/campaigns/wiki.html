@@ -1,4 +1,5 @@
 {% extends 'campaigns/layout.html' %}
+{% from 'partial/cairn_art.html' import empty_art with context %}
 {% from 'campaigns/forms.html' import reveal_dialog with context %}
 {% from 'partial/star_button.html' import star_button with context %}
 {% from 'campaigns/item_send_dialog.html' import send_item_dialog with context %}
@@ -254,7 +255,7 @@
         {{ article_cards(items) }}
       </section>
       {% else %}
-      {% if maps %}{% elif party %}{% if owner_view or not party_notes %}<p class="wiki-empty">{{ _('Nothing has been revealed yet.') }}</p>{% endif %}
+      {% if maps %}{% elif party %}{% if owner_view or not party_notes %}{% call empty_art('tree', 'wiki-empty') %}{{ _('Nothing has been revealed yet.') }}{% endcall %}{% endif %}
       {% elif module is defined and module %}<p class="wiki-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.new_entry', module_id=module.id) }}">{{ _('New article') }}</a></p>
       {% else %}<p class="wiki-empty">{{ _('No articles yet.') }} <a href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}#modules">{{ _('Add a module') }}</a></p>{% endif %}
       {% endfor %}

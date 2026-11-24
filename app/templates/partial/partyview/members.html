@@ -1,3 +1,4 @@
+{% from 'partial/cairn_art.html' import empty_art with context %}
 {% for character in characters %}
 {# online is set for the Warden only: who has Kettlewright open right now (#424). #}
 {% set connected = online is defined and online is not none and character.owner in online %}
@@ -48,5 +49,5 @@
   </div>
 </article>
 {% else %}
-<p>{{_('No members in this party')}}</p>
+{% call empty_art('camp') %}{{_('No members in this party')}}{% endcall %}
 {% endfor %}

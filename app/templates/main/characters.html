@@ -1,4 +1,5 @@
 {% extends "base.html" %} {% block content %}
+{% from 'partial/cairn_art.html' import empty_art with context %}
 <script src="{{ url_for('static', filename='src/js/characters.js') }}" type="module"></script>
 
 <section class="body-container">
@@ -68,6 +69,7 @@
     </article>
     {% endfor %}
   </section>
+  {% if not characters and cairn_art %}{% call empty_art('rider') %}{{ _('No characters yet. Make one, or join a party with its code.') }}{% endcall %}{% endif %}
 
   {% endblock %}
 </section>

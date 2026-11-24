@@ -105,6 +105,8 @@ def create_app():
         'SQLALCHEMY_DATABASE_URI')
     # The whiteboard's Load map waits until there are maps worth loading (#438).
     app.config['WHITEBOARD_LOAD_MAP'] = os.getenv('WHITEBOARD_LOAD_MAP', 'False').lower() in ('true', '1', 't')
+    # Cairn artwork on empty pages and the 404 (experiment): off until Cairn Press agrees to its use (app/lib/cairn_art.py).
+    app.config['CAIRN_ART'] = os.getenv('CAIRN_ART', 'False').lower() in ('true', '1', 't')
 
     db.init_app(app)
 
@@ -282,7 +284,22 @@ def create_app():
     def inject_locale():
         from app.lib.generator_labels import generator_labels
         from app.lib.dice_feedback import pending_dice
-        return dict(locale=get_locale(), generator_labels=generator_labels, pending_dice=pending_dice)
+        from app.lib import cairn_art
+        return dict(locale=get_locale(), generator_labels=generator_labels, pending_dice=pending_dice,
+                    cairn_art=cairn_art if app.config.get('CAIRN_ART') else None)
+
+    # Page not found, with a little art (experiment): only for pages, never for API, htmx or JSON calls.
+    @app.errorhandler(404)
+    def page_not_found(error):
+        from flask import render_template
+        # A handler for 404 itself comes before the API's own (HTTPException) one, so hand it API paths.
+        if request.path.startswith('/api/v1'):
+            from app.blueprints.api import api_error
+            return api_error(error)
+        if (not app.config.get('CAIRN_ART') or request.path.startswith('/api/') or request.headers.get('HX-Request')
+                or not request.accept_mimetypes.accept_html):
+            return error
+        return render_template('errors/404.html'), 404
 
     # Dice rolled while building an htmx partial or before a redirect (app/lib/dice_feedback.py).
     @app.after_request

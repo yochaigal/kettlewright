@@ -1,4 +1,5 @@
-{% macro cards(creatures, editable_stats=true, compact=false, deletable=false) %}
+{% from 'partial/cairn_art.html' import empty_art with context %}
+{% macro cards(creatures, editable_stats=true, compact=false, deletable=false, empty_art_key=None) %}
 <div class="companion-cards{% if compact %} companion-compact{% endif %}">
   {% for c in creatures %}
   <article class="companion-card">
@@ -56,6 +57,7 @@
     </div>
     {% endif %}
   </article>
-  {% else %}<p class="companion-empty">{{_('None yet.')}}</p>{% endfor %}
+  {% else %}{% if empty_art_key and cairn_art %}{% call empty_art(empty_art_key) %}{{_('No monsters yet.')}}{% endcall %}
+  {% else %}<p class="companion-empty">{{_('None yet.')}}</p>{% endif %}{% endfor %}
 </div>
 {% endmacro %}

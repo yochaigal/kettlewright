@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block content %}
+{# Page not found (experiment, CAIRN_ART): a bird over the woods, and the way home. #}
+<section class="cairn-art-404">
+  {% set art = cairn_art.ART.bird %}
+  <figure class="cairn-art cairn-art-silhouette"><img src="{{ art.src }}" alt=""></figure>
+  <h1>{{ _('This path leads nowhere') }}</h1>
+  <p>{{ _('The page you were looking for is not here.') }} <a href="/">{{ _('Back to Kettlewright') }}</a></p>
+  <p class="cairn-art-credit">{{ _('Art:') }} {{ art.credit }}</p>
+</section>
+{% endblock %}

@@ -1,4 +1,5 @@
 {% extends 'campaigns/layout.html' %}
+{% from 'partial/cairn_art.html' import empty_art with context %}
 {% from 'campaigns/forms.html' import token with context %}
 {% from 'partial/star_button.html' import star_button with context %}
 {% block workspace %}
@@ -125,7 +126,7 @@
   <h2 id="running-title"><i class="fa-solid fa-users" aria-hidden="true"></i> {{ _('Your parties') }}</h2>
 </header>
 {% if running %}<ul class="party-overviews">{% for card in running %}{{ party_overview(card) }}{% endfor %}</ul>
-{% else %}<p class="gallery-empty">{{ _('No parties yet. A campaign starts with one.') }}</p>{% endif %}
+{% else %}{% call empty_art('roots', 'gallery-empty') %}{{ _('No parties yet. A campaign starts with one.') }}{% endcall %}{% endif %}
 </section>
 {% endif %}{% endset %}
 {% set playing_island %}{% if playing %}
@@ -161,7 +162,7 @@
 {% endfor %}
 </ul>
 {% else %}
-<p class="gallery-empty">{{ _('No campaigns yet.') }}</p>{# New campaign is the button at the top. #}
+{% call empty_art('stone', 'gallery-empty') %}{{ _('No campaigns yet.') }}{% endcall %}{# New campaign is the button at the top. #}
 {% endif %}
 </div>
 {% endif %}
