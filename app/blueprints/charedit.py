@@ -169,7 +169,9 @@ def charedit_save(username, url_name):
         setattr(character, field, sanitize_data(getattr(form, field).data))
     err = None
     party_code = getattr(form, 'party_code').data
-    if  party_code != "":
+    if party_code is None:
+        pass  # The page no longer sends a join code (the party has its own section): keep the party as it is.
+    elif party_code != "":
         party = Party.query.filter_by(join_code=party_code.strip()).first()
         if party:
             character.party_id = party.id

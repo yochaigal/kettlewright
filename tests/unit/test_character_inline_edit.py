@@ -369,3 +369,26 @@ def test_warden_cannot_change_character_party_or_delete_it(warden_sheet):
     assert client.get('/delete-character/1/').status_code == 302
     with app.app_context():
         assert db.session.get(Character, 1) is not None
+
+
+def test_the_full_edit_page_saves_without_a_join_code_and_keeps_the_party(sheet):
+    """The edit page no longer has the join code field (the party has its own section). Saving it raised a
+    500 ('NoneType' has no strip); it now saves the stats and leaves the party as it was."""
+    app, client = sheet
+    with app.app_context():
+        db.session.add(Party(id=1, owner=2, owner_username='other', name='Crew', party_url='crew', join_code='crew-code',
+                             members='[1]', items='[]', containers='[]'))
+        character = db.session.get(Character, 1)
+        # In the party without a stored join code (the Warden added it): the page sends none, the form has None.
+        character.party_id, character.party_code = 1, None
+        db.session.commit()
+    form = {'strength': '7', 'strength_max': '12', 'dexterity': '8', 'dexterity_max': '8', 'willpower': '9',
+            'willpower_max': '15', 'hp': '3', 'hp_max': '5', 'gold': '11', 'name': 'Hero', 'description': '',
+            'traits': 'Quiet', 'bonds': '', 'omens': '', 'scars': '', 'notes': 'Original notes',
+            'old_items': '[]', 'old_containers': '[{"id": 0, "name": "Main", "slots": 10}]'}
+    response = client.post('/charedit/owner/hero/save', data=form)
+    assert response.status_code == 200, response.get_data(as_text=True)[:200]
+    with app.app_context():
+        character = db.session.get(Character, 1)
+        assert (character.strength, character.willpower_max) == (7, 15)
+        assert character.party_id == 1 and character.party_code is None
