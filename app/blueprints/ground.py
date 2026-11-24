@@ -1,4 +1,5 @@
 """Player-owned dropping and pickup through the shared party ground container."""
+from app.lib.inventory import FATIGUE_NAME
 from flask import Blueprint, abort, make_response, render_template, request
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
@@ -71,7 +72,7 @@ def drop(character_id, kind, object_id):
         abort(404)
     if entry is None:
         abort(404)
-    if kind == 'item' and ('carrying' in entry or entry['name'] == 'Fatigue'):
+    if kind == 'item' and ('carrying' in entry or entry['name'] == FATIGUE_NAME):
         abort(400, description='Fatigue and carrying markers cannot be dropped.')
     error = None
     if request.method == 'POST':

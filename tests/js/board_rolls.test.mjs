@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import {actorKey} from '../../app/static/src/js/maps/token_stats.js';
 import {hideablePanel} from '../../app/static/src/js/maps/board_panels.js';
+import {gameSystem} from '../../app/static/src/js/game_system.js';
 
 const source = readFileSync(new URL('../../app/static/src/js/maps/board_rolls.js', import.meta.url), 'utf8')
   .replace(/^import .*;\n/gm, '').replace(/^export /gm, '');
@@ -24,7 +25,7 @@ class Node {
 const monster = {id: 'companion:7', name: 'Wolf', kind: 'monster', damage: ['d6+d6', 'd8'],
   stats: {strength: 12, dexterity: 9, willpower: null}};
 
-async function setup(warden = true, {storage = {}, osd = null} = {}) {
+async function setup(warden = true, {storage = {}, osd = null, system = null} = {}) {
   const nodes = new Map(), events = {}, frames = [], requests = [], intervals = [];
   const node = id => {if (!nodes.has(id)) nodes.set(id, new Node()); return nodes.get(id);};
   const actives = [];
@@ -39,7 +40,7 @@ async function setup(warden = true, {storage = {}, osd = null} = {}) {
   const dice3d = {enabled: false, show: async () => false, isAvailable: () => true, isEnabled() {return this.enabled;},
     setEnabled(value) {this.enabled = value;}};
   const localStorage = {getItem: key => storage[key] ?? null, setItem: (key, value) => {storage[key] = value;}};
-  const context = vm.createContext({document, actorKey, hideablePanel, diceModal: modal, dice3d, localStorage, FormData: Map, AbortSignal,
+  const context = vm.createContext({document, actorKey, hideablePanel, gameSystem: system ? () => system : gameSystem, diceModal: modal, dice3d, localStorage, FormData: Map, AbortSignal,
     requestAnimationFrame: fn => {frames.push(fn); return frames.length;}, cancelAnimationFrame() {},
     setInterval(fn) {intervals.push(fn);}, clearInterval() {},
     fetch: async (url, options) => {
@@ -226,5 +227,21 @@ test('own rolls go on screen once settled and their socket echo is recognised (#
     s.setPost(async () => ({ok: true, json: async () => ({result: 'A result', values: [4]})}));
     await s.modal.roll('d8');  // The dice modal shows its own result.
     assert.deepEqual(calls.map(call => call[0]), ['hold', 'release']);
+  } finally {s.controller.destroy();}
+});
+
+test('the save buttons are the page system\'s attributes that can be saved (#487)', async () => {
+  const lucky = {key: 'lucky', hp: {key: 'hp', abbr: 'HP', label: 'HP'},
+    attributes: [{key: 'strength', abbr: 'STR', label: 'STR', save: true}, {key: 'luck', abbr: 'LCK', label: 'LCK', save: true},
+      {key: 'renown', abbr: 'REN', label: 'REN', save: false}], conditions: []};
+  const s = await setup(true, {system: lucky});
+  try {
+    s.setRoster([{...monster, stats: {strength: 12, luck: 9, renown: 3}}]);
+    s.events.party_actors_changed({party_id: 1}); s.draw();
+    s.select({'actor-companion-7-token': true});
+    assert.ok(s.button('STR') && s.button('LCK'));
+    assert.equal(s.button('DEX'), undefined); assert.equal(s.button('REN'), undefined);  // Renown is no save.
+    s.button('LCK').events.click(); await tick();
+    assert.equal(s.requests.at(-1).body.get('save'), 'luck');
   } finally {s.controller.destroy();}
 });

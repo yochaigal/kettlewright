@@ -1,3 +1,4 @@
+from kettlewright import system
 import os
 import app 
 import json
@@ -10,7 +11,7 @@ from flask_babel import lazy_gettext as _l
 
 def load_scars():
     result = {}
-    scars_file_path = os.path.join(app_static_path(), 'json', 'scars.json')
+    scars_file_path = os.path.join(app_static_path(), 'json', system().content_path('scars'))
     with open(scars_file_path, 'r') as file:
         scars_data = json.load(file)
     for s in scars_data["Scars"]:
@@ -62,7 +63,7 @@ def portrait_groups(images):
 
 def load_omens():
     result = []
-    omens_file_path = os.path.join(app_static_path(), 'json', 'omens.json')
+    omens_file_path = os.path.join(app_static_path(), 'json', system().content_path('omens'))
     with open(omens_file_path, 'r') as file:
         omens_data = json.load(file)
     for s in omens_data["Omens"]:
@@ -147,14 +148,14 @@ def load_backgrounds():
 
 def load_traits():
     result = []
-    traits_file_path = os.path.join(app_static_path(), 'json', 'traits.json')
+    traits_file_path = os.path.join(app_static_path(), 'json', system().content_path('traits'))
     with open(traits_file_path, 'r') as file:
         traits_data = json.load(file)
     return traits_data
 
 def load_bonds():
     result = []
-    bonds_file_path = os.path.join(app_static_path(), 'json', 'bonds.json')
+    bonds_file_path = os.path.join(app_static_path(), 'json', system().content_path('bonds'))
     with open(bonds_file_path, 'r') as file:
         bonds_data = json.load(file)
     return bonds_data["Bonds"]

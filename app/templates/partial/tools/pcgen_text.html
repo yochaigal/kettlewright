@@ -21,9 +21,8 @@
 <div>
     <div><b>{{_('HP')}}:</b> {{character.attributes.hp}}</div>
     <div><b>{{_('Armor')}}:</b> {{character.attributes.armor}}</div>
-    <div><b>{{_('STR')}}:</b> {{character.attributes.str}}</div>
-    <div><b>{{_('DEX')}}:</b> {{character.attributes.dex}}</div>
-    <div><b>{{_('WIL')}}:</b> {{character.attributes.wil}}</div>
+    {% for stat in game_system.attributes %}<div><b>{{_(stat.abbr)}}:</b> {{character.attributes|attr(stat.abbr|lower)}}</div>
+    {% endfor %}
 </div>
 </p>
 <p>

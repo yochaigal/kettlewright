@@ -5,6 +5,7 @@ d6 HP, d10 traits, a d100 background with three items, d6 armor and weapon
 rolls, one d100 additional gear roll, 3d6 gold, rations and a torch. A gear
 package (Fighter, Thief, Magic-User, Cleric) can replace all of the rolled gear.
 """
+from kettlewright import system
 import json
 import os
 import random
@@ -145,7 +146,7 @@ def build_inventory(item_groups):
     Barebones PC can start over ten slots, and Cairn handles that at the table
     (an overloaded PC is at 0 HP), so nothing is silently dropped.
     """
-    containers = [{'name': 'Main', 'slots': 10, 'id': 0}]
+    containers = system().inventory.default_containers()
     items = []
     for group in item_groups:
         for raw in group:
@@ -164,13 +165,7 @@ def build_inventory(item_groups):
 
 
 def slots_used(items):
-    used = 0
-    for item in items:
-        tags = item.get('tags', [])
-        if 'petty' in tags:
-            continue
-        used += 2 if 'bulky' in tags else 1
-    return used
+    return sum(system().inventory.item_size(item) for item in items)
 
 
 def generate_character(package=None):
@@ -203,9 +198,9 @@ def generate_character(package=None):
     genchar.items = items
     genchar.containers = containers
     genchar.attributes = AttrsValue()
-    genchar.attributes.str, genchar.attributes.dex, genchar.attributes.wil = (
-        sum(random.randint(1, 6) for _ in range(3)) for _ in range(3))
-    genchar.attributes.hp = random.randint(1, 6)
+    # The attributes, then HP, with the system's creation dice (kettlewright). The sheet's short names: str, dex, wil, hp.
+    for stat in system().sheet_stats:
+        setattr(genchar.attributes, stat.abbr.lower(), system().roll_stat(stat.key, random))
     genchar.attributes.armor = genchar.armor()
     genchar.traits = [TraitValue(name, random.choice(values)) for name, values in load_traits().items()]
     genchar.age = random.randint(1, 20) + random.randint(1, 20) + 10

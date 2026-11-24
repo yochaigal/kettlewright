@@ -779,6 +779,7 @@ def sheet_stat(companion_id):
     c = editable(companion_id)
     csrf()
     field = request.form.get('stat', '')
+    STATS = c.rules.stat_keys  # The companion's game system (#487): its own stats.
     maxima = tuple(stat + '_max' for stat in STATS)
     if field not in (*STATS, *maxima, 'gold', 'armor'):
         abort(400)

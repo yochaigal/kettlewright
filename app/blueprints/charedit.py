@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash,
 from flask_login import login_required, current_user
 from flask_wtf import FlaskForm
 from app.models import db, User, Character, Party
+from app.lib.system_forms import condition_fields, stat_fields, with_system_stats
 from app.forms import *
 from app.main import sanitize_data
 from app.lib import *
@@ -89,7 +90,7 @@ def character_section(username, url_name, section):
     if section not in INLINE_SECTIONS:
         abort(404)
     fields = INLINE_SECTIONS[section]
-    form = CharacterEditForm(obj=character)
+    form = with_system_stats(CharacterEditForm, character.rules)(obj=character)
     editing = request.args.get('view') != '1'
     errors = []
     if request.method == 'POST':
@@ -105,6 +106,9 @@ def character_section(username, url_name, section):
             else:
                 code = (form.party_code.data or '').strip()
                 party = Party.query.filter_by(join_code=code).first() if code else None
+                # Only a party of the character's own game system (#487); any other is no party for it.
+                if party is not None and party.game_system != character.game_system:
+                    party = None
                 if not party:
                     errors.append(_('Invalid party code: %(code)s', code=code))
                 else:
@@ -145,7 +149,7 @@ def charedit_show(username, url_name):
     is_owner = False
     if current_user.is_authenticated:
         is_owner = current_user.id == user.id
-    form = CharacterEditForm(obj=character)
+    form = with_system_stats(CharacterEditForm, character.rules)(obj=character)
     if character.party_code != None and character.party_code.startswith('Invalid last party code:'):
         form.party_code.data = ""
     party, party_url = prepare_party_data(character.party_id)
@@ -162,9 +166,14 @@ def charedit_save(username, url_name):
     user, character = get_char_data(username, url_name)
     if character.owner != current_user.id:
         abort(403)
-    form = CharacterEditForm(obj=character)
-    fields_to_update = ['strength_max', 'strength','dexterity_max', 'dexterity', 'willpower_max', 'willpower','hp_max', 'hp', 'deprived', 'gold','description', 'name','omens', 'scars','traits','bonds','notes','panicked','dead']
+    form = with_system_stats(CharacterEditForm, character.rules)(obj=character)
+    # The character's game system (kettlewright, #487): its stats and conditions; set_stat keeps a stat without a
+    # column in system_stats.
+    stats = stat_fields(character.rules) + condition_fields(character.rules)
+    fields_to_update = ['gold', 'description', 'name', 'omens', 'scars', 'traits', 'bonds', 'notes']
     fields_to_update.extend(BACKGROUND_FIELDS)
+    for field in stats:
+        character.set_stat(field, sanitize_data(getattr(form, field).data))
     for field in fields_to_update:
         setattr(character, field, sanitize_data(getattr(form, field).data))
     err = None
@@ -173,6 +182,8 @@ def charedit_save(username, url_name):
         pass  # The page no longer sends a join code (the party has its own section): keep the party as it is.
     elif party_code != "":
         party = Party.query.filter_by(join_code=party_code.strip()).first()
+        if party is not None and party.game_system != character.game_system:
+            party = None  # Only a party of the character's own game system (#487).
         if party:
             character.party_id = party.id
             add_character_to_party(character)

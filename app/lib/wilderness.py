@@ -64,7 +64,7 @@ def make_camp(party, participants, mounts=(), resolve_deprivation=False):
         if getattr(member, 'deprived', False):
             report['still_deprived'].append(member.name)
         else:
-            rested = [item for item in items if item.get('name') != 'Fatigue']
+            rested = [item for item in items if item.get('name') != member.rules.fatigue]  # Fatigue (kettlewright).
             if len(rested) != len(items) and member in participants:
                 report['fatigue_removed'].append(member.name)
             items = rested
@@ -112,7 +112,8 @@ def rest(participants):
         raise ValueError(N_('Select at least one participant.'))
     report = dict(restored=[], already_full=[], deprived=[])
     for character in participants:
-        if getattr(character, 'deprived', False):
+        # Whether rest restores HP is the character's game system's rule (kettlewright): not while Deprived in Cairn.
+        if not character.rules.can_recover(character.active_conditions()):
             report['deprived'].append(character.name)
         elif character.hp_max is not None and (character.hp or 0) < character.hp_max:
             report['restored'].append((character.name, character.hp or 0, character.hp_max))

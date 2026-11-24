@@ -1,48 +1,25 @@
 <div class="create-str-dex-wil-container">
+    {# The game system's attributes and their creation dice (kettlewright): STR, DEX and WIL, 3d6, in Cairn. #}
+    {% for stat in game_system.attributes %}
     <div class="create-attribute-container">
-        <span class="subtitle attribute-font">{{_('STR')}}</span>
-        <span class="attribute-roll-font">{{_('(3d6)')}}</span>
+        <span class="subtitle attribute-font">{{_(stat.abbr)}}</span>
+        <span class="attribute-roll-font">{{_('(' ~ stat.dice ~ ')')}}</span>
         <span class="number-field">
-            {{ form.strength_max(class='input number-input create-attribute-field center-input', size=1, type='number',
-            id="strength-max-field") }}
+            {{ form[stat.key + '_max'](class='input number-input create-attribute-field center-input', size=1, type='number',
+            id=stat.key ~ "-max-field") }}
         </span>
-        <button class="roll button dice-button" type="button" hx-post="/charcreo/attr-roll/str"
+        <button class="roll button dice-button" type="button" hx-post="/charcreo/attr-roll/{{ stat.abbr|lower }}"
             hx-target="#attrs-container"  hx-swap="innerHTML">
             <i class="fa-solid fa-dice dice"></i>
         </button>
     </div>
-    <div class="create-attribute-container">
-        <span class="subtitle attribute-font">{{_('DEX')}}</span>
-        <span class="attribute-roll-font">{{_('(3d6)')}}</span>
-
-        <span class="number-field">
-            {{ form.dexterity_max(class='input number-input create-attribute-field center-input', size=1, type='number',
-            id="dexterity-max-field") }}
-        </span>
-        <button class="roll button dice-button" type="button" hx-post="/charcreo/attr-roll/dex"
-            hx-target="#attrs-container"  hx-swap="innerHTML">
-            <i class="fa-solid fa-dice dice"></i>
-        </button>
-    </div>
-    <div class="create-attribute-container">
-        <span class="subtitle attribute-font">{{_('WIL')}}</span>
-        <span class="attribute-roll-font">{{_('(3d6)')}}</span>
-        <span class="number-field">
-            {{ form.willpower_max(class='input number-input create-attribute-field center-input', size=1, type='number',
-            id="willpower-max-field") }}
-        </span>
-        <button class="roll button dice-button" type="button" hx-post="/charcreo/attr-roll/wil"
-            hx-target="#attrs-container"  hx-swap="innerHTML">
-            <i class="fa-solid fa-dice dice"></i>
-        </button>
-    </div>
+    {% endfor %}
 </div>
 <div id="swap-container">
     <select class="" name="swap_attribute_1">
         <option>{{_('Swap once...')}}</option>
-        <option value="str">{{_('Strength')}}</option>
-        <option value="dex">{{_('Dexterity')}}</option>
-        <option value="wil">{{_('Willpower')}}</option>
+        {% for stat in game_system.attributes %}<option value="{{ stat.abbr|lower }}">{{_(stat.name)}}</option>
+        {% endfor %}
     </select>
 
     <button class="button" type="button" id="swap-button" hx-post="/charcreo/attr-swap" hx-target="#attrs-container"  hx-swap="innerHTML">
@@ -51,15 +28,14 @@
 
     <select class="" name="swap_attribute_2">
         <option>{{_('Swap once...')}}</option>
-        <option value="str">{{_('Strength')}}</option>
-        <option value="dex">{{_('Dexterity')}}</option>
-        <option value="wil">{{_('Willpower')}}</option>
+        {% for stat in game_system.attributes %}<option value="{{ stat.abbr|lower }}">{{_(stat.name)}}</option>
+        {% endfor %}
     </select>
 </div>
 
 <div class="create-attribute-container" id="create-hp-container">
-    <span class="subtitle hp-font">{{_('HP')}}</span>
-    <span class="attribute-roll-font">{{_('(d6)')}}</span>
+    <span class="subtitle hp-font">{{_(game_system.hit_points.abbr)}}</span>
+    <span class="attribute-roll-font">{{_('(' ~ game_system.hit_points.dice ~ ')')}}</span>
     <span class="column number-field">
         {{ form.hp_max(class='input number-input create-attribute-field center-input', size=1, type='number',
         id="hp-max-field") }}

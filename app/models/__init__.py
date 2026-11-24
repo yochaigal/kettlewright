@@ -7,4 +7,5 @@ from .party_map import PartyMap
 from .companion import Companion
 from .mfa import MFAChallenge
 from .discord import DiscordAccount, DiscordChannel, DiscordSelection, DiscordInteraction
+from .game_system import GameSystemChanged
 from .campaign import Campaign, Module, MapPin, ContentEntry, ContentLink, PartyPresentation, PointcrawlMap, MapNode, MapEdge, CampaignImport

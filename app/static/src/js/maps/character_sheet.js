@@ -1,7 +1,10 @@
 // A compact character sheet beside the whiteboard in a Discord Activity (#423): HP, abilities,
 // conditions, armor and the inventory with its slots, uses and Fatigue. Changes are saved by the
 // server with the same rules as the Discord /kw actions (app/lib/compact_sheet.py).
-const STATS = [['hp', 'HP'], ['strength', 'STR'], ['dexterity', 'DEX'], ['willpower', 'WIL']];
+import {stats} from '../game_system.js';
+
+// HP and the attributes of the game system (kettlewright), as [field, English abbreviation].
+const STATS = stats().map(stat => [stat.key, stat.abbr]);
 const STAT_ACTIONS = {hp: 'hp', strength: 'str', dexterity: 'dex', willpower: 'wil'};
 
 function element(doc, tag, props = {}, ...children) {

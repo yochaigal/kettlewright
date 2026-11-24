@@ -9,18 +9,18 @@ parser accepts them in English and in the current language, so a file exported
 and imported in the same language round-trips. Lost on the way: item IDs, armor
 switched off on an item, the portrait, and pet containers other than Main.
 """
+from kettlewright import system
 import re
 
 from flask_babel import _
 
 from app.lib.translations import translate_term
 
-STATS = (('strength', 'STR'), ('dexterity', 'DEX'), ('willpower', 'WIL'), ('hp', 'HP'))
-SECTIONS = (('description', 'Description'), ('traits', 'Traits'), ('bonds', 'Bonds'),
-            ('omens', 'Omens'), ('scars', 'Scars'), ('notes', 'Notes'))
-CONDITIONS = (('deprived', 'Deprived'), ('panicked', 'Panicked'), ('dead', 'Dead'))
-EXTRA_TAGS = ('bulky', 'petty', 'uses', 'charges', 'blast', 'bonus defense', 'd4', 'd6', 'd8', 'd10', 'd12',
-              '1 Armor', '2 Armor', '3 Armor')
+# The sheet's stats and conditions with their labels (kettlewright): (('strength', 'STR'), ..., ('hp', 'HP')).
+STATS = tuple((stat.key, stat.abbr) for stat in system().sheet_stats)
+SECTIONS = system().sheet_sections  # (('description', 'Description'), ...) (kettlewright)
+CONDITIONS = tuple((condition.key, condition.label) for condition in system().conditions)
+EXTRA_TAGS = system().item_tags  # The system's item vocabulary (kettlewright).
 SEPARATOR = ' · '
 DESCRIPTION_SEPARATOR = ' — '
 MAX_MARKDOWN = 200_000
@@ -77,9 +77,15 @@ class _Sheet:
         return '\n\n'.join(self.blocks) + '\n'
 
 
+def _rules(data):
+    """The sheet's game system (kettlewright, #487): its game_system, or the default one (an import, a pet)."""
+    from kettlewright import system_or_default
+    return system_or_default(data.get('game_system'))
+
+
 def _stat_pairs(data, with_armor=True):
     pairs = []
-    for field, label in STATS:
+    for field, label in ((stat.key, stat.abbr) for stat in _rules(data).sheet_stats):
         if data.get(field) is None:
             continue
         maximum = data.get(field + '_max')
@@ -118,10 +124,11 @@ def render_character(data, markdown=True):
         background += f" ({_('Barebones')})"
     sheet.field(_('Background'), background)
     sheet.fields(_stat_pairs(data))
-    conditions = [_(label) for field, label in CONDITIONS if data.get(field)]
+    rules = _rules(data)
+    conditions = [_(condition.label) for condition in rules.conditions if data.get(condition.key)]
     if conditions:
         sheet.field(_('Conditions'), ', '.join(conditions))
-    for field, label in SECTIONS:
+    for field, label in rules.sheet_sections:
         if data.get(field) and str(data[field]).strip():
             sheet.heading(2, _(label))
             sheet.text(translate_term(data[field]) if field in ('bonds', 'omens') else data[field])

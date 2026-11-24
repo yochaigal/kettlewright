@@ -1,3 +1,4 @@
+from kettlewright import system
 from flask_login import login_required
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response, abort
 from flask_wtf import FlaskForm
@@ -100,7 +101,7 @@ def marketplace_party(party_id, container_id):
             error = _('Item not found in the marketplace.')
         else:
             item = market.buy([name])[0]
-            slots = 0 if 'petty' in item['tags'] else 2 if 'bulky' in item['tags'] else 1
+            slots = inventory.rules.inventory.item_size(item)  # The owner's game system (#487).
             if inventory.container_slots(container) + slots > int(container['slots']):
                 error = _('Not enough space in this container.')
             else:

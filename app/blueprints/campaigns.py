@@ -204,6 +204,7 @@ def new_campaign(name):
     adds an existing party instead. It opens on its home, ready for modules."""
     from app.lib.campaign_parties import create_campaign
     with_party = 'party_field' not in request.form or request.form.get('create_party') == '1'
+    # It plays the default game system (#487); the app doesn't offer a choice.
     campaign = create_campaign(current_user.id, text_value(name, 200, True), with_party=with_party)
     db.session.commit()
     return redirect(url_for('campaigns.lobby', campaign_id=campaign.id))
@@ -364,6 +365,9 @@ def add_parties(campaign_id):
     parties = Party.query.filter(Party.id.in_(ids), Party.owner == current_user.id).all() if ids else []
     if not parties or len(parties) != len(ids):
         abort(400)
+    # A party keeps its game system (#487): it only joins a campaign of the same one.
+    if any(party.game_system != campaign.game_system for party in parties):
+        abort(400)
     for party in parties:
         party.campaign = campaign
     db.session.commit()
@@ -379,6 +383,8 @@ def assign_party(party_id):
     if party.owner != current_user.id:
         abort(404)
     campaign = owned(Campaign, integer(request.form.get('campaign_id')))
+    if party.game_system != campaign.game_system:
+        abort(400)  # A party keeps its game system (#487): it only joins a campaign of the same one.
     party.campaign = campaign
     db.session.commit()
     flash(_('Added %(names)s to %(campaign)s.', names=party.name, campaign=campaign.name), 'success')

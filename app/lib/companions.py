@@ -8,8 +8,10 @@ from app.models import db, Character, Companion, Party
 from app.lib.character_json import normalize_inventory
 from app.lib.data import sanitize_json_content
 from app.lib.translations import N_
+from kettlewright import system
+from types import SimpleNamespace
 
-STATS = ('hp', 'strength', 'dexterity', 'willpower')
+STATS = system().stat_keys  # HP and the attributes (kettlewright)
 DATA = Path(__file__).resolve().parents[1] / 'static' / 'json'
 
 
@@ -66,9 +68,13 @@ def pet_data(template, parent):
     result = dict(name=template['name'], role=template['name'], notes=_(notes) if notes else '',
                   armor=template.get('armor', 0), attack=template.get('attack', ''), gold=0,
                   items=[], containers=[dict(id=0, name='Main', slots=template.get('slots', 0))])
-    for stat in STATS:
-        result[stat] = getattr(parent, stat, None) if template.get('mirror') else template.get(stat)
-        result[stat + '_max'] = getattr(parent, stat + '_max', None) if template.get('mirror') else template.get(stat)
+    # The parent's game system (kettlewright, #487): a pet has its owner's stats. A generator's preview parent is no
+    # record: the default system, read as plain attributes.
+    rules = getattr(parent, 'rules', None) or system()
+    read = parent.get_stat if hasattr(parent, 'get_stat') else lambda field: getattr(parent, field, None)
+    for stat in rules.stat_keys:
+        result[stat] = read(stat) if template.get('mirror') else template.get(stat)
+        result[stat + '_max'] = read(stat + '_max') if template.get('mirror') else template.get(stat)
     return result
 
 
@@ -121,10 +127,12 @@ def new_hireling(party, role):
     traits = '\n'.join(_(name) + ': ' + _(choice(values)) for name, values in load_traits().items())
     companion = Companion(kind='hireling', party=party, name=random_name(None), role=role,
                           daily_cost=template['daily_cost'] if template else 0, items=json.dumps(items), notes=traits)
-    for stat in STATS:
-        value = sum(randint(1,6) for _ in range(1 if stat == 'hp' else 3))
-        setattr(companion, stat, value)
-        setattr(companion, stat+'_max', value)
+    # The party's game system (kettlewright, #487): its stats, rolled with its creation dice (Cairn: 1d6 HP, 3d6 the rest).
+    dice = SimpleNamespace(randint=randint)  # This module's randint: rolls (and tests) go through it.
+    for stat in party.rules.stat_keys:
+        value = party.rules.roll_stat(stat, dice)
+        companion.set_stat(stat, value)
+        companion.set_stat(stat + '_max', value)
     return companion
 
 
