@@ -214,7 +214,7 @@ def index():
     if request.method == 'POST':
         return new_campaign(request.form.get('name'))
     from app.lib.campaign_wiki import cover_image
-    from app.lib.campaign_parties import party_cards, parties_view, played_parties
+    from app.lib.campaign_parties import parties_view
     from app.lib.stars import starred_cards
     # Campaigns or Parties (Discord feedback): a party-first view for groups that play across campaigns, or solo.
     # The choice is remembered, so whoever prefers Parties lands there.
@@ -232,8 +232,6 @@ def index():
     return remember_view(make_response(render_template('campaigns/index.html', view=view, campaigns=campaigns_list, articles=by_campaign,
         parties={c.id: c.parties for c in campaigns_list},
         covers={campaign.id: cover_image(campaign, by_campaign[campaign.id]) is not None for campaign in campaigns_list},
-        # Players reach the parties they play in (other Wardens' campaigns) from here.
-        played=party_cards(played_parties(current_user.id)),
         # Removed from their campaign (#483): a campaign's Add existing party brings one back.
         starred=starred_cards(current_user.id))), view)
 

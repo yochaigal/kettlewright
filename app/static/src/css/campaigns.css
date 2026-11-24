@@ -987,10 +987,6 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
 :is(.campaigns-island, .starred-island) .island-head h2 {display:flex;align-items:center;gap:.45em;margin:0;font-family:inherit;font-size:.82em;font-weight:700;
   letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--fg) 75%,var(--bg));}
 :is(.campaigns-island, .starred-island) .island-head h2::before {content:none;}
-.campaigns-island .island-party-card {padding-right:.75em;}
-.campaigns-island .island-party-card .starred-card-body {flex:1;}
-.campaigns-island .island-party-card .campaign-party-members {min-height:0;margin-top:.15em;}
-.campaigns-island .island-party-card .campaign-party-members img {width:1.9em;height:1.9em;}
 .campaign-workspace .party-overview .unassigned-add {align-self:flex-start;margin-top:.45em;min-height:32px;padding:.25em .75em;font-size:.85em;}
 .create-dialog label select {display:block;width:100%;box-sizing:border-box;margin:.4em 0 0;padding:.5em .6em;border:1px solid var(--fg);
   border-radius:2px;background:var(--bg);color:var(--fg);font:inherit;}
@@ -1028,26 +1024,30 @@ dialog#backgrounds-dialog {width:min(560px,calc(100vw - 32px));max-width:none;}
 .campaigns-view-switch a[aria-current="page"] {background:var(--fg);color:var(--bg);}
 .campaigns-view-switch a:not([aria-current]):hover {background:color-mix(in srgb,var(--fg) 8%,var(--bg));}
 .campaigns-view-switch a:focus-visible {outline:2px solid var(--fg);outline-offset:-4px;}
-.party-overviews {display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,24rem),1fr));align-items:start;gap:.85em;margin:0;padding:0;list-style:none;}
-.party-overview {display:flex;flex-direction:column;gap:.6em;margin:0;padding:.85em;border:1px solid color-mix(in srgb,var(--fg) 12%,var(--bg));border-radius:10px;background:var(--bg);min-width:0;}
+/* Parties view: one party per row (the cards were a ragged grid, a party with players three times as tall as one
+   without). Its name and campaign on the left, its characters as cards that wrap on the right. */
+.party-overviews {display:flex;flex-direction:column;gap:.75em;margin:0;padding:0;list-style:none;}
+.party-overview {display:grid;grid-template-columns:15em minmax(0,1fr);align-items:start;gap:.75em 1.25em;margin:0;padding:.85em;border:1px solid color-mix(in srgb,var(--fg) 12%,var(--bg));border-radius:10px;background:var(--bg);min-width:0;}
+.party-overview > dialog {grid-column:1 / -1;}
 .party-overview-head {display:flex;align-items:center;gap:.7em;min-width:0;}
 .party-overview-picture, .party-overview-icon {flex:none;width:44px;height:44px;border-radius:8px;object-fit:cover;}
 .party-overview-icon {display:grid;place-items:center;background:color-mix(in srgb,var(--fg) 8%,var(--bg));}
 .party-overview-title-block {display:flex;flex-direction:column;min-width:0;}
-.party-overview-title {font-weight:700;font-size:1.1em;color:inherit;overflow-wrap:anywhere;}
+.party-overview-title {font-weight:700;font-size:1.1em;color:inherit;overflow-wrap:break-word;}
 .party-overview-meta {font-size:.85em;color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
 .party-overview-meta a {color:inherit;}
-.party-overview-empty {margin:0;font-size:.9em;font-style:italic;color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
-.party-roster {display:flex;flex-direction:column;margin:0;padding:0;list-style:none;border-top:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));}
-.party-roster-row {display:flex;flex-wrap:wrap;align-items:center;gap:.2em .8em;padding:.5em 0;border-bottom:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));}
+.party-overview-empty {align-self:center;margin:0;font-size:.9em;font-style:italic;color:color-mix(in srgb,var(--fg) 65%,var(--bg));}
+.party-roster {display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,13em),1fr));gap:.5em;margin:0;padding:0;list-style:none;}
+.party-roster-row {display:flex;flex-direction:column;gap:.35em;padding:.55em .65em;border:1px solid color-mix(in srgb,var(--fg) 10%,var(--bg));border-radius:8px;background:color-mix(in srgb,var(--fg) 3%,var(--bg));min-width:0;}
 .party-roster-row.is-dead {opacity:.55;}
-.party-roster-name {display:inline-flex;align-items:center;gap:.5em;min-width:9em;flex:1 1 9em;color:inherit;font-weight:600;overflow-wrap:anywhere;}
+.party-roster-name {display:inline-flex;align-items:center;gap:.5em;min-width:0;color:inherit;font-weight:600;overflow-wrap:anywhere;}
 .party-roster-name img {flex:none;width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid color-mix(in srgb,var(--fg) 25%,var(--bg));}
-.party-roster-stats {display:flex;flex-wrap:wrap;gap:.15em .8em;font-size:.88em;}
+.party-roster-stats {display:flex;flex-wrap:wrap;gap:.1em .75em;font-size:.86em;}
 .party-roster-stats strong {font-variant-numeric:tabular-nums;}
 .party-roster-hp.is-zero strong {color:#a33b3b;}
 body.dark-mode .party-roster-hp.is-zero strong {color:#e08080;}
-.party-roster-conditions {display:flex;flex-wrap:wrap;gap:.3em;width:100%;}
+.party-roster-conditions {display:flex;flex-wrap:wrap;gap:.3em;}
+@media (max-width:700px) {.party-overview {grid-template-columns:minmax(0,1fr);}}
 
 /* The map's toolbar (Discord feedback): one bar attached to the top of the map, like the whiteboard's top bar, on the
    map editor, New map, sketches, maps being read and a party's map (with the Warden's fog as a second row).

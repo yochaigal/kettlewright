@@ -1495,12 +1495,24 @@ def test_old_parties_page_opens_campaigns(setup):
     assert '/parties/"' not in client.get('/campaigns/').text.split('navbar-start', 1)[1].split('navbar-end', 1)[0]
 
 
-def test_players_find_their_parties_on_campaigns(setup):
+def test_players_find_their_parties_in_the_parties_view(setup):
     app, client = setup
     login(client, 2)  # Plays Player A in Party 1 of user1's campaign.
-    page = client.get('/campaigns/').text
+    # The Campaigns view is the player's own campaigns only; the parties they play in are under Parties.
+    assert 'Playing in' not in client.get('/campaigns/?view=campaigns').text
+    page = client.get('/campaigns/?view=parties').text
     assert 'Playing in' in page and '/users/user1/parties/party1/' in page
     assert 'Secret campaign' not in page  # The Warden's campaign stays private.
+    # Only parties they play in: no empty Your parties.
+    assert 'id="playing-title"' in page and 'id="running-title"' not in page
+    # Their own party without players yet comes after the one they play in.
+    assert client.post('/parties/new', data={'name': 'Side table'}).status_code == 302
+    page = client.get('/campaigns/?view=parties').text
+    assert page.index('id="playing-title"') < page.index('id="running-title"') and 'Side table' in page
+    # The Warden's party has players, so it comes first for them.
+    login(client, 1)
+    page = client.get('/campaigns/?view=parties').text
+    assert 'id="running-title"' in page and 'id="playing-title"' not in page
 
 
 def test_party_notes_live_only_on_their_party(setup):
