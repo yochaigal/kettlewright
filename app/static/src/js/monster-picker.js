@@ -1,4 +1,5 @@
 import {richContentHTML, inlineContentHTML} from './rich-content.js';
+import {gameSystem} from './game_system.js';
 
 export function initMonsterBatchPicker({rows, search, selectedOnly, total, summon, empty}) {
   const choices = rows.map(row => ({row, check: row.querySelector('[name=template]'), quantity: row.querySelector('[type=number]'),
@@ -70,10 +71,12 @@ export function monsterPreview(monster, {title = true} = {}) {
 }
 
 // The localized bestiary sends its stat labels; other catalogs keep the English ones.
-const ENGLISH_LABELS = {hp:'HP', armor:'Armor', strength:'STR', dexterity:'DEX', willpower:'WIL'};
+// HP, Armor, then the attributes of the game system (kettlewright).
 function statLine(monster, separator) {
-  const labels = monster.labels || ENGLISH_LABELS;
-  return ['hp', 'armor', 'strength', 'dexterity', 'willpower']
+  const {hp, attributes} = gameSystem();
+  const english = {[hp.key]: hp.abbr, armor: 'Armor', ...Object.fromEntries(attributes.map(stat => [stat.key, stat.abbr]))};
+  const labels = monster.labels || english;
+  return [hp.key, 'armor', ...attributes.map(stat => stat.key)]
     .map(stat => `${monster[stat]} ${labels[stat]}`).join(separator);
 }
 

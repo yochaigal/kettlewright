@@ -57,7 +57,7 @@
     <div class="create-attributes-container">
         <h2 class="title script-font">{{_('Attributes')}}</h2>
         <div class="create-str-dex-wil-container">
-            {% for key, field, label in (('str', 'strength', _('STR')), ('dex', 'dexterity', _('DEX')), ('wil', 'willpower', _('WIL'))) %}
+            {% for stat in game_system.attributes %}{% set key, field, label = stat.abbr|lower, stat.key, _(stat.abbr) %}
             <div class="create-attribute-container">
                 <span class="subtitle attribute-font">{{ label }}</span>
                 <span class="attribute-roll-font">{{_('(3d6)')}}</span>

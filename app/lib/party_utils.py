@@ -21,6 +21,9 @@ def add_character_to_party(character):
     if party == None:
         print("party with the id ", character.party_id, "not found")
         return 
+    if party.game_system != character.game_system:
+        # A character keeps its game system (#487): it only joins a party of the same one.
+        raise ValueError('A character only joins a party of its own game system.')
     party_members = load_party_members(party)
     if character.id not in party_members:
         party_members.append(character.id)

@@ -1,4 +1,5 @@
 """Player sheet actions. The caller checks ownership and commits the interaction."""
+from kettlewright import system
 import json
 
 from werkzeug.exceptions import HTTPException
@@ -10,7 +11,14 @@ from app.lib.ground_items import drop_item, drop_container, ground_items, pickup
 from app.models import Party, db
 
 
-STATS = {'hp': 'hp', 'str': 'strength', 'dex': 'dexterity', 'wil': 'willpower'}
+# /kw stat names: {'hp': 'hp', 'str': 'strength', ...} (kettlewright). Discord registers the commands once for the
+# whole app, so their choices are the default system's; a command reads the character's own system.
+STATS = {stat.abbr.lower(): stat.key for stat in system().stats}
+
+
+def stat_field(character, name):
+    """'str' -> 'strength' in the character's game system; None for a stat it doesn't have."""
+    return {stat.abbr.lower(): stat.key for stat in character.rules.stats}.get(name)
 ITEM_ACTIONS = ('use', 'remove', 'drop', 'transfer', 'move')
 
 
@@ -139,24 +147,25 @@ def act(name, values, character, characters, safe_name):
             raise ValueError(error.description) from error
         return f'{who}: picked up {safe_name(item["name"])}.'
     if name == 'stat':
-        field = STATS.get(values.get('stat'))
+        field = stat_field(character, values.get('stat'))
         if not field or values.get('mode', 'change') not in ('change', 'set'):
             raise ValueError('Choose HP, STR, DEX or WIL and a valid mode.')
         amount = number(values.get('value'), -9999)
-        old = getattr(character, field) or 0
+        old = character.get_stat(field) or 0  # A column, or system_stats for a stat without one (#487).
         value = amount if values.get('mode') == 'set' else old + amount
-        maximum = getattr(character, field + '_max') or 0
+        maximum = character.get_stat(field + '_max') or 0
         if not 0 <= value <= maximum:
             raise ValueError(f'The resulting {values["stat"].upper()} must be between 0 and {maximum}. '
                              'No changes saved; use mode:set to record the intended value.')
-        setattr(character, field, value)
+        character.set_stat(field, value)
         text = f'{who}: {values["stat"].upper()} {old} → {value}/{maximum}.'
         if field == 'hp' and character.hpValue()[0] != value:
             text += f' Effective HP is {character.hpValue()[0]} because of panic or inventory load.'
         return text
     if name == 'condition':
         field, active = values.get('condition'), values.get('active')
-        if field not in ('deprived', 'panicked') or type(active) is not bool:
+        # The character's game system's conditions, but Dead (Deprived and Panicked in Cairn).
+        if field not in [key for key in character.rules.condition_keys if key != 'dead'] or type(active) is not bool:
             raise ValueError('Choose deprived or panicked and set active to true or false.')
         setattr(character, field, active)
         return f'{who}: {field.title()} {"applied" if active else "cleared"}. Effective HP: {character.hpValue()[0]}.'

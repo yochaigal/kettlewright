@@ -6,15 +6,9 @@ from flask import current_app
 import sys
 import json
 from .globals import db
-
-def item_armor_value(item):
-    # Old Sloth-Tarps also require explicit activation; ordinary armor stays active.
-    active = item.get('armor_active', item.get('name') != 'Sloth-Tarp')
-    if not active or item.get('location') != 0:
-        return 0
-    tags = item.get('tags') or []
-    return sum(value for value in (1, 2, 3) if f'{value} Armor' in tags)
-
+from .game_stats import SystemStats
+from .game_system import GAME_SYSTEM_DEFAULT
+from kettlewright import system
 
 BACKGROUND_FIELDS = ('background_table1_question', 'background_table1_answer', 'background_table2_question', 'background_table2_answer')
 
@@ -25,7 +19,7 @@ EDITION_BAREBONES = 'barebones'
 EDITIONS = (EDITION_SECOND, EDITION_BAREBONES)
 
 
-class Character(db.Model):
+class Character(SystemStats, db.Model):
     __tablename__ = 'characters'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -67,6 +61,11 @@ class Character(db.Model):
     custom_image = db.Column(db.Boolean)
     image_url = db.Column(db.String(512))
     armor = db.Column(db.String(16))
+    # Stats of the game system that have no column of their own (#487; see game_stats.py).
+    system_stats = db.Column(db.Text, nullable=False, default='{}', server_default='{}')
+    # The game system it plays (#487): its party's when it was created (or the default one), and fixed after
+    # (app/models/game_system.py). It only joins a party of the same system.
+    game_system = db.Column(db.String(32), nullable=False, default=GAME_SYSTEM_DEFAULT, server_default='cairn')
     party_code = db.Column(db.String(64))
     party_id = db.Column(db.Integer)
     edition = db.Column(db.String(16), nullable=False, default=EDITION_SECOND, server_default=EDITION_SECOND)
@@ -91,49 +90,36 @@ class Character(db.Model):
     def __repr__(self):
         return f'<Character {self.name}>'
     
-    # Compute HP value, returns current and max
-    def hpValue(self):
-        hp = self.hp
-        if self.occupiedMainSlots() >= 10 or self.panicked:
-            hp = 0
-        return [hp,self.hp_max]
-    
-    # Returns True if character is overburdened
-    def overburdened(self):
-        max = 10
-        containers = json.loads(self.containers)
-        for c in containers:
-            if c['id'] == 0:
-                max = c['slots']
-        return self.occupiedMainSlots() >= max
-    
-    # Compute armor value based on possessed items
-    def armorValue(self):
-        return min(3, sum(item_armor_value(item) for item in json.loads(self.items or '[]')))
+    # The rules below are the game system's (kettlewright, #487): its party's campaign's, or the default one.
 
-    # Compute occupied slots based on possessed items
-    # but only for a main container
-    # (plus one for coins worth 100gp or more, #507)
+    @property
+    def rules(self):
+        """Its game system (kettlewright, #487); the default one if its key is no longer known."""
+        from kettlewright import system_or_default
+        return system_or_default(self.game_system)
+
+    def active_conditions(self):
+        return tuple(key for key in self.rules.condition_keys if getattr(self, key, False))
+
+    # HP that counts right now, and its maximum (Cairn: 0 with a full inventory or Panicked).
+    def hpValue(self):
+        return [self.rules.effective_hp(self.hp, self.occupiedMainSlots(), self.active_conditions()), self.hp_max]
+
+    # Returns True if the main inventory is full.
+    def overburdened(self):
+        return self.occupiedMainSlots() >= self.rules.inventory.main_capacity(json.loads(self.containers))
+
+    # Armor from the items carried, up to the system's maximum.
+    def armorValue(self):
+        return self.rules.armor_value(json.loads(self.items or '[]'))
+
+    # Slots used in the main inventory, coins included (#507).
     def occupiedMainSlots(self):
-        from app.lib.inventory_slots import coins_take_a_slot
-        items = json.loads(self.items or '[]')
-        slots = 1 if coins_take_a_slot(self.gold) else 0
-        for it in items:
-            if "petty" in it["tags"] or it["location"] != 0:
-                continue
-            if "bulky" in it["tags"]:
-                slots += 2
-                continue
-            slots += 1
-        return slots
-    
+        return self.rules.inventory.occupied_main_slots(json.loads(self.items or '[]'), self.gold)
+
     # Free slots in the main inventory; extra containers have their own capacity.
     def freeMainSlots(self):
-        capacity = 10
-        for container in json.loads(self.containers or '[]'):
-            if container['id'] == 0:
-                capacity = int(container['slots'])
-                break
+        capacity = self.rules.inventory.main_capacity(json.loads(self.containers or '[]'))
         return max(0, capacity - self.occupiedMainSlots())
 
     # The exported sheet as a dictionary; JSON and Markdown exports both use it.
@@ -141,6 +127,8 @@ class Character(db.Model):
         excluded = {'id', 'party_id', 'party_code', 'created_at', 'url_name', 'owner_username', 'owner'}
         data = {column.name: getattr(self, column.name) for column in self.__table__.columns
                 if column.name not in excluded}
+        # A game system's stats without a column (#487) are listed like the others: {'luck': 7, 'luck_max': 9}.
+        data.update(self._extra_stats())
         data['items'] = json.loads(self.items or '[]')
         data['containers'] = json.loads(self.containers or '[]')
         data['armor'] = self.armorValue()

@@ -1,4 +1,5 @@
 """Server-side dice and ownership rules shared by the sheet and Discord."""
+from kettlewright import system
 import json
 import re
 import secrets
@@ -26,19 +27,21 @@ def character_party(character):
     return None
 
 
-SAVES = {'strength': 'STR', 'dexterity': 'DEX', 'willpower': 'WIL'}
+# The attributes that can be rolled as a save, and their labels: {'strength': 'STR', ...} (kettlewright).
+SAVES = {stat.key: stat.abbr for stat in system().attributes if stat.save}
 
 
-def save_outcome(roll, score):
-    """Saves: roll a d20; it fails when the die is higher than the attribute's current value."""
-    return roll <= score
+def save_outcome(roll, score, rules=None):
+    """Saves: roll a d20; Cairn's saves fail when the die is higher than the attribute's current value."""
+    return (rules or system()).save_succeeds(roll, score)
 
 
-def describe_save(result, save, score, roll):
-    """'7 (d20)' becomes '7 (d20) · STR 12 · Success'."""
+def describe_save(result, save, score, roll, rules=None):
+    """'7 (d20)' becomes '7 (d20) · STR 12 · Success'. rules: the roller's game system (default: the default one)."""
     from flask_babel import gettext
-    outcome = gettext('Success') if save_outcome(roll, score) else gettext('Failure')
-    return f'{result} · {SAVES[save]} {score} · {outcome}'
+    rules = rules or system()
+    outcome = gettext('Success') if save_outcome(roll, score, rules) else gettext('Failure')
+    return f'{result} · {rules.abbr(save)} {score} · {outcome}'
 
 
 def roll_label(value):
@@ -54,13 +57,14 @@ def roll_character(user_id, character, expression, expected_party=None, save=Non
     party = character_party(character)
     if expected_party is not None and (not party or party.id != expected_party):
         raise PermissionError('This character is no longer in the channel’s party. Use /kw select again.')
+    rules = character.rules
     if save is not None:
-        # A save is a single d20 against the attribute's current value (#398).
-        if save not in SAVES or getattr(character, save) is None:
+        # A save is a single die (a d20 in Cairn) against the attribute's current value (#398).
+        if save not in rules.save_keys or character.get_stat(save) is None:
             raise ValueError('Choose STR, DEX or WIL to roll a save.')
-        expression = 'd20'
+        expression = f'd{rules.save_die}'
     return roll_for_party(character.name, expression, party,
-                          save=(save, getattr(character, save)) if save else None, label=label), party
+                          save=(save, character.get_stat(save)) if save else None, label=label, rules=rules), party
 
 
 def roll_companion(companion, expression, expected_party=None):
@@ -75,7 +79,7 @@ def roll_companion(companion, expression, expected_party=None):
     return roll_for_party(companion.name, expression, party), party
 
 
-def roll_for_party(name, expression, party, save=None, label=None):
+def roll_for_party(name, expression, party, save=None, label=None, rules=None):
     dice = parse_dice(expression)
     values = [secrets.randbelow(sides) + 1 for sides in dice]
     result = f'{", ".join(map(str, values))} ({"+".join(f"d{sides}" for sides in dice)})'
@@ -84,9 +88,11 @@ def roll_for_party(name, expression, party, save=None, label=None):
     if label and save is None:
         result = f'{result} · {label}'  # e.g. '7 (d8) · Sword': the history says what was rolled for.
     if save is not None:
-        result = describe_save(result, save[0], save[1], values[0])
+        rules = rules or system()
+        result = describe_save(result, save[0], save[1], values[0], rules)
         # For the sheet's notification: which save, against what, and whether it passed.
-        outcome = {'stat': save[0], 'label': SAVES[save[0]], 'score': save[1], 'success': save_outcome(values[0], save[1])}
+        outcome = {'stat': save[0], 'label': rules.abbr(save[0]), 'score': save[1],
+                   'success': save_outcome(values[0], save[1], rules)}
     if party:
         db.session.add(PartyRoll(party_id=party.id, character_name=name, result=result))
     rolled = {'result': result, 'values': values, 'sides': dice}

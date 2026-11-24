@@ -282,7 +282,26 @@ def create_app():
     def inject_locale():
         from app.lib.generator_labels import generator_labels
         from app.lib.dice_feedback import pending_dice
-        return dict(locale=get_locale(), generator_labels=generator_labels, pending_dice=pending_dice)
+        from kettlewright import system
+        # The game system (kettlewright): templates list its stats and conditions instead of writing out Cairn's.
+        return dict(locale=get_locale(), generator_labels=generator_labels, pending_dice=pending_dice,
+                    game_system=system(), game_system_page=game_system_page, rules_for=rules_for)
+
+    def rules_for(record):
+        """A character's, companion's, party's or campaign's game system (kettlewright, #487); the default one for
+        anything else (a form, a generated preview, an undefined variable)."""
+        from kettlewright import system
+        return getattr(record, 'rules', None) or system()
+
+    def game_system_page():
+        """The game system for the page's scripts (app/static/src/js/game_system.js), labels translated."""
+        from flask_babel import gettext
+        from kettlewright import system
+        rules = system()
+        stat = lambda s, **extra: dict(key=s.key, abbr=s.abbr, label=gettext(s.abbr), **extra)
+        return dict(key=rules.key, hp=stat(rules.hit_points),
+                    attributes=[stat(s, save=s.save) for s in rules.attributes],
+                    conditions=[dict(key=c.key, label=gettext(c.label)) for c in rules.conditions])
 
     # Dice rolled while building an htmx partial or before a redirect (app/lib/dice_feedback.py).
     @app.after_request

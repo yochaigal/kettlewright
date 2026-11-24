@@ -1,31 +1,32 @@
 """Stable, backwards-compatible slot positions inside the existing item JSON."""
 from copy import deepcopy
 
-# Cairn 2e: "A bag of coins worth less than 100gp is petty and does not occupy a slot." From 100gp the
-# coins take one slot in the main inventory, however much there is (#507).
-PETTY_GOLD_LIMIT = 100
+from kettlewright import system
+
+# The game system's inventory rules (kettlewright): how many slots an item takes, and when coins take one (#507).
+# rules: the owner's game system (character.rules...); the default one if not given.
+PETTY_GOLD_LIMIT = system().inventory.gold_slot_from
 
 
-def coins_take_a_slot(gold):
-    return (gold or 0) >= PETTY_GOLD_LIMIT
+def coins_take_a_slot(gold, rules=None):
+    return (rules or system()).inventory.coins_take_a_slot(gold)
 
 
-def item_size(item):
-    tags = item.get('tags') or []
-    return 0 if 'petty' in tags else 2 if 'bulky' in tags else 1
+def item_size(item, rules=None):
+    return (rules or system()).inventory.item_size(item)
 
 
-def arrange_slots(items, capacity, first_id=None):
+def arrange_slots(items, capacity, first_id=None, rules=None):
     """Reserve saved positions, then fill gaps. Keep overloaded items visible."""
     items = [deepcopy(item) for item in items if not item.get('is_empty')]
     capacity = max(0, int(capacity))
-    limit = max(capacity, sum(item_size(item) for item in items))
+    limit = max(capacity, sum(item_size(item, rules) for item in items))
     occupied = {}
     positions = {}
     pending = []
     ordered = sorted(items, key=lambda item: str(item['id']) != str(first_id)) if first_id is not None else items
     for item in ordered:
-        size = item_size(item)
+        size = item_size(item, rules)
         if not size:
             continue
         slot = item.get('slot')
@@ -36,7 +37,7 @@ def arrange_slots(items, capacity, first_id=None):
         else:
             pending.append(item)
     for item in pending:
-        size = item_size(item)
+        size = item_size(item, rules)
         slot = 0
         while (size == 2 and slot % 2) or any(index in occupied for index in range(slot, slot + size)):
             slot += 1
@@ -46,9 +47,9 @@ def arrange_slots(items, capacity, first_id=None):
     slot = 0
     while slot < max(capacity, max(occupied, default=-1) + 1):
         item = occupied.get(slot)
-        span = item_size(item) if item else 1
+        span = item_size(item, rules) if item else 1
         rows.append(dict(slot=slot, span=span, item=item, overflow=slot + span > capacity))
         slot += span
-    return dict(rows=rows, petty=[item for item in items if not item_size(item)], positions=positions,
-                used=sum(item_size(item) for item in items), capacity=capacity,
+    return dict(rows=rows, petty=[item for item in items if not item_size(item, rules)], positions=positions,
+                used=sum(item_size(item, rules) for item in items), capacity=capacity,
                 overflow=any(row['overflow'] for row in rows))

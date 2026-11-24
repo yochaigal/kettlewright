@@ -35,7 +35,8 @@ def sheet(character):
     return {'id': character.id, 'name': character.name,
             # Effective HP is 0 while panicked or with a full main inventory; `stored` is what −/+ change.
             'hp': {'value': character.hpValue()[0], 'stored': character.hp or 0, 'max': character.hp_max or 0},
-            'strength': stat('strength'), 'dexterity': stat('dexterity'), 'willpower': stat('willpower'),
+            # The game system's attributes (#487): strength, dexterity and willpower in Cairn.
+            **{attribute.key: stat(attribute.key) for attribute in character.rules.attributes},
             'armor': character.armorValue(), 'deprived': bool(character.deprived),
             'panicked': bool(character.panicked), 'dead': bool(getattr(character, 'dead', False)),
             'containers': containers}

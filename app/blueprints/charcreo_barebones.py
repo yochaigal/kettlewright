@@ -4,6 +4,7 @@
 # hidden JSON fields so rerolling one table (say, the weapon) keeps the random
 # results of the others, such as a background's spellbook.
 
+from kettlewright import system
 import json
 import urllib.parse
 
@@ -32,7 +33,8 @@ def party_background_table():
     use_party_barebones(party_for_code(request.values.get('party_code')))
 
 TRAIT_NAMES = ("Physique", "Skin", "Hair", "Face", "Speech", "Clothing", "Virtue", "Vice")
-ATTRIBUTES = {'str': ('strength', 6, 3), 'dex': ('dexterity', 6, 3), 'wil': ('willpower', 6, 3), 'hp': ('hp', 6, 1)}
+# Form field -> (stat, faces, count): the system's creation dice (kettlewright), e.g. 'str': ('strength', 6, 3).
+ATTRIBUTES = {stat.abbr.lower(): (stat.key, stat.roll[1], stat.roll[0]) for stat in system().sheet_stats}
 # Hidden JSON item groups, in inventory order.
 GROUPS = ('start_items', 'bkg_items', 'armor_items', 'weapon_items', 'gear_items', 'package_items')
 TABLES = {'background': ('backgrounds', 'bkg_items', background_items),
@@ -220,7 +222,7 @@ def validation_errors(state):
         errors.append('Required background selection')
     if not state['name']:
         errors.append('Required character name')
-    for key, label in (('strength', 'STR'), ('dexterity', 'DEX'), ('willpower', 'WIL'), ('hp', 'HP')):
+    for key, label in ((stat.key, stat.abbr) for stat in system().sheet_stats):
         if not state[key] or state[key] < 1:
             errors.append(f'Required {label} attribute')
     return errors
@@ -259,8 +261,10 @@ def save():
     # Created for a party (Join a party): the character joins it.
     from app.lib.campaign_backgrounds import party_for_code
     from app.lib import add_character_to_party
-    party = party_for_code(state['party_code'])
+    with db.session.no_autoflush:  # Not saved before it has its party's game system.
+        party = party_for_code(state['party_code'])
     if party is not None:
+        character.game_system = party.game_system  # It plays its party's system (#487), from now on.
         db.session.flush()
         character.party_id, character.party_code = party.id, party.join_code
         add_character_to_party(character)

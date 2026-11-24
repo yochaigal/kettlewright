@@ -5,7 +5,7 @@
 <h3>{{_('Stats')}}</h3>
 <template data-dead-badge>{% include 'partial/dead_badge.html' %}</template>
 <div class="stats-stats-container character-stat-dashboard">
-  {% for field, label, short in [('strength', _('STR'), 'str'), ('dexterity', _('DEX'), 'dex'), ('willpower', _('WIL'), 'wil'), ('hp', _('HP'), 'hp')] %}
+  {% for stat in rules_for(character).sheet_stats %}{% set field, label, short = stat.key, _(stat.abbr), stat.abbr|lower %}
   <div class="character-stat-card" id="character-{{ short }}-container">
     <div class="stat-card-heading">
       {% if is_owner and field != 'hp' and not generated_preview and character[field] is not none %}

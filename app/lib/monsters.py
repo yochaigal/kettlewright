@@ -1,4 +1,5 @@
 """Cairn stat blocks and party-owned monster instances."""
+from kettlewright import system
 import json
 import re
 from pathlib import Path
@@ -59,7 +60,7 @@ def parse_monsters(markdown):
     return templates
 
 
-def parse_monster(markdown):
+def parse_monster(markdown, rules=None):
     if not isinstance(markdown, str) or len(markdown.encode('utf-8')) > 65536:
         raise ValueError('Choose a Markdown monster file smaller than 64 KB.')
     body = _monster_body(markdown)
@@ -72,17 +73,21 @@ def parse_monster(markdown):
     if stats_line is None or not name or len(name) > 100:
         raise ValueError('Include a monster name and a stat line such as 8 HP, 10 STR, 12 DEX, 2 WIL, vines (d4).')
     stats = lines[stats_line]
-    result = dict(name=name, armor=0, strength=10, dexterity=10, willpower=10)
-    fields = {'HP': 'hp', 'Armor': 'armor', 'STR': 'strength', 'DEX': 'dexterity', 'WIL': 'willpower'}
+    # The stat line's labels are the game system's (kettlewright): HP, Armor, STR, DEX and WIL in Cairn. An attribute
+    # that isn't given is 10.
+    rules = rules or system()
+    result = dict(name=name, armor=0, **{stat.key: 10 for stat in rules.attributes})
+    fields = {rules.hit_points.abbr: rules.hit_points.key, 'Armor': 'armor',
+              **{stat.abbr: stat.key for stat in rules.attributes}}
     for label, field in fields.items():
         matches = re.findall(r'\b(\d+)\s+' + label + r'\b', stats, re.I)
         if len(matches) > 1:
             raise ValueError('Each stat must appear only once.')
         if matches:
             result[field] = int(matches[0])
-        if result.get(field, 0) > (3 if field == 'armor' else 100000):
+        if result.get(field, 0) > ((rules.armor_max or 100000) if field == 'armor' else 100000):
             raise ValueError('Monster stats are outside the allowed range.')
-    attack = re.sub(r'\b\d+\s+(?:HP|Armor|STR|DEX|WIL)\b\s*,?\s*', '', stats, flags=re.I).strip(' ,')
+    attack = re.sub(r'\b\d+\s+(?:' + '|'.join(map(re.escape, fields)) + r')\b\s*,?\s*', '', stats, flags=re.I).strip(' ,')
     result['attack'] = attack
     result['notes'] = '\n'.join(lines[stats_line + 1:]).strip()
     if len(attack) > 200 or len(result['notes']) > 10000:
@@ -103,8 +108,9 @@ def localized_monster_catalog(art='kettlewright'):
     keys stay tied to the English names, so they are set before translating."""
     from flask_babel import gettext
     templates = monster_catalog(art)
-    labels = {'hp': gettext('HP'), 'armor': gettext('Armor'), 'strength': gettext('STR'),
-              'dexterity': gettext('DEX'), 'willpower': gettext('WIL')}
+    rules = system()
+    labels = {rules.hit_points.key: gettext(rules.hit_points.abbr), 'armor': gettext('Armor'),
+              **{stat.key: gettext(stat.abbr) for stat in rules.attributes}}
     for template in templates.values():
         template['labels'] = labels
         for field in ('name', 'attack', 'notes'):
@@ -138,8 +144,10 @@ def new_monster(party, template):
                 image_url=template.get('image_url') or monster_portrait(template['name'], party.monster_art))
     data.pop('labels', None)
     data.pop('art', None)
-    for stat in ('hp', 'strength', 'dexterity', 'willpower'):
-        data[stat + '_max'] = data[stat]
+    # The bestiary's stats (the default system's) and the party's game system's (#487): each starts at its maximum;
+    # a stat the bestiary doesn't have stays empty.
+    for stat in dict.fromkeys((*system().stat_keys, *(party.rules if party is not None else system()).stat_keys)):
+        data[stat + '_max'] = data.get(stat)
     c = import_pet(data)
     c.kind, c.party, c.shared = 'monster', party, False
     return c

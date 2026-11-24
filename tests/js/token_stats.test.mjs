@@ -143,3 +143,34 @@ test('the roller\'s token gets a ring, with or without stats, that follows the c
     for (const [key, value] of originals) globalThis[key] = value;
   }
 });
+
+test('a token\'s stats are the page system\'s, labelled with its abbreviations (#487)', () => {
+  const originals = ['document', 'requestAnimationFrame', 'cancelAnimationFrame', 'ResizeObserver'].map(key => [key, globalThis[key]]);
+  const host = new Node(), frames = [];
+  const lucky = {key: 'lucky', hp: {key: 'hp', abbr: 'HP', label: 'HP'},
+    attributes: [{key: 'strength', abbr: 'STR', label: 'STR', save: true}, {key: 'luck', abbr: 'LCK', label: 'LCK', save: true}],
+    conditions: []};
+  globalThis.document = {createElement(tag) {const node = new Node(); node.tag = tag; return node;},
+    createTextNode(text) {const node = new Node(); node.textContent = text; return node;},
+    getElementById: id => id === 'game-system' ? {textContent: JSON.stringify(lucky)} : null};
+  globalThis.requestAnimationFrame = fn => {frames.push(fn); return frames.length;};
+  globalThis.cancelAnimationFrame = () => {};
+  globalThis.ResizeObserver = class {observe() {} disconnect() {}};
+  let overlay;
+  try {
+    const hero = {id: '3', name: 'Ada', kind: 'character', shared: true, armor: 0,
+      stats: {hp: [4, 4], strength: [10, 10], dexterity: [12, 12], luck: [7, 9]}};
+    overlay = createTokenStats({editor: {querySelector: () => host}, config: {messages: {}},
+      getApi: () => ({getSceneElements: () => [{id: 'actor-3-a', x: 0, y: 0, width: 80, height: 80}],
+        getAppState: () => ({zoom: {value: 1}, scrollX: 0, scrollY: 0, width: 800, height: 600})}),
+      canReveal: () => false, isPlayerPreview: () => false,
+      updates: {subscribe(key, callback) {callback([hero]); return () => {};}, refresh() {}}});
+    frames.splice(0).forEach(fn => fn());
+    const label = host.children[0].children.find(node => node.className === 'token-stats');
+    // Dexterity isn't one of this system's stats, so it isn't shown even if the actor has it.
+    assert.deepEqual(label.children[0].children.map(value => value.textContent), ['HP 4', 'STR 10', 'LCK 7']);
+  } finally {
+    overlay?.destroy();
+    for (const [key, value] of originals) globalThis[key] = value;
+  }
+});

@@ -17,7 +17,7 @@
     </div>
   </div>
   <div class="party-member-stats">
-    {% for field, label in [('hp', _('HP')), ('strength', _('STR')), ('dexterity', _('DEX')), ('willpower', _('WIL'))] %}
+    {% for stat in rules_for(character).stats %}{% set field, label = stat.key, _(stat.abbr) %}
     <div class="party-member-stat">
       {% if current_user.id in (party.owner, character.owner) %}
       {% with stat_id='party-' ~ character.id ~ '-' ~ field,

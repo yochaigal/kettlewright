@@ -5,6 +5,7 @@ with New party. The Warden can delete a party or move it to another of their cam
 (it keeps what it was shown). These helpers create campaigns and parties, list parties,
 and find the parties a player's characters are in (those are someone else's campaigns).
 """
+from kettlewright import system
 import json
 import os
 
@@ -13,7 +14,7 @@ from slugify import slugify
 
 from app.models import db, Character, Party, PartyRoll, PartyMap
 
-DEFAULT_CONTAINERS = '[{"name":"Main","slots":10,"id":0}]'
+DEFAULT_CONTAINERS = json.dumps(system().inventory.default_containers(), separators=(',', ':'))
 
 
 def generate_unique_join_code():
@@ -33,10 +34,13 @@ def generate_unique_party_url(name, owner_id):
     return party_url
 
 
-def create_campaign(owner_id, name, with_party=True):
-    """A new campaign, with an (empty) party named after it unless with_party is False (#501). The caller commits."""
+def create_campaign(owner_id, name, with_party=True, game_system=None):
+    """A new campaign, with an (empty) party named after it unless with_party is False (#501). The caller commits.
+
+    game_system (#487) is the system it plays, fixed from now on; the default one unless given. Not offered in
+    the app: every campaign plays the default system today."""
     from app.models import Campaign
-    campaign = Campaign(owner_id=owner_id, name=name)
+    campaign = Campaign(owner_id=owner_id, name=name, game_system=game_system or system().key)
     db.session.add(campaign)
     if with_party:
         create_party(campaign, name[:64])
@@ -49,8 +53,10 @@ def create_party(campaign, name, description='', owner_id=None):
     from app.models import User
     db.session.flush()  # A campaign created in this request needs its id.
     owner = db.session.get(User, campaign.owner_id if campaign is not None else owner_id)
+    # It plays its campaign's game system (#487), or the default one; fixed from now on.
     party = Party(name=name, description=description, owner=owner.id, owner_username=owner.username,
-                  campaign=campaign, join_code=generate_unique_join_code(),
+                  campaign=campaign, game_system=campaign.game_system if campaign is not None else system().key,
+                  join_code=generate_unique_join_code(),
                   party_url=generate_unique_party_url(name, owner.id), items='[]', containers=DEFAULT_CONTAINERS)
     db.session.add(party)
     return party
@@ -109,8 +115,8 @@ def party_roster(party):
             'src': character.image_url if character.custom_image else
                    url_for('static', filename='images/portraits/' + (character.image_url or 'default-portrait.webp')),
             'hp': hp, 'hp_max': hp_max,
-            'stats': [(stat, getattr(character, stat), getattr(character, stat + '_max')) for stat in ('strength', 'dexterity', 'willpower')],
-            'armor': character.armorValue(), 'free': character.freeMainSlots(),
+            'stats': [(stat, character.get_stat(stat), character.get_stat(stat + '_max')) for stat in character.rules.attribute_keys],
+            'rules': character.rules, 'armor': character.armorValue(), 'free': character.freeMainSlots(),
             'deprived': bool(character.deprived), 'panicked': bool(character.panicked), 'dead': bool(character.dead)})
     return roster
 

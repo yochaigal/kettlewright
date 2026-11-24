@@ -1,3 +1,4 @@
+from .game_system import GAME_SYSTEM_DEFAULT
 from sqlalchemy.sql import func
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -21,6 +22,9 @@ class Party(db.Model):
     official_barebones = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
     # The art of new bestiary monsters: 'kettlewright' or 'oozejar' (app/lib/monsters.py MONSTER_ARTS).
     monster_art = db.Column(db.String(20), nullable=False, default='kettlewright', server_default='kettlewright')
+    # The game system it plays (#487): its campaign's when it was created, and fixed after
+    # (app/models/game_system.py). It only joins a campaign of the same system.
+    game_system = db.Column(db.String(32), nullable=False, default=GAME_SYSTEM_DEFAULT, server_default='cairn')
     created_at = db.Column(db.DateTime(timezone=True),
                            server_default=func.now())
 
@@ -38,6 +42,12 @@ class Party(db.Model):
     containers = db.Column(db.String)
     events = db.Column(db.String)
     version = db.Column(db.Integer, nullable=False, default=0)
+
+    @property
+    def rules(self):
+        """Its game system (kettlewright, #487); the default one if its key is no longer known."""
+        from kettlewright import system_or_default
+        return system_or_default(self.game_system)
 
     @property
     def hirelings(self):

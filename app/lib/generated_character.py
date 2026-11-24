@@ -1,4 +1,5 @@
 """Persist the reviewed Tools character snapshot without rerolling its contents."""
+from kettlewright import system
 import re
 
 from flask import current_app
@@ -24,7 +25,7 @@ def read_snapshot(token):
 
 def character_markdown(data):
     sections = [f"**{_('Background')}:** {data['background']}",
-        f"{data['hp']} HP · {data['strength']} STR · {data['dexterity']} DEX · {data['willpower']} WIL · {data['armor']} {_('Armor')} · {data['gold']} {_('Gold')}"]
+        ' · '.join(f"{data[stat.key]} {stat.abbr}" for stat in system().stats) + f" · {data['armor']} {_('Armor')} · {data['gold']} {_('Gold')}"]
     for key, label in [('description',_('Description')),('traits',_('Traits')),('bonds',_('Bonds')),('omens',_('Omens')),('scars',_('Scars')),('notes',_('Notes'))]:
         if data.get(key):
             sections.append(f"## {label}\n\n{data[key]}")
@@ -53,7 +54,7 @@ def character_markdown(data):
 
 
 def character_pet_markdown(pet):
-    stats = ' · '.join(f"{pet[field]} {label}" for field, label in [('hp','HP'),('strength','STR'),('dexterity','DEX'),('willpower','WIL')]
+    stats = ' · '.join(f"{pet[field]} {label}" for field, label in ((stat.key, stat.abbr) for stat in system().stats)
                        if pet.get(field) is not None)
     equipment = '\n'.join(f"- {item['name']}" for item in pet.get('items', []))
     return '\n\n'.join(part for part in [stats, pet.get('attack'), pet.get('notes'), equipment] if part)

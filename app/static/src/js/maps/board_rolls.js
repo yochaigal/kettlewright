@@ -1,4 +1,5 @@
 import diceModal from '../dice_modal.js';
+import {gameSystem} from '../game_system.js';
 import dice3d from '../dice3d.js';
 import {actorKey} from './token_stats.js';
 import {hideablePanel} from './board_panels.js';
@@ -78,7 +79,7 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
         const damage = active.damage || [];
         if (!damage.length) button(config.messages.damage, {dice: 'd4'}, true);
         for (const dice of damage) button(`${config.messages.damage} ${dice}`, {dice});
-        for (const [stat, label] of [['strength', 'STR'], ['dexterity', 'DEX'], ['willpower', 'WIL']]) {
+        for (const {key: stat, abbr: label} of gameSystem().attributes.filter(attribute => attribute.save)) {
           button(label, {dice: 'd20', save: stat}, active.stats[stat] == null);
         }
         const more = button(config.messages.rollDice, {modal: true});
@@ -106,7 +107,7 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
   }
   // The selected token's panel (#375): HP −/+, a monster at 0 HP is Down, a character's STR, DEX and WIL,
   // Deprived and Panicked, and its full sheet. Rebuilt only for another actor, so a pressed button keeps its focus.
-  const statLabels = {strength: 'STR', dexterity: 'DEX', willpower: 'WIL'};
+  const statLabels = Object.fromEntries(gameSystem().attributes.map(attribute => [attribute.key, attribute.abbr]));
   const statValue = (actor, field) => field === 'hp' ? actor?.hp : actor?.attributes?.[field];
   function drawToken() {
     if (!token) return;

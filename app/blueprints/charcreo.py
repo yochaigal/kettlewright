@@ -2,6 +2,7 @@
 
 # Character creation blueprint
 
+from kettlewright import system
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, make_response, Response
 from flask_login import current_user
 from app.models import db, User, Character, Party
@@ -212,7 +213,7 @@ def update_containers(custom_fields):
                                               custom_fields.get(f'background_table{index}_select')) if background else None
         specs.extend(sdv(option, 'containers', []) if option else [])
     items = [it for it in json.loads(inventory.character.items or '[]') if 'carrying' not in it]
-    containers = [{"name": "Main", "slots": 10, "id": 0}] + starting_containers(specs, items)
+    containers = system().inventory.default_containers() + starting_containers(specs, items)
     inventory.character.items = json.dumps(items)
     inventory.character.containers = json.dumps(containers)
     inventory.parse(inventory.character)
@@ -422,80 +423,35 @@ def queued_roll(faces, count):
 
 
 # route: roll attribute
+def _creation_stats(attributes_only=False):
+    """The stats a new character rolls, by their short name in the form: 'str' -> the STR stat (kettlewright)."""
+    stats = system().attributes if attributes_only else system().sheet_stats
+    return {stat.abbr.lower(): stat for stat in stats}
+
+
 @character_create.route('/charcreo/attr-roll/<atype>', methods=['POST'])
 def charcreo_attr_roll(atype):
     form, custom_fields, _ = process_form_data(request.form)
-    match atype:
-        case "str":
-            total = queued_roll(6, 3)
-            # hack, because flask cannot change numeric field
-            form.strength_max.data = total
-            form.strength_max.raw_data = None
-        case "dex":
-            total = queued_roll(6, 3)
-            form.dexterity_max.data = total
-            form.dexterity_max.raw_data = None
-        case "wil":
-            total = queued_roll(6, 3)
-            form.willpower_max.data = total
-            form.willpower_max.raw_data = None            
-        case "hp":
-            total = queued_roll(6, 1)
-            form.hp_max.data = total
-            form.hp_max.raw_data = None                    
+    stat = _creation_stats().get(atype)
+    if stat:
+        count, faces = stat.roll
+        field = getattr(form, stat.key + '_max')
+        field.data = queued_roll(faces, count)
+        field.raw_data = None  # A numeric field keeps its submitted text unless this is cleared.
     return render_template('partial/charcreo/attrs.html', form=form,custom_fields=custom_fields )
 
 # route: swap attributes
 @character_create.route('/charcreo/attr-swap', methods=['POST'])
 def charcreo_swap_attr():
+    """Swap two attributes once (not HP), as Cairn allows when creating a character."""
     data = request.form
     form, custom_fields, _ = process_form_data(data)
-    attr1 = data['swap_attribute_1']
-    attr2 = data['swap_attribute_2']
-    if attr1 != "" and attr2 != "":
-        match attr1:
-            case "str":
-                match attr2:
-                    case "dex":
-                        v = form.dexterity_max.data
-                        form.dexterity_max.data = form.strength_max.data
-                        form.strength_max.data = v
-                        form.strength_max.raw_data = None
-                        form.dexterity_max.raw_data = None
-                    case "wil":
-                        v = form.willpower_max.data
-                        form.willpower_max.data = form.strength_max.data
-                        form.strength_max.data = v
-                        form.strength_max.raw_data = None
-                        form.willpower_max.raw_data = None
-            case "dex":
-                match attr2:
-                    case "str":
-                        v = form.dexterity_max.data
-                        form.dexterity_max.data = form.strength_max.data
-                        form.strength_max.data = v
-                        form.strength_max.raw_data = None
-                        form.dexterity_max.raw_data = None
-                    case "wil":
-                        v = form.willpower_max.data
-                        form.willpower_max.data = form.dexterity_max.data
-                        form.dexterity_max.data = v
-                        form.willpower_max.raw_data = None
-                        form.dexterity_max.raw_data = None
-            case "wil":
-                match attr2:
-                    case "str":
-                        v = form.strength_max.data
-                        form.strength_max.data = form.willpower_max.data
-                        form.willpower_max.data = v
-                        form.strength_max.raw_data = None
-                        form.willpower_max.raw_data = None
-                    case "dex":
-                        v = form.willpower_max.data
-                        form.willpower_max.data = form.dexterity_max.data
-                        form.dexterity_max.data = v            
-                        form.willpower_max.raw_data = None
-                        form.dexterity_max.raw_data = None
+    attributes = _creation_stats(attributes_only=True)
+    first, second = attributes.get(data['swap_attribute_1']), attributes.get(data['swap_attribute_2'])
+    if first and second and first is not second:
+        one, other = getattr(form, first.key + '_max'), getattr(form, second.key + '_max')
+        one.data, other.data = other.data, one.data
+        one.raw_data = other.raw_data = None
     return render_template('partial/charcreo/attrs.html', form=form,custom_fields=custom_fields )
 
 
@@ -677,18 +633,13 @@ def charcreo_roll_all():
         custom_fields[n] = roll_list(custom_fields['traits'][n])
         tts.append(TraitValue(n, custom_fields[n]))
     form.traits.process_data(traits_text(custom_fields['age'], tts))
-    _, total = roll_multi_dice(6,3)
-    form.strength_max.data = total
-    form.strength_max.raw_data = None
-    _, total = roll_multi_dice(6,3)
-    form.dexterity_max.data = total
-    form.dexterity_max.raw_data = None
-    _, total = roll_multi_dice(6,3)
-    form.willpower_max.data = total
-    form.willpower_max.raw_data = None            
-    _, total = roll_multi_dice(6,1)
-    form.hp_max.data = total
-    form.hp_max.raw_data = None 
+    # The attributes, then HP, with the system's creation dice (kettlewright): 3d6 and 1d6 in Cairn.
+    for stat in system().sheet_stats:
+        count, faces = stat.roll
+        _, total = roll_multi_dice(faces, count)
+        field = getattr(form, stat.key + '_max')
+        field.data = total
+        field.raw_data = None
     image = roll_list(load_images())
     custom_fields['portrait_src'] = image
     custom_fields['custom_image'] = 'false'
@@ -846,7 +797,7 @@ def charcreo_save():
     containers = custom_fields['containers']
     if containers == "":
         # fallback, Main container always exists
-        containers = json.dumps([{"name": "Main", "slots": 10, "id": 0}])
+        containers = json.dumps(system().inventory.default_containers())
     
     description = sdv(background,'background_description','') if background else ''
     description = _(description) if description else ''
@@ -879,8 +830,10 @@ def charcreo_save():
     db.session.add(new_character)
     # Created for a party (its join code): the character joins it.
     from app.lib.campaign_backgrounds import party_for_code
-    party = party_for_code(request.form.get('party_code'))
+    with db.session.no_autoflush:  # Not saved before it has its party's game system.
+        party = party_for_code(request.form.get('party_code'))
     if party is not None:
+        new_character.game_system = party.game_system  # It plays its party's system (#487), from now on.
         db.session.flush()
         new_character.party_id = party.id
         new_character.party_code = party.join_code

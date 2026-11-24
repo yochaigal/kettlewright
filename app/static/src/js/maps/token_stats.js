@@ -1,4 +1,5 @@
 // Stats are a viewer-specific overlay, never serialized into the shared drawing.
+import {statAbbr, statKeys as statKeyList} from '../game_system.js';
 export function actorKey(id) {
   const companion = id.match(/^actor-companion-(\d+)-/);
   if (companion) return `companion:${companion[1]}`;
@@ -24,7 +25,9 @@ export function tokenRingPosition(element, state) {
     size: (Math.max(element.width, element.height) + 12) * zoom};
 }
 
-const statKeys = ['hp', 'strength', 'dexterity', 'willpower'];
+// HP and the attributes of the page's game system (kettlewright): hp, strength, dexterity and willpower in
+// Cairn. Read when drawn, so the labels follow the page.
+const statKeys = () => statKeyList();
 
 export function createTokenStats({editor, config, getApi, canReveal, confirmReveal, isPlayerPreview, updates}) {
   const layer = document.createElement('div'); layer.className = 'token-stats-layer';
@@ -72,10 +75,10 @@ export function createTokenStats({editor, config, getApi, canReveal, confirmReve
       node.actor = actor; node.replaceChildren();
       node.setAttribute('aria-label', actor.name);
       const stats = document.createElement('span'); stats.className = 'token-stat-values';
-      for (const key of statKeys) {
+      for (const key of statKeys()) {
         if (!actor.stats[key]) continue;
         const value = document.createElement('span');
-        value.textContent = `${{hp: 'HP', strength: 'STR', dexterity: 'DEX', willpower: 'WIL'}[key]} ${actor.stats[key][0]}`;
+        value.textContent = `${statAbbr(key)} ${actor.stats[key][0]}`;
         stats.append(value);
       }
       node.append(stats);
@@ -106,12 +109,12 @@ export function createTokenStats({editor, config, getApi, canReveal, confirmReve
     // Shape/visibility changes may add or remove controls. Value changes stay in place.
     if (previous.kind !== actor.kind || previous.shared !== actor.shared
         || Boolean(previous.attack) !== Boolean(actor.attack)
-        || statKeys.some(key => Boolean(previous.stats[key]) !== Boolean(actor.stats[key]))) return false;
+        || statKeys().some(key => Boolean(previous.stats[key]) !== Boolean(actor.stats[key]))) return false;
     if (previous.name !== actor.name) node.setAttribute('aria-label', actor.name);
     const values = node.children[0].children;
-    statKeys.filter(key => actor.stats[key]).forEach((key, index) => {
+    statKeys().filter(key => actor.stats[key]).forEach((key, index) => {
       if (previous.stats[key][0] !== actor.stats[key][0]) {
-        values[index].textContent = `${{hp: 'HP', strength: 'STR', dexterity: 'DEX', willpower: 'WIL'}[key]} ${actor.stats[key][0]}`;
+        values[index].textContent = `${statAbbr(key)} ${actor.stats[key][0]}`;
       }
     });
     const combat = node.children[1], armor = combat.children[0];

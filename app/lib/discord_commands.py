@@ -1,4 +1,5 @@
 """Small guild-only command surface. Mutations commit with the interaction receipt."""
+from kettlewright import system
 import math
 import re
 
@@ -193,8 +194,8 @@ def execute(payload, account):
     if name == 'character':
         owner = db.session.get(User, user_id)
         link = site_url(url_for('main.character', username=owner.username, url_name=character.url_name or ''))
-        conditions = ', '.join(label for field, label in [('deprived', 'Deprived'), ('panicked', 'Panicked'),
-                              ('dead', 'Dead')] if getattr(character, field)) or 'None'
+        conditions = ', '.join(condition.label for condition in character.rules.conditions
+                               if getattr(character, condition.key)) or 'None'
         text = (f'**{safe_name(character.name)}**\n'
                 f'STR {character.strength or 0}/{character.strength_max or 0} · '
                 f'DEX {character.dexterity or 0}/{character.dexterity_max or 0} · '

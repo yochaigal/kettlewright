@@ -1,3 +1,4 @@
+import {gameSystem} from './game_system.js';
 const form = document.getElementById("character-form");
 const fileInput = document.getElementById("jsonFile");
 const submit = document.getElementById("submit-button");
@@ -83,7 +84,9 @@ form.addEventListener("submit", (event) => {
     return;
   }
   if (kind !== "character") return;
-  const numeric = ["strength", "strength_max", "dexterity", "dexterity_max", "willpower", "willpower_max", "hp", "hp_max", "gold"];
+  // The sheet's stats (kettlewright) and their maximums, attributes first: strength, strength_max, ... hp, hp_max.
+  const {hp, attributes} = gameSystem();
+  const numeric = [...[...attributes, hp].flatMap(stat => [stat.key, stat.key + "_max"]), "gold"];
   const text = ["name", "background", "custom_name", "custom_background", "description", "bonds", "omens", "scars", "notes", "image_url", "traits", "background_table1_question", "background_table1_answer", "background_table2_question", "background_table2_answer"];
   for (const field of numeric) form.elements[field].value = data[field] ?? 0;
   for (const field of text) form.elements[field].value = data[field] ?? "";

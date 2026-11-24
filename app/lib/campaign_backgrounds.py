@@ -10,6 +10,7 @@ by its join code, use_party_backgrounds() puts the party's list on flask.g, and
 load_backgrounds() returns it for the rest of the request. Characters keep a copy
 of what they rolled, so later changes never alter them.
 """
+from kettlewright import system
 import copy
 import json
 import os
@@ -33,7 +34,7 @@ class BackgroundError(ValueError):
 
 def official_backgrounds():
     from app.lib.paths import app_static_path
-    path = os.path.join(app_static_path(), 'json', 'backgrounds', 'background_data.json')
+    path = os.path.join(app_static_path(), 'json', system().content_path('backgrounds'))
     with open(path, 'r') as file:
         return json.load(file)
 

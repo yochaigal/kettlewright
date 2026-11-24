@@ -2,10 +2,11 @@
 import json
 from flask import url_for
 from .globals import db
-from .character import item_armor_value
+from kettlewright import system
+from .game_stats import SystemStats
 
 
-class Companion(db.Model):
+class Companion(SystemStats, db.Model):
     __tablename__ = 'companions'
     id = db.Column(db.Integer, primary_key=True)
     kind = db.Column(db.String(10), nullable=False)
@@ -33,6 +34,8 @@ class Companion(db.Model):
     containers = db.Column(db.Text, nullable=False, default='[{"id": 0, "name": "Main", "slots": 10}]')
     public_notes = db.Column(db.Text, nullable=False, default='', server_default='')
     shared = db.Column(db.Boolean, nullable=False, default=True)
+    # Stats of the game system that have no column of their own (#487; see game_stats.py).
+    system_stats = db.Column(db.Text, nullable=False, default='{}', server_default='{}')
     character = db.relationship('Character', backref=db.backref('pets', cascade='all, delete-orphan', order_by='Companion.id'))
     party = db.relationship('Party', backref=db.backref('party_companions', cascade='all, delete-orphan', order_by='Companion.id'))
     hireling = db.relationship('Companion', remote_side=[id], backref=db.backref('pets', cascade='all, delete-orphan', order_by='Companion.id'))
@@ -57,7 +60,13 @@ class Companion(db.Model):
         return attack_dice(self.attack)
 
     def armorValue(self):
-        return min(3, (self.armor or 0) + sum(item_armor_value(it) for it in json.loads(self.items or '[]')))
+        return self.rules.armor_value(json.loads(self.items or '[]'), base=self.armor)
+
+    @property
+    def rules(self):
+        """Its game system (kettlewright, #487): its party's, or its character's or hireling's for a pet."""
+        owner = self.party or self.character or self.hireling
+        return owner.rules if owner is not None else system()
 
     def export(self):
         fields = ('name', 'role', 'hp', 'hp_max', 'strength', 'strength_max', 'dexterity', 'dexterity_max',

@@ -44,9 +44,8 @@
       <p class="character-card-background">{{ character.background | tr }}</p>
       {% include "partial/dead_badge.html" %}
       <dl class="character-card-stats">
-        <div><dt>{{_('STR')}}</dt><dd>{{character.strength}}<small>/{{character.strength_max}}</small></dd></div>
-        <div><dt>{{_('DEX')}}</dt><dd>{{character.dexterity}}<small>/{{character.dexterity_max}}</small></dd></div>
-        <div><dt>{{_('WIL')}}</dt><dd>{{character.willpower}}<small>/{{character.willpower_max}}</small></dd></div>
+        {% for stat in rules_for(character).attributes %}<div><dt>{{_(stat.abbr)}}</dt><dd>{{character[stat.key]}}<small>/{{character[stat.key + '_max']}}</small></dd></div>
+        {% endfor %}
         <div><dt>{{_('HP')}}</dt><dd>{{hp[0]}}<small>/{{hp[1]}}</small></dd></div>
         <div><dt>{{_('Armor')}}</dt><dd>{{character.armorValue()}}</dd></div>
         <div><dt>{{_('Gold')}}</dt><dd>{{character.gold}}</dd></div>

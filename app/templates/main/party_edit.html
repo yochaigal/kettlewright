@@ -69,21 +69,13 @@
 
             <div class="character-card-stats-container">
               <div>
+                {% for stat in rules_for(character).attributes %}
                 <div class="card-attribute-container">
                   <p class="character-card-attribute subtitle">
-                    {{_('STR')}} {{character.strength}}/{{character.strength_max}}
+                    {{_(stat.abbr)}} {{character[stat.key]}}/{{character[stat.key + '_max']}}
                   </p>
                 </div>
-                <div class="card-attribute-container">
-                  <p class="character-card-attribute subtitle">
-                    {{_('DEX')}} {{character.dexterity}}/{{character.dexterity_max}}
-                  </p>
-                </div>
-                <div class="card-attribute-container">
-                  <p class="character-card-attribute subtitle">
-                    {{_('WIL')}} {{character.willpower}}/{{character.willpower_max}}
-                  </p>
-                </div>
+                {% endfor %}
               </div>
               <div>
                 <div class="card-attribute-container">

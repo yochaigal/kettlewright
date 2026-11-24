@@ -58,8 +58,10 @@
           <button class="monster-preview-button" type="button" data-preview="{{key}}" aria-label="{{_('Preview %(name)s', name=monster.name)}}" aria-controls="monster-preview" aria-expanded="false"><i class="fa-solid fa-eye" aria-hidden="true"></i></button>
         </div>
         <dl class="monster-card-stats">
-          {% for label, value in [(_('HP'), monster.hp), (_('Armor'), monster.armor), (_('STR'), monster.strength), (_('DEX'), monster.dexterity), (_('WIL'), monster.willpower)] %}
-          <div><dt>{{label}}</dt><dd>{{value}}</dd></div>
+          {% set rules = rules_for(party) %}<div><dt>{{_(rules.hit_points.abbr)}}</dt><dd>{{monster[rules.hit_points.key]}}</dd></div>
+          <div><dt>{{_('Armor')}}</dt><dd>{{monster.armor}}</dd></div>
+          {% for stat in rules.attributes %}
+          <div><dt>{{_(stat.abbr)}}</dt><dd>{{monster[stat.key]}}</dd></div>
           {% endfor %}
         </dl>
         <div class="monster-card-footer">

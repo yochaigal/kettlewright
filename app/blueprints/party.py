@@ -4,6 +4,7 @@ from app.lib import *
 from app.models import db, User, Character, Party, PartyRoll, PartyMap
 from app.socket_events import party_recipient_ids, notify_roll_history_changed
 from app.lib.quick_stats import save_character_stat, save_current_stat
+from kettlewright import system
 from app.lib.companions import save_item_to_companion, finish_companion_transfers, can_transfer_from
 from flask_wtf import FlaskForm
 from app.forms import *
@@ -248,9 +249,9 @@ def _board_stats(target):
     def add(actor, kind='character'):
         if kind == 'monster' and not warden and not actor.shared:
             return
-        stats = {field: [getattr(actor, field), getattr(actor, field + '_max')]
-                 for field in ('hp', 'strength', 'dexterity', 'willpower')
-                 if getattr(actor, field) is not None}
+        stats = {field: [actor.get_stat(field), actor.get_stat(field + '_max')]
+                 for field in actor.rules.stat_keys
+                 if actor.get_stat(field) is not None}
         if kind == 'character' and 'hp' in stats:
             stats['hp'] = actor.hpValue()
         if not stats:
@@ -375,15 +376,15 @@ def _board_roll_actors(target):
     # The Warden rolls for their monsters and edits every character; a player edits and rolls for their own.
     def character(c):
         return dict(id=str(c.id), name=c.name, kind='character', hp=[c.hp or 0, c.hp_max or 0],
-                    attributes={field: [getattr(c, field) or 0, getattr(c, field + '_max') or 0]
-                                for field in ('strength', 'dexterity', 'willpower')},
+                    attributes={field: [c.get_stat(field) or 0, c.get_stat(field + '_max') or 0]
+                                for field in c.rules.attribute_keys},
                     conditions={'deprived': bool(c.deprived), 'panicked': bool(c.panicked)},
                     statUrl=url_for('party.update_member_stat', party_id=target.id, character_id=c.id),
                     sheetUrl=url_for('main.character', username=c.owner_username, url_name=c.url_name)
                     if c.owner_username and c.url_name else None)
     if target.owner == current_user.id:
         actors = [dict(id=f'companion:{c.id}', name=c.name, kind='monster',
-                       stats={field: getattr(c, field) for field in ('strength', 'dexterity', 'willpower')},
+                       stats={field: c.get_stat(field) for field in c.rules.attribute_keys},
                        damage=c.attack_dice, hp=[c.hp or 0, c.hp_max or 0],
                        statUrl=url_for('companions.stat', companion_id=c.id),
                        sheetUrl=url_for('companions.sheet', companion_id=c.id)) for c in target.monsters]
@@ -430,13 +431,14 @@ def shared_map_roll(party_id):
     except ValueError as error:
         return _board_json({'error': str(error)}), 400
     save = request.form.get('save')
-    if save and (c is None or save not in ('strength', 'dexterity', 'willpower') or sides != [20] or getattr(c, save) is None):
+    rules = c.rules if c is not None else target.rules
+    if save and (c is None or save not in rules.save_keys or sides != [rules.save_die] or c.get_stat(save) is None):
         abort(400)
     values = [secrets.randbelow(side) + 1 for side in sides]
     result = f'{", ".join(map(str, values))} ({"+".join(f"d{side}" for side in sides)})'
     if save:
         from app.lib.character_rolls import describe_save
-        result = describe_save(result, save, getattr(c, save), values[0])
+        result = describe_save(result, save, c.get_stat(save), values[0], rules)
     name = c.name if c else _('Warden') if current_user.id == target.owner else current_user.username
     db.session.add(PartyRoll(party_id=target.id, character_name=name, result=result,
                              private_user_id=None if public else current_user.id))
@@ -755,7 +757,8 @@ def party_edit_save(ownername, party_url):
         if campaign_id:
             from app.models import Campaign
             campaign = db.session.get(Campaign, int(campaign_id)) if campaign_id.isdigit() else None
-            if campaign is None or campaign.owner_id != current_user.id:
+            # A party keeps its game system (#487): it only joins a campaign of the same one.
+            if campaign is None or campaign.owner_id != current_user.id or campaign.game_system != party.game_system:
                 abort(400)
             party.campaign = campaign
         else:

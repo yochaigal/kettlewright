@@ -1,4 +1,4 @@
-from app.models.character import item_armor_value
+from kettlewright import system
 from app.models import db, User, Character, Party
 from app.lib import load_backgrounds, load_traits, load_bonds, load_omens, roll_list, roll_dice, roll_multi_dice, roll_dict
 import random
@@ -127,18 +127,11 @@ class GeneratedCharacter:
         self.containers = []
         
     def used_slots(self):
-        slots = 0
-        for it in self.items:
-            if "bulky" in it["tags"]:
-                slots += 2
-                continue
-            if "petty" in it["tags"]:
-                continue
-            slots += 1
-        return slots
+        # The sheet's rule (kettlewright): a petty item takes no slot, even if also bulky.
+        return sum(system().inventory.item_size(item) for item in self.items)
 
     def armor(self):
-        return min(3, sum(item_armor_value(dict(item, location=item.get('location', 0))) for item in self.items))
+        return system().armor_value([dict(item, location=item.get('location', 0)) for item in self.items])
 
     def container_items(self):
         r = []
@@ -266,10 +259,10 @@ def generate_character(bkg):
     
     genchar.attributes = AttrsValue()
     
-    genchar.attributes.hp=random.randint(1,6)
-    genchar.attributes.str=random.randint(3,18)
-    genchar.attributes.dex=random.randint(3,18)
-    genchar.attributes.wil=random.randint(3,18)
+    # The system's creation dice (kettlewright): 3d6 for each attribute and 1d6 for HP in Cairn. This generator
+    # rolled a flat 3-18 before, unlike character creation.
+    for stat in system().sheet_stats:
+        setattr(genchar.attributes, stat.abbr.lower(), system().roll_stat(stat.key, random))
     genchar.attributes.armor = genchar.armor()
          
     traits = load_traits()
@@ -293,11 +286,7 @@ def generate_character(bkg):
         it['location'] = 0
         idx += 1
     
-    genchar.containers.append({
-            "id": 0,
-            "name": "Main",
-            "slots": 10
-        })
+    genchar.containers.extend(system().inventory.default_containers())
     from app.lib.inventory import starting_containers
     specs = list(genchar.background.get('starting_containers', []))
     specs += t1o.get('containers', []) + t2o.get('containers', [])
@@ -328,7 +317,7 @@ class DummyCharacter:
         self.age = 10
         self.slots = 0
         self.description = ""
-        self.containers = '[{"name": "Main", "slots": 10, "id": 0}]'
+        self.containers = json.dumps(system().inventory.default_containers())
         
 def find_background_table_option(background, tablename, option):
     if tablename in background and 'options' in background[tablename]:
