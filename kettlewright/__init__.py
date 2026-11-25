@@ -4,7 +4,8 @@ A game system (kettlewright.core.GameSystem) says what a character sheet holds (
 inventory) and the rules that read it (saves, armor, slots, when HP drops to zero). the app asks the engine
 for these instead of writing a system's rules into each page. the engine's core is system-agnostic: the systems
 themselves live in packages outside it (systems/cairn for Cairn), found on first use. Plain Python: no Flask,
-database or translation imports.
+database or translation imports, except kettlewright.web (the engine in a Flask app), which nothing here imports.
+The browser half is static/kettlewright.js.
 
     from kettlewright import system
     rules = system()            # the default system

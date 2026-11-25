@@ -1,5 +1,5 @@
-{# A new petty item starts with the system's tag for items that take no slot ('petty' in Cairn). #}
-{% set petty = rules_for(character).inventory.free_tags[:1]|list %}
+{#- A new petty item starts with the system's tag for items that take no slot ('petty' in Cairn). -#}
+{% set petty = rules_for(character).inventory.free_tags[:1]|list -%}
 <div class="inventory-modal">
   <form class="no-space" x-data="itemEditor"
     data-item-tags='{{ (item.tags if mode == "edit" else petty if request.args.get('petty') == '1' else []) | tojson }}'>
