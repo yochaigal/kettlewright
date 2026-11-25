@@ -4,8 +4,8 @@ from types import SimpleNamespace
 import pytest
 from app.lib.companions import starting_pets, catalog
 from app.lib.data import load_backgrounds
-from app.lib.char_utils import generate_character
-from app.blueprints.generator import parse_character
+from systems.cairn.web.char_utils import generate_character
+from systems.cairn.web.generator import parse_character
 
 
 @pytest.mark.parametrize('background,table,index,name', [

@@ -25,7 +25,7 @@ from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Space
 from app.lib.portraits import portrait_directory
 
 
-ASSETS = Path(__file__).resolve().parents[1] / 'pdf_templates'
+ASSETS = Path(__file__).resolve().parent / 'pdf_templates'  # Cairn's sheets (cairn-2e-*.pdf, barebones)
 # Coordinates use points measured from the top-left of each original A4 sheet.
 LAYOUTS = {
     'landscape': dict(

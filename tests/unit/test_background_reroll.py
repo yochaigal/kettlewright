@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from app.blueprints.charcreo import get_custom_fields
+from systems.cairn.web.charcreo import get_custom_fields
 from app.lib.data import load_backgrounds
 
 
@@ -41,7 +41,7 @@ class FormValues(HTMLParser):
 def test_background_change_after_roll_all(app_with_babel, monkeypatch, endpoint, background, legacy):
     with app_with_babel.test_request_context('/'):
         backgrounds = load_backgrounds()
-    monkeypatch.setattr('app.blueprints.charcreo.random_background',
+    monkeypatch.setattr('systems.cairn.web.charcreo.random_background',
                         lambda: (background, backgrounds[background]))
     client = app_with_babel.test_client()
     rolled = client.get('/charcreo/roll-all')
@@ -49,7 +49,7 @@ def test_background_change_after_roll_all(app_with_babel, monkeypatch, endpoint,
     original = FormValues(rolled.get_data(as_text=True)).values
     posted = original.copy()
     target = 'Outrider' if background == 'Aurifex' else background
-    monkeypatch.setattr('app.blueprints.charcreo.random_background',
+    monkeypatch.setattr('systems.cairn.web.charcreo.random_background',
                         lambda: (target, backgrounds[target]))
     if endpoint == 'select-background':
         posted['background'] = target

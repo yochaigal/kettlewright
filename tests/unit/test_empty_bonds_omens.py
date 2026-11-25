@@ -5,7 +5,7 @@ import pytest
 from flask_babel import Babel
 
 from app import get_locale
-from app.lib.char_utils import generate_character
+from systems.cairn.web.char_utils import generate_character
 from app.models import Character, User, db
 
 

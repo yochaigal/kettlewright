@@ -217,7 +217,7 @@ def test_hireling_cart_load_and_removal(world):
 
 
 def test_generator_keeps_background_gear_and_creates_starting_pet(app_with_babel):
-    from app.lib.char_utils import generate_character
+    from systems.cairn.web.char_utils import generate_character
     with app_with_babel.test_request_context('/'):
         character, raw = generate_character('Outrider')
         data = json.loads(raw)

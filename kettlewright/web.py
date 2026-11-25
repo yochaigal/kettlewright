@@ -69,6 +69,12 @@ def system_template(name, record=None):
     return [f'{rules_for(record).key}/{name}', f'kettlewright/{name}']
 
 
+def plugin(rules=None):
+    """A system's web parts (the module its GameSystem names in web), or None: the default system's without rules."""
+    rules = rules or system()
+    return importlib.import_module(rules.web) if rules.web else None
+
+
 def browser_manifest(rules, translate=lambda text: text):
     """The system for the browser engine, with its labels in the page's language."""
     data = rules.manifest()

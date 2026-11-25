@@ -6,6 +6,7 @@ from app.models import db, User, Character, Party
 from app.forms import *
 from app.main import sanitize_data
 from app.lib import *
+from systems.cairn.web.char_utils import *  # Cairn's characters and tables (moved from app.lib).
 from unidecode import unidecode
 from flask_babel import lazy_gettext as _l, _
 
@@ -58,7 +59,7 @@ def character():
     background = request.args.get('background')
     if background and (background == BAREBONES or background.startswith(BAREBONES + ':')):
         # "barebones" rolls a random Barebones PC; "barebones:Fighter" uses a gear package.
-        from app.lib.barebones import generate_character as generate_barebones
+        from systems.cairn.web.barebones import generate_character as generate_barebones
         try:
             genchar, json_data = generate_barebones(background.partition(':')[2] or None)
         except ValueError:

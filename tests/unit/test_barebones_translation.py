@@ -14,7 +14,7 @@ def test_barebones_lockpick_item_differs_from_lockpick_hireling(app_with_babel):
 
 def test_barebones_form_shows_spanish_tables(app_with_babel):
     # #given: a fresh Barebones creation form.
-    from app.blueprints.charcreo_barebones import new_state, render_form
+    from systems.cairn.web.charcreo_barebones import new_state, render_form
     with app_with_babel.test_request_context(), force_locale('es'):
         # #when
         html = render_form(new_state())

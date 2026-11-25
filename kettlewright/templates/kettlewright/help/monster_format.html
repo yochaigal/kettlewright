@@ -1,5 +1,5 @@
 {# The monster import's stat line for any game system (partial/companions/monster_catalog.html): its own labels. -#}
-{% set rules = rules_for(party) %}{% set labels = [rules.hit_points.abbr, 'Armor', *rules.attributes|map(attribute='abbr')] %}
+{% set rules = rules_for(party) %}{% set labels = [rules.hit_points.abbr, 'Armor'] + rules.attributes|map(attribute='abbr')|list %}
       <p>{{ _('Start with a heading containing the monster’s name. Put its stats on one line below it, with numbers before the English labels %(labels)s.', labels=labels|join(', ')) }}</p>
       <pre><code># Wolf
 

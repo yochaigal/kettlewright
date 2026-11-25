@@ -114,7 +114,9 @@ def import_pet(data):
 
 def new_hireling(party, role):
     from app.lib.data import load_traits
-    from app.lib.char_utils import random_name
+    from kettlewright.web import plugin
+    # A name from the party's system's tables, or the default system's for one without web parts (kettlewright).
+    random_name = (plugin(party.rules) or plugin()).random_name
     template = next((r for r in catalog('hireling') if r['name'] == role), None)
     if role != 'Custom' and template is None:
         raise ValueError('Unknown hireling role')
@@ -269,9 +271,12 @@ def convert_hireling(c, owner):
         suffix += 1
     items = json.loads(c.items or '[]')
     if c.armor:
-        # PCs derive armor from inventory, so carry natural armor as a petty item.
+        # PCs derive armor from inventory, so carry natural armor as an item that takes no slot (petty in Cairn),
+        # tagged with the system's armor tag for its value ('2 Armor').
+        rules = c.rules
+        armor_tag = dict((value, tag) for tag, value in rules.armor.tags).get(c.armor, f'{c.armor} Armor')
         items.append(dict(id=uuid.uuid4().hex, name=_('Natural armor'),
-                          tags=['petty', f'{c.armor} Armor'], location=0, armor_active=True))
+                          tags=[*rules.inventory.free_tags[:1], armor_tag], location=0, armor_active=True))
     character = Character(name=c.name, custom_name=c.name, background=background,
                           custom_background=background, url_name=slug, owner=owner.id,
                           owner_username=owner.username, party_id=c.party_id,

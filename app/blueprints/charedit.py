@@ -19,7 +19,6 @@ from flask_babel import lazy_gettext as _l
 
 
 character_edit = Blueprint('character_edit', __name__)
-bool_fields = ['deprived']
 
 @character_edit.app_context_processor
 def inventory_permissions():

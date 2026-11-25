@@ -9,6 +9,7 @@ from app.models import db, User, Character, Party
 from app.forms import *
 from app.main import create_unique_url_name
 from app.lib import *
+from systems.cairn.web.char_utils import *  # Cairn's characters and tables (moved from app.lib).
 from unidecode import unidecode
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
@@ -847,3 +848,42 @@ def charcreo_save():
 @character_create.route('/charcreo/save/error', methods=['GET'])
 def charcreo_save_error_cancel():
     return ""
+
+
+def creation_page():
+    """The 2e creation page (/new_character/): a new character, or one for the party whose code is given."""
+    form = CharacterForm()
+    portrait_src = "default-portrait.webp"
+    ps = request.args.get("src")
+    if ps != None and ps != "":
+        portrait_src = ps
+    custom_image = request.args.get("custom_image")
+    # Created for a party: its campaign's backgrounds, and the character joins it on save.
+    from app.lib.campaign_backgrounds import party_for_code, use_party_backgrounds
+    code = (request.args.get('party') or '').strip()
+    party = party_for_code(code)
+    if party is not None:
+        use_party_backgrounds(party)
+        form = CharacterForm()
+        form.party_code.data = party.join_code
+    custom_fields = {}
+    custom_fields['background'] = None
+    custom_fields['traits'] = load_traits()
+    custom_fields['bonds'] = load_bonds()
+    custom_fields['omens'] = load_omens()
+    custom_fields['gold'] = 0
+    custom_fields['bonus_gold_t1'] = 0
+    custom_fields['bonus_gold_t2'] = 0
+    custom_fields['bonus_gold_bond'] = 0
+    custom_fields['armor'] = 0
+    character = DummyCharacter()
+    custom_fields['inventory'] = Inventory(character)
+    custom_fields['inventory'].decorate()
+    custom_fields['items'] = '[]'
+    custom_fields['bond_items'] = '[]'
+    custom_fields['armor'] = '0'
+    custom_fields['portrait_src'] = portrait_src
+    custom_fields['custom_image'] = 'false'
+    
+    return render_template('main/character_create.html', portrait_src = portrait_src, custom_image=custom_image, 
+                           form=form, custom_fields=custom_fields, party=party, party_code_error=bool(code) and party is None)

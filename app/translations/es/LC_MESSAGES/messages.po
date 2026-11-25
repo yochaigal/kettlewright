@@ -51331,3 +51331,46 @@ msgstr "¿Borrar %(campaign)s? Sus módulos, artículos, dibujos, trasfondos y l
 #, python-format
 msgid "Delete %(campaign)s? Its modules, articles, drawings and backgrounds are permanently deleted. This cannot be undone."
 msgstr "¿Borrar %(campaign)s? Sus módulos, artículos, dibujos y trasfondos se borrarán para siempre. No se puede deshacer."
+
+#. Character sheet: why HP counts as 0, for a game system's condition (kettlewright's generic wording)
+#, python-format
+msgid "%(condition)s reduces your available HP to 0."
+msgstr "%(condition)s reduce tus PG disponibles a 0."
+
+#. Discord help: /kw condition, for any game system (kettlewright's generic wording)
+#, python-format
+msgid "Applies or clears %(conditions)s on your character. Use active:false to clear a condition."
+msgstr "Aplica o elimina %(conditions)s en tu personaje. Usa active:false para eliminar una condición."
+
+#. Monster import help: the game system's maximum Armor
+#, python-format
+msgid "Armor must be between 0 and %(maximum)s."
+msgstr "La Armadura debe estar entre 0 y %(maximum)s."
+
+#. Discord help: /kw stat, for any game system (kettlewright's generic wording)
+#, python-format
+msgid "Changes your current %(stats)s. Use mode:set to set a value instead. Values must stay between zero and the maximum."
+msgstr "Cambia los %(stats)s actuales. Usa mode:set para fijar el valor. Debe permanecer entre cero y el máximo."
+
+#. Make Camp report: characters a condition keeps from recovering (kettlewright's generic wording)
+#, python-format
+msgid "Fatigue kept: %(names)s."
+msgstr "Conservan la Fatiga: %(names)s."
+
+#. Rest report: characters a condition keeps from recovering (kettlewright's generic wording)
+#, python-format
+msgid "No HP recovered: %(names)s."
+msgstr "No recuperan PG: %(names)s."
+
+#. Dungeon rest hint, for any game system (kettlewright's generic wording)
+msgid "Resting takes a turn and restores all HP. It needs a light source and a safe location; present or oncoming danger makes it impossible."
+msgstr "Descansar lleva un turno y restaura todos los PG. Requiere una fuente de luz y un lugar seguro; un peligro presente o inminente lo impide."
+
+#. Monster import help, for any game system: the stat line's English labels
+#, python-format
+msgid "Start with a heading containing the monster’s name. Put its stats on one line below it, with numbers before the English labels %(labels)s."
+msgstr "Empieza con un título que contenga el nombre del monstruo. Pon sus estadísticas en una línea debajo, con los números delante de las etiquetas en inglés %(labels)s."
+
+#. Monster import help, for any game system
+msgid "The name and HP are required. Omitted Armor defaults to 0 and other stats to 10."
+msgstr "El nombre y los PG son obligatorios. Si falta la Armadura, vale 0, y las demás estadísticas valen 10."

@@ -46,7 +46,14 @@ class Cairn(GameSystem):
                    ((2, N_('Hostile')), (5, N_('Wary')), (8, N_('Curious')), (11, N_('Kind')), (12, N_('Helpful')))),
         WardenRoll('fate', N_('Die of Fate'), (6,), 'd6'),
     )
+    # Rest and Make Camp name what keeps a character from recovering: being Deprived.
+    wording: dict = field(default_factory=lambda: {
+        'rest_blocked': N_('Deprived, no HP recovered: %(names)s.'),
+        'camp_blocked': N_('Still deprived, Fatigue kept: %(names)s.'),
+    })
     home: str = str(Path(__file__).parent)
+    # Its web parts: creation, the quick generator, the PDF sheet (systems/cairn/web).
+    web: str = 'systems.cairn.web'
     tables: dict = field(default_factory=lambda: dict(TABLES))
 
 

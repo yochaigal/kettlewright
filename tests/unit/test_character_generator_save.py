@@ -108,7 +108,7 @@ def test_npc_save_is_available_without_tester_ids(generated):
 
 @pytest.mark.parametrize('kind', ['party', 'monster', 'npc'])
 def test_all_backgrounds_can_be_saved(generated, kind):
-    from app.lib.char_utils import load_backgrounds
+    from systems.cairn.web.char_utils import load_backgrounds
     app, clients, form, _ = generated
     for background in load_backgrounds():
         page = clients[1].get('/gen/character', query_string={'view':'sheet','background':background}).text

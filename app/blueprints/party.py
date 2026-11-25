@@ -378,7 +378,9 @@ def _board_roll_actors(target):
         return dict(id=str(c.id), name=c.name, kind='character', hp=[c.hp or 0, c.hp_max or 0],
                     attributes={field: [c.get_stat(field) or 0, c.get_stat(field + '_max') or 0]
                                 for field in c.rules.attribute_keys},
-                    conditions={'deprived': bool(c.deprived), 'panicked': bool(c.panicked)},
+                    # The conditions a player sets in its game system (Deprived, Panicked in Cairn), on or off.
+                    conditions={condition.key: condition.key in c.rules.active_conditions(c) for condition in c.rules.conditions
+                                if 'out_of_play' not in condition.effects},
                     statUrl=url_for('party.update_member_stat', party_id=target.id, character_id=c.id),
                     sheetUrl=url_for('main.character', username=c.owner_username, url_name=c.url_name)
                     if c.owner_username and c.url_name else None)
@@ -567,8 +569,10 @@ def update_member_stat(party_id, character_id):
         abort(404)
     if current_user.id not in (target_party.owner, character.owner):
         abort(403)
-    # The whiteboard's token panel (#375) also sets Deprived and Panicked.
-    if request.form.get('stat') in ('deprived', 'panicked'):
+    # The whiteboard's token panel (#375) also sets conditions a player sets (Deprived and Panicked in Cairn), but
+    # not one that puts a character out of play (Dead).
+    rules = character.rules
+    if request.form.get('stat') in [key for key in rules.condition_keys if key not in rules.conditions_with('out_of_play')]:
         return save_character_stat(character)
     return save_current_stat(character)
 
@@ -786,7 +790,7 @@ def party_remove_char(character_id, ownername, party_url):
         abort(404)
     if target_party.owner != current_user.id:
         abort(403)
-    character = get_character(character_id)
+    character = Character.query.filter_by(id=character_id).first()
     if character is None or character.party_id != target_party.id:
         abort(404)
     remove_character_from_party(character)
@@ -1114,8 +1118,8 @@ def wilderness_summary(action, participants, form, target, characters):
                        packs=report['from_packs'], storage=report['from_storage']))
         if report['fatigue_removed']:
             parts.append(_('Fatigue removed: %(names)s.', names=name_list(report['fatigue_removed'])))
-        if report['still_deprived']:
-            parts.append(_('Still deprived, Fatigue kept: %(names)s.', names=name_list(report['still_deprived'])))
+        if report['still_deprived']:  # The party's system's words (kettlewright): still Deprived in Cairn.
+            parts.append(_(target.rules.words('camp_blocked'), names=name_list(report['still_deprived'])))
         return ' '.join(parts)
     if action == 'travel':
         path = form.get('path', '')
@@ -1191,8 +1195,8 @@ def dungeon_summary(action, participants, form, target, characters):
                 ['%s (%s → %s)' % (name, before, after) for name, before, after in report['restored']])))
         if report['already_full']:
             parts.append(_('Already at full HP: %(names)s.', names=name_list(report['already_full'])))
-        if report['deprived']:
-            parts.append(_('Deprived, no HP recovered: %(names)s.', names=name_list(report['deprived'])))
+        if report['deprived']:  # The party's system's words (kettlewright): Deprived in Cairn.
+            parts.append(_(target.rules.words('rest_blocked'), names=name_list(report['deprived'])))
         return ' '.join(parts)
     abort(400)
 
@@ -1206,7 +1210,8 @@ def party_action(party_id, category, actions, summarize):
         abort(400)
     characters = party_characters(target)
     selected = request.form.getlist('participants')
-    by_id = {str(c.id): c for c in characters if not c.dead}
+    # Characters still in play (not Dead in Cairn: kettlewright's out-of-play conditions).
+    by_id = {str(c.id): c for c in characters if not c.rules.has_effect(c.rules.active_conditions(c), 'out_of_play')}
     if not selected:
         flash(_('You need to select a PC first'), category)
         return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))

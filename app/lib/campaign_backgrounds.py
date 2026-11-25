@@ -200,8 +200,7 @@ def background_panel(party):
 
 def official_barebones():
     """The Cairn Barebones d100 background table: a name and its items."""
-    from app.lib.barebones import _data
-    return list(_data()['backgrounds'])
+    return list(system().content.load('barebones')['backgrounds'])
 
 
 def party_barebones_backgrounds(party):

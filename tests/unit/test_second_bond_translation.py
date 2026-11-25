@@ -2,7 +2,7 @@ import json
 
 from flask_babel import force_locale
 
-from app.lib.char_utils import translate_paragraphs
+from systems.cairn.web.char_utils import translate_paragraphs
 
 
 def _bonds():

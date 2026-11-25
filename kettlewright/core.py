@@ -22,6 +22,18 @@ OUT_OF_PLAY = 'out_of_play'    # The character no longer acts: no rest, no camp 
 EFFECTS = (ZERO_HP, NO_RECOVERY, WEAK_ATTACKS, OUT_OF_PLAY)
 
 
+def N_(text):
+    """Marks an English msgid for extraction; the app translates it where it shows it."""
+    return text
+
+
+# How the app words a rule's outcome, unless a system words it its own way (GameSystem.wording). Message IDs.
+WORDING = {
+    'rest_blocked': N_('No HP recovered: %(names)s.'),       # Rest, for characters a condition keeps from recovering.
+    'camp_blocked': N_('Fatigue kept: %(names)s.'),          # Make Camp, for the same characters.
+}
+
+
 @dataclass(frozen=True)
 class Stat:
     """A number with a current and a maximum value on the sheet, like HP or an attribute.
@@ -163,12 +175,12 @@ class GameSystem:
     # The name of the item that marks Fatigue in an inventory (it takes a slot), or None without Fatigue.
     fatigue: str | None = None
     warden_rolls: tuple = ()
+    # The system's own words for rule outcomes (WORDING's keys), as English message IDs.
+    wording: dict = field(default_factory=dict)
     # Where the system's own files are: its tables (content/), templates (templates/) and scripts (static/).
     home: str | None = None
     # The system's tables, by name: file names under its content/ folder.
     tables: dict = field(default_factory=dict)
-    # How a character of this system is created: (endpoint, label) of each way, the first one the default.
-    creation: tuple = ()
     # The module of the system's web parts (its creation pages...): its init_app(app) is called by kettlewright.web.
     web: str | None = None
 
@@ -272,6 +284,10 @@ class GameSystem:
     def attack_die(self, conditions):
         """The die an attack rolls instead of the weapon's under these conditions, or None for the weapon's."""
         return self.weak_die if self.weak_die and self.has_effect(conditions, WEAK_ATTACKS) else None
+
+    def words(self, key):
+        """The message ID for a rule's outcome: the system's own, or the app's (WORDING)."""
+        return self.wording.get(key, WORDING[key])
 
     def warden_roll(self, key):
         return next((roll for roll in self.warden_rolls if roll.key == key), None)

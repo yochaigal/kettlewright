@@ -11,9 +11,22 @@ from app.lib.ground_items import drop_item, drop_container, ground_items, pickup
 from app.models import Party, db
 
 
-# /kw stat names: {'hp': 'hp', 'str': 'strength', ...} (kettlewright). Discord registers the commands once for the
-# whole app, so their choices are the default system's; a command reads the character's own system.
-STATS = {stat.abbr.lower(): stat.key for stat in system().stats}
+def registered_systems():
+    """Every registered game system, the default one first (kettlewright)."""
+    from kettlewright import SYSTEMS
+    default = system()
+    return [default, *(rules for rules in SYSTEMS.values() if rules is not default)]
+
+
+# Discord registers the commands once for the whole app, so their choices are every registered system's (only
+# Cairn's today); a command reads the character's own system. /kw stat names: {'hp': 'hp', 'str': 'strength', ...}.
+STATS = {}
+for _rules in registered_systems():
+    for _stat in _rules.stats:
+        STATS.setdefault(_stat.abbr.lower(), _stat.key)
+# /kw condition choices: conditions a player sets (not one that puts a character out of play, like Dead).
+CONDITIONS = {condition.key: condition.label for rules in registered_systems() for condition in rules.conditions
+              if 'out_of_play' not in condition.effects}
 
 
 def stat_field(character, name):
@@ -43,7 +56,7 @@ def player_commands():
                 dict(name='Change by amount', value='change'), dict(name='Set value', value='set')])]),
         ('condition', 'Set or clear a condition on your character', [
             option('condition', 'Condition', required=True, choices=[
-                dict(name=s.title(), value=s) for s in ('deprived', 'panicked')]),
+                dict(name=label, value=key) for key, label in CONDITIONS.items()]),
             dict(type=5, name='active', description='True to apply, false to clear', required=True)]),
         ('fatigue', 'Add Fatigue to your main inventory', [integer('amount', 'How much Fatigue (default: 1)', 1, 10)]),
         ('inventory', 'Privately list your items and containers', [integer('page', 'Inventory page', 1)]),
@@ -202,8 +215,9 @@ def act(name, values, character, characters, safe_name):
             tags = catalog.get('tags', [])
             if 'tags' in values:
                 tags = [t.strip() for t in clean_text(values['tags'], 200).split(',') if t.strip()]
-            if 'petty' in tags and 'bulky' in tags:
-                raise ValueError('An item cannot be both petty and bulky.')
+            sizes = [tag for tag, _ in character.rules.inventory.sizes if tag in tags]  # petty, bulky in Cairn.
+            if len(sizes) > 1:
+                raise ValueError(f'An item cannot be both {" and ".join(sizes)}.')
             tags = list(tags)
             uses = number(values.get('uses', catalog.get('uses', 0)))
             charges = number(values.get('charges', catalog.get('charges', 0)))

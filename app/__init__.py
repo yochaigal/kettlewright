@@ -184,15 +184,9 @@ def create_app():
     app.register_blueprint(party_blueprint)
     
     # blueprint for generator
-    from app.blueprints import generator as generator_blueprint
-    app.register_blueprint(generator_blueprint)
     
     # blueprint for character creation
-    from app.blueprints import character_create as character_create_blueprint
-    app.register_blueprint(character_create_blueprint)
 
-    from app.blueprints.charcreo_barebones import charcreo_barebones
-    app.register_blueprint(charcreo_barebones)
 
     from app.blueprints.companions import companions
     app.register_blueprint(companions)
@@ -232,9 +226,8 @@ def create_app():
     def tr_filter(text: str, context=None) -> str:
         return translate_term(text, context)
     
-    # Trait description sentence, shared with the character sheet
-    from app.lib.char_utils import traits_sentence
-    app.add_template_global(traits_sentence)
+    # Cairn's creation pages, quick generator and traits sentence are its web plug-in's (systems/cairn/web),
+    # registered by kettlewright.web above.
 
     # The portrait picker's groups (#502)
     from app.lib.data import portrait_groups

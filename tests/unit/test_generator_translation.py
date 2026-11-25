@@ -8,7 +8,7 @@ from flask import render_template, render_template_string
 
 from app.main import translate_events_data
 from app.lib.companions import catalog, pet_data
-from app.lib.char_utils import item_text
+from systems.cairn.web.char_utils import item_text
 from app.lib.inventory import Inventory
 from app.models import Character
 

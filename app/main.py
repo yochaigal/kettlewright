@@ -8,7 +8,7 @@ from .models import User, Character, Party
 from .models.character import EDITIONS, EDITION_SECOND
 from . import db
 from .forms import CharacterForm, CharacterEditForm, CharacterJSONForm, PartyForm, PartyEditForm
-from app.lib import load_scars, character_portrait_link, Inventory, sanitize_data, sanitize_json_content, load_version, load_backgrounds, load_traits, load_bonds, load_omens, DummyCharacter
+from app.lib import load_scars, character_portrait_link, Inventory, sanitize_data, sanitize_json_content, load_version, load_backgrounds, load_traits, load_bonds, load_omens
 import sys
 import json
 from urllib.parse import quote
@@ -123,6 +123,31 @@ def create_unique_url_name(name):
     return url_name
 
 
+def keep_game_system(character, form):
+    """An imported character keeps the file's game system, if this app plays it (else the default one), and the
+    stats and conditions that system keeps without a column (kettlewright). False for values that aren't numbers."""
+    from kettlewright import SYSTEMS
+    if form.game_system.data in SYSTEMS:
+        character.game_system = form.game_system.data
+    try:
+        extra = json.loads(form.system_stats.data or '{}')
+    except ValueError:
+        return False
+    if not isinstance(extra, dict):
+        return False
+    rules = character.rules
+    for stat in rules.stats:
+        for field in (stat.key, stat.key + '_max'):
+            if field in extra and not character.has_column(field):
+                if type(extra[field]) is not int or not 0 <= extra[field] <= 9999:
+                    return False
+                character.set_stat(field, extra[field])
+    for key in rules.condition_keys:
+        if key in extra and not character.has_column(key):
+            character.set_stat(key, extra[key] is True)
+    return True
+
+
 @main.route('/new_from_json/', methods=['GET', 'POST'])
 @login_required
 def new_from_json():
@@ -192,6 +217,9 @@ def new_from_json():
             from app.models.character import BACKGROUND_FIELDS
             for field in BACKGROUND_FIELDS:
                 setattr(character, field, sanitize_data(getattr(form, field).data))
+            if not keep_game_system(character, form):
+                flash(_('Invalid character stats or inventory in JSON file.'))
+                return render_import_page(form=form), 400
             character.pets.extend(pets)
             character.armor = str(character.armorValue())
             db.session.add(character)
@@ -239,114 +267,18 @@ def string_to_bool(value):
 
 @main.route('/new_character/', methods=['GET', 'POST'])
 def new_character():
-    form = CharacterForm()
     if not current_user.is_authenticated:
         return make_response("Unauthorized")
-    # form = CharacterForm()
-    # if current_user.is_authenticated:
-    #     if form.validate_on_submit():
-    #         # sanitize custom fields
-    #         form.custom_background.data = bleach.clean(
-    #             form.custom_background.data)
-    #         form.custom_name.data = bleach.clean(form.custom_name.data)
-
-    #         # create url_name
-    #         if form.name.data == 'Custom':
-    #             url_name = create_unique_url_name(form.custom_name.data)
-    #             form.name.data = form.custom_name.data
-    #         else:
-    #             url_name = create_unique_url_name(form.name.data)
-
-    #         if form.background.data == 'Custom':
-    #             form.background.data = form.custom_background.data
-
-    #         # add character to db
-
-    #         custom_image = form.custom_image.data.lower() == 'true'
-    #         new_character = Character(
-    #             name=form.name.data, owner_username=current_user.username, background=form.background.data, owner=current_user.id, url_name=url_name, custom_background=form.custom_background.data, custom_name=form.custom_name.data, items=form.items.data, containers=form.containers.data,
-    #             strength_max=form.strength_max.data, dexterity_max=form.dexterity_max.data, willpower_max=form.willpower_max.data, hp_max=form.hp_max.data, strength=form.strength_max.data, dexterity=form.dexterity_max.data, armor=form.armor.data, scars="",
-    #             willpower=form.willpower_max.data, hp=form.hp_max.data, deprived=False, description=form.description.data, traits=form.traits.data, notes=form.notes.data, gold=form.gold.data, bonds=form.bonds.data, omens=form.omens.data, custom_image=custom_image, image_url=form.image_url.data)
-    #         db.session.add(new_character)
-    #         db.session.commit()
-
-    #        # return redirect(url_for('main.index'))
-    #         return redirect(url_for('main.character', username=current_user.username, url_name=url_name))
-    #     else:
-    #         print('not submitted', file=sys.stderr)
-    #         error_messages = []
-    #         for field, errors in form.errors.items():
-    #             for error in errors:
-    #                 error_messages.append(f"{field}: {error}")
-    #         flash(" ".join(error_messages))
-
-    #     # json_file_path = os.path.join(os.path.dirname(os.path.abspath(
-    #     #     __file__)), 'static', 'json', 'background_data.json')
-    #     backgrounds_file_path = os.path.join(os.path.dirname(os.path.abspath(
-    #         __file__)), 'static', 'json', 'backgrounds', 'background_data.json')
-    #     with open(backgrounds_file_path, 'r') as file:
-    #         background_data = json.load(file)
-
-    #     traits_file_path = os.path.join(os.path.dirname(os.path.abspath(
-    #         __file__)), 'static', 'json', 'traits.json')
-    #     with open(traits_file_path, 'r') as file:
-    #         traits_data = json.load(file)
-
-    #     bonds_file_path = os.path.join(os.path.dirname(os.path.abspath(
-    #         __file__)), 'static', 'json', 'bonds.json')
-    #     with open(bonds_file_path, 'r') as file:
-    #         bonds_data = json.load(file)
-
-    #     with open(marketplace_file_path, 'r') as file:
-    #         marketplace_data = json.load(file)
-
-    #     image_folder = os.path.join(os.path.dirname(os.path.abspath(
-    #         __file__)), 'static', 'images', 'portraits')
-    #     image_files = [f for f in os.listdir(
-    #         image_folder) if f.endswith('.webp')]
-        
-    # portrait_src = urllib.parse.quote_plus("/static/images/portraits/default-portrait.webp")
-    portrait_src = "default-portrait.webp"
-    ps = request.args.get("src")
-    if ps != None and ps != "":
-        portrait_src = ps
-    custom_image = request.args.get("custom_image")
-    # Created for a party: its campaign's backgrounds, and the character joins it on save.
-    from app.lib.campaign_backgrounds import party_for_code, use_party_backgrounds
-    code = (request.args.get('party') or '').strip()
-    party = party_for_code(code)
-    if party is not None:
-        use_party_backgrounds(party)
-        form = CharacterForm()
-        form.party_code.data = party.join_code
-    custom_fields = {}
-    custom_fields['background'] = None
-    custom_fields['traits'] = load_traits()
-    custom_fields['bonds'] = load_bonds()
-    custom_fields['omens'] = load_omens()
-    custom_fields['gold'] = 0
-    custom_fields['bonus_gold_t1'] = 0
-    custom_fields['bonus_gold_t2'] = 0
-    custom_fields['bonus_gold_bond'] = 0
-    custom_fields['armor'] = 0
-    character = DummyCharacter()
-    custom_fields['inventory'] = Inventory(character)
-    custom_fields['inventory'].decorate()
-    custom_fields['items'] = '[]'
-    custom_fields['bond_items'] = '[]'
-    custom_fields['armor'] = '0'
-    custom_fields['portrait_src'] = portrait_src
-    custom_fields['custom_image'] = 'false'
-    
-    return render_template('main/character_create.html', portrait_src = portrait_src, custom_image=custom_image, 
-                           form=form, custom_fields=custom_fields, party=party, party_code_error=bool(code) and party is None)
+    # Creation is the game system's (kettlewright): Cairn's 2e pages, in systems/cairn/web.
+    from kettlewright.web import plugin
+    return plugin().creation_page('2e')
 
 
 @main.route('/new_character/barebones/', methods=['GET'])
 @login_required
 def new_barebones_character():
-    from app.blueprints.charcreo_barebones import creation_page
-    return creation_page()
+    from kettlewright.web import plugin
+    return plugin().creation_page('barebones')
 
 
 @main.route('/users/<username>/characters/<url_name>/')
@@ -405,14 +337,16 @@ def print_character_portrait(username, url_name):
 
 
 def _print_character_pdf(username, url_name, orientation):
-    from app.lib.character_pdf import character_sheet
+    from kettlewright.web import plugin
     user = User.query.filter_by(username=username).first_or_404()
     character = Character.query.filter_by(owner=user.id, url_name=url_name).first_or_404()
     party = db.session.get(Party, character.party_id) if character.party_id else None
     export_attributes = request.args.get('export_attributes', '1') != '0'
     # Barebones characters always get the Barebones sheet, whichever orientation link was used.
     paper = 'barebones-a4' if character.is_barebones else f'{orientation}-a4'
-    response = send_file(character_sheet(character, party, orientation, export_attributes=export_attributes).draw(), mimetype='application/pdf',
+    # The character's game system draws its sheet (kettlewright): Cairn's PDF sheets.
+    sheet = plugin(character.rules).character_sheet(character, party, orientation, export_attributes=export_attributes)
+    response = send_file(sheet.draw(), mimetype='application/pdf',
                          download_name=f'{character.url_name}-{paper}.pdf', as_attachment=False)
     response.headers['Cache-Control'] = 'private, no-store'
     response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -509,7 +443,8 @@ def translate_events_data(node, path=()):
 def tools():
     events_data = translate_events_data(_system().content.load('events'))
     backgrounds = load_backgrounds()
-    from app.lib.barebones import gear_packages
+    from kettlewright.web import plugin
+    gear_packages = plugin().gear_packages  # The default system's (kettlewright): Cairn's Barebones packages.
     warden_parties = Party.query.filter_by(owner=current_user.id).order_by(Party.name, Party.id).all() if current_user.is_authenticated else []
     from app.lib.monsters import localized_monster_catalog
     from app.models import Campaign

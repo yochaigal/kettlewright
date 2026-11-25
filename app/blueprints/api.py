@@ -22,15 +22,11 @@ def character_to_dict(character):
         'scars': character.scars,
         'omens': character.omens,
         'portrait': character.image_url if character.custom_image else f'{base_url}/static/images/portraits/{character.image_url}',
-        'strength': character.strength,
-        'strength_max': character.strength_max,
-        'dexterity': character.dexterity,
-        'dexterity_max': character.dexterity_max,
-        'willpower': character.willpower,
-        'willpower_max': character.willpower_max,
-        'hp': character.hp,
-        'hp_max': character.hp_max,
-        'deprived': character.deprived,
+        # Its game system's stats and their maximums, then its conditions (kettlewright): STR, DEX, WIL and HP,
+        # then Deprived, Panicked and Dead in Cairn.
+        **{field: character.get_stat(field) for stat in character.rules.sheet_stats
+           for field in (stat.key, stat.key + '_max')},
+        **{key: getattr(character, key, None) for key in character.rules.condition_keys},
         'gold': character.gold,
         'notes': character.notes,
         'items': character.items,
@@ -99,7 +95,8 @@ def v1_index():
 @api.route('/api/v1/backgrounds')
 def v1_backgrounds():
     from app.lib.data import load_backgrounds
-    from app.lib.barebones import gear_packages
+    from kettlewright.web import plugin
+    gear_packages = plugin().gear_packages  # The default system's (kettlewright): Cairn's Barebones packages.
     backgrounds = [{'name': name, 'description': _(background.get('background_description', ''))}
                    for name, background in load_backgrounds().items()]
     return jsonify(backgrounds=backgrounds, barebones_packages=gear_packages())
@@ -108,18 +105,14 @@ def v1_backgrounds():
 @api.route('/api/v1/characters/random')
 def v1_random_character():
     background = (request.args.get('background') or '').strip()
-    if background == 'barebones' or background.startswith('barebones:'):
-        from app.lib.barebones import generate_character as generate_barebones, gear_packages
-        package = background.partition(':')[2] or None
-        if package and package not in gear_packages():
-            abort(404, description=f"Unknown Barebones package '{package}'. See /api/v1/backgrounds.")
-        _genchar, data = generate_barebones(package)
-    else:
-        from app.lib.data import load_backgrounds
-        from app.lib.char_utils import generate_character
-        if background and background.casefold() not in {name.casefold() for name in load_backgrounds()}:
-            abort(404, description=f"Unknown background '{background}'. See /api/v1/backgrounds.")
-        _genchar, data = generate_character(background or None)
+    # The default system makes it (kettlewright): Cairn's quick generator, or its Barebones tables.
+    from kettlewright.web import plugin
+    try:
+        _genchar, data = plugin().random_character(background or None)
+    except KeyError:
+        if background == 'barebones' or background.startswith('barebones:'):
+            abort(404, description=f"Unknown Barebones package '{background.partition(':')[2]}'. See /api/v1/backgrounds.")
+        abort(404, description=f"Unknown background '{background}'. See /api/v1/backgrounds.")
     character = json.loads(data)
     character['image_url'] = _absolute_portrait(character.get('image_url'))
     return jsonify(character)

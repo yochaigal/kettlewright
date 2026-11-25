@@ -1,7 +1,7 @@
 """Tests for background bond rules and character creation functionality."""
 import pytest
 import json
-from app.lib.char_utils import find_bond_by_description, get_required_bonds_count
+from systems.cairn.web.char_utils import find_bond_by_description, get_required_bonds_count
 from app.lib.data import load_backgrounds, load_bonds
 
 
@@ -101,7 +101,7 @@ class TestBackgroundBondRules:
     
     def test_roll_bond_excluding_function(self):
         """Test the roll_bond_excluding utility function."""
-        from app.lib.char_utils import roll_bond_excluding
+        from systems.cairn.web.char_utils import roll_bond_excluding
         
         bonds = load_bonds()
         first_bond = bonds[0]

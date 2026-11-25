@@ -3,6 +3,8 @@ import secrets
 
 from flask_babel import _
 
+from kettlewright import system
+
 from app.lib.character_rolls import parse_dice
 from app.models import PartyRoll, db
 
@@ -12,23 +14,24 @@ def roll_warden(user, party, kind, expression=None, *, public=False):
         raise PermissionError('Only the Warden can roll for this party.')
     if public and party is None:
         raise ValueError('Choose a party for a public roll.')
+    # Besides dice, the Warden's rolls are the game system's (kettlewright): Reaction Roll and Die of Fate in Cairn.
+    rules = party.rules if party is not None else system()
+    warden_roll = None if kind == 'dice' else rules.warden_roll(kind)
     if kind == 'dice':
         sides = parse_dice(expression)
         label = _('Roll Dice')
-    elif kind == 'reaction':
-        sides, label = [6, 6], _('Reaction Roll')
-    elif kind == 'fate':
-        sides, label = [6], _('Die of Fate')
+    elif warden_roll is not None:
+        sides, label = list(warden_roll.dice), _(warden_roll.label)
     else:
         raise ValueError('Unknown roll type.')
     values = [secrets.randbelow(side) + 1 for side in sides]
     total = sum(values)
-    # A reaction roll is written the way the rules name it: 2d6.
-    notation = '2d6' if kind == 'reaction' else '+'.join(f'd{side}' for side in sides)
+    # A system's roll is written the way its rules name it (2d6).
+    notation = (warden_roll and warden_roll.notation) or '+'.join(f'd{side}' for side in sides)
     result = f'{label}: {", ".join(map(str, values))} ({notation})'
-    if kind == 'reaction':
-        reaction = 'Hostile' if total == 2 else 'Wary' if total <= 5 else 'Curious' if total <= 8 else 'Kind' if total <= 11 else 'Helpful'
-        result += f' = {total} — {_(reaction)}'
+    outcome = warden_roll.outcome(total) if warden_roll else None
+    if outcome:
+        result += f' = {total} — {_(outcome)}'
     if party is not None:
         db.session.add(PartyRoll(party_id=party.id, character_name='Warden',
                                  result=result, private_user_id=None if public else user.id))
