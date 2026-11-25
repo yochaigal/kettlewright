@@ -94,8 +94,8 @@ class PasswordUpdateForm(FlaskForm):
     submit2 = SubmitField(_l('Change'))
 
 
-json_file_path = os.path.join(os.path.dirname(os.path.abspath(
-    __file__)), 'static', 'json', 'backgrounds', 'background_data.json')
+from kettlewright import system as _system
+json_file_path = _system().content_path('backgrounds')  # The default system's backgrounds (kettlewright).
 
 
 def load_data_from_json(file_path):

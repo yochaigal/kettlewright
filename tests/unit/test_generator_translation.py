@@ -13,7 +13,7 @@ from app.lib.inventory import Inventory
 from app.models import Character
 
 
-DATA = Path(__file__).resolve().parents[2] / 'app/static/json/generators'
+DATA = Path(__file__).resolve().parents[2] / 'systems/cairn/content/generators'
 
 
 @pytest.fixture

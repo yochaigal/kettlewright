@@ -1,5 +1,7 @@
 """Cairn 2e Supply and Make Camp inventory changes (no implicit commits)."""
 import json
+
+from kettlewright import system
 import secrets
 import uuid
 from app.lib.translations import N_
@@ -89,9 +91,8 @@ def travel(path):
 
 def table_event(filename, key):
     """Roll d6 on an events table, in the viewer's language (same tables as the Tools page)."""
-    from pathlib import Path
     from app.main import translate_events_data
-    table = json.loads((Path(__file__).resolve().parents[1] / 'static/json/generators' / filename).read_text())
+    table = json.loads((system().content.folder / 'generators' / filename).read_text())
     roll = secrets.randbelow(len(table[key]))
     event = translate_events_data({key: [table[key][roll]]})[key][0]
     return roll + 1, event['description']

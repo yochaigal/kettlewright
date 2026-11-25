@@ -104,7 +104,7 @@ def test_cairn_creation_dice_and_tables():
     assert min(rolls) >= 3 and max(rolls) <= 18 and len(set(rolls)) > 8
     assert {cairn.roll_stat('hp') for _ in range(200)} == {1, 2, 3, 4, 5, 6}
     for name in ('backgrounds', 'traits', 'bonds', 'omens', 'scars'):
-        assert os.path.isfile(os.path.join('app', 'static', 'json', cairn.content_path(name))), name
+        assert cairn.content.path(name).is_file() and os.sep + os.path.join('systems', 'cairn', 'content') in str(cairn.content_path(name)), name
 
 
 def test_barebones_and_2e_creation_roll_with_the_system_s_dice():

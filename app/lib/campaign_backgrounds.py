@@ -1,7 +1,7 @@
 """Party backgrounds: character options a campaign's modules give its parties.
 
 Backgrounds live in the campaign's modules (Module.backgrounds, in the format of
-static/json/backgrounds/background_data.json: name -> background); each party
+the system's backgrounds table: name -> background); each party
 says whether the official ones are offered too (set on the party page). Modules
 bring them as Markdown (type: Background, see background_markdown).
 
@@ -33,10 +33,7 @@ class BackgroundError(ValueError):
 
 
 def official_backgrounds():
-    from app.lib.paths import app_static_path
-    path = os.path.join(app_static_path(), 'json', system().content_path('backgrounds'))
-    with open(path, 'r') as file:
-        return json.load(file)
+    return system().content.load('backgrounds')
 
 
 def _text(value, where, limit=MAX_TEXT, required=False):
@@ -91,13 +88,11 @@ def _container(container, where):
 
 
 def known_pets():
-    from app.lib.paths import app_static_path
-    with open(os.path.join(app_static_path(), 'json', 'pets.json'), 'r') as file:
-        return list(json.load(file))
+    return list(system().content.load('pets'))
 
 
 def _pet(name, where):
-    """Pets come from the pet catalog (static/json/pets.json), which holds their stats."""
+    """Pets come from the pet catalog (the system's pets table), which holds their stats."""
     name = _text(name, where, 100, True)
     pets = known_pets()
     if name not in pets:

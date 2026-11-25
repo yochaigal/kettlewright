@@ -88,9 +88,14 @@ def create_app():
     # Consolidate the JSON data once per process; tests build many apps.
     global _json_consolidated
     if not _json_consolidated:
-        json_root = os.path.join(os.path.dirname(__file__), 'static', 'json')
-        for folder, output in (('backgrounds', 'background_data.json'), ('generators', 'event_data.json')):
-            consolidate_json_files(os.path.join(json_root, folder), os.path.join(json_root, folder, output))
+        # Each system's tables kept as one file per entry (kettlewright): backgrounds/ and generators/ in Cairn.
+        from kettlewright import SYSTEMS, load
+        load()
+        for rules in SYSTEMS.values():
+            folder = rules.content.folder
+            for name, output in (('backgrounds', 'background_data.json'), ('generators', 'event_data.json')):
+                if folder is not None and (folder / name).is_dir():
+                    consolidate_json_files(str(folder / name), str(folder / name / output))
         _json_consolidated = True
 
     # Configure CORS using allowed origins

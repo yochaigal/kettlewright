@@ -1,9 +1,11 @@
-"""Cairn's game system: its stats, conditions, inventory and the rules that read them."""
+"""Cairn's game system: its stats, conditions, inventory and rules, as data the engine reads."""
 from dataclasses import dataclass, field
+from pathlib import Path
 
-from kettlewright.core import Condition, GameSystem, Inventory, Stat
+from kettlewright.core import (NO_RECOVERY, OUT_OF_PLAY, WEAK_ATTACKS, ZERO_HP, Armor, Condition, GameSystem,
+                               Inventory, Stat, WardenRoll)
 from systems.cairn import items
-from systems.cairn.content import CONTENT
+from systems.cairn.content import TABLES
 from systems.cairn.items import N_
 
 
@@ -18,34 +20,33 @@ class Cairn(GameSystem):
         Stat('dexterity', N_('DEX'), N_('Dexterity'), save=True, roll=(3, 6)),
         Stat('willpower', N_('WIL'), N_('Willpower'), save=True, roll=(3, 6)),
     )
+    # Deprived: rest restores nothing. Panicked: 0 HP, and attacks roll a d4. Dead: out of play.
     conditions: tuple = (
-        Condition('deprived', N_('Deprived')),
-        Condition('panicked', N_('Panicked')),
-        Condition('dead', N_('Dead')),
+        Condition('deprived', N_('Deprived'), frozenset({NO_RECOVERY})),
+        Condition('panicked', N_('Panicked'), frozenset({ZERO_HP, WEAK_ATTACKS})),
+        Condition('dead', N_('Dead'), frozenset({OUT_OF_PLAY})),
     )
-    # Ten slots; "a bag of coins worth less than 100gp is petty", and from 100gp it takes one slot of the
-    # main inventory, however much there is (#507).
-    inventory: Inventory = field(default_factory=lambda: Inventory(main_slots=10, sizes=items.SIZES, gold_slot_from=100))
-    armor_max: int = items.ARMOR_MAX
+    # Ten slots, and a full inventory means 0 HP. "A bag of coins worth less than 100gp is petty": from 100gp
+    # it takes one slot of the main inventory, however much there is (#507).
+    inventory: Inventory = field(default_factory=lambda: Inventory(
+        main_slots=10, sizes=items.SIZES, gold_slot_from=100, full_means_zero_hp=True))
+    armor: Armor = field(default_factory=lambda: Armor(
+        tags=items.ARMOR_TAGS, maximum=items.ARMOR_MAX, needs_activating=items.NEEDS_ACTIVATING))
     save_die: int = 20
-    content: dict = field(default_factory=lambda: dict(CONTENT))
+    weak_die: int = 4
+    item_tag_groups: tuple = items.TAG_GROUPS
     item_tags: tuple = items.TAGS
     fatigue: str = items.FATIGUE
     sheet_sections: tuple = (('description', N_('Description')), ('traits', N_('Traits')), ('bonds', N_('Bonds')),
                              ('omens', N_('Omens')), ('scars', N_('Scars')), ('notes', N_('Notes')))
-
-    def item_armor(self, item):
-        return items.item_armor(item)
-
-    def can_recover(self, conditions):
-        """Deprived characters recover nothing from rest."""
-        return 'deprived' not in conditions
-
-    def effective_hp(self, hp, occupied_main_slots, conditions):
-        """A character with a full inventory (ten slots or more) or Panicked has 0 HP."""
-        if occupied_main_slots >= self.inventory.main_slots or 'panicked' in conditions:
-            return 0
-        return hp
+    # The Warden's rolls: the Reaction Roll (2d6) and the Die of Fate (d6).
+    warden_rolls: tuple = (
+        WardenRoll('reaction', N_('Reaction Roll'), (6, 6), '2d6',
+                   ((2, N_('Hostile')), (5, N_('Wary')), (8, N_('Curious')), (11, N_('Kind')), (12, N_('Helpful')))),
+        WardenRoll('fate', N_('Die of Fate'), (6,), 'd6'),
+    )
+    home: str = str(Path(__file__).parent)
+    tables: dict = field(default_factory=lambda: dict(TABLES))
 
 
 CAIRN = Cairn()

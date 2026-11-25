@@ -30,18 +30,10 @@ htmx = HTMX(main)
 base_url = os.environ.get('BASE_URL')
 print('base_url:', base_url, file=sys.stderr)
 
-marketplace_file_path = os.path.join(os.path.dirname(os.path.abspath(
-    __file__)), 'static', 'json', 'marketplace.json')
-
-omens_file_path = os.path.join(os.path.dirname(os.path.abspath(
-    __file__)), 'static', 'json', 'omens.json')
-with open(omens_file_path, 'r') as file:
-    omens_data = json.load(file)
-
-scars_file_path = os.path.join(os.path.dirname(os.path.abspath(
-    __file__)), 'static', 'json', 'scars.json')
-with open(scars_file_path, 'r') as file:
-    scars_data = json.load(file)
+# The default system's tables (kettlewright).
+from kettlewright import system as _system
+omens_data = _system().content.load('omens')
+scars_data = _system().content.load('scars')
 
 
 
@@ -515,11 +507,7 @@ def translate_events_data(node, path=()):
 
 @ main.route('/tools/', methods=['GET'])
 def tools():
-    events_path = os.path.join(os.path.dirname(os.path.abspath(
-        __file__)), 'static', 'json', 'generators', 'event_data.json')
-    with open(events_path, 'r') as file:
-        events_data = json.load(file)
-    events_data = translate_events_data(events_data)
+    events_data = translate_events_data(_system().content.load('events'))
     backgrounds = load_backgrounds()
     from app.lib.barebones import gear_packages
     warden_parties = Party.query.filter_by(owner=current_user.id).order_by(Party.name, Party.id).all() if current_user.is_authenticated else []

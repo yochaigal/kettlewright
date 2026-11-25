@@ -12,11 +12,8 @@ from kettlewright import system
 from types import SimpleNamespace
 
 STATS = system().stat_keys  # HP and the attributes (kettlewright)
-DATA = Path(__file__).resolve().parents[1] / 'static' / 'json'
-
-
 def catalog(kind):
-    return json.loads((DATA / ('hirelings.json' if kind == 'hireling' else 'pets.json')).read_text())
+    return system().content.load('hirelings' if kind == 'hireling' else 'pets')
 
 
 def party_member(party):

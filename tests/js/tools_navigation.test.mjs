@@ -7,7 +7,7 @@ import {itemMarkdown} from '../../app/static/src/js/tools-items.js';
 
 const data = {};
 for (const name of ['dungeons','forests','realm','factions','npcs','names','faction-events','bestiary','custom-monster','reactions','weather','dungeon-events','wilderness-events','reliquary','spellbooks']) {
-  Object.assign(data, JSON.parse(readFileSync(new URL(`../../app/static/json/generators/${name}.json`, import.meta.url))));
+  Object.assign(data, JSON.parse(readFileSync(new URL(`../../systems/cairn/content/generators/${name}.json`, import.meta.url))));
 }
 
 const tabTools = () => Object.values(toolSections()).flat().flatMap(section => section.tools);

@@ -19,14 +19,12 @@ GEAR_BACKGROUND = 'background'
 
 @lru_cache(maxsize=1)
 def _data():
-    with open(os.path.join(app_static_path(), 'json', 'barebones.json'), 'r') as file:
-        return json.load(file)
+    return system().content.load('barebones')
 
 
 @lru_cache(maxsize=1)
 def _spellbooks():
-    with open(os.path.join(app_static_path(), 'json', 'generators', 'spellbooks.json'), 'r') as file:
-        return {spell['name']: spell for spell in json.load(file)['Spellbooks']}
+    return {spell['name']: spell for spell in system().content.load('spellbooks')['Spellbooks']}
 
 
 def _rows(table):
