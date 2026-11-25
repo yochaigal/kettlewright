@@ -51574,3 +51574,15 @@ msgstr "Lava"
 #. Also a pet's or mount's description (systems/cairn/content/backgrounds)
 msgid "Arcane"
 msgstr "Arcano"
+
+#. Monsters tab: where a monster's stats are shown or hidden (#539)
+msgid "On the whiteboard. The eye on its token shows or hides them."
+msgstr "En la pizarra. El ojo de su ficha las muestra u oculta."
+
+#. Monsters tab: the monster's stats are shown to players on the whiteboard (#539)
+msgid "Players see its stats"
+msgstr "Los jugadores ven sus características"
+
+#. Monsters tab: the monster's stats are hidden from players on the whiteboard (#539)
+msgid "Stats hidden from players"
+msgstr "Características ocultas a los jugadores"
