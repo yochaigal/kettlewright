@@ -19,7 +19,7 @@ from app.lib.campaign_import import (preview_archive, single_file_preview, impor
     ImportError, MAX_ARCHIVE, MAX_FILE)
 from app.lib.campaign_backgrounds import BackgroundError
 from app.lib.modules import MODULES, add_module
-from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, article_map_kind, campaign_for, check_version,
+from app.lib.campaigns import (CATEGORIES, MAP_KINDS, PATH_TYPES, article_map_kind, campaign_for, check_version, pin_color,
     entry_audiences, integer, known_entries, map_projection, map_related_ids, notify_parties, owned,
     party_access, publishable_party, render_content, save_geometry, text_value, content_value,
     material_hierarchy, material_deletion_plan, delete_material_plan, save_article_children, set_article_parent, POINT_TYPES,
@@ -1722,6 +1722,7 @@ def map_state(party, pointcrawl, row):
     pins = MapPin.query.filter_by(map_id=pointcrawl.id, party_id=party.id).order_by(MapPin.id).all()
     return {'fog': row.fog or empty_fog(), 'fog_version': row.fog_version,
             'pins': [{'id': pin.id, 'x': pin.x, 'y': pin.y, 'title': pin.entry.title, 'note_id': pin.entry_id,
+                      'color': pin_color(pin.color),
                       'movable': can_move_pin(party, pin),  # Its maker or the Warden drags it (#482).
                       'html': str(render_content(pin.entry.body)),
                       'edit_url': url_for('campaigns.edit_party_note', party_id=party.id, entry_id=pin.entry_id)}
@@ -1829,7 +1830,7 @@ def party_map_fog(party_id, map_id):
 
 @campaigns.route('/party/<int:party_id>/map/<int:map_id>/pins', methods=['POST'])
 def add_map_pin(party_id, map_id):
-    """Any member places a pin: a party note (title and text) at a point of the map."""
+    """Any member places a pin: a party note (title and text) at a point of the map, in a colour (#533)."""
     from app.lib.campaigns import coordinate
     party = party_access(party_id)
     pointcrawl = db.get_or_404(PointcrawlMap, map_id)
@@ -1842,7 +1843,8 @@ def add_map_pin(party_id, map_id):
     note.presentations.append(PartyPresentation(party=party, title=title, body=body))
     db.session.add(note)
     db.session.add(MapPin(map_id=pointcrawl.id, party_id=party.id, entry=note, created_by=current_user.id,
-                          x=coordinate(request.form.get('x')), y=coordinate(request.form.get('y'))))
+                          x=coordinate(request.form.get('x')), y=coordinate(request.form.get('y')),
+                          color=pin_color(request.form.get('color'))))
     db.session.commit()
     notify_parties([party.id])
     return jsonify(map_state(party, pointcrawl, map_presentation(party, pointcrawl)))

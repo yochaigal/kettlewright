@@ -187,3 +187,10 @@ test('pins are markers without titles on the map; hovering shows the title (#494
   assert.equal(pinTooltip(graph,[],400,100),'');  // Not a pin: it has its label.
   assert.equal(pinTooltip(graph,[],200,200),'');
 });
+
+test('party pins are drawn in their colour, red by default (#533)', async () => {
+  const {pinShapes, PIN_COLORS} = await import('../../app/static/src/js/maps/scene.js');
+  const [blue, plain, odd] = pinShapes([{id: 1, x: 0, y: 0, color: 'blue'}, {id: 2, x: 0, y: 0}, {id: 3, x: 0, y: 0, color: 'chartreuse'}]);
+  assert.deepEqual([blue.backgroundColor, blue.strokeColor], PIN_COLORS.blue);
+  assert.deepEqual([plain.backgroundColor, odd.backgroundColor], [PIN_COLORS.red[0], PIN_COLORS.red[0]]);
+});

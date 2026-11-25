@@ -133,6 +133,7 @@ export default function pointcrawl() {
         }
         if (data.type === 'change' && this.editing && !this.saving) {
           // Do not echo an in-progress stroke back to the iframe. A delayed
+        if (data.type === 'scroll') window.scrollBy(Number(data.x) || 0, Number(data.y) || 0);  // An image map's wheel (#533).
           // snapshot would replace the newer points still being drawn there.
           this.receivingCanvas=true;
           for (const move of data.moves || []) {

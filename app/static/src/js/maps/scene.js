@@ -180,11 +180,18 @@ export function graphHit(graph, x, y, tolerance=10) {
 
 // Party map pins: a red marker, its title shown on hover (#494). Pins belong to the party map view, not the drawing.
 // In the map editor they are the players' pins, read only, titled with their party (#482).
+// A party pin's colours (#533): fill and outline, from the drawing editor's palette. app/lib/campaigns.py PIN_COLORS.
+export const PIN_COLORS = {
+  red: ['#e03131', '#7f1d1d'], orange: ['#f08c00', '#7c3a00'], yellow: ['#f0c419', '#5c4400'],
+  green: ['#2f9e44', '#14532d'], blue: ['#1971c2', '#0c2a4d'], purple: ['#9c36b5', '#4a1458'],
+};
+
 export function pinShapes(pins=[], selectedPin='', diameter=26) {
   return pins.map(pin => {
     const active=String(pin.id)===String(selectedPin);
+    const [fill, outline]=PIN_COLORS[pin.color] || PIN_COLORS.red;
     return {id:`kw-pin-${pin.id}`,type:'ellipse',x:pin.x-diameter/2,y:pin.y-diameter/2,width:diameter,height:diameter,locked:true,
-      strokeColor:active?'#e67700':'#7f1d1d',backgroundColor:'#e03131',fillStyle:'solid',strokeWidth:active?4:2,roughness:0,
+      strokeColor:active?'#e67700':outline,backgroundColor:fill,fillStyle:'solid',strokeWidth:active?4:2,roughness:0,
       customData:{kwType:'pin',pinId:String(pin.id)}};
   });
 }

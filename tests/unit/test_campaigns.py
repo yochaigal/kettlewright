@@ -2078,3 +2078,26 @@ def test_campaign_settings_ask_whether_to_keep_the_parties(setup):
     assert client.post('/campaigns/1/delete', data={'version': 1, 'confirm': 'delete', 'keep_parties': '1'}).status_code == 302
     with app.app_context():
         assert db.session.get(Party, 1).campaign_id is None
+
+
+def test_a_party_pin_keeps_the_colour_its_maker_chose(setup):
+    """#533: Add pin > Title > Colour. A colour that isn't one of the few is the default red, as are older pins."""
+    app, client = setup
+    map_id, graph = create_map(client)
+    reveal(client, map_entry_id(app, map_id))
+    login(client, 2)
+    colours = []
+    for title, colour in (('Camp', 'green'), ('Ford', 'chartreuse'), ('Mill', None)):
+        data = {'x': 1, 'y': 2, 'title': title, 'body': '', **({'color': colour} if colour else {})}
+        response = client.post(f'/party/1/map/{map_id}/pins', data=data)
+        assert response.status_code == 200
+        colours = [pin['color'] for pin in response.get_json()['pins']]
+    assert colours == ['green', 'red', 'red']
+    with app.app_context():
+        assert [pin.color for pin in MapPin.query.order_by(MapPin.id)] == ['green', 'red', 'red']
+        db.session.query(MapPin).update({'color': None})  # A pin from before colours.
+        db.session.commit()
+    state = client.get(f'/party/1/map/{map_id}/state').get_json()
+    assert [pin['color'] for pin in state['pins']] == ['red', 'red', 'red']
+    page = client.get(f'/party/1/map/{map_id}/', follow_redirects=True).get_data(as_text=True)
+    assert 'class="pin-colors"' in page and 'x-model="draft.color"' in page

@@ -4,7 +4,7 @@ import {drawingFromScene, emptyDrawing, graphShapes, movedLocations, isManaged, 
   pinShapes, pinHit, pinDiameter, pinTooltip} from './scene.js';
 import {createFogLayer} from './whiteboard_fog.js';
 import {loadLibraries} from './libraries.js';
-import {fittedViewport, imageViewport, clampToImage} from './viewport.js';
+import {fittedViewport, imageViewport, clampToImage, wheelScrollsPage} from './viewport.js';
 import {editorLocale} from './locale.js';
 import {applyCanvasUI} from './canvas_ui.js';
 
@@ -59,6 +59,15 @@ function fitDrawing() {
   api.updateScene({appState: image ? imageViewport(imageBounds(image), width, height)
     : fittedViewport(getCommonBounds(elements), width, height),
     captureUpdate: CaptureUpdateAction.NEVER});
+}
+
+// A pin chosen in a list (#533): the view keeps its zoom and centres on it (inside the picture, on an image map).
+function centerOn({x, y}) {
+  if (!api || !Number.isFinite(x) || !Number.isFinite(y)) return;
+  const {width, height, zoom} = api.getAppState();
+  api.updateScene({appState: {scrollX: width / (2 * zoom.value) - x, scrollY: height / (2 * zoom.value) - y},
+    captureUpdate: CaptureUpdateAction.NEVER});
+  keepInsideImage(api.getAppState());
 }
 
 // Readers zoom and pan inside the picture only.
@@ -204,6 +213,7 @@ window.addEventListener('message', event => {
       api?.updateScene({appState: {theme: message.dark ? 'dark' : 'light'}});
     }
   } else if (message.type === 'fit') fitDrawing();
+  else if (message.type === 'center') centerOn(message);
   else if (message.type === 'set-image') setMapImage(message);
   else if (message.type === 'water-brush' && state?.editing && api) {
     const target=state.graph.nodes.find(node=>String(node.id)===String(message.nodeId) && node.category==='water');
@@ -330,3 +340,17 @@ document.getElementById('editor').addEventListener('pointermove',event=>{
 document.getElementById('editor').addEventListener('pointerleave',hideTooltip);
 document.getElementById('editor').addEventListener('pointerdown',hideTooltip);
 document.getElementById('editor').addEventListener('wheel',hideTooltip,{passive:true});
+
+// An image map being read (#533): the wheel scrolls the page around it (wheelScrollsPage).
+document.getElementById('editor').addEventListener('wheel', event => {
+  const image = api && state && isImageMap() && mapImage();
+  if (!image) return;
+  const view = api.getAppState();
+  const fit = imageViewport(imageBounds(image), view.width, view.height).zoom.value;
+  if (!wheelScrollsPage({editing: state.editing, imageMap: true, zoom: view.zoom.value, fitZoom: fit,
+    ctrlKey: event.ctrlKey, metaKey: event.metaKey})) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  const lines = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
+  send('scroll', {x: event.deltaX * lines, y: event.deltaY * lines});
+}, {capture: true, passive: false});

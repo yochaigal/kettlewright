@@ -51575,6 +51575,18 @@ msgstr "Lava"
 msgid "Arcane"
 msgstr "Arcano"
 
+#. Party map: the colour of a new pin (#533)
+msgid "Color"
+msgstr "Color"
+
+#. Party map: a pin colour (#533)
+msgid "Orange"
+msgstr "Naranja"
+
+#. Party map: a pin colour (#533)
+msgid "Yellow"
+msgstr "Amarillo"
+
 #. Monsters tab: where a monster's stats are shown or hidden (#539)
 msgid "On the whiteboard. The eye on its token shows or hides them."
 msgstr "En la pizarra. El ojo de su ficha las muestra u oculta."

@@ -100,7 +100,7 @@
       <h3 id="party-map-pins-title">{{ _('Pins') }}</h3>
       {# Every pin (#525): the map's own (the Warden's, shown to the party), then the party's. #}
       <ul class="party-map-pins">
-        <template x-for="item in pinList" :key="item.key"><li :class="{'is-map': item.kind === 'map', 'is-selected': item.kind === 'map' ? selected === item.id : selectedPin === item.id}">
+        <template x-for="item in pinList" :key="item.key"><li :class="{'is-map': item.kind === 'map', 'is-selected': item.kind === 'map' ? selected === item.id : selectedPin === item.id}" :style="item.color ? {'--pin-color': item.color} : {}">
           <button type="button" class="link-button" @click="selectListed(item)">
             <span x-html="item.kind === 'map' ? $markdownInline(item.title) : ''" x-show="item.kind === 'map'"></span><span x-text="item.title" x-show="item.kind === 'party'"></span>
           </button>
@@ -115,6 +115,13 @@
     <h2 id="pin-dialog-title">{{ _('Add pin') }}</h2>
     <template x-if="draft"><form @submit.prevent="savePin()">
       <label>{{ _('Title') }}<input type="text" x-ref="pinTitle" x-model="draft.title" required maxlength="200" autocomplete="off"></label>
+      {# The pin's colour (#533), red unless chosen. #}
+      {% set color_names = {'red': _('Red'), 'orange': _('Orange'), 'yellow': _('Yellow'), 'green': _('Green'), 'blue': _('Blue'), 'purple': _('Purple')} %}
+      <fieldset class="pin-colors"><legend>{{ _('Color') }}</legend>
+        <template x-for="color in pinColors" :key="color.name"><label class="pin-color" :style="{'--pin-color': color.fill}"
+          :title="{{ color_names|tojson|forceescape }}[color.name]">
+          <input type="radio" name="pin-color" :value="color.name" x-model="draft.color" :aria-label="{{ color_names|tojson|forceescape }}[color.name]"><span aria-hidden="true"></span></label></template>
+      </fieldset>
       <label>{{ _('Note') }}<textarea x-model="draft.body" rows="5" maxlength="50000"></textarea></label>
       <p class="import-hint">{{ _('The pin is a party note: every member can read and edit it.') }}</p>
       <div class="create-dialog-actions">

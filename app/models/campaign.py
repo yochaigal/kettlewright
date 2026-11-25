@@ -133,6 +133,7 @@ class MapPin(db.Model):
     entry_id = db.Column(db.Integer, db.ForeignKey('content_entries.id', ondelete='CASCADE'), nullable=False, unique=True)
     x = db.Column(db.Float, nullable=False)
     y = db.Column(db.Float, nullable=False)
+    color = db.Column(db.String(16), nullable=True)  # One of PIN_COLORS (#533); none is the first, red.
     created_by = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
     entry = db.relationship('ContentEntry', backref=db.backref('pin', uselist=False, cascade='all, delete-orphan'))
