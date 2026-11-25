@@ -131,14 +131,15 @@ def test_categorized_portraits_work_for_creation_and_companions(shared):
 
 
 def test_portrait_picker_groups(shared):
-    """#502: four groups, Humanoids first, then the Illustrated Bestiary; every portrait in exactly one; the files keep their folders."""
-    from app.lib.data import load_images, portrait_groups
+    """#502: four groups, Humanoids first, then the Illustrated Bestiary; every portrait in exactly one (copies of
+    another in none, #538); the files keep their folders."""
+    from app.lib.data import DUPLICATE_PORTRAITS, load_images, portrait_groups
     app, clients, _ = shared
     with app.app_context():
         images = load_images(include_categories=True)
     groups = dict(portrait_groups(images))
     assert list(groups) == ['humanoids', 'animals', 'monsters', 'objects', 'bestiary']
-    assert sorted(sum(groups.values(), [])) == sorted(images)
+    assert sorted(sum(groups.values(), [])) == sorted(set(images) - DUPLICATE_PORTRAITS)
     assert all('/' not in image for image in groups['humanoids'][:5])  # The old Characters come first.
     assert {'fairy/fairy1.png', 'brute/brute1.png', 'large/large1.png'} <= set(groups['humanoids'])
     assert {'aqua/aqua1.png', 'coldblooded/coldblooded1.png', 'insect/insect1.png'} <= set(groups['animals'])
@@ -692,3 +693,28 @@ def test_the_board_s_token_panel_saves_hp_and_conditions_live(shared):
     assert player['conditions'] == {'deprived': False, 'panicked': True}
     for user in (1, 2):
         assert 'id="board-roll-token"' in clients[user].get('/party/1/shared-map').text
+
+
+def test_the_portrait_picker_offers_each_picture_once():
+    """#538: humanoid/humanoidN.png is portraitN.webp again. The picker shows each once, and a character with either
+    path still has a valid portrait."""
+    from PIL import Image, ImageChops
+    from app.lib.data import DUPLICATE_PORTRAITS, load_images, portrait_groups
+    folder = Path('app/static/images/portraits')
+    images = load_images(include_categories=True)
+    offered = [image for _, group in portrait_groups(images) for image in group]
+    assert not DUPLICATE_PORTRAITS & set(offered) and len(offered) == len(set(offered))
+    assert DUPLICATE_PORTRAITS <= set(images)  # Still valid portraits for characters that have them.
+    assert sorted(path.name for path in (folder / 'humanoid').iterdir()) == sorted(
+        f'humanoid{n}.png' for n in range(70))  # The list covers the whole folder, and no more.
+    def flat(name):  # As the picker shows it: over white, small.
+        image = Image.open(folder / name).convert('RGBA').resize((32, 32))
+        background = Image.new('RGBA', image.size, 'white')
+        background.alpha_composite(image)
+        return background.convert('L')
+    same = lambda a, b: ImageChops.difference(flat(a), flat(b)).getextrema()[1] < 128
+    assert all(same(f'portrait{n}.webp', f'humanoid/humanoid{n}.png') for n in range(1, 70))
+    assert same('default-portrait.webp', 'humanoid/humanoid0.png')
+    assert not same('green/green1.png', 'green/green2.png')  # Look-alikes with another expression: both offered.
+
+
