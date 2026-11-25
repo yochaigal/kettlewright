@@ -4,6 +4,15 @@
 import {imageAspect} from '../../maps/viewport.js';
 import {readCanvasUI, writeCanvasUI} from '../../maps/canvas_ui.js';
 
+// Every pin on the map in one list (#525): the map's own pins (placed by the Warden, and shown to this party),
+// in the map's order, then the party's pins.
+export function listedPins(nodes, pins) {
+  return [
+    ...nodes.map(node => ({key: `map-${node.id}`, kind: 'map', id: String(node.id), title: node.title})),
+    ...pins.map(pin => ({key: `party-${pin.id}`, kind: 'party', id: String(pin.id), title: pin.title})),
+  ];
+}
+
 export default function partyMap() {
   return {
     graph: {nodes: [], edges: []}, pins: [], fog: null, fogVersion: 0, warden: false, labels: {},
@@ -117,8 +126,19 @@ export default function partyMap() {
       if (result.ok) {this.status = this.labels.pinMoved || ''; this.apply(result.data);}
       else {this.status = this.labels.error; this.sync();}
     },
-    // "1 pin", "3 pins" (#482).
-    get pinCount() {return `${this.pins.length} ${this.pins.length === 1 ? this.labels.pinOne : this.labels.pinMany}`;},
+    get pinList() {return listedPins(this.graph.nodes, this.pins);},
+    // A pin chosen in the list opens like a pin clicked on the map.
+    selectListed(item) {
+      this.selectedEdge = '';
+      if (item.kind === 'map') {this.selectedPin = ''; this.selected = item.id;}
+      else {this.selected = ''; this.selectedPin = item.id;}
+      this.sync();
+    },
+    // "1 pin", "3 pins" (#482): every pin, the map's and the party's (#525).
+    get pinCount() {
+      const count = this.pinList.length;
+      return `${count} ${count === 1 ? this.labels.pinOne : this.labels.pinMany}`;
+    },
     async deletePin(pin) {
       if (!confirm(this.labels.deletePin)) return;
       const result = await this.post(`${this.urls.pins}/${pin.id}/delete`, {});

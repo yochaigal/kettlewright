@@ -98,12 +98,16 @@
     </section>
     <section class="party-map-side" aria-labelledby="party-map-pins-title">
       <h3 id="party-map-pins-title">{{ _('Pins') }}</h3>
+      {# Every pin (#525): the map's own (the Warden's, shown to the party), then the party's. #}
       <ul class="party-map-pins">
-        <template x-for="item in pins" :key="item.id"><li>
-          <button type="button" class="link-button" @click="selected=''; selectedEdge=''; selectedPin=String(item.id); sync()" x-text="item.title"></button>
+        <template x-for="item in pinList" :key="item.key"><li :class="{'is-map': item.kind === 'map', 'is-selected': item.kind === 'map' ? selected === item.id : selectedPin === item.id}">
+          <button type="button" class="link-button" @click="selectListed(item)">
+            <span x-html="item.kind === 'map' ? $markdownInline(item.title) : ''" x-show="item.kind === 'map'"></span><span x-text="item.title" x-show="item.kind === 'party'"></span>
+          </button>
+          <span class="wiki-badge" x-show="item.kind === 'map'">{{ _('Warden') }}</span>
         </li></template>
       </ul>
-      <p class="wiki-empty" x-show="!pins.length">{{ _('No pins yet.') }}</p>
+      <p class="wiki-empty" x-show="!pinList.length">{{ _('No pins yet.') }}</p>
     </section>
   </div>
 

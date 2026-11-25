@@ -1994,3 +1994,24 @@ def test_a_map_has_one_toolbar_and_full_screen_takes_both(setup):
     login(client, 2)
     player = client.get(f'/party/1/map/{map_id}/', follow_redirects=True).get_data(as_text=True)
     assert "toggleCanvasUI('fog')" not in player and 'map-bar-fog' not in player
+
+
+def test_the_party_map_lists_the_maps_pins_it_was_shown_with_the_partys(setup):
+    """#525: the Pins list had only the party's own pins; the map's pins (placed by the Warden) could be clicked on the
+    map but weren't listed. Both are listed now, from the same data: the map's pins shown to the party, never the others."""
+    app, client = setup
+    map_id, graph = create_map(client)
+    with app.app_context():
+        rooms = {node.entry.title: node.entry_id for node in db.session.get(PointcrawlMap, map_id).nodes}
+    reveal(client, map_entry_id(app, map_id))
+    reveal(client, rooms['SECRET ROOM 0'])  # One pin shown; the other stays hidden.
+    login(client, 2)
+    assert client.post(f'/party/1/map/{map_id}/pins', data={'x': 40, 'y': 60, 'title': 'Our camp', 'body': ''}).status_code == 200
+    page = client.get(f'/party/1/map/{map_id}/', follow_redirects=True).get_data(as_text=True)
+    shown = json.loads(unescape(re.search(r'data-graph="([^"]+)"', page)[1]))
+    state = json.loads(unescape(re.search(r'data-state="([^"]+)"', page)[1]))
+    assert [node['title'] for node in shown['nodes']] == ['SECRET ROOM 0'] and 'SECRET ROOM 1' not in page
+    assert [pin['title'] for pin in state['pins']] == ['Our camp']
+    pins = page[page.index('id="party-map-pins-title"'):page.index('</section>', page.index('id="party-map-pins-title"'))]
+    assert 'x-for="item in pinList"' in pins and '@click="selectListed(item)"' in pins
+    assert 'x-show="item.kind === \'map\'">Warden</span>' in pins and 'x-show="!pinList.length"' in pins
