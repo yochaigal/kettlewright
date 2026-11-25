@@ -11,6 +11,11 @@ from app.models import Character, User, db
 from app.models.character import BACKGROUND_FIELDS
 
 
+def shown(text):
+    """An answer as the sheet shows it: its Markdown bold and italics (#536) are formatting, not text."""
+    return re.sub(r'(?<![\w*])_(.+?)_(?![\w*])', r'\1', (text or '').replace('**', ''))
+
+
 @pytest.fixture
 def background_character(app_with_babel):
     app = app_with_babel
@@ -36,7 +41,7 @@ def test_generator_answers_and_print(background_character):
     # markupsafe (an apostrophe stays literal), so compare the visible text.
     visible_text = unescape(re.sub(r'<[^>]+>', '', page))
     for field in BACKGROUND_FIELDS:
-        assert data[field] in visible_text
+        assert shown(data[field]) in visible_text
     assert 'character-print-notes-container' not in page
 
 
@@ -81,14 +86,14 @@ def test_import_export_and_every_saved_print_preserves_separate_answers(backgrou
         page = client.get(path).get_data(as_text=True)
         visible_text = unescape(re.sub(r'<[^>]+>', '', page))
         for field in (*BACKGROUND_FIELDS, 'notes'):
-            assert data[field] in visible_text
+            assert shown(data[field]) in visible_text
     else:
         response = client.get(path + output + '.pdf')
         assert response.status_code == 200
         reader = PdfReader(BytesIO(response.data))
         page = re.sub(r'\s+', ' ', '\n'.join(p.extract_text() for p in reader.pages))
         for field in (*BACKGROUND_FIELDS, 'notes'):
-            assert re.sub(r'\s+', ' ', data[field]) in page
+            assert re.sub(r'\s+', ' ', shown(data[field])) in page
 
 
 def test_edit_keeps_old_notes_and_new_answers_independent(background_character):

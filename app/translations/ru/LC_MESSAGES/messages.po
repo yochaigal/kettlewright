@@ -2261,10 +2261,14 @@ msgstr "Какой эксперимент пошел не так?"
 
 #: app/static/json/backgrounds/aurifex.json:46
 msgid ""
-"There was an explosion, and you lost your sense of smell. Well, almost: you "
-"can sniff out gold as a pig does truffles. Take a Tin of Snuff to dampen the "
-"impact. Use it every day or become deprived."
-msgstr "Произошел взрыв, и вы потеряли обоняние. Ну, почти: теперь вы можете учуять золото, как свинья трюфели. Возьмите Табакерку с нюхательным табаком (6 использований), чтобы ослабить эффект. Используйте его ежедневно, иначе получите истощение."
+"There was an explosion, and you lost your sense of smell. Well, almost: "
+"you can sniff out gold as a pig does truffles. Take a **Tin of Snuff** to"
+" dampen the impact. Use it every day or become _deprived_."
+msgstr ""
+"Произошел взрыв, и вы потеряли обоняние. Ну, почти: теперь вы можете "
+"учуять золото, как свинья трюфели. Возьмите Табакерку с нюхательным "
+"табаком (6 использований), чтобы ослабить эффект. Используйте его "
+"ежедневно, иначе получите _истощение_."
 
 #: app/static/json/backgrounds/aurifex.json:49
 msgid "Tin of Snuff"
@@ -2276,11 +2280,15 @@ msgstr "Используйте его ежедневно, иначе получ�
 
 #: app/static/json/backgrounds/aurifex.json:57
 msgid ""
-"You dematerialized a beloved pet. Now it follows you around, invisible but "
-"always present. Although it cannot interact with the physical realm, you are "
-"able to share its senses. (Add a Fatigue each time.) It follows basic "
-"commands."
-msgstr "Вы развоплотили любимого питомца, и теперь он следует за вами незримым духом. Хотя он не способен влиять на физический мир, вы можете обращаться к его ощущениям (1 Усталость каждый раз), а также отдавать простые команды."
+"You dematerialized a beloved pet. Now it follows you around, invisible "
+"but always present. Although it cannot interact with the physical realm, "
+"you are able to share its senses. (Add a **Fatigue** each time.) It "
+"follows basic commands."
+msgstr ""
+"Вы развоплотили любимого питомца, и теперь он следует за вами незримым "
+"духом. Хотя он не способен влиять на физический мир, вы можете обращаться"
+" к его ощущениям (1 **Усталость** каждый раз), а также отдавать простые "
+"команды."
 
 #: app/static/json/backgrounds/aurifex.json:60
 msgid ""
@@ -2291,10 +2299,14 @@ msgstr "Вы подверглись воздействию сыворотки п
 
 #: app/static/json/backgrounds/aurifex.json:63
 msgid ""
-"You were adept at creating fake gold, which is almost as good. Eventually, "
-"your ruse was discovered, and you had to make a hasty retreat. Take a heavy "
-"Metal Ingot and Gold Powder."
-msgstr "Вы искусно создавали фальшивое золото, почти такое же, как настоящее. В конце концов, вашу аферу раскрыли, а вам пришлось бежать. Добавьте в инвентарь тяжелый Металлический слиток и Золотой порошок (3 использования)."
+"You were adept at creating _fake_ gold, which is almost as good. "
+"Eventually, your ruse was discovered, and you had to make a hasty "
+"retreat. Take a heavy **Metal Ingot** and **Gold Powder**."
+msgstr ""
+"Вы искусно создавали фальшивое золото, почти такое же, как настоящее. В "
+"конце концов, вашу аферу раскрыли, а вам пришлось бежать. Добавьте в "
+"инвентарь тяжелый **Металлический слиток** и **Золотой порошок** (3 "
+"использования)."
 
 #: app/static/json/backgrounds/aurifex.json:66
 msgid "Metal Ingot"
@@ -2306,9 +2318,9 @@ msgstr "Золотой порошок"
 
 #: app/static/json/backgrounds/aurifex.json:77
 msgid ""
-"Your alchemical recipe worked, but a rival stole the blueprint before your "
-"claims could be proven. Take a prototype Blunderbuss that takes one round to "
-"reload, and a thirst for revenge."
+"Your alchemical recipe worked, but a rival stole the blueprint before "
+"your claims could be proven. Take a prototype **Blunderbuss** that takes "
+"one round to reload, and a thirst for revenge."
 msgstr "Ваш алхимический рецепт сработал, но конкурент выкрал чертеж, прежде чем вы смогли заявить права на это изобретение. Запишите персонажу прототип Мушкетона (к12, взрыв, громоздкий), который требует одного раунда для перезарядки, и жажду мести."
 
 #: app/static/json/backgrounds/aurifex.json:80
@@ -2321,9 +2333,9 @@ msgstr "Перезарядка занимает раунд"
 
 #: app/static/json/backgrounds/aurifex.json:87
 msgid ""
-"Ridiculed for discovering how to turn gold into lead, you were a laughing "
-"stock. Take a bottle of Universal Solvent that dissolves anything it touches "
-"into its constituent parts."
+"Ridiculed for discovering how to turn gold into _lead_, you were a "
+"laughing stock. Take a bottle of **Universal Solvent** that dissolves "
+"anything it touches into its constituent parts."
 msgstr "Вы стали посмешищем за открытие способа превращения золота в свинец. Возьмите бутылку Универсального растворителя (2 исп.), который растворяет на составляющие все, к чему прикасается."
 
 #: app/static/json/backgrounds/aurifex.json:90
@@ -2336,9 +2348,11 @@ msgstr "Какое алхимическое чудо является вашим
 
 #: app/static/json/backgrounds/aurifex.json:102
 msgid ""
-"Pyrophoric Gel: A sticky green fluid that catches fire when exposed to air. "
-"It lasts for 8 hours and cannot be extinguished."
-msgstr "Воспламеняющийся гель: Липкая зеленая жидкость, загорающаяся при контакте с воздухом и горящая 8 часов. Невозможно потушить (1 исп)."
+"**Pyrophoric Gel**: A sticky green fluid that catches fire when exposed "
+"to air. It lasts for 8 hours and cannot be extinguished."
+msgstr ""
+"**Воспламеняющийся гель**: Липкая зеленая жидкость, загорающаяся при "
+"контакте с воздухом и горящая 8 часов. Невозможно потушить (1 исп)."
 
 #: app/static/json/backgrounds/aurifex.json:105
 msgid "Pyrophoric Gel"
@@ -2358,17 +2372,21 @@ msgstr "Взрывная сфера"
 
 #: app/static/json/backgrounds/aurifex.json:120
 msgid ""
-"Aqua Vita: Purifies any liquid, converting it to pure water. Drinking it "
-"cures 1d6 STR."
-msgstr "Живая вода: Очищает любую жидкость, превращая ее в чистую воду, выпив которую, вы восстановите к6 СИЛ (1 использование)."
+"**Aqua Vita**: Purifies any liquid, converting it to pure water. Drinking"
+" it cures 1d6 STR."
+msgstr ""
+"**Живая вода**: Очищает любую жидкость, превращая ее в чистую воду, выпив"
+" которую, вы восстановите к6 СИЛ (1 использование)."
 
 #: app/static/json/backgrounds/aurifex.json:123
 msgid "Aqua Vita"
 msgstr "Живая вода"
 
 #: app/static/json/backgrounds/aurifex.json:130
-msgid "Mimic Stone: Records a short phrase that can later be played back."
-msgstr "Камень-мимик: Записывает короткую фразу, которую можно воспроизвести позже."
+msgid "**Mimic Stone**: Records a short phrase that can later be played back."
+msgstr ""
+"**Камень-мимик**: Записывает короткую фразу, которую можно воспроизвести "
+"позже."
 
 #: app/static/json/backgrounds/aurifex.json:133
 msgid "Mimic Stone"
@@ -2380,9 +2398,11 @@ msgstr "Записывает короткую фразу, которую мож�
 
 #: app/static/json/backgrounds/aurifex.json:140
 msgid ""
-"Spark Dust: Ignites easily and quickly. Useful for starting a fire or as an "
-"incendiary device."
-msgstr "Искрящаяся пыль: Легко и быстро воспламеняется. Полезна для разжигания огня, может стать зажигательным устройством (3 использования)."
+"**Spark Dust**: Ignites easily and quickly. Useful for starting a fire or"
+" as an incendiary device."
+msgstr ""
+"**Искрящаяся пыль**: Легко и быстро воспламеняется. Полезна для "
+"разжигания огня, может стать зажигательным устройством (3 использования)."
 
 #: app/static/json/backgrounds/aurifex.json:143
 msgid "Spark Dust"
@@ -2390,11 +2410,15 @@ msgstr "Искрящаяся пыль"
 
 #: app/static/json/backgrounds/aurifex.json:150
 msgid ""
-"Homunculus: A miniature clay replica of yourself that follows your every "
-"command. It hates being enthralled to you and complains bitterly whenever "
-"possible. Any damage done to the homunculus is also done to you. 3 HP, 4 "
-"STR, 13 DEX, 5 WIL."
-msgstr "Гомункул: Ваша миниатюрная копия из глины, которая выполняет все ваши команды. Ненавидит подчиняться и жалуется при любой возможности. Любой урон, нанесенный гомункулу, также наносится вам [3 ОЗ, 4 СИЛ, 13 ЛОВ, 5 ВОЛ]."
+"**Homunculus**: A miniature clay replica of yourself that follows your "
+"every command. It hates being enthralled to you and complains bitterly "
+"whenever possible. Any damage done to the homunculus is also done to you."
+" 3 HP, 4 STR, 13 DEX, 5 WIL."
+msgstr ""
+"**Гомункул**: Ваша миниатюрная копия из глины, которая выполняет все ваши"
+" команды. Ненавидит подчиняться и жалуется при любой возможности. Любой "
+"урон, нанесенный гомункулу, также наносится вам [3 ОЗ, 4 СИЛ, 13 ЛОВ, 5 "
+"ВОЛ]."
 
 #: app/static/json/backgrounds/aurifex.json:153
 msgid "Homunculus"
@@ -2441,17 +2465,23 @@ msgstr "Как вы «усовершенствовали» себя?"
 
 #: app/static/json/backgrounds/barber-surgeon.json:54
 msgid ""
-"You have a replacement eye that can magnify objects, act as a telescope, and "
-"provide minimal night vision. You cannot wear anything metal on your head, "
-"and the presence of strong magnets make you deprived."
+"You have a replacement **eye** that can magnify objects, act as a "
+"telescope, and provide minimal night vision. You cannot wear anything "
+"metal on your head, and the presence of strong magnets make you "
+"_deprived_."
 msgstr "Ваш искусственный глаз позволяет рассматривать предметы, как в телескоп, и минимально ориентироваться в темноте. Однако вы не можете надевать на голову металлические предметы, а сильные магниты приводят вас к истощению."
 
 #: app/static/json/backgrounds/barber-surgeon.json:58
 msgid ""
-"One foot is mostly metal (kick, d6), and you treat some tough terrain as "
-"Easy. Carry an Oil Can (6 uses). Without a daily application, you are "
-"deprived and noisy."
-msgstr "Одна из ваших ног почти полностью металлическая (пинок наносит к6), что позволяет вам считать некоторые типы труднопроходимой местности как Легкая. У вас при себе Масленка (6 использований); без ежедневного смазывания вы становитесь истощенным и издаете скрип при движении."
+"One **foot** is mostly metal (kick, d6), and you treat some tough terrain"
+" as **Easy**. Carry an **Oil Can** (6 uses). Without a daily application,"
+" you are _deprived_ and noisy."
+msgstr ""
+"Одна из ваших ног почти полностью металлическая (пинок наносит к6), что "
+"позволяет вам считать некоторые типы труднопроходимой местности как "
+"**Легкая**. У вас при себе **Масленка** (6 использований); без "
+"ежедневного смазывания вы становитесь истощенным и издаете скрип при "
+"движении."
 
 #: app/static/json/backgrounds/barber-surgeon.json:64
 msgid "Without a daily application you are deprived and noisy."
@@ -2459,8 +2489,8 @@ msgstr "Без ежедневной смазки вы Истощены и шум
 
 #: app/static/json/backgrounds/barber-surgeon.json:69
 msgid ""
-"One of your fingers has been swapped, the bone replaced by gold and iron. "
-"Take a Hook and a Screwdriver that can attach to the fingertip."
+"One of your fingers has been swapped, the bone replaced by gold and iron."
+" Take a **Hook** and a **Screwdriver** that can attach to the fingertip."
 msgstr "Кость одного из ваших пальцев заменена протезом из золота и железа. У вас есть Крюк и Отвертка, которые можно закрепить на кончике пальца."
 
 #: app/static/json/backgrounds/barber-surgeon.json:72
@@ -2473,16 +2503,16 @@ msgstr "Крепится к механическому пальцу."
 
 #: app/static/json/backgrounds/barber-surgeon.json:79
 msgid ""
-"Both ears have been surgically enhanced, tripling your hearing. You can "
-"focus on a specific sound, such as a conversation, at a great distance. You "
-"wear an ear flap to protect against sudden loud noises (WIL save to avoid "
-"temporary paralysis)."
+"Both **ears** have been surgically enhanced, tripling your hearing. You "
+"can focus on a specific sound, such as a conversation, at a great "
+"distance. You wear an ear flap to protect against sudden loud noises (WIL"
+" save to avoid temporary paralysis)."
 msgstr "Ваши Уши хирургически модифицированы, что значительно утончает ваш слух. Вы можете сосредоточиться на определенном звуке, например, разговоре на большом расстоянии. Вы носите ушные накладки для защиты от внезапных громких звуков (успешный спасбросок ВОЛ позволяет избежать временного паралича)."
 
 #: app/static/json/backgrounds/barber-surgeon.json:83
 msgid ""
-"Your chest is lined with alchemical sigils, toughening the skin (Armor 1). "
-"Wearing other metallic armor nullifies the effect."
+"Your **chest** is lined with alchemical sigils, _toughening the skin_ "
+"(Armor 1). Wearing other metallic armor nullifies the effect."
 msgstr "Ваша грудь покрыта алхимическими символами, делающими кожу более прочной (+1 Брони). При этом ношение металлической брони нейтрализует этот эффект."
 
 #: app/static/json/backgrounds/barber-surgeon.json:86
@@ -2496,18 +2526,24 @@ msgstr "Ваша грудь покрыта алхимическими симво
 
 #: app/static/json/backgrounds/barber-surgeon.json:93
 msgid ""
-"One arm is fully metal and comes off at the shoulder. It can be used as a "
-"weapon (d8, bulky when not attached) and can move independently if you are "
-"within sight of it."
-msgstr "Одна из ваших рук полностью металлическая и может отсоединяться от плеча. Ее можно использовать как оружие (к8; когда не прикреплена — громоздкий) и она способна двигаться самостоятельно, если вы находитесь в пределах видимости."
+"One **arm** is fully metal and comes off at the shoulder. It can be used "
+"as a weapon (d8, _bulky_ when not attached) and can move independently if"
+" you are within sight of it."
+msgstr ""
+"Одна из ваших рук полностью металлическая и может отсоединяться от плеча."
+" Ее можно использовать как оружие (к8; когда не прикреплена — "
+"_громоздкий_) и она способна двигаться самостоятельно, если вы находитесь"
+" в пределах видимости."
 
 #: app/static/json/backgrounds/barber-surgeon.json:99
 msgid "What rare tool is essential to your work?"
 msgstr "Какой редкий инструмент незаменим в вашей работе?"
 
 #: app/static/json/backgrounds/barber-surgeon.json:102
-msgid "Regrowth Salve: Regrows a body part over the course of a day. 1 use."
-msgstr "Мазь регенерации: Восстанавливает утраченную часть тела в течение дня (1 исп)."
+msgid "**Regrowth Salve**: Regrows a body part over the course of a day. 1 use."
+msgstr ""
+"**Мазь регенерации**: Восстанавливает утраченную часть тела в течение дня"
+" (1 исп)."
 
 #: app/static/json/backgrounds/barber-surgeon.json:105
 msgid "Regrowth Salve"
@@ -2519,9 +2555,11 @@ msgstr "Восстанавливает утраченную часть тела 
 
 #: app/static/json/backgrounds/barber-surgeon.json:113
 msgid ""
-"Graftgrub: A small worm that can fuse inanimate objects with parts of the "
-"body. 1 use."
-msgstr "Приращивающий червь: Маленький червь, способный сращивать неодушевленные объекты с частями тела (1 использование)."
+"**Graftgrub**: A small worm that can fuse inanimate objects with parts of"
+" the body. 1 use."
+msgstr ""
+"**Приращивающий червь**: Маленький червь, способный сращивать "
+"неодушевленные объекты с частями тела (1 использование)."
 
 #: app/static/json/backgrounds/barber-surgeon.json:116
 msgid "Graftgrub"
@@ -2533,9 +2571,11 @@ msgstr "Маленький червь, способный сращивать н�
 
 #: app/static/json/backgrounds/barber-surgeon.json:124
 msgid ""
-"Woundwax: Heals wounds from fire or chemicals (restoring full STR) but "
-"nothing else. 2 uses."
-msgstr "Воск для ран: Заживляет раны от огня или химических ожогов, полностью восстанавливая СИЛ, но не лечит другие повреждения (2 исп)."
+"**Woundwax**: Heals wounds from fire or chemicals (restoring full STR) "
+"but nothing else. 2 uses."
+msgstr ""
+"**Воск для ран**: Заживляет раны от огня или химических ожогов, полностью"
+" восстанавливая СИЛ, но не лечит другие повреждения (2 исп)."
 
 #: app/static/json/backgrounds/barber-surgeon.json:127
 msgid "Woundwax"
@@ -2547,10 +2587,14 @@ msgstr "Заживляет раны от огня или химических о
 
 #: app/static/json/backgrounds/barber-surgeon.json:135
 msgid ""
-"Quicksilver: A stimulant. Go first in combat, and automatically pass any WIL "
-"saves for one hour. Addictive: Save STR or become deprived after 24 hours "
-"without it. 4 uses."
-msgstr "Ртуть: Стимулятор, позволяющий действовать первым в бою и автоматически проходить спасброски ВОЛ в течение одного часа. Вызывает зависимость: через 24 часа без применения, пройдите спасбросок СИЛ, иначе станете истощенным (4 исп)."
+"**Quicksilver**: A stimulant. Go first in combat, and automatically pass "
+"any WIL saves for one hour. _Addictive_: Save STR or become _deprived_ "
+"after 24 hours without it. 4 uses."
+msgstr ""
+"**Ртуть**: Стимулятор, позволяющий действовать первым в бою и "
+"автоматически проходить спасброски ВОЛ в течение одного часа. Вызывает "
+"зависимость: через 24 часа без применения, пройдите спасбросок СИЛ, иначе"
+" станете истощенным (4 исп)."
 
 #: app/static/json/backgrounds/barber-surgeon.json:138
 msgid "Quicksilver"
@@ -2564,9 +2608,11 @@ msgstr "Стимулятор, позволяющий действовать пе
 
 #: app/static/json/backgrounds/barber-surgeon.json:146
 msgid ""
-"Pneuma Pump: Portable iron lungs (bulky). Enables life-saving surgery or "
-"underwater breathing."
-msgstr "Пневматический насос: Портативные железные легкие (громоздкий), позволяющие проводить операции или дышать под водой."
+"**Pneuma Pump**: Portable iron lungs (_bulky_). Enables life-saving "
+"surgery or underwater breathing."
+msgstr ""
+"**Пневматический насос**: Портативные железные легкие (_громоздкий_), "
+"позволяющие проводить операции или дышать под водой."
 
 #: app/static/json/backgrounds/barber-surgeon.json:149
 msgid "Pneuma Pump"
@@ -2579,9 +2625,11 @@ msgstr "Портативные железные легкие (громоздки
 
 #: app/static/json/backgrounds/barber-surgeon.json:156
 msgid ""
-"Lodestone: Draws out dangerous elements from the body and acts as a powerful "
-"magnetic force."
-msgstr "Магнитный камень: Вытягивает опасные элементы из тела и действует как мощный магнит."
+"**Lodestone**: Draws out dangerous elements from the body and acts as a "
+"powerful magnetic force."
+msgstr ""
+"**Магнитный камень**: Вытягивает опасные элементы из тела и действует как"
+" мощный магнит."
 
 #: app/static/json/backgrounds/barber-surgeon.json:159
 msgid "Lodestone"
@@ -2627,9 +2675,12 @@ msgstr "На каких существах вы специализируетес
 
 #: app/static/json/backgrounds/beast-handler.json:53
 msgid ""
-"Arachnids: Take a Quick-Flame Rod and an Oil Can (6 uses). It can destroy a "
-"large spider nest in seconds."
-msgstr "Паукообразные: Возьмите Воспламеняющий жезл и Масленку (6 использований). Они способны уничтожить большое паучье гнездо за считанные секунды."
+"**Arachnids**: Take a **Quick-Flame Rod** and an **Oil Can** (6 uses). It"
+" can destroy a large spider nest in seconds."
+msgstr ""
+"**Паукообразные**: Возьмите Воспламеняющий жезл и Масленку (6 "
+"использований). Они способны уничтожить большое паучье гнездо за "
+"считанные секунды."
 
 #: app/static/json/backgrounds/beast-handler.json:56
 msgid "Quick-Flame Rod"
@@ -2641,9 +2692,11 @@ msgstr "Они способны уничтожить большое паучье
 
 #: app/static/json/backgrounds/beast-handler.json:69
 msgid ""
-"Felines: Take a sack of Whiskerwort. Its odor can calm and control even the "
-"largest of cats."
-msgstr "Кошачьи: Возьмите мешок с Ус-травой. Ее запах может успокоить и подчинить даже самых крупных кошек."
+"**Felines**: Take a sack of **Whiskerwort**. Its odor can calm and "
+"control even the largest of cats."
+msgstr ""
+"**Кошачьи**: Возьмите мешок с Ус-травой. Ее запах может успокоить и "
+"подчинить даже самых крупных кошек."
 
 #: app/static/json/backgrounds/beast-handler.json:72
 msgid "Whiskerwort"
@@ -2655,9 +2708,11 @@ msgstr "Ее запах может успокоить и подчинить да
 
 #: app/static/json/backgrounds/beast-handler.json:79
 msgid ""
-"Canines: Take a wreath of Wolfsbane and a Large Net. Effective against "
-"werewolves as well."
-msgstr "Псовые: Возьмите венок из Волкобоя и Большую сеть. Также эффективно против оборотней!"
+"**Canines**: Take a wreath of **Wolfsbane** and a **Large Net**. "
+"Effective against werewolves as well."
+msgstr ""
+"**Псовые**: Возьмите венок из Волкобоя и Большую сеть. Также эффективно "
+"против оборотней!"
 
 #: app/static/json/backgrounds/beast-handler.json:82
 msgid "Wolfsbane"
@@ -2673,10 +2728,13 @@ msgstr "Большая сеть"
 
 #: app/static/json/backgrounds/beast-handler.json:93
 msgid ""
-"Birds: Take a Warble-Whistle (3 charges). It can imitate any bird call and "
-"can even be used to send simple messages. Recharge: Feed a baby bird as its "
-"mother would, then blow."
-msgstr "Птицы: Возьмите Манок (3 заряда). Он может имитировать любой птичий крик и также использоваться для передачи простых сообщений. Перезарядка: покормите птенца, как это сделала бы его мать, а затем подуйте в свисток."
+"**Birds**: Take a **Warble-Whistle** (3 charges). It can imitate any bird"
+" call and can even be used to send simple messages. **Recharge**: Feed a "
+"baby bird as its mother would, then blow."
+msgstr ""
+"**Птицы**: Возьмите Манок (3 заряда). Он может имитировать любой птичий "
+"крик и также использоваться для передачи простых сообщений. Перезарядка: "
+"покормите птенца, как это сделала бы его мать, а затем подуйте в свисток."
 
 #: app/static/json/backgrounds/beast-handler.json:96
 msgid "Warble-Whistle"
@@ -2690,8 +2748,9 @@ msgstr "Он может имитировать любой птичий крик 
 
 #: app/static/json/backgrounds/beast-handler.json:105
 msgid ""
-"Rodents: Take a Pan Flute that emits a high-pitched sound that only rodents "
-"can hear. So long as you play, they will follow, even to their deaths."
+"**Rodents**: Take a **Pan Flute** that emits a high-pitched sound that "
+"only rodents can hear. So long as you play, they will follow, even to "
+"their deaths."
 msgstr "Грызуны: Возьмите Флейту Пана, издающий высокочастотный звук, который слышат только грызуны. Пока вы играете, они будут следовать за вами, даже к собственной гибели."
 
 #: app/static/json/backgrounds/beast-handler.json:108
@@ -2706,9 +2765,11 @@ msgstr "Издающий высокочастотный звук, который
 
 #: app/static/json/backgrounds/beast-handler.json:115
 msgid ""
-"Serpents: Take a Warming Stone that generates an irresistible heat and a "
-"vial of Antitoxin (2 uses)."
-msgstr "Змеи: Возьмите Согревающий камень, излучающий тепло и привлекающий змей, а также Противоядие (2 использования)."
+"**Serpents**: Take a **Warming Stone** that generates an irresistible "
+"heat and a vial of **Antitoxin** (2 uses)."
+msgstr ""
+"**Змеи**: Возьмите Согревающий камень, излучающий тепло и привлекающий "
+"змей, а также **Противоядие** (2 использования)."
 
 #: app/static/json/backgrounds/beast-handler.json:118
 msgid "Warming Stone"
@@ -2731,42 +2792,46 @@ msgstr "Что понимают дикие существа, но не осоз�
 msgid ""
 "That there is far more to the world than meets the eye. With quiet "
 "concentration, you can borrow the senses of a nearby creature of your "
-"specialty."
+"**specialty**."
 msgstr "Мир гораздо глубже, чем кажется. Сосредоточившись в тишине, вы можете заимствовать чувства ближайшего существа вашей специализации."
 
 #: app/static/json/backgrounds/beast-handler.json:138
 msgid ""
-"That the behavior of beasts is a language in itself. When observing beasts "
-"of your specialty you gain insight into weather patterns and impending "
-"disasters."
+"That the behavior of beasts is a language in itself. When observing "
+"beasts of your **specialty** you gain insight into weather patterns and "
+"impending disasters."
 msgstr "Поведение зверей — это язык. Наблюдая за существами вашей специализации, вы получаете знания о погодных условиях и надвигающихся катастрофах."
 
 #: app/static/json/backgrounds/beast-handler.json:141
 msgid ""
-"That the pulse of the hunt is a powerful impulse. You have a sense for when "
-"predators, even those not of your specialty are near."
+"That the pulse of the hunt is a powerful impulse. You have a sense for "
+"when predators, even those **not of your specialty** are near."
 msgstr "Охота — это пульс жизни. Вы чувствуете присутствие хищников, даже если они не относятся к вашей специализации."
 
 #: app/static/json/backgrounds/beast-handler.json:144
 msgid ""
-"That the land is a language unto itself. Your chance of becoming lost in a "
-"terrain dominated by the beasts of your specialty is reduced by one step "
-"(e.g. 4-in-6 becomes 3-in-6)."
+"That the land is a language unto itself. Your chance of becoming lost in "
+"a terrain dominated by the beasts of your **specialty** is reduced by one"
+" step (e.g. 4-in-6 becomes 3-in-6)."
 msgstr "Вы знаете эти земли как свои пять пальцев. Ваш шанс заблудиться в местности, где доминируют существа вашей специализации, уменьшается на одну ступень (например, с 4-к-6 до 3-к-6)."
 
 #: app/static/json/backgrounds/beast-handler.json:147
 msgid ""
 "That nature's symphony can be heard if you attune to its rhythm. When "
-"surrounded by creatures of your specialty, they can alert you to approaching "
-"danger before it arrives."
+"surrounded by creatures of your **specialty**, they can alert you to "
+"approaching danger before it arrives."
 msgstr "Природная симфония слышна тем, кто способен настроиться. Когда вы окружены существами своей специализации, они могут предупредить вас о приближении опасности."
 
 #: app/static/json/backgrounds/beast-handler.json:150
 msgid ""
 "That survival is all about adaptability. Once per day, you may take on a "
-"simple feature from a creature of your specialty (webbed fingers, night "
-"vision, etc.). Add a Fatigue each time."
-msgstr "Выживание — это адаптация. Один раз в день вы можете заимствовать простую особенность существа вашей специализации (например, перепонки на пальцах, ночное зрение и т. д.). Добавьте одну Усталость за каждое использование."
+"simple feature from a creature of your **specialty** (webbed fingers, "
+"night vision, etc.). Add a **Fatigue** each time."
+msgstr ""
+"Выживание — это адаптация. Один раз в день вы можете заимствовать простую"
+" особенность существа вашей специализации (например, перепонки на "
+"пальцах, ночное зрение и т. д.). Добавьте одну **Усталость** за каждое "
+"использование."
 
 #: app/static/json/backgrounds/bonekeeper.json:4
 msgid ""
@@ -2789,9 +2854,11 @@ msgstr "Что вы взяли у мертвых?"
 
 #: app/static/json/backgrounds/bonekeeper.json:50
 msgid ""
-"A crow-shaped amulet. You can ask a question of the dead but must add a "
-"Fatigue each time. They do not always speak truthfully."
-msgstr "Амулет в форме ворона. Вы можете задавать вопросы мертвым, но за каждое использование добавляйте одну Усталость."
+"A **crow-shaped amulet**. You can ask a question of the dead but must add"
+" a **Fatigue** each time. They do not always speak truthfully."
+msgstr ""
+"**Амулет в форме ворона**. Вы можете задавать вопросы мертвым, но за "
+"каждое использование добавляйте одну **Усталость**."
 
 #: app/static/json/backgrounds/bonekeeper.json:53
 msgid "Crow-shaped Amulet"
@@ -2805,21 +2872,26 @@ msgstr "Вы можете задавать вопросы мертвым, но �
 
 #: app/static/json/backgrounds/bonekeeper.json:60
 msgid ""
-"A mortal wound from a freed revenant. You were healed, but the disfigurement "
-"has made you a pariah. You require neither air nor sustenance but are still "
-"subject to pain and death. Trapped between worlds, the dead see you as one "
-"of their own."
+"A **mortal wound** from a freed _revenant_. You were healed, but the "
+"disfigurement has made you a pariah. You require neither air nor "
+"sustenance but are still subject to pain and death. Trapped between "
+"worlds, the dead see you as one of their own."
 msgstr "Смертельная рана, полученная от ревенанта. Вас исцелили, но уродливые шрамы сделали вас изгоем. Вам не нужны воздух и пища, но вы все еще подвержены боли и смерти. Застряв между мирами, вы воспринимаетесь мертвыми как один из них."
 
 #: app/static/json/backgrounds/bonekeeper.json:64
 #: app/static/json/backgrounds/bonekeeper.json:69
 msgid ""
-"A Blood Pail (bulky) from a local death-cult. Empty it to raise a servant "
-"built from whatever is buried below, with 6 HP, 1 Armor, 13 STR, 11 DEX, 4 "
-"WIL, and shard fists (d8+d8). Only one servant can be raised at a time. If "
-"destroyed, you permanently lose 1d4 STR. Recharge: Fill with the blood of a "
-"dying warrior."
-msgstr "Ведро крови (громоздкий) от местного культа смерти. Опустошите его, чтобы поднять слугу из останков. У него: [6 ОЗ, Броня 1, 13 СИЛ, 11 ЛОВ, 4 ВОЛ и кулаки с острыми осколками (к8+к8)]. Вы можете воскресить только одного слугу за раз. Если он уничтожен, вы навсегда теряете к4 СИЛ. Перезарядка: наполните ведро кровью умирающего воина."
+"A **Blood Pail** (_bulky_) from a local death-cult. Empty it to raise a "
+"servant built from whatever is buried below, with 6 HP, 1 Armor, 13 STR, "
+"11 DEX, 4 WIL, and shard fists (d8+d8). Only one servant can be raised at"
+" a time. If destroyed, you permanently lose 1d4 STR. **Recharge**: Fill "
+"with the blood of a dying warrior."
+msgstr ""
+"**Ведро крови** (_громоздкий_) от местного культа смерти. Опустошите его,"
+" чтобы поднять слугу из останков. У него: [6 ОЗ, Броня 1, 13 СИЛ, 11 ЛОВ,"
+" 4 ВОЛ и кулаки с острыми осколками (к8+к8)]. Вы можете воскресить только"
+" одного слугу за раз. Если он уничтожен, вы навсегда теряете к4 СИЛ. "
+"Перезарядка: наполните ведро кровью умирающего воина."
 
 #: app/static/json/backgrounds/bonekeeper.json:67
 msgid "Blood Pail"
@@ -2827,9 +2899,12 @@ msgstr "Ведро крови"
 
 #: app/static/json/backgrounds/bonekeeper.json:74
 msgid ""
-"A burial wagon (+6 slots, slow) from your last job. It came with a stubborn "
-"old donkey (+4 slots, only +2 slots if pulling wagon)."
-msgstr "Похоронная повозка (+6 слотов) с последнего места работы. В комплекте с упрямым старым Ослом (+4 слота; только +2 слота, если тянет повозку; медленный)."
+"A **burial wagon** (+6 slots, _slow_) from your last job. It came with a "
+"stubborn old **donkey** (+4 slots, only +2 slots if pulling wagon)."
+msgstr ""
+"**Похоронная повозка** (+6 слотов) с последнего места работы. В комплекте"
+" с упрямым старым Ослом (+4 слота; только +2 слота, если тянет повозку; "
+"медленный)."
 
 #: app/static/json/backgrounds/bonekeeper.json:78
 msgid "Burial Wagon"
@@ -2843,10 +2918,16 @@ msgstr "Осел"
 
 #: app/static/json/backgrounds/bonekeeper.json:87
 msgid ""
-"The Detect Magic spellbook, stolen from an ancient library. Your family "
-"worked in service to an obscure underworld deity, but you lost your faith. "
-"Though exiled, you continue to serve, even as an apostate."
-msgstr "Книга заклинания «Обнаружение магии», украденная из древней библиотеки. Ваша семья служила малоизвестному божеству подземного мира, но вы утратили веру. Несмотря на изгнание, вы продолжаете служить. Обнаружение магии: вы можете видеть или слышать магические ауры рядом с собой. Книга становится теплой на ощупь, когда неподалеку используется магия."
+"The **Detect Magic** spellbook, stolen from an ancient library. Your "
+"family worked in service to an obscure underworld deity, but you lost "
+"your faith. Though exiled, you continue to serve, even as an apostate."
+msgstr ""
+"Книга заклинания «**Обнаружение магии**», украденная из древней "
+"библиотеки. Ваша семья служила малоизвестному божеству подземного мира, "
+"но вы утратили веру. Несмотря на изгнание, вы продолжаете служить. "
+"Обнаружение магии: вы можете видеть или слышать магические ауры рядом с "
+"собой. Книга становится теплой на ощупь, когда неподалеку используется "
+"магия."
 
 #: app/static/json/backgrounds/bonekeeper.json:90
 msgid "Spellbook (Detect Magic)"
@@ -2860,9 +2941,11 @@ msgstr "Вы можете видеть или слышать магически�
 
 #: app/static/json/backgrounds/bonekeeper.json:97
 msgid ""
-"A plague doctor's mask, after its owner succumbed to the disease that wiped "
-"out everyone you once knew. They should have kept it on."
-msgstr "Маска чумного доктора. Ее владелец скончался от болезни, уничтожившей всех, кого вы знали. Ему не следовало ее снимать."
+"A **plague doctor's mask**, after its owner succumbed to the disease that"
+" wiped out everyone you once knew. They should have kept it on."
+msgstr ""
+"**Маска чумного доктора**. Ее владелец скончался от болезни, уничтожившей"
+" всех, кого вы знали. Ему не следовало ее снимать."
 
 #: app/static/json/backgrounds/bonekeeper.json:100
 msgid "Plague Doctor's Mask"
@@ -2880,9 +2963,11 @@ msgstr "Какой инструмент был незаменим в вашей 
 
 #: app/static/json/backgrounds/bonekeeper.json:112
 msgid ""
-"Manacles. Though old, it's still effective even against the very strong. You "
-"don't have the key."
-msgstr "Кандалы: Хоть и старые, все еще эффективны даже против очень сильных существ. У вас нет ключа."
+"**Manacles**. Though old, it's still effective even against the very "
+"strong. You don't have the key."
+msgstr ""
+"**Кандалы**: Хоть и старые, все еще эффективны даже против очень сильных "
+"существ. У вас нет ключа."
 
 #: app/static/json/backgrounds/bonekeeper.json:115
 msgid "Manacles"
@@ -2896,9 +2981,11 @@ msgstr "Хоть и старые, все еще эффективны даже п
 
 #: app/static/json/backgrounds/bonekeeper.json:122
 msgid ""
-"Sponge. Supposedly made from the remains of a rare sea creature. It never "
-"seems to dry out."
-msgstr "Губка: Предположительно сделана из останков редкого морского существа. Кажется, она никогда не высыхает."
+"**Sponge**. Supposedly made from the remains of a rare sea creature. It "
+"never seems to dry out."
+msgstr ""
+"**Губка**: Предположительно сделана из останков редкого морского "
+"существа. Кажется, она никогда не высыхает."
 
 #: app/static/json/backgrounds/bonekeeper.json:125
 msgid "Sponge"
@@ -2911,8 +2998,8 @@ msgid ""
 msgstr "Предположительно сделана из останков редкого морского существа. Кажется, она никогда не высыхает."
 
 #: app/static/json/backgrounds/bonekeeper.json:132
-msgid "Pulley. Great for moving gravestones, rocks, or even bodies."
-msgstr "Шкив: Отлично подходят для перемещения надгробий, камней или тел."
+msgid "**Pulley**. Great for moving gravestones, rocks, or even bodies."
+msgstr "**Шкив**: Отлично подходят для перемещения надгробий, камней или тел."
 
 #: app/static/json/backgrounds/bonekeeper.json:135
 msgid "Pulley"
@@ -2924,8 +3011,9 @@ msgstr "Отлично подходят для перемещения надгр
 
 #: app/static/json/backgrounds/bonekeeper.json:142
 msgid ""
-"Incense. Perfect for rituals or to keep the flies at bay. Cools the blood."
-msgstr "Ладан: Идеален для ритуалов или отпугивания мух. Охлаждает кровь."
+"**Incense**. Perfect for rituals or to keep the flies at bay. Cools the "
+"blood."
+msgstr "**Ладан**: Идеален для ритуалов или отпугивания мух. Охлаждает кровь."
 
 #: app/static/json/backgrounds/bonekeeper.json:145
 msgid "Incense"
@@ -2936,8 +3024,10 @@ msgid "Perfect for rituals or to keep the flies at bay. Cools the blood."
 msgstr "Идеален для ритуалов или отпугивания мух. Охлаждает кровь."
 
 #: app/static/json/backgrounds/bonekeeper.json:152
-msgid "Crowbar. d6 damage. Sometimes you just need to get the damn thing open!"
-msgstr "Лом: Урон к6. Иногда нужно просто вскрыть эту чертовщину!"
+msgid ""
+"**Crowbar**. d6 damage. Sometimes you just need to get the damn thing "
+"open!"
+msgstr "**Лом**: Урон к6. Иногда нужно просто вскрыть эту чертовщину!"
 
 #: app/static/json/backgrounds/bonekeeper.json:155
 msgid "Crowbar"
@@ -2949,9 +3039,12 @@ msgstr "Иногда нужно просто вскрыть эту чертов�
 
 #: app/static/json/backgrounds/bonekeeper.json:162
 msgid ""
-"Repellent. Powerful stuff. Its faded label makes it unclear what it is "
-"actually meant to repel, though. Perhaps everything. 3 uses."
-msgstr "Репеллент: Мощная штука. Его выцветшая этикетка не позволяет точно определить, от кого он должен защищать.Возможно, от всех подряд. 3 использования."
+"**Repellent**. Powerful stuff. Its faded label makes it unclear what it "
+"is actually _meant_ to repel, though. Perhaps everything. 3 uses."
+msgstr ""
+"**Репеллент**: Мощная штука. Его выцветшая этикетка не позволяет точно "
+"определить, от кого он должен защищать.Возможно, от всех подряд. 3 "
+"использования."
 
 #: app/static/json/backgrounds/bonekeeper.json:165
 #: app/static/json/backgrounds/fieldwarden.json:43
@@ -2999,9 +3092,11 @@ msgstr "Какое было ваше последнее крупное дело?
 
 #: app/static/json/backgrounds/cutpurse.json:40
 msgid ""
-"A noble's summer home. The place was full of fancy wine (+20gp) but not much "
-"else. Take Fence Cutters."
-msgstr "Летний домик дворянина. В этом месте было полно изысканного вина (+20 зм), но больше ничего ценного. Возьмите Кусачки для проволоки."
+"A noble's summer home. The place was full of fancy wine (+20gp) but not "
+"much else. Take **Fence Cutters**."
+msgstr ""
+"Летний домик дворянина. В этом месте было полно изысканного вина (+20 "
+"зм), но больше ничего ценного. Возьмите **Кусачки для проволоки**."
 
 #: app/static/json/backgrounds/cutpurse.json:43
 msgid "Fence Cutters"
@@ -3018,8 +3113,9 @@ msgstr "bonus_gold"
 
 #: app/static/json/backgrounds/cutpurse.json:50
 msgid ""
-"A bank. (You were caught.) You bear a brand only visible by firelight, and "
-"anyone who sees the mark can ask you for a beer. Take Retractable Wires."
+"A bank. (You were caught.) You bear a brand only visible by firelight, "
+"and anyone who sees the mark can ask you for a beer. Take **Retractable "
+"Wires**."
 msgstr "Банк (вас поймали). На вас есть клеймо, видимое только при свете огня, и любой, кто увидит клеймо, может попросить у вас пива. Возьмите Катушку с проводом."
 
 #: app/static/json/backgrounds/cutpurse.json:53
@@ -3028,10 +3124,11 @@ msgstr "Катушка с проводом"
 
 #: app/static/json/backgrounds/cutpurse.json:59
 msgid ""
-"A guild warehouse. Take a Ladder (bulky, 10ft) and Blinding Powder (1 use)."
+"A guild warehouse. Take a **Ladder** (_bulky_, 10ft) and **Blinding "
+"Powder** (1 use)."
 msgstr ""
-"Склад гильдии. Возьмите Лестницу (громоздкий, 10 фут) и Ослепляющий порошок "
-"(1 использование)."
+"Склад гильдии. Возьмите Лестницу (_громоздкий_, 10 фут) и **Ослепляющий "
+"порошок** (1 использование)."
 
 #: app/static/json/backgrounds/cutpurse.json:62
 msgid "Ladder"
@@ -3047,9 +3144,12 @@ msgstr "Ослепляющий порошок"
 
 #: app/static/json/backgrounds/cutpurse.json:74
 msgid ""
-"Moneylender. Someone beat you to the job but left behind a Scroll of Arcane "
-"Eye (petty)."
-msgstr "Ростовщик. Кто-то опередил вас, но оставил свиток «Магическое око» (мелкий). Магическое око: вы можете видеть через волшебное парящее глазное яблоко, которое перемещается по вашей команде."
+"Moneylender. Someone beat you to the job but left behind a **Scroll** of "
+"_Arcane Eye_ (_petty_)."
+msgstr ""
+"Ростовщик. Кто-то опередил вас, но оставил свиток «_Магическое око_» "
+"(_мелкий_). Магическое око: вы можете видеть через волшебное парящее "
+"глазное яблоко, которое перемещается по вашей команде."
 
 #: app/static/json/backgrounds/cutpurse.json:77
 msgid "Scroll (Arcane Eye)"
@@ -3064,8 +3164,8 @@ msgstr "Вы можете видеть через волшебное парящ�
 
 #: app/static/json/backgrounds/cutpurse.json:84
 msgid ""
-"Constable's quarters. You escaped but left some friends behind. Take Strong "
-"Silk Rope (30ft) and a queasy feeling."
+"Constable's quarters. You escaped but left some friends behind. Take "
+"**Strong Silk Rope** (30ft) and a queasy feeling."
 msgstr "Комната констебля. Вы сбежали, но бросили друзей позади. Начните с Прочной шелковой веревкой и ощущением тошноты от своего поступка."
 
 #: app/static/json/backgrounds/cutpurse.json:87
@@ -3078,9 +3178,11 @@ msgstr "30 фт"
 
 #: app/static/json/backgrounds/cutpurse.json:94
 msgid ""
-"A university. You were seen but not pursued. You still don't know why. Take "
-"Smoke Pellets (3 uses)."
-msgstr "Университет. Вас заметили, но не преследовали. Вы до сих пор не знаете, почему. Возьмите Дымовые бомбы (3 использования)."
+"A university. You were seen but not pursued. You still don't know why. "
+"Take **Smoke Pellets** (3 uses)."
+msgstr ""
+"Университет. Вас заметили, но не преследовали. Вы до сих пор не знаете, "
+"почему. Возьмите **Дымовые бомбы** (3 использования)."
 
 #: app/static/json/backgrounds/cutpurse.json:97
 msgid "Smoke Pellets"
@@ -3092,9 +3194,11 @@ msgstr "Что помогает вам воровать?"
 
 #: app/static/json/backgrounds/cutpurse.json:109
 msgid ""
-"Catring: 2 charges. Climb up walls and fall safely. Recharge: Place the ring "
-"on a stray cat's tail."
-msgstr "Кольцо-кошки: 2 заряда. Позволяет взбираться по стенам и безопасно падать. Перезарядка: наденьте кольцо на хвост бездомной кошки."
+"**Catring**: 2 charges. Climb up walls and fall safely. **Recharge**: "
+"Place the ring on a stray cat's tail."
+msgstr ""
+"**Кольцо-кошки**: 2 заряда. Позволяет взбираться по стенам и безопасно "
+"падать. Перезарядка: наденьте кольцо на хвост бездомной кошки."
 
 #: app/static/json/backgrounds/cutpurse.json:112
 msgid "Catring"
@@ -3106,9 +3210,11 @@ msgstr "Перезарядка: наденьте кольцо на хвост б
 
 #: app/static/json/backgrounds/cutpurse.json:121
 msgid ""
-"Gildfinger: 1 charge. A finger glove that mimics any mundane key. Recharge: "
-"Bundle it with at least 100gp for a night."
-msgstr "Золотой палец: 1 заряд. Накладка на палец, имитирующая любой обычный ключ. Перезарядка: оставьте ее на ночь вместе с не менее чем 100 золотых."
+"**Gildfinger**: 1 charge. A finger glove that mimics any mundane key. "
+"**Recharge**: Bundle it with at least 100gp for a night."
+msgstr ""
+"**Золотой палец**: 1 заряд. Накладка на палец, имитирующая любой обычный "
+"ключ. Перезарядка: оставьте ее на ночь вместе с не менее чем 100 золотых."
 
 #: app/static/json/backgrounds/cutpurse.json:124
 msgid "Gildfinger"
@@ -3120,9 +3226,12 @@ msgstr "Перезарядка: оставьте ее на ночь вместе
 
 #: app/static/json/backgrounds/cutpurse.json:133
 msgid ""
-"Glimpse Glass: 3 charges. A monocle that lets you see through walls or other "
-"obstructions. It shatters after the last use."
-msgstr "Стекло подглядывания: 3 использования. Монокль, позволяющий видеть сквозь стены или другие преграды. Разбивается после последнего использования."
+"**Glimpse Glass**: 3 charges. A monocle that lets you see through walls "
+"or other obstructions. It shatters after the last use."
+msgstr ""
+"**Стекло подглядывания**: 3 использования. Монокль, позволяющий видеть "
+"сквозь стены или другие преграды. Разбивается после последнего "
+"использования."
 
 #: app/static/json/backgrounds/cutpurse.json:136
 msgid "Glimpse Glass"
@@ -3136,10 +3245,13 @@ msgstr "Монокль, позволяющий видеть сквозь сте�
 
 #: app/static/json/backgrounds/cutpurse.json:144
 msgid ""
-"Sweetwhistle: 1 charge. Listeners hear a soft, familiar voice in the "
-"distance that they cannot resist following. Recharge: Lose a dear memory. "
-"(Describe it.)"
-msgstr "Сладкий свисток: 1 заряд. Окружающие слышат мягкий знакомый голос вдалеке. Они следуют за ним, не в силах сопротивляться. Перезарядка: потеряйте дорогое воспоминание (опишите)."
+"**Sweetwhistle**: 1 charge. Listeners hear a soft, familiar voice in the "
+"distance that they cannot resist following. **Recharge**: Lose a dear "
+"memory. (Describe it.)"
+msgstr ""
+"**Сладкий свисток**: 1 заряд. Окружающие слышат мягкий знакомый голос "
+"вдалеке. Они следуют за ним, не в силах сопротивляться. Перезарядка: "
+"потеряйте дорогое воспоминание (опишите)."
 
 #: app/static/json/backgrounds/cutpurse.json:147
 msgid "Sweetwhistle"
@@ -3151,9 +3263,13 @@ msgstr "Перезарядка: потеряйте дорогое воспоми
 
 #: app/static/json/backgrounds/cutpurse.json:155
 msgid ""
-"Vagrant's Veil: 1 charge. Wear it to blend seamlessly into crowds, appearing "
-"as a simple pauper. Recharge: Donate the day's winnings to the poor. Petty"
-msgstr "Покров бродяги: 1 заряд. Наденьте его, чтобы незаметно слиться с толпой, выглядя как простой нищий. Перезарядка: пожертвуйте весь дневной заработок бедным. Мелкий."
+"**Vagrant's Veil**: 1 charge. Wear it to blend seamlessly into crowds, "
+"appearing as a simple pauper. **Recharge**: Donate the day's winnings to "
+"the poor. _Petty_"
+msgstr ""
+"**Покров бродяги**: 1 заряд. Наденьте его, чтобы незаметно слиться с "
+"толпой, выглядя как простой нищий. Перезарядка: пожертвуйте весь дневной "
+"заработок бедным. _Мелкий_."
 
 #: app/static/json/backgrounds/cutpurse.json:158
 msgid "Vagrant's Veil"
@@ -3165,9 +3281,11 @@ msgstr "Перезарядка: пожертвуйте весь дневной �
 
 #: app/static/json/backgrounds/cutpurse.json:166
 msgid ""
-"Reverse Teetotum: 1 use. When spun, time skips backwards 30 seconds. "
+"**Reverse Teetotum**: 1 use. When spun, time skips backwards 30 seconds. "
 "Everyone remembers what happened. Petty."
-msgstr "Обратный тетотум: 1 использование. При вращении, отматывает время на 30 секунд назад. Все помнят, что произошло."
+msgstr ""
+"**Обратный тетотум**: 1 использование. При вращении, отматывает время на "
+"30 секунд назад. Все помнят, что произошло."
 
 #: app/static/json/backgrounds/cutpurse.json:169
 msgid "Reverse Teetotum"
@@ -3217,10 +3335,14 @@ msgstr "Что вас одолело?"
 #: app/static/json/backgrounds/fieldwarden.json:53
 msgid ""
 "A voracious swarm of pests that swallowed crops and animals alike. With "
-"nothing to defend, you left. Take Gale Seed Extract (3 uses). Ingesting it "
-"lets you sprint with a speed four times your regular rate. Afterward you add "
-"two Fatigue."
-msgstr "Ненасытная стая вредителей, пожиравшая урожай и животных. Оставшись без целей для защиты, вы ушли. Возьмите Экстракт семян бури (3 исп.). Выпив его, вы сможете бежать в четыре раза быстрее обычного. После этого добавьте две Усталости."
+"nothing to defend, you left. Take **Gale Seed Extract** (3 uses). "
+"Ingesting it lets you sprint with a speed four times your regular rate. "
+"Afterward you add two **Fatigue**."
+msgstr ""
+"Ненасытная стая вредителей, пожиравшая урожай и животных. Оставшись без "
+"целей для защиты, вы ушли. Возьмите **Экстракт семян бури** (3 исп.). "
+"Выпив его, вы сможете бежать в четыре раза быстрее обычного. После этого "
+"добавьте две Усталости."
 
 #: app/static/json/backgrounds/fieldwarden.json:56
 msgid "Gale Seed Extract"
@@ -3235,9 +3357,11 @@ msgstr "Выпив его, вы сможете бежать в четыре ра
 #: app/static/json/backgrounds/fieldwarden.json:64
 msgid ""
 "A crop spirit, angered by a poor tithing. The fires consumed nearly "
-"everything, and afterward you were able to gather a pouch of Fireseeds (d8, "
-"blast, 4 uses)."
-msgstr "Дух урожая, разгневанный скудным подношением. Огонь уничтожил почти все, но вам удалось собрать мешочек Огненных семян (к8, взрыв, 4 исп.)."
+"everything, and afterward you were able to gather a pouch of "
+"**Fireseeds** (d8, _blast_, 4 uses)."
+msgstr ""
+"Дух урожая, разгневанный скудным подношением. Огонь уничтожил почти все, "
+"но вам удалось собрать мешочек Огненных семян (к8, _взрыв_, 4 исп.)."
 
 #: app/static/json/backgrounds/fieldwarden.json:67
 msgid "Fireseeds"
@@ -3245,10 +3369,13 @@ msgstr "Огненные семена"
 
 #: app/static/json/backgrounds/fieldwarden.json:74
 msgid ""
-"An antlered, toothy demon that nearly ended you. Take a blood-stained Bone "
-"Knife (d6). On Critical Damage, its next attack becomes enhanced from "
-"contact with blood."
-msgstr "Рогатый, зубастый демон, едва не убивший вас. Возьмите окровавленный Костяной нож (к6). При нанесении Критического Урона, его следующая атака становится Усиленной из-за контакта с кровью."
+"An antlered, toothy demon that nearly ended you. Take a blood-stained "
+"**Bone Knife** (d6). On **Critical Damage**, its next attack becomes "
+"_enhanced_ from contact with blood."
+msgstr ""
+"Рогатый, зубастый демон, едва не убивший вас. Возьмите окровавленный "
+"**Костяной нож** (к6). При нанесении Критического Урона, его следующая "
+"атака становится Усиленной из-за контакта с кровью."
 
 #: app/static/json/backgrounds/fieldwarden.json:77
 msgid "Bone Knife"
@@ -3261,9 +3388,12 @@ msgstr "При нанесении Критического Урона, его с
 
 #: app/static/json/backgrounds/fieldwarden.json:84
 msgid ""
-"The Withering, a type of stem rot from the Roots. Take a Diseased Crop (6 "
-"uses) that quickly decays any plant it touches."
-msgstr "Увядание — вид стеблевой гнили из Корней. Возьмите Зараженный урожай (6 использований), который быстро разлагает любое растение, к которому прикасается."
+"_The Withering_, a type of stem rot from the **Roots**. Take a **Diseased"
+" Crop** (6 uses) that quickly decays any plant it touches."
+msgstr ""
+"Увядание — вид стеблевой гнили из Корней. Возьмите **Зараженный урожай** "
+"(6 использований), который быстро разлагает любое растение, к которому "
+"прикасается."
 
 #: app/static/json/backgrounds/fieldwarden.json:87
 msgid "Diseased Crop"
@@ -3275,16 +3405,21 @@ msgstr "Быстро разлагает любое растение, к кото
 
 #: app/static/json/backgrounds/fieldwarden.json:95
 msgid ""
-"Wolves, or so you thought. You are now a Werewolf [8 HP, 15 STR, 14 DEX, "
-"claws (d6+d6), bite (d8)]. Your WIL remains the same. You can turn at will "
-"(once per day) but must make a WIL save to revert. Anyone left alive from "
-"your attacks must make a WIL save to avoid infection."
-msgstr "Волки, по крайней мере, вы так думали... Теперь вы — Оборотень [8 ОЗ, 15 СИЛ, 14 ЛОВ, когти (к6+к6), укус (к8)]. Ваша ВОЛ остается прежней. Вы можете превращаться по желанию (раз в день), но должны пройти проверку ВОЛ, чтобы вернуть себе человеческий облик. Любой, кто выжил после вашей атаки, должен пройти проверку ВОЛ, чтобы избежать заражения."
+"Wolves, or so you thought. You are now a **Werewolf** [8 HP, 15 STR, 14 "
+"DEX, claws (d6+d6), bite (d8)]. Your WIL remains the same. You can _turn_"
+" at will (once per day) but must make a WIL save to revert. Anyone left "
+"alive from your attacks must make a WIL save to avoid infection."
+msgstr ""
+"Волки, по крайней мере, вы так думали... Теперь вы — **Оборотень** [8 ОЗ,"
+" 15 СИЛ, 14 ЛОВ, когти (к6+к6), укус (к8)]. Ваша ВОЛ остается прежней. Вы"
+" можете превращаться по желанию (раз в день), но должны пройти проверку "
+"ВОЛ, чтобы вернуть себе человеческий облик. Любой, кто выжил после вашей "
+"атаки, должен пройти проверку ВОЛ, чтобы избежать заражения."
 
 #: app/static/json/backgrounds/fieldwarden.json:99
 msgid ""
-"Crop thieves. Not all of them survived, but you were outnumbered. Start with "
-"+d4 HP and a Cusped Falchion (d8)."
+"Crop thieves. Not all of them survived, but you were outnumbered. Start "
+"with +d4 HP and a **Cusped Falchion** (d8)."
 msgstr "Воры урожая. Не все из них выжили, но вы были в меньшенстве. Начните с +к4 ОЗ и Зазубренным фальшионом (к8)."
 
 #: app/static/json/backgrounds/fieldwarden.json:102
@@ -3297,9 +3432,11 @@ msgstr "Какой инструмент спас вам жизнь?"
 
 #: app/static/json/backgrounds/fieldwarden.json:113
 msgid ""
-"Bloodvine Whip: d8 damage. On Critical Damage it drains the target's blood, "
-"granting the weapon's next attack the blast quality."
-msgstr "Кнут из кровавой лозы: Урон к8. При Критическом Уроне высасывает из цели кровь, придавая следующей атаке свойство взрыва."
+"**Bloodvine Whip**: d8 damage. On **Critical Damage** it drains the "
+"target's blood, granting the weapon's next attack the _blast_ quality."
+msgstr ""
+"**Кнут из кровавой лозы**: Урон к8. При Критическом Уроне высасывает из "
+"цели кровь, придавая следующей атаке свойство взрыва."
 
 #: app/static/json/backgrounds/fieldwarden.json:116
 msgid "Bloodvine Whip"
@@ -3313,9 +3450,11 @@ msgstr "При Критическом Уроне высасывает из це�
 
 #: app/static/json/backgrounds/fieldwarden.json:123
 msgid ""
-"Clatter Keeper: A hand-cranked device that emits a loud noise, frightening "
-"away most creatures."
-msgstr "Коробка-хлопушка: Ручное устройство, издающее громкий шум, отпугивающий большинство существ."
+"**Clatter Keeper**: A hand-cranked device that emits a loud noise, "
+"frightening away most creatures."
+msgstr ""
+"**Коробка-хлопушка**: Ручное устройство, издающее громкий шум, "
+"отпугивающий большинство существ."
 
 #: app/static/json/backgrounds/fieldwarden.json:126
 msgid "Clatter Keeper"
@@ -3329,9 +3468,12 @@ msgstr "Ручное устройство, издающее громкий шу�
 
 #: app/static/json/backgrounds/fieldwarden.json:133
 msgid ""
-"Sun Stick: Provides ample warmth and light for up to one hour. Recharge: "
-"Leave in heavy sunlight for a full day. 1 use."
-msgstr "Солнечная палочка: Обеспечивает достаточное тепло и свет в течение одного часа (1 использование). Перезарядка: оставьте на целый день на ярком солнце."
+"**Sun Stick**: Provides ample warmth and light for up to one hour. "
+"**Recharge**: Leave in heavy sunlight for a full day. 1 use."
+msgstr ""
+"**Солнечная палочка**: Обеспечивает достаточное тепло и свет в течение "
+"одного часа (1 использование). Перезарядка: оставьте на целый день на "
+"ярком солнце."
 
 #: app/static/json/backgrounds/fieldwarden.json:136
 msgid "Sun Stick"
@@ -3345,9 +3487,11 @@ msgstr "Обеспечивает достаточное тепло и свет �
 
 #: app/static/json/backgrounds/fieldwarden.json:144
 msgid ""
-"Root Tether: When thrown, binds a creature as large as a wolf to the soil "
-"for a short time."
-msgstr "Корневая привязь: Метнув, вы на короткое время свяжете существо размером с волка с землей."
+"**Root Tether**: When thrown, binds a creature as large as a wolf to the "
+"soil for a short time."
+msgstr ""
+"**Корневая привязь**: Метнув, вы на короткое время свяжете существо "
+"размером с волка с землей."
 
 #: app/static/json/backgrounds/fieldwarden.json:147
 msgid "Root Tether"
@@ -3361,9 +3505,11 @@ msgstr "Метнув, вы на короткое время свяжете су�
 
 #: app/static/json/backgrounds/fieldwarden.json:154
 msgid ""
-"Greenwhistle: A small flute that calms plants, making passage through areas "
-"heavy with plant life a bit easier."
-msgstr "Зеленый свисток: Небольшая флейта, успокаивающая растения и облегчающая проход через заросли."
+"**Greenwhistle**: A small flute that calms plants, making passage through"
+" areas heavy with plant life a bit easier."
+msgstr ""
+"**Зеленый свисток**: Небольшая флейта, успокаивающая растения и "
+"облегчающая проход через заросли."
 
 #: app/static/json/backgrounds/fieldwarden.json:157
 msgid "Greenwhistle"
@@ -3377,10 +3523,14 @@ msgstr "Небольшая флейта, успокаивающая растен
 
 #: app/static/json/backgrounds/fieldwarden.json:164
 msgid ""
-"Everbloom Band: A circlet adorned with flowers that never wilt. On taking "
-"Critical Damage the flowers dissolve into dust, but you act as if your save "
-"succeeded (STR loss still occurs)."
-msgstr "Вечноцветущий браслет: Браслет, украшенный цветами, которые никогда не вянут. Когда вы получите Критический Урон, цветы обратятся в пыль, но вы сможете считать, что успешно прошли спасбросок (это не избавит вас от потери СИЛ)."
+"**Everbloom Band**: A circlet adorned with flowers that never wilt. On "
+"taking **Critical Damage** the flowers dissolve into dust, but you act as"
+" if your save succeeded (STR loss still occurs)."
+msgstr ""
+"**Вечноцветущий браслет**: Браслет, украшенный цветами, которые никогда "
+"не вянут. Когда вы получите **Критический Урон**, цветы обратятся в пыль,"
+" но вы сможете считать, что успешно прошли спасбросок (это не избавит вас"
+" от потери СИЛ)."
 
 #: app/static/json/backgrounds/fieldwarden.json:167
 msgid "Everbloom Band"
@@ -3433,37 +3583,42 @@ msgstr "Как вы заслужили свой лук?"
 
 #: app/static/json/backgrounds/fletchwind.json:49
 msgid ""
-"War. If you are first to attack, your bow gains the blast property for the "
-"first round."
-msgstr "Война. Если вы атакуете первым, в первом раунде ваши выстрелы получают свойство взрыв."
+"**War**. If you are first to attack, your bow gains the _blast_ property "
+"for the first round."
+msgstr ""
+"**Война**. Если вы атакуете первым, в первом раунде ваши выстрелы "
+"получают свойство _взрыв_."
 
 #: app/static/json/backgrounds/fletchwind.json:52
 msgid ""
-"Falconry. You keep a falcon [3 hp, 5 STR, 16 DEX, 4 WIL, claws (d6+d6), bite "
-"(d8)]. It only eats live game."
+"**Falconry**. You keep a falcon [3 hp, 5 STR, 16 DEX, 4 WIL, claws "
+"(d6+d6), bite (d8)]. It only eats live game."
 msgstr "Соколиная охота. У вас есть сокол, и он ест только живую добычу. [3 ОЗ, 5 СИЛ, 16 ЛОВ, 4 ВОЛ, когти (к6+к6), клюв (к8)]."
 
 #: app/static/json/backgrounds/fletchwind.json:55
 msgid ""
-"Hunting. When taking the Supply action, your ability to secure Rations "
-"increases by one step (e.g. 1d4 becomes 1d6)."
-msgstr "Охота. При выполнении действия «Снабжение» (стр. 79), ваша способность добывать Пайки увеличивается на ступень (например, к4 становится к6)."
+"**Hunting**. When taking the Supply action, your ability to secure "
+"**Rations** increases by **one step** (e.g. 1d4 becomes 1d6)."
+msgstr ""
+"Охота. При выполнении действия «Снабжение» (стр. 79), ваша способность "
+"добывать **Пайки** увеличивается на ступень (например, к4 становится к6)."
 
 #: app/static/json/backgrounds/fletchwind.json:58
 msgid ""
-"Tournaments. Attacks with your bow are enhanced if the target is immobile."
+"**Tournaments**. Attacks with your bow are _enhanced_ if the target is "
+"immobile."
 msgstr "Турниры. Ваши атаки из лука усилены, если цель обездвижена."
 
 #: app/static/json/backgrounds/fletchwind.json:61
 msgid ""
-"Training. If you are the first to attack, melee attacks against you are "
-"impaired until you take STR damage."
+"**Training**. If you are the first to attack, melee attacks against you "
+"are _impaired_ until you take STR damage."
 msgstr "Тренировка. Если вы атакуете первым, атаки в ближнем бою против вас ослаблены, пока вы не получите урон по СИЛ."
 
 #: app/static/json/backgrounds/fletchwind.json:64
 msgid ""
-"Scouting. When taking the Travel action, your presence decreases the chance "
-"of getting lost by one step (e.g. 4-in-6 becomes 3-in-6)."
+"**Scouting**. When taking the Travel action, your presence decreases the "
+"chance of getting lost by one step (e.g. 4-in-6 becomes 3-in-6)."
 msgstr "Разведка. При выполнении действия «Путешествие» (стр. 79), ваше присутствие снижает шанс заблудиться на одну ступень (например, 4-к-6 станет 3-к-6)."
 
 #: app/static/json/backgrounds/fletchwind.json:69
@@ -3471,8 +3626,12 @@ msgid "What kind of wood is your bow made from?"
 msgstr "Из какого дерева сделан ваш лук?"
 
 #: app/static/json/backgrounds/fletchwind.json:72
-msgid "Western Yew (d6, bulky). Can be wielded as a blunt weapon (d6). Noisy."
-msgstr "Западный тис (к6, громоздкий). Может использоваться в качестве оружия с дробящим уроном в ближнем бою (к6 урон). Шумный."
+msgid ""
+"**Western Yew** (d6, _bulky_). Can be wielded as a blunt weapon (d6). "
+"Noisy."
+msgstr ""
+"**Западный тис** (к6, _громоздкий_). Может использоваться в качестве "
+"оружия с дробящим уроном в ближнем бою (к6 урон). Шумный."
 
 #: app/static/json/backgrounds/fletchwind.json:75
 msgid "Western Yew"
@@ -3484,9 +3643,11 @@ msgstr "Может использоваться в качестве оружия
 
 #: app/static/json/backgrounds/fletchwind.json:82
 msgid ""
-"Sessile Oak (d8, bulky). Slams into targets. On Critical Damage something is "
-"torn off."
-msgstr "Скальный дуб (к8, громоздкий). Ваши выстрелы поразительно мощны. Критический Урон отрывает конечности."
+"**Sessile Oak** (d8, _bulky_). Slams into targets. On **Critical Damage**"
+" something is torn off."
+msgstr ""
+"**Скальный дуб** (к8, _громоздкий_). Ваши выстрелы поразительно мощны. "
+"**Критический Урон** отрывает конечности."
 
 #: app/static/json/backgrounds/fletchwind.json:85
 msgid "Sessile Oak"
@@ -3498,9 +3659,11 @@ msgstr "Ваши выстрелы поразительно мощны. Крит�
 
 #: app/static/json/backgrounds/fletchwind.json:92
 msgid ""
-"Stone Pine (d6, bulky). Produces one use of Sticky Sap per day. The sap is "
-"highly explosive."
-msgstr "Каменная сосна (к6, громоздкий). Производит одну порцию Липкой смолы в день. Аккуратно, смола крайне взрывоопасна."
+"**Stone Pine** (d6, _bulky_). Produces one use of **Sticky Sap** per day."
+" The sap is highly explosive."
+msgstr ""
+"**Каменная сосна** (к6, _громоздкий_). Производит одну порцию Липкой "
+"смолы в день. Аккуратно, смола крайне взрывоопасна."
 
 #: app/static/json/backgrounds/fletchwind.json:95
 msgid "Stone Pine"
@@ -3512,9 +3675,11 @@ msgstr "Производит одну порцию Липкой смолы в д
 
 #: app/static/json/backgrounds/fletchwind.json:102
 msgid ""
-"White Ash (d6, bulky). Can be used in place of a shield in melee combat (+1 "
-"Armor)."
-msgstr "Белый ясень (к6, громоздкий). Может использоваться вместо щита в ближнем бою (Броня 1)."
+"**White Ash** (d6, _bulky_). Can be used in place of a shield in melee "
+"combat (+1 Armor)."
+msgstr ""
+"**Белый ясень** (к6, _громоздкий_). Может использоваться вместо щита в "
+"ближнем бою (Броня 1)."
 
 #: app/static/json/backgrounds/fletchwind.json:105
 msgid "White Ash"
@@ -3526,9 +3691,11 @@ msgstr "В ближнем бою может заменять щит (+1 Брон
 
 #: app/static/json/backgrounds/fletchwind.json:112
 msgid ""
-"Striped Bamboo (d6). Collapsible, it only requires one slot (but still "
-"requires both hands)."
-msgstr "Полосатый бамбук (к6). Складной, занимает только один слот (но все равно требует обеих рук для использования)."
+"**Striped Bamboo** (d6). Collapsible, it only requires one slot (but "
+"still requires both hands)."
+msgstr ""
+"**Полосатый бамбук** (к6). Складной, занимает только один слот (но все "
+"равно требует обеих рук для использования)."
 
 #: app/static/json/backgrounds/fletchwind.json:115
 msgid "Striped Bamboo"
@@ -3540,9 +3707,11 @@ msgstr "Складной, занимает только один слот (но 
 
 #: app/static/json/backgrounds/fletchwind.json:122
 msgid ""
-"Wych Elm (d6, bulky). Protects the bearer from poisons and toxins, so long "
-"as they are holding it."
-msgstr "Ведьмин вяз (к6, громоздкий). Защищает носителя от ядов и токсинов, пока он держит лук."
+"**Wych Elm** (d6, _bulky_). Protects the bearer from poisons and toxins, "
+"so long as they are holding it."
+msgstr ""
+"**Ведьмин вяз** (к6, _громоздкий_). Защищает носителя от ядов и токсинов,"
+" пока он держит лук."
 
 #: app/static/json/backgrounds/fletchwind.json:125
 msgid "Wych Elm"
@@ -3586,8 +3755,11 @@ msgstr "Кто вас приютил?"
 #: app/static/json/backgrounds/foundling.json:52
 msgid ""
 "An old hunter. You were both quite happy, until it all ended. Take a "
-"Weathered Longbow (d8, bulky) and a Leather Jerkin (1 Armor)."
-msgstr "Старый охотник. Вам было хорошо вместе, но все закончилось. Возьмите потрепанный Длинный лук (к8, громоздкий) и Кожаный жакет (Броня 1)."
+"**Weathered Longbow** (d8, _bulky_) and a **Leather Jerkin** (1 Armor)."
+msgstr ""
+"Старый охотник. Вам было хорошо вместе, но все закончилось. Возьмите "
+"**потрепанный Длинный лук** (к8, _громоздкий_) и **Кожаный жакет** (Броня"
+" 1)."
 
 #: app/static/json/backgrounds/foundling.json:55
 msgid "Weathered Longbow"
@@ -3600,7 +3772,7 @@ msgstr "Кожаный жакет"
 #: app/static/json/backgrounds/foundling.json:65
 msgid ""
 "A wizened apothecary, who taught you the healing arts but maintained a "
-"clinical detachment. Take a Healing Unguent (restores d4 STR)."
+"clinical detachment. Take a **Healing Unguent** (restores d4 STR)."
 msgstr "Мудрый фармацевт, который обучил вас искусству исцеления, но сохранял эмоциональную отстраненность. Возьмите Лечебную мазь (восстанавливает к4 СИЛ, 1 использование)."
 
 #: app/static/json/backgrounds/foundling.json:68
@@ -3613,10 +3785,12 @@ msgstr "Восстанавливает к4 СИЛ"
 
 #: app/static/json/backgrounds/foundling.json:76
 msgid ""
-"A druid, who taught you the language of trees. When it came time to leave, "
-"you took with you only a Gnarled Staff (d8) and left a promise that one day "
-"you would return."
-msgstr "Друид, который научил вас языку деревьев. Когда пришло время уйти, вы взяли с собой только Корявый посох (к8) и обещали однажды вернуться."
+"A druid, who taught you the language of trees. When it came time to "
+"leave, you took with you only a **Gnarled Staff** (d8) and left a promise"
+" that one day you would return."
+msgstr ""
+"Друид, который научил вас языку деревьев. Когда пришло время уйти, вы "
+"взяли с собой только **Корявый посох** (к8) и обещали однажды вернуться."
 
 #: app/static/json/backgrounds/foundling.json:79
 msgid "Gnarled Staff"
@@ -3624,10 +3798,15 @@ msgstr "Корявый посох"
 
 #: app/static/json/backgrounds/foundling.json:85
 msgid ""
-"A gruff blacksmith from a sleepy river town. You were always kept at arm's "
-"length. Now the forge is cold, and you've moved on. Take a Smith's Apron "
-"(petty) and a set of Oft-mended Chain Mail (2 Armor, bulky)."
-msgstr "Суровый кузнец из тихого речного городка. Он всегда держал вас поблизости. Теперь кузница холодна, и вы отправились дальше. Возьмите Фартук кузнеца (мелкий) и Кольчуга (Броня 2, громоздкий), который часто чинили."
+"A gruff blacksmith from a sleepy river town. You were always kept at "
+"arm's length. Now the forge is cold, and you've moved on. Take a "
+"**Smith's Apron** (_petty_) and a set of **Oft-mended Chain Mail** (2 "
+"Armor, _bulky_)."
+msgstr ""
+"Суровый кузнец из тихого речного городка. Он всегда держал вас "
+"поблизости. Теперь кузница холодна, и вы отправились дальше. Возьмите "
+"**Фартук кузнеца** (_мелкий_) и Кольчуга (Броня 2, _громоздкий_), который"
+" часто чинили."
 
 #: app/static/json/backgrounds/foundling.json:88
 msgid "Smith's Apron"
@@ -3641,7 +3820,7 @@ msgstr "Латаная кольчуга"
 msgid ""
 "A troupe of traveling entertainers. For a time, they were like family to "
 "you. One day you woke up and they were gone with no explanation. Take a "
-"Storybook, a Dagger (d6), and some burning questions."
+"**Storybook**, a **Dagger** (d6), and some burning questions."
 msgstr "Труппа странствующих артистов. Некоторое время они были для вас как семья. Однажды вы проснулись, а они исчезли без объяснений. Начните игру со Сборником рассказов, Кинжалом (к6) и множеством вопросов без ответов."
 
 #: app/static/json/backgrounds/foundling.json:101
@@ -3651,9 +3830,15 @@ msgstr "Сборник рассказов"
 #: app/static/json/backgrounds/foundling.json:111
 msgid ""
 "The monks of a secluded forest monastery. When their rules became too "
-"strict, and you snuck away. Take a Monk's Habit (warm, petty) and a "
-"Spellbook of Control Plants."
-msgstr "Монахи из уединенного лесного монастыря. Когда их правила стали слишком строгими, вы сбежали. Возьмите Монашескую рясу (теплая, мелкий) и Книгу заклинания «Управление растениями». Управление растениями: ближайшие растения и деревья подчиняются вам и получают способность медленно двигаться. Книга источает слабый запах разложения, а по ее корешку растут листья."
+"strict, and you snuck away. Take a **Monk's Habit** (warm, _petty_) and a"
+" **Spellbook** of _Control Plants_."
+msgstr ""
+"Монахи из уединенного лесного монастыря. Когда их правила стали слишком "
+"строгими, вы сбежали. Возьмите Монашескую рясу (теплая, _мелкий_) и Книгу"
+" заклинания «_Управление растениями_». Управление растениями: ближайшие "
+"растения и деревья подчиняются вам и получают способность медленно "
+"двигаться. Книга источает слабый запах разложения, а по ее корешку растут"
+" листья."
 
 #: app/static/json/backgrounds/foundling.json:114
 msgid "Monk's Habit"
@@ -3679,9 +3864,11 @@ msgstr "Что уберегает вас от дурных происшеств�
 
 #: app/static/json/backgrounds/foundling.json:131
 msgid ""
-"Pipeweed: Your good luck charm. Conversations tend to flow more easily after "
-"a smoke. 6 uses."
-msgstr "Ароматные травы: Ваш талисман на удачу. Беседы обычно становятся легче после розжига (6 использований)."
+"**Pipeweed**: Your good luck charm. Conversations tend to flow more "
+"easily after a smoke. 6 uses."
+msgstr ""
+"**Ароматные травы**: Ваш талисман на удачу. Беседы обычно становятся "
+"легче после розжига (6 использований)."
 
 #: app/static/json/backgrounds/foundling.json:134
 msgid "Pipeweed"
@@ -3694,9 +3881,12 @@ msgstr "Ваш талисман удачи. После перекура разг
 
 #: app/static/json/backgrounds/foundling.json:142
 msgid ""
-"Stink Jar: Shattering this jar releases an odor so foul all nearby must make "
-"a STR save or immediately vomit. 1 use."
-msgstr "Вонючий сосуд: Разбив этот сосуд, вы выпускаете такой отвратительный запах, что все поблизости должны пройти проверку СИЛ или их немедленно вырвет (1 использование)."
+"**Stink Jar**: Shattering this jar releases an odor so foul all nearby "
+"must make a STR save or immediately vomit. 1 use."
+msgstr ""
+"**Вонючий сосуд**: Разбив этот сосуд, вы выпускаете такой отвратительный "
+"запах, что все поблизости должны пройти проверку СИЛ или их немедленно "
+"вырвет (1 использование)."
 
 #: app/static/json/backgrounds/foundling.json:145
 msgid "Stink Jar"
@@ -3710,9 +3900,13 @@ msgstr "Разбив этот сосуд, вы выпускаете такой �
 
 #: app/static/json/backgrounds/foundling.json:153
 msgid ""
-"Ivy Worm: A green worm often mistaken for a weed. Swallowed whole, it "
-"absorbs any toxins or rot in the body before exiting through the usual way."
-msgstr "Плющевой червь: Зеленый червь, которого часто принимают за сорняк. Проглоченный целиком, он поглощает любые токсины или гниль в организме, а затем выходит естественным путем."
+"**Ivy Worm**: A green worm often mistaken for a weed. Swallowed whole, it"
+" absorbs any toxins or rot in the body before exiting through the usual "
+"way."
+msgstr ""
+"**Плющевой червь**: Зеленый червь, которого часто принимают за сорняк. "
+"Проглоченный целиком, он поглощает любые токсины или гниль в организме, а"
+" затем выходит естественным путем."
 
 #: app/static/json/backgrounds/foundling.json:156
 msgid "Ivy Worm"
@@ -3726,9 +3920,11 @@ msgstr "Зеленый червь, которого часто принимаю�
 
 #: app/static/json/backgrounds/foundling.json:163
 msgid ""
-"Dream Stone: A smooth blue stone that helps recall dreams more clearly. "
-"Overuse can cause dream-addiction."
-msgstr "Камень сновидений: Гладкий синий камень, помогающий яснее вспоминать сны. Чрезмерное использование вызывает зависимость от снов."
+"**Dream Stone**: A smooth blue stone that helps recall dreams more "
+"clearly. Overuse can cause dream-addiction."
+msgstr ""
+"**Камень сновидений**: Гладкий синий камень, помогающий яснее вспоминать "
+"сны. Чрезмерное использование вызывает зависимость от снов."
 
 #: app/static/json/backgrounds/foundling.json:166
 msgid "Dream Stone"
@@ -3742,9 +3938,12 @@ msgstr "Гладкий синий камень, помогающий яснее 
 
 #: app/static/json/backgrounds/foundling.json:173
 msgid ""
-"Drowning Rod: A finger-sized wooden stick that doubles in size each time it "
-"is fully submerged in water. It does not shrink down again."
-msgstr "Палочка утопления: Деревянная палочка размером с палец, которая удваивается в размере каждый раз, когда полностью погружается в воду. Она не уменьшается обратно."
+"**Drowning Rod**: A finger-sized wooden stick that doubles in size each "
+"time it is fully submerged in water. It does not shrink down again."
+msgstr ""
+"**Палочка утопления**: Деревянная палочка размером с палец, которая "
+"удваивается в размере каждый раз, когда полностью погружается в воду. Она"
+" не уменьшается обратно."
 
 #: app/static/json/backgrounds/foundling.json:176
 msgid "Drowning Rod"
@@ -3758,9 +3957,13 @@ msgstr "Деревянная палочка размером с палец, ко
 
 #: app/static/json/backgrounds/foundling.json:183
 msgid ""
-"Rabbit's Foot: You were wearing it when they found you. They say it is the "
-"foot of she who left you and that it protects you from witch magic. Petty."
-msgstr "Кроличья лапка: Она была на вашей шее, когда вас нашли. Говорят, это лапка той, кто вас оставил, и что она защищает вас от ведьмовской магии (мелкий)."
+"**Rabbit's Foot**: You were wearing it when they found you. They say it "
+"is the foot of she who left you and that it protects you from witch "
+"magic. _Petty_."
+msgstr ""
+"**Кроличья лапка**: Она была на вашей шее, когда вас нашли. Говорят, это "
+"лапка той, кто вас оставил, и что она защищает вас от ведьмовской магии "
+"(_мелкий_)."
 
 #: app/static/json/backgrounds/foundling.json:186
 msgid "Rabbit's Foot"
@@ -3797,9 +4000,12 @@ msgstr "Какой странный гриб вы обнаружили?"
 
 #: app/static/json/backgrounds/fungal-forager.json:35
 msgid ""
-"Shrieking Trumpet. When exposed to light, it screams so loudly that all "
-"nearby attacks (including your own) are impaired. 2 uses."
-msgstr "Кричащая труба. При воздействии света издает такой громкий крик, при котором все ближайшие атаки (включая ваши собственные) становятся ослабленными (2 использования)."
+"**Shrieking Trumpet**. When exposed to light, it screams so loudly that "
+"all nearby attacks (including your own) are _impaired_. 2 uses."
+msgstr ""
+"**Кричащая труба**. При воздействии света издает такой громкий крик, при "
+"котором все ближайшие атаки (включая ваши собственные) становятся "
+"ослабленными (2 использования)."
 
 #: app/static/json/backgrounds/fungal-forager.json:38
 msgid "Shrieking Trumpet"
@@ -3813,9 +4019,11 @@ msgstr "При воздействии света издает такой гро�
 
 #: app/static/json/backgrounds/fungal-forager.json:46
 msgid ""
-"Torch Fungus. When crushed, it creates a cold blue light for a short while. "
-"2 uses."
-msgstr "Факельный гриб. При раздавливании излучает холодный синий свет в течение короткого времени (2 использования)."
+"**Torch Fungus**. When crushed, it creates a cold blue light for a short "
+"while. 2 uses."
+msgstr ""
+"**Факельный гриб**. При раздавливании излучает холодный синий свет в "
+"течение короткого времени (2 использования)."
 
 #: app/static/json/backgrounds/fungal-forager.json:49
 msgid "Torch Fungus"
@@ -3827,9 +4035,12 @@ msgstr "При раздавливании излучает холодный си
 
 #: app/static/json/backgrounds/fungal-forager.json:57
 msgid ""
-"Murderous Truffle. Pungent, highly toxic, and very rare (worth 50gp to "
-"assassins). Illegal pretty much everywhere. 1 use."
-msgstr "Убийственный трюфель. Резкий, высокотоксичный и очень редкий (можно продать убийцам за 50 зм). Практически везде считается вне закона (1 исп.)."
+"**Murderous Truffle**. Pungent, highly toxic, and very rare (worth 50gp "
+"to assassins). Illegal pretty much everywhere. 1 use."
+msgstr ""
+"**Убийственный трюфель**. Резкий, высокотоксичный и очень редкий (можно "
+"продать убийцам за 50 зм). Практически везде считается вне закона (1 "
+"исп.)."
 
 #: app/static/json/backgrounds/fungal-forager.json:60
 msgid "Murderous Truffle"
@@ -3843,9 +4054,12 @@ msgstr "Резкий, высокотоксичный и очень редкий 
 
 #: app/static/json/backgrounds/fungal-forager.json:68
 msgid ""
-"Hellcap. Exposure to its aroma causes intense nausea and vomiting. Either "
-"way, it clears the room. Bottled. 1 use."
-msgstr "Чертовка. Воздействие ее аромата вызывает сильную тошноту, вплоть до рвоты. В любом случае, превосходно очищает помещение от незванных гостей. Хранится в бутылке (1 использование)."
+"**Hellcap**. Exposure to its aroma causes intense nausea and vomiting. "
+"Either way, it clears the room. Bottled. 1 use."
+msgstr ""
+"**Чертовка**. Воздействие ее аромата вызывает сильную тошноту, вплоть до "
+"рвоты. В любом случае, превосходно очищает помещение от незванных гостей."
+" Хранится в бутылке (1 использование)."
 
 #: app/static/json/backgrounds/fungal-forager.json:71
 msgid "Hellcap"
@@ -3859,10 +4073,13 @@ msgstr "Воздействие ее аромата вызывает сильну
 
 #: app/static/json/backgrounds/fungal-forager.json:79
 msgid ""
-"Sproutcup. Ingest to shrink down to the size of a mouse. (Your belongings "
-"stay the same size.) You return to normal size within the hour, often in "
-"fits and starts. 1 use."
-msgstr "Чашечный росток. При употреблении уменьшает вас до размеров мыши, вещи остаются прежнего размера. Вы возвращаетесь к нормальному виду в течение часа, процесс проходит рывками (1 использование)."
+"**Sproutcup**. Ingest to shrink down to the size of a mouse. (Your "
+"belongings stay the same size.) You return to normal size within the "
+"hour, often in fits and starts. 1 use."
+msgstr ""
+"**Чашечный росток**. При употреблении уменьшает вас до размеров мыши, "
+"вещи остаются прежнего размера. Вы возвращаетесь к нормальному виду в "
+"течение часа, процесс проходит рывками (1 использование)."
 
 #: app/static/json/backgrounds/fungal-forager.json:82
 msgid "Sproutcup"
@@ -3876,9 +4093,13 @@ msgstr "При употреблении уменьшает вас до разм�
 
 #: app/static/json/backgrounds/fungal-forager.json:90
 msgid ""
-"Rootflower. A white fungus found only on corpses deep underground. Ingest to "
-"restore d6 WIL. You will dream of the dead and their stories. 1 use."
-msgstr "Корневой цветок. Белый гриб, встречающийся лишь на трупах, зарытых глубоко в землю. При употреблении восстанавливает к6 ВОЛ. Вам будут сниться мертвецы и их история (1 использование)."
+"**Rootflower**. A white fungus found only on corpses deep underground. "
+"Ingest to restore d6 WIL. You will dream of the dead and their stories. 1"
+" use."
+msgstr ""
+"**Корневой цветок**. Белый гриб, встречающийся лишь на трупах, зарытых "
+"глубоко в землю. При употреблении восстанавливает к6 ВОЛ. Вам будут "
+"сниться мертвецы и их история (1 использование)."
 
 #: app/static/json/backgrounds/fungal-forager.json:93
 msgid "Rootflower"
@@ -3896,9 +4117,11 @@ msgstr "Что помогает вам сохранять рассудок да�
 
 #: app/static/json/backgrounds/fungal-forager.json:106
 msgid ""
-"Glowsnail. Casts a soft, bioluminescent light. Feeds on one ration every two "
-"days."
-msgstr "Светящаяся улитка: Излучает мягкий биолюминесцентный свет. Питается одной порцией пищи каждые два дня."
+"**Glowsnail**. Casts a soft, bioluminescent light. Feeds on one ration "
+"every two days."
+msgstr ""
+"**Светящаяся улитка**: Излучает мягкий биолюминесцентный свет. Питается "
+"одной порцией пищи каждые два дня."
 
 #: app/static/json/backgrounds/fungal-forager.json:109
 msgid "Glowsnail"
@@ -3910,9 +4133,11 @@ msgstr "Излучает мягкий биолюминесцентный све�
 
 #: app/static/json/backgrounds/fungal-forager.json:116
 msgid ""
-"Silk Moth Shawl. A weatherproof blanket, it can also douse a fire without "
-"being damaged."
-msgstr "Шаль шелкового мотылька: Водонепроницаемое одеяло, способное потушить огонь без повреждений."
+"**Silk Moth Shawl**. A weatherproof blanket, it can also douse a fire "
+"without being damaged."
+msgstr ""
+"**Шаль шелкового мотылька**: Водонепроницаемое одеяло, способное потушить"
+" огонь без повреждений."
 
 #: app/static/json/backgrounds/fungal-forager.json:119
 msgid "Silk Moth Shawl"
@@ -3924,9 +4149,11 @@ msgstr "Водонепроницаемое одеяло, способное по
 
 #: app/static/json/backgrounds/fungal-forager.json:126
 msgid ""
-"Milkflower. A gentle stimulant. Chewing it makes you immune to panic for the "
-"next hour. 3 uses."
-msgstr "Молочный цветок: Легкий стимулятор. Жевание делает вас невосприимчивым к панике на следующий час (3 использования)."
+"**Milkflower**. A gentle stimulant. Chewing it makes you immune to "
+"_panic_ for the next hour. 3 uses."
+msgstr ""
+"**Молочный цветок**: Легкий стимулятор. Жевание делает вас "
+"невосприимчивым к панике на следующий час (3 использования)."
 
 #: app/static/json/backgrounds/fungal-forager.json:129
 msgid "Milkflower"
@@ -3939,9 +4166,11 @@ msgstr "Легкий стимулятор. Жевание делает вас н
 
 #: app/static/json/backgrounds/fungal-forager.json:137
 msgid ""
-"Luxcompass. Hums softly as it moves closer to the Sun. Eventually the noise "
-"becomes unbearably loud."
-msgstr "Светокомпас: Тихо гудит по мере приближения к солнцу. Со временем шум становится невыносимо громким."
+"**Luxcompass**. Hums softly as it moves closer to the Sun. Eventually the"
+" noise becomes unbearably loud."
+msgstr ""
+"**Светокомпас**: Тихо гудит по мере приближения к солнцу. Со временем шум"
+" становится невыносимо громким."
 
 #: app/static/json/backgrounds/fungal-forager.json:140
 msgid "Luxcompass"
@@ -3955,9 +4184,11 @@ msgstr "Тихо гудит по мере приближения к солнцу
 
 #: app/static/json/backgrounds/fungal-forager.json:147
 msgid ""
-"Sloth-Tarp. A tough and weatherproof fabric, useful for hanging off trees. "
-"When inside, you have +1 Armor."
-msgstr "Ленивый тент: Прочный и водонепроницаемый материал, пригодный для подвешивания на деревьях. Когда вы внутри, получаете +1 Брони."
+"**Sloth-Tarp**. A tough and weatherproof fabric, useful for hanging off "
+"trees. When inside, you have +1 Armor."
+msgstr ""
+"**Ленивый тент**: Прочный и водонепроницаемый материал, пригодный для "
+"подвешивания на деревьях. Когда вы внутри, получаете +1 Брони."
 
 #: app/static/json/backgrounds/fungal-forager.json:150
 msgid "Sloth-Tarp"
@@ -3971,9 +4202,12 @@ msgstr "Прочный и водонепроницаемый материал, �
 
 #: app/static/json/backgrounds/fungal-forager.json:157
 msgid ""
-"Miner's Grease. Great for dislodging a gem, tool, or limb from a tight "
-"crack. Highly explosive. 3 uses."
-msgstr "Шахтерская смазка: Отлично подходит для высвобождения драгоценного камня, инструмента или конечности из узкой щели. Крайне взрывоопасна (3 использования)."
+"**Miner's Grease**. Great for dislodging a gem, tool, or limb from a "
+"tight crack. Highly explosive. 3 uses."
+msgstr ""
+"**Шахтерская смазка**: Отлично подходит для высвобождения драгоценного "
+"камня, инструмента или конечности из узкой щели. Крайне взрывоопасна (3 "
+"использования)."
 
 #: app/static/json/backgrounds/fungal-forager.json:160
 msgid "Miner's Grease"
@@ -4063,9 +4297,12 @@ msgstr "Как Лес подвел вас?"
 #: app/static/json/backgrounds/greenwise.json:54
 msgid ""
 "An ill-tempered forest spirit cursed you for stealing, marking you as an "
-"enemy of their kind. Take a Bezoar Stone. Ingesting it cures any poison (1 "
-"use, unless retrieved)."
-msgstr "Раздосадованный дух леса проклял вас за воровство, пометив как врага. Возьмите Камень безоара. Прием внутрь излечивает от любого яда (1 использование, если камень не извлечен)."
+"enemy of their kind. Take a **Bezoar Stone**. Ingesting it cures any "
+"poison (1 use, unless retrieved)."
+msgstr ""
+"Раздосадованный дух леса проклял вас за воровство, пометив как врага. "
+"Возьмите **Камень безоара**. Прием внутрь излечивает от любого яда (1 "
+"использование, если камень не извлечен)."
 
 #: app/static/json/backgrounds/greenwise.json:57
 msgid "Bezoar Stone"
@@ -4077,9 +4314,11 @@ msgstr "Прием внутрь излечивает от любого яда (1
 
 #: app/static/json/backgrounds/greenwise.json:65
 msgid ""
-"A close friend disappeared into the forest. Now you see their face in any "
-"tea you brew. Take a Soporific Concoction (3 uses)."
-msgstr "Ваш близкий друг исчез в лесу. Теперь вы видите его лицо в любом заваренном чае. Возьмите Усыпляющий отвар (3 использования)."
+"A close friend disappeared into the forest. Now you see their face in any"
+" tea you brew. Take a **Soporific Concoction** (3 uses)."
+msgstr ""
+"Ваш близкий друг исчез в лесу. Теперь вы видите его лицо в любом "
+"заваренном чае. Возьмите **Усыпляющий отвар** (3 использования)."
 
 #: app/static/json/backgrounds/greenwise.json:68
 msgid "Soporific Concoction"
@@ -4088,29 +4327,34 @@ msgstr "Усыпляющий отвар"
 #: app/static/json/backgrounds/greenwise.json:75
 msgid ""
 "You were poisoned, losing your sense of taste and smell. You can now "
-"withstand noxious fumes and always carry Antitoxin (2 uses)."
-msgstr "Вы были отравлены, потеряли вкус и обоняние. Теперь вы можете выдерживать ядовитые пары и всегда носите с собой Противоядие (2 исп.)."
+"withstand noxious fumes and always carry **Antitoxin** (2 uses)."
+msgstr ""
+"Вы были отравлены, потеряли вкус и обоняние. Теперь вы можете выдерживать"
+" ядовитые пары и всегда носите с собой **Противоядие** (2 исп.)."
 
 #: app/static/json/backgrounds/greenwise.json:85
 msgid ""
 "Your radical experiments turned your skin green, and you now gain "
-"nourishment as a plant. You don't need Rations, but a day without sufficient "
-"sunlight and water leaves you deprived."
+"nourishment as a plant. You don't need **Rations**, but a day without "
+"sufficient sunlight and water leaves you _deprived_."
 msgstr "Ваши радикальные эксперименты окрасили вашу кожу в зеленый цвет, и теперь вы питаетесь как растение. Вам не нужен паек, но день без достаточного количества солнца и воды делает вас истощенным."
 
 #: app/static/json/backgrounds/greenwise.json:88
 msgid ""
 "Your impressive corpseflower won a local contest then promptly killed a "
-"judge. You fled, but not without the Prize Money (100gp) and a warrant for "
-"your arrest."
+"judge. You fled, but not without the **Prize Money (100gp)** and a "
+"warrant for your arrest."
 msgstr "Ваше впечатляющее хищное растение выиграло местный конкурс, но затем убило одного из судей. Вы сбежали, прихватив Призовые деньги (100 зм) и став разыскиваемой персоной."
 
 #: app/static/json/backgrounds/greenwise.json:93
 msgid ""
-"You created a restorative tincture that also causes accidental infertility. "
-"Take a Healing Potion that completely restores STR. Only you know of its "
-"unintended side-effects."
-msgstr "Вы создали восстанавливающую настойку, которая с некоторым шансом способна привести к бесплодию. Возьмите Лечебное зелье, полностью восстанавливающее СИЛ. Только вы знаете о его побочном эффекте."
+"You created a restorative tincture that also causes accidental "
+"infertility. Take a **Healing Potion** that completely restores STR. Only"
+" you know of its unintended side-effects."
+msgstr ""
+"Вы создали восстанавливающую настойку, которая с некоторым шансом "
+"способна привести к бесплодию. Возьмите **Лечебное зелье**, полностью "
+"восстанавливающее СИЛ. Только вы знаете о его побочном эффекте."
 
 #: app/static/json/backgrounds/greenwise.json:96
 msgid "Healing Potion"
@@ -4125,8 +4369,8 @@ msgid "What keeps you safe while in the Wood?"
 msgstr "Что защищает вас в Лесу?"
 
 #: app/static/json/backgrounds/greenwise.json:109
-msgid "Amadou: A vermilion fungus that catches fire quite easily. 3 uses."
-msgstr "Трутовик: Алый гриб, легко воспламеняется (3 использования)"
+msgid "**Amadou**: A vermilion fungus that catches fire quite easily. 3 uses."
+msgstr "**Трутовик**: Алый гриб, легко воспламеняется (3 использования)"
 
 #: app/static/json/backgrounds/greenwise.json:112
 msgid "Amadou"
@@ -4138,9 +4382,11 @@ msgstr "Киноварно-красный гриб, который очень л
 
 #: app/static/json/backgrounds/greenwise.json:120
 msgid ""
-"Delphinium: Breathe water for up to one hour. 1 use, but can be divided into "
-"fractional doses."
-msgstr "Дельфиниум: Позволяет дышать под водой до одного часа (1 использование, можно разделить на несколько раз)."
+"**Delphinium**: Breathe water for up to one hour. 1 use, but can be "
+"divided into fractional doses."
+msgstr ""
+"**Дельфиниум**: Позволяет дышать под водой до одного часа (1 "
+"использование, можно разделить на несколько раз)."
 
 #: app/static/json/backgrounds/greenwise.json:123
 msgid "Delphinium"
@@ -4152,9 +4398,11 @@ msgstr "Позволяет дышать под водой до одного ча
 
 #: app/static/json/backgrounds/greenwise.json:131
 msgid ""
-"Tacky Stalk: A woody reed that hardens into a permanent adhesive when "
-"chewed. 2 uses."
-msgstr "Клейкий стебель: Деревянистый тростник, который превращается в прочный клей при жевании (2 использования)."
+"**Tacky Stalk**: A woody reed that hardens into a permanent adhesive when"
+" chewed. 2 uses."
+msgstr ""
+"**Клейкий стебель**: Деревянистый тростник, который превращается в "
+"прочный клей при жевании (2 использования)."
 
 #: app/static/json/backgrounds/greenwise.json:134
 msgid "Tacky Stalk"
@@ -4166,9 +4414,11 @@ msgstr "Деревянистый тростник, который превращ
 
 #: app/static/json/backgrounds/greenwise.json:142
 msgid ""
-"Wisp Lantern: Caged in wrought iron, provides a dim light so long as the "
-"wisp is able to feed on nearby pain and fear."
-msgstr "Фонарь с блуждающим огоньком: Клетка из кованого железа, дающая слабый свет, пока огонек ощущает неподалеку боль и страх."
+"**Wisp Lantern**: Caged in wrought iron, provides a dim light so long as "
+"the wisp is able to feed on nearby pain and fear."
+msgstr ""
+"**Фонарь с блуждающим огоньком**: Клетка из кованого железа, дающая "
+"слабый свет, пока огонек ощущает неподалеку боль и страх."
 
 #: app/static/json/backgrounds/greenwise.json:145
 msgid "Wisp Lantern"
@@ -4182,9 +4432,11 @@ msgstr "Клетка из кованого железа, дающая слабы
 
 #: app/static/json/backgrounds/greenwise.json:152
 msgid ""
-"Seed Bomb: A canvas sack filled with seeds that explode on impact. d6 damage "
-"(blast, 3 uses)."
-msgstr "Бомба с семенами: Холщовый мешочек, наполненный семенами, взрывающимися при ударе. Урон к6 (взрыв, 3 использования)."
+"**Seed Bomb**: A canvas sack filled with seeds that explode on impact. d6"
+" damage (_blast_, 3 uses)."
+msgstr ""
+"**Бомба с семенами**: Холщовый мешочек, наполненный семенами, "
+"взрывающимися при ударе. Урон к6 (_взрыв_, 3 использования)."
 
 #: app/static/json/backgrounds/greenwise.json:155
 msgid "Seed Bomb"
@@ -4198,9 +4450,11 @@ msgstr "Холщовый мешочек, наполненный семенами
 
 #: app/static/json/backgrounds/greenwise.json:163
 msgid ""
-"Briarvine: Entangles any creature up to horse size (STR to break free). "
-"Reusable."
-msgstr "Шиповник: Опутывает любое существо размером до лошади (проверка СИЛ, чтобы освободиться, многоразовый)."
+"**Briarvine**: Entangles any creature up to horse size (STR to break "
+"free). Reusable."
+msgstr ""
+"**Шиповник**: Опутывает любое существо размером до лошади (проверка СИЛ, "
+"чтобы освободиться, многоразовый)."
 
 #: app/static/json/backgrounds/greenwise.json:166
 msgid "Briarvine"
@@ -4251,10 +4505,13 @@ msgstr "Что вам досталось от Незримого двора?"
 
 #: app/static/json/backgrounds/half-witch.json:54
 msgid ""
-"A Black Rose Fiddle (bulky). Its music causes intense sadness and immobility "
-"in nearby mortals. (Others are merely fascinated.) You don't know how to "
-"play."
-msgstr "Скрипка из черной розы (громоздкий). Ее музыка вызывает у смертных сильную печаль и обездвиживает их. На иных она производит лишь завораживающий эффект. Вы не умеете играть на скрипке."
+"A **Black Rose Fiddle** (_bulky_). Its music causes intense sadness and "
+"immobility in nearby mortals. (Others are merely fascinated.) You don't "
+"know how to play."
+msgstr ""
+"**Скрипка из черной розы** (_громоздкий_). Ее музыка вызывает у смертных "
+"сильную печаль и обездвиживает их. На иных она производит лишь "
+"завораживающий эффект. Вы не умеете играть на скрипке."
 
 #: app/static/json/backgrounds/half-witch.json:57
 msgid "Black Rose Fiddle"
@@ -4268,9 +4525,11 @@ msgstr "Ее музыка вызывает у смертных сильную п
 
 #: app/static/json/backgrounds/half-witch.json:64
 msgid ""
-"Paper legs. You are extremely light and can fall a few stories without "
-"getting hurt. Try to avoid tearing them or getting them wet."
-msgstr "Бумажные ноги. Вы чрезвычайно легки и можете падать с высоты нескольких этажей без травм. Постарайтесь не намочить их и не порвать."
+"**Paper legs**. You are extremely light and can fall a few stories "
+"without getting hurt. Try to avoid tearing them or getting them wet."
+msgstr ""
+"**Бумажные ноги**. Вы чрезвычайно легки и можете падать с высоты "
+"нескольких этажей без травм. Постарайтесь не намочить их и не порвать."
 
 #: app/static/json/backgrounds/half-witch.json:67
 msgid "Paper Legs"
@@ -4284,10 +4543,10 @@ msgstr "Вы чрезвычайно легки и можете падать с �
 
 #: app/static/json/backgrounds/half-witch.json:74
 msgid ""
-"A Living Nightmare that dwells within you but manifests whenever you are in "
-"danger. It has your same Attributes and HP and attacks with claws (d8+d8). "
-"It disappears on Critical Damage (take 1d4 WIL damage), re-appearing again "
-"on the next full moon."
+"A **Living Nightmare** that dwells within you but manifests whenever you "
+"are in danger. It has your same **Attributes** and **HP** and attacks "
+"with claws (d8+d8). It disappears on **Critical Damage** (take 1d4 WIL "
+"damage), re-appearing again on the next full moon."
 msgstr "Кошмарное существо, обитающее внутри вас и проявляющееся, когда вы в опасности. Оно обладает такими же Характеристиками и Очками Защиты, как и вы, и атакует когтями (к8+к8). Исчезает при получении Критического Урона (вы теряете к4 ВОЛ), и появляется вновь на следующее полнолуние."
 
 #: app/static/json/backgrounds/half-witch.json:77
@@ -4303,9 +4562,11 @@ msgstr "Кошмарное существо, обитающее внутри в�
 
 #: app/static/json/backgrounds/half-witch.json:84
 msgid ""
-"A Raven Familiar [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as an "
-"intelligent being and is entirely devoted to you."
-msgstr "Ворон-фамильяр. Он говорит как разумное существо и полностью предан вам. [8 ОЗ, 3 СИЛ, 11 ЛОВ, 13 ВОЛ, клюв (к6)]"
+"A **Raven Familiar** [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks"
+" as an intelligent being and is entirely devoted to you."
+msgstr ""
+"**Ворон-фамильяр**. Он говорит как разумное существо и полностью предан "
+"вам. [8 ОЗ, 3 СИЛ, 11 ЛОВ, 13 ВОЛ, клюв (к6)]"
 
 #: app/static/json/backgrounds/half-witch.json:87
 msgid "Raven Familiar"
@@ -4319,9 +4580,11 @@ msgstr "Он говорит как разумное существо и полн
 
 #: app/static/json/backgrounds/half-witch.json:94
 msgid ""
-"A Briar Thorn. It can pierce any organic material (quite painfully) but when "
-"removed leaves no trace of the intrusion."
-msgstr "Шип шиповника. Он может проколоть любой органический материал (довольно болезненно), но при извлечении не оставляет следов."
+"A **Briar Thorn**. It can pierce any organic material (quite painfully) "
+"but when removed leaves no trace of the intrusion."
+msgstr ""
+"**Шип шиповника**. Он может проколоть любой органический материал "
+"(довольно болезненно), но при извлечении не оставляет следов."
 
 #: app/static/json/backgrounds/half-witch.json:97
 msgid "Briar Thorn"
@@ -4333,10 +4596,13 @@ msgstr "Он может проколоть любой органический �
 
 #: app/static/json/backgrounds/half-witch.json:104
 msgid ""
-"A Fae creature's True Name. Use it to summon its owner for an act of great "
-"service, but only once. It could also fetch a hefty price, from the right "
-"buyer."
-msgstr "Истинное имя феи. Используйте его, чтобы призвать владельца для выпо– лнения значимой услуги, но только один раз. Также может быть продано за значительную сумму подходящему покупателю"
+"A Fae creature's **True Name**. Use it to summon its owner for an act of "
+"great service, but only once. It could also fetch a hefty price, from the"
+" right buyer."
+msgstr ""
+"**Истинное имя** феи. Используйте его, чтобы призвать владельца для выпо–"
+" лнения значимой услуги, но только один раз. Также может быть продано за "
+"значительную сумму подходящему покупателю"
 
 #: app/static/json/backgrounds/half-witch.json:110
 msgid ""
@@ -4346,9 +4612,13 @@ msgstr "Какую алхимическую смесь вы носите с со
 
 #: app/static/json/backgrounds/half-witch.json:113
 msgid ""
-"Rebirth Ash: Remnants of a bark spirit. Sprinkle to reignite a fire that has "
-"died or return to life a creature that has died only moments before. 3 uses."
-msgstr "Пепел возрождения: Останки берестяного духа. Развейте над целью, чтобы вновь зажечь потухший огонь или вернуть к жизни существо, умершее мгновение назад (3 использования)."
+"**Rebirth Ash**: Remnants of a bark spirit. Sprinkle to reignite a fire "
+"that has died or return to life a creature that has died only moments "
+"before. 3 uses."
+msgstr ""
+"**Пепел возрождения**: Останки берестяного духа. Развейте над целью, "
+"чтобы вновь зажечь потухший огонь или вернуть к жизни существо, умершее "
+"мгновение назад (3 использования)."
 
 #: app/static/json/backgrounds/half-witch.json:116
 msgid "Rebirth Ash"
@@ -4362,9 +4632,11 @@ msgstr "Останки берестяного духа. Развейте над 
 
 #: app/static/json/backgrounds/half-witch.json:124
 msgid ""
-"Glamour Feather: Plume of a firebird. Can make any creature appear "
+"**Glamour Feather**: Plume of a firebird. Can make any creature appear "
 "convincingly as someone (or something) else. 1 use."
-msgstr "Гламурное перо: Перо жар-птицы. Может заставить любое существо выглядеть как кто-то (или что-то) другое (1 использование)."
+msgstr ""
+"**Гламурное перо**: Перо жар-птицы. Может заставить любое существо "
+"выглядеть как кто-то (или что-то) другое (1 использование)."
 
 #: app/static/json/backgrounds/half-witch.json:127
 msgid "Glamour Feather"
@@ -4376,10 +4648,13 @@ msgstr "Может заставить любое существо выгляде
 
 #: app/static/json/backgrounds/half-witch.json:135
 msgid ""
-"Hawthorn Seed: An acorn from the other side, gathered on the spring equinox. "
-"When planted, it sprouts a luxurious shelter, collapsing at moonrise the "
-"next day. 1 use."
-msgstr "Семя из иного мира: Желудь из иного мира, собранный в день весеннего равноденствия. При посадке, вырастает в роскошное укрытие, которое исчезает на закате следующего дня (1 исп.)."
+"**Hawthorn Seed**: An acorn from the other side, gathered on the spring "
+"equinox. When planted, it sprouts a luxurious shelter, collapsing at "
+"moonrise the next day. 1 use."
+msgstr ""
+"**Семя из иного мира**: Желудь из иного мира, собранный в день весеннего "
+"равноденствия. При посадке, вырастает в роскошное укрытие, которое "
+"исчезает на закате следующего дня (1 исп.)."
 
 #: app/static/json/backgrounds/half-witch.json:138
 msgid "Hawthorn Seed"
@@ -4393,9 +4668,11 @@ msgstr "Желудь из иного мира, собранный в день в
 
 #: app/static/json/backgrounds/half-witch.json:146
 msgid ""
-"Stonetree Sap: Sap obtained in exchange for blood. Hardens when rubbed on "
-"any surface (+1 Armor). 3 uses."
-msgstr "Сок камнедрева: Получен в обмен на кровь. Затвердевает при нанесении на любую поверхность (+1 Брони, 3 использования)."
+"**Stonetree Sap**: Sap obtained in exchange for blood. Hardens when "
+"rubbed on any surface (+1 Armor). 3 uses."
+msgstr ""
+"**Сок камнедрева**: Получен в обмен на кровь. Затвердевает при нанесении "
+"на любую поверхность (+1 Брони, 3 использования)."
 
 #: app/static/json/backgrounds/half-witch.json:149
 msgid "Stonetree Sap"
@@ -4409,9 +4686,12 @@ msgstr "Получен в обмен на кровь. Затвердевает �
 
 #: app/static/json/backgrounds/half-witch.json:157
 msgid ""
-"Nightdust Powder: The ritual burning of six owls. When tossed in the air, "
-"day turns to night for a short while. 2 uses."
-msgstr "Порошок ночной пыли: Изготовлен путем ритуального сжигания шести сов. При распылении в воздухе, на короткое время превращает день в ночь (2 использования)."
+"**Nightdust Powder**: The ritual burning of six owls. When tossed in the "
+"air, day turns to night for a short while. 2 uses."
+msgstr ""
+"**Порошок ночной пыли**: Изготовлен путем ритуального сжигания шести сов."
+" При распылении в воздухе, на короткое время превращает день в ночь (2 "
+"использования)."
 
 #: app/static/json/backgrounds/half-witch.json:160
 msgid "Nightdust Powder"
@@ -4423,10 +4703,13 @@ msgstr "День ненадолго сменяется ночью, если по
 
 #: app/static/json/backgrounds/half-witch.json:168
 msgid ""
-"Hex Stone: Gathered from a river that flows from the other side. Removed "
-"from its iron tin, it can absorb the effects of an active magical effect. If "
-"destroyed, the magic is released. 1 use."
-msgstr "Шестигранный камень: Собран из реки, текущей из иного мира. Вынутый из железной коробочки, он может поглотить эффект заклинания. При разрушении камня магия освобождается (1 исп.)."
+"**Hex Stone**: Gathered from a river that flows from the _other side_. "
+"Removed from its iron tin, it can absorb the effects of an active magical"
+" effect. If destroyed, the magic is released. 1 use."
+msgstr ""
+"**Шестигранный камень**: Собран из реки, текущей из иного мира. Вынутый "
+"из железной коробочки, он может поглотить эффект заклинания. При "
+"разрушении камня магия освобождается (1 исп.)."
 
 #: app/static/json/backgrounds/half-witch.json:171
 msgid "Hex Stone"
@@ -4468,10 +4751,13 @@ msgstr "К какому ордену вы принадлежите?"
 
 #: app/static/json/backgrounds/hexenbane.json:51
 msgid ""
-"Order of the Crossroads. Take a Pocket Leyfinder. It points to nearby ley "
-"lines and other sources of arcane power. If you lose it, the punishment is "
-"death."
-msgstr "Орден Перекрестков. Возьмите Карманный лейфайндер. Он указывает на ближайшие лей линии и другие источники магической силы. Если вы его потеряете, наказанием будет смерть."
+"**Order of the Crossroads**. Take a **Pocket Leyfinder**. It points to "
+"nearby ley lines and other sources of arcane power. If you lose it, the "
+"punishment is death."
+msgstr ""
+"Орден Перекрестков. Возьмите **Карманный лейфайндер**. Он указывает на "
+"ближайшие лей линии и другие источники магической силы. Если вы его "
+"потеряете, наказанием будет смерть."
 
 #: app/static/json/backgrounds/hexenbane.json:54
 msgid "Pocket Leyfinder"
@@ -4485,8 +4771,8 @@ msgstr "Он указывает на ближайшие лей линии и д�
 
 #: app/static/json/backgrounds/hexenbane.json:61
 msgid ""
-"Order of the Bleeding Star. Take a Star-Iron Mace (d8). It shines faintly in "
-"darkness and becomes very hot in the presence of witchcraft."
+"**Order of the Bleeding Star**. Take a **Star-Iron Mace** (d8). It shines"
+" faintly in darkness and becomes very hot in the presence of witchcraft."
 msgstr "Орден Кровоточащей Звезды. Возьмите Булаву из Звездного железа (к8). Она слабо светится в темноте и становится очень горячей в присутствии ведьмовства."
 
 #: app/static/json/backgrounds/hexenbane.json:64
@@ -4501,10 +4787,13 @@ msgstr "Она слабо светится в темноте и становит
 
 #: app/static/json/backgrounds/hexenbane.json:71
 msgid ""
-"Order of the Glass Sigil. Take a short sword (d8) and chainmail (2 Armor, "
-"bulky). You have contacts in most towns (the more rural, the better) willing "
-"to provide aid, food, or even weapons."
-msgstr "Орден Стеклянного Символа. Возьмите Короткий меч (к8) и Кольчугу (Броня 2, громоздкий). У вас есть контакты в большинстве поселений, готовые предоставить помощь, еду и даже оружие."
+"**Order of the Glass Sigil**. Take a short sword (d8) and chainmail (2 "
+"Armor, _bulky_). You have contacts in most towns (the more rural, the "
+"better) willing to provide aid, food, or even weapons."
+msgstr ""
+"Орден Стеклянного Символа. Возьмите Короткий меч (к8) и Кольчугу (Броня "
+"2, _громоздкий_). У вас есть контакты в большинстве поселений, готовые "
+"предоставить помощь, еду и даже оружие."
 
 #: app/static/json/backgrounds/hexenbane.json:74
 msgid "Short sword"
@@ -4516,10 +4805,14 @@ msgstr "Кольчуга"
 
 #: app/static/json/backgrounds/hexenbane.json:84
 msgid ""
-"Order of the Blank Eye. Take a Voidglass Shard. Peer through it to see "
-"invisible marks, creatures, and other magical effects. Lose the use of your "
-"eye for an hour afterwards (you are deprived)."
-msgstr "Орден Пустого Ока. Возьмите Осколок пустотного стекла. Загляните в него, чтобы увидеть невидимые метки, существ и другие магические эффекты. После использования один ваш глаз теряет зрение на один час и вы получаете истощение."
+"**Order of the Blank Eye**. Take a **Voidglass Shard**. Peer through it "
+"to see invisible marks, creatures, and other magical effects. Lose the "
+"use of your eye for an hour afterwards (you are _deprived_)."
+msgstr ""
+"Орден Пустого Ока. Возьмите **Осколок пустотного стекла**. Загляните в "
+"него, чтобы увидеть невидимые метки, существ и другие магические эффекты."
+" После использования один ваш глаз теряет зрение на один час и вы "
+"получаете _истощение_."
 
 #: app/static/json/backgrounds/hexenbane.json:87
 msgid "Voidglass Shard"
@@ -4533,8 +4826,8 @@ msgstr "Загляните в него, чтобы увидеть невидим
 
 #: app/static/json/backgrounds/hexenbane.json:94
 msgid ""
-"Order of Canaas. Once per day you can change into a wolf. Take a Quicksilver "
-"Chain. Without it, you are unable to shift back."
+"**Order of Canaas**. Once per day you can change into a wolf. Take a "
+"**Quicksilver Chain**. Without it, you are unable to shift back."
 msgstr "Орден Канааса. Один раз в день вы можете превращаться в волка. Возьмите Ртутную цепь. Без нее вам не обернуться обратно."
 
 #: app/static/json/backgrounds/hexenbane.json:97
@@ -4547,9 +4840,11 @@ msgstr "Без нее вам не обернуться обратно."
 
 #: app/static/json/backgrounds/hexenbane.json:104
 msgid ""
-"Order of the Silent Veil. Take a Quell Stone (2 uses) wrapped in burlap. "
-"Extinguishes any nearby flames once exposed to air."
-msgstr "Орден Безмолвной Вуали. Возьмите Камень подавления, завернутый в мешковину. Гасит любые огни поблизости при контакте с воздухом (2 исп)."
+"**Order of the Silent Veil**. Take a **Quell Stone** (2 uses) wrapped in "
+"burlap. Extinguishes any nearby flames once exposed to air."
+msgstr ""
+"Орден Безмолвной Вуали. Возьмите **Камень подавления**, завернутый в "
+"мешковину. Гасит любые огни поблизости при контакте с воздухом (2 исп)."
 
 #: app/static/json/backgrounds/hexenbane.json:107
 msgid "Quell Stone"
@@ -4565,14 +4860,15 @@ msgstr "Каков был ваш обет?"
 
 #: app/static/json/backgrounds/hexenbane.json:120
 msgid ""
-"Honesty. Choose a weapon type (blunt, blade, etc). Attacks against you of "
-"this type are impaired. If your vow is broken, you lose d4 WIL."
+"**Honesty**. Choose a **weapon type** (blunt, blade, etc). Attacks "
+"against you of this type are _impaired_. If your vow is broken, you lose "
+"d4 WIL."
 msgstr "Честность: Выберите тип оружия (дробящее, колющее и т.д.). Атаки против вас этим типом оружия ослаблены. При нарушении обета, потеряйте к4 ВОЛ."
 
 #: app/static/json/backgrounds/hexenbane.json:124
 msgid ""
-"Poverty. You carry the Disassemble Spellbook. Only you can use it. If your "
-"vow is broken, it explodes (d12 STR damage)."
+"**Poverty**. You carry the _Disassemble_ **Spellbook**. Only you can use "
+"it. If your vow is broken, it explodes (d12 STR damage)."
 msgstr "Бедность: У вас есть Книга заклинания «Разборка». Только вы можете ее использовать. При нарушении обета, книга взорвется, нанеся к12 урона СИЛ. Разборка: любая часть вашего тела может быть отсоединена и присоединена по желанию, без боли или повреждений. Вы все еще можете их контролировать. Восстанавливает любые порванные или поврежденные страницы."
 
 #: app/static/json/backgrounds/hexenbane.json:127
@@ -4589,29 +4885,37 @@ msgstr "Только вы можете ее использовать. При н�
 
 #: app/static/json/backgrounds/hexenbane.json:134
 msgid ""
-"Selflessness. You are immune to mind-altering magical effects, such as "
-"charm, hatred, frenzy, and so on. If you break this vow, you lose d6 WIL."
-msgstr "Альтруизм: Вы невосприимчивы к магическим эффектам: очарование, безумие и т.д. При нарушении обета, потеряйте к6 ВОЛ."
+"**Selflessness**. You are immune to **mind-altering magical effects**, "
+"such as _charm_, _hatred_, _frenzy_, and so on. If you break this vow, "
+"you lose d6 WIL."
+msgstr ""
+"Альтруизм: Вы невосприимчивы к магическим эффектам: _очарование_, безумие"
+" и т.д. При нарушении обета, потеряйте к6 ВОЛ."
 
 #: app/static/json/backgrounds/hexenbane.json:138
 msgid ""
-"Mercy. Choose a weapon type (blunt, blade, etc). Attacks with this weapon "
-"are enhanced. If your vow is broken, you can never use that weapon type "
-"again."
+"**Mercy**. Choose a **weapon type** (blunt, blade, etc). Attacks with "
+"this weapon are _enhanced_. If your vow is broken, you can never use that"
+" weapon type again."
 msgstr "Милосердие: Выберите тип оружия (дробящее, колющее и т.д.). Атаки этим оружием усиленны. При нарушении обета, вы никогда не сможете использовать этот тип оружия снова."
 
 #: app/static/json/backgrounds/hexenbane.json:142
 msgid ""
-"Charity. Once per day, you can shrug off a Fatigue. If your vow is ever "
-"broken, you permanently lose one inventory slot."
-msgstr "Щедрость: Один раз в день вы можете снять одну Усталость. При нарушении обета, вы навсегда потеряете один слот инвентаря."
+"**Charity**. Once per day, you can shrug off a **Fatigue**. If your vow "
+"is ever broken, you permanently lose one inventory slot."
+msgstr ""
+"Щедрость: Один раз в день вы можете снять одну **Усталость**. При "
+"нарушении обета, вы навсегда потеряете один слот инвентаря."
 
 #: app/static/json/backgrounds/hexenbane.json:146
 msgid ""
-"Valor. The first time you inflict Critical Damage, you receive +d4 HP, "
-"returning to the previous limit at the end of combat. If your vow is broken, "
-"you die."
-msgstr "Доблесть: В первый раз, нанеся Критический Урон, вы получаете +к4 к ОЗ, возвращаясь к прежнему лимиту в конце боя. При нарушении обета, вы умрете."
+"**Valor**. The first time you inflict **Critical Damage**, you receive "
+"+d4 HP, returning to the previous limit at the end of combat. If your vow"
+" is broken, you die."
+msgstr ""
+"**Доблесть**: В первый раз, нанеся **Критический Урон**, вы получаете +к4"
+" к ОЗ, возвращаясь к прежнему лимиту в конце боя. При нарушении обета, вы"
+" умрете."
 
 #: app/static/json/backgrounds/jongleur.json:4
 msgid ""
@@ -4645,8 +4949,8 @@ msgstr "Что произошло на вашем последнем высту�
 
 #: app/static/json/backgrounds/jongleur.json:51
 msgid ""
-"Despite your training in the deadly arts, an actor died and you were blamed. "
-"Take a light-weight Rapier (d6) and a false identity."
+"Despite your training in the deadly arts, an actor died and you were "
+"blamed. Take a light-weight **Rapier** (d6) and a false identity."
 msgstr "Несмотря на вашу подготовку в смертельных искусствах, один из актеров погиб, и вас обвинили в этом. Начните игру с Легкой рапирой (к6) и фальшивой личностью."
 
 #: app/static/json/backgrounds/jongleur.json:54
@@ -4656,10 +4960,15 @@ msgstr "Охрана"
 
 #: app/static/json/backgrounds/jongleur.json:60
 msgid ""
-"The crowd loved your catchy tune about a noble and his romantic failings. "
-"The noble in question, not so much. Take the Read Mind Spellbook and a "
-"warrant for your arrest."
-msgstr "Толпа была в восторге от вашей запоминающейся песни о дворянине и его любовных неудачах. Возьмите Книгу заклинания «Чтение мыслей» и ордер на ваш арест. Чтение мыслей: вы можете слышать поверхностные мысли ближайших существ. Длительное использование может привести к тому, что вы будете путать чужие мысли со своими собственными."
+"The crowd loved your catchy tune about a noble and his romantic failings."
+" The noble in question, not so much. Take the _Read Mind_ **Spellbook** "
+"and a warrant for your arrest."
+msgstr ""
+"Толпа была в восторге от вашей запоминающейся песни о дворянине и его "
+"любовных неудачах. Возьмите Книгу заклинания «_Чтение мыслей_» и ордер на"
+" ваш арест. Чтение мыслей: вы можете слышать поверхностные мысли "
+"ближайших существ. Длительное использование может привести к тому, что вы"
+" будете путать чужие мысли со своими собственными."
 
 #: app/static/json/backgrounds/jongleur.json:63
 msgid "Read Mind Spellbook"
@@ -4673,10 +4982,10 @@ msgstr "Вы можете слышать поверхностные мысли �
 
 #: app/static/json/backgrounds/jongleur.json:70
 msgid ""
-"Your debut composition reduced the audience to a gibbering mess, murmuring "
-"of bright creatures descending from the night sky. Later you noticed that "
-"the notes resembled stellar constellations. Take a Book On Astronomy and a "
-"lot of questions."
+"Your debut composition reduced the audience to a gibbering mess, "
+"murmuring of bright creatures descending from the night sky. Later you "
+"noticed that the notes resembled stellar constellations. Take a **Book On"
+" Astronomy** and a lot of questions."
 msgstr "Ваш дебютный номер привел зрителей в бессвязное состояние; они бормотали о ярких существах, спускающихся с ночного неба. Позже вы заметили, что ноты напоминали звездные созвездия. Начните игру с Книгой по астрономии и множеством вопросов."
 
 #: app/static/json/backgrounds/jongleur.json:73
@@ -4685,10 +4994,15 @@ msgstr "Книга по астрономии"
 
 #: app/static/json/backgrounds/jongleur.json:79
 msgid ""
-"You mocked a forgotten trickster god and were cursed for it. You speak only "
-"in perfect rhyme. Ironically, this has only made you more popular among your "
-"peers. Take a Thesaurus (20gp). Without it, you are deprived."
-msgstr "Вы высмеяли забытого бога-обманщика и были за это прокляты. Теперь вы говорите только идеальными рифмами. Иронично, но это сделало вас еще более популярным среди коллег. Возьмите Тезаурус (20 зм). Без него вы будете чувствовать истощение."
+"You mocked a forgotten trickster god and were cursed for it. You speak "
+"only in perfect rhyme. Ironically, this has only made you more popular "
+"among your peers. Take a **Thesaurus** (20gp). Without it, you are "
+"_deprived_."
+msgstr ""
+"Вы высмеяли забытого бога-обманщика и были за это прокляты. Теперь вы "
+"говорите только идеальными рифмами. Иронично, но это сделало вас еще "
+"более популярным среди коллег. Возьмите **Тезаурус** (20 зм). Без него вы"
+" будете чувствовать _истощение_."
 
 #: app/static/json/backgrounds/jongleur.json:82
 msgid "Thesaurus"
@@ -4700,9 +5014,9 @@ msgstr "20 зм. Без него вы будете чувствовать ист
 
 #: app/static/json/backgrounds/jongleur.json:89
 msgid ""
-"You were scarred in an on-stage accident. The crowd cheered, thinking it was "
-"part of the act. Take well-worn Stage Mail (1 Armor), a memorable scar, and "
-"a fear of applause."
+"You were scarred in an on-stage accident. The crowd cheered, thinking it "
+"was part of the act. Take well-worn **Stage Mail** (1 Armor), a memorable"
+" scar, and a fear of applause."
 msgstr "Вы получили шрам в результате несчастного случая на сцене. Толпа аплодировала, думая, что это часть представления. Начните игру с поношенной Сценической кольчугой (Броня 1), запоминающимся шрамом и страхом перед аплодисментами."
 
 #: app/static/json/backgrounds/jongleur.json:92
@@ -4711,10 +5025,14 @@ msgstr "Сценическая кольчуга"
 
 #: app/static/json/backgrounds/jongleur.json:98
 msgid ""
-"Your respectable puppeteering skills were matched only by your mimicry. You "
-"were so good you were branded a witch (literally) and banished. Take an "
-"Uncanny Hand-Puppet and a Rabbit Skull (petty) that protects against charms."
-msgstr "Ваши выдающиеся навыки кукловодства и имитации привели к тому, что вас обвинили в колдовстве (буквально) и изгнали. Возьмите зловещую Ручную куклу и Кроличий череп (мелкий), который защищает от чар."
+"Your respectable puppeteering skills were matched only by your mimicry. "
+"You were so good you were branded a witch (literally) and banished. Take "
+"an **Uncanny Hand-Puppet** and a **Rabbit Skull** (_petty_) that protects"
+" against charms."
+msgstr ""
+"Ваши выдающиеся навыки кукловодства и имитации привели к тому, что вас "
+"обвинили в колдовстве (буквально) и изгнали. Возьмите зловещую Ручную "
+"куклу и **Кроличий череп** (_мелкий_), который защищает от чар."
 
 #: app/static/json/backgrounds/jongleur.json:101
 msgid "Uncanny Hand-Puppet"
@@ -4734,9 +5052,11 @@ msgstr "Какую безделушку вы не смогли оставить 
 
 #: app/static/json/backgrounds/jongleur.json:117
 msgid ""
-"False Cuffs: Comfortable, realistic-looking cuffs. Only you know the trick "
-"to get out of them."
-msgstr "Фальшивые оковы: Удобные, выглядящие реалистично наручники. Только вы знаете, как из них выбраться."
+"**False Cuffs**: Comfortable, realistic-looking cuffs. Only you know the "
+"trick to get out of them."
+msgstr ""
+"**Фальшивые оковы**: Удобные, выглядящие реалистично наручники. Только вы"
+" знаете, как из них выбраться."
 
 #: app/static/json/backgrounds/jongleur.json:120
 msgid "False Cuffs"
@@ -4750,9 +5070,11 @@ msgstr "Удобные, выглядящие реалистично наручн
 
 #: app/static/json/backgrounds/jongleur.json:127
 msgid ""
-"Pocket Theatre: A set of small puppets and a folding stage. Good for quick "
-"distractions."
-msgstr "Карманный театр: Набор маленьких кукол и складная сцена. Отлично подходит для быстрых отвлечений."
+"**Pocket Theatre**: A set of small puppets and a folding stage. Good for "
+"quick distractions."
+msgstr ""
+"**Карманный театр**: Набор маленьких кукол и складная сцена. Отлично "
+"подходит для быстрых отвлечений."
 
 #: app/static/json/backgrounds/jongleur.json:130
 msgid "Pocket Theatre"
@@ -4765,9 +5087,11 @@ msgstr "Набор маленьких кукол и складная сцена.
 
 #: app/static/json/backgrounds/jongleur.json:137
 msgid ""
-"Ghost Violin: A dark-grey violin that plays a haunting tune, mirrored by an "
-"invisible, distant twin."
-msgstr "Призрачная скрипка: Тёмно-серая скрипка, играющая навязчивую мелодию, которую повторяет невидимый, далёкий двойник."
+"**Ghost Violin**: A dark-grey violin that plays a haunting tune, mirrored"
+" by an invisible, distant twin."
+msgstr ""
+"**Призрачная скрипка**: Тёмно-серая скрипка, играющая навязчивую мелодию,"
+" которую повторяет невидимый, далёкий двойник."
 
 #: app/static/json/backgrounds/jongleur.json:140
 msgid "Ghost Violin"
@@ -4781,9 +5105,12 @@ msgstr "Тёмно-серая скрипка, играющая навязчив�
 
 #: app/static/json/backgrounds/jongleur.json:147
 msgid ""
-"Tragic Tales: Banned in proper company, this book becomes less bawdy and "
-"more harrowing towards the end. Worth 100gp."
-msgstr "Трагические рассказы: Запрещённая в приличном обществе, эта книга становится менее непристойной и более душераздирающей к концу. Стоимость: 100 зм."
+"**Tragic Tales**: Banned in proper company, this book becomes less bawdy "
+"and more harrowing towards the end. Worth **100gp**."
+msgstr ""
+"**Трагические рассказы**: Запрещённая в приличном обществе, эта книга "
+"становится менее непристойной и более душераздирающей к концу. Стоимость:"
+" 100 зм."
 
 #: app/static/json/backgrounds/jongleur.json:150
 msgid "Tragic Tales"
@@ -4797,9 +5124,11 @@ msgstr "Запрещённая в приличном обществе, эта к
 
 #: app/static/json/backgrounds/jongleur.json:157
 msgid ""
-"Mythos Mask: A plaster mask that allows one to take on a monster's "
-"countenance. Once it comes off, add a Fatigue."
-msgstr "Маска мифов: Гипсовая маска, позволяющая принять облик монстра. После её снятия, добавьте одну Усталость."
+"**Mythos Mask**: A plaster mask that allows one to take on a monster's "
+"countenance. Once it comes off, add a **Fatigue**."
+msgstr ""
+"**Маска мифов**: Гипсовая маска, позволяющая принять облик монстра. После"
+" её снятия, добавьте одну **Усталость**."
 
 #: app/static/json/backgrounds/jongleur.json:160
 msgid "Mythos Mask"
@@ -4813,9 +5142,11 @@ msgstr "Гипсовая маска, позволяющая принять об�
 
 #: app/static/json/backgrounds/jongleur.json:167
 msgid ""
-"Rebreak Glass: A wine flute that can be broken multiple times, reforming "
-"after 24 hours. Makes a really loud noise."
-msgstr "Разбиваемый бокал: Винный бокал, который можно разбить множество раз; он восстанавливается через 24 часа. Издаёт громкий звук."
+"**Rebreak Glass**: A wine flute that can be broken multiple times, "
+"reforming after 24 hours. Makes a really loud noise."
+msgstr ""
+"**Разбиваемый бокал**: Винный бокал, который можно разбить множество раз;"
+" он восстанавливается через 24 часа. Издаёт громкий звук."
 
 #: app/static/json/backgrounds/jongleur.json:170
 msgid "Rebreak Glass"
@@ -4862,9 +5193,9 @@ msgstr "Вы создаете небольшие устройства для м�
 
 #: app/static/json/backgrounds/kettlewright.json:45
 msgid ""
-"You deal in home goods and tools, hawking your wares to townspeople across "
-"the lands. Take 20gp worth of items from the gear table. You are fluent in "
-"the Traveler's Cant."
+"You deal in home goods and tools, hawking your wares to townspeople "
+"across the lands. Take 20gp worth of items from the gear table. You are "
+"fluent in the _Traveler's Cant_."
 msgstr "Вы торгуете товарами для дома и инструментами, предлагая свой товар жителям разных поселений. Возьмите предметы на сумму 20 зм из таблицы снаряжения. Вы свободно владеете жаргоном путешественников."
 
 #: app/static/json/backgrounds/kettlewright.json:47
@@ -4874,10 +5205,13 @@ msgstr "gear_table"
 
 #: app/static/json/backgrounds/kettlewright.json:50
 msgid ""
-"You were a military smelter, before peace destroyed your livelihood. Take a "
-"smelting hammer (d10, bulky) and a tin helm (+1 Armor). Given time and "
-"adequate materials, you can repair armor."
-msgstr "Вы были военным литейщиком, пока мир не разрушил ваш источник дохода. Возьмите Литейный молот (к10, громоздкий) и Жестяной шлем (Броня 1). Имея время и материалы, вы можете ремонтировать доспехи."
+"You were a military smelter, before peace destroyed your livelihood. Take"
+" a **smelting hammer** (d10, _bulky_) and a **tin helm** (+1 Armor). "
+"Given time and adequate materials, you can repair armor."
+msgstr ""
+"Вы были военным литейщиком, пока мир не разрушил ваш источник дохода. "
+"Возьмите **Литейный молот** (к10, _громоздкий_) и **Жестяной шлем** "
+"(Броня 1). Имея время и материалы, вы можете ремонтировать доспехи."
 
 #: app/static/json/backgrounds/kettlewright.json:53
 msgid "Smelting Hammer"
@@ -4894,8 +5228,13 @@ msgstr "Жестяной шлем"
 #: app/static/json/backgrounds/kettlewright.json:64
 msgid ""
 "You sell rare and quality items to monasteries and nobles alike. Take a "
-"Spyglass, a Necklace (petty) worth 20gp, and a Scroll of Mirrorwalk (petty)."
-msgstr "Вы продаете редкие и качественные товары как монастырям, так и дворянам. Возьмите Подзорную трубу, Ожерелье (мелкий) стоимостью 20 зм и свиток «Зеркальный путь» (мелкий). Зеркальный путь: зеркало становится порталом к другому зеркалу, в которое вы смотрели сегодня."
+"**Spyglass**, a **Necklace** (_petty_) worth 20gp, and a **Scroll** of "
+"Mirrorwalk (petty)."
+msgstr ""
+"Вы продаете редкие и качественные товары как монастырям, так и дворянам. "
+"Возьмите Подзорную трубу, **Ожерелье** (_мелкий_) стоимостью 20 зм и "
+"свиток «Зеркальный путь» (мелкий). Зеркальный путь: зеркало становится "
+"порталом к другому зеркалу, в которое вы смотрели сегодня."
 
 #: app/static/json/backgrounds/kettlewright.json:67
 #: app/static/json/backgrounds/outrider.json:43
@@ -4924,9 +5263,12 @@ msgstr ""
 #: app/static/json/backgrounds/kettlewright.json:83
 msgid ""
 "You offer protection as a service, quietly watching for threats as money "
-"exchanges hands. You start with +d4 HP, and carry a Long Sword (d10, bulky) "
-"and a Gambeson (+1 Armor)."
-msgstr "Вы предоставляете услуги по охране, незаметно отслеживая угрозы во время обмена денег. Начните игру с дополнительными +к4 к ОЗ, Длинным мечом (к10, громоздкий) и Стеганка (+1 Брони)."
+"exchanges hands. You start with **+d4 HP**, and carry a **Long Sword** "
+"(d10, _bulky_) and a **Gambeson** (+1 Armor)."
+msgstr ""
+"Вы предоставляете услуги по охране, незаметно отслеживая угрозы во время "
+"обмена денег. Начните игру с дополнительными +к4 к ОЗ, Длинным мечом "
+"(к10, _громоздкий_) и **Стеганка** (+1 Брони)."
 
 #: app/static/json/backgrounds/kettlewright.json:86
 #: app/static/json/backgrounds/marchguard.json:34
@@ -4939,10 +5281,13 @@ msgstr "Стеганка"
 
 #: app/static/json/backgrounds/kettlewright.json:96
 msgid ""
-"You scavenge raw tin and iron from battlefields, pulling teeth from still-"
-"twitching corpses. Start with a young Donkey (+4 slots, slow), a Crossbow "
-"(d8 damage, bulky), and a Saw (d6)."
-msgstr "Вы собираете жесть и железо с полей сражений, вырывая зубы из еще подергивающихся трупов. Начните игру с молодым Ослом (+4 слота, медленный), Арбалетом (к8, громоздкий) и Пилой (к6)."
+"You scavenge raw tin and iron from battlefields, pulling teeth from "
+"still-twitching corpses. Start with a young **Donkey** (+4 slots, slow), "
+"a **Crossbow** (d8 damage, _bulky_), and a **Saw** (d6)."
+msgstr ""
+"Вы собираете жесть и железо с полей сражений, вырывая зубы из еще "
+"подергивающихся трупов. Начните игру с молодым Ослом (+4 слота, "
+"медленный), Арбалетом (к8, _громоздкий_) и Пилой (к6)."
 
 #: app/static/json/backgrounds/kettlewright.json:103
 msgid "Saw"
@@ -4954,9 +5299,13 @@ msgstr "Что всегда выручает вас из беды?"
 
 #: app/static/json/backgrounds/kettlewright.json:120
 msgid ""
-"Fire Eggs: Six small pellets made of sea salt, wood, and crockery-dust. They "
-"explode at low heat (d8, blast) but the flames dissipate quickly."
-msgstr "Огненные яйца: Шесть небольших гранул из морской соли, древесины и керамической пыли. Они взрываются даже при небольшом нагреве (к8, взрыв), но пламя быстро гаснет."
+"**Fire Eggs**: Six small pellets made of sea salt, wood, and crockery-"
+"dust. They explode at low heat (d8, _blast_) but the flames dissipate "
+"quickly."
+msgstr ""
+"**Огненные яйца**: Шесть небольших гранул из морской соли, древесины и "
+"керамической пыли. Они взрываются даже при небольшом нагреве (к8, "
+"_взрыв_), но пламя быстро гаснет."
 
 #: app/static/json/backgrounds/kettlewright.json:123
 msgid "Fire Eggs"
@@ -4969,8 +5318,10 @@ msgid ""
 msgstr "Шесть небольших гранул из морской соли, древесины и керамической пыли. Они взрываются даже при небольшом нагреве (к8, взрыв), но пламя быстро гаснет."
 
 #: app/static/json/backgrounds/kettlewright.json:130
-msgid "Black Tar: Versatile: both sticky and highly flammable. 3 uses."
-msgstr "Черная смола: Универсальна: легко воспламеняющаяся и липкая (3 использования)."
+msgid "**Black Tar**: Versatile: both sticky and highly flammable. 3 uses."
+msgstr ""
+"**Черная смола**: Универсальна: легко воспламеняющаяся и липкая (3 "
+"использования)."
 
 #: app/static/json/backgrounds/kettlewright.json:133
 msgid "Black Tar"
@@ -4982,9 +5333,11 @@ msgstr "Универсальна: легко воспламеняющаяся и
 
 #: app/static/json/backgrounds/kettlewright.json:141
 msgid ""
-"Spiked Boots: Cracks heads (d8) as easily as it does ice and muck. Travel is "
-"also a bit slower, but easier."
-msgstr "Шипованные ботинки: Легко пробивают головы (к8), а также лед и грязь. Передвижение становится немного медленнее, но устойчивее."
+"**Spiked Boots**: Cracks heads (d8) as easily as it does ice and muck. "
+"Travel is also a bit slower, but easier."
+msgstr ""
+"**Шипованные ботинки**: Легко пробивают головы (к8), а также лед и грязь."
+" Передвижение становится немного медленнее, но устойчивее."
 
 #: app/static/json/backgrounds/kettlewright.json:144
 msgid "Spiked Boots"
@@ -4997,8 +5350,10 @@ msgid ""
 msgstr "Легко пробивают головы (к8), а также лед и грязь. Передвижение становится немного медленнее, но устойчивее."
 
 #: app/static/json/backgrounds/kettlewright.json:151
-msgid "Tinker's Paste: Seals shut any fist-sized opening. 3 uses."
-msgstr "Паста мастера: Запечатывает любое отверстие размером с кулак (3 использования)."
+msgid "**Tinker's Paste**: Seals shut any fist-sized opening. 3 uses."
+msgstr ""
+"**Паста мастера**: Запечатывает любое отверстие размером с кулак (3 "
+"использования)."
 
 #: app/static/json/backgrounds/kettlewright.json:154
 msgid "Tinker's Paste"
@@ -5010,9 +5365,12 @@ msgstr "Запечатывает любое отверстие размером 
 
 #: app/static/json/backgrounds/kettlewright.json:162
 msgid ""
-"Fireworks: A dazzling albeit dangerous display. Enough explosive material to "
-"blow off a finger or three. 2 uses remain."
-msgstr "Фейерверки: Ослепительное, хотя и опасное зрелище. Достаточно взрывчатого вещества, чтобы оторвать палец или два (осталось 2 использования)."
+"**Fireworks**: A dazzling albeit dangerous display. Enough explosive "
+"material to blow off a finger or three. 2 uses remain."
+msgstr ""
+"**Фейерверки**: Ослепительное, хотя и опасное зрелище. Достаточно "
+"взрывчатого вещества, чтобы оторвать палец или два (осталось 2 "
+"использования)."
 
 #: app/static/json/backgrounds/kettlewright.json:165
 msgid "Fireworks"
@@ -5026,10 +5384,14 @@ msgstr "Ослепительное, хотя и опасное зрелище. �
 
 #: app/static/json/backgrounds/kettlewright.json:173
 msgid ""
-"A clever pet, small enough to hide in your pack (bulky), but strong enough "
-"to scare off smaller predators. Requires one Ration a day, and it must be "
-"meat."
-msgstr "Кот-падальщик: Хитрый питомец: достаточно маленький, чтобы спрятаться в вашем рюкзаке (громоздкий), но довольно сильный, чтобы отпугнуть мелких хищников. Требует одну порцию мяса в день. [3 ОЗ, 5 СИЛ, 15 ЛОВ, 12 ВОЛ]."
+"A clever pet, small enough to hide in your pack (_bulky_), but strong "
+"enough to scare off smaller predators. Requires one **Ration** a day, and"
+" it must be meat."
+msgstr ""
+"Кот-падальщик: Хитрый питомец: достаточно маленький, чтобы спрятаться в "
+"вашем рюкзаке (_громоздкий_), но довольно сильный, чтобы отпугнуть мелких"
+" хищников. Требует одну порцию мяса в день. [3 ОЗ, 5 СИЛ, 15 ЛОВ, 12 "
+"ВОЛ]."
 
 #: app/static/json/backgrounds/kettlewright.json:176
 msgid "Carrion Cat"
@@ -5087,9 +5449,11 @@ msgstr "Ваша семья имеет давнюю традицию служб�
 
 #: app/static/json/backgrounds/marchguard.json:49
 msgid ""
-"As a convict, the Oath was simply a means of avoiding punishment. Take a set "
-"of Lockpicks and the key (petty) to a safehouse."
-msgstr "Вы были под приговором, и клятва стала для вас способом избежать наказания. Возьмите Набор отмычек и Ключ (мелкий) от безопасного дома."
+"As a convict, the Oath was simply a means of avoiding punishment. Take a "
+"set of **Lockpicks** and the key (_petty_) to a safehouse."
+msgstr ""
+"Вы были под приговором, и клятва стала для вас способом избежать "
+"наказания. Возьмите Набор отмычек и Ключ (_мелкий_) от безопасного дома."
 
 #: app/static/json/backgrounds/marchguard.json:56
 msgid "Safehouse Key"
@@ -5097,8 +5461,8 @@ msgstr "Ключ от убежища"
 
 #: app/static/json/backgrounds/marchguard.json:62
 msgid ""
-"Noble-born, you joined to escape family trouble. Take a Goosefelt Tarp (fits "
-"two) that you stole before leaving home."
+"Noble-born, you joined to escape family trouble. Take a **Goosefelt "
+"Tarp** (fits two) that you stole before leaving home."
 msgstr "Родившись в знатной семье, вы присоединились к стражам, чтобы избежать семейных проблем. Возьмите украденную перед уходом из дома Палатку из гусиного пуха (на 2 человека)."
 
 #: app/static/json/backgrounds/marchguard.json:65
@@ -5112,7 +5476,8 @@ msgstr "Вмещает двоих."
 #: app/static/json/backgrounds/marchguard.json:72
 msgid ""
 "When your family lost everything, you took the Oath to avoid becoming a "
-"burden. Take extra Rations (3 uses) and a brace of Throwing Knives (d6)."
+"burden. Take extra **Rations** (3 uses) and a brace of **Throwing "
+"Knives** (d6)."
 msgstr "Когда ваша семья потеряла все, вы принесли стражам клятву, чтобы не стать обузой. Начните игру с дополнительными Пайками (3 использования) и Метательными ножами (к6)."
 
 #: app/static/json/backgrounds/marchguard.json:81
@@ -5121,10 +5486,13 @@ msgstr "Метательные ножи"
 
 #: app/static/json/backgrounds/marchguard.json:87
 msgid ""
-"Your life was saved by a member of the Marchguard, and you were inspired to "
-"join their ranks. Take a Snare Trap and a Sketchbook filled with detailed "
-"drawings."
-msgstr "Один из стражей пограничья спас вашу жизнь, и это вдохновило вас вступить в их ряды. Возьмите Силок и Альбом для рисования, заполненный детальными изображениями."
+"Your life was saved by a member of the **Marchguard**, and you were "
+"inspired to join their ranks. Take a **Snare Trap** and a **Sketchbook** "
+"filled with detailed drawings."
+msgstr ""
+"Один из стражей пограничья спас вашу жизнь, и это вдохновило вас вступить"
+" в их ряды. Возьмите **Силок** и **Альбом для рисования**, заполненный "
+"детальными изображениями."
 
 #: app/static/json/backgrounds/marchguard.json:90
 msgid "Snare Trap"
@@ -5137,9 +5505,12 @@ msgstr "Альбом для рисования"
 #: app/static/json/backgrounds/marchguard.json:100
 msgid ""
 "You were in a dark place and decided that your life needed a little "
-"direction. You're still not so sure it was the right choice. Take an Oilskin "
-"Coat and Mapping Paper."
-msgstr "У вас были темные времена и вы решили, что вашей жизни нужна цель. Вы все еще не уверены, было ли вступление в стражу правильным выбором. Возьмите Непромокаемый плащ и Картографическую бумагу."
+"direction. You're still not so sure it was the right choice. Take an "
+"**Oilskin Coat** and **Mapping Paper**."
+msgstr ""
+"У вас были темные времена и вы решили, что вашей жизни нужна цель. Вы все"
+" еще не уверены, было ли вступление в стражу правильным выбором. Возьмите"
+" **Непромокаемый плащ** и Картографическую бумагу."
 
 #: app/static/json/backgrounds/marchguard.json:103
 msgid "Oilskin Coat"
@@ -5155,9 +5526,11 @@ msgstr "Что вы носите как символ своей клятвы?"
 
 #: app/static/json/backgrounds/marchguard.json:118
 msgid ""
-"Impressive Pin: A metal badge of honor from the Guard. It can open doors but "
-"leaves a trail. Petty."
-msgstr "Впечатляющий значок: Металлический знак почета от стражи. Люди помогут вам, но Стражи пограничья об этом узнают (мелкий)."
+"**Impressive Pin**: A metal badge of honor from the Guard. It can open "
+"doors but leaves a trail. _Petty_."
+msgstr ""
+"**Впечатляющий значок**: Металлический знак почета от стражи. Люди "
+"помогут вам, но Стражи пограничья об этом узнают (_мелкий_)."
 
 #: app/static/json/backgrounds/marchguard.json:121
 msgid "Impressive Pin"
@@ -5170,9 +5543,11 @@ msgstr "Металлический знак почета от стражи. Лю
 
 #: app/static/json/backgrounds/marchguard.json:128
 msgid ""
-"Oath Compass: Points not towards North, but instead to the nearest member of "
-"the Guard. It also lets you know when they're getting close."
-msgstr "Клятвенный компас: Указывает не на север, а на ближайшего члена стражи пограничья. Также сообщает, когда они приближаются."
+"**Oath Compass**: Points not towards North, but instead to the nearest "
+"member of the Guard. It also lets you know when they're getting close."
+msgstr ""
+"**Клятвенный компас**: Указывает не на север, а на ближайшего члена "
+"стражи пограничья. Также сообщает, когда они приближаются."
 
 #: app/static/json/backgrounds/marchguard.json:131
 msgid "Oath Compass"
@@ -5180,9 +5555,11 @@ msgstr "Клятвенный компас"
 
 #: app/static/json/backgrounds/marchguard.json:137
 msgid ""
-"Pullstones: Two jet-black stones. When separated, the stones will always "
-"roll toward one another."
-msgstr "Притягивающие камни: Два черных как смоль камня. Когда их разделяют, они всегда катятся друг к другу."
+"**Pullstones**: Two jet-black stones. When separated, the stones will "
+"always roll toward one another."
+msgstr ""
+"**Притягивающие камни**: Два черных как смоль камня. Когда их разделяют, "
+"они всегда катятся друг к другу."
 
 #: app/static/json/backgrounds/marchguard.json:140
 msgid "Pullstones"
@@ -5196,9 +5573,13 @@ msgstr "Два черных как смоль камня. Когда их раз
 
 #: app/static/json/backgrounds/marchguard.json:147
 msgid ""
-"Fireflask: Highly alcoholic, yet strangely delicious. When thrown, it "
-"creates a wall of flames 10ft high that burns out after a few minutes. 1 use."
-msgstr "Огненная колба: Удивительно вкусная смесь из крепкого алкоголя. При броске создает стену пламени высотой 10 фут, которая гаснет через несколько минут (1 использование)."
+"**Fireflask**: Highly alcoholic, yet strangely delicious. When thrown, it"
+" creates a wall of flames 10ft high that burns out after a few minutes. 1"
+" use."
+msgstr ""
+"**Огненная колба**: Удивительно вкусная смесь из крепкого алкоголя. При "
+"броске создает стену пламени высотой 10 фут, которая гаснет через "
+"несколько минут (1 использование)."
 
 #: app/static/json/backgrounds/marchguard.json:150
 msgid "Fireflask"
@@ -5212,10 +5593,14 @@ msgstr "Удивительно вкусная смесь из крепкого �
 
 #: app/static/json/backgrounds/marchguard.json:157
 msgid ""
-"Pain Band: Touch an injured creature to transfer their wounds to you. "
-"(Exchange their lost STR with your own.) Recharge: Wear the ring while in "
-"perfect health. You will lose 1 STR, permanently. Petty."
-msgstr "Браслет боли: Прикоснитесь к раненому существу, чтобы перенести его раны на себя (Обменяйте потерянные СИЛ с вашим значением СИЛ). Перезарядка: наденьте браслет, будучи полностью здоровым. При этом вы потеряете 1 СИЛ навсегда (мелкий)."
+"**Pain Band**: Touch an injured creature to transfer their wounds to you."
+" (Exchange their lost STR with your own.) **Recharge**: Wear the ring "
+"while in perfect health. You will lose 1 STR, permanently. _Petty_."
+msgstr ""
+"**Браслет боли**: Прикоснитесь к раненому существу, чтобы перенести его "
+"раны на себя (Обменяйте потерянные СИЛ с вашим значением СИЛ). "
+"Перезарядка: наденьте браслет, будучи полностью здоровым. При этом вы "
+"потеряете 1 СИЛ навсегда (_мелкий_)."
 
 #: app/static/json/backgrounds/marchguard.json:160
 msgid "Pain Band"
@@ -5230,9 +5615,11 @@ msgstr "Прикоснитесь к раненому существу, чтоб�
 
 #: app/static/json/backgrounds/marchguard.json:169
 msgid ""
-"Poacher's Woe: Strongly-scented arrows (3 uses). The scent is powerful "
-"enough to track with ease."
-msgstr "Бич браконьера: Сильно пахнущие стрелы (3 использования). Запах достаточно стойкий, чтобы легко отследить местонахождение стрелы."
+"**Poacher's Woe**: Strongly-scented arrows (3 uses). The scent is "
+"powerful enough to track with ease."
+msgstr ""
+"**Бич браконьера**: Сильно пахнущие стрелы (3 использования). Запах "
+"достаточно стойкий, чтобы легко отследить местонахождение стрелы."
 
 #: app/static/json/backgrounds/marchguard.json:172
 msgid "Poacher's Woe"
@@ -5270,15 +5657,19 @@ msgstr "Как была раскрыта ваша афера?"
 
 #: app/static/json/backgrounds/mountebank.json:55
 msgid ""
-"Your 'patients' kept reporting miraculous recoveries, despite your lack of "
-"training. Start with Bandages (3 uses) and a knack for healing."
-msgstr "Ваши «пациенты» сообщали о чудесных выздоровлениях, несмотря на отсутствие у вас медицинских навыков. Получите Бинты (3 исп) и талант к исцелению."
+"Your 'patients' kept reporting miraculous recoveries, despite your lack "
+"of training. Start with **Bandages** (3 uses) and a knack for healing."
+msgstr ""
+"Ваши «пациенты» сообщали о чудесных выздоровлениях, несмотря на "
+"отсутствие у вас медицинских навыков. Получите **Бинты** (3 исп) и талант"
+" к исцелению."
 
 #: app/static/json/backgrounds/mountebank.json:65
 msgid ""
 "After seducing a wealthy patron, their family hired a criminal gang to "
-"retrieve you. You got away and need to lay low. Start with Beauty Cream, 2 "
-"uses. Apply to appear irresistibly beautiful for the next 12 hours."
+"retrieve you. You got away and need to lay low. Start with **Beauty "
+"Cream**, 2 uses. Apply to appear irresistibly beautiful for the next 12 "
+"hours."
 msgstr "После соблазнения богатого покровителя, его семья наняла банду преступников, чтобы вас найти. Вы сбежали и вынужденны скрываться. Начните игру с Кремом красоты (2 использования). Нанесите его, чтобы выглядеть неотразимо в течение следующих 12 часов."
 
 #: app/static/json/backgrounds/mountebank.json:68
@@ -5287,10 +5678,13 @@ msgstr "Крем красоты"
 
 #: app/static/json/backgrounds/mountebank.json:75
 msgid ""
-"You were a peddler of fake prophesies, but when one turned out to be true, "
-"it drew unwanted attention. Roll on the Omens table, but keep the result to "
-"yourself. Start with a concealable Knife (d6, petty)."
-msgstr "Вы продавали поддельные пророчества, свершение одного из них привлекло нежелательное внимание. Сделайте бросок по таблице Знамений и сохраните результат в тайне. Возьмите скрытый Клинок (к6, мелкий)."
+"You were a peddler of fake prophesies, but when one turned out to be "
+"true, it drew unwanted attention. Roll on the **Omens** table, but keep "
+"the result to yourself. Start with a concealable **Knife** (d6, _petty_)."
+msgstr ""
+"Вы продавали поддельные пророчества, свершение одного из них привлекло "
+"нежелательное внимание. Сделайте бросок по таблице Знамений и сохраните "
+"результат в тайне. Возьмите скрытый Клинок (к6, _мелкий_)."
 
 #: app/static/json/backgrounds/mountebank.json:78
 msgid "Knife"
@@ -5303,9 +5697,12 @@ msgstr "Легко спрятать."
 #: app/static/json/backgrounds/mountebank.json:85
 msgid ""
 "Your latest stunt destroyed a priceless artifact and injured a dozen "
-"bystanders. Start with a Captain's Uniform (petty), a Ceremonial Sword "
-"(harmless, 60gp), and a Bouquet of Flowers."
-msgstr "Ваша выходка уничтожила бесценный артефакт и ранила дюжину зрителей. Начните игру с Капитанской униформой (мелкий), Церемониальным мечом (безвредный, 60 зм) и Букетом цветов."
+"bystanders. Start with a **Captain's Uniform** (_petty_), a **Ceremonial "
+"Sword** (harmless, 60gp), and a **Bouquet of Flowers**."
+msgstr ""
+"Ваша выходка уничтожила бесценный артефакт и ранила дюжину зрителей. "
+"Начните игру с Капитанской униформой (_мелкий_), Церемониальным мечом "
+"(безвредный, 60 зм) и Букетом цветов."
 
 #: app/static/json/backgrounds/mountebank.json:88
 msgid "Captain's Uniform"
@@ -5326,15 +5723,16 @@ msgstr "Букет цветов"
 #: app/static/json/backgrounds/mountebank.json:103
 msgid ""
 "You were cursed by a hedgewitch for fooling some innocent village folk. "
-"Magic acts unpredictably in your hands (WIL save to avoid disaster). If you "
-"are the target of magic, the same applies to its wielder."
+"Magic acts unpredictably in your hands (_WIL save to avoid disaster_). If"
+" you are the target of magic, the same applies to its wielder."
 msgstr "Межевая ведьма прокляла вас за обман деревенских жителей. Ваша магия непредсказуема: сделайте спасбросок ВОЛ, во избежание беды. Если вы становитесь целью чужой магии, спасбросок должен пройти ее создатель."
 
 #: app/static/json/backgrounds/mountebank.json:107
 msgid ""
-"Your 'seances' with the dead were in actuality a ruse involving a cleverly "
-"hidden spellbook of Auditory Illusion. Inevitably, a patron discovered your "
-"secret. Start with the Spellbook and a bundle of scarves."
+"Your 'seances' with the dead were in actuality a ruse involving a "
+"cleverly hidden spellbook of Auditory Illusion. Inevitably, a patron "
+"discovered your secret. Start with the **Spellbook** and a bundle of "
+"scarves."
 msgstr "Ваши «сеансы» общения с мертвыми на самом деле были обманом с использованием скрытой от глаз Книги заклинания «Слуховая иллюзия». В конце концов, один из клиентов раскрыл ваш секрет. Начните игру с книгой заклинания и набором шарфов. Слуховая иллюзия: Вы создаете иллюзорные звуки, которые исходят из выбранного вами направления. Издает случайные и порой неуместные звуки в течение всего дня."
 
 #: app/static/json/backgrounds/mountebank.json:110
@@ -5354,9 +5752,13 @@ msgstr "Какой сувенир может вас выдать?"
 
 #: app/static/json/backgrounds/mountebank.json:122
 msgid ""
-"Royal Crest: Born into royalty, you chose a different life. The Royal Crest "
-"grants you access but also alerts your family of your whereabouts. Petty."
-msgstr "Королевский герб: Родившись в королевской семье, вы выбрали иной путь. Герб (мелкий) дает вам доступ, но также уведомляет семью о вашем местонахождении."
+"**Royal Crest**: Born into royalty, you chose a different life. The Royal"
+" Crest grants you access but also alerts your family of your whereabouts."
+" _Petty_."
+msgstr ""
+"**Королевский герб**: Родившись в королевской семье, вы выбрали иной "
+"путь. Герб (_мелкий_) дает вам доступ, но также уведомляет семью о вашем "
+"местонахождении."
 
 #: app/static/json/backgrounds/mountebank.json:125
 msgid "Royal Crest"
@@ -5369,8 +5771,8 @@ msgid ""
 msgstr "Родившись в королевской семье, вы выбрали иной путь. Герб (мелкий) дает вам доступ, но также уведомляет семью о вашем местонахождении."
 
 #: app/static/json/backgrounds/mountebank.json:132
-msgid "Miracle Oil: A smelly, slippery concoction. 2 uses."
-msgstr "Чудо-масло: Пахучая, скользкая смесь (2 использования)."
+msgid "**Miracle Oil**: A smelly, slippery concoction. 2 uses."
+msgstr "**Чудо-масло**: Пахучая, скользкая смесь (2 использования)."
 
 #: app/static/json/backgrounds/mountebank.json:135
 msgid "Miracle Oil"
@@ -5378,9 +5780,11 @@ msgstr "Чудо-масло"
 
 #: app/static/json/backgrounds/mountebank.json:142
 msgid ""
-"Surgeon's Soap: A lye and ash block that makes skin temporarily transparent, "
-"revealing the anatomy within. 4 uses."
-msgstr "Хирургическое мыло: Брусок из щелочи и золы, временно делающий кожу прозрачной, обнажая анатомию (4 использования)."
+"**Surgeon's Soap**: A lye and ash block that makes skin temporarily "
+"transparent, revealing the anatomy within. 4 uses."
+msgstr ""
+"**Хирургическое мыло**: Брусок из щелочи и золы, временно делающий кожу "
+"прозрачной, обнажая анатомию (4 использования)."
 
 #: app/static/json/backgrounds/mountebank.json:145
 msgid "Surgeon's Soap"
@@ -5388,9 +5792,11 @@ msgstr "Хирургическое мыло"
 
 #: app/static/json/backgrounds/mountebank.json:152
 msgid ""
-"Goat Powder: Derived from the placenta of a baby goat. Temporarily cures any "
-"affliction, but symptoms return within hours."
-msgstr "Козий порошок: Получен из плаценты козленка. Излечивает любую болезнь, но симптомы возвращаются через несколько часов."
+"**Goat Powder**: Derived from the placenta of a baby goat. Temporarily "
+"cures any affliction, but symptoms return within hours."
+msgstr ""
+"**Козий порошок**: Получен из плаценты козленка. Излечивает любую "
+"болезнь, но симптомы возвращаются через несколько часов."
 
 #: app/static/json/backgrounds/mountebank.json:155
 msgid "Goat Powder"
@@ -5398,9 +5804,12 @@ msgstr "Козий порошок"
 
 #: app/static/json/backgrounds/mountebank.json:161
 msgid ""
-"Cursed Sapphire: Worth 200gp, it noticeably returns to your pocket shortly "
-"after you spend it. You can't seem to get rid of it."
-msgstr "Проклятый сапфир: Стоимость 200 зм; заметно для окружающих возвращается в ваш карман вскоре после того, как вы его потратите. Вы не можете от него избавиться."
+"**Cursed Sapphire**: Worth **200gp**, it noticeably returns to your "
+"pocket shortly after you spend it. You can't seem to get rid of it."
+msgstr ""
+"**Проклятый сапфир**: Стоимость 200 зм; заметно для окружающих "
+"возвращается в ваш карман вскоре после того, как вы его потратите. Вы не "
+"можете от него избавиться."
 
 #: app/static/json/backgrounds/mountebank.json:164
 msgid "Cursed Sapphire"
@@ -5408,10 +5817,13 @@ msgstr "Проклятый сапфир"
 
 #: app/static/json/backgrounds/mountebank.json:170
 msgid ""
-"Alchemical Tattoo: A dog, cat, or bird that can leave your body on demand. "
-"It follows your commands to the best of its abilities and can pass its "
-"injuries (as STR loss) back onto you. Petty."
-msgstr "Алхимическое тату: Собака, кошка или птица, способная покидать ваше тело по требованию. Она выполняет ваши команды по мере своих возможностей и может передавать вам свои ранения, например, потерю СИЛ (мелкий)."
+"**Alchemical Tattoo**: A dog, cat, or bird that can leave your body on "
+"demand. It follows your commands to the best of its abilities and can "
+"pass its injuries (_as STR loss_) back onto you. _Petty_."
+msgstr ""
+"**Алхимическое тату**: Собака, кошка или птица, способная покидать ваше "
+"тело по требованию. Она выполняет ваши команды по мере своих возможностей"
+" и может передавать вам свои ранения, например, потерю СИЛ (_мелкий_)."
 
 #: app/static/json/backgrounds/mountebank.json:173
 msgid "Alchemical Tattoo"
@@ -5439,10 +5851,13 @@ msgstr "Какой личный кодекс или принцип вы собл
 
 #: app/static/json/backgrounds/outrider.json:51
 msgid ""
-"No innocent blood: No bystander will come to harm on your watch. Take a "
-"Steadymade Buckler (+1 Armor). While holding this shield, you cannot be "
-"moved so long as both feet are planted on firm ground."
-msgstr "Не проливать кровь невинных: ни один обыватель не пострадает под вашей защитой. Возьмите Надежный баклер (Броня 1). Держа этот щит, вы не можете быть сдвинуты, пока обе ноги стоят на твердой почве."
+"**No innocent blood**: No bystander will come to harm on your watch. Take"
+" a **Steadymade Buckler** (+1 Armor). While holding this shield, you "
+"cannot be moved so long as both feet are planted on firm ground."
+msgstr ""
+"Не проливать кровь невинных: ни один обыватель не пострадает под вашей "
+"защитой. Возьмите **Надежный баклер** (Броня 1). Держа этот щит, вы не "
+"можете быть сдвинуты, пока обе ноги стоят на твердой почве."
 
 #: app/static/json/backgrounds/outrider.json:54
 msgid "Steadymade Buckler"
@@ -5456,9 +5871,10 @@ msgstr "Держа этот щит, вы не можете быть сдвину
 
 #: app/static/json/backgrounds/outrider.json:61
 msgid ""
-"Revere the tools of death: Weapons are to be respected and maintained. Take "
-"a Wyrmbone Whetstone. Following a half-hour ritual sharpening, attacks with "
-"the weapon are enhanced until STR damage is dealt."
+"**Revere the tools of death**: Weapons are to be respected and "
+"maintained. Take a **Wyrmbone Whetstone**. Following a half-hour ritual "
+"sharpening, attacks with the weapon are _enhanced_ until STR damage is "
+"dealt."
 msgstr "Чтите орудия смерти: оружие нужно уважать и содержать в порядке. Возьмите Оселок из кости вирма. Вы совершаете получасовой ритуал заточки. Ваши атаки оружием считаются усиленными до тех пор, пока не будет нанесен урон СИЛ."
 
 #: app/static/json/backgrounds/outrider.json:64
@@ -5473,9 +5889,10 @@ msgstr "Вы совершаете получасовой ритуал заточ
 
 #: app/static/json/backgrounds/outrider.json:71
 msgid ""
-"To the death, always: You never back down from a fight, no matter the odds. "
-"Take a Death-Whistle, 1 charge. Its scream frightens away all who hear it "
-"(save WIL or flee). Recharge: Capture the final breath of a dying warrior."
+"**To the death, always**: You never back down from a fight, no matter the"
+" odds. Take a **Death-Whistle**, 1 charge. Its scream frightens away all "
+"who hear it (save WIL or flee). **Recharge**: Capture the final breath of"
+" a dying warrior."
 msgstr "Навстречу смерти: вы никогда не отступаете, независимо от шансов. Возьмите Свисток смерти с 1 зарядом. Его звук пугает всех, кто его слышит (спасбросок ВОЛ или бегство). Перезарядка: уловите последний вздох умирающего воина."
 
 #: app/static/json/backgrounds/outrider.json:74
@@ -5490,17 +5907,17 @@ msgstr "Его звук пугает всех, кто его слышит (сп�
 
 #: app/static/json/backgrounds/outrider.json:83
 msgid ""
-"Revere the dead: Death is a journey we all take, and it deserves respect. "
-"Take an extra 30gp. You always place two gold pieces on the eyelids of a "
-"slain foe. Somehow, you always find the coin."
+"**Revere the dead**: Death is a journey we all take, and it deserves "
+"respect. Take an extra **30gp**. You always place two gold pieces on the "
+"eyelids of a slain foe. Somehow, you always find the coin."
 msgstr "Чтите мертвых: смерть — это путь, который проходят все, и он заслуживает уважения. Возьмите дополнительные 30 зм. Вы всегда кладете две золотые монеты на веки убитого врага. Каким-то образом, они всегда есть у вас под рукой."
 
 #: app/static/json/backgrounds/outrider.json:88
 msgid ""
-"Loyalty to the work: Your word is your bond. Once you've accepted a job, you "
-"see it through to the end. Take a weathered Tally Stick. Once a vow is "
-"marked onto its face, the stick hardens (d8) until it is complete. The stick "
-"will snap in half if the vow is ever broken."
+"**Loyalty to the work**: Your word is your bond. Once you've accepted a "
+"job, you see it through to the end. Take a weathered **Tally Stick**. "
+"Once a vow is marked onto its face, the stick hardens (d8) until it is "
+"complete. The stick will snap in half if the vow is ever broken."
 msgstr "Верность делу: ваше слово — ваша клятва. Приняв задание, вы доводите его до конца. Возьмите Счетную палку. Когда на ее поверхности отмечается клятва—палочка затвердевает (к8) и остается такой, пока клятва не будет выполнена. Если клятва нарушена, палочка ломается пополам."
 
 #: app/static/json/backgrounds/outrider.json:91
@@ -5515,9 +5932,9 @@ msgstr "Когда на ее поверхности отмечается кля�
 
 #: app/static/json/backgrounds/outrider.json:98
 msgid ""
-"Always pay your debts: You always repay what you owe, whether in coin or in "
-"kind. You expect nothing less from all others. Take a Blacked-Out Ledger, "
-"then roll a second time on the Bonds table."
+"**Always pay your debts**: You always repay what you owe, whether in coin"
+" or in kind. You expect nothing less from all others. Take a **Blacked-"
+"Out Ledger**, then roll a second time on the **Bonds** table."
 msgstr "Всегда платите по счетам: вы всегда возвращаете то, что должны, как монеты, так и услуги. Вы ожидаете того же от других. Возьмите Книгу учета с отметками о выполненных обязательствах, затем сделайте еще один бросок по таблице Связей (стр. 12)."
 
 #: app/static/json/backgrounds/outrider.json:101
@@ -5530,9 +5947,11 @@ msgstr "Какой породы ваша лошадь?"
 
 #: app/static/json/backgrounds/outrider.json:112
 msgid ""
-"Heavy Destrier: A beast built for war, an imposing creature. 8 HP, 1 Armor, "
-"hooves (d10+d10), +2 slots."
-msgstr "Тяжелый дестриэ: Внушительное животное, словно созданное для войны [8 ОЗ, Броня 1, копыта (к10+к10), +2 слота]."
+"**Heavy Destrier**: A beast built for war, an imposing creature. 8 HP, 1 "
+"Armor, hooves (d10+d10), +2 slots."
+msgstr ""
+"**Тяжелый дестриэ**: Внушительное животное, словно созданное для войны [8"
+" ОЗ, Броня 1, копыта (к10+к10), +2 слота]."
 
 #: app/static/json/backgrounds/outrider.json:115
 msgid "Heavy Destrier"
@@ -5540,9 +5959,11 @@ msgstr "Тяжелый дестриэ"
 
 #: app/static/json/backgrounds/outrider.json:121
 msgid ""
-"Blacklegged Dandy: Hardy and adaptable. Tough or Perilous terrain are one "
-"step easier. 6 HP. +4 slots."
-msgstr "Черноногий дэнди: Выносливый и адаптивный. Трудная или Опасная местность становится на одну ступень легче [6 ОЗ, +4 слота]."
+"**Blacklegged Dandy**: Hardy and adaptable. **Tough** or **Perilous** "
+"terrain are one step easier. 6 HP. +4 slots."
+msgstr ""
+"**Черноногий дэнди**: Выносливый и адаптивный. **Трудная** или "
+"**Опасная** местность становится на одну ступень легче [6 ОЗ, +4 слота]."
 
 #: app/static/json/backgrounds/outrider.json:124
 msgid "Blacklegged Dandy"
@@ -5550,9 +5971,11 @@ msgstr "Черноногий дэнди"
 
 #: app/static/json/backgrounds/outrider.json:130
 msgid ""
-"Rivertooth: Impressively strong, capable of carrying heavy loads. 4 HP. +6 "
-"slots (only +2 slots if carrying two people)."
-msgstr "Речнозуб: Впечатляюще сильный, способен нести тяжелые грузы [4 ОЗ, +6 слотов или +2 слота, если везет двух человек]."
+"**Rivertooth**: Impressively strong, capable of carrying heavy loads. 4 "
+"HP. +6 slots (only +2 slots if carrying two people)."
+msgstr ""
+"**Речнозуб**: Впечатляюще сильный, способен нести тяжелые грузы [4 ОЗ, +6"
+" слотов или +2 слота, если везет двух человек]."
 
 #: app/static/json/backgrounds/outrider.json:133
 msgid "Rivertooth"
@@ -5560,9 +5983,11 @@ msgstr "Речнозуб"
 
 #: app/static/json/backgrounds/outrider.json:139
 msgid ""
-"Piebald Cob: Intelligent, it can understand simple commands, and even has an "
-"instinct for danger. 6 HP. +4 slots."
-msgstr "Пегий коб: Умный, понимает простые команды и даже чувствует опасность [6 ОЗ, +4 слота]."
+"**Piebald Cob**: Intelligent, it can understand simple commands, and even"
+" has an instinct for danger. 6 HP. +4 slots."
+msgstr ""
+"**Пегий коб**: Умный, понимает простые команды и даже чувствует опасность"
+" [6 ОЗ, +4 слота]."
 
 #: app/static/json/backgrounds/outrider.json:142
 msgid "Piebald Cob"
@@ -5570,9 +5995,12 @@ msgstr "Пегий коб"
 
 #: app/static/json/backgrounds/outrider.json:148
 msgid ""
-"Linden White: Highly trained and agile, it can perform intricate maneuvers "
-"in a time of need (no DEX save to flee). 4 HP. +3 slots."
-msgstr "Липовый белый: Тренированный и ловкий, способен выполнять сложные маневры в критические моменты, не требуется спасбросок ЛОВ для бегства [4 ОЗ, +3 слота]."
+"**Linden White**: Highly trained and agile, it can perform intricate "
+"maneuvers in a time of need (no DEX save to flee). 4 HP. +3 slots."
+msgstr ""
+"**Липовый белый**: Тренированный и ловкий, способен выполнять сложные "
+"маневры в критические моменты, не требуется спасбросок ЛОВ для бегства [4"
+" ОЗ, +3 слота]."
 
 #: app/static/json/backgrounds/outrider.json:151
 msgid "Linden White"
@@ -5580,9 +6008,11 @@ msgstr "Липовый белый"
 
 #: app/static/json/backgrounds/outrider.json:157
 msgid ""
-"Stray Fogger: Wild but very fast (even in Tough terrain). Rides light. 4 HP. "
-"+2 slots."
-msgstr "Бродячий туманник: Дикий, но очень быстрый, даже в Трудной местности. Легкий в управлении [4 ОЗ, +2 слота]."
+"**Stray Fogger**: Wild but very fast (even in **Tough** terrain). Rides "
+"light. 4 HP. +2 slots."
+msgstr ""
+"**Бродячий туманник**: Дикий, но очень быстрый, даже в Трудной местности."
+" Легкий в управлении [4 ОЗ, +2 слота]."
 
 #: app/static/json/backgrounds/outrider.json:160
 msgid "Stray Fogger"
@@ -5618,11 +6048,15 @@ msgstr "На кого вы охотились в последний раз?"
 
 #: app/static/json/backgrounds/prowler.json:52
 msgid ""
-"A mock firefly, baiting water carriers with its glowing lure. Take an "
-"Alchemical Limb (d8, petty when worn) to replace the one it tore off and an "
-"Oil Can (6 uses). The limb is immune to heat and poison. Needs to be oiled "
-"daily."
-msgstr "Светлячок-Имитатор, приманивающий рыбаков своим мерцанием. Вы потеряли конечность в схватке с ним и заменили ее на алхимический протез (к8, мелкое при ношении). Протез устойчив к нагреву и ядам, но требует ежедневной смазки. В комплекте — Масленка (6 использований)."
+"A _mock firefly_, baiting water carriers with its glowing lure. Take an "
+"**Alchemical Limb** (d8, _petty_ when worn) to replace the one it tore "
+"off and an **Oil Can** (6 uses). The limb is immune to heat and poison. "
+"Needs to be oiled daily."
+msgstr ""
+"Светлячок-Имитатор, приманивающий рыбаков своим мерцанием. Вы потеряли "
+"конечность в схватке с ним и заменили ее на **алхимический протез** (к8, "
+"мелкое при ношении). Протез устойчив к нагреву и ядам, но требует "
+"ежедневной смазки. В комплекте — **Масленка** (6 использований)."
 
 #: app/static/json/backgrounds/prowler.json:55
 msgid "Alchemical Limb"
@@ -5634,10 +6068,15 @@ msgstr "Протез устойчив к нагреву и ядам, но тре
 
 #: app/static/json/backgrounds/prowler.json:67
 msgid ""
-"An ice nettle, trapping and draining sheep. You lost your commission when "
-"the fungus you introduced killed half the flock. Take a Rime Seed (1 use). "
-"It freezes any body of water, no matter the size. Don't eat it."
-msgstr "Ледяная крапива, пьющая кровь овец. Вы потеряли свою награду, когда она уничтожила половину стада. Но теперь у вас есть Семя ледяной крапивы, которое замораживает любой водоем независимо от размера. Не употребляйте его внутрь (1 использование)."
+"An _ice nettle_, trapping and draining sheep. You lost your commission "
+"when the fungus you introduced killed half the flock. Take a **Rime "
+"Seed** (1 use). It freezes any body of water, no matter the size. Don't "
+"eat it."
+msgstr ""
+"Ледяная крапива, пьющая кровь овец. Вы потеряли свою награду, когда она "
+"уничтожила половину стада. Но теперь у вас есть **Семя ледяной крапивы**,"
+" которое замораживает любой водоем независимо от размера. Не употребляйте"
+" его внутрь (1 использование)."
 
 #: app/static/json/backgrounds/prowler.json:70
 msgid "Rime Seed"
@@ -5649,10 +6088,14 @@ msgstr "Замораживает любой водоем, каким бы огр
 
 #: app/static/json/backgrounds/prowler.json:78
 msgid ""
-"A silver marsh crawler that killed someone close to you. You now carry its "
-"Tooth (petty) on a chain around your neck as a warning to others of its "
-"kind. The tooth hums softly when something is stalking you."
-msgstr "Серебряный болотный ползун, убивший кого-то из ваших близких. Теперь вы носите его Зуб (мелкий) на цепочке вокруг шеи как предупреждение для его сородичей. Зуб мягко гудит, когда за вами кто-то следит."
+"A _silver marsh crawler_ that killed someone close to you. You now carry "
+"its **Tooth** (_petty_) on a chain around your neck as a warning to "
+"others of its kind. _The tooth hums softly when something is stalking "
+"you_."
+msgstr ""
+"Серебряный болотный ползун, убивший кого-то из ваших близких. Теперь вы "
+"носите его **Зуб** (_мелкий_) на цепочке вокруг шеи как предупреждение "
+"для его сородичей. Зуб мягко гудит, когда за вами кто-то следит."
 
 #: app/static/json/backgrounds/prowler.json:81
 msgid "Tooth"
@@ -5666,10 +6109,13 @@ msgstr "Серебряный болотный ползун, убивший ко�
 
 #: app/static/json/backgrounds/prowler.json:88
 msgid ""
-"A malicious forest spirit that poisoned a homestead. You saved a Heartseed "
-"from the roots of a dying tree (plant to create a a new forest). Also, take "
-"Iron Bracers (+1 Armor, bulky)."
-msgstr "Обозленный лесной дух, отравивший усадьбу. Вы спасли сердечное семя из корней умирающего дерева. Посадите его, чтобы вырастить новый лес. Также у вас есть Железные наручи (Броня 1, громоздкий)."
+"A malicious _forest spirit_ that poisoned a homestead. You saved a "
+"**Heartseed** from the roots of a dying tree (plant to create a a new "
+"forest). Also, take **Iron Bracers** (+1 Armor, _bulky_)."
+msgstr ""
+"Обозленный лесной дух, отравивший усадьбу. Вы спасли **сердечное семя** "
+"из корней умирающего дерева. Посадите его, чтобы вырастить новый лес. "
+"Также у вас есть **Железные наручи** (Броня 1, _громоздкий_)."
 
 #: app/static/json/backgrounds/prowler.json:91
 msgid "Heartseed"
@@ -5685,17 +6131,24 @@ msgstr "Железные наручи"
 
 #: app/static/json/backgrounds/prowler.json:102
 msgid ""
-"A hollow wolf that had been frightening travelers. You took pity on the half-"
-"starved creature and nursed it back to health. Now it is loyal to you unto "
-"death. It is also a great tunneler. 5 HP, 11 STR, 13 DEX, 8 WIL, teeth (d6)."
-msgstr "Пустотелый волк, нападавший на путников. Вы сжалились и выходили это изголодавшее существо. Теперь он предан вам до смерти, а еще он отлично роет туннели. [5 ОЗ, 11 СИЛ, 13 ЛОВ, 8 ВОЛ, зубы (к6)]."
+"A _hollow wolf_ that had been frightening travelers. You took pity on the"
+" half-starved creature and nursed it back to health. Now it is loyal to "
+"you unto death. It is also a great tunneler. 5 HP, 11 STR, 13 DEX, 8 WIL,"
+" teeth (d6)."
+msgstr ""
+"_Пустотелый волк_, нападавший на путников. Вы сжалились и выходили это "
+"изголодавшее существо. Теперь он предан вам до смерти, а еще он отлично "
+"роет туннели. [5 ОЗ, 11 СИЛ, 13 ЛОВ, 8 ВОЛ, зубы (к6)]."
 
 #: app/static/json/backgrounds/prowler.json:106
 msgid ""
-"An azure warbler. The gametes attract a sizeable profit, if properly "
-"extracted. You succeeded but left its nest to the wolves. Take a Paring "
-"Knife (d6), an extra 20gp, and a pang of regret."
-msgstr "Лазурная камышовка. Ее гаметы при правильном извлечении приносят огромную прибыль. Вы преуспели, но оставили гнездо на съедение волкам. У вас есть Разделочный нож (к6), дополнительные 20 зм и чувство вины."
+"An _azure warbler_. The gametes attract a sizeable profit, if properly "
+"extracted. You succeeded but left its nest to the wolves. Take a **Paring"
+" Knife** (d6), **an extra 20gp**, and a pang of regret."
+msgstr ""
+"Лазурная камышовка. Ее гаметы при правильном извлечении приносят огромную"
+" прибыль. Вы преуспели, но оставили гнездо на съедение волкам. У вас есть"
+" **Разделочный нож** (к6), дополнительные 20 зм и чувство вины."
 
 #: app/static/json/backgrounds/prowler.json:109
 msgid "Paring Knife"
@@ -5707,9 +6160,11 @@ msgstr "Какой инструмент всегда в вашем рюкзак�
 
 #: app/static/json/backgrounds/prowler.json:121
 msgid ""
-"Fermented Spirits: Keeps you warm at the best of times and as an explosive "
-"at the worst. 3 Uses."
-msgstr "Забродивший спирт: Согревает в лучшие времена и может стать взрывчаткой в худшие (3 использования)."
+"**Fermented Spirits**: Keeps you warm at the best of times and as an "
+"explosive at the worst. 3 Uses."
+msgstr ""
+"**Забродивший спирт**: Согревает в лучшие времена и может стать "
+"взрывчаткой в худшие (3 использования)."
 
 #: app/static/json/backgrounds/prowler.json:124
 msgid "Fermented Spirits"
@@ -5721,9 +6176,11 @@ msgstr "Согревает в лучшие времена и может стат
 
 #: app/static/json/backgrounds/prowler.json:132
 msgid ""
-"Trail Shaker: A noisy instrument that reveals nearby trails, even when "
-"deeply hidden."
-msgstr "Следоискатель: Шумный инструмент, выявляющий поблизости тропы, даже глубоко скрытые."
+"**Trail Shaker**: A noisy instrument that reveals nearby trails, even "
+"when deeply hidden."
+msgstr ""
+"**Следоискатель**: Шумный инструмент, выявляющий поблизости тропы, даже "
+"глубоко скрытые."
 
 #: app/static/json/backgrounds/prowler.json:135
 msgid "Trail Shaker"
@@ -5735,9 +6192,11 @@ msgstr "Шумный инструмент, выявляющий поблизос
 
 #: app/static/json/backgrounds/prowler.json:142
 msgid ""
-"Drowse Balm: A wax bar. If boiled in water, the steam acts as a soporific "
-"agent."
-msgstr "Успокаивающий бальзам: Восковой брусок. Если прокипятить в воде, пар действует как снотворное средство."
+"**Drowse Balm**: A wax bar. If boiled in water, the steam acts as a "
+"soporific agent."
+msgstr ""
+"**Успокаивающий бальзам**: Восковой брусок. Если прокипятить в воде, пар "
+"действует как снотворное средство."
 
 #: app/static/json/backgrounds/prowler.json:145
 msgid "Drowse Balm"
@@ -5749,9 +6208,11 @@ msgstr "Восковой брусок. Если прокипятить в вод
 
 #: app/static/json/backgrounds/prowler.json:152
 msgid ""
-"Spike and Cord: For traversing difficult terrain or for creating makeshift "
-"traps and structures."
-msgstr "Клин и кабель: Для преодоления сложной местности или создания самодельных ловушек и сооружений."
+"**Spike and Cord**: For traversing difficult terrain or for creating "
+"makeshift traps and structures."
+msgstr ""
+"**Клин и кабель**: Для преодоления сложной местности или создания "
+"самодельных ловушек и сооружений."
 
 #: app/static/json/backgrounds/prowler.json:155
 msgid "Spike and Cord"
@@ -5765,9 +6226,11 @@ msgstr "Для преодоления сложной местности или �
 
 #: app/static/json/backgrounds/prowler.json:162
 msgid ""
-"Iron Rattle: A noisemaker for distracting or scaring your quarry. Sounds "
-"convincingly like a snake."
-msgstr "Железная погремушка: Шумелка для отвлечения или отпугивания добычи. Она звучит как змея."
+"**Iron Rattle**: A noisemaker for distracting or scaring your quarry. "
+"Sounds convincingly like a snake."
+msgstr ""
+"**Железная погремушка**: Шумелка для отвлечения или отпугивания добычи. "
+"Она звучит как змея."
 
 #: app/static/json/backgrounds/prowler.json:165
 msgid "Iron Rattle"
@@ -5783,9 +6246,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/prowler.json:172
 msgid ""
-"Hardening Glue: Makes any flat material (cloth, leather, sand) as hard as "
-"stone. Expensive (20gp a bottle, 3 uses)."
-msgstr "Затвердевающий клей: Делает любой плоский материал (ткань, кожу, песок) твердым как камень. Дорогостоящий (20 зм за бутылку, 3 исп)."
+"**Hardening Glue**: Makes any flat material (cloth, leather, sand) as "
+"hard as stone. Expensive (20gp a bottle, 3 uses)."
+msgstr ""
+"**Затвердевающий клей**: Делает любой плоский материал (ткань, кожу, "
+"песок) твердым как камень. Дорогостоящий (20 зм за бутылку, 3 исп)."
 
 #: app/static/json/backgrounds/prowler.json:175
 msgid "Hardening Glue"
@@ -5850,10 +6315,13 @@ msgstr "Какими песнями вы наиболее известны?"
 
 #: app/static/json/backgrounds/rill-runner.json:40
 msgid ""
-"The Tinker's Two-Step. A humorous fairy tale about a gift-giving traveler. "
-"Start with a Reed Whistle. Anyone in earshot must pass a WIL save to perform "
-"an act of violence."
-msgstr "Тустеп жестянщика. Веселая сказка о страннике, раздающем подарки. Возьмите Тростниковый свисток. Все, кто его услышит, должны пройти проверку ВОЛ, перед совершением акта насилия."
+"_The Tinker's Two-Step_. A humorous fairy tale about a gift-giving "
+"traveler. Start with a **Reed Whistle**. Anyone in earshot must pass a "
+"WIL save to perform an act of violence."
+msgstr ""
+"Тустеп жестянщика. Веселая сказка о страннике, раздающем подарки. "
+"Возьмите **Тростниковый свисток**. Все, кто его услышит, должны пройти "
+"проверку ВОЛ, перед совершением акта насилия."
 
 #: app/static/json/backgrounds/rill-runner.json:43
 msgid "Reed Whistle"
@@ -5865,10 +6333,13 @@ msgstr "Все, кто его услышит, должны пройти пров
 
 #: app/static/json/backgrounds/rill-runner.json:50
 msgid ""
-"The Sylph and Her Lover. A bawdy tale of lost love. Start with a Breeze Knot "
-"(3 charges). Creates a strong breeze. Recharge: Tie it to a mast during a "
-"storm."
-msgstr "Сильф и ее возлюбленный. Непристойная история о потерянной любви. Возьмите Узелок ветра (3 заряда). Создает сильный ветер. Перезарядка: привяжите узелок к мачте во время шторма."
+"_The Sylph and Her Lover_. A bawdy tale of lost love. Start with a "
+"**Breeze Knot** (3 charges). Creates a strong breeze. **Recharge**: Tie "
+"it to a mast during a storm."
+msgstr ""
+"Сильф и ее возлюбленный. Непристойная история о потерянной любви. "
+"Возьмите **Узелок ветра** (3 заряда). Создает сильный ветер. Перезарядка:"
+" привяжите узелок к мачте во время шторма."
 
 #: app/static/json/backgrounds/rill-runner.json:53
 msgid "Breeze Knot"
@@ -5880,9 +6351,9 @@ msgstr "Создает сильный ветер. Перезарядка: при
 
 #: app/static/json/backgrounds/rill-runner.json:62
 msgid ""
-"Harper's Devotion. A sad, short tale about a musician who falls in love with "
-"a star. Start with a Celestial Lute. Reveals the constellations above, no "
-"matter the weather."
+"_Harper's Devotion_. A sad, short tale about a musician who falls in love"
+" with a star. Start with a **Celestial Lute**. Reveals the constellations"
+" above, no matter the weather."
 msgstr "Преданность арфиста. Грустная короткая история о музыканте, влюбившемся в звезду. Возьмите Небесную лютню. Показывает созвездия над головой, независимо от погоды."
 
 #: app/static/json/backgrounds/rill-runner.json:65
@@ -5895,10 +6366,13 @@ msgstr "Показывает созвездия над головой, неза�
 
 #: app/static/json/backgrounds/rill-runner.json:72
 msgid ""
-"The Reed Fisher. A celebrated song about a massive carp that always seems to "
-"get away. Begin with a spool of River Twine (5 uses). Each dip into the "
-"river guarantees a catch, though it might not be pleasant."
-msgstr "Ловец тростника. Известная песня о гигантском карпе, который всегда ускользает. Возьмите Моток речной бечевки (5 использований). Каждое погружение в реку гарантирует улов, хотя он может быть неприятным."
+"_The Reed Fisher_. A celebrated song about a massive carp that always "
+"seems to get away. Begin with a spool of **River Twine** (5 uses). Each "
+"dip into the river guarantees a catch, though it might not be pleasant."
+msgstr ""
+"Ловец тростника. Известная песня о гигантском карпе, который всегда "
+"ускользает. Возьмите **Моток речной бечевки** (5 использований). Каждое "
+"погружение в реку гарантирует улов, хотя он может быть неприятным."
 
 #: app/static/json/backgrounds/rill-runner.json:75
 msgid "River Twine"
@@ -5911,8 +6385,8 @@ msgstr "Каждое погружение в реку гарантирует у�
 
 #: app/static/json/backgrounds/rill-runner.json:83
 msgid ""
-"Song of the Silver Stream. A wordless lullaby that mimics flowing water. "
-"Take a Stone Flute that can calm almost any river."
+"_Song of the Silver Stream_. A wordless lullaby that mimics flowing "
+"water. Take a **Stone Flute** that can calm almost any river."
 msgstr "Песня серебряного ручья. Колыбельная, имитирующая звук текущей воды. Возьмите Каменную флейту, способную успокоить почти любую реку."
 
 #: app/static/json/backgrounds/rill-runner.json:86
@@ -5925,10 +6399,14 @@ msgstr "Способную успокоить почти любую реку."
 
 #: app/static/json/backgrounds/rill-runner.json:93
 msgid ""
-"The Thrush and the Meadow. A moody tale told in alternating chorus. Start "
-"with a Feather Quill (1 use, petty). A map drawn with this quill reveals the "
-"most expedient course between any two points."
-msgstr "Дрозд на лугу. Меланхоличная история, рассказанная хором сменяющихся голосов. Возьмите Гусиное перо (1 исп., мелкий). Карта, нарисованная этим пером, показывает самый быстрый путь между двумя точками."
+"_The Thrush and the Meadow_. A moody tale told in alternating chorus. "
+"Start with a **Feather Quill** (1 use, _petty_). A map drawn with this "
+"quill reveals the most expedient course between any two points."
+msgstr ""
+"Дрозд на лугу. Меланхоличная история, рассказанная хором сменяющихся "
+"голосов. Возьмите **Гусиное перо** (1 исп., _мелкий_). Карта, "
+"нарисованная этим пером, показывает самый быстрый путь между двумя "
+"точками."
 
 #: app/static/json/backgrounds/rill-runner.json:96
 msgid "Feather Quill"
@@ -5946,19 +6424,22 @@ msgstr "Как вы добываете деньги на оплату ваших
 
 #: app/static/json/backgrounds/rill-runner.json:109
 msgid ""
-"Performing at taverns always yields both room and board. Sometimes you even "
-"get tips! Start with an extra 10gp."
+"Performing at taverns always yields both room and board. Sometimes you "
+"even get tips! Start with an extra **10gp**."
 msgstr "Концерты: Выступления в тавернах всегда обеспечивают вас едой и жильем, иногда даже чаевыми! Начните игру с дополнительными к6 зм."
 
 #: app/static/json/backgrounds/rill-runner.json:114
 msgid ""
-"You are a protector for those afraid to travel alone. Start with a Rapier."
-msgstr "Охрана: Вы защищаете тех, кто боится путешествовать в одиночку. Возьмите Рапиру (к8)."
+"You are a protector for those afraid to travel alone. Start with a "
+"**Rapier**."
+msgstr ""
+"**Охрана**: Вы защищаете тех, кто боится путешествовать в одиночку. "
+"Возьмите Рапиру (к8)."
 
 #: app/static/json/backgrounds/rill-runner.json:123
 msgid ""
 "You buy low and sell high, always making just enough to get by. Take a "
-"single item worth 20gp (or less) from the gear table."
+"**single item** worth **20gp** (or less) from the gear table."
 msgstr "Торговля: Вы покупаете дешево и продаете дорого, зарабатывая себе на жизнь торговлей. Возьмите Один предмет стоимостью до 20 зм из таблицы снаряжения."
 
 #: app/static/json/backgrounds/rill-runner.json:128
@@ -5975,9 +6456,12 @@ msgstr "Друг моряков: Сквозь бурные воды и опас�
 
 #: app/static/json/backgrounds/rill-runner.json:136
 msgid ""
-"You shepherd caravans and travelers across water-soaked lands. Start with a  "
-"map (petty) relevant to your next journey."
-msgstr "Проводник: Вы сопровождаете путешественников и караваны по заболоченным землям. Возьмите Карту (мелкий), относящейся к вашему следующему путешествию."
+"You shepherd caravans and travelers across water-soaked lands. Start with"
+" a  **map** (_petty_) relevant to your next journey."
+msgstr ""
+"**Проводник**: Вы сопровождаете путешественников и караваны по "
+"заболоченным землям. Возьмите Карту (_мелкий_), относящейся к вашему "
+"следующему путешествию."
 
 #: app/static/json/backgrounds/rill-runner.json:139
 msgid "Map"
@@ -6016,9 +6500,11 @@ msgstr "Какую книгу вы носите при себе?"
 
 #: app/static/json/backgrounds/scrivener.json:51
 msgid ""
-"The Wild Tongue. A bundle of leather-bound scrolls. A seminal work, "
+"**The Wild Tongue**. A bundle of leather-bound scrolls. A seminal work, "
 "cataloging the hidden languages of beasts and how to understand them."
-msgstr "Дикий язык. Свитки в кожаном переплете. Фундаментальный труд, каталогизирующий скрытые языки животных и способы их понимания."
+msgstr ""
+"**Дикий язык**. Свитки в кожаном переплете. Фундаментальный труд, "
+"каталогизирующий скрытые языки животных и способы их понимания."
 
 #: app/static/json/backgrounds/scrivener.json:54
 msgid "The Wild Tongue"
@@ -6032,9 +6518,11 @@ msgstr "Дикий язык. Свитки в кожаном переплете. 
 
 #: app/static/json/backgrounds/scrivener.json:61
 msgid ""
-"The Silent Symphony. Bound in fluorescent wrap. Very rare, it chronicles the "
-"subtle signs used by those employing invisibility magic."
-msgstr "Безмолвная симфония. Книга в флуоресцентной обертке. Очень редкая, описывает знаки, используемые практикующими магию невидимости."
+"**The Silent Symphony**. Bound in fluorescent wrap. Very rare, it "
+"chronicles the subtle signs used by those employing invisibility magic."
+msgstr ""
+"**Безмолвная симфония**. Книга в флуоресцентной обертке. Очень редкая, "
+"описывает знаки, используемые практикующими магию невидимости."
 
 #: app/static/json/backgrounds/scrivener.json:64
 msgid "The Silent Symphony"
@@ -6048,10 +6536,13 @@ msgstr "Книга в флуоресцентной обертке. Очень р
 
 #: app/static/json/backgrounds/scrivener.json:71
 msgid ""
-"A Treatise on the Abyss. A nondescript black book. An in-depth, largely "
-"theoretical text describing the Roots, as well as information about the "
-"location of a nearby Gate."
-msgstr "Трактат о Бездне. Неописуемая черная книга. Глубокий, в основном теоретический труд, описывающий Корни, а также информацию о расположении ближайших Врат."
+"**A Treatise on the Abyss**. A nondescript black book. An in-depth, "
+"largely theoretical text describing the **Roots**, as well as information"
+" about the location of a nearby **Gate**."
+msgstr ""
+"**Трактат о Бездне**. Неописуемая черная книга. Глубокий, в основном "
+"теоретический труд, описывающий **Корни**, а также информацию о "
+"расположении ближайших Врат."
 
 #: app/static/json/backgrounds/scrivener.json:74
 msgid "A Treatise on the Abyss"
@@ -6065,10 +6556,13 @@ msgstr "Неописуемая черная книга. Глубокий, в о�
 
 #: app/static/json/backgrounds/scrivener.json:81
 msgid ""
-"The Star Waltz. A comet-shaped clasp bound in a fine leather cover. Detailed "
-"astronomical charts, celestial movements, and stellar festivals. Highly "
-"valued (100gp) for its usefulness to travelers."
-msgstr "Звездный вальс. Переплет из тонкой кожи с застежкой в форме кометы. Детализированные астрономические карты, небесные движения и звездные фестивали. Высоко ценится (100 зм) за полезность для путешественников."
+"**The Star Waltz**. A comet-shaped clasp bound in a fine leather cover. "
+"Detailed astronomical charts, celestial movements, and stellar festivals."
+" Highly valued (100gp) for its usefulness to travelers."
+msgstr ""
+"**Звездный вальс**. Переплет из тонкой кожи с застежкой в форме кометы. "
+"Детализированные астрономические карты, небесные движения и звездные "
+"фестивали. Высоко ценится (100 зм) за полезность для путешественников."
 
 #: app/static/json/backgrounds/scrivener.json:84
 msgid "The Star Waltz"
@@ -6083,9 +6577,9 @@ msgstr "Переплет из тонкой кожи с застежкой в ф�
 
 #: app/static/json/backgrounds/scrivener.json:91
 msgid ""
-"The Cathedral and the Canopy. Large-leaf binding over vellum. Nominally a "
-"children's storybook, the margins detail information about traveling, "
-"eating, and sleeping in the cloud forests."
+"**The Cathedral and the Canopy**. Large-leaf binding over vellum. "
+"Nominally a children's storybook, the margins detail information about "
+"traveling, eating, and sleeping in the cloud forests."
 msgstr "Собор и Крона. Переплет из крупных листьев поверх пергамента. Номинально детская книга, но на полях содержится информация о путешествиях, питании и ночлеге в облачных лесах."
 
 #: app/static/json/backgrounds/scrivener.json:94
@@ -6101,9 +6595,9 @@ msgstr "Переплет из крупных листьев поверх пер�
 
 #: app/static/json/backgrounds/scrivener.json:101
 msgid ""
-"Garden of Glass. Bound in the cover of another book. A heretical work, it "
-"describes the materials, procedures, and optimal locations required to open "
-"a Gate."
+"**Garden of Glass**. Bound in the cover of another book. A heretical "
+"work, it describes the materials, procedures, and optimal locations "
+"required to open a **Gate**."
 msgstr "Стеклянный сад. Спрятана под обложкой другой книги. Еретический труд, описывающий материалы, процедуры и оптимальные места для открытия Врат."
 
 #: app/static/json/backgrounds/scrivener.json:104
@@ -6122,9 +6616,11 @@ msgstr "Как вы записываете конфиденциальную ин
 
 #: app/static/json/backgrounds/scrivener.json:116
 msgid ""
-"Fib Ink. Glows when used to write true statements but fades if used to write "
-"false ones."
-msgstr "Чернила правды: Светятся при написании истинных утверждений, но исчезают, если написать ложь."
+"**Fib Ink**. Glows when used to write true statements but fades if used "
+"to write false ones."
+msgstr ""
+"**Чернила правды**: Светятся при написании истинных утверждений, но "
+"исчезают, если написать ложь."
 
 #: app/static/json/backgrounds/scrivener.json:119
 msgid "Fib Ink"
@@ -6138,9 +6634,11 @@ msgstr "Светятся, когда ими пишут правду, и туск
 
 #: app/static/json/backgrounds/scrivener.json:126
 msgid ""
-"Cipher Stone. A pair of sharp black stones. Each one decrypts any message "
-"written by the other."
-msgstr "Камень-шифратор: Пара острых черных камней. Каждый из них расшифровывает любое сообщение, написанное другим."
+"**Cipher Stone**. A pair of sharp black stones. Each one decrypts any "
+"message written by the other."
+msgstr ""
+"**Камень-шифратор**: Пара острых черных камней. Каждый из них "
+"расшифровывает любое сообщение, написанное другим."
 
 #: app/static/json/backgrounds/scrivener.json:129
 msgid "Cipher Stone"
@@ -6153,8 +6651,10 @@ msgid ""
 msgstr "Пара острых черных камней. Каждый из них расшифровывает любое сообщение, написанное другим."
 
 #: app/static/json/backgrounds/scrivener.json:136
-msgid "Everquill. A quill that writes on any surface. You still need ink."
-msgstr "Вечное перо: Перо, которое пишет на любой поверхности. Однако вам все равно нужна чернильница (мелкий)."
+msgid "**Everquill**. A quill that writes on any surface. You still need ink."
+msgstr ""
+"**Вечное перо**: Перо, которое пишет на любой поверхности. Однако вам все"
+" равно нужна чернильница (мелкий)."
 
 #: app/static/json/backgrounds/scrivener.json:139
 msgid "Everquill"
@@ -6166,9 +6666,11 @@ msgstr "Перо, которое пишет на любой поверхност
 
 #: app/static/json/backgrounds/scrivener.json:146
 msgid ""
-"Whisper Vial. Whisper a message into the vial, and it will play it back to "
-"whoever opens it next."
-msgstr "Флакон шепота: Прошепчите сообщение во флакон, и он воспроизведет его тому, кто откроет его следующим."
+"**Whisper Vial**. Whisper a message into the vial, and it will play it "
+"back to whoever opens it next."
+msgstr ""
+"**Флакон шепота**: Прошепчите сообщение во флакон, и он воспроизведет его"
+" тому, кто откроет его следующим."
 
 #: app/static/json/backgrounds/scrivener.json:149
 msgid "Whisper Vial"
@@ -6182,9 +6684,11 @@ msgstr "Прошепчите сообщение во флакон, и он во�
 
 #: app/static/json/backgrounds/scrivener.json:156
 msgid ""
-"Sanguine Lens. Extracts blood from a target without their knowledge. A "
-"stolen drop placed on the eye reveals memories from the past day."
-msgstr "Кровавая линза: Извлекает кровь из цели без ее ведома. Капля, помещенная на глаз, раскрывает воспоминания за последний день."
+"**Sanguine Lens**. Extracts blood from a target without their knowledge. "
+"A stolen drop placed on the eye reveals memories from the past day."
+msgstr ""
+"**Кровавая линза**: Извлекает кровь из цели без ее ведома. Капля, "
+"помещенная на глаз, раскрывает воспоминания за последний день."
 
 #: app/static/json/backgrounds/scrivener.json:159
 msgid "Sanguine Lens"
@@ -6198,9 +6702,11 @@ msgstr "Извлекает кровь из цели без ее ведома. К
 
 #: app/static/json/backgrounds/scrivener.json:166
 msgid ""
-"Echo Leaf. A blank parchment. Whomever unfurls it sees their actions of the "
-"day slowly revealed in a tight scrawl."
-msgstr "Лист эха: Пустой пергамент (мелкий). Тот, кто его разворачивает, видит свои действия за день, медленно проявляющиеся в плотном почерке."
+"**Echo Leaf**. A blank parchment. Whomever unfurls it sees their actions "
+"of the day slowly revealed in a tight scrawl."
+msgstr ""
+"**Лист эха**: Пустой пергамент (мелкий). Тот, кто его разворачивает, "
+"видит свои действия за день, медленно проявляющиеся в плотном почерке."
 
 #: app/static/json/backgrounds/scrivener.json:169
 msgid "Echo Leaf"
@@ -23991,10 +24497,10 @@ msgstr "Экспортировать характеристики"
 
 #. Cairn RUS 9_07, player:45
 msgid ""
-"Blast Sphere: A head-sized iron ball filled with explosive powder that "
-"detonates on impact. "
+"**Blast Sphere**: A head-sized iron ball filled with explosive powder "
+"that detonates on impact. "
 msgstr ""
-"Взрывная сфера: Железный шар размером с голову. Наполнен порошком, "
+"**Взрывная сфера**: Железный шар размером с голову. Наполнен порошком, "
 "взрывающимся при ударе (к12, взрыв, громоздкий, 1 использование)."
 
 #. Cairn RUS 9_07, Warden p. 7
@@ -36198,3 +36704,162 @@ msgstr "Животные"
 #. Portrait picker: the group of object portraits: weapons, statues, things (#502)
 msgid "Objects"
 msgstr "Предметы"
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"You dematerialized a beloved pet. Now it follows you around, invisible "
+"but always present. Although it cannot interact with the physical realm, "
+"you are able to share its senses. (Add a Fatigue each time.) It follows "
+"basic commands."
+msgstr ""
+"Вы развоплотили любимого питомца, и теперь он следует за вами незримым "
+"духом. Хотя он не способен влиять на физический мир, вы можете обращаться"
+" к его ощущениям (1 Усталость каждый раз), а также отдавать простые "
+"команды."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Homunculus: A miniature clay replica of yourself that follows your every "
+"command. It hates being enthralled to you and complains bitterly whenever"
+" possible. Any damage done to the homunculus is also done to you. 3 HP, 4"
+" STR, 13 DEX, 5 WIL."
+msgstr ""
+"Гомункул: Ваша миниатюрная копия из глины, которая выполняет все ваши "
+"команды. Ненавидит подчиняться и жалуется при любой возможности. Любой "
+"урон, нанесенный гомункулу, также наносится вам [3 ОЗ, 4 СИЛ, 13 ЛОВ, 5 "
+"ВОЛ]."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A Blood Pail (bulky) from a local death-cult. Empty it to raise a servant"
+" built from whatever is buried below, with 6 HP, 1 Armor, 13 STR, 11 DEX,"
+" 4 WIL, and shard fists (d8+d8). Only one servant can be raised at a "
+"time. If destroyed, you permanently lose 1d4 STR. Recharge: Fill with the"
+" blood of a dying warrior."
+msgstr ""
+"Ведро крови (громоздкий) от местного культа смерти. Опустошите его, чтобы"
+" поднять слугу из останков. У него: [6 ОЗ, Броня 1, 13 СИЛ, 11 ЛОВ, 4 ВОЛ"
+" и кулаки с острыми осколками (к8+к8)]. Вы можете воскресить только "
+"одного слугу за раз. Если он уничтожен, вы навсегда теряете к4 СИЛ. "
+"Перезарядка: наполните ведро кровью умирающего воина."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A burial wagon (+6 slots, slow) from your last job. It came with a "
+"stubborn old donkey (+4 slots, only +2 slots if pulling wagon)."
+msgstr ""
+"Похоронная повозка (+6 слотов) с последнего места работы. В комплекте с "
+"упрямым старым Ослом (+4 слота; только +2 слота, если тянет повозку; "
+"медленный)."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A Living Nightmare that dwells within you but manifests whenever you are "
+"in danger. It has your same Attributes and HP and attacks with claws "
+"(d8+d8). It disappears on Critical Damage (take 1d4 WIL damage), re-"
+"appearing again on the next full moon."
+msgstr ""
+"Кошмарное существо, обитающее внутри вас и проявляющееся, когда вы в "
+"опасности. Оно обладает такими же Характеристиками и Очками Защиты, как и"
+" вы, и атакует когтями (к8+к8). Исчезает при получении Критического Урона"
+" (вы теряете к4 ВОЛ), и появляется вновь на следующее полнолуние."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A Raven Familiar [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as "
+"an intelligent being and is entirely devoted to you."
+msgstr ""
+"Ворон-фамильяр. Он говорит как разумное существо и полностью предан вам. "
+"[8 ОЗ, 3 СИЛ, 11 ЛОВ, 13 ВОЛ, клюв (к6)]"
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A clever pet, small enough to hide in your pack (bulky), but strong "
+"enough to scare off smaller predators. Requires one Ration a day, and it "
+"must be meat."
+msgstr ""
+"Кот-падальщик: Хитрый питомец: достаточно маленький, чтобы спрятаться в "
+"вашем рюкзаке (громоздкий), но довольно сильный, чтобы отпугнуть мелких "
+"хищников. Требует одну порцию мяса в день. [3 ОЗ, 5 СИЛ, 15 ЛОВ, 12 ВОЛ]."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Alchemical Tattoo: A dog, cat, or bird that can leave your body on "
+"demand. It follows your commands to the best of its abilities and can "
+"pass its injuries (as STR loss) back onto you. Petty."
+msgstr ""
+"Алхимическое тату: Собака, кошка или птица, способная покидать ваше тело "
+"по требованию. Она выполняет ваши команды по мере своих возможностей и "
+"может передавать вам свои ранения, например, потерю СИЛ (мелкий)."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Heavy Destrier: A beast built for war, an imposing creature. 8 HP, 1 "
+"Armor, hooves (d10+d10), +2 slots."
+msgstr ""
+"Тяжелый дестриэ: Внушительное животное, словно созданное для войны [8 ОЗ,"
+" Броня 1, копыта (к10+к10), +2 слота]."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Blacklegged Dandy: Hardy and adaptable. Tough or Perilous terrain are one"
+" step easier. 6 HP. +4 slots."
+msgstr ""
+"Черноногий дэнди: Выносливый и адаптивный. Трудная или Опасная местность "
+"становится на одну ступень легче [6 ОЗ, +4 слота]."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Rivertooth: Impressively strong, capable of carrying heavy loads. 4 HP. "
+"+6 slots (only +2 slots if carrying two people)."
+msgstr ""
+"Речнозуб: Впечатляюще сильный, способен нести тяжелые грузы [4 ОЗ, +6 "
+"слотов или +2 слота, если везет двух человек]."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Piebald Cob: Intelligent, it can understand simple commands, and even has"
+" an instinct for danger. 6 HP. +4 slots."
+msgstr ""
+"Пегий коб: Умный, понимает простые команды и даже чувствует опасность [6 "
+"ОЗ, +4 слота]."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Linden White: Highly trained and agile, it can perform intricate "
+"maneuvers in a time of need (no DEX save to flee). 4 HP. +3 slots."
+msgstr ""
+"Липовый белый: Тренированный и ловкий, способен выполнять сложные маневры"
+" в критические моменты, не требуется спасбросок ЛОВ для бегства [4 ОЗ, +3"
+" слота]."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Stray Fogger: Wild but very fast (even in Tough terrain). Rides light. 4 "
+"HP. +2 slots."
+msgstr ""
+"Бродячий туманник: Дикий, но очень быстрый, даже в Трудной местности. "
+"Легкий в управлении [4 ОЗ, +2 слота]."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A hollow wolf that had been frightening travelers. You took pity on the "
+"half-starved creature and nursed it back to health. Now it is loyal to "
+"you unto death. It is also a great tunneler. 5 HP, 11 STR, 13 DEX, 8 WIL,"
+" teeth (d6)."
+msgstr ""
+"Пустотелый волк, нападавший на путников. Вы сжалились и выходили это "
+"изголодавшее существо. Теперь он предан вам до смерти, а еще он отлично "
+"роет туннели. [5 ОЗ, 11 СИЛ, 13 ЛОВ, 8 ВОЛ, зубы (к6)]."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid "Slate"
+msgstr "Сланец"
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid "Lava"
+msgstr "Лава"
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid "Arcane"
+msgstr "Магия"

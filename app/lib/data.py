@@ -18,6 +18,11 @@ def load_scars():
         result[name] = desc
     return result
 
+# Copies of other portraits (#538): humanoid/humanoidN.png is portraitN.webp again (humanoid0, default-portrait.webp).
+# Characters may store their paths, so the files stay valid; the picker doesn't offer them twice.
+DUPLICATE_PORTRAITS = frozenset(f'humanoid/humanoid{n}.png' for n in range(70))
+
+
 def load_images(include_categories=False):
     image_folder = os.path.join(app_static_path(), 'images', 'portraits')
     image_files = [f for f in os.listdir(image_folder) if f.endswith('.webp')]
@@ -53,6 +58,8 @@ def portrait_groups(images):
     """[(group, images)] for the portrait picker, in PORTRAIT_GROUPS order, each in the order given."""
     groups = {group: [] for group in PORTRAIT_GROUPS}
     for image in images:
+        if image in DUPLICATE_PORTRAITS:
+            continue
         folder = image.split('/')[0] if '/' in image else ''
         group = PORTRAIT_GROUP_OVERRIDES.get(image) or PORTRAIT_FOLDER_GROUPS.get(folder, 'monsters')
         groups[group].append(image)

@@ -60,6 +60,15 @@ def integer(value):
         abort(400, 'Invalid integer.')
 
 
+# A party pin's colours (#533), the first the default; static/src/js/maps/scene.js draws them.
+PIN_COLORS = ('red', 'orange', 'yellow', 'green', 'blue', 'purple')
+
+
+def pin_color(value):
+    """A colour a pin may have, or the default one."""
+    return value if value in PIN_COLORS else PIN_COLORS[0]
+
+
 def coordinate(value):
     try:
         number = float(value)

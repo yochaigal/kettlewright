@@ -3,13 +3,15 @@
 // The drawing is the same map iframe (maps/editor.html) as the article pages, in view mode.
 import {imageAspect} from '../../maps/viewport.js';
 import {readCanvasUI, writeCanvasUI} from '../../maps/canvas_ui.js';
+import {PIN_COLORS} from '../../maps/scene.js';
 
 // Every pin on the map in one list (#525): the map's own pins (placed by the Warden, and shown to this party),
 // in the map's order, then the party's pins.
 export function listedPins(nodes, pins) {
   return [
-    ...nodes.map(node => ({key: `map-${node.id}`, kind: 'map', id: String(node.id), title: node.title})),
-    ...pins.map(pin => ({key: `party-${pin.id}`, kind: 'party', id: String(pin.id), title: pin.title})),
+    ...nodes.map(node => ({key: `map-${node.id}`, kind: 'map', id: String(node.id), title: node.title, x: node.x, y: node.y})),
+    ...pins.map(pin => ({key: `party-${pin.id}`, kind: 'party', id: String(pin.id), title: pin.title, x: pin.x, y: pin.y,
+                         color: (PIN_COLORS[pin.color] || PIN_COLORS.red)[0]})),
   ];
 }
 
@@ -51,7 +53,7 @@ export default function partyMap() {
     sync() {
       this.send('state', {graph: JSON.parse(JSON.stringify(this.graph)), editing: false, ui: {...this.canvasUI},
         selected: this.selected, selectedEdge: this.selectedEdge, selectedPin: this.selectedPin,
-        pins: this.pins.map(({id, x, y, title, movable}) => ({id, x, y, title, movable})),
+        pins: this.pins.map(({id, x, y, title, movable, color}) => ({id, x, y, title, movable, color})),
         fog: this.fog && JSON.parse(JSON.stringify(this.fog)), fogWarden: this.warden, dark: document.body.classList.contains('dark-mode'),
         lang: document.documentElement.lang || 'en'});
     },
@@ -59,6 +61,7 @@ export default function partyMap() {
       if (event.source !== this.$refs.canvas.contentWindow || event.origin !== location.origin || event.data?.channel !== 'kw-map') return;
       const data = event.data;
       if (data.type === 'ready') this.sync();
+      if (data.type === 'scroll') window.scrollBy(Number(data.x) || 0, Number(data.y) || 0);  // An image map's wheel (#533).
       if (data.type === 'mounted') this.canvasReady = true;
       if (data.type === 'select') {
         this.selectedPin = '';
@@ -70,7 +73,7 @@ export default function partyMap() {
       if (data.type === 'picked') {
         this.picking = false;
         if (document.fullscreenElement) document.exitFullscreen().catch(() => {});  // The pin dialog is on the page.
-        this.draft = {x: data.x, y: data.y, title: '', body: ''};
+        this.draft = {x: data.x, y: data.y, title: '', body: '', color: 'red'};
         this.$nextTick(() => {this.$refs.pinDialog.showModal(); this.$refs.pinTitle?.focus();});
       }
       if (data.type === 'fog-operation') this.fogOperation(data.operation);
@@ -113,7 +116,8 @@ export default function partyMap() {
       if (!this.draft?.title.trim() || this.saving) return;
       this.saving = true;
       try {
-        const result = await this.post(this.urls.pins, {x: this.draft.x, y: this.draft.y, title: this.draft.title, body: this.draft.body});
+        const result = await this.post(this.urls.pins, {x: this.draft.x, y: this.draft.y, title: this.draft.title, body: this.draft.body,
+          color: this.draft.color || 'red'});
         if (!result.ok) throw new Error(result.status);
         this.$refs.pinDialog.close(); this.draft = null; this.status = this.labels.pinSaved;
         this.apply(result.data);
@@ -127,12 +131,16 @@ export default function partyMap() {
       else {this.status = this.labels.error; this.sync();}
     },
     get pinList() {return listedPins(this.graph.nodes, this.pins);},
-    // A pin chosen in the list opens like a pin clicked on the map.
+    pinColors: Object.entries(PIN_COLORS).map(([name, [fill]]) => ({name, fill})),
+    // A pin chosen in the list opens like a pin clicked on the map, and the map shows where it is (#533): the map
+    // comes into view, centred on the pin.
     selectListed(item) {
       this.selectedEdge = '';
       if (item.kind === 'map') {this.selectedPin = ''; this.selected = item.id;}
       else {this.selected = ''; this.selectedPin = item.id;}
       this.sync();
+      if (Number.isFinite(item.x) && Number.isFinite(item.y)) this.send('center', {x: item.x, y: item.y});
+      (this.$refs.frame || this.$refs.canvas)?.scrollIntoView?.({behavior: 'smooth', block: 'nearest'});
     },
     // "1 pin", "3 pins" (#482): every pin, the map's and the party's (#525).
     get pinCount() {

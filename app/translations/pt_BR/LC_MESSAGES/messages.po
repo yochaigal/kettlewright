@@ -2391,13 +2391,13 @@ msgstr "O que deu terrivelmente errado?"
 
 #: app/static/json/backgrounds/aurifex.json:46
 msgid ""
-"There was an explosion, and you lost your sense of smell. Well, almost: you can sniff "
-"out gold as a pig does truffles. Take a Tin of Snuff to dampen the impact. Use it "
-"every day or become deprived."
+"There was an explosion, and you lost your sense of smell. Well, almost: "
+"you can sniff out gold as a pig does truffles. Take a **Tin of Snuff** to"
+" dampen the impact. Use it every day or become _deprived_."
 msgstr ""
-"Houve uma explosão, e você perdeu o olfato. Bem, quase: você pode farejar ouro como um "
-"porco fareja trufas. Pegue uma Lata de Rapé para amortecer o impacto. Use-a todos os "
-"dias ou caia em exaustão."
+"Houve uma explosão, e você perdeu o olfato. Bem, quase: você pode farejar"
+" ouro como um porco fareja trufas. Pegue uma **Lata de Rapé** para "
+"amortecer o impacto. Use-a todos os dias ou caia _em exaustão_."
 
 #: app/static/json/backgrounds/aurifex.json:49
 msgid "Tin of Snuff"
@@ -2409,14 +2409,15 @@ msgstr "Use-o todos os dias ou caia em exaustão."
 
 #: app/static/json/backgrounds/aurifex.json:57
 msgid ""
-"You dematerialized a beloved pet. Now it follows you around, invisible but always "
-"present. Although it cannot interact with the physical realm, you are able to share "
-"its senses. (Add a Fatigue each time.) It follows basic commands."
+"You dematerialized a beloved pet. Now it follows you around, invisible "
+"but always present. Although it cannot interact with the physical realm, "
+"you are able to share its senses. (Add a **Fatigue** each time.) It "
+"follows basic commands."
 msgstr ""
-"Você desmaterializou um animal de estimação amado. Agora ele segue você por aí, "
-"invisível, mas sempre presente. Embora ele não possa interagir com o reino físico, "
-"você é capaz de compartilhar seus sentidos. (Adicione uma Fadiga a cada vez.) Ele "
-"segue comandos básicos."
+"Você desmaterializou um animal de estimação amado. Agora ele segue você "
+"por aí, invisível, mas sempre presente. Embora ele não possa interagir "
+"com o reino físico, você é capaz de compartilhar seus sentidos. (Adicione"
+" uma **Fadiga** a cada vez.) Ele segue comandos básicos."
 
 #: app/static/json/backgrounds/aurifex.json:60
 msgid ""
@@ -2429,13 +2430,14 @@ msgstr ""
 
 #: app/static/json/backgrounds/aurifex.json:63
 msgid ""
-"You were adept at creating fake gold, which is almost as good. Eventually, your ruse "
-"was discovered, and you had to make a hasty retreat. Take a heavy Metal Ingot and Gold "
-"Powder."
+"You were adept at creating _fake_ gold, which is almost as good. "
+"Eventually, your ruse was discovered, and you had to make a hasty "
+"retreat. Take a heavy **Metal Ingot** and **Gold Powder**."
 msgstr ""
-"Você era adepto de criar ouro falso, o que é quase tão bom. Eventualmente, seu "
-"estratagema foi descoberto, e você teve que fazer uma retirada apressada. Pegue um "
-"Lajota de Ouro Falso e Ouro Falso em Pó."
+"Você era adepto de criar ouro falso, o que é quase tão bom. "
+"Eventualmente, seu estratagema foi descoberto, e você teve que fazer uma "
+"retirada apressada. Pegue um **Lajota de Ouro Falso** e **Ouro Falso em "
+"Pó**."
 
 #: app/static/json/backgrounds/aurifex.json:66
 msgid "Metal Ingot"
@@ -2447,13 +2449,13 @@ msgstr "Ouro Falso em Pó"
 
 #: app/static/json/backgrounds/aurifex.json:77
 msgid ""
-"Your alchemical recipe worked, but a rival stole the blueprint before your claims "
-"could be proven. Take a prototype Blunderbuss that takes one round to reload, and a "
-"thirst for revenge."
+"Your alchemical recipe worked, but a rival stole the blueprint before "
+"your claims could be proven. Take a prototype **Blunderbuss** that takes "
+"one round to reload, and a thirst for revenge."
 msgstr ""
-"Sua receita alquímica funcionou, mas um rival roubou o projeto antes que suas "
-"alegações pudessem ser provadas. Pegue um protótipo de Bacamarte que leva uma rodada "
-"para recarregar e uma sede de vingança."
+"Sua receita alquímica funcionou, mas um rival roubou o projeto antes que "
+"suas alegações pudessem ser provadas. Pegue um protótipo de **Bacamarte**"
+" que leva uma rodada para recarregar e uma sede de vingança."
 
 #: app/static/json/backgrounds/aurifex.json:80
 msgid "Blunderbuss"
@@ -2465,13 +2467,13 @@ msgstr "Demora uma rodada para recarregar"
 
 #: app/static/json/backgrounds/aurifex.json:87
 msgid ""
-"Ridiculed for discovering how to turn gold into lead, you were a laughing stock. Take "
-"a bottle of Universal Solvent that dissolves anything it touches into its constituent "
-"parts."
+"Ridiculed for discovering how to turn gold into _lead_, you were a "
+"laughing stock. Take a bottle of **Universal Solvent** that dissolves "
+"anything it touches into its constituent parts."
 msgstr ""
-"Ridicularizado por descobrir como transformar ouro em chumbo, você era motivo de "
-"chacota. Pegue uma garrafa de Solvente Universal que dissolve tudo que toca em suas "
-"partes constituintes."
+"Ridicularizado por descobrir como transformar ouro em chumbo, você era "
+"motivo de chacota. Pegue uma garrafa de **Solvente Universal** que "
+"dissolve tudo que toca em suas partes constituintes."
 
 #: app/static/json/backgrounds/aurifex.json:90
 msgid "Universal Solvent"
@@ -2483,11 +2485,11 @@ msgstr "Que maravilha alquímica é o produto da sua mais recente engenhosidade?
 
 #: app/static/json/backgrounds/aurifex.json:102
 msgid ""
-"Pyrophoric Gel: A sticky green fluid that catches fire when exposed to air. It lasts "
-"for 8 hours and cannot be extinguished."
+"**Pyrophoric Gel**: A sticky green fluid that catches fire when exposed "
+"to air. It lasts for 8 hours and cannot be extinguished."
 msgstr ""
-"Gel pirofórico: Um fluido verde pegajoso que pega fogo quando exposto ao ar. Dura 8 "
-"horas e não pode ser extinto."
+"**Gel pirofórico**: Um fluido verde pegajoso que pega fogo quando exposto"
+" ao ar. Dura 8 horas e não pode ser extinto."
 
 #: app/static/json/backgrounds/aurifex.json:105
 msgid "Pyrophoric Gel"
@@ -2507,17 +2509,21 @@ msgstr "Esfera Explosiva"
 
 #: app/static/json/backgrounds/aurifex.json:120
 msgid ""
-"Aqua Vita: Purifies any liquid, converting it to pure water. Drinking it cures 1d6 STR."
+"**Aqua Vita**: Purifies any liquid, converting it to pure water. Drinking"
+" it cures 1d6 STR."
 msgstr ""
-"Aqua Vita: Purifica qualquer líquido, convertendo-o em água pura. Beber cura 1d6 FOR."
+"**Aqua Vita**: Purifica qualquer líquido, convertendo-o em água pura. "
+"Beber cura 1d6 FOR."
 
 #: app/static/json/backgrounds/aurifex.json:123
 msgid "Aqua Vita"
 msgstr "Aqua Vita"
 
 #: app/static/json/backgrounds/aurifex.json:130
-msgid "Mimic Stone: Records a short phrase that can later be played back."
-msgstr "Pedra Mímica: Grava uma frase curta que pode ser reproduzida posteriormente."
+msgid "**Mimic Stone**: Records a short phrase that can later be played back."
+msgstr ""
+"**Pedra Mímica**: Grava uma frase curta que pode ser reproduzida "
+"posteriormente."
 
 #: app/static/json/backgrounds/aurifex.json:133
 msgid "Mimic Stone"
@@ -2529,11 +2535,11 @@ msgstr "Grava uma frase curta que pode ser reproduzida posteriormente."
 
 #: app/static/json/backgrounds/aurifex.json:140
 msgid ""
-"Spark Dust: Ignites easily and quickly. Useful for starting a fire or as an incendiary "
-"device."
+"**Spark Dust**: Ignites easily and quickly. Useful for starting a fire or"
+" as an incendiary device."
 msgstr ""
-"Poeira de Fagulha: Acende fácil e rapidamente. Útil para iniciar um incêndio ou como "
-"um dispositivo incendiário."
+"**Poeira de Fagulha**: Acende fácil e rapidamente. Útil para iniciar um "
+"incêndio ou como um dispositivo incendiário."
 
 #: app/static/json/backgrounds/aurifex.json:143
 msgid "Spark Dust"
@@ -2541,13 +2547,15 @@ msgstr "Poeira de Fagulha"
 
 #: app/static/json/backgrounds/aurifex.json:150
 msgid ""
-"Homunculus: A miniature clay replica of yourself that follows your every command. It "
-"hates being enthralled to you and complains bitterly whenever possible. Any damage "
-"done to the homunculus is also done to you. 3 HP, 4 STR, 13 DEX, 5 WIL."
+"**Homunculus**: A miniature clay replica of yourself that follows your "
+"every command. It hates being enthralled to you and complains bitterly "
+"whenever possible. Any damage done to the homunculus is also done to you."
+" 3 HP, 4 STR, 13 DEX, 5 WIL."
 msgstr ""
-"Homúnculo: Uma réplica de argila em miniatura de você mesmo que segue todos os seus "
-"comandos. Ele odeia ser cativado por você e reclama amargamente sempre que possível. "
-"Qualquer dano causado ao homúnculo também é causado a você. 3 PV, 4 FOR, 13 DES, 5 VON."
+"**Homúnculo**: Uma réplica de argila em miniatura de você mesmo que segue"
+" todos os seus comandos. Ele odeia ser cativado por você e reclama "
+"amargamente sempre que possível. Qualquer dano causado ao homúnculo "
+"também é causado a você. 3 PV, 4 FOR, 13 DES, 5 VON."
 
 #: app/static/json/backgrounds/aurifex.json:153
 msgid "Homunculus"
@@ -2600,22 +2608,24 @@ msgstr "Como você se \"melhorou\"?"
 
 #: app/static/json/backgrounds/barber-surgeon.json:54
 msgid ""
-"You have a replacement eye that can magnify objects, act as a telescope, and provide "
-"minimal night vision. You cannot wear anything metal on your head, and the presence of "
-"strong magnets make you deprived."
+"You have a replacement **eye** that can magnify objects, act as a "
+"telescope, and provide minimal night vision. You cannot wear anything "
+"metal on your head, and the presence of strong magnets make you "
+"_deprived_."
 msgstr ""
-"Você tem um olho substituto que pode ampliar objetos, agir como um telescópio e "
-"fornecer visão noturna mínima. Você não pode usar nada de metal na cabeça, e a "
-"presença de ímãs fortes o deixam em exaustão."
+"Você tem um olho substituto que pode ampliar objetos, agir como um "
+"telescópio e fornecer visão noturna mínima. Você não pode usar nada de "
+"metal na cabeça, e a presença de ímãs fortes o deixam _em exaustão_."
 
 #: app/static/json/backgrounds/barber-surgeon.json:58
 msgid ""
-"One foot is mostly metal (kick, d6), and you treat some tough terrain as Easy. Carry "
-"an Oil Can (6 uses). Without a daily application, you are deprived and noisy."
+"One **foot** is mostly metal (kick, d6), and you treat some tough terrain"
+" as **Easy**. Carry an **Oil Can** (6 uses). Without a daily application,"
+" you are _deprived_ and noisy."
 msgstr ""
-"Um pé é principalmente metal (chute, d6), e você trata alguns terrenos difíceis como "
-"Fácil. Carregue uma Lata de Óleo (6 usos). Sem uma aplicação diária, você fica em exaustão "
-"e barulhento."
+"Um pé é principalmente metal (chute, d6), e você trata alguns terrenos "
+"difíceis como **Fácil**. Carregue uma Lata de Óleo (6 usos). Sem uma "
+"aplicação diária, você fica _em exaustão_ e barulhento."
 
 #: app/static/json/backgrounds/barber-surgeon.json:64
 msgid "Without a daily application you are deprived and noisy."
@@ -2623,8 +2633,8 @@ msgstr "Sem uma aplicação diária você fica em exaustão e barulhento."
 
 #: app/static/json/backgrounds/barber-surgeon.json:69
 msgid ""
-"One of your fingers has been swapped, the bone replaced by gold and iron. Take a Hook "
-"and a Screwdriver that can attach to the fingertip."
+"One of your fingers has been swapped, the bone replaced by gold and iron."
+" Take a **Hook** and a **Screwdriver** that can attach to the fingertip."
 msgstr ""
 "Um dos seus dedos foi trocado, o osso foi substituído por ouro e ferro. Pegue um "
 "gancho e uma chave de fenda que possam ser presos à ponta do dedo.Um dos seus dedos "
@@ -2641,18 +2651,20 @@ msgstr "Fixa-se ao dedo mecânico."
 
 #: app/static/json/backgrounds/barber-surgeon.json:79
 msgid ""
-"Both ears have been surgically enhanced, tripling your hearing. You can focus on a "
-"specific sound, such as a conversation, at a great distance. You wear an ear flap to "
-"protect against sudden loud noises (WIL save to avoid temporary paralysis)."
+"Both **ears** have been surgically enhanced, tripling your hearing. You "
+"can focus on a specific sound, such as a conversation, at a great "
+"distance. You wear an ear flap to protect against sudden loud noises (WIL"
+" save to avoid temporary paralysis)."
 msgstr ""
-"Both ears have been surgically enhanced, tripling your hearing. You can focus on a "
-"specific sound, such as a conversation, at a great distance. You wear an ear flap to "
-"protect against sudden loud noises (VON save to avoid temporary paralysis)."
+"Both **ears** have been surgically enhanced, tripling your hearing. You "
+"can focus on a specific sound, such as a conversation, at a great "
+"distance. You wear an ear flap to protect against sudden loud noises (VON"
+" save to avoid temporary paralysis)."
 
 #: app/static/json/backgrounds/barber-surgeon.json:83
 msgid ""
-"Your chest is lined with alchemical sigils, toughening the skin (Armor 1). Wearing "
-"other metallic armor nullifies the effect."
+"Your **chest** is lined with alchemical sigils, _toughening the skin_ "
+"(Armor 1). Wearing other metallic armor nullifies the effect."
 msgstr ""
 "Seu peito é revestido com sigilos alquímicos, endurecendo a pele (Armadura 1). Usar "
 "outra armadura metálica anula o efeito."
@@ -2667,18 +2679,20 @@ msgstr "Seu peito é revestido com sigilos alquímicos, _endurecendo a pele_ (1 
 
 #: app/static/json/backgrounds/barber-surgeon.json:93
 msgid ""
-"One arm is fully metal and comes off at the shoulder. It can be used as a weapon (d8, "
-"bulky when not attached) and can move independently if you are within sight of it."
+"One **arm** is fully metal and comes off at the shoulder. It can be used "
+"as a weapon (d8, _bulky_ when not attached) and can move independently if"
+" you are within sight of it."
 msgstr ""
-"One arm is fully metal and comes off at the shoulder. It can be used as a weapon (d8, "
-"bulky when not attached) and can move independently if you are within sight of it."
+"One **arm** is fully metal and comes off at the shoulder. It can be used "
+"as a weapon (d8, bulky when not attached) and can move independently if "
+"you are within sight of it."
 
 #: app/static/json/backgrounds/barber-surgeon.json:99
 msgid "What rare tool is essential to your work?"
 msgstr "Que ferramenta rara é essencial para seu trabalho?"
 
 #: app/static/json/backgrounds/barber-surgeon.json:102
-msgid "Regrowth Salve: Regrows a body part over the course of a day. 1 use."
+msgid "**Regrowth Salve**: Regrows a body part over the course of a day. 1 use."
 msgstr ""
 "Pomada para regeneração: faz uma parte do corpo crescer novamente ao longo de um dia. "
 "1 uso."
@@ -2693,10 +2707,11 @@ msgstr "Faz uma parte do corpo crescer novamente ao longo de um dia."
 
 #: app/static/json/backgrounds/barber-surgeon.json:113
 msgid ""
-"Graftgrub: A small worm that can fuse inanimate objects with parts of the body. 1 use."
+"**Graftgrub**: A small worm that can fuse inanimate objects with parts of"
+" the body. 1 use."
 msgstr ""
-"Larva de Enxerto: Um pequeno verme que pode fundir objetos inanimados com partes do "
-"corpo. 1 uso."
+"**Larva de Enxerto**: Um pequeno verme que pode fundir objetos inanimados"
+" com partes do corpo. 1 uso."
 
 #: app/static/json/backgrounds/barber-surgeon.json:116
 msgid "Graftgrub"
@@ -2708,8 +2723,8 @@ msgstr "Funde objetos inanimados com partes do corpo."
 
 #: app/static/json/backgrounds/barber-surgeon.json:124
 msgid ""
-"Woundwax: Heals wounds from fire or chemicals (restoring full STR) but nothing else. 2 "
-"uses."
+"**Woundwax**: Heals wounds from fire or chemicals (restoring full STR) "
+"but nothing else. 2 uses."
 msgstr ""
 "Cera para Ferimentos: Cura ferimentos causados ​​por fogo ou produtos químicos "
 "(restaurando FOR total), mas nada mais. 2 usos."
@@ -2725,12 +2740,14 @@ msgstr ""
 
 #: app/static/json/backgrounds/barber-surgeon.json:135
 msgid ""
-"Quicksilver: A stimulant. Go first in combat, and automatically pass any WIL saves for "
-"one hour. Addictive: Save STR or become deprived after 24 hours without it. 4 uses."
+"**Quicksilver**: A stimulant. Go first in combat, and automatically pass "
+"any WIL saves for one hour. _Addictive_: Save STR or become _deprived_ "
+"after 24 hours without it. 4 uses."
 msgstr ""
-"Mercúrio: Um estimulante. Vá primeiro em combate e passe automaticamente em qualquer "
-"teste de resistência de VON por uma hora. Viciante: Economize FOR ou caia em exaustão "
-"após 24 horas sem ele. 4 usos."
+"**Mercúrio**: Um estimulante. Vá primeiro em combate e passe "
+"automaticamente em qualquer teste de resistência de VON por uma hora. "
+"Viciante: Economize FOR ou caia _em exaustão_ após 24 horas sem ele. 4 "
+"usos."
 
 #: app/static/json/backgrounds/barber-surgeon.json:138
 msgid "Quicksilver"
@@ -2747,11 +2764,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/barber-surgeon.json:146
 msgid ""
-"Pneuma Pump: Portable iron lungs (bulky). Enables life-saving surgery or underwater "
-"breathing."
+"**Pneuma Pump**: Portable iron lungs (_bulky_). Enables life-saving "
+"surgery or underwater breathing."
 msgstr ""
-"Bomba pneumática: Pulmões de ferro portáteis (volumosos). Permite cirurgias que salvam "
-"vidas ou respiração subaquática."
+"**Bomba pneumática**: Pulmões de ferro portáteis (volumosos). Permite "
+"cirurgias que salvam vidas ou respiração subaquática."
 
 #: app/static/json/backgrounds/barber-surgeon.json:149
 msgid "Pneuma Pump"
@@ -2765,11 +2782,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/barber-surgeon.json:156
 msgid ""
-"Lodestone: Draws out dangerous elements from the body and acts as a powerful magnetic "
-"force."
+"**Lodestone**: Draws out dangerous elements from the body and acts as a "
+"powerful magnetic force."
 msgstr ""
-"Pedra-ímã: Extrai elementos perigosos do corpo e atua como uma poderosa força "
-"magnética."
+"**Pedra-ímã**: Extrai elementos perigosos do corpo e atua como uma "
+"poderosa força magnética."
 
 #: app/static/json/backgrounds/barber-surgeon.json:159
 msgid "Lodestone"
@@ -2816,11 +2833,11 @@ msgstr "Qual criatura é sua especialidade?"
 
 #: app/static/json/backgrounds/beast-handler.json:53
 msgid ""
-"Arachnids: Take a Quick-Flame Rod and an Oil Can (6 uses). It can destroy a large "
-"spider nest in seconds."
+"**Arachnids**: Take a **Quick-Flame Rod** and an **Oil Can** (6 uses). It"
+" can destroy a large spider nest in seconds."
 msgstr ""
-"Aracnídeos: Pegue uma Vara de Chama Rápida e uma Lata de Óleo (6 usos). Pode destruir "
-"um grande ninho de aranha em segundos."
+"Aracnídeos: Pegue uma **Vara de Chama Rápida** e uma Lata de Óleo (6 "
+"usos). Pode destruir um grande ninho de aranha em segundos."
 
 #: app/static/json/backgrounds/beast-handler.json:56
 msgid "Quick-Flame Rod"
@@ -2832,11 +2849,11 @@ msgstr "Pode destruir um grande ninho de aranha em segundos."
 
 #: app/static/json/backgrounds/beast-handler.json:69
 msgid ""
-"Felines: Take a sack of Whiskerwort. Its odor can calm and control even the largest of "
-"cats."
+"**Felines**: Take a sack of **Whiskerwort**. Its odor can calm and "
+"control even the largest of cats."
 msgstr ""
-"Felinos: Pegue um saco de Uva-bigode. Seu odor pode acalmar e controlar até mesmo o "
-"maior dos gatos."
+"Felinos: Pegue um saco de **Uva-bigode**. Seu odor pode acalmar e "
+"controlar até mesmo o maior dos gatos."
 
 #: app/static/json/backgrounds/beast-handler.json:72
 msgid "Whiskerwort"
@@ -2848,10 +2865,11 @@ msgstr "Seu odor pode acalmar e controlar até mesmo os maiores gatos."
 
 #: app/static/json/backgrounds/beast-handler.json:79
 msgid ""
-"Canines: Take a wreath of Wolfsbane and a Large Net. Effective against werewolves as "
-"well."
+"**Canines**: Take a wreath of **Wolfsbane** and a **Large Net**. "
+"Effective against werewolves as well."
 msgstr ""
-"Caninos: Pegue uma coroa de Acônito e uma Rede Grande. Eficaz contra lobisomens também."
+"Caninos: Pegue uma coroa de **Acônito** e uma **Rede Grande**. Eficaz "
+"contra lobisomens também."
 
 #: app/static/json/backgrounds/beast-handler.json:82
 msgid "Wolfsbane"
@@ -2867,13 +2885,14 @@ msgstr "Rede Grande"
 
 #: app/static/json/backgrounds/beast-handler.json:93
 msgid ""
-"Birds: Take a Warble-Whistle (3 charges). It can imitate any bird call and can even be "
-"used to send simple messages. Recharge: Feed a baby bird as its mother would, then "
-"blow."
+"**Birds**: Take a **Warble-Whistle** (3 charges). It can imitate any bird"
+" call and can even be used to send simple messages. **Recharge**: Feed a "
+"baby bird as its mother would, then blow."
 msgstr ""
-"Pássaros: Pegue um Apito de Passarinho (3 cargas). Ele pode imitar qualquer chamado de "
-"pássaro e pode até ser usado para enviar mensagens simples. Recarregue: Alimente um "
-"filhote de pássaro como sua mãe faria, então sopre."
+"Pássaros: Pegue um **Apito de Passarinho** (3 cargas). Ele pode imitar "
+"qualquer chamado de pássaro e pode até ser usado para enviar mensagens "
+"simples. Recarregue: Alimente um filhote de pássaro como sua mãe faria, "
+"então sopre."
 
 #: app/static/json/backgrounds/beast-handler.json:96
 msgid "Warble-Whistle"
@@ -2889,11 +2908,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/beast-handler.json:105
 msgid ""
-"Rodents: Take a Pan Flute that emits a high-pitched sound that only rodents can hear. "
-"So long as you play, they will follow, even to their deaths."
+"**Rodents**: Take a **Pan Flute** that emits a high-pitched sound that "
+"only rodents can hear. So long as you play, they will follow, even to "
+"their deaths."
 msgstr ""
-"Roedores: Pegue uma Flauta de Pã que emite um som agudo que somente roedores podem "
-"ouvir. Enquanto você tocar, eles seguirão, mesmo para suas mortes."
+"Roedores: Pegue uma **Flauta de Pã** que emite um som agudo que somente "
+"roedores podem ouvir. Enquanto você tocar, eles seguirão, mesmo para suas"
+" mortes."
 
 #: app/static/json/backgrounds/beast-handler.json:108
 msgid "Pan Flute"
@@ -2909,11 +2930,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/beast-handler.json:115
 msgid ""
-"Serpents: Take a Warming Stone that generates an irresistible heat and a vial of "
-"Antitoxin (2 uses)."
+"**Serpents**: Take a **Warming Stone** that generates an irresistible "
+"heat and a vial of **Antitoxin** (2 uses)."
 msgstr ""
-"Serpentes: Pegue uma Pedra de Aquecimento que gera um calor irresistível e um frasco "
-"de Antitoxina (2 usos)."
+"Serpentes: Pegue uma **Pedra de Aquecimento** que gera um calor "
+"irresistível e um frasco de **Antitoxina** (2 usos)."
 
 #: app/static/json/backgrounds/beast-handler.json:118
 msgid "Warming Stone"
@@ -2934,33 +2955,35 @@ msgstr "O que você aprendeu com as criaturas selvagens?"
 
 #: app/static/json/backgrounds/beast-handler.json:135
 msgid ""
-"That there is far more to the world than meets the eye. With quiet concentration, you "
-"can borrow the senses of a nearby creature of your specialty."
+"That there is far more to the world than meets the eye. With quiet "
+"concentration, you can borrow the senses of a nearby creature of your "
+"**specialty**."
 msgstr ""
 "Que há muito mais no mundo do que os olhos podem ver. Com concentração silenciosa, "
 "você pode pegar emprestado os sentidos de uma criatura próxima da sua especialidade."
 
 #: app/static/json/backgrounds/beast-handler.json:138
 msgid ""
-"That the behavior of beasts is a language in itself. When observing beasts of your "
-"specialty you gain insight into weather patterns and impending disasters."
+"That the behavior of beasts is a language in itself. When observing "
+"beasts of your **specialty** you gain insight into weather patterns and "
+"impending disasters."
 msgstr ""
 "Que o comportamento das feras é uma linguagem em si. Ao observar feras de sua "
 "especialidade, você ganha insights sobre padrões climáticos e desastres iminentes."
 
 #: app/static/json/backgrounds/beast-handler.json:141
 msgid ""
-"That the pulse of the hunt is a powerful impulse. You have a sense for when predators, "
-"even those not of your specialty are near."
+"That the pulse of the hunt is a powerful impulse. You have a sense for "
+"when predators, even those **not of your specialty** are near."
 msgstr ""
 "Que o pulso da caça é um impulso poderoso. Você tem um senso de quando predadores, "
 "mesmo aqueles que não são da sua especialidade, estão por perto."
 
 #: app/static/json/backgrounds/beast-handler.json:144
 msgid ""
-"That the land is a language unto itself. Your chance of becoming lost in a terrain "
-"dominated by the beasts of your specialty is reduced by one step (e.g. 4-in-6 becomes "
-"3-in-6)."
+"That the land is a language unto itself. Your chance of becoming lost in "
+"a terrain dominated by the beasts of your **specialty** is reduced by one"
+" step (e.g. 4-in-6 becomes 3-in-6)."
 msgstr ""
 "Que a terra é uma linguagem em si mesma. Sua chance de se perder em um terreno "
 "dominado pelas feras de sua especialidade é reduzida em um passo (por exemplo, 4 em 6 "
@@ -2968,9 +2991,9 @@ msgstr ""
 
 #: app/static/json/backgrounds/beast-handler.json:147
 msgid ""
-"That nature's symphony can be heard if you attune to its rhythm. When surrounded by "
-"creatures of your specialty, they can alert you to approaching danger before it "
-"arrives."
+"That nature's symphony can be heard if you attune to its rhythm. When "
+"surrounded by creatures of your **specialty**, they can alert you to "
+"approaching danger before it arrives."
 msgstr ""
 "Essa sinfonia da natureza pode ser ouvida se você sintonizar seu ritmo. Quando cercado "
 "por criaturas de sua especialidade, elas podem alertá-lo sobre o perigo que se "
@@ -2978,13 +3001,14 @@ msgstr ""
 
 #: app/static/json/backgrounds/beast-handler.json:150
 msgid ""
-"That survival is all about adaptability. Once per day, you may take on a simple "
-"feature from a creature of your specialty (webbed fingers, night vision, etc.). Add a "
-"Fatigue each time."
+"That survival is all about adaptability. Once per day, you may take on a "
+"simple feature from a creature of your **specialty** (webbed fingers, "
+"night vision, etc.). Add a **Fatigue** each time."
 msgstr ""
-"Que a sobrevivência é tudo sobre adaptabilidade. Uma vez por dia, você pode assumir "
-"uma característica simples de uma criatura de sua especialidade (dedos palmados, visão "
-"noturna, etc.). Adicione uma Fadiga a cada vez."
+"Que a sobrevivência é tudo sobre adaptabilidade. Uma vez por dia, você "
+"pode assumir uma característica simples de uma criatura de sua "
+"especialidade (dedos palmados, visão noturna, etc.). Adicione uma "
+"**Fadiga** a cada vez."
 
 #: app/static/json/backgrounds/bonekeeper.json:4
 msgid ""
@@ -3010,11 +3034,12 @@ msgstr "O que você tirou dos mortos?"
 
 #: app/static/json/backgrounds/bonekeeper.json:50
 msgid ""
-"A crow-shaped amulet. You can ask a question of the dead but must add a Fatigue each "
-"time. They do not always speak truthfully."
+"A **crow-shaped amulet**. You can ask a question of the dead but must add"
+" a **Fatigue** each time. They do not always speak truthfully."
 msgstr ""
-"Um amuleto em forma de corvo. Você pode fazer uma pergunta aos mortos, mas deve "
-"adicionar uma Fadiga a cada vez. Eles nem sempre falam a verdade."
+"Um **amuleto em forma de corvo**. Você pode fazer uma pergunta aos "
+"mortos, mas deve adicionar uma **Fadiga** a cada vez. Eles nem sempre "
+"falam a verdade."
 
 #: app/static/json/backgrounds/bonekeeper.json:53
 msgid "Crow-shaped Amulet"
@@ -3030,9 +3055,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/bonekeeper.json:60
 msgid ""
-"A mortal wound from a freed revenant. You were healed, but the disfigurement has made "
-"you a pariah. You require neither air nor sustenance but are still subject to pain and "
-"death. Trapped between worlds, the dead see you as one of their own."
+"A **mortal wound** from a freed _revenant_. You were healed, but the "
+"disfigurement has made you a pariah. You require neither air nor "
+"sustenance but are still subject to pain and death. Trapped between "
+"worlds, the dead see you as one of their own."
 msgstr ""
 "Uma ferida mortal de um espectro liberto. Você foi curado, mas a desfiguração fez de "
 "você um pária. Você não precisa de ar nem sustento, mas ainda está sujeito à dor e à "
@@ -3041,16 +3067,18 @@ msgstr ""
 #: app/static/json/backgrounds/bonekeeper.json:64
 #: app/static/json/backgrounds/bonekeeper.json:69
 msgid ""
-"A Blood Pail (bulky) from a local death-cult. Empty it to raise a servant built from "
-"whatever is buried below, with 6 HP, 1 Armor, 13 STR, 11 DEX, 4 WIL, and shard fists "
-"(d8+d8). Only one servant can be raised at a time. If destroyed, you permanently lose "
-"1d4 STR. Recharge: Fill with the blood of a dying warrior."
+"A **Blood Pail** (_bulky_) from a local death-cult. Empty it to raise a "
+"servant built from whatever is buried below, with 6 HP, 1 Armor, 13 STR, "
+"11 DEX, 4 WIL, and shard fists (d8+d8). Only one servant can be raised at"
+" a time. If destroyed, you permanently lose 1d4 STR. **Recharge**: Fill "
+"with the blood of a dying warrior."
 msgstr ""
-"Um Balde de Sangue (volumoso) de um culto local à morte. Esvazie-o para levantar um "
-"servo construído a partir do que estiver enterrado abaixo, com 6 PV, Armadura 1, 13 "
-"FOR, 11 DES, 4 VON e punhos de cacos (d8+d8). Apenas um servo pode ser levantado por "
-"vez. Se destruído, você perde permanentemente 1d4 FOR. Recarregue: Encha com o sangue "
-"de um guerreiro moribundo."
+"Um **Balde de Sangue** (_volumoso_) de um culto local à morte. Esvazie-o "
+"para levantar um servo construído a partir do que estiver enterrado "
+"abaixo, com 6 PV, Armadura 1, 13 FOR, 11 DES, 4 VON e punhos de cacos "
+"(d8+d8). Apenas um servo pode ser levantado por vez. Se destruído, você "
+"perde permanentemente 1d4 FOR. Recarregue: Encha com o sangue de um "
+"guerreiro moribundo."
 
 #: app/static/json/backgrounds/bonekeeper.json:67
 msgid "Blood Pail"
@@ -3058,11 +3086,12 @@ msgstr "Balde de Sangue"
 
 #: app/static/json/backgrounds/bonekeeper.json:74
 msgid ""
-"A burial wagon (+6 slots, slow) from your last job. It came with a stubborn old donkey "
-"(+4 slots, only +2 slots if pulling wagon)."
+"A **burial wagon** (+6 slots, _slow_) from your last job. It came with a "
+"stubborn old **donkey** (+4 slots, only +2 slots if pulling wagon)."
 msgstr ""
-"Uma carroça funerária (+6 slots, lento) do seu último trabalho. Ela veio com um burro "
-"velho e teimoso (+4 slots, apenas +2 slots se estiver puxando carroça)."
+"Uma **carroça funerária** (+6 slots, lento) do seu último trabalho. Ela "
+"veio com um burro velho e teimoso (+4 slots, apenas +2 slots se estiver "
+"puxando carroça)."
 
 #: app/static/json/backgrounds/bonekeeper.json:78
 msgid "Burial Wagon"
@@ -3076,13 +3105,14 @@ msgstr "Asna"
 
 #: app/static/json/backgrounds/bonekeeper.json:87
 msgid ""
-"The Detect Magic spellbook, stolen from an ancient library. Your family worked in "
-"service to an obscure underworld deity, but you lost your faith. Though exiled, you "
-"continue to serve, even as an apostate."
+"The **Detect Magic** spellbook, stolen from an ancient library. Your "
+"family worked in service to an obscure underworld deity, but you lost "
+"your faith. Though exiled, you continue to serve, even as an apostate."
 msgstr ""
-"O livro de feitiços Detectar Magia, roubado de uma biblioteca antiga. Sua família "
-"trabalhou a serviço de uma obscura divindade do submundo, mas você perdeu sua fé. "
-"Embora exilado, você continua a servir, mesmo como um apóstata."
+"O livro de feitiços **Detectar Magia**, roubado de uma biblioteca antiga."
+" Sua família trabalhou a serviço de uma obscura divindade do submundo, "
+"mas você perdeu sua fé. Embora exilado, você continua a servir, mesmo "
+"como um apóstata."
 
 #: app/static/json/backgrounds/bonekeeper.json:90
 msgid "Spellbook (Detect Magic)"
@@ -3098,8 +3128,8 @@ msgstr ""
 
 #: app/static/json/backgrounds/bonekeeper.json:97
 msgid ""
-"A plague doctor's mask, after its owner succumbed to the disease that wiped out "
-"everyone you once knew. They should have kept it on."
+"A **plague doctor's mask**, after its owner succumbed to the disease that"
+" wiped out everyone you once knew. They should have kept it on."
 msgstr ""
 "Uma máscara de médico da peste, depois que seu dono sucumbiu à doença que dizimou "
 "todos que você conheceu. Eles deveriam ter mantido isso."
@@ -3122,11 +3152,11 @@ msgstr "Qual ferramenta foi inestimável no seu trabalho?"
 
 #: app/static/json/backgrounds/bonekeeper.json:112
 msgid ""
-"Manacles. Though old, it's still effective even against the very strong. You don't "
-"have the key."
+"**Manacles**. Though old, it's still effective even against the very "
+"strong. You don't have the key."
 msgstr ""
-"Algemas. Embora antigas, ainda são efetivas mesmo contra os muito fortes. Você não tem "
-"a chave."
+"**Algemas**. Embora antigas, ainda são efetivas mesmo contra os muito "
+"fortes. Você não tem a chave."
 
 #: app/static/json/backgrounds/bonekeeper.json:115
 msgid "Manacles"
@@ -3140,11 +3170,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/bonekeeper.json:122
 msgid ""
-"Sponge. Supposedly made from the remains of a rare sea creature. It never seems to dry "
-"out."
+"**Sponge**. Supposedly made from the remains of a rare sea creature. It "
+"never seems to dry out."
 msgstr ""
-"Esponja. Supostamente feita dos restos de uma rara criatura marinha. Parece que nunca "
-"seca."
+"**Esponja**. Supostamente feita dos restos de uma rara criatura marinha. "
+"Parece que nunca seca."
 
 #: app/static/json/backgrounds/bonekeeper.json:125
 msgid "Sponge"
@@ -3157,8 +3187,8 @@ msgstr ""
 "Supostamente feito dos restos de uma rara criatura marinha. Parece que nunca seca."
 
 #: app/static/json/backgrounds/bonekeeper.json:132
-msgid "Pulley. Great for moving gravestones, rocks, or even bodies."
-msgstr "Polia. Ótima para mover lápides, pedras ou até mesmo corpos."
+msgid "**Pulley**. Great for moving gravestones, rocks, or even bodies."
+msgstr "**Polia**. Ótima para mover lápides, pedras ou até mesmo corpos."
 
 #: app/static/json/backgrounds/bonekeeper.json:135
 msgid "Pulley"
@@ -3169,9 +3199,12 @@ msgid "Great for moving gravestones, rocks, or even bodies."
 msgstr "Ótimo para mover lápides, pedras ou até mesmo corpos."
 
 #: app/static/json/backgrounds/bonekeeper.json:142
-msgid "Incense. Perfect for rituals or to keep the flies at bay. Cools the blood."
+msgid ""
+"**Incense**. Perfect for rituals or to keep the flies at bay. Cools the "
+"blood."
 msgstr ""
-"Incenso. Perfeito para rituais ou para manter as moscas afastadas. Refresca o sangue."
+"**Incenso**. Perfeito para rituais ou para manter as moscas afastadas. "
+"Refresca o sangue."
 
 #: app/static/json/backgrounds/bonekeeper.json:145
 msgid "Incense"
@@ -3182,7 +3215,9 @@ msgid "Perfect for rituals or to keep the flies at bay. Cools the blood."
 msgstr "Perfeito para rituais ou para manter as moscas afastadas. Esfria o sangue."
 
 #: app/static/json/backgrounds/bonekeeper.json:152
-msgid "Crowbar. d6 damage. Sometimes you just need to get the damn thing open!"
+msgid ""
+"**Crowbar**. d6 damage. Sometimes you just need to get the damn thing "
+"open!"
 msgstr "Pé-de-cabra. d6 de dano. Às vezes você só precisa abrir a porcaria!"
 
 #: app/static/json/backgrounds/bonekeeper.json:155
@@ -3195,11 +3230,11 @@ msgstr "Às vezes você só precisa abrir essa porcaria!"
 
 #: app/static/json/backgrounds/bonekeeper.json:162
 msgid ""
-"Repellent. Powerful stuff. Its faded label makes it unclear what it is actually meant "
-"to repel, though. Perhaps everything. 3 uses."
+"**Repellent**. Powerful stuff. Its faded label makes it unclear what it "
+"is actually _meant_ to repel, though. Perhaps everything. 3 uses."
 msgstr ""
-"Repelente. Coisa poderosa. Seu rótulo desbotado não deixa claro o que ele realmente "
-"pretende repelir, no entanto. Talvez tudo. 3 usos."
+"**Repelente**. Coisa poderosa. Seu rótulo desbotado não deixa claro o que"
+" ele realmente pretende repelir, no entanto. Talvez tudo. 3 usos."
 
 #: app/static/json/backgrounds/bonekeeper.json:165
 #: app/static/json/backgrounds/fieldwarden.json:43
@@ -3251,8 +3286,8 @@ msgstr "Qual foi seu último grande trabalho?"
 
 #: app/static/json/backgrounds/cutpurse.json:40
 msgid ""
-"A noble's summer home. The place was full of fancy wine (+20gp) but not much else. "
-"Take Fence Cutters."
+"A noble's summer home. The place was full of fancy wine (+20gp) but not "
+"much else. Take **Fence Cutters**."
 msgstr ""
 "A casa de verão de um nobre. O lugar estava cheio de vinho chique (+20gp), mas não "
 "muito mais que isso. Pegue Fence Cutters."
@@ -3272,20 +3307,25 @@ msgstr "bonus_ouro"
 
 #: app/static/json/backgrounds/cutpurse.json:50
 msgid ""
-"A bank. (You were caught.) You bear a brand only visible by firelight, and anyone who "
-"sees the mark can ask you for a beer. Take Retractable Wires."
+"A bank. (You were caught.) You bear a brand only visible by firelight, "
+"and anyone who sees the mark can ask you for a beer. Take **Retractable "
+"Wires**."
 msgstr ""
-"Um banco. (Você foi pego.) Você carrega uma marca visível apenas à luz do fogo, e "
-"qualquer um que veja a marca pode lhe pedir uma cerveja. Pegue Fios Retráteis."
+"Um banco. (Você foi pego.) Você carrega uma marca visível apenas à luz do"
+" fogo, e qualquer um que veja a marca pode lhe pedir uma cerveja. Pegue "
+"**Fios Retráteis**."
 
 #: app/static/json/backgrounds/cutpurse.json:53
 msgid "Retractable Wires"
 msgstr "Fios retráteis"
 
 #: app/static/json/backgrounds/cutpurse.json:59
-msgid "A guild warehouse. Take a Ladder (bulky, 10ft) and Blinding Powder (1 use)."
+msgid ""
+"A guild warehouse. Take a **Ladder** (_bulky_, 10ft) and **Blinding "
+"Powder** (1 use)."
 msgstr ""
-"Um armazém de guilda. Pegue uma Escada (volumosa, 10 pés) e Pó Ofuscante (1 uso)."
+"Um armazém de guilda. Pegue uma **Escada** (volumosa, 10 pés) e **Pó "
+"Ofuscante** (1 uso)."
 
 #: app/static/json/backgrounds/cutpurse.json:62
 msgid "Ladder"
@@ -3301,11 +3341,11 @@ msgstr "Pó ofuscante"
 
 #: app/static/json/backgrounds/cutpurse.json:74
 msgid ""
-"Moneylender. Someone beat you to the job but left behind a Scroll of Arcane Eye "
-"(petty)."
+"Moneylender. Someone beat you to the job but left behind a **Scroll** of "
+"_Arcane Eye_ (_petty_)."
 msgstr ""
-"Agiota. Alguém chegou antes de você no trabalho, mas deixou para trás um Pegaminho do "
-"Olho Arcano (trivial)."
+"Agiota. Alguém chegou antes de você no trabalho, mas deixou para trás um "
+"Pegaminho do _Olho Arcano_ (trivial)."
 
 #: app/static/json/backgrounds/cutpurse.json:77
 msgid "Scroll (Arcane Eye)"
@@ -3319,8 +3359,8 @@ msgstr ""
 
 #: app/static/json/backgrounds/cutpurse.json:84
 msgid ""
-"Constable's quarters. You escaped but left some friends behind. Take Strong Silk Rope "
-"(30ft) and a queasy feeling."
+"Constable's quarters. You escaped but left some friends behind. Take "
+"**Strong Silk Rope** (30ft) and a queasy feeling."
 msgstr ""
 "Quartos do policial. Você escapou, mas deixou alguns amigos para trás. Pegue Strong "
 "Silk Rope (9m) e uma sensação de enjoo."
@@ -3335,8 +3375,8 @@ msgstr "9m"
 
 #: app/static/json/backgrounds/cutpurse.json:94
 msgid ""
-"A university. You were seen but not pursued. You still don't know why. Take Smoke "
-"Pellets (3 uses)."
+"A university. You were seen but not pursued. You still don't know why. "
+"Take **Smoke Pellets** (3 uses)."
 msgstr ""
 "Uma universidade. Você foi visto, mas não perseguido. Você ainda não sabe o porquê. "
 "Pegue Smoke Pellets (3 usos)."
@@ -3351,11 +3391,11 @@ msgstr "O que ajuda você a roubar?"
 
 #: app/static/json/backgrounds/cutpurse.json:109
 msgid ""
-"Catring: 2 charges. Climb up walls and fall safely. Recharge: Place the ring on a "
-"stray cat's tail."
+"**Catring**: 2 charges. Climb up walls and fall safely. **Recharge**: "
+"Place the ring on a stray cat's tail."
 msgstr ""
-"Anel do gato: 2 cargas. Escale paredes e caia com segurança. Recarga: Coloque o anel "
-"no rabo de um gato de rua."
+"**Anel do gato**: 2 cargas. Escale paredes e caia com segurança. Recarga:"
+" Coloque o anel no rabo de um gato de rua."
 
 #: app/static/json/backgrounds/cutpurse.json:112
 msgid "Catring"
@@ -3367,11 +3407,11 @@ msgstr "Recarga: Coloque o anel no rabo de um gato de rua."
 
 #: app/static/json/backgrounds/cutpurse.json:121
 msgid ""
-"Gildfinger: 1 charge. A finger glove that mimics any mundane key. Recharge: Bundle it "
-"with at least 100gp for a night."
+"**Gildfinger**: 1 charge. A finger glove that mimics any mundane key. "
+"**Recharge**: Bundle it with at least 100gp for a night."
 msgstr ""
-"Dedo Mestre: 1 carga. Uma luva de dedo que imita qualquer chave mundana. Recarga: "
-"Combine com pelo menos 100 gp por uma noite."
+"**Dedo Mestre**: 1 carga. Uma luva de dedo que imita qualquer chave "
+"mundana. Recarga: Combine com pelo menos 100 gp por uma noite."
 
 #: app/static/json/backgrounds/cutpurse.json:124
 msgid "Gildfinger"
@@ -3383,11 +3423,12 @@ msgstr "Recarga: combine com pelo menos 100 PO por uma noite."
 
 #: app/static/json/backgrounds/cutpurse.json:133
 msgid ""
-"Glimpse Glass: 3 charges. A monocle that lets you see through walls or other "
-"obstructions. It shatters after the last use."
+"**Glimpse Glass**: 3 charges. A monocle that lets you see through walls "
+"or other obstructions. It shatters after the last use."
 msgstr ""
-"Monóculo do Vislumbre: 3 cargas. Um monóculo que permite que você veja através de "
-"paredes ou outras obstruções. Ele quebra após o último uso."
+"**Monóculo do Vislumbre**: 3 cargas. Um monóculo que permite que você "
+"veja através de paredes ou outras obstruções. Ele quebra após o último "
+"uso."
 
 #: app/static/json/backgrounds/cutpurse.json:136
 msgid "Glimpse Glass"
@@ -3403,11 +3444,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/cutpurse.json:144
 msgid ""
-"Sweetwhistle: 1 charge. Listeners hear a soft, familiar voice in the distance that "
-"they cannot resist following. Recharge: Lose a dear memory. (Describe it.)"
+"**Sweetwhistle**: 1 charge. Listeners hear a soft, familiar voice in the "
+"distance that they cannot resist following. **Recharge**: Lose a dear "
+"memory. (Describe it.)"
 msgstr ""
-"Apito doce: 1 carga. Os ouvintes ouvem uma voz suave e familiar à distância que não "
-"conseguem resistir a seguir. Recarga: Perca uma memória querida. (Descreva-a.)"
+"**Apito doce**: 1 carga. Os ouvintes ouvem uma voz suave e familiar à "
+"distância que não conseguem resistir a seguir. Recarga: Perca uma memória"
+" querida. (Descreva-a.)"
 
 #: app/static/json/backgrounds/cutpurse.json:147
 msgid "Sweetwhistle"
@@ -3419,11 +3462,13 @@ msgstr "Recarregar: Perder uma lembrança querida. (Descreva-a.)"
 
 #: app/static/json/backgrounds/cutpurse.json:155
 msgid ""
-"Vagrant's Veil: 1 charge. Wear it to blend seamlessly into crowds, appearing as a "
-"simple pauper. Recharge: Donate the day's winnings to the poor. Petty"
+"**Vagrant's Veil**: 1 charge. Wear it to blend seamlessly into crowds, "
+"appearing as a simple pauper. **Recharge**: Donate the day's winnings to "
+"the poor. _Petty_"
 msgstr ""
-"Véu do Vagabundo: 1 carga. Use-o para se misturar perfeitamente às multidões, "
-"parecendo um simples mendigo. Recarga: Doe os ganhos do dia para os pobres. Pequeno"
+"**Véu do Vagabundo**: 1 carga. Use-o para se misturar perfeitamente às "
+"multidões, parecendo um simples mendigo. Recarga: Doe os ganhos do dia "
+"para os pobres. _Pequeno_"
 
 #: app/static/json/backgrounds/cutpurse.json:158
 msgid "Vagrant's Veil"
@@ -3435,11 +3480,11 @@ msgstr "Recarregue: Doe os ganhos do dia para os pobres."
 
 #: app/static/json/backgrounds/cutpurse.json:166
 msgid ""
-"Reverse Teetotum: 1 use. When spun, time skips backwards 30 seconds. Everyone "
-"remembers what happened. Petty."
+"**Reverse Teetotum**: 1 use. When spun, time skips backwards 30 seconds. "
+"Everyone remembers what happened. Petty."
 msgstr ""
-"Peão Reverso: 1 uso. Quando girado, o tempo pula para trás 30 segundos. Todos se "
-"lembram do que aconteceu. Mesquinho."
+"**Peão Reverso**: 1 uso. Quando girado, o tempo pula para trás 30 "
+"segundos. Todos se lembram do que aconteceu. Mesquinho."
 
 #: app/static/json/backgrounds/cutpurse.json:169
 msgid "Reverse Teetotum"
@@ -3491,14 +3536,15 @@ msgstr "O que levou a melhor sobre você?"
 
 #: app/static/json/backgrounds/fieldwarden.json:53
 msgid ""
-"A voracious swarm of pests that swallowed crops and animals alike. With nothing to "
-"defend, you left. Take Gale Seed Extract (3 uses). Ingesting it lets you sprint with a "
-"speed four times your regular rate. Afterward you add two Fatigue."
+"A voracious swarm of pests that swallowed crops and animals alike. With "
+"nothing to defend, you left. Take **Gale Seed Extract** (3 uses). "
+"Ingesting it lets you sprint with a speed four times your regular rate. "
+"Afterward you add two **Fatigue**."
 msgstr ""
-"Um enxame voraz de pragas que engoliu plantações e animais. Sem nada para defender, "
-"você foi embora. Pegue Extrato de Semente de Gale (3 usos). Ingeri-lo permite que você "
-"corra a uma velocidade quatro vezes maior que sua taxa normal. Depois, você adiciona "
-"duas Fadigas."
+"Um enxame voraz de pragas que engoliu plantações e animais. Sem nada para"
+" defender, você foi embora. Pegue **Extrato de Semente de Gale** (3 "
+"usos). Ingeri-lo permite que você corra a uma velocidade quatro vezes "
+"maior que sua taxa normal. Depois, você adiciona duas Fadigas."
 
 #: app/static/json/backgrounds/fieldwarden.json:56
 msgid "Gale Seed Extract"
@@ -3514,11 +3560,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/fieldwarden.json:64
 msgid ""
-"A crop spirit, angered by a poor tithing. The fires consumed nearly everything, and "
-"afterward you were able to gather a pouch of Fireseeds (d8, blast, 4 uses)."
+"A crop spirit, angered by a poor tithing. The fires consumed nearly "
+"everything, and afterward you were able to gather a pouch of "
+"**Fireseeds** (d8, _blast_, 4 uses)."
 msgstr ""
-"Um espírito da colheita, irritado por um dízimo ruim. O fogo consumiu quase tudo, e "
-"depois você conseguiu reunir uma bolsa de Sementes de fogo (d8, explosão, 4 usos)."
+"Um espírito da colheita, irritado por um dízimo ruim. O fogo consumiu "
+"quase tudo, e depois você conseguiu reunir uma bolsa de **Sementes de "
+"fogo** (d8, _explosão_, 4 usos)."
 
 #: app/static/json/backgrounds/fieldwarden.json:67
 msgid "Fireseeds"
@@ -3526,12 +3574,13 @@ msgstr "Sementes de fogo"
 
 #: app/static/json/backgrounds/fieldwarden.json:74
 msgid ""
-"An antlered, toothy demon that nearly ended you. Take a blood-stained Bone Knife (d6). "
-"On Critical Damage, its next attack becomes enhanced from contact with blood."
+"An antlered, toothy demon that nearly ended you. Take a blood-stained "
+"**Bone Knife** (d6). On **Critical Damage**, its next attack becomes "
+"_enhanced_ from contact with blood."
 msgstr ""
-"Um demônio com chifres e dentes que quase acabou com você. Pegue uma Faca de Osso "
-"manchada de sangue (d6). Em Dano Crítico, seu próximo ataque se torna aprimorado pelo "
-"contato com sangue."
+"Um demônio com chifres e dentes que quase acabou com você. Pegue uma "
+"**Faca de Osso** manchada de sangue (d6). Em **Dano Crítico**, seu "
+"próximo ataque se torna aprimorado pelo contato com sangue."
 
 #: app/static/json/backgrounds/fieldwarden.json:77
 msgid "Bone Knife"
@@ -3544,11 +3593,12 @@ msgstr ""
 
 #: app/static/json/backgrounds/fieldwarden.json:84
 msgid ""
-"The Withering, a type of stem rot from the Roots. Take a Diseased Crop (6 uses) that "
-"quickly decays any plant it touches."
+"_The Withering_, a type of stem rot from the **Roots**. Take a **Diseased"
+" Crop** (6 uses) that quickly decays any plant it touches."
 msgstr ""
-"A Podridão, um tipo de podridão do caule das raízes. Pegue uma Colheita Doente (6 "
-"usos) que rapidamente apodrece qualquer planta que toque."
+"A Podridão, um tipo de podridão do caule das **raízes**. Pegue uma "
+"**Colheita Doente** (6 usos) que rapidamente apodrece qualquer planta que"
+" toque."
 
 #: app/static/json/backgrounds/fieldwarden.json:87
 msgid "Diseased Crop"
@@ -3560,23 +3610,24 @@ msgstr "Decompõe rapidamente qualquer planta que toca."
 
 #: app/static/json/backgrounds/fieldwarden.json:95
 msgid ""
-"Wolves, or so you thought. You are now a Werewolf [8 HP, 15 STR, 14 DEX, claws "
-"(d6+d6), bite (d8)]. Your WIL remains the same. You can turn at will (once per day) "
-"but must make a WIL save to revert. Anyone left alive from your attacks must make a "
-"WIL save to avoid infection."
+"Wolves, or so you thought. You are now a **Werewolf** [8 HP, 15 STR, 14 "
+"DEX, claws (d6+d6), bite (d8)]. Your WIL remains the same. You can _turn_"
+" at will (once per day) but must make a WIL save to revert. Anyone left "
+"alive from your attacks must make a WIL save to avoid infection."
 msgstr ""
-"Lobos, ou assim você pensou. Agora você é um Lobisomem [8 PV, 15 FOR, 14 DES, garras "
-"(d6+d6), mordida (d8)]. Sua VON permanece a mesma. Você pode virar à vontade (uma vez "
-"por dia), mas deve fazer um teste de VON para reverter. Qualquer um que fique vivo dos "
-"seus ataques deve fazer um teste de VON para evitar infecção."
+"Lobos, ou assim você pensou. Agora você é um **Lobisomem** [8 PV, 15 FOR,"
+" 14 DES, garras (d6+d6), mordida (d8)]. Sua VON permanece a mesma. Você "
+"pode virar à vontade (uma vez por dia), mas deve fazer um teste de VON "
+"para reverter. Qualquer um que fique vivo dos seus ataques deve fazer um "
+"teste de VON para evitar infecção."
 
 #: app/static/json/backgrounds/fieldwarden.json:99
 msgid ""
-"Crop thieves. Not all of them survived, but you were outnumbered. Start with +d4 HP "
-"and a Cusped Falchion (d8)."
+"Crop thieves. Not all of them survived, but you were outnumbered. Start "
+"with +d4 HP and a **Cusped Falchion** (d8)."
 msgstr ""
-"Ladrões de colheitas. Nem todos sobreviveram, mas vocês estavam em menor número. "
-"Comece com +d4 PV e um Facão (d8)."
+"Ladrões de colheitas. Nem todos sobreviveram, mas vocês estavam em menor "
+"número. Comece com +d4 PV e um **Facão** (d8)."
 
 #: app/static/json/backgrounds/fieldwarden.json:102
 msgid "Cusped Falchion"
@@ -3588,11 +3639,11 @@ msgstr "Qual ferramenta salvou sua vida?"
 
 #: app/static/json/backgrounds/fieldwarden.json:113
 msgid ""
-"Bloodvine Whip: d8 damage. On Critical Damage it drains the target's blood, granting "
-"the weapon's next attack the blast quality."
+"**Bloodvine Whip**: d8 damage. On **Critical Damage** it drains the "
+"target's blood, granting the weapon's next attack the _blast_ quality."
 msgstr ""
-"Chicote de Vinhas: d8 de dano. Em dano crítico, drena o sangue do alvo, concedendo ao "
-"próximo ataque da arma a qualidade de explosão."
+"**Chicote de Vinhas**: d8 de dano. Em **dano crítico**, drena o sangue do"
+" alvo, concedendo ao próximo ataque da arma a qualidade de _explosão_."
 
 #: app/static/json/backgrounds/fieldwarden.json:116
 msgid "Bloodvine Whip"
@@ -3608,11 +3659,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fieldwarden.json:123
 msgid ""
-"Clatter Keeper: A hand-cranked device that emits a loud noise, frightening away most "
-"creatures."
+"**Clatter Keeper**: A hand-cranked device that emits a loud noise, "
+"frightening away most creatures."
 msgstr ""
-"Guardião do barulho: Um dispositivo acionado manualmente que emite um ruído alto, "
-"assustando a maioria das criaturas."
+"**Guardião do barulho**: Um dispositivo acionado manualmente que emite um"
+" ruído alto, assustando a maioria das criaturas."
 
 #: app/static/json/backgrounds/fieldwarden.json:126
 msgid "Clatter Keeper"
@@ -3626,11 +3677,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fieldwarden.json:133
 msgid ""
-"Sun Stick: Provides ample warmth and light for up to one hour. Recharge: Leave in "
-"heavy sunlight for a full day. 1 use."
+"**Sun Stick**: Provides ample warmth and light for up to one hour. "
+"**Recharge**: Leave in heavy sunlight for a full day. 1 use."
 msgstr ""
-"Bastão de Sol: Fornece bastante calor e luz por até uma hora. Recarga: Deixe em luz "
-"solar intensa por um dia inteiro. 1 uso."
+"**Bastão de Sol**: Fornece bastante calor e luz por até uma hora. "
+"Recarga: Deixe em luz solar intensa por um dia inteiro. 1 uso."
 
 #: app/static/json/backgrounds/fieldwarden.json:136
 msgid "Sun Stick"
@@ -3646,11 +3697,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fieldwarden.json:144
 msgid ""
-"Root Tether: When thrown, binds a creature as large as a wolf to the soil for a short "
-"time."
+"**Root Tether**: When thrown, binds a creature as large as a wolf to the "
+"soil for a short time."
 msgstr ""
-"Amarração de Raiz: Quando lançada, prende uma criatura do tamanho de um lobo ao solo "
-"por um curto período de tempo."
+"**Amarração de Raiz**: Quando lançada, prende uma criatura do tamanho de "
+"um lobo ao solo por um curto período de tempo."
 
 #: app/static/json/backgrounds/fieldwarden.json:147
 msgid "Root Tether"
@@ -3664,11 +3715,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fieldwarden.json:154
 msgid ""
-"Greenwhistle: A small flute that calms plants, making passage through areas heavy with "
-"plant life a bit easier."
+"**Greenwhistle**: A small flute that calms plants, making passage through"
+" areas heavy with plant life a bit easier."
 msgstr ""
-"Apito verde: Uma pequena flauta que acalma as plantas, facilitando um pouco a passagem "
-"por áreas com muitas plantas."
+"**Apito verde**: Uma pequena flauta que acalma as plantas, facilitando um"
+" pouco a passagem por áreas com muitas plantas."
 
 #: app/static/json/backgrounds/fieldwarden.json:157
 msgid "Greenwhistle"
@@ -3684,13 +3735,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/fieldwarden.json:164
 msgid ""
-"Everbloom Band: A circlet adorned with flowers that never wilt. On taking Critical "
-"Damage the flowers dissolve into dust, but you act as if your save succeeded (STR loss "
-"still occurs)."
+"**Everbloom Band**: A circlet adorned with flowers that never wilt. On "
+"taking **Critical Damage** the flowers dissolve into dust, but you act as"
+" if your save succeeded (STR loss still occurs)."
 msgstr ""
-"Diadema florido: Um diadema adornado com flores que nunca murcham. Ao receber dano "
-"crítico, as flores se dissolvem em pó, mas você age como se seu teste tivesse sido bem-"
-"sucedido (perda de FOR ainda ocorre)."
+"**Diadema florido**: Um diadema adornado com flores que nunca murcham. Ao"
+" receber **dano crítico**, as flores se dissolvem em pó, mas você age "
+"como se seu teste tivesse sido bem-sucedido (perda de FOR ainda ocorre)."
 
 #: app/static/json/backgrounds/fieldwarden.json:167
 msgid "Everbloom Band"
@@ -3748,43 +3799,46 @@ msgstr "Como você ganhou seu arco?"
 
 #: app/static/json/backgrounds/fletchwind.json:49
 msgid ""
-"War. If you are first to attack, your bow gains the blast property for the first round."
+"**War**. If you are first to attack, your bow gains the _blast_ property "
+"for the first round."
 msgstr ""
-"Guerra. Se você for o primeiro a atacar, seu arco ganha a propriedade de explosão na "
-"primeira rodada."
+"**Guerra**. Se você for o primeiro a atacar, seu arco ganha a propriedade"
+" de _explosão_ na primeira rodada."
 
 #: app/static/json/backgrounds/fletchwind.json:52
 msgid ""
-"Falconry. You keep a falcon [3 hp, 5 STR, 16 DEX, 4 WIL, claws (d6+d6), bite (d8)]. It "
-"only eats live game."
+"**Falconry**. You keep a falcon [3 hp, 5 STR, 16 DEX, 4 WIL, claws "
+"(d6+d6), bite (d8)]. It only eats live game."
 msgstr ""
 "Falcoaria. Você mantém um falcão [3 PV, 5 FOR, 16 DES, 4 VON, garras (d6+d6), mordida "
 "(d8)]. Ele só come caça viva."
 
 #: app/static/json/backgrounds/fletchwind.json:55
 msgid ""
-"Hunting. When taking the Supply action, your ability to secure Rations increases by "
-"one step (e.g. 1d4 becomes 1d6)."
+"**Hunting**. When taking the Supply action, your ability to secure "
+"**Rations** increases by **one step** (e.g. 1d4 becomes 1d6)."
 msgstr ""
-"Caça. Ao realizar a ação de Suprimento, sua habilidade de garantir Rações aumenta em "
-"um passo (por exemplo, 1d4 se torna 1d6)."
+"Caça. Ao realizar a ação de Suprimento, sua habilidade de garantir "
+"**Rações** aumenta em um passo (por exemplo, 1d4 se torna 1d6)."
 
 #: app/static/json/backgrounds/fletchwind.json:58
-msgid "Tournaments. Attacks with your bow are enhanced if the target is immobile."
+msgid ""
+"**Tournaments**. Attacks with your bow are _enhanced_ if the target is "
+"immobile."
 msgstr "Torneios. Ataques com seu arco são aprimorados se o alvo estiver imóvel."
 
 #: app/static/json/backgrounds/fletchwind.json:61
 msgid ""
-"Training. If you are the first to attack, melee attacks against you are impaired until "
-"you take STR damage."
+"**Training**. If you are the first to attack, melee attacks against you "
+"are _impaired_ until you take STR damage."
 msgstr ""
-"Treinamento. Se você for o primeiro a atacar, ataques corpo a corpo contra você serão "
-"prejudicados até que você receba dano na FOR."
+"**Treinamento**. Se você for o primeiro a atacar, ataques corpo a corpo "
+"contra você serão prejudicados até que você receba dano na FOR."
 
 #: app/static/json/backgrounds/fletchwind.json:64
 msgid ""
-"Scouting. When taking the Travel action, your presence decreases the chance of getting "
-"lost by one step (e.g. 4-in-6 becomes 3-in-6)."
+"**Scouting**. When taking the Travel action, your presence decreases the "
+"chance of getting lost by one step (e.g. 4-in-6 becomes 3-in-6)."
 msgstr ""
 "Patrulha. Ao realizar a ação de Viagem, sua presença diminui a chance de se perder em "
 "um passo (por exemplo, 4 em 6 se torna 3 em 6)."
@@ -3794,10 +3848,12 @@ msgid "What kind of wood is your bow made from?"
 msgstr "De que tipo de madeira seu arco é feito?"
 
 #: app/static/json/backgrounds/fletchwind.json:72
-msgid "Western Yew (d6, bulky). Can be wielded as a blunt weapon (d6). Noisy."
+msgid ""
+"**Western Yew** (d6, _bulky_). Can be wielded as a blunt weapon (d6). "
+"Noisy."
 msgstr ""
-"Teixo Ocidental (d6, volumoso). Pode ser empunhado como uma arma contundente (d6). "
-"Barulhento."
+"**Teixo Ocidental** (d6, _volumoso_). Pode ser empunhado como uma arma "
+"contundente (d6). Barulhento."
 
 #: app/static/json/backgrounds/fletchwind.json:75
 msgid "Western Yew"
@@ -3809,9 +3865,11 @@ msgstr "Pode ser empunhada como uma arma contundente (d6). Barulhenta."
 
 #: app/static/json/backgrounds/fletchwind.json:82
 msgid ""
-"Sessile Oak (d8, bulky). Slams into targets. On Critical Damage something is torn off."
+"**Sessile Oak** (d8, _bulky_). Slams into targets. On **Critical Damage**"
+" something is torn off."
 msgstr ""
-"Carvalho Séssil (d8, volumoso). Bate nos alvos. Em Dano Crítico, algo é arrancado."
+"**Carvalho Séssil** (d8, _volumoso_). Bate nos alvos. Em **Dano "
+"Crítico**, algo é arrancado."
 
 #: app/static/json/backgrounds/fletchwind.json:85
 msgid "Sessile Oak"
@@ -3823,11 +3881,11 @@ msgstr "Bate em alvos. Em dano crítico, algo é arrancado."
 
 #: app/static/json/backgrounds/fletchwind.json:92
 msgid ""
-"Stone Pine (d6, bulky). Produces one use of Sticky Sap per day. The sap is highly "
-"explosive."
+"**Stone Pine** (d6, _bulky_). Produces one use of **Sticky Sap** per day."
+" The sap is highly explosive."
 msgstr ""
-"Pinheiro de Pedra (d6, volumoso). Produz um uso de Seiva Grudenta por dia. A seiva é "
-"altamente explosiva."
+"**Pinheiro de Pedra** (d6, _volumoso_). Produz um uso de Seiva Grudenta "
+"por dia. A seiva é altamente explosiva."
 
 #: app/static/json/backgrounds/fletchwind.json:95
 msgid "Stone Pine"
@@ -3839,10 +3897,11 @@ msgstr "Produz um uso de Seiva Grudenta por dia. A seiva é altamente explosiva.
 
 #: app/static/json/backgrounds/fletchwind.json:102
 msgid ""
-"White Ash (d6, bulky). Can be used in place of a shield in melee combat (+1 Armor)."
+"**White Ash** (d6, _bulky_). Can be used in place of a shield in melee "
+"combat (+1 Armor)."
 msgstr ""
-"Cinza Branca (d6, volumoso). Pode ser usado no lugar de um escudo em combate corpo a "
-"corpo (+1 Armadura)."
+"**Cinza Branca** (d6, _volumoso_). Pode ser usado no lugar de um escudo "
+"em combate corpo a corpo (+1 Armadura)."
 
 #: app/static/json/backgrounds/fletchwind.json:105
 msgid "White Ash"
@@ -3854,10 +3913,11 @@ msgstr "Pode ser usado no lugar de um escudo em combate corpo a corpo (+1 Armadu
 
 #: app/static/json/backgrounds/fletchwind.json:112
 msgid ""
-"Striped Bamboo (d6). Collapsible, it only requires one slot (but still requires both "
-"hands)."
+"**Striped Bamboo** (d6). Collapsible, it only requires one slot (but "
+"still requires both hands)."
 msgstr ""
-"Bambu Listrado (d6). Dobrável, requer apenas um slot (mas ainda requer as duas mãos)."
+"**Bambu Listrado** (d6). Dobrável, requer apenas um slot (mas ainda "
+"requer as duas mãos)."
 
 #: app/static/json/backgrounds/fletchwind.json:115
 msgid "Striped Bamboo"
@@ -3869,11 +3929,11 @@ msgstr "Dobrável, requer apenas um slot (mas ainda requer as duas mãos)."
 
 #: app/static/json/backgrounds/fletchwind.json:122
 msgid ""
-"Wych Elm (d6, bulky). Protects the bearer from poisons and toxins, so long as they are "
-"holding it."
+"**Wych Elm** (d6, _bulky_). Protects the bearer from poisons and toxins, "
+"so long as they are holding it."
 msgstr ""
-"Elmo de Madeira (d6, volumoso). Protege o portador de venenos e toxinas, enquanto ele "
-"estiver segurando."
+"**Elmo de Madeira** (d6, _volumoso_). Protege o portador de venenos e "
+"toxinas, enquanto ele estiver segurando."
 
 #: app/static/json/backgrounds/fletchwind.json:125
 msgid "Wych Elm"
@@ -3919,11 +3979,12 @@ msgstr "Quem te acolheu?"
 
 #: app/static/json/backgrounds/foundling.json:52
 msgid ""
-"An old hunter. You were both quite happy, until it all ended. Take a Weathered Longbow "
-"(d8, bulky) and a Leather Jerkin (1 Armor)."
+"An old hunter. You were both quite happy, until it all ended. Take a "
+"**Weathered Longbow** (d8, _bulky_) and a **Leather Jerkin** (1 Armor)."
 msgstr ""
-"Um velho caçador. Vocês dois estavam bem felizes, até que tudo acabou. Pegue um Arco "
-"Longo Envelhecido (d8, volumoso) e um Jerkin de Couro (1 Armadura)."
+"Um velho caçador. Vocês dois estavam bem felizes, até que tudo acabou. "
+"Pegue um **Arco Longo Envelhecido** (d8, _volumoso_) e um Jerkin de Couro"
+" (1 Armadura)."
 
 #: app/static/json/backgrounds/foundling.json:55
 msgid "Weathered Longbow"
@@ -3935,11 +3996,11 @@ msgstr "Jaqueta de couro"
 
 #: app/static/json/backgrounds/foundling.json:65
 msgid ""
-"A wizened apothecary, who taught you the healing arts but maintained a clinical "
-"detachment. Take a Healing Unguent (restores d4 STR)."
+"A wizened apothecary, who taught you the healing arts but maintained a "
+"clinical detachment. Take a **Healing Unguent** (restores d4 STR)."
 msgstr ""
-"Um boticário enrugado, que lhe ensinou as artes da cura, mas manteve um distanciamento "
-"clínico. Pegue um Unguento de Cura (restaura d4 FOR)."
+"Um boticário enrugado, que lhe ensinou as artes da cura, mas manteve um "
+"distanciamento clínico. Pegue um **Unguento de Cura** (restaura d4 FOR)."
 
 #: app/static/json/backgrounds/foundling.json:68
 msgid "Healing Unguent"
@@ -3951,12 +4012,13 @@ msgstr "Restaura d4 FOR"
 
 #: app/static/json/backgrounds/foundling.json:76
 msgid ""
-"A druid, who taught you the language of trees. When it came time to leave, you took "
-"with you only a Gnarled Staff (d8) and left a promise that one day you would return."
+"A druid, who taught you the language of trees. When it came time to "
+"leave, you took with you only a **Gnarled Staff** (d8) and left a promise"
+" that one day you would return."
 msgstr ""
-"Um druida, que lhe ensinou a linguagem das árvores. Quando chegou a hora de partir, "
-"você levou consigo apenas um Cajado Nodoso (d8) e deixou uma promessa de que um dia "
-"retornaria."
+"Um druida, que lhe ensinou a linguagem das árvores. Quando chegou a hora "
+"de partir, você levou consigo apenas um **Cajado Nodoso** (d8) e deixou "
+"uma promessa de que um dia retornaria."
 
 #: app/static/json/backgrounds/foundling.json:79
 msgid "Gnarled Staff"
@@ -3964,13 +4026,15 @@ msgstr "Cajado Nodoso"
 
 #: app/static/json/backgrounds/foundling.json:85
 msgid ""
-"A gruff blacksmith from a sleepy river town. You were always kept at arm's length. Now "
-"the forge is cold, and you've moved on. Take a Smith's Apron (petty) and a set of Oft-"
-"mended Chain Mail (2 Armor, bulky)."
+"A gruff blacksmith from a sleepy river town. You were always kept at "
+"arm's length. Now the forge is cold, and you've moved on. Take a "
+"**Smith's Apron** (_petty_) and a set of **Oft-mended Chain Mail** (2 "
+"Armor, _bulky_)."
 msgstr ""
-"Um ferreiro rude de uma cidadezinha sonolenta no rio. Você sempre foi mantido à "
-"distância. Agora a forja está fria, e você seguiu em frente. Pegue um Avental de "
-"Ferreiro (trivial) e um conjunto de Cota de Malha Remendada (Armadura 2, volumoso)."
+"Um ferreiro rude de uma cidadezinha sonolenta no rio. Você sempre foi "
+"mantido à distância. Agora a forja está fria, e você seguiu em frente. "
+"Pegue um **Avental de Ferreiro** (trivial) e um conjunto de Cota de Malha"
+" Remendada (Armadura 2, _volumoso_)."
 
 #: app/static/json/backgrounds/foundling.json:88
 msgid "Smith's Apron"
@@ -3982,13 +4046,14 @@ msgstr "Cota de malha reparada com frequência"
 
 #: app/static/json/backgrounds/foundling.json:98
 msgid ""
-"A troupe of traveling entertainers. For a time, they were like family to you. One day "
-"you woke up and they were gone with no explanation. Take a Storybook, a Dagger (d6), "
-"and some burning questions."
+"A troupe of traveling entertainers. For a time, they were like family to "
+"you. One day you woke up and they were gone with no explanation. Take a "
+"**Storybook**, a **Dagger** (d6), and some burning questions."
 msgstr ""
-"Uma trupe de artistas itinerantes. Por um tempo, eles foram como uma família para "
-"você. Um dia, você acordou e eles se foram sem nenhuma explicação. Pegue um Livro de "
-"Histórias, uma Adaga (d6) e algumas perguntas candentes."
+"Uma trupe de artistas itinerantes. Por um tempo, eles foram como uma "
+"família para você. Um dia, você acordou e eles se foram sem nenhuma "
+"explicação. Pegue um **Livro de Histórias**, uma **Adaga** (d6) e algumas"
+" perguntas candentes."
 
 #: app/static/json/backgrounds/foundling.json:101
 msgid "Storybook"
@@ -3996,12 +4061,13 @@ msgstr "Livro de Histórias"
 
 #: app/static/json/backgrounds/foundling.json:111
 msgid ""
-"The monks of a secluded forest monastery. When their rules became too strict, and you "
-"snuck away. Take a Monk's Habit (warm, petty) and a Spellbook of Control Plants."
+"The monks of a secluded forest monastery. When their rules became too "
+"strict, and you snuck away. Take a **Monk's Habit** (warm, _petty_) and a"
+" **Spellbook** of _Control Plants_."
 msgstr ""
-"Os monges de um monastério isolado na floresta. Quando suas regras se tornaram muito "
-"rígidas, e você escapou. Pegue um Hábito de Monge (quente, trivial) e um Livro de "
-"Feitiços de Plantas de Controle."
+"Os monges de um monastério isolado na floresta. Quando suas regras se "
+"tornaram muito rígidas, e você escapou. Pegue um **Hábito de Monge** "
+"(quente, trivial) e um Livro de Feitiços de _Plantas de Controle_."
 
 #: app/static/json/backgrounds/foundling.json:114
 msgid "Monk's Habit"
@@ -4030,11 +4096,11 @@ msgstr "O que mantém as más notícias afastadas?"
 
 #: app/static/json/backgrounds/foundling.json:131
 msgid ""
-"Pipeweed: Your good luck charm. Conversations tend to flow more easily after a smoke. "
-"6 uses."
+"**Pipeweed**: Your good luck charm. Conversations tend to flow more "
+"easily after a smoke. 6 uses."
 msgstr ""
-"Erva de Cachimbo: Seu amuleto da sorte. As conversas tendem a fluir mais facilmente "
-"depois de um fumo. 6 usos."
+"**Erva de Cachimbo**: Seu amuleto da sorte. As conversas tendem a fluir "
+"mais facilmente depois de um fumo. 6 usos."
 
 #: app/static/json/backgrounds/foundling.json:134
 msgid "Pipeweed"
@@ -4047,11 +4113,12 @@ msgstr ""
 
 #: app/static/json/backgrounds/foundling.json:142
 msgid ""
-"Stink Jar: Shattering this jar releases an odor so foul all nearby must make a STR "
-"save or immediately vomit. 1 use."
+"**Stink Jar**: Shattering this jar releases an odor so foul all nearby "
+"must make a STR save or immediately vomit. 1 use."
 msgstr ""
-"Frasco de Fedor: quebrar este frasco libera um odor tão forte que todos por perto "
-"devem fazer um teste de FOR ou vomitar imediatamente. 1 uso."
+"**Frasco de Fedor**: quebrar este frasco libera um odor tão forte que "
+"todos por perto devem fazer um teste de FOR ou vomitar imediatamente. 1 "
+"uso."
 
 #: app/static/json/backgrounds/foundling.json:145
 msgid "Stink Jar"
@@ -4067,12 +4134,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/foundling.json:153
 msgid ""
-"Ivy Worm: A green worm often mistaken for a weed. Swallowed whole, it absorbs any "
-"toxins or rot in the body before exiting through the usual way."
+"**Ivy Worm**: A green worm often mistaken for a weed. Swallowed whole, it"
+" absorbs any toxins or rot in the body before exiting through the usual "
+"way."
 msgstr ""
-"Hera Verminosa: Um verme verde frequentemente confundido com uma erva daninha. "
-"Engolido inteiro, ele absorve quaisquer toxinas ou apodrecimento no corpo antes de "
-"sair pelo caminho usual."
+"**Hera Verminosa**: Um verme verde frequentemente confundido com uma erva"
+" daninha. Engolido inteiro, ele absorve quaisquer toxinas ou "
+"apodrecimento no corpo antes de sair pelo caminho usual."
 
 #: app/static/json/backgrounds/foundling.json:156
 msgid "Ivy Worm"
@@ -4088,11 +4156,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/foundling.json:163
 msgid ""
-"Dream Stone: A smooth blue stone that helps recall dreams more clearly. Overuse can "
-"cause dream-addiction."
+"**Dream Stone**: A smooth blue stone that helps recall dreams more "
+"clearly. Overuse can cause dream-addiction."
 msgstr ""
-"Pedra dos Sonhos: Uma pedra azul suave que ajuda a lembrar dos sonhos com mais "
-"clareza. O uso excessivo pode causar vício em sonhos."
+"**Pedra dos Sonhos**: Uma pedra azul suave que ajuda a lembrar dos sonhos"
+" com mais clareza. O uso excessivo pode causar vício em sonhos."
 
 #: app/static/json/backgrounds/foundling.json:166
 msgid "Dream Stone"
@@ -4108,11 +4176,12 @@ msgstr ""
 
 #: app/static/json/backgrounds/foundling.json:173
 msgid ""
-"Drowning Rod: A finger-sized wooden stick that doubles in size each time it is fully "
-"submerged in water. It does not shrink down again."
+"**Drowning Rod**: A finger-sized wooden stick that doubles in size each "
+"time it is fully submerged in water. It does not shrink down again."
 msgstr ""
-"Vara de Afogamento: Um bastão de madeira do tamanho de um dedo que dobra de tamanho "
-"cada vez que é completamente submerso em água. Ele não encolhe novamente."
+"**Vara de Afogamento**: Um bastão de madeira do tamanho de um dedo que "
+"dobra de tamanho cada vez que é completamente submerso em água. Ele não "
+"encolhe novamente."
 
 #: app/static/json/backgrounds/foundling.json:176
 msgid "Drowning Rod"
@@ -4128,11 +4197,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/foundling.json:183
 msgid ""
-"Rabbit's Foot: You were wearing it when they found you. They say it is the foot of she "
-"who left you and that it protects you from witch magic. Petty."
+"**Rabbit's Foot**: You were wearing it when they found you. They say it "
+"is the foot of she who left you and that it protects you from witch "
+"magic. _Petty_."
 msgstr ""
-"Pé de Coelho: Você estava usando quando te encontraram. Dizem que é o pé daquela que "
-"te deixou e que te protege da magia das bruxas. Mesquinho."
+"**Pé de Coelho**: Você estava usando quando te encontraram. Dizem que é o"
+" pé daquela que te deixou e que te protege da magia das bruxas. "
+"Mesquinho."
 
 #: app/static/json/backgrounds/foundling.json:186
 msgid "Rabbit's Foot"
@@ -4174,11 +4245,11 @@ msgstr "Que fungo estranho você descobriu?"
 
 #: app/static/json/backgrounds/fungal-forager.json:35
 msgid ""
-"Shrieking Trumpet. When exposed to light, it screams so loudly that all nearby attacks "
-"(including your own) are impaired. 2 uses."
+"**Shrieking Trumpet**. When exposed to light, it screams so loudly that "
+"all nearby attacks (including your own) are _impaired_. 2 uses."
 msgstr ""
-"Trombeta Gritante. Quando exposto à luz, ele grita tão alto que todos os ataques "
-"próximos (incluindo o seu) são prejudicados. 2 usos."
+"**Trombeta Gritante**. Quando exposto à luz, ele grita tão alto que todos"
+" os ataques próximos (incluindo o seu) são prejudicados. 2 usos."
 
 #: app/static/json/backgrounds/fungal-forager.json:38
 msgid "Shrieking Trumpet"
@@ -4194,9 +4265,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:46
 msgid ""
-"Torch Fungus. When crushed, it creates a cold blue light for a short while. 2 uses."
+"**Torch Fungus**. When crushed, it creates a cold blue light for a short "
+"while. 2 uses."
 msgstr ""
-"Tocha Fungo. Quando esmagado, ele cria uma luz azul fria por um curto período. 2 usos."
+"**Tocha Fungo**. Quando esmagado, ele cria uma luz azul fria por um curto"
+" período. 2 usos."
 
 #: app/static/json/backgrounds/fungal-forager.json:49
 msgid "Torch Fungus"
@@ -4208,11 +4281,11 @@ msgstr "Quando esmagado, ele cria uma luz sem calor por dez minutos."
 
 #: app/static/json/backgrounds/fungal-forager.json:57
 msgid ""
-"Murderous Truffle. Pungent, highly toxic, and very rare (worth 50gp to assassins). "
-"Illegal pretty much everywhere. 1 use."
+"**Murderous Truffle**. Pungent, highly toxic, and very rare (worth 50gp "
+"to assassins). Illegal pretty much everywhere. 1 use."
 msgstr ""
-"Trufa Assassina. Pungente, altamente tóxica e muito rara (vale 50gp para assassinos). "
-"Ilegal em praticamente todos os lugares. 1 uso."
+"**Trufa Assassina**. Pungente, altamente tóxica e muito rara (vale 50gp "
+"para assassinos). Ilegal em praticamente todos os lugares. 1 uso."
 
 #: app/static/json/backgrounds/fungal-forager.json:60
 msgid "Murderous Truffle"
@@ -4228,11 +4301,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:68
 msgid ""
-"Hellcap. Exposure to its aroma causes intense nausea and vomiting. Either way, it "
-"clears the room. Bottled. 1 use."
+"**Hellcap**. Exposure to its aroma causes intense nausea and vomiting. "
+"Either way, it clears the room. Bottled. 1 use."
 msgstr ""
-"Calota do Inferno. A exposição ao seu aroma causa náusea e vômito intensos. De "
-"qualquer forma, ele limpa o ambiente. Engarrafado. 1 uso."
+"**Calota do Inferno**. A exposição ao seu aroma causa náusea e vômito "
+"intensos. De qualquer forma, ele limpa o ambiente. Engarrafado. 1 uso."
 
 #: app/static/json/backgrounds/fungal-forager.json:71
 msgid "Hellcap"
@@ -4248,12 +4321,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:79
 msgid ""
-"Sproutcup. Ingest to shrink down to the size of a mouse. (Your belongings stay the "
-"same size.) You return to normal size within the hour, often in fits and starts. 1 use."
+"**Sproutcup**. Ingest to shrink down to the size of a mouse. (Your "
+"belongings stay the same size.) You return to normal size within the "
+"hour, often in fits and starts. 1 use."
 msgstr ""
-"Broto de Copa. Ingerir para encolher até o tamanho de um rato. (Seus pertences "
-"permanecem do mesmo tamanho.) Você retorna ao tamanho normal dentro de uma hora, "
-"geralmente em ataques e recomeços. 1 uso."
+"**Broto de Copa**. Ingerir para encolher até o tamanho de um rato. (Seus "
+"pertences permanecem do mesmo tamanho.) Você retorna ao tamanho normal "
+"dentro de uma hora, geralmente em ataques e recomeços. 1 uso."
 
 #: app/static/json/backgrounds/fungal-forager.json:82
 msgid "Sproutcup"
@@ -4269,11 +4343,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:90
 msgid ""
-"Rootflower. A white fungus found only on corpses deep underground. Ingest to restore "
-"d6 WIL. You will dream of the dead and their stories. 1 use."
+"**Rootflower**. A white fungus found only on corpses deep underground. "
+"Ingest to restore d6 WIL. You will dream of the dead and their stories. 1"
+" use."
 msgstr ""
-"Flor de raiz. Um fungo branco encontrado somente em cadáveres no subsolo. Ingerir para "
-"restaurar d6 VON. Você sonhará com os mortos e suas histórias. 1 uso."
+"**Flor de raiz**. Um fungo branco encontrado somente em cadáveres no "
+"subsolo. Ingerir para restaurar d6 VON. Você sonhará com os mortos e suas"
+" histórias. 1 uso."
 
 #: app/static/json/backgrounds/fungal-forager.json:93
 msgid "Rootflower"
@@ -4293,10 +4369,11 @@ msgstr "O que mantém você são, mesmo na escuridão total?"
 
 #: app/static/json/backgrounds/fungal-forager.json:106
 msgid ""
-"Glowsnail. Casts a soft, bioluminescent light. Feeds on one ration every two days."
+"**Glowsnail**. Casts a soft, bioluminescent light. Feeds on one ration "
+"every two days."
 msgstr ""
-"Caracol brilhante. Emite uma luz suave e bioluminescente. Alimenta-se de uma ração a "
-"cada dois dias."
+"**Caracol brilhante**. Emite uma luz suave e bioluminescente. Alimenta-se"
+" de uma ração a cada dois dias."
 
 #: app/static/json/backgrounds/fungal-forager.json:109
 msgid "Glowsnail"
@@ -4309,11 +4386,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:116
 msgid ""
-"Silk Moth Shawl. A weatherproof blanket, it can also douse a fire without being "
-"damaged."
+"**Silk Moth Shawl**. A weatherproof blanket, it can also douse a fire "
+"without being damaged."
 msgstr ""
-"Xale de seda. Um cobertor à prova de intempéries também pode apagar um incêndio sem "
-"ser danificado."
+"**Xale de seda**. Um cobertor à prova de intempéries também pode apagar "
+"um incêndio sem ser danificado."
 
 #: app/static/json/backgrounds/fungal-forager.json:119
 msgid "Silk Moth Shawl"
@@ -4326,11 +4403,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:126
 msgid ""
-"Milkflower. A gentle stimulant. Chewing it makes you immune to panic for the next "
-"hour. 3 uses."
+"**Milkflower**. A gentle stimulant. Chewing it makes you immune to "
+"_panic_ for the next hour. 3 uses."
 msgstr ""
-"Flor de leite. Um estimulante suave. Mastigá-lo deixa você imune ao pânico pela "
-"próxima hora. 3 usos."
+"**Flor de leite**. Um estimulante suave. Mastigá-lo deixa você imune ao "
+"pânico pela próxima hora. 3 usos."
 
 #: app/static/json/backgrounds/fungal-forager.json:129
 msgid "Milkflower"
@@ -4342,11 +4419,11 @@ msgstr "Um estimulante suave. Mastigá-lo deixa você imune ao pânico pela pró
 
 #: app/static/json/backgrounds/fungal-forager.json:137
 msgid ""
-"Luxcompass. Hums softly as it moves closer to the Sun. Eventually the noise becomes "
-"unbearably loud."
+"**Luxcompass**. Hums softly as it moves closer to the Sun. Eventually the"
+" noise becomes unbearably loud."
 msgstr ""
-"Bú-sol-la. Zumbido suavemente conforme se aproxima do Sol. Eventualmente o barulho se "
-"torna insuportavelmente alto."
+"**Bú-sol-la**. Zumbido suavemente conforme se aproxima do Sol. "
+"Eventualmente o barulho se torna insuportavelmente alto."
 
 #: app/static/json/backgrounds/fungal-forager.json:140
 msgid "Luxcompass"
@@ -4362,11 +4439,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:147
 msgid ""
-"Sloth-Tarp. A tough and weatherproof fabric, useful for hanging off trees. When "
-"inside, you have +1 Armor."
+"**Sloth-Tarp**. A tough and weatherproof fabric, useful for hanging off "
+"trees. When inside, you have +1 Armor."
 msgstr ""
-"Lona-Preguiça. Um tecido resistente e à prova d'água, útil para pendurar em árvores. "
-"Quando dentro, você tem +1 de Armadura."
+"**Lona-Preguiça**. Um tecido resistente e à prova d'água, útil para "
+"pendurar em árvores. Quando dentro, você tem +1 de Armadura."
 
 #: app/static/json/backgrounds/fungal-forager.json:150
 msgid "Sloth-Tarp"
@@ -4382,11 +4459,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:157
 msgid ""
-"Miner's Grease. Great for dislodging a gem, tool, or limb from a tight crack. Highly "
-"explosive. 3 uses."
+"**Miner's Grease**. Great for dislodging a gem, tool, or limb from a "
+"tight crack. Highly explosive. 3 uses."
 msgstr ""
-"Graxa de mineiro. Ótimo para desalojar uma gema, ferramenta ou membro de uma rachadura "
-"apertada. Altamente explosivo. 3 usos."
+"**Graxa de mineiro**. Ótimo para desalojar uma gema, ferramenta ou membro"
+" de uma rachadura apertada. Altamente explosivo. 3 usos."
 
 #: app/static/json/backgrounds/fungal-forager.json:160
 msgid "Miner's Grease"
@@ -4478,13 +4555,13 @@ msgstr "Como a Floresta falhou com você?"
 
 #: app/static/json/backgrounds/greenwise.json:54
 msgid ""
-"An ill-tempered forest spirit cursed you for stealing, marking you as an enemy of "
-"their kind. Take a Bezoar Stone. Ingesting it cures any poison (1 use, unless "
-"retrieved)."
+"An ill-tempered forest spirit cursed you for stealing, marking you as an "
+"enemy of their kind. Take a **Bezoar Stone**. Ingesting it cures any "
+"poison (1 use, unless retrieved)."
 msgstr ""
-"Um espírito mal-humorado da floresta amaldiçoou você por roubar, marcando você como um "
-"inimigo de sua espécie. Pegue uma Pedra Bezoar. Ingeri-la cura qualquer veneno (1 uso, "
-"a menos que seja recuperado)."
+"Um espírito mal-humorado da floresta amaldiçoou você por roubar, marcando"
+" você como um inimigo de sua espécie. Pegue uma **Pedra Bezoar**. Ingeri-"
+"la cura qualquer veneno (1 uso, a menos que seja recuperado)."
 
 #: app/static/json/backgrounds/greenwise.json:57
 msgid "Bezoar Stone"
@@ -4496,11 +4573,11 @@ msgstr "Ingeri-lo cura qualquer veneno (1 uso, a menos que seja recuperado)."
 
 #: app/static/json/backgrounds/greenwise.json:65
 msgid ""
-"A close friend disappeared into the forest. Now you see their face in any tea you "
-"brew. Take a Soporific Concoction (3 uses)."
+"A close friend disappeared into the forest. Now you see their face in any"
+" tea you brew. Take a **Soporific Concoction** (3 uses)."
 msgstr ""
-"Um amigo próximo desapareceu na floresta. Agora você vê o rosto dele em qualquer chá "
-"que você preparar. Tome uma Mistura Soporífica (3 usos)."
+"Um amigo próximo desapareceu na floresta. Agora você vê o rosto dele em "
+"qualquer chá que você preparar. Tome uma **Mistura Soporífica** (3 usos)."
 
 #: app/static/json/backgrounds/greenwise.json:68
 msgid "Soporific Concoction"
@@ -4508,39 +4585,41 @@ msgstr "Mistura Soporífica"
 
 #: app/static/json/backgrounds/greenwise.json:75
 msgid ""
-"You were poisoned, losing your sense of taste and smell. You can now withstand noxious "
-"fumes and always carry Antitoxin (2 uses)."
+"You were poisoned, losing your sense of taste and smell. You can now "
+"withstand noxious fumes and always carry **Antitoxin** (2 uses)."
 msgstr ""
-"Você foi envenenado, perdendo o sentido do paladar e do olfato. Agora você pode "
-"suportar vapores nocivos e sempre carrega Antitoxina (2 usos)."
+"Você foi envenenado, perdendo o sentido do paladar e do olfato. Agora "
+"você pode suportar vapores nocivos e sempre carrega **Antitoxina** (2 "
+"usos)."
 
 #: app/static/json/backgrounds/greenwise.json:85
 msgid ""
-"Your radical experiments turned your skin green, and you now gain nourishment as a "
-"plant. You don't need Rations, but a day without sufficient sunlight and water leaves "
-"you deprived."
+"Your radical experiments turned your skin green, and you now gain "
+"nourishment as a plant. You don't need **Rations**, but a day without "
+"sufficient sunlight and water leaves you _deprived_."
 msgstr ""
-"Seus experimentos radicais deixaram sua pele verde, e agora você ganha nutrição como "
-"uma planta. Você não precisa de Rações, mas um dia sem luz solar e água suficientes "
-"deixa você em exaustão."
+"Seus experimentos radicais deixaram sua pele verde, e agora você ganha "
+"nutrição como uma planta. Você não precisa de **Rações**, mas um dia sem "
+"luz solar e água suficientes deixa você _em exaustão_."
 
 #: app/static/json/backgrounds/greenwise.json:88
 msgid ""
-"Your impressive corpseflower won a local contest then promptly killed a judge. You "
-"fled, but not without the Prize Money (100gp) and a warrant for your arrest."
+"Your impressive corpseflower won a local contest then promptly killed a "
+"judge. You fled, but not without the **Prize Money (100gp)** and a "
+"warrant for your arrest."
 msgstr ""
 "Sua impressionante corpseflower venceu um concurso local e então prontamente matou um "
 "juiz. Você fugiu, mas não sem o Dinheiro do Prêmio (100gp) e um mandado de prisão."
 
 #: app/static/json/backgrounds/greenwise.json:93
 msgid ""
-"You created a restorative tincture that also causes accidental infertility. Take a "
-"Healing Potion that completely restores STR. Only you know of its unintended side-"
-"effects."
+"You created a restorative tincture that also causes accidental "
+"infertility. Take a **Healing Potion** that completely restores STR. Only"
+" you know of its unintended side-effects."
 msgstr ""
-"Você criou uma tintura restauradora que também causa infertilidade acidental. Tome uma "
-"Poção de Cura que restaura FOR completamente. Só você sabe dos seus efeitos colaterais "
-"não intencionais."
+"Você criou uma tintura restauradora que também causa infertilidade "
+"acidental. Tome uma **Poção de Cura** que restaura FOR completamente. Só "
+"você sabe dos seus efeitos colaterais não intencionais."
 
 #: app/static/json/backgrounds/greenwise.json:96
 msgid "Healing Potion"
@@ -4557,8 +4636,10 @@ msgid "What keeps you safe while in the Wood?"
 msgstr "O que mantém você seguro enquanto estiver na Floresta?"
 
 #: app/static/json/backgrounds/greenwise.json:109
-msgid "Amadou: A vermilion fungus that catches fire quite easily. 3 uses."
-msgstr "Amadou: Um fungo vermelho que pega fogo com bastante facilidade. 3 usos."
+msgid "**Amadou**: A vermilion fungus that catches fire quite easily. 3 uses."
+msgstr ""
+"**Amadou**: Um fungo vermelho que pega fogo com bastante facilidade. 3 "
+"usos."
 
 #: app/static/json/backgrounds/greenwise.json:112
 msgid "Amadou"
@@ -4570,11 +4651,11 @@ msgstr "Um fungo vermelho que pega fogo com bastante facilidade."
 
 #: app/static/json/backgrounds/greenwise.json:120
 msgid ""
-"Delphinium: Breathe water for up to one hour. 1 use, but can be divided into "
-"fractional doses."
+"**Delphinium**: Breathe water for up to one hour. 1 use, but can be "
+"divided into fractional doses."
 msgstr ""
-"Delphinium: Respire água por até uma hora. 1 uso, mas pode ser dividido em doses "
-"fracionadas."
+"**Delphinium**: Respire água por até uma hora. 1 uso, mas pode ser "
+"dividido em doses fracionadas."
 
 #: app/static/json/backgrounds/greenwise.json:123
 msgid "Delphinium"
@@ -4586,10 +4667,11 @@ msgstr "Respire água por até uma hora. Pode ser dividido em doses fracionadas.
 
 #: app/static/json/backgrounds/greenwise.json:131
 msgid ""
-"Tacky Stalk: A woody reed that hardens into a permanent adhesive when chewed. 2 uses."
+"**Tacky Stalk**: A woody reed that hardens into a permanent adhesive when"
+" chewed. 2 uses."
 msgstr ""
-"Caule pegajoso: Um junco lenhoso que endurece e se torna um adesivo permanente quando "
-"mastigado. 2 usos."
+"**Caule pegajoso**: Um junco lenhoso que endurece e se torna um adesivo "
+"permanente quando mastigado. 2 usos."
 
 #: app/static/json/backgrounds/greenwise.json:134
 msgid "Tacky Stalk"
@@ -4602,11 +4684,12 @@ msgstr ""
 
 #: app/static/json/backgrounds/greenwise.json:142
 msgid ""
-"Wisp Lantern: Caged in wrought iron, provides a dim light so long as the wisp is able "
-"to feed on nearby pain and fear."
+"**Wisp Lantern**: Caged in wrought iron, provides a dim light so long as "
+"the wisp is able to feed on nearby pain and fear."
 msgstr ""
-"Lanterna do Fogo-fátuo: enjaulada em ferro forjado, fornece uma luz fraca enquanto o "
-"fogo-fátuo for capaz de se alimentar da dor e do medo próximos."
+"**Lanterna do Fogo-fátuo**: enjaulada em ferro forjado, fornece uma luz "
+"fraca enquanto o fogo-fátuo for capaz de se alimentar da dor e do medo "
+"próximos."
 
 #: app/static/json/backgrounds/greenwise.json:145
 msgid "Wisp Lantern"
@@ -4620,11 +4703,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/greenwise.json:152
 msgid ""
-"Seed Bomb: A canvas sack filled with seeds that explode on impact. d6 damage (blast, 3 "
-"uses)."
+"**Seed Bomb**: A canvas sack filled with seeds that explode on impact. d6"
+" damage (_blast_, 3 uses)."
 msgstr ""
-"Bomba de Sementes: Um saco de lona cheio de sementes que explodem com o impacto. d6 de "
-"dano (explosão, 3 usos)."
+"**Bomba de Sementes**: Um saco de lona cheio de sementes que explodem com"
+" o impacto. d6 de dano (_explosão_, 3 usos)."
 
 #: app/static/json/backgrounds/greenwise.json:155
 msgid "Seed Bomb"
@@ -4638,10 +4721,12 @@ msgstr ""
 "usos)."
 
 #: app/static/json/backgrounds/greenwise.json:163
-msgid "Briarvine: Entangles any creature up to horse size (STR to break free). Reusable."
+msgid ""
+"**Briarvine**: Entangles any creature up to horse size (STR to break "
+"free). Reusable."
 msgstr ""
-"Videira de Briar: Enreda qualquer criatura até o tamanho de um cavalo (FOR para se "
-"libertar). Reutilizável."
+"**Videira de Briar**: Enreda qualquer criatura até o tamanho de um cavalo"
+" (FOR para se libertar). Reutilizável."
 
 #: app/static/json/backgrounds/greenwise.json:166
 msgid "Briarvine"
@@ -4695,11 +4780,13 @@ msgstr "O que você trouxe da Corte das Fadas?"
 
 #: app/static/json/backgrounds/half-witch.json:54
 msgid ""
-"A Black Rose Fiddle (bulky). Its music causes intense sadness and immobility in nearby "
-"mortals. (Others are merely fascinated.) You don't know how to play."
+"A **Black Rose Fiddle** (_bulky_). Its music causes intense sadness and "
+"immobility in nearby mortals. (Others are merely fascinated.) You don't "
+"know how to play."
 msgstr ""
-"Um Violino Rosa Negra (volumoso). Sua música causa intensa tristeza e imobilidade em "
-"mortais próximos. (Outros ficam meramente fascinados.) Você não sabe tocar."
+"Um **Violino Rosa Negra** (_volumoso_). Sua música causa intensa tristeza"
+" e imobilidade em mortais próximos. (Outros ficam meramente fascinados.) "
+"Você não sabe tocar."
 
 #: app/static/json/backgrounds/half-witch.json:57
 msgid "Black Rose Fiddle"
@@ -4715,11 +4802,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:64
 msgid ""
-"Paper legs. You are extremely light and can fall a few stories without getting hurt. "
-"Try to avoid tearing them or getting them wet."
+"**Paper legs**. You are extremely light and can fall a few stories "
+"without getting hurt. Try to avoid tearing them or getting them wet."
 msgstr ""
-"Pernas de papel. Você é extremamente leve e pode cair alguns andares sem se machucar. "
-"Tente evitar rasgá-las ou molhá-las."
+"**Pernas de papel**. Você é extremamente leve e pode cair alguns andares "
+"sem se machucar. Tente evitar rasgá-las ou molhá-las."
 
 #: app/static/json/backgrounds/half-witch.json:67
 msgid "Paper Legs"
@@ -4735,13 +4822,15 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:74
 msgid ""
-"A Living Nightmare that dwells within you but manifests whenever you are in danger. It "
-"has your same Attributes and HP and attacks with claws (d8+d8). It disappears on "
-"Critical Damage (take 1d4 WIL damage), re-appearing again on the next full moon."
+"A **Living Nightmare** that dwells within you but manifests whenever you "
+"are in danger. It has your same **Attributes** and **HP** and attacks "
+"with claws (d8+d8). It disappears on **Critical Damage** (take 1d4 WIL "
+"damage), re-appearing again on the next full moon."
 msgstr ""
-"Um Pesadelo Vivo que habita dentro de você, mas se manifesta sempre que você está em "
-"perigo. Ele tem os mesmos Atributos e PV e ataca com garras (d8+d8). Ele desaparece em "
-"Dano Crítico (recebe 1d4 de dano VON), reaparecendo novamente na próxima lua cheia."
+"Um **Pesadelo Vivo** que habita dentro de você, mas se manifesta sempre "
+"que você está em perigo. Ele tem os mesmos **Atributos** e **PV** e ataca"
+" com garras (d8+d8). Ele desaparece em **Dano Crítico** (recebe 1d4 de "
+"dano VON), reaparecendo novamente na próxima lua cheia."
 
 #: app/static/json/backgrounds/half-witch.json:77
 msgid "Living Nightmare"
@@ -4759,11 +4848,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:84
 msgid ""
-"A Raven Familiar [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as an "
-"intelligent being and is entirely devoted to you."
+"A **Raven Familiar** [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks"
+" as an intelligent being and is entirely devoted to you."
 msgstr ""
-"Um Corvo Familiar [8 PV, 3 FOR, 11 DES, 13 VON, bico (d6)]. Ele fala como um ser "
-"inteligente e é inteiramente devotado a você."
+"Um **Corvo Familiar** [8 PV, 3 FOR, 11 DES, 13 VON, bico (d6)]. Ele fala "
+"como um ser inteligente e é inteiramente devotado a você."
 
 #: app/static/json/backgrounds/half-witch.json:87
 msgid "Raven Familiar"
@@ -4779,11 +4868,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:94
 msgid ""
-"A Briar Thorn. It can pierce any organic material (quite painfully) but when removed "
-"leaves no trace of the intrusion."
+"A **Briar Thorn**. It can pierce any organic material (quite painfully) "
+"but when removed leaves no trace of the intrusion."
 msgstr ""
-"Um espinho de urze. Ele pode perfurar qualquer material orgânico (de forma bem "
-"dolorosa), mas quando removido não deixa vestígios da intrusão."
+"Um **espinho de urze**. Ele pode perfurar qualquer material orgânico (de "
+"forma bem dolorosa), mas quando removido não deixa vestígios da intrusão."
 
 #: app/static/json/backgrounds/half-witch.json:97
 msgid "Briar Thorn"
@@ -4795,8 +4884,9 @@ msgstr "Pode perfurar qualquer material orgânico sem deixar vestígios."
 
 #: app/static/json/backgrounds/half-witch.json:104
 msgid ""
-"A Fae creature's True Name. Use it to summon its owner for an act of great service, "
-"but only once. It could also fetch a hefty price, from the right buyer."
+"A Fae creature's **True Name**. Use it to summon its owner for an act of "
+"great service, but only once. It could also fetch a hefty price, from the"
+" right buyer."
 msgstr ""
 "O Verdadeiro Nome de uma criatura Fada. Use-o para invocar seu dono para um ato de "
 "grande serviço, mas apenas uma vez. Também pode render um preço alto, do comprador "
@@ -4809,12 +4899,13 @@ msgstr "Que mistura você carrega e quais ingredientes raros você reuniu para f
 
 #: app/static/json/backgrounds/half-witch.json:113
 msgid ""
-"Rebirth Ash: Remnants of a bark spirit. Sprinkle to reignite a fire that has died or "
-"return to life a creature that has died only moments before. 3 uses."
+"**Rebirth Ash**: Remnants of a bark spirit. Sprinkle to reignite a fire "
+"that has died or return to life a creature that has died only moments "
+"before. 3 uses."
 msgstr ""
-"Cinzas do Renascimento: Remanescentes de um espírito de casca. Polvilhe para reacender "
-"um fogo que morreu ou trazer de volta à vida uma criatura que morreu apenas momentos "
-"antes. 3 usos."
+"**Cinzas do Renascimento**: Remanescentes de um espírito de casca. "
+"Polvilhe para reacender um fogo que morreu ou trazer de volta à vida uma "
+"criatura que morreu apenas momentos antes. 3 usos."
 
 #: app/static/json/backgrounds/half-witch.json:116
 msgid "Rebirth Ash"
@@ -4830,8 +4921,8 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:124
 msgid ""
-"Glamour Feather: Plume of a firebird. Can make any creature appear convincingly as "
-"someone (or something) else. 1 use."
+"**Glamour Feather**: Plume of a firebird. Can make any creature appear "
+"convincingly as someone (or something) else. 1 use."
 msgstr ""
 "Pena de Glamour: Pluma de um pássaro de fogo. Pode fazer qualquer criatura parecer "
 "convincentemente como outra pessoa (ou algo). 1 uso."
@@ -4846,12 +4937,13 @@ msgstr "Pode fazer qualquer criatura parecer outra pessoa ou coisa."
 
 #: app/static/json/backgrounds/half-witch.json:135
 msgid ""
-"Hawthorn Seed: An acorn from the other side, gathered on the spring equinox. When "
-"planted, it sprouts a luxurious shelter, collapsing at moonrise the next day. 1 use."
+"**Hawthorn Seed**: An acorn from the other side, gathered on the spring "
+"equinox. When planted, it sprouts a luxurious shelter, collapsing at "
+"moonrise the next day. 1 use."
 msgstr ""
-"Semente de espinheiro: Uma bolota do outro lado, coletada no equinócio da primavera. "
-"Quando plantada, ela brota um abrigo luxuoso, desabando ao nascer da lua no dia "
-"seguinte. 1 uso."
+"**Semente de espinheiro**: Uma bolota do outro lado, coletada no "
+"equinócio da primavera. Quando plantada, ela brota um abrigo luxuoso, "
+"desabando ao nascer da lua no dia seguinte. 1 uso."
 
 #: app/static/json/backgrounds/half-witch.json:138
 msgid "Hawthorn Seed"
@@ -4867,11 +4959,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:146
 msgid ""
-"Stonetree Sap: Sap obtained in exchange for blood. Hardens when rubbed on any surface "
-"(+1 Armor). 3 uses."
+"**Stonetree Sap**: Sap obtained in exchange for blood. Hardens when "
+"rubbed on any surface (+1 Armor). 3 uses."
 msgstr ""
-"Seiva da Árvore-Pedra: Seiva obtida em troca de sangue. Endurece quando esfregada em "
-"qualquer superfície (+1 Armadura). 3 usos."
+"**Seiva da Árvore-Pedra**: Seiva obtida em troca de sangue. Endurece "
+"quando esfregada em qualquer superfície (+1 Armadura). 3 usos."
 
 #: app/static/json/backgrounds/half-witch.json:149
 msgid "Stonetree Sap"
@@ -4886,11 +4978,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:157
 msgid ""
-"Nightdust Powder: The ritual burning of six owls. When tossed in the air, day turns to "
-"night for a short while. 2 uses."
+"**Nightdust Powder**: The ritual burning of six owls. When tossed in the "
+"air, day turns to night for a short while. 2 uses."
 msgstr ""
-"Poeira Noturna: A queima ritual de seis corujas. Quando jogada no ar, o dia vira noite "
-"por um curto período. 2 usos."
+"**Poeira Noturna**: A queima ritual de seis corujas. Quando jogada no ar,"
+" o dia vira noite por um curto período. 2 usos."
 
 #: app/static/json/backgrounds/half-witch.json:160
 msgid "Nightdust Powder"
@@ -4902,13 +4994,13 @@ msgstr "O dia se transforma em noite por um curto período quando jogado no ar."
 
 #: app/static/json/backgrounds/half-witch.json:168
 msgid ""
-"Hex Stone: Gathered from a river that flows from the other side. Removed from its iron "
-"tin, it can absorb the effects of an active magical effect. If destroyed, the magic is "
-"released. 1 use."
+"**Hex Stone**: Gathered from a river that flows from the _other side_. "
+"Removed from its iron tin, it can absorb the effects of an active magical"
+" effect. If destroyed, the magic is released. 1 use."
 msgstr ""
-"Pedra Hexagonal: Coletada de um rio que flui do outro lado. Removida de sua lata de "
-"ferro, ela pode absorver os efeitos de um efeito mágico ativo. Se destruída, a magia é "
-"liberada. 1 uso."
+"**Pedra Hexagonal**: Coletada de um rio que flui do outro lado. Removida "
+"de sua lata de ferro, ela pode absorver os efeitos de um efeito mágico "
+"ativo. Se destruída, a magia é liberada. 1 uso."
 
 #: app/static/json/backgrounds/half-witch.json:171
 msgid "Hex Stone"
@@ -4950,11 +5042,13 @@ msgstr "A qual ordem você pertence?"
 
 #: app/static/json/backgrounds/hexenbane.json:51
 msgid ""
-"Order of the Crossroads. Take a Pocket Leyfinder. It points to nearby ley lines and "
-"other sources of arcane power. If you lose it, the punishment is death."
+"**Order of the Crossroads**. Take a **Pocket Leyfinder**. It points to "
+"nearby ley lines and other sources of arcane power. If you lose it, the "
+"punishment is death."
 msgstr ""
-"Ordem das Encruzilhadas. Pegue uma Bússola Mágica. Ele aponta para linhas ley próximas "
-"e outras fontes de poder arcano. Se você perdê-lo, a punição é a morte."
+"Ordem das Encruzilhadas. Pegue uma **Bússola Mágica**. Ele aponta para "
+"linhas ley próximas e outras fontes de poder arcano. Se você perdê-lo, a "
+"punição é a morte."
 
 #: app/static/json/backgrounds/hexenbane.json:54
 msgid "Pocket Leyfinder"
@@ -4970,11 +5064,12 @@ msgstr ""
 
 #: app/static/json/backgrounds/hexenbane.json:61
 msgid ""
-"Order of the Bleeding Star. Take a Star-Iron Mace (d8). It shines faintly in darkness "
-"and becomes very hot in the presence of witchcraft."
+"**Order of the Bleeding Star**. Take a **Star-Iron Mace** (d8). It shines"
+" faintly in darkness and becomes very hot in the presence of witchcraft."
 msgstr ""
-"Ordem da Estrela Sangrenta. Pegue uma Maça de Ferro Estelar (d8). Ela brilha "
-"fracamente na escuridão e fica muito quente na presença de bruxaria."
+"Ordem da Estrela Sangrenta. Pegue uma **Maça de Ferro Estelar** (d8). Ela"
+" brilha fracamente na escuridão e fica muito quente na presença de "
+"bruxaria."
 
 #: app/static/json/backgrounds/hexenbane.json:64
 msgid "Star-Iron Mace"
@@ -4986,9 +5081,9 @@ msgstr "Ela brilha fracamente na escuridão e fica muito quente na presença de 
 
 #: app/static/json/backgrounds/hexenbane.json:71
 msgid ""
-"Order of the Glass Sigil. Take a short sword (d8) and chainmail (2 Armor, bulky). You "
-"have contacts in most towns (the more rural, the better) willing to provide aid, food, "
-"or even weapons."
+"**Order of the Glass Sigil**. Take a short sword (d8) and chainmail (2 "
+"Armor, _bulky_). You have contacts in most towns (the more rural, the "
+"better) willing to provide aid, food, or even weapons."
 msgstr ""
 "Ordem do Sigilo de Vidro. Pegue uma espada curta (d8) e uma cota de malha (2 Armadura, "
 "volumosa). Você tem contatos na maioria das cidades (quanto mais rural, melhor) "
@@ -5004,13 +5099,13 @@ msgstr "Cota de malha"
 
 #: app/static/json/backgrounds/hexenbane.json:84
 msgid ""
-"Order of the Blank Eye. Take a Voidglass Shard. Peer through it to see invisible "
-"marks, creatures, and other magical effects. Lose the use of your eye for an hour "
-"afterwards (you are deprived)."
+"**Order of the Blank Eye**. Take a **Voidglass Shard**. Peer through it "
+"to see invisible marks, creatures, and other magical effects. Lose the "
+"use of your eye for an hour afterwards (you are _deprived_)."
 msgstr ""
-"Ordem do Olho Vazio. Pegue um Fragmento de Vidro Vazio. Olhe através dele para ver "
-"marcas invisíveis, criaturas e outros efeitos mágicos. Perca o uso do seu olho por uma "
-"hora depois (você está em exaustão)."
+"Ordem do Olho Vazio. Pegue um **Fragmento de Vidro Vazio**. Olhe através "
+"dele para ver marcas invisíveis, criaturas e outros efeitos mágicos. "
+"Perca o uso do seu olho por uma hora depois (você está _em exaustão_)."
 
 #: app/static/json/backgrounds/hexenbane.json:87
 msgid "Voidglass Shard"
@@ -5026,11 +5121,12 @@ msgstr ""
 
 #: app/static/json/backgrounds/hexenbane.json:94
 msgid ""
-"Order of Canaas. Once per day you can change into a wolf. Take a Quicksilver Chain. "
-"Without it, you are unable to shift back."
+"**Order of Canaas**. Once per day you can change into a wolf. Take a "
+"**Quicksilver Chain**. Without it, you are unable to shift back."
 msgstr ""
-"Ordem de Canaas. Uma vez por dia você pode se transformar em um lobo. Pegue uma "
-"Corrente de Mercúrio. Sem ela, você não consegue voltar a se transformar."
+"Ordem de Canaas. Uma vez por dia você pode se transformar em um lobo. "
+"Pegue uma **Corrente de Mercúrio**. Sem ela, você não consegue voltar a "
+"se transformar."
 
 #: app/static/json/backgrounds/hexenbane.json:97
 msgid "Quicksilver Chain"
@@ -5042,11 +5138,12 @@ msgstr "Sem ela, você não consegue voltar."
 
 #: app/static/json/backgrounds/hexenbane.json:104
 msgid ""
-"Order of the Silent Veil. Take a Quell Stone (2 uses) wrapped in burlap. Extinguishes "
-"any nearby flames once exposed to air."
+"**Order of the Silent Veil**. Take a **Quell Stone** (2 uses) wrapped in "
+"burlap. Extinguishes any nearby flames once exposed to air."
 msgstr ""
-"Ordem do Véu Silencioso. Pegue uma Pedra de Acalmar (2 usos) embrulhada em estopa. "
-"Extingue qualquer chama próxima quando exposta ao ar."
+"Ordem do Véu Silencioso. Pegue uma **Pedra de Acalmar** (2 usos) "
+"embrulhada em estopa. Extingue qualquer chama próxima quando exposta ao "
+"ar."
 
 #: app/static/json/backgrounds/hexenbane.json:107
 msgid "Quell Stone"
@@ -5062,19 +5159,20 @@ msgstr "Qual foi seu voto?"
 
 #: app/static/json/backgrounds/hexenbane.json:120
 msgid ""
-"Honesty. Choose a weapon type (blunt, blade, etc). Attacks against you of this type "
-"are impaired. If your vow is broken, you lose d4 WIL."
+"**Honesty**. Choose a **weapon type** (blunt, blade, etc). Attacks "
+"against you of this type are _impaired_. If your vow is broken, you lose "
+"d4 WIL."
 msgstr ""
 "Honestidade. Escolha um tipo de arma (contundente, lâmina, etc.). Ataques contra você "
 "desse tipo são prejudicados. Se seu voto for quebrado, você perde d4 VON."
 
 #: app/static/json/backgrounds/hexenbane.json:124
 msgid ""
-"Poverty. You carry the Disassemble Spellbook. Only you can use it. If your vow is "
-"broken, it explodes (d12 STR damage)."
+"**Poverty**. You carry the _Disassemble_ **Spellbook**. Only you can use "
+"it. If your vow is broken, it explodes (d12 STR damage)."
 msgstr ""
-"Pobreza. Você carrega o Livro de Feitiços (Desmontar). Só você pode usá-lo. Se seu "
-"voto for quebrado, ele explode (d12 de dano FOR)."
+"Pobreza. Você carrega o Livro de Feitiços (_Desmontar_). Só você pode "
+"usá-lo. Se seu voto for quebrado, ele explode (d12 de dano FOR)."
 
 #: app/static/json/backgrounds/hexenbane.json:127
 msgid "Spellbook (Disassemble)"
@@ -5092,16 +5190,19 @@ msgstr ""
 
 #: app/static/json/backgrounds/hexenbane.json:134
 msgid ""
-"Selflessness. You are immune to mind-altering magical effects, such as charm, hatred, "
-"frenzy, and so on. If you break this vow, you lose d6 WIL."
+"**Selflessness**. You are immune to **mind-altering magical effects**, "
+"such as _charm_, _hatred_, _frenzy_, and so on. If you break this vow, "
+"you lose d6 WIL."
 msgstr ""
-"Abnegação. Você é imune a efeitos mágicos que alteram a mente, como charme, ódio, "
-"frenesi e assim por diante. Se você quebrar esse voto, você perde d6 VON."
+"Abnegação. Você é imune a efeitos mágicos que alteram a mente, como "
+"_charme_, _ódio_, _frenesi_ e assim por diante. Se você quebrar esse "
+"voto, você perde d6 VON."
 
 #: app/static/json/backgrounds/hexenbane.json:138
 msgid ""
-"Mercy. Choose a weapon type (blunt, blade, etc). Attacks with this weapon are "
-"enhanced. If your vow is broken, you can never use that weapon type again."
+"**Mercy**. Choose a **weapon type** (blunt, blade, etc). Attacks with "
+"this weapon are _enhanced_. If your vow is broken, you can never use that"
+" weapon type again."
 msgstr ""
 "Misericórdia. Escolha um tipo de arma (contundente, lâmina, etc.). Ataques com esta "
 "arma são aprimorados. Se seu voto for quebrado, você nunca mais poderá usar aquele "
@@ -5109,19 +5210,21 @@ msgstr ""
 
 #: app/static/json/backgrounds/hexenbane.json:142
 msgid ""
-"Charity. Once per day, you can shrug off a Fatigue. If your vow is ever broken, you "
-"permanently lose one inventory slot."
+"**Charity**. Once per day, you can shrug off a **Fatigue**. If your vow "
+"is ever broken, you permanently lose one inventory slot."
 msgstr ""
-"Caridade. Uma vez por dia, você pode se livrar de uma Fadiga. Se seu voto for "
-"quebrado, você perde permanentemente um espaço de inventário."
+"Caridade. Uma vez por dia, você pode se livrar de uma **Fadiga**. Se seu "
+"voto for quebrado, você perde permanentemente um espaço de inventário."
 
 #: app/static/json/backgrounds/hexenbane.json:146
 msgid ""
-"Valor. The first time you inflict Critical Damage, you receive +d4 HP, returning to "
-"the previous limit at the end of combat. If your vow is broken, you die."
+"**Valor**. The first time you inflict **Critical Damage**, you receive "
+"+d4 HP, returning to the previous limit at the end of combat. If your vow"
+" is broken, you die."
 msgstr ""
-"Bravura. Na primeira vez que você inflige Dano Crítico, você recebe +d4 HP, retornando "
-"ao limite anterior no fim do combate. Se seu voto for quebrado, você morre."
+"Bravura. Na primeira vez que você inflige **Dano Crítico**, você recebe "
+"+d4 HP, retornando ao limite anterior no fim do combate. Se seu voto for "
+"quebrado, você morre."
 
 #: app/static/json/backgrounds/jongleur.json:4
 msgid ""
@@ -5157,11 +5260,11 @@ msgstr "O que aconteceu na sua apresentação final?"
 
 #: app/static/json/backgrounds/jongleur.json:51
 msgid ""
-"Despite your training in the deadly arts, an actor died and you were blamed. Take a "
-"light-weight Rapier (d6) and a false identity."
+"Despite your training in the deadly arts, an actor died and you were "
+"blamed. Take a light-weight **Rapier** (d6) and a false identity."
 msgstr ""
-"Apesar do seu treinamento nas artes mortais, um ator morreu e você foi culpado. Pegue "
-"um Florete leve (d6) e uma identidade falsa."
+"Apesar do seu treinamento nas artes mortais, um ator morreu e você foi "
+"culpado. Pegue um **Florete** leve (d6) e uma identidade falsa."
 
 #: app/static/json/backgrounds/jongleur.json:54
 #: app/static/json/backgrounds/rill-runner.json:117
@@ -5170,12 +5273,13 @@ msgstr "Florete"
 
 #: app/static/json/backgrounds/jongleur.json:60
 msgid ""
-"The crowd loved your catchy tune about a noble and his romantic failings. The noble in "
-"question, not so much. Take the Read Mind Spellbook and a warrant for your arrest."
+"The crowd loved your catchy tune about a noble and his romantic failings."
+" The noble in question, not so much. Take the _Read Mind_ **Spellbook** "
+"and a warrant for your arrest."
 msgstr ""
-"A multidão adorou sua melodia cativante sobre um nobre e suas falhas românticas. O "
-"nobre em questão, nem tanto. Pegue o Livro de Feitiços (Ler Mente) e um mandado de "
-"prisão."
+"A multidão adorou sua melodia cativante sobre um nobre e suas falhas "
+"românticas. O nobre em questão, nem tanto. Pegue o Livro de Feitiços "
+"(_Ler Mente_) e um mandado de prisão."
 
 #: app/static/json/backgrounds/jongleur.json:63
 msgid "Read Mind Spellbook"
@@ -5191,13 +5295,15 @@ msgstr ""
 
 #: app/static/json/backgrounds/jongleur.json:70
 msgid ""
-"Your debut composition reduced the audience to a gibbering mess, murmuring of bright "
-"creatures descending from the night sky. Later you noticed that the notes resembled "
-"stellar constellations. Take a Book On Astronomy and a lot of questions."
+"Your debut composition reduced the audience to a gibbering mess, "
+"murmuring of bright creatures descending from the night sky. Later you "
+"noticed that the notes resembled stellar constellations. Take a **Book On"
+" Astronomy** and a lot of questions."
 msgstr ""
-"Sua composição de estreia reduziu o público a uma confusão balbuciante, murmúrios de "
-"criaturas brilhantes descendo do céu noturno. Mais tarde, você notou que as notas "
-"lembravam constelações estelares. Pegue um Livro sobre Astronomia e muitas perguntas."
+"Sua composição de estreia reduziu o público a uma confusão balbuciante, "
+"murmúrios de criaturas brilhantes descendo do céu noturno. Mais tarde, "
+"você notou que as notas lembravam constelações estelares. Pegue um "
+"**Livro sobre Astronomia** e muitas perguntas."
 
 #: app/static/json/backgrounds/jongleur.json:73
 msgid "Book On Astronomy"
@@ -5205,13 +5311,15 @@ msgstr "Livro sobre Astronomia"
 
 #: app/static/json/backgrounds/jongleur.json:79
 msgid ""
-"You mocked a forgotten trickster god and were cursed for it. You speak only in perfect "
-"rhyme. Ironically, this has only made you more popular among your peers. Take a "
-"Thesaurus (20gp). Without it, you are deprived."
+"You mocked a forgotten trickster god and were cursed for it. You speak "
+"only in perfect rhyme. Ironically, this has only made you more popular "
+"among your peers. Take a **Thesaurus** (20gp). Without it, you are "
+"_deprived_."
 msgstr ""
-"Você zombou de um deus trapaceiro esquecido e foi amaldiçoado por isso. Você fala "
-"apenas em rima perfeita. Ironicamente, isso só o tornou mais popular entre seus pares. "
-"Pegue um Dicionário de sinônimos (20gp). Sem ele, você fica em exaustão."
+"Você zombou de um deus trapaceiro esquecido e foi amaldiçoado por isso. "
+"Você fala apenas em rima perfeita. Ironicamente, isso só o tornou mais "
+"popular entre seus pares. Pegue um **Dicionário de sinônimos** (20gp). "
+"Sem ele, você fica _em exaustão_."
 
 #: app/static/json/backgrounds/jongleur.json:82
 msgid "Thesaurus"
@@ -5223,12 +5331,13 @@ msgstr "Vale 20gp. Sem isso você fica em exaustão."
 
 #: app/static/json/backgrounds/jongleur.json:89
 msgid ""
-"You were scarred in an on-stage accident. The crowd cheered, thinking it was part of "
-"the act. Take well-worn Stage Mail (1 Armor), a memorable scar, and a fear of applause."
+"You were scarred in an on-stage accident. The crowd cheered, thinking it "
+"was part of the act. Take well-worn **Stage Mail** (1 Armor), a memorable"
+" scar, and a fear of applause."
 msgstr ""
-"Você ficou marcado em um acidente no palco. A multidão aplaudiu, pensando que era "
-"parte do ato. Pegue uma Malha de Palco (Armadura 1) bem usada, uma cicatriz memorável "
-"e um medo de aplausos."
+"Você ficou marcado em um acidente no palco. A multidão aplaudiu, pensando"
+" que era parte do ato. Pegue uma **Malha de Palco** (Armadura 1) bem "
+"usada, uma cicatriz memorável e um medo de aplausos."
 
 #: app/static/json/backgrounds/jongleur.json:92
 msgid "Stage Mail"
@@ -5236,14 +5345,15 @@ msgstr "Malha de Palco"
 
 #: app/static/json/backgrounds/jongleur.json:98
 msgid ""
-"Your respectable puppeteering skills were matched only by your mimicry. You were so "
-"good you were branded a witch (literally) and banished. Take an Uncanny Hand-Puppet "
-"and a Rabbit Skull (petty) that protects against charms."
+"Your respectable puppeteering skills were matched only by your mimicry. "
+"You were so good you were branded a witch (literally) and banished. Take "
+"an **Uncanny Hand-Puppet** and a **Rabbit Skull** (_petty_) that protects"
+" against charms."
 msgstr ""
-"Suas respeitáveis ​​habilidades de marionetista eram equiparadas apenas por sua "
-"imitação. Você era tão boa que foi marcada como bruxa (literalmente) e banida. Pegue "
-"um Fantoche de mão estranho e uma Crânio de Coelho (trivial) que protege contra "
-"feitiços."
+"Suas respeitáveis ​​habilidades de marionetista eram equiparadas apenas "
+"por sua imitação. Você era tão boa que foi marcada como bruxa "
+"(literalmente) e banida. Pegue um **Fantoche de mão estranho** e uma "
+"**Crânio de Coelho** (trivial) que protege contra feitiços."
 
 #: app/static/json/backgrounds/jongleur.json:101
 msgid "Uncanny Hand-Puppet"
@@ -5263,10 +5373,11 @@ msgstr "Que bugiganga você não conseguiu deixar para trás?"
 
 #: app/static/json/backgrounds/jongleur.json:117
 msgid ""
-"False Cuffs: Comfortable, realistic-looking cuffs. Only you know the trick to get out "
-"of them."
+"**False Cuffs**: Comfortable, realistic-looking cuffs. Only you know the "
+"trick to get out of them."
 msgstr ""
-"Algemas Falsas: Algemas confortáveis ​​e realistas. Só você sabe o truque para tirá-las."
+"**Algemas Falsas**: Algemas confortáveis ​​e realistas. Só você sabe o "
+"truque para tirá-las."
 
 #: app/static/json/backgrounds/jongleur.json:120
 msgid "False Cuffs"
@@ -5278,11 +5389,11 @@ msgstr "Algemas confortáveis ​​e realistas. Só você sabe o truque para ti
 
 #: app/static/json/backgrounds/jongleur.json:127
 msgid ""
-"Pocket Theatre: A set of small puppets and a folding stage. Good for quick "
-"distractions."
+"**Pocket Theatre**: A set of small puppets and a folding stage. Good for "
+"quick distractions."
 msgstr ""
-"Teatro de bolso: Um conjunto de pequenos bonecos e um palco dobrável. Bom para "
-"distrações rápidas."
+"**Teatro de bolso**: Um conjunto de pequenos bonecos e um palco dobrável."
+" Bom para distrações rápidas."
 
 #: app/static/json/backgrounds/jongleur.json:130
 msgid "Pocket Theatre"
@@ -5295,11 +5406,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/jongleur.json:137
 msgid ""
-"Ghost Violin: A dark-grey violin that plays a haunting tune, mirrored by an invisible, "
-"distant twin."
+"**Ghost Violin**: A dark-grey violin that plays a haunting tune, mirrored"
+" by an invisible, distant twin."
 msgstr ""
-"Violino Fantasma: Um violino cinza-escuro que toca uma melodia assustadora, espelhada "
-"por um gêmeo invisível e distante."
+"**Violino Fantasma**: Um violino cinza-escuro que toca uma melodia "
+"assustadora, espelhada por um gêmeo invisível e distante."
 
 #: app/static/json/backgrounds/jongleur.json:140
 msgid "Ghost Violin"
@@ -5314,11 +5425,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/jongleur.json:147
 msgid ""
-"Tragic Tales: Banned in proper company, this book becomes less bawdy and more "
-"harrowing towards the end. Worth 100gp."
+"**Tragic Tales**: Banned in proper company, this book becomes less bawdy "
+"and more harrowing towards the end. Worth **100gp**."
 msgstr ""
-"Contos Trágicos: Banido em companhia adequada, este livro se torna menos obsceno e "
-"mais angustiante em direção ao fim. Vale 100gp."
+"**Contos Trágicos**: Banido em companhia adequada, este livro se torna "
+"menos obsceno e mais angustiante em direção ao fim. Vale **100gp**."
 
 #: app/static/json/backgrounds/jongleur.json:150
 msgid "Tragic Tales"
@@ -5334,11 +5445,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/jongleur.json:157
 msgid ""
-"Mythos Mask: A plaster mask that allows one to take on a monster's countenance. Once "
-"it comes off, add a Fatigue."
+"**Mythos Mask**: A plaster mask that allows one to take on a monster's "
+"countenance. Once it comes off, add a **Fatigue**."
 msgstr ""
-"Máscara de Mythos: Uma máscara de gesso que permite que alguém assuma a aparência de "
-"um monstro. Depois que ela sai, adicione uma Fadiga."
+"**Máscara de Mythos**: Uma máscara de gesso que permite que alguém assuma"
+" a aparência de um monstro. Depois que ela sai, adicione uma **Fadiga**."
 
 #: app/static/json/backgrounds/jongleur.json:160
 msgid "Mythos Mask"
@@ -5354,11 +5465,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/jongleur.json:167
 msgid ""
-"Rebreak Glass: A wine flute that can be broken multiple times, reforming after 24 "
-"hours. Makes a really loud noise."
+"**Rebreak Glass**: A wine flute that can be broken multiple times, "
+"reforming after 24 hours. Makes a really loud noise."
 msgstr ""
-"Taça Requebrada: Uma taça de vinho que pode ser quebrada várias vezes, reformando-se "
-"após 24 horas. Faz um barulho muito alto."
+"**Taça Requebrada**: Uma taça de vinho que pode ser quebrada várias "
+"vezes, reformando-se após 24 horas. Faz um barulho muito alto."
 
 #: app/static/json/backgrounds/jongleur.json:170
 msgid "Rebreak Glass"
@@ -5412,8 +5523,9 @@ msgstr ""
 
 #: app/static/json/backgrounds/kettlewright.json:45
 msgid ""
-"You deal in home goods and tools, hawking your wares to townspeople across the lands. "
-"Take 20gp worth of items from the gear table. You are fluent in the Traveler's Cant."
+"You deal in home goods and tools, hawking your wares to townspeople "
+"across the lands. Take 20gp worth of items from the gear table. You are "
+"fluent in the _Traveler's Cant_."
 msgstr ""
 "Você negocia com artigos para casa e ferramentas, vendendo suas mercadorias para os "
 "moradores das cidades por todas as terras. Pegue 20gp em itens da mesa de "
@@ -5426,13 +5538,14 @@ msgstr "tabela_de_engrenagens"
 
 #: app/static/json/backgrounds/kettlewright.json:50
 msgid ""
-"You were a military smelter, before peace destroyed your livelihood. Take a smelting "
-"hammer (d10, bulky) and a tin helm (+1 Armor). Given time and adequate materials, you "
-"can repair armor."
+"You were a military smelter, before peace destroyed your livelihood. Take"
+" a **smelting hammer** (d10, _bulky_) and a **tin helm** (+1 Armor). "
+"Given time and adequate materials, you can repair armor."
 msgstr ""
-"Você era um fundidor militar, antes que a paz destruísse seu sustento. Pegue um "
-"Martelo de fundição (d10, volumoso) e um Capacete de Lata (+1 Armadura). Com tempo e "
-"materiais adequados, você pode consertar armaduras."
+"Você era um fundidor militar, antes que a paz destruísse seu sustento. "
+"Pegue um **Martelo de fundição** (d10, _volumoso_) e um **Capacete de "
+"Lata** (+1 Armadura). Com tempo e materiais adequados, você pode "
+"consertar armaduras."
 
 #: app/static/json/backgrounds/kettlewright.json:53
 msgid "Smelting Hammer"
@@ -5448,11 +5561,13 @@ msgstr "Capacete de lata"
 
 #: app/static/json/backgrounds/kettlewright.json:64
 msgid ""
-"You sell rare and quality items to monasteries and nobles alike. Take a Spyglass, a "
-"Necklace (petty) worth 20gp, and a Scroll of Mirrorwalk (petty)."
+"You sell rare and quality items to monasteries and nobles alike. Take a "
+"**Spyglass**, a **Necklace** (_petty_) worth 20gp, and a **Scroll** of "
+"Mirrorwalk (petty)."
 msgstr ""
-"Você vende itens raros e de qualidade para monastérios e nobres. Pegue uma Luneta, um "
-"Colar (trivial) que vale 20gp e um Pergaminho de Caminhada Espelhada (trivial)."
+"Você vende itens raros e de qualidade para monastérios e nobres. Pegue "
+"uma **Luneta**, um **Colar** (trivial) que vale 20gp e um Pergaminho de "
+"Caminhada Espelhada (trivial)."
 
 #: app/static/json/backgrounds/kettlewright.json:67
 #: app/static/json/backgrounds/outrider.json:43
@@ -5479,13 +5594,14 @@ msgstr ""
 
 #: app/static/json/backgrounds/kettlewright.json:83
 msgid ""
-"You offer protection as a service, quietly watching for threats as money exchanges "
-"hands. You start with +d4 HP, and carry a Long Sword (d10, bulky) and a Gambeson (+1 "
-"Armor)."
+"You offer protection as a service, quietly watching for threats as money "
+"exchanges hands. You start with **+d4 HP**, and carry a **Long Sword** "
+"(d10, _bulky_) and a **Gambeson** (+1 Armor)."
 msgstr ""
-"Você oferece proteção como um serviço, observando silenciosamente as ameaças enquanto "
-"o dinheiro troca de mãos. Você começa com +d4 PV e carrega uma Espada Longa (d10, "
-"volumosa) e um Gambesão (+1 Armadura)."
+"Você oferece proteção como um serviço, observando silenciosamente as "
+"ameaças enquanto o dinheiro troca de mãos. Você começa com +d4 PV e "
+"carrega uma **Espada Longa** (d10, volumosa) e um **Gambesão** (+1 "
+"Armadura)."
 
 #: app/static/json/backgrounds/kettlewright.json:86
 #: app/static/json/backgrounds/marchguard.json:34
@@ -5498,13 +5614,13 @@ msgstr "Gambesão"
 
 #: app/static/json/backgrounds/kettlewright.json:96
 msgid ""
-"You scavenge raw tin and iron from battlefields, pulling teeth from still-twitching "
-"corpses. Start with a young Donkey (+4 slots, slow), a Crossbow (d8 damage, bulky), "
-"and a Saw (d6)."
+"You scavenge raw tin and iron from battlefields, pulling teeth from "
+"still-twitching corpses. Start with a young **Donkey** (+4 slots, slow), "
+"a **Crossbow** (d8 damage, _bulky_), and a **Saw** (d6)."
 msgstr ""
-"Você coleta lata e ferro brutos de campos de batalha, arrancando dentes de cadáveres "
-"ainda se contorcendo. Comece com um Burro jovem (+4 espaços, lento), uma Besta (d8 de "
-"dano, volumosa) e uma Serra (d6)."
+"Você coleta lata e ferro brutos de campos de batalha, arrancando dentes "
+"de cadáveres ainda se contorcendo. Comece com um Burro jovem (+4 espaços,"
+" lento), uma **Besta** (d8 de dano, volumosa) e uma **Serra** (d6)."
 
 #: app/static/json/backgrounds/kettlewright.json:103
 msgid "Saw"
@@ -5516,11 +5632,13 @@ msgstr "O que nunca deixa de tirar você de problemas?"
 
 #: app/static/json/backgrounds/kettlewright.json:120
 msgid ""
-"Fire Eggs: Six small pellets made of sea salt, wood, and crockery-dust. They explode "
-"at low heat (d8, blast) but the flames dissipate quickly."
+"**Fire Eggs**: Six small pellets made of sea salt, wood, and crockery-"
+"dust. They explode at low heat (d8, _blast_) but the flames dissipate "
+"quickly."
 msgstr ""
-"Ovos de Fogo: Seis pequenas pelotas feitas de sal marinho, madeira e pó de louça. Elas "
-"explodem em fogo baixo (d8, explosão), mas as chamas se dissipam rapidamente."
+"**Ovos de Fogo**: Seis pequenas pelotas feitas de sal marinho, madeira e "
+"pó de louça. Elas explodem em fogo baixo (d8, _explosão_), mas as chamas "
+"se dissipam rapidamente."
 
 #: app/static/json/backgrounds/kettlewright.json:123
 msgid "Fire Eggs"
@@ -5535,8 +5653,8 @@ msgstr ""
 "fogo baixo, mas as chamas se dissipam rapidamente."
 
 #: app/static/json/backgrounds/kettlewright.json:130
-msgid "Black Tar: Versatile: both sticky and highly flammable. 3 uses."
-msgstr "Alcatrão preto: Versátil: pegajoso e altamente inflamável. 3 usos."
+msgid "**Black Tar**: Versatile: both sticky and highly flammable. 3 uses."
+msgstr "**Alcatrão preto**: Versátil: pegajoso e altamente inflamável. 3 usos."
 
 #: app/static/json/backgrounds/kettlewright.json:133
 msgid "Black Tar"
@@ -5548,11 +5666,11 @@ msgstr "Versátil: pegajoso e altamente inflamável."
 
 #: app/static/json/backgrounds/kettlewright.json:141
 msgid ""
-"Spiked Boots: Cracks heads (d8) as easily as it does ice and muck. Travel is also a "
-"bit slower, but easier."
+"**Spiked Boots**: Cracks heads (d8) as easily as it does ice and muck. "
+"Travel is also a bit slower, but easier."
 msgstr ""
-"Botas com Pontas: Quebra cabeças (d8) tão facilmente quanto gelo e lama. Viajar também "
-"é um pouco mais lento, mas mais fácil."
+"**Botas com Pontas**: Quebra cabeças (d8) tão facilmente quanto gelo e "
+"lama. Viajar também é um pouco mais lento, mas mais fácil."
 
 #: app/static/json/backgrounds/kettlewright.json:144
 msgid "Spiked Boots"
@@ -5567,9 +5685,10 @@ msgstr ""
 "lento, mas mais fácil."
 
 #: app/static/json/backgrounds/kettlewright.json:151
-msgid "Tinker's Paste: Seals shut any fist-sized opening. 3 uses."
+msgid "**Tinker's Paste**: Seals shut any fist-sized opening. 3 uses."
 msgstr ""
-"Pasta de Funileiro: Sela e fecha qualquer abertura do tamanho de um punho. 3 usos."
+"**Pasta de Funileiro**: Sela e fecha qualquer abertura do tamanho de um "
+"punho. 3 usos."
 
 #: app/static/json/backgrounds/kettlewright.json:154
 msgid "Tinker's Paste"
@@ -5581,11 +5700,12 @@ msgstr "As vedações fecham qualquer abertura do tamanho de um punho."
 
 #: app/static/json/backgrounds/kettlewright.json:162
 msgid ""
-"Fireworks: A dazzling albeit dangerous display. Enough explosive material to blow off "
-"a finger or three. 2 uses remain."
+"**Fireworks**: A dazzling albeit dangerous display. Enough explosive "
+"material to blow off a finger or three. 2 uses remain."
 msgstr ""
-"Fogos de artifício: Uma exibição deslumbrante, embora perigosa. Material explosivo "
-"suficiente para explodir um dedo ou três. Restam 2 usos."
+"**Fogos de artifício**: Uma exibição deslumbrante, embora perigosa. "
+"Material explosivo suficiente para explodir um dedo ou três. Restam 2 "
+"usos."
 
 #: app/static/json/backgrounds/kettlewright.json:165
 msgid "Fireworks"
@@ -5601,12 +5721,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/kettlewright.json:173
 msgid ""
-"A clever pet, small enough to hide in your pack (bulky), but strong enough to scare "
-"off smaller predators. Requires one Ration a day, and it must be meat."
+"A clever pet, small enough to hide in your pack (_bulky_), but strong "
+"enough to scare off smaller predators. Requires one **Ration** a day, and"
+" it must be meat."
 msgstr ""
-"Um animal de estimação inteligente, pequeno o suficiente para se esconder na sua "
-"mochila (volumoso), mas forte o suficiente para assustar predadores menores. Requer "
-"uma Ração por dia, e deve ser carne."
+"Um animal de estimação inteligente, pequeno o suficiente para se esconder"
+" na sua mochila (_volumoso_), mas forte o suficiente para assustar "
+"predadores menores. Requer uma Ração por dia, e deve ser carne."
 
 #: app/static/json/backgrounds/kettlewright.json:176
 msgid "Carrion Cat"
@@ -5671,8 +5792,8 @@ msgstr ""
 
 #: app/static/json/backgrounds/marchguard.json:49
 msgid ""
-"As a convict, the Oath was simply a means of avoiding punishment. Take a set of "
-"Lockpicks and the key (petty) to a safehouse."
+"As a convict, the Oath was simply a means of avoiding punishment. Take a "
+"set of **Lockpicks** and the key (_petty_) to a safehouse."
 msgstr ""
 "Como um condenado, o Juramento era simplesmente um meio de evitar punição. Pegue uma "
 "Gazua e uma chave (trivial) para um esconderijo."
@@ -5683,11 +5804,12 @@ msgstr "Chave do Esconderijo"
 
 #: app/static/json/backgrounds/marchguard.json:62
 msgid ""
-"Noble-born, you joined to escape family trouble. Take a Goosefelt Tarp (fits two) that "
-"you stole before leaving home."
+"Noble-born, you joined to escape family trouble. Take a **Goosefelt "
+"Tarp** (fits two) that you stole before leaving home."
 msgstr ""
-"De nascimento nobre, você se juntou para escapar de problemas familiares. Pegue uma "
-"lona de feltro de ganso (serve dois) que você roubou antes de sair de casa."
+"De nascimento nobre, você se juntou para escapar de problemas familiares."
+" Pegue uma **lona de feltro de ganso** (serve dois) que você roubou antes"
+" de sair de casa."
 
 #: app/static/json/backgrounds/marchguard.json:65
 msgid "Goosefelt Tarp"
@@ -5699,11 +5821,13 @@ msgstr "Serve para 2."
 
 #: app/static/json/backgrounds/marchguard.json:72
 msgid ""
-"When your family lost everything, you took the Oath to avoid becoming a burden. Take "
-"extra Rations (3 uses) and a brace of Throwing Knives (d6)."
+"When your family lost everything, you took the Oath to avoid becoming a "
+"burden. Take extra **Rations** (3 uses) and a brace of **Throwing "
+"Knives** (d6)."
 msgstr ""
-"Quando sua família perdeu tudo, você fez o Juramento para evitar se tornar um fardo. "
-"Leve Rações extras (3 usos) e um par de Facas de Arremesso (d6)."
+"Quando sua família perdeu tudo, você fez o Juramento para evitar se "
+"tornar um fardo. Leve **Rações** extras (3 usos) e um par de **Facas de "
+"Arremesso** (d6)."
 
 #: app/static/json/backgrounds/marchguard.json:81
 msgid "Throwing Knives"
@@ -5711,12 +5835,13 @@ msgstr "Facas de arremesso"
 
 #: app/static/json/backgrounds/marchguard.json:87
 msgid ""
-"Your life was saved by a member of the Marchguard, and you were inspired to join their "
-"ranks. Take a Snare Trap and a Sketchbook filled with detailed drawings."
+"Your life was saved by a member of the **Marchguard**, and you were "
+"inspired to join their ranks. Take a **Snare Trap** and a **Sketchbook** "
+"filled with detailed drawings."
 msgstr ""
-"Sua vida foi salva por um membro da Guarda, e você foi inspirado a se juntar às "
-"fileiras deles. Pegue uma Armadilha de laço e um Caderno de Esboços cheio de desenhos "
-"detalhados."
+"Sua vida foi salva por um membro da Guarda, e você foi inspirado a se "
+"juntar às fileiras deles. Pegue uma **Armadilha de laço** e um **Caderno "
+"de Esboços** cheio de desenhos detalhados."
 
 #: app/static/json/backgrounds/marchguard.json:90
 msgid "Snare Trap"
@@ -5728,12 +5853,13 @@ msgstr "Caderno de esboços"
 
 #: app/static/json/backgrounds/marchguard.json:100
 msgid ""
-"You were in a dark place and decided that your life needed a little direction. You're "
-"still not so sure it was the right choice. Take an Oilskin Coat and Mapping Paper."
+"You were in a dark place and decided that your life needed a little "
+"direction. You're still not so sure it was the right choice. Take an "
+"**Oilskin Coat** and **Mapping Paper**."
 msgstr ""
-"Você estava em um lugar escuro e decidiu que sua vida precisava de um pouco de "
-"direção. Você ainda não tem tanta certeza de que foi a escolha certa. Pegue um Casaco "
-"de pele de oleado e Papel para Mapas."
+"Você estava em um lugar escuro e decidiu que sua vida precisava de um "
+"pouco de direção. Você ainda não tem tanta certeza de que foi a escolha "
+"certa. Pegue um **Casaco de pele de oleado** e **Papel para Mapas**."
 
 #: app/static/json/backgrounds/marchguard.json:103
 msgid "Oilskin Coat"
@@ -5749,11 +5875,11 @@ msgstr "O que você carrega como prova do seu juramento?"
 
 #: app/static/json/backgrounds/marchguard.json:118
 msgid ""
-"Impressive Pin: A metal badge of honor from the Guard. It can open doors but leaves a "
-"trail. Petty."
+"**Impressive Pin**: A metal badge of honor from the Guard. It can open "
+"doors but leaves a trail. _Petty_."
 msgstr ""
-"Distintivo Distinto: Um distintivo de honra de metal da Guarda. Pode abrir portas, mas "
-"deixa um rastro. Minúsculo."
+"**Distintivo Distinto**: Um distintivo de honra de metal da Guarda. Pode "
+"abrir portas, mas deixa um rastro. _Minúsculo_."
 
 #: app/static/json/backgrounds/marchguard.json:121
 msgid "Impressive Pin"
@@ -5766,8 +5892,8 @@ msgstr ""
 
 #: app/static/json/backgrounds/marchguard.json:128
 msgid ""
-"Oath Compass: Points not towards North, but instead to the nearest member of the "
-"Guard. It also lets you know when they're getting close."
+"**Oath Compass**: Points not towards North, but instead to the nearest "
+"member of the Guard. It also lets you know when they're getting close."
 msgstr ""
 "Bússola do Juramento: Não aponta para o Norte, mas sim para o membro mais próximo da "
 "Guarda. Ela também permite que você saiba quando eles estão se aproximando."
@@ -5778,11 +5904,11 @@ msgstr "Compasso do Juramento"
 
 #: app/static/json/backgrounds/marchguard.json:137
 msgid ""
-"Pullstones: Two jet-black stones. When separated, the stones will always roll toward "
-"one another."
+"**Pullstones**: Two jet-black stones. When separated, the stones will "
+"always roll toward one another."
 msgstr ""
-"Pedras Puxadoras: Duas pedras pretas como azeviche. Quando separadas, as pedras sempre "
-"rolarão uma em direção à outra."
+"**Pedras Puxadoras**: Duas pedras pretas como azeviche. Quando separadas,"
+" as pedras sempre rolarão uma em direção à outra."
 
 #: app/static/json/backgrounds/marchguard.json:140
 msgid "Pullstones"
@@ -5797,11 +5923,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/marchguard.json:147
 msgid ""
-"Fireflask: Highly alcoholic, yet strangely delicious. When thrown, it creates a wall "
-"of flames 10ft high that burns out after a few minutes. 1 use."
+"**Fireflask**: Highly alcoholic, yet strangely delicious. When thrown, it"
+" creates a wall of flames 10ft high that burns out after a few minutes. 1"
+" use."
 msgstr ""
-"Frasco de fogo: Altamente alcoólico, mas estranhamente delicioso. Quando jogado, ele "
-"cria uma parede de chamas de 3 metros de altura que queima após alguns minutos. 1 uso."
+"**Frasco de fogo**: Altamente alcoólico, mas estranhamente delicioso. "
+"Quando jogado, ele cria uma parede de chamas de 3 metros de altura que "
+"queima após alguns minutos. 1 uso."
 
 #: app/static/json/backgrounds/marchguard.json:150
 msgid "Fireflask"
@@ -5817,13 +5945,14 @@ msgstr ""
 
 #: app/static/json/backgrounds/marchguard.json:157
 msgid ""
-"Pain Band: Touch an injured creature to transfer their wounds to you. (Exchange their "
-"lost STR with your own.) Recharge: Wear the ring while in perfect health. You will "
-"lose 1 STR, permanently. Petty."
+"**Pain Band**: Touch an injured creature to transfer their wounds to you."
+" (Exchange their lost STR with your own.) **Recharge**: Wear the ring "
+"while in perfect health. You will lose 1 STR, permanently. _Petty_."
 msgstr ""
-"Anel da Dor: Toque em uma criatura ferida para transferir os ferimentos dela para "
-"você. (Troque o FOR perdido dela pelo seu.) Recarga: Use o anel enquanto estiver com "
-"saúde perfeita. Você perderá 1 FOR, permanentemente. Minúsculo."
+"**Anel da Dor**: Toque em uma criatura ferida para transferir os "
+"ferimentos dela para você. (Troque o FOR perdido dela pelo seu.) Recarga:"
+" Use o anel enquanto estiver com saúde perfeita. Você perderá 1 FOR, "
+"permanentemente. _Minúsculo_."
 
 #: app/static/json/backgrounds/marchguard.json:160
 msgid "Pain Band"
@@ -5841,11 +5970,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/marchguard.json:169
 msgid ""
-"Poacher's Woe: Strongly-scented arrows (3 uses). The scent is powerful enough to track "
-"with ease."
+"**Poacher's Woe**: Strongly-scented arrows (3 uses). The scent is "
+"powerful enough to track with ease."
 msgstr ""
-"Flechas Aromáticas: Flechas fortemente perfumadas (3 usos). O cheiro é poderoso o "
-"suficiente para rastrear com facilidade."
+"**Flechas Aromáticas**: Flechas fortemente perfumadas (3 usos). O cheiro "
+"é poderoso o suficiente para rastrear com facilidade."
 
 #: app/static/json/backgrounds/marchguard.json:172
 msgid "Poacher's Woe"
@@ -5885,21 +6014,24 @@ msgstr "Como sua fraude foi exposta?"
 
 #: app/static/json/backgrounds/mountebank.json:55
 msgid ""
-"Your 'patients' kept reporting miraculous recoveries, despite your lack of training. "
-"Start with Bandages (3 uses) and a knack for healing."
+"Your 'patients' kept reporting miraculous recoveries, despite your lack "
+"of training. Start with **Bandages** (3 uses) and a knack for healing."
 msgstr ""
-"Seus 'pacientes' continuaram relatando recuperações milagrosas, apesar de sua falta de "
-"treinamento. Comece com Bandagens (3 usos) e um talento para cura."
+"Seus 'pacientes' continuaram relatando recuperações milagrosas, apesar de"
+" sua falta de treinamento. Comece com **Bandagens** (3 usos) e um talento"
+" para cura."
 
 #: app/static/json/backgrounds/mountebank.json:65
 msgid ""
-"After seducing a wealthy patron, their family hired a criminal gang to retrieve you. "
-"You got away and need to lay low. Start with Beauty Cream, 2 uses. Apply to appear "
-"irresistibly beautiful for the next 12 hours."
+"After seducing a wealthy patron, their family hired a criminal gang to "
+"retrieve you. You got away and need to lay low. Start with **Beauty "
+"Cream**, 2 uses. Apply to appear irresistibly beautiful for the next 12 "
+"hours."
 msgstr ""
-"Depois de seduzir um cliente rico, a família dele contratou uma gangue criminosa para "
-"te resgatar. Você escapou e precisa se esconder. Comece com o Creme de Beleza, 2 usos. "
-"Aplique para ficar irresistivelmente lindo(a) pelas próximas 12 horas."
+"Depois de seduzir um cliente rico, a família dele contratou uma gangue "
+"criminosa para te resgatar. Você escapou e precisa se esconder. Comece "
+"com o **Creme de Beleza**, 2 usos. Aplique para ficar irresistivelmente "
+"lindo(a) pelas próximas 12 horas."
 
 #: app/static/json/backgrounds/mountebank.json:68
 msgid "Beauty Cream"
@@ -5907,13 +6039,14 @@ msgstr "Creme de beleza"
 
 #: app/static/json/backgrounds/mountebank.json:75
 msgid ""
-"You were a peddler of fake prophesies, but when one turned out to be true, it drew "
-"unwanted attention. Roll on the Omens table, but keep the result to yourself. Start "
-"with a concealable Knife (d6, petty)."
+"You were a peddler of fake prophesies, but when one turned out to be "
+"true, it drew unwanted attention. Roll on the **Omens** table, but keep "
+"the result to yourself. Start with a concealable **Knife** (d6, _petty_)."
 msgstr ""
-"Você era um vendedor ambulante de falsas profecias, mas quando uma delas se revelou "
-"verdadeira, atraiu atenção indesejada. Role na tabela de Presságios, mas guarde o "
-"resultado para si. Comece com uma Faca ocultável (d6, trivial)."
+"Você era um vendedor ambulante de falsas profecias, mas quando uma delas "
+"se revelou verdadeira, atraiu atenção indesejada. Role na tabela de "
+"**Presságios**, mas guarde o resultado para si. Comece com uma **Faca** "
+"ocultável (d6, trivial)."
 
 #: app/static/json/backgrounds/mountebank.json:78
 msgid "Knife"
@@ -5925,13 +6058,13 @@ msgstr "Ocultável."
 
 #: app/static/json/backgrounds/mountebank.json:85
 msgid ""
-"Your latest stunt destroyed a priceless artifact and injured a dozen bystanders. Start "
-"with a Captain's Uniform (petty), a Ceremonial Sword (harmless, 60gp), and a Bouquet "
-"of Flowers."
+"Your latest stunt destroyed a priceless artifact and injured a dozen "
+"bystanders. Start with a **Captain's Uniform** (_petty_), a **Ceremonial "
+"Sword** (harmless, 60gp), and a **Bouquet of Flowers**."
 msgstr ""
-"Sua última façanha destruiu um artefato inestimável e feriu uma dúzia de espectadores. "
-"Comece com um Uniforme de Capitão (trivial), uma Espada Cerimonial (inofensiva, 60gp) "
-"e um Buquê de Flores."
+"Sua última façanha destruiu um artefato inestimável e feriu uma dúzia de "
+"espectadores. Comece com um **Uniforme de Capitão** (trivial), uma "
+"**Espada Cerimonial** (inofensiva, 60gp) e um **Buquê de Flores**."
 
 #: app/static/json/backgrounds/mountebank.json:88
 msgid "Captain's Uniform"
@@ -5951,9 +6084,9 @@ msgstr "Buquê de flores"
 
 #: app/static/json/backgrounds/mountebank.json:103
 msgid ""
-"You were cursed by a hedgewitch for fooling some innocent village folk. Magic acts "
-"unpredictably in your hands (WIL save to avoid disaster). If you are the target of "
-"magic, the same applies to its wielder."
+"You were cursed by a hedgewitch for fooling some innocent village folk. "
+"Magic acts unpredictably in your hands (_WIL save to avoid disaster_). If"
+" you are the target of magic, the same applies to its wielder."
 msgstr ""
 "Você foi amaldiçoado por uma bruxa por enganar algumas pessoas inocentes da vila. A "
 "magia age de forma imprevisível em suas mãos (salve VON para evitar desastre). Se você "
@@ -5961,9 +6094,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/mountebank.json:107
 msgid ""
-"Your 'seances' with the dead were in actuality a ruse involving a cleverly hidden "
-"spellbook of Auditory Illusion. Inevitably, a patron discovered your secret. Start "
-"with the Spellbook and a bundle of scarves."
+"Your 'seances' with the dead were in actuality a ruse involving a "
+"cleverly hidden spellbook of Auditory Illusion. Inevitably, a patron "
+"discovered your secret. Start with the **Spellbook** and a bundle of "
+"scarves."
 msgstr ""
 "Suas 'sessões' com os mortos eram, na verdade, um estratagema envolvendo um livro de "
 "feitiços de Ilusão Auditiva habilmente escondido. Inevitavelmente, um cliente "
@@ -5987,11 +6121,13 @@ msgstr "Que lembrança sempre poderia identificá-lo?"
 
 #: app/static/json/backgrounds/mountebank.json:122
 msgid ""
-"Royal Crest: Born into royalty, you chose a different life. The Royal Crest grants you "
-"access but also alerts your family of your whereabouts. Petty."
+"**Royal Crest**: Born into royalty, you chose a different life. The Royal"
+" Crest grants you access but also alerts your family of your whereabouts."
+" _Petty_."
 msgstr ""
-"Brasão Real: Nascido na realeza, você escolheu uma vida diferente. O Brasão Real lhe "
-"concede acesso, mas também alerta sua família sobre seu paradeiro. Minúsculo."
+"**Brasão Real**: Nascido na realeza, você escolheu uma vida diferente. O "
+"Brasão Real lhe concede acesso, mas também alerta sua família sobre seu "
+"paradeiro. _Minúsculo_."
 
 #: app/static/json/backgrounds/mountebank.json:125
 msgid "Royal Crest"
@@ -6006,8 +6142,8 @@ msgstr ""
 "acesso, mas também alerta sua família sobre seu paradeiro."
 
 #: app/static/json/backgrounds/mountebank.json:132
-msgid "Miracle Oil: A smelly, slippery concoction. 2 uses."
-msgstr "Óleo milagroso: uma mistura fedorenta e escorregadia. 2 usos."
+msgid "**Miracle Oil**: A smelly, slippery concoction. 2 uses."
+msgstr "**Óleo milagroso**: uma mistura fedorenta e escorregadia. 2 usos."
 
 #: app/static/json/backgrounds/mountebank.json:135
 msgid "Miracle Oil"
@@ -6015,11 +6151,11 @@ msgstr "Óleo Milagroso"
 
 #: app/static/json/backgrounds/mountebank.json:142
 msgid ""
-"Surgeon's Soap: A lye and ash block that makes skin temporarily transparent, revealing "
-"the anatomy within. 4 uses."
+"**Surgeon's Soap**: A lye and ash block that makes skin temporarily "
+"transparent, revealing the anatomy within. 4 uses."
 msgstr ""
-"Sabonete de cirurgião: um bloco de soda cáustica e cinzas que torna a pele "
-"temporariamente transparente, revelando a anatomia interna. 4 usos."
+"**Sabonete de cirurgião**: um bloco de soda cáustica e cinzas que torna a"
+" pele temporariamente transparente, revelando a anatomia interna. 4 usos."
 
 #: app/static/json/backgrounds/mountebank.json:145
 msgid "Surgeon's Soap"
@@ -6027,11 +6163,11 @@ msgstr "Sabonete de cirurgião"
 
 #: app/static/json/backgrounds/mountebank.json:152
 msgid ""
-"Goat Powder: Derived from the placenta of a baby goat. Temporarily cures any "
-"affliction, but symptoms return within hours."
+"**Goat Powder**: Derived from the placenta of a baby goat. Temporarily "
+"cures any affliction, but symptoms return within hours."
 msgstr ""
-"Pó de cabra: derivado da placenta de um cabrito. Cura temporariamente qualquer "
-"aflição, mas os sintomas retornam em poucas horas."
+"**Pó de cabra**: derivado da placenta de um cabrito. Cura temporariamente"
+" qualquer aflição, mas os sintomas retornam em poucas horas."
 
 #: app/static/json/backgrounds/mountebank.json:155
 msgid "Goat Powder"
@@ -6039,11 +6175,11 @@ msgstr "Pó de cabra"
 
 #: app/static/json/backgrounds/mountebank.json:161
 msgid ""
-"Cursed Sapphire: Worth 200gp, it noticeably returns to your pocket shortly after you "
-"spend it. You can't seem to get rid of it."
+"**Cursed Sapphire**: Worth **200gp**, it noticeably returns to your "
+"pocket shortly after you spend it. You can't seem to get rid of it."
 msgstr ""
-"Safira Amaldiçoada: Vale 200gp, ela notavelmente retorna ao seu bolso logo após você "
-"gastá-la. Você não consegue se livrar dela."
+"**Safira Amaldiçoada**: Vale **200gp**, ela notavelmente retorna ao seu "
+"bolso logo após você gastá-la. Você não consegue se livrar dela."
 
 #: app/static/json/backgrounds/mountebank.json:164
 msgid "Cursed Sapphire"
@@ -6051,13 +6187,13 @@ msgstr "Safira Amaldiçoada"
 
 #: app/static/json/backgrounds/mountebank.json:170
 msgid ""
-"Alchemical Tattoo: A dog, cat, or bird that can leave your body on demand. It follows "
-"your commands to the best of its abilities and can pass its injuries (as STR loss) "
-"back onto you. Petty."
+"**Alchemical Tattoo**: A dog, cat, or bird that can leave your body on "
+"demand. It follows your commands to the best of its abilities and can "
+"pass its injuries (_as STR loss_) back onto you. _Petty_."
 msgstr ""
-"Tatuagem Alquímica: Um cão, gato ou pássaro que pode deixar seu corpo sob demanda. Ele "
-"segue seus comandos da melhor maneira possível e pode passar seus ferimentos (como FOR "
-"perda) de volta para você. Minúsculo."
+"**Tatuagem Alquímica**: Um cão, gato ou pássaro que pode deixar seu corpo"
+" sob demanda. Ele segue seus comandos da melhor maneira possível e pode "
+"passar seus ferimentos (como FOR perda) de volta para você. _Minúsculo_."
 
 #: app/static/json/backgrounds/mountebank.json:173
 msgid "Alchemical Tattoo"
@@ -6087,13 +6223,14 @@ msgstr "Que código ou princípio pessoal você defende?"
 
 #: app/static/json/backgrounds/outrider.json:51
 msgid ""
-"No innocent blood: No bystander will come to harm on your watch. Take a Steadymade "
-"Buckler (+1 Armor). While holding this shield, you cannot be moved so long as both "
-"feet are planted on firm ground."
+"**No innocent blood**: No bystander will come to harm on your watch. Take"
+" a **Steadymade Buckler** (+1 Armor). While holding this shield, you "
+"cannot be moved so long as both feet are planted on firm ground."
 msgstr ""
-"Sem sangue inocente: Nenhum espectador será ferido sob sua vigilância. Pegue um "
-"Broquel da Firmeza (+1 Armadura). Enquanto estiver segurando este escudo, você não "
-"pode ser movido enquanto ambos os pés estiverem plantados em solo firme."
+"Sem sangue inocente: Nenhum espectador será ferido sob sua vigilância. "
+"Pegue um **Broquel da Firmeza** (+1 Armadura). Enquanto estiver segurando"
+" este escudo, você não pode ser movido enquanto ambos os pés estiverem "
+"plantados em solo firme."
 
 #: app/static/json/backgrounds/outrider.json:54
 msgid "Steadymade Buckler"
@@ -6109,13 +6246,15 @@ msgstr ""
 
 #: app/static/json/backgrounds/outrider.json:61
 msgid ""
-"Revere the tools of death: Weapons are to be respected and maintained. Take a Wyrmbone "
-"Whetstone. Following a half-hour ritual sharpening, attacks with the weapon are "
-"enhanced until STR damage is dealt."
+"**Revere the tools of death**: Weapons are to be respected and "
+"maintained. Take a **Wyrmbone Whetstone**. Following a half-hour ritual "
+"sharpening, attacks with the weapon are _enhanced_ until STR damage is "
+"dealt."
 msgstr ""
-"Reverencie as ferramentas da morte: As armas devem ser respeitadas e mantidas. Pegue "
-"uma Pedra de Amolar Ancestral. Após um ritual de afiação de meia hora, os ataques com "
-"a arma são aprimorados até que o dano FOR seja causado."
+"Reverencie as ferramentas da morte: As armas devem ser respeitadas e "
+"mantidas. Pegue uma **Pedra de Amolar Ancestral**. Após um ritual de "
+"afiação de meia hora, os ataques com a arma são aprimorados até que o "
+"dano FOR seja causado."
 
 #: app/static/json/backgrounds/outrider.json:64
 msgid "Wyrmbone Whetstone"
@@ -6131,13 +6270,15 @@ msgstr ""
 
 #: app/static/json/backgrounds/outrider.json:71
 msgid ""
-"To the death, always: You never back down from a fight, no matter the odds. Take a "
-"Death-Whistle, 1 charge. Its scream frightens away all who hear it (save WIL or flee). "
-"Recharge: Capture the final breath of a dying warrior."
+"**To the death, always**: You never back down from a fight, no matter the"
+" odds. Take a **Death-Whistle**, 1 charge. Its scream frightens away all "
+"who hear it (save WIL or flee). **Recharge**: Capture the final breath of"
+" a dying warrior."
 msgstr ""
-"Até a morte, sempre: Você nunca recua de uma luta, não importa as probabilidades. "
-"Pegue um Apito da Morte, 1 carga. Seu grito assusta todos que o ouvem (salve VON ou "
-"fuja). Recarregue: Capture o último suspiro de um guerreiro moribundo."
+"Até a morte, sempre: Você nunca recua de uma luta, não importa as "
+"probabilidades. Pegue um **Apito da Morte**, 1 carga. Seu grito assusta "
+"todos que o ouvem (salve VON ou fuja). Recarregue: Capture o último "
+"suspiro de um guerreiro moribundo."
 
 #: app/static/json/backgrounds/outrider.json:74
 msgid "Death-Whistle"
@@ -6153,25 +6294,27 @@ msgstr ""
 
 #: app/static/json/backgrounds/outrider.json:83
 msgid ""
-"Revere the dead: Death is a journey we all take, and it deserves respect. Take an "
-"extra 30gp. You always place two gold pieces on the eyelids of a slain foe. Somehow, "
-"you always find the coin."
+"**Revere the dead**: Death is a journey we all take, and it deserves "
+"respect. Take an extra **30gp**. You always place two gold pieces on the "
+"eyelids of a slain foe. Somehow, you always find the coin."
 msgstr ""
-"Reverencie os mortos: A morte é uma jornada que todos nós fazemos, e ela merece "
-"respeito. Pegue 30gp extras. Você sempre coloca duas peças de ouro nas pálpebras de um "
-"inimigo morto. De alguma forma, você sempre encontra a moeda."
+"Reverencie os mortos: A morte é uma jornada que todos nós fazemos, e ela "
+"merece respeito. Pegue **30gp** extras. Você sempre coloca duas peças de "
+"ouro nas pálpebras de um inimigo morto. De alguma forma, você sempre "
+"encontra a moeda."
 
 #: app/static/json/backgrounds/outrider.json:88
 msgid ""
-"Loyalty to the work: Your word is your bond. Once you've accepted a job, you see it "
-"through to the end. Take a weathered Tally Stick. Once a vow is marked onto its face, "
-"the stick hardens (d8) until it is complete. The stick will snap in half if the vow is "
-"ever broken."
+"**Loyalty to the work**: Your word is your bond. Once you've accepted a "
+"job, you see it through to the end. Take a weathered **Tally Stick**. "
+"Once a vow is marked onto its face, the stick hardens (d8) until it is "
+"complete. The stick will snap in half if the vow is ever broken."
 msgstr ""
-"Lealdade ao trabalho: Sua palavra é seu vínculo. Uma vez que você aceitou um trabalho, "
-"você o vê até o fim. Pegue um Bastão Talhado desgastado. Uma vez que uma promessa é "
-"marcada no bastão, o bastão endurece (d8) até que esteja completa. O bastão se "
-"quebrará ao meio se a promessa for quebrada."
+"Lealdade ao trabalho: Sua palavra é seu vínculo. Uma vez que você aceitou"
+" um trabalho, você o vê até o fim. Pegue um **Bastão Talhado** "
+"desgastado. Uma vez que uma promessa é marcada no bastão, o bastão "
+"endurece (d8) até que esteja completa. O bastão se quebrará ao meio se a "
+"promessa for quebrada."
 
 #: app/static/json/backgrounds/outrider.json:91
 msgid "Tally Stick"
@@ -6188,13 +6331,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/outrider.json:98
 msgid ""
-"Always pay your debts: You always repay what you owe, whether in coin or in kind. You "
-"expect nothing less from all others. Take a Blacked-Out Ledger, then roll a second "
-"time on the Bonds table."
+"**Always pay your debts**: You always repay what you owe, whether in coin"
+" or in kind. You expect nothing less from all others. Take a **Blacked-"
+"Out Ledger**, then roll a second time on the **Bonds** table."
 msgstr ""
-"Sempre pague suas dívidas: Você sempre paga o que deve, seja em moeda ou em espécie. "
-"Você não espera nada menos de todos os outros. Pegue um Caderno de Registros Preto e "
-"role uma segunda vez na tabela Bonds."
+"Sempre pague suas dívidas: Você sempre paga o que deve, seja em moeda ou "
+"em espécie. Você não espera nada menos de todos os outros. Pegue um "
+"**Caderno de Registros Preto** e role uma segunda vez na tabela Bonds."
 
 #: app/static/json/backgrounds/outrider.json:101
 msgid "Blacked-Out Ledger"
@@ -6206,11 +6349,11 @@ msgstr "Qual é a raça do seu cavalo?"
 
 #: app/static/json/backgrounds/outrider.json:112
 msgid ""
-"Heavy Destrier: A beast built for war, an imposing creature. 8 HP, 1 Armor, hooves "
-"(d10+d10), +2 slots."
+"**Heavy Destrier**: A beast built for war, an imposing creature. 8 HP, 1 "
+"Armor, hooves (d10+d10), +2 slots."
 msgstr ""
-"Corsário Pesado: Uma fera construída para a guerra, uma criatura imponente. 8 PV, "
-"Armadura 1, cascos (d10+d10), +2 espaços."
+"**Corsário Pesado**: Uma fera construída para a guerra, uma criatura "
+"imponente. 8 PV, Armadura 1, cascos (d10+d10), +2 espaços."
 
 #: app/static/json/backgrounds/outrider.json:115
 msgid "Heavy Destrier"
@@ -6218,11 +6361,11 @@ msgstr "Corsário Pesado"
 
 #: app/static/json/backgrounds/outrider.json:121
 msgid ""
-"Blacklegged Dandy: Hardy and adaptable. Tough or Perilous terrain are one step easier. "
-"6 HP. +4 slots."
+"**Blacklegged Dandy**: Hardy and adaptable. **Tough** or **Perilous** "
+"terrain are one step easier. 6 HP. +4 slots."
 msgstr ""
-"Dande Perna Preta: Resistente e adaptável. Terrenos difíceis ou perigosos são um passo "
-"mais fáceis. 6 PV. +4 slots."
+"**Dande Perna Preta**: Resistente e adaptável. Terrenos difíceis ou "
+"perigosos são um passo mais fáceis. 6 PV. +4 slots."
 
 #: app/static/json/backgrounds/outrider.json:124
 msgid "Blacklegged Dandy"
@@ -6230,11 +6373,12 @@ msgstr "Dande Perna Preta"
 
 #: app/static/json/backgrounds/outrider.json:130
 msgid ""
-"Rivertooth: Impressively strong, capable of carrying heavy loads. 4 HP. +6 slots (only "
-"+2 slots if carrying two people)."
+"**Rivertooth**: Impressively strong, capable of carrying heavy loads. 4 "
+"HP. +6 slots (only +2 slots if carrying two people)."
 msgstr ""
-"Dente Azul: Impressionantemente forte, capaz de carregar cargas pesadas. 4 PV. +6 "
-"slots (apenas +2 slots se estiver carregando duas pessoas)."
+"**Dente Azul**: Impressionantemente forte, capaz de carregar cargas "
+"pesadas. 4 PV. +6 slots (apenas +2 slots se estiver carregando duas "
+"pessoas)."
 
 #: app/static/json/backgrounds/outrider.json:133
 msgid "Rivertooth"
@@ -6242,11 +6386,11 @@ msgstr "Dente Azul"
 
 #: app/static/json/backgrounds/outrider.json:139
 msgid ""
-"Piebald Cob: Intelligent, it can understand simple commands, and even has an instinct "
-"for danger. 6 HP. +4 slots."
+"**Piebald Cob**: Intelligent, it can understand simple commands, and even"
+" has an instinct for danger. 6 HP. +4 slots."
 msgstr ""
-"Espiga Careca: Inteligente, consegue entender comandos simples e tem até instinto para "
-"o perigo. 6 PV. +4 slots."
+"**Espiga Careca**: Inteligente, consegue entender comandos simples e tem "
+"até instinto para o perigo. 6 PV. +4 slots."
 
 #: app/static/json/backgrounds/outrider.json:142
 msgid "Piebald Cob"
@@ -6254,11 +6398,12 @@ msgstr "Espiga Careca"
 
 #: app/static/json/backgrounds/outrider.json:148
 msgid ""
-"Linden White: Highly trained and agile, it can perform intricate maneuvers in a time "
-"of need (no DEX save to flee). 4 HP. +3 slots."
+"**Linden White**: Highly trained and agile, it can perform intricate "
+"maneuvers in a time of need (no DEX save to flee). 4 HP. +3 slots."
 msgstr ""
-"Tília Branca: Altamente treinado e ágil, ele pode executar manobras complexas em "
-"momentos de necessidade (sem teste de DES para fugir). 4 PV. +3 slots."
+"**Tília Branca**: Altamente treinado e ágil, ele pode executar manobras "
+"complexas em momentos de necessidade (sem teste de DES para fugir). 4 PV."
+" +3 slots."
 
 #: app/static/json/backgrounds/outrider.json:151
 msgid "Linden White"
@@ -6266,10 +6411,11 @@ msgstr "Tília Branca"
 
 #: app/static/json/backgrounds/outrider.json:157
 msgid ""
-"Stray Fogger: Wild but very fast (even in Tough terrain). Rides light. 4 HP. +2 slots."
+"**Stray Fogger**: Wild but very fast (even in **Tough** terrain). Rides "
+"light. 4 HP. +2 slots."
 msgstr ""
-"Sapeiro Perdido: Selvagem, mas muito rápido (mesmo em terrenos difíceis). Cavalga "
-"leve. 4 HP. +2 slots."
+"**Sapeiro Perdido**: Selvagem, mas muito rápido (mesmo em terrenos "
+"difíceis). Cavalga leve. 4 HP. +2 slots."
 
 #: app/static/json/backgrounds/outrider.json:160
 msgid "Stray Fogger"
@@ -6307,14 +6453,15 @@ msgstr "Qual foi a última caçada que você fez?"
 
 #: app/static/json/backgrounds/prowler.json:52
 msgid ""
-"A mock firefly, baiting water carriers with its glowing lure. Take an Alchemical Limb "
-"(d8, petty when worn) to replace the one it tore off and an Oil Can (6 uses). The limb "
-"is immune to heat and poison. Needs to be oiled daily."
+"A _mock firefly_, baiting water carriers with its glowing lure. Take an "
+"**Alchemical Limb** (d8, _petty_ when worn) to replace the one it tore "
+"off and an **Oil Can** (6 uses). The limb is immune to heat and poison. "
+"Needs to be oiled daily."
 msgstr ""
-"Um vaga-lume falso, atraindo carregadores de água com sua isca brilhante. Pegue um "
-"Membro Alquímico (d8, minúsculo quando usado) para substituir o que ele arrancou e uma "
-"Lata de Óleo (6 usos). O membro é imune a calor e veneno. Precisa ser oleado "
-"diariamente."
+"Um vaga-lume falso, atraindo carregadores de água com sua isca brilhante."
+" Pegue um **Membro Alquímico** (d8, _minúsculo_ quando usado) para "
+"substituir o que ele arrancou e uma Lata de Óleo (6 usos). O membro é "
+"imune a calor e veneno. Precisa ser oleado diariamente."
 
 #: app/static/json/backgrounds/prowler.json:55
 msgid "Alchemical Limb"
@@ -6326,13 +6473,15 @@ msgstr "Imune a calor e veneno. Precisa ser oleado diariamente. Mesquinho quando
 
 #: app/static/json/backgrounds/prowler.json:67
 msgid ""
-"An ice nettle, trapping and draining sheep. You lost your commission when the fungus "
-"you introduced killed half the flock. Take a Rime Seed (1 use). It freezes any body of "
-"water, no matter the size. Don't eat it."
+"An _ice nettle_, trapping and draining sheep. You lost your commission "
+"when the fungus you introduced killed half the flock. Take a **Rime "
+"Seed** (1 use). It freezes any body of water, no matter the size. Don't "
+"eat it."
 msgstr ""
-"Uma urtiga de gelo, capturando e drenando ovelhas. Você perdeu sua comissão quando o "
-"fungo que introduziu matou metade do rebanho. Pegue uma Semente da Geada (1 uso). Ela "
-"congela qualquer corpo de água, não importa o tamanho. Não a coma."
+"Uma urtiga de gelo, capturando e drenando ovelhas. Você perdeu sua "
+"comissão quando o fungo que introduziu matou metade do rebanho. Pegue uma"
+" **Semente da Geada** (1 uso). Ela congela qualquer corpo de água, não "
+"importa o tamanho. Não a coma."
 
 #: app/static/json/backgrounds/prowler.json:70
 msgid "Rime Seed"
@@ -6344,13 +6493,15 @@ msgstr "Congela qualquer corpo de água, não importa o tamanho. Não coma."
 
 #: app/static/json/backgrounds/prowler.json:78
 msgid ""
-"A silver marsh crawler that killed someone close to you. You now carry its Tooth "
-"(petty) on a chain around your neck as a warning to others of its kind. The tooth hums "
-"softly when something is stalking you."
+"A _silver marsh crawler_ that killed someone close to you. You now carry "
+"its **Tooth** (_petty_) on a chain around your neck as a warning to "
+"others of its kind. _The tooth hums softly when something is stalking "
+"you_."
 msgstr ""
-"Um rastejador prateado do pântano que matou alguém próximo a você. Agora você carrega "
-"seu Dente (trivial) em uma corrente em volta do pescoço como um aviso para outros de "
-"sua espécie. O dente zumbe suavemente quando algo está perseguindo você."
+"Um rastejador prateado do pântano que matou alguém próximo a você. Agora "
+"você carrega seu **Dente** (trivial) em uma corrente em volta do pescoço "
+"como um aviso para outros de sua espécie. O dente zumbe suavemente quando"
+" algo está perseguindo você."
 
 #: app/static/json/backgrounds/prowler.json:81
 msgid "Tooth"
@@ -6366,13 +6517,14 @@ msgstr ""
 
 #: app/static/json/backgrounds/prowler.json:88
 msgid ""
-"A malicious forest spirit that poisoned a homestead. You saved a Heartseed from the "
-"roots of a dying tree (plant to create a a new forest). Also, take Iron Bracers (+1 "
-"Armor, bulky)."
+"A malicious _forest spirit_ that poisoned a homestead. You saved a "
+"**Heartseed** from the roots of a dying tree (plant to create a a new "
+"forest). Also, take **Iron Bracers** (+1 Armor, _bulky_)."
 msgstr ""
-"Um espírito malicioso da floresta que envenenou uma propriedade. Você salvou uma "
-"Semente de Coração das raízes de uma árvore moribunda (plante para criar uma nova "
-"floresta). Além disso, pegue Iron Bracers (+1 Armadura, bulky)."
+"Um espírito malicioso da floresta que envenenou uma propriedade. Você "
+"salvou uma **Semente de Coração** das raízes de uma árvore moribunda "
+"(plante para criar uma nova floresta). Além disso, pegue Iron Bracers (+1"
+" Armadura, bulky)."
 
 #: app/static/json/backgrounds/prowler.json:91
 msgid "Heartseed"
@@ -6388,9 +6540,10 @@ msgstr "Braçadeiras de Ferro"
 
 #: app/static/json/backgrounds/prowler.json:102
 msgid ""
-"A hollow wolf that had been frightening travelers. You took pity on the half-starved "
-"creature and nursed it back to health. Now it is loyal to you unto death. It is also a "
-"great tunneler. 5 HP, 11 STR, 13 DEX, 8 WIL, teeth (d6)."
+"A _hollow wolf_ that had been frightening travelers. You took pity on the"
+" half-starved creature and nursed it back to health. Now it is loyal to "
+"you unto death. It is also a great tunneler. 5 HP, 11 STR, 13 DEX, 8 WIL,"
+" teeth (d6)."
 msgstr ""
 "Um lobo oco que estava assustando viajantes. Você teve pena da criatura meio faminta e "
 "cuidou dela até ela voltar à saúde. Agora ela é leal a você até a morte. Ela também é "
@@ -6398,13 +6551,14 @@ msgstr ""
 
 #: app/static/json/backgrounds/prowler.json:106
 msgid ""
-"An azure warbler. The gametes attract a sizeable profit, if properly extracted. You "
-"succeeded but left its nest to the wolves. Take a Paring Knife (d6), an extra 20gp, "
-"and a pang of regret."
+"An _azure warbler_. The gametes attract a sizeable profit, if properly "
+"extracted. You succeeded but left its nest to the wolves. Take a **Paring"
+" Knife** (d6), **an extra 20gp**, and a pang of regret."
 msgstr ""
-"Uma toutinegra azul. Os gametas atraem um lucro considerável, se extraídos "
-"corretamente. Você teve sucesso, mas deixou seu ninho para os lobos. Pegue uma Faca de "
-"Descascar (d6), 20gp extras e uma pontada de arrependimento."
+"Uma toutinegra azul. Os gametas atraem um lucro considerável, se "
+"extraídos corretamente. Você teve sucesso, mas deixou seu ninho para os "
+"lobos. Pegue uma **Faca de Descascar** (d6), 20gp extras e uma pontada de"
+" arrependimento."
 
 #: app/static/json/backgrounds/prowler.json:109
 msgid "Paring Knife"
@@ -6416,11 +6570,11 @@ msgstr "Que ferramenta você sempre tem na mochila?"
 
 #: app/static/json/backgrounds/prowler.json:121
 msgid ""
-"Fermented Spirits: Keeps you warm at the best of times and as an explosive at the "
-"worst. 3 Uses."
+"**Fermented Spirits**: Keeps you warm at the best of times and as an "
+"explosive at the worst. 3 Uses."
 msgstr ""
-"Bebidas fermentadas: Mantém você aquecido nos melhores momentos e como explosivo nos "
-"piores. 3 usos."
+"**Bebidas fermentadas**: Mantém você aquecido nos melhores momentos e "
+"como explosivo nos piores. 3 usos."
 
 #: app/static/json/backgrounds/prowler.json:124
 msgid "Fermented Spirits"
@@ -6432,7 +6586,8 @@ msgstr "Mantém você aquecido nos melhores momentos e como um explosivo nos pio
 
 #: app/static/json/backgrounds/prowler.json:132
 msgid ""
-"Trail Shaker: A noisy instrument that reveals nearby trails, even when deeply hidden."
+"**Trail Shaker**: A noisy instrument that reveals nearby trails, even "
+"when deeply hidden."
 msgstr ""
 "Agitador de trilhas: Um instrumento barulhento que revela trilhas próximas, mesmo "
 "quando profundamente escondidas."
@@ -6448,10 +6603,12 @@ msgstr ""
 "escondidas."
 
 #: app/static/json/backgrounds/prowler.json:142
-msgid "Drowse Balm: A wax bar. If boiled in water, the steam acts as a soporific agent."
+msgid ""
+"**Drowse Balm**: A wax bar. If boiled in water, the steam acts as a "
+"soporific agent."
 msgstr ""
-"Bálsamo para dormir: Uma barra de cera. Se fervida em água, o vapor age como um agente "
-"soporífero."
+"**Bálsamo para dormir**: Uma barra de cera. Se fervida em água, o vapor "
+"age como um agente soporífero."
 
 #: app/static/json/backgrounds/prowler.json:145
 msgid "Drowse Balm"
@@ -6463,8 +6620,8 @@ msgstr "Uma barra de cera. Se fervida em água, o vapor age como um agente sopor
 
 #: app/static/json/backgrounds/prowler.json:152
 msgid ""
-"Spike and Cord: For traversing difficult terrain or for creating makeshift traps and "
-"structures."
+"**Spike and Cord**: For traversing difficult terrain or for creating "
+"makeshift traps and structures."
 msgstr ""
 "Espinhos e cordas: para atravessar terrenos difíceis ou para criar armadilhas e "
 "estruturas improvisadas."
@@ -6480,11 +6637,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/prowler.json:162
 msgid ""
-"Iron Rattle: A noisemaker for distracting or scaring your quarry. Sounds convincingly "
-"like a snake."
+"**Iron Rattle**: A noisemaker for distracting or scaring your quarry. "
+"Sounds convincingly like a snake."
 msgstr ""
-"Chocalho de Ferro: Um apito para distrair ou assustar sua presa. Soa convincentemente "
-"como uma cobra."
+"**Chocalho de Ferro**: Um apito para distrair ou assustar sua presa. Soa "
+"convincentemente como uma cobra."
 
 #: app/static/json/backgrounds/prowler.json:165
 msgid "Iron Rattle"
@@ -6498,8 +6655,8 @@ msgstr ""
 
 #: app/static/json/backgrounds/prowler.json:172
 msgid ""
-"Hardening Glue: Makes any flat material (cloth, leather, sand) as hard as stone. "
-"Expensive (20gp a bottle, 3 uses)."
+"**Hardening Glue**: Makes any flat material (cloth, leather, sand) as "
+"hard as stone. Expensive (20gp a bottle, 3 uses)."
 msgstr ""
 "Cola Endurecedora: Deixa qualquer material plano (tecido, couro, areia) tão duro "
 "quanto pedra. Cara (20gp o frasco, 3 usos)."
@@ -6571,12 +6728,14 @@ msgstr "Quais músicas são mais conhecidas por você?"
 
 #: app/static/json/backgrounds/rill-runner.json:40
 msgid ""
-"The Tinker's Two-Step. A humorous fairy tale about a gift-giving traveler. Start with "
-"a Reed Whistle. Anyone in earshot must pass a WIL save to perform an act of violence."
+"_The Tinker's Two-Step_. A humorous fairy tale about a gift-giving "
+"traveler. Start with a **Reed Whistle**. Anyone in earshot must pass a "
+"WIL save to perform an act of violence."
 msgstr ""
-"O viajante generoso. Um conto de fadas bem-humorado sobre um viajante que dá "
-"presentes. Comece com um Apito Vermelho. Qualquer um que esteja ao alcance da voz deve "
-"passar por um teste de VON para realizar um ato de violência."
+"O viajante generoso. Um conto de fadas bem-humorado sobre um viajante que"
+" dá presentes. Comece com um **Apito Vermelho**. Qualquer um que esteja "
+"ao alcance da voz deve passar por um teste de VON para realizar um ato de"
+" violência."
 
 #: app/static/json/backgrounds/rill-runner.json:43
 msgid "Reed Whistle"
@@ -6590,11 +6749,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/rill-runner.json:50
 msgid ""
-"The Sylph and Her Lover. A bawdy tale of lost love. Start with a Breeze Knot (3 "
-"charges). Creates a strong breeze. Recharge: Tie it to a mast during a storm."
+"_The Sylph and Her Lover_. A bawdy tale of lost love. Start with a "
+"**Breeze Knot** (3 charges). Creates a strong breeze. **Recharge**: Tie "
+"it to a mast during a storm."
 msgstr ""
-"A Sílfide e seu Amante. Um conto obsceno de amor perdido. Comece com um Nó de Brisa (3 "
-"cargas). Cria uma brisa forte. Recarregue: Amarre-o a um mastro durante uma tempestade."
+"A Sílfide e seu Amante. Um conto obsceno de amor perdido. Comece com um "
+"**Nó de Brisa** (3 cargas). Cria uma brisa forte. Recarregue: Amarre-o a "
+"um mastro durante uma tempestade."
 
 #: app/static/json/backgrounds/rill-runner.json:53
 msgid "Breeze Knot"
@@ -6606,12 +6767,13 @@ msgstr "Cria uma brisa forte. Recarregue: Amarre-o a um mastro durante uma tempe
 
 #: app/static/json/backgrounds/rill-runner.json:62
 msgid ""
-"Harper's Devotion. A sad, short tale about a musician who falls in love with a star. "
-"Start with a Celestial Lute. Reveals the constellations above, no matter the weather."
+"_Harper's Devotion_. A sad, short tale about a musician who falls in love"
+" with a star. Start with a **Celestial Lute**. Reveals the constellations"
+" above, no matter the weather."
 msgstr ""
-"Devoção de Harper. Um conto triste e curto sobre um músico que se apaixona por uma "
-"estrela. Comece com um Alaúde Celestial. Revela as constelações acima, não importa o "
-"clima."
+"Devoção de Harper. Um conto triste e curto sobre um músico que se "
+"apaixona por uma estrela. Comece com um **Alaúde Celestial**. Revela as "
+"constelações acima, não importa o clima."
 
 #: app/static/json/backgrounds/rill-runner.json:65
 msgid "Celestial Lute"
@@ -6623,13 +6785,13 @@ msgstr "Revela as constelações acima, não importa o clima."
 
 #: app/static/json/backgrounds/rill-runner.json:72
 msgid ""
-"The Reed Fisher. A celebrated song about a massive carp that always seems to get away. "
-"Begin with a spool of River Twine (5 uses). Each dip into the river guarantees a "
-"catch, though it might not be pleasant."
+"_The Reed Fisher_. A celebrated song about a massive carp that always "
+"seems to get away. Begin with a spool of **River Twine** (5 uses). Each "
+"dip into the river guarantees a catch, though it might not be pleasant."
 msgstr ""
-"O Pescador do Canavial. Uma canção célebre sobre uma carpa enorme que sempre parece "
-"escapar. Comece com um Carretel do Rio (5 usos). Cada mergulho no rio garante uma "
-"captura, embora possa não ser agradável."
+"O Pescador do Canavial. Uma canção célebre sobre uma carpa enorme que "
+"sempre parece escapar. Comece com um **Carretel do Rio** (5 usos). Cada "
+"mergulho no rio garante uma captura, embora possa não ser agradável."
 
 #: app/static/json/backgrounds/rill-runner.json:75
 msgid "River Twine"
@@ -6641,11 +6803,11 @@ msgstr "Cada mergulho no rio garante uma captura, mesmo que não seja agradável
 
 #: app/static/json/backgrounds/rill-runner.json:83
 msgid ""
-"Song of the Silver Stream. A wordless lullaby that mimics flowing water. Take a Stone "
-"Flute that can calm almost any river."
+"_Song of the Silver Stream_. A wordless lullaby that mimics flowing "
+"water. Take a **Stone Flute** that can calm almost any river."
 msgstr ""
-"Canção do Rio Prateado. Uma canção de ninar sem palavras que imitam água corrente. "
-"Pegue uma Flauta de Pedra que pode rir quase qualquer rio."
+"Canção do Rio Prateado. Uma canção de ninar sem palavras que imitam água "
+"corrente. Pegue uma **Flauta de Pedra** que pode rir quase qualquer rio."
 
 #: app/static/json/backgrounds/rill-runner.json:86
 msgid "Stone Flute"
@@ -6657,13 +6819,13 @@ msgstr "Pode acalmar quase qualquer rio."
 
 #: app/static/json/backgrounds/rill-runner.json:93
 msgid ""
-"The Thrush and the Meadow. A moody tale told in alternating chorus. Start with a "
-"Feather Quill (1 use, petty). A map drawn with this quill reveals the most expedient "
-"course between any two points."
+"_The Thrush and the Meadow_. A moody tale told in alternating chorus. "
+"Start with a **Feather Quill** (1 use, _petty_). A map drawn with this "
+"quill reveals the most expedient course between any two points."
 msgstr ""
-"O Tordo e o Prado. Um conto melancólico contado em coro alternado. Comece com uma "
-"Caneta de Pena (1 uso, trivial). Um mapa desenhado com esta pena revela o curso mais "
-"conveniente entre quaisquer dois pontos."
+"O Tordo e o Prado. Um conto melancólico contado em coro alternado. Comece"
+" com uma **Caneta de Pena** (1 uso, trivial). Um mapa desenhado com esta "
+"pena revela o curso mais conveniente entre quaisquer dois pontos."
 
 #: app/static/json/backgrounds/rill-runner.json:96
 msgid "Feather Quill"
@@ -6681,24 +6843,28 @@ msgstr "O que paga sua travessia do país?"
 
 #: app/static/json/backgrounds/rill-runner.json:109
 msgid ""
-"Performing at taverns always yields both room and board. Sometimes you even get tips! "
-"Start with an extra 10gp."
+"Performing at taverns always yields both room and board. Sometimes you "
+"even get tips! Start with an extra **10gp**."
 msgstr ""
-"Apresentar-se em tavernas sempre rende tanto quarto quanto comida. Às vezes você até "
-"ganha gorjetas! Comece com 10gp extras."
+"Apresentar-se em tavernas sempre rende tanto quarto quanto comida. Às "
+"vezes você até ganha gorjetas! Comece com **10gp** extras."
 
 #: app/static/json/backgrounds/rill-runner.json:114
-msgid "You are a protector for those afraid to travel alone. Start with a Rapier."
+msgid ""
+"You are a protector for those afraid to travel alone. Start with a "
+"**Rapier**."
 msgstr ""
-"Você é um protetor para aqueles que têm medo de viajar sozinhos. Comece com um Florete."
+"Você é um protetor para aqueles que têm medo de viajar sozinhos. Comece "
+"com um **Florete**."
 
 #: app/static/json/backgrounds/rill-runner.json:123
 msgid ""
-"You buy low and sell high, always making just enough to get by. Take a single item "
-"worth 20gp (or less) from the gear table."
+"You buy low and sell high, always making just enough to get by. Take a "
+"**single item** worth **20gp** (or less) from the gear table."
 msgstr ""
-"Você compra barato e vende caro, sempre ganhando o suficiente para sobreviver. Pegue "
-"um único item que vale 20gp (ou menos) da tabela de equipamentos."
+"Você compra barato e vende caro, sempre ganhando o suficiente para "
+"sobreviver. Pegue um único item que vale **20gp** (ou menos) da tabela de"
+" equipamentos."
 
 #: app/static/json/backgrounds/rill-runner.json:128
 msgid ""
@@ -6718,11 +6884,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/rill-runner.json:136
 msgid ""
-"You shepherd caravans and travelers across water-soaked lands. Start with a  map "
-"(petty) relevant to your next journey."
+"You shepherd caravans and travelers across water-soaked lands. Start with"
+" a  **map** (_petty_) relevant to your next journey."
 msgstr ""
-"Você pastoreia caravanas e viajantes por terras encharcadas de água. Comece com um "
-"mapa (trivial) relevante para sua próxima jornada."
+"Você pastoreia caravanas e viajantes por terras encharcadas de água. "
+"Comece com um **mapa** (trivial) relevante para sua próxima jornada."
 
 #: app/static/json/backgrounds/rill-runner.json:139
 msgid "Map"
@@ -6764,11 +6930,12 @@ msgstr "Que trabalho você guardou para si?"
 
 #: app/static/json/backgrounds/scrivener.json:51
 msgid ""
-"The Wild Tongue. A bundle of leather-bound scrolls. A seminal work, cataloging the "
-"hidden languages of beasts and how to understand them."
+"**The Wild Tongue**. A bundle of leather-bound scrolls. A seminal work, "
+"cataloging the hidden languages of beasts and how to understand them."
 msgstr ""
-"A Língua Selvagem. Um maço de pergaminhos encadernados em couro. Uma obra seminal, "
-"catalogando as línguas ocultas das feras e como entendê-las."
+"**A Língua Selvagem**. Um maço de pergaminhos encadernados em couro. Uma "
+"obra seminal, catalogando as línguas ocultas das feras e como "
+"entendê-las."
 
 #: app/static/json/backgrounds/scrivener.json:54
 msgid "The Wild Tongue"
@@ -6784,11 +6951,12 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:61
 msgid ""
-"The Silent Symphony. Bound in fluorescent wrap. Very rare, it chronicles the subtle "
-"signs used by those employing invisibility magic."
+"**The Silent Symphony**. Bound in fluorescent wrap. Very rare, it "
+"chronicles the subtle signs used by those employing invisibility magic."
 msgstr ""
-"A Sinfonia Silenciosa. Encadernado em envoltório fluorescente. Muito raro, ele narra "
-"os sinais sutis usados ​​por aqueles que empregam magia de invisibilidade."
+"**A Sinfonia Silenciosa**. Encadernado em envoltório fluorescente. Muito "
+"raro, ele narra os sinais sutis usados ​​por aqueles que empregam magia "
+"de invisibilidade."
 
 #: app/static/json/backgrounds/scrivener.json:64
 msgid "The Silent Symphony"
@@ -6804,12 +6972,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:71
 msgid ""
-"A Treatise on the Abyss. A nondescript black book. An in-depth, largely theoretical "
-"text describing the Roots, as well as information about the location of a nearby Gate."
+"**A Treatise on the Abyss**. A nondescript black book. An in-depth, "
+"largely theoretical text describing the **Roots**, as well as information"
+" about the location of a nearby **Gate**."
 msgstr ""
-"Um Tratado sobre o Abismo. Um livro preto indefinido. Um texto profundo e amplamente "
-"teórico descrevendo as Raízes, bem como informações sobre a localização de um Portão "
-"próximo."
+"**Um Tratado sobre o Abismo**. Um livro preto indefinido. Um texto "
+"profundo e amplamente teórico descrevendo as **Raízes**, bem como "
+"informações sobre a localização de um **Portão** próximo."
 
 #: app/static/json/backgrounds/scrivener.json:74
 msgid "A Treatise on the Abyss"
@@ -6825,13 +6994,14 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:81
 msgid ""
-"The Star Waltz. A comet-shaped clasp bound in a fine leather cover. Detailed "
-"astronomical charts, celestial movements, and stellar festivals. Highly valued (100gp) "
-"for its usefulness to travelers."
+"**The Star Waltz**. A comet-shaped clasp bound in a fine leather cover. "
+"Detailed astronomical charts, celestial movements, and stellar festivals."
+" Highly valued (100gp) for its usefulness to travelers."
 msgstr ""
-"A Valsa das Estrelas. Um fecho em forma de cometa encadernado em uma capa de couro "
-"fino. Mapas astronômicos detalhados, movimentos celestes e festivais estelares. "
-"Altamente valorizado (100gp) por sua utilidade para viajantes."
+"**A Valsa das Estrelas**. Um fecho em forma de cometa encadernado em uma "
+"capa de couro fino. Mapas astronômicos detalhados, movimentos celestes e "
+"festivais estelares. Altamente valorizado (100gp) por sua utilidade para "
+"viajantes."
 
 #: app/static/json/backgrounds/scrivener.json:84
 msgid "The Star Waltz"
@@ -6849,13 +7019,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:91
 msgid ""
-"The Cathedral and the Canopy. Large-leaf binding over vellum. Nominally a children's "
-"storybook, the margins detail information about traveling, eating, and sleeping in the "
-"cloud forests."
+"**The Cathedral and the Canopy**. Large-leaf binding over vellum. "
+"Nominally a children's storybook, the margins detail information about "
+"traveling, eating, and sleeping in the cloud forests."
 msgstr ""
-"A Catedral e o Dossel. Encadernação de folhas grandes sobre velino. Nominalmente um "
-"livro de histórias infantis, as margens detalham informações sobre viajar, comer e "
-"dormir nas florestas nubladas."
+"**A Catedral e o Dossel**. Encadernação de folhas grandes sobre velino. "
+"Nominalmente um livro de histórias infantis, as margens detalham "
+"informações sobre viajar, comer e dormir nas florestas nubladas."
 
 #: app/static/json/backgrounds/scrivener.json:94
 msgid "The Cathedral and the Canopy"
@@ -6872,11 +7042,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:101
 msgid ""
-"Garden of Glass. Bound in the cover of another book. A heretical work, it describes "
-"the materials, procedures, and optimal locations required to open a Gate."
+"**Garden of Glass**. Bound in the cover of another book. A heretical "
+"work, it describes the materials, procedures, and optimal locations "
+"required to open a **Gate**."
 msgstr ""
-"Jardim de Vidro. Encadernado na capa de outro livro. Uma obra herética, descreve os "
-"materiais, procedimentos e localizações ideais necessárias para abrir um Portal."
+"**Jardim de Vidro**. Encadernado na capa de outro livro. Uma obra "
+"herética, descreve os materiais, procedimentos e localizações ideais "
+"necessárias para abrir um Portal."
 
 #: app/static/json/backgrounds/scrivener.json:104
 msgid "Garden of Glass"
@@ -6896,11 +7068,11 @@ msgstr "Como você transcreve informações confidenciais?"
 
 #: app/static/json/backgrounds/scrivener.json:116
 msgid ""
-"Fib Ink. Glows when used to write true statements but fades if used to write false "
-"ones."
+"**Fib Ink**. Glows when used to write true statements but fades if used "
+"to write false ones."
 msgstr ""
-"Tinta Honesta. Brilha quando usada para escrever afirmações verdadeiras, mas desbota "
-"se usada para escrever afirmações falsas."
+"**Tinta Honesta**. Brilha quando usada para escrever afirmações "
+"verdadeiras, mas desbota se usada para escrever afirmações falsas."
 
 #: app/static/json/backgrounds/scrivener.json:119
 msgid "Fib Ink"
@@ -6914,11 +7086,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:126
 msgid ""
-"Cipher Stone. A pair of sharp black stones. Each one decrypts any message written by "
-"the other."
+"**Cipher Stone**. A pair of sharp black stones. Each one decrypts any "
+"message written by the other."
 msgstr ""
-"Pedra Cifrada. Um par de pedras pretas afiadas. Cada uma decifra qualquer mensagem "
-"escrita pela outra."
+"**Pedra Cifrada**. Um par de pedras pretas afiadas. Cada uma decifra "
+"qualquer mensagem escrita pela outra."
 
 #: app/static/json/backgrounds/scrivener.json:129
 msgid "Cipher Stone"
@@ -6930,9 +7102,10 @@ msgstr ""
 "Um par de pedras pretas afiadas. Cada uma decifra qualquer mensagem escrita pela outra."
 
 #: app/static/json/backgrounds/scrivener.json:136
-msgid "Everquill. A quill that writes on any surface. You still need ink."
+msgid "**Everquill**. A quill that writes on any surface. You still need ink."
 msgstr ""
-"Peneterna. Uma pena que escreve em qualquer superfície. Você ainda precisa de tinta."
+"**Peneterna**. Uma pena que escreve em qualquer superfície. Você ainda "
+"precisa de tinta."
 
 #: app/static/json/backgrounds/scrivener.json:139
 msgid "Everquill"
@@ -6944,11 +7117,11 @@ msgstr "Uma pena que escreve em qualquer superfície. Você ainda precisa de tin
 
 #: app/static/json/backgrounds/scrivener.json:146
 msgid ""
-"Whisper Vial. Whisper a message into the vial, and it will play it back to whoever "
-"opens it next."
+"**Whisper Vial**. Whisper a message into the vial, and it will play it "
+"back to whoever opens it next."
 msgstr ""
-"Frasco Sussurrante. Sussurre uma mensagem no frasco, e ele a reproduzirá para quem o "
-"abrir em seguida."
+"**Frasco Sussurrante**. Sussurre uma mensagem no frasco, e ele a "
+"reproduzirá para quem o abrir em seguida."
 
 #: app/static/json/backgrounds/scrivener.json:149
 msgid "Whisper Vial"
@@ -6962,11 +7135,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:156
 msgid ""
-"Sanguine Lens. Extracts blood from a target without their knowledge. A stolen drop "
-"placed on the eye reveals memories from the past day."
+"**Sanguine Lens**. Extracts blood from a target without their knowledge. "
+"A stolen drop placed on the eye reveals memories from the past day."
 msgstr ""
-"Lente Sanguínea. Extrai sangue de um alvo sem que ele saiba. Uma gota roubada colocada "
-"no olho revela memórias do dia anterior."
+"**Lente Sanguínea**. Extrai sangue de um alvo sem que ele saiba. Uma gota"
+" roubada colocada no olho revela memórias do dia anterior."
 
 #: app/static/json/backgrounds/scrivener.json:159
 msgid "Sanguine Lens"
@@ -6982,11 +7155,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:166
 msgid ""
-"Echo Leaf. A blank parchment. Whomever unfurls it sees their actions of the day slowly "
-"revealed in a tight scrawl."
+"**Echo Leaf**. A blank parchment. Whomever unfurls it sees their actions "
+"of the day slowly revealed in a tight scrawl."
 msgstr ""
-"Folha de eco. Um pergaminho em branco. Quem o desenrola vê suas ações do dia "
-"lentamente reveladas em um rabisco apertado."
+"**Folha de eco**. Um pergaminho em branco. Quem o desenrola vê suas ações"
+" do dia lentamente reveladas em um rabisco apertado."
 
 #: app/static/json/backgrounds/scrivener.json:169
 msgid "Echo Leaf"
@@ -24612,3 +24785,164 @@ msgstr "Animais"
 #. Portrait picker: the group of object portraits: weapons, statues, things (#502)
 msgid "Objects"
 msgstr "Objetos"
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"You dematerialized a beloved pet. Now it follows you around, invisible "
+"but always present. Although it cannot interact with the physical realm, "
+"you are able to share its senses. (Add a Fatigue each time.) It follows "
+"basic commands."
+msgstr ""
+"Você desmaterializou um animal de estimação amado. Agora ele segue você "
+"por aí, invisível, mas sempre presente. Embora ele não possa interagir "
+"com o reino físico, você é capaz de compartilhar seus sentidos. (Adicione"
+" uma Fadiga a cada vez.) Ele segue comandos básicos."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Homunculus: A miniature clay replica of yourself that follows your every "
+"command. It hates being enthralled to you and complains bitterly whenever"
+" possible. Any damage done to the homunculus is also done to you. 3 HP, 4"
+" STR, 13 DEX, 5 WIL."
+msgstr ""
+"Homúnculo: Uma réplica de argila em miniatura de você mesmo que segue "
+"todos os seus comandos. Ele odeia ser cativado por você e reclama "
+"amargamente sempre que possível. Qualquer dano causado ao homúnculo "
+"também é causado a você. 3 PV, 4 FOR, 13 DES, 5 VON."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A Blood Pail (bulky) from a local death-cult. Empty it to raise a servant"
+" built from whatever is buried below, with 6 HP, 1 Armor, 13 STR, 11 DEX,"
+" 4 WIL, and shard fists (d8+d8). Only one servant can be raised at a "
+"time. If destroyed, you permanently lose 1d4 STR. Recharge: Fill with the"
+" blood of a dying warrior."
+msgstr ""
+"Um Balde de Sangue (volumoso) de um culto local à morte. Esvazie-o para "
+"levantar um servo construído a partir do que estiver enterrado abaixo, "
+"com 6 PV, Armadura 1, 13 FOR, 11 DES, 4 VON e punhos de cacos (d8+d8). "
+"Apenas um servo pode ser levantado por vez. Se destruído, você perde "
+"permanentemente 1d4 FOR. Recarregue: Encha com o sangue de um guerreiro "
+"moribundo."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A burial wagon (+6 slots, slow) from your last job. It came with a "
+"stubborn old donkey (+4 slots, only +2 slots if pulling wagon)."
+msgstr ""
+"Uma carroça funerária (+6 slots, lento) do seu último trabalho. Ela veio "
+"com um burro velho e teimoso (+4 slots, apenas +2 slots se estiver "
+"puxando carroça)."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A Living Nightmare that dwells within you but manifests whenever you are "
+"in danger. It has your same Attributes and HP and attacks with claws "
+"(d8+d8). It disappears on Critical Damage (take 1d4 WIL damage), re-"
+"appearing again on the next full moon."
+msgstr ""
+"Um Pesadelo Vivo que habita dentro de você, mas se manifesta sempre que "
+"você está em perigo. Ele tem os mesmos Atributos e PV e ataca com garras "
+"(d8+d8). Ele desaparece em Dano Crítico (recebe 1d4 de dano VON), "
+"reaparecendo novamente na próxima lua cheia."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A Raven Familiar [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as "
+"an intelligent being and is entirely devoted to you."
+msgstr ""
+"Um Corvo Familiar [8 PV, 3 FOR, 11 DES, 13 VON, bico (d6)]. Ele fala como"
+" um ser inteligente e é inteiramente devotado a você."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A clever pet, small enough to hide in your pack (bulky), but strong "
+"enough to scare off smaller predators. Requires one Ration a day, and it "
+"must be meat."
+msgstr ""
+"Um animal de estimação inteligente, pequeno o suficiente para se esconder"
+" na sua mochila (volumoso), mas forte o suficiente para assustar "
+"predadores menores. Requer uma Ração por dia, e deve ser carne."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Alchemical Tattoo: A dog, cat, or bird that can leave your body on "
+"demand. It follows your commands to the best of its abilities and can "
+"pass its injuries (as STR loss) back onto you. Petty."
+msgstr ""
+"Tatuagem Alquímica: Um cão, gato ou pássaro que pode deixar seu corpo sob"
+" demanda. Ele segue seus comandos da melhor maneira possível e pode "
+"passar seus ferimentos (como FOR perda) de volta para você. Minúsculo."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Heavy Destrier: A beast built for war, an imposing creature. 8 HP, 1 "
+"Armor, hooves (d10+d10), +2 slots."
+msgstr ""
+"Corsário Pesado: Uma fera construída para a guerra, uma criatura "
+"imponente. 8 PV, Armadura 1, cascos (d10+d10), +2 espaços."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Blacklegged Dandy: Hardy and adaptable. Tough or Perilous terrain are one"
+" step easier. 6 HP. +4 slots."
+msgstr ""
+"Dande Perna Preta: Resistente e adaptável. Terrenos difíceis ou perigosos"
+" são um passo mais fáceis. 6 PV. +4 slots."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Rivertooth: Impressively strong, capable of carrying heavy loads. 4 HP. "
+"+6 slots (only +2 slots if carrying two people)."
+msgstr ""
+"Dente Azul: Impressionantemente forte, capaz de carregar cargas pesadas. "
+"4 PV. +6 slots (apenas +2 slots se estiver carregando duas pessoas)."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Piebald Cob: Intelligent, it can understand simple commands, and even has"
+" an instinct for danger. 6 HP. +4 slots."
+msgstr ""
+"Espiga Careca: Inteligente, consegue entender comandos simples e tem até "
+"instinto para o perigo. 6 PV. +4 slots."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Linden White: Highly trained and agile, it can perform intricate "
+"maneuvers in a time of need (no DEX save to flee). 4 HP. +3 slots."
+msgstr ""
+"Tília Branca: Altamente treinado e ágil, ele pode executar manobras "
+"complexas em momentos de necessidade (sem teste de DES para fugir). 4 PV."
+" +3 slots."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Stray Fogger: Wild but very fast (even in Tough terrain). Rides light. 4 "
+"HP. +2 slots."
+msgstr ""
+"Sapeiro Perdido: Selvagem, mas muito rápido (mesmo em terrenos difíceis)."
+" Cavalga leve. 4 HP. +2 slots."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A hollow wolf that had been frightening travelers. You took pity on the "
+"half-starved creature and nursed it back to health. Now it is loyal to "
+"you unto death. It is also a great tunneler. 5 HP, 11 STR, 13 DEX, 8 WIL,"
+" teeth (d6)."
+msgstr ""
+"Um lobo oco que estava assustando viajantes. Você teve pena da criatura "
+"meio faminta e cuidou dela até ela voltar à saúde. Agora ela é leal a "
+"você até a morte. Ela também é uma ótima escavadora de túneis. 5 PV, 11 "
+"FOR, 13 DES, 8 VON, dentes (d6)."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid "Slate"
+msgstr "Ardósia"
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid "Lava"
+msgstr "Lava"
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid "Arcane"
+msgstr "Arcano"

@@ -7,14 +7,29 @@ import {saveDie} from '#kettlewright';
 const panel = document.getElementById('warden-dice');
 const form = document.getElementById('warden-dice-form');
 const publicToggle = document.getElementById('warden-public-roll');
-// Do not restore a public mode from browser form-state or a previous visit.
-publicToggle.checked = false;
-function updatePublicToggle() {
-  publicToggle.disabled = !form.elements.party_id.value;
-  if (publicToggle.disabled) publicToggle.checked = false;
-}
 let rolling = false;
 let monster = null, save = null;
+
+// Public roll (#539): a monster's attack or save is combat, so public unless the Warden turned it off; the Warden's
+// own dice are private unless turned on. Each remembers the Warden's last choice (this browser).
+export const PUBLIC_DEFAULTS = {monster: true, warden: false};
+const publicKey = kind => `warden-public-${kind}`;
+export function publicPreference(kind, storage = globalThis.localStorage) {
+  try {
+    const saved = storage?.getItem(publicKey(kind));
+    if (saved === 'true' || saved === 'false') return saved === 'true';
+  } catch (_) { /* Optional preference. */ }
+  return PUBLIC_DEFAULTS[kind];
+}
+export function rememberPublic(kind, value, storage = globalThis.localStorage) {
+  try { storage?.setItem(publicKey(kind), String(Boolean(value))); } catch (_) { /* Optional preference. */ }
+}
+const rollKind = () => (monster ? 'monster' : 'warden');
+function updatePublicToggle() {
+  publicToggle.disabled = !form.elements.party_id.value;
+  publicToggle.checked = !publicToggle.disabled && publicPreference(rollKind());
+}
+publicToggle.addEventListener('change', () => rememberPublic(rollKind(), publicToggle.checked));
 
 // Callers show the result (diceModal.showResult animates it), so this only rolls and records.
 export async function requestWardenRoll(kind, dice = '') {
@@ -47,12 +62,12 @@ export async function requestWardenRoll(kind, dice = '') {
 diceModal.initialize(dice => requestWardenRoll('dice', dice));
 diceModal.setMode('party');
 document.getElementById('warden-dice-button')?.addEventListener('click', () => {
-  monster = null; save = null; publicToggle.checked = false; diceModal.showDiceModal();
+  monster = null; save = null; updatePublicToggle(); diceModal.showDiceModal();
 });
 document.addEventListener('click', async event => {
   const button = event.target.closest('[data-monster-roll]');
   if (!button || rolling) return;
-  monster = button; save = button.dataset.save || null; publicToggle.checked = false;
+  monster = button; save = button.dataset.save || null; updatePublicToggle();
   diceModal.showDiceModal();
   if (button.dataset.dice || save) {
     const dice = save ? `d${saveDie()}` : button.dataset.dice;

@@ -728,6 +728,14 @@ pointer-events: none;
     .monster-numbering input { width: auto; margin: 0; }
   }
   .monster-add-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
+  // A short window, or the whiteboard's party panel (#534): the bestiary keeps room for a row of monsters (the
+  // dialog scrolls past that), and the intro gives its room to them.
+  .modal-card { overflow-y: auto; }
+  .monster-catalog-form .monster-choices { min-height: 17rem; }
+  @media (max-height: 760px) {
+    .monster-add-intro { display: none; }
+    .monster-add-filters { padding-top: .6rem; padding-bottom: .6rem; }
+  }
   @media (max-width: 600px) {
     .modal-card { width: 100%; max-width: none; height: 100dvh; max-height: none; border: 0; }
     .monster-add-filters, .monster-import-body { padding-left: 1.2rem; padding-right: 1.2rem; }
@@ -897,4 +905,15 @@ button.companion-delete {
     -webkit-mask-image: linear-gradient(to right, #000 85%, transparent);
     button { padding: .7rem .9rem; }
   }
+}
+
+// In the whiteboard's party panel (#534) the dialog fills the frame, as on a phone, and its filters take one line each
+// so the bestiary gets the room.
+body.board-embedded .monster-add-modal {
+  .modal-card { width: 100%; max-width: none; height: 100dvh; max-height: none; border: 0; }
+  .modal-card-head { padding-top: 1rem; padding-bottom: .6rem; }
+  .monster-add-filters { gap: .4rem 1.6rem; }
+  .monster-art-choice { align-items: center; margin: 0; }
+  .monster-art-choice legend { float: none; display: contents; }
+  .monster-catalog-form .monster-choices { min-height: 21rem; }
 }

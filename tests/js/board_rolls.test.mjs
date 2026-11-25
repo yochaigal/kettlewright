@@ -30,7 +30,10 @@ async function setup(warden = true, {storage = {}, osd = null, system = null} = 
   const nodes = new Map(), events = {}, frames = [], requests = [], intervals = [];
   const node = id => {if (!nodes.has(id)) nodes.set(id, new Node()); return nodes.get(id);};
   const actives = [];
-  let roster = warden ? [monster] : [{id: '3', name: 'Ada', kind: 'character'}, {id: '4', name: 'Pip', kind: 'character'}];
+  let roster = warden ? [monster] : [
+    {id: '3', name: 'Ada', kind: 'character', weapons: [{name: 'Sword', dice: 'd8'}, {name: 'Bow', dice: 'd6'}],
+     attributes: {strength: [10, 12], dexterity: [14, 14], willpower: [8, 9]}},
+    {id: '4', name: 'Pip', kind: 'character', weapons: [], attributes: {strength: [5, 5], dexterity: [5, 5], willpower: [5, 5]}}];
   let selected = {}, allowed = true, preview = false;
   let post = async () => ({ok: true, json: async () => ({result: 'A result', values: [4]})});
   const modal = {resultText: new Node(), initialize(fn) {this.roll = fn;}, setMode(value) {this.mode = value;}, showDiceModal() {this.open = true;}};
@@ -131,16 +134,23 @@ test('selecting a monster offers damage, saves and its own modal, then returns t
   } finally {s.controller.destroy();}
 });
 
-test('player roller always shows all player dice, follows owned tokens and supports choosing another owned character', async () => {
+test('a player\'s roller has its character\'s quick rolls, follows owned tokens and can choose another owned character', async () => {
   const s = await setup(false);
   try {
     assert.equal(s.node('board-roll-name').textContent, 'Ada');
-    assert.equal(s.node('board-roll-actions').children.length, 11);
+    // Its weapons' damage, its saves, and the dice window for the rest (#532).
+    assert.deepEqual(s.node('board-roll-actions').children.map(child => child.ariaLabel),
+      ['Sword d8', 'Bow d6', 'STR', 'DEX', 'WIL', 'Roll Dice']);
+    assert.equal(s.node('board-roll-actions').dataset.mode, 'quick');
     assert.equal(s.node('board-roll-actor').hidden, false);
     assert.equal(s.button('d100'), undefined);
-    s.button('d6+d6').events.click(); await tick();
+    s.button('Bow d6').events.click(); await tick();
     assert.equal(s.requests[0].body.get('character_id'), '3');
+    assert.equal(s.requests[0].body.get('dice'), 'd6');
     assert.equal(s.requests[0].body.get('public_roll'), 'on');
+    s.button('DEX').events.click(); await tick();
+    assert.equal(s.requests[1].body.get('save'), 'dexterity');
+    assert.equal(s.requests[1].body.get('dice'), 'd20');
     s.select({'actor-4-token': true});
     assert.equal(s.node('board-roll-name').textContent, 'Pip');
     s.node('board-roll-actor').value = '3'; s.node('board-roll-actor').events.change(); s.draw();

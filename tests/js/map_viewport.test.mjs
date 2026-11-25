@@ -54,3 +54,14 @@ test('the frame takes the picture\'s shape',()=>{
   assert.equal(imageAspect({elements:[{type:'image',width:1600,height:1000,isDeleted:true}]}),null);
   assert.equal(imageAspect(null),null);
 });
+
+test('over an image map being read, the wheel scrolls the page unless the picture is zoomed in (#533)', async () => {
+  const {wheelScrollsPage} = await import('../../app/static/src/js/maps/viewport.js');
+  const reading = {editing: false, imageMap: true, zoom: 0.5, fitZoom: 0.5, ctrlKey: false, metaKey: false};
+  assert.equal(wheelScrollsPage(reading), true);
+  assert.equal(wheelScrollsPage({...reading, zoom: 0.8}), false);  // Zoomed in: the wheel pans inside the picture.
+  assert.equal(wheelScrollsPage({...reading, ctrlKey: true}), false);  // Ctrl/⌘ + wheel zooms.
+  assert.equal(wheelScrollsPage({...reading, metaKey: true}), false);
+  assert.equal(wheelScrollsPage({...reading, editing: true}), false);  // Drawing a map: the editor's own wheel.
+  assert.equal(wheelScrollsPage({...reading, imageMap: false}), false);  // A drawn map pans as before.
+});

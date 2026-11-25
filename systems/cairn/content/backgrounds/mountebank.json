@@ -52,7 +52,7 @@
       "question": "How was your fraud exposed?",
       "options": [
         {
-          "description": "Your 'patients' kept reporting miraculous recoveries, despite your lack of training. Start with Bandages (3 uses) and a knack for healing.",
+          "description": "Your 'patients' kept reporting miraculous recoveries, despite your lack of training. Start with **Bandages** (3 uses) and a knack for healing.",
           "items": [
             {
               "name": "Bandages",
@@ -62,7 +62,7 @@
           ]
         },
         {
-          "description": "After seducing a wealthy patron, their family hired a criminal gang to retrieve you. You got away and need to lay low. Start with Beauty Cream, 2 uses. Apply to appear irresistibly beautiful for the next 12 hours.",
+          "description": "After seducing a wealthy patron, their family hired a criminal gang to retrieve you. You got away and need to lay low. Start with **Beauty Cream**, 2 uses. Apply to appear irresistibly beautiful for the next 12 hours.",
           "items": [
             {
               "name": "Beauty Cream",
@@ -72,7 +72,7 @@
           ]
         },
         {
-          "description": "You were a peddler of fake prophesies, but when one turned out to be true, it drew unwanted attention. Roll on the Omens table, but keep the result to yourself. Start with a concealable Knife (d6, petty).",
+          "description": "You were a peddler of fake prophesies, but when one turned out to be true, it drew unwanted attention. Roll on the **Omens** table, but keep the result to yourself. Start with a concealable **Knife** (d6, _petty_).",
           "items": [
             {
               "name": "Knife",
@@ -82,7 +82,7 @@
           ]
         },
         {
-          "description": "Your latest stunt destroyed a priceless artifact and injured a dozen bystanders. Start with a Captain's Uniform (petty), a Ceremonial Sword (harmless, 60gp), and a Bouquet of Flowers.",
+          "description": "Your latest stunt destroyed a priceless artifact and injured a dozen bystanders. Start with a **Captain's Uniform** (_petty_), a **Ceremonial Sword** (harmless, 60gp), and a **Bouquet of Flowers**.",
           "items": [
             {
               "name": "Captain's Uniform",
@@ -100,11 +100,11 @@
           ]
         },
         {
-          "description": "You were cursed by a hedgewitch for fooling some innocent village folk. Magic acts unpredictably in your hands (WIL save to avoid disaster). If you are the target of magic, the same applies to its wielder.",
+          "description": "You were cursed by a hedgewitch for fooling some innocent village folk. Magic acts unpredictably in your hands (_WIL save to avoid disaster_). If you are the target of magic, the same applies to its wielder.",
           "items": []
         },
         {
-          "description": "Your 'seances' with the dead were in actuality a ruse involving a cleverly hidden spellbook of Auditory Illusion. Inevitably, a patron discovered your secret. Start with the Spellbook and a bundle of scarves.",
+          "description": "Your 'seances' with the dead were in actuality a ruse involving a cleverly hidden spellbook of Auditory Illusion. Inevitably, a patron discovered your secret. Start with the **Spellbook** and a bundle of scarves.",
           "items": [
             {
               "name": "Spellbook (Auditory Illusion)",
@@ -119,7 +119,7 @@
       "question": "What keepsake could always identify you?",
       "options": [
         {
-          "description": "Royal Crest: Born into royalty, you chose a different life. The Royal Crest grants you access but also alerts your family of your whereabouts. Petty.",
+          "description": "**Royal Crest**: Born into royalty, you chose a different life. The Royal Crest grants you access but also alerts your family of your whereabouts. _Petty_.",
           "items": [
             {
               "name": "Royal Crest",
@@ -129,7 +129,7 @@
           ]
         },
         {
-          "description": "Miracle Oil: A smelly, slippery concoction. 2 uses.",
+          "description": "**Miracle Oil**: A smelly, slippery concoction. 2 uses.",
           "items": [
             {
               "name": "Miracle Oil",
@@ -139,7 +139,7 @@
           ]
         },
         {
-          "description": "Surgeon's Soap: A lye and ash block that makes skin temporarily transparent, revealing the anatomy within. 4 uses.",
+          "description": "**Surgeon's Soap**: A lye and ash block that makes skin temporarily transparent, revealing the anatomy within. 4 uses.",
           "items": [
             {
               "name": "Surgeon's Soap",
@@ -149,7 +149,7 @@
           ]
         },
         {
-          "description": "Goat Powder: Derived from the placenta of a baby goat. Temporarily cures any affliction, but symptoms return within hours.",
+          "description": "**Goat Powder**: Derived from the placenta of a baby goat. Temporarily cures any affliction, but symptoms return within hours.",
           "items": [
             {
               "name": "Goat Powder",
@@ -158,7 +158,7 @@
           ]
         },
         {
-          "description": "Cursed Sapphire: Worth 200gp, it noticeably returns to your pocket shortly after you spend it. You can't seem to get rid of it.",
+          "description": "**Cursed Sapphire**: Worth **200gp**, it noticeably returns to your pocket shortly after you spend it. You can't seem to get rid of it.",
           "items": [
             {
               "name": "Cursed Sapphire",
@@ -168,7 +168,7 @@
         },
         {
           "pets": ["Alchemical Tattoo"],
-          "description": "Alchemical Tattoo: A dog, cat, or bird that can leave your body on demand. It follows your commands to the best of its abilities and can pass its injuries (as STR loss) back onto you. Petty.",
+          "description": "**Alchemical Tattoo**: A dog, cat, or bird that can leave your body on demand. It follows your commands to the best of its abilities and can pass its injuries (_as STR loss_) back onto you. _Petty_.",
           "items": [
             {
               "name": "Alchemical Tattoo",

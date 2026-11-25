@@ -69,6 +69,9 @@ def _register_fonts():
 def plain_text(value):
     value = str(value or '').replace('\r\n', '\n').replace('\r', '\n')
     value = re.sub(r'<\s*br\s*/?\s*>|</\s*(?:p|div|li)\s*>', '\n', value, flags=re.I)
+    # Markdown's bold and italics (answers name items in bold, #536; notes): the sheet shows the words, not the marks.
+    value = re.sub(r'(\*\*|__)(?=\S)(.+?)(?<=\S)\1', r'\2', value)
+    value = re.sub(r'(?<![\w*])([*_])(?=\S)(.+?)(?<=\S)\1(?![\w*])', r'\2', value)
     return unescape(bleach.clean(value, tags=[], strip=True)).strip()
 
 

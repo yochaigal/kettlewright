@@ -48,7 +48,7 @@
       "question": "What work did you keep for yourself?",
       "options": [
         {
-          "description": "The Wild Tongue. A bundle of leather-bound scrolls. A seminal work, cataloging the hidden languages of beasts and how to understand them.",
+          "description": "**The Wild Tongue**. A bundle of leather-bound scrolls. A seminal work, cataloging the hidden languages of beasts and how to understand them.",
           "items": [
             {
               "name": "The Wild Tongue",
@@ -58,7 +58,7 @@
           ]
         },
         {
-          "description": "The Silent Symphony. Bound in fluorescent wrap. Very rare, it chronicles the subtle signs used by those employing invisibility magic.",
+          "description": "**The Silent Symphony**. Bound in fluorescent wrap. Very rare, it chronicles the subtle signs used by those employing invisibility magic.",
           "items": [
             {
               "name": "The Silent Symphony",
@@ -68,7 +68,7 @@
           ]
         },
         {
-          "description": "A Treatise on the Abyss. A nondescript black book. An in-depth, largely theoretical text describing the Roots, as well as information about the location of a nearby Gate.",
+          "description": "**A Treatise on the Abyss**. A nondescript black book. An in-depth, largely theoretical text describing the **Roots**, as well as information about the location of a nearby **Gate**.",
           "items": [
             {
               "name": "A Treatise on the Abyss",
@@ -78,7 +78,7 @@
           ]
         },
         {
-          "description": "The Star Waltz. A comet-shaped clasp bound in a fine leather cover. Detailed astronomical charts, celestial movements, and stellar festivals. Highly valued (100gp) for its usefulness to travelers.",
+          "description": "**The Star Waltz**. A comet-shaped clasp bound in a fine leather cover. Detailed astronomical charts, celestial movements, and stellar festivals. Highly valued (100gp) for its usefulness to travelers.",
           "items": [
             {
               "name": "The Star Waltz",
@@ -88,7 +88,7 @@
           ]
         },
         {
-          "description": "The Cathedral and the Canopy. Large-leaf binding over vellum. Nominally a children's storybook, the margins detail information about traveling, eating, and sleeping in the cloud forests.",
+          "description": "**The Cathedral and the Canopy**. Large-leaf binding over vellum. Nominally a children's storybook, the margins detail information about traveling, eating, and sleeping in the cloud forests.",
           "items": [
             {
               "name": "The Cathedral and the Canopy",
@@ -98,7 +98,7 @@
           ]
         },
         {
-          "description": "Garden of Glass. Bound in the cover of another book. A heretical work, it describes the materials, procedures, and optimal locations required to open a Gate.",
+          "description": "**Garden of Glass**. Bound in the cover of another book. A heretical work, it describes the materials, procedures, and optimal locations required to open a **Gate**.",
           "items": [
             {
               "name": "Garden of Glass",
@@ -113,7 +113,7 @@
       "question": "How do you transcribe sensitive information?",
       "options": [
         {
-          "description": "Fib Ink. Glows when used to write true statements but fades if used to write false ones.",
+          "description": "**Fib Ink**. Glows when used to write true statements but fades if used to write false ones.",
           "items": [
             {
               "name": "Fib Ink",
@@ -123,7 +123,7 @@
           ]
         },
         {
-          "description": "Cipher Stone. A pair of sharp black stones. Each one decrypts any message written by the other.",
+          "description": "**Cipher Stone**. A pair of sharp black stones. Each one decrypts any message written by the other.",
           "items": [
             {
               "name": "Cipher Stone",
@@ -133,7 +133,7 @@
           ]
         },
         {
-          "description": "Everquill. A quill that writes on any surface. You still need ink.",
+          "description": "**Everquill**. A quill that writes on any surface. You still need ink.",
           "items": [
             {
               "name": "Everquill",
@@ -143,7 +143,7 @@
           ]
         },
         {
-          "description": "Whisper Vial. Whisper a message into the vial, and it will play it back to whoever opens it next.",
+          "description": "**Whisper Vial**. Whisper a message into the vial, and it will play it back to whoever opens it next.",
           "items": [
             {
               "name": "Whisper Vial",
@@ -153,7 +153,7 @@
           ]
         },
         {
-          "description": "Sanguine Lens. Extracts blood from a target without their knowledge. A stolen drop placed on the eye reveals memories from the past day.",
+          "description": "**Sanguine Lens**. Extracts blood from a target without their knowledge. A stolen drop placed on the eye reveals memories from the past day.",
           "items": [
             {
               "name": "Sanguine Lens",
@@ -163,7 +163,7 @@
           ]
         },
         {
-          "description": "Echo Leaf. A blank parchment. Whomever unfurls it sees their actions of the day slowly revealed in a tight scrawl.",
+          "description": "**Echo Leaf**. A blank parchment. Whomever unfurls it sees their actions of the day slowly revealed in a tight scrawl.",
           "items": [
             {
               "name": "Echo Leaf",

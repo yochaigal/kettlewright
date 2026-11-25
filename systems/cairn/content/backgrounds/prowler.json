@@ -49,7 +49,7 @@
       "question": "What did you last hunt?",
       "options": [
         {
-          "description": "A mock firefly, baiting water carriers with its glowing lure. Take an Alchemical Limb (d8, petty when worn) to replace the one it tore off and an Oil Can (6 uses). The limb is immune to heat and poison. Needs to be oiled daily.",
+          "description": "A _mock firefly_, baiting water carriers with its glowing lure. Take an **Alchemical Limb** (d8, _petty_ when worn) to replace the one it tore off and an **Oil Can** (6 uses). The limb is immune to heat and poison. Needs to be oiled daily.",
           "items": [
             {
               "name": "Alchemical Limb",
@@ -64,7 +64,7 @@
           ]
         },
         {
-          "description": "An ice nettle, trapping and draining sheep. You lost your commission when the fungus you introduced killed half the flock. Take a Rime Seed (1 use). It freezes any body of water, no matter the size. Don't eat it.",
+          "description": "An _ice nettle_, trapping and draining sheep. You lost your commission when the fungus you introduced killed half the flock. Take a **Rime Seed** (1 use). It freezes any body of water, no matter the size. Don't eat it.",
           "items": [
             {
               "name": "Rime Seed",
@@ -75,7 +75,7 @@
           ]
         },
         {
-          "description": "A silver marsh crawler that killed someone close to you. You now carry its Tooth (petty) on a chain around your neck as a warning to others of its kind. The tooth hums softly when something is stalking you.",
+          "description": "A _silver marsh crawler_ that killed someone close to you. You now carry its **Tooth** (_petty_) on a chain around your neck as a warning to others of its kind. _The tooth hums softly when something is stalking you_.",
           "items": [
             {
               "name": "Tooth",
@@ -85,7 +85,7 @@
           ]
         },
         {
-          "description": "A malicious forest spirit that poisoned a homestead. You saved a Heartseed from the roots of a dying tree (plant to create a a new forest). Also, take Iron Bracers (+1 Armor, bulky).",
+          "description": "A malicious _forest spirit_ that poisoned a homestead. You saved a **Heartseed** from the roots of a dying tree (plant to create a a new forest). Also, take **Iron Bracers** (+1 Armor, _bulky_).",
           "items": [
             {
               "name": "Heartseed",
@@ -100,11 +100,11 @@
         },
         {
           "pets": ["Hollow Wolf"],
-          "description": "A hollow wolf that had been frightening travelers. You took pity on the half-starved creature and nursed it back to health. Now it is loyal to you unto death. It is also a great tunneler. 5 HP, 11 STR, 13 DEX, 8 WIL, teeth (d6).",
+          "description": "A _hollow wolf_ that had been frightening travelers. You took pity on the half-starved creature and nursed it back to health. Now it is loyal to you unto death. It is also a great tunneler. 5 HP, 11 STR, 13 DEX, 8 WIL, teeth (d6).",
           "items": []
         },
         {
-          "description": "An azure warbler. The gametes attract a sizeable profit, if properly extracted. You succeeded but left its nest to the wolves. Take a Paring Knife (d6), an extra 20gp, and a pang of regret.",
+          "description": "An _azure warbler_. The gametes attract a sizeable profit, if properly extracted. You succeeded but left its nest to the wolves. Take a **Paring Knife** (d6), **an extra 20gp**, and a pang of regret.",
           "items": [
             {
               "name": "Paring Knife",
@@ -119,7 +119,7 @@
       "question": "What tool is always in your pack?",
       "options": [
         {
-          "description": "Fermented Spirits: Keeps you warm at the best of times and as an explosive at the worst. 3 Uses.",
+          "description": "**Fermented Spirits**: Keeps you warm at the best of times and as an explosive at the worst. 3 Uses.",
           "items": [
             {
               "name": "Fermented Spirits",
@@ -130,7 +130,7 @@
           ]
         },
         {
-          "description": "Trail Shaker: A noisy instrument that reveals nearby trails, even when deeply hidden.",
+          "description": "**Trail Shaker**: A noisy instrument that reveals nearby trails, even when deeply hidden.",
           "items": [
             {
               "name": "Trail Shaker",
@@ -140,7 +140,7 @@
           ]
         },
         {
-          "description": "Drowse Balm: A wax bar. If boiled in water, the steam acts as a soporific agent.",
+          "description": "**Drowse Balm**: A wax bar. If boiled in water, the steam acts as a soporific agent.",
           "items": [
             {
               "name": "Drowse Balm",
@@ -150,7 +150,7 @@
           ]
         },
         {
-          "description": "Spike and Cord: For traversing difficult terrain or for creating makeshift traps and structures.",
+          "description": "**Spike and Cord**: For traversing difficult terrain or for creating makeshift traps and structures.",
           "items": [
             {
               "name": "Spike and Cord",
@@ -160,7 +160,7 @@
           ]
         },
         {
-          "description": "Iron Rattle: A noisemaker for distracting or scaring your quarry. Sounds convincingly like a snake.",
+          "description": "**Iron Rattle**: A noisemaker for distracting or scaring your quarry. Sounds convincingly like a snake.",
           "items": [
             {
               "name": "Iron Rattle",
@@ -170,7 +170,7 @@
           ]
         },
         {
-          "description": "Hardening Glue: Makes any flat material (cloth, leather, sand) as hard as stone. Expensive (20gp a bottle, 3 uses).",
+          "description": "**Hardening Glue**: Makes any flat material (cloth, leather, sand) as hard as stone. Expensive (20gp a bottle, 3 uses).",
           "items": [
             {
               "name": "Hardening Glue",

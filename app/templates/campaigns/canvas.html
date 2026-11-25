@@ -42,7 +42,8 @@
   <p><a :href="playerPin.url">{{ _('Open on the party’s map') }} →</a> <button type="button" class="link-button" @click="selectedPlayerPin=''">{{ _('Close') }}</button></p>
 </section></template>
 {% endif %}
-{% if not sketch %}
+{# The map's Pins, under it; a page that lists them beside the map (the wiki, #528) sets pins_in_aside. #}
+{% if not sketch and not pins_in_aside %}
 <section class="map-pins" aria-labelledby="map-pins-title">
 <h2 id="map-pins-title"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ _('Pins') }} <small x-text="graph.nodes.length"></small></h2>
 <p class="wiki-empty" x-show="!graph.nodes.length">{% if editing %}{{ _('No pins yet. Add pin, then click the map where it goes.') }}{% else %}{{ _('No pins on this map.') }}{% endif %}</p>

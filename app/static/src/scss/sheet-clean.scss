@@ -127,7 +127,8 @@ $soft-fill: color-mix(in srgb, var(--fg) 5%, transparent);
     min-height: 3.6rem; border: 1px solid $hairline; border-radius: 8px; box-shadow: none; background: transparent;
     font-size: 1.4rem; font-weight: 700;
   }
-  .party-header-actions .button:hover, &#party-form .party-header-actions a.button:hover { border-color: var(--fg); background: $soft-fill; }
+  // Keep the text's colour: the site's .button:hover inverts it, unreadable on this light fill (#531).
+  .party-header-actions .button:hover, &#party-form .party-header-actions a.button:hover { border-color: var(--fg); background: $soft-fill; color: var(--fg); }
 
   // Compact / Cards / Connected only: a light segmented control.
   .party-view-controls { border-color: $hairline; border-radius: 999px; overflow: hidden; }

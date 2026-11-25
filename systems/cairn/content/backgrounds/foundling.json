@@ -49,7 +49,7 @@
       "question": "Who took you in?",
       "options": [
         {
-          "description": "An old hunter. You were both quite happy, until it all ended. Take a Weathered Longbow (d8, bulky) and a Leather Jerkin (1 Armor).",
+          "description": "An old hunter. You were both quite happy, until it all ended. Take a **Weathered Longbow** (d8, _bulky_) and a **Leather Jerkin** (1 Armor).",
           "items": [
             {
               "name": "Weathered Longbow",
@@ -62,7 +62,7 @@
           ]
         },
         {
-          "description": "A wizened apothecary, who taught you the healing arts but maintained a clinical detachment. Take a Healing Unguent (restores d4 STR).",
+          "description": "A wizened apothecary, who taught you the healing arts but maintained a clinical detachment. Take a **Healing Unguent** (restores d4 STR).",
           "items": [
             {
               "name": "Healing Unguent",
@@ -73,7 +73,7 @@
           ]
         },
         {
-          "description": "A druid, who taught you the language of trees. When it came time to leave, you took with you only a Gnarled Staff (d8) and left a promise that one day you would return.",
+          "description": "A druid, who taught you the language of trees. When it came time to leave, you took with you only a **Gnarled Staff** (d8) and left a promise that one day you would return.",
           "items": [
             {
               "name": "Gnarled Staff",
@@ -82,7 +82,7 @@
           ]
         },
         {
-          "description": "A gruff blacksmith from a sleepy river town. You were always kept at arm's length. Now the forge is cold, and you've moved on. Take a Smith's Apron (petty) and a set of Oft-mended Chain Mail (2 Armor, bulky).",
+          "description": "A gruff blacksmith from a sleepy river town. You were always kept at arm's length. Now the forge is cold, and you've moved on. Take a **Smith's Apron** (_petty_) and a set of **Oft-mended Chain Mail** (2 Armor, _bulky_).",
           "items": [
             {
               "name": "Smith's Apron",
@@ -95,7 +95,7 @@
           ]
         },
         {
-          "description": "A troupe of traveling entertainers. For a time, they were like family to you. One day you woke up and they were gone with no explanation. Take a Storybook, a Dagger (d6), and some burning questions.",
+          "description": "A troupe of traveling entertainers. For a time, they were like family to you. One day you woke up and they were gone with no explanation. Take a **Storybook**, a **Dagger** (d6), and some burning questions.",
           "items": [
             {
               "name": "Storybook",
@@ -108,7 +108,7 @@
           ]
         },
         {
-          "description": "The monks of a secluded forest monastery. When their rules became too strict, and you snuck away. Take a Monk's Habit (warm, petty) and a Spellbook of Control Plants.",
+          "description": "The monks of a secluded forest monastery. When their rules became too strict, and you snuck away. Take a **Monk's Habit** (warm, _petty_) and a **Spellbook** of _Control Plants_.",
           "items": [
             {
               "name": "Monk's Habit",
@@ -128,7 +128,7 @@
       "question": "What keeps bad tidings at bay?",
       "options": [
         {
-          "description": "Pipeweed: Your good luck charm. Conversations tend to flow more easily after a smoke. 6 uses.",
+          "description": "**Pipeweed**: Your good luck charm. Conversations tend to flow more easily after a smoke. 6 uses.",
           "items": [
             {
               "name": "Pipeweed",
@@ -139,7 +139,7 @@
           ]
         },
         {
-          "description": "Stink Jar: Shattering this jar releases an odor so foul all nearby must make a STR save or immediately vomit. 1 use.",
+          "description": "**Stink Jar**: Shattering this jar releases an odor so foul all nearby must make a STR save or immediately vomit. 1 use.",
           "items": [
             {
               "name": "Stink Jar",
@@ -150,7 +150,7 @@
           ]
         },
         {
-          "description": "Ivy Worm: A green worm often mistaken for a weed. Swallowed whole, it absorbs any toxins or rot in the body before exiting through the usual way.",
+          "description": "**Ivy Worm**: A green worm often mistaken for a weed. Swallowed whole, it absorbs any toxins or rot in the body before exiting through the usual way.",
           "items": [
             {
               "name": "Ivy Worm",
@@ -160,7 +160,7 @@
           ]
         },
         {
-          "description": "Dream Stone: A smooth blue stone that helps recall dreams more clearly. Overuse can cause dream-addiction.",
+          "description": "**Dream Stone**: A smooth blue stone that helps recall dreams more clearly. Overuse can cause dream-addiction.",
           "items": [
             {
               "name": "Dream Stone",
@@ -170,7 +170,7 @@
           ]
         },
         {
-          "description": "Drowning Rod: A finger-sized wooden stick that doubles in size each time it is fully submerged in water. It does not shrink down again.",
+          "description": "**Drowning Rod**: A finger-sized wooden stick that doubles in size each time it is fully submerged in water. It does not shrink down again.",
           "items": [
             {
               "name": "Drowning Rod",
@@ -180,7 +180,7 @@
           ]
         },
         {
-          "description": "Rabbit's Foot: You were wearing it when they found you. They say it is the foot of she who left you and that it protects you from witch magic. Petty.",
+          "description": "**Rabbit's Foot**: You were wearing it when they found you. They say it is the foot of she who left you and that it protects you from witch magic. _Petty_.",
           "items": [
             {
               "name": "Rabbit's Foot",

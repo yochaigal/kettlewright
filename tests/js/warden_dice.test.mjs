@@ -41,7 +41,7 @@ function roller(active = '1') {
     ownRolls: {track: request => request},  // own_rolls.js: hides the party's echo of this tab's roll.
   });
   const source = readFileSync(new URL('../../app/static/src/js/warden_dice.js', import.meta.url), 'utf8')
-    .replace(/^import .*;\n/gm, '').replace('export async function', 'async function');
+    .replace(/^import .*;\n/gm, '').replace(/^export /gm, '');
   vm.runInContext(source, context);
   return {context, buttons, result, select, requests, stored, publicToggle, modal};
 }
@@ -86,10 +86,12 @@ test('stale active party falls back to no party', () => {
   assert.equal(publicToggle.checked, false);
 });
 
-test('public mode requires an explicit choice and resets when the party is cleared', async () => {
-  const {context, publicToggle, requests, select} = roller();
+test('the Warden\'s dice start private, remember the Warden\'s choice, and are never public without a party (#539)', async () => {
+  const {context, publicToggle, requests, select, stored} = roller();
   assert.equal(publicToggle.checked, false);
   publicToggle.checked = true;
+  publicToggle.listeners.change();
+  assert.equal(stored.get('warden-public-warden'), 'true');
   await context.requestWardenRoll('fate');
   assert.equal(requests[0].body.get('public_roll'), 'on');
   select.value = '';
@@ -99,7 +101,8 @@ test('public mode requires an explicit choice and resets when the party is clear
   select.value = '1';
   select.listeners.change();
   assert.equal(publicToggle.disabled, false);
-  assert.equal(publicToggle.checked, false);
+  assert.equal(publicToggle.checked, true);  // Remembered.
+  assert.equal(roller().publicToggle.checked, false);  // A new browser: private.
 });
 
 test('pending roll prevents duplicate submission and unlocks controls on failure', async () => {
@@ -131,13 +134,24 @@ test('monster shortcuts keep actor, save and visibility separate from Warden rol
   assert.equal(requests[0].body.get('companion_id'), '7');
   assert.equal(requests[0].body.get('save'), 'strength');
   assert.equal(requests[0].body.get('dice'), 'd20');
-  assert.equal(requests[0].body.has('public_roll'), false);
-  publicToggle.checked = true;
+  assert.equal(requests[0].body.get('public_roll'), 'on');  // A monster's roll is combat: public (#539).
   await context.requestWardenRoll('dice', 'd8');
   assert.equal(requests[1].body.has('save'), false);
   assert.equal(requests[1].body.get('public_roll'), 'on');
-  buttons[0].listeners.click();
+  buttons[0].listeners.click();  // The Warden's own dice: private, whatever monsters do.
   await context.requestWardenRoll('dice', 'd6');
   assert.equal(requests[2].body.has('companion_id'), false);
   assert.equal(requests[2].body.has('public_roll'), false);
+});
+
+test('turning a monster\'s rolls private is remembered for the next monster roll (#539)', async () => {
+  const {context, requests, publicToggle, stored} = roller();
+  const monster = {dataset: {monsterRoll: '7', dice: 'd8', rollUrl: '/party/1/shared-map/roll'}};
+  await context.document.listeners.click({target: {closest: () => monster}});
+  publicToggle.checked = false;
+  publicToggle.listeners.change();
+  assert.equal(stored.get('warden-public-monster'), 'false');
+  await context.document.listeners.click({target: {closest: () => monster}});
+  assert.equal(requests[1].body.has('public_roll'), false);
+  assert.equal(stored.get('warden-public-warden'), undefined);  // The Warden's own dice keep theirs.
 });

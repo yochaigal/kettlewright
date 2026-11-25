@@ -2442,13 +2442,13 @@ msgstr "Що пішло геть не так?"
 
 #: app/static/json/backgrounds/aurifex.json:46
 msgid ""
-"There was an explosion, and you lost your sense of smell. Well, almost: you "
-"can sniff out gold as a pig does truffles. Take a Tin of Snuff to dampen the "
-"impact. Use it every day or become deprived."
+"There was an explosion, and you lost your sense of smell. Well, almost: "
+"you can sniff out gold as a pig does truffles. Take a **Tin of Snuff** to"
+" dampen the impact. Use it every day or become _deprived_."
 msgstr ""
-"Стався вибух, і ви втратили нюх. Ну, майже: ви можете винюхувати золото, як "
-"свиня трюфелі. Візьміть Бляшанку нюхального тютюну, щоб пом’якшити наслідки. "
-"Використовуйте її щодня, інакше отримаєте стан Позбавлення."
+"Стався вибух, і ви втратили нюх. Ну, майже: ви можете винюхувати золото, "
+"як свиня трюфелі. Візьміть Бляшанку нюхального тютюну, щоб пом’якшити "
+"наслідки. Використовуйте її щодня, інакше отримаєте стан _Позбавлення_."
 
 #: app/static/json/backgrounds/aurifex.json:49
 msgid "Tin of Snuff"
@@ -2460,10 +2460,10 @@ msgstr "Використовуйте її щодня, інакше отрима�
 
 #: app/static/json/backgrounds/aurifex.json:57
 msgid ""
-"You dematerialized a beloved pet. Now it follows you around, invisible but "
-"always present. Although it cannot interact with the physical realm, you are "
-"able to share its senses. (Add a Fatigue each time.) It follows basic "
-"commands."
+"You dematerialized a beloved pet. Now it follows you around, invisible "
+"but always present. Although it cannot interact with the physical realm, "
+"you are able to share its senses. (Add a **Fatigue** each time.) It "
+"follows basic commands."
 msgstr ""
 "Ви дематеріалізували улюблену тваринку. Тепер вона всюди ходить за вами — "
 "невидима, але завжди присутня. Хоч вона не може взаємодіяти з фізичним "
@@ -2481,13 +2481,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/aurifex.json:63
 msgid ""
-"You were adept at creating fake gold, which is almost as good. Eventually, "
-"your ruse was discovered, and you had to make a hasty retreat. Take a heavy "
-"Metal Ingot and Gold Powder."
+"You were adept at creating _fake_ gold, which is almost as good. "
+"Eventually, your ruse was discovered, and you had to make a hasty "
+"retreat. Take a heavy **Metal Ingot** and **Gold Powder**."
 msgstr ""
-"Ви вправно виготовляли фальшиве золото — воно майже не гірше за справжнє. "
-"Зрештою ваш обман викрили, і вам довелося спішно тікати. Візьміть важкий "
-"Металевий зливок і Золотий порошок."
+"Ви вправно виготовляли фальшиве золото — воно майже не гірше за справжнє."
+" Зрештою ваш обман викрили, і вам довелося спішно тікати. Візьміть важкий"
+" **Металевий зливок** і **Золотий порошок**."
 
 #: app/static/json/backgrounds/aurifex.json:66
 msgid "Metal Ingot"
@@ -2499,9 +2499,9 @@ msgstr "Золотий порошок"
 
 #: app/static/json/backgrounds/aurifex.json:77
 msgid ""
-"Your alchemical recipe worked, but a rival stole the blueprint before your "
-"claims could be proven. Take a prototype Blunderbuss that takes one round to "
-"reload, and a thirst for revenge."
+"Your alchemical recipe worked, but a rival stole the blueprint before "
+"your claims could be proven. Take a prototype **Blunderbuss** that takes "
+"one round to reload, and a thirst for revenge."
 msgstr ""
 "Ваш алхімічний рецепт спрацював, але суперник викрав креслення, перш ніж ви "
 "змогли довести своє авторство. Візьміть прототип Мушкетона, що "
@@ -2517,9 +2517,9 @@ msgstr "Перезаряджається один раунд"
 
 #: app/static/json/backgrounds/aurifex.json:87
 msgid ""
-"Ridiculed for discovering how to turn gold into lead, you were a laughing "
-"stock. Take a bottle of Universal Solvent that dissolves anything it touches "
-"into its constituent parts."
+"Ridiculed for discovering how to turn gold into _lead_, you were a "
+"laughing stock. Take a bottle of **Universal Solvent** that dissolves "
+"anything it touches into its constituent parts."
 msgstr ""
 "Вас висміяли за відкриття способу перетворювати золото на свинець — ви стали "
 "посміховиськом. Візьміть пляшку Універсального розчинника, що розчиняє все, "
@@ -2535,11 +2535,11 @@ msgstr "Яке алхімічне диво є плодом вашої остан
 
 #: app/static/json/backgrounds/aurifex.json:102
 msgid ""
-"Pyrophoric Gel: A sticky green fluid that catches fire when exposed to air. "
-"It lasts for 8 hours and cannot be extinguished."
+"**Pyrophoric Gel**: A sticky green fluid that catches fire when exposed "
+"to air. It lasts for 8 hours and cannot be extinguished."
 msgstr ""
-"Пірофорний гель: липка зелена рідина, що займається на повітрі. Горить 8 "
-"годин, і її неможливо загасити."
+"**Пірофорний гель**: липка зелена рідина, що займається на повітрі. "
+"Горить 8 годин, і її неможливо загасити."
 
 #: app/static/json/backgrounds/aurifex.json:105
 msgid "Pyrophoric Gel"
@@ -2559,19 +2559,19 @@ msgstr "Вибухова сфера"
 
 #: app/static/json/backgrounds/aurifex.json:120
 msgid ""
-"Aqua Vita: Purifies any liquid, converting it to pure water. Drinking it "
-"cures 1d6 STR."
+"**Aqua Vita**: Purifies any liquid, converting it to pure water. Drinking"
+" it cures 1d6 STR."
 msgstr ""
-"Аквавіта: очищує будь-яку рідину, перетворюючи її на чисту воду. Якщо її "
-"випити, відновлює 1к6 СИЛ."
+"**Аквавіта**: очищує будь-яку рідину, перетворюючи її на чисту воду. Якщо"
+" її випити, відновлює 1к6 СИЛ."
 
 #: app/static/json/backgrounds/aurifex.json:123
 msgid "Aqua Vita"
 msgstr "Аквавіта"
 
 #: app/static/json/backgrounds/aurifex.json:130
-msgid "Mimic Stone: Records a short phrase that can later be played back."
-msgstr "Камінь-імітатор: записує коротку фразу, яку потім можна відтворити."
+msgid "**Mimic Stone**: Records a short phrase that can later be played back."
+msgstr "**Камінь-імітатор**: записує коротку фразу, яку потім можна відтворити."
 
 #: app/static/json/backgrounds/aurifex.json:133
 msgid "Mimic Stone"
@@ -2583,11 +2583,11 @@ msgstr "Записує коротку фразу, яку потім можна �
 
 #: app/static/json/backgrounds/aurifex.json:140
 msgid ""
-"Spark Dust: Ignites easily and quickly. Useful for starting a fire or as an "
-"incendiary device."
+"**Spark Dust**: Ignites easily and quickly. Useful for starting a fire or"
+" as an incendiary device."
 msgstr ""
-"Іскровий пил: займається легко та швидко. Корисний для розпалювання вогню "
-"або як запальний засіб."
+"**Іскровий пил**: займається легко та швидко. Корисний для розпалювання "
+"вогню або як запальний засіб."
 
 #: app/static/json/backgrounds/aurifex.json:143
 msgid "Spark Dust"
@@ -2595,15 +2595,15 @@ msgstr "Іскровий пил"
 
 #: app/static/json/backgrounds/aurifex.json:150
 msgid ""
-"Homunculus: A miniature clay replica of yourself that follows your every "
-"command. It hates being enthralled to you and complains bitterly whenever "
-"possible. Any damage done to the homunculus is also done to you. 3 HP, 4 "
-"STR, 13 DEX, 5 WIL."
+"**Homunculus**: A miniature clay replica of yourself that follows your "
+"every command. It hates being enthralled to you and complains bitterly "
+"whenever possible. Any damage done to the homunculus is also done to you."
+" 3 HP, 4 STR, 13 DEX, 5 WIL."
 msgstr ""
-"Гомункул: мініатюрна глиняна копія вас самих, що виконує кожен ваш наказ. "
-"Він ненавидить своє рабство у вас і гірко скаржиться за кожної нагоди. Будь-"
-"які пошкодження, завдані гомункулу, зазнаєте і ви. 3 ПЗ, 4 СИЛ, 13 СПР, 5 "
-"ВОЛ."
+"**Гомункул**: мініатюрна глиняна копія вас самих, що виконує кожен ваш "
+"наказ. Він ненавидить своє рабство у вас і гірко скаржиться за кожної "
+"нагоди. Будь-які пошкодження, завдані гомункулу, зазнаєте і ви. 3 ПЗ, 4 "
+"СИЛ, 13 СПР, 5 ВОЛ."
 
 #: app/static/json/backgrounds/aurifex.json:153
 msgid "Homunculus"
@@ -2656,23 +2656,24 @@ msgstr "Як ви себе «вдосконалили»?"
 
 #: app/static/json/backgrounds/barber-surgeon.json:54
 msgid ""
-"You have a replacement eye that can magnify objects, act as a telescope, and "
-"provide minimal night vision. You cannot wear anything metal on your head, "
-"and the presence of strong magnets make you deprived."
+"You have a replacement **eye** that can magnify objects, act as a "
+"telescope, and provide minimal night vision. You cannot wear anything "
+"metal on your head, and the presence of strong magnets make you "
+"_deprived_."
 msgstr ""
 "У вас є штучне око, що може збільшувати предмети, працювати як підзорна "
-"труба й давати слабкий нічний зір. Ви не можете носити нічого металевого на "
-"голові, а поблизу сильних магнітів отримуєте стан Позбавлення."
+"труба й давати слабкий нічний зір. Ви не можете носити нічого металевого "
+"на голові, а поблизу сильних магнітів отримуєте стан _Позбавлення_."
 
 #: app/static/json/backgrounds/barber-surgeon.json:58
 msgid ""
-"One foot is mostly metal (kick, d6), and you treat some tough terrain as "
-"Easy. Carry an Oil Can (6 uses). Without a daily application, you are "
-"deprived and noisy."
+"One **foot** is mostly metal (kick, d6), and you treat some tough terrain"
+" as **Easy**. Carry an **Oil Can** (6 uses). Without a daily application,"
+" you are _deprived_ and noisy."
 msgstr ""
-"Одна ступня майже повністю металева (копняк, к6), і деяку складну місцевість "
-"ви долаєте як легку. Носіть Бляшанку з маслом (6 використань). Без щоденного "
-"змащування ви в стані Позбавлення й шумите."
+"Одна ступня майже повністю металева (копняк, к6), і деяку складну "
+"місцевість ви долаєте як легку. Носіть Бляшанку з маслом (6 використань)."
+" Без щоденного змащування ви в стані _Позбавлення_ й шумите."
 
 #: app/static/json/backgrounds/barber-surgeon.json:64
 msgid "Without a daily application you are deprived and noisy."
@@ -2680,8 +2681,8 @@ msgstr "Без щоденного змащування ви в стані Поз
 
 #: app/static/json/backgrounds/barber-surgeon.json:69
 msgid ""
-"One of your fingers has been swapped, the bone replaced by gold and iron. "
-"Take a Hook and a Screwdriver that can attach to the fingertip."
+"One of your fingers has been swapped, the bone replaced by gold and iron."
+" Take a **Hook** and a **Screwdriver** that can attach to the fingertip."
 msgstr ""
 "Один із ваших пальців замінено: кістку в ньому заступили золото й залізо. "
 "Візьміть Гачок і Викрутку, що кріпляться до кінчика пальця."
@@ -2696,10 +2697,10 @@ msgstr "Кріпиться до механічного пальця."
 
 #: app/static/json/backgrounds/barber-surgeon.json:79
 msgid ""
-"Both ears have been surgically enhanced, tripling your hearing. You can "
-"focus on a specific sound, such as a conversation, at a great distance. You "
-"wear an ear flap to protect against sudden loud noises (WIL save to avoid "
-"temporary paralysis)."
+"Both **ears** have been surgically enhanced, tripling your hearing. You "
+"can focus on a specific sound, such as a conversation, at a great "
+"distance. You wear an ear flap to protect against sudden loud noises (WIL"
+" save to avoid temporary paralysis)."
 msgstr ""
 "Обидва ваші вуха хірургічно вдосконалено, що втричі посилило слух. Ви можете "
 "зосередитися на конкретному звуці, як-от розмові, на великій відстані. Ви "
@@ -2708,8 +2709,8 @@ msgstr ""
 
 #: app/static/json/backgrounds/barber-surgeon.json:83
 msgid ""
-"Your chest is lined with alchemical sigils, toughening the skin (Armor 1). "
-"Wearing other metallic armor nullifies the effect."
+"Your **chest** is lined with alchemical sigils, _toughening the skin_ "
+"(Armor 1). Wearing other metallic armor nullifies the effect."
 msgstr ""
 "Ваші груди вкриті алхімічними сигілами, що зміцнюють шкіру (1 Броні). "
 "Носіння іншої металевої броні скасовує ефект."
@@ -2726,12 +2727,12 @@ msgstr ""
 
 #: app/static/json/backgrounds/barber-surgeon.json:93
 msgid ""
-"One arm is fully metal and comes off at the shoulder. It can be used as a "
-"weapon (d8, bulky when not attached) and can move independently if you are "
-"within sight of it."
+"One **arm** is fully metal and comes off at the shoulder. It can be used "
+"as a weapon (d8, _bulky_ when not attached) and can move independently if"
+" you are within sight of it."
 msgstr ""
 "Одна рука повністю металева й від’єднується біля плеча. Її можна "
-"використовувати як зброю (к8, громіздке, коли від’єднана), і вона може "
+"використовувати як зброю (к8, _громіздке_, коли від’єднана), і вона може "
 "рухатися самостійно, якщо ви бачите її."
 
 #: app/static/json/backgrounds/barber-surgeon.json:99
@@ -2739,8 +2740,8 @@ msgid "What rare tool is essential to your work?"
 msgstr "Який рідкісний інструмент необхідний для вашої роботи?"
 
 #: app/static/json/backgrounds/barber-surgeon.json:102
-msgid "Regrowth Salve: Regrows a body part over the course of a day. 1 use."
-msgstr "Мазь відрощення: відрощує частину тіла протягом дня. 1 використання."
+msgid "**Regrowth Salve**: Regrows a body part over the course of a day. 1 use."
+msgstr "**Мазь відрощення**: відрощує частину тіла протягом дня. 1 використання."
 
 #: app/static/json/backgrounds/barber-surgeon.json:105
 msgid "Regrowth Salve"
@@ -2752,11 +2753,11 @@ msgstr "Відрощує частину тіла протягом дня."
 
 #: app/static/json/backgrounds/barber-surgeon.json:113
 msgid ""
-"Graftgrub: A small worm that can fuse inanimate objects with parts of the "
-"body. 1 use."
+"**Graftgrub**: A small worm that can fuse inanimate objects with parts of"
+" the body. 1 use."
 msgstr ""
-"Черв’як-приживлювач: маленький черв’як, що може зрощувати неживі предмети з "
-"частинами тіла. 1 використання."
+"**Черв’як-приживлювач**: маленький черв’як, що може зрощувати неживі "
+"предмети з частинами тіла. 1 використання."
 
 #: app/static/json/backgrounds/barber-surgeon.json:116
 msgid "Graftgrub"
@@ -2768,11 +2769,11 @@ msgstr "Зрощує неживі предмети з частинами тіл�
 
 #: app/static/json/backgrounds/barber-surgeon.json:124
 msgid ""
-"Woundwax: Heals wounds from fire or chemicals (restoring full STR) but "
-"nothing else. 2 uses."
+"**Woundwax**: Heals wounds from fire or chemicals (restoring full STR) "
+"but nothing else. 2 uses."
 msgstr ""
-"Рановіск: зцілює рани від вогню чи хімікатів (повністю відновлюючи СИЛ), але "
-"нічого більше. 2 використання."
+"**Рановіск**: зцілює рани від вогню чи хімікатів (повністю відновлюючи "
+"СИЛ), але нічого більше. 2 використання."
 
 #: app/static/json/backgrounds/barber-surgeon.json:127
 msgid "Woundwax"
@@ -2784,14 +2785,14 @@ msgstr "Зцілює рани від вогню чи хімікатів, пов�
 
 #: app/static/json/backgrounds/barber-surgeon.json:135
 msgid ""
-"Quicksilver: A stimulant. Go first in combat, and automatically pass any WIL "
-"saves for one hour. Addictive: Save STR or become deprived after 24 hours "
-"without it. 4 uses."
+"**Quicksilver**: A stimulant. Go first in combat, and automatically pass "
+"any WIL saves for one hour. _Addictive_: Save STR or become _deprived_ "
+"after 24 hours without it. 4 uses."
 msgstr ""
-"Живе срібло: стимулятор. Протягом години ви дієте в бою першими та "
+"**Живе срібло**: стимулятор. Протягом години ви дієте в бою першими та "
 "автоматично проходите всі перевірки ВОЛ. Викликає залежність: пройдіть "
-"перевірку СИЛ, інакше через 24 години без нього отримаєте стан Позбавлення. "
-"4 використання."
+"перевірку СИЛ, інакше через 24 години без нього отримаєте стан "
+"_Позбавлення_. 4 використання."
 
 #: app/static/json/backgrounds/barber-surgeon.json:138
 msgid "Quicksilver"
@@ -2808,11 +2809,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/barber-surgeon.json:146
 msgid ""
-"Pneuma Pump: Portable iron lungs (bulky). Enables life-saving surgery or "
-"underwater breathing."
+"**Pneuma Pump**: Portable iron lungs (_bulky_). Enables life-saving "
+"surgery or underwater breathing."
 msgstr ""
-"Пневмопомпа: переносні залізні легені (громіздке). Уможливлює рятівну "
-"операцію або дихання під водою."
+"**Пневмопомпа**: переносні залізні легені (_громіздке_). Уможливлює "
+"рятівну операцію або дихання під водою."
 
 #: app/static/json/backgrounds/barber-surgeon.json:149
 msgid "Pneuma Pump"
@@ -2827,10 +2828,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/barber-surgeon.json:156
 msgid ""
-"Lodestone: Draws out dangerous elements from the body and acts as a powerful "
-"magnetic force."
+"**Lodestone**: Draws out dangerous elements from the body and acts as a "
+"powerful magnetic force."
 msgstr ""
-"Магнетит: витягує небезпечні речовини з тіла й діє як потужна магнітна сила."
+"**Магнетит**: витягує небезпечні речовини з тіла й діє як потужна "
+"магнітна сила."
 
 #: app/static/json/backgrounds/barber-surgeon.json:159
 msgid "Lodestone"
@@ -2879,10 +2881,10 @@ msgstr "Які створіння — ваша спеціальність?"
 
 #: app/static/json/backgrounds/beast-handler.json:53
 msgid ""
-"Arachnids: Take a Quick-Flame Rod and an Oil Can (6 uses). It can destroy a "
-"large spider nest in seconds."
+"**Arachnids**: Take a **Quick-Flame Rod** and an **Oil Can** (6 uses). It"
+" can destroy a large spider nest in seconds."
 msgstr ""
-"Павукоподібні: візьміть Швидковогняний жезл і Бляшанку з маслом (6 "
+"Павукоподібні: візьміть **Швидковогняний жезл** і Бляшанку з маслом (6 "
 "використань). Він може знищити велике павуче гніздо за лічені секунди."
 
 #: app/static/json/backgrounds/beast-handler.json:56
@@ -2895,8 +2897,8 @@ msgstr "Може знищити велике павуче гніздо за лі
 
 #: app/static/json/backgrounds/beast-handler.json:69
 msgid ""
-"Felines: Take a sack of Whiskerwort. Its odor can calm and control even the "
-"largest of cats."
+"**Felines**: Take a sack of **Whiskerwort**. Its odor can calm and "
+"control even the largest of cats."
 msgstr ""
 "Котячі: візьміть мішечок Вусотрави. Її запах може заспокоїти й приборкати "
 "навіть найбільших котів."
@@ -2911,8 +2913,8 @@ msgstr "Її запах може заспокоїти й приборкати н
 
 #: app/static/json/backgrounds/beast-handler.json:79
 msgid ""
-"Canines: Take a wreath of Wolfsbane and a Large Net. Effective against "
-"werewolves as well."
+"**Canines**: Take a wreath of **Wolfsbane** and a **Large Net**. "
+"Effective against werewolves as well."
 msgstr ""
 "Псові: візьміть вінок Тої (Вовкобою) і Велику сітку. Дієво також проти "
 "вовкулак."
@@ -2931,13 +2933,14 @@ msgstr "Велика сітка"
 
 #: app/static/json/backgrounds/beast-handler.json:93
 msgid ""
-"Birds: Take a Warble-Whistle (3 charges). It can imitate any bird call and "
-"can even be used to send simple messages. Recharge: Feed a baby bird as its "
-"mother would, then blow."
+"**Birds**: Take a **Warble-Whistle** (3 charges). It can imitate any bird"
+" call and can even be used to send simple messages. **Recharge**: Feed a "
+"baby bird as its mother would, then blow."
 msgstr ""
-"Птахи: візьміть Щебет-свисток (3 заряди). Він може імітувати будь-який "
-"пташиний спів і навіть передавати прості повідомлення. Перезарядження: "
-"нагодуйте пташеня, як це зробила б його мати, а тоді подміть у свисток."
+"Птахи: візьміть **Щебет-свисток** (3 заряди). Він може імітувати "
+"будь-який пташиний спів і навіть передавати прості повідомлення. "
+"Перезарядження: нагодуйте пташеня, як це зробила б його мати, а тоді "
+"подміть у свисток."
 
 #: app/static/json/backgrounds/beast-handler.json:96
 msgid "Warble-Whistle"
@@ -2954,8 +2957,9 @@ msgstr ""
 
 #: app/static/json/backgrounds/beast-handler.json:105
 msgid ""
-"Rodents: Take a Pan Flute that emits a high-pitched sound that only rodents "
-"can hear. So long as you play, they will follow, even to their deaths."
+"**Rodents**: Take a **Pan Flute** that emits a high-pitched sound that "
+"only rodents can hear. So long as you play, they will follow, even to "
+"their deaths."
 msgstr ""
 "Гризуни: візьміть Флейту Пана, що видає високий звук, який чують лише "
 "гризуни. Поки ви граєте, вони йтимуть за вами — навіть на смерть."
@@ -2974,11 +2978,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/beast-handler.json:115
 msgid ""
-"Serpents: Take a Warming Stone that generates an irresistible heat and a "
-"vial of Antitoxin (2 uses)."
+"**Serpents**: Take a **Warming Stone** that generates an irresistible "
+"heat and a vial of **Antitoxin** (2 uses)."
 msgstr ""
-"Змії: візьміть Гріючий камінь, що випромінює непереборно привабливе тепло, і "
-"флакон Антитоксину (2 використання)."
+"Змії: візьміть **Гріючий камінь**, що випромінює непереборно привабливе "
+"тепло, і флакон Антитоксину (2 використання)."
 
 #: app/static/json/backgrounds/beast-handler.json:118
 msgid "Warming Stone"
@@ -3001,33 +3005,33 @@ msgstr "Чого ви навчилися від диких створінь?"
 msgid ""
 "That there is far more to the world than meets the eye. With quiet "
 "concentration, you can borrow the senses of a nearby creature of your "
-"specialty."
+"**specialty**."
 msgstr ""
 "Що світ значно більший, ніж здається на перший погляд. Тихо зосередившись, "
 "ви можете позичити відчуття створіння вашої спеціальності поблизу."
 
 #: app/static/json/backgrounds/beast-handler.json:138
 msgid ""
-"That the behavior of beasts is a language in itself. When observing beasts "
-"of your specialty you gain insight into weather patterns and impending "
-"disasters."
+"That the behavior of beasts is a language in itself. When observing "
+"beasts of your **specialty** you gain insight into weather patterns and "
+"impending disasters."
 msgstr ""
 "Що поведінка звірів — це мова сама по собі. Спостерігаючи за звірами вашої "
 "спеціальності, ви розумієте погодні зміни та передчуваєте лиха."
 
 #: app/static/json/backgrounds/beast-handler.json:141
 msgid ""
-"That the pulse of the hunt is a powerful impulse. You have a sense for when "
-"predators, even those not of your specialty are near."
+"That the pulse of the hunt is a powerful impulse. You have a sense for "
+"when predators, even those **not of your specialty** are near."
 msgstr ""
 "Що пульс полювання — могутній порив. Ви відчуваєте, коли поблизу хижаки, "
 "навіть якщо вони не вашої спеціальності."
 
 #: app/static/json/backgrounds/beast-handler.json:144
 msgid ""
-"That the land is a language unto itself. Your chance of becoming lost in a "
-"terrain dominated by the beasts of your specialty is reduced by one step "
-"(e.g. 4-in-6 becomes 3-in-6)."
+"That the land is a language unto itself. Your chance of becoming lost in "
+"a terrain dominated by the beasts of your **specialty** is reduced by one"
+" step (e.g. 4-in-6 becomes 3-in-6)."
 msgstr ""
 "Що земля — це мова сама по собі. Ваш шанс заблукати в місцевості, де панують "
 "звірі вашої спеціальності, зменшується на один крок (напр., 4-із-6 стає 3-"
@@ -3036,8 +3040,8 @@ msgstr ""
 #: app/static/json/backgrounds/beast-handler.json:147
 msgid ""
 "That nature's symphony can be heard if you attune to its rhythm. When "
-"surrounded by creatures of your specialty, they can alert you to approaching "
-"danger before it arrives."
+"surrounded by creatures of your **specialty**, they can alert you to "
+"approaching danger before it arrives."
 msgstr ""
 "Що симфонію природи можна почути, якщо налаштуватися на її ритм. Коли вас "
 "оточують створіння вашої спеціальності, вони можуть попередити вас про "
@@ -3046,8 +3050,8 @@ msgstr ""
 #: app/static/json/backgrounds/beast-handler.json:150
 msgid ""
 "That survival is all about adaptability. Once per day, you may take on a "
-"simple feature from a creature of your specialty (webbed fingers, night "
-"vision, etc.). Add a Fatigue each time."
+"simple feature from a creature of your **specialty** (webbed fingers, "
+"night vision, etc.). Add a **Fatigue** each time."
 msgstr ""
 "Що виживання — це передусім пристосованість. Раз на день ви можете набути "
 "простої риси створіння вашої спеціальності (перетинчасті пальці, нічний зір "
@@ -3077,11 +3081,11 @@ msgstr "Що ви взяли в мертвих?"
 
 #: app/static/json/backgrounds/bonekeeper.json:50
 msgid ""
-"A crow-shaped amulet. You can ask a question of the dead but must add a "
-"Fatigue each time. They do not always speak truthfully."
+"A **crow-shaped amulet**. You can ask a question of the dead but must add"
+" a **Fatigue** each time. They do not always speak truthfully."
 msgstr ""
-"Амулет у формі ворони. Ви можете поставити мертвим запитання, але щоразу "
-"мусите додати Втому. Вони не завжди кажуть правду."
+"**Амулет у формі ворони**. Ви можете поставити мертвим запитання, але "
+"щоразу мусите додати Втому. Вони не завжди кажуть правду."
 
 #: app/static/json/backgrounds/bonekeeper.json:53
 msgid "Crow-shaped Amulet"
@@ -3097,10 +3101,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/bonekeeper.json:60
 msgid ""
-"A mortal wound from a freed revenant. You were healed, but the disfigurement "
-"has made you a pariah. You require neither air nor sustenance but are still "
-"subject to pain and death. Trapped between worlds, the dead see you as one "
-"of their own."
+"A **mortal wound** from a freed _revenant_. You were healed, but the "
+"disfigurement has made you a pariah. You require neither air nor "
+"sustenance but are still subject to pain and death. Trapped between "
+"worlds, the dead see you as one of their own."
 msgstr ""
 "Смертельна рана від звільненого ревенанта. Вас зцілили, але каліцтво зробило "
 "вас парією. Вам не потрібні ні повітря, ні харч, але біль і смерть вам досі "
@@ -3109,17 +3113,17 @@ msgstr ""
 #: app/static/json/backgrounds/bonekeeper.json:64
 #: app/static/json/backgrounds/bonekeeper.json:69
 msgid ""
-"A Blood Pail (bulky) from a local death-cult. Empty it to raise a servant "
-"built from whatever is buried below, with 6 HP, 1 Armor, 13 STR, 11 DEX, 4 "
-"WIL, and shard fists (d8+d8). Only one servant can be raised at a time. If "
-"destroyed, you permanently lose 1d4 STR. Recharge: Fill with the blood of a "
-"dying warrior."
+"A **Blood Pail** (_bulky_) from a local death-cult. Empty it to raise a "
+"servant built from whatever is buried below, with 6 HP, 1 Armor, 13 STR, "
+"11 DEX, 4 WIL, and shard fists (d8+d8). Only one servant can be raised at"
+" a time. If destroyed, you permanently lose 1d4 STR. **Recharge**: Fill "
+"with the blood of a dying warrior."
 msgstr ""
-"Відро крові (громіздке) від місцевого культу смерті. Вилийте його, щоб "
-"підняти слугу, складеного з того, що поховано внизу: 6 ПЗ, 1 Броні, 13 СИЛ, "
-"11 СПР, 4 ВОЛ і кулаки з уламків (к8+к8). Водночас можна підняти лише одного "
-"слугу. Якщо його знищать, ви назавжди втрачаєте 1к4 СИЛ. Перезарядження: "
-"наповніть кров’ю воїна, що помирає."
+"**Відро крові** (_громіздке_) від місцевого культу смерті. Вилийте його, "
+"щоб підняти слугу, складеного з того, що поховано внизу: 6 ПЗ, 1 Броні, "
+"13 СИЛ, 11 СПР, 4 ВОЛ і кулаки з уламків (к8+к8). Водночас можна підняти "
+"лише одного слугу. Якщо його знищать, ви назавжди втрачаєте 1к4 СИЛ. "
+"Перезарядження: наповніть кров’ю воїна, що помирає."
 
 #: app/static/json/backgrounds/bonekeeper.json:67
 msgid "Blood Pail"
@@ -3127,11 +3131,12 @@ msgstr "Відро крові"
 
 #: app/static/json/backgrounds/bonekeeper.json:74
 msgid ""
-"A burial wagon (+6 slots, slow) from your last job. It came with a stubborn "
-"old donkey (+4 slots, only +2 slots if pulling wagon)."
+"A **burial wagon** (+6 slots, _slow_) from your last job. It came with a "
+"stubborn old **donkey** (+4 slots, only +2 slots if pulling wagon)."
 msgstr ""
-"Похоронний віз (+6 слотів, повільний) з вашої останньої роботи. У комплекті "
-"— впертий старий віслюк (+4 слоти; лише +2 слоти, якщо тягне воза)."
+"**Похоронний віз** (+6 слотів, _повільний_) з вашої останньої роботи. У "
+"комплекті — впертий старий **віслюк** (+4 слоти; лише +2 слоти, якщо "
+"тягне воза)."
 
 #: app/static/json/backgrounds/bonekeeper.json:78
 msgid "Burial Wagon"
@@ -3145,13 +3150,13 @@ msgstr "Віслюк"
 
 #: app/static/json/backgrounds/bonekeeper.json:87
 msgid ""
-"The Detect Magic spellbook, stolen from an ancient library. Your family "
-"worked in service to an obscure underworld deity, but you lost your faith. "
-"Though exiled, you continue to serve, even as an apostate."
+"The **Detect Magic** spellbook, stolen from an ancient library. Your "
+"family worked in service to an obscure underworld deity, but you lost "
+"your faith. Though exiled, you continue to serve, even as an apostate."
 msgstr ""
-"Книга заклять «Виявлення магії», викрадена з давньої бібліотеки. Ваша родина "
-"служила маловідомому божеству підземного світу, але ви втратили віру. Хоч "
-"вас і вигнали, ви продовжуєте служити — навіть як відступник."
+"Книга заклять «**Виявлення магії**», викрадена з давньої бібліотеки. Ваша"
+" родина служила маловідомому божеству підземного світу, але ви втратили "
+"віру. Хоч вас і вигнали, ви продовжуєте служити — навіть як відступник."
 
 #: app/static/json/backgrounds/bonekeeper.json:90
 msgid "Spellbook (Detect Magic)"
@@ -3167,11 +3172,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/bonekeeper.json:97
 msgid ""
-"A plague doctor's mask, after its owner succumbed to the disease that wiped "
-"out everyone you once knew. They should have kept it on."
+"A **plague doctor's mask**, after its owner succumbed to the disease that"
+" wiped out everyone you once knew. They should have kept it on."
 msgstr ""
-"Маска чумного лікаря, що лишилася після того, як її власник помер від "
-"хвороби, яка забрала всіх, кого ви колись знали. Дарма він її знімав."
+"**Маска чумного лікаря**, що лишилася після того, як її власник помер від"
+" хвороби, яка забрала всіх, кого ви колись знали. Дарма він її знімав."
 
 #: app/static/json/backgrounds/bonekeeper.json:100
 msgid "Plague Doctor's Mask"
@@ -3191,11 +3196,11 @@ msgstr "Який інструмент був незамінним у вашій 
 
 #: app/static/json/backgrounds/bonekeeper.json:112
 msgid ""
-"Manacles. Though old, it's still effective even against the very strong. You "
-"don't have the key."
+"**Manacles**. Though old, it's still effective even against the very "
+"strong. You don't have the key."
 msgstr ""
-"Кайданки. Хоч і старі, вони досі надійні навіть проти дуже сильних. Ключа у "
-"вас немає."
+"**Кайданки**. Хоч і старі, вони досі надійні навіть проти дуже сильних. "
+"Ключа у вас немає."
 
 #: app/static/json/backgrounds/bonekeeper.json:115
 msgid "Manacles"
@@ -3210,11 +3215,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/bonekeeper.json:122
 msgid ""
-"Sponge. Supposedly made from the remains of a rare sea creature. It never "
-"seems to dry out."
+"**Sponge**. Supposedly made from the remains of a rare sea creature. It "
+"never seems to dry out."
 msgstr ""
-"Губка. Кажуть, зроблена з решток рідкісної морської істоти. Здається, вона "
-"ніколи не висихає."
+"**Губка**. Кажуть, зроблена з решток рідкісної морської істоти. Здається,"
+" вона ніколи не висихає."
 
 #: app/static/json/backgrounds/bonekeeper.json:125
 msgid "Sponge"
@@ -3229,9 +3234,10 @@ msgstr ""
 "не висихає."
 
 #: app/static/json/backgrounds/bonekeeper.json:132
-msgid "Pulley. Great for moving gravestones, rocks, or even bodies."
+msgid "**Pulley**. Great for moving gravestones, rocks, or even bodies."
 msgstr ""
-"Шків. Чудово підходить, щоб пересувати надгробки, каміння чи навіть тіла."
+"**Шків**. Чудово підходить, щоб пересувати надгробки, каміння чи навіть "
+"тіла."
 
 #: app/static/json/backgrounds/bonekeeper.json:135
 msgid "Pulley"
@@ -3243,8 +3249,9 @@ msgstr "Чудово підходить, щоб пересувати надгр�
 
 #: app/static/json/backgrounds/bonekeeper.json:142
 msgid ""
-"Incense. Perfect for rituals or to keep the flies at bay. Cools the blood."
-msgstr "Пахощі. Ідеальні для ритуалів або щоб відганяти мух. Охолоджують кров."
+"**Incense**. Perfect for rituals or to keep the flies at bay. Cools the "
+"blood."
+msgstr "**Пахощі**. Ідеальні для ритуалів або щоб відганяти мух. Охолоджують кров."
 
 #: app/static/json/backgrounds/bonekeeper.json:145
 msgid "Incense"
@@ -3255,8 +3262,10 @@ msgid "Perfect for rituals or to keep the flies at bay. Cools the blood."
 msgstr "Ідеальні для ритуалів або щоб відганяти мух. Охолоджують кров."
 
 #: app/static/json/backgrounds/bonekeeper.json:152
-msgid "Crowbar. d6 damage. Sometimes you just need to get the damn thing open!"
-msgstr "Лом. к6 пошкоджень. Іноді просто треба відкрити цю кляту штуку!"
+msgid ""
+"**Crowbar**. d6 damage. Sometimes you just need to get the damn thing "
+"open!"
+msgstr "**Лом**. к6 пошкоджень. Іноді просто треба відкрити цю кляту штуку!"
 
 #: app/static/json/backgrounds/bonekeeper.json:155
 msgid "Crowbar"
@@ -3268,11 +3277,11 @@ msgstr "Іноді просто треба відкрити цю кляту шт
 
 #: app/static/json/backgrounds/bonekeeper.json:162
 msgid ""
-"Repellent. Powerful stuff. Its faded label makes it unclear what it is "
-"actually meant to repel, though. Perhaps everything. 3 uses."
+"**Repellent**. Powerful stuff. Its faded label makes it unclear what it "
+"is actually _meant_ to repel, though. Perhaps everything. 3 uses."
 msgstr ""
-"Репелент. Потужна річ. Щоправда, вицвіла етикетка не дає зрозуміти, що саме "
-"він має відлякувати. Можливо, все. 3 використання."
+"**Репелент**. Потужна річ. Щоправда, вицвіла етикетка не дає зрозуміти, "
+"що саме він має відлякувати. Можливо, все. 3 використання."
 
 #: app/static/json/backgrounds/bonekeeper.json:165
 #: app/static/json/backgrounds/fieldwarden.json:43
@@ -3325,11 +3334,11 @@ msgstr "Якою була ваша остання велика справа?"
 
 #: app/static/json/backgrounds/cutpurse.json:40
 msgid ""
-"A noble's summer home. The place was full of fancy wine (+20gp) but not much "
-"else. Take Fence Cutters."
+"A noble's summer home. The place was full of fancy wine (+20gp) but not "
+"much else. Take **Fence Cutters**."
 msgstr ""
-"Літній маєток шляхтича. Там було повно вишуканого вина (+20 зм), але мало "
-"чого іншого. Візьміть Кусачки для огорож."
+"Літній маєток шляхтича. Там було повно вишуканого вина (+20 зм), але мало"
+" чого іншого. Візьміть **Кусачки для огорож**."
 
 #: app/static/json/backgrounds/cutpurse.json:43
 msgid "Fence Cutters"
@@ -3346,12 +3355,13 @@ msgstr "bonus_gold"
 
 #: app/static/json/backgrounds/cutpurse.json:50
 msgid ""
-"A bank. (You were caught.) You bear a brand only visible by firelight, and "
-"anyone who sees the mark can ask you for a beer. Take Retractable Wires."
+"A bank. (You were caught.) You bear a brand only visible by firelight, "
+"and anyone who sees the mark can ask you for a beer. Take **Retractable "
+"Wires**."
 msgstr ""
-"Банк. (Вас спіймали.) Ви носите тавро, видиме лише у світлі вогню, і кожен, "
-"хто бачить цей знак, може попросити у вас кухоль пива. Візьміть Висувні "
-"дроти."
+"Банк. (Вас спіймали.) Ви носите тавро, видиме лише у світлі вогню, і "
+"кожен, хто бачить цей знак, може попросити у вас кухоль пива. Візьміть "
+"**Висувні дроти**."
 
 #: app/static/json/backgrounds/cutpurse.json:53
 msgid "Retractable Wires"
@@ -3359,10 +3369,11 @@ msgstr "Висувні дроти"
 
 #: app/static/json/backgrounds/cutpurse.json:59
 msgid ""
-"A guild warehouse. Take a Ladder (bulky, 10ft) and Blinding Powder (1 use)."
+"A guild warehouse. Take a **Ladder** (_bulky_, 10ft) and **Blinding "
+"Powder** (1 use)."
 msgstr ""
-"Склад гільдії. Візьміть Драбину (громіздке, 10 футів) і Осліплюючий порошок "
-"(1 використання)."
+"Склад гільдії. Візьміть Драбину (_громіздке_, 10 футів) і **Осліплюючий "
+"порошок** (1 використання)."
 
 #: app/static/json/backgrounds/cutpurse.json:62
 msgid "Ladder"
@@ -3378,10 +3389,11 @@ msgstr "Осліплюючий порошок"
 
 #: app/static/json/backgrounds/cutpurse.json:74
 msgid ""
-"Moneylender. Someone beat you to the job but left behind a Scroll of Arcane "
-"Eye (petty)."
+"Moneylender. Someone beat you to the job but left behind a **Scroll** of "
+"_Arcane Eye_ (_petty_)."
 msgstr ""
-"Лихвар. Хтось випередив вас, але залишив Сувій Чарівного ока (дріб’язкове)."
+"Лихвар. Хтось випередив вас, але залишив Сувій Чарівного ока "
+"(_дріб’язкове_)."
 
 #: app/static/json/backgrounds/cutpurse.json:77
 msgid "Scroll (Arcane Eye)"
@@ -3396,8 +3408,8 @@ msgstr "Ви бачите через магічне летюче око, що л
 
 #: app/static/json/backgrounds/cutpurse.json:84
 msgid ""
-"Constable's quarters. You escaped but left some friends behind. Take Strong "
-"Silk Rope (30ft) and a queasy feeling."
+"Constable's quarters. You escaped but left some friends behind. Take "
+"**Strong Silk Rope** (30ft) and a queasy feeling."
 msgstr ""
 "Квартира констебля. Ви втекли, але залишили друзів позаду. Візьміть Міцну "
 "шовкову мотузку (30 футів) і гнітюче відчуття."
@@ -3412,11 +3424,11 @@ msgstr "30 футів"
 
 #: app/static/json/backgrounds/cutpurse.json:94
 msgid ""
-"A university. You were seen but not pursued. You still don't know why. Take "
-"Smoke Pellets (3 uses)."
+"A university. You were seen but not pursued. You still don't know why. "
+"Take **Smoke Pellets** (3 uses)."
 msgstr ""
 "Університет. Вас помітили, але не переслідували. Ви досі не знаєте чому. "
-"Візьміть Димові кульки (3 використання)."
+"Візьміть **Димові кульки** (3 використання)."
 
 #: app/static/json/backgrounds/cutpurse.json:97
 msgid "Smoke Pellets"
@@ -3428,11 +3440,11 @@ msgstr "Що допомагає вам красти?"
 
 #: app/static/json/backgrounds/cutpurse.json:109
 msgid ""
-"Catring: 2 charges. Climb up walls and fall safely. Recharge: Place the ring "
-"on a stray cat's tail."
+"**Catring**: 2 charges. Climb up walls and fall safely. **Recharge**: "
+"Place the ring on a stray cat's tail."
 msgstr ""
-"Котячий перстень: 2 заряди. Дозволяє лазити по стінах і безпечно падати. "
-"Перезарядження: надіньте перстень на хвіст безпритульного кота."
+"**Котячий перстень**: 2 заряди. Дозволяє лазити по стінах і безпечно "
+"падати. Перезарядження: надіньте перстень на хвіст безпритульного кота."
 
 #: app/static/json/backgrounds/cutpurse.json:112
 msgid "Catring"
@@ -3444,10 +3456,10 @@ msgstr "Перезарядження: надіньте перстень на х�
 
 #: app/static/json/backgrounds/cutpurse.json:121
 msgid ""
-"Gildfinger: 1 charge. A finger glove that mimics any mundane key. Recharge: "
-"Bundle it with at least 100gp for a night."
+"**Gildfinger**: 1 charge. A finger glove that mimics any mundane key. "
+"**Recharge**: Bundle it with at least 100gp for a night."
 msgstr ""
-"Золотопал: 1 заряд. Напальчник, що імітує будь-який звичайний ключ. "
+"**Золотопал**: 1 заряд. Напальчник, що імітує будь-який звичайний ключ. "
 "Перезарядження: залиште його на ніч разом із щонайменше 100 зм."
 
 #: app/static/json/backgrounds/cutpurse.json:124
@@ -3460,11 +3472,11 @@ msgstr "Перезарядження: залиште його на ніч раз
 
 #: app/static/json/backgrounds/cutpurse.json:133
 msgid ""
-"Glimpse Glass: 3 charges. A monocle that lets you see through walls or other "
-"obstructions. It shatters after the last use."
+"**Glimpse Glass**: 3 charges. A monocle that lets you see through walls "
+"or other obstructions. It shatters after the last use."
 msgstr ""
-"Проглядне скельце: 3 заряди. Монокль, що дозволяє бачити крізь стіни та інші "
-"перешкоди. Розбивається після останнього використання."
+"**Проглядне скельце**: 3 заряди. Монокль, що дозволяє бачити крізь стіни "
+"та інші перешкоди. Розбивається після останнього використання."
 
 #: app/static/json/backgrounds/cutpurse.json:136
 msgid "Glimpse Glass"
@@ -3480,12 +3492,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/cutpurse.json:144
 msgid ""
-"Sweetwhistle: 1 charge. Listeners hear a soft, familiar voice in the "
-"distance that they cannot resist following. Recharge: Lose a dear memory. "
-"(Describe it.)"
+"**Sweetwhistle**: 1 charge. Listeners hear a soft, familiar voice in the "
+"distance that they cannot resist following. **Recharge**: Lose a dear "
+"memory. (Describe it.)"
 msgstr ""
-"Солодкосвист: 1 заряд. Слухачі чують удалині м’який знайомий голос, за яким "
-"не можуть не піти. Перезарядження: втратьте дорогий спогад. (Опишіть його.)"
+"**Солодкосвист**: 1 заряд. Слухачі чують удалині м’який знайомий голос, "
+"за яким не можуть не піти. Перезарядження: втратьте дорогий спогад. "
+"(Опишіть його.)"
 
 #: app/static/json/backgrounds/cutpurse.json:147
 msgid "Sweetwhistle"
@@ -3497,12 +3510,13 @@ msgstr "Перезарядження: втратьте дорогий спога
 
 #: app/static/json/backgrounds/cutpurse.json:155
 msgid ""
-"Vagrant's Veil: 1 charge. Wear it to blend seamlessly into crowds, appearing "
-"as a simple pauper. Recharge: Donate the day's winnings to the poor. Petty"
+"**Vagrant's Veil**: 1 charge. Wear it to blend seamlessly into crowds, "
+"appearing as a simple pauper. **Recharge**: Donate the day's winnings to "
+"the poor. _Petty_"
 msgstr ""
-"Вуаль волоцюги: 1 заряд. Одягніть її, щоб непомітно злитися з натовпом у "
-"подобі простого злидаря. Перезарядження: віддайте денний заробіток бідним. "
-"Дріб’язкове"
+"**Вуаль волоцюги**: 1 заряд. Одягніть її, щоб непомітно злитися з "
+"натовпом у подобі простого злидаря. Перезарядження: віддайте денний "
+"заробіток бідним. _Дріб’язкове_"
 
 #: app/static/json/backgrounds/cutpurse.json:158
 msgid "Vagrant's Veil"
@@ -3514,11 +3528,11 @@ msgstr "Перезарядження: віддайте денний заробі
 
 #: app/static/json/backgrounds/cutpurse.json:166
 msgid ""
-"Reverse Teetotum: 1 use. When spun, time skips backwards 30 seconds. "
+"**Reverse Teetotum**: 1 use. When spun, time skips backwards 30 seconds. "
 "Everyone remembers what happened. Petty."
 msgstr ""
-"Зворотна дзиґа: 1 використання. Коли її розкрутити, час відмотується на 30 "
-"секунд назад. Усі пам’ятають, що сталося. Дріб’язкове."
+"**Зворотна дзиґа**: 1 використання. Коли її розкрутити, час відмотується "
+"на 30 секунд назад. Усі пам’ятають, що сталося. Дріб’язкове."
 
 #: app/static/json/backgrounds/cutpurse.json:169
 msgid "Reverse Teetotum"
@@ -3573,9 +3587,9 @@ msgstr "Що взяло над вами гору?"
 #: app/static/json/backgrounds/fieldwarden.json:53
 msgid ""
 "A voracious swarm of pests that swallowed crops and animals alike. With "
-"nothing to defend, you left. Take Gale Seed Extract (3 uses). Ingesting it "
-"lets you sprint with a speed four times your regular rate. Afterward you add "
-"two Fatigue."
+"nothing to defend, you left. Take **Gale Seed Extract** (3 uses). "
+"Ingesting it lets you sprint with a speed four times your regular rate. "
+"Afterward you add two **Fatigue**."
 msgstr ""
 "Ненажерливий рій шкідників, що пожирав і посіви, і тварин. Коли не стало "
 "чого захищати, ви пішли. Візьміть Витяжку з насіння бурі (3 використання). "
@@ -3597,11 +3611,11 @@ msgstr ""
 #: app/static/json/backgrounds/fieldwarden.json:64
 msgid ""
 "A crop spirit, angered by a poor tithing. The fires consumed nearly "
-"everything, and afterward you were able to gather a pouch of Fireseeds (d8, "
-"blast, 4 uses)."
+"everything, and afterward you were able to gather a pouch of "
+"**Fireseeds** (d8, _blast_, 4 uses)."
 msgstr ""
 "Дух врожаю, розгніваний убогою десятиною. Вогонь поглинув майже все, а "
-"опісля ви змогли зібрати торбинку Вогняного насіння (к8, Вибух, 4 "
+"опісля ви змогли зібрати торбинку Вогняного насіння (к8, _Вибух_, 4 "
 "використання)."
 
 #: app/static/json/backgrounds/fieldwarden.json:67
@@ -3610,13 +3624,13 @@ msgstr "Вогняне насіння"
 
 #: app/static/json/backgrounds/fieldwarden.json:74
 msgid ""
-"An antlered, toothy demon that nearly ended you. Take a blood-stained Bone "
-"Knife (d6). On Critical Damage, its next attack becomes enhanced from "
-"contact with blood."
+"An antlered, toothy demon that nearly ended you. Take a blood-stained "
+"**Bone Knife** (d6). On **Critical Damage**, its next attack becomes "
+"_enhanced_ from contact with blood."
 msgstr ""
-"Рогатий зубастий демон, який мало не прикінчив вас. Візьміть закривавлений "
-"Кістяний ніж (к6). Після критичного пошкодження його наступна атака стає "
-"посиленою через контакт із кров’ю."
+"Рогатий зубастий демон, який мало не прикінчив вас. Візьміть "
+"закривавлений **Кістяний ніж** (к6). Після критичного пошкодження його "
+"наступна атака стає посиленою через контакт із кров’ю."
 
 #: app/static/json/backgrounds/fieldwarden.json:77
 msgid "Bone Knife"
@@ -3631,11 +3645,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fieldwarden.json:84
 msgid ""
-"The Withering, a type of stem rot from the Roots. Take a Diseased Crop (6 "
-"uses) that quickly decays any plant it touches."
+"_The Withering_, a type of stem rot from the **Roots**. Take a **Diseased"
+" Crop** (6 uses) that quickly decays any plant it touches."
 msgstr ""
-"В’янення — різновид гнилі стебел із Коренів. Візьміть Уражений колос (6 "
-"використань), що швидко розкладає будь-яку рослину, якої торкнеться."
+"В’янення — різновид гнилі стебел із Коренів. Візьміть **Уражений колос** "
+"(6 використань), що швидко розкладає будь-яку рослину, якої торкнеться."
 
 #: app/static/json/backgrounds/fieldwarden.json:87
 msgid "Diseased Crop"
@@ -3647,21 +3661,21 @@ msgstr "Швидко розкладає будь-яку рослину, якої
 
 #: app/static/json/backgrounds/fieldwarden.json:95
 msgid ""
-"Wolves, or so you thought. You are now a Werewolf [8 HP, 15 STR, 14 DEX, "
-"claws (d6+d6), bite (d8)]. Your WIL remains the same. You can turn at will "
-"(once per day) but must make a WIL save to revert. Anyone left alive from "
-"your attacks must make a WIL save to avoid infection."
+"Wolves, or so you thought. You are now a **Werewolf** [8 HP, 15 STR, 14 "
+"DEX, claws (d6+d6), bite (d8)]. Your WIL remains the same. You can _turn_"
+" at will (once per day) but must make a WIL save to revert. Anyone left "
+"alive from your attacks must make a WIL save to avoid infection."
 msgstr ""
-"Вовки — так ви думали. Тепер ви Вовкулака [8 ПЗ, 15 СИЛ, 14 СПР, кігті "
-"(к6+к6), укус (к8)]. Ваша ВОЛ лишається незмінною. Ви можете перекидатися за "
-"бажанням (раз на день), але щоб повернути людську подобу, мусите пройти "
-"перевірку ВОЛ. Кожен, хто вижив після ваших атак, мусить пройти перевірку "
-"ВОЛ, щоб уникнути зараження."
+"Вовки — так ви думали. Тепер ви **Вовкулака** [8 ПЗ, 15 СИЛ, 14 СПР, "
+"кігті (к6+к6), укус (к8)]. Ваша ВОЛ лишається незмінною. Ви можете "
+"перекидатися за бажанням (раз на день), але щоб повернути людську подобу,"
+" мусите пройти перевірку ВОЛ. Кожен, хто вижив після ваших атак, мусить "
+"пройти перевірку ВОЛ, щоб уникнути зараження."
 
 #: app/static/json/backgrounds/fieldwarden.json:99
 msgid ""
-"Crop thieves. Not all of them survived, but you were outnumbered. Start with "
-"+d4 HP and a Cusped Falchion (d8)."
+"Crop thieves. Not all of them survived, but you were outnumbered. Start "
+"with +d4 HP and a **Cusped Falchion** (d8)."
 msgstr ""
 "Крадії врожаю. Вижили не всі з них, але їх було більше. Почніть із +к4 ПЗ і "
 "Зубчастим фальшіоном (к8)."
@@ -3676,10 +3690,10 @@ msgstr "Який інструмент врятував вам життя?"
 
 #: app/static/json/backgrounds/fieldwarden.json:113
 msgid ""
-"Bloodvine Whip: d8 damage. On Critical Damage it drains the target's blood, "
-"granting the weapon's next attack the blast quality."
+"**Bloodvine Whip**: d8 damage. On **Critical Damage** it drains the "
+"target's blood, granting the weapon's next attack the _blast_ quality."
 msgstr ""
-"Кроволозовий батіг: к8 пошкоджень. Після критичного пошкодження він "
+"**Кроволозовий батіг**: к8 пошкоджень. Після критичного пошкодження він "
 "висмоктує кров цілі, надаючи наступній атаці зброї властивість Вибуху."
 
 #: app/static/json/backgrounds/fieldwarden.json:116
@@ -3696,10 +3710,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/fieldwarden.json:123
 msgid ""
-"Clatter Keeper: A hand-cranked device that emits a loud noise, frightening "
-"away most creatures."
+"**Clatter Keeper**: A hand-cranked device that emits a loud noise, "
+"frightening away most creatures."
 msgstr ""
-"Тарахкало: пристрій із ручною корбою, що видає гучний шум і відлякує "
+"**Тарахкало**: пристрій із ручною корбою, що видає гучний шум і відлякує "
 "більшість істот."
 
 #: app/static/json/backgrounds/fieldwarden.json:126
@@ -3715,10 +3729,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/fieldwarden.json:133
 msgid ""
-"Sun Stick: Provides ample warmth and light for up to one hour. Recharge: "
-"Leave in heavy sunlight for a full day. 1 use."
+"**Sun Stick**: Provides ample warmth and light for up to one hour. "
+"**Recharge**: Leave in heavy sunlight for a full day. 1 use."
 msgstr ""
-"Сонячна палиця: дає вдосталь тепла і світла до однієї години. "
+"**Сонячна палиця**: дає вдосталь тепла і світла до однієї години. "
 "Перезарядження: залиште на яскравому сонці на цілий день. 1 використання."
 
 #: app/static/json/backgrounds/fieldwarden.json:136
@@ -3735,10 +3749,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/fieldwarden.json:144
 msgid ""
-"Root Tether: When thrown, binds a creature as large as a wolf to the soil "
-"for a short time."
+"**Root Tether**: When thrown, binds a creature as large as a wolf to the "
+"soil for a short time."
 msgstr ""
-"Коренева прив’язь: кинута, на короткий час приковує до землі істоту "
+"**Коренева прив’язь**: кинута, на короткий час приковує до землі істоту "
 "завбільшки з вовка."
 
 #: app/static/json/backgrounds/fieldwarden.json:147
@@ -3753,11 +3767,11 @@ msgstr "Кинута, на короткий час приковує до зем�
 
 #: app/static/json/backgrounds/fieldwarden.json:154
 msgid ""
-"Greenwhistle: A small flute that calms plants, making passage through areas "
-"heavy with plant life a bit easier."
+"**Greenwhistle**: A small flute that calms plants, making passage through"
+" areas heavy with plant life a bit easier."
 msgstr ""
-"Зеленосвист: маленька флейта, що заспокоює рослини, трохи полегшуючи прохід "
-"крізь густо зарослі місця."
+"**Зеленосвист**: маленька флейта, що заспокоює рослини, трохи полегшуючи "
+"прохід крізь густо зарослі місця."
 
 #: app/static/json/backgrounds/fieldwarden.json:157
 msgid "Greenwhistle"
@@ -3773,13 +3787,14 @@ msgstr ""
 
 #: app/static/json/backgrounds/fieldwarden.json:164
 msgid ""
-"Everbloom Band: A circlet adorned with flowers that never wilt. On taking "
-"Critical Damage the flowers dissolve into dust, but you act as if your save "
-"succeeded (STR loss still occurs)."
+"**Everbloom Band**: A circlet adorned with flowers that never wilt. On "
+"taking **Critical Damage** the flowers dissolve into dust, but you act as"
+" if your save succeeded (STR loss still occurs)."
 msgstr ""
-"Вінець вічноцвіту: обруч, прикрашений квітами, що ніколи не в’януть. Коли ви "
-"зазнаєте критичного пошкодження, квіти розсипаються на порох, але ви дієте "
-"так, ніби ваша перевірка була успішною (втрата СИЛ усе одно відбувається)."
+"**Вінець вічноцвіту**: обруч, прикрашений квітами, що ніколи не в’януть. "
+"Коли ви зазнаєте критичного пошкодження, квіти розсипаються на порох, але"
+" ви дієте так, ніби ваша перевірка була успішною (втрата СИЛ усе одно "
+"відбувається)."
 
 #: app/static/json/backgrounds/fieldwarden.json:167
 msgid "Everbloom Band"
@@ -3837,45 +3852,46 @@ msgstr "Як ви заслужили свій лук?"
 
 #: app/static/json/backgrounds/fletchwind.json:49
 msgid ""
-"War. If you are first to attack, your bow gains the blast property for the "
-"first round."
+"**War**. If you are first to attack, your bow gains the _blast_ property "
+"for the first round."
 msgstr ""
-"Війна. Якщо ви атакуєте першими, ваш лук отримує властивість Вибуху на "
-"перший раунд."
+"**Війна**. Якщо ви атакуєте першими, ваш лук отримує властивість Вибуху "
+"на перший раунд."
 
 #: app/static/json/backgrounds/fletchwind.json:52
 msgid ""
-"Falconry. You keep a falcon [3 hp, 5 STR, 16 DEX, 4 WIL, claws (d6+d6), bite "
-"(d8)]. It only eats live game."
+"**Falconry**. You keep a falcon [3 hp, 5 STR, 16 DEX, 4 WIL, claws "
+"(d6+d6), bite (d8)]. It only eats live game."
 msgstr ""
 "Соколине полювання. Ви тримаєте сокола [3 ПЗ, 5 СИЛ, 16 СПР, 4 ВОЛ, кігті "
 "(к6+к6), укус (к8)]. Він їсть лише живу здобич."
 
 #: app/static/json/backgrounds/fletchwind.json:55
 msgid ""
-"Hunting. When taking the Supply action, your ability to secure Rations "
-"increases by one step (e.g. 1d4 becomes 1d6)."
+"**Hunting**. When taking the Supply action, your ability to secure "
+"**Rations** increases by **one step** (e.g. 1d4 becomes 1d6)."
 msgstr ""
 "Полювання. Коли ви виконуєте дію «Постачання», ваша здатність добувати пайки "
 "зростає на один крок (напр., 1к4 стає 1к6)."
 
 #: app/static/json/backgrounds/fletchwind.json:58
 msgid ""
-"Tournaments. Attacks with your bow are enhanced if the target is immobile."
+"**Tournaments**. Attacks with your bow are _enhanced_ if the target is "
+"immobile."
 msgstr "Турніри. Атаки вашим луком посилені, якщо ціль нерухома."
 
 #: app/static/json/backgrounds/fletchwind.json:61
 msgid ""
-"Training. If you are the first to attack, melee attacks against you are "
-"impaired until you take STR damage."
+"**Training**. If you are the first to attack, melee attacks against you "
+"are _impaired_ until you take STR damage."
 msgstr ""
 "Вишкіл. Якщо ви атакуєте першими, атаки ближнього бою проти вас ослаблені, "
 "доки ви не зазнаєте пошкодження СИЛ."
 
 #: app/static/json/backgrounds/fletchwind.json:64
 msgid ""
-"Scouting. When taking the Travel action, your presence decreases the chance "
-"of getting lost by one step (e.g. 4-in-6 becomes 3-in-6)."
+"**Scouting**. When taking the Travel action, your presence decreases the "
+"chance of getting lost by one step (e.g. 4-in-6 becomes 3-in-6)."
 msgstr ""
 "Розвідка. Коли ви виконуєте дію «Подорож», ваша присутність зменшує шанс "
 "заблукати на один крок (напр., 4-із-6 стає 3-із-6)."
@@ -3885,10 +3901,12 @@ msgid "What kind of wood is your bow made from?"
 msgstr "З якого дерева зроблений ваш лук?"
 
 #: app/static/json/backgrounds/fletchwind.json:72
-msgid "Western Yew (d6, bulky). Can be wielded as a blunt weapon (d6). Noisy."
+msgid ""
+"**Western Yew** (d6, _bulky_). Can be wielded as a blunt weapon (d6). "
+"Noisy."
 msgstr ""
-"Західний тис (к6, громіздке). Можна використовувати як тупу зброю (к6). "
-"Гучний."
+"**Західний тис** (к6, _громіздке_). Можна використовувати як тупу зброю "
+"(к6). Гучний."
 
 #: app/static/json/backgrounds/fletchwind.json:75
 msgid "Western Yew"
@@ -3900,10 +3918,10 @@ msgstr "Можна використовувати як тупу зброю (к6)
 
 #: app/static/json/backgrounds/fletchwind.json:82
 msgid ""
-"Sessile Oak (d8, bulky). Slams into targets. On Critical Damage something is "
-"torn off."
+"**Sessile Oak** (d8, _bulky_). Slams into targets. On **Critical Damage**"
+" something is torn off."
 msgstr ""
-"Скельний дуб (к8, громіздке). Врізається в цілі. Після критичного "
+"**Скельний дуб** (к8, _громіздке_). Врізається в цілі. Після критичного "
 "пошкодження щось відривається."
 
 #: app/static/json/backgrounds/fletchwind.json:85
@@ -3916,11 +3934,11 @@ msgstr "Врізається в цілі. Після критичного пош
 
 #: app/static/json/backgrounds/fletchwind.json:92
 msgid ""
-"Stone Pine (d6, bulky). Produces one use of Sticky Sap per day. The sap is "
-"highly explosive."
+"**Stone Pine** (d6, _bulky_). Produces one use of **Sticky Sap** per day."
+" The sap is highly explosive."
 msgstr ""
-"Пінія (к6, громіздке). Щодня дає одне використання Липкої живиці. Живиця "
-"дуже вибухова."
+"**Пінія** (к6, _громіздке_). Щодня дає одне використання Липкої живиці. "
+"Живиця дуже вибухова."
 
 #: app/static/json/backgrounds/fletchwind.json:95
 msgid "Stone Pine"
@@ -3932,11 +3950,11 @@ msgstr "Щодня дає одне використання Липкої жив�
 
 #: app/static/json/backgrounds/fletchwind.json:102
 msgid ""
-"White Ash (d6, bulky). Can be used in place of a shield in melee combat (+1 "
-"Armor)."
+"**White Ash** (d6, _bulky_). Can be used in place of a shield in melee "
+"combat (+1 Armor)."
 msgstr ""
-"Білий ясен (к6, громіздке). У ближньому бою можна використовувати замість "
-"щита (+1 Броні)."
+"**Білий ясен** (к6, _громіздке_). У ближньому бою можна використовувати "
+"замість щита (+1 Броні)."
 
 #: app/static/json/backgrounds/fletchwind.json:105
 msgid "White Ash"
@@ -3948,11 +3966,11 @@ msgstr "У ближньому бою можна використовувати �
 
 #: app/static/json/backgrounds/fletchwind.json:112
 msgid ""
-"Striped Bamboo (d6). Collapsible, it only requires one slot (but still "
-"requires both hands)."
+"**Striped Bamboo** (d6). Collapsible, it only requires one slot (but "
+"still requires both hands)."
 msgstr ""
-"Смугастий бамбук (к6). Складаний, займає лише один слот (але все одно "
-"потребує обох рук)."
+"**Смугастий бамбук** (к6). Складаний, займає лише один слот (але все одно"
+" потребує обох рук)."
 
 #: app/static/json/backgrounds/fletchwind.json:115
 msgid "Striped Bamboo"
@@ -3964,11 +3982,11 @@ msgstr "Складаний, займає лише один слот (але вс
 
 #: app/static/json/backgrounds/fletchwind.json:122
 msgid ""
-"Wych Elm (d6, bulky). Protects the bearer from poisons and toxins, so long "
-"as they are holding it."
+"**Wych Elm** (d6, _bulky_). Protects the bearer from poisons and toxins, "
+"so long as they are holding it."
 msgstr ""
-"Гірський в’яз (к6, громіздке). Захищає власника від отрут і токсинів, поки "
-"той тримає його в руках."
+"**Гірський в’яз** (к6, _громіздке_). Захищає власника від отрут і "
+"токсинів, поки той тримає його в руках."
 
 #: app/static/json/backgrounds/fletchwind.json:125
 msgid "Wych Elm"
@@ -4015,10 +4033,11 @@ msgstr "Хто вас прихистив?"
 #: app/static/json/backgrounds/foundling.json:52
 msgid ""
 "An old hunter. You were both quite happy, until it all ended. Take a "
-"Weathered Longbow (d8, bulky) and a Leather Jerkin (1 Armor)."
+"**Weathered Longbow** (d8, _bulky_) and a **Leather Jerkin** (1 Armor)."
 msgstr ""
 "Старий мисливець. Ви обоє були доволі щасливі, доки все не скінчилося. "
-"Візьміть Пошарпаний довгий лук (к8, громіздке) і Шкіряний дублет (1 Броні)."
+"Візьміть **Пошарпаний довгий лук** (к8, _громіздке_) і **Шкіряний "
+"дублет** (1 Броні)."
 
 #: app/static/json/backgrounds/foundling.json:55
 msgid "Weathered Longbow"
@@ -4031,7 +4050,7 @@ msgstr "Шкіряний дублет"
 #: app/static/json/backgrounds/foundling.json:65
 msgid ""
 "A wizened apothecary, who taught you the healing arts but maintained a "
-"clinical detachment. Take a Healing Unguent (restores d4 STR)."
+"clinical detachment. Take a **Healing Unguent** (restores d4 STR)."
 msgstr ""
 "Висохлий аптекар, що навчив вас мистецтва зцілення, але тримався з холодною "
 "відстороненістю. Візьміть Цілющу мазь (відновлює к4 СИЛ)."
@@ -4046,12 +4065,12 @@ msgstr "Відновлює к4 СИЛ"
 
 #: app/static/json/backgrounds/foundling.json:76
 msgid ""
-"A druid, who taught you the language of trees. When it came time to leave, "
-"you took with you only a Gnarled Staff (d8) and left a promise that one day "
-"you would return."
+"A druid, who taught you the language of trees. When it came time to "
+"leave, you took with you only a **Gnarled Staff** (d8) and left a promise"
+" that one day you would return."
 msgstr ""
-"Друїд, що навчив вас мови дерев. Коли настав час іти, ви взяли з собою лише "
-"Вузлуватий посох (к8) і залишили обіцянку колись повернутися."
+"Друїд, що навчив вас мови дерев. Коли настав час іти, ви взяли з собою "
+"лише **Вузлуватий посох** (к8) і залишили обіцянку колись повернутися."
 
 #: app/static/json/backgrounds/foundling.json:79
 msgid "Gnarled Staff"
@@ -4059,13 +4078,15 @@ msgstr "Вузлуватий посох"
 
 #: app/static/json/backgrounds/foundling.json:85
 msgid ""
-"A gruff blacksmith from a sleepy river town. You were always kept at arm's "
-"length. Now the forge is cold, and you've moved on. Take a Smith's Apron "
-"(petty) and a set of Oft-mended Chain Mail (2 Armor, bulky)."
+"A gruff blacksmith from a sleepy river town. You were always kept at "
+"arm's length. Now the forge is cold, and you've moved on. Take a "
+"**Smith's Apron** (_petty_) and a set of **Oft-mended Chain Mail** (2 "
+"Armor, _bulky_)."
 msgstr ""
 "Суворий коваль із сонного містечка над річкою. Вас завжди тримали на "
-"відстані. Тепер горно охололо, і ви рушили далі. Візьміть Ковальський фартух "
-"(дріб’язкове) і Латану-перелатану кольчугу (2 Броні, громіздке)."
+"відстані. Тепер горно охололо, і ви рушили далі. Візьміть **Ковальський "
+"фартух** (_дріб’язкове_) і Латану-перелатану кольчугу (2 Броні, "
+"_громіздке_)."
 
 #: app/static/json/backgrounds/foundling.json:88
 msgid "Smith's Apron"
@@ -4079,11 +4100,11 @@ msgstr "Латана-перелатана кольчуга"
 msgid ""
 "A troupe of traveling entertainers. For a time, they were like family to "
 "you. One day you woke up and they were gone with no explanation. Take a "
-"Storybook, a Dagger (d6), and some burning questions."
+"**Storybook**, a **Dagger** (d6), and some burning questions."
 msgstr ""
-"Трупа мандрівних артистів. Певний час вони були вам як родина. Одного дня ви "
-"прокинулися, а вони зникли без пояснень. Візьміть Книгу казок, Кинджал (к6) "
-"і кілька пекучих запитань."
+"Трупа мандрівних артистів. Певний час вони були вам як родина. Одного дня"
+" ви прокинулися, а вони зникли без пояснень. Візьміть Книгу казок, "
+"**Кинджал** (к6) і кілька пекучих запитань."
 
 #: app/static/json/backgrounds/foundling.json:101
 msgid "Storybook"
@@ -4092,12 +4113,12 @@ msgstr "Книга казок"
 #: app/static/json/backgrounds/foundling.json:111
 msgid ""
 "The monks of a secluded forest monastery. When their rules became too "
-"strict, and you snuck away. Take a Monk's Habit (warm, petty) and a "
-"Spellbook of Control Plants."
+"strict, and you snuck away. Take a **Monk's Habit** (warm, _petty_) and a"
+" **Spellbook** of _Control Plants_."
 msgstr ""
-"Ченці відлюдного лісового монастиря. Коли їхні правила стали надто суворими, "
-"ви тихцем утекли. Візьміть Чернечу рясу (тепла, дріб’язкове) і Книгу заклять "
-"«Контроль рослин»."
+"Ченці відлюдного лісового монастиря. Коли їхні правила стали надто "
+"суворими, ви тихцем утекли. Візьміть Чернечу рясу (тепла, _дріб’язкове_) "
+"і Книгу заклять «_Контроль рослин_»."
 
 #: app/static/json/backgrounds/foundling.json:114
 msgid "Monk's Habit"
@@ -4125,11 +4146,11 @@ msgstr "Що відганяє лихі вісті?"
 
 #: app/static/json/backgrounds/foundling.json:131
 msgid ""
-"Pipeweed: Your good luck charm. Conversations tend to flow more easily after "
-"a smoke. 6 uses."
+"**Pipeweed**: Your good luck charm. Conversations tend to flow more "
+"easily after a smoke. 6 uses."
 msgstr ""
-"Люлькове зілля: ваш талісман на удачу. Після перекуру розмови зазвичай ідуть "
-"легше. 6 використань."
+"**Люлькове зілля**: ваш талісман на удачу. Після перекуру розмови "
+"зазвичай ідуть легше. 6 використань."
 
 #: app/static/json/backgrounds/foundling.json:134
 msgid "Pipeweed"
@@ -4142,12 +4163,12 @@ msgstr "Ваш талісман на удачу. Після перекуру р�
 
 #: app/static/json/backgrounds/foundling.json:142
 msgid ""
-"Stink Jar: Shattering this jar releases an odor so foul all nearby must make "
-"a STR save or immediately vomit. 1 use."
+"**Stink Jar**: Shattering this jar releases an odor so foul all nearby "
+"must make a STR save or immediately vomit. 1 use."
 msgstr ""
-"Смердючий слоїк: якщо розбити цей слоїк, вивільняється такий огидний сморід, "
-"що всі поблизу мусять пройти перевірку СИЛ, інакше їх одразу знудить. 1 "
-"використання."
+"**Смердючий слоїк**: якщо розбити цей слоїк, вивільняється такий огидний "
+"сморід, що всі поблизу мусять пройти перевірку СИЛ, інакше їх одразу "
+"знудить. 1 використання."
 
 #: app/static/json/backgrounds/foundling.json:145
 msgid "Stink Jar"
@@ -4163,12 +4184,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/foundling.json:153
 msgid ""
-"Ivy Worm: A green worm often mistaken for a weed. Swallowed whole, it "
-"absorbs any toxins or rot in the body before exiting through the usual way."
+"**Ivy Worm**: A green worm often mistaken for a weed. Swallowed whole, it"
+" absorbs any toxins or rot in the body before exiting through the usual "
+"way."
 msgstr ""
-"Плющовий черв: зелений черв’як, якого часто плутають із бур’яном. "
-"Проковтнутий цілим, він убирає всі токсини та гниль у тілі, перш ніж вийти "
-"звичним шляхом."
+"**Плющовий черв**: зелений черв’як, якого часто плутають із бур’яном. "
+"Проковтнутий цілим, він убирає всі токсини та гниль у тілі, перш ніж "
+"вийти звичним шляхом."
 
 #: app/static/json/backgrounds/foundling.json:156
 msgid "Ivy Worm"
@@ -4184,11 +4206,12 @@ msgstr ""
 
 #: app/static/json/backgrounds/foundling.json:163
 msgid ""
-"Dream Stone: A smooth blue stone that helps recall dreams more clearly. "
-"Overuse can cause dream-addiction."
+"**Dream Stone**: A smooth blue stone that helps recall dreams more "
+"clearly. Overuse can cause dream-addiction."
 msgstr ""
-"Камінь снів: Гладенький блакитний камінь, що допомагає чіткіше пригадувати "
-"сни. Надмірне використання може спричинити залежність від снів."
+"**Камінь снів**: Гладенький блакитний камінь, що допомагає чіткіше "
+"пригадувати сни. Надмірне використання може спричинити залежність від "
+"снів."
 
 #: app/static/json/backgrounds/foundling.json:166
 msgid "Dream Stone"
@@ -4204,11 +4227,12 @@ msgstr ""
 
 #: app/static/json/backgrounds/foundling.json:173
 msgid ""
-"Drowning Rod: A finger-sized wooden stick that doubles in size each time it "
-"is fully submerged in water. It does not shrink down again."
+"**Drowning Rod**: A finger-sized wooden stick that doubles in size each "
+"time it is fully submerged in water. It does not shrink down again."
 msgstr ""
-"Потопельний жезл: Дерев’яна паличка завбільшки з палець, що подвоюється в "
-"розмірі щоразу, коли її повністю занурюють у воду. Назад вона не зменшується."
+"**Потопельний жезл**: Дерев’яна паличка завбільшки з палець, що "
+"подвоюється в розмірі щоразу, коли її повністю занурюють у воду. Назад "
+"вона не зменшується."
 
 #: app/static/json/backgrounds/foundling.json:176
 msgid "Drowning Rod"
@@ -4224,11 +4248,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/foundling.json:183
 msgid ""
-"Rabbit's Foot: You were wearing it when they found you. They say it is the "
-"foot of she who left you and that it protects you from witch magic. Petty."
+"**Rabbit's Foot**: You were wearing it when they found you. They say it "
+"is the foot of she who left you and that it protects you from witch "
+"magic. _Petty_."
 msgstr ""
-"Кроляча лапка: Вона була на вас, коли вас знайшли. Кажуть, це лапка тієї, що "
-"вас покинула, і що вона захищає вас від відьомської магії. Дріб’язкове."
+"**Кроляча лапка**: Вона була на вас, коли вас знайшли. Кажуть, це лапка "
+"тієї, що вас покинула, і що вона захищає вас від відьомської магії. "
+"_Дріб’язкове_."
 
 #: app/static/json/backgrounds/foundling.json:186
 msgid "Rabbit's Foot"
@@ -4270,11 +4296,11 @@ msgstr "Який дивний гриб ви відкрили?"
 
 #: app/static/json/backgrounds/fungal-forager.json:35
 msgid ""
-"Shrieking Trumpet. When exposed to light, it screams so loudly that all "
-"nearby attacks (including your own) are impaired. 2 uses."
+"**Shrieking Trumpet**. When exposed to light, it screams so loudly that "
+"all nearby attacks (including your own) are _impaired_. 2 uses."
 msgstr ""
-"Верескливий ріжок. Під дією світла він верещить так гучно, що всі атаки "
-"поблизу (зокрема ваші) ослаблені. 2 використання."
+"**Верескливий ріжок**. Під дією світла він верещить так гучно, що всі "
+"атаки поблизу (зокрема ваші) ослаблені. 2 використання."
 
 #: app/static/json/backgrounds/fungal-forager.json:38
 msgid "Shrieking Trumpet"
@@ -4290,11 +4316,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:46
 msgid ""
-"Torch Fungus. When crushed, it creates a cold blue light for a short while. "
-"2 uses."
+"**Torch Fungus**. When crushed, it creates a cold blue light for a short "
+"while. 2 uses."
 msgstr ""
-"Гриб-смолоскип. Якщо його розчавити, він ненадовго випромінює холодне "
-"блакитне світло. 2 використання."
+"**Гриб-смолоскип**. Якщо його розчавити, він ненадовго випромінює холодне"
+" блакитне світло. 2 використання."
 
 #: app/static/json/backgrounds/fungal-forager.json:49
 msgid "Torch Fungus"
@@ -4306,11 +4332,11 @@ msgstr "Якщо його розчавити, він десять хвилин �
 
 #: app/static/json/backgrounds/fungal-forager.json:57
 msgid ""
-"Murderous Truffle. Pungent, highly toxic, and very rare (worth 50gp to "
-"assassins). Illegal pretty much everywhere. 1 use."
+"**Murderous Truffle**. Pungent, highly toxic, and very rare (worth 50gp "
+"to assassins). Illegal pretty much everywhere. 1 use."
 msgstr ""
-"Смертоносний трюфель. Їдкий, дуже токсичний і вкрай рідкісний (вартий 50 зм "
-"для найманих убивць). Заборонений майже всюди. 1 використання."
+"**Смертоносний трюфель**. Їдкий, дуже токсичний і вкрай рідкісний (вартий"
+" 50 зм для найманих убивць). Заборонений майже всюди. 1 використання."
 
 #: app/static/json/backgrounds/fungal-forager.json:60
 msgid "Murderous Truffle"
@@ -4326,11 +4352,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:68
 msgid ""
-"Hellcap. Exposure to its aroma causes intense nausea and vomiting. Either "
-"way, it clears the room. Bottled. 1 use."
+"**Hellcap**. Exposure to its aroma causes intense nausea and vomiting. "
+"Either way, it clears the room. Bottled. 1 use."
 msgstr ""
-"Пекельна шапинка. Її запах викликає сильну нудоту та блювання. Так чи інак, "
-"кімната швидко порожніє. У пляшці. 1 використання."
+"**Пекельна шапинка**. Її запах викликає сильну нудоту та блювання. Так чи"
+" інак, кімната швидко порожніє. У пляшці. 1 використання."
 
 #: app/static/json/backgrounds/fungal-forager.json:71
 msgid "Hellcap"
@@ -4346,13 +4372,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:79
 msgid ""
-"Sproutcup. Ingest to shrink down to the size of a mouse. (Your belongings "
-"stay the same size.) You return to normal size within the hour, often in "
-"fits and starts. 1 use."
+"**Sproutcup**. Ingest to shrink down to the size of a mouse. (Your "
+"belongings stay the same size.) You return to normal size within the "
+"hour, often in fits and starts. 1 use."
 msgstr ""
-"Паросткова чашечка. Проковтніть, щоб зменшитися до розміру миші. (Ваші речі "
-"лишаються незмінними.) Протягом години ви повертаєтеся до звичайного "
-"розміру, часто ривками. 1 використання."
+"**Паросткова чашечка**. Проковтніть, щоб зменшитися до розміру миші. "
+"(Ваші речі лишаються незмінними.) Протягом години ви повертаєтеся до "
+"звичайного розміру, часто ривками. 1 використання."
 
 #: app/static/json/backgrounds/fungal-forager.json:82
 msgid "Sproutcup"
@@ -4369,12 +4395,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:90
 msgid ""
-"Rootflower. A white fungus found only on corpses deep underground. Ingest to "
-"restore d6 WIL. You will dream of the dead and their stories. 1 use."
+"**Rootflower**. A white fungus found only on corpses deep underground. "
+"Ingest to restore d6 WIL. You will dream of the dead and their stories. 1"
+" use."
 msgstr ""
-"Коренецвіт. Білий гриб, що росте лише на трупах глибоко під землею. "
-"Проковтніть, щоб відновити к6 ВОЛ. Вам снитимуться мертві та їхні історії. 1 "
-"використання."
+"**Коренецвіт**. Білий гриб, що росте лише на трупах глибоко під землею. "
+"Проковтніть, щоб відновити к6 ВОЛ. Вам снитимуться мертві та їхні "
+"історії. 1 використання."
 
 #: app/static/json/backgrounds/fungal-forager.json:93
 msgid "Rootflower"
@@ -4394,11 +4421,11 @@ msgstr "Що вберігає ваш глузд навіть у цілковит
 
 #: app/static/json/backgrounds/fungal-forager.json:106
 msgid ""
-"Glowsnail. Casts a soft, bioluminescent light. Feeds on one ration every two "
-"days."
+"**Glowsnail**. Casts a soft, bioluminescent light. Feeds on one ration "
+"every two days."
 msgstr ""
-"Сяйний равлик. Випромінює м’яке біолюмінесцентне світло. З’їдає один пайок "
-"кожні два дні."
+"**Сяйний равлик**. Випромінює м’яке біолюмінесцентне світло. З’їдає один "
+"пайок кожні два дні."
 
 #: app/static/json/backgrounds/fungal-forager.json:109
 msgid "Glowsnail"
@@ -4411,11 +4438,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:116
 msgid ""
-"Silk Moth Shawl. A weatherproof blanket, it can also douse a fire without "
-"being damaged."
+"**Silk Moth Shawl**. A weatherproof blanket, it can also douse a fire "
+"without being damaged."
 msgstr ""
-"Шаль шовкового метелика. Ковдра, що захищає від негоди; нею також можна "
-"загасити вогонь, не пошкодивши її."
+"**Шаль шовкового метелика**. Ковдра, що захищає від негоди; нею також "
+"можна загасити вогонь, не пошкодивши її."
 
 #: app/static/json/backgrounds/fungal-forager.json:119
 msgid "Silk Moth Shawl"
@@ -4429,10 +4456,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:126
 msgid ""
-"Milkflower. A gentle stimulant. Chewing it makes you immune to panic for the "
-"next hour. 3 uses."
+"**Milkflower**. A gentle stimulant. Chewing it makes you immune to "
+"_panic_ for the next hour. 3 uses."
 msgstr ""
-"Молочноцвіт. Легкий стимулятор. Пожувавши його, ви на годину стаєте "
+"**Молочноцвіт**. Легкий стимулятор. Пожувавши його, ви на годину стаєте "
 "несприйнятливими до паніки. 3 використання."
 
 #: app/static/json/backgrounds/fungal-forager.json:129
@@ -4448,11 +4475,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:137
 msgid ""
-"Luxcompass. Hums softly as it moves closer to the Sun. Eventually the noise "
-"becomes unbearably loud."
+"**Luxcompass**. Hums softly as it moves closer to the Sun. Eventually the"
+" noise becomes unbearably loud."
 msgstr ""
-"Люкс-компас. Тихо гуде, наближаючись до Сонця. Зрештою гул стає нестерпно "
-"гучним."
+"**Люкс-компас**. Тихо гуде, наближаючись до Сонця. Зрештою гул стає "
+"нестерпно гучним."
 
 #: app/static/json/backgrounds/fungal-forager.json:140
 msgid "Luxcompass"
@@ -4466,10 +4493,10 @@ msgstr "Тихо гуде, наближаючись до Сонця. Зрешт�
 
 #: app/static/json/backgrounds/fungal-forager.json:147
 msgid ""
-"Sloth-Tarp. A tough and weatherproof fabric, useful for hanging off trees. "
-"When inside, you have +1 Armor."
+"**Sloth-Tarp**. A tough and weatherproof fabric, useful for hanging off "
+"trees. When inside, you have +1 Armor."
 msgstr ""
-"Лінивцевий тент. Міцна тканина, що захищає від негоди; зручна, щоб "
+"**Лінивцевий тент**. Міцна тканина, що захищає від негоди; зручна, щоб "
 "підвішуватися на деревах. Коли ви всередині, маєте +1 Броні."
 
 #: app/static/json/backgrounds/fungal-forager.json:150
@@ -4486,10 +4513,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/fungal-forager.json:157
 msgid ""
-"Miner's Grease. Great for dislodging a gem, tool, or limb from a tight "
-"crack. Highly explosive. 3 uses."
+"**Miner's Grease**. Great for dislodging a gem, tool, or limb from a "
+"tight crack. Highly explosive. 3 uses."
 msgstr ""
-"Шахтарський жир. Чудово допомагає вивільнити самоцвіт, інструмент чи "
+"**Шахтарський жир**. Чудово допомагає вивільнити самоцвіт, інструмент чи "
 "кінцівку з вузької щілини. Дуже вибухонебезпечний. 3 використання."
 
 #: app/static/json/backgrounds/fungal-forager.json:160
@@ -4585,12 +4612,12 @@ msgstr "Чим Хаща підвела вас?"
 #: app/static/json/backgrounds/greenwise.json:54
 msgid ""
 "An ill-tempered forest spirit cursed you for stealing, marking you as an "
-"enemy of their kind. Take a Bezoar Stone. Ingesting it cures any poison (1 "
-"use, unless retrieved)."
+"enemy of their kind. Take a **Bezoar Stone**. Ingesting it cures any "
+"poison (1 use, unless retrieved)."
 msgstr ""
-"Лихий лісовий дух прокляв вас за крадіжку, позначивши вас як ворога свого "
-"роду. Візьміть Безоаровий камінь. Якщо його проковтнути, він зцілює будь-яку "
-"отруту (1 використання, якщо не дістати назад)."
+"Лихий лісовий дух прокляв вас за крадіжку, позначивши вас як ворога свого"
+" роду. Візьміть **Безоаровий камінь**. Якщо його проковтнути, він зцілює "
+"будь-яку отруту (1 використання, якщо не дістати назад)."
 
 #: app/static/json/backgrounds/greenwise.json:57
 msgid "Bezoar Stone"
@@ -4604,11 +4631,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/greenwise.json:65
 msgid ""
-"A close friend disappeared into the forest. Now you see their face in any "
-"tea you brew. Take a Soporific Concoction (3 uses)."
+"A close friend disappeared into the forest. Now you see their face in any"
+" tea you brew. Take a **Soporific Concoction** (3 uses)."
 msgstr ""
-"Близький друг зник у лісі. Тепер ви бачите його обличчя в кожному чаї, який "
-"заварюєте. Візьміть Снодійне вариво (3 використання)."
+"Близький друг зник у лісі. Тепер ви бачите його обличчя в кожному чаї, "
+"який заварюєте. Візьміть **Снодійне вариво** (3 використання)."
 
 #: app/static/json/backgrounds/greenwise.json:68
 msgid "Soporific Concoction"
@@ -4617,39 +4644,39 @@ msgstr "Снодійне вариво"
 #: app/static/json/backgrounds/greenwise.json:75
 msgid ""
 "You were poisoned, losing your sense of taste and smell. You can now "
-"withstand noxious fumes and always carry Antitoxin (2 uses)."
+"withstand noxious fumes and always carry **Antitoxin** (2 uses)."
 msgstr ""
-"Вас отруїли, і ви втратили смак і нюх. Тепер ви витримуєте отруйні випари й "
-"завжди носите із собою Антитоксин (2 використання)."
+"Вас отруїли, і ви втратили смак і нюх. Тепер ви витримуєте отруйні випари"
+" й завжди носите із собою **Антитоксин** (2 використання)."
 
 #: app/static/json/backgrounds/greenwise.json:85
 msgid ""
 "Your radical experiments turned your skin green, and you now gain "
-"nourishment as a plant. You don't need Rations, but a day without sufficient "
-"sunlight and water leaves you deprived."
+"nourishment as a plant. You don't need **Rations**, but a day without "
+"sufficient sunlight and water leaves you _deprived_."
 msgstr ""
-"Радикальні експерименти зробили вашу шкіру зеленою, і тепер ви живитеся як "
-"рослина. Вам не потрібні пайки, але день без достатнього сонячного світла й "
-"води спричиняє стан Позбавлення."
+"Радикальні експерименти зробили вашу шкіру зеленою, і тепер ви живитеся "
+"як рослина. Вам не потрібні пайки, але день без достатнього сонячного "
+"світла й води спричиняє стан _Позбавлення_."
 
 #: app/static/json/backgrounds/greenwise.json:88
 msgid ""
 "Your impressive corpseflower won a local contest then promptly killed a "
-"judge. You fled, but not without the Prize Money (100gp) and a warrant for "
-"your arrest."
+"judge. You fled, but not without the **Prize Money (100gp)** and a "
+"warrant for your arrest."
 msgstr ""
 "Ваша вражаюча трупна квітка виграла місцевий конкурс, а тоді одразу вбила "
 "суддю. Ви втекли, але не без Призових грошей (100 зм) і ордера на ваш арешт."
 
 #: app/static/json/backgrounds/greenwise.json:93
 msgid ""
-"You created a restorative tincture that also causes accidental infertility. "
-"Take a Healing Potion that completely restores STR. Only you know of its "
-"unintended side-effects."
+"You created a restorative tincture that also causes accidental "
+"infertility. Take a **Healing Potion** that completely restores STR. Only"
+" you know of its unintended side-effects."
 msgstr ""
 "Ви створили відновлювальну настоянку, що також випадково спричиняє "
-"безпліддя. Візьміть Цілюще зілля, яке повністю відновлює СИЛ. Лише ви знаєте "
-"про його небажані побічні ефекти."
+"безпліддя. Візьміть **Цілюще зілля**, яке повністю відновлює СИЛ. Лише ви"
+" знаєте про його небажані побічні ефекти."
 
 #: app/static/json/backgrounds/greenwise.json:96
 msgid "Healing Potion"
@@ -4665,8 +4692,8 @@ msgid "What keeps you safe while in the Wood?"
 msgstr "Що береже вас у Хащі?"
 
 #: app/static/json/backgrounds/greenwise.json:109
-msgid "Amadou: A vermilion fungus that catches fire quite easily. 3 uses."
-msgstr "Трут: Яскраво-червоний гриб, що дуже легко займається. 3 використання."
+msgid "**Amadou**: A vermilion fungus that catches fire quite easily. 3 uses."
+msgstr "**Трут**: Яскраво-червоний гриб, що дуже легко займається. 3 використання."
 
 #: app/static/json/backgrounds/greenwise.json:112
 msgid "Amadou"
@@ -4678,11 +4705,11 @@ msgstr "Яскраво-червоний гриб, що дуже легко за�
 
 #: app/static/json/backgrounds/greenwise.json:120
 msgid ""
-"Delphinium: Breathe water for up to one hour. 1 use, but can be divided into "
-"fractional doses."
+"**Delphinium**: Breathe water for up to one hour. 1 use, but can be "
+"divided into fractional doses."
 msgstr ""
-"Дельфіній: Дихайте під водою до однієї години. 1 використання, але можна "
-"поділити на менші дози."
+"**Дельфіній**: Дихайте під водою до однієї години. 1 використання, але "
+"можна поділити на менші дози."
 
 #: app/static/json/backgrounds/greenwise.json:123
 msgid "Delphinium"
@@ -4694,11 +4721,11 @@ msgstr "Дихайте під водою до однієї години. Мож�
 
 #: app/static/json/backgrounds/greenwise.json:131
 msgid ""
-"Tacky Stalk: A woody reed that hardens into a permanent adhesive when "
-"chewed. 2 uses."
+"**Tacky Stalk**: A woody reed that hardens into a permanent adhesive when"
+" chewed. 2 uses."
 msgstr ""
-"Липке стебло: Дерев’яниста очеретина, що після жування твердне в постійний "
-"клей. 2 використання."
+"**Липке стебло**: Дерев’яниста очеретина, що після жування твердне в "
+"постійний клей. 2 використання."
 
 #: app/static/json/backgrounds/greenwise.json:134
 msgid "Tacky Stalk"
@@ -4710,11 +4737,11 @@ msgstr "Дерев’яниста очеретина, що після жуван
 
 #: app/static/json/backgrounds/greenwise.json:142
 msgid ""
-"Wisp Lantern: Caged in wrought iron, provides a dim light so long as the "
-"wisp is able to feed on nearby pain and fear."
+"**Wisp Lantern**: Caged in wrought iron, provides a dim light so long as "
+"the wisp is able to feed on nearby pain and fear."
 msgstr ""
-"Ліхтар із вогником: Ув’язнений у кованому залізі блукаючий вогник дає тьмяне "
-"світло, доки може живитися болем і страхом поблизу."
+"**Ліхтар із вогником**: Ув’язнений у кованому залізі блукаючий вогник дає"
+" тьмяне світло, доки може живитися болем і страхом поблизу."
 
 #: app/static/json/backgrounds/greenwise.json:145
 msgid "Wisp Lantern"
@@ -4728,11 +4755,11 @@ msgstr "Дає тьмяне світло, доки вогник може жив�
 
 #: app/static/json/backgrounds/greenwise.json:152
 msgid ""
-"Seed Bomb: A canvas sack filled with seeds that explode on impact. d6 damage "
-"(blast, 3 uses)."
+"**Seed Bomb**: A canvas sack filled with seeds that explode on impact. d6"
+" damage (_blast_, 3 uses)."
 msgstr ""
-"Насіннєва бомба: Полотняний мішечок із насінням, що вибухає від удару. к6 "
-"пошкоджень (Вибух, 3 використання)."
+"**Насіннєва бомба**: Полотняний мішечок із насінням, що вибухає від "
+"удару. к6 пошкоджень (_Вибух_, 3 використання)."
 
 #: app/static/json/backgrounds/greenwise.json:155
 msgid "Seed Bomb"
@@ -4748,11 +4775,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/greenwise.json:163
 msgid ""
-"Briarvine: Entangles any creature up to horse size (STR to break free). "
-"Reusable."
+"**Briarvine**: Entangles any creature up to horse size (STR to break "
+"free). Reusable."
 msgstr ""
-"Тернолоза: Обплутує будь-яку істоту завбільшки до коня (перевірка СИЛ, щоб "
-"вирватися). Багаторазова."
+"**Тернолоза**: Обплутує будь-яку істоту завбільшки до коня (перевірка "
+"СИЛ, щоб вирватися). Багаторазова."
 
 #: app/static/json/backgrounds/greenwise.json:166
 msgid "Briarvine"
@@ -4808,13 +4835,13 @@ msgstr "Що ви принесли з Неблагого двору?"
 
 #: app/static/json/backgrounds/half-witch.json:54
 msgid ""
-"A Black Rose Fiddle (bulky). Its music causes intense sadness and immobility "
-"in nearby mortals. (Others are merely fascinated.) You don't know how to "
-"play."
+"A **Black Rose Fiddle** (_bulky_). Its music causes intense sadness and "
+"immobility in nearby mortals. (Others are merely fascinated.) You don't "
+"know how to play."
 msgstr ""
-"Скрипка чорної троянди (громіздке). Її музика викликає у смертних поблизу "
-"глибокий смуток і заціпеніння. (Інших вона лише заворожує.) Ви не вмієте "
-"грати."
+"**Скрипка чорної троянди** (_громіздке_). Її музика викликає у смертних "
+"поблизу глибокий смуток і заціпеніння. (Інших вона лише заворожує.) Ви не"
+" вмієте грати."
 
 #: app/static/json/backgrounds/half-witch.json:57
 msgid "Black Rose Fiddle"
@@ -4830,11 +4857,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:64
 msgid ""
-"Paper legs. You are extremely light and can fall a few stories without "
-"getting hurt. Try to avoid tearing them or getting them wet."
+"**Paper legs**. You are extremely light and can fall a few stories "
+"without getting hurt. Try to avoid tearing them or getting them wet."
 msgstr ""
-"Паперові ноги. Ви надзвичайно легкі й можете впасти з кількох поверхів без "
-"шкоди. Намагайтеся не порвати їх і не намочити."
+"**Паперові ноги**. Ви надзвичайно легкі й можете впасти з кількох "
+"поверхів без шкоди. Намагайтеся не порвати їх і не намочити."
 
 #: app/static/json/backgrounds/half-witch.json:67
 msgid "Paper Legs"
@@ -4850,15 +4877,15 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:74
 msgid ""
-"A Living Nightmare that dwells within you but manifests whenever you are in "
-"danger. It has your same Attributes and HP and attacks with claws (d8+d8). "
-"It disappears on Critical Damage (take 1d4 WIL damage), re-appearing again "
-"on the next full moon."
+"A **Living Nightmare** that dwells within you but manifests whenever you "
+"are in danger. It has your same **Attributes** and **HP** and attacks "
+"with claws (d8+d8). It disappears on **Critical Damage** (take 1d4 WIL "
+"damage), re-appearing again on the next full moon."
 msgstr ""
-"Живий кошмар, що мешкає у вас, але проявляється щоразу, коли ви в небезпеці. "
-"Він має ті самі Атрибути й ПЗ, що й ви, та атакує кігтями (к8+к8). Він "
-"зникає при критичному пошкодженні (отримайте 1к4 пошкоджень ВОЛ) і знову "
-"з’являється в наступну повню."
+"**Живий кошмар**, що мешкає у вас, але проявляється щоразу, коли ви в "
+"небезпеці. Він має ті самі **Атрибути** й **ПЗ**, що й ви, та атакує "
+"кігтями (к8+к8). Він зникає при критичному пошкодженні (отримайте 1к4 "
+"пошкоджень ВОЛ) і знову з’являється в наступну повню."
 
 #: app/static/json/backgrounds/half-witch.json:77
 msgid "Living Nightmare"
@@ -4876,11 +4903,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:84
 msgid ""
-"A Raven Familiar [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as an "
-"intelligent being and is entirely devoted to you."
+"A **Raven Familiar** [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks"
+" as an intelligent being and is entirely devoted to you."
 msgstr ""
-"Крук-фамільяр [8 ПЗ, 3 СИЛ, 11 СПР, 13 ВОЛ, дзьоб, (к6)]. Він говорить як "
-"розумна істота й цілковито відданий вам."
+"**Крук-фамільяр** [8 ПЗ, 3 СИЛ, 11 СПР, 13 ВОЛ, дзьоб, (к6)]. Він "
+"говорить як розумна істота й цілковито відданий вам."
 
 #: app/static/json/backgrounds/half-witch.json:87
 msgid "Raven Familiar"
@@ -4896,11 +4923,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:94
 msgid ""
-"A Briar Thorn. It can pierce any organic material (quite painfully) but when "
-"removed leaves no trace of the intrusion."
+"A **Briar Thorn**. It can pierce any organic material (quite painfully) "
+"but when removed leaves no trace of the intrusion."
 msgstr ""
-"Тернова колючка. Вона може проколоти будь-який органічний матеріал (доволі "
-"болісно), але після виймання не лишає жодного сліду проникнення."
+"**Тернова колючка**. Вона може проколоти будь-який органічний матеріал "
+"(доволі болісно), але після виймання не лишає жодного сліду проникнення."
 
 #: app/static/json/backgrounds/half-witch.json:97
 msgid "Briar Thorn"
@@ -4912,13 +4939,13 @@ msgstr "Може проколоти будь-який органічний ма�
 
 #: app/static/json/backgrounds/half-witch.json:104
 msgid ""
-"A Fae creature's True Name. Use it to summon its owner for an act of great "
-"service, but only once. It could also fetch a hefty price, from the right "
-"buyer."
+"A Fae creature's **True Name**. Use it to summon its owner for an act of "
+"great service, but only once. It could also fetch a hefty price, from the"
+" right buyer."
 msgstr ""
-"Справжнє ім’я істоти-фейрі. Промовте його, щоб прикликати власника для "
-"однієї великої послуги — але лише раз. За нього також можна вторгувати "
-"чималу ціну в потрібного покупця."
+"**Справжнє ім’я** істоти-фейрі. Промовте його, щоб прикликати власника "
+"для однієї великої послуги — але лише раз. За нього також можна "
+"вторгувати чималу ціну в потрібного покупця."
 
 #: app/static/json/backgrounds/half-witch.json:110
 msgid ""
@@ -4930,12 +4957,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:113
 msgid ""
-"Rebirth Ash: Remnants of a bark spirit. Sprinkle to reignite a fire that has "
-"died or return to life a creature that has died only moments before. 3 uses."
+"**Rebirth Ash**: Remnants of a bark spirit. Sprinkle to reignite a fire "
+"that has died or return to life a creature that has died only moments "
+"before. 3 uses."
 msgstr ""
-"Попіл відродження: Рештки духа кори. Посипте, щоб знову розпалити згаслий "
-"вогонь або повернути до життя істоту, що померла лише мить тому. 3 "
-"використання."
+"**Попіл відродження**: Рештки духа кори. Посипте, щоб знову розпалити "
+"згаслий вогонь або повернути до життя істоту, що померла лише мить тому. "
+"3 використання."
 
 #: app/static/json/backgrounds/half-witch.json:116
 msgid "Rebirth Ash"
@@ -4951,10 +4979,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:124
 msgid ""
-"Glamour Feather: Plume of a firebird. Can make any creature appear "
+"**Glamour Feather**: Plume of a firebird. Can make any creature appear "
 "convincingly as someone (or something) else. 1 use."
 msgstr ""
-"Перо омани: Перо жар-птиці. Може змусити будь-яку істоту переконливо "
+"**Перо омани**: Перо жар-птиці. Може змусити будь-яку істоту переконливо "
 "виглядати кимось (або чимось) іншим. 1 використання."
 
 #: app/static/json/backgrounds/half-witch.json:127
@@ -4967,13 +4995,13 @@ msgstr "Може змусити будь-яку істоту виглядати 
 
 #: app/static/json/backgrounds/half-witch.json:135
 msgid ""
-"Hawthorn Seed: An acorn from the other side, gathered on the spring equinox. "
-"When planted, it sprouts a luxurious shelter, collapsing at moonrise the "
-"next day. 1 use."
+"**Hawthorn Seed**: An acorn from the other side, gathered on the spring "
+"equinox. When planted, it sprouts a luxurious shelter, collapsing at "
+"moonrise the next day. 1 use."
 msgstr ""
-"Насінина глоду: Жолудь з того боку, зібраний у весняне рівнодення. "
-"Посаджена, вона проростає розкішним прихистком, що розпадається зі сходом "
-"місяця наступного дня. 1 використання."
+"**Насінина глоду**: Жолудь з того боку, зібраний у весняне рівнодення. "
+"Посаджена, вона проростає розкішним прихистком, що розпадається зі сходом"
+" місяця наступного дня. 1 використання."
 
 #: app/static/json/backgrounds/half-witch.json:138
 msgid "Hawthorn Seed"
@@ -4989,11 +5017,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:146
 msgid ""
-"Stonetree Sap: Sap obtained in exchange for blood. Hardens when rubbed on "
-"any surface (+1 Armor). 3 uses."
+"**Stonetree Sap**: Sap obtained in exchange for blood. Hardens when "
+"rubbed on any surface (+1 Armor). 3 uses."
 msgstr ""
-"Сік каменедерева: Сік, отриманий в обмін на кров. Твердне, коли ним натерти "
-"будь-яку поверхню (+1 Броні). 3 використання."
+"**Сік каменедерева**: Сік, отриманий в обмін на кров. Твердне, коли ним "
+"натерти будь-яку поверхню (+1 Броні). 3 використання."
 
 #: app/static/json/backgrounds/half-witch.json:149
 msgid "Stonetree Sap"
@@ -5009,11 +5037,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/half-witch.json:157
 msgid ""
-"Nightdust Powder: The ritual burning of six owls. When tossed in the air, "
-"day turns to night for a short while. 2 uses."
+"**Nightdust Powder**: The ritual burning of six owls. When tossed in the "
+"air, day turns to night for a short while. 2 uses."
 msgstr ""
-"Порошок нічного пилу: Ритуальне спалення шести сов. Якщо підкинути його в "
-"повітря, день ненадовго обертається на ніч. 2 використання."
+"**Порошок нічного пилу**: Ритуальне спалення шести сов. Якщо підкинути "
+"його в повітря, день ненадовго обертається на ніч. 2 використання."
 
 #: app/static/json/backgrounds/half-witch.json:160
 msgid "Nightdust Powder"
@@ -5025,13 +5053,13 @@ msgstr "Якщо підкинути його в повітря, день нен�
 
 #: app/static/json/backgrounds/half-witch.json:168
 msgid ""
-"Hex Stone: Gathered from a river that flows from the other side. Removed "
-"from its iron tin, it can absorb the effects of an active magical effect. If "
-"destroyed, the magic is released. 1 use."
+"**Hex Stone**: Gathered from a river that flows from the _other side_. "
+"Removed from its iron tin, it can absorb the effects of an active magical"
+" effect. If destroyed, the magic is released. 1 use."
 msgstr ""
-"Відьомський камінь: Здобутий із річки, що тече з того боку. Вийнятий зі "
-"своєї залізної бляшанки, він може ввібрати дію активного магічного ефекту. "
-"Якщо його знищити, магія вивільняється. 1 використання."
+"**Відьомський камінь**: Здобутий із річки, що тече з того боку. Вийнятий "
+"зі своєї залізної бляшанки, він може ввібрати дію активного магічного "
+"ефекту. Якщо його знищити, магія вивільняється. 1 використання."
 
 #: app/static/json/backgrounds/half-witch.json:171
 msgid "Hex Stone"
@@ -5073,12 +5101,13 @@ msgstr "До якого ордену ви належите?"
 
 #: app/static/json/backgrounds/hexenbane.json:51
 msgid ""
-"Order of the Crossroads. Take a Pocket Leyfinder. It points to nearby ley "
-"lines and other sources of arcane power. If you lose it, the punishment is "
-"death."
+"**Order of the Crossroads**. Take a **Pocket Leyfinder**. It points to "
+"nearby ley lines and other sources of arcane power. If you lose it, the "
+"punishment is death."
 msgstr ""
-"Орден Роздоріжжя. Візьміть Кишеньковий лейшукач. Він вказує на лей-лінії та "
-"інші джерела таємної сили поблизу. Якщо ви його загубите, кара — смерть."
+"Орден Роздоріжжя. Візьміть **Кишеньковий лейшукач**. Він вказує на "
+"лей-лінії та інші джерела таємної сили поблизу. Якщо ви його загубите, "
+"кара — смерть."
 
 #: app/static/json/backgrounds/hexenbane.json:54
 msgid "Pocket Leyfinder"
@@ -5094,8 +5123,8 @@ msgstr ""
 
 #: app/static/json/backgrounds/hexenbane.json:61
 msgid ""
-"Order of the Bleeding Star. Take a Star-Iron Mace (d8). It shines faintly in "
-"darkness and becomes very hot in the presence of witchcraft."
+"**Order of the Bleeding Star**. Take a **Star-Iron Mace** (d8). It shines"
+" faintly in darkness and becomes very hot in the presence of witchcraft."
 msgstr ""
 "Орден Кривавої зорі. Візьміть Булаву із зоряного заліза (к8). Вона слабко "
 "сяє в темряві й сильно нагрівається поруч із відьомством."
@@ -5112,13 +5141,13 @@ msgstr "Вона слабко сяє в темряві й сильно нагр�
 
 #: app/static/json/backgrounds/hexenbane.json:71
 msgid ""
-"Order of the Glass Sigil. Take a short sword (d8) and chainmail (2 Armor, "
-"bulky). You have contacts in most towns (the more rural, the better) willing "
-"to provide aid, food, or even weapons."
+"**Order of the Glass Sigil**. Take a short sword (d8) and chainmail (2 "
+"Armor, _bulky_). You have contacts in most towns (the more rural, the "
+"better) willing to provide aid, food, or even weapons."
 msgstr ""
 "Орден Скляного сигіла. Візьміть короткий меч (к8) і кольчугу (2 Броні, "
-"громіздке). У більшості міст (що глухіших, то краще) у вас є знайомі, готові "
-"надати допомогу, їжу чи навіть зброю."
+"_громіздке_). У більшості міст (що глухіших, то краще) у вас є знайомі, "
+"готові надати допомогу, їжу чи навіть зброю."
 
 #: app/static/json/backgrounds/hexenbane.json:74
 msgid "Short sword"
@@ -5130,13 +5159,13 @@ msgstr "Кольчуга"
 
 #: app/static/json/backgrounds/hexenbane.json:84
 msgid ""
-"Order of the Blank Eye. Take a Voidglass Shard. Peer through it to see "
-"invisible marks, creatures, and other magical effects. Lose the use of your "
-"eye for an hour afterwards (you are deprived)."
+"**Order of the Blank Eye**. Take a **Voidglass Shard**. Peer through it "
+"to see invisible marks, creatures, and other magical effects. Lose the "
+"use of your eye for an hour afterwards (you are _deprived_)."
 msgstr ""
-"Орден Порожнього ока. Візьміть Уламок скла порожнечі. Погляньте крізь нього, "
-"щоб побачити невидимі знаки, істот та інші магічні ефекти. Після цього ви на "
-"годину втрачаєте зір на це око (ви в стані Позбавлення)."
+"Орден Порожнього ока. Візьміть **Уламок скла порожнечі**. Погляньте крізь"
+" нього, щоб побачити невидимі знаки, істот та інші магічні ефекти. Після "
+"цього ви на годину втрачаєте зір на це око (ви в стані _Позбавлення_)."
 
 #: app/static/json/backgrounds/hexenbane.json:87
 msgid "Voidglass Shard"
@@ -5153,11 +5182,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/hexenbane.json:94
 msgid ""
-"Order of Canaas. Once per day you can change into a wolf. Take a Quicksilver "
-"Chain. Without it, you are unable to shift back."
+"**Order of Canaas**. Once per day you can change into a wolf. Take a "
+"**Quicksilver Chain**. Without it, you are unable to shift back."
 msgstr ""
-"Орден Канаас. Раз на день ви можете перекидатися на вовка. Візьміть Ртутний "
-"ланцюг. Без нього ви не зможете перекинутися назад."
+"Орден Канаас. Раз на день ви можете перекидатися на вовка. Візьміть "
+"**Ртутний ланцюг**. Без нього ви не зможете перекинутися назад."
 
 #: app/static/json/backgrounds/hexenbane.json:97
 msgid "Quicksilver Chain"
@@ -5169,11 +5198,12 @@ msgstr "Без нього ви не зможете перекинутися на
 
 #: app/static/json/backgrounds/hexenbane.json:104
 msgid ""
-"Order of the Silent Veil. Take a Quell Stone (2 uses) wrapped in burlap. "
-"Extinguishes any nearby flames once exposed to air."
+"**Order of the Silent Veil**. Take a **Quell Stone** (2 uses) wrapped in "
+"burlap. Extinguishes any nearby flames once exposed to air."
 msgstr ""
-"Орден Тихої Завіси. Візьміть Гасильний камінь (2 використання), загорнутий у "
-"мішковину. Щойно опиняється на повітрі, гасить будь-яке полум’я поблизу."
+"Орден Тихої Завіси. Візьміть **Гасильний камінь** (2 використання), "
+"загорнутий у мішковину. Щойно опиняється на повітрі, гасить будь-яке "
+"полум’я поблизу."
 
 #: app/static/json/backgrounds/hexenbane.json:107
 msgid "Quell Stone"
@@ -5189,18 +5219,19 @@ msgstr "Якою була ваша обітниця?"
 
 #: app/static/json/backgrounds/hexenbane.json:120
 msgid ""
-"Honesty. Choose a weapon type (blunt, blade, etc). Attacks against you of "
-"this type are impaired. If your vow is broken, you lose d4 WIL."
+"**Honesty**. Choose a **weapon type** (blunt, blade, etc). Attacks "
+"against you of this type are _impaired_. If your vow is broken, you lose "
+"d4 WIL."
 msgstr ""
 "Чесність. Оберіть тип зброї (ударна, клинкова тощо). Атаки цього типу проти "
 "вас ослаблені. Якщо ваша обітниця порушена, ви втрачаєте к4 ВОЛ."
 
 #: app/static/json/backgrounds/hexenbane.json:124
 msgid ""
-"Poverty. You carry the Disassemble Spellbook. Only you can use it. If your "
-"vow is broken, it explodes (d12 STR damage)."
+"**Poverty**. You carry the _Disassemble_ **Spellbook**. Only you can use "
+"it. If your vow is broken, it explodes (d12 STR damage)."
 msgstr ""
-"Бідність. Ви носите Книгу заклять «Розібрати». Лише ви можете нею "
+"Бідність. Ви носите Книгу заклять «_Розібрати_». Лише ви можете нею "
 "користуватися. Якщо ваша обітниця порушена, вона вибухає (к12 пошкоджень "
 "СИЛ)."
 
@@ -5222,18 +5253,19 @@ msgstr ""
 
 #: app/static/json/backgrounds/hexenbane.json:134
 msgid ""
-"Selflessness. You are immune to mind-altering magical effects, such as "
-"charm, hatred, frenzy, and so on. If you break this vow, you lose d6 WIL."
+"**Selflessness**. You are immune to **mind-altering magical effects**, "
+"such as _charm_, _hatred_, _frenzy_, and so on. If you break this vow, "
+"you lose d6 WIL."
 msgstr ""
 "Безкорисливість. Ви маєте імунітет до магічних ефектів, що впливають на "
-"розум: зачарування, ненависть, божевілля тощо. Якщо ви порушите цю обітницю, "
-"ви втрачаєте к6 ВОЛ."
+"розум: _зачарування_, _ненависть_, _божевілля_ тощо. Якщо ви порушите цю "
+"обітницю, ви втрачаєте к6 ВОЛ."
 
 #: app/static/json/backgrounds/hexenbane.json:138
 msgid ""
-"Mercy. Choose a weapon type (blunt, blade, etc). Attacks with this weapon "
-"are enhanced. If your vow is broken, you can never use that weapon type "
-"again."
+"**Mercy**. Choose a **weapon type** (blunt, blade, etc). Attacks with "
+"this weapon are _enhanced_. If your vow is broken, you can never use that"
+" weapon type again."
 msgstr ""
 "Милосердя. Оберіть тип зброї (ударна, клинкова тощо). Атаки цією зброєю "
 "посилені. Якщо ваша обітниця порушена, ви більше ніколи не зможете "
@@ -5241,21 +5273,21 @@ msgstr ""
 
 #: app/static/json/backgrounds/hexenbane.json:142
 msgid ""
-"Charity. Once per day, you can shrug off a Fatigue. If your vow is ever "
-"broken, you permanently lose one inventory slot."
+"**Charity**. Once per day, you can shrug off a **Fatigue**. If your vow "
+"is ever broken, you permanently lose one inventory slot."
 msgstr ""
 "Щедрість. Раз на день ви можете скинути одну Втому. Якщо ваша обітниця буде "
 "порушена, ви назавжди втрачаєте один слот інвентарю."
 
 #: app/static/json/backgrounds/hexenbane.json:146
 msgid ""
-"Valor. The first time you inflict Critical Damage, you receive +d4 HP, "
-"returning to the previous limit at the end of combat. If your vow is broken, "
-"you die."
+"**Valor**. The first time you inflict **Critical Damage**, you receive "
+"+d4 HP, returning to the previous limit at the end of combat. If your vow"
+" is broken, you die."
 msgstr ""
-"Звитяга. Коли ви вперше завдаєте критичного пошкодження, ви отримуєте +к4 "
-"ПЗ; наприкінці бою значення повертається до попередньої межі. Якщо ваша "
-"обітниця порушена, ви помираєте."
+"**Звитяга**. Коли ви вперше завдаєте критичного пошкодження, ви отримуєте"
+" +к4 ПЗ; наприкінці бою значення повертається до попередньої межі. Якщо "
+"ваша обітниця порушена, ви помираєте."
 
 #: app/static/json/backgrounds/jongleur.json:4
 msgid ""
@@ -5291,8 +5323,8 @@ msgstr "Що сталося на вашому останньому виступ�
 
 #: app/static/json/backgrounds/jongleur.json:51
 msgid ""
-"Despite your training in the deadly arts, an actor died and you were blamed. "
-"Take a light-weight Rapier (d6) and a false identity."
+"Despite your training in the deadly arts, an actor died and you were "
+"blamed. Take a light-weight **Rapier** (d6) and a false identity."
 msgstr ""
 "Попри ваш вишкіл у смертельних мистецтвах, актор загинув, і провину поклали "
 "на вас. Візьміть легку Рапіру (к6) і фальшиве ім’я."
@@ -5304,13 +5336,13 @@ msgstr "Рапіра"
 
 #: app/static/json/backgrounds/jongleur.json:60
 msgid ""
-"The crowd loved your catchy tune about a noble and his romantic failings. "
-"The noble in question, not so much. Take the Read Mind Spellbook and a "
-"warrant for your arrest."
+"The crowd loved your catchy tune about a noble and his romantic failings."
+" The noble in question, not so much. Take the _Read Mind_ **Spellbook** "
+"and a warrant for your arrest."
 msgstr ""
-"Натовп обожнював вашу влучну пісеньку про шляхтича та його любовні невдачі. "
-"Сам шляхтич — не надто. Візьміть Книгу заклять «Читання думок» і ордер на "
-"власний арешт."
+"Натовп обожнював вашу влучну пісеньку про шляхтича та його любовні "
+"невдачі. Сам шляхтич — не надто. Візьміть Книгу заклять «_Читання думок_»"
+" і ордер на власний арешт."
 
 #: app/static/json/backgrounds/jongleur.json:63
 msgid "Read Mind Spellbook"
@@ -5326,10 +5358,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/jongleur.json:70
 msgid ""
-"Your debut composition reduced the audience to a gibbering mess, murmuring "
-"of bright creatures descending from the night sky. Later you noticed that "
-"the notes resembled stellar constellations. Take a Book On Astronomy and a "
-"lot of questions."
+"Your debut composition reduced the audience to a gibbering mess, "
+"murmuring of bright creatures descending from the night sky. Later you "
+"noticed that the notes resembled stellar constellations. Take a **Book On"
+" Astronomy** and a lot of questions."
 msgstr ""
 "Ваш дебютний твір довів слухачів до белькотіння — вони мурмотіли про осяйних "
 "істот, що сходять із нічного неба. Згодом ви помітили, що ноти нагадують "
@@ -5341,13 +5373,15 @@ msgstr "Книга з астрономії"
 
 #: app/static/json/backgrounds/jongleur.json:79
 msgid ""
-"You mocked a forgotten trickster god and were cursed for it. You speak only "
-"in perfect rhyme. Ironically, this has only made you more popular among your "
-"peers. Take a Thesaurus (20gp). Without it, you are deprived."
+"You mocked a forgotten trickster god and were cursed for it. You speak "
+"only in perfect rhyme. Ironically, this has only made you more popular "
+"among your peers. Take a **Thesaurus** (20gp). Without it, you are "
+"_deprived_."
 msgstr ""
-"Ви поглузували із забутого бога-трикстера, і він вас прокляв. Ви говорите "
-"лише досконалими римами. За іронією, це лише додало вам популярності серед "
-"побратимів. Візьміть Тезаурус (20 зм). Без нього ви в стані Позбавлення."
+"Ви поглузували із забутого бога-трикстера, і він вас прокляв. Ви говорите"
+" лише досконалими римами. За іронією, це лише додало вам популярності "
+"серед побратимів. Візьміть **Тезаурус** (20 зм). Без нього ви в стані "
+"_Позбавлення_."
 
 #: app/static/json/backgrounds/jongleur.json:82
 msgid "Thesaurus"
@@ -5359,9 +5393,9 @@ msgstr "Вартий 20 зм. Без нього ви в стані Позбав�
 
 #: app/static/json/backgrounds/jongleur.json:89
 msgid ""
-"You were scarred in an on-stage accident. The crowd cheered, thinking it was "
-"part of the act. Take well-worn Stage Mail (1 Armor), a memorable scar, and "
-"a fear of applause."
+"You were scarred in an on-stage accident. The crowd cheered, thinking it "
+"was part of the act. Take well-worn **Stage Mail** (1 Armor), a memorable"
+" scar, and a fear of applause."
 msgstr ""
 "Ви дістали шрам через нещасний випадок на сцені. Натовп аплодував, гадаючи, "
 "що це частина вистави. Візьміть поношену Сценічну кольчугу (1 Броні), "
@@ -5373,14 +5407,15 @@ msgstr "Сценічна кольчуга"
 
 #: app/static/json/backgrounds/jongleur.json:98
 msgid ""
-"Your respectable puppeteering skills were matched only by your mimicry. You "
-"were so good you were branded a witch (literally) and banished. Take an "
-"Uncanny Hand-Puppet and a Rabbit Skull (petty) that protects against charms."
+"Your respectable puppeteering skills were matched only by your mimicry. "
+"You were so good you were branded a witch (literally) and banished. Take "
+"an **Uncanny Hand-Puppet** and a **Rabbit Skull** (_petty_) that protects"
+" against charms."
 msgstr ""
 "Ваша неабияка майстерність лялькаря поступалася хіба що вашому дару "
-"наслідування. Ви були такі вправні, що вас затаврували як відьму (буквально) "
-"і вигнали. Візьміть Моторошну ляльку-рукавичку та Кролячий череп "
-"(дріб’язкове), що захищає від зачарувань."
+"наслідування. Ви були такі вправні, що вас затаврували як відьму "
+"(буквально) і вигнали. Візьміть Моторошну ляльку-рукавичку та **Кролячий "
+"череп** (_дріб’язкове_), що захищає від зачарувань."
 
 #: app/static/json/backgrounds/jongleur.json:101
 msgid "Uncanny Hand-Puppet"
@@ -5400,11 +5435,11 @@ msgstr "Яку дрібничку ви не змогли залишити?"
 
 #: app/static/json/backgrounds/jongleur.json:117
 msgid ""
-"False Cuffs: Comfortable, realistic-looking cuffs. Only you know the trick "
-"to get out of them."
+"**False Cuffs**: Comfortable, realistic-looking cuffs. Only you know the "
+"trick to get out of them."
 msgstr ""
-"Фальшиві кайданки: зручні кайданки, що виглядають як справжні. Лише ви "
-"знаєте, як із них вибратися."
+"**Фальшиві кайданки**: зручні кайданки, що виглядають як справжні. Лише "
+"ви знаєте, як із них вибратися."
 
 #: app/static/json/backgrounds/jongleur.json:120
 msgid "False Cuffs"
@@ -5420,11 +5455,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/jongleur.json:127
 msgid ""
-"Pocket Theatre: A set of small puppets and a folding stage. Good for quick "
-"distractions."
+"**Pocket Theatre**: A set of small puppets and a folding stage. Good for "
+"quick distractions."
 msgstr ""
-"Кишеньковий театр: набір маленьких ляльок і складана сцена. Добре відвертає "
-"увагу."
+"**Кишеньковий театр**: набір маленьких ляльок і складана сцена. Добре "
+"відвертає увагу."
 
 #: app/static/json/backgrounds/jongleur.json:130
 msgid "Pocket Theatre"
@@ -5437,10 +5472,10 @@ msgstr "Набір маленьких ляльок і складана сцен�
 
 #: app/static/json/backgrounds/jongleur.json:137
 msgid ""
-"Ghost Violin: A dark-grey violin that plays a haunting tune, mirrored by an "
-"invisible, distant twin."
+"**Ghost Violin**: A dark-grey violin that plays a haunting tune, mirrored"
+" by an invisible, distant twin."
 msgstr ""
-"Примарна скрипка: темно-сіра скрипка, що грає тужливу мелодію, яку "
+"**Примарна скрипка**: темно-сіра скрипка, що грає тужливу мелодію, яку "
 "віддзеркалює невидимий далекий двійник."
 
 #: app/static/json/backgrounds/jongleur.json:140
@@ -5457,11 +5492,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/jongleur.json:147
 msgid ""
-"Tragic Tales: Banned in proper company, this book becomes less bawdy and "
-"more harrowing towards the end. Worth 100gp."
+"**Tragic Tales**: Banned in proper company, this book becomes less bawdy "
+"and more harrowing towards the end. Worth **100gp**."
 msgstr ""
-"Трагічні оповіді: заборонена в пристойному товаристві книга; ближче до кінця "
-"вона стає менш сороміцькою і дедалі моторошнішою. Варта 100 зм."
+"**Трагічні оповіді**: заборонена в пристойному товаристві книга; ближче "
+"до кінця вона стає менш сороміцькою і дедалі моторошнішою. Варта 100 зм."
 
 #: app/static/json/backgrounds/jongleur.json:150
 msgid "Tragic Tales"
@@ -5477,11 +5512,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/jongleur.json:157
 msgid ""
-"Mythos Mask: A plaster mask that allows one to take on a monster's "
-"countenance. Once it comes off, add a Fatigue."
+"**Mythos Mask**: A plaster mask that allows one to take on a monster's "
+"countenance. Once it comes off, add a **Fatigue**."
 msgstr ""
-"Маска міфів: гіпсова маска, що дозволяє прибрати подобу монстра. Щойно її "
-"знімають, додайте Втому."
+"**Маска міфів**: гіпсова маска, що дозволяє прибрати подобу монстра. "
+"Щойно її знімають, додайте Втому."
 
 #: app/static/json/backgrounds/jongleur.json:160
 msgid "Mythos Mask"
@@ -5497,11 +5532,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/jongleur.json:167
 msgid ""
-"Rebreak Glass: A wine flute that can be broken multiple times, reforming "
-"after 24 hours. Makes a really loud noise."
+"**Rebreak Glass**: A wine flute that can be broken multiple times, "
+"reforming after 24 hours. Makes a really loud noise."
 msgstr ""
-"Відновний келих: винний келих, який можна розбивати знову й знову — він "
-"відновлюється за 24 години. Розбивається дуже гучно."
+"**Відновний келих**: винний келих, який можна розбивати знову й знову — "
+"він відновлюється за 24 години. Розбивається дуже гучно."
 
 #: app/static/json/backgrounds/jongleur.json:170
 msgid "Rebreak Glass"
@@ -5556,9 +5591,9 @@ msgstr ""
 
 #: app/static/json/backgrounds/kettlewright.json:45
 msgid ""
-"You deal in home goods and tools, hawking your wares to townspeople across "
-"the lands. Take 20gp worth of items from the gear table. You are fluent in "
-"the Traveler's Cant."
+"You deal in home goods and tools, hawking your wares to townspeople "
+"across the lands. Take 20gp worth of items from the gear table. You are "
+"fluent in the _Traveler's Cant_."
 msgstr ""
 "Ви торгуєте домашнім начинням та інструментами, пропонуючи крам городянам по "
 "всіх усюдах. Візьміть предметів на 20 зм із таблиці спорядження. Ви вільно "
@@ -5571,13 +5606,13 @@ msgstr "gear_table"
 
 #: app/static/json/backgrounds/kettlewright.json:50
 msgid ""
-"You were a military smelter, before peace destroyed your livelihood. Take a "
-"smelting hammer (d10, bulky) and a tin helm (+1 Armor). Given time and "
-"adequate materials, you can repair armor."
+"You were a military smelter, before peace destroyed your livelihood. Take"
+" a **smelting hammer** (d10, _bulky_) and a **tin helm** (+1 Armor). "
+"Given time and adequate materials, you can repair armor."
 msgstr ""
-"Ви були військовим ливарником, доки мир не зруйнував ваш заробіток. Візьміть "
-"ливарний молот (к10, громіздке) та олов’яний шолом (+1 Броні). Маючи час і "
-"належні матеріали, ви можете лагодити броню."
+"Ви були військовим ливарником, доки мир не зруйнував ваш заробіток. "
+"Візьміть **ливарний молот** (к10, _громіздке_) та **олов’яний шолом** (+1"
+" Броні). Маючи час і належні матеріали, ви можете лагодити броню."
 
 #: app/static/json/backgrounds/kettlewright.json:53
 msgid "Smelting Hammer"
@@ -5594,11 +5629,12 @@ msgstr "Олов’яний шолом"
 #: app/static/json/backgrounds/kettlewright.json:64
 msgid ""
 "You sell rare and quality items to monasteries and nobles alike. Take a "
-"Spyglass, a Necklace (petty) worth 20gp, and a Scroll of Mirrorwalk (petty)."
+"**Spyglass**, a **Necklace** (_petty_) worth 20gp, and a **Scroll** of "
+"Mirrorwalk (petty)."
 msgstr ""
-"Ви продаєте рідкісні та якісні речі монастирям і шляхті. Візьміть Підзорну "
-"трубу, Намисто (дріб’язкове) варте 20 зм і Сувій «Дзеркальний прохід» "
-"(дріб’язкове)."
+"Ви продаєте рідкісні та якісні речі монастирям і шляхті. Візьміть "
+"Підзорну трубу, **Намисто** (_дріб’язкове_) варте 20 зм і Сувій "
+"«Дзеркальний прохід» (дріб’язкове)."
 
 #: app/static/json/backgrounds/kettlewright.json:67
 #: app/static/json/backgrounds/outrider.json:43
@@ -5626,12 +5662,12 @@ msgstr "Дзеркало стає порталом до іншого дзерк�
 #: app/static/json/backgrounds/kettlewright.json:83
 msgid ""
 "You offer protection as a service, quietly watching for threats as money "
-"exchanges hands. You start with +d4 HP, and carry a Long Sword (d10, bulky) "
-"and a Gambeson (+1 Armor)."
+"exchanges hands. You start with **+d4 HP**, and carry a **Long Sword** "
+"(d10, _bulky_) and a **Gambeson** (+1 Armor)."
 msgstr ""
 "Ви пропонуєте захист як послугу, тихо пильнуючи загрози, поки гроші "
-"переходять із рук у руки. Ви починаєте з +к4 ПЗ і носите Довгий меч (к10, "
-"громіздке) та Гамбезон (+1 Броні)."
+"переходять із рук у руки. Ви починаєте з +к4 ПЗ і носите **Довгий меч** "
+"(к10, _громіздке_) та **Гамбезон** (+1 Броні)."
 
 #: app/static/json/backgrounds/kettlewright.json:86
 #: app/static/json/backgrounds/marchguard.json:34
@@ -5644,13 +5680,13 @@ msgstr "Гамбезон"
 
 #: app/static/json/backgrounds/kettlewright.json:96
 msgid ""
-"You scavenge raw tin and iron from battlefields, pulling teeth from still-"
-"twitching corpses. Start with a young Donkey (+4 slots, slow), a Crossbow "
-"(d8 damage, bulky), and a Saw (d6)."
+"You scavenge raw tin and iron from battlefields, pulling teeth from "
+"still-twitching corpses. Start with a young **Donkey** (+4 slots, slow), "
+"a **Crossbow** (d8 damage, _bulky_), and a **Saw** (d6)."
 msgstr ""
-"Ви збираєте олово й залізо на полях битв, вириваючи зуби з трупів, які ще "
-"сіпаються. Почніть із молодого Віслюка (+4 слоти, повільний), Арбалета (к8 "
-"пошкоджень, громіздке) і Пилки (к6)."
+"Ви збираєте олово й залізо на полях битв, вириваючи зуби з трупів, які ще"
+" сіпаються. Почніть із молодого Віслюка (+4 слоти, повільний), Арбалета "
+"(к8 пошкоджень, _громіздке_) і Пилки (к6)."
 
 #: app/static/json/backgrounds/kettlewright.json:103
 msgid "Saw"
@@ -5662,12 +5698,13 @@ msgstr "Що незмінно рятує вас із халепи?"
 
 #: app/static/json/backgrounds/kettlewright.json:120
 msgid ""
-"Fire Eggs: Six small pellets made of sea salt, wood, and crockery-dust. They "
-"explode at low heat (d8, blast) but the flames dissipate quickly."
+"**Fire Eggs**: Six small pellets made of sea salt, wood, and crockery-"
+"dust. They explode at low heat (d8, _blast_) but the flames dissipate "
+"quickly."
 msgstr ""
-"Вогняні яйця: шість маленьких кульок із морської солі, дерева й керамічного "
-"пилу. Вони вибухають від слабкого нагріву (к8, Вибух), але полум’я швидко "
-"згасає."
+"**Вогняні яйця**: шість маленьких кульок із морської солі, дерева й "
+"керамічного пилу. Вони вибухають від слабкого нагріву (к8, _Вибух_), але "
+"полум’я швидко згасає."
 
 #: app/static/json/backgrounds/kettlewright.json:123
 msgid "Fire Eggs"
@@ -5682,8 +5719,8 @@ msgstr ""
 "вибухають від слабкого нагріву, але полум’я швидко згасає."
 
 #: app/static/json/backgrounds/kettlewright.json:130
-msgid "Black Tar: Versatile: both sticky and highly flammable. 3 uses."
-msgstr "Чорний дьоготь: універсальний — липкий і дуже горючий. 3 використання."
+msgid "**Black Tar**: Versatile: both sticky and highly flammable. 3 uses."
+msgstr "**Чорний дьоготь**: універсальний — липкий і дуже горючий. 3 використання."
 
 #: app/static/json/backgrounds/kettlewright.json:133
 msgid "Black Tar"
@@ -5695,11 +5732,11 @@ msgstr "Універсальний: липкий і дуже горючий."
 
 #: app/static/json/backgrounds/kettlewright.json:141
 msgid ""
-"Spiked Boots: Cracks heads (d8) as easily as it does ice and muck. Travel is "
-"also a bit slower, but easier."
+"**Spiked Boots**: Cracks heads (d8) as easily as it does ice and muck. "
+"Travel is also a bit slower, but easier."
 msgstr ""
-"Шиповані черевики: трощать голови (к8) так само легко, як лід і багнюку. "
-"Подорож трохи повільніша, зате легша."
+"**Шиповані черевики**: трощать голови (к8) так само легко, як лід і "
+"багнюку. Подорож трохи повільніша, зате легша."
 
 #: app/static/json/backgrounds/kettlewright.json:144
 msgid "Spiked Boots"
@@ -5714,9 +5751,9 @@ msgstr ""
 "повільніша, зате легша."
 
 #: app/static/json/backgrounds/kettlewright.json:151
-msgid "Tinker's Paste: Seals shut any fist-sized opening. 3 uses."
+msgid "**Tinker's Paste**: Seals shut any fist-sized opening. 3 uses."
 msgstr ""
-"Паста лудильника: запечатує будь-який отвір завбільшки з кулак. 3 "
+"**Паста лудильника**: запечатує будь-який отвір завбільшки з кулак. 3 "
 "використання."
 
 #: app/static/json/backgrounds/kettlewright.json:154
@@ -5729,10 +5766,10 @@ msgstr "Запечатує будь-який отвір завбільшки з 
 
 #: app/static/json/backgrounds/kettlewright.json:162
 msgid ""
-"Fireworks: A dazzling albeit dangerous display. Enough explosive material to "
-"blow off a finger or three. 2 uses remain."
+"**Fireworks**: A dazzling albeit dangerous display. Enough explosive "
+"material to blow off a finger or three. 2 uses remain."
 msgstr ""
-"Феєрверки: сліпуче, хоч і небезпечне видовище. Вибухівки стане, щоб "
+"**Феєрверки**: сліпуче, хоч і небезпечне видовище. Вибухівки стане, щоб "
 "відірвати палець, а то й три. Лишилося 2 використання."
 
 #: app/static/json/backgrounds/kettlewright.json:165
@@ -5749,13 +5786,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/kettlewright.json:173
 msgid ""
-"A clever pet, small enough to hide in your pack (bulky), but strong enough "
-"to scare off smaller predators. Requires one Ration a day, and it must be "
-"meat."
+"A clever pet, small enough to hide in your pack (_bulky_), but strong "
+"enough to scare off smaller predators. Requires one **Ration** a day, and"
+" it must be meat."
 msgstr ""
 "Кмітливий улюбленець, достатньо малий, щоб ховатися у вашому рюкзаку "
-"(громіздке), але достатньо сильний, щоб відлякувати менших хижаків. Потребує "
-"один пайок на день, і лише м’ясний."
+"(_громіздке_), але достатньо сильний, щоб відлякувати менших хижаків. "
+"Потребує один пайок на день, і лише м’ясний."
 
 #: app/static/json/backgrounds/kettlewright.json:176
 msgid "Carrion Cat"
@@ -5821,11 +5858,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/marchguard.json:49
 msgid ""
-"As a convict, the Oath was simply a means of avoiding punishment. Take a set "
-"of Lockpicks and the key (petty) to a safehouse."
+"As a convict, the Oath was simply a means of avoiding punishment. Take a "
+"set of **Lockpicks** and the key (_petty_) to a safehouse."
 msgstr ""
 "Для вас, засудженого, Присяга була просто способом уникнути покарання. "
-"Візьміть Відмички та ключ (дріб’язкове) від таємного прихистку."
+"Візьміть **Відмички** та ключ (_дріб’язкове_) від таємного прихистку."
 
 #: app/static/json/backgrounds/marchguard.json:56
 msgid "Safehouse Key"
@@ -5833,12 +5870,12 @@ msgstr "Ключ від таємного прихистку"
 
 #: app/static/json/backgrounds/marchguard.json:62
 msgid ""
-"Noble-born, you joined to escape family trouble. Take a Goosefelt Tarp (fits "
-"two) that you stole before leaving home."
+"Noble-born, you joined to escape family trouble. Take a **Goosefelt "
+"Tarp** (fits two) that you stole before leaving home."
 msgstr ""
-"Шляхетного роду, ви вступили до Варти, щоб утекти від родинних негараздів. "
-"Візьміть Тент із гусячої повсті (вміщує двох), який ви поцупили, тікаючи з "
-"дому."
+"Шляхетного роду, ви вступили до Варти, щоб утекти від родинних "
+"негараздів. Візьміть **Тент із гусячої повсті** (вміщує двох), який ви "
+"поцупили, тікаючи з дому."
 
 #: app/static/json/backgrounds/marchguard.json:65
 msgid "Goosefelt Tarp"
@@ -5851,7 +5888,8 @@ msgstr "Вміщує 2 людини."
 #: app/static/json/backgrounds/marchguard.json:72
 msgid ""
 "When your family lost everything, you took the Oath to avoid becoming a "
-"burden. Take extra Rations (3 uses) and a brace of Throwing Knives (d6)."
+"burden. Take extra **Rations** (3 uses) and a brace of **Throwing "
+"Knives** (d6)."
 msgstr ""
 "Коли ваша родина втратила все, ви склали Присягу, щоб не стати тягарем. "
 "Візьміть додаткові Пайки (3 використання) і пару Метальних ножів (к6)."
@@ -5862,12 +5900,13 @@ msgstr "Метальні ножі"
 
 #: app/static/json/backgrounds/marchguard.json:87
 msgid ""
-"Your life was saved by a member of the Marchguard, and you were inspired to "
-"join their ranks. Take a Snare Trap and a Sketchbook filled with detailed "
-"drawings."
+"Your life was saved by a member of the **Marchguard**, and you were "
+"inspired to join their ranks. Take a **Snare Trap** and a **Sketchbook** "
+"filled with detailed drawings."
 msgstr ""
-"Ваше життя врятував порубіжник, і ви надихнулися стати до їхніх лав. "
-"Візьміть Сильце та Альбом для замальовок, заповнений детальними малюнками."
+"Ваше життя врятував **порубіжник**, і ви надихнулися стати до їхніх лав. "
+"Візьміть **Сильце** та **Альбом для замальовок**, заповнений детальними "
+"малюнками."
 
 #: app/static/json/backgrounds/marchguard.json:90
 msgid "Snare Trap"
@@ -5880,11 +5919,12 @@ msgstr "Альбом для замальовок"
 #: app/static/json/backgrounds/marchguard.json:100
 msgid ""
 "You were in a dark place and decided that your life needed a little "
-"direction. You're still not so sure it was the right choice. Take an Oilskin "
-"Coat and Mapping Paper."
+"direction. You're still not so sure it was the right choice. Take an "
+"**Oilskin Coat** and **Mapping Paper**."
 msgstr ""
-"Ви переживали темні часи й вирішили, що вашому життю бракує напряму. Ви досі "
-"не певні, що вибір був правильний. Візьміть Дублений плащ і Папір для мап."
+"Ви переживали темні часи й вирішили, що вашому життю бракує напряму. Ви "
+"досі не певні, що вибір був правильний. Візьміть **Дублений плащ** і "
+"**Папір для мап**."
 
 #: app/static/json/backgrounds/marchguard.json:103
 msgid "Oilskin Coat"
@@ -5900,11 +5940,11 @@ msgstr "Що ви носите на доказ своєї Присяги?"
 
 #: app/static/json/backgrounds/marchguard.json:118
 msgid ""
-"Impressive Pin: A metal badge of honor from the Guard. It can open doors but "
-"leaves a trail. Petty."
+"**Impressive Pin**: A metal badge of honor from the Guard. It can open "
+"doors but leaves a trail. _Petty_."
 msgstr ""
-"Показний значок: металева відзнака Варти. Відчиняє двері, але залишає слід. "
-"Дріб’язкове."
+"**Показний значок**: металева відзнака Варти. Відчиняє двері, але залишає"
+" слід. _Дріб’язкове_."
 
 #: app/static/json/backgrounds/marchguard.json:121
 msgid "Impressive Pin"
@@ -5917,11 +5957,11 @@ msgstr "Металева відзнака Варти. Відчиняє двер�
 
 #: app/static/json/backgrounds/marchguard.json:128
 msgid ""
-"Oath Compass: Points not towards North, but instead to the nearest member of "
-"the Guard. It also lets you know when they're getting close."
+"**Oath Compass**: Points not towards North, but instead to the nearest "
+"member of the Guard. It also lets you know when they're getting close."
 msgstr ""
-"Компас Присяги: вказує не на північ, а на найближчого члена Варти. А ще дає "
-"знати, коли вони наближаються."
+"**Компас Присяги**: вказує не на північ, а на найближчого члена Варти. А "
+"ще дає знати, коли вони наближаються."
 
 #: app/static/json/backgrounds/marchguard.json:131
 msgid "Oath Compass"
@@ -5929,11 +5969,11 @@ msgstr "Компас Присяги"
 
 #: app/static/json/backgrounds/marchguard.json:137
 msgid ""
-"Pullstones: Two jet-black stones. When separated, the stones will always "
-"roll toward one another."
+"**Pullstones**: Two jet-black stones. When separated, the stones will "
+"always roll toward one another."
 msgstr ""
-"Тяжні камені: два чорні як смола камені. Якщо їх розділити, вони завжди "
-"котитимуться один до одного."
+"**Тяжні камені**: два чорні як смола камені. Якщо їх розділити, вони "
+"завжди котитимуться один до одного."
 
 #: app/static/json/backgrounds/marchguard.json:140
 msgid "Pullstones"
@@ -5949,11 +5989,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/marchguard.json:147
 msgid ""
-"Fireflask: Highly alcoholic, yet strangely delicious. When thrown, it "
-"creates a wall of flames 10ft high that burns out after a few minutes. 1 use."
+"**Fireflask**: Highly alcoholic, yet strangely delicious. When thrown, it"
+" creates a wall of flames 10ft high that burns out after a few minutes. 1"
+" use."
 msgstr ""
-"Вогняна фляга: дуже міцна, але напрочуд смачна. Кинута, створює стіну "
-"полум’я 10 футів (3 м) заввишки, що згасає за кілька хвилин. 1 використання."
+"**Вогняна фляга**: дуже міцна, але напрочуд смачна. Кинута, створює стіну"
+" полум’я 10 футів (3 м) заввишки, що згасає за кілька хвилин. 1 "
+"використання."
 
 #: app/static/json/backgrounds/marchguard.json:150
 msgid "Fireflask"
@@ -5969,13 +6011,14 @@ msgstr ""
 
 #: app/static/json/backgrounds/marchguard.json:157
 msgid ""
-"Pain Band: Touch an injured creature to transfer their wounds to you. "
-"(Exchange their lost STR with your own.) Recharge: Wear the ring while in "
-"perfect health. You will lose 1 STR, permanently. Petty."
+"**Pain Band**: Touch an injured creature to transfer their wounds to you."
+" (Exchange their lost STR with your own.) **Recharge**: Wear the ring "
+"while in perfect health. You will lose 1 STR, permanently. _Petty_."
 msgstr ""
-"Каблучка болю: торкніться пораненої істоти, щоб перебрати її рани на себе. "
-"(Обміняйте її втрачену СИЛ на власну.) Перезарядження: носіть каблучку, "
-"будучи цілком здоровим. Ви назавжди втратите 1 СИЛ. Дріб’язкове."
+"**Каблучка болю**: торкніться пораненої істоти, щоб перебрати її рани на "
+"себе. (Обміняйте її втрачену СИЛ на власну.) Перезарядження: носіть "
+"каблучку, будучи цілком здоровим. Ви назавжди втратите 1 СИЛ. "
+"_Дріб’язкове_."
 
 #: app/static/json/backgrounds/marchguard.json:160
 msgid "Pain Band"
@@ -5993,11 +6036,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/marchguard.json:169
 msgid ""
-"Poacher's Woe: Strongly-scented arrows (3 uses). The scent is powerful "
-"enough to track with ease."
+"**Poacher's Woe**: Strongly-scented arrows (3 uses). The scent is "
+"powerful enough to track with ease."
 msgstr ""
-"Горе браконьєра: стріли з сильним запахом (3 використання). Запах достатньо "
-"сильний, щоб легко йти по сліду."
+"**Горе браконьєра**: стріли з сильним запахом (3 використання). Запах "
+"достатньо сильний, щоб легко йти по сліду."
 
 #: app/static/json/backgrounds/marchguard.json:172
 msgid "Poacher's Woe"
@@ -6037,8 +6080,8 @@ msgstr "Як викрили ваше шахрайство?"
 
 #: app/static/json/backgrounds/mountebank.json:55
 msgid ""
-"Your 'patients' kept reporting miraculous recoveries, despite your lack of "
-"training. Start with Bandages (3 uses) and a knack for healing."
+"Your 'patients' kept reporting miraculous recoveries, despite your lack "
+"of training. Start with **Bandages** (3 uses) and a knack for healing."
 msgstr ""
 "Ваші «пацієнти» раз у раз розповідали про дивовижні одужання, попри брак у "
 "вас вишколу. Почніть із Бинтів (3 використання) і хисту до зцілення."
@@ -6046,8 +6089,9 @@ msgstr ""
 #: app/static/json/backgrounds/mountebank.json:65
 msgid ""
 "After seducing a wealthy patron, their family hired a criminal gang to "
-"retrieve you. You got away and need to lay low. Start with Beauty Cream, 2 "
-"uses. Apply to appear irresistibly beautiful for the next 12 hours."
+"retrieve you. You got away and need to lay low. Start with **Beauty "
+"Cream**, 2 uses. Apply to appear irresistibly beautiful for the next 12 "
+"hours."
 msgstr ""
 "Після того як ви спокусили заможного покровителя, його родина найняла "
 "злочинну банду, щоб вас дістати. Ви втекли, і тепер вам треба залягти на "
@@ -6060,13 +6104,14 @@ msgstr "Крем краси"
 
 #: app/static/json/backgrounds/mountebank.json:75
 msgid ""
-"You were a peddler of fake prophesies, but when one turned out to be true, "
-"it drew unwanted attention. Roll on the Omens table, but keep the result to "
-"yourself. Start with a concealable Knife (d6, petty)."
+"You were a peddler of fake prophesies, but when one turned out to be "
+"true, it drew unwanted attention. Roll on the **Omens** table, but keep "
+"the result to yourself. Start with a concealable **Knife** (d6, _petty_)."
 msgstr ""
-"Ви торгували фальшивими пророцтвами, та коли одне справдилося, це привернуло "
-"небажану увагу. Киньте за таблицею «Знамення», але тримайте результат при "
-"собі. Почніть із Ножа, який легко сховати (к6, дріб’язкове)."
+"Ви торгували фальшивими пророцтвами, та коли одне справдилося, це "
+"привернуло небажану увагу. Киньте за таблицею «**Знамення**», але "
+"тримайте результат при собі. Почніть із Ножа, який легко сховати (к6, "
+"_дріб’язкове_)."
 
 #: app/static/json/backgrounds/mountebank.json:78
 msgid "Knife"
@@ -6079,11 +6124,11 @@ msgstr "Легко сховати."
 #: app/static/json/backgrounds/mountebank.json:85
 msgid ""
 "Your latest stunt destroyed a priceless artifact and injured a dozen "
-"bystanders. Start with a Captain's Uniform (petty), a Ceremonial Sword "
-"(harmless, 60gp), and a Bouquet of Flowers."
+"bystanders. Start with a **Captain's Uniform** (_petty_), a **Ceremonial "
+"Sword** (harmless, 60gp), and a **Bouquet of Flowers**."
 msgstr ""
 "Ваш останній трюк знищив безцінний артефакт і поранив десяток перехожих. "
-"Почніть із Капітанської уніформи (дріб’язкове), Церемоніального меча "
+"Почніть із Капітанської уніформи (_дріб’язкове_), Церемоніального меча "
 "(нешкідливий, 60 зм) і Букета квітів."
 
 #: app/static/json/backgrounds/mountebank.json:88
@@ -6105,8 +6150,8 @@ msgstr "Букет квітів"
 #: app/static/json/backgrounds/mountebank.json:103
 msgid ""
 "You were cursed by a hedgewitch for fooling some innocent village folk. "
-"Magic acts unpredictably in your hands (WIL save to avoid disaster). If you "
-"are the target of magic, the same applies to its wielder."
+"Magic acts unpredictably in your hands (_WIL save to avoid disaster_). If"
+" you are the target of magic, the same applies to its wielder."
 msgstr ""
 "Сільська відьма прокляла вас за те, що ви обдурили простодушних селян. Магія "
 "у ваших руках діє непередбачувано (перевірка ВОЛ, щоб уникнути лиха). Якщо "
@@ -6114,9 +6159,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/mountebank.json:107
 msgid ""
-"Your 'seances' with the dead were in actuality a ruse involving a cleverly "
-"hidden spellbook of Auditory Illusion. Inevitably, a patron discovered your "
-"secret. Start with the Spellbook and a bundle of scarves."
+"Your 'seances' with the dead were in actuality a ruse involving a "
+"cleverly hidden spellbook of Auditory Illusion. Inevitably, a patron "
+"discovered your secret. Start with the **Spellbook** and a bundle of "
+"scarves."
 msgstr ""
 "Ваші «сеанси» з мертвими насправді були виставою з хитро схованою книгою "
 "заклять «Звукова ілюзія». Неминуче один із відвідувачів розкрив ваш секрет. "
@@ -6141,12 +6187,13 @@ msgstr "За якою пам’ятною річчю вас завжди мож�
 
 #: app/static/json/backgrounds/mountebank.json:122
 msgid ""
-"Royal Crest: Born into royalty, you chose a different life. The Royal Crest "
-"grants you access but also alerts your family of your whereabouts. Petty."
+"**Royal Crest**: Born into royalty, you chose a different life. The Royal"
+" Crest grants you access but also alerts your family of your whereabouts."
+" _Petty_."
 msgstr ""
-"Королівський герб: народжені в королівській родині, ви обрали інше життя. "
-"Королівський герб відкриває вам двері, але й сповіщає родину про ваше "
-"місцеперебування. Дріб’язкове."
+"**Королівський герб**: народжені в королівській родині, ви обрали інше "
+"життя. Королівський герб відкриває вам двері, але й сповіщає родину про "
+"ваше місцеперебування. _Дріб’язкове_."
 
 #: app/static/json/backgrounds/mountebank.json:125
 msgid "Royal Crest"
@@ -6161,8 +6208,8 @@ msgstr ""
 "відкриває вам двері, але й сповіщає родину про ваше місцеперебування."
 
 #: app/static/json/backgrounds/mountebank.json:132
-msgid "Miracle Oil: A smelly, slippery concoction. 2 uses."
-msgstr "Чудодійне масло: смердюча слизька мікстура. 2 використання."
+msgid "**Miracle Oil**: A smelly, slippery concoction. 2 uses."
+msgstr "**Чудодійне масло**: смердюча слизька мікстура. 2 використання."
 
 #: app/static/json/backgrounds/mountebank.json:135
 msgid "Miracle Oil"
@@ -6170,10 +6217,10 @@ msgstr "Чудодійне масло"
 
 #: app/static/json/backgrounds/mountebank.json:142
 msgid ""
-"Surgeon's Soap: A lye and ash block that makes skin temporarily transparent, "
-"revealing the anatomy within. 4 uses."
+"**Surgeon's Soap**: A lye and ash block that makes skin temporarily "
+"transparent, revealing the anatomy within. 4 uses."
 msgstr ""
-"Хірургове мило: брусок із лугу та попелу, що робить шкіру тимчасово "
+"**Хірургове мило**: брусок із лугу та попелу, що робить шкіру тимчасово "
 "прозорою, відкриваючи анатомію під нею. 4 використання."
 
 #: app/static/json/backgrounds/mountebank.json:145
@@ -6182,11 +6229,11 @@ msgstr "Хірургове мило"
 
 #: app/static/json/backgrounds/mountebank.json:152
 msgid ""
-"Goat Powder: Derived from the placenta of a baby goat. Temporarily cures any "
-"affliction, but symptoms return within hours."
+"**Goat Powder**: Derived from the placenta of a baby goat. Temporarily "
+"cures any affliction, but symptoms return within hours."
 msgstr ""
-"Козячий порошок: виготовлений з плаценти козеняти. Тимчасово зцілює будь-яку "
-"недугу, але за кілька годин симптоми повертаються."
+"**Козячий порошок**: виготовлений з плаценти козеняти. Тимчасово зцілює "
+"будь-яку недугу, але за кілька годин симптоми повертаються."
 
 #: app/static/json/backgrounds/mountebank.json:155
 msgid "Goat Powder"
@@ -6194,12 +6241,12 @@ msgstr "Козячий порошок"
 
 #: app/static/json/backgrounds/mountebank.json:161
 msgid ""
-"Cursed Sapphire: Worth 200gp, it noticeably returns to your pocket shortly "
-"after you spend it. You can't seem to get rid of it."
+"**Cursed Sapphire**: Worth **200gp**, it noticeably returns to your "
+"pocket shortly after you spend it. You can't seem to get rid of it."
 msgstr ""
-"Проклятий сапфір: вартий 200 зм, він помітно повертається до вашої кишені "
-"невдовзі після того, як ви його витратите. Здається, його неможливо "
-"позбутися."
+"**Проклятий сапфір**: вартий 200 зм, він помітно повертається до вашої "
+"кишені невдовзі після того, як ви його витратите. Здається, його "
+"неможливо позбутися."
 
 #: app/static/json/backgrounds/mountebank.json:164
 msgid "Cursed Sapphire"
@@ -6207,13 +6254,13 @@ msgstr "Проклятий сапфір"
 
 #: app/static/json/backgrounds/mountebank.json:170
 msgid ""
-"Alchemical Tattoo: A dog, cat, or bird that can leave your body on demand. "
-"It follows your commands to the best of its abilities and can pass its "
-"injuries (as STR loss) back onto you. Petty."
+"**Alchemical Tattoo**: A dog, cat, or bird that can leave your body on "
+"demand. It follows your commands to the best of its abilities and can "
+"pass its injuries (_as STR loss_) back onto you. _Petty_."
 msgstr ""
-"Алхімічне татуювання: пес, кіт або птах, що може за вашим бажанням залишати "
-"ваше тіло. Воно виконує ваші накази в міру своїх сил і може передавати свої "
-"ушкодження (як втрату СИЛ) вам. Дріб’язкове."
+"**Алхімічне татуювання**: пес, кіт або птах, що може за вашим бажанням "
+"залишати ваше тіло. Воно виконує ваші накази в міру своїх сил і може "
+"передавати свої ушкодження (як втрату СИЛ) вам. _Дріб’язкове_."
 
 #: app/static/json/backgrounds/mountebank.json:173
 msgid "Alchemical Tattoo"
@@ -6244,13 +6291,13 @@ msgstr "Якого особистого кодексу чи принципу в�
 
 #: app/static/json/backgrounds/outrider.json:51
 msgid ""
-"No innocent blood: No bystander will come to harm on your watch. Take a "
-"Steadymade Buckler (+1 Armor). While holding this shield, you cannot be "
-"moved so long as both feet are planted on firm ground."
+"**No innocent blood**: No bystander will come to harm on your watch. Take"
+" a **Steadymade Buckler** (+1 Armor). While holding this shield, you "
+"cannot be moved so long as both feet are planted on firm ground."
 msgstr ""
 "Жодної невинної крові: поки ви на варті, жоден сторонній не постраждає. "
-"Візьміть Непохитний баклер (+1 Броні). Тримаючи цей щит, ви не можете бути "
-"зрушені з місця, поки обидві ноги стоять на твердій землі."
+"Візьміть **Непохитний баклер** (+1 Броні). Тримаючи цей щит, ви не можете"
+" бути зрушені з місця, поки обидві ноги стоять на твердій землі."
 
 #: app/static/json/backgrounds/outrider.json:54
 msgid "Steadymade Buckler"
@@ -6266,13 +6313,14 @@ msgstr ""
 
 #: app/static/json/backgrounds/outrider.json:61
 msgid ""
-"Revere the tools of death: Weapons are to be respected and maintained. Take "
-"a Wyrmbone Whetstone. Following a half-hour ritual sharpening, attacks with "
-"the weapon are enhanced until STR damage is dealt."
+"**Revere the tools of death**: Weapons are to be respected and "
+"maintained. Take a **Wyrmbone Whetstone**. Following a half-hour ritual "
+"sharpening, attacks with the weapon are _enhanced_ until STR damage is "
+"dealt."
 msgstr ""
 "Шануйте знаряддя смерті: зброю належить поважати й доглядати. Візьміть "
-"Точило з кістки змія. Після півгодинного ритуального гостріння атаки цією "
-"зброєю посилені, доки не буде завдано пошкоджень СИЛ."
+"**Точило з кістки змія**. Після півгодинного ритуального гостріння атаки "
+"цією зброєю посилені, доки не буде завдано пошкоджень СИЛ."
 
 #: app/static/json/backgrounds/outrider.json:64
 msgid "Wyrmbone Whetstone"
@@ -6288,14 +6336,15 @@ msgstr ""
 
 #: app/static/json/backgrounds/outrider.json:71
 msgid ""
-"To the death, always: You never back down from a fight, no matter the odds. "
-"Take a Death-Whistle, 1 charge. Its scream frightens away all who hear it "
-"(save WIL or flee). Recharge: Capture the final breath of a dying warrior."
+"**To the death, always**: You never back down from a fight, no matter the"
+" odds. Take a **Death-Whistle**, 1 charge. Its scream frightens away all "
+"who hear it (save WIL or flee). **Recharge**: Capture the final breath of"
+" a dying warrior."
 msgstr ""
-"Завжди до смерті: ви ніколи не відступаєте з бою, хоч би якими були шанси. "
-"Візьміть Свисток смерті, 1 заряд. Його вереск лякає всіх, хто його чує "
-"(перевірка ВОЛ або втеча). Перезарядження: впіймайте останній подих "
-"умираючого воїна."
+"Завжди до смерті: ви ніколи не відступаєте з бою, хоч би якими були "
+"шанси. Візьміть **Свисток смерті**, 1 заряд. Його вереск лякає всіх, хто "
+"його чує (перевірка ВОЛ або втеча). Перезарядження: впіймайте останній "
+"подих умираючого воїна."
 
 #: app/static/json/backgrounds/outrider.json:74
 msgid "Death-Whistle"
@@ -6311,9 +6360,9 @@ msgstr ""
 
 #: app/static/json/backgrounds/outrider.json:83
 msgid ""
-"Revere the dead: Death is a journey we all take, and it deserves respect. "
-"Take an extra 30gp. You always place two gold pieces on the eyelids of a "
-"slain foe. Somehow, you always find the coin."
+"**Revere the dead**: Death is a journey we all take, and it deserves "
+"respect. Take an extra **30gp**. You always place two gold pieces on the "
+"eyelids of a slain foe. Somehow, you always find the coin."
 msgstr ""
 "Шануйте мертвих: смерть — це подорож, яку здійснює кожен, і вона заслуговує "
 "на повагу. Візьміть додаткові 30 зм. Ви завжди кладете дві золоті монети на "
@@ -6321,15 +6370,15 @@ msgstr ""
 
 #: app/static/json/backgrounds/outrider.json:88
 msgid ""
-"Loyalty to the work: Your word is your bond. Once you've accepted a job, you "
-"see it through to the end. Take a weathered Tally Stick. Once a vow is "
-"marked onto its face, the stick hardens (d8) until it is complete. The stick "
-"will snap in half if the vow is ever broken."
+"**Loyalty to the work**: Your word is your bond. Once you've accepted a "
+"job, you see it through to the end. Take a weathered **Tally Stick**. "
+"Once a vow is marked onto its face, the stick hardens (d8) until it is "
+"complete. The stick will snap in half if the vow is ever broken."
 msgstr ""
-"Вірність справі: ваше слово — ваша порука. Узявшись за роботу, ви доводите "
-"її до кінця. Візьміть пошарпану Бирку. Щойно на ній карбують обітницю, бирка "
-"твердне (к8), доки обітницю не виконано. Якщо обітницю буде порушено, бирка "
-"розломиться навпіл."
+"Вірність справі: ваше слово — ваша порука. Узявшись за роботу, ви "
+"доводите її до кінця. Візьміть пошарпану Бирку. Щойно на ній карбують "
+"обітницю, **бирка** твердне (к8), доки обітницю не виконано. Якщо "
+"обітницю буде порушено, бирка розломиться навпіл."
 
 #: app/static/json/backgrounds/outrider.json:91
 msgid "Tally Stick"
@@ -6345,13 +6394,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/outrider.json:98
 msgid ""
-"Always pay your debts: You always repay what you owe, whether in coin or in "
-"kind. You expect nothing less from all others. Take a Blacked-Out Ledger, "
-"then roll a second time on the Bonds table."
+"**Always pay your debts**: You always repay what you owe, whether in coin"
+" or in kind. You expect nothing less from all others. Take a **Blacked-"
+"Out Ledger**, then roll a second time on the **Bonds** table."
 msgstr ""
 "Завжди сплачуйте борги: ви завжди повертаєте те, що винні, — монетою чи "
-"послугою. Того ж очікуєте й від усіх інших. Візьміть Закреслений гросбух, а "
-"тоді киньте вдруге за таблицею «Узи»."
+"послугою. Того ж очікуєте й від усіх інших. Візьміть **Закреслений "
+"гросбух**, а тоді киньте вдруге за таблицею «**Узи**»."
 
 #: app/static/json/backgrounds/outrider.json:101
 msgid "Blacked-Out Ledger"
@@ -6363,11 +6412,11 @@ msgstr "Якої породи ваш кінь?"
 
 #: app/static/json/backgrounds/outrider.json:112
 msgid ""
-"Heavy Destrier: A beast built for war, an imposing creature. 8 HP, 1 Armor, "
-"hooves (d10+d10), +2 slots."
+"**Heavy Destrier**: A beast built for war, an imposing creature. 8 HP, 1 "
+"Armor, hooves (d10+d10), +2 slots."
 msgstr ""
-"Важкий дестрієр: звір, створений для війни, величне створіння. 8 ПЗ, 1 "
-"Броні, копита (к10+к10), +2 слоти."
+"**Важкий дестрієр**: звір, створений для війни, величне створіння. 8 ПЗ, "
+"1 Броні, копита (к10+к10), +2 слоти."
 
 #: app/static/json/backgrounds/outrider.json:115
 msgid "Heavy Destrier"
@@ -6375,11 +6424,11 @@ msgstr "Важкий дестрієр"
 
 #: app/static/json/backgrounds/outrider.json:121
 msgid ""
-"Blacklegged Dandy: Hardy and adaptable. Tough or Perilous terrain are one "
-"step easier. 6 HP. +4 slots."
+"**Blacklegged Dandy**: Hardy and adaptable. **Tough** or **Perilous** "
+"terrain are one step easier. 6 HP. +4 slots."
 msgstr ""
-"Чорноногий денді: витривалий і невибагливий. Складна чи підступна місцевість "
-"на один крок легша. 6 ПЗ. +4 слоти."
+"**Чорноногий денді**: витривалий і невибагливий. **Складна** чи "
+"**підступна** місцевість на один крок легша. 6 ПЗ. +4 слоти."
 
 #: app/static/json/backgrounds/outrider.json:124
 msgid "Blacklegged Dandy"
@@ -6387,11 +6436,11 @@ msgstr "Чорноногий денді"
 
 #: app/static/json/backgrounds/outrider.json:130
 msgid ""
-"Rivertooth: Impressively strong, capable of carrying heavy loads. 4 HP. +6 "
-"slots (only +2 slots if carrying two people)."
+"**Rivertooth**: Impressively strong, capable of carrying heavy loads. 4 "
+"HP. +6 slots (only +2 slots if carrying two people)."
 msgstr ""
-"Річкозуб: надзвичайно сильний, здатний нести важкі вантажі. 4 ПЗ. +6 слотів "
-"(лише +2 слоти, якщо везе двох людей)."
+"**Річкозуб**: надзвичайно сильний, здатний нести важкі вантажі. 4 ПЗ. +6 "
+"слотів (лише +2 слоти, якщо везе двох людей)."
 
 #: app/static/json/backgrounds/outrider.json:133
 msgid "Rivertooth"
@@ -6399,11 +6448,11 @@ msgstr "Річкозуб"
 
 #: app/static/json/backgrounds/outrider.json:139
 msgid ""
-"Piebald Cob: Intelligent, it can understand simple commands, and even has an "
-"instinct for danger. 6 HP. +4 slots."
+"**Piebald Cob**: Intelligent, it can understand simple commands, and even"
+" has an instinct for danger. 6 HP. +4 slots."
 msgstr ""
-"Рябий коб: розумний, розуміє прості команди й навіть відчуває небезпеку. 6 "
-"ПЗ. +4 слоти."
+"**Рябий коб**: розумний, розуміє прості команди й навіть відчуває "
+"небезпеку. 6 ПЗ. +4 слоти."
 
 #: app/static/json/backgrounds/outrider.json:142
 msgid "Piebald Cob"
@@ -6411,11 +6460,11 @@ msgstr "Рябий коб"
 
 #: app/static/json/backgrounds/outrider.json:148
 msgid ""
-"Linden White: Highly trained and agile, it can perform intricate maneuvers "
-"in a time of need (no DEX save to flee). 4 HP. +3 slots."
+"**Linden White**: Highly trained and agile, it can perform intricate "
+"maneuvers in a time of need (no DEX save to flee). 4 HP. +3 slots."
 msgstr ""
-"Липовий білий: чудово вишколений і спритний, у скрутну мить здатен на "
-"складні маневри (втеча без перевірки СПР). 4 ПЗ. +3 слоти."
+"**Липовий білий**: чудово вишколений і спритний, у скрутну мить здатен на"
+" складні маневри (втеча без перевірки СПР). 4 ПЗ. +3 слоти."
 
 #: app/static/json/backgrounds/outrider.json:151
 msgid "Linden White"
@@ -6423,11 +6472,11 @@ msgstr "Липовий білий"
 
 #: app/static/json/backgrounds/outrider.json:157
 msgid ""
-"Stray Fogger: Wild but very fast (even in Tough terrain). Rides light. 4 HP. "
-"+2 slots."
+"**Stray Fogger**: Wild but very fast (even in **Tough** terrain). Rides "
+"light. 4 HP. +2 slots."
 msgstr ""
-"Бродячий туманник: дикий, але дуже швидкий (навіть на складній місцевості). "
-"Несе небагато. 4 ПЗ. +2 слоти."
+"**Бродячий туманник**: дикий, але дуже швидкий (навіть на складній "
+"місцевості). Несе небагато. 4 ПЗ. +2 слоти."
 
 #: app/static/json/backgrounds/outrider.json:160
 msgid "Stray Fogger"
@@ -6467,10 +6516,10 @@ msgstr "На кого ви полювали востаннє?"
 
 #: app/static/json/backgrounds/prowler.json:52
 msgid ""
-"A mock firefly, baiting water carriers with its glowing lure. Take an "
-"Alchemical Limb (d8, petty when worn) to replace the one it tore off and an "
-"Oil Can (6 uses). The limb is immune to heat and poison. Needs to be oiled "
-"daily."
+"A _mock firefly_, baiting water carriers with its glowing lure. Take an "
+"**Alchemical Limb** (d8, _petty_ when worn) to replace the one it tore "
+"off and an **Oil Can** (6 uses). The limb is immune to heat and poison. "
+"Needs to be oiled daily."
 msgstr ""
 "Несправжній світляк, що заманював водоносів своєю сяйливою приманкою. "
 "Візьміть Алхімічну кінцівку (к8, дріб’язкова, коли носите) на заміну тій, "
@@ -6489,9 +6538,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/prowler.json:67
 msgid ""
-"An ice nettle, trapping and draining sheep. You lost your commission when "
-"the fungus you introduced killed half the flock. Take a Rime Seed (1 use). "
-"It freezes any body of water, no matter the size. Don't eat it."
+"An _ice nettle_, trapping and draining sheep. You lost your commission "
+"when the fungus you introduced killed half the flock. Take a **Rime "
+"Seed** (1 use). It freezes any body of water, no matter the size. Don't "
+"eat it."
 msgstr ""
 "Крижана кропива, що ловила й висушувала овець. Ви втратили замовлення, коли "
 "занесений вами грибок вигубив половину отари. Візьміть Насінину паморозі (1 "
@@ -6508,13 +6558,14 @@ msgstr "Заморожує будь-яку водойму, хоч би якою 
 
 #: app/static/json/backgrounds/prowler.json:78
 msgid ""
-"A silver marsh crawler that killed someone close to you. You now carry its "
-"Tooth (petty) on a chain around your neck as a warning to others of its "
-"kind. The tooth hums softly when something is stalking you."
+"A _silver marsh crawler_ that killed someone close to you. You now carry "
+"its **Tooth** (_petty_) on a chain around your neck as a warning to "
+"others of its kind. _The tooth hums softly when something is stalking "
+"you_."
 msgstr ""
 "Сріблястий болотяний повзун, що вбив когось із ваших близьких. Тепер ви "
-"носите його Зуб (дріб’язкове) на ланцюжку на шиї як пересторогу для інших "
-"його роду. Зуб тихо гуде, коли хтось вас вистежує."
+"носите його **Зуб** (_дріб’язкове_) на ланцюжку на шиї як пересторогу для"
+" інших його роду. Зуб тихо гуде, коли хтось вас вистежує."
 
 #: app/static/json/backgrounds/prowler.json:81
 msgid "Tooth"
@@ -6530,13 +6581,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/prowler.json:88
 msgid ""
-"A malicious forest spirit that poisoned a homestead. You saved a Heartseed "
-"from the roots of a dying tree (plant to create a a new forest). Also, take "
-"Iron Bracers (+1 Armor, bulky)."
+"A malicious _forest spirit_ that poisoned a homestead. You saved a "
+"**Heartseed** from the roots of a dying tree (plant to create a a new "
+"forest). Also, take **Iron Bracers** (+1 Armor, _bulky_)."
 msgstr ""
 "Злісний лісовий дух, що отруїв хутір. Ви врятували Серцеву насінину з "
 "коріння вмираючого дерева (посадіть, щоб виростити новий ліс). Також "
-"візьміть Залізні наручі (+1 Броні, громіздке)."
+"візьміть **Залізні наручі** (+1 Броні, _громіздке_)."
 
 #: app/static/json/backgrounds/prowler.json:91
 msgid "Heartseed"
@@ -6552,23 +6603,24 @@ msgstr "Залізні наручі"
 
 #: app/static/json/backgrounds/prowler.json:102
 msgid ""
-"A hollow wolf that had been frightening travelers. You took pity on the half-"
-"starved creature and nursed it back to health. Now it is loyal to you unto "
-"death. It is also a great tunneler. 5 HP, 11 STR, 13 DEX, 8 WIL, teeth (d6)."
+"A _hollow wolf_ that had been frightening travelers. You took pity on the"
+" half-starved creature and nursed it back to health. Now it is loyal to "
+"you unto death. It is also a great tunneler. 5 HP, 11 STR, 13 DEX, 8 WIL,"
+" teeth (d6)."
 msgstr ""
-"Порожнистий вовк, що лякав подорожніх. Ви зглянулися на напівголодне "
+"_Порожнистий вовк_, що лякав подорожніх. Ви зглянулися на напівголодне "
 "створіння й виходили його. Тепер воно віддане вам до смерті. А ще воно "
 "чудово риє тунелі. 5 ПЗ, 11 СИЛ, 13 СПР, 8 ВОЛ, зуби (к6)."
 
 #: app/static/json/backgrounds/prowler.json:106
 msgid ""
-"An azure warbler. The gametes attract a sizeable profit, if properly "
-"extracted. You succeeded but left its nest to the wolves. Take a Paring "
-"Knife (d6), an extra 20gp, and a pang of regret."
+"An _azure warbler_. The gametes attract a sizeable profit, if properly "
+"extracted. You succeeded but left its nest to the wolves. Take a **Paring"
+" Knife** (d6), **an extra 20gp**, and a pang of regret."
 msgstr ""
 "Лазурова очеретянка. Її гамети приносять чималий зиск, якщо їх правильно "
-"добути. Вам це вдалося, але гніздо ви залишили вовкам. Візьміть Ніж для "
-"чищення (к6), додаткові 20 зм і напад каяття."
+"добути. Вам це вдалося, але гніздо ви залишили вовкам. Візьміть **Ніж для"
+" чищення** (к6), додаткові 20 зм і напад каяття."
 
 #: app/static/json/backgrounds/prowler.json:109
 msgid "Paring Knife"
@@ -6580,11 +6632,11 @@ msgstr "Який інструмент завжди у вашому рюкзак�
 
 #: app/static/json/backgrounds/prowler.json:121
 msgid ""
-"Fermented Spirits: Keeps you warm at the best of times and as an explosive "
-"at the worst. 3 Uses."
+"**Fermented Spirits**: Keeps you warm at the best of times and as an "
+"explosive at the worst. 3 Uses."
 msgstr ""
-"Міцний трунок: у найкращі часи зігріває, у найгірші — править за вибухівку. "
-"3 використання."
+"**Міцний трунок**: у найкращі часи зігріває, у найгірші — править за "
+"вибухівку. 3 використання."
 
 #: app/static/json/backgrounds/prowler.json:124
 msgid "Fermented Spirits"
@@ -6596,10 +6648,10 @@ msgstr "У найкращі часи зігріває, у найгірші — �
 
 #: app/static/json/backgrounds/prowler.json:132
 msgid ""
-"Trail Shaker: A noisy instrument that reveals nearby trails, even when "
-"deeply hidden."
+"**Trail Shaker**: A noisy instrument that reveals nearby trails, even "
+"when deeply hidden."
 msgstr ""
-"Стежкотрус: гучний прилад, що виявляє стежки поблизу, навіть глибоко "
+"**Стежкотрус**: гучний прилад, що виявляє стежки поблизу, навіть глибоко "
 "приховані."
 
 #: app/static/json/backgrounds/prowler.json:135
@@ -6612,11 +6664,11 @@ msgstr "Гучний прилад, що виявляє стежки поблиз
 
 #: app/static/json/backgrounds/prowler.json:142
 msgid ""
-"Drowse Balm: A wax bar. If boiled in water, the steam acts as a soporific "
-"agent."
+"**Drowse Balm**: A wax bar. If boiled in water, the steam acts as a "
+"soporific agent."
 msgstr ""
-"Дрімотний бальзам: брусок воску. Якщо його зварити у воді, пара діє як "
-"снодійне."
+"**Дрімотний бальзам**: брусок воску. Якщо його зварити у воді, пара діє "
+"як снодійне."
 
 #: app/static/json/backgrounds/prowler.json:145
 msgid "Drowse Balm"
@@ -6628,11 +6680,11 @@ msgstr "Брусок воску. Якщо його зварити у воді, �
 
 #: app/static/json/backgrounds/prowler.json:152
 msgid ""
-"Spike and Cord: For traversing difficult terrain or for creating makeshift "
-"traps and structures."
+"**Spike and Cord**: For traversing difficult terrain or for creating "
+"makeshift traps and structures."
 msgstr ""
-"Костиль і шнур: для подолання складної місцевості або створення саморобних "
-"пасток і конструкцій."
+"**Костиль і шнур**: для подолання складної місцевості або створення "
+"саморобних пасток і конструкцій."
 
 #: app/static/json/backgrounds/prowler.json:155
 msgid "Spike and Cord"
@@ -6648,11 +6700,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/prowler.json:162
 msgid ""
-"Iron Rattle: A noisemaker for distracting or scaring your quarry. Sounds "
-"convincingly like a snake."
+"**Iron Rattle**: A noisemaker for distracting or scaring your quarry. "
+"Sounds convincingly like a snake."
 msgstr ""
-"Залізне брязкальце: пристрій для шуму, щоб відволікати чи лякати здобич. "
-"Звучить достоту як змія."
+"**Залізне брязкальце**: пристрій для шуму, щоб відволікати чи лякати "
+"здобич. Звучить достоту як змія."
 
 #: app/static/json/backgrounds/prowler.json:165
 msgid "Iron Rattle"
@@ -6667,11 +6719,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/prowler.json:172
 msgid ""
-"Hardening Glue: Makes any flat material (cloth, leather, sand) as hard as "
-"stone. Expensive (20gp a bottle, 3 uses)."
+"**Hardening Glue**: Makes any flat material (cloth, leather, sand) as "
+"hard as stone. Expensive (20gp a bottle, 3 uses)."
 msgstr ""
-"Тверднучий клей: робить будь-який плаский матеріал (тканину, шкіру, пісок) "
-"твердим, мов камінь. Дорогий (20 зм за пляшку, 3 використання)."
+"**Тверднучий клей**: робить будь-який плаский матеріал (тканину, шкіру, "
+"пісок) твердим, мов камінь. Дорогий (20 зм за пляшку, 3 використання)."
 
 #: app/static/json/backgrounds/prowler.json:175
 msgid "Hardening Glue"
@@ -6740,13 +6792,13 @@ msgstr "Якими піснями ви найбільше відомі?"
 
 #: app/static/json/backgrounds/rill-runner.json:40
 msgid ""
-"The Tinker's Two-Step. A humorous fairy tale about a gift-giving traveler. "
-"Start with a Reed Whistle. Anyone in earshot must pass a WIL save to perform "
-"an act of violence."
+"_The Tinker's Two-Step_. A humorous fairy tale about a gift-giving "
+"traveler. Start with a **Reed Whistle**. Anyone in earshot must pass a "
+"WIL save to perform an act of violence."
 msgstr ""
-"«Двокрок лудильника». Жартівлива казка про мандрівника, що роздає дарунки. "
-"На початку ви маєте Очеретяний свисток. Кожен, хто чує його, мусить пройти "
-"перевірку ВОЛ, щоб вчинити насильство."
+"«Двокрок лудильника». Жартівлива казка про мандрівника, що роздає "
+"дарунки. На початку ви маєте **Очеретяний свисток**. Кожен, хто чує його,"
+" мусить пройти перевірку ВОЛ, щоб вчинити насильство."
 
 #: app/static/json/backgrounds/rill-runner.json:43
 msgid "Reed Whistle"
@@ -6759,12 +6811,12 @@ msgstr ""
 
 #: app/static/json/backgrounds/rill-runner.json:50
 msgid ""
-"The Sylph and Her Lover. A bawdy tale of lost love. Start with a Breeze Knot "
-"(3 charges). Creates a strong breeze. Recharge: Tie it to a mast during a "
-"storm."
+"_The Sylph and Her Lover_. A bawdy tale of lost love. Start with a "
+"**Breeze Knot** (3 charges). Creates a strong breeze. **Recharge**: Tie "
+"it to a mast during a storm."
 msgstr ""
 "«Сильфіда та її коханий». Сороміцька оповідка про втрачене кохання. На "
-"початку ви маєте Вузол вітерцю (3 заряди). Створює сильний вітерець. "
+"початку ви маєте **Вузол вітерцю** (3 заряди). Створює сильний вітерець. "
 "Перезарядження: прив’яжіть його до щогли під час бурі."
 
 #: app/static/json/backgrounds/rill-runner.json:53
@@ -6779,9 +6831,9 @@ msgstr ""
 
 #: app/static/json/backgrounds/rill-runner.json:62
 msgid ""
-"Harper's Devotion. A sad, short tale about a musician who falls in love with "
-"a star. Start with a Celestial Lute. Reveals the constellations above, no "
-"matter the weather."
+"_Harper's Devotion_. A sad, short tale about a musician who falls in love"
+" with a star. Start with a **Celestial Lute**. Reveals the constellations"
+" above, no matter the weather."
 msgstr ""
 "«Відданість арфіста». Сумна коротка оповідка про музику, що закохався в "
 "зорю. На початку ви маєте Небесну лютню. Вона показує сузір’я над головою за "
@@ -6797,9 +6849,9 @@ msgstr "Показує сузір’я над головою за будь-як�
 
 #: app/static/json/backgrounds/rill-runner.json:72
 msgid ""
-"The Reed Fisher. A celebrated song about a massive carp that always seems to "
-"get away. Begin with a spool of River Twine (5 uses). Each dip into the "
-"river guarantees a catch, though it might not be pleasant."
+"_The Reed Fisher_. A celebrated song about a massive carp that always "
+"seems to get away. Begin with a spool of **River Twine** (5 uses). Each "
+"dip into the river guarantees a catch, though it might not be pleasant."
 msgstr ""
 "«Очеретяний рибалка». Славетна пісня про величезного коропа, якому щоразу "
 "вдається втекти. На початку ви маєте моток Річкового шпагату (5 "
@@ -6818,8 +6870,8 @@ msgstr ""
 
 #: app/static/json/backgrounds/rill-runner.json:83
 msgid ""
-"Song of the Silver Stream. A wordless lullaby that mimics flowing water. "
-"Take a Stone Flute that can calm almost any river."
+"_Song of the Silver Stream_. A wordless lullaby that mimics flowing "
+"water. Take a **Stone Flute** that can calm almost any river."
 msgstr ""
 "«Пісня срібного потоку». Колискова без слів, що наслідує плин води. Візьміть "
 "Кам’яну флейту, здатну заспокоїти майже будь-яку річку."
@@ -6834,13 +6886,14 @@ msgstr "Здатна заспокоїти майже будь-яку річку.
 
 #: app/static/json/backgrounds/rill-runner.json:93
 msgid ""
-"The Thrush and the Meadow. A moody tale told in alternating chorus. Start "
-"with a Feather Quill (1 use, petty). A map drawn with this quill reveals the "
-"most expedient course between any two points."
+"_The Thrush and the Meadow_. A moody tale told in alternating chorus. "
+"Start with a **Feather Quill** (1 use, _petty_). A map drawn with this "
+"quill reveals the most expedient course between any two points."
 msgstr ""
-"«Дрізд і лука». Меланхолійна оповідка з почерговими приспівами. На початку "
-"ви маєте Пташине перо (1 використання, дріб’язкове). Мапа, накреслена цим "
-"пером, показує найзручніший шлях між будь-якими двома точками."
+"«Дрізд і лука». Меланхолійна оповідка з почерговими приспівами. На "
+"початку ви маєте **Пташине перо** (1 використання, _дріб’язкове_). Мапа, "
+"накреслена цим пером, показує найзручніший шлях між будь-якими двома "
+"точками."
 
 #: app/static/json/backgrounds/rill-runner.json:96
 msgid "Feather Quill"
@@ -6860,15 +6913,16 @@ msgstr "Що оплачує ваші мандри краєм?"
 
 #: app/static/json/backgrounds/rill-runner.json:109
 msgid ""
-"Performing at taverns always yields both room and board. Sometimes you even "
-"get tips! Start with an extra 10gp."
+"Performing at taverns always yields both room and board. Sometimes you "
+"even get tips! Start with an extra **10gp**."
 msgstr ""
 "Виступи в тавернах завжди дають і нічліг, і харч. Часом вам навіть лишають "
 "чайові! На початку ви маєте додаткові 10 зм."
 
 #: app/static/json/backgrounds/rill-runner.json:114
 msgid ""
-"You are a protector for those afraid to travel alone. Start with a Rapier."
+"You are a protector for those afraid to travel alone. Start with a "
+"**Rapier**."
 msgstr ""
 "Ви — захисник тих, хто боїться подорожувати наодинці. На початку ви маєте "
 "Рапіру."
@@ -6876,7 +6930,7 @@ msgstr ""
 #: app/static/json/backgrounds/rill-runner.json:123
 msgid ""
 "You buy low and sell high, always making just enough to get by. Take a "
-"single item worth 20gp (or less) from the gear table."
+"**single item** worth **20gp** (or less) from the gear table."
 msgstr ""
 "Ви купуєте дешево й продаєте дорого, заробляючи рівно стільки, щоб зводити "
 "кінці з кінцями. Візьміть один предмет вартістю 20 зм (або менше) з таблиці "
@@ -6900,11 +6954,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/rill-runner.json:136
 msgid ""
-"You shepherd caravans and travelers across water-soaked lands. Start with a  "
-"map (petty) relevant to your next journey."
+"You shepherd caravans and travelers across water-soaked lands. Start with"
+" a  **map** (_petty_) relevant to your next journey."
 msgstr ""
 "Ви проводите каравани й подорожніх через заводнені землі. На початку ви "
-"маєте мапу (дріб’язкове), потрібну для вашої наступної подорожі."
+"маєте мапу (_дріб’язкове_), потрібну для вашої наступної подорожі."
 
 #: app/static/json/backgrounds/rill-runner.json:139
 msgid "Map"
@@ -6945,11 +6999,11 @@ msgstr "Яку працю ви залишили собі?"
 
 #: app/static/json/backgrounds/scrivener.json:51
 msgid ""
-"The Wild Tongue. A bundle of leather-bound scrolls. A seminal work, "
+"**The Wild Tongue**. A bundle of leather-bound scrolls. A seminal work, "
 "cataloging the hidden languages of beasts and how to understand them."
 msgstr ""
-"«Дика мова». В’язка сувоїв у шкіряній оправі. Фундаментальна праця, що "
-"каталогізує потаємні мови звірів і способи їх розуміти."
+"**«Дика мова»**. В’язка сувоїв у шкіряній оправі. Фундаментальна праця, "
+"що каталогізує потаємні мови звірів і способи їх розуміти."
 
 #: app/static/json/backgrounds/scrivener.json:54
 msgid "The Wild Tongue"
@@ -6965,11 +7019,12 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:61
 msgid ""
-"The Silent Symphony. Bound in fluorescent wrap. Very rare, it chronicles the "
-"subtle signs used by those employing invisibility magic."
+"**The Silent Symphony**. Bound in fluorescent wrap. Very rare, it "
+"chronicles the subtle signs used by those employing invisibility magic."
 msgstr ""
-"«Безмовна симфонія». У флуоресцентній обгортці. Дуже рідкісна; описує ледь "
-"помітні знаки, якими послуговуються ті, хто вдається до магії невидимості."
+"**«Безмовна симфонія»**. У флуоресцентній обгортці. Дуже рідкісна; описує"
+" ледь помітні знаки, якими послуговуються ті, хто вдається до магії "
+"невидимості."
 
 #: app/static/json/backgrounds/scrivener.json:64
 msgid "The Silent Symphony"
@@ -6985,13 +7040,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:71
 msgid ""
-"A Treatise on the Abyss. A nondescript black book. An in-depth, largely "
-"theoretical text describing the Roots, as well as information about the "
-"location of a nearby Gate."
+"**A Treatise on the Abyss**. A nondescript black book. An in-depth, "
+"largely theoretical text describing the **Roots**, as well as information"
+" about the location of a nearby **Gate**."
 msgstr ""
-"«Трактат про Безодню». Непримітна чорна книга. Ґрунтовний, здебільшого "
-"теоретичний текст про Корені, а також відомості про розташування найближчої "
-"Брами."
+"**«Трактат про Безодню»**. Непримітна чорна книга. Ґрунтовний, "
+"здебільшого теоретичний текст про Корені, а також відомості про "
+"розташування найближчої Брами."
 
 #: app/static/json/backgrounds/scrivener.json:74
 msgid "A Treatise on the Abyss"
@@ -7007,13 +7062,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:81
 msgid ""
-"The Star Waltz. A comet-shaped clasp bound in a fine leather cover. Detailed "
-"astronomical charts, celestial movements, and stellar festivals. Highly "
-"valued (100gp) for its usefulness to travelers."
+"**The Star Waltz**. A comet-shaped clasp bound in a fine leather cover. "
+"Detailed astronomical charts, celestial movements, and stellar festivals."
+" Highly valued (100gp) for its usefulness to travelers."
 msgstr ""
-"«Зоряний вальс». Застібка у формі комети на добротній шкіряній оправі. "
-"Докладні астрономічні мапи, рухи небесних тіл і зоряні свята. Високо "
-"цінується (100 зм) за користь для подорожніх."
+"**«Зоряний вальс»**. Застібка у формі комети на добротній шкіряній "
+"оправі. Докладні астрономічні мапи, рухи небесних тіл і зоряні свята. "
+"Високо цінується (100 зм) за користь для подорожніх."
 
 #: app/static/json/backgrounds/scrivener.json:84
 msgid "The Star Waltz"
@@ -7031,13 +7086,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:91
 msgid ""
-"The Cathedral and the Canopy. Large-leaf binding over vellum. Nominally a "
-"children's storybook, the margins detail information about traveling, "
-"eating, and sleeping in the cloud forests."
+"**The Cathedral and the Canopy**. Large-leaf binding over vellum. "
+"Nominally a children's storybook, the margins detail information about "
+"traveling, eating, and sleeping in the cloud forests."
 msgstr ""
-"Собор і крона. Оправа з великого листя поверх пергаменту. Начебто дитяча "
-"книжка казок, але на полях — докладні відомості про подорожі, харчування та "
-"ночівлю в туманних лісах."
+"**Собор і крона**. Оправа з великого листя поверх пергаменту. Начебто "
+"дитяча книжка казок, але на полях — докладні відомості про подорожі, "
+"харчування та ночівлю в туманних лісах."
 
 #: app/static/json/backgrounds/scrivener.json:94
 msgid "The Cathedral and the Canopy"
@@ -7055,12 +7110,13 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:101
 msgid ""
-"Garden of Glass. Bound in the cover of another book. A heretical work, it "
-"describes the materials, procedures, and optimal locations required to open "
-"a Gate."
+"**Garden of Glass**. Bound in the cover of another book. A heretical "
+"work, it describes the materials, procedures, and optimal locations "
+"required to open a **Gate**."
 msgstr ""
-"Скляний сад. Оправлений у палітурку іншої книги. Єретичний твір, що описує "
-"матеріали, процедури та найкращі місця, потрібні, щоб відкрити Браму."
+"**Скляний сад**. Оправлений у палітурку іншої книги. Єретичний твір, що "
+"описує матеріали, процедури та найкращі місця, потрібні, щоб відкрити "
+"Браму."
 
 #: app/static/json/backgrounds/scrivener.json:104
 msgid "Garden of Glass"
@@ -7080,11 +7136,11 @@ msgstr "Як ви записуєте таємні відомості?"
 
 #: app/static/json/backgrounds/scrivener.json:116
 msgid ""
-"Fib Ink. Glows when used to write true statements but fades if used to write "
-"false ones."
+"**Fib Ink**. Glows when used to write true statements but fades if used "
+"to write false ones."
 msgstr ""
-"Чорнило небилиць. Світиться, коли ним пишуть правду, але блякне, коли ним "
-"записують брехню."
+"**Чорнило небилиць**. Світиться, коли ним пишуть правду, але блякне, коли"
+" ним записують брехню."
 
 #: app/static/json/backgrounds/scrivener.json:119
 msgid "Fib Ink"
@@ -7099,10 +7155,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:126
 msgid ""
-"Cipher Stone. A pair of sharp black stones. Each one decrypts any message "
-"written by the other."
+"**Cipher Stone**. A pair of sharp black stones. Each one decrypts any "
+"message written by the other."
 msgstr ""
-"Камінь-шифр. Пара гострих чорних каменів. Кожен розшифровує будь-яке "
+"**Камінь-шифр**. Пара гострих чорних каменів. Кожен розшифровує будь-яке "
 "послання, написане іншим."
 
 #: app/static/json/backgrounds/scrivener.json:129
@@ -7118,9 +7174,10 @@ msgstr ""
 "іншим."
 
 #: app/static/json/backgrounds/scrivener.json:136
-msgid "Everquill. A quill that writes on any surface. You still need ink."
+msgid "**Everquill**. A quill that writes on any surface. You still need ink."
 msgstr ""
-"Вічне перо. Перо, що пише на будь-якій поверхні. Чорнило все одно потрібне."
+"**Вічне перо**. Перо, що пише на будь-якій поверхні. Чорнило все одно "
+"потрібне."
 
 #: app/static/json/backgrounds/scrivener.json:139
 msgid "Everquill"
@@ -7132,11 +7189,11 @@ msgstr "Перо, що пише на будь-якій поверхні. Чор�
 
 #: app/static/json/backgrounds/scrivener.json:146
 msgid ""
-"Whisper Vial. Whisper a message into the vial, and it will play it back to "
-"whoever opens it next."
+"**Whisper Vial**. Whisper a message into the vial, and it will play it "
+"back to whoever opens it next."
 msgstr ""
-"Флакон шепоту. Прошепочіть послання у флакон — і він відтворить його тому, "
-"хто відкриє його наступним."
+"**Флакон шепоту**. Прошепочіть послання у флакон — і він відтворить його "
+"тому, хто відкриє його наступним."
 
 #: app/static/json/backgrounds/scrivener.json:149
 msgid "Whisper Vial"
@@ -7152,10 +7209,10 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:156
 msgid ""
-"Sanguine Lens. Extracts blood from a target without their knowledge. A "
-"stolen drop placed on the eye reveals memories from the past day."
+"**Sanguine Lens**. Extracts blood from a target without their knowledge. "
+"A stolen drop placed on the eye reveals memories from the past day."
 msgstr ""
-"Кривава лінза. Витягає кров із цілі без її відома. Викрадена крапля, "
+"**Кривава лінза**. Витягає кров із цілі без її відома. Викрадена крапля, "
 "покладена на око, показує спогади минулого дня."
 
 #: app/static/json/backgrounds/scrivener.json:159
@@ -7172,11 +7229,11 @@ msgstr ""
 
 #: app/static/json/backgrounds/scrivener.json:166
 msgid ""
-"Echo Leaf. A blank parchment. Whomever unfurls it sees their actions of the "
-"day slowly revealed in a tight scrawl."
+"**Echo Leaf**. A blank parchment. Whomever unfurls it sees their actions "
+"of the day slowly revealed in a tight scrawl."
 msgstr ""
-"Аркуш-відлуння. Чистий пергамент. Той, хто розгорне його, побачить, як його "
-"денні вчинки поволі проступають дрібним почерком."
+"**Аркуш-відлуння**. Чистий пергамент. Той, хто розгорне його, побачить, "
+"як його денні вчинки поволі проступають дрібним почерком."
 
 #: app/static/json/backgrounds/scrivener.json:169
 msgid "Echo Leaf"
@@ -26253,11 +26310,11 @@ msgstr "Тіберій"
 
 #. Background equipment description
 msgid ""
-"Blast Sphere: A head-sized iron ball filled with explosive powder that "
-"detonates on impact. "
+"**Blast Sphere**: A head-sized iron ball filled with explosive powder "
+"that detonates on impact. "
 msgstr ""
-"Вибухова сфера: залізна куля завбільшки з голову, наповнена вибуховим "
-"порошком, який детонує від удару. "
+"**Вибухова сфера**: залізна куля завбільшки з голову, наповнена вибуховим"
+" порошком, який детонує від удару. "
 
 #: app/templates/main/tools.html
 msgid "Generate"
@@ -27701,3 +27758,161 @@ msgstr "Тварини"
 #. Portrait picker: the group of object portraits: weapons, statues, things (#502)
 msgid "Objects"
 msgstr "Предмети"
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"You dematerialized a beloved pet. Now it follows you around, invisible "
+"but always present. Although it cannot interact with the physical realm, "
+"you are able to share its senses. (Add a Fatigue each time.) It follows "
+"basic commands."
+msgstr ""
+"Ви дематеріалізували улюблену тваринку. Тепер вона всюди ходить за вами —"
+" невидима, але завжди присутня. Хоч вона не може взаємодіяти з фізичним "
+"світом, ви можете розділяти її відчуття. (Щоразу додавайте Втому.) Вона "
+"виконує прості команди."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Homunculus: A miniature clay replica of yourself that follows your every "
+"command. It hates being enthralled to you and complains bitterly whenever"
+" possible. Any damage done to the homunculus is also done to you. 3 HP, 4"
+" STR, 13 DEX, 5 WIL."
+msgstr ""
+"Гомункул: мініатюрна глиняна копія вас самих, що виконує кожен ваш наказ."
+" Він ненавидить своє рабство у вас і гірко скаржиться за кожної нагоди. "
+"Будь-які пошкодження, завдані гомункулу, зазнаєте і ви. 3 ПЗ, 4 СИЛ, 13 "
+"СПР, 5 ВОЛ."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A Blood Pail (bulky) from a local death-cult. Empty it to raise a servant"
+" built from whatever is buried below, with 6 HP, 1 Armor, 13 STR, 11 DEX,"
+" 4 WIL, and shard fists (d8+d8). Only one servant can be raised at a "
+"time. If destroyed, you permanently lose 1d4 STR. Recharge: Fill with the"
+" blood of a dying warrior."
+msgstr ""
+"Відро крові (громіздке) від місцевого культу смерті. Вилийте його, щоб "
+"підняти слугу, складеного з того, що поховано внизу: 6 ПЗ, 1 Броні, 13 "
+"СИЛ, 11 СПР, 4 ВОЛ і кулаки з уламків (к8+к8). Водночас можна підняти "
+"лише одного слугу. Якщо його знищать, ви назавжди втрачаєте 1к4 СИЛ. "
+"Перезарядження: наповніть кров’ю воїна, що помирає."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A burial wagon (+6 slots, slow) from your last job. It came with a "
+"stubborn old donkey (+4 slots, only +2 slots if pulling wagon)."
+msgstr ""
+"Похоронний віз (+6 слотів, повільний) з вашої останньої роботи. У "
+"комплекті — впертий старий віслюк (+4 слоти; лише +2 слоти, якщо тягне "
+"воза)."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A Living Nightmare that dwells within you but manifests whenever you are "
+"in danger. It has your same Attributes and HP and attacks with claws "
+"(d8+d8). It disappears on Critical Damage (take 1d4 WIL damage), re-"
+"appearing again on the next full moon."
+msgstr ""
+"Живий кошмар, що мешкає у вас, але проявляється щоразу, коли ви в "
+"небезпеці. Він має ті самі Атрибути й ПЗ, що й ви, та атакує кігтями "
+"(к8+к8). Він зникає при критичному пошкодженні (отримайте 1к4 пошкоджень "
+"ВОЛ) і знову з’являється в наступну повню."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A Raven Familiar [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as "
+"an intelligent being and is entirely devoted to you."
+msgstr ""
+"Крук-фамільяр [8 ПЗ, 3 СИЛ, 11 СПР, 13 ВОЛ, дзьоб, (к6)]. Він говорить як"
+" розумна істота й цілковито відданий вам."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A clever pet, small enough to hide in your pack (bulky), but strong "
+"enough to scare off smaller predators. Requires one Ration a day, and it "
+"must be meat."
+msgstr ""
+"Кмітливий улюбленець, достатньо малий, щоб ховатися у вашому рюкзаку "
+"(громіздке), але достатньо сильний, щоб відлякувати менших хижаків. "
+"Потребує один пайок на день, і лише м’ясний."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Alchemical Tattoo: A dog, cat, or bird that can leave your body on "
+"demand. It follows your commands to the best of its abilities and can "
+"pass its injuries (as STR loss) back onto you. Petty."
+msgstr ""
+"Алхімічне татуювання: пес, кіт або птах, що може за вашим бажанням "
+"залишати ваше тіло. Воно виконує ваші накази в міру своїх сил і може "
+"передавати свої ушкодження (як втрату СИЛ) вам. Дріб’язкове."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Heavy Destrier: A beast built for war, an imposing creature. 8 HP, 1 "
+"Armor, hooves (d10+d10), +2 slots."
+msgstr ""
+"Важкий дестрієр: звір, створений для війни, величне створіння. 8 ПЗ, 1 "
+"Броні, копита (к10+к10), +2 слоти."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Blacklegged Dandy: Hardy and adaptable. Tough or Perilous terrain are one"
+" step easier. 6 HP. +4 slots."
+msgstr ""
+"Чорноногий денді: витривалий і невибагливий. Складна чи підступна "
+"місцевість на один крок легша. 6 ПЗ. +4 слоти."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Rivertooth: Impressively strong, capable of carrying heavy loads. 4 HP. "
+"+6 slots (only +2 slots if carrying two people)."
+msgstr ""
+"Річкозуб: надзвичайно сильний, здатний нести важкі вантажі. 4 ПЗ. +6 "
+"слотів (лише +2 слоти, якщо везе двох людей)."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Piebald Cob: Intelligent, it can understand simple commands, and even has"
+" an instinct for danger. 6 HP. +4 slots."
+msgstr ""
+"Рябий коб: розумний, розуміє прості команди й навіть відчуває небезпеку. "
+"6 ПЗ. +4 слоти."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Linden White: Highly trained and agile, it can perform intricate "
+"maneuvers in a time of need (no DEX save to flee). 4 HP. +3 slots."
+msgstr ""
+"Липовий білий: чудово вишколений і спритний, у скрутну мить здатен на "
+"складні маневри (втеча без перевірки СПР). 4 ПЗ. +3 слоти."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"Stray Fogger: Wild but very fast (even in Tough terrain). Rides light. 4 "
+"HP. +2 slots."
+msgstr ""
+"Бродячий туманник: дикий, але дуже швидкий (навіть на складній "
+"місцевості). Несе небагато. 4 ПЗ. +2 слоти."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid ""
+"A hollow wolf that had been frightening travelers. You took pity on the "
+"half-starved creature and nursed it back to health. Now it is loyal to "
+"you unto death. It is also a great tunneler. 5 HP, 11 STR, 13 DEX, 8 WIL,"
+" teeth (d6)."
+msgstr ""
+"Порожнистий вовк, що лякав подорожніх. Ви зглянулися на напівголодне "
+"створіння й виходили його. Тепер воно віддане вам до смерті. А ще воно "
+"чудово риє тунелі. 5 ПЗ, 11 СИЛ, 13 СПР, 8 ВОЛ, зуби (к6)."
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid "Slate"
+msgstr "Сланець"
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid "Lava"
+msgstr "Лава"
+
+#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+msgid "Arcane"
+msgstr "Магія"

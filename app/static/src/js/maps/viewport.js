@@ -36,3 +36,9 @@ export function imageAspect(drawing) {
   const image = drawing?.elements?.find(element => element.type === 'image' && !element.isDeleted);
   return image && image.width > 0 && image.height > 0 ? image.width / image.height : null;
 }
+
+// An image map being read (#533): the wheel scrolls the page, as over any picture, unless the picture is zoomed in
+// past the frame (then it pans inside it). Ctrl or ⌘ with the wheel still zooms.
+export function wheelScrollsPage({editing, imageMap, zoom, fitZoom, ctrlKey, metaKey}) {
+  return !editing && imageMap && !ctrlKey && !metaKey && zoom <= fitZoom * 1.001;
+}
