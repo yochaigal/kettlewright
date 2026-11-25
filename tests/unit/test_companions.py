@@ -596,10 +596,12 @@ def test_companion_portrait_upload_and_shared_cleanup(world, tmp_path):
 ])
 def test_companion_portrait_rejects_invalid_references(world, data):
     app, clients = world
+    with app.app_context():
+        before = db.session.get(Companion, 1).image_url  # A new hireling's random portrait (#529).
     response = clients[1].post('/companions/1/portrait', data=data)
     assert b'role="alert"' in response.data
     with app.app_context():
-        assert db.session.get(Companion, 1).image_url is None
+        assert db.session.get(Companion, 1).image_url == before
 
 
 def test_companion_portrait_permissions_csrf_and_pet_roundtrip(world):

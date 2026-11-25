@@ -25,18 +25,32 @@ const companion_id = "{{c.id}}";</script>
     </div>
     {% if editable %}<p class="inline-edit-hint"><small>{{_('Click a field to edit.')}}</small></p>{% endif %}
     <div id="character-stats-container">{% include 'partial/companions/stats.html' %}</div>
+    {% if c.kind == 'hireling' %}
+    {# A hireling is presented like a character (#529): its inventory beside the rest of it as small cards. #}
+    <div class="sheet-layout">
+      <div class="sheet-main">
+        <div class="inventory-container character-sheet-inventory" id="inventory-container" hx-vals='{"inventory_context": "sheet"}'>{% include 'partial/charview/inventory_slots.html' %}</div>
+      </div>
+      <aside class="sheet-side" aria-label="{{ _('About the hireling') }}">
+        <div id="companion-daily_cost-container">{% with section='daily_cost' %}{% include 'partial/companions/inline_section.html' %}{% endwith %}</div>
+        {# A hireling attacks with its weapons; an attack of its own shows once one is set. #}
+        {% if c.attack %}<div id="companion-attack-container">{% with section='attack' %}{% include 'partial/companions/inline_section.html' %}{% endwith %}</div>{% endif %}
+        <div class="character-sheet-notes companion-notes" id="companion-notes-container">{% with section='notes' %}{% include 'partial/companions/inline_section.html' %}{% endwith %}</div>
+        {% if c.pets %}
+        {% from 'partial/companions/cards.html' import cards with context %}
+        <section class="companion-section" id="hireling-pets"><h3>{{_('Pets')}}</h3>{{cards(c.pets)}}</section>
+        {% endif %}
+        {% if current_user.id == c.party.owner %}
+        <div class="character-sheet-notes" id="companion-access-container">{% with section='access' %}{% include 'partial/companions/inline_section.html' %}{% endwith %}</div>
+        {% endif %}
+      </aside>
+    </div>
+    {% else %}
     <div class="inventory-container character-sheet-inventory" id="inventory-container" hx-vals='{"inventory_context": "sheet"}'>{% include 'partial/charview/inventory_slots.html' %}</div>
     <div class="character-details-grid">
       {% if editable or c.attack %}<div id="companion-attack-container">{% with section='attack' %}{% include 'partial/companions/inline_section.html' %}{% endwith %}</div>{% endif %}
-      {% if c.kind == 'hireling' %}<div id="companion-daily_cost-container">{% with section='daily_cost' %}{% include 'partial/companions/inline_section.html' %}{% endwith %}</div>{% endif %}
     </div>
     <div class="character-sheet-notes companion-notes" id="companion-notes-container">{% with section='notes' %}{% include 'partial/companions/inline_section.html' %}{% endwith %}</div>
-    {% if c.kind == 'hireling' and current_user.id == c.party.owner %}
-      <div class="character-sheet-notes" id="companion-access-container">{% with section='access' %}{% include 'partial/companions/inline_section.html' %}{% endwith %}</div>
-    {% endif %}
-    {% if c.kind == 'hireling' and c.pets %}
-    {% from 'partial/companions/cards.html' import cards with context %}
-    <section class="companion-section" id="hireling-pets"><h3>{{_('Pets')}}</h3>{{cards(c.pets)}}</section>
     {% endif %}
     {% include 'partial/companions/monster_controls.html' %}
     {% if editable %}

@@ -226,7 +226,8 @@ def sheet(companion_id):
                 abort(400, description='Current stats cannot exceed their maximum.')
             setattr(c,stat,value)
             setattr(c,stat+'_max',maximum)
-        c.armor = number('armor',3)
+        if 'armor' in request.form:  # Hirelings have no natural armor to edit (#529).
+            c.armor = number('armor',3)
         c.gold = number('gold')
         if c.kind == 'hireling':
             c.daily_cost = number('daily_cost')

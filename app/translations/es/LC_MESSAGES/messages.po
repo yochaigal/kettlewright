@@ -26607,7 +26607,7 @@ msgstr ""
 
 #: app/static/json/backgrounds:1 app/static/json/backgrounds/fletchwind.json:1
 msgid "Hawk"
-msgstr ""
+msgstr "Halcón"
 
 #: app/static/json/backgrounds:1 app/static/json/backgrounds/foundling.json:1
 msgid "Hazel"
@@ -51602,3 +51602,15 @@ msgstr "Características visibles"
 #. Monsters tab: the monster's stats are hidden from players on the whiteboard (#539)
 msgid "Hidden stats"
 msgstr "Características ocultas"
+
+#. A hireling's page: its side column (#529)
+msgid "About the hireling"
+msgstr "Sobre el seguidor"
+
+#. The Animal Handler hireling's pet (#529), from the Cairn SRD
+msgid "An Animal Handler's hawk [2 HP, 5 STR, 16 DEX, 5 WIL, claws (d4+d4)]."
+msgstr "El halcón de un domador de bestias [2 PG, 5 FUE, 16 DES, 5 VOL, garras (d4+d4)]."
+
+#. The Hawk's attack (#529)
+msgid "Claws (d4+d4)"
+msgstr "Garras (d4+d4)"

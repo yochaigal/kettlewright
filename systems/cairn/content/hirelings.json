@@ -4,15 +4,38 @@
     "daily_cost": 30,
     "items": [
       {
-        "name": "Alchemical Tools",
-        "tags": []
-      },
-      {
         "name": "Rations",
         "tags": [
           "uses"
         ],
         "uses": 3
+      },
+      {
+        "name": "Torch",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      },
+      {
+        "name": "Dagger",
+        "tags": [
+          "d6"
+        ]
+      },
+      {
+        "name": "Acid",
+        "tags": []
+      },
+      {
+        "name": "Lens",
+        "tags": []
+      },
+      {
+        "name": "Gloves",
+        "tags": [
+          "petty"
+        ]
       }
     ]
   },
@@ -21,24 +44,36 @@
     "daily_cost": 5,
     "items": [
       {
-        "name": "Rope",
-        "tags": []
-      },
-      {
-        "name": "Animal Feed",
-        "tags": [
-          "uses",
-          "bulky"
-        ],
-        "uses": 3
-      },
-      {
         "name": "Rations",
         "tags": [
           "uses"
         ],
         "uses": 3
+      },
+      {
+        "name": "Torch",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      },
+      {
+        "name": "Dagger",
+        "tags": [
+          "d6"
+        ]
+      },
+      {
+        "name": "Cage",
+        "tags": []
+      },
+      {
+        "name": "Rope (25ft)",
+        "tags": []
       }
+    ],
+    "pets": [
+      "Hawk"
     ]
   },
   {
@@ -46,21 +81,38 @@
     "daily_cost": 15,
     "items": [
       {
+        "name": "Rations",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      },
+      {
+        "name": "Lantern",
+        "tags": []
+      },
+      {
+        "name": "Oil Can",
+        "tags": [
+          "uses"
+        ],
+        "uses": 6
+      },
+      {
         "name": "Hammer",
         "tags": [
           "d6"
         ]
       },
       {
-        "name": "Smithing Tools",
+        "name": "Iron Tongs",
         "tags": []
       },
       {
-        "name": "Rations",
+        "name": "Gambeson",
         "tags": [
-          "uses"
-        ],
-        "uses": 3
+          "1 Armor"
+        ]
       }
     ]
   },
@@ -69,23 +121,30 @@
     "daily_cost": 10,
     "items": [
       {
-        "name": "Sword",
-        "tags": [
-          "d8"
-        ]
-      },
-      {
-        "name": "Gambeson",
-        "tags": [
-          "1 Armor"
-        ]
-      },
-      {
         "name": "Rations",
         "tags": [
           "uses"
         ],
         "uses": 3
+      },
+      {
+        "name": "Torch",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      },
+      {
+        "name": "Sword",
+        "tags": [
+          "d6"
+        ]
+      },
+      {
+        "name": "Helmet",
+        "tags": [
+          "1 Armor"
+        ]
       }
     ]
   },
@@ -94,21 +153,30 @@
     "daily_cost": 5,
     "items": [
       {
-        "name": "Staff",
-        "tags": [
-          "d6"
-        ]
-      },
-      {
-        "name": "Lantern",
-        "tags": []
-      },
-      {
         "name": "Rations",
         "tags": [
           "uses"
         ],
         "uses": 3
+      },
+      {
+        "name": "Torch",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      },
+      {
+        "name": "Compass",
+        "tags": []
+      },
+      {
+        "name": "Rope (25ft)",
+        "tags": []
+      },
+      {
+        "name": "Shovel",
+        "tags": []
       }
     ]
   },
@@ -117,15 +185,36 @@
     "daily_cost": 10,
     "items": [
       {
-        "name": "Thieving Tools",
-        "tags": []
-      },
-      {
         "name": "Rations",
         "tags": [
           "uses"
         ],
         "uses": 3
+      },
+      {
+        "name": "Lantern",
+        "tags": []
+      },
+      {
+        "name": "Oil Can",
+        "tags": [
+          "uses"
+        ],
+        "uses": 6
+      },
+      {
+        "name": "Cudgel",
+        "tags": [
+          "d6"
+        ]
+      },
+      {
+        "name": "Lockpick",
+        "tags": []
+      },
+      {
+        "name": "Metal File",
+        "tags": []
       }
     ]
   },
@@ -134,15 +223,32 @@
     "daily_cost": 10,
     "items": [
       {
-        "name": "Compass",
-        "tags": []
-      },
-      {
         "name": "Rations",
         "tags": [
           "uses"
         ],
         "uses": 3
+      },
+      {
+        "name": "Torch",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      },
+      {
+        "name": "Dagger",
+        "tags": [
+          "d6"
+        ]
+      },
+      {
+        "name": "Compass",
+        "tags": []
+      },
+      {
+        "name": "Sextant",
+        "tags": []
       }
     ]
   },
@@ -151,21 +257,36 @@
     "daily_cost": 5,
     "items": [
       {
-        "name": "Rope",
-        "tags": []
-      },
-      {
-        "name": "Dagger",
-        "tags": [
-          "d6"
-        ]
-      },
-      {
         "name": "Rations",
         "tags": [
           "uses"
         ],
         "uses": 3
+      },
+      {
+        "name": "Lantern",
+        "tags": []
+      },
+      {
+        "name": "Oil Can",
+        "tags": [
+          "uses"
+        ],
+        "uses": 6
+      },
+      {
+        "name": "Sling",
+        "tags": [
+          "d6"
+        ]
+      },
+      {
+        "name": "Spyglass",
+        "tags": []
+      },
+      {
+        "name": "Rope (25ft)",
+        "tags": []
       }
     ]
   },
@@ -174,19 +295,41 @@
     "daily_cost": 20,
     "items": [
       {
-        "name": "Book",
-        "tags": []
-      },
-      {
-        "name": "Writing Tools",
-        "tags": []
-      },
-      {
         "name": "Rations",
         "tags": [
           "uses"
         ],
         "uses": 3
+      },
+      {
+        "name": "Candle",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      },
+      {
+        "name": "Parchment & Ink",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      },
+      {
+        "name": "Stylus",
+        "tags": []
+      },
+      {
+        "name": "Staff",
+        "tags": [
+          "d6"
+        ]
+      },
+      {
+        "name": "Robes",
+        "tags": [
+          "petty"
+        ]
       }
     ]
   },
@@ -195,18 +338,29 @@
     "daily_cost": 5,
     "items": [
       {
-        "name": "Bow",
-        "tags": [
-          "d6",
-          "bulky"
-        ]
-      },
-      {
         "name": "Rations",
         "tags": [
           "uses"
         ],
         "uses": 3
+      },
+      {
+        "name": "Torch",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      },
+      {
+        "name": "Crossbow",
+        "tags": [
+          "d8",
+          "bulky"
+        ]
+      },
+      {
+        "name": "Chain (10ft)",
+        "tags": []
       }
     ]
   },
@@ -215,21 +369,35 @@
     "daily_cost": 5,
     "items": [
       {
-        "name": "Trap",
-        "tags": []
-      },
-      {
-        "name": "Dagger",
-        "tags": [
-          "d6"
-        ]
-      },
-      {
         "name": "Rations",
         "tags": [
           "uses"
         ],
         "uses": 3
+      },
+      {
+        "name": "Torch",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      },
+      {
+        "name": "Bow",
+        "tags": [
+          "d6",
+          "bulky"
+        ]
+      },
+      {
+        "name": "Trap",
+        "tags": [
+          "d6 STR"
+        ]
+      },
+      {
+        "name": "Sack",
+        "tags": []
       }
     ]
   },
@@ -238,31 +406,37 @@
     "daily_cost": 20,
     "items": [
       {
-        "name": "Sword",
-        "tags": [
-          "d8"
-        ]
-      },
-      {
-        "name": "Chainmail",
-        "tags": [
-          "2 Armor",
-          "bulky"
-        ]
-      },
-      {
-        "name": "Shield",
-        "tags": [
-          "1 Armor",
-          "bonus defense"
-        ]
-      },
-      {
         "name": "Rations",
         "tags": [
           "uses"
         ],
         "uses": 3
+      },
+      {
+        "name": "Torch",
+        "tags": [
+          "uses"
+        ],
+        "uses": 3
+      },
+      {
+        "name": "Long Sword",
+        "tags": [
+          "d10",
+          "bulky"
+        ]
+      },
+      {
+        "name": "Helmet",
+        "tags": [
+          "1 Armor"
+        ]
+      },
+      {
+        "name": "Gambeson",
+        "tags": [
+          "1 Armor"
+        ]
       }
     ]
   }

@@ -105,5 +105,14 @@
     "name": "Donkey",
     "notes": "A burial wagon (+6 slots, slow) from your last job. It came with a stubborn old donkey (+4 slots, only +2 slots if pulling wagon).",
     "slots": 4
+  },
+  "Hawk": {
+    "name": "Hawk",
+    "hp": 2,
+    "strength": 5,
+    "dexterity": 16,
+    "willpower": 5,
+    "attack": "Claws (d4+d4)",
+    "notes": "An Animal Handler's hawk [2 HP, 5 STR, 16 DEX, 5 WIL, claws (d4+d4)]."
   }
 }
