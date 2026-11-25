@@ -198,6 +198,8 @@ body.warden-board .excalidraw .layer-ui__wrapper__footer-left { margin-left: 64p
 .board-roll-actions { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 5px; }
 .board-roll-actions[data-mode="warden"] { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
 .board-roll-actions[data-mode="player"] { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+/* A monster's or a player's character's quick rolls (#532): damage, saves and the dice window, in one row. */
+.board-roll-actions[data-mode="quick"] button { padding: 0 10px; }
 .board-roll-actions button, #board-roll-actor { cursor: pointer; border: 1px solid var(--board-border);
   border-radius: 6px; background: var(--board-bg); color: var(--board-text); padding: 6px 9px; font: inherit; }
 .board-roll-actions button { min-height: 32px; min-width: 36px; }

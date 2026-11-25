@@ -9,6 +9,7 @@ from app.lib.companions import save_item_to_companion, finish_companion_transfer
 from flask_wtf import FlaskForm
 from app.forms import *
 import json
+import re
 from flask_babel import _
 from app.lib.dice_feedback import queue_dice
 
@@ -371,11 +372,26 @@ def shared_map_roll_actors(party_id):
     return _board_json({'actors': _board_roll_actors(_board_party(party_id))})
 
 
+def character_weapons(c):
+    """A character's quick damage rolls on the whiteboard (#532): each item it carries in its main inventory that has
+    a damage die, as [{'name': 'Sword', 'dice': 'd8'}]. Under a condition that weakens attacks (Panicked in Cairn)
+    each rolls the system's weak die instead (a d4), as on its sheet."""
+    rules = c.rules
+    weak = rules.attack_die(rules.active_conditions(c))
+    weapons = []
+    for item in json.loads(c.items or '[]'):
+        dice = next((tag.replace(' ', '') for tag in item.get('tags') or []
+                     if re.fullmatch(r'd\d+(?: \+ d\d+)?', str(tag))), None)
+        if item.get('location') == 0 and dice:
+            weapons.append({'name': str(item.get('name') or ''), 'dice': f'd{weak}' if weak else dice})
+    return weapons[:6]
+
+
 def _board_roll_actors(target):
     # The roller is also the selected token's panel (#375): its HP, attributes, conditions and sheet.
     # The Warden rolls for their monsters and edits every character; a player edits and rolls for their own.
     def character(c):
-        return dict(id=str(c.id), name=c.name, kind='character', hp=[c.hp or 0, c.hp_max or 0],
+        return dict(id=str(c.id), name=c.name, kind='character', hp=[c.hp or 0, c.hp_max or 0], weapons=character_weapons(c),
                     attributes={field: [c.get_stat(field) or 0, c.get_stat(field + '_max') or 0]
                                 for field in c.rules.attribute_keys},
                     # The conditions a player sets in its game system (Deprived, Panicked in Cairn), on or off.

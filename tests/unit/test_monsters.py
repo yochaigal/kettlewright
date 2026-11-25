@@ -739,3 +739,17 @@ def test_illustrated_bestiary_tokens_fill_their_circle():
                     break
     assert padded == []
 
+
+def test_a_character_s_quick_damage_rolls_are_its_weapons(app):
+    """#532: the whiteboard's quick rolls for a player's character: each item with a damage die in its main inventory;
+    while Panicked, each rolls the weak die (a d4), as on the sheet."""
+    import json
+    from app.blueprints.party import character_weapons
+    from app.models import Character
+    items = [{'name': 'Sword', 'tags': ['d8'], 'location': 0}, {'name': 'Greataxe', 'tags': ['bulky', 'd10 + d10'], 'location': 0},
+             {'name': 'Spare dagger', 'tags': ['d6'], 'location': 1}, {'name': 'Rope', 'tags': [], 'location': 0}]
+    with app.app_context():
+        ada = Character(name='Ada', items=json.dumps(items), panicked=False, deprived=False, dead=False)
+        assert character_weapons(ada) == [{'name': 'Sword', 'dice': 'd8'}, {'name': 'Greataxe', 'dice': 'd10+d10'}]
+        ada.panicked = True
+        assert [weapon['dice'] for weapon in character_weapons(ada)] == ['d4', 'd4']

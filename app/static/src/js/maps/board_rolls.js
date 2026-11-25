@@ -74,13 +74,23 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
       choices.value = preferred;
       drawToken();
       actions.replaceChildren();
-      actions.dataset.mode = active?.kind === 'monster' ? 'monster' : config.warden ? 'warden' : 'player';
-      if (active?.kind === 'monster') {
-        const damage = active.damage || [];
-        if (!damage.length) button(config.messages.damage, {dice: 'd4'}, true);
-        for (const dice of damage) button(`${config.messages.damage} ${dice}`, {dice});
+      // A monster, or a player's own character (#532): quick rolls (its damage and saves), and the full dice
+      // in the dice window. The Warden with nothing or a character selected has the dice here.
+      const quick = active?.kind === 'monster' || (active?.kind === 'character' && !config.warden);
+      actions.dataset.mode = quick ? 'quick' : config.warden ? 'warden' : 'player';
+      if (quick) {
+        const saveDice = `d${gameSystem().save?.die ?? 20}`;
+        if (active.kind === 'monster') {
+          const damage = active.damage || [];
+          if (!damage.length) button(config.messages.damage, {dice: 'd4'}, true);
+          for (const dice of damage) button(`${config.messages.damage} ${dice}`, {dice});
+        } else {
+          for (const weapon of active.weapons || []) button(`${weapon.name} ${weapon.dice}`, {dice: weapon.dice});
+        }
+        const scores = active.kind === 'monster' ? active.stats : Object.fromEntries(
+          Object.entries(active.attributes || {}).map(([stat, [current]]) => [stat, current]));
         for (const {key: stat, abbr: label} of gameSystem().attributes.filter(attribute => attribute.save)) {
-          button(label, {dice: `d${gameSystem().save?.die ?? 20}`, save: stat}, active.stats[stat] == null);
+          button(label, {dice: saveDice, save: stat}, scores[stat] == null);
         }
         const more = button(config.messages.rollDice, {modal: true});
         more.textContent = '';
