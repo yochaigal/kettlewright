@@ -28,11 +28,11 @@
     </div>
     {% if not compact %}<p>{{_('Armor')}} {{ c.armorValue() }}{% if c.attack %} · {{ c.attack }}{% endif %}</p>
     {% if generated_preview and c.notes %}<div class="rich-content">{{c.notes|markdown}}</div>{% endif %}
-    {% if c.kind == 'monster' %}<p title="{{ _('On the whiteboard. The eye on its token shows or hides them.') }}">{{ _('Players see its stats') if c.shared else _('Stats hidden from players') }}</p>{% endif %}
+    {% if c.kind == 'monster' %}<p title="{{ _('Players see its name and stats on the whiteboard. The eye on its token hides them.') if c.shared else _('Players don’t see its name and stats on the whiteboard. The eye on its token shows them.') }}">{{ _('Shown stats') if c.shared else _('Hidden stats') }}</p>{% endif %}
     {% if c.kind == 'hireling' %}<p>{{ c.daily_cost }} {{_('gp/day')}}</p>{% endif %}
     {% elif c.kind == 'hireling' %}<p class="companion-hire-cost">{{ c.daily_cost }} {{_('gp/day')}}</p>
     {% elif c.kind == 'monster' %}
-    <p class="companion-visibility" title="{{ _('On the whiteboard. The eye on its token shows or hides them.') }}">{{ _('Players see its stats') if c.shared else _('Stats hidden from players') }}</p>
+    <p class="companion-visibility" title="{{ _('Players see its name and stats on the whiteboard. The eye on its token hides them.') if c.shared else _('Players don’t see its name and stats on the whiteboard. The eye on its token shows them.') }}">{{ _('Shown stats') if c.shared else _('Hidden stats') }}</p>
     {% if c.attack or (c.notes and can_manage_companion(c)) %}
     <div class="companion-monster-notes">
       {% if c.attack %}<p>{{c.attack|markdown_inline}}</p>{% endif %}

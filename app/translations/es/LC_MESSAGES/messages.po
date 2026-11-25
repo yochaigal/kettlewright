@@ -51587,14 +51587,18 @@ msgstr "Naranja"
 msgid "Yellow"
 msgstr "Amarillo"
 
-#. Monsters tab: where a monster's stats are shown or hidden (#539)
-msgid "On the whiteboard. The eye on its token shows or hides them."
-msgstr "En la pizarra. El ojo de su ficha las muestra u oculta."
+#. Monsters tab: the monster's name and stats are shown on the whiteboard (#539)
+msgid "Players see its name and stats on the whiteboard. The eye on its token hides them."
+msgstr "Los jugadores ven su nombre y sus características en la pizarra. El ojo de su ficha las oculta."
+
+#. Monsters tab: the monster's name and stats are hidden on the whiteboard (#539)
+msgid "Players don’t see its name and stats on the whiteboard. The eye on its token shows them."
+msgstr "Los jugadores no ven su nombre ni sus características en la pizarra. El ojo de su ficha las muestra."
 
 #. Monsters tab: the monster's stats are shown to players on the whiteboard (#539)
-msgid "Players see its stats"
-msgstr "Los jugadores ven sus características"
+msgid "Shown stats"
+msgstr "Características visibles"
 
 #. Monsters tab: the monster's stats are hidden from players on the whiteboard (#539)
-msgid "Stats hidden from players"
-msgstr "Características ocultas a los jugadores"
+msgid "Hidden stats"
+msgstr "Características ocultas"
