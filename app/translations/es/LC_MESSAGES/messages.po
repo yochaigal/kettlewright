@@ -51309,3 +51309,25 @@ msgstr "Abatido"
 #. Whiteboard token panel: link to the full sheet
 msgid "Open sheet"
 msgstr "Abrir hoja"
+
+#. Delete campaign page: what deleting it removes (its parties can be kept)
+msgid "Deleting this campaign permanently deletes all its modules, articles and drawings. This cannot be undone."
+msgstr "Borrar esta campaña borra para siempre todos sus módulos, artículos y dibujos. No se puede deshacer."
+
+#. Delete campaign page: checkbox, followed by the parties' names
+msgid "Keep its parties"
+msgstr "Conservar sus grupos"
+
+#. Delete campaign page: below Keep its parties
+msgid "They stay, with their characters, storage and notes, under Parties without a campaign: add them to another campaign any time. Unchecked, the parties are deleted too, and their characters leave them."
+msgstr "Se quedan, con sus personajes, su almacén y sus notas, en Grupos sin campaña: añádelos a otra campaña cuando quieras. Si lo desmarcas, los grupos también se eliminan y sus personajes los dejan."
+
+#. Campaign settings: confirmation for Delete campaign while Keep its parties is checked
+#, python-format
+msgid "Delete %(campaign)s? Its modules, articles, drawings, backgrounds and what was revealed to parties are permanently deleted. Its parties are kept, without a campaign. This cannot be undone."
+msgstr "¿Borrar %(campaign)s? Sus módulos, artículos, dibujos, trasfondos y lo revelado a los grupos se borrarán para siempre. Sus grupos se conservan, sin campaña. No se puede deshacer."
+
+#. Campaign settings: confirmation for Delete campaign, for a campaign without parties
+#, python-format
+msgid "Delete %(campaign)s? Its modules, articles, drawings and backgrounds are permanently deleted. This cannot be undone."
+msgstr "¿Borrar %(campaign)s? Sus módulos, artículos, dibujos y trasfondos se borrarán para siempre. No se puede deshacer."

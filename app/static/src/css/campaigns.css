@@ -777,6 +777,10 @@ body.dark-mode .wiki-edit.wiki-danger, body.dark-mode .kw-action.wiki-danger {co
 .party-map-pins li {display:flex;align-items:center;gap:.5em;}
 .party-map-pins li::before {content:'';flex:none;width:.7em;height:.7em;border-radius:50%;background:#e03131;border:2px solid #f59f00;}
 .party-map-pins .link-button {min-height:0;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;text-decoration:underline;cursor:pointer;}
+/* The map's own pins (#525), placed by the Warden: a plain dot, unlike the party's red pins. */
+.party-map-pins li.is-map::before {background:color-mix(in srgb,var(--fg) 70%,var(--bg));border-color:var(--bg);box-shadow:0 0 0 1px color-mix(in srgb,var(--fg) 70%,var(--bg));}
+.party-map-pins li.is-selected .link-button {font-weight:700;}
+.party-map-pins .wiki-badge {font-size:.75em;}
 
 /* Maps apart from articles: the module's Maps list, and the map editor's title. */
 .module-map-list {display:grid;grid-template-columns:repeat(auto-fill,minmax(15em,1fr));gap:.6em;margin:0;padding:0;list-style:none;}

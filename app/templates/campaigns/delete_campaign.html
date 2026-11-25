@@ -3,10 +3,15 @@
 {% block workspace %}
 {{ page_header(_('Delete campaign?')) }}
 <p><strong>{{ campaign.name }}</strong></p>
-<p>{{ _('Deleting this campaign permanently deletes all its modules, articles, drawings and parties. This cannot be undone. Characters are kept and leave their party.') }}</p>
+<p>{{ _('Deleting this campaign permanently deletes all its modules, articles and drawings. This cannot be undone.') }}</p>
 <p>{{ _('Articles to delete:') }} {{ campaign.entries|length }}</p>
 <form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}">
 {{ token(campaign.version) }}
+{# Its parties stay by default (Discord feedback): they become parties without a campaign, as with Remove party. #}
+{% if campaign.parties %}
+<label class="campaign-check"><input type="checkbox" name="keep_parties" value="1" checked> {{ _('Keep its parties') }}: {{ campaign.parties|map(attribute='name')|join(', ') }}</label>
+<p class="import-hint">{{ _('They stay, with their characters, storage and notes, under Parties without a campaign: add them to another campaign any time. Unchecked, the parties are deleted too, and their characters leave them.') }}</p>
+{% endif %}
 <div class="campaign-actions">
 <a href="{{ url_for('campaigns.lobby', campaign_id=campaign.id) }}">{{ _('Cancel') }}</a>
 <button type="submit" name="confirm" value="delete">{{ _('Permanently delete campaign and all articles') }}</button>

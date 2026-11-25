@@ -7,7 +7,7 @@ from sqlalchemy.orm.exc import StaleDataError
 from sqlalchemy.orm import Session
 
 from app.models import (db, User, Party, Character, Campaign,
-                        ContentEntry, ContentLink, PartyPresentation, PointcrawlMap, MapNode, MapEdge)
+                        ContentEntry, ContentLink, PartyPresentation, PointcrawlMap, MapNode, MapEdge, MapPin)
 from app.lib.campaigns import render_content
 from tests.helpers import login
 
@@ -1994,3 +1994,85 @@ def test_a_map_has_one_toolbar_and_full_screen_takes_both(setup):
     login(client, 2)
     player = client.get(f'/party/1/map/{map_id}/', follow_redirects=True).get_data(as_text=True)
     assert "toggleCanvasUI('fog')" not in player and 'map-bar-fog' not in player
+
+
+def test_the_party_map_lists_the_maps_pins_it_was_shown_with_the_partys(setup):
+    """#525: the Pins list had only the party's own pins; the map's pins (placed by the Warden) could be clicked on the
+    map but weren't listed. Both are listed now, from the same data: the map's pins shown to the party, never the others."""
+    app, client = setup
+    map_id, graph = create_map(client)
+    with app.app_context():
+        rooms = {node.entry.title: node.entry_id for node in db.session.get(PointcrawlMap, map_id).nodes}
+    reveal(client, map_entry_id(app, map_id))
+    reveal(client, rooms['SECRET ROOM 0'])  # One pin shown; the other stays hidden.
+    login(client, 2)
+    assert client.post(f'/party/1/map/{map_id}/pins', data={'x': 40, 'y': 60, 'title': 'Our camp', 'body': ''}).status_code == 200
+    page = client.get(f'/party/1/map/{map_id}/', follow_redirects=True).get_data(as_text=True)
+    shown = json.loads(unescape(re.search(r'data-graph="([^"]+)"', page)[1]))
+    state = json.loads(unescape(re.search(r'data-state="([^"]+)"', page)[1]))
+    assert [node['title'] for node in shown['nodes']] == ['SECRET ROOM 0'] and 'SECRET ROOM 1' not in page
+    assert [pin['title'] for pin in state['pins']] == ['Our camp']
+    pins = page[page.index('id="party-map-pins-title"'):page.index('</section>', page.index('id="party-map-pins-title"'))]
+    assert 'x-for="item in pinList"' in pins and '@click="selectListed(item)"' in pins
+    assert 'x-show="item.kind === \'map\'">Warden</span>' in pins and 'x-show="!pinList.length"' in pins
+
+
+def test_deleting_a_campaign_can_keep_its_parties(setup, monkeypatch):
+    """Discord feedback: deleting a campaign also deleted its parties. Keep its parties (checked by default) leaves them
+    without a campaign, as Remove party does: their characters, storage and notes stay; what they were shown of the
+    campaign goes with it."""
+    app, client = setup
+    map_id, graph = create_map(client)
+    reveal(client, map_entry_id(app, map_id))
+    assert client.post('/party/1/notes', data={'title': 'Rumours', 'body': 'The mill burns.'}).status_code in (200, 302)
+    login(client, 2)
+    assert client.post(f'/party/1/map/{map_id}/pins', data={'x': 1, 'y': 2, 'title': 'Our camp', 'body': ''}).status_code == 200
+    login(client, 1)
+    page = client.post('/campaigns/1/delete', data={'version': 1}).get_data(as_text=True)
+    box = page[page.index('name="keep_parties"') - 40:page.index('</label>', page.index('name="keep_parties"'))]
+    assert 'type="checkbox"' in box and 'checked' in box and 'Party 1' in box
+    from app import socketio
+    notified = []
+    monkeypatch.setattr(socketio, 'emit', lambda event, payload, **kw: notified.append(kw.get('to') or kw.get('room')))
+    assert client.post('/campaigns/1/delete', data={'version': 1, 'confirm': 'delete', 'keep_parties': '1'}).status_code == 302
+    with app.app_context():
+        assert db.session.get(Campaign, 1) is None and db.session.get(PointcrawlMap, map_id) is None
+        party = db.session.get(Party, 1)
+        assert party is not None and party.campaign_id is None
+        assert db.session.get(Character, 1).party_id == 1 and json.loads(party.members) == [1]
+        notes = [e.title for e in ContentEntry.query.filter_by(category='party_note')]
+        assert 'Rumours' in notes and 'Our camp' in notes  # The pin's note stays, without its map.
+        assert MapPin.query.count() == 0 and PartyPresentation.query.filter_by(party_id=1).count() == 2  # The notes.
+    assert notified  # The party's members hear that what they were shown is gone.
+    assert 'Party 1' in client.get('/campaigns/?view=parties').get_data(as_text=True)
+
+
+def test_a_campaign_without_parties_asks_nothing_about_them(setup):
+    app, client = setup
+    with app.app_context():
+        db.session.add(Campaign(id=2, owner_id=1, name='Empty campaign'))
+        db.session.commit()
+    page = client.post('/campaigns/2/delete', data={'version': 1}).get_data(as_text=True)
+    assert 'Delete campaign?' in page and 'keep_parties' not in page
+
+
+def test_campaign_settings_ask_whether_to_keep_the_parties(setup):
+    """The lobby's Delete campaign (the one Wardens use) keeps the parties unless Keep its parties is unchecked, and its
+    confirmation says which."""
+    from html import unescape as plain
+    app, client = setup
+    with app.app_context():
+        db.session.add(Campaign(id=2, owner_id=1, name='Empty campaign'))
+        db.session.commit()
+    page = client.get('/campaigns/1/').get_data(as_text=True)
+    form = page[page.index('class="campaign-danger-zone"') - 200:page.index('</form>', page.index('class="campaign-danger-zone"'))]
+    assert 'name="keep_parties" value="1" checked' in form and 'Keep its parties' in form
+    assert 'Its parties are kept, without a campaign.' in plain(form)
+    assert 'and its parties are permanently deleted. Characters are kept and leave their party.' in plain(form)  # Unchecked.
+    empty = client.get('/campaigns/2/').get_data(as_text=True)
+    form = empty[empty.index('class="campaign-danger-zone"') - 200:empty.index('</form>', empty.index('class="campaign-danger-zone"'))]
+    assert 'keep_parties' not in form and 'Its modules, articles, drawings and backgrounds are permanently deleted.' in plain(form)
+    # The form as sent with the box checked keeps the party.
+    assert client.post('/campaigns/1/delete', data={'version': 1, 'confirm': 'delete', 'keep_parties': '1'}).status_code == 302
+    with app.app_context():
+        assert db.session.get(Party, 1).campaign_id is None
