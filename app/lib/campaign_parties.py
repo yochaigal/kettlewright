@@ -14,7 +14,10 @@ from slugify import slugify
 
 from app.models import db, Character, Party, PartyRoll, PartyMap
 
-DEFAULT_CONTAINERS = json.dumps(system().inventory.default_containers(), separators=(',', ':'))
+# A party's storage starts as its Stash (#540): not 'Main', which is every character's main inventory.
+PARTY_STORAGE = 'Stash'
+DEFAULT_CONTAINERS = json.dumps([dict(container, name=PARTY_STORAGE) if container['id'] == 0 else container
+                                 for container in system().inventory.default_containers()], separators=(',', ':'))
 
 
 def generate_unique_join_code():
