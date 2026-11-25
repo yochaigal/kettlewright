@@ -848,11 +848,16 @@ def delete_campaign(campaign_id):
     for entry in list(campaign.entries):
         audiences.update(presentation.party_id for presentation in entry.presentations)
         db.session.delete(entry)
-    # Its parties go with it; the characters are kept and leave their party.
+    # Its parties stay, without a campaign, when Keep its parties is checked (as Remove party does); otherwise they
+    # go with it, and their characters are kept and leave them. A form without the box deletes them, as before.
     from app.lib.campaign_parties import delete_party
+    keep_parties = request.form.get('keep_parties') == '1'
     for party in list(campaign.parties):
-        audiences.discard(party.id)
-        delete_party(party)
+        if keep_parties:
+            party.campaign = None  # Its members see what it was shown of this campaign go.
+        else:
+            audiences.discard(party.id)
+            delete_party(party)
     db.session.delete(campaign)
     db.session.commit()
     notify_parties(audiences)

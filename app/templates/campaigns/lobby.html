@@ -30,9 +30,13 @@
           </div>
         </form>
         <form method="post" action="{{ url_for('campaigns.delete_campaign', campaign_id=campaign.id) }}" class="campaign-danger-zone"
-              data-confirm="{{ _('Delete %(campaign)s? Its modules, articles, drawings, backgrounds, what was revealed to parties, and its parties are permanently deleted. Characters are kept and leave their party. This cannot be undone.', campaign=campaign.name) }}"
+              data-confirm="{% if campaign.parties %}{{ _('Delete %(campaign)s? Its modules, articles, drawings, backgrounds and what was revealed to parties are permanently deleted. Its parties are kept, without a campaign. This cannot be undone.', campaign=campaign.name) }}{% else %}{{ _('Delete %(campaign)s? Its modules, articles, drawings and backgrounds are permanently deleted. This cannot be undone.', campaign=campaign.name) }}{% endif %}"
               data-confirm-label="{{ _('Delete campaign') }}">
           {{ content_form.csrf_token }}<input type="hidden" name="version" value="{{ campaign.version }}"><input type="hidden" name="confirm" value="delete">
+          {# Its parties stay by default (Discord feedback): they become parties without a campaign, as with Remove party.
+             Unchecked, the confirmation says they go too. #}
+          {% if campaign.parties %}<label class="campaign-check"><input type="checkbox" name="keep_parties" value="1" checked
+            data-confirm-unchecked="{{ _('Delete %(campaign)s? Its modules, articles, drawings, backgrounds, what was revealed to parties, and its parties are permanently deleted. Characters are kept and leave their party. This cannot be undone.', campaign=campaign.name) }}"> {{ _('Keep its parties') }}</label>{% endif %}
           <button type="submit" class="kw-action kw-action-danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> {{ _('Delete campaign…') }}</button>
         </form>
       </dialog>
