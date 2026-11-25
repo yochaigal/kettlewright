@@ -718,3 +718,24 @@ def test_the_portrait_picker_offers_each_picture_once():
     assert not same('green/green1.png', 'green/green2.png')  # Look-alikes with another expression: both offered.
 
 
+def test_illustrated_bestiary_tokens_fill_their_circle():
+    """#535: no token has black padding between its drawing and its round edge."""
+    from PIL import Image
+    folder = Path('app/static/images/portraits/oozejar')
+    padded = []
+    for path in sorted(folder.glob('*.webp')):
+        image = Image.open(path).convert('RGBA')
+        pixels, (width, height) = image.load(), image.size
+        for line in (0, 4, width - 1, width - 5):  # Columns near each side, within the round mask.
+            inside = [pixels[line, y] for y in range(height) if pixels[line, y][3] > 0]
+            if inside and sum(sum(p[:3]) <= 24 for p in inside) >= len(inside) / 2:
+                padded.append(path.stem)
+                break
+        else:
+            for line in (0, 4, height - 1, height - 5):
+                inside = [pixels[x, line] for x in range(width) if pixels[x, line][3] > 0]
+                if inside and sum(sum(p[:3]) <= 24 for p in inside) >= len(inside) / 2:
+                    padded.append(path.stem)
+                    break
+    assert padded == []
+

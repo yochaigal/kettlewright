@@ -8,5 +8,7 @@ One token for each monster of the Cairn bestiary, named after the monster (`blac
   drawings were cropped to round tokens and set on a tinted background.
 - Changes for Kettlewright: renamed after the bestiary entries, scaled to 400 × 400 pixels and cut to a circle
   with transparent corners, like Kettlewright's own tokens.
+- 44 tokens whose drawing didn't fill the circle (black padding around it) were cropped to the drawing and scaled
+  to fill the circle (#535).
 
 These files are shared under the same licence, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
