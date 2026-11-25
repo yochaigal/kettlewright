@@ -34,9 +34,10 @@
               data-confirm-label="{{ _('Delete campaign') }}">
           {{ content_form.csrf_token }}<input type="hidden" name="version" value="{{ campaign.version }}"><input type="hidden" name="confirm" value="delete">
           {# Its parties stay by default (Discord feedback): they become parties without a campaign, as with Remove party.
-             Unchecked, the confirmation says they go too. #}
-          {% if campaign.parties %}<label class="campaign-check"><input type="checkbox" name="keep_parties" value="1" checked
-            data-confirm-unchecked="{{ _('Delete %(campaign)s? Its modules, articles, drawings, backgrounds, what was revealed to parties, and its parties are permanently deleted. Characters are kept and leave their party. This cannot be undone.', campaign=campaign.name) }}"> {{ _('Keep its parties') }}</label>{% endif %}
+             The choice is in the confirmation (its template below); the hidden field keeps them even without it. #}
+          {% if campaign.parties %}<input type="hidden" name="keep_parties" value="1">
+          <template data-confirm-extra><label class="campaign-check"><input type="checkbox" name="keep_parties" value="1" checked
+            data-confirm-unchecked="{{ _('Delete %(campaign)s? Its modules, articles, drawings, backgrounds, what was revealed to parties, and its parties are permanently deleted. Characters are kept and leave their party. This cannot be undone.', campaign=campaign.name) }}"> {{ _('Keep its parties') }}</label></template>{% endif %}
           <button type="submit" class="kw-action kw-action-danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> {{ _('Delete campaign…') }}</button>
         </form>
       </dialog>

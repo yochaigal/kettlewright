@@ -234,6 +234,9 @@ section.body-container > .sheet.campaign-workspace {background:transparent;box-s
 .campaign-card-actions button.campaign-card-parties {opacity:1;}
 .campaign-card-actions {flex-wrap:wrap;row-gap:0;}
 .confirm-dialog p {margin:0 0 1em;}
+/* A form's own choices in its confirmation (e.g. Delete campaign: Keep its parties). */
+.confirm-dialog-extra {margin:0 0 1em;}
+.confirm-dialog-extra[hidden] {display:none;}
 .campaign-workspace .tree-heading .heading-toggle {display:none;}
 .campaign-workspace .tree-heading > h3 {margin:0;font:inherit;font-weight:400;}
 .campaign-workspace .tree-heading > h3::before {content:none;}
