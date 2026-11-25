@@ -48,7 +48,7 @@
       "question": "To which order do you belong?",
       "options": [
         {
-          "description": "Order of the Crossroads. Take a Pocket Leyfinder. It points to nearby ley lines and other sources of arcane power. If you lose it, the punishment is death.",
+          "description": "**Order of the Crossroads**. Take a **Pocket Leyfinder**. It points to nearby ley lines and other sources of arcane power. If you lose it, the punishment is death.",
           "items": [
             {
               "name": "Pocket Leyfinder",
@@ -58,7 +58,7 @@
           ]
         },
         {
-          "description": "Order of the Bleeding Star. Take a Star-Iron Mace (d8). It shines faintly in darkness and becomes very hot in the presence of witchcraft.",
+          "description": "**Order of the Bleeding Star**. Take a **Star-Iron Mace** (d8). It shines faintly in darkness and becomes very hot in the presence of witchcraft.",
           "items": [
             {
               "name": "Star-Iron Mace",
@@ -68,7 +68,7 @@
           ]
         },
         {
-          "description": "Order of the Glass Sigil. Take a short sword (d8) and chainmail (2 Armor, bulky). You have contacts in most towns (the more rural, the better) willing to provide aid, food, or even weapons.",
+          "description": "**Order of the Glass Sigil**. Take a short sword (d8) and chainmail (2 Armor, _bulky_). You have contacts in most towns (the more rural, the better) willing to provide aid, food, or even weapons.",
           "items": [
             {
               "name": "Short sword",
@@ -81,7 +81,7 @@
           ]
         },
         {
-          "description": "Order of the Blank Eye. Take a Voidglass Shard. Peer through it to see invisible marks, creatures, and other magical effects. Lose the use of your eye for an hour afterwards (you are deprived).",
+          "description": "**Order of the Blank Eye**. Take a **Voidglass Shard**. Peer through it to see invisible marks, creatures, and other magical effects. Lose the use of your eye for an hour afterwards (you are _deprived_).",
           "items": [
             {
               "name": "Voidglass Shard",
@@ -91,7 +91,7 @@
           ]
         },
         {
-          "description": "Order of Canaas. Once per day you can change into a wolf. Take a Quicksilver Chain. Without it, you are unable to shift back.",
+          "description": "**Order of Canaas**. Once per day you can change into a wolf. Take a **Quicksilver Chain**. Without it, you are unable to shift back.",
           "items": [
             {
               "name": "Quicksilver Chain",
@@ -101,7 +101,7 @@
           ]
         },
         {
-          "description": "Order of the Silent Veil. Take a Quell Stone (2 uses) wrapped in burlap. Extinguishes any nearby flames once exposed to air.",
+          "description": "**Order of the Silent Veil**. Take a **Quell Stone** (2 uses) wrapped in burlap. Extinguishes any nearby flames once exposed to air.",
           "items": [
             {
               "name": "Quell Stone",
@@ -117,11 +117,11 @@
       "question": "What was your vow?",
       "options": [
         {
-          "description": "Honesty. Choose a weapon type (blunt, blade, etc). Attacks against you of this type are impaired. If your vow is broken, you lose d4 WIL.",
+          "description": "**Honesty**. Choose a **weapon type** (blunt, blade, etc). Attacks against you of this type are _impaired_. If your vow is broken, you lose d4 WIL.",
           "items": []
         },
         {
-          "description": "Poverty. You carry the Disassemble Spellbook. Only you can use it. If your vow is broken, it explodes (d12 STR damage).",
+          "description": "**Poverty**. You carry the _Disassemble_ **Spellbook**. Only you can use it. If your vow is broken, it explodes (d12 STR damage).",
           "items": [
             {
               "name": "Spellbook (Disassemble)",
@@ -131,19 +131,19 @@
           ]
         },
         {
-          "description": "Selflessness. You are immune to mind-altering magical effects, such as charm, hatred, frenzy, and so on. If you break this vow, you lose d6 WIL.",
+          "description": "**Selflessness**. You are immune to **mind-altering magical effects**, such as _charm_, _hatred_, _frenzy_, and so on. If you break this vow, you lose d6 WIL.",
           "items": []
         },
         {
-          "description": "Mercy. Choose a weapon type (blunt, blade, etc). Attacks with this weapon are enhanced. If your vow is broken, you can never use that weapon type again.",
+          "description": "**Mercy**. Choose a **weapon type** (blunt, blade, etc). Attacks with this weapon are _enhanced_. If your vow is broken, you can never use that weapon type again.",
           "items": []
         },
         {
-          "description": "Charity. Once per day, you can shrug off a Fatigue. If your vow is ever broken, you permanently lose one inventory slot.",
+          "description": "**Charity**. Once per day, you can shrug off a **Fatigue**. If your vow is ever broken, you permanently lose one inventory slot.",
           "items": []
         },
         {
-          "description": "Valor. The first time you inflict Critical Damage, you receive +d4 HP, returning to the previous limit at the end of combat. If your vow is broken, you die.",
+          "description": "**Valor**. The first time you inflict **Critical Damage**, you receive +d4 HP, returning to the previous limit at the end of combat. If your vow is broken, you die.",
           "items": []
         }
       ]

@@ -46,7 +46,7 @@
           "description": "Your family has a long tradition of serving, and you were trained from an early age on how to survive in the wild. When taking the Supply action, your yield increases by one step (e.g. 1d4 > 1d6)."
         },
         {
-          "description": "As a convict, the Oath was simply a means of avoiding punishment. Take a set of Lockpicks and the key (petty) to a safehouse.",
+          "description": "As a convict, the Oath was simply a means of avoiding punishment. Take a set of **Lockpicks** and the key (_petty_) to a safehouse.",
           "items": [
             {
               "name": "Lockpicks",
@@ -59,7 +59,7 @@
           ]
         },
         {
-          "description": "Noble-born, you joined to escape family trouble. Take a Goosefelt Tarp (fits two) that you stole before leaving home.",
+          "description": "Noble-born, you joined to escape family trouble. Take a **Goosefelt Tarp** (fits two) that you stole before leaving home.",
           "items": [
             {
               "name": "Goosefelt Tarp",
@@ -69,7 +69,7 @@
           ]
         },
         {
-          "description": "When your family lost everything, you took the Oath to avoid becoming a burden. Take extra Rations (3 uses) and a brace of Throwing Knives (d6).",
+          "description": "When your family lost everything, you took the Oath to avoid becoming a burden. Take extra **Rations** (3 uses) and a brace of **Throwing Knives** (d6).",
           "items": [
             {
               "name": "Rations",
@@ -84,7 +84,7 @@
           ]
         },
         {
-          "description": "Your life was saved by a member of the Marchguard, and you were inspired to join their ranks. Take a Snare Trap and a Sketchbook filled with detailed drawings.",
+          "description": "Your life was saved by a member of the **Marchguard**, and you were inspired to join their ranks. Take a **Snare Trap** and a **Sketchbook** filled with detailed drawings.",
           "items": [
             {
               "name": "Snare Trap",
@@ -97,7 +97,7 @@
           ]
         },
         {
-          "description": "You were in a dark place and decided that your life needed a little direction. You're still not so sure it was the right choice. Take an Oilskin Coat and Mapping Paper.",
+          "description": "You were in a dark place and decided that your life needed a little direction. You're still not so sure it was the right choice. Take an **Oilskin Coat** and **Mapping Paper**.",
           "items": [
             {
               "name": "Oilskin Coat",
@@ -115,7 +115,7 @@
       "question": "What do you carry as proof of your Oath?",
       "options": [
         {
-          "description": "Impressive Pin: A metal badge of honor from the Guard. It can open doors but leaves a trail. Petty.",
+          "description": "**Impressive Pin**: A metal badge of honor from the Guard. It can open doors but leaves a trail. _Petty_.",
           "items": [
             {
               "name": "Impressive Pin",
@@ -125,7 +125,7 @@
           ]
         },
         {
-          "description": "Oath Compass: Points not towards North, but instead to the nearest member of the Guard. It also lets you know when they're getting close.",
+          "description": "**Oath Compass**: Points not towards North, but instead to the nearest member of the Guard. It also lets you know when they're getting close.",
           "items": [
             {
               "name": "Oath Compass",
@@ -134,7 +134,7 @@
           ]
         },
         {
-          "description": "Pullstones: Two jet-black stones. When separated, the stones will always roll toward one another.",
+          "description": "**Pullstones**: Two jet-black stones. When separated, the stones will always roll toward one another.",
           "items": [
             {
               "name": "Pullstones",
@@ -144,7 +144,7 @@
           ]
         },
         {
-          "description": "Fireflask: Highly alcoholic, yet strangely delicious. When thrown, it creates a wall of flames 10ft high that burns out after a few minutes. 1 use.",
+          "description": "**Fireflask**: Highly alcoholic, yet strangely delicious. When thrown, it creates a wall of flames 10ft high that burns out after a few minutes. 1 use.",
           "items": [
             {
               "name": "Fireflask",
@@ -154,7 +154,7 @@
           ]
         },
         {
-          "description": "Pain Band: Touch an injured creature to transfer their wounds to you. (Exchange their lost STR with your own.) Recharge: Wear the ring while in perfect health. You will lose 1 STR, permanently. Petty.",
+          "description": "**Pain Band**: Touch an injured creature to transfer their wounds to you. (Exchange their lost STR with your own.) **Recharge**: Wear the ring while in perfect health. You will lose 1 STR, permanently. _Petty_.",
           "items": [
             {
               "name": "Pain Band",
@@ -166,7 +166,7 @@
           ]
         },
         {
-          "description": "Poacher's Woe: Strongly-scented arrows (3 uses). The scent is powerful enough to track with ease.",
+          "description": "**Poacher's Woe**: Strongly-scented arrows (3 uses). The scent is powerful enough to track with ease.",
           "items": [
             {
               "name": "Poacher's Woe",

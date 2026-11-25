@@ -47,7 +47,7 @@
       "question": "What did you take from the dead?",
       "options": [
         {
-          "description": "A crow-shaped amulet. You can ask a question of the dead but must add a Fatigue each time. They do not always speak truthfully.",
+          "description": "A **crow-shaped amulet**. You can ask a question of the dead but must add a **Fatigue** each time. They do not always speak truthfully.",
           "items": [
             {
               "name": "Crow-shaped Amulet",
@@ -57,11 +57,11 @@
           ]
         },
         {
-          "description": "A mortal wound from a freed revenant. You were healed, but the disfigurement has made you a pariah. You require neither air nor sustenance but are still subject to pain and death. Trapped between worlds, the dead see you as one of their own.",
+          "description": "A **mortal wound** from a freed _revenant_. You were healed, but the disfigurement has made you a pariah. You require neither air nor sustenance but are still subject to pain and death. Trapped between worlds, the dead see you as one of their own.",
           "items": []
         },
         {
-          "description": "A Blood Pail (bulky) from a local death-cult. Empty it to raise a servant built from whatever is buried below, with 6 HP, 1 Armor, 13 STR, 11 DEX, 4 WIL, and shard fists (d8+d8). Only one servant can be raised at a time. If destroyed, you permanently lose 1d4 STR. Recharge: Fill with the blood of a dying warrior.",
+          "description": "A **Blood Pail** (_bulky_) from a local death-cult. Empty it to raise a servant built from whatever is buried below, with 6 HP, 1 Armor, 13 STR, 11 DEX, 4 WIL, and shard fists (d8+d8). Only one servant can be raised at a time. If destroyed, you permanently lose 1d4 STR. **Recharge**: Fill with the blood of a dying warrior.",
           "items": [
             {
               "name": "Blood Pail",
@@ -72,7 +72,7 @@
         },
         {
           "pets": ["Donkey"],
-          "description": "A burial wagon (+6 slots, slow) from your last job. It came with a stubborn old donkey (+4 slots, only +2 slots if pulling wagon).",
+          "description": "A **burial wagon** (+6 slots, _slow_) from your last job. It came with a stubborn old **donkey** (+4 slots, only +2 slots if pulling wagon).",
           "items": [],
           "containers": [
             {
@@ -85,7 +85,7 @@
           ]
         },
         {
-          "description": "The Detect Magic spellbook, stolen from an ancient library. Your family worked in service to an obscure underworld deity, but you lost your faith. Though exiled, you continue to serve, even as an apostate.",
+          "description": "The **Detect Magic** spellbook, stolen from an ancient library. Your family worked in service to an obscure underworld deity, but you lost your faith. Though exiled, you continue to serve, even as an apostate.",
           "items": [
             {
               "name": "Spellbook (Detect Magic)",
@@ -95,7 +95,7 @@
           ]
         },
         {
-          "description": "A plague doctor's mask, after its owner succumbed to the disease that wiped out everyone you once knew. They should have kept it on.",
+          "description": "A **plague doctor's mask**, after its owner succumbed to the disease that wiped out everyone you once knew. They should have kept it on.",
           "items": [
             {
               "name": "Plague Doctor's Mask",
@@ -110,7 +110,7 @@
       "question": "What tool was invaluable in your work?",
       "options": [
         {
-          "description": "Manacles. Though old, it's still effective even against the very strong. You don't have the key.",
+          "description": "**Manacles**. Though old, it's still effective even against the very strong. You don't have the key.",
           "items": [
             {
               "name": "Manacles",
@@ -120,7 +120,7 @@
           ]
         },
         {
-          "description": "Sponge. Supposedly made from the remains of a rare sea creature. It never seems to dry out.",
+          "description": "**Sponge**. Supposedly made from the remains of a rare sea creature. It never seems to dry out.",
           "items": [
             {
               "name": "Sponge",
@@ -130,7 +130,7 @@
           ]
         },
         {
-          "description": "Pulley. Great for moving gravestones, rocks, or even bodies.",
+          "description": "**Pulley**. Great for moving gravestones, rocks, or even bodies.",
           "items": [
             {
               "name": "Pulley",
@@ -140,7 +140,7 @@
           ]
         },
         {
-          "description": "Incense. Perfect for rituals or to keep the flies at bay. Cools the blood.",
+          "description": "**Incense**. Perfect for rituals or to keep the flies at bay. Cools the blood.",
           "items": [
             {
               "name": "Incense",
@@ -150,7 +150,7 @@
           ]
         },
         {
-          "description": "Crowbar. d6 damage. Sometimes you just need to get the damn thing open!",
+          "description": "**Crowbar**. d6 damage. Sometimes you just need to get the damn thing open!",
           "items": [
             {
               "name": "Crowbar",
@@ -160,7 +160,7 @@
           ]
         },
         {
-          "description": "Repellent. Powerful stuff. Its faded label makes it unclear what it is actually meant to repel, though. Perhaps everything. 3 uses.",
+          "description": "**Repellent**. Powerful stuff. Its faded label makes it unclear what it is actually _meant_ to repel, though. Perhaps everything. 3 uses.",
           "items": [
             {
               "name": "Repellent",

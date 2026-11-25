@@ -37,7 +37,7 @@
       "question": "What was your last big job?",
       "options": [
         {
-          "description": "A noble's summer home. The place was full of fancy wine (+20gp) but not much else. Take Fence Cutters.",
+          "description": "A noble's summer home. The place was full of fancy wine (+20gp) but not much else. Take **Fence Cutters**.",
           "items": [
             {
               "name": "Fence Cutters",
@@ -47,7 +47,7 @@
           "bonus_gold": 20
         },
         {
-          "description": "A bank. (You were caught.) You bear a brand only visible by firelight, and anyone who sees the mark can ask you for a beer. Take Retractable Wires.",
+          "description": "A bank. (You were caught.) You bear a brand only visible by firelight, and anyone who sees the mark can ask you for a beer. Take **Retractable Wires**.",
           "items": [
             {
               "name": "Retractable Wires",
@@ -56,7 +56,7 @@
           ]
         },
         {
-          "description": "A guild warehouse. Take a Ladder (bulky, 10ft) and Blinding Powder (1 use).",
+          "description": "A guild warehouse. Take a **Ladder** (_bulky_, 10ft) and **Blinding Powder** (1 use).",
           "items": [
             {
               "name": "Ladder",
@@ -71,7 +71,7 @@
           ]
         },
         {
-          "description": "Moneylender. Someone beat you to the job but left behind a Scroll of Arcane Eye (petty).",
+          "description": "Moneylender. Someone beat you to the job but left behind a **Scroll** of _Arcane Eye_ (_petty_).",
           "items": [
             {
               "name": "Scroll (Arcane Eye)",
@@ -81,7 +81,7 @@
           ]
         },
         {
-          "description": "Constable's quarters. You escaped but left some friends behind. Take Strong Silk Rope (30ft) and a queasy feeling.",
+          "description": "Constable's quarters. You escaped but left some friends behind. Take **Strong Silk Rope** (30ft) and a queasy feeling.",
           "items": [
             {
               "name": "Strong Silk Rope",
@@ -91,7 +91,7 @@
           ]
         },
         {
-          "description": "A university. You were seen but not pursued. You still don't know why. Take Smoke Pellets (3 uses).",
+          "description": "A university. You were seen but not pursued. You still don't know why. Take **Smoke Pellets** (3 uses).",
           "items": [
             {
               "name": "Smoke Pellets",
@@ -106,7 +106,7 @@
       "question": "What helps you steal?",
       "options": [
         {
-          "description": "Catring: 2 charges. Climb up walls and fall safely. Recharge: Place the ring on a stray cat's tail.",
+          "description": "**Catring**: 2 charges. Climb up walls and fall safely. **Recharge**: Place the ring on a stray cat's tail.",
           "items": [
             {
               "name": "Catring",
@@ -118,7 +118,7 @@
           ]
         },
         {
-          "description": "Gildfinger: 1 charge. A finger glove that mimics any mundane key. Recharge: Bundle it with at least 100gp for a night.",
+          "description": "**Gildfinger**: 1 charge. A finger glove that mimics any mundane key. **Recharge**: Bundle it with at least 100gp for a night.",
           "items": [
             {
               "name": "Gildfinger",
@@ -130,7 +130,7 @@
           ]
         },
         {
-          "description": "Glimpse Glass: 3 charges. A monocle that lets you see through walls or other obstructions. It shatters after the last use.",
+          "description": "**Glimpse Glass**: 3 charges. A monocle that lets you see through walls or other obstructions. It shatters after the last use.",
           "items": [
             {
               "name": "Glimpse Glass",
@@ -141,7 +141,7 @@
           ]
         },
         {
-          "description": "Sweetwhistle: 1 charge. Listeners hear a soft, familiar voice in the distance that they cannot resist following. Recharge: Lose a dear memory. (Describe it.)",
+          "description": "**Sweetwhistle**: 1 charge. Listeners hear a soft, familiar voice in the distance that they cannot resist following. **Recharge**: Lose a dear memory. (Describe it.)",
           "items": [
             {
               "name": "Sweetwhistle",
@@ -152,7 +152,7 @@
           ]
         },
         {
-          "description": "Vagrant's Veil: 1 charge. Wear it to blend seamlessly into crowds, appearing as a simple pauper. Recharge: Donate the day's winnings to the poor. Petty",
+          "description": "**Vagrant's Veil**: 1 charge. Wear it to blend seamlessly into crowds, appearing as a simple pauper. **Recharge**: Donate the day's winnings to the poor. _Petty_",
           "items": [
             {
               "name": "Vagrant's Veil",
@@ -163,7 +163,7 @@
           ]
         },
         {
-          "description": "Reverse Teetotum: 1 use. When spun, time skips backwards 30 seconds. Everyone remembers what happened. Petty.",
+          "description": "**Reverse Teetotum**: 1 use. When spun, time skips backwards 30 seconds. Everyone remembers what happened. Petty.",
           "items": [
             {
               "name": "Reverse Teetotum",
