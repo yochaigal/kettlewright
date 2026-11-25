@@ -25,6 +25,9 @@ export default function pointcrawl() {
     edgeSource:'', edgeTarget:'', kind:'dungeon', tables:null, labels:{}, locationId:'', draftBody:'', poiCount:'', generateChildren:true, forestChance:50, dungeonChance:25,
     init() {
       this.componentElement=this.$el;
+      // A pin chosen in the page's Pins list (the map read in the wiki, #528): selected and centred on the map.
+      this.onPinListed=event=>this.chooseListed(String(event.detail));
+      window.addEventListener('kw-map-select',this.onPinListed);
       this.graph=JSON.parse(this.$el.dataset.graph || '{"nodes":[],"edges":[]}');
       this.kind=this.graph.kind || this.$el.dataset.kind || 'realm';
       this.editing=this.$el.dataset.editing === 'true';
@@ -112,12 +115,25 @@ export default function pointcrawl() {
       window.removeEventListener('beforeunload',this.onLeave);
       document.removeEventListener('fullscreenchange',this.onFullscreen);
       this.articleForm?.removeEventListener('submit',this.onArticleSubmit);
+      window.removeEventListener('kw-map-select',this.onPinListed);
+    },
+    // The wiki's Pins list (#528), beside a map being read: a pin opened there is selected on the map, which
+    // centres on it; a pin clicked on the map opens there.
+    chooseListed(id) {
+      const node=this.node(id);
+      if(!node)return;
+      this.selectedEdge='';this.selected=id;this.syncCanvas();
+      if(Number.isFinite(node.x)&&Number.isFinite(node.y))this.sendCanvas?.('center',{x:node.x,y:node.y});
+    },
+    openListed(id) {
+      for(const pin of document.querySelectorAll('[data-wiki-pin]'))pin.open=pin.dataset.wikiPin===id;
     },
     startCanvas() {
       this.onCanvasMessage = event => {
         if (event.source !== this.$refs.canvas.contentWindow || event.origin !== location.origin || event.data?.channel !== 'kw-map') return;
         const data=event.data;
         if (data.type === 'ready') this.syncCanvas();
+        if (data.type === 'scroll') window.scrollBy(Number(data.x) || 0, Number(data.y) || 0);  // An image map's wheel (#533).
         if (data.type === 'mounted') {this.canvasReady=true;clearTimeout(this.canvasTimer);this.status='';}
         if (data.type === 'picked' && this.picking) {this.picking=false;this.status='';this.placePin(data.x,data.y);}
         if (data.type === 'select-pin') {this.selectedPlayerPin=String(data.id);this.syncCanvas();}
@@ -130,10 +146,10 @@ export default function pointcrawl() {
             const row=[...this.$el.querySelectorAll(`[${attribute}]`)].find(row=>row.getAttribute(attribute)===String(data.id));
             row?.scrollIntoView({behavior:'smooth',block:'nearest'});
           });
+          if(data.kind!=='path')this.openListed(String(data.id));
         }
         if (data.type === 'change' && this.editing && !this.saving) {
           // Do not echo an in-progress stroke back to the iframe. A delayed
-        if (data.type === 'scroll') window.scrollBy(Number(data.x) || 0, Number(data.y) || 0);  // An image map's wheel (#533).
           // snapshot would replace the newer points still being drawn there.
           this.receivingCanvas=true;
           for (const move of data.moves || []) {

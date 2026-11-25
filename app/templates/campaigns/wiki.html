@@ -133,7 +133,8 @@
         <div class="wiki-content">
           {# The article's own image (#476), apart from its text. #}
           {% if entry.image %}<figure class="wiki-image"><img src="{{ url_for('campaigns.party_entry_image', party_id=party.id, entry_id=entry.id) if party else url_for('campaigns.entry_image', entry_id=entry.id) }}" alt="{{ entry.title|markdown_inline|striptags }}"></figure>{% endif %}
-          {% if graph and not party %}{% include 'campaigns/map_panel.html' %}{% endif %}
+          {# A map read here (#528): its pins are listed once, beside it (the aside's Pins), not under it too. #}
+          {% if graph and not party %}{% set pins_in_aside = true %}{% include 'campaigns/map_panel.html' %}{% endif %}
           {% if entry.body.strip() %}<div class="rich-content">{{ render_content(entry.body, references) }}</div>
           {% elif not graph %}<p class="wiki-empty">{{ _('This article has no text yet.') }}{% if edit_url and not party %} <a href="{{ edit_url }}">{{ _('Edit') }}</a>{% endif %}</p>{% endif %}
 
@@ -145,15 +146,31 @@
           {% endif %}
         </div>
 
-        {% if toc|length > 1 or links_to or linked_from %}
+        {# A map's pins are in its Pins list, so Links to leaves them out (#528). #}
+        {% set map_pins = graph.nodes if graph and not party else [] %}
+        {% set pin_entries = map_pins|map(attribute='entry_id')|list %}
+        {% set other_links = links_to|rejectattr('id', 'in', pin_entries)|list %}
+        {% if toc|length > 1 or other_links or linked_from or map_pins %}
         <aside class="wiki-aside" aria-label="{{ _('About this article') }}">
+          {% if map_pins %}
+          <section class="wiki-related wiki-map-pins">
+            <h2><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ _('Pins') }} <small>{{ map_pins|length }}</small></h2>
+            <ol>{% for pin in map_pins %}<li>
+              <details data-wiki-pin="{{ pin.id }}" @toggle="$el.open && window.dispatchEvent(new CustomEvent('kw-map-select', {detail: {{ pin.id|tojson }}}))">
+                <summary>{{ pin.title|markdown_inline }}</summary>
+                {% if pin.body and pin.body.strip() %}<div class="rich-content">{{ render_content(pin.body, pin.references) }}</div>{% endif %}
+                <a href="{{ page_url(pin.entry_id) }}">{{ _('Open article') }} →</a>
+              </details>
+            </li>{% endfor %}</ol>
+          </section>
+          {% endif %}
           {% if toc|length > 1 %}
           <nav class="wiki-toc" aria-label="{{ _('On this page') }}">
             <h2>{{ _('On this page') }}</h2>
             <ul>{% for heading in toc %}<li><a href="#{{ heading.anchor }}">{{ heading.title }}</a></li>{% endfor %}</ul>
           </nav>
           {% endif %}
-          {{ link_list(_('Links to'), links_to) }}
+          {{ link_list(_('Links to'), other_links) }}
           {{ link_list(_('Linked from'), linked_from) }}
         </aside>
         {% endif %}

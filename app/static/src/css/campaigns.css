@@ -364,6 +364,15 @@ aside:where(.campaign-wiki *), article:where(.campaign-wiki *), header:where(.ca
 .wiki-related h2 small {margin-left:.35em;font-weight:400;}
 .wiki-aside ul, .wiki-related > ul {margin:0;padding:0;list-style:none;}
 .wiki-aside li {margin:.3em 0;}
+/* A map's pins beside it (#528): each opens to its note and a link to its article, and is chosen on the map. */
+.wiki-map-pins ol {margin:0;padding:0;list-style:none;}
+.wiki-map-pins summary {display:flex;align-items:center;gap:.5em;cursor:pointer;list-style:none;}
+.wiki-map-pins summary::-webkit-details-marker {display:none;}
+.wiki-map-pins details > summary::before, .wiki-map-pins details[open] > summary::before {content:'';flex:none;top:0;width:.65em;height:.65em;border-radius:50%;background:color-mix(in srgb,var(--fg) 70%,var(--bg));}
+.wiki-map-pins details[open] > summary {font-weight:700;}
+.wiki-map-pins details > .rich-content {margin:.4em 0 .3em 1.15em;font-size:.95em;}
+.wiki-map-pins details > a {display:inline-block;margin:0 0 .4em 1.15em;}
+.wiki-map-pins small {font-weight:400;letter-spacing:0;}
 .wiki-toc a {color:inherit;}
 .wiki-toc a[aria-current] {font-weight:700;text-decoration-thickness:2px;}
 .wiki-related {margin-top:2em;}
