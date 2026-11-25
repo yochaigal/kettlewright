@@ -51,7 +51,7 @@
         {% if it["is_empty"] %}
         <div class="inventory-item-text"></div>
         {% else %}
-        <div class="inventory-item-text {% if it.name == 'Fatigue' %} fatigue-text {% endif %}">
+        <div class="inventory-item-text {% if it.name == rules_for(character).fatigue %} fatigue-text {% endif %}">
             {{it.title | markdown_inline}}
         </div>
         <div class="inventory-item-button-container">
@@ -119,11 +119,11 @@
             hx-target="#modal-anchor" {% if inventory.selected_container['encumbered'] %} disabled {% endif %}>
             + {{_('Item')}}
         </button>
-        <button class="button smaller-font" type="button"
+        {% if rules_for(character).fatigue %}<button class="button smaller-font" type="button"
             hx-post="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/{{inventory.selected_container['id']}}/fatigue"
             hx-target="#inventory-container" {% if inventory.selected_container["encumbered"] %} disabled {% endif %}>
-            + {{_('Fatigue')}}
-        </button>
+            + {{_(rules_for(character).fatigue)}}
+        </button>{% endif %}
         <button class="button smaller-font" type="button"
             hx-get="{{inventory_edit_base|default("/charedit/inplace-inventory/" ~ username ~ "/" ~ url_name)}}/container-edit/{{inventory.selected_container['id']}}?mode=create"
             hx-target="#modal-anchor">

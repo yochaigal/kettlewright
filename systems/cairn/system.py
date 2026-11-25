@@ -31,7 +31,8 @@ class Cairn(GameSystem):
     inventory: Inventory = field(default_factory=lambda: Inventory(
         main_slots=10, sizes=items.SIZES, gold_slot_from=100, full_means_zero_hp=True))
     armor: Armor = field(default_factory=lambda: Armor(
-        tags=items.ARMOR_TAGS, maximum=items.ARMOR_MAX, needs_activating=items.NEEDS_ACTIVATING))
+        tags=items.ARMOR_TAGS, maximum=items.ARMOR_MAX, needs_activating=items.NEEDS_ACTIVATING,
+        bonus_tag=items.BONUS_DEFENSE))
     save_die: int = 20
     weak_die: int = 4
     item_tag_groups: tuple = items.TAG_GROUPS

@@ -613,3 +613,70 @@ def test_a_companion_s_sheet_controls_use_its_system(lucky_campaign):
     assert warden.post(f'/companions/{hireling_id}/sheet-stat', data={'stat': 'willpower', 'value': '1'}).status_code == 400
     with app.app_context():
         assert db.session.get(Companion, hireling_id).stat_values()['luck'] == [20, 20]
+
+
+# The web layer (kettlewright.web) and the browser engine (kettlewright/static/kettlewright.js).
+
+def test_the_js_tests_play_cairn_as_the_server_sends_it():
+    """tests/js/support/cairn-system.json is Cairn's manifest; regenerate it when Cairn changes:
+    python -c "import json; from kettlewright import system; from kettlewright.web import browser_manifest;
+    print(json.dumps(browser_manifest(system('cairn')), indent=2))" > tests/js/support/cairn-system.json"""
+    import json
+    from pathlib import Path
+    from kettlewright.web import browser_manifest
+    fixture = json.loads((Path(__file__).parents[1] / 'js/support/cairn-system.json').read_text())
+    assert fixture == json.loads(json.dumps(browser_manifest(system('cairn'))))
+
+
+def test_the_browser_engine_has_no_system_of_its_own():
+    import re
+    from pathlib import Path
+    import kettlewright
+    source = (Path(kettlewright.__file__).parent / 'static' / 'kettlewright.js').read_text()
+    code = '\n'.join(line for line in source.splitlines() if not line.lstrip().startswith('//'))
+    assert not re.search(r'[Cc]airn|strength|deprived|panicked|bulky|petty|\d Armor', code)
+    # Its plainest rules are GameSystem's defaults.
+    plain = GameSystem('', '', Stat('hp', 'HP', 'Hit Points')).manifest()
+    for key in ('inventory', 'armor', 'save', 'weak_die', 'fatigue', 'conditions', 'attributes'):
+        assert re.sub(r'\s', '', json_js(plain[key])) in re.sub(r'\s', '', source), key
+
+
+def json_js(value):
+    """A manifest value as kettlewright.js writes it in PLAIN ({main_slots: 10, ...})."""
+    import json
+    import re
+    return re.sub(r'"(\w+)":', r'\1:', json.dumps(value)).replace('"', "'")
+
+
+def test_pages_serve_the_engine_and_play_their_record_s_system(lucky_campaign):
+    import json
+    from tests.helpers import login
+    app, _ = lucky_campaign
+    player = login(app.test_client(), 2)
+    script = player.get('/kettlewright/static/kettlewright.js')
+    assert script.status_code == 200 and b'export function gameSystem' in script.data
+    page = app.test_client().get('/login').get_data(as_text=True)  # Signed out: a page without a record.
+    importmap = json.loads(page.split('<script type="importmap">', 1)[1].split('</script>', 1)[0])
+    assert importmap == {'imports': {'#kettlewright': '/kettlewright/static/kettlewright.js'}}
+    assert page.index('type="importmap"') < page.index('type="module"')  # Before any module.
+    manifest = lambda html: json.loads(html.split('<script id="game-system" type="application/json">', 1)[1]
+                                       .split('</script>', 1)[0])
+    assert manifest(page)['key'] == 'cairn'  # A page without a record: the default system.
+    with app.app_context():
+        from app.models import Character
+        ada = Character.query.filter_by(name='Ada').one()
+        sheet = player.get(f'/users/{ada.owner_username}/characters/{ada.url_name}/').get_data(as_text=True)
+    assert manifest(sheet)['key'] == 'lucky'  # Ada's own system.
+    assert [a['key'] for a in manifest(sheet)['attributes']] == ['strength', 'luck']
+
+
+def test_a_system_s_own_files_and_template_pieces(app_with_babel):
+    """A system's static/ and templates/<key>/ are served and found; without its own piece, the engine's."""
+    from flask import render_template_string
+    from kettlewright.web import system_template
+    with app_with_babel.test_request_context():
+        assert system_template('help/monster_format.html') == ['cairn/help/monster_format.html',
+                                                               'kettlewright/help/monster_format.html']
+        loader = app_with_babel.jinja_env.loader
+        assert 'kettlewright/help/monster_format.html' in loader.list_templates()
+        assert render_template_string("{{ rules_for(None).key }}") == 'cairn'

@@ -63,6 +63,11 @@ class Inventory:
     # Whether a full main inventory makes HP count as 0.
     full_means_zero_hp: bool = False
 
+    @property
+    def free_tags(self):
+        """The tags of items that take no slot ('petty' in Cairn)."""
+        return tuple(tag for tag, size in self.sizes if size == 0)
+
     def item_size(self, item):
         tags = item.get('tags') or []
         for tag, size in self.sizes:
@@ -99,10 +104,18 @@ class Armor:
     tags: tuple = ()               # (('1 Armor', 1), ...)
     maximum: int | None = None
     needs_activating: tuple = ()   # Item names: ('Sloth-Tarp',) in Cairn.
+    bonus_tag: str | None = None   # A tag that marks an item's armor as a bonus, shown '+1 Armor' ('bonus defense').
+
+    @property
+    def tag_names(self):
+        return tuple(tag for tag, _ in self.tags)
+
+    def is_active(self, item):
+        """Whether an item's armor counts: switched on, or not one that needs activating."""
+        return item.get('armor_active', item.get('name') not in self.needs_activating)
 
     def item_armor(self, item):
-        active = item.get('armor_active', item.get('name') not in self.needs_activating)
-        if not active or item.get('location') != 0:
+        if not self.is_active(item) or item.get('location') != 0:
             return 0
         tags = item.get('tags') or []
         return sum(value for tag, value in self.tags if tag in tags)
@@ -156,6 +169,8 @@ class GameSystem:
     tables: dict = field(default_factory=dict)
     # How a character of this system is created: (endpoint, label) of each way, the first one the default.
     creation: tuple = ()
+    # The module of the system's web parts (its creation pages...): its init_app(app) is called by kettlewright.web.
+    web: str | None = None
 
     # Stats, in the order the sheet shows them.
 
@@ -198,6 +213,10 @@ class GameSystem:
     def conditions_with(self, effect):
         """The keys of the conditions that have this effect: ('panicked',) for ZERO_HP in Cairn."""
         return tuple(condition.key for condition in self.conditions if effect in condition.effects)
+
+    def active_conditions(self, record):
+        """The keys of a record's conditions that are on (record.deprived...): none for a record without them."""
+        return tuple(key for key in self.condition_keys if getattr(record, key, False))
 
     def has_effect(self, conditions, effect):
         """Whether any of these active conditions (keys) has this effect."""
@@ -263,7 +282,7 @@ class GameSystem:
         """The system as data for the browser engine (static/kettlewright.js): everything its rules read.
 
         Labels are the English msgids; the web layer translates them (kettlewright.web)."""
-        stat = lambda s, **extra: dict(key=s.key, abbr=s.abbr, name=s.name, **extra)
+        stat = lambda s, **extra: dict(key=s.key, abbr=s.abbr, **extra)
         return dict(
             key=self.key, name=self.name,
             hp=stat(self.hit_points),

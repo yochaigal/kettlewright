@@ -4,6 +4,7 @@ import diceModal from "./dice_modal.js";
 import dice3d from "./dice3d.js";
 import notification from "./notification.js";
 import ownRolls from "./own_rolls.js";
+import {saveDie} from "#kettlewright";
 
 // Every roll of this page goes through ownRolls, so the party's echo of it is not shown twice.
 const requestRoll = (dice, label = "") => ownRolls.track(requestRollRaw(dice, label));
@@ -67,7 +68,7 @@ const rollDiceCallback = async (sides, item = "") => {
   }
 };
 
-// Saves (#398): STR, DEX or WIL on the sheet rolls a d20 against the current value. The server
+// Saves (#398): an attribute on the sheet (STR, DEX or WIL in Cairn) rolls the system's save die (a d20) against the current value. The server
 // decides the roll and the outcome, and it goes to the party's roll history like any other roll.
 document.addEventListener("click", async (event) => {
   const button = event.target.closest("[data-save-roll]");
@@ -75,7 +76,7 @@ document.addEventListener("click", async (event) => {
   directRolling = true;
   button.disabled = true;
   try {
-    const result = await rollOnSheet({dice: "d20", save: button.dataset.saveRoll});
+    const result = await rollOnSheet({dice: `d${saveDie()}`, save: button.dataset.saveRoll});
     await dice3d.show(result);
     // Always say how the save went once the dice settle: it fails when the die is higher than the value.
     const sheet = document.getElementById("character-roll");

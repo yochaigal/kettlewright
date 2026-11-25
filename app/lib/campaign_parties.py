@@ -117,7 +117,8 @@ def party_roster(party):
             'hp': hp, 'hp_max': hp_max,
             'stats': [(stat, character.get_stat(stat), character.get_stat(stat + '_max')) for stat in character.rules.attribute_keys],
             'rules': character.rules, 'armor': character.armorValue(), 'free': character.freeMainSlots(),
-            'deprived': bool(character.deprived), 'panicked': bool(character.panicked), 'dead': bool(character.dead)})
+            # Each of its system's conditions, on or off (kettlewright): deprived, panicked and dead in Cairn.
+            **{key: key in character.active_conditions() for key in character.rules.condition_keys}})
     return roster
 
 

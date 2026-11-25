@@ -6,6 +6,10 @@ def N_(text):
     return text
 
 
+# Condition labels as shown in capitals (the edit page, the party page, the printed sheet): they are looked up
+# from the conditions, so they are marked here for extraction.
+CAPITALS = (N_('DEPRIVED'), N_('PANICKED'), N_('DEAD'))
+
 # Fatigue is an item of this name that takes a slot until the character makes camp.
 FATIGUE = 'Fatigue'
 
@@ -17,6 +21,8 @@ SIZES = (('petty', 0), ('bulky', 2))
 ARMOR_TAGS = (('1 Armor', 1), ('2 Armor', 2), ('3 Armor', 3))
 ARMOR_MAX = 3
 NEEDS_ACTIVATING = ('Sloth-Tarp',)
+# Armor tagged 'bonus defense' adds to other armor: it shows as '+1 Armor'.
+BONUS_DEFENSE = 'bonus defense'
 
 # The tags an item can carry. An item has at most one of each group (the item editor toggles within a group).
 TAG_GROUPS = (

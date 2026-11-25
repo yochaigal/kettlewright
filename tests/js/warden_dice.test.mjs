@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
+import './support/cairn.mjs';
+import {saveDie} from '#kettlewright';
 
 function roller(active = '1') {
   const element = () => ({disabled: false, listeners: {}, addEventListener(event, fn) { this.listeners[event] = fn; }});
@@ -22,6 +24,7 @@ function roller(active = '1') {
   const stored = new Map([['warden-roll-party', active]]);
   const requests = [];
   const context = vm.createContext({
+    saveDie,  // The engine's (kettlewright), playing Cairn: a d20.
     document: {listeners: {}, addEventListener(event, fn) {this.listeners[event] = fn;}, getElementById(id) { return {
       'warden-dice': panel, 'warden-dice-form': form, 'warden-roll-result': result,
       'warden-roll-party': select, 'warden-dice-button': buttons[0],

@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {CAIRN} from './support/cairn.mjs';  // Cairn, the system these tests play.
+import {useSystem} from '#kettlewright';
 import {initMonsterBatchPicker, monsterText} from '../../app/static/src/js/monster-picker.js';
 
 function control(values = {}) {
@@ -90,13 +92,14 @@ test('a monster\'s text lists the page system\'s stats (#487)', () => {
   const original = globalThis.document;
   const imp = {name: 'Imp', hp: 4, armor: 1, strength: 12, dexterity: 15, willpower: 8, luck: 9, attack: 'claws (d6)', notes: 'Small.'};
   try {
-    globalThis.document = undefined;  // No page: Cairn.
-    assert.equal(monsterText(imp), 'Imp\n\n4 HP, 1 Armor, 12 STR, 15 DEX, 8 WIL, claws (d6)\n\nSmall.');
+    assert.equal(monsterText(imp), 'Imp\n\n4 HP, 1 Armor, 12 STR, 15 DEX, 8 WIL, claws (d6)\n\nSmall.');  // Cairn.
+    useSystem(null);  // The page's system from here on.
     const lucky = {key: 'lucky', hp: {key: 'hp', abbr: 'HP', label: 'HP'},
       attributes: [{key: 'strength', abbr: 'STR', label: 'STR', save: true}, {key: 'luck', abbr: 'LCK', label: 'LCK', save: true}]};
     globalThis.document = {getElementById: id => id === 'game-system' ? {textContent: JSON.stringify(lucky)} : null};
     assert.equal(monsterText(imp), 'Imp\n\n4 HP, 1 Armor, 12 STR, 9 LCK, claws (d6)\n\nSmall.');
   } finally {
     globalThis.document = original;
+    useSystem(CAIRN);
   }
 });

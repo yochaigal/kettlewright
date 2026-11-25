@@ -2,6 +2,7 @@
 
 import inventoryUI from "./inventoryUI.js";
 import utils from "./utils.js";
+import {defaultContainers, fatigueItem, slotsUsed} from "#kettlewright";
 
 const inventory = {
   items: [],
@@ -163,12 +164,13 @@ const inventory = {
   },
 
   addFatigue() {
-    this.addItem({ name: "Fatigue", location: 0, tags: [] });
+    const fatigue = fatigueItem();  // The game system's (kettlewright); none without Fatigue.
+    if (fatigue) this.addItem(fatigue);
   },
 
   resetInventory() {
     this.items = [];
-    this.containers = [{ name: "Main", slots: 10, id: 0 }];
+    this.containers = defaultContainers();
   },
 
   deleteItem(id) {
@@ -190,38 +192,16 @@ const inventory = {
     return item.description;
   },
 
+  // Slots a container's items take, by the game system's sizes (kettlewright).
   getSlotsCount(containerID) {
-    let slots = 0;
-    // console.log("Getting slots for container: " + containerID, this.items);
-    this.items.forEach((item) => {
-      if (item.location === containerID && item.tags) {
-        if (item.tags.includes("bulky")) {
-          slots += 2;
-        } else if (!item.tags.includes("petty")) {
-          slots++;
-        } else {
-        }
-      }
-    });
-    return slots;
+    return slotsUsed(this.items, containerID);
   },
 
   getPartyMemberSlotsCount(items, containerID = 0) {
     if (!items) {
       return;
     }
-    let slots = 0;
-    items.forEach((item) => {
-      if (item.location === containerID && item.tags) {
-        if (item.tags.includes("bulky")) {
-          slots += 2;
-        } else if (!item.tags.includes("petty")) {
-          slots++;
-        } else {
-        }
-      }
-    });
-    return slots;
+    return slotsUsed(items, containerID);
   },
 
   // NOTE: Moved to backend

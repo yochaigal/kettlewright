@@ -1,4 +1,4 @@
-import {gameSystem} from './game_system.js';
+import {conditionKeys, gameSystem} from '#kettlewright';
 const form = document.getElementById("character-form");
 const fileInput = document.getElementById("jsonFile");
 const submit = document.getElementById("submit-button");
@@ -90,7 +90,8 @@ form.addEventListener("submit", (event) => {
   const text = ["name", "background", "custom_name", "custom_background", "description", "bonds", "omens", "scars", "notes", "image_url", "traits", "background_table1_question", "background_table1_answer", "background_table2_question", "background_table2_answer"];
   for (const field of numeric) form.elements[field].value = data[field] ?? 0;
   for (const field of text) form.elements[field].value = data[field] ?? "";
-  for (const field of ["custom_image", "deprived", "panicked", "dead"]) {
+  for (const field of ["custom_image", ...conditionKeys()]) {
+    if (!form.elements[field]) continue;
     form.elements[field].value = [true, 1, "true", "True", "1"].includes(data[field]) ? "true" : "false";
   }
   form.elements.edition.value = data.edition === "barebones" ? "barebones" : "2e";

@@ -1,4 +1,6 @@
 {% set editable = false if generated_preview else (can_manage_companion(character) if companion_sheet else can_edit_inventory(character)) %}
+{# The character's game system (kettlewright): its item sizes and armor, and the die attacks roll under conditions that weaken them (a d4 while Panicked in Cairn). #}
+{% set rules = rules_for(character) %}{% set weak_die = rules.attack_die(rules_for(character).active_conditions(character)) %}
 {% set layout = inventory.slot_layout() %}
 {% set container = inventory.selected_container %}
 {% set edit_base = inventory_edit_base|default('/charedit/inplace-inventory/' ~ username ~ '/' ~ url_name) %}
@@ -26,14 +28,14 @@
           {% if maximum > 12 %}<small>{{it.uses}}/{{maximum}}</small>{% endif %}
         </div>
       {% endif %}
-      {% for tag in it.tags if tag not in ('uses', 'charges', 'petty', 'bonus defense') %}
+      {% for tag in it.tags if tag not in ['uses', 'charges'] + rules.inventory.free_tags|list + [rules.armor.bonus_tag] %}
         {% if tag.startswith('d') and it.dice|length > 0 and is_owner and (not companion_sheet or can_roll) %}
         <button type="button" class="slot-tag slot-damage" title="{{_('Roll dice')}}"
           aria-label="{{_('Roll dice')}}: {{item_name}}"
-          onclick="KW_rollDiceCallback({{ '[4]' if character.panicked else it.dice }}, {{ item_name|striptags|tojson|forceescape }})">{{tag | tr}}</button>
+          onclick="KW_rollDiceCallback({{ '[%d]' % weak_die if weak_die else it.dice }}, {{ item_name|striptags|tojson|forceescape }})">{{tag | tr}}</button>
         {% else %}
-        <span class="slot-tag {% if 'Armor' in tag and not it.get('armor_active', it.name != 'Sloth-Tarp') %}slot-tag-inactive{% endif %}">
-          {% if 'Armor' in tag %}<i class="fa-solid fa-shield-halved" aria-hidden="true"></i> {% if 'bonus defense' in it.tags %}+{% endif %}{% endif %}{{tag | tr}}
+        <span class="slot-tag {% if tag in rules.armor.tag_names and not rules.armor.is_active(it) %}slot-tag-inactive{% endif %}">
+          {% if tag in rules.armor.tag_names %}<i class="fa-solid fa-shield-halved" aria-hidden="true"></i> {% if rules.armor.bonus_tag in it.tags %}+{% endif %}{% endif %}{{tag | tr}}
         </span>
         {% endif %}
       {% endfor %}
@@ -54,7 +56,7 @@
       hx-get="{{ url_for('ground.drop', character_id=character.id, kind='item', object_id=it.id) }}" hx-target="#modal-anchor"><i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button>
     {% endif %}
     {% if editable and slot is not none and it.coins is not defined %}
-    <button type="button" class="slot-move" data-move-item="{{it.id}}"{% if it.editable %} data-move-across="{{ 2 if 'bulky' in it.tags else 1 }}"{% endif %}
+    <button type="button" class="slot-move" data-move-item="{{it.id}}"{% if it.editable %} data-move-across="{{ [rules.inventory.item_size(it), 1]|max }}"{% endif %}
       aria-label="{{_('Move')}}: {{item_name}}" title="{{_('Drag to a slot, another container’s tab or a cart. Arrow keys then Enter also work.') if it.editable else _('Drag to move. Arrow keys then Enter also work.')}}"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button>
     {% endif %}
     {% if it.description %}
@@ -149,9 +151,9 @@
     <button type="button" class="button smaller-font"
       hx-get="{{ url_for('ground.drop', character_id=character.id, kind='container', object_id=container.id) }}" hx-target="#modal-anchor">{{ _('Drop container') }}</button>
     {% endif %}
-    <button type="button" class="button smaller-font" hx-get="{{edit_base}}/item-edit/None?mode=create&container={{container.id}}&petty=1" hx-target="#modal-anchor">+ {{_('Petty item')}}</button>
-    <button type="button" class="button smaller-font" hx-post="{{edit_base}}/{{container.id}}/fatigue"
-      hx-target="#inventory-container" {% if layout.used >= layout.capacity %}disabled{% endif %}>+ {{_('Fatigue')}}</button>
+    {% if rules.inventory.free_tags %}<button type="button" class="button smaller-font" hx-get="{{edit_base}}/item-edit/None?mode=create&container={{container.id}}&petty=1" hx-target="#modal-anchor">+ {{_('Petty item')}}</button>{% endif %}
+    {% if rules.fatigue %}<button type="button" class="button smaller-font" hx-post="{{edit_base}}/{{container.id}}/fatigue"
+      hx-target="#inventory-container" {% if layout.used >= layout.capacity %}disabled{% endif %}>+ {{_(rules.fatigue)}}</button>{% endif %}
     <button type="button" class="button smaller-font" hx-get="{{edit_base}}/container-edit/{{container.id}}?mode=create"
       hx-target="#modal-anchor">+ {{_('Container')}}</button>
   </div>

@@ -2,9 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
+import './support/cairn.mjs';  // Cairn, the system these tests play.
 import {actorKey} from '../../app/static/src/js/maps/token_stats.js';
 import {hideablePanel} from '../../app/static/src/js/maps/board_panels.js';
-import {gameSystem} from '../../app/static/src/js/game_system.js';
+import {gameSystem} from '#kettlewright';
 
 const source = readFileSync(new URL('../../app/static/src/js/maps/board_rolls.js', import.meta.url), 'utf8')
   .replace(/^import .*;\n/gm, '').replace(/^export /gm, '');

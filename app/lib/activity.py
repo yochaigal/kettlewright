@@ -62,7 +62,10 @@ ESM_IMPORTS = {
     'react-dom/client': '/react-dom@18.3.1/client?deps=react@18.3.1',
     'excalidraw': '/@excalidraw/excalidraw@0.18.0/dist/prod/index.js?deps=react@18.3.1,react-dom@18.3.1',
 }
-_BARE = re.compile(r'''((?:\bfrom|\bimport)\s*\(?\s*)(['"])(%s)\2''' % '|'.join(map(re.escape, ESM_IMPORTS)))
+# The game-system engine's browser half (kettlewright.web), served by Kettlewright itself.
+ENGINE_SPECIFIER = '#kettlewright'
+_BARE = re.compile(r'''((?:\bfrom|\bimport)\s*\(?\s*)(['"])(%s)\2'''
+                   % '|'.join(map(re.escape, (*ESM_IMPORTS, ENGINE_SPECIFIER))))
 
 
 def _serializer():
@@ -122,7 +125,9 @@ def load_request_user(req):
 
 def rewrite_imports(source):
     """Point the whiteboard's bare imports at esm.sh paths: Discord's CSP allows no inline import map."""
-    return _BARE.sub(lambda m: m.group(1) + m.group(2) + ESM_IMPORTS[m.group(3)] + m.group(2), source)
+    from kettlewright.web import imports
+    mapping = {**ESM_IMPORTS, **imports()}
+    return _BARE.sub(lambda m: m.group(1) + m.group(2) + mapping[m.group(3)] + m.group(2), source)
 
 
 def esm_directory():

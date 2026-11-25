@@ -2,6 +2,7 @@ import diceModal from './dice_modal.js';
 import notification from './notification.js';
 import ownRolls from './own_rolls.js';
 import { refreshRollHistory } from './party_roll_history.js';
+import {saveDie} from '#kettlewright';
 
 const panel = document.getElementById('warden-dice');
 const form = document.getElementById('warden-dice-form');
@@ -54,7 +55,7 @@ document.addEventListener('click', async event => {
   monster = button; save = button.dataset.save || null; publicToggle.checked = false;
   diceModal.showDiceModal();
   if (button.dataset.dice || save) {
-    const dice = save ? 'd20' : button.dataset.dice;
+    const dice = save ? `d${saveDie()}` : button.dataset.dice;
     const label = button.textContent?.trim() || dice;
     diceModal.showRolling(label, dice);
     try {await diceModal.showResult(await requestWardenRoll('dice', dice), {label});}

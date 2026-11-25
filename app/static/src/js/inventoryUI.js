@@ -4,6 +4,7 @@ import inventory from "./inventoryData.js";
 import inventoryModalUI from "./inventoryModalUI.js";
 import marketplace from "./marketplace.js";
 import { createElement } from "./utils.js";
+import {isFatigue, itemSize, sizeTags} from "#kettlewright";
 
 const inventoryUI = {
   mode: "view",
@@ -88,7 +89,8 @@ const inventoryUI = {
       }
     };
 
-    if (name !== "Fatigue" && name !== "empty slot" && carrying == null) {
+    const fatigue = isFatigue({name});  // The game system's Fatigue item (kettlewright).
+    if (!fatigue && name !== "empty slot" && carrying == null) {
       const rightSideIcons = createElement("span", {
         classes: ["inventory-item-button-container"],
       });
@@ -147,7 +149,7 @@ const inventoryUI = {
       nameDiv.innerHTML = inlineContentHTML(name);
       nameDiv.id = "item-name-" + index; // Unique ID for each item
       nameDiv.classList.add("item-name", "inventory-item-text");
-    } else if (name === "Fatigue" || carrying !== null) {
+    } else if (fatigue || carrying !== null) {
       if (this.mode === "edit") {
         const deleteIcon = createElement("i", {
           classes: ["inventory-item-button-container", "inventory-item-edit-button"],
@@ -163,8 +165,8 @@ const inventoryUI = {
 
         itemContainer.appendChild(deleteIcon);
       }
-      if (name === "Fatigue") {
-        nameDiv.textContent = interfaceText("Fatigue");
+      if (fatigue) {
+        nameDiv.textContent = interfaceText(name);
         nameDiv.classList.add("fatigue-text");
       } else if (carrying !== null) {
         nameDiv.innerHTML = inlineContentHTML(name);
@@ -179,9 +181,9 @@ const inventoryUI = {
       let bonusDefense = tags.includes("bonus defense");
       tags.forEach((tag) => {
         let element = null;
-        switch (tag) {
-          case "bulky":
-          case "petty":
+        // The game system's size tags ('bulky', 'petty' in Cairn) are shown in italics.
+        switch (sizeTags().includes(tag) ? "size" : tag) {
+          case "size":
             element = createElement("i", { content: tag });
             break;
           case "uses":
@@ -284,8 +286,8 @@ const inventoryUI = {
 
     // Sort this.items so that "Carrying..." and "Fatigue" items come last
     items.sort((a, b) => {
-      if (a.name === "Fatigue") return 1;
-      if (b.name === "Fatigue") return -1;
+      if (isFatigue(a)) return 1;
+      if (isFatigue(b)) return -1;
       if (a.carrying !== null && b.carrying === null) return 1;
       if (a.carrying === null && b.carrying !== null) return -1;
       return 0;
@@ -480,9 +482,8 @@ const inventoryUI = {
 
         if (item.tags && item.tags.length > 0) {
           const appendTags = item.tags.map((tag) => {
-            switch (tag) {
-              case "bulky":
-              case "petty":
+            switch (sizeTags().includes(tag) ? "size" : tag) {
+              case "size":
                 return createElement("i", { content: tag });
               case "uses":
               case "charges":
@@ -497,11 +498,7 @@ const inventoryUI = {
                 return document.createTextNode(tag);
             }
           });
-          if (item.tags.includes("bulky")) {
-            slotsCount += 2;
-          } else if (!item.tags.includes("petty")) {
-            slotsCount++;
-          }
+          slotsCount += itemSize(item);
 
           itemElement.textContent = `${item.name} (`;
           appendTags.forEach((tag, index) => {

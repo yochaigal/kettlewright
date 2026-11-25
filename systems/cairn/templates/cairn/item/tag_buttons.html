@@ -1,0 +1,61 @@
+{# Cairn's item tags in the item editors (partial/modal/edit_item.html, edit_item_party.html). -#}
+        <div class="tags-container field" style="margin: 20px 0px">
+          <label>{{_('Tags')}}</label>
+          <div>
+            <button type="button" class="tag button" data-tag="bulky"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('bulky')}}</button>
+            <button type="button" class="tag button" data-tag="petty"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('petty')}}</button>
+            <button type="button" class="tag button" data-tag="uses"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('uses')}}</button>
+            <button type="button" class="tag button" data-tag="charges"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('charges')}}</button>
+            <button type="button" class="tag button" data-tag="blast"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('blast')}}</button>
+          </div>
+          <div>
+            <button type="button" class="tag button" data-tag="d4"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">
+              {{_('d4')}}
+            </button>
+            <button type="button" class="tag button" data-tag="d6"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">
+              {{_('d6')}}
+            </button>
+            <button type="button" class="tag button" data-tag="d8"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">
+              {{_('d8')}}
+            </button>
+            <button type="button" class="tag button" data-tag="d10"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">
+              {{_('d10')}}</button>
+            <button type="button" class="tag button" data-tag="d12"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">
+              {{_('d12')}}</button>
+          </div>
+          <div>
+            <button type="button" class="tag button" data-tag="1 Armor"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">
+              {{_('1 Armor')}}</button>
+            <button type="button" class="tag button" data-tag="2 Armor"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('2 Armor')}}</button>
+            <button type="button" class="tag button" data-tag="3 Armor"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('3 Armor')}}</button>
+            <button type="button" class="tag button" data-tag="bonus defense"
+              :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
+              @click="toggleTag($el.dataset.tag)">{{_('bonus defense')}}</button>
+          </div>
+        </div>

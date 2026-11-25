@@ -1,3 +1,4 @@
+import {conditionsWith, ZERO_HP} from '#kettlewright';
 const states = new WeakMap();
 const valueOf = input => input.type === 'checkbox' ? String(Number(input.checked)) : input.value;
 const savedValueOf = input => input.type === 'checkbox' ? String(Number(input.defaultChecked)) : input.defaultValue;
@@ -118,7 +119,7 @@ export function initializeCharacterStats() {
           }
         }
         markEdited(change.form);
-        conditionsChanged ||= field === 'panicked';
+        conditionsChanged ||= conditionsWith(ZERO_HP).includes(field);  // Panicked in Cairn (kettlewright).
         goldChanged ||= field === 'gold';
         status.textContent = '';
       } catch (error) {

@@ -1,6 +1,7 @@
 import {interfaceText} from './locale.js';
 import { createElement, styledAlert } from "./utils.js";
 import inventoryUI from "./inventoryUI.js";
+import {sizeTags} from "#kettlewright";
 
 const marketplace = {
   selectedItems: [],
@@ -133,9 +134,9 @@ const marketplace = {
   },
 
   createTagElement(tag, item) {
-    switch (tag) {
-      case "bulky":
-      case "petty":
+    // The game system's size tags ('bulky', 'petty' in Cairn) are shown in italics (kettlewright).
+    switch (sizeTags().includes(tag) ? "size" : tag) {
+      case "size":
         return createElement("i", { content: tag });
       case "uses":
         return document.createTextNode(item.uses === 1 ? "1 use" : `${item.uses} uses`);

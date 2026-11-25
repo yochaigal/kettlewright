@@ -1,0 +1,7 @@
+{# The monster import's stat line for any game system (partial/companions/monster_catalog.html): its own labels. -#}
+{% set rules = rules_for(party) %}{% set labels = [rules.hit_points.abbr, 'Armor', *rules.attributes|map(attribute='abbr')] %}
+      <p>{{ _('Start with a heading containing the monster’s name. Put its stats on one line below it, with numbers before the English labels %(labels)s.', labels=labels|join(', ')) }}</p>
+      <pre><code># Wolf
+
+4 HP, 0 Armor{% for stat in rules.attributes %}, 10 {{ stat.abbr }}{% endfor %}, bite (d6)</code></pre>
+      <p>{{ _('The name and HP are required. Omitted Armor defaults to 0 and other stats to 10.') }}{% if rules.armor_max is not none %} {{ _('Armor must be between 0 and %(maximum)s.', maximum=rules.armor_max) }}{% endif %}</p>

@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import './support/cairn.mjs';  // Cairn, the system these tests play.
 import {renderSheet, setupCharacterSheet} from '../../app/static/src/js/maps/character_sheet.js';
 
 // A small DOM: enough elements, attributes and events for the sheet.

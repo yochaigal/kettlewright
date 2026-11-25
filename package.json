@@ -1,0 +1,9 @@
+{
+  "name": "kettlewright",
+  "private": true,
+  "type": "module",
+  "description": "Node runs Kettlewright's JS tests only (node --test 'tests/js/**/*.test.mjs'); nothing is built or installed.",
+  "imports": {
+    "#kettlewright": "./kettlewright/static/kettlewright.js"
+  }
+}

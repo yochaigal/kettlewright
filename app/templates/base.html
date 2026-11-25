@@ -20,7 +20,8 @@
       element.style.height = element.scrollHeight + 4 + "px";
     }
   </script>
-  
+  {# Before any module script: '#kettlewright' is the game-system engine's browser half (kettlewright.web). #}
+  {{ kettlewright_importmap() }}
   <script type="text/javascript" src="{{ url_for('static', filename='src/js/main.js') }}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
   {% if current_user.is_authenticated %}
@@ -58,7 +59,7 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/markdown.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/article-preview.css') }}">
-<script id="game-system" type="application/json">{{ game_system_page()|tojson }}</script>
+{{ kettlewright_manifest() }}
 <script id="interface-labels" type="application/json">{{ {
   'preview': _('Preview'), 'move': _('Move'), 'pin': _('Pin'), 'unpin': _('Unpin'),
   'previewsOn': _('Hover previews: on'), 'previewsOff': _('Hover previews: off'),

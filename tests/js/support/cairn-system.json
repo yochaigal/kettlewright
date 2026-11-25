@@ -1,0 +1,132 @@
+{
+  "key": "cairn",
+  "name": "Cairn",
+  "hp": {
+    "key": "hp",
+    "abbr": "HP",
+    "label": "HP"
+  },
+  "attributes": [
+    {
+      "key": "strength",
+      "abbr": "STR",
+      "save": true,
+      "label": "STR"
+    },
+    {
+      "key": "dexterity",
+      "abbr": "DEX",
+      "save": true,
+      "label": "DEX"
+    },
+    {
+      "key": "willpower",
+      "abbr": "WIL",
+      "save": true,
+      "label": "WIL"
+    }
+  ],
+  "conditions": [
+    {
+      "key": "deprived",
+      "label": "Deprived",
+      "effects": [
+        "no_recovery"
+      ]
+    },
+    {
+      "key": "panicked",
+      "label": "Panicked",
+      "effects": [
+        "weak_attacks",
+        "zero_hp"
+      ]
+    },
+    {
+      "key": "dead",
+      "label": "Dead",
+      "effects": [
+        "out_of_play"
+      ]
+    }
+  ],
+  "inventory": {
+    "main_slots": 10,
+    "sizes": [
+      [
+        "petty",
+        0
+      ],
+      [
+        "bulky",
+        2
+      ]
+    ],
+    "gold_slot_from": 100,
+    "full_means_zero_hp": true
+  },
+  "armor": {
+    "tags": [
+      [
+        "1 Armor",
+        1
+      ],
+      [
+        "2 Armor",
+        2
+      ],
+      [
+        "3 Armor",
+        3
+      ]
+    ],
+    "maximum": 3,
+    "needs_activating": [
+      "Sloth-Tarp"
+    ]
+  },
+  "save": {
+    "die": 20,
+    "under": true
+  },
+  "weak_die": 4,
+  "item_tag_groups": [
+    [
+      "bulky",
+      "petty"
+    ],
+    [
+      "uses",
+      "charges"
+    ],
+    [
+      "d4",
+      "d6",
+      "d8",
+      "d10",
+      "d12"
+    ],
+    [
+      "1 Armor",
+      "2 Armor",
+      "3 Armor"
+    ]
+  ],
+  "item_tags": [
+    "bulky",
+    "petty",
+    "uses",
+    "charges",
+    "blast",
+    "bonus defense",
+    "d4",
+    "d6",
+    "d8",
+    "d10",
+    "d12",
+    "1 Armor",
+    "2 Armor",
+    "3 Armor"
+  ],
+  "fatigue": "Fatigue"
+}

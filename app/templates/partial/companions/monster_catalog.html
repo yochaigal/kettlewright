@@ -100,20 +100,8 @@
             <input id="monster-file" type="file" name="monster_file" accept=".md,.markdown,text/markdown,text/plain" aria-label="{{_('Monster file')}}" aria-describedby="monster-import-format">
     <div id="monster-import-format" class="monster-import-format">
       <p>{{_('Paste Markdown or upload a UTF-8 file (.md), up to 64 KB. Separate monsters with --- on its own line. Add at most 100 instances at a time.')}}</p>
-      <p>{{_('Start with a heading containing the monster’s name. Put its stats on one line below it, with numbers before the English labels HP, Armor, STR, DEX and WIL.')}}</p>
-      <pre><code># Vampire Bat
-
-3 HP, 0 Armor, 6 STR, 14 DEX, 3 WIL, bite (d8)
-
-- Feeds on blood and navigates by echolocation.
-- **Critical Damage:** The target is infected by disease.
-
----
-
-# Wolf
-
-4 HP, 12 STR, bite (d6)</code></pre>
-      <p>{{_('The name and HP are required. Omitted Armor defaults to 0; STR, DEX and WIL default to 10. Armor must be between 0 and 3.')}}</p>
+      {# The stat line's format is the party's game system's (kettlewright). #}
+      {% include system_template('help/monster_format.html', party) %}
       <p>{{_('The rest of the stat line becomes the attack. Everything below it becomes the monster’s notes and supports Markdown.')}}</p>
     </div>
           </div>
