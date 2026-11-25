@@ -2066,7 +2066,9 @@ def test_campaign_settings_ask_whether_to_keep_the_parties(setup):
         db.session.commit()
     page = client.get('/campaigns/1/').get_data(as_text=True)
     form = page[page.index('class="campaign-danger-zone"') - 200:page.index('</form>', page.index('class="campaign-danger-zone"'))]
-    assert 'name="keep_parties" value="1" checked' in form and 'Keep its parties' in form
+    # Kept by default (a hidden field), and asked in the confirmation (its template).
+    assert '<input type="hidden" name="keep_parties" value="1">' in form
+    assert '<template data-confirm-extra>' in form and 'name="keep_parties" value="1" checked' in form and 'Keep its parties' in form
     assert 'Its parties are kept, without a campaign.' in plain(form)
     assert 'and its parties are permanently deleted. Characters are kept and leave their party.' in plain(form)  # Unchecked.
     empty = client.get('/campaigns/2/').get_data(as_text=True)

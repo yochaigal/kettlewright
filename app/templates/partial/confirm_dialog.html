@@ -2,6 +2,8 @@
 <dialog class="create-dialog confirm-dialog" id="kw-confirm-dialog" role="alertdialog" aria-labelledby="kw-confirm-title" aria-describedby="kw-confirm-message">
 <h2 id="kw-confirm-title">{{ _('Are you sure?') }}</h2>
 <p id="kw-confirm-message" data-confirm-message></p>
+{# A form's own choices for this confirmation (its <template data-confirm-extra>), e.g. Keep its parties. #}
+<div class="confirm-dialog-extra" data-confirm-extra-slot hidden></div>
 <div class="create-dialog-actions">
 <button type="button" autofocus onclick="this.closest('dialog').close()">{{ _('Cancel') }}</button>
 <button type="button" class="danger" data-confirm-ok data-default="{{ _('Confirm') }}">{{ _('Confirm') }}</button>
