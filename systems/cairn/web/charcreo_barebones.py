@@ -12,10 +12,10 @@ import bleach
 from flask import Blueprint, render_template, request, make_response, url_for, abort
 from flask_login import current_user, login_required
 
-from app.lib.barebones import (GEAR_BACKGROUND, armor_items, background_items, background_name, barebones_data,
+from systems.cairn.web.barebones import (GEAR_BACKGROUND, armor_items, background_items, background_name, barebones_data,
                                build_inventory, gear_items, gear_packages, package_items, roll_index, roll_name,
                                slots_used, starting_items, weapon_items)
-from app.lib.char_utils import DummyCharacter, TraitValue, traits_text
+from systems.cairn.web.char_utils import DummyCharacter, TraitValue, traits_text
 from app.lib.data import load_images, load_traits
 from app.lib.inventory import Inventory
 from app.lib.roll import roll_list, roll_multi_dice

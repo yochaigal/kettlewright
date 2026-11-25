@@ -23,17 +23,20 @@
       <div>
         <h3>{{_('Stats')}}</h3>
         <dl class="character-print-stats">
-          <dt>{{_('STR')}}</dt><dd>{{character.strength}} / {{character.strength_max}}</dd>
-          <dt>{{_('Gold')}}</dt><dd>{{character.gold}}</dd>
-          <dt>{{_('DEX')}}</dt><dd>{{character.dexterity}} / {{character.dexterity_max}}</dd>
-          <dt>{{_('Armor')}}</dt><dd>{{character.armorValue()}}</dd>
-          <dt>{{_('WIL')}}</dt><dd>{{character.willpower}} / {{character.willpower_max}}</dd>
-          <dt>{{_('HP')}}</dt><dd>{{character.hp}} / {{character.hp_max}}</dd>
+          {# Two columns: the system's stats (attributes, then HP) beside Gold and Armor, as the sheet lays them out. #}
+          {% set rules = rules_for(character) %}{% set extras = [(_('Gold'), character.gold), (_('Armor'), character.armorValue())] %}
+          {% for stat in rules.sheet_stats %}
+          <dt>{{_(stat.abbr)}}</dt><dd>{{character[stat.key]}} / {{character[stat.key ~ '_max']}}</dd>
+          {% if extras[loop.index0] is defined %}<dt>{{ extras[loop.index0][0] }}</dt><dd>{{ extras[loop.index0][1] }}</dd>{% endif %}
+          {% endfor %}
         </dl>
-        {% if character.deprived or character.panicked %}
+        {# Active conditions, but one that puts the character out of play (Dead) has its own badge. #}
+        {% set active = rules.active_conditions(character) %}
+        {% set shown = [] %}{% for condition in rules.conditions if condition.key in active and 'out_of_play' not in condition.effects %}{% if shown.append(condition) %}{% endif %}{% endfor %}
+        {% if shown %}
         <div class="character-print-conditions">
-          {% if character.deprived %}<strong>{{_('DEPRIVED')}}</strong>{% endif %}
-          {% if character.panicked %}<strong>{{_('PANICKED')}}</strong>{% endif %}
+          {% for condition in shown %}<strong>{{_(condition.label|upper)}}</strong>
+          {% endfor %}
         </div>
         {% endif %}
       </div>

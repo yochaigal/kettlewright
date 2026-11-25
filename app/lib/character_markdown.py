@@ -188,17 +188,17 @@ def _known_equipment():
             for value in node:
                 walk(value)
     from app.lib.data import load_market
-    from app.lib.barebones import barebones_data
+    from kettlewright.web import plugin
     walk(load_market())
-    walk(barebones_data())
+    walk(plugin().barebones_data())
     return tags, names
 
 
 def _known_backgrounds():
     from app.lib.data import load_backgrounds
-    from app.lib.barebones import barebones_data
+    from kettlewright.web import plugin
     names = set(load_backgrounds())
-    bare = barebones_data()
+    bare = plugin().barebones_data()
     names.update(entry['name'] for entry in bare.get('backgrounds', []) if isinstance(entry, dict) and 'name' in entry)
     names.update(bare.get('gear_packages', {}))
     return names

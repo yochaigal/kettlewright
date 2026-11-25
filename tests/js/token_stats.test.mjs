@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {CAIRN} from './support/cairn.mjs';  // Cairn, the system these tests play.
+import {useSystem} from '#kettlewright';
 import {actorKey, tokenStatsPosition, tokenRingPosition, createTokenStats} from '../../app/static/src/js/maps/token_stats.js';
 
 class Node {
@@ -156,6 +158,7 @@ test('a token\'s stats are the page system\'s, labelled with its abbreviations (
   globalThis.requestAnimationFrame = fn => {frames.push(fn); return frames.length;};
   globalThis.cancelAnimationFrame = () => {};
   globalThis.ResizeObserver = class {observe() {} disconnect() {}};
+  useSystem(null);  // The page's system.
   let overlay;
   try {
     const hero = {id: '3', name: 'Ada', kind: 'character', shared: true, armor: 0,
@@ -172,5 +175,6 @@ test('a token\'s stats are the page system\'s, labelled with its abbreviations (
   } finally {
     overlay?.destroy();
     for (const [key, value] of originals) globalThis[key] = value;
+    useSystem(CAIRN);
   }
 });

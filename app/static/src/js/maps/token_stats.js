@@ -1,5 +1,5 @@
 // Stats are a viewer-specific overlay, never serialized into the shared drawing.
-import {statAbbr, statKeys as statKeyList} from '../game_system.js';
+import {statAbbr, statKeys as statKeyList} from '#kettlewright';
 export function actorKey(id) {
   const companion = id.match(/^actor-companion-(\d+)-/);
   if (companion) return `companion:${companion[1]}`;

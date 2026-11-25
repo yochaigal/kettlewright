@@ -1,10 +1,6 @@
-const tagGroups = [
-  ['bulky', 'petty'],
-  ['uses', 'charges'],
-  ['d4', 'd6', 'd8', 'd10', 'd12'],
-  ['1 Armor', '2 Armor', '3 Armor'],
-];
-const standardTags = [...tagGroups.flat(), 'blast', 'bonus defense'];
+import {armorTags, itemTagGroups, itemTags} from '#kettlewright';
+
+// The game system's item vocabulary (kettlewright): an item has at most one tag of each group.
 
 export default function itemEditor() {
   return {
@@ -30,14 +26,14 @@ export default function itemEditor() {
     },
 
     get hasArmor() {
-      return this.tags.some(tag => tagGroups[3].includes(tag));
+      return this.tags.some(tag => armorTags().includes(tag));
     },
 
     toggleTag(tag) {
       if (this.tags.includes(tag)) {
         this.tags = this.tags.filter(value => value !== tag);
       } else {
-        const group = tagGroups.find(values => values.includes(tag)) || [];
+        const group = itemTagGroups().find(values => values.includes(tag)) || [];
         this.tags = [...this.tags.filter(value => !group.includes(value)), tag];
       }
       if (!this.hasArmor) this.armorActive = false;
@@ -54,7 +50,7 @@ export default function itemEditor() {
       this.charges = item.charges;
       this.maxCharges = item.max_charges;
       this.tags = [...item.tags];
-      this.extraTags = this.tags.filter(tag => !standardTags.includes(tag))
+      this.extraTags = this.tags.filter(tag => !itemTags().includes(tag))
         .map(tag => ({ value: tag, label: tag }));
       this.armorActive = this.hasArmor;
     },

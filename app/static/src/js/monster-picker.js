@@ -1,5 +1,5 @@
 import {richContentHTML, inlineContentHTML} from './rich-content.js';
-import {gameSystem} from './game_system.js';
+import {gameSystem} from '#kettlewright';
 
 export function initMonsterBatchPicker({rows, search, selectedOnly, total, summon, empty}) {
   const choices = rows.map(row => ({row, check: row.querySelector('[name=template]'), quantity: row.querySelector('[type=number]'),

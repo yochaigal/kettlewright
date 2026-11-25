@@ -1,5 +1,7 @@
 """Cairn 2e Supply and Make Camp inventory changes (no implicit commits)."""
 import json
+
+from kettlewright import NO_RECOVERY, system
 import secrets
 import uuid
 from app.lib.translations import N_
@@ -59,9 +61,13 @@ def make_camp(party, participants, mounts=(), resolve_deprivation=False):
         inventories.append((member, items))
     # Apply only after everyone can eat. Existing deprivation can have other causes.
     for member, items in inventories:
-        if resolve_deprivation and hasattr(member, 'deprived'):
-            member.deprived = False
-        if getattr(member, 'deprived', False):
+        # Eating ends what keeps a member from recovering (Deprived in Cairn), when the Warden says so (kettlewright).
+        rules = member.rules
+        if resolve_deprivation:
+            for key in rules.conditions_with(NO_RECOVERY):
+                if hasattr(member, key):
+                    setattr(member, key, False)
+        if not rules.can_recover(rules.active_conditions(member)):
             report['still_deprived'].append(member.name)
         else:
             rested = [item for item in items if item.get('name') != member.rules.fatigue]  # Fatigue (kettlewright).
@@ -89,9 +95,8 @@ def travel(path):
 
 def table_event(filename, key):
     """Roll d6 on an events table, in the viewer's language (same tables as the Tools page)."""
-    from pathlib import Path
     from app.main import translate_events_data
-    table = json.loads((Path(__file__).resolve().parents[1] / 'static/json/generators' / filename).read_text())
+    table = json.loads((system().content.folder / 'generators' / filename).read_text())
     roll = secrets.randbelow(len(table[key]))
     event = translate_events_data({key: [table[key][roll]]})[key][0]
     return roll + 1, event['description']
@@ -113,7 +118,7 @@ def rest(participants):
     report = dict(restored=[], already_full=[], deprived=[])
     for character in participants:
         # Whether rest restores HP is the character's game system's rule (kettlewright): not while Deprived in Cairn.
-        if not character.rules.can_recover(character.active_conditions()):
+        if not character.rules.can_recover(character.rules.active_conditions(character)):
             report['deprived'].append(character.name)
         elif character.hp_max is not None and (character.hp or 0) < character.hp_max:
             report['restored'].append((character.name, character.hp or 0, character.hp_max))

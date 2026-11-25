@@ -1,0 +1,2 @@
+{# Why HP counts as 0 (partial/charview/stats.html): a full inventory, or Panic. -#}
+{% if character.overburdened() %}{{_('Your main inventory is full. Free a slot to use your HP.')}}{% else %}{{_('Panic reduces your available HP to 0.')}}{% endif %}

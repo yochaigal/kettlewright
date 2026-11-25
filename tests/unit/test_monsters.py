@@ -1,6 +1,8 @@
 from io import BytesIO
 from copy import deepcopy
 
+from pathlib import Path
+
 import pytest
 
 from app.lib.monsters import parse_monster, parse_monsters, monster_catalog
@@ -154,7 +156,7 @@ def test_illustrated_bestiary_has_a_token_for_every_monster_and_a_credit(shared)
     with app.app_context():
         groups = dict(portrait_groups(load_images(include_categories=True)))
     assert sorted(groups['bestiary']) == sorted(f'oozejar/{key}.webp' for key in monster_catalog())
-    assert (CATALOG.parents[1] / 'images/portraits/oozejar/LICENSE.md').is_file()
+    assert Path('app/static/images/portraits/oozejar/LICENSE.md').is_file()
     picker = clients[1].get('/charcreo/portrait?src=default-portrait.webp&custom_image=false').text
     bestiary = picker[picker.index('data-portrait-category="bestiary"'):]
     assert 'Illustrated Bestiary' in bestiary and 'https://oozejar.com' in bestiary and 'CC-BY-SA 4.0' in bestiary
@@ -324,7 +326,7 @@ def test_monster_portraits_cover_catalog_and_preserve_custom_choice(shared):
     catalog = monster_catalog()
     assert set(monster_portraits()) == set(catalog)
     for template in catalog.values():
-        assert (CATALOG.parents[1] / 'images/portraits' / template['image_url']).is_file()
+        assert (Path('app/static/images/portraits') / template['image_url']).is_file()
     for key, template in catalog.items():
         if 'dragon' in key or key == 'wyvern':
             assert template['image_url'] == 'coldblooded/coldblooded3.png'

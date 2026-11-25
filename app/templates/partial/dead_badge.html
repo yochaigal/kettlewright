@@ -1,3 +1,4 @@
-{% if character.dead %}
-<span class="character-dead-badge"><i class="fa-solid fa-skull" aria-hidden="true"></i> {{_('Dead')}}</span>
-{% endif %}
+{# A condition that puts the character out of play (Dead in Cairn), as a badge (kettlewright). #}
+{% for condition in rules_for(character).conditions if 'out_of_play' in condition.effects and condition.key in rules_for(character).active_conditions(character) %}
+<span class="character-dead-badge"><i class="fa-solid fa-skull" aria-hidden="true"></i> {{_(condition.label)}}</span>
+{% endfor %}

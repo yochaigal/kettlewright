@@ -1,9 +1,12 @@
-"""Cairn's tables for character creation, by name: paths under the app's static/json folder."""
+"""Cairn's tables, by name: files under systems/cairn/content (rules.content.load(name)).
 
-CONTENT = {
+Tables not named here are '<name>.json' (traits, bonds, omens, scars, barebones, marketplace, monsters,
+hirelings, pets). backgrounds/ and generators/ hold one file per table, consolidated when the app starts.
+"""
+
+TABLES = {
     'backgrounds': 'backgrounds/background_data.json',
-    'traits': 'traits.json',
-    'bonds': 'bonds.json',
-    'omens': 'omens.json',
-    'scars': 'scars.json',
+    'monster-portraits': 'monster-portraits.json',
+    'events': 'generators/event_data.json',
+    'spellbooks': 'generators/spellbooks.json',
 }

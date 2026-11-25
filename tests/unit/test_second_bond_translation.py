@@ -2,11 +2,11 @@ import json
 
 from flask_babel import force_locale
 
-from app.lib.char_utils import translate_paragraphs
+from systems.cairn.web.char_utils import translate_paragraphs
 
 
 def _bonds():
-    with open('app/static/json/bonds.json') as f:
+    with open('systems/cairn/content/bonds.json') as f:
         return json.load(f)['Bonds']
 
 

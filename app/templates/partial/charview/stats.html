@@ -26,9 +26,10 @@
     {% else %}
       <p class="stat-readonly" id="{{ field }}-view-text">{{ character.hpValue().0 if field == 'hp' else character[field] }} <span>/ {{ character[field ~ '_max'] }}</span></p>
     {% endif %}
-    <div class="stat-warning">{% if field == 'hp' and can_edit_sheet and (character.overburdened() or character.panicked) %}
+    {# HP counts as 0 with a full inventory or a condition that says so (Panicked in Cairn): the system's words for why. #}
+    <div class="stat-warning">{% if field == 'hp' and can_edit_sheet and (character.overburdened() or rules_for(character).has_effect(rules_for(character).active_conditions(character), 'zero_hp')) %}
       <small>{{_('Available HP: 0')}}</small>
-      <small>{% if character.overburdened() %}{{_('Your main inventory is full. Free a slot to use your HP.')}}{% else %}{{_('Panic reduces your available HP to 0.')}}{% endif %}</small>
+      <small>{% include system_template('charview/zero_hp_reason.html', character) %}</small>
     {% endif %}</div>
   </div>
   {% endfor %}
@@ -48,7 +49,7 @@
     <div id="character-deprived-container" class="character-stat-resource character-stat-conditions">
       <h4>{{_('Conditions')}}</h4>
       <div class="character-condition-options">
-      {% for field, label in [('deprived', _('Deprived')), ('panicked', _('Panicked')), ('dead', _('Dead'))] %}
+      {% for condition in rules_for(character).conditions %}{% set field, label = condition.key, _(condition.label) %}
         {% if can_edit_sheet %}
         <form class="sheet-stat-form" action="{{ url_for('character_edit.character_stat_save', username=username, url_name=url_name) }}" method="post">
           {{ stat_form.csrf_token(id='sheet-' ~ field ~ '-csrf') if stat_form.csrf_token is defined else '' }}
@@ -57,14 +58,14 @@
         </form>
         {% elif character[field] %}<span class="character-condition is-selected">{{label}}</span>{% endif %}
       {% endfor %}
-      {% if not can_edit_sheet and not character.deprived and not character.panicked and not character.dead %}<span>{{_('None')}}</span>{% endif %}
+      {% if not can_edit_sheet and not rules_for(character).active_conditions(character) %}<span>{{_('None')}}</span>{% endif %}
       </div>
     </div>
     <div id="character-rest-container" class="character-stat-rest">
       {% if can_edit_sheet %}
       <button class="button smaller-font" hx-get="/charedit/rest/{{username}}/{{url_name}}" hx-swap="innerHTML"
         hx-target="#character-stats-container" hx-confirm="{{_('Do you want to restore all HP?')}}"
-        data-confirm-title="{{_('Rest')}}" data-confirm-button="{{_('Yes')}}" data-cancel-button="{{_('No')}}" {% if character.deprived %}disabled{% endif %}>{{_('Rest')}}</button>
+        data-confirm-title="{{_('Rest')}}" data-confirm-button="{{_('Yes')}}" data-cancel-button="{{_('No')}}" {% if not rules_for(character).can_recover(rules_for(character).active_conditions(character)) %}disabled{% endif %}>{{_('Rest')}}</button>
       {% endif %}
     </div>
   </div>

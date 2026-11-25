@@ -1,5 +1,5 @@
 import diceModal from '../dice_modal.js';
-import {gameSystem} from '../game_system.js';
+import {gameSystem} from '#kettlewright';
 import dice3d from '../dice3d.js';
 import {actorKey} from './token_stats.js';
 import {hideablePanel} from './board_panels.js';
@@ -80,7 +80,7 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
         if (!damage.length) button(config.messages.damage, {dice: 'd4'}, true);
         for (const dice of damage) button(`${config.messages.damage} ${dice}`, {dice});
         for (const {key: stat, abbr: label} of gameSystem().attributes.filter(attribute => attribute.save)) {
-          button(label, {dice: 'd20', save: stat}, active.stats[stat] == null);
+          button(label, {dice: `d${gameSystem().save?.die ?? 20}`, save: stat}, active.stats[stat] == null);
         }
         const more = button(config.messages.rollDice, {modal: true});
         more.textContent = '';
@@ -140,7 +140,8 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
       }
       for (const condition of Object.keys(active.conditions || {})) {
         const chip = document.createElement('button'); chip.type = 'button'; chip.className = 'board-roll-condition';
-        chip.dataset.condition = condition; chip.textContent = config.messages[condition];
+        chip.dataset.condition = condition;
+        chip.textContent = config.messages[condition] ?? gameSystem().conditions.find(({key}) => key === condition)?.label ?? condition;
         chip.addEventListener('click', () => saveStat(condition, active.conditions[condition] ? 0 : 1));
         token.append(chip);
       }

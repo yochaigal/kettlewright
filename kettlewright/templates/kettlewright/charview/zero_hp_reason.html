@@ -1,0 +1,6 @@
+{# Why HP counts as 0 (partial/charview/stats.html): a full inventory, or a condition that zeroes HP. -#}
+{% if character.overburdened() -%}
+{{_('Your main inventory is full. Free a slot to use your HP.')}}
+{%- else -%}
+{% for condition in rules_for(character).conditions if 'zero_hp' in condition.effects and condition.key in rules_for(character).active_conditions(character) %}{{ _('%(condition)s reduces your available HP to 0.', condition=_(condition.label)) }} {% endfor %}
+{%- endif %}

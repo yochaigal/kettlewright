@@ -3,6 +3,7 @@ import {richContentHTML} from './rich-content.js';
 import inventory from "./inventoryData.js";
 import inventoryUI from "./inventoryUI.js";
 import utils, { createOption } from "./utils.js";
+import {itemTagGroups} from "#kettlewright";
 
 const inventoryModalUI = {
   openModal: "none",
@@ -190,27 +191,23 @@ const inventoryModalUI = {
 
   initializeTagButtons() {
     const tagButtons = document.querySelectorAll(".tag");
-    const armorTags = ["1 Armor", "2 Armor", "3 Armor"];
-    const weightTags = ["petty", "bulky"];
-    const damageTags = ["d4", "d6", "d8", "d10", "d12"];
-    const dualDamageTags = ["d4 + d4", "d6 + d6", "d8 + d8", "d10 + d10", "d12 + d12"];
-    const usesTags = ["uses", "charges"];
+    // The game system's tag groups (kettlewright): an item has at most one tag of each ('bulky' or 'petty'...).
+    // Damage dice (d4, d6...) also toggle to two dice ('d6 + d6'), and the uses group shows the uses field.
+    const groups = itemTagGroups();
+    const isDie = (text) => /^d\d+$/.test(text);
+    const damageTags = groups.find((group) => group.some(isDie)) || [];
+    const dualDamageTags = damageTags.map((die) => `${die} + ${die}`);
 
     tagButtons.forEach((tag) => {
       tag.addEventListener("click", () => {
         const tagText = tag.textContent.trim();
+        const group = groups.find((values) => values.includes(tagText));
 
-        if (weightTags.includes(tagText)) {
-          handleExclusiveSelection(weightTags, tag);
-        } else if (usesTags.includes(tagText)) {
-          handleExclusiveSelection(usesTags, tag);
-          this.toggleUses();
-        } else if (armorTags.includes(tagText)) {
-          handleExclusiveSelection(armorTags, tag);
-        } else if (damageTags.includes(tagText)) {
+        if (damageTags.includes(tagText) || dualDamageTags.includes(tagText)) {
           handleDamageTags(tag);
-        } else if (dualDamageTags.includes(tagText)) {
-          handleDamageTags(tag);
+        } else if (group) {
+          handleExclusiveSelection(group, tag);
+          if (group.includes("uses")) this.toggleUses();
         } else {
           tag.classList.toggle("selected");
         }

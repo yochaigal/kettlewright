@@ -5,6 +5,7 @@ import inventory from "./inventoryData.js";
 import inventoryUI from "./inventoryUI.js";
 import inventoryModalUI from "./inventoryModalUI.js";
 import { styledAlert } from "./utils.js";
+import {effectiveHp, occupiedMainSlots} from "#kettlewright";
 
 inventory.setItems(data);
 inventory.setContainers(containersData);
@@ -46,9 +47,9 @@ document.addEventListener("DOMContentLoaded", function () {
       redirectToCharacterPage(element);
     });
 
-    // adjust HP if overburdened
-    const slots = inventory.getPartyMemberSlotsCount(JSON.parse(element.getAttribute("data-character-items")));
-    if (slots > 10) {
+    // HP that counts as 0 with a full inventory, by the game system's rule (kettlewright).
+    const items = JSON.parse(element.getAttribute("data-character-items"));
+    if (effectiveHp(1, occupiedMainSlots(items), []) === 0) {
       const hpText = element.querySelector(".hp-text");
       hpText.textContent = "0/" + element.getAttribute("data-character-hp-max");
       hpText.classList.add("red-text");

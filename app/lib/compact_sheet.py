@@ -13,10 +13,11 @@ ACTIONS = ('stat', 'condition', 'fatigue', 'use', 'remove')
 FIELDS = ('stat', 'value', 'condition', 'active', 'amount', 'item', 'resource')
 
 
-def _item(item):
+def _item(item, rules):
     tags = item.get('tags') or []
-    entry = {'id': item['id'], 'name': item['name'], 'fatigue': item['name'] == FATIGUE_NAME,
-             'bulky': 'bulky' in tags, 'petty': 'petty' in tags}
+    # Its slots by the game system's sizes (kettlewright): 0 petty, 2 bulky, else 1 in Cairn.
+    entry = {'id': item['id'], 'name': item['name'], 'fatigue': item['name'] == rules.fatigue,
+             'slots': rules.inventory.item_size(item)}
     for resource in ('uses', 'charges'):
         if resource in tags and resource in item:
             entry[resource] = item[resource]
@@ -29,7 +30,7 @@ def sheet(character):
     inventory = Inventory(character)
     containers = [{'id': c['id'], 'name': c['name'], 'slots': int(c.get('slots') or 0),
                    'used': inventory.container_slots(c),
-                   'items': [_item(i) for i in c['items'] if 'carrying' not in i]}
+                   'items': [_item(i, character.rules) for i in c['items'] if 'carrying' not in i]}
                   for c in inventory.containers if not c.get('on_the_ground')]
     stat = lambda field: {'value': getattr(character, field) or 0, 'max': getattr(character, field + '_max') or 0}
     return {'id': character.id, 'name': character.name,
@@ -37,8 +38,9 @@ def sheet(character):
             'hp': {'value': character.hpValue()[0], 'stored': character.hp or 0, 'max': character.hp_max or 0},
             # The game system's attributes (#487): strength, dexterity and willpower in Cairn.
             **{attribute.key: stat(attribute.key) for attribute in character.rules.attributes},
-            'armor': character.armorValue(), 'deprived': bool(character.deprived),
-            'panicked': bool(character.panicked), 'dead': bool(getattr(character, 'dead', False)),
+            # Each of its system's conditions, on or off: deprived, panicked and dead in Cairn.
+            'armor': character.armorValue(),
+            **{key: key in character.rules.active_conditions(character) for key in character.rules.condition_keys},
             'containers': containers}
 
 
@@ -51,7 +53,7 @@ def apply(character, characters, data):
     if action == 'remove':
         # The sheet only clears Fatigue; other items are removed on the full sheet.
         item = next((i for i in json.loads(character.items or '[]') if str(i['id']) == str(values.get('item'))), None)
-        if item is None or item['name'] != FATIGUE_NAME:
+        if item is None or item['name'] != character.rules.fatigue:
             raise ValueError('Only Fatigue can be cleared here.')
     if action == 'use':
         values['remove-empty'] = False

@@ -13,7 +13,7 @@
     htmx.ajax('GET', `/marketplace/{{username}}/{{url_name}}/{{container.id}}?categories=${cats.join(',')}`, "#inventory-container");
   }
 
-  function KW_modify_cart(maxgold, name, cost, plus, tags) {
+  function KW_modify_cart(maxgold, name, cost, plus, size) {
 
     // Check capacity
     let currCapacityEl = document.getElementById("current-capacity");
@@ -41,9 +41,7 @@
 
 
     let cartAmount = Number.parseInt(document.getElementById("cart-" + name).innerHTML);
-    let nett = 1;
-    if (tags.includes("bulky")) nett = 2;
-    else if (tags.includes("petty")) nett = 0;
+    let nett = size;  // The slots one takes, by the game system's sizes (kettlewright).
     if (plus) {
       cartAmount += 1;
       currCapacityNum -= nett;
@@ -126,12 +124,12 @@
               <td>
                 <div class="row8">
                   <div class="pointer item-edit-button-frame" title="{{ _('Decrease') }}"
-                    onclick="KW_modify_cart({{character.gold}},'{{item.name}}',{{item.cost}},false, {{item.tags}})">
+                    onclick="KW_modify_cart({{character.gold}},'{{item.name}}',{{item.cost}},false, {{ rules_for(character).inventory.item_size(item) }})">
                     <i class="item-edit-button fa-solid fa-minus minus"></i>
                   </div>
                   <div id="cart-{{item.name}}" class="cart-amount">0</div>
                   <div class="pointer item-edit-button-frame" title="{{ _('Increase') }}"
-                    onclick="KW_modify_cart({{character.gold}},'{{item.name}}',{{item.cost}},true,{{item.tags}})">
+                    onclick="KW_modify_cart({{character.gold}},'{{item.name}}',{{item.cost}},true,{{ rules_for(character).inventory.item_size(item) }})">
                     <i class="item-edit-button fa-solid fa-plus plus"></i>
                   </div>
                 </div>

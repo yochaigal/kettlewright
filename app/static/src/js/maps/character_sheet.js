@@ -1,11 +1,12 @@
 // A compact character sheet beside the whiteboard in a Discord Activity (#423): HP, abilities,
 // conditions, armor and the inventory with its slots, uses and Fatigue. Changes are saved by the
 // server with the same rules as the Discord /kw actions (app/lib/compact_sheet.py).
-import {stats} from '../game_system.js';
+import {conditionsWith, fatigueName, gameSystem, OUT_OF_PLAY, stats} from '#kettlewright';
 
-// HP and the attributes of the game system (kettlewright), as [field, English abbreviation].
+// HP and the attributes of the game system (kettlewright), as [field, English abbreviation], and the name each
+// has in the sheet's actions: its abbreviation in lower case ('str'), as in the Discord commands.
 const STATS = stats().map(stat => [stat.key, stat.abbr]);
-const STAT_ACTIONS = {hp: 'hp', strength: 'str', dexterity: 'dex', willpower: 'wil'};
+const STAT_ACTIONS = Object.fromEntries(stats().map(stat => [stat.key, stat.abbr.toLowerCase()]));
 
 function element(doc, tag, props = {}, ...children) {
   const node = doc.createElement(tag);
@@ -30,7 +31,8 @@ export function renderSheet(doc, character, messages, act, busy = false) {
   };
   const stats = element(doc, 'div', {className: 'sheet-stats'});
   for (const [field] of STATS) {
-    const stat = character[field], label = messages[field] || field;
+    // The stat's label: the page's, else the game system's (translated in the manifest).
+    const stat = character[field], label = messages[field] || stats().find(({key}) => key === field)?.label || field;
     // −/+ change the recorded HP; effective HP can be lower (panic, full inventory).
     const current = field === 'hp' ? stat.stored : stat.value;
     stats.append(element(doc, 'div', {className: 'sheet-stat'},
@@ -46,18 +48,23 @@ export function renderSheet(doc, character, messages, act, busy = false) {
     element(doc, 'output', {textContent: String(character.armor)})));
   const note = character.hp.value !== character.hp.stored
     ? element(doc, 'p', {className: 'sheet-note', textContent: text('effective', {hp: character.hp.value})}) : null;
+  // The system's conditions: a box for each, but one that puts a character out of play (Dead) is only shown.
   const conditions = element(doc, 'div', {className: 'sheet-conditions'});
-  for (const condition of ['deprived', 'panicked']) {
+  const outOfPlay = conditionsWith(OUT_OF_PLAY);
+  for (const {key: condition, label} of gameSystem().conditions.filter(({key}) => !outOfPlay.includes(key))) {
     const box = element(doc, 'input', {type: 'checkbox', checked: character[condition]});
     box.disabled = busy;
     box.addEventListener('change', () => act({action: 'condition', condition, active: box.checked}));
-    conditions.append(element(doc, 'label', {}, box, ' ' + messages[condition]));
+    conditions.append(element(doc, 'label', {}, box, ' ' + (messages[condition] ?? label)));
   }
-  if (character.dead) conditions.append(element(doc, 'strong', {className: 'sheet-dead', textContent: messages.dead}));
-  const inventory = element(doc, 'div', {className: 'sheet-inventory'},
-    element(doc, 'div', {className: 'sheet-inventory-heading'},
-      element(doc, 'h3', {textContent: messages.inventory}),
-      button(messages.addFatigue, {action: 'fatigue', amount: 1})));
+  for (const {key: condition, label} of gameSystem().conditions.filter(({key}) => outOfPlay.includes(key))) {
+    if (character[condition]) {
+      conditions.append(element(doc, 'strong', {className: 'sheet-dead', textContent: messages[condition] ?? label}));
+    }
+  }
+  const heading = element(doc, 'div', {className: 'sheet-inventory-heading'}, element(doc, 'h3', {textContent: messages.inventory}));
+  if (fatigueName()) heading.append(button(messages.addFatigue, {action: 'fatigue', amount: 1}));
+  const inventory = element(doc, 'div', {className: 'sheet-inventory'}, heading);
   for (const container of character.containers) {
     const list = element(doc, 'ul');
     for (const item of container.items) {

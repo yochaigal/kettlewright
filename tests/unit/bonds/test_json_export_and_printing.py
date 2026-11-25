@@ -2,7 +2,7 @@
 import html as html_lib
 import json
 import re
-from app.lib.char_utils import generate_character
+from systems.cairn.web.char_utils import generate_character
 
 
 def test_fieldwarden_json_export_includes_both_bonds(app_with_babel):

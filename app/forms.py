@@ -94,8 +94,8 @@ class PasswordUpdateForm(FlaskForm):
     submit2 = SubmitField(_l('Change'))
 
 
-json_file_path = os.path.join(os.path.dirname(os.path.abspath(
-    __file__)), 'static', 'json', 'backgrounds', 'background_data.json')
+from kettlewright import system as _system
+json_file_path = _system().content_path('backgrounds')  # The default system's backgrounds (kettlewright).
 
 
 def load_data_from_json(file_path):
@@ -294,6 +294,9 @@ class CharacterJSONForm(FlaskForm):
     panicked = HiddenField(_l('Panicked'), validators=[Length(max=5)])
     dead = HiddenField(_l('Dead'), validators=[Length(max=5)])
     edition = HiddenField(_l('Edition'), validators=[Length(max=16)])
+    # The character's game system and the stats and conditions it keeps without a column (kettlewright), from the file.
+    game_system = HiddenField(validators=[Length(max=64)])
+    system_stats = HiddenField(validators=[Length(max=10000)])
 
     notes = HiddenField(_l('Notes'), validators=[Length(max=2000)])
     description = HiddenField(_l('Description'), validators=[Length(max=2000)])

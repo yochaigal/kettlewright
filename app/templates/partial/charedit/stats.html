@@ -24,24 +24,13 @@
       min='0', max='99', step='1', id='hp-max-input') }}
     </span>
   </div>
-  <!-- deprived -->
-
-  <div class="character-attribute-container edit-mode" id="character-deprived-container">
-    <h4 class="character-deprived-text">{{_('DEPRIVED')}}</h4>
-    {{ form.deprived(aria_label=form.deprived.label.text, class='checkbox edit-mode',
-    type='checkbox',id='deprived-field') }}
+  {# The game system's conditions (kettlewright): Deprived, Panicked and Dead in Cairn, labelled in capitals. #}
+  {% for condition in rules_for(character).conditions %}{% set box = form[condition.key] %}
+  <div class="character-attribute-container edit-mode" id="character-{{ condition.key }}-container">
+    <h4 class="character-deprived-text"><label for="{{ condition.key }}-field">{{_(condition.label|upper)}}</label></h4>
+    {{ box(aria_label=box.label.text, class='checkbox edit-mode', type='checkbox', id=condition.key ~ '-field') }}
   </div>
-
-   <!-- panicked -->
-  <div class="character-attribute-container edit-mode" id="character-panicked-container">
-    <h4 class="character-deprived-text">{{_('PANICKED')}}</h4>
-    {{ form.panicked(aria_label=form.panicked.label.text, class='checkbox edit-mode', type='checkbox',id='panicked-field') }}
-  </div>
-
-  <div class="character-attribute-container edit-mode" id="character-dead-container">
-    <h4 class="character-deprived-text"><label for="dead-field">{{_('DEAD')}}</label></h4>
-    {{ form.dead(aria_label=form.dead.label.text, class='checkbox edit-mode', type='checkbox', id='dead-field') }}
-  </div>
+  {% endfor %}
 
 
   <div class="character-attribute-container" id="character-gold-container">

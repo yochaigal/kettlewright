@@ -1,7 +1,7 @@
 """Tests for automatic second bond rolling in charcreo_roll_all endpoint."""
 import pytest
 import json
-from app.blueprints.charcreo import roll_second_bond_if_needed
+from systems.cairn.web.charcreo import roll_second_bond_if_needed
 from app.lib.data import load_bonds, load_backgrounds
 
 
@@ -13,7 +13,7 @@ def test_roll_all_with_fieldwarden_gets_two_bonds(app_with_babel, client, monkey
         def mock_random_background():
             return "Fieldwarden", backgrounds["Fieldwarden"]
         
-        monkeypatch.setattr("app.blueprints.charcreo.random_background", mock_random_background)
+        monkeypatch.setattr("systems.cairn.web.charcreo.random_background", mock_random_background)
         
         response = client.get('/charcreo/roll-all')
         

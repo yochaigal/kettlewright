@@ -7,7 +7,10 @@ from flask import current_app, url_for
 
 from app.lib.character_rolls import roll_character
 from app.lib.warden_rolls import roll_warden
-from app.lib.discord_character import act, option, player_choices, player_commands
+from app.lib.discord_character import act, option, player_choices, player_commands, registered_systems
+
+# /kw warden-roll kinds besides dice: every registered system's Warden rolls (Reaction Roll, Die of Fate in Cairn).
+WARDEN_ROLLS = {roll.key: roll.label for rules in registered_systems() for roll in rules.warden_rolls}
 from app.models import Character, DiscordAccount, DiscordChannel, DiscordSelection, Party, User, db
 from app.blueprints.party import party_characters
 
@@ -27,8 +30,7 @@ def command_definition():
             option('dice', 'For example d20, 2d6 or d6+d8; omit to show dice buttons', max_length=30)]),
         ('warden-roll', 'Roll as the party’s Warden (private by default)', [
             option('kind', 'Roll type (default: dice)', choices=[
-                dict(name='Roll Dice', value='dice'), dict(name='Reaction Roll', value='reaction'),
-                dict(name='Die of Fate', value='fate')]),
+                dict(name='Roll Dice', value='dice'), *(dict(name=label, value=key) for key, label in WARDEN_ROLLS.items())]),
             option('dice', 'For example d20, 2d6 or d6+d8; omit to show dice buttons', max_length=30),
             dict(type=5, name='public', description='Share this roll with the channel and party (default: false)')]),
     ] + player_commands()
@@ -79,13 +81,13 @@ def command_parts(payload):
     if payload.get('type') == 3:
         if data.get('component_type') != 2:
             raise ValueError('Unknown button.')
-        match = re.fullmatch(r'kw:warden-roll:(\d+):(\d+):([01]):(d(?:4|6|8|10|12|20|100)|2d6|reaction|fate)',
-                             data.get('custom_id', ''))
+        match = re.fullmatch(r'kw:warden-roll:(\d+):(\d+):([01]):(d(?:4|6|8|10|12|20|100)|2d6|%s)'
+                             % '|'.join(map(re.escape, WARDEN_ROLLS)), data.get('custom_id', ''))
         if match:
             roll = match[4]
             return 'warden-roll', dict(button_user=int(match[1]), button_party=int(match[2]),
-                                       public=match[3] == '1', kind=roll if roll in ('reaction', 'fate') else 'dice',
-                                       **({} if roll in ('reaction', 'fate') else dict(dice=roll)))
+                                       public=match[3] == '1', kind=roll if roll in WARDEN_ROLLS else 'dice',
+                                       **({} if roll in WARDEN_ROLLS else dict(dice=roll)))
         match = re.fullmatch(r'kw:roll:(\d+):(\d+):(d(?:4|6|8|10|12|20|100)|2d6)', data.get('custom_id', ''))
         if not match:
             raise ValueError('Unknown button. Open /kw roll again.')
@@ -169,8 +171,10 @@ def execute(payload, account):
         pages = max(1, math.ceil(len(characters) / 10))
         if type(page) is not int or not 1 <= page <= pages:
             raise ValueError(f'Choose a page between 1 and {pages}.')
-        roster = '\n'.join(f'{safe_name(c.name)} — STR {c.strength or 0}, DEX {c.dexterity or 0}, '
-                           f'WIL {c.willpower or 0}, HP {c.hpValue()[0]}/{c.hp_max or 0}'
+        # Each character's attributes in its game system (STR, DEX, WIL in Cairn), then HP.
+        roster = '\n'.join(f'{safe_name(c.name)} — '
+                           + ', '.join(f'{stat.abbr} {c.get_stat(stat.key) or 0}' for stat in c.rules.attributes)
+                           + f', HP {c.hpValue()[0]}/{c.hp_max or 0}'
                            for c in characters[(page - 1) * 10:page * 10]) or 'No characters yet.'
         owner = db.session.get(User, party.owner)
         link = site_url(url_for('party.party_view', ownername=owner.username, party_url=party.party_url or ''))
@@ -196,10 +200,11 @@ def execute(payload, account):
         link = site_url(url_for('main.character', username=owner.username, url_name=character.url_name or ''))
         conditions = ', '.join(condition.label for condition in character.rules.conditions
                                if getattr(character, condition.key)) or 'None'
+        # The character's attributes in its game system (STR, DEX, WIL in Cairn).
+        attributes = ' · '.join(f'{stat.abbr} {character.get_stat(stat.key) or 0}/{character.get_stat(stat.key + "_max") or 0}'
+                                for stat in character.rules.attributes)
         text = (f'**{safe_name(character.name)}**\n'
-                f'STR {character.strength or 0}/{character.strength_max or 0} · '
-                f'DEX {character.dexterity or 0}/{character.dexterity_max or 0} · '
-                f'WIL {character.willpower or 0}/{character.willpower_max or 0}\n'
+                f'{attributes}\n'
                 f'HP {character.hpValue()[0]}/{character.hp_max or 0} · Armor {character.armorValue()}\n'
                 f'Conditions: {conditions}\n<{link}>')
         return reply(text, private=False), None
@@ -228,7 +233,7 @@ def execute_warden_roll(payload, values, user_id, party):
     if type(public) is not bool:
         raise ValueError('Choose true or false for public.')
     kind = values.get('kind', 'dice')
-    if kind not in ('dice', 'reaction', 'fate'):
+    if kind != 'dice' and party.rules.warden_roll(kind) is None:  # The party's system's rolls (kettlewright).
         raise ValueError('Unknown roll type.')
     if kind != 'dice' and 'dice' in values:
         raise ValueError('Use dice only with kind:dice.')
@@ -236,11 +241,11 @@ def execute_warden_roll(payload, values, user_id, party):
         visibility = 'Public: results appear in this channel and KW’s party history.' if public else 'Private: only you see the results.'
         response = reply(f'Roll as **Warden** for **{safe_name(party.name)}**. {visibility}')
         rolls = [(d, d) for d in ('d4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100', '2d6')]
-        rolls += [('Reaction Roll', 'reaction'), ('Die of Fate', 'fate')]
+        rolls += [(roll.label, roll.key) for roll in party.rules.warden_rolls]
         buttons = [dict(type=2, style=1, label=label,
                         custom_id=f'kw:warden-roll:{user_id}:{party.id}:{int(public)}:{roll}')
                    for label, roll in rolls]
-        response['data']['components'] = [dict(type=1, components=buttons[:5]), dict(type=1, components=buttons[5:])]
+        response['data']['components'] = [dict(type=1, components=buttons[row:row + 5]) for row in range(0, len(buttons), 5)]
         return response, None
     result = roll_warden(db.session.get(User, user_id), party, kind, values.get('dice'), public=public)
     return reply(f'**Warden** rolled **{result["result"]}**', private=not public), (

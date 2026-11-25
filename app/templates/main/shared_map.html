@@ -23,7 +23,8 @@
     "react-dom": "https://esm.sh/react-dom@18.3.1?external=react",
     "react-dom/client": "https://esm.sh/react-dom@18.3.1/client?external=react",
     "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
-    "excalidraw": "https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/index.js?external=react,react-dom"
+    "excalidraw": "https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/index.js?external=react,react-dom",
+    "#kettlewright": {{ kettlewright_imports()['#kettlewright']|tojson }}
   }}
   </script>
   {% endif %}
@@ -31,6 +32,8 @@
 <body class="{{ 'warden-board' if warden }}{{ ' in-activity' if activity_token }}">
   {# Dark mode before the first paint (#470): a blocking classic script, first thing in the body. #}
   <script src="{{ url_for('activity.static', filename='src/js/maps/board_theme.js') if activity_token else url_for('static', filename='src/js/maps/board_theme.js') }}"></script>
+  {# The party's game system for the board's scripts (kettlewright.web); a data block, so allowed in the Activity too. #}
+  {{ kettlewright_manifest(party) }}
   <header class="map-header">
     {# Inside Discord the party page cannot sign in, so the board offers neither link to it. #}
     <a id="back-to-party"{% if activity_token %} hidden{% endif %} href="{{ url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) }}" title="{{ _('Back to party') }}" aria-label="{{ _('Back to party') }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>
@@ -199,7 +202,7 @@
       'warden': _('Warden'), 'rollDice': _('Roll Dice'), 'damage': _('Damage'),
       'reaction': _('Reaction Roll'), 'fate': _('Die of Fate'),
       'hp': _('HP'), 'lowerStat': _('Lower %(stat)s', stat='{stat}'), 'raiseStat': _('Raise %(stat)s', stat='{stat}'), 'down': _('Down'),
-      'deprived': _('Deprived'), 'panicked': _('Panicked'), 'openSheet': _('Open sheet'),
+      'openSheet': _('Open sheet'),
       'statFailed': _('Unable to save this stat. Please try again.'),
       'rollFailed': _('Unable to roll dice. Please try again.'),
       'rolled': _('%(name)s rolled %(result)s', name='{name}', result='{result}'),
@@ -235,8 +238,7 @@
         'sand': pgettext('floor color', 'Sand'), 'wood': pgettext('floor color', 'Wood'),
         'moss': pgettext('floor color', 'Moss'), 'water': pgettext('floor color', 'Water'),
         'lava': pgettext('floor color', 'Lava'), 'arcane': pgettext('floor color', 'Arcane')},
-      'sheet': {'hp': _('HP'), 'strength': _('STR'), 'dexterity': _('DEX'), 'willpower': _('WIL'), 'armor': _('Armor'),
-        'deprived': _('Deprived'), 'panicked': _('Panicked'), 'dead': _('Dead'), 'inventory': _('Inventory'),
+      'sheet': {'armor': _('Armor'), 'inventory': _('Inventory'),
         'slots': _('%(used)s/%(total)s slots', used='{used}', total='{total}'), 'uses': _('uses'), 'charges': _('charges'),
         'use': _('Use'), 'clear': _('Clear'), 'addFatigue': _('Add Fatigue'), 'fatigue': _('Fatigue'),
         'lower': _('Lower %(stat)s', stat='{stat}'), 'raise': _('Raise %(stat)s', stat='{stat}'),

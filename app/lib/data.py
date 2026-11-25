@@ -11,9 +11,7 @@ from flask_babel import lazy_gettext as _l
 
 def load_scars():
     result = {}
-    scars_file_path = os.path.join(app_static_path(), 'json', system().content_path('scars'))
-    with open(scars_file_path, 'r') as file:
-        scars_data = json.load(file)
+    scars_data = system().content.load('scars')
     for s in scars_data["Scars"]:
         desc = s['description']
         name = s["name"]
@@ -63,9 +61,7 @@ def portrait_groups(images):
 
 def load_omens():
     result = []
-    omens_file_path = os.path.join(app_static_path(), 'json', system().content_path('omens'))
-    with open(omens_file_path, 'r') as file:
-        omens_data = json.load(file)
+    omens_data = system().content.load('omens')
     for s in omens_data["Omens"]:
         desc = s['description']
         result.append(desc)
@@ -74,9 +70,7 @@ def load_omens():
 
 def load_market():
     result = []
-    market_file_path = os.path.join(app_static_path(), 'json', 'marketplace.json')
-    with open(market_file_path, 'r') as file:
-        market_data = json.load(file)
+    market_data = system().content.load('marketplace')
     result = []
     for cat in market_data:
         for name in market_data[cat]:
@@ -148,16 +142,12 @@ def load_backgrounds():
 
 def load_traits():
     result = []
-    traits_file_path = os.path.join(app_static_path(), 'json', system().content_path('traits'))
-    with open(traits_file_path, 'r') as file:
-        traits_data = json.load(file)
+    traits_data = system().content.load('traits')
     return traits_data
 
 def load_bonds():
     result = []
-    bonds_file_path = os.path.join(app_static_path(), 'json', system().content_path('bonds'))
-    with open(bonds_file_path, 'r') as file:
-        bonds_data = json.load(file)
+    bonds_data = system().content.load('bonds')
     return bonds_data["Bonds"]
     
 # safe dictionary value

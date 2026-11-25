@@ -12,21 +12,19 @@ import random
 import uuid
 from functools import lru_cache
 
-from .paths import app_static_path
+from app.lib.paths import app_static_path
 
 GEAR_BACKGROUND = 'background'
 
 
 @lru_cache(maxsize=1)
 def _data():
-    with open(os.path.join(app_static_path(), 'json', 'barebones.json'), 'r') as file:
-        return json.load(file)
+    return system().content.load('barebones')
 
 
 @lru_cache(maxsize=1)
 def _spellbooks():
-    with open(os.path.join(app_static_path(), 'json', 'generators', 'spellbooks.json'), 'r') as file:
-        return {spell['name']: spell for spell in json.load(file)['Spellbooks']}
+    return {spell['name']: spell for spell in system().content.load('spellbooks')['Spellbooks']}
 
 
 def _rows(table):
@@ -175,7 +173,7 @@ def generate_character(package=None):
     template and the JSON snapshot used by the preview, print, export and save
     actions. Bonds, omens and background tables stay empty, as Barebones has none.
     """
-    from app.lib.char_utils import AttrsValue, GeneratedCharacter, TraitValue, item_text, traits_text
+    from systems.cairn.web.char_utils import AttrsValue, GeneratedCharacter, TraitValue, item_text, traits_text
     from app.lib.data import load_traits
 
     if package is not None and package not in _data()['gear_packages']:

@@ -8,13 +8,11 @@ import json
 import os
 import random
 
-EVENTS_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                           'static', 'json', 'generators', 'event_data.json')
+from kettlewright import system
 
 
 def load_tables(translated=True):
-    with open(EVENTS_PATH, encoding='utf-8') as file:
-        data = json.load(file)
+    data = system().content.load('events')  # The default system's Warden tables (kettlewright).
     if translated:
         from app.main import translate_events_data
         data = translate_events_data(data)

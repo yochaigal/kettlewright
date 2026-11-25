@@ -407,9 +407,8 @@ def test_compact_sheet_shows_your_characters_only(hero):
     assert sheet['hp'] == {'value': 4, 'stored': 4, 'max': 6} and sheet['willpower'] == {'value': 8, 'max': 9}
     main, backpack = sheet['containers']
     assert (main['name'], main['used'], main['slots']) == ('Main', 2, 10)
-    assert (backpack['used'], backpack['items'][0]['bulky']) == (2, True)
-    assert item(main, 'Torch') == {'id': 1, 'name': 'Torch', 'fatigue': False, 'bulky': False, 'petty': False,
-                                'uses': 1, 'max_uses': 3}
+    assert (backpack['used'], backpack['items'][0]['slots']) == (2, 2)  # Bulky: two slots.
+    assert item(main, 'Torch') == {'id': 1, 'name': 'Torch', 'fatigue': False, 'slots': 1, 'uses': 1, 'max_uses': 3}
     # The Warden has no character here, and nobody sees someone else's inventory.
     assert clients[1].get(SHEET).json == {'characters': []}
     assert clients[3].get(SHEET).status_code == 403

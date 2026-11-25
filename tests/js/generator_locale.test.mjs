@@ -31,7 +31,7 @@ test('fresh graph localization keeps internal keys and exact child link targets'
 test('localized forest terrain still generates a nested forest',()=>{
   const data={};
   for(const file of ['realm','forests','dungeons'])
-    Object.assign(data,JSON.parse(readFileSync(new URL(`../../app/static/json/generators/${file}.json`,import.meta.url))));
+    Object.assign(data,JSON.parse(readFileSync(new URL(`../../systems/cairn/content/generators/${file}.json`,import.meta.url))));
   data.Realm.Topography.TerrainKeys={'Леса':'Forests'};
   data.Realm.Topography.Terrain.Tough.Terrain=['Леса'];
   const draft=generateSettingArticle(data,'terrain',()=>0,{terrainDifficulty:'Tough',forestChance:100,dungeonChance:0});

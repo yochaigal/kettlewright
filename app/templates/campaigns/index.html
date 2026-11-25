@@ -40,10 +40,12 @@
         <span>{{ _('Armor') }} <strong>{{ member.armor }}</strong></span>
         <span>{{ ngettext('%(num)s slot free', '%(num)s slots free', member.free) }}</span>
       </span>
-      {% if member.dead or member.deprived or member.panicked %}<span class="party-roster-conditions">
-        {% if member.dead %}<span class="wiki-badge">{{ _('Dead') }}</span>{% endif %}
-        {% if member.deprived %}<span class="wiki-badge">{{ _('Deprived') }}</span>{% endif %}
-        {% if member.panicked %}<span class="wiki-badge">{{ _('Panicked') }}</span>{% endif %}</span>{% endif %}
+      {# The member's active conditions (kettlewright): out of play first (Dead), then the others in the system's order. #}
+      {% set rules = member.rules or rules_for(None) %}
+      {% set active = [] %}{% for condition in rules.conditions if member[condition.key] and 'out_of_play' in condition.effects %}{% if active.append(condition) %}{% endif %}{% endfor %}
+      {% for condition in rules.conditions if member[condition.key] and 'out_of_play' not in condition.effects %}{% if active.append(condition) %}{% endif %}{% endfor %}
+      {% if active %}<span class="party-roster-conditions">
+        {% for condition in active %}<span class="wiki-badge">{{ _(condition.label) }}</span>{% endfor %}</span>{% endif %}
     </li>
   {% endfor %}
   </ul>

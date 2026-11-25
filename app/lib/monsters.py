@@ -7,7 +7,9 @@ from functools import lru_cache
 
 from app.models import Companion, Character, db
 
-CATALOG = Path(__file__).resolve().parents[1] / 'static/json/monsters.json'
+from kettlewright import system
+
+CATALOG = system().content.path('monsters')  # The default system's bestiary (kettlewright).
 # The art a party's new monsters get: Kettlewright's tokens, or Oozejar's Illustrated Bestiary
 # (from the Cairn collection for Atlas VTT, CC BY-SA 4.0), which has one token for each bestiary monster.
 MONSTER_ARTS = ('kettlewright', 'oozejar')

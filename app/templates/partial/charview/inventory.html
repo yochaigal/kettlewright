@@ -40,8 +40,9 @@
         <i class="item-edit-button fa-solid fa-circle-info circle-info"></i>
       </div>
       {% endif %} {% if it.dice|length > 0 and is_owner and (not companion_sheet or can_roll) %}
-      {% if character.panicked %}
-      <div class="pointer" title="{{_('Roll dice (impaired)')}}" onclick="KW_rollDiceCallback('4', {{ (it.name|tr('equipment'))|striptags|tojson|forceescape }})" style="color:#ff5555">
+      {% set weak_die = rules_for(character).attack_die(rules_for(character).active_conditions(character)) %}
+      {% if weak_die %}
+      <div class="pointer" title="{{_('Roll dice (impaired)')}}" onclick="KW_rollDiceCallback('{{ weak_die }}', {{ (it.name|tr('equipment'))|striptags|tojson|forceescape }})" style="color:#ff5555">
         <i class="fa-solid fa-dice dice"></i>
       </div>
       {% else %}

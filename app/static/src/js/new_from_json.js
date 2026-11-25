@@ -1,4 +1,4 @@
-import {gameSystem} from './game_system.js';
+import {conditionKeys, gameSystem} from '#kettlewright';
 const form = document.getElementById("character-form");
 const fileInput = document.getElementById("jsonFile");
 const submit = document.getElementById("submit-button");
@@ -90,10 +90,19 @@ form.addEventListener("submit", (event) => {
   const text = ["name", "background", "custom_name", "custom_background", "description", "bonds", "omens", "scars", "notes", "image_url", "traits", "background_table1_question", "background_table1_answer", "background_table2_question", "background_table2_answer"];
   for (const field of numeric) form.elements[field].value = data[field] ?? 0;
   for (const field of text) form.elements[field].value = data[field] ?? "";
-  for (const field of ["custom_image", "deprived", "panicked", "dead"]) {
+  for (const field of ["custom_image", ...conditionKeys()]) {
+    if (!form.elements[field]) continue;
     form.elements[field].value = [true, 1, "true", "True", "1"].includes(data[field]) ? "true" : "false";
   }
   form.elements.edition.value = data.edition === "barebones" ? "barebones" : "2e";
+  // The character's game system, and what the file has beyond the form's fields: the stats and conditions a system
+  // keeps without a column ("luck": 7). The server keeps only those of the character's system (kettlewright).
+  if (form.elements.game_system) form.elements.game_system.value = typeof data.game_system === "string" ? data.game_system : "";
+  if (form.elements.system_stats) {
+    const extra = Object.entries(data).filter(([field, value]) =>
+      !form.elements[field] && ["number", "boolean"].includes(typeof value));
+    form.elements.system_stats.value = JSON.stringify(Object.fromEntries(extra));
+  }
   form.elements.pets.value = JSON.stringify(data.pets ?? []);
   form.elements.items.value = JSON.stringify(data.items ?? []);
   form.elements.containers.value = JSON.stringify(data.containers ?? []);

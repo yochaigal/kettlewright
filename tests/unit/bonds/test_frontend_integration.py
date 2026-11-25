@@ -7,7 +7,7 @@ import os
 # Add the app directory to the path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-from app.lib.char_utils import get_required_bonds_count
+from systems.cairn.web.char_utils import get_required_bonds_count
 
 
 def test_template_logic_simulation():

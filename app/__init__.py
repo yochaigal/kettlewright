@@ -88,9 +88,14 @@ def create_app():
     # Consolidate the JSON data once per process; tests build many apps.
     global _json_consolidated
     if not _json_consolidated:
-        json_root = os.path.join(os.path.dirname(__file__), 'static', 'json')
-        for folder, output in (('backgrounds', 'background_data.json'), ('generators', 'event_data.json')):
-            consolidate_json_files(os.path.join(json_root, folder), os.path.join(json_root, folder, output))
+        # Each system's tables kept as one file per entry (kettlewright): backgrounds/ and generators/ in Cairn.
+        from kettlewright import SYSTEMS, load
+        load()
+        for rules in SYSTEMS.values():
+            folder = rules.content.folder
+            for name, output in (('backgrounds', 'background_data.json'), ('generators', 'event_data.json')):
+                if folder is not None and (folder / name).is_dir():
+                    consolidate_json_files(str(folder / name), str(folder / name / output))
         _json_consolidated = True
 
     # Configure CORS using allowed origins
@@ -151,6 +156,11 @@ def create_app():
 
     # blueprint for auth routes
     from app.blueprints import auth as auth_blueprint
+    # The game-system engine and its systems (kettlewright.web): their files, templates, and each page's system.
+    from flask_babel import gettext
+    from kettlewright.web import init_app as init_kettlewright
+    init_kettlewright(app, translate=gettext)
+
     app.register_blueprint(auth_blueprint)
 
     # blueprint for non-auth routes
@@ -174,15 +184,9 @@ def create_app():
     app.register_blueprint(party_blueprint)
     
     # blueprint for generator
-    from app.blueprints import generator as generator_blueprint
-    app.register_blueprint(generator_blueprint)
     
     # blueprint for character creation
-    from app.blueprints import character_create as character_create_blueprint
-    app.register_blueprint(character_create_blueprint)
 
-    from app.blueprints.charcreo_barebones import charcreo_barebones
-    app.register_blueprint(charcreo_barebones)
 
     from app.blueprints.companions import companions
     app.register_blueprint(companions)
@@ -222,9 +226,8 @@ def create_app():
     def tr_filter(text: str, context=None) -> str:
         return translate_term(text, context)
     
-    # Trait description sentence, shared with the character sheet
-    from app.lib.char_utils import traits_sentence
-    app.add_template_global(traits_sentence)
+    # Cairn's creation pages, quick generator and traits sentence are its web plug-in's (systems/cairn/web),
+    # registered by kettlewright.web above.
 
     # The portrait picker's groups (#502)
     from app.lib.data import portrait_groups
@@ -282,26 +285,7 @@ def create_app():
     def inject_locale():
         from app.lib.generator_labels import generator_labels
         from app.lib.dice_feedback import pending_dice
-        from kettlewright import system
-        # The game system (kettlewright): templates list its stats and conditions instead of writing out Cairn's.
-        return dict(locale=get_locale(), generator_labels=generator_labels, pending_dice=pending_dice,
-                    game_system=system(), game_system_page=game_system_page, rules_for=rules_for)
-
-    def rules_for(record):
-        """A character's, companion's, party's or campaign's game system (kettlewright, #487); the default one for
-        anything else (a form, a generated preview, an undefined variable)."""
-        from kettlewright import system
-        return getattr(record, 'rules', None) or system()
-
-    def game_system_page():
-        """The game system for the page's scripts (app/static/src/js/game_system.js), labels translated."""
-        from flask_babel import gettext
-        from kettlewright import system
-        rules = system()
-        stat = lambda s, **extra: dict(key=s.key, abbr=s.abbr, label=gettext(s.abbr), **extra)
-        return dict(key=rules.key, hp=stat(rules.hit_points),
-                    attributes=[stat(s, save=s.save) for s in rules.attributes],
-                    conditions=[dict(key=c.key, label=gettext(c.label)) for c in rules.conditions])
+        return dict(locale=get_locale(), generator_labels=generator_labels, pending_dice=pending_dice)
 
     # Dice rolled while building an htmx partial or before a redirect (app/lib/dice_feedback.py).
     @app.after_request
