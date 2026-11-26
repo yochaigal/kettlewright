@@ -2,8 +2,9 @@
 
 A stat with a column of its own (all of Cairn's: hp, strength, ... and their *_max) is read and written there.
 Any other stat a system adds is kept in the sheet's system_stats JSON, so a second system does not need new
-columns. The model mixing this in has a system_stats Text column and a rules property (its game system).
+columns. The model mixing this in has a system_stats Text column.
 """
+from kettlewright import system
 import json
 
 
@@ -13,7 +14,7 @@ class SystemStats:
         if name.startswith('_') or hasattr(type(self), name):
             return False
         try:
-            rules = self.rules
+            rules = system()
         except Exception:
             return False
         return name.removesuffix('_max') in rules.stat_keys or name in rules.condition_keys
@@ -28,10 +29,10 @@ class SystemStats:
     def __getattr__(self, name):
         """character.luck, character['luck'] in a template: a stat (or its _max, or a condition) of the game system
         that has no column reads from system_stats. Only for names that aren't attributes already."""
-        if name.startswith('_') or name in ('system_stats', 'game_system', 'rules'):
+        if name.startswith('_') or name == 'system_stats':
             raise AttributeError(name)
         try:
-            rules = self.rules
+            rules = system()
         except Exception:
             raise AttributeError(name) from None
         base = name.removesuffix('_max')
@@ -66,4 +67,4 @@ class SystemStats:
 
     def stat_values(self):
         """{field: [current, maximum]} for each of the system's stats, HP first."""
-        return {stat.key: [self.get_stat(stat.key), self.get_stat(stat.key + '_max')] for stat in self.rules.stats}
+        return {stat.key: [self.get_stat(stat.key), self.get_stat(stat.key + '_max')] for stat in system().stats}

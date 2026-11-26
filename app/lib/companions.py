@@ -65,9 +65,8 @@ def pet_data(template, parent):
     result = dict(name=template['name'], role=template['name'], notes=_(notes) if notes else '',
                   armor=template.get('armor', 0), attack=template.get('attack', ''), gold=0,
                   items=[], containers=[dict(id=0, name='Main', slots=template.get('slots', 0))])
-    # The parent's game system (kettlewright, #487): a pet has its owner's stats. A generator's preview parent is no
-    # record: the default system, read as plain attributes.
-    rules = getattr(parent, 'rules', None) or system()
+    # The game system's stats (kettlewright, #487). A generator's preview parent is no record: plain attributes.
+    rules = system()
     read = parent.get_stat if hasattr(parent, 'get_stat') else lambda field: getattr(parent, field, None)
     for stat in rules.stat_keys:
         result[stat] = read(stat) if template.get('mirror') else template.get(stat)
@@ -123,8 +122,9 @@ def new_hireling(party, role):
     a random name, traits and portrait."""
     from app.lib.data import load_images, load_traits
     from kettlewright.web import plugin
-    # A name from the party's system's tables, or the default system's for one without web parts (kettlewright).
-    random_name = (plugin(party.rules) or plugin()).random_name
+    # A name from the system's tables (kettlewright); a system without web parts names its hirelings by their role.
+    web = plugin()
+    random_name = web.random_name if web is not None else (lambda background: role if role != 'Custom' else _('Hireling'))
     template = next((r for r in catalog('hireling') if r['name'] == role), None)
     if role != 'Custom' and template is None:
         raise ValueError('Unknown hireling role')
@@ -136,10 +136,10 @@ def new_hireling(party, role):
     companion = Companion(kind='hireling', party=party, name=random_name(None), role=role,
                           daily_cost=template['daily_cost'] if template else 0, items=json.dumps(items), notes=traits,
                           image_url=choice(portraits) if portraits else None)
-    # The party's game system (kettlewright, #487): its stats, rolled with its creation dice (Cairn: 1d6 HP, 3d6 the rest).
+    # The game system (kettlewright, #487): its stats, rolled with its creation dice (Cairn: 1d6 HP, 3d6 the rest).
     dice = SimpleNamespace(randint=randint)  # This module's randint: rolls (and tests) go through it.
-    for stat in party.rules.stat_keys:
-        value = party.rules.roll_stat(stat, dice)
+    for stat in system().stat_keys:
+        value = system().roll_stat(stat, dice)
         companion.set_stat(stat, value)
         companion.set_stat(stat + '_max', value)
     # Its own animals (the Animal Handler's Hawk), as its pets.
@@ -287,7 +287,7 @@ def convert_hireling(c, owner):
     if c.armor:
         # PCs derive armor from inventory, so carry natural armor as an item that takes no slot (petty in Cairn),
         # tagged with the system's armor tag for its value ('2 Armor').
-        rules = c.rules
+        rules = system()
         armor_tag = dict((value, tag) for tag, value in rules.armor.tags).get(c.armor, f'{c.armor} Armor')
         items.append(dict(id=uuid.uuid4().hex, name=_('Natural armor'),
                           tags=[*rules.inventory.free_tags[:1], armor_tag], location=0, armor_active=True))

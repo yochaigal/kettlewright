@@ -9,7 +9,7 @@
     {% if c.role and c.role != c.name %}<p>{{ c.role | tr }}</p>{% endif %}
     {% if compact %}</div></div>{% endif %}
     <div class="companion-stats">
-      {% for stat in rules_for(c).stats %}{% set field, label = stat.key, stat.abbr %}
+      {% for stat in game_system.stats %}{% set field, label = stat.key, stat.abbr %}
       {% if editable_stats and can_manage_companion(c) and c[field] is not none %}
       <form class="companion-stat-form quick-stat-form" data-error="{{_('Unable to save this stat. Please try again.')}}" data-saved="{{_('Saved')}}" method="post" action="{{ url_for('companions.stat', companion_id=c.id) }}">
         {{ companion_form().hidden_tag() }}

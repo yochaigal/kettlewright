@@ -15,7 +15,7 @@ def roll_warden(user, party, kind, expression=None, *, public=False):
     if public and party is None:
         raise ValueError('Choose a party for a public roll.')
     # Besides dice, the Warden's rolls are the game system's (kettlewright): Reaction Roll and Die of Fate in Cairn.
-    rules = party.rules if party is not None else system()
+    rules = system()
     warden_roll = None if kind == 'dice' else rules.warden_roll(kind)
     if kind == 'dice':
         sides = parse_dice(expression)

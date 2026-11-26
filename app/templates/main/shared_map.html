@@ -32,8 +32,8 @@
 <body class="{{ 'warden-board' if warden }}{{ ' in-activity' if activity_token }}">
   {# Dark mode before the first paint (#470): a blocking classic script, first thing in the body. #}
   <script src="{{ url_for('activity.static', filename='src/js/maps/board_theme.js') if activity_token else url_for('static', filename='src/js/maps/board_theme.js') }}"></script>
-  {# The party's game system for the board's scripts (kettlewright.web); a data block, so allowed in the Activity too. #}
-  {{ kettlewright_manifest(party) }}
+  {# The game system for the board's scripts (kettlewright.web); a data block, so allowed in the Activity too. #}
+  {{ kettlewright_manifest() }}
   <header class="map-header">
     {# Inside Discord the party page cannot sign in, so the board offers neither link to it. #}
     <a id="back-to-party"{% if activity_token %} hidden{% endif %} href="{{ url_for('party.party_view', ownername=party.owner_username, party_url=party.party_url) }}" title="{{ _('Back to party') }}" aria-label="{{ _('Back to party') }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>

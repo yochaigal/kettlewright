@@ -70,11 +70,6 @@ class Inventory:
         self.itemsWithRolls = True        
         
 
-    @property
-    def rules(self):
-        """The owner's game system (kettlewright, #487): a character's, companion's or party's; the default one else."""
-        return getattr(self.character, 'rules', None) or system()
-
     def setItemsWithRolls(self, value):
         self.itemsWithRolls = value
         
@@ -114,7 +109,7 @@ class Inventory:
         """
         from app.lib.inventory_slots import coins_take_a_slot
         gold = getattr(self.character, 'gold', 0) if isinstance(self.character, (Character, Companion)) else 0
-        if main is None or not coins_take_a_slot(gold, self.rules):
+        if main is None or not coins_take_a_slot(gold):
             return
         main["items"].append({
             "id": COINS_ID, "name": _("Coins"), "tags": [f"{int(gold)} {_('gp')}"], "location": 0,
@@ -124,7 +119,7 @@ class Inventory:
         
     def slot_layout(self):
         from app.lib.inventory_slots import arrange_slots
-        return arrange_slots(self.selected_container['items'], self.selected_container['slots'], rules=self.rules)
+        return arrange_slots(self.selected_container['items'], self.selected_container['slots'])
 
     def pin_slots(self, container_id):
         """Keep legacy items in their displayed slots before changing the list."""
@@ -134,7 +129,7 @@ class Inventory:
         container = self.get_container(container_id)
         if container is None:
             return
-        positions = arrange_slots(container['items'], container['slots'], rules=self.rules)['positions']
+        positions = arrange_slots(container['items'], container['slots'])['positions']
         items = json.loads(self.character.items)
         for item in items:
             if item['location'] == int(container_id) and str(item['id']) in positions:
@@ -147,24 +142,24 @@ class Inventory:
         if item is None:
             abort(404)
         container = self.get_container(item['location'])
-        size = item_size(item, self.rules)
+        size = item_size(item)
         if not size or not 0 <= slot <= int(container['slots']) - size:
             abort(400, description='The item does not fit in these slots.')
         if size == 2:
             slot -= slot % 2
-        current = arrange_slots(container['items'], container['slots'], rules=self.rules)
+        current = arrange_slots(container['items'], container['slots'])
         items = json.loads(self.character.items)
         for entry in items:
-            if entry['location'] == item['location'] and item_size(entry, self.rules):
+            if entry['location'] == item['location'] and item_size(entry):
                 entry['slot'] = current['positions'][str(entry['id'])]
                 if str(entry['id']) == str(item_id):
                     entry['slot'] = slot
         arranged = arrange_slots([entry for entry in items if entry['location'] == item['location']],
-                                 container['slots'], first_id=item_id, rules=self.rules)
+                                 container['slots'], first_id=item_id)
         if current['used'] <= int(container['slots']) and any(row['overflow'] for row in arranged['rows']):
             abort(400, description='The item does not fit in these slots.')
         for entry in items:
-            if entry['location'] == item['location'] and item_size(entry, self.rules):
+            if entry['location'] == item['location'] and item_size(entry):
                 entry['slot'] = arranged['positions'][str(entry['id'])]
         self.character.items = json.dumps(items)
         if commit:
@@ -175,7 +170,7 @@ class Inventory:
     def free_slots(self, container_id):
         from app.lib.inventory_slots import item_size
         container = self.get_container(container_id)
-        used = sum(item_size(item, self.rules) for item in container['items'] if not item.get('is_empty'))
+        used = sum(item_size(item) for item in container['items'] if not item.get('is_empty'))
         return max(0, int(container['slots']) - used)
 
     def move_to_container(self, item_id, container_id, commit=True):
@@ -197,7 +192,7 @@ class Inventory:
             abort(400, description='This item cannot change containers.')
         self.require_regular_container(source_id)
         self.require_regular_container(target_id)
-        if item_size(item, self.rules) > self.free_slots(target_id):
+        if item_size(item) > self.free_slots(target_id):
             abort(400, description='There is not enough room in that container.')
         self.pin_slots(source_id)
         self.pin_slots(target_id)
@@ -208,8 +203,8 @@ class Inventory:
                 entry['location'] = target_id
                 entry.pop('slot', None)
                 item = entry
-        if item_size(item, self.rules):  # Save the first free slot there, so it stays put.
-            arranged = arrange_slots([entry for entry in items if entry['location'] == target_id], target['slots'], rules=self.rules)
+        if item_size(item):  # Save the first free slot there, so it stays put.
+            arranged = arrange_slots([entry for entry in items if entry['location'] == target_id], target['slots'])
             item['slot'] = arranged['positions'][str(item['id'])]
         self.character.items = json.dumps(items)
         if commit:
@@ -412,7 +407,7 @@ class Inventory:
         
     # add fatigue
     def add_fatigue(self, container_id):
-        if not self.rules.fatigue:  # A game system without Fatigue (kettlewright).
+        if not system().fatigue:  # A game system without Fatigue (kettlewright).
             return
         idx = 0        
         cont_items = self.get_items_for_container(container_id, False)
@@ -423,7 +418,7 @@ class Inventory:
             return
         items = json.loads(self.character.items)                
         new_id = self.generate_item_id()
-        items.append({"id": new_id, "name": self.rules.fatigue, "editable": False, "location": int(container_id),"tags":[]})
+        items.append({"id": new_id, "name": system().fatigue, "editable": False, "location": int(container_id),"tags":[]})
         self.character.items = json.dumps(items)
         db.session.commit()
         self.parse(self.character)
@@ -615,7 +610,7 @@ class Inventory:
         if cnt.get('on_the_ground'):
             abort(400, description='Drop items from your character and specify a place.')
         from app.lib.inventory_slots import item_size
-        size = item_size({'tags': tags.split(',') if tags else []}, self.rules)
+        size = item_size({'tags': tags.split(',') if tags else []})
         if size and self.container_slots(cnt) + size > int(cnt['slots']):
             return None
         self.pin_slots(container)
@@ -803,7 +798,7 @@ class Inventory:
                 db.session.commit()        
                 
     def compute_armor(self):
-        return self.rules.armor_value(self.get_items_for_container(0, False))
+        return system().armor_value(self.get_items_for_container(0, False))
 
     def print(self):
         print(self.containers)

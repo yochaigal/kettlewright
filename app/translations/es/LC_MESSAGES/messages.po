@@ -51411,7 +51411,7 @@ msgstr "Empieza con un título que contenga el nombre del monstruo. Pon sus esta
 msgid "The name and HP are required. Omitted Armor defaults to 0 and other stats to 10."
 msgstr "El nombre y los PG son obligatorios. Si falta la Armadura, vale 0, y las demás estadísticas valen 10."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "You dematerialized a beloved pet. Now it follows you around, invisible "
 "but always present. Although it cannot interact with the physical realm, "
@@ -51423,7 +51423,7 @@ msgstr ""
 " en el reino físico, tú puedes percibir a través de sus sentidos (añade "
 "una Fatiga tras cada uso). La mascota sigue órdenes básicas."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Homunculus: A miniature clay replica of yourself that follows your every "
 "command. It hates being enthralled to you and complains bitterly whenever"
@@ -51435,7 +51435,7 @@ msgstr ""
 "siempre que puede. Cualquier daño infligido al homúnculo te afecta a ti. "
 "PG 3, FUE 4, DES 13, VOL 5."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "A Blood Pail (bulky) from a local death-cult. Empty it to raise a servant"
 " built from whatever is buried below, with 6 HP, 1 Armor, 13 STR, 11 DEX,"
@@ -51450,7 +51450,7 @@ msgstr ""
 "derrotado, pierdes 1d4 de FUE permanentemente. Recarga: llénalo de nuevo "
 "con la sangre de un guerrero moribundo."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "A burial wagon (+6 slots, slow) from your last job. It came with a "
 "stubborn old donkey (+4 slots, only +2 slots if pulling wagon)."
@@ -51459,7 +51459,7 @@ msgstr ""
 "trabajo. Es tirado por un burro viejo y testarudo (+4 espacios, solo +2 "
 "espacios si tira del carromato)."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "A Living Nightmare that dwells within you but manifests whenever you are "
 "in danger. It has your same Attributes and HP and attacks with claws "
@@ -51471,7 +51471,7 @@ msgstr ""
 "(d8+d8). Desaparece al recibir Daño Crítico (recibes 1d4 de daño a VOL) y"
 " reaparece en la siguiente luna llena."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "A Raven Familiar [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as "
 "an intelligent being and is entirely devoted to you."
@@ -51479,7 +51479,7 @@ msgstr ""
 "Un cuervo, como familiar [PG 8, FUE 3, DES 11, VOL 13, pico (d6)]. Habla "
 "como un ser inteligente y está completamente entregado a ti."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "A clever pet, small enough to hide in your pack (bulky), but strong "
 "enough to scare off smaller predators. Requires one Ration a day, and it "
@@ -51490,7 +51490,7 @@ msgstr ""
 "ahuyentar a depredadores más pequeños. Consume una ración de carne al "
 "día."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Alchemical Tattoo: A dog, cat, or bird that can leave your body on "
 "demand. It follows your commands to the best of its abilities and can "
@@ -51501,7 +51501,7 @@ msgstr ""
 "puede y te transmite las heridas que recibe haciéndote perder puntos de "
 "FUE. Insignificante."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Heavy Destrier: A beast built for war, an imposing creature. 8 HP, 1 "
 "Armor, hooves (d10+d10), +2 slots."
@@ -51509,7 +51509,7 @@ msgstr ""
 "Destrero pesado: una bestia hecha para la guerra, una criatura imponente."
 " PG 8, Armadura 1, pezuñas (d10+d10), +2 espacios."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Blacklegged Dandy: Hardy and adaptable. Tough or Perilous terrain are one"
 " step easier. 6 HP. +4 slots."
@@ -51517,7 +51517,7 @@ msgstr ""
 "Dandi patinegro: resistente y adaptable. Los terrenos Duros o Peligrosos "
 "se vuelven un paso más fáciles. PG 6, +4 espacios."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Rivertooth: Impressively strong, capable of carrying heavy loads. 4 HP. "
 "+6 slots (only +2 slots if carrying two people)."
@@ -51526,7 +51526,7 @@ msgstr ""
 "pesadas. PG 4, +6 espacios (solo +2 espacios si transporta a dos "
 "personas)."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Piebald Cob: Intelligent, it can understand simple commands, and even has"
 " an instinct for danger. 6 HP. +4 slots."
@@ -51534,7 +51534,7 @@ msgstr ""
 "Cob Pío: inteligente, puede entender órdenes sencillas e incluso tiene "
 "instinto para el peligro. PG 6, +4 espacios."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Linden White: Highly trained and agile, it can perform intricate "
 "maneuvers in a time of need (no DEX save to flee). 4 HP. +3 slots."
@@ -51543,7 +51543,7 @@ msgstr ""
 "complejas en momentos de necesidad (no requiere Salvación de DES para "
 "huir). PG 4, +3 espacios."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Stray Fogger: Wild but very fast (even in Tough terrain). Rides light. 4 "
 "HP. +2 slots."
@@ -51551,7 +51551,7 @@ msgstr ""
 "Niebla errante: salvaje pero muy rápido, incluso en terrenos duros. "
 "Montura ligera. PG 4, +2 espacios."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "A hollow wolf that had been frightening travelers. You took pity on the "
 "half-starved creature and nursed it back to health. Now it is loyal to "
@@ -51563,15 +51563,15 @@ msgstr ""
 "recuperó. Ahora te es leal hasta la muerte. Es un gran excavador. PG 5, "
 "FUE 11, DES 13, VOL 8, dientes (d6)."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid "Slate"
 msgstr "Pizarra"
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid "Lava"
 msgstr "Lava"
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid "Arcane"
 msgstr "Arcano"
 
@@ -51647,3 +51647,7 @@ msgstr "Si tu campaña tiene sus propios trasfondos, introduce primero el códig
 #. Campaign page, no parties yet: how players join one (#530)
 msgid "No parties yet. Create one, then give your players its join code: they enter it when they create a character, or on an existing character's sheet."
 msgstr "Aún no hay grupos. Crea uno y da a tus jugadores su código de acceso: lo introducen al crear un personaje, o en la ficha de un personaje que ya tengan."
+
+#. JSON import: a character of another game system than the instance plays (#487)
+msgid "This character plays another game system (%(system)s) than this site (%(here)s)."
+msgstr "Este personaje es de otro sistema de juego (%(system)s) que este sitio (%(here)s)."

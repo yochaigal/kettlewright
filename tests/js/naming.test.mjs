@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {settingName} from '../../app/static/src/js/naming.js';
 import pointcrawl from '../../app/static/src/js/alpine/components/pointcrawl.js';
 
-const data=JSON.parse(readFileSync(new URL('../../systems/cairn/content/generators/names.json',import.meta.url)));
+const data=JSON.parse(readFileSync(new URL('../../system/cairn/content/generators/names.json',import.meta.url)));
 
 test('manually connected paths use naming dictionaries and reject duplicate clicks',async()=>{
   const component=pointcrawl();

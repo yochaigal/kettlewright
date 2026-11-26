@@ -173,7 +173,7 @@ def generate_character(package=None):
     template and the JSON snapshot used by the preview, print, export and save
     actions. Bonds, omens and background tables stay empty, as Barebones has none.
     """
-    from systems.cairn.web.char_utils import AttrsValue, GeneratedCharacter, TraitValue, item_text, traits_text
+    from system.cairn.web.char_utils import AttrsValue, GeneratedCharacter, TraitValue, item_text, traits_text
     from app.lib.data import load_traits
 
     if package is not None and package not in _data()['gear_packages']:

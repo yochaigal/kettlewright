@@ -4,7 +4,7 @@ import re
 
 import pytest
 
-from systems.cairn.web.char_utils import generate_character, load_backgrounds
+from system.cairn.web.char_utils import generate_character, load_backgrounds
 from app.models import Character, Companion, User
 
 
@@ -46,7 +46,7 @@ def test_preview_inventory_and_export_share_the_exact_generated_snapshot(app_wit
     snapshot['items'][0]['location'] = 9
     raw = json.dumps(snapshot)
     from importlib import import_module
-    generator_module = import_module('systems.cairn.web.generator')
+    generator_module = import_module('system.cairn.web.generator')
     monkeypatch.setattr(generator_module, 'generate_character', lambda background:(generated, raw))
     page = app_with_babel.test_client().get('/gen/character?view=sheet').text
     shown = exported(page)

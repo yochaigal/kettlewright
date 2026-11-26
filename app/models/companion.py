@@ -60,13 +60,7 @@ class Companion(SystemStats, db.Model):
         return attack_dice(self.attack)
 
     def armorValue(self):
-        return self.rules.armor_value(json.loads(self.items or '[]'), base=self.armor)
-
-    @property
-    def rules(self):
-        """Its game system (kettlewright, #487): its party's, or its character's or hireling's for a pet."""
-        owner = self.party or self.character or self.hireling
-        return owner.rules if owner is not None else system()
+        return system().armor_value(json.loads(self.items or '[]'), base=self.armor)
 
     def export(self):
         fields = ('name', 'role', 'hp', 'hp_max', 'strength', 'strength_max', 'dexterity', 'dexterity_max',

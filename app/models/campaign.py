@@ -3,7 +3,6 @@
 Map roots, locations and paths share the same publication boundary. Geometry
 contains no player-facing prose.
 """
-from .game_system import GAME_SYSTEM_DEFAULT
 from sqlalchemy import event
 from sqlalchemy.orm import declared_attr, Session
 from datetime import datetime, timezone
@@ -26,9 +25,6 @@ class Campaign(Versioned, db.Model):
     name = db.Column(db.String(200), nullable=False)
     # Its picture (#476): the campaign's cover. Empty: the first picture in its articles.
     image = db.Column(db.String(2000), nullable=False, default='', server_default='')
-    # The game system it plays (#487): a kettlewright system's key, set when it is created and never changed after
-    # (app/models/game_system.py). Its parties start with it.
-    game_system = db.Column(db.String(32), nullable=False, default=GAME_SYSTEM_DEFAULT, server_default='cairn')
     owner = db.relationship('User', backref=db.backref('campaigns', cascade='all, delete-orphan'))
     # Its parties (several at once for a West Marches game), created in it; the first comes with the
     # campaign. A party can be deleted, or moved to another of the Warden's campaigns.
@@ -37,11 +33,6 @@ class Campaign(Versioned, db.Model):
     modules = db.relationship('Module', backref='campaign', cascade='all, delete-orphan', order_by='Module.id')
 
 
-    @property
-    def rules(self):
-        """Its game system (kettlewright); the default one if its key is no longer known."""
-        from kettlewright import system_or_default
-        return system_or_default(self.game_system)
 
 
 class Module(Versioned, db.Model):

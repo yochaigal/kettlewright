@@ -1,6 +1,6 @@
 # Cairn
 
-[Cairn](https://cairnrpg.com), second edition: the system Kettlewright was built for, and its default one.
+[Cairn](https://cairnrpg.com), second edition: the system Kettlewright was built for, and the one an instance plays unless `GAME_SYSTEM` names another.
 See [docs/game-systems.md](../../docs/game-systems.md) for how systems fit into Kettlewright.
 
 | Path | What it holds |

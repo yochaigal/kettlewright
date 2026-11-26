@@ -6,7 +6,7 @@ import re
 
 import pytest
 
-from systems.cairn.web import barebones
+from system.cairn.web import barebones
 from app.models import Character, User, db
 
 
@@ -260,7 +260,7 @@ def test_one_new_character_button_and_edition_tabs_on_both_creators(client):
 # PDF sheet
 
 def test_split_traits_reads_both_sentence_forms():
-    from systems.cairn.web.character_pdf import split_traits
+    from system.cairn.web.character_pdf import split_traits
     word_by_word = ('You have a Lanky Physique, Oily Skin, and Oily Hair. Your Face is Rakish, your Speech Blunt. '
                     'You have Filthy Clothing. You are Cautious and Deceitful. You are 31 years old.')
     sentence = ('You have a lanky physique, oily skin, and oily hair. Your face is rakish, your speech blunt. '

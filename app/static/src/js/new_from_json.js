@@ -95,7 +95,7 @@ form.addEventListener("submit", (event) => {
     form.elements[field].value = [true, 1, "true", "True", "1"].includes(data[field]) ? "true" : "false";
   }
   form.elements.edition.value = data.edition === "barebones" ? "barebones" : "2e";
-  // The character's game system, and what the file has beyond the form's fields: the stats and conditions a system
+  // The file's game system (the server refuses another), and what the file has beyond the form's fields: the stats and conditions a system
   // keeps without a column ("luck": 7). The server keeps only those of the character's system (kettlewright).
   if (form.elements.game_system) form.elements.game_system.value = typeof data.game_system === "string" ? data.game_system : "";
   if (form.elements.system_stats) {

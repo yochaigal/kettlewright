@@ -1,20 +1,23 @@
-"""The Kettlewright engine (kettlewright/, #487): Cairn's rules as the app had them, and room for another system."""
+"""The Kettlewright engine (kettlewright/, #487): Cairn's rules as the app had them, and an instance that plays one
+system, chosen before it starts (GAME_SYSTEM). Tests play another with use_system()."""
 import subprocess
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from pathlib import Path
 
 import pytest
 
-from kettlewright import SYSTEMS, Condition, GameSystem, Inventory, Stat, register, system
+from kettlewright import Condition, GameSystem, Inventory, Stat, system, use_system
 
 
 def item(*tags, location=0, **extra):
     return dict(tags=list(tags), location=location, **extra)
 
 
-def test_cairn_is_the_default_with_its_stats_conditions_and_saves():
+def test_cairn_is_the_instance_s_system_with_its_stats_conditions_and_saves():
+    from system.cairn import CAIRN
     cairn = system()
-    assert cairn is system('cairn') and cairn.name == 'Cairn'
+    assert cairn is CAIRN and cairn.key == 'cairn' and cairn.name == 'Cairn'
     assert cairn.stat_keys == ('hp', 'strength', 'dexterity', 'willpower')
     assert [stat.key for stat in cairn.sheet_stats] == ['strength', 'dexterity', 'willpower', 'hp']
     assert cairn.save_keys == cairn.attribute_keys == ('strength', 'dexterity', 'willpower')
@@ -22,8 +25,6 @@ def test_cairn_is_the_default_with_its_stats_conditions_and_saves():
     assert cairn.condition_keys == ('deprived', 'panicked', 'dead')
     # A save is a d20 under the attribute's current value.
     assert cairn.save_die == 20 and cairn.save_succeeds(12, 12) and not cairn.save_succeeds(13, 12)
-    with pytest.raises(KeyError):
-        system('no-such-system')
 
 
 def test_cairn_inventory_slots_and_coins():
@@ -65,15 +66,14 @@ def test_another_system_plugs_in_with_its_own_stats_and_rules():
         def save_succeeds(self, roll, score):
             return roll >= score
 
-    rules = register(RollOver())
-    try:
-        assert system('roll-over') is rules and system() is system('cairn')  # Cairn stays the default.
+    cairn = system()
+    with use_system(RollOver()) as rules:
+        assert system() is rules
         assert rules.save_keys == ('strength', 'agility', 'presence') and rules.abbr('presence') == 'PRE'
         assert rules.save_succeeds(15, 12) and not rules.save_succeeds(3, 12)
         assert rules.inventory.item_size(item('bulky')) == 1  # No sizes: every item takes one slot.
         assert rules.armor_value([]) == 0 and rules.effective_hp(5, 99, ('poisoned',)) == 5
-    finally:
-        SYSTEMS.pop('roll-over', None)
+    assert system() is cairn  # The instance's system again.
 
 
 def test_the_engine_stands_alone_without_flask_or_the_database():
@@ -104,11 +104,11 @@ def test_cairn_creation_dice_and_tables():
     assert min(rolls) >= 3 and max(rolls) <= 18 and len(set(rolls)) > 8
     assert {cairn.roll_stat('hp') for _ in range(200)} == {1, 2, 3, 4, 5, 6}
     for name in ('backgrounds', 'traits', 'bonds', 'omens', 'scars'):
-        assert cairn.content.path(name).is_file() and os.sep + os.path.join('systems', 'cairn', 'content') in str(cairn.content_path(name)), name
+        assert cairn.content.path(name).is_file() and os.sep + os.path.join('system', 'cairn', 'content') in str(cairn.content_path(name)), name
 
 
 def test_barebones_and_2e_creation_roll_with_the_system_s_dice():
-    from systems.cairn.web.charcreo_barebones import ATTRIBUTES
+    from system.cairn.web.charcreo_barebones import ATTRIBUTES
     assert ATTRIBUTES == {'str': ('strength', 6, 3), 'dex': ('dexterity', 6, 3), 'wil': ('willpower', 6, 3), 'hp': ('hp', 6, 1)}
 
 
@@ -139,8 +139,8 @@ def test_2e_creation_rolls_and_swaps_attributes(app_with_babel):
 # Step 3: one slot rule everywhere: a petty item takes no slot, even if it is also bulky.
 
 def test_petty_and_bulky_takes_no_slot_everywhere():
-    from systems.cairn.web.barebones import slots_used
-    from systems.cairn.web.char_utils import GeneratedCharacter
+    from system.cairn.web.barebones import slots_used
+    from system.cairn.web.char_utils import GeneratedCharacter
     odd = [item('petty', 'bulky'), item('bulky'), item()]
     assert slots_used(odd) == 3
     generated = GeneratedCharacter()
@@ -160,13 +160,16 @@ def test_pages_get_the_game_system_for_their_scripts(app_with_babel):
     assert [c['key'] for c in data['conditions']] == ['deprived', 'panicked', 'dead']
 
 
-# Steps 4 and 5: a campaign plays a system, and a stat without a column is stored in system_stats.
+# Steps 4 and 5: the instance plays a system, and a stat without a column is stored in system_stats.
 
 @dataclass(frozen=True)
 class Lucky(GameSystem):
-    """Cairn's stats plus Luck, which has no column; saves roll over."""
+    """Cairn's stats plus Luck, which has no column; saves roll over. Its tables are Cairn's (a system ships its own:
+    the app reads its backgrounds, traits, bestiary...), and it has no web parts."""
     key: str = 'lucky'
     name: str = 'Lucky'
+    home: str = str(Path(__file__).parents[2] / 'system' / 'cairn')
+    tables: dict = field(default_factory=lambda: dict(system().tables))
     hit_points: Stat = Stat('hp', 'HP', 'Hit Points', roll=(1, 6))
     attributes: tuple = (Stat('strength', 'STR', 'Strength', save=True, roll=(3, 6)),
                          Stat('luck', 'LCK', 'Luck', save=True, roll=(2, 6)))
@@ -178,21 +181,19 @@ class Lucky(GameSystem):
 
 @pytest.fixture
 def lucky_campaign(app_with_babel):
-    """user 1 runs a Lucky campaign whose party has user 2's character Ada (STR 10/10, Luck 7/9).
-
-    Nothing in the app offers another system: code creates them with it, and from then on it is fixed."""
+    """An instance that plays Lucky: user 1 runs a campaign whose party has user 2's character Ada (STR 10/10,
+    Luck 7/9)."""
     import json
     from app.lib.campaign_parties import create_campaign
     from app.models import Character, User, db
-    register(Lucky())
     app = app_with_babel
-    with app.app_context():
+    with use_system(Lucky()), app.app_context():
         db.session.add_all([User(id=1, username='warden'), User(id=2, username='player')])
         db.session.flush()
-        party = create_campaign(1, 'Lucky Roads', game_system='lucky').parties[0]
+        party = create_campaign(1, 'Lucky Roads').parties[0]
         db.session.flush()
         ada = Character(owner=2, owner_username='player', name='Ada', url_name='ada', party_id=party.id,
-                        game_system='lucky', background='Custom', edition='2e', strength=10, strength_max=10,
+                        background='Custom', edition='2e', strength=10, strength_max=10,
                         hp=4, hp_max=4, gold=0, deprived=False, panicked=False, dead=False, items='[]',
                         containers='[{"id": 0, "name": "Main", "slots": 10}]')
         ada.set_stat('luck', 7)
@@ -202,96 +203,45 @@ def lucky_campaign(app_with_babel):
         party.members = json.dumps([ada.id])
         db.session.commit()
         ids = party.id, ada.id
-    yield app, ids
-    SYSTEMS.pop('lucky', None)
+    with use_system(Lucky()):
+        yield app, ids
 
 
-def test_campaigns_parties_and_characters_keep_the_system_they_were_created_with(lucky_campaign):
-    from app.lib.campaign_parties import create_party
-    from app.models import Campaign, Character, GameSystemChanged, Party, db
+def test_records_keep_no_system_of_their_own(lucky_campaign):
+    """One system per instance: campaigns, parties and characters have no game_system (dropped by 487a03)."""
+    from app.models import Campaign, Character, Party, db
     app, (party_id, ada_id) = lucky_campaign
+    for model in (Campaign, Party, Character):
+        assert 'game_system' not in model.__table__.columns and not hasattr(model, 'rules')
     with app.app_context():
-        party, ada = db.session.get(Party, party_id), db.session.get(Character, ada_id)
-        campaign = party.campaign
-        assert campaign.rules is party.rules is ada.rules is system('lucky')
+        ada = db.session.get(Character, ada_id)
         assert ada.system_stats == '{"luck": 7, "luck_max": 9}' and ada.get_stat('luck') == 7
         assert ada.stat_values() == {'hp': [4, 4], 'strength': [10, 10], 'luck': [7, 9]}
-        # A new party of the campaign plays its system.
-        assert create_party(campaign, 'Second Table').game_system == 'lucky'
-        db.session.rollback()
-        # A party that leaves its campaign keeps its system; so does a character that leaves its party.
-        party.campaign = None
-        ada.party_id = None
-        db.session.flush()
-        assert party.rules is ada.rules is system('lucky')
-        db.session.rollback()
-        # Once created, the system can't change.
-        for row in (db.session.get(Campaign, campaign.id), db.session.get(Party, party_id), db.session.get(Character, ada_id)):
-            row.game_system = 'cairn'
-            with pytest.raises(GameSystemChanged):
-                db.session.flush()
-            db.session.rollback()
-        # A key that is no longer registered falls back to the default system.
-        assert Campaign(game_system='gone').rules is system()
 
 
-def test_a_party_only_joins_a_campaign_of_its_own_system(lucky_campaign):
-    from app.lib.campaign_parties import create_campaign, create_party
-    from app.models import Party, db
-    from tests.helpers import login
-    app, (party_id, ada_id) = lucky_campaign
-    with app.app_context():
-        cairn = create_campaign(1, 'Plain Roads', with_party=False)
-        loose = create_party(None, 'Loose Ends', owner_id=1)
-        db.session.commit()
-        cairn_id, loose_id = cairn.id, loose.id
-        assert loose.game_system == 'cairn'
-    warden = login(app.test_client(), 1)
-    # The Lucky party can't move to a Cairn campaign, by any of the three ways a party joins one.
-    assert warden.post(f'/campaigns/{cairn_id}/parties/add', data={'party_id': party_id}).status_code == 400
-    assert warden.post(f'/party/{party_id}/campaign', data={'campaign_id': cairn_id}).status_code == 400
-    with app.app_context():
-        party = db.session.get(Party, party_id)
-        url = f'/party/edit/warden/{party.party_url}/save'
-    assert warden.post(url, data={'name': 'Lucky Roads', 'description': '', 'campaign_id': cairn_id}).status_code == 400
-    # A Cairn party can.
-    assert warden.post(f'/party/{loose_id}/campaign', data={'campaign_id': cairn_id}).status_code == 302
-    with app.app_context():
-        assert db.session.get(Party, party_id).campaign_id != cairn_id
-        assert db.session.get(Party, loose_id).campaign_id == cairn_id
-
-
-def test_a_character_only_joins_a_party_of_its_own_system(lucky_campaign):
-    import json
-    from app.lib import add_character_to_party
-    from app.models import Character, Party, db
-    from tests.helpers import login
-    app, (party_id, ada_id) = lucky_campaign
-    with app.app_context():
-        party = db.session.get(Party, party_id)
-        code = party.join_code
-        db.session.add(Character(id=50, owner=2, owner_username='player', name='Old Hand', url_name='old-hand',
-                                 background='Aurifex', items='[]', containers='[{"id": 0, "name": "Main", "slots": 10}]'))
-        db.session.commit()
-        hand = db.session.get(Character, 50)
-        assert hand.game_system == 'cairn'
-        hand.party_id = party_id
-        with pytest.raises(ValueError):
-            add_character_to_party(hand)
-        db.session.rollback()
-    # Joining with the code: the Lucky party is no party for a Cairn character.
-    player = login(app.test_client(), 2)
-    player.post('/charedit/player/old-hand/section/party', data={'party_code': code})
-    with app.app_context():
-        assert db.session.get(Character, 50).party_id is None
-        assert json.loads(db.session.get(Party, party_id).members) == [ada_id]
-    # A character created for the party plays its system.
-    form = {'party_code': code, 'name': 'Rook', 'background': '1', 'strength': '10', 'dexterity': '10',
-            'willpower': '10', 'hp': '4', 'gold': '5', 'age': '20'}
-    assert player.post('/charcreo/barebones/save', data=form).headers.get('HX-Redirect')
-    with app.app_context():
-        rook = Character.query.filter_by(name='Rook').one()
-        assert rook.game_system == 'lucky' and rook.party_id == party_id
+def test_the_instance_plays_the_system_game_system_names(tmp_path):
+    """GAME_SYSTEM (in .env) names the system's package in system/; without it, system/__init__.py's DEFAULT."""
+    import os
+    run = lambda code, **env: subprocess.run([sys.executable, '-c', code], capture_output=True, text=True,
+                                             env={**{k: v for k, v in os.environ.items() if k != 'GAME_SYSTEM'}, **env})
+    assert run('import kettlewright; print(kettlewright.system().key)').stdout.strip() == 'cairn'
+    assert run('import kettlewright; print(kettlewright.system().key)', GAME_SYSTEM=' Cairn ').stdout.strip() == 'cairn'
+    unknown = run('import kettlewright; kettlewright.system()', GAME_SYSTEM='no-such-system')
+    assert unknown.returncode and 'UnknownGameSystem: GAME_SYSTEM=no-such-system: no such game system. Available: cairn.' in unknown.stderr
+    # Another system's package: the instance plays it, and only it.
+    package = tmp_path / 'more_systems' / 'tiny'
+    package.mkdir(parents=True)
+    (package.parent / '__init__.py').write_text("DEFAULT = 'tiny'\n")
+    (package / '__init__.py').write_text(
+        'from dataclasses import dataclass\n'
+        'from kettlewright import GameSystem, Stat, register\n'
+        '@dataclass(frozen=True)\n'
+        'class Tiny(GameSystem):\n'
+        "    key: str = 'tiny'\n    name: str = 'Tiny'\n    hit_points: Stat = Stat('hp', 'HP', 'HP')\n"
+        'register(Tiny())\n')
+    code = ('import sys, kettlewright.registry as r; r.PACKAGE = "more_systems"; import kettlewright; '
+            'print(kettlewright.system().key, kettlewright.available(), "system.cairn" in sys.modules)')
+    assert run(code, PYTHONPATH=f'{tmp_path}{os.pathsep}.').stdout.strip() == "tiny ['tiny'] False"
 
 
 def test_a_stat_without_a_column_is_shown_saved_and_rolled(lucky_campaign):
@@ -316,7 +266,7 @@ def test_a_stat_without_a_column_is_shown_saved_and_rolled(lucky_campaign):
 
 
 def test_the_app_offers_no_choice_of_system(app_with_babel):
-    """Systems are internal (#487): New campaign has no choice, and a posted system is ignored."""
+    """The system is the instance's (#487): New campaign has no choice, and a posted system is ignored."""
     from app.models import Campaign, User, db
     from tests.helpers import login
     app = app_with_babel
@@ -324,45 +274,42 @@ def test_the_app_offers_no_choice_of_system(app_with_babel):
         db.session.add(User(id=1, username='warden'))
         db.session.commit()
     client = login(app.test_client(), 1)
-    register(Lucky())
-    try:
-        page = client.get('/campaigns/').get_data(as_text=True)
-        assert 'game_system' not in page and 'Lucky' not in page
-        assert client.post('/campaigns/', data={'name': 'Lucky Roads', 'game_system': 'lucky'}).status_code == 302
-        with app.app_context():
-            campaign = Campaign.query.one()
-            assert campaign.game_system == 'cairn' and campaign.parties[0].game_system == 'cairn'
-    finally:
-        SYSTEMS.pop('lucky', None)
+    page = client.get('/campaigns/').get_data(as_text=True)
+    assert 'game_system' not in page
+    assert client.post('/campaigns/', data={'name': 'Lucky Roads', 'game_system': 'lucky'}).status_code == 302
+    with app.app_context():
+        assert Campaign.query.one().name == 'Lucky Roads'
 
 
-def test_migrations_add_system_stats_and_the_campaign_s_system():
+def test_migrations_add_system_stats_and_drop_the_records_systems():
     import pathlib
     versions = pathlib.Path('migrations/versions')
     stats, campaign = (versions / '487a01_system_stats.py').read_text(), (versions / '487a02_campaign_system.py').read_text()
+    one = (versions / '487a03_one_system_per_instance.py').read_text()
+    assert "down_revision = '537a01'" in one and "drop_column('game_system')" in one and "server_default='cairn'" in one
     assert "down_revision = '514a01'" in stats and "server_default='{}'" in stats and 'drop_column' in stats
     assert "down_revision = '487a01'" in campaign and "server_default='cairn'" in campaign and 'drop_column' in campaign
     assert "TABLES = ('campaigns', 'parties', 'characters')" in campaign
 
 
-# The systems live outside the engine's core (systems/), and each record follows its own.
+# The systems live outside the engine's core (system/); the instance plays one.
 
-def test_the_core_has_no_system_and_finds_them_in_the_systems_package():
+def test_the_core_has_no_system_and_finds_it_in_the_system_package():
     import pathlib
     for path in pathlib.Path('kettlewright').glob('*.py'):
         code = path.read_text()
-        assert 'import cairn' not in code and 'systems.cairn' not in code and "'cairn'" not in code, path
-    code = ('import sys, kettlewright; before = "systems.cairn" in sys.modules; kettlewright.system(); '
-            'print(before, "systems.cairn" in sys.modules, kettlewright.default_key())')
+        assert 'import cairn' not in code and 'system.cairn' not in code and "'cairn'" not in code, path
+    code = ('import sys, kettlewright; before = "system.cairn" in sys.modules; rules = kettlewright.system(); '
+            'print(before, "system.cairn" in sys.modules, rules.key)')
     out = subprocess.run([sys.executable, '-c', code], capture_output=True, text=True, check=True).stdout.split()
-    assert out == ['False', 'True', 'cairn']  # Loaded on first use; the systems package names the default.
-    from systems.cairn import CAIRN
-    assert system('cairn') is CAIRN and CAIRN.fatigue == 'Fatigue' and '1 Armor' in CAIRN.item_tags
+    assert out == ['False', 'True', 'cairn']  # Loaded on first use.
+    from system.cairn import CAIRN
+    assert system() is CAIRN and CAIRN.fatigue == 'Fatigue' and '1 Armor' in CAIRN.item_tags
     assert [field for field, _ in CAIRN.sheet_sections] == ['description', 'traits', 'bonds', 'omens', 'scars', 'notes']
     assert CAIRN.can_recover(()) and not CAIRN.can_recover(('deprived',))
 
 
-def test_a_character_s_pages_forms_and_exports_follow_its_system(lucky_campaign):
+def test_a_character_s_pages_forms_and_exports_follow_the_system(lucky_campaign):
     from app.lib.character_markdown import render_character
     from app.lib.discord_character import stat_field
     from app.lib.monsters import parse_monster
@@ -377,14 +324,14 @@ def test_a_character_s_pages_forms_and_exports_follow_its_system(lucky_campaign)
         assert (ada.luck, ada.luck_max) == (7, 9) and ada.stat_values()['luck'] == [7, 9]
         with pytest.raises(AttributeError):
             ada.charisma
-        assert stat_fields(ada.rules) == ['strength_max', 'strength', 'luck_max', 'luck', 'hp_max', 'hp']
-        form = with_system_stats(CharacterEditForm, ada.rules)
-        assert hasattr(form, 'luck') and hasattr(form, 'luck_max') and with_system_stats(CharacterEditForm, system()) is CharacterEditForm
+        assert stat_fields() == ['strength_max', 'strength', 'luck_max', 'luck', 'hp_max', 'hp']
+        form = with_system_stats(CharacterEditForm)
+        assert hasattr(form, 'luck') and hasattr(form, 'luck_max') and form is not CharacterEditForm
         text = render_character(ada.export_data(), markdown=False)
         assert 'STR 10/10 · LCK 7/9 · HP 4/4' in text and 'DEX' not in text
-        assert ada.export_data()['luck'] == 7
+        assert ada.export_data()['luck'] == 7 and ada.export_data()['game_system'] == 'lucky'
         assert stat_field(ada, 'lck') == 'luck' and stat_field(ada, 'dex') is None
-        monster = parse_monster('# Imp\n4 HP, 12 STR, 15 LCK, claws (d6)', rules=ada.rules)
+        monster = parse_monster('# Imp\n4 HP, 12 STR, 15 LCK, claws (d6)')
         assert (monster['luck'], monster['strength'], monster['attack']) == (15, 12, 'claws (d6)')
         assert 'dexterity' not in monster
     player = login(app.test_client(), 2)
@@ -402,10 +349,9 @@ def test_party_members_hirelings_fatigue_and_rest_follow_the_system(lucky_campai
     with app.app_context():
         party, ada = db.session.get(Party, party_id), db.session.get(Character, ada_id)
         hireling = new_hireling(party, 'Custom')
-        assert hireling.rules is party.rules and 2 <= hireling.get_stat('luck') <= 12
+        assert 2 <= hireling.get_stat('luck') <= 12
         assert hireling.get_stat('luck') == hireling.get_stat('luck_max') and json.loads(hireling.system_stats)['luck']
         inventory = Inventory(ada)
-        assert inventory.rules is ada.rules
         inventory.add_fatigue(0)
         assert json.loads(ada.items) == []  # Lucky has no Fatigue.
         # Rest: Cairn's Deprived characters recover nothing; Lucky's do.
@@ -435,8 +381,8 @@ def test_cairn_fatigue_and_rest_are_cairn_s(app_with_babel):
         assert rest([hand]) == dict(restored=[], already_full=[], deprived=['Hand']) and hand.hp == 1
 
 
-# Gaps found reviewing the tests: defaults, the registry, storage edge cases, and every place a second system
-# meets content or code written for Cairn.
+# Gaps found reviewing the tests: defaults, storage edge cases, and every place another system meets content or code
+# written for Cairn.
 
 def test_game_system_defaults_are_the_plainest_rules():
     plain = GameSystem(key='plain', name='Plain', hit_points=Stat('hp', 'HP', 'Hit Points'))
@@ -445,26 +391,6 @@ def test_game_system_defaults_are_the_plainest_rules():
     assert plain.effective_hp(4, 99, ('panicked',)) == 4 and plain.can_recover(('deprived',))
     assert plain.fatigue is None and plain.save_succeeds(5, 5) and not plain.save_succeeds(6, 5)
     assert plain.inventory.occupied_main_slots([item()], gold=10**6) == 1  # Coins never take a slot.
-
-
-def test_the_registry_refuses_an_unknown_default_and_loads_other_packages(tmp_path):
-    from kettlewright import set_default
-    with pytest.raises(KeyError):
-        set_default('no-such-system')
-    package = tmp_path / 'more_systems'
-    package.mkdir()
-    (package / '__init__.py').write_text(
-        'from dataclasses import dataclass\n'
-        'from kettlewright import GameSystem, Stat, register\n'
-        '@dataclass(frozen=True)\n'
-        'class Tiny(GameSystem):\n'
-        "    key: str = 'tiny'\n    name: str = 'Tiny'\n    hit_points: Stat = Stat('hp', 'HP', 'HP')\n"
-        'register(Tiny())\n')
-    import os
-    env = dict(os.environ, KETTLEWRIGHT_SYSTEMS='systems,more_systems', PYTHONPATH=f'{tmp_path}{os.pathsep}.')
-    code = 'import kettlewright; print(sorted(kettlewright.SYSTEMS) if kettlewright.system() else "", kettlewright.default_key())'
-    out = subprocess.run([sys.executable, '-c', code], capture_output=True, text=True, check=True, env=env).stdout
-    assert out.strip() == "['cairn', 'tiny'] cairn"  # Both packages loaded; the systems package's default stays.
 
 
 def test_unreadable_system_stats_read_as_empty(lucky_campaign):
@@ -482,7 +408,7 @@ def test_unreadable_system_stats_read_as_empty(lucky_campaign):
         db.session.rollback()
 
 
-def test_pets_and_hirelings_play_their_owner_s_system(lucky_campaign):
+def test_pets_and_hirelings_play_the_system(lucky_campaign):
     import json
     from app.lib.companions import new_hireling, pet_data
     from app.models import Character, Companion, Party, db
@@ -496,7 +422,6 @@ def test_pets_and_hirelings_play_their_owner_s_system(lucky_campaign):
         hound = Companion(kind='pet', hireling=hireling, name='Hound', items='[]', containers='[]')
         db.session.add_all([pet, hound])
         db.session.commit()
-        assert pet.rules is hound.rules is hireling.rules is system('lucky')
         mirrored = pet_data({'name': 'Shadow', 'mirror': True}, ada)
         assert (mirrored['luck'], mirrored['luck_max'], mirrored['strength']) == (7, 9, 10) and 'dexterity' not in mirrored
         hireling_id = hireling.id
@@ -507,14 +432,14 @@ def test_pets_and_hirelings_play_their_owner_s_system(lucky_campaign):
         assert json.loads(db.session.get(Companion, hireling_id).system_stats)['luck'] == 1
 
 
-def test_a_bestiary_monster_joins_a_party_of_another_system(lucky_campaign):
-    """The bestiary is Cairn's: in a Lucky party a goblin gets Lucky's stats it has (STR, HP), and no Luck."""
+def test_a_bestiary_monster_in_another_system(lucky_campaign):
+    """The bestiary is Cairn's: playing Lucky, a goblin gets Lucky's stats it has (STR, HP), and no Luck."""
     from app.lib.monsters import monster_catalog, new_monster
     from app.models import Party, db
     app, (party_id, ada_id) = lucky_campaign
     with app.app_context():
         goblin = new_monster(db.session.get(Party, party_id), monster_catalog()['goblin'])
-        assert goblin.rules is system('lucky') and goblin.strength == goblin.strength_max == 8
+        assert goblin.strength == goblin.strength_max == 8
         assert goblin.get_stat('luck') is None and goblin.get_stat('luck_max') is None
 
 
@@ -522,18 +447,15 @@ def test_a_system_s_own_condition_has_a_form_field_and_is_saved(app_with_babel):
     from dataclasses import replace
     from app.forms import CharacterEditForm
     from app.lib.system_forms import condition_fields, with_system_stats
-    poisoned = register(replace(Lucky(), key='poisoned', conditions=(Condition('poisoned', 'Poisoned'),)))
-    try:
-        form = with_system_stats(CharacterEditForm, poisoned)
-        assert type(form.poisoned).__name__ == 'UnboundField' and condition_fields(poisoned) == ['poisoned']
-        assert with_system_stats(CharacterEditForm, poisoned) is form  # Made once per system.
-    finally:
-        SYSTEMS.pop('poisoned', None)
+    with use_system(replace(Lucky(), key='poisoned', conditions=(Condition('poisoned', 'Poisoned'),))):
+        form = with_system_stats(CharacterEditForm)
+        assert type(form.poisoned).__name__ == 'UnboundField' and condition_fields() == ['poisoned']
+        assert with_system_stats(CharacterEditForm) is form  # Made once.
 
 
 def test_the_pdf_discord_and_make_camp_for_another_system(lucky_campaign):
     import json
-    from systems.cairn.web.character_pdf import character_sheet
+    from system.cairn.web.character_pdf import character_sheet
     from app.lib.discord_character import act
     from app.lib.wilderness import make_camp
     from app.models import Character, Party, db
@@ -620,12 +542,12 @@ def test_a_companion_s_sheet_controls_use_its_system(lucky_campaign):
 def test_the_js_tests_play_cairn_as_the_server_sends_it():
     """tests/js/support/cairn-system.json is Cairn's manifest; regenerate it when Cairn changes:
     python -c "import json; from kettlewright import system; from kettlewright.web import browser_manifest;
-    print(json.dumps(browser_manifest(system('cairn')), indent=2))" > tests/js/support/cairn-system.json"""
+    print(json.dumps(browser_manifest(system()), indent=2))" > tests/js/support/cairn-system.json"""
     import json
     from pathlib import Path
     from kettlewright.web import browser_manifest
     fixture = json.loads((Path(__file__).parents[1] / 'js/support/cairn-system.json').read_text())
-    assert fixture == json.loads(json.dumps(browser_manifest(system('cairn'))))
+    assert fixture == json.loads(json.dumps(browser_manifest(system())))
 
 
 def test_the_browser_engine_has_no_system_of_its_own():
@@ -648,7 +570,7 @@ def json_js(value):
     return re.sub(r'"(\w+)":', r'\1:', json.dumps(value)).replace('"', "'")
 
 
-def test_pages_serve_the_engine_and_play_their_record_s_system(lucky_campaign):
+def test_pages_serve_the_engine_and_play_the_instance_s_system(lucky_campaign):
     import json
     from tests.helpers import login
     app, _ = lucky_campaign
@@ -661,12 +583,12 @@ def test_pages_serve_the_engine_and_play_their_record_s_system(lucky_campaign):
     assert page.index('type="importmap"') < page.index('type="module"')  # Before any module.
     manifest = lambda html: json.loads(html.split('<script id="game-system" type="application/json">', 1)[1]
                                        .split('</script>', 1)[0])
-    assert manifest(page)['key'] == 'cairn'  # A page without a record: the default system.
+    assert manifest(page)['key'] == 'lucky'  # Every page: the instance's system.
     with app.app_context():
         from app.models import Character
         ada = Character.query.filter_by(name='Ada').one()
         sheet = player.get(f'/users/{ada.owner_username}/characters/{ada.url_name}/').get_data(as_text=True)
-    assert manifest(sheet)['key'] == 'lucky'  # Ada's own system.
+    assert manifest(sheet)['key'] == 'lucky'
     assert [a['key'] for a in manifest(sheet)['attributes']] == ['strength', 'luck']
 
 
@@ -679,7 +601,7 @@ def test_a_system_s_own_files_and_template_pieces(app_with_babel):
                                                                'kettlewright/help/monster_format.html']
         loader = app_with_babel.jinja_env.loader
         assert 'kettlewright/help/monster_format.html' in loader.list_templates()
-        assert render_template_string("{{ rules_for(None).key }}") == 'cairn'
+        assert render_template_string("{{ game_system.key }}") == 'cairn'
 
 
 # Rules as data: what conditions do, the Warden's rolls and the system's words.
@@ -698,7 +620,7 @@ def test_cairn_s_conditions_say_what_they_do():
     assert plain.words('rest_blocked') == 'No HP recovered: %(names)s.' and plain.attack_die(('any',)) is None
 
 
-def test_the_warden_s_rolls_are_the_party_s_system_s():
+def test_the_warden_s_rolls_are_the_system_s():
     from types import SimpleNamespace
     from app.lib import warden_rolls
     reaction = system().warden_roll('reaction')
@@ -706,50 +628,61 @@ def test_the_warden_s_rolls_are_the_party_s_system_s():
     assert [reaction.outcome(total) for total in (2, 3, 5, 6, 8, 9, 11, 12)] == [
         'Hostile', 'Wary', 'Wary', 'Curious', 'Curious', 'Kind', 'Kind', 'Helpful']
     assert system().warden_roll('fate').dice == (6,) and system().warden_roll('weather') is None
-    with pytest.raises(ValueError):  # A roll the party's system doesn't have.
-        warden_rolls.roll_warden(SimpleNamespace(id=1), SimpleNamespace(owner=1, rules=Lucky()), 'fate')
+    with use_system(Lucky()), pytest.raises(ValueError):  # A roll the system doesn't have.
+        warden_rolls.roll_warden(SimpleNamespace(id=1), SimpleNamespace(owner=1), 'fate')
 
 
 def test_the_app_reaches_cairn_only_through_the_engine():
-    """Only the engine imports system packages, by the module names systems give it."""
+    """Only the engine imports the system's package, by the module names the system gives it."""
     import re
     from pathlib import Path
     root = Path(__file__).parents[2] / 'app'
     offenders = [str(path) for path in root.rglob('*.py') if 'obsolete' not in path.parts
-                 and re.search(r'^\s*(from|import) systems\b', path.read_text(), re.M)]
+                 and re.search(r'^\s*(from|import) system(\.|\s|$)', path.read_text(), re.M)]
     assert offenders == []
 
 
-def test_a_system_without_web_parts_still_gets_hirelings_and_its_own_wording(lucky_campaign):
+def test_a_system_without_web_parts_still_gets_hirelings(lucky_campaign):
+    from app.lib.companions import new_hireling
+    from app.models import Party, db
     from kettlewright.web import plugin
-    assert plugin(Lucky()) is None and plugin(system()).__name__ == 'systems.cairn.web'
+    from system.cairn import CAIRN
+    app, (party_id, ada_id) = lucky_campaign
+    assert plugin() is None
+    with use_system(CAIRN):
+        assert plugin().__name__ == 'system.cairn.web'
+    with app.test_request_context():
+        assert new_hireling(db.session.get(Party, party_id), 'Custom').name == 'Hireling'  # Named by its role.
 
 
-def test_json_import_keeps_the_character_s_system_and_its_stats_without_a_column(lucky_campaign):
-    """An exported Lucky character comes back as Lucky, with its Luck: the file's game system, and the stats the
-    page's script puts in system_stats (new_from_json.js)."""
+def test_json_import_takes_the_system_s_characters_and_their_stats_without_a_column(lucky_campaign):
+    """An exported Lucky character comes back with its Luck (the stats the page's script puts in system_stats,
+    new_from_json.js). A character of another system is refused: the instance plays one."""
     import json
     from app.models import Character, db
     from tests.helpers import login
     app, (party_id, ada_id) = lucky_campaign
     with app.app_context():
         data = db.session.get(Character, ada_id).export_data()
+    assert data['game_system'] == 'lucky'
     form = {key: json.dumps(value) if isinstance(value, (list, bool)) else value
             for key, value in data.items() if value is not None and key != 'system_stats'}
-    # As the page's script fills it: the page system's stat fields (0 when the file has none), then the rest.
+    # As the page's script fills it: the system's stat fields (0 when the file has none), then the rest.
     form.update({field: data.get(field) or 0 for stat in system().stats for field in (stat.key, stat.key + '_max')})
     form.update(name='Ada Again', system_stats=json.dumps({'luck': 7, 'luck_max': 9, 'dexterity': 3}))
     player = login(app.test_client(), 2)
     assert player.post('/new_from_json/', data=form).status_code == 302
     with app.app_context():
         again = Character.query.filter_by(name='Ada Again').one()
-        assert again.game_system == 'lucky' and (again.get_stat('luck'), again.get_stat('luck_max')) == (7, 9)
+        assert (again.get_stat('luck'), again.get_stat('luck_max')) == (7, 9)
         assert 'dexterity' not in again._extra_stats()  # Not one of Lucky's stats: not kept from system_stats.
-    # A system the app doesn't play: the default one. A stat that isn't a number: refused.
-    form.update(name='Ada Elsewhere', game_system='no-such-system', system_stats='{}')
-    assert player.post('/new_from_json/', data=form).status_code == 302
+    # A file of another system, or a stat that isn't a number: refused. A file that doesn't say: this system's.
+    form.update(name='Ada Elsewhere', game_system='cairn', system_stats='{}')
+    refused = player.post('/new_from_json/', data=form)
+    assert refused.status_code == 400 and 'another game system (cairn) than this site (Lucky)' in refused.get_data(as_text=True)
     form.update(name='Ada Broken', game_system='lucky', system_stats=json.dumps({'luck': 'seven'}))
     assert player.post('/new_from_json/', data=form).status_code == 400
+    form.update(name='Ada Unsaid', game_system='', system_stats='{}')
+    assert player.post('/new_from_json/', data=form).status_code == 302
     with app.app_context():
-        assert Character.query.filter_by(name='Ada Elsewhere').one().game_system == 'cairn'
-        assert Character.query.filter_by(name='Ada Broken').count() == 0
+        assert Character.query.filter(Character.name.in_(['Ada Elsewhere', 'Ada Broken'])).count() == 0

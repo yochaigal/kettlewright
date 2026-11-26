@@ -152,7 +152,8 @@ def test_portrait_picker_groups(shared):
 
 def test_illustrated_bestiary_has_a_token_for_every_monster_and_a_credit(shared):
     from app.lib.data import load_images, portrait_groups
-    from app.lib.monsters import CATALOG
+    from app.lib.monsters import catalog_path
+    CATALOG = catalog_path()
     app, clients, _ = shared
     with app.app_context():
         groups = dict(portrait_groups(load_images(include_categories=True)))
@@ -322,7 +323,8 @@ def test_locked_map_and_unlocked_tokens(shared):
 
 
 def test_monster_portraits_cover_catalog_and_preserve_custom_choice(shared):
-    from app.lib.monsters import CATALOG, monster_portrait, monster_portraits
+    from app.lib.monsters import catalog_path, monster_portrait, monster_portraits
+    CATALOG = catalog_path()
     app, clients, _ = shared
     catalog = monster_catalog()
     assert set(monster_portraits()) == set(catalog)

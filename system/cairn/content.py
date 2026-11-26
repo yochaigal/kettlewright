@@ -1,4 +1,4 @@
-"""Cairn's tables, by name: files under systems/cairn/content (rules.content.load(name)).
+"""Cairn's tables, by name: files under system/cairn/content (rules.content.load(name)).
 
 Tables not named here are '<name>.json' (traits, bonds, omens, scars, barebones, marketplace, monsters,
 hirelings, pets). backgrounds/ and generators/ hold one file per table, consolidated when the app starts.

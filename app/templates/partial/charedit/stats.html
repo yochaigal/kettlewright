@@ -1,7 +1,7 @@
 {% if not inline_stats %}<h3>{{_('Stats')}}</h3>{% endif %}
 <div class="stats-stats-container character-section">
   {# The game system's attributes (kettlewright): STR, DEX and WIL in Cairn. #}
-  {% for stat in rules_for(character).attributes %}{% set current, maximum = form[stat.key], form[stat.key + '_max'] %}
+  {% for stat in game_system.attributes %}{% set current, maximum = form[stat.key], form[stat.key + '_max'] %}
   <div class="character-attribute-container" id="character-{{ stat.abbr|lower }}-container">
     <h4>{{_(stat.abbr)}}</h4>
 
@@ -25,7 +25,7 @@
     </span>
   </div>
   {# The game system's conditions (kettlewright): Deprived, Panicked and Dead in Cairn, labelled in capitals. #}
-  {% for condition in rules_for(character).conditions %}{% set box = form[condition.key] %}
+  {% for condition in game_system.conditions %}{% set box = form[condition.key] %}
   <div class="character-attribute-container edit-mode" id="character-{{ condition.key }}-container">
     <h4 class="character-deprived-text"><label for="{{ condition.key }}-field">{{_(condition.label|upper)}}</label></h4>
     {{ box(aria_label=box.label.text, class='checkbox edit-mode', type='checkbox', id=condition.key ~ '-field') }}

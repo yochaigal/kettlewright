@@ -8,6 +8,7 @@ from alembic.migration import MigrationContext
 from alembic.operations import Operations
 
 from app.lib.companions import catalog, new_hireling
+from kettlewright import system
 from app.models import Character, Companion, Party, db
 from tests.unit.test_companions import world  # noqa: F401  (the fixture)
 
@@ -54,7 +55,7 @@ def test_a_hireling_s_sheet_is_laid_out_like_a_character_s(world):
     with app.app_context():
         hireling = db.session.get(Companion, 1)
         form = {'name': hireling.name, 'role': hireling.role, 'attack': '', 'notes': '', 'gold': 0, 'daily_cost': 10,
-                **{field: hireling.get_stat(field) for stat in hireling.rules.stats for field in (stat.key, stat.key + '_max')}}
+                **{field: hireling.get_stat(field) for stat in system().stats for field in (stat.key, stat.key + '_max')}}
     assert clients[1].post('/companions/1', data=form).status_code == 302
     with app.app_context():
         assert db.session.get(Companion, 1).armor == 1

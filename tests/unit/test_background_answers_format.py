@@ -7,7 +7,7 @@ import sqlalchemy as sa
 from alembic.migration import MigrationContext
 from alembic.operations import Operations
 
-BACKGROUNDS = Path('systems/cairn/content/backgrounds')
+BACKGROUNDS = Path('system/cairn/content/backgrounds')
 
 
 def migration():

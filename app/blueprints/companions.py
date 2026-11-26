@@ -1,4 +1,5 @@
 """Pets and hirelings have distinct entry points and shared small-sheet controls."""
+from kettlewright import system
 import json
 import re
 import uuid
@@ -807,7 +808,7 @@ def sheet_stat(companion_id):
     c = editable(companion_id)
     csrf()
     field = request.form.get('stat', '')
-    STATS = c.rules.stat_keys  # The companion's game system (#487): its own stats.
+    STATS = system().stat_keys  # The game system's stats (#487).
     maxima = tuple(stat + '_max' for stat in STATS)
     if field not in (*STATS, *maxima, 'gold', 'armor'):
         abort(400)

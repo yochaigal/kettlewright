@@ -9,7 +9,7 @@ from app.models import db, User, Character, Party
 from app.forms import *
 from app.main import create_unique_url_name
 from app.lib import *
-from systems.cairn.web.char_utils import *  # Cairn's characters and tables (moved from app.lib).
+from system.cairn.web.char_utils import *  # Cairn's characters and tables (moved from app.lib).
 from unidecode import unidecode
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
@@ -831,16 +831,14 @@ def charcreo_save():
     db.session.add(new_character)
     # Created for a party (its join code): the character joins it.
     from app.lib.campaign_backgrounds import party_for_code
-    with db.session.no_autoflush:  # Not saved before it has its party's game system.
-        party = party_for_code(request.form.get('party_code'))
+    party = party_for_code(request.form.get('party_code'))
     if party is not None:
-        new_character.game_system = party.game_system  # It plays its party's system (#487), from now on.
         db.session.flush()
         new_character.party_id = party.id
         new_character.party_code = party.join_code
         add_character_to_party(new_character)
     # An Outrider's mount carries for it: the container its background gives is the mount's (#537). After the party:
-    # linking saves the character, which must already have its party's game system.
+    # linking saves the character.
     from app.lib.mounts import link_mounts
     link_mounts(new_character)
     db.session.commit()

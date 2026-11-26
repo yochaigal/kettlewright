@@ -22,7 +22,7 @@ import {generateResult, graphFromResult, localizeText, resultText} from '../../a
 
 const data={};
 for (const name of ['dungeons','forests','realm','factions','npcs','names','faction-events','bestiary','custom-monster','reactions','weather','dungeon-events','wilderness-events','reliquary','spellbooks']) {
-  Object.assign(data,JSON.parse(readFileSync(new URL(`../../systems/cairn/content/generators/${name}.json`,import.meta.url))));
+  Object.assign(data,JSON.parse(readFileSync(new URL(`../../system/cairn/content/generators/${name}.json`,import.meta.url))));
 }
 function rng(seed) {return () => {seed=(seed*1664525+1013904223)>>>0; return seed/4294967296;};}
 for (const type of ['Dungeon','Forest','Realm']) test(`${type}: deterministic tables, connected graph and preserved results`,()=>{
@@ -133,7 +133,7 @@ test('dungeon and region paths roll all three types reproducibly',()=>{
 
 test('every Article category has a complete editable draft from shared rules tables', async()=>{
   const {generateArticle}=await import('../../app/static/src/js/content_generators.js');
-  data.Equipment=JSON.parse(readFileSync(new URL('../../systems/cairn/content/marketplace.json',import.meta.url)));
+  data.Equipment=JSON.parse(readFileSync(new URL('../../system/cairn/content/marketplace.json',import.meta.url)));
   for(const category of ['overview','npc','location','lore','faction','relic','note','bestiary','item','spellbook','culture','map']) {
     const draft=generateArticle(data,category,'',rng(9));
     assert.equal(draft.category,category);

@@ -1,54 +1,71 @@
-"""The game systems the engine knows, by key, and the default one.
+"""The game system this Kettlewright instance plays: one per instance, chosen before it starts.
 
-the engine's core has no system of its own. Systems live in packages outside it (Kettlewright's are in systems/ at
-the root of the repository): each registers itself when its package is imported, and the package says which
-one is the default. The packages are loaded on first use: KETTLEWRIGHT_SYSTEMS (comma-separated module names) or
-'systems'.
+The engine's core has no system of its own. The systems live in packages outside it, under system/ at the root of
+the repository (system/cairn for Cairn). GAME_SYSTEM, an environment variable (in .env), names the one this
+instance plays; without it, the one system/__init__.py names as DEFAULT. On first use the engine imports system.<GAME_SYSTEM>, which registers its
+GameSystem. Another system means another GAME_SYSTEM and a restart: everything the instance stores (campaigns,
+parties, characters) plays the system it runs.
 """
 import importlib
 import os
+from contextlib import contextmanager
+from pathlib import Path
 
-SYSTEMS = {}
-_state = {'default': None, 'loaded': False}
-
-
-def load(packages=None):
-    """Import the system packages once, so their systems are registered."""
-    if _state['loaded']:
-        return
-    _state['loaded'] = True
-    names = packages or [name.strip() for name in os.environ.get('KETTLEWRIGHT_SYSTEMS', 'systems').split(',') if name.strip()]
-    for name in names:
-        importlib.import_module(name)
+PACKAGE = 'system'  # The packages of the systems: system/<key>; system/__init__.py names the DEFAULT one.
+_state = {'system': None}
 
 
-def register(game_system, default=False):
-    """Add a system (from a system package, or a test). default: make it the default system."""
-    SYSTEMS[game_system.key] = game_system
-    if default or _state['default'] is None:
-        _state['default'] = game_system.key
+class UnknownGameSystem(LookupError):
+    """GAME_SYSTEM names no system in system/ (or its package registered none)."""
+
+
+def configured_key():
+    """The key GAME_SYSTEM names; the systems package's DEFAULT when it is not set."""
+    key = os.environ.get('GAME_SYSTEM') or getattr(importlib.import_module(PACKAGE), 'DEFAULT', '')
+    return key.strip().lower()
+
+
+def available():
+    """The systems an instance can play: the packages in system/."""
+    module = importlib.import_module(PACKAGE)
+    return sorted(path.parent.name for path in Path(module.__file__).parent.glob('*/__init__.py'))
+
+
+def register(game_system):
+    """Called by a system's package when it is imported. The instance plays it if it is the one GAME_SYSTEM names;
+    a package imported for something else (its tables, a test) doesn't change the instance's system. Returns it."""
+    if game_system.key == configured_key() and _state['system'] is None:
+        _state['system'] = game_system
     return game_system
 
 
-def set_default(key):
-    """Make a registered system the default one (the one new campaigns, parties and characters play)."""
-    if key not in SYSTEMS:
-        raise KeyError(key)
-    _state['default'] = key
+def load():
+    """Import the package of the system GAME_SYSTEM names, once. UnknownGameSystem if there is no such system."""
+    if _state['system'] is not None:
+        return _state['system']
+    key = configured_key()
+    try:
+        importlib.import_module(f'{PACKAGE}.{key}')
+    except ModuleNotFoundError as error:
+        if error.name not in (f'{PACKAGE}.{key}', PACKAGE):
+            raise
+        raise UnknownGameSystem(f"GAME_SYSTEM={key}: no such game system. Available: {', '.join(available())}.") from None
+    if _state['system'] is None:
+        raise UnknownGameSystem(f"system.{key} registered no game system with the key '{key}'.")
+    return _state['system']
 
 
-def default_key():
-    load()
-    return _state['default']
+def system():
+    """The game system this instance plays."""
+    return _state['system'] or load()
 
 
-def system(key=None):
-    """The system with this key, or the default one. KeyError for an unknown key."""
-    load()
-    return SYSTEMS[key or _state['default']]
-
-
-def system_or_default(key):
-    """The system with this key, or the default one if there is no such system (any more)."""
-    load()
-    return SYSTEMS.get(key) or SYSTEMS[_state['default']]
+@contextmanager
+def use_system(game_system):
+    """Play another system for a while (tests, tools); the instance's system again after."""
+    before = system()
+    _state['system'] = game_system
+    try:
+        yield game_system
+    finally:
+        _state['system'] = before

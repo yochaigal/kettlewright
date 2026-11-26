@@ -1,7 +1,7 @@
 <div id="item-extra-tags" data-labels='[
   {% if mode == "edit" %}
   {# Tags outside the game system's vocabulary (kettlewright), which the editor shows as extra tags. #}
-  {% for tag in item.tags if tag not in rules_for(character|default(party|default(None))).item_tags %}
+  {% for tag in item.tags if tag not in game_system.item_tags %}
   {"value": {{ tag | tojson }}, "label": {{ _(tag) | tojson }}}{% if not loop.last %},{% endif %}
   {% endfor %}
   {% endif %}

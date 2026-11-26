@@ -78,9 +78,9 @@ class _Sheet:
 
 
 def _rules(data):
-    """The sheet's game system (kettlewright, #487): its game_system, or the default one (an import, a pet)."""
-    from kettlewright import system_or_default
-    return system_or_default(data.get('game_system'))
+    """The game system (kettlewright, #487): the one the instance plays."""
+    from kettlewright import system
+    return system()
 
 
 def _stat_pairs(data, with_armor=True):

@@ -4,7 +4,7 @@ from pathlib import Path
 
 from kettlewright import system
 
-FOLDER = system().content.folder / 'generators'  # The default system's generators (kettlewright).
+FOLDER = system().content.folder / 'generators'  # The system's generators (kettlewright).
 TABLE_FILES = ('dungeons', 'forests', 'realm', 'factions', 'npcs', 'names', 'bestiary',
                'custom-monster', 'reliquary', 'spellbooks', 'dungeon-events', 'wilderness-events')
 MAP_TABLES = ('Dungeon', 'Forest', 'Realm', 'NPCGenerator', 'Names')

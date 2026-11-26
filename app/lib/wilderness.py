@@ -62,7 +62,7 @@ def make_camp(party, participants, mounts=(), resolve_deprivation=False):
     # Apply only after everyone can eat. Existing deprivation can have other causes.
     for member, items in inventories:
         # Eating ends what keeps a member from recovering (Deprived in Cairn), when the Warden says so (kettlewright).
-        rules = member.rules
+        rules = system()
         if resolve_deprivation:
             for key in rules.conditions_with(NO_RECOVERY):
                 if hasattr(member, key):
@@ -70,7 +70,7 @@ def make_camp(party, participants, mounts=(), resolve_deprivation=False):
         if not rules.can_recover(rules.active_conditions(member)):
             report['still_deprived'].append(member.name)
         else:
-            rested = [item for item in items if item.get('name') != member.rules.fatigue]  # Fatigue (kettlewright).
+            rested = [item for item in items if item.get('name') != system().fatigue]  # Fatigue (kettlewright).
             if len(rested) != len(items) and member in participants:
                 report['fatigue_removed'].append(member.name)
             items = rested
@@ -117,8 +117,8 @@ def rest(participants):
         raise ValueError(N_('Select at least one participant.'))
     report = dict(restored=[], already_full=[], deprived=[])
     for character in participants:
-        # Whether rest restores HP is the character's game system's rule (kettlewright): not while Deprived in Cairn.
-        if not character.rules.can_recover(character.rules.active_conditions(character)):
+        # Whether rest restores HP is the game system's rule (kettlewright): not while Deprived in Cairn.
+        if not system().can_recover(system().active_conditions(character)):
             report['deprived'].append(character.name)
         elif character.hp_max is not None and (character.hp or 0) < character.hp_max:
             report['restored'].append((character.name, character.hp or 0, character.hp_max))

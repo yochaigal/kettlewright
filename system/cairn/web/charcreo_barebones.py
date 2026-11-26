@@ -12,10 +12,10 @@ import bleach
 from flask import Blueprint, render_template, request, make_response, url_for, abort
 from flask_login import current_user, login_required
 
-from systems.cairn.web.barebones import (GEAR_BACKGROUND, armor_items, background_items, background_name, barebones_data,
+from system.cairn.web.barebones import (GEAR_BACKGROUND, armor_items, background_items, background_name, barebones_data,
                                build_inventory, gear_items, gear_packages, package_items, roll_index, roll_name,
                                slots_used, starting_items, weapon_items)
-from systems.cairn.web.char_utils import DummyCharacter, TraitValue, traits_text
+from system.cairn.web.char_utils import DummyCharacter, TraitValue, traits_text
 from app.lib.data import load_images, load_traits
 from app.lib.inventory import Inventory
 from app.lib.roll import roll_list, roll_multi_dice
@@ -261,10 +261,8 @@ def save():
     # Created for a party (Join a party): the character joins it.
     from app.lib.campaign_backgrounds import party_for_code
     from app.lib import add_character_to_party
-    with db.session.no_autoflush:  # Not saved before it has its party's game system.
-        party = party_for_code(state['party_code'])
+    party = party_for_code(state['party_code'])
     if party is not None:
-        character.game_system = party.game_system  # It plays its party's system (#487), from now on.
         db.session.flush()
         character.party_id, character.party_code = party.id, party.join_code
         add_character_to_party(character)

@@ -13,7 +13,7 @@
       <p class="party-member-background">{{ character.background | tr }}</p>
       {% include "partial/dead_badge.html" %}
       {# The system's other active conditions (Deprived, Panicked in Cairn); out of play has its badge above. #}
-      {% for condition in rules_for(character).conditions if condition.key in rules_for(character).active_conditions(character) and 'out_of_play' not in condition.effects %}
+      {% for condition in game_system.conditions if condition.key in game_system.active_conditions(character) and 'out_of_play' not in condition.effects %}
       <small>{{_(condition.label|upper)}}</small>
       {% endfor %}
     </div>
@@ -22,7 +22,7 @@
     {# HP that counts as 0 (a full inventory, Panicked: #544) shows as on the sheet: 0 when read, and a warning beside
        the stored value when edited. #}
     {% set available_hp = character.hpValue()[0] %}
-    {% for stat in rules_for(character).stats %}{% set field, label = stat.key, _(stat.abbr) %}
+    {% for stat in game_system.stats %}{% set field, label = stat.key, _(stat.abbr) %}
     <div class="party-member-stat">
       {% if current_user.id in (party.owner, character.owner) %}
       {% with stat_id='party-' ~ character.id ~ '-' ~ field,

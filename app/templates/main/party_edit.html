@@ -69,7 +69,7 @@
 
             <div class="character-card-stats-container">
               <div>
-                {% for stat in rules_for(character).attributes %}
+                {% for stat in game_system.attributes %}
                 <div class="card-attribute-container">
                   <p class="character-card-attribute subtitle">
                     {{_(stat.abbr)}} {{character[stat.key]}}/{{character[stat.key + '_max']}}

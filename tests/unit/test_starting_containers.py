@@ -75,7 +75,7 @@ def test_mountebank_keeps_cart_through_character_creation(app_with_babel):
 
 
 def test_random_mountebank_carries_cart(app_with_babel):
-    from systems.cairn.web.char_utils import generate_character
+    from system.cairn.web.char_utils import generate_character
     with app_with_babel.test_request_context('/'):
         genchar, data = generate_character('Mountebank')
     data = json.loads(data)

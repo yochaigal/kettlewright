@@ -11,27 +11,16 @@ from app.lib.ground_items import drop_item, drop_container, ground_items, pickup
 from app.models import Party, db
 
 
-def registered_systems():
-    """Every registered game system, the default one first (kettlewright)."""
-    from kettlewright import SYSTEMS
-    default = system()
-    return [default, *(rules for rules in SYSTEMS.values() if rules is not default)]
-
-
-# Discord registers the commands once for the whole app, so their choices are every registered system's (only
-# Cairn's today); a command reads the character's own system. /kw stat names: {'hp': 'hp', 'str': 'strength', ...}.
-STATS = {}
-for _rules in registered_systems():
-    for _stat in _rules.stats:
-        STATS.setdefault(_stat.abbr.lower(), _stat.key)
+# The commands' choices are the game system's (kettlewright). /kw stat names: {'hp': 'hp', 'str': 'strength', ...}.
+STATS = {stat.abbr.lower(): stat.key for stat in system().stats}
 # /kw condition choices: conditions a player sets (not one that puts a character out of play, like Dead).
-CONDITIONS = {condition.key: condition.label for rules in registered_systems() for condition in rules.conditions
+CONDITIONS = {condition.key: condition.label for condition in system().conditions
               if 'out_of_play' not in condition.effects}
 
 
 def stat_field(character, name):
-    """'str' -> 'strength' in the character's game system; None for a stat it doesn't have."""
-    return {stat.abbr.lower(): stat.key for stat in character.rules.stats}.get(name)
+    """'str' -> 'strength' in the game system; None for a stat it doesn't have."""
+    return {stat.abbr.lower(): stat.key for stat in system().stats}.get(name)
 ITEM_ACTIONS = ('use', 'remove', 'drop', 'transfer', 'move')
 
 
@@ -177,8 +166,8 @@ def act(name, values, character, characters, safe_name):
         return text
     if name == 'condition':
         field, active = values.get('condition'), values.get('active')
-        # The character's game system's conditions, but Dead (Deprived and Panicked in Cairn).
-        if field not in [key for key in character.rules.condition_keys if key != 'dead'] or type(active) is not bool:
+        # The game system's conditions, but Dead (Deprived and Panicked in Cairn).
+        if field not in [key for key in system().condition_keys if key != 'dead'] or type(active) is not bool:
             raise ValueError('Choose deprived or panicked and set active to true or false.')
         setattr(character, field, active)
         return f'{who}: {field.title()} {"applied" if active else "cleared"}. Effective HP: {character.hpValue()[0]}.'
@@ -215,7 +204,7 @@ def act(name, values, character, characters, safe_name):
             tags = catalog.get('tags', [])
             if 'tags' in values:
                 tags = [t.strip() for t in clean_text(values['tags'], 200).split(',') if t.strip()]
-            sizes = [tag for tag, _ in character.rules.inventory.sizes if tag in tags]  # petty, bulky in Cairn.
+            sizes = [tag for tag, _ in system().inventory.sizes if tag in tags]  # petty, bulky in Cairn.
             if len(sizes) > 1:
                 raise ValueError(f'An item cannot be both {" and ".join(sizes)}.')
             tags = list(tags)

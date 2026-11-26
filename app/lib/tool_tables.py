@@ -12,7 +12,7 @@ from kettlewright import system
 
 
 def load_tables(translated=True):
-    data = system().content.load('events')  # The default system's Warden tables (kettlewright).
+    data = system().content.load('events')  # The system's Warden tables (kettlewright).
     if translated:
         from app.main import translate_events_data
         data = translate_events_data(data)

@@ -251,7 +251,7 @@ def _board_stats(target):
         if kind == 'monster' and not warden and not actor.shared:
             return
         stats = {field: [actor.get_stat(field), actor.get_stat(field + '_max')]
-                 for field in actor.rules.stat_keys
+                 for field in system().stat_keys
                  if actor.get_stat(field) is not None}
         if kind == 'character' and 'hp' in stats:
             stats['hp'] = actor.hpValue()
@@ -376,7 +376,7 @@ def character_weapons(c):
     """A character's quick damage rolls on the whiteboard (#532): each item it carries in its main inventory that has
     a damage die, as [{'name': 'Sword', 'dice': 'd8'}]. Under a condition that weakens attacks (Panicked in Cairn)
     each rolls the system's weak die instead (a d4), as on its sheet."""
-    rules = c.rules
+    rules = system()
     weak = rules.attack_die(rules.active_conditions(c))
     weapons = []
     for item in json.loads(c.items or '[]'):
@@ -393,16 +393,16 @@ def _board_roll_actors(target):
     def character(c):
         return dict(id=str(c.id), name=c.name, kind='character', hp=[c.hp or 0, c.hp_max or 0], weapons=character_weapons(c),
                     attributes={field: [c.get_stat(field) or 0, c.get_stat(field + '_max') or 0]
-                                for field in c.rules.attribute_keys},
+                                for field in system().attribute_keys},
                     # The conditions a player sets in its game system (Deprived, Panicked in Cairn), on or off.
-                    conditions={condition.key: condition.key in c.rules.active_conditions(c) for condition in c.rules.conditions
+                    conditions={condition.key: condition.key in system().active_conditions(c) for condition in system().conditions
                                 if 'out_of_play' not in condition.effects},
                     statUrl=url_for('party.update_member_stat', party_id=target.id, character_id=c.id),
                     sheetUrl=url_for('main.character', username=c.owner_username, url_name=c.url_name)
                     if c.owner_username and c.url_name else None)
     if target.owner == current_user.id:
         actors = [dict(id=f'companion:{c.id}', name=c.name, kind='monster',
-                       stats={field: c.get_stat(field) for field in c.rules.attribute_keys},
+                       stats={field: c.get_stat(field) for field in system().attribute_keys},
                        damage=c.attack_dice, hp=[c.hp or 0, c.hp_max or 0],
                        statUrl=url_for('companions.stat', companion_id=c.id),
                        sheetUrl=url_for('companions.sheet', companion_id=c.id)) for c in target.monsters]
@@ -451,14 +451,14 @@ def shared_map_roll(party_id):
     except ValueError as error:
         return _board_json({'error': str(error)}), 400
     save = request.form.get('save')
-    rules = c.rules if c is not None else target.rules
+    rules = system()
     if save and (c is None or save not in rules.save_keys or sides != [rules.save_die] or c.get_stat(save) is None):
         abort(400)
     values = [secrets.randbelow(side) + 1 for side in sides]
     result = f'{", ".join(map(str, values))} ({"+".join(f"d{side}" for side in sides)})'
     if save:
         from app.lib.character_rolls import describe_save
-        result = describe_save(result, save, c.get_stat(save), values[0], rules)
+        result = describe_save(result, save, c.get_stat(save), values[0])
     name = c.name if c else _('Warden') if current_user.id == target.owner else current_user.username
     db.session.add(PartyRoll(party_id=target.id, character_name=name, result=result,
                              private_user_id=None if public else current_user.id))
@@ -589,7 +589,7 @@ def update_member_stat(party_id, character_id):
         abort(403)
     # The whiteboard's token panel (#375) also sets conditions a player sets (Deprived and Panicked in Cairn), but
     # not one that puts a character out of play (Dead).
-    rules = character.rules
+    rules = system()
     if request.form.get('stat') in [key for key in rules.condition_keys if key not in rules.conditions_with('out_of_play')]:
         return save_character_stat(character)
     return save_current_stat(character)
@@ -779,8 +779,7 @@ def party_edit_save(ownername, party_url):
         if campaign_id:
             from app.models import Campaign
             campaign = db.session.get(Campaign, int(campaign_id)) if campaign_id.isdigit() else None
-            # A party keeps its game system (#487): it only joins a campaign of the same one.
-            if campaign is None or campaign.owner_id != current_user.id or campaign.game_system != party.game_system:
+            if campaign is None or campaign.owner_id != current_user.id:
                 abort(400)
             party.campaign = campaign
         else:
@@ -1136,8 +1135,8 @@ def wilderness_summary(action, participants, form, target, characters):
                        packs=report['from_packs'], storage=report['from_storage']))
         if report['fatigue_removed']:
             parts.append(_('Fatigue removed: %(names)s.', names=name_list(report['fatigue_removed'])))
-        if report['still_deprived']:  # The party's system's words (kettlewright): still Deprived in Cairn.
-            parts.append(_(target.rules.words('camp_blocked'), names=name_list(report['still_deprived'])))
+        if report['still_deprived']:  # The system's words (kettlewright): still Deprived in Cairn.
+            parts.append(_(system().words('camp_blocked'), names=name_list(report['still_deprived'])))
         return ' '.join(parts)
     if action == 'travel':
         path = form.get('path', '')
@@ -1213,8 +1212,8 @@ def dungeon_summary(action, participants, form, target, characters):
                 ['%s (%s → %s)' % (name, before, after) for name, before, after in report['restored']])))
         if report['already_full']:
             parts.append(_('Already at full HP: %(names)s.', names=name_list(report['already_full'])))
-        if report['deprived']:  # The party's system's words (kettlewright): Deprived in Cairn.
-            parts.append(_(target.rules.words('rest_blocked'), names=name_list(report['deprived'])))
+        if report['deprived']:  # The system's words (kettlewright): Deprived in Cairn.
+            parts.append(_(system().words('rest_blocked'), names=name_list(report['deprived'])))
         return ' '.join(parts)
     abort(400)
 
@@ -1229,7 +1228,7 @@ def party_action(party_id, category, actions, summarize):
     characters = party_characters(target)
     selected = request.form.getlist('participants')
     # Characters still in play (not Dead in Cairn: kettlewright's out-of-play conditions).
-    by_id = {str(c.id): c for c in characters if not c.rules.has_effect(c.rules.active_conditions(c), 'out_of_play')}
+    by_id = {str(c.id): c for c in characters if not system().has_effect(system().active_conditions(c), 'out_of_play')}
     if not selected:
         flash(_('You need to select a PC first'), category)
         return redirect(url_for('party.party_view', ownername=target.owner_username, party_url=target.party_url))

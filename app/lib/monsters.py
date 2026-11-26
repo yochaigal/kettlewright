@@ -9,11 +9,15 @@ from app.models import Companion, Character, db
 
 from kettlewright import system
 
-CATALOG = system().content.path('monsters')  # The default system's bestiary (kettlewright).
 # The art a party's new monsters get: Kettlewright's tokens, or Oozejar's Illustrated Bestiary
 # (from the Cairn collection for Atlas VTT, CC BY-SA 4.0), which has one token for each bestiary monster.
 MONSTER_ARTS = ('kettlewright', 'oozejar')
 MAX_MONSTER_BATCH = 100
+
+
+def catalog_path():
+    """The system's bestiary (kettlewright)."""
+    return system().content.path('monsters')
 
 
 def _monster_body(markdown):
@@ -62,7 +66,7 @@ def parse_monsters(markdown):
     return templates
 
 
-def parse_monster(markdown, rules=None):
+def parse_monster(markdown):
     if not isinstance(markdown, str) or len(markdown.encode('utf-8')) > 65536:
         raise ValueError('Choose a Markdown monster file smaller than 64 KB.')
     body = _monster_body(markdown)
@@ -77,7 +81,7 @@ def parse_monster(markdown, rules=None):
     stats = lines[stats_line]
     # The stat line's labels are the game system's (kettlewright): HP, Armor, STR, DEX and WIL in Cairn. An attribute
     # that isn't given is 10.
-    rules = rules or system()
+    rules = system()
     result = dict(name=name, armor=0, **{stat.key: 10 for stat in rules.attributes})
     fields = {rules.hit_points.abbr: rules.hit_points.key, 'Armor': 'armor',
               **{stat.abbr: stat.key for stat in rules.attributes}}
@@ -98,7 +102,7 @@ def parse_monster(markdown, rules=None):
 
 
 def monster_catalog(art='kettlewright'):
-    templates = json.loads(CATALOG.read_text())
+    templates = json.loads(catalog_path().read_text())
     for template in templates.values():
         template['art'] = {choice: monster_portrait(template['name'], choice) for choice in MONSTER_ARTS}
         template['image_url'] = template['art'].get(art, template['art']['kettlewright'])
@@ -123,11 +127,11 @@ def localized_monster_catalog(art='kettlewright'):
 
 @lru_cache(maxsize=1)
 def _monster_portraits(version):
-    return json.loads(CATALOG.with_name('monster-portraits.json').read_text())
+    return json.loads(catalog_path().with_name('monster-portraits.json').read_text())
 
 
 def monster_portraits():
-    return _monster_portraits(CATALOG.with_name('monster-portraits.json').stat().st_mtime_ns)
+    return _monster_portraits(catalog_path().with_name('monster-portraits.json').stat().st_mtime_ns)
 
 
 def monster_portrait(name, art='kettlewright'):
@@ -141,14 +145,17 @@ def monster_portrait(name, art='kettlewright'):
 
 
 def new_monster(party, template):
-    from app.lib.companions import import_pet
+    from app.lib.companions import STATS, import_pet
     data = dict(template, role=template['name'], gold=0, items=[], containers=[dict(id=0, name='Main', slots=10)],
                 image_url=template.get('image_url') or monster_portrait(template['name'], party.monster_art))
     data.pop('labels', None)
     data.pop('art', None)
-    # The bestiary's stats (the default system's) and the party's game system's (#487): each starts at its maximum;
-    # a stat the bestiary doesn't have stays empty.
-    for stat in dict.fromkeys((*system().stat_keys, *(party.rules if party is not None else system()).stat_keys)):
+    # The game system's stats (#487): each starts at its maximum; a stat the bestiary doesn't have stays empty, and
+    # one the system doesn't have is left out.
+    for stat in STATS:
+        if stat not in system().stat_keys:
+            data.pop(stat, None)
+    for stat in system().stat_keys:
         data[stat + '_max'] = data.get(stat)
     c = import_pet(data)
     c.kind, c.party, c.shared = 'monster', party, False

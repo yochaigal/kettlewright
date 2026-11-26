@@ -2,7 +2,8 @@
 
 `kettlewright` is the game-system engine the app runs on ([#487](https://github.com/yochaigal/kettlewright/issues/487)).
 It is system-agnostic: it defines what a game system is, applies a system's rules (in Python here, and in the browser
-in `static/kettlewright.js`), and keeps the registered systems, which live outside it in [`systems/`](../systems).
+in `static/kettlewright.js`), and loads the one system an instance plays (`GAME_SYSTEM`), from its package in
+[`system/`](../system).
 See [docs/game-systems.md](../docs/game-systems.md) for the design and how the app uses it.
 
 ## Files
@@ -11,8 +12,8 @@ See [docs/game-systems.md](../docs/game-systems.md) for the design and how the a
 |---|---|
 | `core.py` | `Stat`, `Condition` (and its `EFFECTS`), `Inventory`, `Armor`, `WardenRoll`, `GameSystem`: a system's data and the generic rules that read it; `manifest()` for the browser |
 | `content.py` | `Content`: a system's tables, read from its package |
-| `registry.py` | `register`, `system(key)`, `system_or_default(key)`, `default_key()`, `load()` |
-| `web.py` | `init_app(app)`, the only Flask-aware module: the engine's and systems' files and templates, each page's system, `plugin(rules)` |
+| `registry.py` | `system()`, `load()`, `register`, `configured_key()`, `available()`, `use_system()`, `UnknownGameSystem` |
+| `web.py` | `init_app(app)`, the only Flask-aware module: the engine's and the system's files and templates, the page's copy of the system, `plugin()` |
 | `static/kettlewright.js` | The browser engine, imported as `'#kettlewright'`: the same rules over the page's system |
 | `templates/kettlewright/` | Generic template pieces, for a system without its own |
 | `__init__.py` | The public API |
@@ -20,10 +21,9 @@ See [docs/game-systems.md](../docs/game-systems.md) for the design and how the a
 ## The API
 
 ```python
-from kettlewright import system, register, ZERO_HP
+from kettlewright import system, ZERO_HP
 
-rules = system()                       # the default system
-rules = system('cairn')                # by key; KeyError if unknown
+rules = system()                       # the system the instance plays (GAME_SYSTEM)
 rules.stat_keys                        # ('hp', 'strength', 'dexterity', 'willpower')
 rules.abbr('dexterity')                # 'DEX'
 rules.save_succeeds(roll=7, score=12)  # Cairn: roll under
@@ -45,11 +45,14 @@ rules.manifest()                       # all of it as data, for the browser
 import {itemSize, occupiedMainSlots, effectiveHp, armorValue, saveDie, useSystem} from '#kettlewright';
 ```
 
-## Loading systems
+## The instance's system
 
-On first use, `load()` imports the packages named in `KETTLEWRIGHT_SYSTEMS` (comma-separated), or `systems`. Each
-package registers its systems when imported (`register(...)`) and may set the default (`set_default(key)`);
-without one, the first registered system is the default.
+An instance plays one system. `GAME_SYSTEM` (an environment variable, in `.env`) names its package in `system/`;
+without it, the one `system/__init__.py` names as `DEFAULT` (`cairn`). On first use, `load()` imports
+`system.<GAME_SYSTEM>`, whose `__init__.py` calls `register(...)`; an unknown name raises `UnknownGameSystem` with
+the systems there are (`available()`). Another system means another `GAME_SYSTEM` and a restart.
+
+`use_system(rules)` plays another system for a while, as a context manager: for tests and tools.
 
 ## Defaults
 
