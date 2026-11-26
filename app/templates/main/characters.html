@@ -25,7 +25,7 @@
       <p class="character-card-background">{{ character.background | tr }}</p>
       {% include "partial/dead_badge.html" %}
       <dl class="character-card-stats">
-        {% for stat in rules_for(character).attributes %}<div><dt>{{_(stat.abbr)}}</dt><dd>{{character[stat.key]}}<small>/{{character[stat.key + '_max']}}</small></dd></div>
+        {% for stat in game_system.attributes %}<div><dt>{{_(stat.abbr)}}</dt><dd>{{character[stat.key]}}<small>/{{character[stat.key + '_max']}}</small></dd></div>
         {% endfor %}
         <div><dt>{{_('HP')}}</dt><dd>{{hp[0]}}<small>/{{hp[1]}}</small></dd></div>
         <div><dt>{{_('Armor')}}</dt><dd>{{character.armorValue()}}</dd></div>

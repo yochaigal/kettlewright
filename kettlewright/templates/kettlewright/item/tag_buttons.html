@@ -1,6 +1,6 @@
 {# A game system's item tags in the item editors: a row for each group (an item has at most one tag of each),
    then a row of the other tags. The item editor (alpine/components/item-editor.js) toggles them. -#}
-{% set rules = rules_for(record if record is defined else (character if character is defined else party)) %}
+{% set rules = game_system %}
 {% macro tag_button(tag) %}<button type="button" class="tag button" data-tag="{{ tag }}"
               :class="{ selected: tags.includes($el.dataset.tag) }" :aria-pressed="tags.includes($el.dataset.tag)"
               @click="toggleTag($el.dataset.tag)">{{_(tag)}}</button>{% endmacro %}

@@ -124,12 +124,12 @@
               <td>
                 <div class="row8">
                   <div class="pointer item-edit-button-frame" title="{{ _('Decrease') }}"
-                    onclick="KW_modify_cart({{character.gold}},'{{item.name}}',{{item.cost}},false, {{ rules_for(character).inventory.item_size(item) }})">
+                    onclick="KW_modify_cart({{character.gold}},'{{item.name}}',{{item.cost}},false, {{ game_system.inventory.item_size(item) }})">
                     <i class="item-edit-button fa-solid fa-minus minus"></i>
                   </div>
                   <div id="cart-{{item.name}}" class="cart-amount">0</div>
                   <div class="pointer item-edit-button-frame" title="{{ _('Increase') }}"
-                    onclick="KW_modify_cart({{character.gold}},'{{item.name}}',{{item.cost}},true,{{ rules_for(character).inventory.item_size(item) }})">
+                    onclick="KW_modify_cart({{character.gold}},'{{item.name}}',{{item.cost}},true,{{ game_system.inventory.item_size(item) }})">
                     <i class="item-edit-button fa-solid fa-plus plus"></i>
                   </div>
                 </div>

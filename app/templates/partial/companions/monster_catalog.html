@@ -58,7 +58,7 @@
           <button class="monster-preview-button" type="button" data-preview="{{key}}" aria-label="{{_('Preview %(name)s', name=monster.name)}}" aria-controls="monster-preview" aria-expanded="false"><i class="fa-solid fa-eye" aria-hidden="true"></i></button>
         </div>
         <dl class="monster-card-stats">
-          {% set rules = rules_for(party) %}<div><dt>{{_(rules.hit_points.abbr)}}</dt><dd>{{monster[rules.hit_points.key]}}</dd></div>
+          {% set rules = game_system %}<div><dt>{{_(rules.hit_points.abbr)}}</dt><dd>{{monster[rules.hit_points.key]}}</dd></div>
           <div><dt>{{_('Armor')}}</dt><dd>{{monster.armor}}</dd></div>
           {% for stat in rules.attributes %}
           <div><dt>{{_(stat.abbr)}}</dt><dd>{{monster[stat.key]}}</dd></div>
@@ -100,8 +100,8 @@
             <input id="monster-file" type="file" name="monster_file" accept=".md,.markdown,text/markdown,text/plain" aria-label="{{_('Monster file')}}" aria-describedby="monster-import-format">
     <div id="monster-import-format" class="monster-import-format">
       <p>{{_('Paste Markdown or upload a UTF-8 file (.md), up to 64 KB. Separate monsters with --- on its own line. Add at most 100 instances at a time.')}}</p>
-      {# The stat line's format is the party's game system's (kettlewright). #}
-      {% include system_template('help/monster_format.html', party) %}
+      {# The stat line's format is the game system's (kettlewright). #}
+      {% include system_template('help/monster_format.html') %}
       <p>{{_('The rest of the stat line becomes the attack. Everything below it becomes the monster’s notes and supports Markdown.')}}</p>
     </div>
           </div>

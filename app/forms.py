@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, SelectField, HiddenField, SelectMultipleField, TextAreaField
-from wtforms.validators import DataRequired, InputRequired, Length, Email, Regexp, EqualTo, URL, ValidationError
+from wtforms.validators import DataRequired, InputRequired, Length, Email, Optional, Regexp, EqualTo, URL, ValidationError
 import os
 import json
 from flask_babel import lazy_gettext as _l
@@ -95,7 +95,7 @@ class PasswordUpdateForm(FlaskForm):
 
 
 from kettlewright import system as _system
-json_file_path = _system().content_path('backgrounds')  # The default system's backgrounds (kettlewright).
+json_file_path = _system().content_path('backgrounds')  # The system's backgrounds (kettlewright).
 
 
 def load_data_from_json(file_path):
@@ -268,22 +268,15 @@ class CharacterJSONForm(FlaskForm):
     custom_background = HiddenField(
         _l('Custom Background'), validators=[Length(max=2000)])
 
-    # Integer fields
-    strength = HiddenField(_l('Strength'), validators=[
-                           InputRequired(), Length(max=10)])
-    strength_max = HiddenField(_l('Strength Max'), validators=[
-                               InputRequired(), Length(max=10)])
-    dexterity = HiddenField(_l('Dexterity'), validators=[
-                            InputRequired(), Length(max=10)])
-    dexterity_max = HiddenField(_l('Dexterity Max'), validators=[
-                                InputRequired(), Length(max=10)])
-    willpower = HiddenField(_l('Willpower'), validators=[
-                            InputRequired(), Length(max=10)])
-    willpower_max = HiddenField(_l('Willpower Max'), validators=[
-                                InputRequired(), Length(max=10)])
-    hp = HiddenField(_l('HP'), validators=[InputRequired(), Length(max=10)])
-    hp_max = HiddenField(_l('HP Max'), validators=[
-                         InputRequired(), Length(max=10)])
+    # Integer fields: Cairn's stat columns. Another system's page doesn't fill those it hasn't: 0 (kettlewright).
+    strength = HiddenField(_l('Strength'), validators=[Optional(), Length(max=10)])
+    strength_max = HiddenField(_l('Strength Max'), validators=[Optional(), Length(max=10)])
+    dexterity = HiddenField(_l('Dexterity'), validators=[Optional(), Length(max=10)])
+    dexterity_max = HiddenField(_l('Dexterity Max'), validators=[Optional(), Length(max=10)])
+    willpower = HiddenField(_l('Willpower'), validators=[Optional(), Length(max=10)])
+    willpower_max = HiddenField(_l('Willpower Max'), validators=[Optional(), Length(max=10)])
+    hp = HiddenField(_l('HP'), validators=[Optional(), Length(max=10)])
+    hp_max = HiddenField(_l('HP Max'), validators=[Optional(), Length(max=10)])
     gold = HiddenField(_l('Gold'), validators=[InputRequired(), Length(max=10)])
 
     items = HiddenField(_l('Items'), validators=[Length(max=100000)])
@@ -294,7 +287,7 @@ class CharacterJSONForm(FlaskForm):
     panicked = HiddenField(_l('Panicked'), validators=[Length(max=5)])
     dead = HiddenField(_l('Dead'), validators=[Length(max=5)])
     edition = HiddenField(_l('Edition'), validators=[Length(max=16)])
-    # The character's game system and the stats and conditions it keeps without a column (kettlewright), from the file.
+    # The file's game system (an import of another is refused) and the stats and conditions kept without a column (kettlewright).
     game_system = HiddenField(validators=[Length(max=64)])
     system_stats = HiddenField(validators=[Length(max=10000)])
 

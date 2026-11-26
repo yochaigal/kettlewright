@@ -365,9 +365,6 @@ def add_parties(campaign_id):
     parties = Party.query.filter(Party.id.in_(ids), Party.owner == current_user.id).all() if ids else []
     if not parties or len(parties) != len(ids):
         abort(400)
-    # A party keeps its game system (#487): it only joins a campaign of the same one.
-    if any(party.game_system != campaign.game_system for party in parties):
-        abort(400)
     for party in parties:
         party.campaign = campaign
     db.session.commit()
@@ -383,8 +380,6 @@ def assign_party(party_id):
     if party.owner != current_user.id:
         abort(404)
     campaign = owned(Campaign, integer(request.form.get('campaign_id')))
-    if party.game_system != campaign.game_system:
-        abort(400)  # A party keeps its game system (#487): it only joins a campaign of the same one.
     party.campaign = campaign
     db.session.commit()
     flash(_('Added %(names)s to %(campaign)s.', names=party.name, campaign=campaign.name), 'success')

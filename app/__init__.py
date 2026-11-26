@@ -88,14 +88,12 @@ def create_app():
     # Consolidate the JSON data once per process; tests build many apps.
     global _json_consolidated
     if not _json_consolidated:
-        # Each system's tables kept as one file per entry (kettlewright): backgrounds/ and generators/ in Cairn.
-        from kettlewright import SYSTEMS, load
-        load()
-        for rules in SYSTEMS.values():
-            folder = rules.content.folder
-            for name, output in (('backgrounds', 'background_data.json'), ('generators', 'event_data.json')):
-                if folder is not None and (folder / name).is_dir():
-                    consolidate_json_files(str(folder / name), str(folder / name / output))
+        # The system's tables kept as one file per entry (kettlewright): backgrounds/ and generators/ in Cairn.
+        from kettlewright import load
+        folder = load().content.folder
+        for name, output in (('backgrounds', 'background_data.json'), ('generators', 'event_data.json')):
+            if folder is not None and (folder / name).is_dir():
+                consolidate_json_files(str(folder / name), str(folder / name / output))
         _json_consolidated = True
 
     # Configure CORS using allowed origins
@@ -226,7 +224,7 @@ def create_app():
     def tr_filter(text: str, context=None) -> str:
         return translate_term(text, context)
     
-    # Cairn's creation pages, quick generator and traits sentence are its web plug-in's (systems/cairn/web),
+    # Cairn's creation pages, quick generator and traits sentence are its web plug-in's (system/cairn/web),
     # registered by kettlewright.web above.
 
     # The portrait picker's groups (#502)

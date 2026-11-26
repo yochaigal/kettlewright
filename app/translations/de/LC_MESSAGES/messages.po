@@ -23638,14 +23638,14 @@ msgstr "Tiere"
 msgid "Objects"
 msgstr "Gegenstände"
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid "Slate"
 msgstr "Schiefer"
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid "Lava"
 msgstr "Lava"
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid "Arcane"
 msgstr "Arkan"

@@ -1,6 +1,6 @@
 from flask_babel import force_locale
 
-from systems.cairn.web.char_utils import TraitValue, traits_text
+from system.cairn.web.char_utils import TraitValue, traits_text
 
 TRAITS = [('Physique', 'Short'), ('Skin', 'Tattooed'), ('Hair', 'Bald'), ('Face', 'Chiseled'),
           ('Speech', 'Cryptic'), ('Clothing', 'Livery'), ('Virtue', 'Tolerant'), ('Vice', 'Nervous')]

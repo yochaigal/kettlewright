@@ -3,10 +3,18 @@
 Kettlewright was built for Cairn 2e, and Cairn is the only system it plays today. Issue
 [#487](https://github.com/yochaigal/kettlewright/issues/487) asks for other systems one day. This document
 describes how the code is laid out for that: a system-agnostic engine (the **`kettlewright`** package, with a
-half in the browser), the systems themselves in their own packages (**`systems/`**), and how the app asks them
-for rules instead of writing Cairn's into each page and script.
+half in the browser), the systems themselves in their own packages (**`system/`**), and how the app asks the
+engine for rules instead of writing Cairn's into each page and script.
 
-None of this shows in the app. Every campaign, party and character plays Cairn; nothing offers a choice.
+**One system per instance.** Whoever runs Kettlewright picks the system before starting it, with an environment
+variable, and everything the instance stores plays it:
+
+```
+GAME_SYSTEM=cairn      # in .env: a folder in system/; Cairn when it is not set
+```
+
+Another system means a fork (or another deployment) with another `GAME_SYSTEM`. Nothing in the app offers a
+choice, and no campaign, party or character records a system of its own.
 
 ## The design in one paragraph
 
@@ -16,7 +24,7 @@ and tables. The engine applies the same generic rules to that data twice, on the
 data), so a rule is written once and the two halves can't drift apart. What can't be data, a system writes
 once in Python and, if pages need it, once in JavaScript (`registerRules`). What is a system's own presentation
 (its wording, its sheet, its creation pages) lives in the system's package, and the app reaches it through the
-engine, never by importing the system.
+engine, never by importing the system. The engine loads only the system `GAME_SYSTEM` names.
 
 ## Layout
 
@@ -26,15 +34,15 @@ kettlewright/                 the engine: no system of its own
 ├── core.py                   Stat, Condition (and its effects), Inventory, Armor, WardenRoll, GameSystem:
 │                             a system's data and the generic rules that read it; manifest() for the browser
 ├── content.py                Content: a system's tables, read from its package
-├── registry.py               the registered systems, the default one, loading the system packages
+├── registry.py               the instance's system: GAME_SYSTEM, loading its package
 ├── web.py                    the engine in a Flask app (its only Flask-aware module): files, templates, the
-│                             page's system, system plug-ins
+│                             page's copy of the system, its plug-in
 ├── static/kettlewright.js    the browser engine, imported as '#kettlewright'
 ├── templates/kettlewright/   generic template pieces, for a system without its own
 └── README.md
 
-systems/                      the game systems, outside the engine
-├── __init__.py               imports each system package and names the default system
+system/                       the game systems, outside the engine; an instance plays one
+├── __init__.py               names the DEFAULT one (cairn), for an instance without GAME_SYSTEM
 └── cairn/                    Cairn, second edition
     ├── __init__.py           registers Cairn with the engine
     ├── system.py             Cairn's GameSystem: all data
@@ -47,25 +55,24 @@ systems/                      the game systems, outside the engine
     └── README.md
 
 app/                          Kettlewright: asks the engine
-├── models/game_system.py     the game_system a campaign, party or character plays, fixed at creation
 ├── models/game_stats.py      stats without a column of their own (system_stats)
-└── lib/system_forms.py       character forms with a system's stats
+└── lib/system_forms.py       character forms with the system's stats
 ```
 
 ### Who may import whom
 
 ```
-app  ──────────►  kettlewright (core, web)  ◄──────────  systems/<key>   (pure: rules, data, templates)
+app  ──────────►  kettlewright (core, web)  ◄──────────  system/<key>   (pure: rules, data, templates)
  ▲                        │
- │                        └── loads, by module name ──►  systems/<key>/web   (may use the app)
+ │                        └── loads, by module name ──►  system/<key>/web   (may use the app)
  └──────────────────────────────────────────────────────────────┘
 ```
 
 - The engine's core imports nothing of the app, Flask or the database (`test_the_engine_stands_alone…`), and never
   names a system (`test_the_core_has_no_system…`, `test_the_browser_engine_has_no_system_of_its_own`).
 - A system's package is plain Python too, except its `web/` plug-in, which may use the app.
-- The app never imports `systems` (`test_the_app_reaches_cairn_only_through_the_engine`): it asks a record for its
-  `rules`, and reaches a system's web parts through `kettlewright.web.plugin(rules)`.
+- The app never imports `system` (`test_the_app_reaches_cairn_only_through_the_engine`): it asks the engine for the
+  instance's system (`kettlewright.system()`), and reaches its web parts through `kettlewright.web.plugin()`.
 
 ## What a system says
 
@@ -85,19 +92,21 @@ A system is a frozen dataclass that subclasses `kettlewright.GameSystem`. Cairn'
 | `warden_rolls` (`WardenRoll`) | Reaction Roll (2d6: Hostile…Helpful), Die of Fate (d6) | The Warden's dice, Discord |
 | `sheet_sections` | Description, Traits, Bonds, Omens, Scars, Notes | Markdown exports |
 | `wording` | "Deprived, no HP recovered: …" | Rest and Make Camp reports (else the engine's `WORDING`) |
-| `home`, `tables` | `systems/cairn`, its table names | `rules.content.load('traits')` |
-| `web` | `'systems.cairn.web'` | Its web plug-in (below) |
+| `home`, `tables` | `system/cairn`, its table names | `rules.content.load('traits')` |
+| `web` | `'system.cairn.web'` | Its web plug-in (below) |
 
 The rules (`effective_hp`, `can_recover`, `attack_die`, `armor_value`, `save_succeeds`, `item_size`…) read this data.
 A system whose rule can't be said as data overrides the method, and registers the same rule for pages in
 JavaScript. Labels are English msgids marked with `N_()`; `babel.cfg` extracts `kettlewright/**.py`,
-`systems/**.py`, their templates and `systems/**/content/**.json`.
+`system/**.py`, their templates and `system/**/content/**.json`.
+
+The app reads the system's tables (backgrounds, traits, bonds, omens, scars, the Marketplace, the bestiary,
+hirelings, pets, the Warden's generators) from its `content/`: a system ships its own.
 
 ## The browser engine
 
-Every page carries its system as data: `{{ kettlewright_manifest() }}` writes
-`<script id="game-system" type="application/json">` from `GameSystem.manifest()`, labels translated. It is the
-system of the page's character, companion, party or campaign, else the default one; the whiteboard has its party's.
+Every page carries the system as data: `{{ kettlewright_manifest() }}` writes
+`<script id="game-system" type="application/json">` from `GameSystem.manifest()`, labels translated.
 
 Scripts import the engine as `'#kettlewright'`:
 
@@ -112,7 +121,7 @@ import {itemSize, slotsUsed, effectiveHp, armorValue, saveDie, conditionsWith, Z
 
 It has no system of its own: without a page it plays the plainest rules, and tests give it one with `useSystem()`.
 `tests/js/support/cairn.mjs` loads Cairn from `tests/js/support/cairn-system.json`, which
-`test_the_js_tests_play_cairn_as_the_server_sends_it` keeps in step with `systems/cairn` (its docstring has the
+`test_the_js_tests_play_cairn_as_the_server_sends_it` keeps in step with `system/cairn` (its docstring has the
 command that regenerates it).
 
 A system's rule that data can't say: its `static/rules.js` calls
@@ -120,14 +129,14 @@ A system's rule that data can't say: its `static/rules.js` calls
 
 ## Templates
 
-App templates read rules (`rules_for(character)`, `game_system`) instead of naming Cairn's stats and conditions.
-Where a page has a system's own wording or layout, it includes a **piece**:
+App templates read the system (`game_system`) instead of naming Cairn's stats and conditions. Where a page has the
+system's own wording or layout, it includes a **piece**:
 
 ```jinja
-{% include system_template('help/monster_format.html', party) %}
+{% include system_template('help/monster_format.html') %}
 ```
 
-which is `systems/<key>/templates/<key>/help/monster_format.html` if the system has it, else the engine's generic
+which is `system/<key>/templates/<key>/help/monster_format.html` if the system has it, else the engine's generic
 `kettlewright/templates/kettlewright/help/monster_format.html`. Cairn's pieces:
 
 | Piece | What it is |
@@ -143,32 +152,30 @@ A system's own pages (Cairn's creation and generator pages) are in its `template
 ## A system's web plug-in
 
 A system that names a module in `web` gets its `init_app(app)` called when the app starts, to register its pages.
-The app asks it, through `kettlewright.web.plugin(rules)`, for:
+The app asks it, through `kettlewright.web.plugin()`, for:
 
 | Function | Cairn |
 |---|---|
 | `creation_page(method)` | 2e (`/new_character/`) or Barebones creation |
 | `random_character(background)` | The quick generator, for `/api/v1/characters/random` |
 | `gear_packages()`, `barebones_data()` | Barebones packages and tables (Tools, the API, Markdown import) |
-| `random_name(background)` | A hireling's name |
+| `random_name(background)` | A hireling's name (without a plug-in, hirelings are named by their role) |
 | `character_sheet(character, party, orientation)` | The PDF, drawn on Cairn's own sheets |
 
 ## How the app plays a system
 
-### Each record keeps the system it was created with
+### One system, chosen before the instance starts
 
-`campaigns`, `parties` and `characters` have a `game_system` column (migration `487a02`):
+`kettlewright.system()` is the system the instance plays: the package `GAME_SYSTEM` names in `system/`, or
+`system/__init__.py`'s `DEFAULT` (`cairn`) without it. The engine imports that package on first use and nothing
+else; an unknown name stops the app with `UnknownGameSystem` and the systems there are.
 
-- A campaign gets the default system; a party, its campaign's (or the default one without a campaign); a
-  character, its party's when it is created for one (join code), the file's when imported from JSON (if the app
-  plays it), or the default one.
-- From then on it never changes: a flush that changes a saved row's `game_system` raises `GameSystemChanged`
-  (`app/models/game_system.py`). A party that leaves its campaign, or a character that leaves its party, keeps it.
-- A party only joins a campaign of its own system, and a character only joins a party of its own.
-- Only code creates a campaign with another system: `create_campaign(owner_id, name, game_system='...')`.
-
-`campaign.rules`, `party.rules`, `character.rules` and `companion.rules` return the system; an unknown key falls
-back to the default one. `rules.active_conditions(record)` reads which of its conditions a record has on.
+- Campaigns, parties and characters don't record a system (migration `487a03` dropped the `game_system` columns
+  `487a02` had added): they all play the instance's. Any party joins any campaign, any character any party.
+- A character's JSON export says its system (`"game_system": "cairn"`); importing a character of another system is
+  refused. A file that doesn't say is taken as the instance's.
+- Changing `GAME_SYSTEM` on an instance that has data is not supported: its characters keep the stats they have.
+- Tests play another system with `kettlewright.use_system(rules)`.
 
 ### Stats without a column
 
@@ -184,23 +191,23 @@ character.luck                    # also works, so templates read it like a colu
 
 ### Discord
 
-Discord registers the commands once for the whole app, so `/kw stat`, `/kw condition` and `/kw warden-roll` offer
-every registered system's stats, conditions and Warden rolls; a command reads the character's (or party's) own.
+`/kw stat`, `/kw condition` and `/kw warden-roll` offer the system's stats, conditions and Warden rolls.
 
 ## Adding a system
 
-1. Add a package beside `systems/cairn`: a `GameSystem` subclass with its data, its tables in `content/`, and an
-   `__init__.py` that calls `kettlewright.register(...)`. Import it in `systems/__init__.py`.
+1. Add a package beside `system/cairn` (its folder's name is its key): a `GameSystem` subclass with its data, its
+   tables in `content/`, and an `__init__.py` that calls `kettlewright.register(...)`.
 2. Mark its labels with `N_()` and add their translations.
 3. Add template pieces where the engine's generic ones don't say it right, and a `web/` plug-in for its creation
    pages and PDF sheet.
-4. Create a campaign with it in code (`create_campaign(..., game_system='key')`).
+4. Run an instance with `GAME_SYSTEM=<key>`.
 
 `tests/unit/test_kettlewright.py` defines a made-up system (Lucky: STR and Luck, Luck stored in `system_stats`,
-saves rolled over, no Fatigue, no web plug-in) and runs it through a campaign, its party and a character: the sheet,
-the edit form, the stat controls, the whiteboard, a save, Markdown, JSON import, hirelings, rest and the monster
-parser. `tests/js/kettlewright_engine.test.mjs` runs the browser engine's rules for Cairn, the plainest rules, a
-page's own system and a system's JavaScript rule.
+saves rolled over, no Fatigue, no web plug-in), plays it with `use_system`, and runs a campaign, its party and a
+character through it: the sheet, the edit form, the stat controls, the whiteboard, a save, Markdown, JSON import,
+hirelings, rest and the monster parser. It also starts Python with `GAME_SYSTEM` set to check which system loads.
+`tests/js/kettlewright_engine.test.mjs` runs the browser engine's rules for Cairn, the plainest rules, a page's own
+system and a system's JavaScript rule.
 
 ## Still Cairn's, on purpose
 
@@ -211,5 +218,7 @@ page's own system and a system's JavaScript rule.
   `with_system_stats` adds another system's.
 - **Editions**: `Character.edition` (2e or Barebones) and `Party.official_barebones` are in the data model, so the app
   knows Cairn has two ways of creating characters, and asks Cairn's plug-in for them.
-- **Content the whole app shows**: the Tools page's generators and the portrait art (`app/static/images`) are Cairn's
-  but shared by every page; the translations of every system are in `app/translations`.
+- **The JSON import form** (`CharacterJSONForm`) has Cairn's stat columns; another system's page sends 0 for those
+  it doesn't have.
+- **Content the whole app shows**: the portrait art (`app/static/images`) is Cairn's; the translations of every
+  system are in `app/translations`.

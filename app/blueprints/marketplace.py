@@ -101,7 +101,7 @@ def marketplace_party(party_id, container_id):
             error = _('Item not found in the marketplace.')
         else:
             item = market.buy([name])[0]
-            slots = inventory.rules.inventory.item_size(item)  # The owner's game system (#487).
+            slots = system().inventory.item_size(item)  # The game system's sizes (#487).
             if inventory.container_slots(container) + slots > int(container['slots']):
                 error = _('Not enough space in this container.')
             else:

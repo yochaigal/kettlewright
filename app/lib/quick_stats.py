@@ -1,3 +1,4 @@
+from kettlewright import system
 from flask import abort, jsonify, request
 from flask_babel import _
 from flask_wtf import FlaskForm
@@ -13,7 +14,7 @@ def save_current_stat(character):
     if not FlaskForm().validate_on_submit():
         abort(400)
     field = request.form.get('stat')
-    if field not in character.rules.stat_keys:
+    if field not in system().stat_keys:
         abort(400)
     try:
         value = int(request.form['value'])
@@ -29,7 +30,7 @@ def save_current_stat(character):
 
 def save_character_stat(character):
     """Sheet controls; the caller checks owner/Warden edit permission."""
-    rules = character.rules
+    rules = system()
     field = request.form.get('stat')
     if field in rules.stat_keys:
         return save_current_stat(character)

@@ -36,12 +36,12 @@
       {% if member.url %}<a class="party-roster-name" href="{{ member.url }}">{% else %}<span class="party-roster-name">{% endif %}<img src="{{ member.src }}" alt="" loading="lazy"> {{ member.name }}{% if member.url %}</a>{% else %}</span>{% endif %}
       <span class="party-roster-stats">
         <span class="party-roster-hp{% if member.hp == 0 %} is-zero{% endif %}">{{ _('HP') }} <strong>{{ member.hp }}</strong>/{{ member.hp_max }}</span>
-        {% for stat, current, maximum in member.stats %}<span>{{ _(member.rules.abbr(stat)) }} <strong>{{ current if current is not none else '—' }}</strong>{% if maximum is not none and current != maximum %}/{{ maximum }}{% endif %}</span>{% endfor %}
+        {% for stat, current, maximum in member.stats %}<span>{{ _(game_system.abbr(stat)) }} <strong>{{ current if current is not none else '—' }}</strong>{% if maximum is not none and current != maximum %}/{{ maximum }}{% endif %}</span>{% endfor %}
         <span>{{ _('Armor') }} <strong>{{ member.armor }}</strong></span>
         <span>{{ ngettext('%(num)s slot free', '%(num)s slots free', member.free) }}</span>
       </span>
       {# The member's active conditions (kettlewright): out of play first (Dead), then the others in the system's order. #}
-      {% set rules = member.rules or rules_for(None) %}
+      {% set rules = game_system %}
       {% set active = [] %}{% for condition in rules.conditions if member[condition.key] and 'out_of_play' in condition.effects %}{% if active.append(condition) %}{% endif %}{% endfor %}
       {% for condition in rules.conditions if member[condition.key] and 'out_of_play' not in condition.effects %}{% if active.append(condition) %}{% endif %}{% endfor %}
       {% if active %}<span class="party-roster-conditions">

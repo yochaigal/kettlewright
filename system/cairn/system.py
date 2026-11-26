@@ -4,9 +4,9 @@ from pathlib import Path
 
 from kettlewright.core import (NO_RECOVERY, OUT_OF_PLAY, WEAK_ATTACKS, ZERO_HP, Armor, Condition, GameSystem,
                                Inventory, Stat, WardenRoll)
-from systems.cairn import items
-from systems.cairn.content import TABLES
-from systems.cairn.items import N_
+from system.cairn import items
+from system.cairn.content import TABLES
+from system.cairn.items import N_
 
 
 @dataclass(frozen=True)
@@ -52,8 +52,8 @@ class Cairn(GameSystem):
         'camp_blocked': N_('Still deprived, Fatigue kept: %(names)s.'),
     })
     home: str = str(Path(__file__).parent)
-    # Its web parts: creation, the quick generator, the PDF sheet (systems/cairn/web).
-    web: str = 'systems.cairn.web'
+    # Its web parts: creation, the quick generator, the PDF sheet (system/cairn/web).
+    web: str = 'system.cairn.web'
     tables: dict = field(default_factory=lambda: dict(TABLES))
 
 

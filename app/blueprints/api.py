@@ -1,3 +1,4 @@
+from kettlewright import system
 from flask import Blueprint, jsonify, abort
 from flask_login import current_user
 from app.models import User, Character, Party
@@ -24,9 +25,9 @@ def character_to_dict(character):
         'portrait': character.image_url if character.custom_image else f'{base_url}/static/images/portraits/{character.image_url}',
         # Its game system's stats and their maximums, then its conditions (kettlewright): STR, DEX, WIL and HP,
         # then Deprived, Panicked and Dead in Cairn.
-        **{field: character.get_stat(field) for stat in character.rules.sheet_stats
+        **{field: character.get_stat(field) for stat in system().sheet_stats
            for field in (stat.key, stat.key + '_max')},
-        **{key: getattr(character, key, None) for key in character.rules.condition_keys},
+        **{key: getattr(character, key, None) for key in system().condition_keys},
         'gold': character.gold,
         'notes': character.notes,
         'items': character.items,
@@ -96,7 +97,7 @@ def v1_index():
 def v1_backgrounds():
     from app.lib.data import load_backgrounds
     from kettlewright.web import plugin
-    gear_packages = plugin().gear_packages  # The default system's (kettlewright): Cairn's Barebones packages.
+    gear_packages = plugin().gear_packages  # The system's (kettlewright): Cairn's Barebones packages.
     backgrounds = [{'name': name, 'description': _(background.get('background_description', ''))}
                    for name, background in load_backgrounds().items()]
     return jsonify(backgrounds=backgrounds, barebones_packages=gear_packages())
@@ -105,7 +106,7 @@ def v1_backgrounds():
 @api.route('/api/v1/characters/random')
 def v1_random_character():
     background = (request.args.get('background') or '').strip()
-    # The default system makes it (kettlewright): Cairn's quick generator, or its Barebones tables.
+    # The system makes it (kettlewright): Cairn's quick generator, or its Barebones tables.
     from kettlewright.web import plugin
     try:
         _genchar, data = plugin().random_character(background or None)

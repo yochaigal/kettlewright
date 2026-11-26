@@ -1,6 +1,6 @@
 {% set editable = false if generated_preview else (can_manage_companion(character) if companion_sheet else can_edit_inventory(character)) %}
-{# The character's game system (kettlewright): its item sizes and armor, and the die attacks roll under conditions that weaken them (a d4 while Panicked in Cairn). #}
-{% set rules = rules_for(character) %}{% set weak_die = rules.attack_die(rules_for(character).active_conditions(character)) %}
+{# The game system (kettlewright): its item sizes and armor, and the die attacks roll under conditions that weaken them (a d4 while Panicked in Cairn). #}
+{% set rules = game_system %}{% set weak_die = rules.attack_die(game_system.active_conditions(character)) %}
 {% set layout = inventory.slot_layout() %}
 {% set container = inventory.selected_container %}
 {% set edit_base = inventory_edit_base|default('/charedit/inplace-inventory/' ~ username ~ '/' ~ url_name) %}

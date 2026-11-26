@@ -36705,7 +36705,7 @@ msgstr "Животные"
 msgid "Objects"
 msgstr "Предметы"
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "You dematerialized a beloved pet. Now it follows you around, invisible "
 "but always present. Although it cannot interact with the physical realm, "
@@ -36717,7 +36717,7 @@ msgstr ""
 " к его ощущениям (1 Усталость каждый раз), а также отдавать простые "
 "команды."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Homunculus: A miniature clay replica of yourself that follows your every "
 "command. It hates being enthralled to you and complains bitterly whenever"
@@ -36729,7 +36729,7 @@ msgstr ""
 "урон, нанесенный гомункулу, также наносится вам [3 ОЗ, 4 СИЛ, 13 ЛОВ, 5 "
 "ВОЛ]."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "A Blood Pail (bulky) from a local death-cult. Empty it to raise a servant"
 " built from whatever is buried below, with 6 HP, 1 Armor, 13 STR, 11 DEX,"
@@ -36743,7 +36743,7 @@ msgstr ""
 "одного слугу за раз. Если он уничтожен, вы навсегда теряете к4 СИЛ. "
 "Перезарядка: наполните ведро кровью умирающего воина."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "A burial wagon (+6 slots, slow) from your last job. It came with a "
 "stubborn old donkey (+4 slots, only +2 slots if pulling wagon)."
@@ -36752,7 +36752,7 @@ msgstr ""
 "упрямым старым Ослом (+4 слота; только +2 слота, если тянет повозку; "
 "медленный)."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "A Living Nightmare that dwells within you but manifests whenever you are "
 "in danger. It has your same Attributes and HP and attacks with claws "
@@ -36764,7 +36764,7 @@ msgstr ""
 " вы, и атакует когтями (к8+к8). Исчезает при получении Критического Урона"
 " (вы теряете к4 ВОЛ), и появляется вновь на следующее полнолуние."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "A Raven Familiar [8 HP, 3 STR, 11 DEX, 13 WIL, beak, (d6)]. It speaks as "
 "an intelligent being and is entirely devoted to you."
@@ -36772,7 +36772,7 @@ msgstr ""
 "Ворон-фамильяр. Он говорит как разумное существо и полностью предан вам. "
 "[8 ОЗ, 3 СИЛ, 11 ЛОВ, 13 ВОЛ, клюв (к6)]"
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "A clever pet, small enough to hide in your pack (bulky), but strong "
 "enough to scare off smaller predators. Requires one Ration a day, and it "
@@ -36782,7 +36782,7 @@ msgstr ""
 "вашем рюкзаке (громоздкий), но довольно сильный, чтобы отпугнуть мелких "
 "хищников. Требует одну порцию мяса в день. [3 ОЗ, 5 СИЛ, 15 ЛОВ, 12 ВОЛ]."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Alchemical Tattoo: A dog, cat, or bird that can leave your body on "
 "demand. It follows your commands to the best of its abilities and can "
@@ -36792,7 +36792,7 @@ msgstr ""
 "по требованию. Она выполняет ваши команды по мере своих возможностей и "
 "может передавать вам свои ранения, например, потерю СИЛ (мелкий)."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Heavy Destrier: A beast built for war, an imposing creature. 8 HP, 1 "
 "Armor, hooves (d10+d10), +2 slots."
@@ -36800,7 +36800,7 @@ msgstr ""
 "Тяжелый дестриэ: Внушительное животное, словно созданное для войны [8 ОЗ,"
 " Броня 1, копыта (к10+к10), +2 слота]."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Blacklegged Dandy: Hardy and adaptable. Tough or Perilous terrain are one"
 " step easier. 6 HP. +4 slots."
@@ -36808,7 +36808,7 @@ msgstr ""
 "Черноногий дэнди: Выносливый и адаптивный. Трудная или Опасная местность "
 "становится на одну ступень легче [6 ОЗ, +4 слота]."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Rivertooth: Impressively strong, capable of carrying heavy loads. 4 HP. "
 "+6 slots (only +2 slots if carrying two people)."
@@ -36816,7 +36816,7 @@ msgstr ""
 "Речнозуб: Впечатляюще сильный, способен нести тяжелые грузы [4 ОЗ, +6 "
 "слотов или +2 слота, если везет двух человек]."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Piebald Cob: Intelligent, it can understand simple commands, and even has"
 " an instinct for danger. 6 HP. +4 slots."
@@ -36824,7 +36824,7 @@ msgstr ""
 "Пегий коб: Умный, понимает простые команды и даже чувствует опасность [6 "
 "ОЗ, +4 слота]."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Linden White: Highly trained and agile, it can perform intricate "
 "maneuvers in a time of need (no DEX save to flee). 4 HP. +3 slots."
@@ -36833,7 +36833,7 @@ msgstr ""
 " в критические моменты, не требуется спасбросок ЛОВ для бегства [4 ОЗ, +3"
 " слота]."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Stray Fogger: Wild but very fast (even in Tough terrain). Rides light. 4 "
 "HP. +2 slots."
@@ -36841,7 +36841,7 @@ msgstr ""
 "Бродячий туманник: Дикий, но очень быстрый, даже в Трудной местности. "
 "Легкий в управлении [4 ОЗ, +2 слота]."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "A hollow wolf that had been frightening travelers. You took pity on the "
 "half-starved creature and nursed it back to health. Now it is loyal to "
@@ -36852,14 +36852,14 @@ msgstr ""
 "изголодавшее существо. Теперь он предан вам до смерти, а еще он отлично "
 "роет туннели. [5 ОЗ, 11 СИЛ, 13 ЛОВ, 8 ВОЛ, зубы (к6)]."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid "Slate"
 msgstr "Сланец"
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid "Lava"
 msgstr "Лава"
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid "Arcane"
 msgstr "Магия"

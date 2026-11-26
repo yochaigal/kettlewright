@@ -9,9 +9,9 @@ import os
 # Add the app directory to the path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-from systems.cairn.web.char_utils import get_required_bonds_count, find_bond_by_description
+from system.cairn.web.char_utils import get_required_bonds_count, find_bond_by_description
 from app.lib.data import load_bonds
-from systems.cairn.web.charcreo import clear_second_bond_if_needed
+from system.cairn.web.charcreo import clear_second_bond_if_needed
 
 
 class MockForm:

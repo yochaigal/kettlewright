@@ -30,7 +30,7 @@ htmx = HTMX(main)
 base_url = os.environ.get('BASE_URL')
 print('base_url:', base_url, file=sys.stderr)
 
-# The default system's tables (kettlewright).
+# The system's tables (kettlewright).
 from kettlewright import system as _system
 omens_data = _system().content.load('omens')
 scars_data = _system().content.load('scars')
@@ -123,29 +123,30 @@ def create_unique_url_name(name):
     return url_name
 
 
-def keep_game_system(character, form):
-    """An imported character keeps the file's game system, if this app plays it (else the default one), and the
-    stats and conditions that system keeps without a column (kettlewright). False for values that aren't numbers."""
-    from kettlewright import SYSTEMS
-    if form.game_system.data in SYSTEMS:
-        character.game_system = form.game_system.data
+def import_system_stats(character, form):
+    """An imported character's stats and conditions that the game system keeps without a column (kettlewright).
+    An error message for a file of another game system (the instance plays one) or values that aren't numbers."""
+    rules = _system()
+    if form.game_system.data and form.game_system.data != rules.key:
+        return _('This character plays another game system (%(system)s) than this site (%(here)s).',
+                 system=form.game_system.data, here=rules.name)
+    invalid = _('Invalid character stats or inventory in JSON file.')
     try:
         extra = json.loads(form.system_stats.data or '{}')
     except ValueError:
-        return False
+        return invalid
     if not isinstance(extra, dict):
-        return False
-    rules = character.rules
+        return invalid
     for stat in rules.stats:
         for field in (stat.key, stat.key + '_max'):
             if field in extra and not character.has_column(field):
                 if type(extra[field]) is not int or not 0 <= extra[field] <= 9999:
-                    return False
+                    return invalid
                 character.set_stat(field, extra[field])
     for key in rules.condition_keys:
         if key in extra and not character.has_column(key):
             character.set_stat(key, extra[key] is True)
-    return True
+    return None
 
 
 @main.route('/new_from_json/', methods=['GET', 'POST'])
@@ -166,7 +167,7 @@ def new_from_json():
                 pets = [import_pet(pet) for pet in pets_data]
                 for field in ('strength', 'strength_max', 'dexterity', 'dexterity_max',
                               'willpower', 'willpower_max', 'hp', 'hp_max', 'gold'):
-                    getattr(form, field).data = int(getattr(form, field).data)
+                    getattr(form, field).data = int(getattr(form, field).data or 0)
             except (ValueError, TypeError, KeyError):
                 flash(_('Invalid character stats or inventory in JSON file.'))
                 return render_import_page(form=form), 400
@@ -217,8 +218,9 @@ def new_from_json():
             from app.models.character import BACKGROUND_FIELDS
             for field in BACKGROUND_FIELDS:
                 setattr(character, field, sanitize_data(getattr(form, field).data))
-            if not keep_game_system(character, form):
-                flash(_('Invalid character stats or inventory in JSON file.'))
+            error = import_system_stats(character, form)
+            if error:
+                flash(error)
                 return render_import_page(form=form), 400
             character.pets.extend(pets)
             character.armor = str(character.armorValue())
@@ -274,7 +276,7 @@ def string_to_bool(value):
 def new_character():
     if not current_user.is_authenticated:
         return make_response("Unauthorized")
-    # Creation is the game system's (kettlewright): Cairn's 2e pages, in systems/cairn/web.
+    # Creation is the game system's (kettlewright): Cairn's 2e pages, in system/cairn/web.
     from kettlewright.web import plugin
     return plugin().creation_page('2e')
 
@@ -349,8 +351,8 @@ def _print_character_pdf(username, url_name, orientation):
     export_attributes = request.args.get('export_attributes', '1') != '0'
     # Barebones characters always get the Barebones sheet, whichever orientation link was used.
     paper = 'barebones-a4' if character.is_barebones else f'{orientation}-a4'
-    # The character's game system draws its sheet (kettlewright): Cairn's PDF sheets.
-    sheet = plugin(character.rules).character_sheet(character, party, orientation, export_attributes=export_attributes)
+    # The game system draws the sheet (kettlewright): Cairn's PDF sheets.
+    sheet = plugin().character_sheet(character, party, orientation, export_attributes=export_attributes)
     response = send_file(sheet.draw(), mimetype='application/pdf',
                          download_name=f'{character.url_name}-{paper}.pdf', as_attachment=False)
     response.headers['Cache-Control'] = 'private, no-store'
@@ -449,7 +451,7 @@ def tools():
     events_data = translate_events_data(_system().content.load('events'))
     backgrounds = load_backgrounds()
     from kettlewright.web import plugin
-    gear_packages = plugin().gear_packages  # The default system's (kettlewright): Cairn's Barebones packages.
+    gear_packages = plugin().gear_packages  # The system's (kettlewright): Cairn's Barebones packages.
     warden_parties = Party.query.filter_by(owner=current_user.id).order_by(Party.name, Party.id).all() if current_user.is_authenticated else []
     from app.lib.monsters import localized_monster_catalog
     from app.models import Campaign

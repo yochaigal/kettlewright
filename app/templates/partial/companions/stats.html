@@ -4,7 +4,7 @@
      data-save-error="{{_('Unable to save this stat. Please try again.')}}" data-load-error="{{_('Unable to refresh character stats.')}}">
 <h3>{{_('Stats')}}</h3>
 <div class="stats-stats-container character-stat-dashboard">
-  {% for stat in rules_for(c).sheet_stats %}{% set field, label, short = stat.key, _(stat.abbr), stat.abbr|lower %}
+  {% for stat in game_system.sheet_stats %}{% set field, label, short = stat.key, _(stat.abbr), stat.abbr|lower %}
   <div class="character-stat-card" id="character-{{short}}-container">
     <div class="stat-card-heading"><h4>{{label}}</h4></div>
     {% if editable %}

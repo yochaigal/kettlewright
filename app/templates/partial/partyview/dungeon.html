@@ -14,10 +14,10 @@
     <input type="text" id="dungeon-search-target" name="target" maxlength="100" autocomplete="off" placeholder="{{_('e.g. the altar')}}">
   {% endcall %}
   {% call action_dialog('dungeon', 'rest', pgettext('dungeon action', 'Rest'), 'fa-bed', _('Catch your breath and recover all HP.'), pgettext('dungeon action', 'Rest'), durl, drules) %}
-    {% include system_template('partyview/rest_hint.html', party) %}
+    {% include system_template('partyview/rest_hint.html') %}
     <fieldset><legend>{{_('Resting characters')}}</legend><div class="wilderness-choices">
     {# Characters still in play (not Dead), and what keeps one from recovering (Deprived in Cairn). #}
-    {% for c in characters if not rules_for(c).has_effect(rules_for(c).active_conditions(c), 'out_of_play') %}<label class="wilderness-choice"><input type="checkbox" name="participants" value="{{c.id}}"> {{ c.name|markdown_inline }} <small>({{c.hp or 0}}/{{c.hp_max or 0}} {{_('HP')}}{% for condition in rules_for(c).conditions if 'no_recovery' in condition.effects and condition.key in rules_for(c).active_conditions(c) %}, {{_(condition.label)}}{% endfor %})</small></label> {% endfor %}
+    {% for c in characters if not game_system.has_effect(game_system.active_conditions(c), 'out_of_play') %}<label class="wilderness-choice"><input type="checkbox" name="participants" value="{{c.id}}"> {{ c.name|markdown_inline }} <small>({{c.hp or 0}}/{{c.hp_max or 0}} {{_('HP')}}{% for condition in game_system.conditions if 'no_recovery' in condition.effects and condition.key in game_system.active_conditions(c) %}, {{_(condition.label)}}{% endfor %})</small></label> {% endfor %}
     </div></fieldset>
   {% endcall %}
   </div>

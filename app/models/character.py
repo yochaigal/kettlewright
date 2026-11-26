@@ -7,7 +7,6 @@ import sys
 import json
 from .globals import db
 from .game_stats import SystemStats
-from .game_system import GAME_SYSTEM_DEFAULT
 from kettlewright import system
 
 BACKGROUND_FIELDS = ('background_table1_question', 'background_table1_answer', 'background_table2_question', 'background_table2_answer')
@@ -63,9 +62,6 @@ class Character(SystemStats, db.Model):
     armor = db.Column(db.String(16))
     # Stats of the game system that have no column of their own (#487; see game_stats.py).
     system_stats = db.Column(db.Text, nullable=False, default='{}', server_default='{}')
-    # The game system it plays (#487): its party's when it was created (or the default one), and fixed after
-    # (app/models/game_system.py). It only joins a party of the same system.
-    game_system = db.Column(db.String(32), nullable=False, default=GAME_SYSTEM_DEFAULT, server_default='cairn')
     party_code = db.Column(db.String(64))
     party_id = db.Column(db.Integer)
     edition = db.Column(db.String(16), nullable=False, default=EDITION_SECOND, server_default=EDITION_SECOND)
@@ -90,36 +86,30 @@ class Character(SystemStats, db.Model):
     def __repr__(self):
         return f'<Character {self.name}>'
     
-    # The rules below are the game system's (kettlewright, #487): its party's campaign's, or the default one.
-
-    @property
-    def rules(self):
-        """Its game system (kettlewright, #487); the default one if its key is no longer known."""
-        from kettlewright import system_or_default
-        return system_or_default(self.game_system)
+    # The rules below are the game system's (kettlewright, #487): the one the instance plays.
 
     def active_conditions(self):
-        return tuple(key for key in self.rules.condition_keys if getattr(self, key, False))
+        return tuple(key for key in system().condition_keys if getattr(self, key, False))
 
     # HP that counts right now, and its maximum (Cairn: 0 with a full inventory or Panicked).
     def hpValue(self):
-        return [self.rules.effective_hp(self.hp, self.occupiedMainSlots(), self.active_conditions()), self.hp_max]
+        return [system().effective_hp(self.hp, self.occupiedMainSlots(), self.active_conditions()), self.hp_max]
 
     # Returns True if the main inventory is full.
     def overburdened(self):
-        return self.occupiedMainSlots() >= self.rules.inventory.main_capacity(json.loads(self.containers))
+        return self.occupiedMainSlots() >= system().inventory.main_capacity(json.loads(self.containers))
 
     # Armor from the items carried, up to the system's maximum.
     def armorValue(self):
-        return self.rules.armor_value(json.loads(self.items or '[]'))
+        return system().armor_value(json.loads(self.items or '[]'))
 
     # Slots used in the main inventory, coins included (#507).
     def occupiedMainSlots(self):
-        return self.rules.inventory.occupied_main_slots(json.loads(self.items or '[]'), self.gold)
+        return system().inventory.occupied_main_slots(json.loads(self.items or '[]'), self.gold)
 
     # Free slots in the main inventory; extra containers have their own capacity.
     def freeMainSlots(self):
-        capacity = self.rules.inventory.main_capacity(json.loads(self.containers or '[]'))
+        capacity = system().inventory.main_capacity(json.loads(self.containers or '[]'))
         return max(0, capacity - self.occupiedMainSlots())
 
     # The exported sheet as a dictionary; JSON and Markdown exports both use it.
@@ -129,6 +119,7 @@ class Character(SystemStats, db.Model):
                 if column.name not in excluded}
         # A game system's stats without a column (#487) are listed like the others: {'luck': 7, 'luck_max': 9}.
         data.update(self._extra_stats())
+        data['game_system'] = system().key  # The system it plays: another instance only imports one of its own.
         data['items'] = json.loads(self.items or '[]')
         data['containers'] = json.loads(self.containers or '[]')
         data['armor'] = self.armorValue()

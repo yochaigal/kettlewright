@@ -29,6 +29,9 @@ For local development, follow the [Dev Container instructions](.devcontainer/REA
        CAPTCHA_KEY=[Fill in if Required]
        CAPTCHA_PROJECT_ID=[Fill in if Required]
        CAPTCHA_API_KEY=[Fill in if Required]
+       GAME_SYSTEM=cairn
+
+> Note: `GAME_SYSTEM` is the game system the instance plays, a folder in `system/` (only `cairn` today, also the default when it is not set). Choose it before the first start: everything the instance stores plays that system. See [docs/game-systems.md](docs/game-systems.md).
 
 > Note: You will likely not need to mark USE_REDIS as 'True' unless you are planning to support hundreds of users. In that case please adjust the required worker count (typically 2 * CPU cores + 1). See "Using a redis server" below for more details.
 

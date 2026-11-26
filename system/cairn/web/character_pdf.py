@@ -224,7 +224,7 @@ class CharacterSheet:
             for center in (134, 207, 279, 350):
                 self.text(_('current'), center, 277, 7, centered=True)
                 self.text(_('max'), center, 327, 7, centered=True)
-        for index, attribute in enumerate(stat.key for stat in c.rules.sheet_stats):
+        for index, attribute in enumerate(stat.key for stat in system().sheet_stats):
             x, current_top, maximum_x, maximum_top = layout['attributes'][index]
             self.text(getattr(c, attribute + '_max'), maximum_x, maximum_top, 14, centered=True)
             if self.export_attributes:
@@ -241,20 +241,20 @@ class CharacterSheet:
 
         items = json.loads(c.items or '[]')
         main = [it for it in items if it.get('location') == 0]
-        petty = [it for it in main if not c.rules.inventory.item_size(it)]  # Takes no slot (kettlewright).
+        petty = [it for it in main if not system().inventory.item_size(it)]  # Takes no slot (kettlewright).
         x, top, step, width = layout['inventory']
         fatigue_x, fatigue_top = layout['fatigue']
         slot = 0
         for item in main:
             if item in petty:
                 continue
-            slots = c.rules.inventory.item_size(item)
+            slots = system().inventory.item_size(item)
             title = _item_title(item)
             if slot + slots <= 10:
                 self.single_line(title, x, top + slot * step, width, title=_('Inventory details'))
                 if slots == 2:
                     self.single_line(_('Occupied by bulky item above'), x, top + (slot + 1) * step, width)
-                if item.get('name') == c.rules.fatigue:
+                if item.get('name') == system().fatigue:
                     self.text('X', fatigue_x, fatigue_top + slot * step, 9, centered=True)
             else:
                 self.section(_('Additional inventory'), title)
@@ -292,7 +292,7 @@ class CharacterSheet:
         c = self.character
         for pet in c.pets:
             stats = ' · '.join(label + ' ' + (str(getattr(pet, stat)) + '/' + str(getattr(pet, stat+'_max')) if getattr(pet, stat) is not None else '—')
-                               for stat, label in ((stat.key, stat.abbr) for stat in pet.rules.stats))
+                               for stat, label in ((stat.key, stat.abbr) for stat in system().stats))
             lines = [stats, _('Armor') + ': ' + str(pet.armorValue()), pet.attack, pet.notes]
             for container in json.loads(pet.containers):
                 lines.append(container['name'] + ' (' + str(container['slots']) + ' ' + _('slots') + ')')
@@ -490,12 +490,12 @@ class BarebonesSheet(CharacterSheet):
 
         items = json.loads(c.items or '[]')
         main = [it for it in items if it.get('location') == 0]
-        petty = [it for it in main if not c.rules.inventory.item_size(it)]  # Takes no slot (kettlewright).
+        petty = [it for it in main if not system().inventory.item_size(it)]  # Takes no slot (kettlewright).
         slot = 0
         for item in main:
             if item in petty:
                 continue
-            slots = c.rules.inventory.item_size(item)
+            slots = system().inventory.item_size(item)
             title = _item_title(item)
             if slot + slots <= 10:
                 self.field_text(f'Inventory{slot + 1}', title, title=_('Inventory details'))

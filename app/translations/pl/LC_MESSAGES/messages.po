@@ -23959,7 +23959,7 @@ msgstr "Zwierzęta"
 msgid "Objects"
 msgstr "Przedmioty"
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "You dematerialized a beloved pet. Now it follows you around, invisible "
 "but always present. Although it cannot interact with the physical realm, "
@@ -23971,7 +23971,7 @@ msgstr ""
 "ze światem fizycznym,  możesz współdzielić z nim jego zmysły. (Dodaj "
 "zmęczenie za każdym razem.)  Wykonuje podstawowe polecenia."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "Homunculus: A miniature clay replica of yourself that follows your every "
 "command. It hates being enthralled to you and complains bitterly whenever"
@@ -23983,7 +23983,7 @@ msgstr ""
 "narzeka gorzko, gdy tylko jest to możliwe.  Wszelkie obrażenia zadane "
 "homunkulusowi są również zadawane tobie. 3 OCHR, 4 SIŁ, 13 ZRE, 5 WOL"
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "A Blood Pail (bulky) from a local death-cult. Empty it to raise a servant"
 " built from whatever is buried below, with 6 HP, 1 Armor, 13 STR, 11 DEX,"
@@ -23998,7 +23998,7 @@ msgstr ""
 "zostanie zniszczony, na stałe traci 1k4 SIŁ. Doładowanie: Napełnij wiadro"
 " krwią umierającego wojownika."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid ""
 "A burial wagon (+6 slots, slow) from your last job. It came with a "
 "stubborn old donkey (+4 slots, only +2 slots if pulling wagon)."
@@ -24006,14 +24006,14 @@ msgstr ""
 "Karawan (+6 miejsc, wolny) z twojej ostatniej pracy. Masz również "
 "upartego, starego osła (+4 miejsca, tylko +2 miejsca, jeśli ciągnie wóz)."
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid "Slate"
 msgstr "Łupek"
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid "Lava"
 msgstr "Lawa"
 
-#. Also a pet's or mount's description (systems/cairn/content/backgrounds)
+#. Also a pet's or mount's description (system/cairn/content/backgrounds)
 msgid "Arcane"
 msgstr "Arkana"

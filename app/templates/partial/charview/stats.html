@@ -5,7 +5,7 @@
 <h3>{{_('Stats')}}</h3>
 <template data-dead-badge>{% include 'partial/dead_badge.html' %}</template>
 <div class="stats-stats-container character-stat-dashboard">
-  {% for stat in rules_for(character).sheet_stats %}{% set field, label, short = stat.key, _(stat.abbr), stat.abbr|lower %}
+  {% for stat in game_system.sheet_stats %}{% set field, label, short = stat.key, _(stat.abbr), stat.abbr|lower %}
   <div class="character-stat-card" id="character-{{ short }}-container">
     <div class="stat-card-heading">
       {% if is_owner and field != 'hp' and not generated_preview and character[field] is not none %}
@@ -27,9 +27,9 @@
       <p class="stat-readonly" id="{{ field }}-view-text">{{ character.hpValue().0 if field == 'hp' else character[field] }} <span>/ {{ character[field ~ '_max'] }}</span></p>
     {% endif %}
     {# HP counts as 0 with a full inventory or a condition that says so (Panicked in Cairn): the system's words for why. #}
-    <div class="stat-warning">{% if field == 'hp' and can_edit_sheet and (character.overburdened() or rules_for(character).has_effect(rules_for(character).active_conditions(character), 'zero_hp')) %}
+    <div class="stat-warning">{% if field == 'hp' and can_edit_sheet and (character.overburdened() or game_system.has_effect(game_system.active_conditions(character), 'zero_hp')) %}
       <small>{{_('Available HP: 0')}}</small>
-      <small>{% include system_template('charview/zero_hp_reason.html', character) %}</small>
+      <small>{% include system_template('charview/zero_hp_reason.html') %}</small>
     {% endif %}</div>
   </div>
   {% endfor %}
@@ -49,7 +49,7 @@
     <div id="character-deprived-container" class="character-stat-resource character-stat-conditions">
       <h4>{{_('Conditions')}}</h4>
       <div class="character-condition-options">
-      {% for condition in rules_for(character).conditions %}{% set field, label = condition.key, _(condition.label) %}
+      {% for condition in game_system.conditions %}{% set field, label = condition.key, _(condition.label) %}
         {% if can_edit_sheet %}
         <form class="sheet-stat-form" action="{{ url_for('character_edit.character_stat_save', username=username, url_name=url_name) }}" method="post">
           {{ stat_form.csrf_token(id='sheet-' ~ field ~ '-csrf') if stat_form.csrf_token is defined else '' }}
@@ -58,14 +58,14 @@
         </form>
         {% elif character[field] %}<span class="character-condition is-selected">{{label}}</span>{% endif %}
       {% endfor %}
-      {% if not can_edit_sheet and not rules_for(character).active_conditions(character) %}<span>{{_('None')}}</span>{% endif %}
+      {% if not can_edit_sheet and not game_system.active_conditions(character) %}<span>{{_('None')}}</span>{% endif %}
       </div>
     </div>
     <div id="character-rest-container" class="character-stat-rest">
       {% if can_edit_sheet %}
       <button class="button smaller-font" hx-get="/charedit/rest/{{username}}/{{url_name}}" hx-swap="innerHTML"
         hx-target="#character-stats-container" hx-confirm="{{_('Do you want to restore all HP?')}}"
-        data-confirm-title="{{_('Rest')}}" data-confirm-button="{{_('Yes')}}" data-cancel-button="{{_('No')}}" {% if not rules_for(character).can_recover(rules_for(character).active_conditions(character)) %}disabled{% endif %}>{{_('Rest')}}</button>
+        data-confirm-title="{{_('Rest')}}" data-confirm-button="{{_('Yes')}}" data-cancel-button="{{_('No')}}" {% if not game_system.can_recover(game_system.active_conditions(character)) %}disabled{% endif %}>{{_('Rest')}}</button>
       {% endif %}
     </div>
   </div>

@@ -1,6 +1,6 @@
 """Background table answers with the Cairn SRD's formatting (#536): items in bold, mechanics in italics.
 
-The tables' answers gained their Markdown (systems/cairn/content/backgrounds, and their translations); a character
+The tables' answers gained their Markdown (system/cairn/content/backgrounds, and their translations); a character
 keeps the answer it was created with, so one whose answer is a table answer without that formatting, in any
 language, gets the formatted one. The formatting only added marks, so the answer without them is the old one.
 """
@@ -28,7 +28,7 @@ def plain(text):
 def formatted_answers():
     """Every table answer that has formatting, in English and in each translation."""
     answers = set()
-    for path in (ROOT / 'systems/cairn/content/backgrounds').glob('*.json'):
+    for path in (ROOT / 'system/cairn/content/backgrounds').glob('*.json'):
         if path.name == 'background_data.json':
             continue
         background = next(iter(json.loads(path.read_text()).values()))

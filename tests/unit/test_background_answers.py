@@ -6,7 +6,7 @@ import re
 
 import pytest
 from pypdf import PdfReader
-from systems.cairn.web.char_utils import generate_character
+from system.cairn.web.char_utils import generate_character
 from app.models import Character, User, db
 from app.models.character import BACKGROUND_FIELDS
 

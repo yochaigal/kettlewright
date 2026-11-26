@@ -24,7 +24,7 @@
         <h3>{{_('Stats')}}</h3>
         <dl class="character-print-stats">
           {# Two columns: the system's stats (attributes, then HP) beside Gold and Armor, as the sheet lays them out. #}
-          {% set rules = rules_for(character) %}{% set extras = [(_('Gold'), character.gold), (_('Armor'), character.armorValue())] %}
+          {% set rules = game_system %}{% set extras = [(_('Gold'), character.gold), (_('Armor'), character.armorValue())] %}
           {% for stat in rules.sheet_stats %}
           <dt>{{_(stat.abbr)}}</dt><dd>{{character[stat.key]}} / {{character[stat.key ~ '_max']}}</dd>
           {% if extras[loop.index0] is defined %}<dt>{{ extras[loop.index0][0] }}</dt><dd>{{ extras[loop.index0][1] }}</dd>{% endif %}
@@ -70,7 +70,7 @@
       <section class="print-container"><h3>{{_('Pets')}}</h3>
       {% for pet in character.pets %}
         <h4>{{ pet.name|markdown_inline }}</h4>
-        <p>{% for s in rules_for(pet).stats %}{% set stat, label = s.key, s.abbr %}{{label}} {{pet[stat] if pet[stat] is not none else '—'}}{% if pet[stat+'_max'] is not none %}/{{pet[stat+'_max']}}{% endif %} · {% endfor %}{{_('Armor')}} {{pet.armorValue()}} · {{pet.attack}}</p>
+        <p>{% for s in game_system.stats %}{% set stat, label = s.key, s.abbr %}{{label}} {{pet[stat] if pet[stat] is not none else '—'}}{% if pet[stat+'_max'] is not none %}/{{pet[stat+'_max']}}{% endif %} · {% endfor %}{{_('Armor')}} {{pet.armorValue()}} · {{pet.attack}}</p>
         <div class="with-whitespace rich-content">{{ pet.notes|markdown }}</div>
         {% for container in pet.export().containers %}<p>{{ container.name|markdown_inline }} ({{container.slots}} {{_('slots')}}): {% for item in pet.export()['items'] if item.location == container.id %}{{item.name}}{% if not loop.last %}, {% endif %}{% endfor %}</p>{% endfor %}
       {% endfor %}</section>
