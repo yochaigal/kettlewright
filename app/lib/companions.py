@@ -72,6 +72,12 @@ def pet_data(template, parent):
     for stat in rules.stat_keys:
         result[stat] = read(stat) if template.get('mirror') else template.get(stat)
         result[stat + '_max'] = read(stat + '_max') if template.get('mirror') else template.get(stat)
+    # A mount with no stats of its own (Horse, Mule, Donkey) rolls them with the system's dice, and kicks (#537).
+    if template.get('slots') and not template.get('mirror') and all(template.get(stat) is None for stat in rules.stat_keys):
+        dice = SimpleNamespace(randint=randint)
+        for stat in rules.stat_keys:
+            result[stat] = result[stat + '_max'] = rules.roll_stat(stat, dice)
+        result['attack'] = result['attack'] or N_('Hooves (d6)')
     return result
 
 
@@ -113,7 +119,9 @@ def import_pet(data):
 
 
 def new_hireling(party, role):
-    from app.lib.data import load_traits
+    """A hireling of this role (#529): its gear and pets from the catalog (the Cairn SRD's hirelings), its stats rolled,
+    a random name, traits and portrait."""
+    from app.lib.data import load_images, load_traits
     from kettlewright.web import plugin
     # A name from the party's system's tables, or the default system's for one without web parts (kettlewright).
     random_name = (plugin(party.rules) or plugin()).random_name
@@ -124,14 +132,20 @@ def new_hireling(party, role):
     for item in template['items'] if template else []:
         items.append(dict(item, id=uuid.uuid4().hex, location=0))
     traits = '\n'.join(_(name) + ': ' + _(choice(values)) for name, values in load_traits().items())
+    portraits = [image for image in load_images() if image != 'default-portrait.webp']
     companion = Companion(kind='hireling', party=party, name=random_name(None), role=role,
-                          daily_cost=template['daily_cost'] if template else 0, items=json.dumps(items), notes=traits)
+                          daily_cost=template['daily_cost'] if template else 0, items=json.dumps(items), notes=traits,
+                          image_url=choice(portraits) if portraits else None)
     # The party's game system (kettlewright, #487): its stats, rolled with its creation dice (Cairn: 1d6 HP, 3d6 the rest).
     dice = SimpleNamespace(randint=randint)  # This module's randint: rolls (and tests) go through it.
     for stat in party.rules.stat_keys:
         value = party.rules.roll_stat(stat, dice)
         companion.set_stat(stat, value)
         companion.set_stat(stat + '_max', value)
+    # Its own animals (the Animal Handler's Hawk), as its pets.
+    pets = catalog('pet')
+    for key in (template or {}).get('pets', []):
+        companion.pets.append(import_pet(pet_data(pets[key], companion)))
     return companion
 
 

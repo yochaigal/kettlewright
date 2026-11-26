@@ -177,6 +177,12 @@ def add_pet(character_id):
         if request.form.get('name', '').strip():
             pet.name = text('name',100,True)
         parent.pets.append(pet)
+        # A pet that can carry (a horse, a mule) carries for the character if asked (#537): its slots become a
+        # container in the character's inventory, linked to it.
+        from app.lib.mounts import can_carry, carry
+        if can_carry(template) and request.form.get('carries') == 'on':
+            db.session.flush()
+            carry(pet, parent)
         db.session.commit()
         return redirect(url_for('companions.sheet', companion_id=pet.id))
     return render_template('main/companion_add.html', kind='pet', parent=parent, templates=catalog('pet'), form=FlaskForm())
@@ -220,13 +226,17 @@ def sheet(companion_id):
             if field == 'role' and field not in request.form:
                 continue
             setattr(c, field, text(field,limit,field=='name'))
+        if c.kind == 'pet':  # A mount's container has its name (#537).
+            from app.lib.mounts import renamed_pet
+            renamed_pet(c)
         for stat in STATS:
             value, maximum = number(stat, optional=True), number(stat+'_max', optional=True)
             if (value is None) != (maximum is None) or (value is not None and value > maximum):
                 abort(400, description='Current stats cannot exceed their maximum.')
             setattr(c,stat,value)
             setattr(c,stat+'_max',maximum)
-        c.armor = number('armor',3)
+        if 'armor' in request.form:  # Hirelings have no natural armor to edit (#529).
+            c.armor = number('armor',3)
         c.gold = number('gold')
         if c.kind == 'hireling':
             c.daily_cost = number('daily_cost')
@@ -256,6 +266,9 @@ def delete(companion_id):
         abort(403)
     csrf()
     back = parent_url(c)
+    if c.kind == 'pet':  # A mount's container goes with it; what it carried goes to the main inventory (#537).
+        from app.lib.mounts import pet_removed
+        pet_removed(c)
     db.session.delete(c)
     db.session.commit()
     return redirect(back)
@@ -354,7 +367,19 @@ def sheet_context(c, selected=0):
                 companion_sheet=True, inventory=inventory, outgoing=inventories(c) if can_manage(c) else {},
                 inventory_edit_base=f'/companions/{c.id}/inventory',
                 inventory_select_base=f'/companions/{c.id}/containers', decode=json.loads,
-                username='', url_name='', party_containers=[])
+                username='', url_name='', party_containers=[], mount=mount_of(c))
+
+
+def mount_of(c):
+    """What a mount carries for its owner (#537): (owner, its container, its page), or None."""
+    from app.lib.mounts import mount_container, owner_of
+    container = mount_container(c) if c.kind == 'pet' else None
+    if container is None:
+        return None
+    owner = owner_of(c)
+    url = (url_for('main.character', username=owner.owner_username, url_name=owner.url_name)
+           if c.character else url_for('companions.sheet', companion_id=owner.id))
+    return dict(owner=owner, container=container, url=url)
 
 
 def inventory_response(c, selected=0):
@@ -752,6 +777,9 @@ def section(companion_id, section):
             error = problem.description
         else:
             setattr(c, 'shared' if section == 'access' else section, value)
+            if section == 'name' and c.kind == 'pet':  # A mount's container has its name (#537).
+                from app.lib.mounts import renamed_pet
+                renamed_pet(c)
             db.session.commit()
             editing = False
     response = make_response(render_template('partial/companions/inline_section.html',

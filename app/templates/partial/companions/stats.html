@@ -17,6 +17,28 @@
     <div class="stat-warning"></div>
   </div>
   {% endfor %}
+  {% if c.kind == 'hireling' %}
+  {# A hireling is presented like a character (#529): Armor (from what it carries) and Gold as cards. It has no natural
+     armor; one that was given some before keeps its control. #}
+  <div class="character-stat-card character-resource-card" id="character-armor-container">
+    <div class="stat-card-heading"><h4>{{_('Armor')}}</h4></div>
+    <p class="stat-readonly" id="armor-counter"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> {{ c.armorValue() }}</p>
+  </div>
+  <div class="character-stat-card character-resource-card" id="character-gold-container">
+    <div class="stat-card-heading"><h4>{{_('Gold')}}</h4></div>
+    {% if editable %}
+      <div class="stat-card-gold">{% with control='gold', caption=_('Gold'), label=_('Gold'), limit=100000 %}{% include 'partial/charview/stat_control.html' %}{% endwith %}</div>
+    {% else %}<p class="stat-readonly" id="gold-view-text">{{c.gold}}</p>{% endif %}
+  </div>
+  {% if c.armor %}
+  <div class="character-stat-toolbar companion-stat-toolbar">
+    <div class="character-stat-resource" id="character-natural-armor-container">
+      {% if editable %}{% with control='armor', caption=_('Natural armor'), limit=3 %}{% include 'partial/charview/stat_control.html' %}{% endwith %}
+      {% else %}<h4>{{_('Natural armor')}}</h4><p>{{c.armor}}</p>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+  {% else %}
   <div class="character-stat-toolbar companion-stat-toolbar">
     {% for control, label, limit in [('gold', _('Gold'), 100000), ('armor', _('Natural armor'), 3)] %}
     <div class="character-stat-resource" id="character-{{'gold' if control == 'gold' else 'natural-armor'}}-container">
@@ -26,6 +48,7 @@
     {% endfor %}
     <div class="character-stat-resource" id="character-armor-container"><h4>{{_('Armor')}}</h4><p>{{c.armorValue()}}</p></div>
   </div>
+  {% endif %}
 </div>
 <div hx-trigger="refresh-stats from:body" hx-get="{{url_for('companions.stats',companion_id=c.id)}}" hx-target="#character-stats-container"></div>
 <p class="quick-stats-status" role="status" aria-live="polite"></p>

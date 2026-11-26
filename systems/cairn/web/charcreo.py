@@ -839,6 +839,10 @@ def charcreo_save():
         new_character.party_id = party.id
         new_character.party_code = party.join_code
         add_character_to_party(new_character)
+    # An Outrider's mount carries for it: the container its background gives is the mount's (#537). After the party:
+    # linking saves the character, which must already have its party's game system.
+    from app.lib.mounts import link_mounts
+    link_mounts(new_character)
     db.session.commit()
     response = make_response("Redirecting")
     response.headers["HX-Redirect"] = url_for('main.character', username=current_user.username, url_name=url_name)

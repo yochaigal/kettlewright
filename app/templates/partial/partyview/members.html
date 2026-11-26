@@ -19,6 +19,9 @@
     </div>
   </div>
   <div class="party-member-stats">
+    {# HP that counts as 0 (a full inventory, Panicked: #544) shows as on the sheet: 0 when read, and a warning beside
+       the stored value when edited. #}
+    {% set available_hp = character.hpValue()[0] %}
     {% for stat in rules_for(character).stats %}{% set field, label = stat.key, _(stat.abbr) %}
     <div class="party-member-stat">
       {% if current_user.id in (party.owner, character.owner) %}
@@ -26,9 +29,10 @@
               stat_action=url_for('party.update_member_stat', party_id=party.id, character_id=character.id) %}
         {% include 'partial/quick_stat.html' %}
       {% endwith %}
+      {% if field == 'hp' and available_hp != (character.hp or 0) %}<small class="party-stat-warning">{{_('Available HP: 0')}}</small>{% endif %}
       {% else %}
       <span class="party-stat-label">{{ label }}</span>
-      <span class="quick-stat-value">{{ character[field] or 0 }}/{{ character[field + '_max'] or 0 }}</span>
+      <span class="quick-stat-value">{{ (available_hp if field == 'hp' else character[field]) or 0 }}/{{ character[field + '_max'] or 0 }}</span>
       {% endif %}
     </div>
     {% endfor %}

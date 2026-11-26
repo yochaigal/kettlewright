@@ -26607,7 +26607,7 @@ msgstr ""
 
 #: app/static/json/backgrounds:1 app/static/json/backgrounds/fletchwind.json:1
 msgid "Hawk"
-msgstr ""
+msgstr "Halcón"
 
 #: app/static/json/backgrounds:1 app/static/json/backgrounds/foundling.json:1
 msgid "Hazel"
@@ -51603,6 +51603,35 @@ msgstr "Características visibles"
 msgid "Hidden stats"
 msgstr "Características ocultas"
 
+#. A hireling's page: its side column (#529)
+msgid "About the hireling"
+msgstr "Sobre el seguidor"
+
+#. The Animal Handler hireling's pet (#529), from the Cairn SRD
+msgid "An Animal Handler's hawk [2 HP, 5 STR, 16 DEX, 5 WIL, claws (d4+d4)]."
+msgstr "El halcón de un domador de bestias [2 PG, 5 FUE, 16 DES, 5 VOL, garras (d4+d4)]."
+
+#. The Hawk's attack (#529)
+msgid "Claws (d4+d4)"
+msgstr "Garras (d4+d4)"
+
+#. A mount's page: what it carries for its owner (#537)
+#, python-format
+msgid "Carries for %(owner)s: %(container)s, %(slots)s slots."
+msgstr "Carga para %(owner)s: %(container)s, %(slots)s espacios."
+
+#. Adding a pet that can carry (#537)
+#, python-format
+msgid "Carries for %(owner)s: +%(slots)s slots, a container in their inventory"
+msgstr "Carga para %(owner)s: +%(slots)s espacios, un contenedor en su inventario"
+
+#. A mount's page: a link to its owner's inventory (#537)
+msgid "Open inventory"
+msgstr "Abrir inventario"
+
+#. A mount's attack when it has none of its own (#537)
+msgid "Hooves (d6)"
+msgstr "Pezuñas (d6)"
 #. Character creation: the party it is made for (#530)
 msgid "Party join code"
 msgstr "Código de acceso del grupo"

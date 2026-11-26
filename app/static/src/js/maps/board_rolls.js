@@ -74,9 +74,9 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
       choices.value = preferred;
       drawToken();
       actions.replaceChildren();
-      // A monster, or a player's own character (#532): quick rolls (its damage and saves), and the full dice
-      // in the dice window. The Warden with nothing or a character selected has the dice here.
-      const quick = active?.kind === 'monster' || (active?.kind === 'character' && !config.warden);
+      // A monster or a character (#532, #543): quick rolls (its damage and saves), and the full dice in the dice
+      // window. The Warden with nothing selected has the dice here.
+      const quick = active?.kind === 'monster' || active?.kind === 'character';
       actions.dataset.mode = quick ? 'quick' : config.warden ? 'warden' : 'player';
       if (quick) {
         const saveDice = `d${gameSystem().save?.die ?? 20}`;
@@ -85,12 +85,13 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
           if (!damage.length) button(config.messages.damage, {dice: 'd4'}, true);
           for (const dice of damage) button(`${config.messages.damage} ${dice}`, {dice});
         } else {
-          for (const weapon of active.weapons || []) button(`${weapon.name} ${weapon.dice}`, {dice: weapon.dice});
+          // The Warden rolls these for the selected character, as it (#543).
+          for (const weapon of active.weapons || []) button(`${weapon.name} ${weapon.dice}`, {dice: weapon.dice, asActive: true});
         }
         const scores = active.kind === 'monster' ? active.stats : Object.fromEntries(
           Object.entries(active.attributes || {}).map(([stat, [current]]) => [stat, current]));
         for (const {key: stat, abbr: label} of gameSystem().attributes.filter(attribute => attribute.save)) {
-          button(label, {dice: saveDice, save: stat}, scores[stat] == null);
+          button(label, {dice: saveDice, save: stat, asActive: true}, scores[stat] == null);
         }
         const more = button(config.messages.rollDice, {modal: true});
         more.textContent = '';
@@ -203,14 +204,15 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
     control.append(...Array.from({length: count}, () => icon.cloneNode(true)));
     return control;
   }
-  // The Warden edits a selected player's character (#375) but still rolls as the Warden.
+  // The Warden edits a selected player's character (#375) and rolls its quick rolls as it (#543); the Warden's own
+  // dice (the dice window) stay the Warden's.
   const roller = () => config.warden && active?.kind === 'character' ? null : active;
   function button(label, action, unavailable = false) {
     const button = document.createElement('button'); button.type = 'button'; button.textContent = label;
     button.title = button.ariaLabel = label; button.dataset.unavailable = String(unavailable);
     button.addEventListener('click', () => {
       if (action.modal) openModal(roller());
-      else request(roller(), action).catch(() => {});
+      else request(action.asActive ? active : roller(), action).catch(() => {});
     });
     actions.append(button); return button;
   }
@@ -237,12 +239,12 @@ export function createBoardRolls({config, getApi, updates, canRoll, isPlayerPrev
       const roll = await response.json();
       release(roll);
       if (animate && !stopped) await dice3d.show(roll);
-      if (!stopped && actorId === roller()?.id) result.textContent = roll.result;
+      if (!stopped && (actorId === roller()?.id || actorId === active?.id)) result.textContent = roll.result;
       // Rolls from the dice modal already show their result there.
       if (animate && !stopped) osd?.own(rollName, roll.result);
       return roll;
     } catch (error) {
-      if (!stopped && actorId === roller()?.id) result.textContent = config.messages.rollFailed;
+      if (!stopped && (actorId === roller()?.id || actorId === active?.id)) result.textContent = config.messages.rollFailed;
       throw error;
     } finally {release(); rolling = false; if (!stopped) draw();}
   }

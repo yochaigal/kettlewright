@@ -256,3 +256,25 @@ test('the save buttons are the page system\'s attributes that can be saved (#487
     assert.equal(s.requests.at(-1).body.get('save'), 'luck');
   } finally {s.controller.destroy();}
 });
+
+test('the Warden rolls a selected character\'s quick rolls as it, and keeps the Warden\'s own dice (#543)', async () => {
+  const s = await setup(true);
+  try {
+    s.setRoster([{id: '3', name: 'Ada', kind: 'character', weapons: [{name: 'Sword', dice: 'd8'}],
+      attributes: {strength: [10, 12], dexterity: [14, 14], willpower: [8, 9]}}]);
+    s.events.party_actors_changed(); s.select({'actor-3-token': true});
+    assert.equal(s.node('board-roll-name').textContent, 'Ada');
+    assert.deepEqual(s.node('board-roll-actions').children.map(child => child.ariaLabel), ['Sword d8', 'STR', 'DEX', 'WIL', 'Roll Dice']);
+    s.button('Sword d8').events.click(); await tick();
+    assert.equal(s.requests.at(-1).body.get('character_id'), '3');
+    assert.equal(s.requests.at(-1).url, '/roll');
+    assert.equal(s.node('board-roll-result').textContent, 'A result');  // The Warden sees it.
+    s.button('WIL').events.click(); await tick();
+    assert.equal(s.requests.at(-1).body.get('save'), 'willpower');
+    s.button('Roll Dice').events.click();  // The dice window is the Warden's.
+    assert.equal(s.modal.open, true);
+    await s.modal.roll('d6');
+    assert.equal(s.requests.at(-1).url, '/warden');
+    assert.equal(s.requests.at(-1).body.has('character_id'), false);
+  } finally {s.controller.destroy();}
+});

@@ -493,6 +493,9 @@ class Inventory:
             self.character.items = json.dumps(items)
             
         self.character.containers = json.dumps(result)
+        if cnt.get('mount') and hasattr(self.character, 'pets'):  # A mount's name follows its container's (#537).
+            from app.lib.mounts import renamed_container
+            renamed_container(self.character, cnt)
         db.session.commit()
         self.parse(self.character)
 
@@ -560,6 +563,9 @@ class Inventory:
         for c in containers:
             if c["id"] != int(container_id):
                 result.append(c)
+            elif c.get('mount') and hasattr(self.character, 'pets'):  # The mount is a plain pet again (#537).
+                from app.lib.mounts import container_removed
+                container_removed(self.character, c)
         self.character.containers = json.dumps(result)
         items = json.loads(self.character.items)
         result = []
