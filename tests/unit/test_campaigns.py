@@ -1515,6 +1515,22 @@ def test_players_find_their_parties_in_the_parties_view(setup):
     assert 'id="running-title"' in page and 'id="playing-title"' not in page
 
 
+
+def test_without_any_party_the_parties_view_shows_no_empty_island(setup):
+    """Like Playing in, Your parties only shows with parties in it: with none, just the empty line (as Campaigns)."""
+    app, client = setup
+    with app.app_context():
+        db.session.add(User(id=5, username='user5'))
+        db.session.commit()
+    login(client, 5)
+    page = client.get('/campaigns/?view=parties').text
+    assert 'No parties yet' in page and 'New party' in page
+    assert 'id="running-title"' not in page and 'id="playing-title"' not in page and 'parties-island' not in page
+    # Once they have a party, the island is back.
+    assert client.post('/parties/new', data={'name': 'First table'}).status_code == 302
+    page = client.get('/campaigns/?view=parties').text
+    assert 'id="running-title"' in page and 'First table' in page and 'No parties yet' not in page
+
 def test_party_notes_live_only_on_their_party(setup):
     app, client = setup
     renderable_party_page(app)
