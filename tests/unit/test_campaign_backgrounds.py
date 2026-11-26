@@ -301,7 +301,7 @@ def test_without_a_code_creation_uses_official_backgrounds(warden):
         db.session.commit()
     login(client, 2)
     page = client.get('/new_character/').get_data(as_text=True)
-    assert 'Tidewatcher' not in page and 'value="Aurifex"' in page and 'create-party-box' not in page
+    assert 'Tidewatcher' not in page and 'value="Aurifex"' in page and 'Creating a character for' not in page
     assert 'No party has this join code' in client.get('/new_character/?party=nope').get_data(as_text=True)
     client.post('/charcreo/save', data=creation_form(background='Aurifex', background_table1_select='',
                                                      background_table2_select=''))
@@ -309,18 +309,20 @@ def test_without_a_code_creation_uses_official_backgrounds(warden):
         assert Character.query.one().party_id is None
 
 
-def test_characters_page_joins_a_party_with_a_new_character(warden):
-    """Join a party (Characters page): a new character for that party, with its campaign's backgrounds."""
+def test_a_new_character_takes_its_party_s_join_code_first(warden):
+    """#530: no Join a party on the Characters page; creating a character (2e or Barebones) asks for the party's join
+    code first, which brings the campaign's backgrounds, and the character joins the party when saved."""
     app, client = warden
     login(client, 2)
     page = client.get('/users/player/characters/').get_data(as_text=True)
-    dialog = page[page.index('id="join-party-dialog"'):page.index('</dialog>', page.index('id="join-party-dialog"'))]
-    assert 'Join a party' in page and 'action="/new_character/"' in dialog and 'name="party"' in dialog
-    assert 'method="get"' in dialog and 'its Party section' in dialog
-    assert 'Creating a character for Lamplighters' in client.get('/new_character/?party=coast-code').get_data(as_text=True)
-    # Without a code, creation shows no party box; a wrong code can be corrected there.
-    assert 'create-party-box' not in client.get('/new_character/').get_data(as_text=True)
-    assert 'No party has this join code' in client.get('/new_character/?party=nope').get_data(as_text=True)
+    assert 'join-party' not in page and 'Join a party' not in page
+    for path in ('/new_character/', '/new_character/barebones/'):
+        box = client.get(path).get_data(as_text=True)
+        box = box[box.index('create-party-box'):box.index('</div>', box.index('create-party-box'))]
+        assert f'action="{path}"' in box and 'name="party"' in box and 'method="get"' in box
+        assert 'enter your party’s join code first' in box and 'No party has this join code' not in box
+        assert f'Creating a character for Lamplighters' in client.get(f'{path}?party=coast-code').get_data(as_text=True)
+        assert 'No party has this join code' in client.get(f'{path}?party=nope').get_data(as_text=True)
     party_page = client.get('/users/warden/parties/lamplighters/').get_data(as_text=True)
     assert 'invite-link-button' not in party_page
 

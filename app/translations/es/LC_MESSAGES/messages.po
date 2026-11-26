@@ -51602,3 +51602,19 @@ msgstr "Características visibles"
 #. Monsters tab: the monster's stats are hidden from players on the whiteboard (#539)
 msgid "Hidden stats"
 msgstr "Características ocultas"
+
+#. Character creation: the party it is made for (#530)
+msgid "Party join code"
+msgstr "Código de acceso del grupo"
+
+#. Character creation: the party join code is optional (#530)
+msgid "optional"
+msgstr "opcional"
+
+#. Character creation: why to enter the party's join code first (#530)
+msgid "If your campaign has its own backgrounds, enter your party’s join code first: the character uses them, and joins the party when you save it."
+msgstr "Si tu campaña tiene sus propios trasfondos, introduce primero el código de acceso de tu grupo: el personaje los usa y se une al grupo al guardarlo."
+
+#. Campaign page, no parties yet: how players join one (#530)
+msgid "No parties yet. Create one, then give your players its join code: they enter it when they create a character, or on an existing character's sheet."
+msgstr "Aún no hay grupos. Crea uno y da a tus jugadores su código de acceso: lo introducen al crear un personaje, o en la ficha de un personaje que ya tengan."

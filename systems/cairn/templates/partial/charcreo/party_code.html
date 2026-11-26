@@ -1,0 +1,18 @@
+{# The party a new character is made for (#530): its join code first, so the character uses its campaign's backgrounds
+   and joins it when saved. action is this creation page; party the party of the code, party_code_error a wrong code. #}
+<div class="create-party-box">
+  {% if party %}
+  <p>{{ _('Creating a character for %(party)s', party=party.name) }}.
+    <a href="{{ action }}">{{ _('Create without a party') }}</a></p>
+  {% else %}
+  <form method="get" action="{{ action }}" class="create-party-form">
+    <div class="create-party-line">
+      <label for="create-party-code">{{ _('Party join code') }} <small>({{ _('optional') }})</small></label>
+      <span class="create-party-row"><input type="text" id="create-party-code" name="party" maxlength="64" autocomplete="off" class="input"
+        placeholder="{{ _('join code') }}" aria-describedby="create-party-hint"><button type="submit" class="button">{{ _('Use code') }}</button></span>
+    </div>
+    <p class="help" id="create-party-hint">{{ _('If your campaign has its own backgrounds, enter your party’s join code first: the character uses them, and joins the party when you save it.') }}</p>
+    {% if party_code_error %}<p class="help is-danger" role="alert">{{ _('No party has this join code.') }}</p>{% endif %}
+  </form>
+  {% endif %}
+</div>

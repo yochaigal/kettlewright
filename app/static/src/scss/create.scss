@@ -351,13 +351,23 @@ html:has(#barebones-form) {
   }
 }
 
-// Creating a character for a party: its join code (campaign backgrounds, joins on save).
+// Creating a character for a party: its join code (campaign backgrounds, joins on save). As wide as the sheet below
+// it, and short: the code on one line, the hint under it (#530).
 .create-party-box {
-  margin: 0 0 1em;
-  padding: .75em 1em;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 940px;
+  margin: 0 auto 1em;
+  padding: .5em 1em;
   border: 1px dashed currentColor;
   border-radius: 8px;
   p { margin: 0; }
-  .create-party-row { display: flex; gap: .5em; margin-top: .4em; flex-wrap: wrap; }
-  .create-party-row .input { max-width: 16em; }
+  .create-party-form { margin: 0; padding: 0; max-width: none; background: none; box-shadow: none; border: 0; }
+  .create-party-line { display: flex; align-items: center; gap: .4em .75em; flex-wrap: wrap; }
+  .create-party-line label { margin: 0; font-weight: 600; white-space: nowrap; }
+  .create-party-row { display: flex; align-items: center; gap: .5em; flex: 1 1 18em; }
+  .create-party-row .input { flex: 1 1 auto; max-width: 16em; margin: 0; }
+  .create-party-row .button { margin: 0; }
+  .help { margin: .25em 0 0; font-size: .85em; opacity: .75; }
+  .help.is-danger { opacity: 1; }
 }

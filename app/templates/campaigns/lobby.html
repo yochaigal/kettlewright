@@ -65,7 +65,7 @@
           </form>
         </div>
         {% endfor %}
-        {% if not parties %}<p class="wiki-empty">{{ _("No parties yet. Create one, then give your players its join code: they use Join a party on their Characters page.") }}</p>{% endif %}
+        {% if not parties %}<p class="wiki-empty">{{ _("No parties yet. Create one, then give your players its join code: they enter it when they create a character, or on an existing character's sheet.") }}</p>{% endif %}
         {% if audience %}
         <p class="wiki-audience-hint">{{ _('Also revealed to parties of other campaigns:') }}
           {% for other, count in audience %}<a href="{{ url_for('campaigns.party_wiki', party_id=other.id) }}">{{ other.name|markdown_inline }}</a> ({{ count }}){% if not loop.last %}, {% endif %}{% endfor %}</p>
