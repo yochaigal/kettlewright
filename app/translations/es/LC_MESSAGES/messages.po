@@ -51614,3 +51614,21 @@ msgstr "El halcón de un domador de bestias [2 PG, 5 FUE, 16 DES, 5 VOL, garras 
 #. The Hawk's attack (#529)
 msgid "Claws (d4+d4)"
 msgstr "Garras (d4+d4)"
+
+#. A mount's page: what it carries for its owner (#537)
+#, python-format
+msgid "Carries for %(owner)s: %(container)s, %(slots)s slots."
+msgstr "Carga para %(owner)s: %(container)s, %(slots)s espacios."
+
+#. Adding a pet that can carry (#537)
+#, python-format
+msgid "Carries for %(owner)s: +%(slots)s slots, a container in their inventory"
+msgstr "Carga para %(owner)s: +%(slots)s espacios, un contenedor en su inventario"
+
+#. A mount's page: a link to its owner's inventory (#537)
+msgid "Open inventory"
+msgstr "Abrir inventario"
+
+#. A mount's attack when it has none of its own (#537)
+msgid "Hooves (d6)"
+msgstr "Pezuñas (d6)"

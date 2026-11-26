@@ -3,10 +3,12 @@
 <section class="body-container"><div class="sheet companion-sheet">
   <h1>{{_('Add hireling') if kind == 'hireling' else _('Add pet')}}</h1>
   <p>{{ parent.name|markdown_inline }}</p>
-  <form method="post">
+  {# A pet that can carry (a horse, a mule) can carry for its owner (#537): its slots, by catalog name. #}
+  {% set carrying = {} %}{% if kind == 'pet' %}{% for name, entry in templates.items() if entry.slots %}{% if carrying.update({name: entry.slots}) %}{% endif %}{% endfor %}{% endif %}
+  <form method="post" x-data="{choice: '', slots: {{ carrying|tojson|forceescape }}}">
     {{ form.hidden_tag() }}
     <label for="template">{{_('Role') if kind == 'hireling' else _('Pet')}}</label>
-    <select id="template" name="template">
+    <select id="template" name="template" x-model="choice" x-init="choice = $el.value">
       {% if kind == 'hireling' %}
       {% for entry in templates %}<option value="{{ entry.name }}">{{ entry.name | tr|markdown_inline|striptags }} · {{ entry.daily_cost }} {{_('gp/day')}}</option>{% endfor %}
       {% else %}{% for name in templates %}<option value="{{ name }}">{{ name | tr }}</option>{% endfor %}{% endif %}
@@ -14,7 +16,10 @@
     </select>
     <label for="name">{{_('Name')}}</label><input type="text" id="name" name="name" maxlength="100">
     {% if kind == 'hireling' %}<p>{{_('Rolls 3d6 for each attribute and d6 for HP. Starting equipment is a suggestion you can edit. Leave the name blank to roll one.')}}</p>
-    {% else %}<p>{{_('Custom pets require a name. Unknown stats can be filled in on the pet sheet.')}}</p>{% endif %}
+    {% else %}<p>{{_('Custom pets require a name. Unknown stats can be filled in on the pet sheet.')}}</p>
+    <label class="campaign-check" x-show="slots[choice]" x-cloak><input type="checkbox" name="carries" checked>
+      <span x-text="{{ _('Carries for %(owner)s: +%(slots)s slots, a container in their inventory', owner='__OWNER__', slots='__SLOTS__')|tojson|forceescape }}.replace('__OWNER__', {{ parent.name|markdown_inline|striptags|tojson|forceescape }}).replace('__SLOTS__', slots[choice])"></span></label>
+    {% endif %}
     <button type="submit">{{_('Create')}}</button>
   </form>
 </div></section>

@@ -25,8 +25,11 @@ def test_every_explicit_pet_reward(app_with_babel, background, table, index, nam
         assert len(pets) == 1
         pet = pets[0]
         assert pet.name == name
+        template = catalog('pet')[name]
         if name == 'Living Nightmare': assert pet.hp == 4 and pet.willpower == 12
-        else: assert pet.hp == catalog('pet')[name].get('hp')
+        elif template.get('slots') and template.get('hp') is None:  # A mount without stats rolls them (#537).
+            assert 1 <= pet.hp <= 6 and 3 <= pet.strength <= 18 and pet.attack == 'Hooves (d6)'
+        else: assert pet.hp == template.get('hp')
 
 
 def test_generator_json_and_print_parser_keep_starting_mount(app_with_babel):

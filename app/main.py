@@ -223,6 +223,11 @@ def new_from_json():
             character.pets.extend(pets)
             character.armor = str(character.armorValue())
             db.session.add(character)
+            # Its mounts carry for it again (#537): a link in the file names the other site's pet, so it is made anew.
+            from app.lib.mounts import link_mounts
+            character.containers = json.dumps([{key: value for key, value in container.items() if key != 'mount'}
+                                               for container in json.loads(character.containers)])
+            link_mounts(character)
             db.session.commit()
 
             print('submitted', file=sys.stderr)

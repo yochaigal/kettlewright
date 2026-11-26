@@ -72,6 +72,12 @@ def pet_data(template, parent):
     for stat in rules.stat_keys:
         result[stat] = read(stat) if template.get('mirror') else template.get(stat)
         result[stat + '_max'] = read(stat + '_max') if template.get('mirror') else template.get(stat)
+    # A mount with no stats of its own (Horse, Mule, Donkey) rolls them with the system's dice, and kicks (#537).
+    if template.get('slots') and not template.get('mirror') and all(template.get(stat) is None for stat in rules.stat_keys):
+        dice = SimpleNamespace(randint=randint)
+        for stat in rules.stat_keys:
+            result[stat] = result[stat + '_max'] = rules.roll_stat(stat, dice)
+        result['attack'] = result['attack'] or N_('Hooves (d6)')
     return result
 
 

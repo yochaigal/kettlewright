@@ -46,7 +46,14 @@ const companion_id = "{{c.id}}";</script>
       </aside>
     </div>
     {% else %}
+    {% if mount %}
+    {# A mount carries for its owner (#537): what it carries is a container in the owner's inventory. #}
+    <p class="companion-mount"><i class="fa-solid fa-horse" aria-hidden="true"></i>
+      {{ _('Carries for %(owner)s: %(container)s, %(slots)s slots.', owner=mount.owner.name|markdown_inline|striptags, container=mount.container.name|markdown_inline|striptags, slots=mount.container.slots) }}
+      <a href="{{ mount.url }}">{{ _('Open inventory') }} →</a></p>
+    {% else %}
     <div class="inventory-container character-sheet-inventory" id="inventory-container" hx-vals='{"inventory_context": "sheet"}'>{% include 'partial/charview/inventory_slots.html' %}</div>
+    {% endif %}
     <div class="character-details-grid">
       {% if editable or c.attack %}<div id="companion-attack-container">{% with section='attack' %}{% include 'partial/companions/inline_section.html' %}{% endwith %}</div>{% endif %}
     </div>
