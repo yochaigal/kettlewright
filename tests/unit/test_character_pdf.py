@@ -42,6 +42,14 @@ def contents(reader):
     return '\n'.join(page.extract_text() for page in reader.pages)
 
 
+def drawn_numbers(page):
+    """The numbers drawn on the page, one per text run, in drawing order. Read through pypdf's text visitor, so
+    numbers drawn side by side (current and max) stay apart whatever extract_text joins them into (pypdf 7.2)."""
+    runs = []
+    page.extract_text(visitor_text=lambda text, *_: runs.append(text.strip()))
+    return [run for run in runs if run.isdigit()]
+
+
 def test_pdf_route_embeds_fonts_and_builtin_portrait_without_mutating_character(pdf_character, orientation):
     app, character = pdf_character
     original = (character.name, character.items, character.containers, character.hp)
@@ -70,7 +78,7 @@ def test_pdf_exports_attributes_by_default_and_always_keeps_maxima(pdf_character
     text = reader.pages[0].extract_text()
     if orientation == 'landscape':
         assert text.count('current') == 4 and text.count('max') == 4
-    values = re.findall(r'^\s*(\d+)\s*$', text, flags=re.M)
+    values = drawn_numbers(reader.pages[0])
     assert values == (['18', '17', '12', '11', '14', '13', '6', '5', '2', '31415']
                       if include_current else ['18', '12', '14', '6'])
     assert 'Leather armor (2 Armor)' in text
@@ -82,7 +90,7 @@ def test_pdf_uses_effective_hp_when_panicked(pdf_character, orientation):
     character.panicked = True
     db.session.commit()
     _, reader = rendered(app, orientation)
-    values = re.findall(r'^\s*(\d+)\s*$', reader.pages[0].extract_text(), flags=re.M)
+    values = drawn_numbers(reader.pages[0])
     assert values[6:8] == ['3', '0']
     assert character.hp == 3
 

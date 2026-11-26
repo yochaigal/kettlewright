@@ -121,13 +121,13 @@
 
 {% if view == 'parties' %}
 {# Every party at once (Discord feedback): its campaign, and each character's HP, stats, armor and slots. #}
-{% set running_island %}{% if running or not playing %}
+{# Like Playing in, Your parties only shows with parties in it; with none at all, just the empty line (as Campaigns). #}
+{% set running_island %}{% if running %}
 <section class="campaigns-island parties-island" aria-labelledby="running-title">
 <header class="island-head">
   <h2 id="running-title"><i class="fa-solid fa-users" aria-hidden="true"></i> {{ _('Your parties') }}</h2>
 </header>
-{% if running %}<ul class="party-overviews">{% for card in running %}{{ party_overview(card) }}{% endfor %}</ul>
-{% else %}<p class="gallery-empty">{{ _('No parties yet. A campaign starts with one.') }}</p>{% endif %}
+<ul class="party-overviews">{% for card in running %}{{ party_overview(card) }}{% endfor %}</ul>
 </section>
 {% endif %}{% endset %}
 {% set playing_island %}{% if playing %}
@@ -139,7 +139,8 @@
 </section>
 {% endif %}{% endset %}
 {# The active one first: Your parties, unless none of them has players yet and you play in someone else's. #}
-{% if running|selectattr('roster')|list or not playing %}{{ running_island }}{{ playing_island }}
+{% if not running and not playing %}<p class="gallery-empty">{{ _('No parties yet. A campaign starts with one.') }}</p>{# New party is the button at the top. #}
+{% elif running|selectattr('roster')|list or not playing %}{{ running_island }}{{ playing_island }}
 {% else %}{{ playing_island }}{{ running_island }}{% endif %}
 {% else %}
 
