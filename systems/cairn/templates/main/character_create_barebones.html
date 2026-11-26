@@ -23,12 +23,8 @@
             <i class="fa-solid fa-rotate-right icon-in-button"></i>
         </button>
     </div>
-    {% if party %}
-    <div class="create-party-box"><p>{{ _('Creating a character for %(party)s', party=party.name) }}.
-        <a href="{{ url_for('main.new_barebones_character') }}">{{ _('Create without a party') }}</a></p></div>
-    {% elif party_code_error %}
-    <div class="create-party-box"><p class="help is-danger" role="alert">{{ _('No party has this join code.') }}</p></div>
-    {% endif %}
+    {# The party it is made for (#530): its join code brings the campaign's backgrounds, and the character joins it. #}
+    {% with action=url_for('main.new_barebones_character') %}{% include 'partial/charcreo/party_code.html' %}{% endwith %}
     {{ form_html | safe }}
 </div>
 <div class="no-space" id="dialog-anchor"></div>
