@@ -580,7 +580,7 @@ def test_board_player_rolls_are_attributed_and_public_with_server_side_ownership
     with app.app_context():
         saved = PartyRoll.query.one()
         assert saved.character_name == 'Player' and saved.private_user_id is None
-    assert clients[1].post(path, data=data).status_code == 403
+    assert clients[1].post(path, data=data).status_code == 200  # The Warden rolls its quick rolls (#543).
     assert clients[4].post(path, data=data).status_code == 403
     cid = summon(clients)
     assert clients[1].post(path, data=dict(data, companion_id=cid)).status_code == 400

@@ -437,7 +437,9 @@ def shared_map_roll(party_id):
         abort(400)
     if character_id:
         c = db.get_or_404(Character, request.form.get('character_id', type=int))
-        if c.owner != current_user.id or c.party_id != target.id or c.id not in json.loads(target.members or '[]'):
+        # Its player, or the party's Warden rolling its quick rolls on the whiteboard (#543).
+        if (current_user.id not in (c.owner, target.owner) or c.party_id != target.id
+                or c.id not in json.loads(target.members or '[]')):
             abort(403)
     if request.form.get('companion_id'):
         c = db.get_or_404(Companion, request.form.get('companion_id', type=int))
