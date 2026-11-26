@@ -115,3 +115,7 @@ body.dark-mode .character-card-footer .card-delete-character-button { color: #e0
   &::-webkit-inner-spin-button, &::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
   &:hover, &:focus { border-bottom-style: solid; border-bottom-color: var(--fg); outline: none; }
 }
+
+// HP that counts as 0 beside the stored value a Warden or owner edits (#544).
+.party-stat-warning { display: block; margin-top: .2rem; font-size: 1.1rem; font-weight: 700; color: #c92a2a; text-align: center; }
+body.dark-mode .party-stat-warning { color: #ff8787; }
