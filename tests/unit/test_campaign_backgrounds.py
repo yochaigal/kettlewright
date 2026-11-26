@@ -318,7 +318,7 @@ def test_a_new_character_takes_its_party_s_join_code_first(warden):
     assert 'join-party' not in page and 'Join a party' not in page
     for path in ('/new_character/', '/new_character/barebones/'):
         box = client.get(path).get_data(as_text=True)
-        box = box[box.index('create-party-box'):box.index('</div>', box.index('create-party-box'))]
+        box = box[box.index('create-party-box'):box.index('</form>', box.index('create-party-box'))]
         assert f'action="{path}"' in box and 'name="party"' in box and 'method="get"' in box
         assert 'enter your party’s join code first' in box and 'No party has this join code' not in box
         assert f'Creating a character for Lamplighters' in client.get(f'{path}?party=coast-code').get_data(as_text=True)
